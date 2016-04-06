@@ -1,8 +1,3 @@
-## Isomorphic Redux Demo
+## Twinkle Website
 
-Basic isomorphic app built on [Redux](https://github.com/gaearon/redux)
-
-```
-$ npm run dev
-$ browser http://localhost:3000
-```
+Website for Twinkle students
