@@ -1,5 +1,5 @@
 import request from 'axios';
-import URL from './URL';
+import { URL } from './URL';
 
 const API_URL = `${URL}/api/user`;
 
