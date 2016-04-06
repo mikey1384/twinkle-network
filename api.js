@@ -259,10 +259,10 @@ app.post('/playlist', (req, res) => {
       const post = {title, description, createdby: uploaderid};
       pool.query('INSERT INTO vq_playlists SET ?', post, (err, res) => {
         const playlistId = res.insertId;
-        callback(err, playlistId, uploadername);
+        callback(err, playlistId, uploadername, uploaderid);
       })
     },
-    (playlistId, uploadername, callback) => {
+    (playlistId, uploadername, uploaderid, callback) => {
       for (let i = 0; i < videos.length; i ++) {
         var TaskFactory = function (playlistId, videoId) {
           this.task = function (callback) {
@@ -283,7 +283,8 @@ app.post('/playlist', (req, res) => {
             playlist: rows,
             title: title,
             id: playlistId,
-            uploader: uploadername
+            uploader: uploadername,
+            uploaderId: uploaderid
           })
         })
       })
