@@ -4,3 +4,4 @@ build
 siteConfig.js
 URL.js
 .fuse_hidden*
+.DS_Store
