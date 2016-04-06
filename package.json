@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production NODE_PATH=$NODE_PATH:./shared node --harmony .",
+    "start": "NODE_ENV=production NODE_PATH=$NODE_PATH:./shared forever start -c \"node --harmony .\" index.js",
+    "stop": "forever stop index.js",
     "dev": "NODE_PATH=$NODE_PATH:./shared node --harmony .",
     "build": "webpack --progress --color -p --config webpack.prod.config.js",
     "api": "node api.js"
@@ -30,6 +31,7 @@
     "client-sessions": "^0.7.0",
     "crypto": "0.0.3",
     "express": "^4.13.3",
+    "forever": "^0.15.1",
     "history": "^1.17.0",
     "mysql": "^2.10.2",
     "nodemailer": "^2.2.1",
