@@ -257,7 +257,7 @@ app.post('/playlist', (req, res) => {
       const uploaderid = rows[0].id;
       const uploadername = rows[0].username;
       const post = {title, description, createdby: uploaderid};
-      pool.query('INSERT INTO vq_playlists SET?', post, (err, res) => {
+      pool.query('INSERT INTO vq_playlists SET ?', post, (err, res) => {
         const playlistId = res.insertId;
         callback(err, playlistId, uploadername);
       })

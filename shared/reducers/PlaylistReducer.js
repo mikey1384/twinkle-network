@@ -63,7 +63,7 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'UPLOAD_PLAYLIST':
       const result = action.res.data.result;
-      if (initialPlaylists.length > 0) {
+      if (initialPlaylists.length > 2) {
         initialPlaylists.pop();
         initialPlaylists = [result].concat(initialPlaylists);
       }

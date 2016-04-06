@@ -80,18 +80,15 @@ export default class AddPlaylistModal extends Component {
       videos: this.state.selectedVideos
     }
     resetForm();
-    dispatch(uploadPlaylist(params)).subscribe(
-      () => {
-        dispatch(closeAddPlaylistModal());
-        this.setState({
-          section: 0,
-          title: null,
-          description: null,
-          selectedVideos: [],
-          titleError: false
-        })
-      }
-    )
+    dispatch(uploadPlaylist(params));
+    dispatch(closeAddPlaylistModal());
+    this.setState({
+      section: 0,
+      title: null,
+      description: null,
+      selectedVideos: [],
+      titleError: false
+    })
   }
 
   renderTitle() {
