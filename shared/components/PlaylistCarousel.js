@@ -4,6 +4,10 @@ import VideoThumb from './VideoThumb';
 import SmallDropdownButton from './SmallDropdownButton';
 
 class PlaylistCarousel extends Component {
+  state = {
+    onEdit: false
+  }
+
   renderThumbs () {
     const { playlist } = this.props;
     let index = 0;
@@ -19,7 +23,7 @@ class PlaylistCarousel extends Component {
   }
 
   onEditTitle() {
-
+    this.setState({onEdit: true})
   }
 
   onDeleteClick() {
@@ -27,6 +31,7 @@ class PlaylistCarousel extends Component {
   }
 
   render () {
+    const { onEdit } = this.state;
     const { title, uploader, editable } = this.props;
     const menuProps = [
       {
@@ -51,15 +56,31 @@ class PlaylistCarousel extends Component {
     ]
     return (
       <div className="container-fluid">
-        <div className="row">
-          <h4
-            style={{
-              marginLeft:"1rem"
-            }}
-            className="pull-left"
-          >
-            {title} <small>by {uploader}</small>
-          </h4>
+        <div className="row container-fluid">
+          {
+            onEdit ?
+            <div
+              className="input-group col-sm-6 pull-left"
+              style={{
+                paddingBottom: '0.3em'
+              }}
+            >
+              <form>
+                <input
+                  ref="editTitleInput"
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter Title..."
+                />
+              </form>
+            </div>
+            :
+            <h4
+              className="pull-left"
+            >
+              {title} <small>by {uploader}</small>
+            </h4>
+          }
           {
             editable && <SmallDropdownButton
               menuProps={menuProps}
