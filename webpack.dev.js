@@ -1,8 +1,8 @@
-import webpack              from 'webpack';
-import assign               from 'object-assign';
+import webpack from 'webpack';
+import assign from 'object-assign';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-import prodCfg              from './webpack.prod.config.js';
+import prodCfg from './webpack.prod.config.js';
 
 Object.assign = assign;
 
@@ -37,10 +37,10 @@ export default function(app) {
     module: {
       loaders: [
         {
-          test:    /\.jsx?$/,
+          test: /\.js$/,
           exclude: /node_modules/,
-          loader:  'babel',
-          query:   BABEL_QUERY
+          loader: 'babel',
+          query: BABEL_QUERY
         }
       ]
     },

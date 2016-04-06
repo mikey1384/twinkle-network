@@ -10,14 +10,15 @@ module.exports = {
     extensions:         ['', '.js', '.jsx']
   },
   output: {
-    path:       path.join(__dirname, 'dist'),
-    filename:   'bundle.js',
+    path: path.join(__dirname, 'dist'),
+    filename: 'bundle.js',
+    chunkFilename: '[id].chunk.js',
     publicPath: '/'
   },
   module: {
     loaders: [
       {
-        test:    /\.jsx?$/,
+        test: /\.js$/,
         exclude: /node_modules/,
         loaders: ['babel']
       }
@@ -29,6 +30,8 @@ module.exports = {
         NODE_ENV: '"production"'
       }
     }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
