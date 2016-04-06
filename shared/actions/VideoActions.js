@@ -1,6 +1,7 @@
 import request from 'axios';
+import URL from './URL';
 
-export const API_URL = 'http://www.twin-kle.com:3000/api/video';
+const API_URL = `${URL}/api/video`;
 
 export function getVideos() {
   return {

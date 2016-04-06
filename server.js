@@ -13,6 +13,7 @@ import { createStore,
          applyMiddleware } from 'redux';
 import path from 'path';
 import session from 'client-sessions';
+import { siteSession } from './siteConfig';
 
 const app = express();
 
@@ -22,12 +23,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/api', require('./api'));
-app.use(session({
-	cookieName: 'session',
-	secret: 'twinkleisthebesthakwon',
-	duration: 365 * 24 * 60 * 60 * 1000,
-	activeDuration: 5 * 60 * 1000
-}));
+app.use(siteSession());
 app.use((req, res) => {
   global.SESSION = req.session;
   const location = createLocation(req.url);

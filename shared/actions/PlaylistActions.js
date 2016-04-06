@@ -1,6 +1,7 @@
 import request from 'axios';
+import URL from './URL';
 
-const API_URL = 'http://www.twin-kle.com:3000/api/playlist';
+const API_URL = `${URL}/api/playlist`;
 
 export function getPlaylists() {
   return {
