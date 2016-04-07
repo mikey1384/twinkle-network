@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import SmallDropdownButton from './SmallDropdownButton';
-import EditThumbTitleForm from './EditThumbTitleForm';
+import EditTitleForm from './EditTitleForm';
 import ReactDOM from 'react-dom';
 import { deleteVideo } from 'actions/VideoActions';
 import ConfirmModal from './ConfirmModal';
+import { editVideoTitle } from 'actions/VideoActions';
 
 class VideoThumb extends Component {
   state = {
@@ -17,11 +18,20 @@ class VideoThumb extends Component {
     this.setState({onEdit: true})
   }
 
-  onEditFinish (editedTitle) {
-    this.setState({onEdit: false});
-    if (editedTitle) {
-      this.setState({title: editedTitle})
+  onEditedTitleSubmit(value, props) {
+    const { dispatch } = this.props;
+    props['videoId'] = this.props.video.id;
+    if (props.editedTitle && props.editedTitle !== value) {
+      dispatch(editVideoTitle(props, this.props.arrayNumber));
+      this.setState({onEdit: false});
+      this.setState({title: props.editedTitle})
+      return;
     }
+    this.setState({onEdit: false});
+  }
+
+  onEditTitleCancel() {
+    this.setState({onEdit: false});
   }
 
   onDeleteClick () {
@@ -81,11 +91,12 @@ class VideoThumb extends Component {
                   paddingBottom: '0.3em'
                 }}
               >
-                <EditThumbTitleForm
+                <EditTitleForm
                   arrayNumber={this.props.arrayNumber}
                   videoId={ video.id }
                   value={ title }
-                  onEditFinish={ this.onEditFinish.bind(this) }
+                  onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
+                  onEditCancel={ this.onEditTitleCancel.bind(this) }
                 />
               </div>
               :

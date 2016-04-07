@@ -2,34 +2,26 @@ import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import listensToClickOutside from 'react-onclickoutside/decorator';
-import { API_URL, editVideoTitle } from 'actions/VideoActions';
 import ReactDOM from 'react-dom';
 
-class EditThumbTitleForm extends Component {
+class EditTitleForm extends Component {
   componentDidMount () {
     this.refs.editTitleInput.value = this.props.value;
     ReactDOM.findDOMNode(this.refs.editTitleInput).focus();
   }
 
   handleClickOutside = (event) => {
-    this.props.onEditFinish();
+    this.props.onEditCancel();
   }
 
-  onSubmit(props) {
-    const { value, dispatch } = this.props;
-    props['videoId'] = this.props.videoId;
-    if (props.editedTitle && props.editedTitle !== value) {
-      dispatch(editVideoTitle(props, this.props.arrayNumber));
-      this.props.onEditFinish(props.editedTitle);
-    } else {
-      this.props.onEditFinish();
-    }
+  onEditSubmit(props) {
+    this.props.onEditSubmit(this.props.value, props);
   }
 
   render () {
     const { fields: { editedTitle }, handleSubmit } = this.props;
     return (
-      <form onSubmit={ handleSubmit(this.onSubmit.bind(this)) }>
+      <form onSubmit={ handleSubmit(this.onEditSubmit.bind(this)) }>
         <input
           ref="editTitleInput"
           type="text"
@@ -42,9 +34,9 @@ class EditThumbTitleForm extends Component {
   }
 }
 
-EditThumbTitleForm = reduxForm({
-  form: 'EditVideoThumbTitleForm',
+EditTitleForm = reduxForm({
+  form: 'EditTitleForm',
   fields: ['editedTitle']
-})(listensToClickOutside(EditThumbTitleForm));
+})(listensToClickOutside(EditTitleForm));
 
-export default connect()(EditThumbTitleForm);
+export default connect()(EditTitleForm);
