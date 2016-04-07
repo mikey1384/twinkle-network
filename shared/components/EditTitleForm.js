@@ -15,7 +15,7 @@ class EditTitleForm extends Component {
   }
 
   onEditSubmit(props) {
-    this.props.onEditSubmit(this.props.value, props);
+    this.props.onEditSubmit(props);
   }
 
   render () {

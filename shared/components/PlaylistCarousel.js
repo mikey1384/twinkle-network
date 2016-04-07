@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import Carousel from 'nuka-carousel';
 import VideoThumb from './VideoThumb';
 import SmallDropdownButton from './SmallDropdownButton';
+import EditTitleForm from './EditTitleForm';
+import { editPlaylistTitle } from 'actions/PlaylistActions';
+import { connect } from 'react-redux';
 
-class PlaylistCarousel extends Component {
+@connect()
+export default class PlaylistCarousel extends Component {
   state = {
     onEdit: false
   }
@@ -24,6 +28,22 @@ class PlaylistCarousel extends Component {
 
   onEditTitle() {
     this.setState({onEdit: true})
+  }
+
+  onEditedTitleSubmit(props) {
+    const { title, dispatch } = this.props;
+    props['playlistId'] = this.props.playlistId;
+    if (props.editedTitle && props.editedTitle !== title) {
+      dispatch(editPlaylistTitle(props, this.props.arrayNumber));
+      this.setState({onEdit: false});
+      this.setState({title: props.editedTitle});
+      return;
+    }
+    this.setState({onEdit: false})
+  }
+
+  onEditTitleCancel() {
+    this.setState({onEdit: false})
   }
 
   onDeleteClick() {
@@ -65,14 +85,11 @@ class PlaylistCarousel extends Component {
                 paddingBottom: '0.3em'
               }}
             >
-              <form>
-                <input
-                  ref="editTitleInput"
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter Title..."
-                />
-              </form>
+              <EditTitleForm
+                value={ title }
+                onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
+                onEditCancel={ this.onEditTitleCancel.bind(this) }
+              />
             </div>
             :
             <h4
@@ -95,5 +112,3 @@ class PlaylistCarousel extends Component {
     )
   }
 }
-
-export default PlaylistCarousel;

@@ -8,13 +8,15 @@ class PlaylistsPanel extends Component {
   }
 
   renderPlaylists() {
-    const { playlists, userId } = this.props;
+    const { playlists, playlistType, userId } = this.props;
     return playlists.map(playlist => {
       const editable = userId == playlist.uploaderId ? true : false;
       return (
         <PlaylistCarousel
           key={playlists.indexOf(playlist)}
           playlist={playlist.playlist}
+          playlistId={playlist.id}
+          arrayNumber={playlists.indexOf(playlist)}
           title={playlist.title}
           editable={editable}
           uploader={playlist.uploader} />

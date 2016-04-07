@@ -72,8 +72,29 @@ export default function PlaylistReducer(state = defaultState, action) {
         allPlaylists: result ? [result].concat(state.allPlaylists) : state.allPlaylists,
         addPlaylistModalShown: false
       }
-    case 'EDIT_PLAYLIST':
-      return state.set(action.id, action.text);
+    case 'EDIT_PLAYLIST_TITLE':
+    if (action.res.data.result) {
+      const newPlaylists = state.allPlaylists.map(playlist => {
+        if (playlist.id === action.playlistId) {
+          playlist.title = action.res.data.result
+        }
+        return playlist;
+      })
+      const newPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
+        if (playlist.id === action.playlistId) {
+          playlist.title = action.res.data.result
+        }
+        return playlist;
+      })
+      return {
+        ...state,
+        pinnedPlaylists: newPinnedPlaylists,
+        allPlaylists: newPlaylists
+      }
+    } else {
+      console.log(action.res.data.error);
+      return state;
+    }
     case 'DELETE_PLAYLIST':
       return state.delete(action.id);
     case 'RESET_PL_STATE':

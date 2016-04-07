@@ -33,6 +33,15 @@ export function uploadPlaylist(params) {
   }
 }
 
+export function editPlaylistTitle(params, arrayNumber) {
+  return {
+    type: 'EDIT_PLAYLIST_TITLE',
+    arrayNumber,
+    playlistId: params.playlistId,
+    promise: request.post(`${API_URL}/edit/title`, params)
+  }
+}
+
 export function resetPlaylistState() {
   return {
     type: 'RESET_PL_STATE'

@@ -18,13 +18,13 @@ class VideoThumb extends Component {
     this.setState({onEdit: true})
   }
 
-  onEditedTitleSubmit(value, props) {
-    const { dispatch } = this.props;
+  onEditedTitleSubmit(props) {
+    const { dispatch, title } = this.props;
     props['videoId'] = this.props.video.id;
-    if (props.editedTitle && props.editedTitle !== value) {
+    if (props.editedTitle && props.editedTitle !== title) {
       dispatch(editVideoTitle(props, this.props.arrayNumber));
       this.setState({onEdit: false});
-      this.setState({title: props.editedTitle})
+      this.setState({title: props.editedTitle});
       return;
     }
     this.setState({onEdit: false});
@@ -92,8 +92,6 @@ class VideoThumb extends Component {
                 }}
               >
                 <EditTitleForm
-                  arrayNumber={this.props.arrayNumber}
-                  videoId={ video.id }
                   value={ title }
                   onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
                   onEditCancel={ this.onEditTitleCancel.bind(this) }

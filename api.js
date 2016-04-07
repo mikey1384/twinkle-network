@@ -339,6 +339,46 @@ app.post('/playlist', (req, res) => {
   }
 })
 
+app.post('/playlist/edit/title', (req, res) => {
+  const { editedTitle, playlistId } = req.body,
+        newTitle = processedTitleString(editedTitle),
+        session = req.session.sessioncode,
+        post = {
+          title: newTitle
+        };
+
+  async.waterfall([
+    (callback) => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows) return;
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      pool.query('UPDATE vq_playlists SET ? WHERE id = ? AND createdby = ?', [post, playlistId, userId], err => {
+        callback(err, newTitle);
+      })
+    }
+  ], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({error: err});
+      return;
+    }
+    res.json({result});
+  });
+
+  function processedTitleString (string) {
+  	var processedString = string
+  	.replace(/&/g, '&amp;')
+  	.replace(/</g, '&lt;')
+  	.replace(/>/g, '&gt;')
+  	.replace(/\\/g, '\\\\');
+  	return processedString;
+  }
+})
+
 app.get('/user/session', function (req, res) {
   const session = req.session.sessioncode;
   if (typeof session !== 'undefined') {

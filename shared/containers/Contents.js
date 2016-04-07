@@ -76,6 +76,7 @@ class Contents extends Component {
       <div className="container-fluid">
         <PlaylistsPanel
           key={"homeworkplaylists"}
+          playlistType="pinned"
           title="Homework Playlists"
           loadMoreButton={loadMorePinnedPlaylists}
           userId={userId}
@@ -87,6 +88,7 @@ class Contents extends Component {
           buttonGroupShown={isAdmin}
           buttonGroup={ this.renderPlaylistButton }
           onButtonOneClick={ this.showAddPlaylistModal.bind(this) }
+          playlistType="all"
           title="All Playlists"
           loadMoreButton={loadMorePlaylistsButton}
           userId={userId}
