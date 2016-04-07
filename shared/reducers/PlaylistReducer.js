@@ -69,7 +69,7 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        allPlaylists: result ? [result].concat(state.allPlaylists) : state.allPlaylists,
+        allPlaylists: [result].concat(state.allPlaylists),
         addPlaylistModalShown: false
       }
     case 'EDIT_PLAYLIST_TITLE':

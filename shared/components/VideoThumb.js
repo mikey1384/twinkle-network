@@ -3,13 +3,10 @@ import { connect } from 'react-redux'
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ReactDOM from 'react-dom';
-import { deleteVideo } from 'actions/VideoActions';
 import ConfirmModal from './ConfirmModal';
-import { editVideoTitle } from 'actions/VideoActions';
 
-class VideoThumb extends Component {
+export default class VideoThumb extends Component {
   state = {
-    title: this.props.video.title,
     onEdit: false,
     confirmModalShown: false
   }
@@ -19,13 +16,10 @@ class VideoThumb extends Component {
   }
 
   onEditedTitleSubmit(props) {
-    const { dispatch, title } = this.props;
-    props['videoId'] = this.props.video.id;
-    if (props.editedTitle && props.editedTitle !== title) {
-      dispatch(editVideoTitle(props, this.props.arrayNumber));
-      this.setState({onEdit: false});
-      this.setState({title: props.editedTitle});
-      return;
+    const { video } = this.props;
+    props['videoId'] = video.id;
+    if (props.editedTitle && props.editedTitle !== video.title) {
+      this.props.editVideoTitle(props);
     }
     this.setState({onEdit: false});
   }
@@ -39,8 +33,8 @@ class VideoThumb extends Component {
   }
 
   onDeleteConfirm () {
-    const { dispatch, video, arrayNumber, lastVideoId } = this.props;
-    dispatch(deleteVideo(video.id, arrayNumber, lastVideoId));
+    const { deleteVideo, video, arrayNumber, lastVideoId } = this.props;
+    deleteVideo(video.id, arrayNumber, lastVideoId);
   }
 
   onHideModal () {
@@ -48,7 +42,7 @@ class VideoThumb extends Component {
   }
 
   render () {
-    const { onEdit, title, confirmModalShown } = this.state;
+    const { onEdit, confirmModalShown } = this.state;
     const { size, editable, video } = this.props;
     const menuProps = [
       {
@@ -92,7 +86,7 @@ class VideoThumb extends Component {
                 }}
               >
                 <EditTitleForm
-                  value={ title }
+                  value={ video.title }
                   onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
                   onEditCancel={ this.onEditTitleCancel.bind(this) }
                 />
@@ -104,7 +98,7 @@ class VideoThumb extends Component {
                   textOverflow:'ellipsis',
                   overflow:'hidden',
                   lineHeight: 'normal'
-                }}>{title}</h5>
+                }}>{ video.title }</h5>
               </div>
             }
             <small style={{
@@ -123,5 +117,3 @@ class VideoThumb extends Component {
     )
   }
 }
-
-export default connect()(VideoThumb);

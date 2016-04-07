@@ -76,10 +76,9 @@ export default function VideoReducer(state = defaultState, action) {
       }
     case 'EDIT_VIDEO_TITLE':
       if (action.res.data.result) {
-        let arrayNumber = 0;
         const newVideoThumbs = state.allVideoThumbs.map(thumb => {
-          if (arrayNumber++ === action.arrayNumber) {
-            thumb.title = action.res.data.result
+          if (thumb.id === action.videoId) {
+            thumb.title = action.res.data.result;
           }
           return thumb;
         })

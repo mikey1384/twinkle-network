@@ -1,33 +1,20 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { openAddVideoModal } from 'actions/VideoActions';
 import VideoThumb from 'components/VideoThumb';
 import LoadMoreButton from 'components/LoadMoreButton';
+import { editVideoTitle } from 'actions/VideoActions';
+import { bindActionCreators } from 'redux';
 
-class AllVideosPanel extends Component {
-  renderVideos (lastVideoId){
-    const { videos, userId } = this.props;
-    return videos.map(video => {
-      const editable = userId == video.uploaderid ? true : false;
-      return (
-        <VideoThumb
-          size="col-sm-3"
-          key={video.id}
-          arrayNumber={videos.indexOf(video)}
-          editable={editable}
-          video={video}
-          lastVideoId={lastVideoId} />
-      )
-    })
+export default class AllVideosPanel extends Component {
+  onAddVideoClick() {
+    this.props.onAddVideoClick();
   }
-
   render (){
-    const { loadMoreButton, getMoreVideos, videos, key, title, isAdmin, dispatch } = this.props;
+    const { loadMoreButton, getMoreVideos, videos, key, title, isAdmin } = this.props;
     const last = (array) => {
       return array[array.length - 1];
     };
-    const lastId = last(videos) ? last(videos).id : 0;
     const loadMoreVideos = () => {
+      const lastId = last(videos) ? last(videos).id : 0;
       getMoreVideos(lastId);
     }
     return (
@@ -41,13 +28,29 @@ class AllVideosPanel extends Component {
               style={{
                 marginLeft: 'auto'
               }}
-              onClick={() => dispatch(openAddVideoModal())}
+              onClick={this.onAddVideoClick.bind(this)}
             >+ Add Video</button>
           }
           <div className="clearfix"></div>
         </div>
         <div className="panel-body">
-          { this.renderVideos(lastId) }
+          {
+            videos.map(video => {
+              const editable = this.props.userId == video.uploaderid ? true : false;
+              return (
+                <VideoThumb
+                  size="col-sm-3"
+                  key={video.id}
+                  arrayNumber={videos.indexOf(video)}
+                  editable={editable}
+                  video={video}
+                  lastVideoId={last(videos) ? last(videos).id : 0}
+                  editVideoTitle={this.props.editVideoTitle}
+                  deleteVideo={this.props.deleteVideo}
+                />
+              )
+            })
+          }
           { loadMoreButton &&
             <div className="text-center">
               <button className="btn btn-default" onClick={loadMoreVideos}>Load More</button>
@@ -58,5 +61,3 @@ class AllVideosPanel extends Component {
     );
   }
 }
-
-export default connect()(AllVideosPanel);

@@ -5,10 +5,10 @@ import { Modal, Button } from 'react-bootstrap';
 import { closeAddPlaylistModal, uploadPlaylist } from 'actions/PlaylistActions';
 import { getMoreVideosForPlaylist } from 'actions/VideoActions';
 import { connect } from 'react-redux';
-import VideoThumb from './VideoThumb';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import SelectVideosForm from './SelectVideosForm';
 
 @reduxForm({
   form: 'UploadPlaylistForm',
@@ -165,42 +165,14 @@ export default class AddPlaylistModal extends Component {
               )
               case 1:
               return (
-                <div className="row">
-                {
-                  videos.map(video => {
-                    return (
-                      <VideoThumb
-                        key={video.id}
-                        video={video}
-                        selectable={true}
-                        selected={
-                          this.state.selectedVideos.indexOf(video.id) != -1 ? true : false
-                        }
-                        onSelect={
-                          (videoId => {
-                            let selected = this.state.selectedVideos;
-                            this.setState({ selectedVideos: selected.concat([videoId]) })
-                          }).bind(this)
-                        }
-                        onDeselect={
-                          (videoId => {
-                            let selected = this.state.selectedVideos;
-                            const index = selected.indexOf(videoId);
-                            selected.splice(index, 1);
-                            this.setState({ selectedVideos: selected });
-                          }).bind(this)
-                        }
-                      />
-                    )
-                  })
-                }
-                {
-                  loadMoreVideosButton &&
-                  <div className="text-center">
-                    <button className="btn btn-default" onClick={loadMoreVideos}>Load More</button>
-                  </div>
-                }
-                </div>
+                <SelectVideosForm
+                  videos={videos}
+                  selectedVideos={this.state.selectedVideos}
+                  loadMoreVideosButton={loadMoreVideosButton}
+                  onSelect={(selected, videoId) => this.setState({ selectedVideos: selected.concat([videoId]) })}
+                  onDeselect={selected => this.setState({ selectedVideos: selected })}
+                  loadMoreVideos={loadMoreVideos}
+                />
               )
               case 2:
               const selectedVideos = this.state.selectedVideos;

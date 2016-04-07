@@ -14,10 +14,9 @@ export default class PlaylistCarousel extends Component {
 
   renderThumbs () {
     const { playlist } = this.props;
-    let index = 0;
     return playlist.map(thumb => {
       return (
-        <VideoThumb key={index++} video={{
+        <VideoThumb key={playlist.indexOf(thumb)} video={{
           videocode: thumb.videocode,
           title: thumb.video_title,
           uploadername: thumb.video_uploader

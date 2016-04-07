@@ -40,10 +40,10 @@ export function uploadVideo(params) {
   };
 }
 
-export function editVideoTitle(params, arrayNumber) {
+export function editVideoTitle(params) {
   return {
     type: 'EDIT_VIDEO_TITLE',
-    arrayNumber,
+    videoId: params.videoId,
     promise: request.post(`${API_URL}/edit/title`, params)
   }
 }

@@ -102,6 +102,7 @@ class Contents extends Component {
           loadMoreButton={loadMoreVideosButton}
           userId={userId}
           videos={videos}
+          onAddVideoClick={() => dispatch(VideoActions.openAddVideoModal())}
           {...bindActionCreators(VideoActions, dispatch)}
         />
         <AddVideoModal show={addVideoModalShown} onHide={ () => dispatch(closeAddVideoModal()) } />
