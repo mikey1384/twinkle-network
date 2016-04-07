@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
-import { connect } from 'react-redux';
 import listensToClickOutside from 'react-onclickoutside/decorator';
 import ReactDOM from 'react-dom';
 
@@ -39,4 +38,4 @@ EditTitleForm = reduxForm({
   fields: ['editedTitle']
 })(listensToClickOutside(EditTitleForm));
 
-export default connect()(EditTitleForm);
+export default EditTitleForm;

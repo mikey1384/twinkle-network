@@ -19,7 +19,9 @@ class PlaylistsPanel extends Component {
           arrayNumber={playlists.indexOf(playlist)}
           title={playlist.title}
           editable={editable}
-          uploader={playlist.uploader} />
+          uploader={playlist.uploader}
+          editPlaylistTitle={this.props.editPlaylistTitle}
+        />
       )
     })
   }

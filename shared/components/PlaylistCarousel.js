@@ -4,9 +4,7 @@ import VideoThumb from './VideoThumb';
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import { editPlaylistTitle } from 'actions/PlaylistActions';
-import { connect } from 'react-redux';
 
-@connect()
 export default class PlaylistCarousel extends Component {
   state = {
     onEdit: false
@@ -30,10 +28,10 @@ export default class PlaylistCarousel extends Component {
   }
 
   onEditedTitleSubmit(props) {
-    const { title, dispatch } = this.props;
+    const { title, editPlaylistTitle } = this.props;
     props['playlistId'] = this.props.playlistId;
     if (props.editedTitle && props.editedTitle !== title) {
-      dispatch(editPlaylistTitle(props, this.props.arrayNumber));
+      editPlaylistTitle(props, this.props.arrayNumber);
       this.setState({onEdit: false});
       this.setState({title: props.editedTitle});
       return;
