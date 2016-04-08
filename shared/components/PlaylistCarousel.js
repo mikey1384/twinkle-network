@@ -27,6 +27,10 @@ export default class PlaylistCarousel extends Component {
     this.setState({onEdit: true})
   }
 
+  onChangeVideos() {
+    console.log("change video clicked")
+  }
+
   onEditedTitleSubmit(props) {
     const { title, editPlaylistTitle } = this.props;
     props['playlistId'] = this.props.playlistId;
@@ -57,7 +61,7 @@ export default class PlaylistCarousel extends Component {
       },
       {
         label: 'Change Videos',
-        onClick: this.onEditTitle.bind(this)
+        onClick: this.onChangeVideos.bind(this)
       },
       {
         label: 'Reorder Videos',

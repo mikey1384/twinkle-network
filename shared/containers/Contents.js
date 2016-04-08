@@ -6,7 +6,7 @@ import PlaylistsPanel from 'components/PlaylistsPanel';
 import * as VideoActions from 'actions/VideoActions';
 import * as PlaylistActions from 'actions/PlaylistActions';
 import AddVideoModal from './AddVideoModal';
-import AddPlaylistModal from './AddPlaylistModal';
+import AddPlaylistModal from './PlaylistModals/AddPlaylistModal';
 
 class Contents extends Component {
   componentWillMount() {
