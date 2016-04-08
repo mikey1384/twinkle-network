@@ -10,7 +10,9 @@ const thumbSource = {
   },
   endDrag(props, monitor) {
     if(!monitor.didDrop()) {
-      return;
+      return false;
+    } else {
+      return true;
     }
   },
   isDragging(props, monitor) {

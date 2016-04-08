@@ -162,7 +162,7 @@ export default function PlaylistReducer(state = defaultState, action) {
 
         addPlaylistModalShown: false,
         editPlaylistModalType: null,
-        editPlaylistThumbs: null
+        editPlaylistThumbs: []
       }
     case 'RESET_PL_MODAL_STATE':
       return {
@@ -172,7 +172,7 @@ export default function PlaylistReducer(state = defaultState, action) {
 
         addPlaylistModalShown: false,
         editPlaylistModalType: null,
-        editPlaylistThumbs: null
+        editPlaylistThumbs: []
       }
     default:
       return state;

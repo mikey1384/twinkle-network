@@ -33,10 +33,10 @@ export default class PlaylistCarousel extends Component {
   }
 
   onChangeVideos() {
-    const playlistThumbs = this.props.playlist.map(thumb => {
+    const selectedVideos = this.props.playlist.map(thumb => {
       return thumb.id;
     })
-    this.props.openEditPlaylistModal("change", playlistThumbs);
+    this.props.openEditPlaylistModal("change", selectedVideos);
     this.setState({editPlaylistModalShown: true})
   }
 
@@ -63,7 +63,7 @@ export default class PlaylistCarousel extends Component {
   render () {
     const { onEdit, editPlaylistModalShown } = this.state;
     const { title, uploader, editable } = this.props;
-    const playlistThumbs = this.props.playlist.map(thumb => {
+    const selectedVideos = this.props.playlist.map(thumb => {
       return thumb.videoid;
     })
     const menuProps = [
@@ -124,7 +124,7 @@ export default class PlaylistCarousel extends Component {
         {editPlaylistModalShown &&
           <EditPlaylistModal
             show={true}
-            selectedVideos={playlistThumbs}
+            selectedVideos={selectedVideos}
             onHide={ () => this.setState({editPlaylistModalShown: false})}
           />
         }
