@@ -11,35 +11,38 @@ export default class SelectVideosForm extends Component {
       onDeselect,
       loadMoreVideos
     } = this.props;
+
+    const formVideos = videos.map(video => {
+      return (
+        <VideoThumb
+          key={video.id}
+          video={video}
+          selectable={true}
+          selected={
+            selectedVideos.indexOf(video.id) != -1 ? true : false
+          }
+          onSelect={
+            (videoId => {
+              let selected = selectedVideos;
+              onSelect(selected, videoId);
+            }).bind(this)
+          }
+          onDeselect={
+            (videoId => {
+              let selected = selectedVideos;
+              const index = selected.indexOf(videoId);
+              selected.splice(index, 1);
+              onDeselect(selected);
+            }).bind(this)
+          }
+        />
+      )
+    })
+
     return (
       <div className="row">
       {
-        videos.map(video => {
-          return (
-            <VideoThumb
-              key={video.id}
-              video={video}
-              selectable={true}
-              selected={
-                selectedVideos.indexOf(video.id) != -1 ? true : false
-              }
-              onSelect={
-                (videoId => {
-                  let selected = selectedVideos;
-                  onSelect(selected, videoId);
-                }).bind(this)
-              }
-              onDeselect={
-                (videoId => {
-                  let selected = selectedVideos;
-                  const index = selected.indexOf(videoId);
-                  selected.splice(index, 1);
-                  onDeselect(selected);
-                }).bind(this)
-              }
-            />
-          )
-        })
+        formVideos
       }
       {
         loadMoreVideosButton &&

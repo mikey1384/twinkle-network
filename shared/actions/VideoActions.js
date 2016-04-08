@@ -18,21 +18,6 @@ export function getMoreVideos(videoId) {
   }
 }
 
-export function getVideosForPlaylist() {
-  return {
-    type: 'GET_VIDEOS_FOR_PLAYLIST',
-    initialRun: true,
-    promise: request.get(`${API_URL}?numberToLoad=18`)
-  }
-}
-
-export function getMoreVideosForPlaylist(videoId) {
-  return {
-    type: 'GET_VIDEOS_FOR_PLAYLIST',
-    promise: request.get(`${API_URL}?numberToLoad=18&videoId=${videoId}`)
-  }
-}
-
 export function uploadVideo(params) {
   return {
     type: 'UPLOAD_VIDEO',
@@ -71,11 +56,5 @@ export function closeAddVideoModal() {
 export function resetVideoState() {
   return {
     type: 'RESET_VID_STATE'
-  }
-}
-
-export function resetAddPlaylistVideoState() {
-  return {
-    type: 'RESET_PL_VID_STATE'
   }
 }

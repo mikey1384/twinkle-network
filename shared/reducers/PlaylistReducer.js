@@ -3,13 +3,22 @@ const defaultState = {
   pinnedPlaylists: [],
   loadMoreButton: false,
   loadMorePinned: false,
-  addPlaylistModalShown: false
+
+  videoThumbsForModal: [],
+  loadMoreButtonForModal: false,
+  allVideosLoadedForModal: false,
+
+  addPlaylistModalShown: false,
+  editPlaylistModalType: null,
+  editPlaylistThumbs: []
 };
 
 let initialPlaylists,
     initialPinnedPlaylists
 
 export default function PlaylistReducer(state = defaultState, action) {
+  let loadMoreButtonForModal = false;
+  let allVideosLoadedForModal = false;
   switch(action.type) {
     case 'GET_PLAYLISTS':
       let loadMoreButton = false;
@@ -51,15 +60,58 @@ export default function PlaylistReducer(state = defaultState, action) {
           loadMorePinned
         };
       }
-    case 'PL_MODAL_OPEN':
+    case 'GET_VIDEOS_FOR_MODAL':
+      if (action.res.data.length > 18) {
+        action.res.data.pop();
+        loadMoreButtonForModal = true;
+      } else {
+        allVideosLoadedForModal = true;
+      }
+      if (action.initialRun) {
+        return {
+          ...state,
+          videoThumbsForModal: action.res.data,
+          loadMoreButtonForModal,
+          allVideosLoadedForModal
+        }
+      } else {
+        return {
+          ...state,
+          videoThumbsForModal: state.videoThumbsForModal.concat(action.res.data),
+          loadMoreButtonForModal,
+          allVideosLoadedForModal
+        }
+      }
+    case 'ADD_PL_MODAL_OPEN':
       return {
         ...state,
         addPlaylistModalShown: true
       };
-    case 'PL_MODAL_CLOSE':
+    case 'ADD_PL_MODAL_CLOSE':
       return {
         ...state,
         addPlaylistModalShown: false
+      }
+    case 'EDIT_PL_MODAL_OPEN':
+      const { modalType } = action;
+      if (action.res.data.length > 18) {
+        action.res.data.pop();
+        loadMoreButtonForModal = true;
+      } else {
+        allVideosLoadedForModal = true;
+      }
+      return {
+        ...state,
+        editPlaylistModalType: modalType,
+        videoThumbsForModal: action.res.data,
+        editPlaylistThumbs: action.playlistThumbs,
+        loadMoreButtonForModal,
+        allVideosLoadedForModal
+      }
+    case 'EDIT_PL_MODAL_CLOSE':
+      return {
+        ...state,
+        editPlaylistModalType: null
       }
     case 'UPLOAD_PLAYLIST':
       const result = action.res.data.result;
@@ -103,7 +155,24 @@ export default function PlaylistReducer(state = defaultState, action) {
         pinnedPlaylists: initialPinnedPlaylists,
         loadMoreButton: false,
         loadMorePinned: false,
-        addPlaylistModalShown: false
+
+        videoThumbsForModal: [],
+        loadMoreButtonForModal: false,
+        allVideosLoadedForModal: false,
+
+        addPlaylistModalShown: false,
+        editPlaylistModalType: null,
+        editPlaylistThumbs: null
+      }
+    case 'RESET_PL_MODAL_STATE':
+      return {
+        videoThumbsForModal: [],
+        loadMoreButtonForModal: false,
+        allVideosLoadedForModal: false,
+
+        addPlaylistModalShown: false,
+        editPlaylistModalType: null,
+        editPlaylistThumbs: null
       }
     default:
       return state;

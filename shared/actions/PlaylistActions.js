@@ -26,6 +26,21 @@ export function getPinnedPlaylists() {
   }
 }
 
+export function getVideosForModal() {
+  return {
+    type: 'GET_VIDEOS_FOR_MODAL',
+    initialRun: true,
+    promise: request.get(`${URL}/api/video?numberToLoad=18`)
+  }
+}
+
+export function getMoreVideosForModal(videoId) {
+  return {
+    type: 'GET_VIDEOS_FOR_MODAL',
+    promise: request.get(`${URL}/api/video?numberToLoad=18&videoId=${videoId}`)
+  }
+}
+
 export function uploadPlaylist(params) {
   return {
     type: 'UPLOAD_PLAYLIST',
@@ -50,12 +65,33 @@ export function resetPlaylistState() {
 
 export function openAddPlaylistModal() {
   return {
-    type: 'PL_MODAL_OPEN'
+    type: 'ADD_PL_MODAL_OPEN'
   }
 }
 
 export function closeAddPlaylistModal() {
   return {
-    type: 'PL_MODAL_CLOSE'
+    type: 'ADD_PL_MODAL_CLOSE'
+  }
+}
+
+export function openEditPlaylistModal(modalType, playlistThumbs) {
+  return {
+    type: 'EDIT_PL_MODAL_OPEN',
+    modalType,
+    playlistThumbs,
+    promise: request.get(`${URL}/api/video?numberToLoad=18`)
+  }
+}
+
+export function closeEditPlaylistModal() {
+  return {
+    type: 'EDIT_PL_MODAL_CLOSE'
+  }
+}
+
+export function resetPlaylistModalState() {
+  return {
+    type: 'RESET_PL_MODAL_STATE'
   }
 }

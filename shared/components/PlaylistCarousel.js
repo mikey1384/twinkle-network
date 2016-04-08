@@ -4,21 +4,26 @@ import VideoThumb from './VideoThumb';
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import { editPlaylistTitle } from 'actions/PlaylistActions';
+import EditPlaylistModal from 'containers/PlaylistModals/EditPlaylistModal';
 
 export default class PlaylistCarousel extends Component {
   state = {
-    onEdit: false
+    onEdit: false,
+    editPlaylistModalShown: false
   }
 
   renderThumbs () {
     const { playlist } = this.props;
     return playlist.map(thumb => {
       return (
-        <VideoThumb key={playlist.indexOf(thumb)} video={{
-          videocode: thumb.videocode,
-          title: thumb.video_title,
-          uploadername: thumb.video_uploader
-        }} />
+        <VideoThumb
+          key={playlist.indexOf(thumb)}
+          video={{
+            videocode: thumb.videocode,
+            title: thumb.video_title,
+            uploadername: thumb.video_uploader
+          }}
+        />
       )
     })
   }
@@ -28,7 +33,11 @@ export default class PlaylistCarousel extends Component {
   }
 
   onChangeVideos() {
-    console.log("change video clicked")
+    const playlistThumbs = this.props.playlist.map(thumb => {
+      return thumb.id;
+    })
+    this.props.openEditPlaylistModal("change", playlistThumbs);
+    this.setState({editPlaylistModalShown: true})
   }
 
   onEditedTitleSubmit(props) {
@@ -52,8 +61,11 @@ export default class PlaylistCarousel extends Component {
   }
 
   render () {
-    const { onEdit } = this.state;
+    const { onEdit, editPlaylistModalShown } = this.state;
     const { title, uploader, editable } = this.props;
+    const playlistThumbs = this.props.playlist.map(thumb => {
+      return thumb.videoid;
+    })
     const menuProps = [
       {
         label: 'Edit Title',
@@ -109,6 +121,13 @@ export default class PlaylistCarousel extends Component {
         <Carousel slidesToShow={5} slidesToScroll={5} cellSpacing={20}>
           { this.renderThumbs() }
         </Carousel>
+        {editPlaylistModalShown &&
+          <EditPlaylistModal
+            show={true}
+            selectedVideos={playlistThumbs}
+            onHide={ () => this.setState({editPlaylistModalShown: false})}
+          />
+        }
       </div>
     )
   }

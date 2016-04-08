@@ -3,10 +3,6 @@ const defaultState = {
   loadMoreButton: false,
   allVideosLoaded: false,
   addVideoModalShown: false,
-
-  videoThumbsForPlaylist: [],
-  loadMoreButtonForPlaylist: false,
-  allVideosLoadedForPlaylist: false
 };
 
 export default function VideoReducer(state = defaultState, action) {
@@ -33,30 +29,6 @@ export default function VideoReducer(state = defaultState, action) {
           allVideoThumbs: state.allVideoThumbs.concat(action.res.data),
           loadMoreButton,
           allVideosLoaded
-        }
-      }
-    case 'GET_VIDEOS_FOR_PLAYLIST':
-      let loadMoreButtonForPlaylist = false;
-      let allVideosLoadedForPlaylist = false;
-      if (action.res.data.length > 18) {
-        action.res.data.pop();
-        loadMoreButtonForPlaylist = true;
-      } else {
-        allVideosLoadedForPlaylist = true;
-      }
-      if (action.initialRun) {
-        return {
-          ...state,
-          videoThumbsForPlaylist: action.res.data,
-          loadMoreButtonForPlaylist,
-          allVideosLoadedForPlaylist
-        }
-      } else {
-        return {
-          ...state,
-          videoThumbsForPlaylist: state.videoThumbsForPlaylist.concat(action.res.data),
-          loadMoreButtonForPlaylist,
-          allVideosLoadedForPlaylist
         }
       }
     case 'UPLOAD_VIDEO':
@@ -119,13 +91,6 @@ export default function VideoReducer(state = defaultState, action) {
         loadMoreButton: false,
         allVideosLoaded: false,
         addVideoModalShown: false
-      }
-    case 'RESET_PL_VID_STATE':
-      return {
-        ...state,
-        videoThumbsForPlaylist: [],
-        loadMoreButtonForPlaylist: false,
-        allVideosLoadedForPlaylist: false
       }
     default:
       return state;

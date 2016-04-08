@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import Textarea from 'react-textarea-autosize';
 import { reduxForm } from 'redux-form';
 import { Modal, Button } from 'react-bootstrap';
-import { closeAddPlaylistModal, uploadPlaylist } from 'actions/PlaylistActions';
-import { getMoreVideosForPlaylist } from 'actions/VideoActions';
+import { closeAddPlaylistModal, uploadPlaylist, getMoreVideosForModal } from 'actions/PlaylistActions';
 import { connect } from 'react-redux';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
@@ -18,8 +17,8 @@ import SelectVideosForm from './SelectVideosForm';
 @DragDropContext(HTML5Backend)
 @connect(
   state => ({
-    videos: state.VideoReducer.videoThumbsForPlaylist,
-    loadMoreVideosButton: state.VideoReducer.loadMoreButtonForPlaylist
+    videos: state.PlaylistReducer.videoThumbsForModal,
+    loadMoreVideosButton: state.PlaylistReducer.loadMoreButtonForModal
   })
 )
 export default class AddPlaylistModal extends Component {
@@ -114,7 +113,7 @@ export default class AddPlaylistModal extends Component {
     };
     const lastId = last(videos) ? last(videos).id : 0;
     const loadMoreVideos = () => {
-      dispatch(getMoreVideosForPlaylist(lastId));
+      dispatch(getMoreVideosForModal(lastId));
     }
     return (
       <Modal

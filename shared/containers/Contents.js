@@ -43,9 +43,8 @@ class Contents extends Component {
 
   showAddPlaylistModal() {
     const { dispatch } = this.props;
-    const { openAddPlaylistModal } = PlaylistActions;
-    const { getVideosForPlaylist } = VideoActions;
-    dispatch(getVideosForPlaylist());
+    const { openAddPlaylistModal, getVideosForModal } = PlaylistActions;
+    dispatch(getVideosForModal());
     dispatch(openAddPlaylistModal());
   }
 
@@ -68,6 +67,7 @@ class Contents extends Component {
 
       addVideoModalShown,
       addPlaylistModalShown,
+      editPlaylistModalShown,
 
       dispatch
     } = this.props;
