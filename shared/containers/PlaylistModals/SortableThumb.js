@@ -8,15 +8,8 @@ const thumbSource = {
       id: props.video.id
     };
   },
-  endDrag(props, monitor) {
-    if(!monitor.didDrop()) {
-      return false;
-    } else {
-      return true;
-    }
-  },
   isDragging(props, monitor) {
-    return props.video.id === monitor.getItem().id;
+    return props.video.id && (props.video.id === monitor.getItem().id);
   }
 };
 
