@@ -57,6 +57,18 @@ export function editPlaylistTitle(params, arrayNumber) {
   }
 }
 
+export function changePlaylistVideos(playlistId, selectedVideos) {
+  const params = {
+    playlistId,
+    selectedVideos
+  }
+  return {
+    type: 'CHANGE_PLAYLIST_VIDEOS',
+    playlistId,
+    promise: request.post(`${API_URL}/change/videos`, params)
+  }
+}
+
 export function resetPlaylistState() {
   return {
     type: 'RESET_PL_STATE'

@@ -114,14 +114,13 @@ export default function PlaylistReducer(state = defaultState, action) {
         editPlaylistModalType: null
       }
     case 'UPLOAD_PLAYLIST':
-      const result = action.res.data.result;
       if (initialPlaylists.length > 2) {
         initialPlaylists.pop();
-        initialPlaylists = [result].concat(initialPlaylists);
+        initialPlaylists = [action.res.data.result].concat(initialPlaylists);
       }
       return {
         ...state,
-        allPlaylists: [result].concat(state.allPlaylists),
+        allPlaylists: [action.res.data.result].concat(state.allPlaylists),
         addPlaylistModalShown: false
       }
     case 'EDIT_PLAYLIST_TITLE':
@@ -144,9 +143,35 @@ export default function PlaylistReducer(state = defaultState, action) {
         allPlaylists: newPlaylists
       }
     } else {
-      console.log(action.res.data.error);
+      console.error(action.res.data.error);
       return state;
     }
+    case 'CHANGE_PLAYLIST_VIDEOS':
+      if (action.res.data.error) {
+        let { error } = action.res.data;
+        console.error(error);
+        return state;
+      }
+      if (action.res.data.result) {
+        let { result } = action.res.data;
+        const newPlaylists = state.allPlaylists.map(playlist => {
+          if (playlist.id === action.playlistId) {
+            playlist.playlist = result;
+          }
+          return playlist;
+        })
+        const newPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
+          if (playlist.id === action.playlistId) {
+            playlist.playlist = result;
+          }
+          return playlist;
+        })
+        return {
+          ...state,
+          pinnedPlaylists: newPinnedPlaylists,
+          allPlaylists: newPlaylists
+        }
+      }
     case 'DELETE_PLAYLIST':
       return state.delete(action.id);
     case 'RESET_PL_STATE':

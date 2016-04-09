@@ -62,7 +62,7 @@ export default class PlaylistCarousel extends Component {
 
   render () {
     const { onEdit, editPlaylistModalShown } = this.state;
-    const { title, uploader, editable } = this.props;
+    const { title, uploader, editable, playlistId  } = this.props;
     const selectedVideos = this.props.playlist.map(thumb => {
       return thumb.videoid;
     })
@@ -125,6 +125,7 @@ export default class PlaylistCarousel extends Component {
           <EditPlaylistModal
             show={true}
             selectedVideos={selectedVideos}
+            playlistId={playlistId}
             onHide={ () => this.setState({editPlaylistModalShown: false})}
           />
         }

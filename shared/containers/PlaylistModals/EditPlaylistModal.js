@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { closeEditPlaylistModal, getMoreVideosForModal } from 'actions/PlaylistActions';
+import { closeEditPlaylistModal, changePlaylistVideos, getMoreVideosForModal } from 'actions/PlaylistActions';
 import SelectVideosForm from './SelectVideosForm';
 
 @connect(
@@ -16,6 +16,12 @@ export default class EditPlaylistModal extends Component {
     selectedVideos: this.props.selectedVideos
   }
   handleHide() {
+    this.props.onHide();
+  }
+  handleSave() {
+    const { selectedVideos } = this.state;
+    const { playlistId, dispatch } = this.props;
+    dispatch(changePlaylistVideos(playlistId, selectedVideos));
     this.props.onHide();
   }
   render() {
@@ -37,7 +43,7 @@ export default class EditPlaylistModal extends Component {
         onHide={this.handleHide.bind(this)}
       >
         <Modal.Header closeButton>
-          This is a Modal
+          <h4>Add or Remove Videos</h4>
         </Modal.Header>
         <Modal.Body>
           <SelectVideosForm
@@ -51,6 +57,12 @@ export default class EditPlaylistModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.handleHide.bind(this)}>Cancel</Button>
+          <Button
+            bsStyle="primary"
+            onClick={this.handleSave.bind(this)}
+            disabled={this.state.selectedVideos.length < 2 ? true : false}
+          >
+            Save</Button>
         </Modal.Footer>
       </Modal>
     )

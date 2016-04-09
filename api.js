@@ -379,6 +379,67 @@ app.post('/playlist/edit/title', (req, res) => {
   }
 })
 
+app.post('/playlist/change/videos', (req, res) => {
+  const {playlistId, selectedVideos} = req.body,
+        session = req.session.sessioncode,
+        taskArray = [];
+  async.waterfall([
+    (callback) => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows) return;
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      pool.query('SELECT * FROM vq_playlists WHERE createdby = ? AND id = ?', [playlistId, userId], (err, rows) => {
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      if (!rows) return;
+      pool.query('DELETE FROM vq_playlistvideos WHERE playlistid = ?', playlistId, err => {
+        callback(err, null)
+      })
+    },
+    (res, callback) => {
+      for (let i = 0; i < selectedVideos.length; i ++) {
+        var TaskFactory = function (playlistId, videoId) {
+          this.task = function (callback) {
+            insertVideoIntoPlaylist(playlistId, videoId, callback);
+          }
+        }
+        var factory = new TaskFactory(playlistId, selectedVideos[i]);
+        taskArray.push(factory.task);
+      }
+      async.series(taskArray, (err) => {
+        const query = [
+          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
+          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
+          'WHERE a.playlistid = ?'
+        ].join('');
+        pool.query(query, playlistId, (err, rows) => {
+          callback(err, rows)
+        })
+      })
+    }
+  ], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({error: err});
+      return;
+    }
+    res.json({result});
+  });
+
+  function insertVideoIntoPlaylist (playlistId, videoId, callback) {
+    var playlistVideo = {playlistid: playlistId, videoid: videoId};
+    pool.query("INSERT INTO vq_playlistvideos SET ?", playlistVideo, function (err) {
+      callback(err);
+    })
+  }
+})
+
 app.get('/user/session', function (req, res) {
   const session = req.session.sessioncode;
   if (typeof session !== 'undefined') {
