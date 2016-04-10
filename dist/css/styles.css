@@ -16,6 +16,17 @@
   box-shadow:inset 0px 0px 0px 4px #18aae0;
 }
 
+.footer {
+	background-color: #f5f5f5;
+  bottom: 0;
+	height: auto;
+	padding: 2em;
+}
+
+.footer > p {
+	margin: 0;
+}
+
 @media (min-width: 1192px) {
 	.modal-extra-lg{
 	    min-width: 1180px !important;

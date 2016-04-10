@@ -15,12 +15,20 @@ class App extends React.Component {
     getPinnedPlaylists,
     getPlaylists
   ];
-  
+
   render() {
     return (
       <div id="main-view">
         <Header />
         {this.props.children}
+        <footer
+          className="footer col-md-12"
+          style={{
+            marginTop: '1em'
+          }}
+        >
+          <p className="text-muted text-center">Twinkle © 2016</p>
+        </footer>
       </div>
     );
   }

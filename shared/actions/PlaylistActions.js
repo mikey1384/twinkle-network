@@ -87,18 +87,19 @@ export function closeAddPlaylistModal() {
   }
 }
 
-export function openEditPlaylistModal(modalType, playlistThumbs) {
+export function openChangePlaylistVideosModal() {
   return {
-    type: 'EDIT_PL_MODAL_OPEN',
-    modalType,
-    playlistThumbs,
+    type: 'CHANGE_PL_VIDS_MODAL_OPEN',
+    modalType: 'change',
     promise: request.get(`${URL}/api/video?numberToLoad=18`)
   }
 }
 
-export function closeEditPlaylistModal() {
+export function openReorderPlaylistVideosModal(playlistVideos) {
   return {
-    type: 'EDIT_PL_MODAL_CLOSE'
+    type: 'REORDER_PL_VIDS_MODAL_OPEN',
+    modalType: 'reorder',
+    playlistVideos
   }
 }
 

@@ -33,11 +33,14 @@ export default class PlaylistCarousel extends Component {
   }
 
   onChangeVideos() {
-    const selectedVideos = this.props.playlist.map(thumb => {
-      return thumb.id;
-    })
-    this.props.openEditPlaylistModal("change", selectedVideos);
-    this.setState({editPlaylistModalShown: true})
+    this.props.openChangePlaylistVideosModal();
+    this.setState({editPlaylistModalShown: true});
+  }
+
+  onReorderVideos() {
+    const playlistVideos = this.props.playlist;
+    this.props.openReorderPlaylistVideosModal(playlistVideos);
+    this.setState({editPlaylistModalShown: true});
   }
 
   onEditedTitleSubmit(props) {
@@ -77,7 +80,7 @@ export default class PlaylistCarousel extends Component {
       },
       {
         label: 'Reorder Videos',
-        onClick: this.onEditTitle.bind(this)
+        onClick: this.onReorderVideos.bind(this)
       },
       {
         separator: true

@@ -10,7 +10,7 @@ const defaultState = {
 
   addPlaylistModalShown: false,
   editPlaylistModalType: null,
-  editPlaylistThumbs: []
+  selectedModalThumbs: []
 };
 
 let initialPlaylists,
@@ -92,8 +92,7 @@ export default function PlaylistReducer(state = defaultState, action) {
         ...state,
         addPlaylistModalShown: false
       }
-    case 'EDIT_PL_MODAL_OPEN':
-      const { modalType } = action;
+    case 'CHANGE_PL_VIDS_MODAL_OPEN':
       if (action.res.data.length > 18) {
         action.res.data.pop();
         loadMoreButtonForModal = true;
@@ -102,16 +101,24 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        editPlaylistModalType: modalType,
+        editPlaylistModalType: action.modalType,
         videoThumbsForModal: action.res.data,
-        editPlaylistThumbs: action.playlistThumbs,
         loadMoreButtonForModal,
         allVideosLoadedForModal
       }
-    case 'EDIT_PL_MODAL_CLOSE':
+    case 'REORDER_PL_VIDS_MODAL_OPEN':
+      const videoThumbs = action.playlistVideos.map(video => {
+        return {
+          id: video.videoid,
+          title: video.video_title,
+          uploadername: video.video_uploader,
+          videocode: video.videocode
+        }
+      })
       return {
         ...state,
-        editPlaylistModalType: null
+        editPlaylistModalType: action.modalType,
+        videoThumbsForModal: videoThumbs
       }
     case 'UPLOAD_PLAYLIST':
       if (initialPlaylists.length > 2) {
@@ -187,7 +194,7 @@ export default function PlaylistReducer(state = defaultState, action) {
 
         addPlaylistModalShown: false,
         editPlaylistModalType: null,
-        editPlaylistThumbs: []
+        selectedModalThumbs: []
       }
     case 'RESET_PL_MODAL_STATE':
       return {
@@ -197,7 +204,7 @@ export default function PlaylistReducer(state = defaultState, action) {
 
         addPlaylistModalShown: false,
         editPlaylistModalType: null,
-        editPlaylistThumbs: []
+        selectedModalThumbs: []
       }
     default:
       return state;
