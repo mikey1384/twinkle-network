@@ -13,8 +13,8 @@ const defaultState = {
   selectedModalThumbs: []
 };
 
-let initialPlaylists,
-    initialPinnedPlaylists
+let defaultPlaylists,
+    defaultPinnedPlaylists
 
 export default function PlaylistReducer(state = defaultState, action) {
   let loadMoreButtonForModal = false;
@@ -27,10 +27,10 @@ export default function PlaylistReducer(state = defaultState, action) {
         loadMoreButton = true;
       }
       if (action.initialRun) {
-        initialPlaylists = action.res.data.playlists;
+        defaultPlaylists = action.res.data.playlists;
         return {
           ...state,
-          allPlaylists: initialPlaylists,
+          allPlaylists: defaultPlaylists,
           loadMoreButton
         }
       } else {
@@ -47,10 +47,10 @@ export default function PlaylistReducer(state = defaultState, action) {
         loadMorePinned = true;
       }
       if (action.initialRun) {
-        initialPinnedPlaylists = action.res.data.playlists;
+        defaultPinnedPlaylists = action.res.data.playlists;
         return {
           ...state,
-          pinnedPlaylists: initialPinnedPlaylists,
+          pinnedPlaylists: defaultPinnedPlaylists,
           loadMorePinned
         }
       } else {
@@ -121,9 +121,11 @@ export default function PlaylistReducer(state = defaultState, action) {
         videoThumbsForModal: videoThumbs
       }
     case 'UPLOAD_PLAYLIST':
-      if (initialPlaylists.length > 2) {
-        initialPlaylists.pop();
-        initialPlaylists = [action.res.data.result].concat(initialPlaylists);
+      if (defaultPlaylists.length > 2) {
+        defaultPlaylists.pop();
+        defaultPlaylists = [action.res.data.result].concat(defaultPlaylists);
+      } else {
+        defaultPlaylists = [action.res.data.result].concat(state.allPlaylists);
       }
       return {
         ...state,
@@ -132,13 +134,13 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'EDIT_PLAYLIST_TITLE':
     if (action.res.data.result) {
-      const newPlaylists = state.allPlaylists.map(playlist => {
+      defaultPlaylists = state.allPlaylists.map(playlist => {
         if (playlist.id === action.playlistId) {
           playlist.title = action.res.data.result
         }
         return playlist;
       })
-      const newPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
+      defaultPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
         if (playlist.id === action.playlistId) {
           playlist.title = action.res.data.result
         }
@@ -146,8 +148,8 @@ export default function PlaylistReducer(state = defaultState, action) {
       })
       return {
         ...state,
-        pinnedPlaylists: newPinnedPlaylists,
-        allPlaylists: newPlaylists
+        pinnedPlaylists: defaultPinnedPlaylists,
+        allPlaylists: defaultPlaylists
       }
     } else {
       console.error(action.res.data.error);
@@ -161,53 +163,49 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
       if (action.res.data.result) {
         let { result } = action.res.data;
-        const newPlaylists = state.allPlaylists.map(playlist => {
+        defaultPlaylists = state.allPlaylists.map(playlist => {
           if (playlist.id === action.playlistId) {
             playlist.playlist = result;
           }
           return playlist;
         })
-        const newPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
+        defaultPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
           if (playlist.id === action.playlistId) {
             playlist.playlist = result;
           }
           return playlist;
         })
-        initialPlaylists = newPlaylists;
-        initialPinnedPlaylists = newPinnedPlaylists;
         return {
           ...state,
-          pinnedPlaylists: newPinnedPlaylists,
-          allPlaylists: newPlaylists
+          pinnedPlaylists: defaultPinnedPlaylists,
+          allPlaylists: defaultPlaylists
         }
       }
     case 'DELETE_PLAYLIST':
       if (action.res.data.success) {
-        const newPlaylists = state.allPlaylists.filter(playlist => {
+        defaultPlaylists = state.allPlaylists.filter(playlist => {
           if (playlist.id === action.playlistId) {
             return false;
           }
           return true;
         })
-        const newPinnedPlaylists = state.pinnedPlaylists.filter(playlist => {
+        defaultPinnedPlaylists = state.pinnedPlaylists.filter(playlist => {
           if (playlist.id === action.playlistId) {
             return false;
           }
           return true;
         })
-        initialPlaylists = newPlaylists;
-        initialPinnedPlaylists = newPinnedPlaylists;
         return {
           ...state,
-          pinnedPlaylists: newPinnedPlaylists,
-          allPlaylists: newPlaylists
+          pinnedPlaylists: defaultPinnedPlaylists,
+          allPlaylists: defaultPlaylists
         }
       }
       return state;
     case 'RESET_PL_STATE':
       return {
-        allPlaylists: initialPlaylists,
-        pinnedPlaylists: initialPinnedPlaylists,
+        allPlaylists: defaultPlaylists,
+        pinnedPlaylists: defaultPinnedPlaylists,
         loadMoreButton: false,
         loadMorePinned: false,
 
