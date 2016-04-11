@@ -19,7 +19,7 @@ class SmallDropdownButton extends Component {
         return (
           <li
             key={menuProps.indexOf(prop)}
-            role="separator" 
+            role="separator"
             className="divider"></li>
         )
       }
@@ -41,7 +41,7 @@ class SmallDropdownButton extends Component {
         className="dropdown pull-right"
         style={{
           position: 'absolute',
-          right: this.props.rightMargin || '0',
+          right: this.props.rightMargin || '0px',
           marginRight: '2rem'
         }}>
         <button className="dropdown-toggle" onClick={ () => this.setState({menuDisplayed: !menuDisplayed})}>

@@ -52,7 +52,7 @@ class PlaylistsPanel extends Component {
       getMorePlaylists(lastId);
     }
     return (
-      <div className="panel panel-primary" key={this.props.key}>
+      <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
           <h3 className="panel-title pull-left">{ this.props.title }</h3>
           {

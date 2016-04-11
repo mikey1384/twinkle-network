@@ -9,7 +9,7 @@ export default class AllVideosPanel extends Component {
     this.props.onAddVideoClick();
   }
   render (){
-    const { loadMoreButton, getMoreVideos, videos, key, title, isAdmin } = this.props;
+    const { loadMoreButton, getMoreVideos, videos, title, isAdmin } = this.props;
     const last = (array) => {
       return array[array.length - 1];
     };
@@ -18,7 +18,7 @@ export default class AllVideosPanel extends Component {
       getMoreVideos(lastId);
     }
     return (
-      <div className="panel panel-primary" key={key}>
+      <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
           <h3 className="panel-title pull-left">{title}</h3>
           {

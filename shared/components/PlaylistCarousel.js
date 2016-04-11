@@ -48,9 +48,6 @@ export default class PlaylistCarousel extends Component {
     props['playlistId'] = this.props.playlistId;
     if (props.editedTitle && props.editedTitle !== title) {
       editPlaylistTitle(props, this.props.arrayNumber);
-      this.setState({onEdit: false});
-      this.setState({title: props.editedTitle});
-      return;
     }
     this.setState({onEdit: false})
   }
@@ -59,7 +56,7 @@ export default class PlaylistCarousel extends Component {
     this.setState({onEdit: false})
   }
 
-  onDeleteClick() {
+  onDelete() {
 
   }
 
@@ -87,7 +84,7 @@ export default class PlaylistCarousel extends Component {
       },
       {
         label: 'Remove Playlist',
-        onClick: this.onDeleteClick.bind(this)
+        onClick: this.onDelete.bind(this)
       }
     ]
     return (

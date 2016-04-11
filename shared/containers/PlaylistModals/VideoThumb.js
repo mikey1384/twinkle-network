@@ -31,12 +31,12 @@ class VideoThumb extends Component {
           />
           <div className="caption">
             <div>
-              <h4 style={{
+              <h5 style={{
                 whiteSpace: 'nowrap',
                 textOverflow:'ellipsis',
                 overflow:'hidden',
                 lineHeight: 'normal'
-              }}>{video.title}</h4>
+              }}>{video.title}</h5>
             </div>
             <small style={{
               whiteSpace: 'nowrap',

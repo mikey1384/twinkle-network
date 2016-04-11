@@ -97,7 +97,12 @@ export default class EditPlaylistModal extends Component {
         onHide={this.handleHide.bind(this)}
       >
         <Modal.Header closeButton>
-          <h4>Add or Remove Videos</h4>
+          {
+            modalType === 'change' ?
+            <h4>Add or Remove Videos</h4>
+            :
+            <h4>Reorder Videos</h4>
+          }
         </Modal.Header>
         <Modal.Body>
           {modalBody(modalType)}
