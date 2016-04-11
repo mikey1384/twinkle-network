@@ -69,9 +69,11 @@ export function changePlaylistVideos(playlistId, selectedVideos) {
   }
 }
 
-export function resetPlaylistState() {
+export function deletePlaylist(playlistId) {
   return {
-    type: 'RESET_PL_STATE'
+    type: 'DELETE_PLAYLIST',
+    promise: request.delete(`${API_URL}?playlistId=${playlistId}`),
+    playlistId
   }
 }
 
@@ -106,5 +108,11 @@ export function openReorderPlaylistVideosModal(playlistVideos) {
 export function resetPlaylistModalState() {
   return {
     type: 'RESET_PL_MODAL_STATE'
+  }
+}
+
+export function resetPlaylistState() {
+  return {
+    type: 'RESET_PL_STATE'
   }
 }

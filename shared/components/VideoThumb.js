@@ -114,7 +114,7 @@ export default class VideoThumb extends Component {
           </div>
         </div>
         <ConfirmModal
-          title="Delete Video"
+          title="Remove Video"
           show={confirmModalShown}
           onHide={this.onHideModal.bind(this)}
           onConfirm={this.onDeleteConfirm.bind(this)} />

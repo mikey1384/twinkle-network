@@ -5,11 +5,13 @@ import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import { editPlaylistTitle } from 'actions/PlaylistActions';
 import EditPlaylistModal from 'containers/PlaylistModals/EditPlaylistModal';
+import ConfirmModal from './ConfirmModal';
 
 export default class PlaylistCarousel extends Component {
   state = {
     onEdit: false,
-    editPlaylistModalShown: false
+    editPlaylistModalShown: false,
+    deleteConfirmModalShown: false
   }
 
   renderThumbs () {
@@ -56,12 +58,18 @@ export default class PlaylistCarousel extends Component {
     this.setState({onEdit: false})
   }
 
-  onDelete() {
+  onDeleteClick() {
+    this.setState({deleteConfirmModalShown: true});
+  }
 
+  onDeleteConfirm() {
+    const { deletePlaylist, playlistId } = this.props;
+    deletePlaylist(playlistId);
+    this.setState({deleteConfirmModalShown: false})
   }
 
   render () {
-    const { onEdit, editPlaylistModalShown } = this.state;
+    const { onEdit, editPlaylistModalShown, deleteConfirmModalShown } = this.state;
     const { title, uploader, editable, playlistId  } = this.props;
     const selectedVideos = this.props.playlist.map(thumb => {
       return thumb.videoid;
@@ -89,7 +97,7 @@ export default class PlaylistCarousel extends Component {
       },
       {
         label: 'Remove Playlist',
-        onClick: this.onDelete.bind(this)
+        onClick: this.onDeleteClick.bind(this)
       }
     ]
     return (
@@ -132,6 +140,14 @@ export default class PlaylistCarousel extends Component {
             selectedVideos={selectedVideos}
             playlistId={playlistId}
             onHide={ () => this.setState({editPlaylistModalShown: false})}
+          />
+        }
+        {deleteConfirmModalShown &&
+          <ConfirmModal
+            show={true}
+            title="Remove Playlist"
+            onConfirm={this.onDeleteConfirm.bind(this)}
+            onHide={ () => this.setState({deleteConfirmModalShown: false})}
           />
         }
       </div>

@@ -21,6 +21,7 @@ class PlaylistsPanel extends Component {
           editable={editable}
           uploader={playlist.uploader}
           editPlaylistTitle={this.props.editPlaylistTitle}
+          deletePlaylist={this.props.deletePlaylist}
           openChangePlaylistVideosModal={this.props.openChangePlaylistVideosModal}
           openReorderPlaylistVideosModal={this.props.openReorderPlaylistVideosModal}
         />

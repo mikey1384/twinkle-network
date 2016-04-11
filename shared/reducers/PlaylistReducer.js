@@ -173,6 +173,8 @@ export default function PlaylistReducer(state = defaultState, action) {
           }
           return playlist;
         })
+        initialPlaylists = newPlaylists;
+        initialPinnedPlaylists = newPinnedPlaylists;
         return {
           ...state,
           pinnedPlaylists: newPinnedPlaylists,
@@ -180,7 +182,28 @@ export default function PlaylistReducer(state = defaultState, action) {
         }
       }
     case 'DELETE_PLAYLIST':
-      return state.delete(action.id);
+      if (action.res.data.success) {
+        const newPlaylists = state.allPlaylists.filter(playlist => {
+          if (playlist.id === action.playlistId) {
+            return false;
+          }
+          return true;
+        })
+        const newPinnedPlaylists = state.pinnedPlaylists.filter(playlist => {
+          if (playlist.id === action.playlistId) {
+            return false;
+          }
+          return true;
+        })
+        initialPlaylists = newPlaylists;
+        initialPinnedPlaylists = newPinnedPlaylists;
+        return {
+          ...state,
+          pinnedPlaylists: newPinnedPlaylists,
+          allPlaylists: newPlaylists
+        }
+      }
+      return state;
     case 'RESET_PL_STATE':
       return {
         allPlaylists: initialPlaylists,

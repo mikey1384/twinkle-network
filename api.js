@@ -339,6 +339,49 @@ app.post('/playlist', (req, res) => {
   }
 })
 
+app.delete('/playlist', (req, res) => {
+  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : 0,
+        session = req.session.sessioncode;
+  async.waterfall([
+    (callback) => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows) return;
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      pool.query('SELECT * FROM vq_playlists WHERE createdby = ? AND id = ?', [userId, playlistId], (err, rows) => {
+        if (!rows) return;
+        callback(err, userId);
+      })
+    },
+    (userId, callback) => {
+      async.parallel([
+        (callback) => {
+          pool.query('DELETE FROM vq_playlists WHERE createdby = ? AND id = ?', [userId, playlistId], (err, result) => {
+            callback(err, result);
+          })
+        },
+        (callback) => {
+          pool.query('DELETE FROM vq_playlistvideos WHERE playlistId = ?', playlistId, (err, result) => {
+            callback(err, result);
+          })
+        }
+      ], (err, results) => {
+        callback(err, results);
+      });
+    }
+  ], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({error: err});
+      return;
+    }
+    res.json({success: true});
+  });
+})
+
 app.post('/playlist/edit/title', (req, res) => {
   const { title, playlistId } = req.body,
         newTitle = processedTitleString(title),
