@@ -75,9 +75,9 @@ class Contents extends Component {
     return (
       <div className="container-fluid">
         <PlaylistsPanel
-          key={"homeworkplaylists"}
+          key={"pinnedPlaylists"}
           playlistType="pinned"
-          title="Homework Playlists"
+          title="Pinned Playlists"
           loadMoreButton={loadMorePinnedPlaylists}
           userId={userId}
           playlists={pinnedPlaylists}
