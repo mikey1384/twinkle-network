@@ -28,7 +28,7 @@ app.get('/video', (req, res) => {
 });
 
 app.post('/video', (req, res) => {
-  const rawDescription = req.body.description || "No description",
+  const rawDescription = (!req.body.description || req.body.description === '') ? "No description" : req.body.description,
         title = processedTitleString(req.body.title),
         description = processedString(rawDescription),
         videocode = fetchedVideoCodeFromURL(req.body.url),
@@ -240,7 +240,7 @@ app.get('/playlist', (req, res) => {
 })
 
 app.post('/playlist', (req, res) => {
-  const rawDescription = req.body.description || "No description",
+  const rawDescription = (!req.body.description || req.body.description === '') ? "No description" : req.body.description,
         title = processedTitleString(req.body.title),
         description = processedString(rawDescription),
         videos = req.body.videos,

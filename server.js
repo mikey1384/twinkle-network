@@ -10,7 +10,8 @@ import promiseMiddleware from 'lib/promiseMiddleware';
 import fetchComponentData from 'lib/fetchComponentData';
 import { createStore,
          combineReducers,
-         applyMiddleware } from 'redux';
+         applyMiddleware,
+         compose } from 'redux';
 import path from 'path';
 import session from 'client-sessions';
 import { siteSession } from './siteConfig';
@@ -27,8 +28,13 @@ app.use(siteSession());
 app.use((req, res) => {
   global.SESSION = req.session;
   const location = createLocation(req.url);
-  const reducer  = combineReducers(reducers);
-  const store    = applyMiddleware(promiseMiddleware)(createStore)(reducer);
+  const reducer = combineReducers(reducers);
+  const store = createStore(
+    reducer,
+    compose(
+      applyMiddleware(promiseMiddleware)
+    )
+  )
 
   match({ routes, location }, (err, redirectLocation, renderProps) => {
     if(err) {
