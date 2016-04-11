@@ -4,8 +4,11 @@ import listensToClickOutside from 'react-onclickoutside/decorator';
 import ReactDOM from 'react-dom';
 
 class EditTitleForm extends Component {
+  state = {
+    inputValue: this.props.value
+  }
+
   componentDidMount () {
-    this.refs.editTitleInput.value = this.props.value;
     ReactDOM.findDOMNode(this.refs.editTitleInput).focus();
   }
 
@@ -26,6 +29,7 @@ class EditTitleForm extends Component {
           type="text"
           className="form-control"
           placeholder="Enter Title..."
+          value={this.state.inputValue}
           { ...editedTitle }
         />
       </form>
