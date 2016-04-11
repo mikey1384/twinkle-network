@@ -177,34 +177,35 @@ export default class AddPlaylistModal extends Component {
               const selectedVideos = this.state.selectedVideos;
               return (
                 <div className="row">
-                  {
-                    selectedVideos.map(selectedVideo => {
-                      return (
-                        videos.map(video => {
-                          if (video.id == selectedVideo) {
-                            return (
-                              <SortableThumb
-                                key={video.id}
-                                video={video}
-                                onMove={
-                                  ({sourceId, targetId}) => {
-                                    const selectedVideoArray = this.state.selectedVideos;
-                                    const sourceIndex = selectedVideoArray.indexOf(sourceId);
-                                    const targetIndex = selectedVideoArray.indexOf(targetId);
-                                    selectedVideoArray.splice(sourceIndex, 1);
-                                    selectedVideoArray.splice(targetIndex, 0, sourceId);
-                                    this.setState({
-                                      selectedVideos: selectedVideoArray
-                                    });
-                                  }
-                                }
-                              />
-                            )
+                {
+                  this.state.selectedVideos.map(videoId => {
+                    let index = -1;
+                    for(let i = 0; i < videos.length; i++) {
+                        if (videos[i].id === videoId) {
+                          index = i;
+                          break;
+                        }
+                    }
+                    return (
+                      <SortableThumb
+                        key={videos[index].id}
+                        video={videos[index]}
+                        onMove={
+                          ({sourceId, targetId}) => {
+                            const selectedVideoArray = this.state.selectedVideos;
+                            const sourceIndex = selectedVideoArray.indexOf(sourceId);
+                            const targetIndex = selectedVideoArray.indexOf(targetId);
+                            selectedVideoArray.splice(sourceIndex, 1);
+                            selectedVideoArray.splice(targetIndex, 0, sourceId);
+                            this.setState({
+                              selectedVideos: selectedVideoArray
+                            });
                           }
-                        })
-                      )
-                    })
-                  }
+                        }
+                      />
+                    )
+                  })
+                }
                 </div>
               )
               default: return <div></div>
