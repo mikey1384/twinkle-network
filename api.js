@@ -138,8 +138,8 @@ app.delete('/video', (req, res) => {
 })
 
 app.post('/video/edit/title', (req, res) => {
-  const { editedTitle, videoId } = req.body,
-        newTitle = processedTitleString(editedTitle),
+  const { title, videoId } = req.body,
+        newTitle = processedTitleString(title),
         session = req.session.sessioncode,
         post = {
           title: newTitle
@@ -340,8 +340,8 @@ app.post('/playlist', (req, res) => {
 })
 
 app.post('/playlist/edit/title', (req, res) => {
-  const { editedTitle, playlistId } = req.body,
-        newTitle = processedTitleString(editedTitle),
+  const { title, playlistId } = req.body,
+        newTitle = processedTitleString(title),
         session = req.session.sessioncode,
         post = {
           title: newTitle

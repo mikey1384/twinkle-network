@@ -46,7 +46,7 @@ export default class PlaylistCarousel extends Component {
   onEditedTitleSubmit(props) {
     const { title, editPlaylistTitle } = this.props;
     props['playlistId'] = this.props.playlistId;
-    if (props.editedTitle && props.editedTitle !== title) {
+    if (props.title && props.title !== title) {
       editPlaylistTitle(props, this.props.arrayNumber);
     }
     this.setState({onEdit: false})
@@ -66,6 +66,11 @@ export default class PlaylistCarousel extends Component {
     const selectedVideos = this.props.playlist.map(thumb => {
       return thumb.videoid;
     })
+    const initialTitleFormValues = {
+      initialValues: {
+        title: title
+      }
+    }
     const menuProps = [
       {
         label: 'Edit Title',
@@ -99,7 +104,7 @@ export default class PlaylistCarousel extends Component {
               }}
             >
               <EditTitleForm
-                value={ title }
+                {...initialTitleFormValues}
                 onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
                 onEditCancel={ this.onEditTitleCancel.bind(this) }
               />

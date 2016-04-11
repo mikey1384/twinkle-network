@@ -18,7 +18,7 @@ export default class VideoThumb extends Component {
   onEditedTitleSubmit(props) {
     const { video } = this.props;
     props['videoId'] = video.id;
-    if (props.editedTitle && props.editedTitle !== video.title) {
+    if (props.title && props.title !== video.title) {
       this.props.editVideoTitle(props);
     }
     this.setState({onEdit: false});
@@ -44,6 +44,11 @@ export default class VideoThumb extends Component {
   render () {
     const { onEdit, confirmModalShown } = this.state;
     const { size, editable, video } = this.props;
+    const initialTitleFormValues = {
+      initialValues: {
+        title: video.title
+      }
+    }
     const menuProps = [
       {
         label: 'Edit',
@@ -86,7 +91,7 @@ export default class VideoThumb extends Component {
                 }}
               >
                 <EditTitleForm
-                  value={ video.title }
+                  { ...initialTitleFormValues }
                   onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
                   onEditCancel={ this.onEditTitleCancel.bind(this) }
                 />

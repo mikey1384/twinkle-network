@@ -4,24 +4,18 @@ import listensToClickOutside from 'react-onclickoutside/decorator';
 import ReactDOM from 'react-dom';
 
 class EditTitleForm extends Component {
-  state = {
-    inputValue: this.props.value
-  }
-
   componentDidMount () {
     ReactDOM.findDOMNode(this.refs.editTitleInput).focus();
   }
-
   handleClickOutside = (event) => {
     this.props.onEditCancel();
   }
-
   onEditSubmit(props) {
     this.props.onEditSubmit(props);
   }
 
   render () {
-    const { fields: { editedTitle }, handleSubmit } = this.props;
+    const { fields: { title }, handleSubmit } = this.props;
     return (
       <form onSubmit={ handleSubmit(this.onEditSubmit.bind(this)) }>
         <input
@@ -29,8 +23,7 @@ class EditTitleForm extends Component {
           type="text"
           className="form-control"
           placeholder="Enter Title..."
-          value={this.state.inputValue}
-          { ...editedTitle }
+          { ...title }
         />
       </form>
     )
@@ -39,7 +32,7 @@ class EditTitleForm extends Component {
 
 EditTitleForm = reduxForm({
   form: 'EditTitleForm',
-  fields: ['editedTitle']
+  fields: ['title']
 })(listensToClickOutside(EditTitleForm));
 
 export default EditTitleForm;
