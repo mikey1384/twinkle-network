@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ReactDOM from 'react-dom';
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from './Modals/ConfirmModal';
 
 export default class VideoThumb extends Component {
   state = {

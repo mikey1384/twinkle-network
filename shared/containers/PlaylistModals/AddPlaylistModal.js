@@ -181,10 +181,10 @@ export default class AddPlaylistModal extends Component {
                   this.state.selectedVideos.map(videoId => {
                     let index = -1;
                     for(let i = 0; i < videos.length; i++) {
-                        if (videos[i].id === videoId) {
-                          index = i;
-                          break;
-                        }
+                      if (videos[i].id === videoId) {
+                        index = i;
+                        break;
+                      }
                     }
                     return (
                       <SortableThumb

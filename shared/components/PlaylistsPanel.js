@@ -14,12 +14,9 @@ class PlaylistsPanel extends Component {
       return (
         <PlaylistCarousel
           key={playlists.indexOf(playlist)}
-          playlist={playlist.playlist}
-          playlistId={playlist.id}
           arrayNumber={playlists.indexOf(playlist)}
-          title={playlist.title}
+          {...playlist}
           editable={editable}
-          uploader={playlist.uploader}
           editPlaylistTitle={this.props.editPlaylistTitle}
           deletePlaylist={this.props.deletePlaylist}
           openChangePlaylistVideosModal={this.props.openChangePlaylistVideosModal}
@@ -63,6 +60,9 @@ class PlaylistsPanel extends Component {
         </div>
         <div className="panel-body">
           { this.renderPlaylists() }
+          {
+            playlists.length === 0 && <div className="text-center">No Playlists</div>
+          }
           { loadMoreButton &&
             <div className="text-center">
               <button className="btn btn-default" onClick={loadMorePlaylists}>Load More</button>

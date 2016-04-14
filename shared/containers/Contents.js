@@ -5,8 +5,10 @@ import AllVideosPanel from 'components/AllVideosPanel';
 import PlaylistsPanel from 'components/PlaylistsPanel';
 import * as VideoActions from 'actions/VideoActions';
 import * as PlaylistActions from 'actions/PlaylistActions';
-import AddVideoModal from './AddVideoModal';
+import AddVideoModal from 'components/Modals/AddVideoModal';
 import AddPlaylistModal from './PlaylistModals/AddPlaylistModal';
+import SelectPlaylistsToPinModal from 'components/Modals/SelectPlaylistsToPinModal';
+import ButtonGroup from 'components/ButtonGroup';
 
 class Contents extends Component {
   componentWillMount() {
@@ -24,28 +26,6 @@ class Contents extends Component {
     const { resetPlaylistState } = PlaylistActions;
     dispatch(resetVideoState());
     dispatch(resetPlaylistState());
-  }
-
-  renderPlaylistButton() {
-    return (
-      <div
-        className="btn-group pull-right"
-        style={{
-          marginLeft: 'auto'
-        }}
-      >
-        <button type="button" className="btn btn-default" onClick={ this.onButtonOneClick.bind(this) }>
-          + Add Playlist
-        </button>
-      </div>
-    )
-  }
-
-  showAddPlaylistModal() {
-    const { dispatch } = this.props;
-    const { openAddPlaylistModal, getVideosForModal } = PlaylistActions;
-    dispatch(getVideosForModal());
-    dispatch(openAddPlaylistModal());
   }
 
   render() {
@@ -67,15 +47,39 @@ class Contents extends Component {
 
       addVideoModalShown,
       addPlaylistModalShown,
-      editPlaylistModalShown,
+
+      selectPlaylistsToPinModalShown,
+      playlistsToPin,
+      loadMorePlaylistsToPinButton,
 
       dispatch
     } = this.props;
     const { closeAddVideoModal } = VideoActions;
+    const allPlaylistButtons = [
+      {
+        label: '+ Add Playlist',
+        onClick: this.showAddPlaylistModal.bind(this),
+        buttonClass: 'btn-default'
+      }
+    ]
+    const pinnedPlaylistButtons = [
+      {
+        label: 'Select Playlists',
+        onClick: () => dispatch(PlaylistActions.openSelectPlaylistsToPinModal()),
+        buttonClass: 'btn-default'
+      },
+      {
+        label: 'Reorder Playlists',
+        onClick: this.showAddPlaylistModal.bind(this),
+        buttonClass: 'btn-default'
+      }
+    ]
     return (
       <div className="container-fluid">
         <PlaylistsPanel
           key={"pinnedPlaylists"}
+          buttonGroupShown={userType === 'master'}
+          buttonGroup={ () => this.renderPlaylistButton(pinnedPlaylistButtons) }
           playlistType="pinned"
           title="Pinned Playlists"
           loadMoreButton={loadMorePinnedPlaylists}
@@ -86,8 +90,7 @@ class Contents extends Component {
         <PlaylistsPanel
           key={"allplaylists"}
           buttonGroupShown={isAdmin}
-          buttonGroup={ this.renderPlaylistButton }
-          onButtonOneClick={ this.showAddPlaylistModal.bind(this) }
+          buttonGroup={ () => this.renderPlaylistButton(allPlaylistButtons) }
           playlistType="all"
           title="All Playlists"
           loadMoreButton={loadMorePlaylistsButton}
@@ -105,10 +108,51 @@ class Contents extends Component {
           onAddVideoClick={() => dispatch(VideoActions.openAddVideoModal())}
           {...bindActionCreators(VideoActions, dispatch)}
         />
-        <AddVideoModal show={addVideoModalShown} onHide={ () => dispatch(closeAddVideoModal()) } />
-        <AddPlaylistModal show={addPlaylistModalShown} />
+        {
+          addVideoModalShown &&
+          <AddVideoModal
+            show
+            onHide={ () => dispatch(closeAddVideoModal()) }
+            {...bindActionCreators(VideoActions, dispatch)}
+          />
+        }
+        { addPlaylistModalShown && <AddPlaylistModal show /> }
+        {
+          selectPlaylistsToPinModalShown && <SelectPlaylistsToPinModal
+            show
+            playlistsToPin={playlistsToPin}
+            pinnedPlaylists={pinnedPlaylists}
+            selectedPlaylists={
+              pinnedPlaylists.map(playlist => {
+                return playlist.id
+              })
+            }
+            loadMoreButton={loadMorePlaylistsToPinButton}
+            onHide={ () => dispatch(PlaylistActions.closeSelectPlaylistsToPinModal()) }
+            {...bindActionCreators(PlaylistActions, dispatch)}
+          />
+        }
       </div>
     );
+  }
+
+  renderPlaylistButton(buttonsArray) {
+    return (
+      <ButtonGroup
+        className='btn-group'
+        style={{
+          marginLeft: 'auto'
+        }}
+        buttons={buttonsArray}
+      />
+    )
+  }
+
+  showAddPlaylistModal() {
+    const { dispatch } = this.props;
+    const { openAddPlaylistModal, getVideosForModal } = PlaylistActions;
+    dispatch(getVideosForModal());
+    dispatch(openAddPlaylistModal());
   }
 }
 
@@ -126,8 +170,12 @@ export default connect(
 
     pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
     loadMorePinnedPlaylists: state.PlaylistReducer.loadMorePinned,
-    addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
 
-    addVideoModalShown: state.VideoReducer.addVideoModalShown
+    addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
+    addVideoModalShown: state.VideoReducer.addVideoModalShown,
+
+    selectPlaylistsToPinModalShown: state.PlaylistReducer.selectPlaylistsToPinModalShown,
+    playlistsToPin: state.PlaylistReducer.playlistsToPin,
+    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton
   })
 )(Contents);

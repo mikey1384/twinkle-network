@@ -21,8 +21,7 @@ export function getMorePlaylists(playlistId) {
 export function getPinnedPlaylists() {
   return {
     type: 'GET_PINNED_PLAYLISTS',
-    initialRun: true,
-    promise: request.get(`${API_URL}?pinned=true`)
+    promise: request.get(`${API_URL}/pinned`)
   }
 }
 
@@ -74,6 +73,36 @@ export function deletePlaylist(playlistId) {
     type: 'DELETE_PLAYLIST',
     promise: request.delete(`${API_URL}?playlistId=${playlistId}`),
     playlistId
+  }
+}
+
+export function openSelectPlaylistsToPinModal() {
+  return {
+    type: 'SELECT_PL_TO_PIN_OPEN',
+    promise: request.get(`${API_URL}/list`)
+  }
+}
+
+export function loadMorePlaylistList(playlistId) {
+  return {
+    type: 'LOAD_MORE_PLAYLIST_LIST',
+    promise: request.get(`${API_URL}/list?playlistId=${playlistId}`)
+  }
+}
+
+export function changePinnedPlaylists(selectedPlaylists) {
+  const params = {
+    selectedPlaylists
+  }
+  return {
+    type: 'CHANGE_PINNED_PLAYLISTS',
+    promise: request.post(`${API_URL}/pinned`, params)
+  }
+}
+
+export function closeSelectPlaylistsToPinModal() {
+  return {
+    type: 'SELECT_PL_TO_PIN_CLOSE'
   }
 }
 

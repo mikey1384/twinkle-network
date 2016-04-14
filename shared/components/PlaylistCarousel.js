@@ -5,7 +5,7 @@ import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import { editPlaylistTitle } from 'actions/PlaylistActions';
 import EditPlaylistModal from 'containers/PlaylistModals/EditPlaylistModal';
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from './Modals/ConfirmModal';
 
 export default class PlaylistCarousel extends Component {
   state = {
@@ -46,8 +46,8 @@ export default class PlaylistCarousel extends Component {
   }
 
   onEditedTitleSubmit(props) {
-    const { title, editPlaylistTitle } = this.props;
-    props['playlistId'] = this.props.playlistId;
+    const { title, editPlaylistTitle, id } = this.props;
+    props['playlistId'] = id;
     if (props.title && props.title !== title) {
       editPlaylistTitle(props, this.props.arrayNumber);
     }
@@ -63,8 +63,8 @@ export default class PlaylistCarousel extends Component {
   }
 
   onDeleteConfirm() {
-    const { deletePlaylist, playlistId } = this.props;
-    deletePlaylist(playlistId);
+    const { deletePlaylist, id } = this.props;
+    deletePlaylist(id);
     this.setState({deleteConfirmModalShown: false})
   }
 
@@ -125,7 +125,8 @@ export default class PlaylistCarousel extends Component {
             </h4>
           }
           {
-            editable && <SmallDropdownButton
+            editable &&
+            <SmallDropdownButton
               menuProps={menuProps}
               rightMargin="1em"
             />

@@ -178,18 +178,8 @@ app.post('/video/edit/title', (req, res) => {
 })
 
 app.get('/playlist', (req, res) => {
-  var pinnedOnly = typeof req.query.pinned !== 'undefined' ? true : false;
   var playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null;
-  var where = playlistId !== null || pinnedOnly ? 'WHERE' : '';
-  if (playlistId !== null) {
-    where += ' a.id < ? ';
-  }
-  if (playlistId === null && pinnedOnly) {
-    where += ' a.pinned = 1 ';
-  }
-  if (playlistId !== null && pinnedOnly) {
-    where += 'AND a.pinned = 1 ';
-  }
+  var where = playlistId !== null ? 'WHERE a.id < ? ' : '';
   var taskArray = [];
   var playlistArrayGroup = [];
   var query = [
@@ -237,6 +227,73 @@ app.get('/playlist', (req, res) => {
       callback(null);
     })
   }
+})
+
+app.get('/playlist/pinned', (req, res) => {
+  const query = [
+    'SELECT a.id, a.title, a.createdby AS uploaderid, b.username AS uploader ',
+    'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
+    'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
+  ].join('');
+  let taskArray = [];
+  let playlistArrayGroup = [];
+  pool.query(query, function (err, rows) {
+    if (!rows) return;
+    for (let i = 0; i < rows.length; i++) {
+      var TaskFactory = function (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId) {
+        this.task = function (callback) {
+          createPlaylistArrays(playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback);
+        }
+      }
+      var taskFactory = new TaskFactory(i, rows[i].id, rows[i].title, rows[i].uploader, rows[i].uploaderid);
+      taskArray.push(taskFactory.task);
+    }
+    async.parallel(taskArray, err => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      res.json({
+        playlists: playlistArrayGroup
+      });
+    });
+  })
+
+  function createPlaylistArrays (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback) {
+    const query = [
+      'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
+      'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
+      'WHERE a.playlistid = ?'
+    ].join('');
+
+    pool.query(query, playlistId, (err, rows) => {
+      playlistArrayGroup[playlistRowNumber] = {
+        playlist: rows,
+        title: playlistTitle,
+        id: playlistId,
+        uploader: uploader,
+        uploaderId: uploaderId
+      }
+      callback(null);
+    })
+  }
+})
+
+app.get('/playlist/list', (req, res) => {
+  const playlistId = req.query.playlistId ? req.query.playlistId : 0;
+  const where = playlistId !== 0 ? 'WHERE id < ' + playlistId + ' ' : '';
+  const query = [
+    'SELECT id, title FROM vq_playlists ',
+    where,
+    'ORDER BY id DESC LIMIT 11'
+  ].join('');
+  pool.query(query, (err, rows) => {
+    if (!rows) {
+      res.send({error: "No Playlist"});
+      return;
+    };
+    res.send({result: rows});
+  })
 })
 
 app.post('/playlist', (req, res) => {
@@ -339,13 +396,121 @@ app.post('/playlist', (req, res) => {
   }
 })
 
+app.post('/playlist/pinned', (req, res) => {
+  const { selectedPlaylists } = req.body;
+  const session = req.session.sessioncode;
+  if (selectedPlaylists.length > 3) {
+    res.send({error: 'Maximum playlist number exceeded'});
+    return;
+  }
+  async.waterfall([
+    callback => {
+      pool.query('SELECT usertype FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows) {
+          return callback('Invalid User');
+        };
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userType = rows[0].usertype;
+      if (userType !== 'master') {
+        return callback('User is not authorized to perform this action');
+      }
+      pool.query('SELECT * FROM vq_pinned_playlists', (err, rows) => {
+        if (rows) {
+          pool.query('DELETE FROM vq_pinned_playlists', err => {
+            if (err) {
+              return callback(err);
+            }
+          })
+        }
+        callback(err)
+      })
+    },
+    callback => {
+      if (selectedPlaylists.length === 0) {
+        callback(null, true);
+      }
+      let taskArray = [];
+      for (let i = selectedPlaylists.length - 1; i >= 0; i--) {
+        taskArray.push(callback => {
+          pool.query('INSERT INTO vq_pinned_playlists SET ?', {playlistId: selectedPlaylists[i]}, err => {
+            callback(err)
+          })
+        })
+      }
+      async.series(taskArray, (err, results) => {
+        callback(null, true)
+      })
+    }
+  ], (err, success) => {
+    if (err) {
+      res.send({error: err});
+      return;
+    }
+    if (success) {
+      const query = [
+        'SELECT a.id, a.title, a.createdby AS uploaderid, b.username AS uploader ',
+        'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
+        'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
+      ].join('');
+      let taskArray = [];
+      let playlistArrayGroup = [];
+      pool.query(query, function (err, rows) {
+        if (!rows) return;
+        for (let i = 0; i < rows.length; i++) {
+          var TaskFactory = function (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId) {
+            this.task = function (callback) {
+              createPlaylistArrays(playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback);
+            }
+          }
+          var taskFactory = new TaskFactory(i, rows[i].id, rows[i].title, rows[i].uploader, rows[i].uploaderid);
+          taskArray.push(taskFactory.task);
+        }
+        async.parallel(taskArray, err => {
+          if (err) {
+            console.error(err);
+            res.send({error: err})
+            return;
+          }
+          res.json({
+            playlists: playlistArrayGroup
+          });
+        });
+      })
+
+      function createPlaylistArrays (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback) {
+        const query = [
+          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
+          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
+          'WHERE a.playlistid = ?'
+        ].join('');
+
+        pool.query(query, playlistId, (err, rows) => {
+          playlistArrayGroup[playlistRowNumber] = {
+            playlist: rows,
+            title: playlistTitle,
+            id: playlistId,
+            uploader: uploader,
+            uploaderId: uploaderId
+          }
+          callback(null);
+        })
+      }
+    }
+  })
+})
+
 app.delete('/playlist', (req, res) => {
   const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : 0,
         session = req.session.sessioncode;
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) return;
+        if (!rows) {
+          return callback('Invalid User');
+        }
         callback(err, rows);
       })
     },
@@ -360,6 +525,11 @@ app.delete('/playlist', (req, res) => {
       async.parallel([
         (callback) => {
           pool.query('DELETE FROM vq_playlists WHERE createdby = ? AND id = ?', [userId, playlistId], (err, result) => {
+            callback(err, result);
+          })
+        },
+        (callback) => {
+          pool.query('DELETE FROM vq_pinned_playlists WHERE playlistId = ?', playlistId, (err, result) => {
             callback(err, result);
           })
         },
