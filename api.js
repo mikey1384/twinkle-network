@@ -419,7 +419,7 @@ app.post('/playlist/pinned', (req, res) => {
       }
       pool.query('SELECT * FROM vq_pinned_playlists', (err, rows) => {
         if (rows) {
-          pool.query('DELETE FROM vq_pinned_playlists', err => {
+          pool.query('TRUNCATE vq_pinned_playlists', err => {
             if (err) {
               return callback(err);
             }
