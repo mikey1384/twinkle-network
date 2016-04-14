@@ -103,8 +103,7 @@ export default class PlaylistCarousel extends Component {
     return (
       <div className="container-fluid">
         <div className="row container-fluid">
-          {
-            onEdit ?
+          {onEdit ?
             <div
               className="input-group col-sm-6 pull-left"
               style={{
@@ -124,8 +123,7 @@ export default class PlaylistCarousel extends Component {
               {title} <small>by {uploader}</small>
             </h4>
           }
-          {
-            editable &&
+          {editable &&
             <SmallDropdownButton
               menuProps={menuProps}
               rightMargin="1em"

@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.14)
 # Database: twinkle
-# Generation Time: 2016-04-06 13:02:03 +0000
+# Generation Time: 2016-04-14 17:02:16 +0000
 # ************************************************************
 
 
@@ -169,29 +169,60 @@ CREATE TABLE `vq_commentupvotes` (
 
 
 
+# Dump of table vq_pinned_playlists
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `vq_pinned_playlists`;
+
+CREATE TABLE `vq_pinned_playlists` (
+  `id` bigint(100) unsigned NOT NULL AUTO_INCREMENT,
+  `playlistId` bigint(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOCK TABLES `vq_pinned_playlists` WRITE;
+/*!40000 ALTER TABLE `vq_pinned_playlists` DISABLE KEYS */;
+
+INSERT INTO `vq_pinned_playlists` (`id`, `playlistId`)
+VALUES
+	(1,55),
+	(2,53),
+	(3,49);
+
+/*!40000 ALTER TABLE `vq_pinned_playlists` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 # Dump of table vq_playlists
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `vq_playlists`;
 
 CREATE TABLE `vq_playlists` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint(100) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(300) DEFAULT NULL,
   `description` varchar(300) DEFAULT NULL,
   `createdby` bigint(100) DEFAULT NULL,
-  `pinned` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `vq_playlists` WRITE;
 /*!40000 ALTER TABLE `vq_playlists` DISABLE KEYS */;
 
-INSERT INTO `vq_playlists` (`id`, `title`, `description`, `createdby`, `pinned`)
+INSERT INTO `vq_playlists` (`id`, `title`, `description`, `createdby`)
 VALUES
-	(3,'test','No description',5,1),
-	(12,'test2','No description',5,0),
-	(13,'test3','No description',5,0),
-	(14,'test4','No description',5,0);
+	(42,'Pinned Playlist','No description',5),
+	(43,'fourth playlist','test',5),
+	(44,'test','No description',5),
+	(45,'playlist','No description',5),
+	(46,'another playlist!!','No description',5),
+	(47,'People','No description',5),
+	(48,'Poof','No description',5),
+	(49,'change title to something more normal','No description',5),
+	(50,'dsafsadfsadf','No description',5),
+	(53,'Normal name','No description',5),
+	(54,'test','No description',5),
+	(55,'newest playlist','No description',5);
 
 /*!40000 ALTER TABLE `vq_playlists` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -214,19 +245,79 @@ LOCK TABLES `vq_playlistvideos` WRITE;
 
 INSERT INTO `vq_playlistvideos` (`id`, `playlistid`, `videoid`)
 VALUES
-	(267,3,233),
-	(268,3,234),
-	(269,3,235),
-	(270,3,236),
-	(304,12,236),
-	(305,12,235),
-	(306,13,236),
-	(307,13,235),
-	(308,13,234),
-	(309,14,236),
-	(310,14,235),
-	(311,14,234),
-	(312,14,233);
+	(577,42,246),
+	(578,42,255),
+	(579,42,245),
+	(580,42,239),
+	(581,42,238),
+	(582,42,237),
+	(589,43,239),
+	(590,43,257),
+	(591,43,259),
+	(592,43,256),
+	(593,43,255),
+	(594,43,253),
+	(595,43,250),
+	(596,44,241),
+	(597,44,246),
+	(598,44,247),
+	(599,44,256),
+	(600,44,255),
+	(601,44,240),
+	(602,44,239),
+	(603,44,238),
+	(604,45,256),
+	(605,45,255),
+	(606,45,253),
+	(607,45,250),
+	(608,45,244),
+	(609,46,256),
+	(610,46,255),
+	(611,46,253),
+	(612,47,256),
+	(613,47,248),
+	(614,47,247),
+	(615,47,246),
+	(616,47,245),
+	(617,47,244),
+	(618,47,250),
+	(619,48,256),
+	(620,48,255),
+	(621,48,253),
+	(622,48,239),
+	(623,48,240),
+	(624,48,241),
+	(625,48,234),
+	(626,48,233),
+	(627,49,256),
+	(628,49,257),
+	(629,49,259),
+	(630,49,243),
+	(631,50,255),
+	(632,50,253),
+	(633,50,250),
+	(634,50,238),
+	(635,50,239),
+	(636,50,240),
+	(649,53,255),
+	(650,53,256),
+	(651,53,245),
+	(652,53,253),
+	(653,53,244),
+	(654,54,256),
+	(655,54,255),
+	(656,54,253),
+	(657,54,250),
+	(658,54,249),
+	(659,54,237),
+	(660,54,238),
+	(668,55,256),
+	(669,55,255),
+	(670,55,253),
+	(671,55,250),
+	(672,55,249),
+	(673,55,243),
+	(674,55,248);
 
 /*!40000 ALTER TABLE `vq_playlistvideos` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -310,7 +401,23 @@ VALUES
 	(235,'Thomas Suarez: A 12-year-old app developer','test','Fkd9TWUtFm0',5),
 	(236,'tests','No description','GigYWy2UmOY',5),
 	(237,'another vid','No description','eIho2S0ZahI',5),
-	(238,'yet another ted','No description','P_6vDLq64gE',5);
+	(238,'I forgot the title of this video','No description','P_6vDLq64gE',5),
+	(239,'Why happy couples cheat??','No description','P2AUat93a8Q',5),
+	(240,'Esther Perel: The secret to desire in a long-term relationship','No description','sa0RUmGTCYY',5),
+	(241,'Monica Lewinsky: The price of shame','No description','H_8y0WLm78U',5),
+	(242,'The person you really need to marry','No description','P3fIZuW9P_M',5),
+	(243,'The sex-starved marriagedsa','No description','Ep2MAx95m20',5),
+	(244,'The great porn experiment','No description','wSF82AwSDiU',5),
+	(245,'Why is India so filthy?','No description','tf1VA5jqmRo',5),
+	(246,'A well educated mind vs a well formed mind','No description','kcW4ABcY3zI',5),
+	(247,'The habits of highly boring people?','No description','3rbVQNTzCh8',5),
+	(248,'Stereotypes -- funny because they are true','No description','A0q9hn8hebw',5),
+	(249,'Life is easy. Why do we make it so hard?','No description','21j_OCNLuYg',5),
+	(250,'If you want to achieve your goals, don\'t focus on them','No description','V2PP3p4_4R8',5),
+	(253,'test','No description','uy9GFAOGGXU',5),
+	(255,'Dark Souls!!!','No description','6bbf9Exnbxc',5),
+	(256,'Why Flux? | React + Redux + Webpack (Part 6)','No description','O83pwcIg6jw',5),
+	(257,'desc testing?','testing whether desc works','NDMwhg-xwKo',5);
 
 /*!40000 ALTER TABLE `vq_videos` ENABLE KEYS */;
 UNLOCK TABLES;
