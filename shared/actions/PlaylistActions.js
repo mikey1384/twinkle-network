@@ -106,6 +106,18 @@ export function closeSelectPlaylistsToPinModal() {
   }
 }
 
+export function openReorderPinnedPlaylistsModal() {
+  return {
+    type: 'REORDER_PINNED_PL_OPEN'
+  }
+}
+
+export function closeReorderPinnedPlaylistsModal() {
+  return {
+    type: 'REORDER_PINNED_PL_CLOSE'
+  }
+}
+
 export function openAddPlaylistModal() {
   return {
     type: 'ADD_PL_MODAL_OPEN'

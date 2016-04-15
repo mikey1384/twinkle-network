@@ -423,26 +423,29 @@ app.post('/playlist/pinned', (req, res) => {
             if (err) {
               return callback(err);
             }
+            callback(err)
           })
+        } else {
+          callback(err)
         }
-        callback(err)
       })
     },
     callback => {
       if (selectedPlaylists.length === 0) {
         callback(null, true);
-      }
-      let taskArray = [];
-      for (let i = selectedPlaylists.length - 1; i >= 0; i--) {
-        taskArray.push(callback => {
-          pool.query('INSERT INTO vq_pinned_playlists SET ?', {playlistId: selectedPlaylists[i]}, err => {
-            callback(err)
+      } else {
+        let taskArray = [];
+        for (let i = selectedPlaylists.length - 1; i >= 0; i--) {
+          taskArray.push(callback => {
+            pool.query('INSERT INTO vq_pinned_playlists SET ?', {playlistId: selectedPlaylists[i]}, err => {
+              callback(err)
+            })
           })
+        }
+        async.series(taskArray, (err, results) => {
+          callback(null, true)
         })
       }
-      async.series(taskArray, (err, results) => {
-        callback(null, true)
-      })
     }
   ], (err, success) => {
     if (err) {
@@ -612,10 +615,10 @@ app.post('/playlist/change/videos', (req, res) => {
     (rows, callback) => {
       if (!rows) return;
       pool.query('DELETE FROM vq_playlistvideos WHERE playlistid = ?', playlistId, err => {
-        callback(err, null)
+        callback(err)
       })
     },
-    (res, callback) => {
+    (callback) => {
       for (let i = 0; i < selectedVideos.length; i ++) {
         var TaskFactory = function (playlistId, videoId) {
           this.task = function (callback) {

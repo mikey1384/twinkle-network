@@ -8,6 +8,7 @@ import * as PlaylistActions from 'actions/PlaylistActions';
 import AddVideoModal from 'components/Modals/AddVideoModal';
 import AddPlaylistModal from './PlaylistModals/AddPlaylistModal';
 import SelectPlaylistsToPinModal from 'components/Modals/SelectPlaylistsToPinModal';
+import ReorderPinnedPlaylistsModal from 'components/Modals/ReorderPinnedPlaylistsModal';
 import ButtonGroup from 'components/ButtonGroup';
 
 class Contents extends Component {
@@ -52,6 +53,8 @@ class Contents extends Component {
       playlistsToPin,
       loadMorePlaylistsToPinButton,
 
+      reorderPinnedPlaylistsModalShown,
+
       dispatch
     } = this.props;
     const { closeAddVideoModal } = VideoActions;
@@ -70,7 +73,7 @@ class Contents extends Component {
       },
       {
         label: 'Reorder Playlists',
-        onClick: this.showAddPlaylistModal.bind(this),
+        onClick: () => dispatch(PlaylistActions.openReorderPinnedPlaylistsModal()),
         buttonClass: 'btn-default'
       }
     ]
@@ -117,8 +120,8 @@ class Contents extends Component {
           />
         }
         { addPlaylistModalShown && <AddPlaylistModal show /> }
-        {
-          selectPlaylistsToPinModalShown && <SelectPlaylistsToPinModal
+        {selectPlaylistsToPinModalShown &&
+          <SelectPlaylistsToPinModal
             show
             playlistsToPin={playlistsToPin}
             pinnedPlaylists={pinnedPlaylists}
@@ -129,6 +132,19 @@ class Contents extends Component {
             }
             loadMoreButton={loadMorePlaylistsToPinButton}
             onHide={ () => dispatch(PlaylistActions.closeSelectPlaylistsToPinModal()) }
+            {...bindActionCreators(PlaylistActions, dispatch)}
+          />
+        }
+        {reorderPinnedPlaylistsModalShown &&
+          <ReorderPinnedPlaylistsModal
+            show
+            pinnedPlaylists={pinnedPlaylists}
+            playlistIds={
+              pinnedPlaylists.map(playlist => {
+                return playlist.id
+              })
+            }
+            onHide={ () => dispatch(PlaylistActions.closeReorderPinnedPlaylistsModal()) }
             {...bindActionCreators(PlaylistActions, dispatch)}
           />
         }
@@ -176,6 +192,8 @@ export default connect(
 
     selectPlaylistsToPinModalShown: state.PlaylistReducer.selectPlaylistsToPinModalShown,
     playlistsToPin: state.PlaylistReducer.playlistsToPin,
-    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton
+    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton,
+
+    reorderPinnedPlaylistsModalShown: state.PlaylistReducer.reorderPinnedPlaylistsModalShown
   })
 )(Contents);

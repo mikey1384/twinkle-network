@@ -1,3 +1,4 @@
 export default {
-  THUMB: 'thumb'
+  THUMB: 'thumb',
+  LIST_ITEM: 'listItem'
 };

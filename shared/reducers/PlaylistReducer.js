@@ -13,7 +13,9 @@ const defaultState = {
 
   selectPlaylistsToPinModalShown: false,
   loadMorePlaylistsToPinButton: false,
-  playlistsToPin: []
+  playlistsToPin: [],
+
+  reorderPinnedPlaylistsModalShown: false
 };
 
 let defaultPlaylists,
@@ -142,6 +144,16 @@ export default function PlaylistReducer(state = defaultState, action) {
         }
       }
       return state;
+    case 'REORDER_PINNED_PL_OPEN':
+      return {
+        ...state,
+        reorderPinnedPlaylistsModalShown: true
+      }
+    case 'REORDER_PINNED_PL_CLOSE':
+      return {
+        ...state,
+        reorderPinnedPlaylistsModalShown: false
+      }
     case 'CHANGE_PL_VIDS_MODAL_OPEN':
       if (action.res.data.length > 18) {
         action.res.data.pop();
@@ -270,7 +282,10 @@ export default function PlaylistReducer(state = defaultState, action) {
         selectedModalThumbs: [],
 
         selectPlaylistsToPinModalShown: false,
-        playlistsToPin: []
+        loadMorePlaylistsToPinButton: false,
+        playlistsToPin: [],
+
+        reorderPinnedPlaylistsModalShown: false
       }
     case 'RESET_PL_MODAL_STATE':
       return {

@@ -44,6 +44,10 @@
   user-select: none;
 }
 
+.grey-color {
+	color: #b9b9b9;
+}
+
 @media (min-width: 1192px) {
 	.modal-extra-lg{
 	    min-width: 1180px !important;

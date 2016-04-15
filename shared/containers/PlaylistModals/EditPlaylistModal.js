@@ -87,7 +87,6 @@ export default class EditPlaylistModal extends Component {
         )
       }
     }
-
     return (
       <Modal
         {...this.props}
