@@ -3,8 +3,10 @@ import bodyParser from 'body-parser';
 import async from 'async';
 import passwordHash from 'password-hash';
 import crypto from 'crypto';
-import * as UserDataHelper from './helpers/UserData';
-import { pool, siteSession } from './siteConfig';
+import { userExists, isFalseClaim } from './UserHelper';
+import { fetchedVideoCodeFromURL, processedTitleString, processedString, capitalize } from './StringHelper';
+import { fetchPlaylists } from './PlaylistHelper';
+import { pool, siteSession } from '../siteConfig';
 
 const app = express();
 
@@ -23,6 +25,10 @@ app.get('/video', (req, res) => {
     'ORDER BY a.id DESC LIMIT ' + numberToLoad
   ].join('');
   pool.query(query, videoId, (err, rows) => {
+    if (!rows) {
+      res.send({error: "No Videos"});
+      return;
+    }
     res.json(rows);
   });
 });
@@ -57,44 +63,6 @@ app.post('/video', (req, res) => {
     }
     res.json({result});
   });
-
-  function fetchedVideoCodeFromURL (url) {
-		var trimmedUrl = url.split("v=")[1].split("#")[0];
-		var videoCode = trimmedUrl.split("&")[0];
-		return videoCode;
-	}
-  function processedTitleString (string) {
-  	var processedString = string
-  	.replace(/&/g, '&amp;')
-  	.replace(/</g, '&lt;')
-  	.replace(/>/g, '&gt;')
-  	.replace(/\\/g, '\\\\');
-  	return processedString;
-  }
-  function processedString (string) {
-  	var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-  	var tempString = string
-  	.replace(/&/g, '&amp;')
-  	.replace(/</g, '&lt;')
-  	.replace(/>/g, '&gt;')
-  	.replace(/\\/g, '\\\\')
-  	.replace(/\r?\n/g, '<br>')
-  	.replace(regex,"<a href=\"$1\" target=\"_blank\">$1</a>");
-  	var newString = "";
-  	while(tempString.length > 0){
-  		var position = tempString.indexOf("href=\"");
-  		if(position === -1){
-  			newString += tempString;
-  			break;
-  		}
-  		newString += tempString.substring(0, position + 6);
-  		tempString = tempString.substring(position + 6, tempString.length);
-  		if (tempString.indexOf("://") > 8 || tempString.indexOf("://") === -1) {
-  			newString += "http://";
-  		}
-  	}
-  	return newString;
-  }
 });
 
 app.delete('/video', (req, res) => {
@@ -166,67 +134,27 @@ app.post('/video/edit/title', (req, res) => {
     }
     res.json({result});
   });
-
-  function processedTitleString (string) {
-  	var processedString = string
-  	.replace(/&/g, '&amp;')
-  	.replace(/</g, '&lt;')
-  	.replace(/>/g, '&gt;')
-  	.replace(/\\/g, '\\\\');
-  	return processedString;
-  }
 })
 
 app.get('/playlist', (req, res) => {
-  var playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null;
-  var where = playlistId !== null ? 'WHERE a.id < ? ' : '';
-  var taskArray = [];
-  var playlistArrayGroup = [];
-  var query = [
+  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null;
+  const where = playlistId !== null ? 'WHERE a.id < ' + playlistId + ' ' : '';
+  const query = [
     'SELECT a.id, a.title, a.createdby AS uploaderid, b.username AS uploader ',
     'FROM vq_playlists a JOIN users b ON a.createdby = b.id ',
     where,
     'ORDER BY a.id DESC LIMIT 4'
   ].join('');
-  pool.query(query, playlistId, function (err, rows) {
-    if (!rows) return;
-    for (let i = 0; i < rows.length; i++) {
-      var TaskFactory = function (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId) {
-        this.task = function (callback) {
-          createPlaylistArrays(playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback);
-        }
-      }
-      var taskFactory = new TaskFactory(i, rows[i].id, rows[i].title, rows[i].uploader, rows[i].uploaderid);
-      taskArray.push(taskFactory.task);
+  fetchPlaylists(query, (err, result) =>{
+    if (err) {
+      console.error(err);
+      res.send({error: err});
+      return;
     }
-    async.parallel(taskArray, err => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      res.json({
-        playlists: playlistArrayGroup
-      });
+    res.json({
+      playlists: result
     });
   })
-
-  function createPlaylistArrays (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback) {
-    var query = [
-      'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
-      'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-      'WHERE a.playlistid = ?'
-    ].join('');
-    pool.query(query, playlistId, (err, rows) => {
-      playlistArrayGroup[playlistRowNumber] = {
-        playlist: rows,
-        title: playlistTitle,
-        id: playlistId,
-        uploader: uploader,
-        uploaderId: uploaderId
-      }
-      callback(null);
-    })
-  }
 })
 
 app.get('/playlist/pinned', (req, res) => {
@@ -235,48 +163,16 @@ app.get('/playlist/pinned', (req, res) => {
     'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
     'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
   ].join('');
-  let taskArray = [];
-  let playlistArrayGroup = [];
-  pool.query(query, function (err, rows) {
-    if (!rows) return;
-    for (let i = 0; i < rows.length; i++) {
-      var TaskFactory = function (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId) {
-        this.task = function (callback) {
-          createPlaylistArrays(playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback);
-        }
-      }
-      var taskFactory = new TaskFactory(i, rows[i].id, rows[i].title, rows[i].uploader, rows[i].uploaderid);
-      taskArray.push(taskFactory.task);
+  fetchPlaylists(query, (err, result) =>{
+    if (err) {
+      console.error(err);
+      res.send({error: err});
+      return;
     }
-    async.parallel(taskArray, err => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      res.json({
-        playlists: playlistArrayGroup
-      });
+    res.json({
+      playlists: result
     });
   })
-
-  function createPlaylistArrays (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback) {
-    const query = [
-      'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
-      'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-      'WHERE a.playlistid = ?'
-    ].join('');
-
-    pool.query(query, playlistId, (err, rows) => {
-      playlistArrayGroup[playlistRowNumber] = {
-        playlist: rows,
-        title: playlistTitle,
-        id: playlistId,
-        uploader: uploader,
-        uploaderId: uploaderId
-      }
-      callback(null);
-    })
-  }
 })
 
 app.get('/playlist/list', (req, res) => {
@@ -321,13 +217,12 @@ app.post('/playlist', (req, res) => {
     },
     (playlistId, uploadername, uploaderid, callback) => {
       for (let i = 0; i < videos.length; i ++) {
-        var TaskFactory = function (playlistId, videoId) {
-          this.task = function (callback) {
-            insertVideoIntoPlaylist(playlistId, videoId, callback);
-          }
-        }
-        var factory = new TaskFactory(playlistId, videos[i]);
-        taskArray.push(factory.task);
+        taskArray.push(callback => {
+          let playlistVideo = {playlistid: playlistId, videoid: videos[i]};
+          pool.query("INSERT INTO vq_playlistvideos SET ?", playlistVideo, function (err) {
+            callback(err);
+          })
+        });
       }
       async.series(taskArray, function (err) {
         const query = [
@@ -354,46 +249,6 @@ app.post('/playlist', (req, res) => {
     }
     res.json({result});
   });
-
-  function insertVideoIntoPlaylist (playlistId, videoId, callback) {
-    var playlistVideo = {playlistid: playlistId, videoid: videoId};
-    pool.query("INSERT INTO vq_playlistvideos SET ?", playlistVideo, function (err) {
-      callback(err);
-    })
-  }
-
-  function processedTitleString (string) {
-  	var processedString = string
-  	.replace(/&/g, '&amp;')
-  	.replace(/</g, '&lt;')
-  	.replace(/>/g, '&gt;')
-  	.replace(/\\/g, '\\\\');
-  	return processedString;
-  }
-  function processedString (string) {
-  	var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-  	var tempString = string
-  	.replace(/&/g, '&amp;')
-  	.replace(/</g, '&lt;')
-  	.replace(/>/g, '&gt;')
-  	.replace(/\\/g, '\\\\')
-  	.replace(/\r?\n/g, '<br>')
-  	.replace(regex,"<a href=\"$1\" target=\"_blank\">$1</a>");
-  	var newString = "";
-  	while(tempString.length > 0){
-  		var position = tempString.indexOf("href=\"");
-  		if(position === -1){
-  			newString += tempString;
-  			break;
-  		}
-  		newString += tempString.substring(0, position + 6);
-  		tempString = tempString.substring(position + 6, tempString.length);
-  		if (tempString.indexOf("://") > 8 || tempString.indexOf("://") === -1) {
-  			newString += "http://";
-  		}
-  	}
-  	return newString;
-  }
 })
 
 app.post('/playlist/pinned', (req, res) => {
@@ -458,49 +313,16 @@ app.post('/playlist/pinned', (req, res) => {
         'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
         'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
       ].join('');
-      let taskArray = [];
-      let playlistArrayGroup = [];
-      pool.query(query, function (err, rows) {
-        if (!rows) return;
-        for (let i = 0; i < rows.length; i++) {
-          var TaskFactory = function (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId) {
-            this.task = function (callback) {
-              createPlaylistArrays(playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback);
-            }
-          }
-          var taskFactory = new TaskFactory(i, rows[i].id, rows[i].title, rows[i].uploader, rows[i].uploaderid);
-          taskArray.push(taskFactory.task);
+      fetchPlaylists(query, (err, result) =>{
+        if (err) {
+          console.error(err);
+          res.send({error: err});
+          return;
         }
-        async.parallel(taskArray, err => {
-          if (err) {
-            console.error(err);
-            res.send({error: err})
-            return;
-          }
-          res.json({
-            playlists: playlistArrayGroup
-          });
+        res.json({
+          playlists: result
         });
       })
-
-      function createPlaylistArrays (playlistRowNumber, playlistId, playlistTitle, uploader, uploaderId, callback) {
-        const query = [
-          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
-          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-          'WHERE a.playlistid = ?'
-        ].join('');
-
-        pool.query(query, playlistId, (err, rows) => {
-          playlistArrayGroup[playlistRowNumber] = {
-            playlist: rows,
-            title: playlistTitle,
-            id: playlistId,
-            uploader: uploader,
-            uploaderId: uploaderId
-          }
-          callback(null);
-        })
-      }
     }
   })
 })
@@ -584,15 +406,6 @@ app.post('/playlist/edit/title', (req, res) => {
     }
     res.json({result});
   });
-
-  function processedTitleString (string) {
-  	var processedString = string
-  	.replace(/&/g, '&amp;')
-  	.replace(/</g, '&lt;')
-  	.replace(/>/g, '&gt;')
-  	.replace(/\\/g, '\\\\');
-  	return processedString;
-  }
 })
 
 app.post('/playlist/change/videos', (req, res) => {
@@ -620,13 +433,12 @@ app.post('/playlist/change/videos', (req, res) => {
     },
     (callback) => {
       for (let i = 0; i < selectedVideos.length; i ++) {
-        var TaskFactory = function (playlistId, videoId) {
-          this.task = function (callback) {
-            insertVideoIntoPlaylist(playlistId, videoId, callback);
-          }
-        }
-        var factory = new TaskFactory(playlistId, selectedVideos[i]);
-        taskArray.push(factory.task);
+        taskArray.push(callback => {
+          let playlistVideo = {playlistid: playlistId, videoid: selectedVideos[i]};
+          pool.query("INSERT INTO vq_playlistvideos SET ?", playlistVideo, function (err) {
+            callback(err);
+          })
+        });
       }
       async.series(taskArray, (err) => {
         const query = [
@@ -647,13 +459,6 @@ app.post('/playlist/change/videos', (req, res) => {
     }
     res.json({result});
   });
-
-  function insertVideoIntoPlaylist (playlistId, videoId, callback) {
-    var playlistVideo = {playlistid: playlistId, videoid: videoId};
-    pool.query("INSERT INTO vq_playlistvideos SET ?", playlistVideo, function (err) {
-      callback(err);
-    })
-  }
 })
 
 app.get('/user/session', function (req, res) {
@@ -706,7 +511,6 @@ app.get('/user/logout', function (req, res) {
 app.post('/user/login', function (req, res) {
   const { username, password } = req.body;
   const usernameCapped = username.toUpperCase();
-  const { userExists } = UserDataHelper;
   pool.query('SELECT * FROM users WHERE username = ?', usernameCapped, function (err, rows) {
     if (!err) {
       if (userExists(rows)) {
@@ -735,7 +539,6 @@ app.post('/user/login', function (req, res) {
 app.post('/user/signup', function (req, res) {
   const { isTeacher, username, firstname, lastname, email, password } = req.body;
   const realname = capitalize(firstname) + ' ' + capitalize(lastname);
-  const { userExists, isFalseClaim } = UserDataHelper;
   pool.query('SELECT * FROM users WHERE username = ?', username, (err, rows) => {
     if (!err) {
       if (userExists(rows)) {
@@ -758,10 +561,6 @@ app.post('/user/signup', function (req, res) {
       });
     }
   });
-
-  function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
 
   function saveUserData() {
     const hashedPass = passwordHash.generate(password);
