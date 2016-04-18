@@ -19,6 +19,7 @@ export default class PlaylistCarousel extends Component {
     return playlist.map(thumb => {
       return (
         <VideoThumb
+          to={`contents/videos/${thumb.videoid}`}
           key={playlist.indexOf(thumb)}
           video={{
             videocode: thumb.videocode,

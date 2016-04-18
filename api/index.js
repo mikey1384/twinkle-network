@@ -145,15 +145,13 @@ app.get('/playlist', (req, res) => {
     where,
     'ORDER BY a.id DESC LIMIT 4'
   ].join('');
-  fetchPlaylists(query, (err, result) =>{
+  fetchPlaylists(query, (err, playlists) =>{
     if (err) {
       console.error(err);
       res.send({error: err});
       return;
     }
-    res.json({
-      playlists: result
-    });
+    res.json({playlists});
   })
 })
 
@@ -163,15 +161,13 @@ app.get('/playlist/pinned', (req, res) => {
     'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
     'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
   ].join('');
-  fetchPlaylists(query, (err, result) =>{
+  fetchPlaylists(query, (err, playlists) =>{
     if (err) {
       console.error(err);
       res.send({error: err});
       return;
     }
-    res.json({
-      playlists: result
-    });
+    res.json({playlists});
   })
 })
 
@@ -313,15 +309,13 @@ app.post('/playlist/pinned', (req, res) => {
         'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
         'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
       ].join('');
-      fetchPlaylists(query, (err, result) =>{
+      fetchPlaylists(query, (err, playlists) =>{
         if (err) {
           console.error(err);
           res.send({error: err});
           return;
         }
-        res.json({
-          playlists: result
-        });
+        res.json({playlists});
       })
     }
   })

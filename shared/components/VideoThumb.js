@@ -4,6 +4,7 @@ import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ReactDOM from 'react-dom';
 import ConfirmModal from './Modals/ConfirmModal';
+import { Link } from 'react-router';
 
 export default class VideoThumb extends Component {
   state = {
@@ -74,9 +75,11 @@ export default class VideoThumb extends Component {
               menuProps={menuProps}
             />
           }
-          <img
-            src={`http://img.youtube.com/vi/${video.videocode}/0.jpg`}
-          />
+          <Link to={`/${this.props.to}`}>
+            <img
+              src={`http://img.youtube.com/vi/${video.videocode}/0.jpg`}
+            />
+          </Link>
           <div className="caption"
             style={{
               height: '8rem'
@@ -103,7 +106,7 @@ export default class VideoThumb extends Component {
                   textOverflow:'ellipsis',
                   overflow:'hidden',
                   lineHeight: 'normal'
-                }}>{ video.title }</h5>
+                }}><Link to={`/${this.props.to}`}>{ video.title }</Link></h5>
               </div>
             }
             <small style={{

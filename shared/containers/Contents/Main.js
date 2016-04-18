@@ -1,34 +1,42 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import AllVideosPanel from 'components/AllVideosPanel';
-import PlaylistsPanel from 'components/PlaylistsPanel';
-import * as VideoActions from 'actions/VideoActions';
-import * as PlaylistActions from 'actions/PlaylistActions';
-import AddVideoModal from 'components/Modals/AddVideoModal';
-import AddPlaylistModal from './PlaylistModals/AddPlaylistModal';
+import React, { Component } from 'react';
 import SelectPlaylistsToPinModal from 'components/Modals/SelectPlaylistsToPinModal';
 import ReorderPinnedPlaylistsModal from 'components/Modals/ReorderPinnedPlaylistsModal';
 import ButtonGroup from 'components/ButtonGroup';
+import AddVideoModal from 'components/Modals/AddVideoModal';
+import AllVideosPanel from 'components/AllVideosPanel';
+import PlaylistsPanel from 'components/PlaylistsPanel';
+import { bindActionCreators } from 'redux';
+import * as VideoActions from 'actions/VideoActions';
+import * as PlaylistActions from 'actions/PlaylistActions';
+import AddPlaylistModal from '../PlaylistModals/AddPlaylistModal';
+import { connect } from 'react-redux';
 
-class Contents extends Component {
-  componentWillMount() {
-    const { dispatch } = this.props;
-    const { getVideos } = VideoActions;
-    const { getPinnedPlaylists, getPlaylists } = PlaylistActions;
-    dispatch(getVideos());
-    dispatch(getPinnedPlaylists());
-    dispatch(getPlaylists());
-  }
+@connect(
+  state => ({
+    userType: state.UserReducer.userType,
+    isAdmin: state.UserReducer.isAdmin,
+    userId: state.UserReducer.userId,
 
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    const { resetVideoState } = VideoActions;
-    const { resetPlaylistState } = PlaylistActions;
-    dispatch(resetVideoState());
-    dispatch(resetPlaylistState());
-  }
+    videos: state.VideoReducer.allVideoThumbs,
+    loadMoreVideosButton: state.VideoReducer.loadMoreButton,
 
+    playlists: state.PlaylistReducer.allPlaylists,
+    loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
+
+    pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
+    loadMorePinnedPlaylists: state.PlaylistReducer.loadMorePinned,
+
+    addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
+    addVideoModalShown: state.VideoReducer.addVideoModalShown,
+
+    selectPlaylistsToPinModalShown: state.PlaylistReducer.selectPlaylistsToPinModalShown,
+    playlistsToPin: state.PlaylistReducer.playlistsToPin,
+    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton,
+
+    reorderPinnedPlaylistsModalShown: state.PlaylistReducer.reorderPinnedPlaylistsModalShown
+  })
+)
+export default class Main extends Component {
   render() {
     const {
       userType,
@@ -77,8 +85,9 @@ class Contents extends Component {
         buttonClass: 'btn-default'
       }
     ]
+
     return (
-      <div className="container-fluid">
+      <div>
         <PlaylistsPanel
           key={"pinnedPlaylists"}
           buttonGroupShown={userType === 'master'}
@@ -149,7 +158,7 @@ class Contents extends Component {
           />
         }
       </div>
-    );
+    )
   }
 
   renderPlaylistButton(buttonsArray) {
@@ -171,29 +180,3 @@ class Contents extends Component {
     dispatch(openAddPlaylistModal());
   }
 }
-
-export default connect(
-  state => ({
-    userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
-    userId: state.UserReducer.userId,
-
-    videos: state.VideoReducer.allVideoThumbs,
-    loadMoreVideosButton: state.VideoReducer.loadMoreButton,
-
-    playlists: state.PlaylistReducer.allPlaylists,
-    loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
-
-    pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
-    loadMorePinnedPlaylists: state.PlaylistReducer.loadMorePinned,
-
-    addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
-    addVideoModalShown: state.VideoReducer.addVideoModalShown,
-
-    selectPlaylistsToPinModalShown: state.PlaylistReducer.selectPlaylistsToPinModalShown,
-    playlistsToPin: state.PlaylistReducer.playlistsToPin,
-    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton,
-
-    reorderPinnedPlaylistsModalShown: state.PlaylistReducer.reorderPinnedPlaylistsModalShown
-  })
-)(Contents);

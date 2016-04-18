@@ -39,6 +39,7 @@ export default class AllVideosPanel extends Component {
               const editable = this.props.userId == video.uploaderid ? true : false;
               return (
                 <VideoThumb
+                  to={`contents/videos/${video.id}`}
                   size="col-sm-3"
                   key={video.id}
                   arrayNumber={videos.indexOf(video)}
