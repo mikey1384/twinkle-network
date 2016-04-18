@@ -3,18 +3,12 @@ import React from 'react';
 import { renderToString } from 'react-dom/server'
 import { RouterContext, match } from 'react-router';
 import createLocation from 'history/lib/createLocation';
-import routes from 'routes';
 import { Provider } from 'react-redux';
-import * as reducers from 'reducers';
-import promiseMiddleware from 'lib/promiseMiddleware';
 import fetchComponentData from 'lib/fetchComponentData';
-import { createStore,
-         combineReducers,
-         applyMiddleware,
-         compose } from 'redux';
 import path from 'path';
 import session from 'client-sessions';
 import { siteSession } from './siteConfig';
+import { routes, store } from 'Root';
 
 const app = express();
 
@@ -28,13 +22,6 @@ app.use(siteSession());
 app.use((req, res) => {
   global.SESSION = req.session;
   const location = createLocation(req.url);
-  const reducer = combineReducers(reducers);
-  const store = createStore(
-    reducer,
-    compose(
-      applyMiddleware(promiseMiddleware)
-    )
-  )
 
   match({ routes, location }, (err, redirectLocation, renderProps) => {
     if(err) {

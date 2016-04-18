@@ -53,6 +53,20 @@ export function closeAddVideoModal() {
   }
 }
 
+export function loadVideoPage(params) {
+  return {
+    params,
+    promise: request.get(`${API_URL}/loadPage?videoId=${params.videoId}`),
+    type: 'LOAD_VIDEO_PAGE'
+  }
+}
+
+export function resetVideoPage() {
+  return {
+    type: 'RESET_VIDEO_PAGE'
+  }
+}
+
 export function resetVideoState() {
   return {
     type: 'RESET_VID_STATE'

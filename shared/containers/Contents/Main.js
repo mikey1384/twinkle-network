@@ -36,6 +36,7 @@ import { connect } from 'react-redux';
     reorderPinnedPlaylistsModalShown: state.PlaylistReducer.reorderPinnedPlaylistsModalShown
   })
 )
+
 export default class Main extends Component {
   render() {
     const {

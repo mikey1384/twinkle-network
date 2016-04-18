@@ -3,6 +3,12 @@ const defaultState = {
   loadMoreButton: false,
   allVideosLoaded: false,
   addVideoModalShown: false,
+  videoPage: {
+    title: null,
+    description: null,
+    videocode: null,
+    uploader: null
+  }
 };
 
 export default function VideoReducer(state = defaultState, action) {
@@ -88,6 +94,26 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         addVideoModalShown: false
       };
+    case 'LOAD_VIDEO_PAGE':
+      if (action.res.data.error) {
+        console.error(action.res.data.error);
+        return state;
+      }
+      const videoPageVariables = { ...action.res.data };
+      return {
+        ...state,
+        videoPage: videoPageVariables
+      }
+    case 'RESET_VIDEO_PAGE':
+      return {
+        ...state,
+        videoPage: {
+          title: null,
+          description: null,
+          videocode: null,
+          uploader: null
+        }
+      }
     case 'RESET_VID_STATE':
       return {
         ...state,

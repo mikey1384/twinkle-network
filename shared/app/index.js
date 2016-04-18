@@ -5,12 +5,12 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 import { getVideos } from 'actions/VideoActions';
 import { getPinnedPlaylists, getPlaylists } from 'actions/PlaylistActions';
-import * as UserActions from 'actions/UserActions';
+import { initSession } from 'actions/UserActions';
 
 
-class App extends React.Component {
+export default class App extends React.Component {
   static needs = [
-    UserActions.initSession,
+    initSession,
     getVideos,
     getPinnedPlaylists,
     getPlaylists
@@ -33,5 +33,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default App;

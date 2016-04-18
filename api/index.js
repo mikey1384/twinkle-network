@@ -136,6 +136,27 @@ app.post('/video/edit/title', (req, res) => {
   });
 })
 
+app.get('/video/loadPage', (req, res) => {
+  const {videoId} = req.query;
+  pool.query('SELECT * FROM vq_videos WHERE id = ?', videoId, (err, rows) => {
+    if (err) {
+      res.send({error: err});
+      return;
+    }
+    if (rows) {
+      const { title, description, videocode, uploader } = rows[0];
+      res.json({
+        title,
+        description,
+        videocode,
+        uploader
+      })
+    } else {
+      res.send({error: 'Video doesn\'t exist'})
+    }
+  })
+})
+
 app.get('/playlist', (req, res) => {
   const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null;
   const where = playlistId !== null ? 'WHERE a.id < ' + playlistId + ' ' : '';
