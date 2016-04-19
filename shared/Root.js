@@ -40,7 +40,7 @@ export const routes = (
     <Route path="/contents" component={Contents}>
       <IndexRoute component={ContentsMain}/>
       <Route
-        path="/contents/videos/:videoId"
+        path="videos/:videoId"
         component={VideoPage}
         onEnter={onVideoPageEnter}
       />
