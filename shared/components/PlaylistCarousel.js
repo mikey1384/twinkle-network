@@ -131,7 +131,12 @@ export default class PlaylistCarousel extends Component {
             />
           }
         </div>
-        <Carousel slidesToShow={5} slidesToScroll={5} cellSpacing={20}>
+        <Carousel
+          slidesToShow={5}
+          slidesToScroll={5}
+          cellSpacing={20}
+          dragging={false}
+        >
           { this.renderThumbs() }
         </Carousel>
         {editPlaylistModalShown &&

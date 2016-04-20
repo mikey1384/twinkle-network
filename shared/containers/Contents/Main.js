@@ -165,7 +165,6 @@ export default class Main extends Component {
   renderPlaylistButton(buttonsArray) {
     return (
       <ButtonGroup
-        className='btn-group'
         style={{
           marginLeft: 'auto'
         }}

@@ -48,6 +48,18 @@
 	color: #b9b9b9;
 }
 
+.video-container-fixed-left {
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	z-index: 2000;
+}
+
+.video-fixed-left {
+	width: 28.8rem;
+	height: 16.2rem;
+}
+
 @media (min-width: 1192px) {
 	.modal-extra-lg{
 	    min-width: 1180px !important;
