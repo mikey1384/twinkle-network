@@ -7,7 +7,8 @@ const defaultState = {
     title: null,
     description: null,
     videocode: null,
-    uploader: null
+    uploader: null,
+    questions: []
   }
 };
 
@@ -111,7 +112,8 @@ export default function VideoReducer(state = defaultState, action) {
           title: null,
           description: null,
           videocode: null,
-          uploader: null
+          uploader: null,
+          questions: []
         }
       }
     case 'RESET_VID_STATE':

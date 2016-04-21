@@ -138,7 +138,7 @@ app.post('/video/edit/title', (req, res) => {
 
 app.get('/video/loadPage', (req, res) => {
   const {videoId} = req.query;
-  const query = [
+  let query = [
     'SELECT a.id AS videoId, a.title, a.description, a.videocode, a.uploader AS uploaderId, b.username AS uploaderName ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
     'WHERE a.id = ?'
@@ -150,13 +150,31 @@ app.get('/video/loadPage', (req, res) => {
     }
     if (rows) {
       const { videoId, title, description, videocode, uploaderId, uploaderName } = rows[0];
-      res.json({
-
-        title,
-        description,
-        videocode,
-        uploaderId,
-        uploaderName
+      pool.query('SELECT * FROM vq_questions WHERE videoid = ? AND isdraft = 0', videoId, (err, rows) => {
+        let questions = [];
+        if (rows) {
+          questions = rows.map(row => {
+            return {
+              title: row.questiontitle,
+              choices: [
+                row.choice1,
+                row.choice2,
+                row.choice3,
+                row.choice4,
+                row.choice5
+              ],
+              correctChoice: row.correctchoice
+            }
+          })
+        }
+        res.json({
+          title,
+          description,
+          videocode,
+          uploaderId,
+          uploaderName,
+          questions
+        })
       })
     } else {
       res.send({error: 'Video doesn\'t exist'})

@@ -16,6 +16,7 @@ export default class ButtonGroup extends Component {
                 type="button"
                 className={`btn ${button.buttonClass}`}
                 onClick={ button.onClick }
+                disabled={ button.disabled }
               >
                 { button.label }
               </button>

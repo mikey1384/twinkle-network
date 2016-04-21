@@ -1,11 +1,10 @@
-'use strict';
-
 import React from 'react';
 import ReactDom from 'react-dom';
 import tweenState from 'kw-react-tween-state';
 import decorators from './decorators';
 import assign from 'object-assign';
 import ExecutionEnvironment from 'exenv';
+import ButtonGroup from 'components/ButtonGroup';
 
 const addEvent = function(elem, type, eventHandle) {
   if (elem === null || typeof (elem) === 'undefined') {
@@ -37,50 +36,6 @@ const Carousel = React.createClass({
   displayName: 'Carousel',
 
   mixins: [tweenState.Mixin],
-
-  propTypes: {
-    afterSlide: React.PropTypes.func,
-    beforeSlide: React.PropTypes.func,
-    cellAlign: React.PropTypes.oneOf(['left', 'center', 'right']),
-    cellSpacing: React.PropTypes.number,
-    data: React.PropTypes.func,
-    decorators: React.PropTypes.arrayOf(
-      React.PropTypes.shape({
-        component: React.PropTypes.func,
-        position: React.PropTypes.oneOf([
-          'TopLeft',
-          'TopCenter',
-          'TopRight',
-          'CenterLeft',
-          'CenterCenter',
-          'CenterRight',
-          'BottomLeft',
-          'BottomCenter',
-          'BottomRight'
-        ]),
-        style: React.PropTypes.object
-      })
-    ),
-    dragging: React.PropTypes.bool,
-    easing: React.PropTypes.string,
-    edgeEasing: React.PropTypes.string,
-    framePadding: React.PropTypes.string,
-    initialSlideHeight: React.PropTypes.number,
-    initialSlideWidth: React.PropTypes.number,
-    slideIndex: React.PropTypes.number,
-    slidesToShow: React.PropTypes.number,
-    slidesToScroll: React.PropTypes.oneOfType([
-      React.PropTypes.number,
-      React.PropTypes.oneOf(['auto'])
-    ]),
-    slideWidth: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number
-    ]),
-    speed: React.PropTypes.number,
-    vertical: React.PropTypes.bool,
-    width: React.PropTypes.string
-  },
 
   getDefaultProps() {
     return {
@@ -144,30 +99,41 @@ const Carousel = React.createClass({
   render() {
     var self = this;
     var children = React.Children.count(this.props.children) > 1 ? this.formatChildren(this.props.children) : this.props.children;
+    const slideFraction = (this.state.currentSlide + 1)/this.state.slideCount;
     return (
       <div className={['slider', this.props.className || ''].join(' ')} ref="slider" style={assign(this.getSliderStyles(), this.props.style || {})}>
-        {this.props.decorators ?
-          this.props.decorators.map(function(Decorator, index) {
-            return (
-              <div
-                style={assign(self.getDecoratorStyles(Decorator.position), Decorator.style || {})}
-                className={'slider-decorator-' + index}
-                key={index}>
-                <Decorator.component
-                  currentSlide={self.state.currentSlide}
-                  slideCount={self.state.slideCount}
-                  frameWidth={self.state.frameWidth}
-                  slideWidth={self.state.slideWidth}
-                  slidesToScroll={self.state.slidesToScroll}
-                  cellSpacing={self.props.cellSpacing}
-                  slidesToShow={self.props.slidesToShow}
-                  nextSlide={self.nextSlide}
-                  previousSlide={self.previousSlide}
-                  goToSlide={self.goToSlide} />
-              </div>
-            )
-          })
-        : null}
+        <div
+          className="text-center"
+        >
+          <ButtonGroup
+            buttons={[
+              {
+                label: 'Prev',
+                onClick: this.previousSlide,
+                buttonClass: 'btn-default',
+                disabled: this.state.currentSlide === 0 ? true : false
+              },
+              {
+                label: this.state.currentSlide + 1 === this.state.slideCount ? 'Finish' : 'Next',
+                onClick: this.nextSlide,
+                buttonClass: 'btn-default',
+              }
+            ]}
+          />
+        </div>
+        <div
+          className="progress"
+          style={{marginTop: '2rem'}}
+        >
+          <div
+            className="progress-bar progress-bar-success"
+            role="progressbar"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style={{width: `${slideFraction*100}%`}}
+          >{`${this.state.currentSlide + 1}/${this.state.slideCount}`}</div>
+        </div>
         <div className="slider-frame"
           ref="frame"
           style={this.getFrameStyles()}

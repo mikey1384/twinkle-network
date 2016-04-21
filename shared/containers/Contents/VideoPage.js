@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { loadVideoPage, resetVideoPage } from 'actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
-import ButtonGroup from 'components/ButtonGroup';
 
 @connect(
   state => ({
@@ -16,7 +15,8 @@ import ButtonGroup from 'components/ButtonGroup';
 )
 export default class VideoPage extends Component {
   state = {
-    watchTabActive: true
+    watchTabActive: true,
+    currentSlide: 0
   }
 
   componentWillUnmount() {
@@ -38,51 +38,6 @@ export default class VideoPage extends Component {
     const tabPaneClassName = watchTabActive ?
     'container col-sm-8 col-sm-offset-2' :
     'container';
-    const CarouselDecorators = [{
-      component: React.createClass({
-        render() {
-          return (
-            <div
-              className="text-center"
-            >
-              <ButtonGroup
-                buttons={[
-                  {
-                    label: 'Prev',
-                    onClick: this.props.previousSlide,
-                    buttonClass: 'btn-default'
-                  },
-                  {
-                    label: 'Next',
-                    onClick: this.props.nextSlide,
-                    buttonClass: 'btn-default'
-                  }
-                ]}
-              />
-            </div>
-          )
-        }
-      }),
-      position: 'Relative'
-    }];
-
-    const choices = [
-      {
-        label: 'option 1'
-      },
-      {
-        label: 'option 2'
-      },
-      {
-        label: 'option 3'
-      },
-      {
-        label: 'option 4'
-      },
-      {
-        label: 'option 5'
-      }
-    ]
 
     return (
       <div className="container-fluid">
@@ -102,7 +57,7 @@ export default class VideoPage extends Component {
         </div>
         <div className="row container">
           <h2>Description</h2>
-          <p>{this.props.description}</p>
+          <p dangerouslySetInnerHTML={{__html: this.props.description}}/>
         </div>
         <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
           <div className="row container-fluid">
@@ -144,34 +99,20 @@ export default class VideoPage extends Component {
               </iframe>
             </div>
             {
-              !watchTabActive &&
+              !watchTabActive && this.props.questions.length > 0 &&
               <Carousel
                 slidesToShow={1}
                 slidesToScroll={1}
-                decorators={CarouselDecorators}
+                slideIndex={this.state.currentSlide}
                 dragging={false}
+                afterSlide={this.onSlide.bind(this)}
               >
-                <div>
-                  <div>
-                    <h3>Question 1</h3>
-                  </div>
-                  <CheckListGroup
-                    listItems={choices}
-                    inputType="radio"
-                    name="questions"
-                  />
-                </div>
-                <div>
-                  <div>
-                    <h3>Question 2</h3>
-                  </div>
-                  <CheckListGroup
-                    listItems={choices}
-                    inputType="radio"
-                    name="questions"
-                  />
-                </div>
+                {this.renderSlides()}
               </Carousel>
+            }
+            {
+              !watchTabActive && this.props.questions.length === 0 &&
+              <div className="text-center">No Questions</div>
             }
           </div>
         </div>
@@ -205,5 +146,41 @@ export default class VideoPage extends Component {
         </div>
       </div>
     )
+  }
+
+  renderSlides() {
+    const {questions} = this.props;
+    return questions.map(question => {
+      const filteredChoices = question.choices.filter(choice => {
+        return choice === null ? false : true;
+      })
+      const listItems = filteredChoices.map(choice => {
+        return {
+          label: choice,
+          checked: false
+        }
+      })
+      return (
+        <div key={questions.indexOf(question)}>
+          <div>
+            <h3 style={{marginTop: '1rem'}}>{question.title}</h3>
+          </div>
+          <CheckListGroup
+            listItems={listItems}
+            inputType="radio"
+            name="questions"
+            onSelect={this.onSelect.bind(this)}
+          />
+        </div>
+      )
+    })
+  }
+
+  onSlide(index) {
+    this.setState({currentSlide: index})
+  }
+
+  onSelect() {
+    console.log("selected")
   }
 }

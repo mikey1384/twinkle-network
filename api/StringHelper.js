@@ -38,6 +38,13 @@ export const processedString = string => {
   return newString;
 }
 
+export const cleanString = (string) => {
+	var regexBr = /<br\s*[\/]?>/gi;
+	var regexAnchor = /<a[^>]*>|<\/a>/g;
+	var cleanedString = string.replace(regexBr, "\n").replace(regexAnchor, "");
+	return cleanedString;
+}
+
 export const capitalize = string => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
