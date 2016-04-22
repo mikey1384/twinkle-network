@@ -205,7 +205,7 @@ export default class VideoPage extends Component {
     })
     let numberCorrect = 0;
     for (let i = 0; i < userAnswers.length; i++) {
-      if (userAnswers[i] === correctAnswers[i]) numberCorrect++;
+      if (userAnswers[i] + 1 === correctAnswers[i]) numberCorrect++;
     }
     return numberCorrect;
   }
