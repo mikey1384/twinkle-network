@@ -14,10 +14,8 @@ class SmallDropdownButton extends Component {
   }
   renderMenu() {
     const { menuProps } = this.props;
-    let propIndex = 0;
-    return menuProps.map(prop => {
+    return menuProps.map((prop, index) => {
       if (prop.separator) {
-        let index = propIndex++;
         return (
           <li
             key={index}
@@ -25,7 +23,6 @@ class SmallDropdownButton extends Component {
             className="divider"></li>
         )
       }
-      let index = propIndex++;
       return (
         <li
           onClick={() => this.handleMenuClick(prop.onClick)}

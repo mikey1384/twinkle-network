@@ -34,7 +34,7 @@ class Header extends Component {
   }
 
   render () {
-    const { signinModalShown, loggedIn, username, usertype, isAdmin, userId, dispatch } = this.props;
+    const { signinModalShown, loggedIn, username, userType, isAdmin, userId, dispatch } = this.props;
     const { initSession, checkSession, openSigninModal, closeSigninModal } = UserActions;
     const NavLink = activeComponent('li')
     return (
@@ -85,7 +85,7 @@ export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
     username: state.UserReducer.username,
-    usertype: state.UserReducer.usertype,
+    userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
     signinModalShown: state.UserReducer.signinModalShown

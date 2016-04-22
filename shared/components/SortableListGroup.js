@@ -6,15 +6,13 @@ import SortableListItem from './SortableListItem';
 @DragDropContext(HTML5Backend)
 export default class SortableListGroup extends Component {
   render() {
-    let itemIndex = 0;
     return (
       <ul
         className="list-group unselectable"
         style={{cursor: 'pointer'}}
       >
         {
-          this.props.listItems.map(item => {
-            const index = itemIndex++;
+          this.props.listItems.map((item, index) => {
             return (
               <SortableListItem
                 key={index}

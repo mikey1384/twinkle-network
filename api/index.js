@@ -526,7 +526,10 @@ app.post('/user/session', function (req, res) {
   const session = req.body.session.sessioncode;
   if (typeof session !== 'undefined') {
     pool.query("SELECT * FROM users WHERE sessioncode = ?", session, (err, rows) => {
-      if (!rows) return;
+      if (!rows) {
+        res.json({loggedIn: false});
+        return;
+      };
       if (rows.length > 0) {
         res.json({
           loggedIn: true,

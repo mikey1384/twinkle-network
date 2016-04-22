@@ -14,43 +14,18 @@ function isAdmin (userType) {
 }
 
 export default function UserReducer(state = defaultState, action) {
-  const data = action.res ? action.res.data : null;
   switch (action.type) {
     case 'FETCH_SESSION':
-    if (data.loggedIn) {
+    if (action.res.data.loggedIn) {
       return {
         ...state,
         loggedIn: true,
-        username: data.username,
-        userType: data.usertype,
-        isAdmin: isAdmin(data.usertype),
-        userId: data.userId
+        username: action.res.data.username,
+        userType: action.res.data.usertype,
+        isAdmin: isAdmin(action.res.data.usertype),
+        userId: action.res.data.userId
       }
     } else {
-      return {
-        ...state,
-        loggedIn: false
-      }
-    }
-    case 'SIGNIN_LOGIN':
-    if (data.result === 'success') {
-      return {
-        ...state,
-        loggedIn: true,
-        username: data.username,
-        userType: data.usertype,
-        isAdmin: isAdmin(data.usertype),
-        userId: data.userId,
-        signinModalShown: false
-      }
-    } else {
-      return {
-        ...state,
-        loginError: data.result
-      }
-    }
-    case 'SIGNIN_LOGOUT':
-    if (data.result === 'success') {
       return {
         ...state,
         loggedIn: false,
@@ -59,24 +34,48 @@ export default function UserReducer(state = defaultState, action) {
         isAdmin: false,
         userId: null
       }
-    } else {
-      return state;
     }
-    case 'SIGNIN_SIGNUP':
-    if (data.result === 'success') {
+    case 'SIGNIN_LOGIN':
+    if (action.res.data.result === 'success') {
       return {
         ...state,
         loggedIn: true,
-        username: data.username,
-        userType: data.usertype,
-        isAdmin: isAdmin(data.usertype),
-        userId: data.userId,
+        username: action.res.data.username,
+        userType: action.res.data.usertype,
+        isAdmin: isAdmin(action.res.data.usertype),
+        userId: action.res.data.userId,
         signinModalShown: false
       }
     } else {
       return {
         ...state,
-        signupError: data.result
+        loginError: action.res.data.result
+      }
+    }
+    case 'SIGNIN_LOGOUT':
+    return {
+      ...state,
+      loggedIn: false,
+      username: null,
+      userType: null,
+      isAdmin: false,
+      userId: null
+    }
+    case 'SIGNIN_SIGNUP':
+    if (action.res.data.result === 'success') {
+      return {
+        ...state,
+        loggedIn: true,
+        username: action.res.data.username,
+        userType: action.res.data.usertype,
+        isAdmin: isAdmin(action.res.data.usertype),
+        userId: action.res.data.userId,
+        signinModalShown: false
+      }
+    } else {
+      return {
+        ...state,
+        signupError: action.res.data.result
       }
     };
     case 'SIGNIN_OPEN':

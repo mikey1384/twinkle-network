@@ -21,11 +21,8 @@ export default function(ComposedComponent) {
 
     render () {
       const { isAdmin } = this.props;
-      if (isAdmin) {
-        return <ComposedComponent {...this.props} />
-      } else {
-        return <div></div>
-      }
+      return isAdmin ?
+      <ComposedComponent {...this.props} /> : null
     }
   }
 
