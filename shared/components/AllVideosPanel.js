@@ -17,6 +17,7 @@ export default class AllVideosPanel extends Component {
       const lastId = last(videos) ? last(videos).id : 0;
       getMoreVideos(lastId);
     }
+    let videoIndex = 0;
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -36,13 +37,14 @@ export default class AllVideosPanel extends Component {
         <div className="panel-body">
           {
             videos.map(video => {
+              const index = videoIndex++;
               const editable = this.props.userId == video.uploaderid ? true : false;
               return (
                 <VideoThumb
                   to={`contents/videos/${video.id}`}
                   size="col-sm-3"
                   key={video.id}
-                  arrayNumber={videos.indexOf(video)}
+                  arrayNumber={index}
                   editable={editable}
                   video={video}
                   lastVideoId={last(videos) ? last(videos).id : 0}

@@ -3,7 +3,6 @@ import Carousel from 'nuka-carousel';
 import VideoThumb from './VideoThumb';
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
-import { editPlaylistTitle } from 'actions/PlaylistActions';
 import EditPlaylistModal from 'containers/PlaylistModals/EditPlaylistModal';
 import ConfirmModal from './Modals/ConfirmModal';
 
@@ -16,11 +15,13 @@ export default class PlaylistCarousel extends Component {
 
   renderThumbs () {
     const { playlist } = this.props;
+    let thumbIndex = 0;
     return playlist.map(thumb => {
+      const index = thumbIndex++;
       return (
         <VideoThumb
           to={`contents/videos/${thumb.videoid}`}
-          key={playlist.indexOf(thumb)}
+          key={index}
           video={{
             videocode: thumb.videocode,
             title: thumb.video_title,
@@ -144,7 +145,7 @@ export default class PlaylistCarousel extends Component {
             show={true}
             selectedVideos={selectedVideos}
             playlistId={id}
-            onHide={ () => this.setState({editPlaylistModalShown: false})}
+            onHide={ this.onEditPlaylistHide.bind(this) }
           />
         }
         {deleteConfirmModalShown &&
@@ -157,5 +158,10 @@ export default class PlaylistCarousel extends Component {
         }
       </div>
     )
+  }
+
+  onEditPlaylistHide() {
+    this.props.resetPlaylistState();
+    this.setState({editPlaylistModalShown: false});
   }
 }

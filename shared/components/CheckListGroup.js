@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 export default class ListGroup extends Component {
   render() {
     const { listItems, inputType, name, onSelect } = this.props;
+    let listItemIndex = 0;
     return (
       <div
         className="row container-fluid unselectable"
@@ -10,7 +11,7 @@ export default class ListGroup extends Component {
       >
         {
           listItems.map(listItem => {
-            const index = listItems.indexOf(listItem);
+            const index = listItemIndex++;
             let leftStyle = {
               borderTopLeftRadius: '0px',
               borderBottomLeftRadius: '0px',

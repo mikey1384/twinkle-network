@@ -16,7 +16,8 @@ import CheckListGroup from 'components/CheckListGroup';
 export default class VideoPage extends Component {
   state = {
     watchTabActive: true,
-    currentSlide: 0
+    currentSlide: 0,
+    userAnswers: []
   }
 
   componentWillUnmount() {
@@ -106,13 +107,19 @@ export default class VideoPage extends Component {
                 slideIndex={this.state.currentSlide}
                 dragging={false}
                 afterSlide={this.onSlide.bind(this)}
+                onFinish={this.onFinish.bind(this)}
               >
                 {this.renderSlides()}
               </Carousel>
             }
             {
               !watchTabActive && this.props.questions.length === 0 &&
-              <div className="text-center">No Questions</div>
+              <div className="text-center">
+                <p>There are no questions yet.</p>
+                <button className="btn btn-default"
+                  style={{marginTop: '1em'}}
+                >Add Questions</button>
+              </div>
             }
           </div>
         </div>
@@ -150,18 +157,23 @@ export default class VideoPage extends Component {
 
   renderSlides() {
     const {questions} = this.props;
+    const {currentSlide, userAnswers} = this.state;
+    let questionIndex = 0;
     return questions.map(question => {
       const filteredChoices = question.choices.filter(choice => {
         return choice === null ? false : true;
       })
+      let isCurrentSlide = questionIndex++ === currentSlide ? true : false;
+      let choiceIndex = 0;
       const listItems = filteredChoices.map(choice => {
+        let isSelectedChoice = choiceIndex++ === userAnswers[currentSlide] ? true : false;
         return {
           label: choice,
-          checked: false
+          checked: isCurrentSlide && isSelectedChoice ? true : false
         }
       })
       return (
-        <div key={questions.indexOf(question)}>
+        <div key={questionIndex}>
           <div>
             <h3 style={{marginTop: '1rem'}}>{question.title}</h3>
           </div>
@@ -180,7 +192,15 @@ export default class VideoPage extends Component {
     this.setState({currentSlide: index})
   }
 
-  onSelect() {
-    console.log("selected")
+  onFinish() {
+    console.log("finished");
+  }
+
+  onSelect(index) {
+    let userAnswers = this.state.userAnswers;
+    userAnswers[this.state.currentSlide] = index;
+    this.setState({userAnswers}, () => {
+      console.log(this.state.userAnswers)
+    })
   }
 }

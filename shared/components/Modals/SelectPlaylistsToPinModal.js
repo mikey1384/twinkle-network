@@ -145,8 +145,7 @@ export default class SelectPlaylistsToPinModal extends Component {
       newSelectedPlaylists = [playlistId].concat(this.state.selectedPlaylists);
     } else {
       newSelectedPlaylists = this.state.selectedPlaylists.filter(id => {
-        if (id == playlistId) return false;
-        return true;
+        return id == playlistId ? false : true;
       })
     }
     this.setState({selectedPlaylists: newSelectedPlaylists});
@@ -154,11 +153,9 @@ export default class SelectPlaylistsToPinModal extends Component {
 
   onDeselect(index) {
     const { selectedPlaylists } = this.state;
+    let playlistIndex = 0;
     const newSelectedPlaylists = selectedPlaylists.filter(playlist => {
-      if (selectedPlaylists.indexOf(playlist) === index) {
-        return false;
-      }
-      return true;
+      return playlistIndex++ === index ? false : true;
     })
     this.setState({selectedPlaylists: newSelectedPlaylists});
   }
