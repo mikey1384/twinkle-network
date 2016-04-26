@@ -9,14 +9,14 @@ const defaultState = {
 export default function VideoReducer(state = defaultState, action) {
   switch(action.type) {
     case 'GET_VIDEOS':
-      if (action.res.data.error) {
-        console.error(action.res.data.error);
+      if (action.videos.error) {
+        console.error(action.videos.error);
         return state;
       }
       let loadMoreButton = false;
       let allVideosLoaded = false;
-      if (action.res.data.length > 12) {
-        action.res.data.pop();
+      if (action.videos.length > 12) {
+        action.videos.pop();
         loadMoreButton = true;
       } else {
         allVideosLoaded = true;
@@ -24,14 +24,14 @@ export default function VideoReducer(state = defaultState, action) {
       if (action.initialRun) {
         return {
           ...state,
-          allVideoThumbs: action.res.data,
+          allVideoThumbs: action.videos,
           loadMoreButton,
           allVideosLoaded
         }
       } else {
         return {
           ...state,
-          allVideoThumbs: state.allVideoThumbs.concat(action.res.data),
+          allVideoThumbs: state.allVideoThumbs.concat(action.videos),
           loadMoreButton,
           allVideosLoaded
         }

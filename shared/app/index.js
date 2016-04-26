@@ -3,18 +3,12 @@ import ReactDOM from 'react-dom';
 import Header from 'containers/Header';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-
-import { getVideos } from 'actions/VideoActions';
-import { getPinnedPlaylists, getPlaylists } from 'actions/PlaylistActions';
 import { initSession } from 'actions/UserActions';
 
 
 export default class App extends React.Component {
   static needs = [
-    initSession,
-    getVideos,
-    getPinnedPlaylists,
-    getPlaylists
+    initSession
   ];
 
   componentDidUpdate() {

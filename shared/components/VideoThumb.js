@@ -63,7 +63,6 @@ export default class VideoThumb extends Component {
     return (
       <div
         className={size}
-        key={ video.id }
       >
         <div
           className="thumbnail"

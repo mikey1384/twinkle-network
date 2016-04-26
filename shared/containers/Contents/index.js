@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { getVideos, resetVideoState } from 'actions/VideoActions';
-import { getPinnedPlaylists, getPlaylists, resetPlaylistState } from 'actions/PlaylistActions';
+import { getInitialVideos, resetVideoState } from 'actions/VideoActions';
+import { getAllPlaylists, resetPlaylistState } from 'actions/PlaylistActions';
 import { connect } from 'react-redux';
 
 @connect()
 export default class Contents extends Component {
   componentWillMount() {
     const { dispatch } = this.props;
-    dispatch(getVideos());
-    dispatch(getPinnedPlaylists());
-    dispatch(getPlaylists());
+    dispatch(getInitialVideos());
+    dispatch(getAllPlaylists());
   }
 
   componentWillUnmount() {

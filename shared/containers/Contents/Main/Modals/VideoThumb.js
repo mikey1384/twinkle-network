@@ -6,7 +6,6 @@ class VideoThumb extends Component {
     return (
       <div
         className="col-sm-2"
-        key={ video.id }
       >
         <div
           className={`thumbnail ${selected && 'thumbnail-selected'}`}

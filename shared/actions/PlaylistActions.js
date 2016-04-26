@@ -1,13 +1,14 @@
 import request from 'axios';
 import {URL} from './URL';
+import async from 'async';
 
 const API_URL = `${URL}/api/playlist`;
 
-export function getPlaylists() {
+export function getPlaylists(data, initialRun) {
   return {
     type: 'GET_PLAYLISTS',
-    initialRun: true,
-    promise: request.get(`${API_URL}`)
+    initialRun,
+    data
   }
 }
 
@@ -18,11 +19,32 @@ export function getMorePlaylists(playlistId) {
   }
 }
 
-export function getPinnedPlaylists() {
+export function getPinnedPlaylists(data) {
   return {
     type: 'GET_PINNED_PLAYLISTS',
-    promise: request.get(`${API_URL}/pinned`)
+    data
   }
+}
+
+export function getAllPlaylists() {
+  return dispatch => {
+    async.parallel({
+      pinned: callback => {
+        request.get(`${API_URL}/pinned`).then(
+          response => callback(null, response.data)
+        )
+      },
+      all: callback => {
+        request.get(`${API_URL}`).then(
+          response => callback(null, response.data)
+        )
+      }
+    },
+    (err, results) => {
+      dispatch(getPinnedPlaylists(results.pinned));
+      dispatch(getPlaylists(results.all, true));
+    });
+  };
 }
 
 export function getVideosForModal() {

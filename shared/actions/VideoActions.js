@@ -3,19 +3,28 @@ import {URL} from './URL';
 
 const API_URL = `${URL}/api/video`;
 
-export function getVideos() {
+export function getVideos(videos, initialRun) {
   return {
     type: 'GET_VIDEOS',
-    initialRun: true,
-    promise: request.get(`${API_URL}`)
+    initialRun,
+    videos: videos
   }
 }
 
+export function getInitialVideos() {
+  return dispatch => {
+    request.get(`${API_URL}`).then(
+      response => dispatch(getVideos(response.data, true))
+    );
+  };
+}
+
 export function getMoreVideos(videoId) {
-  return {
-    type: 'GET_VIDEOS',
-    promise: request.get(`${API_URL}?videoId=${videoId}`)
-  }
+  return dispatch => {
+    request.get(`${API_URL}?videoId=${videoId}`).then(
+      response => dispatch(getVideos(response.data, false))
+    );
+  };
 }
 
 export function uploadVideo(params) {

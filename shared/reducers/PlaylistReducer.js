@@ -27,31 +27,32 @@ export default function PlaylistReducer(state = defaultState, action) {
   let loadMorePlaylistsToPinButton = false;
   switch(action.type) {
     case 'GET_PLAYLISTS':
-      if (action.res.data.error) {
-        console.error(action.res.data.error);
+      if (action.data.error) {
+        console.error(action.data.error);
         return state;
       }
       let loadMoreButton = false;
-      if (action.res.data.playlists.length > 3) {
-        action.res.data.playlists.pop();
+      if (action.data.playlists.length > 3) {
+        action.data.playlists.pop();
         loadMoreButton = true;
       }
       if (action.initialRun) {
-        defaultPlaylists = action.res.data.playlists;
+        defaultPlaylists = action.data.playlists;
         return {
           ...state,
           allPlaylists: defaultPlaylists,
           loadMoreButton
         }
       } else {
+        console.log("not inital");
         return {
           ...state,
-          allPlaylists: state.allPlaylists.concat(action.res.data.playlists),
+          allPlaylists: state.allPlaylists.concat(action.data.playlists),
           loadMoreButton
         };
       }
     case 'GET_PINNED_PLAYLISTS':
-      defaultPinnedPlaylists = action.res.data.playlists;
+      defaultPinnedPlaylists = action.data.playlists;
       return {
         ...state,
         pinnedPlaylists: defaultPinnedPlaylists

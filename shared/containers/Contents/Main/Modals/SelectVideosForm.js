@@ -12,10 +12,10 @@ export default class SelectVideosForm extends Component {
       loadMoreVideos
     } = this.props;
 
-    const formVideos = videos.map(video => {
+    const formVideos = videos.map((video, index) => {
       return (
         <VideoThumb
-          key={video.id}
+          key={index}
           video={video}
           selectable={true}
           selected={

@@ -56,6 +56,7 @@
     "react-tween-state": "^0.1.4",
     "redux": "^3.0.5",
     "redux-form": "^5.0.1",
+    "redux-thunk": "^2.0.1",
     "socket.io": "^1.4.5",
     "webpack": "^1.12.9"
   },
