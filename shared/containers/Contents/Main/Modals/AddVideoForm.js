@@ -5,7 +5,7 @@ import { Modal, Button } from 'react-bootstrap';
 
 class AddVideoForm extends Component {
   onSubmit(props) {
-    this.props.uploadVideo(props)
+    this.props.uploadVideoAsync(props)
   }
 
   render () {

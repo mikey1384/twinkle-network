@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { editVideoPage, resetVideoPage, deleteVideo } from 'actions/VideoActions';
+import { editVideoPageAsync, resetVideoPage, deleteVideoAsync } from 'actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
 import PageTab from './PageTab';
@@ -8,7 +8,6 @@ import Comments from './Comments';
 import Description from './Description';
 import ResultModal from './Modals/ResultModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { push } from 'react-router-redux';
 
 @connect(
   state => ({
@@ -191,13 +190,12 @@ export default class VideoPage extends Component {
     this.setState({userAnswers})
   }
 
-  onDescriptionEditFinish(params, callback) {
-    this.props.dispatch(editVideoPage(params));
-    callback();
+  onDescriptionEditFinish(params, sender) {
+    this.props.dispatch(editVideoPageAsync(params, sender));
   }
 
   onVideoDelete() {
-    this.props.dispatch(deleteVideo(this.props.videoId));
-    this.props.dispatch(push('/contents'));
+    const { videoId } = this.props;
+    this.props.dispatch(deleteVideoAsync({videoId}));
   }
 }

@@ -1,5 +1,6 @@
 import request from 'axios';
 import {URL} from './URL';
+import {push} from 'react-router-redux';
 
 const API_URL = `${URL}/api/video`;
 
@@ -27,35 +28,101 @@ export function getMoreVideos(videoId) {
   };
 }
 
-export function uploadVideo(params) {
+export function uploadVideo(data) {
   return {
     type: 'UPLOAD_VIDEO',
-    promise: request.post(API_URL, params)
+    data
   };
 }
 
-export function editVideoTitle(params) {
-  return {
-    type: 'EDIT_VIDEO_TITLE',
-    videoId: params.videoId,
-    promise: request.post(`${API_URL}/edit/title`, params)
+export function uploadVideoAsync(params) {
+  return dispatch => {
+    request.post(API_URL, params).then(
+      response => dispatch(uploadVideo(response.data))
+    )
   }
 }
 
-export function editVideoPage(params) {
+export function loadVideoPage(data) {
+  return {
+    type: 'LOAD_VIDEO_PAGE',
+    data
+  }
+}
+
+export function loadVideoPageAsync(params) {
+  return dispatch => {
+    request.get(`${API_URL}/loadPage?videoId=${params.videoId}`).then(
+      response => {
+        dispatch(loadVideoPage(response.data));
+      }
+    )
+  }
+}
+
+export function editVideoTitle(videoId, data) {
+  return {
+    type: 'EDIT_VIDEO_TITLE',
+    videoId,
+    data
+  }
+}
+
+export function editVideoTitleAsync(params, sender) {
+  return dispatch => {
+    request.post(`${API_URL}/edit/title`, params).then(
+      response => {
+        dispatch(editVideoTitle(params.videoId, response.data))
+        sender.setState({onEdit: false});
+      }
+    )
+  }
+}
+
+export function editVideoPage(params, data) {
   return {
     type: 'EDIT_VIDEO_PAGE',
     params,
-    promise: request.post(`${API_URL}/edit/page`, params)
+    data
   }
 }
 
-export function deleteVideo(videoId, arrayNumber, lastVideoId) {
+export function editVideoPageAsync(params, sender) {
+  return dispatch => {
+    request.post(`${API_URL}/edit/page`, params).then(
+      response => {
+        dispatch(editVideoPage(params, response.data));
+        sender.setState({
+          onEdit: false,
+          editDoneButtonDisabled: true
+        })
+      }
+    )
+  }
+}
+
+export function deleteVideo(arrayNumber, data) {
   return {
     type: 'DELETE_VIDEO',
     arrayNumber,
-    promise: request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`)
+    data
   };
+}
+
+export function deleteVideoAsync({videoId, arrayNumber, lastVideoId}, sender) {
+  return dispatch => {
+    request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`).then(
+      response => {
+        if (!lastVideoId) {
+          dispatch(getInitialVideos())
+          dispatch(push('/contents'))
+        } else {
+          dispatch(deleteVideo(arrayNumber, response.data));
+          sender.setState({confirmModalShown: false});
+        }
+      }
+    )
+  }
 }
 
 export function openAddVideoModal() {
@@ -67,14 +134,6 @@ export function openAddVideoModal() {
 export function closeAddVideoModal() {
   return {
     type: 'VID_MODAL_CLOSE'
-  }
-}
-
-export function loadVideoPage(params) {
-  return {
-    params,
-    promise: request.get(`${API_URL}/loadPage?videoId=${params.videoId}`),
-    type: 'LOAD_VIDEO_PAGE'
   }
 }
 

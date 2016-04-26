@@ -9,7 +9,6 @@ class ConfirmModal extends Component {
   onConfirm () {
     const { store } = this.context;
     this.props.onConfirm();
-    store.subscribe(() => this.props.onHide);
   }
 
   render () {

@@ -37,8 +37,8 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'UPLOAD_VIDEO':
-      if (action.res.data.result) {
-        const newState = [action.res.data.result].concat(state.allVideoThumbs);
+      if (action.data.result) {
+        const newState = [action.data.result].concat(state.allVideoThumbs);
         if (!state.allVideosLoaded) {
           newState.pop();
         }
@@ -48,14 +48,14 @@ export default function VideoReducer(state = defaultState, action) {
           addVideoModalShown: false
         }
       } else {
-        console.log(action.res.data.error);
+        console.log(action.data.error);
         return state;
       }
     case 'EDIT_VIDEO_TITLE':
-      if (action.res.data.result) {
+      if (action.data.result) {
         const newVideoThumbs = state.allVideoThumbs.map(thumb => {
           if (thumb.id === action.videoId) {
-            thumb.title = action.res.data.result;
+            thumb.title = action.data.result;
           }
           return thumb;
         })
@@ -64,19 +64,19 @@ export default function VideoReducer(state = defaultState, action) {
           allVideoThumbs: newVideoThumbs
         }
       } else {
-        console.log(action.res.data.error);
+        console.log(action.data.error);
         return state;
       }
     case 'DELETE_VIDEO':
-      if (action.res.data.result) {
+      if (action.data.result) {
         const newVideoThumbs = state.allVideoThumbs;
         newVideoThumbs.splice(action.arrayNumber, 1);
         return {
           ...state,
-          allVideoThumbs: newVideoThumbs.concat(action.res.data.result)
+          allVideoThumbs: newVideoThumbs.concat(action.data.result)
         }
       } else {
-        console.log(action.res.data.error);
+        console.log(action.data.error);
         return state;
       }
     case 'VID_MODAL_OPEN':
@@ -90,8 +90,8 @@ export default function VideoReducer(state = defaultState, action) {
         addVideoModalShown: false
       };
     case 'LOAD_VIDEO_PAGE':
-      if (action.res.data.error) {
-        console.error(action.res.data.error);
+      if (action.data.error) {
+        console.error(action.data.error);
         return {
           ...state,
           videoPage: {
@@ -100,34 +100,34 @@ export default function VideoReducer(state = defaultState, action) {
         };
       }
       const videoPageVariables = {
-        ...action.res.data
+        ...action.data
       };
       return {
         ...state,
         videoPage: videoPageVariables
       }
+      case 'EDIT_VIDEO_PAGE':
+        if (action.data.success) {
+          const description = (action.params.description === '') ?
+          'No description' : processedString(action.params.description);
+          return {
+            ...state,
+            videoPage: {
+              ...state.videoPage,
+              title: action.params.title,
+              description
+            }
+          }
+        }
+        if (action.data.error) {
+          console.error(error);
+        }
+        return state;
     case 'RESET_VIDEO_PAGE':
       return {
         ...state,
         videoPage: {}
       }
-    case 'EDIT_VIDEO_PAGE':
-      if (action.res.data.success) {
-        const description = (action.params.description === '') ?
-        'No description' : processedString(action.params.description);
-        return {
-          ...state,
-          videoPage: {
-            ...state.videoPage,
-            title: action.params.title,
-            description
-          }
-        }
-      }
-      if (action.res.data.error) {
-        console.error(error);
-      }
-      return state;
     case 'RESET_VID_STATE':
       return {
         ...state,

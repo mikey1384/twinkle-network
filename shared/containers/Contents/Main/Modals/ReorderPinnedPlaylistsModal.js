@@ -53,7 +53,6 @@ export default class ReorderPinnedPlaylistsModal extends Component {
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylists(this.state.playlistIds);
-    this.props.onHide();
+    this.props.changePinnedPlaylistsAsync(this.state.playlistIds, () => this.props.onHide());
   }
 }

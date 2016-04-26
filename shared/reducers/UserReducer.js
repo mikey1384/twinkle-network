@@ -16,14 +16,14 @@ function isAdmin (userType) {
 export default function UserReducer(state = defaultState, action) {
   switch (action.type) {
     case 'FETCH_SESSION':
-    if (action.res.data.loggedIn) {
+    if (typeof action.data !== 'undefined' && action.data.loggedIn) {
       return {
         ...state,
         loggedIn: true,
-        username: action.res.data.username,
-        userType: action.res.data.usertype,
-        isAdmin: isAdmin(action.res.data.usertype),
-        userId: action.res.data.userId
+        username: action.data.username,
+        userType: action.data.usertype,
+        isAdmin: isAdmin(action.data.usertype),
+        userId: action.data.userId
       }
     } else {
       return {
@@ -36,14 +36,14 @@ export default function UserReducer(state = defaultState, action) {
       }
     }
     case 'SIGNIN_LOGIN':
-    if (action.res.data.result === 'success') {
+    if (action.data.result === 'success') {
       return {
         ...state,
         loggedIn: true,
-        username: action.res.data.username,
-        userType: action.res.data.usertype,
-        isAdmin: isAdmin(action.res.data.usertype),
-        userId: action.res.data.userId,
+        username: action.data.username,
+        userType: action.data.usertype,
+        isAdmin: isAdmin(action.data.usertype),
+        userId: action.data.userId,
         signinModalShown: false
       }
     } else {
@@ -62,20 +62,20 @@ export default function UserReducer(state = defaultState, action) {
       userId: null
     }
     case 'SIGNIN_SIGNUP':
-    if (action.res.data.result === 'success') {
+    if (action.data.result === 'success') {
       return {
         ...state,
         loggedIn: true,
-        username: action.res.data.username,
-        userType: action.res.data.usertype,
-        isAdmin: isAdmin(action.res.data.usertype),
-        userId: action.res.data.userId,
+        username: action.data.username,
+        userType: action.data.usertype,
+        isAdmin: isAdmin(action.data.usertype),
+        userId: action.data.userId,
         signinModalShown: false
       }
     } else {
       return {
         ...state,
-        signupError: action.res.data.result
+        signupError: action.data.result
       }
     };
     case 'SIGNIN_OPEN':

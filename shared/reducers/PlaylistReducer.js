@@ -44,7 +44,6 @@ export default function PlaylistReducer(state = defaultState, action) {
           loadMoreButton
         }
       } else {
-        console.log("not inital");
         return {
           ...state,
           allPlaylists: state.allPlaylists.concat(action.data.playlists),
@@ -58,8 +57,8 @@ export default function PlaylistReducer(state = defaultState, action) {
         pinnedPlaylists: defaultPinnedPlaylists
       }
     case 'GET_VIDEOS_FOR_MODAL':
-      if (action.res.data.length > 18) {
-        action.res.data.pop();
+      if (action.data.length > 18) {
+        action.data.pop();
         loadMoreButtonForModal = true;
       } else {
         allVideosLoadedForModal = true;
@@ -67,14 +66,14 @@ export default function PlaylistReducer(state = defaultState, action) {
       if (action.initialRun) {
         return {
           ...state,
-          videoThumbsForModal: action.res.data,
+          videoThumbsForModal: action.data,
           loadMoreButtonForModal,
           allVideosLoadedForModal
         }
       } else {
         return {
           ...state,
-          videoThumbsForModal: state.videoThumbsForModal.concat(action.res.data),
+          videoThumbsForModal: state.videoThumbsForModal.concat(action.data),
           loadMoreButtonForModal,
           allVideosLoadedForModal
         }
@@ -90,15 +89,15 @@ export default function PlaylistReducer(state = defaultState, action) {
         addPlaylistModalShown: false
       }
     case 'SELECT_PL_TO_PIN_OPEN':
-      if (action.res.data.error) {
-        console.error(action.res.data.error);
+      if (action.data.error) {
+        console.error(action.data.error);
         return state;
       }
-      if (action.res.data.result.length > 10) {
-        action.res.data.result.pop();
+      if (action.data.result.length > 10) {
+        action.data.result.pop();
         loadMorePlaylistsToPinButton = true;
       }
-      let playlistsToPin = action.res.data.result.map(item => {
+      let playlistsToPin = action.data.result.map(item => {
         return {
           title: item.title,
           id: item.id
@@ -117,15 +116,15 @@ export default function PlaylistReducer(state = defaultState, action) {
         selectPlaylistsToPinModalShown: false
       }
     case 'LOAD_MORE_PLAYLIST_LIST':
-      if (action.res.data.error) {
-        console.error(action.res.data.error);
+      if (action.data.error) {
+        console.error(action.data.error);
         return state;
       }
-      if (action.res.data.result.length > 10) {
-        action.res.data.result.pop();
+      if (action.data.result.length > 10) {
+        action.data.result.pop();
         loadMorePlaylistsToPinButton = true;
       }
-      let morePlaylistsToPin = action.res.data.result.map(item => {
+      let morePlaylistsToPin = action.data.result.map(item => {
         return {
           title: item.title,
           id: item.id
@@ -137,12 +136,12 @@ export default function PlaylistReducer(state = defaultState, action) {
         loadMorePlaylistsToPinButton
       }
     case 'CHANGE_PINNED_PLAYLISTS':
-      if (action.res.data.error) {
-        console.error(action.res.data.error);
+      if (action.data.error) {
+        console.error(action.data.error);
         return state;
       }
-      if (action.res.data.playlists) {
-        defaultPinnedPlaylists = action.res.data.playlists;
+      if (action.data.playlists) {
+        defaultPinnedPlaylists = action.data.playlists;
         return {
           ...state,
           pinnedPlaylists: defaultPinnedPlaylists
@@ -160,8 +159,8 @@ export default function PlaylistReducer(state = defaultState, action) {
         reorderPinnedPlaylistsModalShown: false
       }
     case 'CHANGE_PL_VIDS_MODAL_OPEN':
-      if (action.res.data.length > 18) {
-        action.res.data.pop();
+      if (action.data.length > 18) {
+        action.data.pop();
         loadMoreButtonForModal = true;
       } else {
         allVideosLoadedForModal = true;
@@ -169,7 +168,7 @@ export default function PlaylistReducer(state = defaultState, action) {
       return {
         ...state,
         editPlaylistModalType: action.modalType,
-        videoThumbsForModal: action.res.data,
+        videoThumbsForModal: action.data,
         loadMoreButtonForModal,
         allVideosLoadedForModal
       }
@@ -191,28 +190,28 @@ export default function PlaylistReducer(state = defaultState, action) {
       let loadMoreButtonDisplayed = false;
       if (defaultPlaylists.length > 2) {
         defaultPlaylists.pop();
-        defaultPlaylists = [action.res.data.result].concat(defaultPlaylists);
+        defaultPlaylists = [action.data.result].concat(defaultPlaylists);
         if (!state.loadMoreButton) loadMoreButtonDisplayed = true;
       } else {
-        defaultPlaylists = [action.res.data.result].concat(state.allPlaylists);
+        defaultPlaylists = [action.data.result].concat(state.allPlaylists);
       }
       return {
         ...state,
-        allPlaylists: [action.res.data.result].concat(state.allPlaylists),
+        allPlaylists: [action.data.result].concat(state.allPlaylists),
         loadMoreButton: loadMoreButtonDisplayed,
         addPlaylistModalShown: false
       }
     case 'EDIT_PLAYLIST_TITLE':
-    if (action.res.data.result) {
+    if (action.data.result) {
       defaultPlaylists = state.allPlaylists.map(playlist => {
         if (playlist.id === action.playlistId) {
-          playlist.title = action.res.data.result
+          playlist.title = action.data.result
         }
         return playlist;
       })
       defaultPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
         if (playlist.id === action.playlistId) {
-          playlist.title = action.res.data.result
+          playlist.title = action.data.result
         }
         return playlist;
       })
@@ -222,17 +221,17 @@ export default function PlaylistReducer(state = defaultState, action) {
         allPlaylists: defaultPlaylists
       }
     } else {
-      console.error(action.res.data.error);
+      console.error(action.data.error);
       return state;
     }
     case 'CHANGE_PLAYLIST_VIDEOS':
-      if (action.res.data.error) {
-        let { error } = action.res.data;
+      if (action.data.error) {
+        let { error } = action.data;
         console.error(error);
         return state;
       }
-      if (action.res.data.result) {
-        let { result } = action.res.data;
+      if (action.data.result) {
+        let { result } = action.data;
         defaultPlaylists = state.allPlaylists.map(playlist => {
           if (playlist.id === action.playlistId) {
             playlist.playlist = result;
@@ -252,7 +251,7 @@ export default function PlaylistReducer(state = defaultState, action) {
         }
       }
     case 'DELETE_PLAYLIST':
-      if (action.res.data.success) {
+      if (action.data.success) {
         defaultPlaylists = state.allPlaylists.filter(playlist => {
           if (playlist.id === action.playlistId) {
             return false;

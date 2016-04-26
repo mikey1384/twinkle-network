@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import VideoThumb from 'components/VideoThumb';
-import { editVideoTitle } from 'actions/VideoActions';
 import { bindActionCreators } from 'redux';
 
 export default class AllVideosPanel extends Component {
@@ -45,8 +44,8 @@ export default class AllVideosPanel extends Component {
                   editable={editable}
                   video={video}
                   lastVideoId={last(videos) ? last(videos).id : 0}
-                  editVideoTitle={this.props.editVideoTitle}
-                  deleteVideo={this.props.deleteVideo}
+                  editVideoTitle={this.props.editVideoTitleAsync}
+                  deleteVideo={this.props.deleteVideoAsync}
                 />
               )
             })

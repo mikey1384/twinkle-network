@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Modal } from 'react-bootstrap';
-import AddVideoForm from '../AddVideoForm';
+import AddVideoForm from './AddVideoForm';
 
 class AddVideoModal extends Component {
   render() {

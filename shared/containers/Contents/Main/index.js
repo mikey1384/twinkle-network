@@ -77,7 +77,7 @@ export default class Main extends Component {
     const pinnedPlaylistButtons = [
       {
         label: 'Select Playlists',
-        onClick: () => dispatch(PlaylistActions.openSelectPlaylistsToPinModal()),
+        onClick: () => dispatch(PlaylistActions.openSelectPlaylistsToPinModalAsync()),
         buttonClass: 'btn-default'
       },
       {
@@ -121,8 +121,7 @@ export default class Main extends Component {
           onAddVideoClick={() => dispatch(VideoActions.openAddVideoModal())}
           {...bindActionCreators(VideoActions, dispatch)}
         />
-        {
-          addVideoModalShown &&
+        { addVideoModalShown &&
           <AddVideoModal
             show
             onHide={ () => dispatch(closeAddVideoModal()) }
@@ -175,8 +174,7 @@ export default class Main extends Component {
 
   showAddPlaylistModal() {
     const { dispatch } = this.props;
-    const { openAddPlaylistModal, getVideosForModal } = PlaylistActions;
-    dispatch(getVideosForModal());
-    dispatch(openAddPlaylistModal());
+    const { getVideosForModalAsync } = PlaylistActions;
+    dispatch(getVideosForModalAsync());
   }
 }

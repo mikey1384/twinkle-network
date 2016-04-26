@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Textarea from 'react-textarea-autosize';
 import { reduxForm } from 'redux-form';
 import { Modal, Button } from 'react-bootstrap';
-import { closeAddPlaylistModal, uploadPlaylist, getMoreVideosForModal } from 'actions/PlaylistActions';
+import { closeAddPlaylistModal, uploadPlaylistAsync, getMoreVideosForModalAsync } from 'actions/PlaylistActions';
 import { connect } from 'react-redux';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
@@ -79,15 +79,7 @@ export default class AddPlaylistModal extends Component {
       videos: this.state.selectedVideos
     }
     resetForm();
-    dispatch(uploadPlaylist(params));
-    dispatch(closeAddPlaylistModal());
-    this.setState({
-      section: 0,
-      title: null,
-      description: null,
-      selectedVideos: [],
-      titleError: false
-    })
+    dispatch(uploadPlaylistAsync(params));
   }
 
   renderTitle() {
@@ -113,7 +105,7 @@ export default class AddPlaylistModal extends Component {
     };
     const lastId = last(videos) ? last(videos).id : 0;
     const loadMoreVideos = () => {
-      dispatch(getMoreVideosForModal(lastId));
+      dispatch(getMoreVideosForModalAsync(lastId));
     }
     return (
       <Modal

@@ -16,10 +16,10 @@ class PlaylistsPanel extends Component {
           arrayNumber={index}
           {...playlist}
           editable={editable}
-          editPlaylistTitle={this.props.editPlaylistTitle}
+          editPlaylistTitle={this.props.editPlaylistTitleAsync}
           resetPlaylistState={this.props.resetPlaylistState}
-          deletePlaylist={this.props.deletePlaylist}
-          openChangePlaylistVideosModal={this.props.openChangePlaylistVideosModal}
+          deletePlaylist={this.props.deletePlaylistAsync}
+          openChangePlaylistVideosModal={this.props.openChangePlaylistVideosModalAsync}
           openReorderPlaylistVideosModal={this.props.openReorderPlaylistVideosModal}
         />
       )

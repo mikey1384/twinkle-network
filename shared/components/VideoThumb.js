@@ -20,9 +20,8 @@ export default class VideoThumb extends Component {
     const { video } = this.props;
     props['videoId'] = video.id;
     if (props.title && props.title !== video.title) {
-      this.props.editVideoTitle(props);
+      this.props.editVideoTitle(props, this);
     }
-    this.setState({onEdit: false});
   }
 
   onEditTitleCancel() {
@@ -35,7 +34,8 @@ export default class VideoThumb extends Component {
 
   onDeleteConfirm () {
     const { deleteVideo, video, arrayNumber, lastVideoId } = this.props;
-    deleteVideo(video.id, arrayNumber, lastVideoId);
+    const videoId = video.id;
+    deleteVideo({videoId, arrayNumber, lastVideoId}, this);
   }
 
   onHideModal () {

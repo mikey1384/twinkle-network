@@ -11,7 +11,7 @@ class SignUpForm extends Component {
   }
 
   onSubmit(props) {
-    this.props.signup(props)
+    this.props.signupAsync(props)
   }
 
   render () {

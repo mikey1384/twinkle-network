@@ -131,7 +131,7 @@ export default class SelectPlaylistsToPinModal extends Component {
   }
 
   loadMorePlaylists(lastPlaylistId) {
-    this.props.loadMorePlaylistList(lastPlaylistId);
+    this.props.loadMorePlaylistListAsync(lastPlaylistId);
   }
 
   onSelect(index) {
@@ -157,7 +157,6 @@ export default class SelectPlaylistsToPinModal extends Component {
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylists(this.state.selectedPlaylists);
-    this.props.onHide();
+    this.props.changePinnedPlaylistsAsync(this.state.selectedPlaylists, () => this.props.onHide());
   }
 }

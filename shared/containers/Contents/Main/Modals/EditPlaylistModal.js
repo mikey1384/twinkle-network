@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { closeEditPlaylistModal, changePlaylistVideos, getMoreVideosForModal } from 'actions/PlaylistActions';
+import { closeEditPlaylistModal, changePlaylistVideosAsync, getMoreVideosForModal } from 'actions/PlaylistActions';
 import SelectVideosForm from './SelectVideosForm';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
@@ -25,8 +25,7 @@ export default class EditPlaylistModal extends Component {
   handleSave() {
     const { selectedVideos } = this.state;
     const { playlistId, dispatch } = this.props;
-    dispatch(changePlaylistVideos(playlistId, selectedVideos));
-    this.props.onHide();
+    dispatch(changePlaylistVideosAsync(playlistId, selectedVideos, this));
   }
   render() {
     const { modalType, videos, loadMoreVideosButton,  dispatch } = this.props;

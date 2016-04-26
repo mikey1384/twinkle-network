@@ -10,6 +10,19 @@ export default class Description extends Component {
     editDoneButtonDisabled: true
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.title !== this.props.title) {
+      this.setState({
+        editedTitle: nextProps.title
+      })
+    }
+    if (nextProps.description !== this.props.description) {
+      this.setState({
+        editedDescription: this.cleanString(nextProps.description)
+      })
+    }
+  }
+
   render() {
     const menuProps = [
       {
@@ -141,12 +154,7 @@ export default class Description extends Component {
       title: this.state.editedTitle,
       description: this.state.editedDescription
     }
-    this.props.onEditFinish(params, () => {
-      this.setState({
-        onEdit: false,
-        editDoneButtonDisabled: true
-      })
-    });
+    this.props.onEditFinish(params, this);
   }
 
   onEditCancel() {

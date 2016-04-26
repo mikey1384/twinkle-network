@@ -35,8 +35,7 @@ export default class PlaylistCarousel extends Component {
   }
 
   onChangeVideos() {
-    this.props.openChangePlaylistVideosModal();
-    this.setState({editPlaylistModalShown: true});
+    this.props.openChangePlaylistVideosModal(this);
   }
 
   onReorderVideos() {
@@ -49,9 +48,8 @@ export default class PlaylistCarousel extends Component {
     const { title, editPlaylistTitle, id } = this.props;
     props['playlistId'] = id;
     if (props.title && props.title !== title) {
-      editPlaylistTitle(props, this.props.arrayNumber);
+      editPlaylistTitle(props, this.props.arrayNumber, this);
     }
-    this.setState({onEdit: false})
   }
 
   onEditTitleCancel() {
@@ -64,8 +62,7 @@ export default class PlaylistCarousel extends Component {
 
   onDeleteConfirm() {
     const { deletePlaylist, id } = this.props;
-    deletePlaylist(id);
-    this.setState({deleteConfirmModalShown: false})
+    deletePlaylist(id, this);
   }
 
   render () {

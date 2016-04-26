@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import activeComponent from 'react-router-active-component'
 
-import { getVideos } from 'actions/VideoActions';
-import { getPinnedPlaylists, getPlaylists } from 'actions/PlaylistActions';
 import * as UserActions from 'actions/UserActions';
 
 import SigninModal from 'containers/SigninModal';
@@ -23,10 +21,6 @@ class Header extends Component {
     tabClicked: false
   }
 
-  componentWillMount() {
-    this.props.dispatch(UserActions.checkSession())
-  }
-
   handleClick() {
     this.setState({
       tabClicked: true
@@ -35,7 +29,7 @@ class Header extends Component {
 
   render () {
     const { signinModalShown, loggedIn, username, userType, isAdmin, userId, dispatch } = this.props;
-    const { initSession, checkSession, openSigninModal, closeSigninModal } = UserActions;
+    const { openSigninModal, closeSigninModal } = UserActions;
     const NavLink = activeComponent('li')
     return (
       <Navbar staticTop fluid>

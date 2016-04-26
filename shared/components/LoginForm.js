@@ -4,7 +4,7 @@ import { Modal, Button, Alert } from 'react-bootstrap';
 
 class LoginForm extends Component {
   onSubmit(props) {
-    this.props.login(props)
+    this.props.loginAsync(props)
   }
 
   render () {
