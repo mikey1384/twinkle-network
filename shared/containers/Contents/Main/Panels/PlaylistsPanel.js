@@ -1,6 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import PlaylistCarousel from '../PlaylistCarousel';
-import LoadMoreButton from 'components/LoadMoreButton';
 
 class PlaylistsPanel extends Component {
   state = {
@@ -42,13 +41,13 @@ class PlaylistsPanel extends Component {
   }
 
   render() {
-    const { loadMoreButton, getMorePlaylists, playlists, buttonGroupShown } = this.props;
+    const { loadMoreButton, getMorePlaylistsAsync, playlists, buttonGroupShown } = this.props;
     const loadMorePlaylists = () => {
       const last = (array) => {
         return array[array.length - 1];
       };
       const lastId = last(playlists).id;
-      getMorePlaylists(lastId);
+      getMorePlaylistsAsync(lastId);
     }
     return (
       <div className="panel panel-primary">

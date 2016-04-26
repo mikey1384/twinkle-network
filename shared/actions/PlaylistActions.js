@@ -11,13 +11,6 @@ export function getPlaylists(data, initialRun) {
   }
 }
 
-export function getMorePlaylists(playlistId) {
-  return {
-    type: 'GET_PLAYLISTS',
-    promise: request.get(`${API_URL}?playlistId=${playlistId}`)
-  }
-}
-
 export function getPinnedPlaylists(data) {
   return {
     type: 'GET_PINNED_PLAYLISTS',
@@ -25,17 +18,28 @@ export function getPinnedPlaylists(data) {
   }
 }
 
-export function getAllPlaylists() {
+export function getPinnedPlaylistsAsync() {
   return dispatch => {
-    return Promise.all([
-      request.get(`${API_URL}/pinned`).then(
-        response => dispatch(getPinnedPlaylists(response.data))
-      ),
-      request.get(`${API_URL}`).then(
-        response => dispatch(getPlaylists(response.data, true))
-      )
-    ])
-  };
+    return request.get(`${API_URL}/pinned`).then(
+      response => dispatch(getPinnedPlaylists(response.data))
+    )
+  }
+}
+
+export function getPlaylistsAsync() {
+  return dispatch => {
+    return request.get(`${API_URL}`).then(
+      response => dispatch(getPlaylists(response.data, true))
+    )
+  }
+}
+
+export function getMorePlaylistsAsync(playlistId) {
+  return dispatch => {
+    return request.get(`${API_URL}?playlistId=${playlistId}`).then(
+      response => dispatch(getPlaylists(response.data, false))
+    )
+  }
 }
 
 export function getVideosForModal() {

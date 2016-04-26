@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { getInitialVideos, resetVideoState } from 'actions/VideoActions';
-import { getAllPlaylists, resetPlaylistState } from 'actions/PlaylistActions';
+import { getPinnedPlaylistsAsync, getPlaylistsAsync, resetPlaylistState } from 'actions/PlaylistActions';
 import { connect } from 'react-redux';
 
 @connect()
@@ -8,7 +8,8 @@ export default class Contents extends Component {
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch(getInitialVideos());
-    dispatch(getAllPlaylists());
+    dispatch(getPinnedPlaylistsAsync());
+    dispatch(getPlaylistsAsync());
   }
 
   componentWillUnmount() {

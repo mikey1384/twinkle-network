@@ -4,13 +4,16 @@ import Header from '../Header';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { initSession } from 'actions/UserActions';
-import { getAllPlaylists } from 'actions/PlaylistActions';
+import { getInitialVideos } from 'actions/VideoActions';
+import { getPinnedPlaylistsAsync, getPlaylistsAsync } from 'actions/PlaylistActions';
 
 
 export default class App extends React.Component {
   static needs = [
     initSession,
-    getAllPlaylists
+    getPinnedPlaylistsAsync,
+    getPlaylistsAsync,
+    getInitialVideos
   ];
 
   componentDidUpdate() {
