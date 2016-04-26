@@ -1,6 +1,5 @@
 import request from 'axios';
 import {URL} from './URL';
-import async from 'async';
 
 const API_URL = `${URL}/api/playlist`;
 
@@ -28,22 +27,14 @@ export function getPinnedPlaylists(data) {
 
 export function getAllPlaylists() {
   return dispatch => {
-    async.parallel({
-      pinned: callback => {
-        request.get(`${API_URL}/pinned`).then(
-          response => callback(null, response.data)
-        )
-      },
-      all: callback => {
-        request.get(`${API_URL}`).then(
-          response => callback(null, response.data)
-        )
-      }
-    },
-    (err, results) => {
-      dispatch(getPinnedPlaylists(results.pinned));
-      dispatch(getPlaylists(results.all, true));
-    });
+    return Promise.all([
+      request.get(`${API_URL}/pinned`).then(
+        response => dispatch(getPinnedPlaylists(response.data))
+      ),
+      request.get(`${API_URL}`).then(
+        response => dispatch(getPlaylists(response.data, true))
+      )
+    ])
   };
 }
 

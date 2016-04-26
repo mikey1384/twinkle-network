@@ -4,11 +4,11 @@ import { renderToString } from 'react-dom/server'
 import { RouterContext, match } from 'react-router';
 import createLocation from 'history/lib/createLocation';
 import { Provider } from 'react-redux';
-import fetchComponentData from 'lib/fetchComponentData';
 import path from 'path';
 import session from 'client-sessions';
 import { siteSession } from './siteConfig';
 import { routes, store } from 'Root';
+import { initActions } from './shared/actions';
 
 const app = express();
 
@@ -29,8 +29,11 @@ app.use((req, res) => {
       return res.status(500).end('Internal server error');
     }
 
-    if(!renderProps)
-      return res.status(404).end('Not found');
+    if(!renderProps) return res.status(404).end('Not found');
+
+    store.dispatch(initActions(renderProps.components, renderProps.params))
+    .then(() => res.end(renderView()))
+    .catch(err => res.end(err.message))
 
     function renderView() {
       const InitialView = (
@@ -61,11 +64,6 @@ app.use((req, res) => {
       `;
       return HTML;
     }
-
-    fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
-      .then(renderView)
-      .then(html => res.end(html))
-      .catch(err => res.end(err.message));
   });
 });
 
