@@ -33,6 +33,14 @@ export function editVideoTitle(params) {
   }
 }
 
+export function editVideoPage(params) {
+  return {
+    type: 'EDIT_VIDEO_PAGE',
+    params,
+    promise: request.post(`${API_URL}/edit/page`, params)
+  }
+}
+
 export function deleteVideo(videoId, arrayNumber, lastVideoId) {
   return {
     type: 'DELETE_VIDEO',

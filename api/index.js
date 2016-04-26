@@ -136,6 +136,41 @@ app.post('/video/edit/title', (req, res) => {
   });
 })
 
+app.post('/video/edit/page', (req, res) => {
+  let { videoId, title, description } = req.body;
+  if (title === '') {
+    res.send({error: "Title is empty"});
+    return;
+  }
+  if (description === '') description = 'No description';
+  const session = req.session.sessioncode;
+  const post = {title, description: processedString(description)};
+  async.waterfall([
+    (callback) => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows) {
+          res.json({error: "User not found"});
+          return;
+        };
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
+        callback(err, true);
+      })
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      res.json({error: err});
+      return;
+    }
+    res.json({success});
+  });
+})
+
 app.get('/video/loadPage', (req, res) => {
   const {videoId} = req.query;
   let query = [
@@ -148,7 +183,7 @@ app.get('/video/loadPage', (req, res) => {
       res.send({error: err});
       return;
     }
-    if (rows) {
+    if (rows[0]) {
       const { videoId, title, description, videocode, uploaderId, uploaderName } = rows[0];
       pool.query('SELECT * FROM vq_questions WHERE videoid = ? AND isdraft = 0', videoId, (err, rows) => {
         let questions = [];
@@ -168,6 +203,7 @@ app.get('/video/loadPage', (req, res) => {
           })
         }
         res.json({
+          videoId,
           title,
           description,
           videocode,
@@ -177,7 +213,7 @@ app.get('/video/loadPage', (req, res) => {
         })
       })
     } else {
-      res.send({error: 'Video doesn\'t exist'})
+      res.json({error: 'Video doesn\'t exist'})
     }
   })
 })

@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { loadVideoPage, resetVideoPage } from 'actions/VideoActions';
+import { editVideoPage, resetVideoPage, deleteVideo } from 'actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
+import PageTab from './PageTab';
+import Comments from './Comments';
+import Description from './Description';
 import ResultModal from './Modals/ResultModal';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import { push } from 'react-router-redux';
 
 @connect(
   state => ({
@@ -20,18 +24,21 @@ export default class VideoPage extends Component {
     currentSlide: 0,
     userAnswers: [],
     resultModalShown: false,
-    editModalShown: false
+    editModalShown: false,
+    confirmModalShown: false
   }
 
   componentWillUnmount() {
     this.props.dispatch(resetVideoPage())
   }
 
-  componentDidMount() {
-    ReactDOM.findDOMNode(this).scrollIntoView();
-  }
-
   render() {
+    if (this.props.videoId === 0) {
+      return (
+        <div>Video Not Found</div>
+      )
+    }
+    const { uploaderId, uploaderName, description, userId, videoId, title } = this.props;
     const { watchTabActive } = this.state;
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
@@ -45,43 +52,22 @@ export default class VideoPage extends Component {
 
     return (
       <div className="container-fluid">
-        <div
-          className="row page-header text-center"
-          style={{paddingBottom: '1em'}}
-        >
-          <h1>
-            <span>{this.props.title}</span>
-          </h1>
-          <small style={{
-            whiteSpace: 'nowrap',
-            textOverflow:'ellipsis',
-            overflow:'hidden',
-            lineHeight: 'normal'
-          }}>Added by {this.props.uploaderName}</small>
-        </div>
-        <div className="row container">
-          <h2>Description</h2>
-          <p dangerouslySetInnerHTML={{__html: this.props.description}}/>
-        </div>
+        <Description
+          videoId={videoId}
+          title={title}
+          uploaderName={uploaderName}
+          description={description}
+          uploaderId={uploaderId}
+          userId={userId}
+          onEditFinish={this.onDescriptionEditFinish.bind(this)}
+          onDelete={ () => this.setState({confirmModalShown: true}) }
+        />
         <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
-          <div className="row container-fluid">
-            <ul className="nav nav-tabs nav-justified" style={{width: '100%'}}>
-              <li
-                className={watchTabActive ? 'active' : ''}
-                style={{cursor: 'pointer'}}
-                onClick={ () => this.setState({watchTabActive: true})}
-              >
-                <a>Watch</a>
-              </li>
-              <li
-                className={watchTabActive ? '' : 'active'}
-                style={{cursor: 'pointer'}}
-                onClick={ () => this.setState({watchTabActive: false})}
-              >
-                <a>Questions</a>
-              </li>
-            </ul>
-          </div>
+          <PageTab
+            watchTabActive={watchTabActive}
+            onWatchTabClick={() => this.setState({watchTabActive: true})}
+            onQuestionTabClick={() => this.setState({watchTabActive: false})}
+          />
           <div
             className={`tab-pane ${tabPaneClassName}`}
             style={{
@@ -110,7 +96,7 @@ export default class VideoPage extends Component {
                 slideIndex={this.state.currentSlide}
                 dragging={false}
                 afterSlide={this.onSlide.bind(this)}
-                onFinish={this.onFinish.bind(this)}
+                onFinish={this.onQuestionsFinish.bind(this)}
               >
                 {this.renderSlides()}
               </Carousel>
@@ -126,40 +112,21 @@ export default class VideoPage extends Component {
             }
           </div>
         </div>
-        <div className="row container-fluid">
-          <div className="container-fluid">
-            <div className="page-header">
-              <h3>Comments</h3>
-              <div className="container-fluid">
-                <div className="row form-group">
-                  <textarea
-                    className="form-control"
-                    rows="4"
-                    placeholder="Post your thoughts here."
-                    style={{
-                      height: '92px',
-                      overflowY: 'hidden'
-                    }}>
-                  </textarea>
-                </div>
-                <div className="row">
-                  <button className="btn btn-default btn-sm">Submit</button>
-                </div>
-              </div>
-            </div>
-            <div className="container-fluid">
-              <ul className="media-list">
-                <li className="media">There are no comments, yet.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <Comments />
         { this.state.resultModalShown &&
           <ResultModal
             show={true}
             onHide={ () => this.setState({resultModalShown: false}) }
             numberCorrect={this.numberCorrect.bind(this)}
             totalQuestions={this.props.questions.length}
+          />
+        }
+        { this.state.confirmModalShown &&
+          <ConfirmModal
+            title="Remove Video"
+            show={true}
+            onHide={ () => this.setState({confirmModalShown: false}) }
+            onConfirm={this.onVideoDelete.bind(this)}
           />
         }
       </div>
@@ -191,7 +158,7 @@ export default class VideoPage extends Component {
             listItems={listItems}
             inputType="radio"
             name="questions"
-            onSelect={this.onSelect.bind(this)}
+            onSelect={this.onSelectChoice.bind(this)}
           />
         </div>
       )
@@ -214,13 +181,23 @@ export default class VideoPage extends Component {
     this.setState({currentSlide: index})
   }
 
-  onFinish() {
+  onQuestionsFinish() {
     this.setState({resultModalShown: true})
   }
 
-  onSelect(index) {
+  onSelectChoice(index) {
     let userAnswers = this.state.userAnswers;
     userAnswers[this.state.currentSlide] = index;
     this.setState({userAnswers})
+  }
+
+  onDescriptionEditFinish(params, callback) {
+    this.props.dispatch(editVideoPage(params));
+    callback();
+  }
+
+  onVideoDelete() {
+    this.props.dispatch(deleteVideo(this.props.videoId));
+    this.props.dispatch(push('/contents'));
   }
 }

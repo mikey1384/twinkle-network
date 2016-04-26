@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import Header from 'containers/Header';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
@@ -15,6 +16,10 @@ export default class App extends React.Component {
     getPinnedPlaylists,
     getPlaylists
   ];
+
+  componentDidUpdate() {
+    ReactDOM.findDOMNode(this).scrollIntoView();
+  }
 
   render() {
     return (

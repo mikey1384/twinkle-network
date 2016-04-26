@@ -15,20 +15,35 @@ import NotFound from 'components/NotFound';
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import * as reducers from 'reducers';
+import { routerReducer, routerMiddleware } from 'react-router-redux'
 import promiseMiddleware from 'lib/promiseMiddleware';
 import { loadVideoPage } from 'actions/VideoActions';
+import { browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 let storeElements = [
-  combineReducers(reducers)
+  combineReducers({
+    ...reducers,
+    routing: routerReducer
+  })
+]
+let middlewares = [
+  promiseMiddleware
 ]
 
-if (typeof window !== 'undefined') storeElements.push(window.__INITIAL_STATE__);
+if (typeof window !== 'undefined') {
+  storeElements.push(window.__INITIAL_STATE__);
+  if (browserHistory) middlewares.push(routerMiddleware(browserHistory));
+}
+
 export const store = createStore(
   ...storeElements,
   compose(
-    applyMiddleware(promiseMiddleware)
+    applyMiddleware(...middlewares)
   )
 );
+
+export const history = browserHistory ? syncHistoryWithStore(browserHistory, store) : null;
 
 export const routes = (
   <Route name="app" component={App} path="/">
@@ -52,14 +67,6 @@ export const routes = (
 );
 
 function onVideoPageEnter(nextState, replaceState, callback) {
-  let unsubscribe;
-  function onStateChanged() {
-    const state = store.getState();
-    if (state.VideoReducer.videoPage.title) {
-      unsubscribe();
-      callback();
-    }
-  }
-  unsubscribe = store.subscribe(onStateChanged);
   store.dispatch(loadVideoPage(nextState.params));
+  callback();
 }

@@ -3,13 +3,7 @@ const defaultState = {
   loadMoreButton: false,
   allVideosLoaded: false,
   addVideoModalShown: false,
-  videoPage: {
-    title: null,
-    description: null,
-    videocode: null,
-    uploader: null,
-    questions: []
-  }
+  videoPage: {}
 };
 
 export default function VideoReducer(state = defaultState, action) {
@@ -98,9 +92,16 @@ export default function VideoReducer(state = defaultState, action) {
     case 'LOAD_VIDEO_PAGE':
       if (action.res.data.error) {
         console.error(action.res.data.error);
-        return state;
+        return {
+          ...state,
+          videoPage: {
+            videoId: 0
+          }
+        };
       }
-      const videoPageVariables = { ...action.res.data };
+      const videoPageVariables = {
+        ...action.res.data
+      };
       return {
         ...state,
         videoPage: videoPageVariables
@@ -108,14 +109,25 @@ export default function VideoReducer(state = defaultState, action) {
     case 'RESET_VIDEO_PAGE':
       return {
         ...state,
-        videoPage: {
-          title: null,
-          description: null,
-          videocode: null,
-          uploader: null,
-          questions: []
+        videoPage: {}
+      }
+    case 'EDIT_VIDEO_PAGE':
+      if (action.res.data.success) {
+        const description = (action.params.description === '') ?
+        'No description' : processedString(action.params.description);
+        return {
+          ...state,
+          videoPage: {
+            ...state.videoPage,
+            title: action.params.title,
+            description
+          }
         }
       }
+      if (action.res.data.error) {
+        console.error(error);
+      }
+      return state;
     case 'RESET_VID_STATE':
       return {
         ...state,
@@ -127,4 +139,29 @@ export default function VideoReducer(state = defaultState, action) {
     default:
       return state;
   }
+}
+
+function processedString(string) {
+  var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  var tempString = string
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/\\/g, '\\\\')
+  .replace(/\r?\n/g, '<br>')
+  .replace(regex,"<a href=\"$1\" target=\"_blank\">$1</a>");
+  var newString = "";
+  while(tempString.length > 0){
+    var position = tempString.indexOf("href=\"");
+    if(position === -1){
+      newString += tempString;
+      break;
+    }
+    newString += tempString.substring(0, position + 6);
+    tempString = tempString.substring(position + 6, tempString.length);
+    if (tempString.indexOf("://") > 8 || tempString.indexOf("://") === -1) {
+      newString += "http://";
+    }
+  }
+  return newString;
 }
