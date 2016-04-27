@@ -7,6 +7,7 @@ import PageTab from './PageTab';
 import Comments from './Comments';
 import Description from './Description';
 import ResultModal from './Modals/ResultModal';
+import QuestionsBuilder from './Modals/QuestionsBuilder';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 
 @connect(
@@ -24,7 +25,8 @@ export default class VideoPage extends Component {
     userAnswers: [],
     resultModalShown: false,
     editModalShown: false,
-    confirmModalShown: false
+    confirmModalShown: false,
+    questionsBuilderShown: false
   }
 
   componentWillUnmount() {
@@ -73,22 +75,23 @@ export default class VideoPage extends Component {
               paddingTop: '3em'
             }}
           >
-            <div
-              className={`${youtubeIframeContainerClassName}`}
-            >
-              <iframe
-                key={this.props.videoId}
-                className={`${youtubeIframeClassName}`}
-                frameBorder="0"
-                allowFullScreen="1"
-                title={this.props.title}
-                width="640"
-                height="360"
-                src={`https://www.youtube.com/embed/${this.props.videocode}`}>
-              </iframe>
-            </div>
-            {
-              !watchTabActive && this.props.questions.length > 0 &&
+            { !this.state.questionsBuilderShown &&
+              <div
+                className={`${youtubeIframeContainerClassName}`}
+              >
+                <iframe
+                  key={this.props.videoId}
+                  className={`${youtubeIframeClassName}`}
+                  frameBorder="0"
+                  allowFullScreen="1"
+                  title={this.props.title}
+                  width="640"
+                  height="360"
+                  src={`https://www.youtube.com/embed/${this.props.videocode}`}>
+                </iframe>
+              </div>
+            }
+            { !watchTabActive && this.props.questions.length > 0 &&
               <Carousel
                 slidesToShow={1}
                 slidesToScroll={1}
@@ -100,13 +103,16 @@ export default class VideoPage extends Component {
                 {this.renderSlides()}
               </Carousel>
             }
-            {
-              !watchTabActive && this.props.questions.length === 0 &&
+            { !watchTabActive && this.props.questions.length === 0 &&
               <div className="text-center">
                 <p>There are no questions yet.</p>
-                <button className="btn btn-default"
-                  style={{marginTop: '1em'}}
-                >Add Questions</button>
+                { userId == uploaderId &&
+                  <button
+                    className="btn btn-default"
+                    style={{marginTop: '1em'}}
+                    onClick={ () => this.setState({questionsBuilderShown: true}) }
+                  >Add Questions</button>
+                }
               </div>
             }
           </div>
@@ -126,6 +132,14 @@ export default class VideoPage extends Component {
             show={true}
             onHide={ () => this.setState({confirmModalShown: false}) }
             onConfirm={this.onVideoDelete.bind(this)}
+          />
+        }
+        { this.state.questionsBuilderShown &&
+          <QuestionsBuilder
+            title={title}
+            videocode={this.props.videocode}
+            show={true}
+            onHide={ () => this.setState({questionsBuilderShown: false}) }
           />
         }
       </div>
@@ -156,7 +170,6 @@ export default class VideoPage extends Component {
             style={{marginTop: '2em'}}
             listItems={listItems}
             inputType="radio"
-            name="questions"
             onSelect={this.onSelectChoice.bind(this)}
           />
         </div>

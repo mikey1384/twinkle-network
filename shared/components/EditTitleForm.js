@@ -1,38 +1,37 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
 import listensToClickOutside from 'react-onclickoutside/decorator';
-import ReactDOM from 'react-dom';
 
-class EditTitleForm extends Component {
-  componentDidMount () {
-    ReactDOM.findDOMNode(this.refs.editTitleInput).focus();
+@listensToClickOutside()
+export default class EditTitleForm extends Component {
+  state = {
+    title: this.props.title
   }
+
   handleClickOutside = (event) => {
-    this.props.onEditCancel();
+    this.props.onClickOutSide();
   }
-  onEditSubmit(props) {
-    this.props.onEditSubmit(props);
+  onEditSubmit(event, title) {
+    event.preventDefault();
+    this.props.onEditSubmit(title);
   }
 
   render () {
-    const { fields: { title }, handleSubmit } = this.props;
+    const { title } = this.state;
     return (
-      <form onSubmit={ handleSubmit(this.onEditSubmit.bind(this)) }>
+      <form
+        {...this.props}
+        onSubmit={ event => this.onEditSubmit(event, title) }
+      >
         <input
+          autoFocus
           ref="editTitleInput"
           type="text"
           className="form-control"
           placeholder="Enter Title..."
-          { ...title }
+          value={title}
+          onChange={event => this.setState({title: event.target.value})}
         />
       </form>
     )
   }
 }
-
-EditTitleForm = reduxForm({
-  form: 'EditTitleForm',
-  fields: ['title']
-})(listensToClickOutside(EditTitleForm));
-
-export default EditTitleForm;

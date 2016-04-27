@@ -306,7 +306,7 @@ app.post('/playlist', (req, res) => {
         const query = [
           'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
           'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-          'WHERE a.playlistid = ?'
+          'WHERE a.playlistid = ? ORDER BY a.id'
         ].join('');
         pool.query(query, playlistId, (err, rows) => {
           callback(err, {
@@ -485,9 +485,10 @@ app.post('/playlist/edit/title', (req, res) => {
 })
 
 app.post('/playlist/change/videos', (req, res) => {
-  const {playlistId, selectedVideos} = req.body,
-        session = req.session.sessioncode,
-        taskArray = [];
+  const {playlistId, selectedVideos} = req.body;
+  const session = req.session.sessioncode;
+  const taskArray = [];
+
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
@@ -520,7 +521,7 @@ app.post('/playlist/change/videos', (req, res) => {
         const query = [
           'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
           'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-          'WHERE a.playlistid = ?'
+          'WHERE a.playlistid = ? ORDER BY a.id'
         ].join('');
         pool.query(query, playlistId, (err, rows) => {
           callback(err, rows)

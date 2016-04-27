@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import VideoThumb from './VideoThumb';
+import VideoThumb from './ModalVideoThumb';
 
 export default class SelectVideosForm extends Component {
   render() {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export default class ListGroup extends Component {
   render() {
-    const { listItems, inputType, name, onSelect } = this.props;
+    const { listItems, inputType, onSelect } = this.props;
     return (
       <div
         className="row container-fluid unselectable"
@@ -68,7 +68,6 @@ export default class ListGroup extends Component {
                 >
                   <input
                     type={inputType}
-                    name={name}
                     onChange={() => onSelect(index)}
                     checked={listItem.checked}
                     style={{

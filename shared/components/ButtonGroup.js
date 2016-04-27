@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export default class ButtonGroup extends Component {
   render() {
-    const { pullRight, buttons } = this.props;
+    const { buttons } = this.props;
     return (
       <div
         {...this.props}

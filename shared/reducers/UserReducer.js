@@ -49,7 +49,7 @@ export default function UserReducer(state = defaultState, action) {
     } else {
       return {
         ...state,
-        loginError: action.res.data.result
+        loginError: action.data.result
       }
     }
     case 'SIGNIN_LOGOUT':

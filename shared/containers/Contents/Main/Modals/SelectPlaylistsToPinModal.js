@@ -43,7 +43,6 @@ export default class SelectPlaylistsToPinModal extends Component {
           { selectTabActive &&
             <div>
               <CheckListGroup
-                name="selectPlaylist"
                 inputType="checkbox"
                 onSelect={this.onSelect.bind(this)}
                 listItems={
@@ -76,7 +75,6 @@ export default class SelectPlaylistsToPinModal extends Component {
           { !selectTabActive &&
             <div>
               <CheckListGroup
-                name="deselectPlaylist"
                 inputType="checkbox"
                 onSelect={this.onDeselect.bind(this)}
                 listItems={

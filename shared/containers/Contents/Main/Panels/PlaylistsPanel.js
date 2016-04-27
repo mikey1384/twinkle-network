@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PlaylistCarousel from '../PlaylistCarousel';
+import PlaylistCarousel from '../Carousels/PlaylistCarousel';
 
 class PlaylistsPanel extends Component {
   state = {

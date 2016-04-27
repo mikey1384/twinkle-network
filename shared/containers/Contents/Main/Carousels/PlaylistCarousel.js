@@ -3,7 +3,7 @@ import Carousel from 'nuka-carousel';
 import VideoThumb from 'components/VideoThumb';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTitleForm from 'components/EditTitleForm';
-import EditPlaylistModal from './Modals/EditPlaylistModal';
+import EditPlaylistModal from '../Modals/EditPlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 
 export default class PlaylistCarousel extends Component {
@@ -44,11 +44,13 @@ export default class PlaylistCarousel extends Component {
     this.setState({editPlaylistModalShown: true});
   }
 
-  onEditedTitleSubmit(props) {
-    const { title, editPlaylistTitle, id } = this.props;
-    props['playlistId'] = id;
-    if (props.title && props.title !== title) {
-      editPlaylistTitle(props, this.props.arrayNumber, this);
+  onEditedTitleSubmit(title) {
+    const { editPlaylistTitle, id } = this.props;
+    const playlistId = id;
+    if (title && title !== this.props.title) {
+      editPlaylistTitle({title, playlistId}, this.props.arrayNumber, this);
+    } else {
+      this.setState({onEdit: false})
     }
   }
 
@@ -71,11 +73,6 @@ export default class PlaylistCarousel extends Component {
     const selectedVideos = this.props.playlist.map(thumb => {
       return thumb.videoid;
     })
-    const initialTitleFormValues = {
-      initialValues: {
-        title: title
-      }
-    }
     const menuProps = [
       {
         label: 'Edit Title',
@@ -108,9 +105,10 @@ export default class PlaylistCarousel extends Component {
               }}
             >
               <EditTitleForm
-                {...initialTitleFormValues}
+                title={ this.props.title }
                 onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
                 onEditCancel={ this.onEditTitleCancel.bind(this) }
+                onClickOutSide={ this.onEditTitleCancel.bind(this) }
               />
             </div>
             :
