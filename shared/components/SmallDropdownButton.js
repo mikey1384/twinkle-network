@@ -42,7 +42,8 @@ class SmallDropdownButton extends Component {
         style={{
           position: 'absolute',
           right: this.props.rightMargin || '0px',
-          marginRight: '2rem'
+          marginRight: '2rem',
+          zIndex: '2000'
         }}>
         <button className="dropdown-toggle" onClick={ () => this.setState({menuDisplayed: !menuDisplayed})}>
           <span className="glyphicon glyphicon-pencil"></span>
