@@ -293,6 +293,7 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'RESET_PL_MODAL_STATE':
       return {
+        ...state,
         videoThumbsForModal: [],
         loadMoreButtonForModal: false,
         allVideosLoadedForModal: false,
