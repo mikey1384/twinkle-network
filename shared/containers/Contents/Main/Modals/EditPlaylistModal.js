@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { closeEditPlaylistModal, changePlaylistVideosAsync, getMoreVideosForModal } from 'actions/PlaylistActions';
+import { closeEditPlaylistModal, changePlaylistVideosAsync, getMoreVideosForModalAsync } from 'actions/PlaylistActions';
 import SelectVideosForm from './SelectVideosForm';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
@@ -35,7 +35,7 @@ export default class EditPlaylistModal extends Component {
     };
     const lastId = last(videos) ? last(videos).id : 0;
     const loadMoreVideos = () => {
-      dispatch(getMoreVideosForModal(lastId));
+      dispatch(getMoreVideosForModalAsync(lastId));
     }
     const modalBody = (modalType) => {
       switch (modalType) {

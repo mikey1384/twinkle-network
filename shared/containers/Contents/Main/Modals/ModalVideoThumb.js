@@ -25,9 +25,15 @@ class VideoThumb extends Component {
             }
           }
         >
-          <img
-            src={`http://img.youtube.com/vi/${video.videocode}/0.jpg`}
-          />
+          <div
+            style={{
+              backgroundImage: 'url(' + `http://img.youtube.com/vi/${video.videocode}/0.jpg` + ')',
+              backgroundSize: '100% 100%',
+              backgroundRepeat: 'no-repeat',
+              height: '13rem'
+            }}
+          >
+          </div>
           <div className="caption">
             <div>
               <h5 style={{

@@ -25,6 +25,7 @@ export default class PlaylistCarousel extends Component {
             title: thumb.video_title,
             uploadername: thumb.video_uploader
           }}
+          height='18rem'
         />
       )
     })

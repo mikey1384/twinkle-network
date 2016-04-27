@@ -72,9 +72,15 @@ export default class VideoThumb extends Component {
             />
           }
           <Link to={`/${this.props.to}`}>
-            <img
-              src={`http://img.youtube.com/vi/${video.videocode}/0.jpg`}
-            />
+            <div
+              style={{
+                backgroundImage: 'url(' + `http://img.youtube.com/vi/${video.videocode}/0.jpg` + ')',
+                backgroundSize: '100% 100%',
+                backgroundRepeat: 'no-repeat',
+                height: this.props.height
+              }}
+            >
+            </div>
           </Link>
           <div className="caption"
             style={{
