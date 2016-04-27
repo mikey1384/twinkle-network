@@ -156,7 +156,7 @@ export default class PlaylistCarousel extends Component {
   }
 
   onEditPlaylistHide() {
-    this.props.resetPlaylistState();
+    this.props.resetPlaylistModalState();
     this.setState({editPlaylistModalShown: false});
   }
 }
