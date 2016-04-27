@@ -17,7 +17,7 @@ class PlaylistsPanel extends Component {
           {...playlist}
           editable={editable}
           editPlaylistTitle={this.props.editPlaylistTitleAsync}
-          resetPlaylistState={this.props.resetPlaylistState}
+          resetPlaylistModalState={this.props.resetPlaylistModalState}
           deletePlaylist={this.props.deletePlaylistAsync}
           openChangePlaylistVideosModal={this.props.openChangePlaylistVideosModalAsync}
           openReorderPlaylistVideosModal={this.props.openReorderPlaylistVideosModal}
