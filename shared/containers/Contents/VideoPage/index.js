@@ -94,6 +94,7 @@ export default class VideoPage extends Component {
             { !watchTabActive && questions.length > 0 &&
               <Carousel
                 showQuestionsBuilder={ () => this.setState({questionsBuilderShown: true})}
+                isUploader={userId == uploaderId}
                 slidesToShow={1}
                 slidesToScroll={1}
                 slideIndex={this.state.currentSlide}
