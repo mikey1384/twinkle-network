@@ -9,7 +9,7 @@ export default class SortableListGroup extends Component {
     return (
       <ul
         className="list-group unselectable"
-        style={{cursor: 'pointer'}}
+        style={{cursor: 'ns-resize'}}
       >
         {
           this.props.listItems.map((item, index) => {

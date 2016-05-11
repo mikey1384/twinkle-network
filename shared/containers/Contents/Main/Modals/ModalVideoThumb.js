@@ -29,7 +29,7 @@ class VideoThumb extends Component {
             style={{
               position: 'relative',
               overflow: 'hidden',
-              paddingBottom: '70%'
+              paddingBottom: '75%'
             }}
           >
             <img

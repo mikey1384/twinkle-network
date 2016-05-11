@@ -106,23 +106,35 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: videoPageVariables
       }
-      case 'EDIT_VIDEO_PAGE':
-        if (action.data.success) {
-          const description = (action.params.description === '') ?
-          'No description' : processedString(action.params.description);
-          return {
-            ...state,
-            videoPage: {
-              ...state.videoPage,
-              title: action.params.title,
-              description
-            }
+    case 'UPLOAD_QUESTIONS':
+      if (action.data.error) {
+        console.error(action.data.error);
+        return state;
+      }
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          questions: action.data.questions
+        }
+      }
+    case 'EDIT_VIDEO_PAGE':
+      if (action.data.success) {
+        const description = (action.params.description === '') ?
+        'No description' : processedString(action.params.description);
+        return {
+          ...state,
+          videoPage: {
+            ...state.videoPage,
+            title: action.params.title,
+            description
           }
         }
-        if (action.data.error) {
-          console.error(error);
-        }
-        return state;
+      }
+      if (action.data.error) {
+        console.error(error);
+      }
+      return state;
     case 'RESET_VIDEO_PAGE':
       return {
         ...state,

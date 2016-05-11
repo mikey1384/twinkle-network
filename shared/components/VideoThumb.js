@@ -76,11 +76,11 @@ export default class VideoThumb extends Component {
               style={{
                 position: 'relative',
                 overflow: 'hidden',
-                paddingBottom: '70%'
+                paddingBottom: '75%'
               }}
             >
               <img
-                src={`http://img.youtube.com/vi/${video.videocode}/0.jpg`}
+                src={`https://img.youtube.com/vi/${video.videocode}/0.jpg`}
                 style={{
                   width: '100%',
                   position: 'absolute',

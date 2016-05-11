@@ -106,12 +106,10 @@ app.delete('/video', (req, res) => {
 })
 
 app.post('/video/edit/title', (req, res) => {
-  const { title, videoId } = req.body,
-        newTitle = processedTitleString(title),
-        session = req.session.sessioncode,
-        post = {
-          title: newTitle
-        };
+  const { title, videoId } = req.body;
+  const newTitle = processedTitleString(title);
+  const session = req.session.sessioncode;
+  const post = { title: newTitle };
 
   async.waterfall([
     (callback) => {
@@ -216,6 +214,48 @@ app.get('/video/loadPage', (req, res) => {
       res.json({error: 'Video doesn\'t exist'})
     }
   })
+})
+
+app.post('/video/questions', (req, res) => {
+  const { videoId, questions } = req.body;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    (callback) => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows) {
+          res.json({error: "noUser"})
+          return;
+        };
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      pool.query('DELETE FROM vq_questions WHERE videoid = ? AND createdby = ?', [videoId, userId], err => {
+        callback(err, userId)
+      })
+    },
+    (userId, callback) => {
+      let taskArray = [];
+      for (let i = 0; i < questions.length; i++) {
+        taskArray.push(callback => {
+          pool.query('INSERT INTO vq_questions SET ?', questions[i], err => {
+            callback(err)
+          })
+        })
+      }
+      async.series(taskArray, (err, results) => {
+        callback(err, true)
+      })
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      res.json({error: err});
+      return;
+    }
+    res.json({success});
+  });
 })
 
 app.get('/playlist', (req, res) => {

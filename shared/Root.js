@@ -16,7 +16,6 @@ import NotFound from 'components/NotFound';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import * as reducers from 'reducers';
 import { routerReducer, routerMiddleware } from 'react-router-redux'
-import promiseMiddleware from 'lib/promiseMiddleware';
 import ReduxThunk from 'redux-thunk';
 import { loadVideoPageAsync } from 'actions/VideoActions';
 import { browserHistory } from 'react-router';

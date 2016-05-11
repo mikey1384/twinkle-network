@@ -125,6 +125,41 @@ export function deleteVideoAsync({videoId, arrayNumber, lastVideoId}, sender) {
   }
 }
 
+export function uploadQuestions(data) {
+  return {
+    type: 'UPLOAD_QUESTIONS',
+    data
+  }
+}
+
+export function uploadQuestionsAsync(data, callback) {
+  return dispatch => {
+    request.post(`${API_URL}/questions`, data).then(
+      response => {
+        if (response.data.success) {
+          const questions = data.questions.map(row => {
+            return {
+              title: row.questiontitle,
+              choices: [
+                row.choice1,
+                row.choice2,
+                row.choice3,
+                row.choice4,
+                row.choice5
+              ],
+              correctChoice: row.correctchoice
+            }
+          })
+          dispatch(uploadQuestions({questions}));
+          callback();
+        } else {
+          dispatch(uploadQuestions({error: response.data.error || "Error"}))
+        }
+      }
+    )
+  }
+}
+
 export function openAddVideoModal() {
   return {
     type: 'VID_MODAL_OPEN'

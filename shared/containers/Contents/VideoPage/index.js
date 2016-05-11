@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { editVideoPageAsync, resetVideoPage, deleteVideoAsync } from 'actions/VideoActions';
+import { editVideoPageAsync, resetVideoPage, deleteVideoAsync, uploadQuestionsAsync } from 'actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
 import PageTab from './PageTab';
@@ -39,7 +39,7 @@ export default class VideoPage extends Component {
         <div>Video Not Found</div>
       )
     }
-    const { uploaderId, uploaderName, description, userId, videoId, title } = this.props;
+    const { uploaderId, uploaderName, description, userId, videoId, title, questions } = this.props;
     const { watchTabActive } = this.state;
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
@@ -91,8 +91,9 @@ export default class VideoPage extends Component {
                 </iframe>
               </div>
             }
-            { !watchTabActive && this.props.questions.length > 0 &&
+            { !watchTabActive && questions.length > 0 &&
               <Carousel
+                showQuestionsBuilder={ () => this.setState({questionsBuilderShown: true})}
                 slidesToShow={1}
                 slidesToScroll={1}
                 slideIndex={this.state.currentSlide}
@@ -103,7 +104,7 @@ export default class VideoPage extends Component {
                 {this.renderSlides()}
               </Carousel>
             }
-            { !watchTabActive && this.props.questions.length === 0 &&
+            { !watchTabActive && questions.length === 0 &&
               <div className="text-center">
                 <p>There are no questions yet.</p>
                 { userId == uploaderId &&
@@ -123,7 +124,7 @@ export default class VideoPage extends Component {
             show={true}
             onHide={ () => this.setState({resultModalShown: false}) }
             numberCorrect={this.numberCorrect.bind(this)}
-            totalQuestions={this.props.questions.length}
+            totalQuestions={questions.length}
           />
         }
         { this.state.confirmModalShown &&
@@ -136,9 +137,11 @@ export default class VideoPage extends Component {
         }
         { this.state.questionsBuilderShown &&
           <QuestionsBuilder
+            questions={questions}
             title={title}
             videocode={this.props.videocode}
             show={true}
+            onSubmit={this.onQuestionsSubmit.bind(this)}
             onHide={ () => this.setState({questionsBuilderShown: false}) }
           />
         }
@@ -210,5 +213,36 @@ export default class VideoPage extends Component {
   onVideoDelete() {
     const { videoId } = this.props;
     this.props.dispatch(deleteVideoAsync({videoId}));
+  }
+
+  onQuestionsSubmit(questions) {
+    const data = {
+      videoId: this.props.videoId,
+      questions: questions.map(question => {
+        const choices = question.choices.filter(choice => {
+          return !choice.label || choice.label === '' ? false : true;
+        })
+        return {
+          videoid: this.props.videoId,
+          questiontitle: question.title,
+          correctchoice: (() => {
+            let correctChoice = 0;
+            for (let i = 0; i < choices.length; i ++) {
+              if (choices[i].checked) correctChoice = i+1;
+            }
+            return correctChoice;
+          })(),
+          choice1: choices[0].label,
+          choice2: choices[1].label,
+          choice3: choices[2] ? choices[2].label : null,
+          choice4: choices[3] ? choices[3].label : null,
+          choice5: choices[4] ? choices[4].label : null,
+          createdby: this.props.userId
+        }
+      })
+    }
+    this.props.dispatch(uploadQuestionsAsync(data, () => {
+      this.setState({questionsBuilderShown: false})
+    }));
   }
 }
