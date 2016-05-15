@@ -79,9 +79,8 @@ export default class ListGroup extends Component {
                   className="list-group-item check-list-item"
                   style={rightStyle}
                   onClick={() => onSelect(index)}
-                >
-                  <span>{listItem.label}</span>
-                </div>
+                  dangerouslySetInnerHTML={{__html: listItem.label}}
+                />
               </div>
             )
           })

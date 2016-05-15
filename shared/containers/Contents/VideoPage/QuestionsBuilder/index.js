@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Modal } from 'react-bootstrap';
-import QuestionBlock from '../QuestionBlock';
+import QuestionBlock from './QuestionBlock';
 import ButtonGroup from 'components/ButtonGroup';
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContext } from 'react-dnd';
-import QuestionsListGroup from '../QuestionsListGroup';
+import QuestionsListGroup from './QuestionsListGroup';
 import { connect } from 'react-redux';
 
 

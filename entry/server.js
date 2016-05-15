@@ -6,18 +6,18 @@ import createLocation from 'history/lib/createLocation';
 import { Provider } from 'react-redux';
 import path from 'path';
 import session from 'client-sessions';
-import { siteSession } from './siteConfig';
 import { routes, store } from 'Root';
-import { initActions } from './shared/actions';
+import { initActions } from '../shared/actions';
+import { siteSession } from '../siteConfig';
 
 const app = express();
 
 if (process.env.NODE_ENV !== 'production') {
-  require('./webpack.dev').default(app);
+  require('../webpack.dev').default(app);
 }
 
 app.use(express.static(path.join(__dirname, 'dist')));
-app.use('/api', require('./api'));
+app.use('/api', require('../api'));
 app.use(siteSession());
 app.use((req, res) => {
   global.SESSION = req.session;

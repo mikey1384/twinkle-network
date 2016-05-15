@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 export default class ResultModal extends Component {

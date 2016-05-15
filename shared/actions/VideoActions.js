@@ -50,11 +50,47 @@ export function loadVideoPage(data) {
   }
 }
 
-export function loadVideoPageAsync(params) {
+export function loadVideoPageAsync(params, cb) {
   return dispatch => {
     request.get(`${API_URL}/loadPage?videoId=${params.videoId}`).then(
       response => {
         dispatch(loadVideoPage(response.data));
+        dispatch(loadVideoCommentsAsync(params.videoId));
+        if (cb) cb();
+      }
+    )
+  }
+}
+
+export function loadVideoComments(data) {
+  return {
+    type: 'LOAD_VIDEO_COMMENTS',
+    data
+  }
+}
+
+export function loadVideoCommentsAsync(videoId) {
+  return dispatch => {
+    request.get(`${API_URL}/loadComments?videoId=${videoId}`).then(
+      response => {
+        dispatch(loadVideoComments(response.data))
+      }
+    )
+  }
+}
+
+export function likeVideo(data) {
+  return {
+    type: 'VIDEO_LIKE',
+    data
+  }
+}
+
+export function likeVideoAsync(videoId) {
+  return dispatch => {
+    request.post(`${API_URL}/like`, {videoId}).then(
+      response => {
+        dispatch(likeVideo(response.data));
       }
     )
   }

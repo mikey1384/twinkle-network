@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: [
-    './client'
+    './entry/client'
   ],
   resolve: {
     modulesDirectories: ['node_modules', 'shared'],

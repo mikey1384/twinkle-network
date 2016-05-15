@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
-import ReactDOM from 'react-dom';
 import ConfirmModal from './Modals/ConfirmModal';
 import { Link } from 'react-router';
 

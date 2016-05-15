@@ -32,7 +32,7 @@ export default function(app) {
     devtool: 'inline-source-map',
     entry:   [
       'webpack-hot-middleware/client',
-      './client'
+      './entry/client'
     ],
     module: {
       loaders: [

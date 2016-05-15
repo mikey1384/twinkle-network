@@ -3,10 +3,10 @@ import bodyParser from 'body-parser';
 import async from 'async';
 import passwordHash from 'password-hash';
 import crypto from 'crypto';
+import { pool, siteSession } from '../siteConfig';
 import { userExists, isFalseClaim } from './UserHelper';
 import { fetchedVideoCodeFromURL, processedTitleString, processedString, capitalize } from './StringHelper';
 import { fetchPlaylists } from './PlaylistHelper';
-import { pool, siteSession } from '../siteConfig';
 
 const app = express();
 
@@ -183,23 +183,46 @@ app.get('/video/loadPage', (req, res) => {
     }
     if (rows[0]) {
       const { videoId, title, description, videocode, uploaderId, uploaderName } = rows[0];
-      pool.query('SELECT * FROM vq_questions WHERE videoid = ? AND isdraft = 0', videoId, (err, rows) => {
-        let questions = [];
-        if (rows) {
-          questions = rows.map(row => {
-            return {
-              title: row.questiontitle,
-              choices: [
-                row.choice1,
-                row.choice2,
-                row.choice3,
-                row.choice4,
-                row.choice5
-              ],
-              correctChoice: row.correctchoice
+      async.parallel([
+        (callback) => {
+          pool.query('SELECT * FROM vq_questions WHERE videoid = ? AND isdraft = 0', videoId, (err, rows) => {
+            let questions = [];
+            if (rows) {
+              questions = rows.map(row => {
+                return {
+                  title: row.questiontitle,
+                  choices: [
+                    row.choice1,
+                    row.choice2,
+                    row.choice3,
+                    row.choice4,
+                    row.choice5
+                  ],
+                  correctChoice: row.correctchoice
+                }
+              })
             }
+            callback(err, questions);
+          })
+        },
+        (callback) => {
+          let likes = [];
+          let query = [
+            'SELECT a.userId, b.username ',
+            'FROM vq_video_likes a JOIN users b ON a.userId = b.id ',
+            'WHERE a.videoId = ?'
+          ].join('');
+          pool.query(query, videoId, (err, rows) => {
+            likes = rows.map(row => {
+              return {
+                userId: row.userId,
+                username: row.username
+              }
+            })
+            callback(err, likes);
           })
         }
+      ], (err, results) => {
         res.json({
           videoId,
           title,
@@ -207,12 +230,46 @@ app.get('/video/loadPage', (req, res) => {
           videocode,
           uploaderId,
           uploaderName,
-          questions
+          questions: results[0],
+          likes: results[1]
         })
-      })
+      });
     } else {
       res.json({error: 'Video doesn\'t exist'})
     }
+  })
+})
+
+app.get('/video/loadComments', (req, res) => {
+  const { videoId } = req.query;
+  const query = [
+    'SELECT a.id, a.userid, a.content, a.timeposted, b.username ',
+    'FROM vq_comments a JOIN users b ON a.userid = b.id ',
+    'WHERE videoid = ?'
+  ].join('');
+  pool.query(query, videoId, (err, rows) => {
+    if (err) {
+      res.send({error: err});
+      return;
+    }
+    if (rows.length === 0) {
+      res.send({
+        noComments: true
+      })
+      return;
+    }
+    res.send({
+      comments: rows.map(row => {
+        return {
+          id: row.id,
+          posterId: row.userid,
+          posterName: row.username,
+          content: row.content,
+          timeStamp: row.timeposted
+        }
+      }),
+      noComments: false
+    })
   })
 })
 
@@ -255,6 +312,61 @@ app.post('/video/questions', (req, res) => {
       return;
     }
     res.json({success});
+  });
+})
+
+app.post('/video/like', (req, res) => {
+  const { videoId } = req.body;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    (callback) => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows) {
+          res.json({error: "noUser"})
+          return;
+        };
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      pool.query('SELECT * FROM vq_video_likes WHERE videoId = ? AND userId = ?', [videoId, userId], (err, rows) => {
+        callback(err, rows, userId);
+      })
+    },
+    (rows, userId, callback) => {
+      if (rows.length > 0) {
+        pool.query('DELETE FROM vq_video_likes WHERE videoId = ? AND userId = ?', [videoId, userId], err => {
+          callback(err);
+        })
+      }
+      else {
+        pool.query('INSERT INTO vq_video_likes SET ?', {videoId, userId}, err => {
+          callback(err);
+        })
+      }
+    }
+  ], (err) => {
+    if (err) {
+      console.error(err);
+      res.json({error: err});
+      return;
+    }
+    let likes = [];
+    let query = [
+      'SELECT a.userId, b.username ',
+      'FROM vq_video_likes a JOIN users b ON a.userId = b.id ',
+      'WHERE a.videoId = ?'
+    ].join('');
+    pool.query(query, videoId, (err, rows) => {
+      likes = rows.map(row => {
+        return {
+          userId: row.userId,
+          username: row.username
+        }
+      })
+      res.json({likes})
+    })
   });
 })
 
@@ -494,12 +606,12 @@ app.delete('/playlist', (req, res) => {
 })
 
 app.post('/playlist/edit/title', (req, res) => {
-  const { title, playlistId } = req.body,
-        newTitle = processedTitleString(title),
-        session = req.session.sessioncode,
-        post = {
-          title: newTitle
-        };
+  const { title, playlistId } = req.body;
+  const newTitle = processedTitleString(title);
+  const session = req.session.sessioncode;
+  const post = {
+    title: newTitle
+  };
 
   async.waterfall([
     (callback) => {

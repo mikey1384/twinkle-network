@@ -5,4 +5,4 @@ siteConfig.js
 .fuse_hidden*
 .DS_Store
 URL.js
-dist/bundle.js
+entry/dist/bundle.js

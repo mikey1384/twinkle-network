@@ -66,7 +66,11 @@ export const routes = (
   </Route>
 );
 
-function onVideoPageEnter(nextState, replaceState, enter) {
-  store.dispatch(loadVideoPageAsync(nextState.params));
-  enter();
+function onVideoPageEnter(nextState, replace, enter) {
+  if(browserHistory) {
+    store.dispatch(loadVideoPageAsync(nextState.params));
+    enter();
+  } else {
+    store.dispatch(loadVideoPageAsync(nextState.params, enter));
+  }
 }

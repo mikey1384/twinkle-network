@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Textarea from 'react-textarea-autosize';
+import { cleanString } from 'helpers/StringHelper';
 
 export default class EditChoiceListItem extends Component {
   render() {
@@ -18,8 +19,7 @@ export default class EditChoiceListItem extends Component {
             onChange={event => this.props.onEdit(this.props.index, event.target.value)}
             value={cleanString(this.props.text)}
             placeholder={this.props.placeholder}
-          >
-          </Textarea>
+          />
         </form>
         <span className="input pull-right">
           <input
@@ -34,13 +34,4 @@ export default class EditChoiceListItem extends Component {
       </div>
     )
   }
-}
-
-function cleanString (string) {
-	return string ?
-  string
-  .replace(/<br\s*[\/]?>/gi, "\n")
-  .replace(/&amp;/gi, "&")
-  .replace(/&lt;/gi, "<")
-  .replace(/&gt;/gi, ">") : '';
 }

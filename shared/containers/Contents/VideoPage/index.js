@@ -1,13 +1,21 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { editVideoPageAsync, resetVideoPage, deleteVideoAsync, uploadQuestionsAsync } from 'actions/VideoActions';
+import {
+  editVideoPageAsync,
+  resetVideoPage,
+  deleteVideoAsync,
+  uploadQuestionsAsync,
+  loadVideoCommentsAsync,
+  likeVideoAsync } from 'actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
 import PageTab from './PageTab';
+import VideoLikeInterface from './VideoLikeInterface';
 import Comments from './Comments';
 import Description from './Description';
 import ResultModal from './Modals/ResultModal';
-import QuestionsBuilder from './Modals/QuestionsBuilder';
+import QuestionsBuilder from './QuestionsBuilder';
+import UserListModal from 'components/Modals/UserListModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 
 @connect(
@@ -26,7 +34,8 @@ export default class VideoPage extends Component {
     resultModalShown: false,
     editModalShown: false,
     confirmModalShown: false,
-    questionsBuilderShown: false
+    questionsBuilderShown: false,
+    userListModalShown: false
   }
 
   componentWillUnmount() {
@@ -39,7 +48,17 @@ export default class VideoPage extends Component {
         <div>Video Not Found</div>
       )
     }
-    const { uploaderId, uploaderName, description, userId, videoId, title, questions } = this.props;
+    const {
+      uploaderId,
+      uploaderName,
+      description,
+      userId,
+      videoId,
+      title,
+      questions,
+      likes,
+      comments,
+      noComments } = this.props;
     const { watchTabActive } = this.state;
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
@@ -76,25 +95,33 @@ export default class VideoPage extends Component {
             }}
           >
             { !this.state.questionsBuilderShown &&
-              <div
-                className={`${youtubeIframeContainerClassName}`}
-              >
-                <iframe
-                  key={this.props.videoId}
-                  className={`${youtubeIframeClassName}`}
-                  frameBorder="0"
-                  allowFullScreen="1"
-                  title={this.props.title}
-                  width="640"
-                  height="360"
-                  src={`https://www.youtube.com/embed/${this.props.videocode}`}>
-                </iframe>
+              <div>
+                <div className={`${youtubeIframeContainerClassName}`}>
+                  <iframe
+                    key={this.props.videoId}
+                    className={`${youtubeIframeClassName}`}
+                    frameBorder="0"
+                    allowFullScreen="1"
+                    title={this.props.title}
+                    width="640"
+                    height="360"
+                    src={`https://www.youtube.com/embed/${this.props.videocode}`}>
+                  </iframe>
+                </div>
+                { watchTabActive &&
+                  <VideoLikeInterface
+                    userId={userId}
+                    likes={likes}
+                    onLikeClick={this.onVideoLikeClick.bind(this)}
+                    showLikerList={this.showLikerList.bind(this)}
+                  />
+                }
               </div>
             }
             { !watchTabActive && questions.length > 0 &&
               <Carousel
                 showQuestionsBuilder={ () => this.setState({questionsBuilderShown: true})}
-                isUploader={userId == uploaderId}
+                userIsUploader={userId == uploaderId}
                 slidesToShow={1}
                 slidesToScroll={1}
                 slideIndex={this.state.currentSlide}
@@ -119,7 +146,10 @@ export default class VideoPage extends Component {
             }
           </div>
         </div>
-        <Comments />
+        <Comments
+          comments={comments}
+          noComments={noComments}
+        />
         { this.state.resultModalShown &&
           <ResultModal
             show={true}
@@ -130,20 +160,34 @@ export default class VideoPage extends Component {
         }
         { this.state.confirmModalShown &&
           <ConfirmModal
-            title="Remove Video"
             show={true}
+            title="Remove Video"
             onHide={ () => this.setState({confirmModalShown: false}) }
             onConfirm={this.onVideoDelete.bind(this)}
           />
         }
         { this.state.questionsBuilderShown &&
           <QuestionsBuilder
+            show={true}
             questions={questions}
             title={title}
             videocode={this.props.videocode}
-            show={true}
             onSubmit={this.onQuestionsSubmit.bind(this)}
             onHide={ () => this.setState({questionsBuilderShown: false}) }
+          />
+        }
+        { this.state.userListModalShown &&
+          <UserListModal
+            show={true}
+            onHide={ () => this.setState({userListModalShown: false}) }
+            title="People who liked this video"
+            userId={userId}
+            likers={likes.map(like => {
+              return {
+                username: like.username,
+                userId: like.userId
+              }
+            })}
           />
         }
       </div>
@@ -243,7 +287,20 @@ export default class VideoPage extends Component {
       })
     }
     this.props.dispatch(uploadQuestionsAsync(data, () => {
-      this.setState({questionsBuilderShown: false})
+      this.setState({
+        questionsBuilderShown: false,
+        currentSlide: 0,
+        userAnswers: []
+      })
     }));
+  }
+
+  onVideoLikeClick() {
+    const { videoId } = this.props;
+    this.props.dispatch(likeVideoAsync(videoId));
+  }
+
+  showLikerList() {
+    this.setState({userListModalShown: true})
   }
 }

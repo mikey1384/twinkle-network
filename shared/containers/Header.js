@@ -69,7 +69,9 @@ class Header extends Component {
             }
           </Nav>
         </Navbar.Collapse>
-        <SigninModal show={signinModalShown} onHide={ () => dispatch(closeSigninModal()) } />
+        { signinModalShown &&
+          <SigninModal show={true} onHide={ () => dispatch(closeSigninModal()) } />
+        }
       </Navbar>
     )
   }

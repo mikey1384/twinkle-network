@@ -1,9 +1,14 @@
+import { processedStringWithURL } from 'helpers/StringHelper';
+
 const defaultState = {
   allVideoThumbs: [],
   loadMoreButton: false,
   allVideosLoaded: false,
   addVideoModalShown: false,
-  videoPage: {}
+  videoPage: {
+    comments: [],
+    noComments: false
+  }
 };
 
 export default function VideoReducer(state = defaultState, action) {
@@ -95,7 +100,8 @@ export default function VideoReducer(state = defaultState, action) {
         return {
           ...state,
           videoPage: {
-            videoId: 0
+            videoId: 0,
+            comments: []
           }
         };
       }
@@ -104,7 +110,35 @@ export default function VideoReducer(state = defaultState, action) {
       };
       return {
         ...state,
-        videoPage: videoPageVariables
+        videoPage: {
+          ...videoPageVariables,
+          comments: []
+        }
+      }
+    case 'LOAD_VIDEO_COMMENTS':
+      if (action.data.error) {
+        console.error(action.data.error);
+        return state;
+      }
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: action.data.comments,
+          noComments: action.data.noComments
+        }
+      }
+    case 'VIDEO_LIKE':
+      if (action.data.error) {
+        console.error(action.data.error);
+        return state;
+      }
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          likes: action.data.likes
+        }
       }
     case 'UPLOAD_QUESTIONS':
       if (action.data.error) {
@@ -121,7 +155,7 @@ export default function VideoReducer(state = defaultState, action) {
     case 'EDIT_VIDEO_PAGE':
       if (action.data.success) {
         const description = (action.params.description === '') ?
-        'No description' : processedString(action.params.description);
+        'No description' : processedStringWithURL(action.params.description);
         return {
           ...state,
           videoPage: {
@@ -138,7 +172,10 @@ export default function VideoReducer(state = defaultState, action) {
     case 'RESET_VIDEO_PAGE':
       return {
         ...state,
-        videoPage: {}
+        videoPage: {
+          comments: [],
+          noComments: false
+        }
       }
     case 'RESET_VID_STATE':
       return {
@@ -151,29 +188,4 @@ export default function VideoReducer(state = defaultState, action) {
     default:
       return state;
   }
-}
-
-function processedString(string) {
-  var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-  var tempString = string
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/\\/g, '\\\\')
-  .replace(/\r?\n/g, '<br>')
-  .replace(regex,"<a href=\"$1\" target=\"_blank\">$1</a>");
-  var newString = "";
-  while(tempString.length > 0){
-    var position = tempString.indexOf("href=\"");
-    if(position === -1){
-      newString += tempString;
-      break;
-    }
-    newString += tempString.substring(0, position + 6);
-    tempString = tempString.substring(position + 6, tempString.length);
-    if (tempString.indexOf("://") > 8 || tempString.indexOf("://") === -1) {
-      newString += "http://";
-    }
-  }
-  return newString;
 }

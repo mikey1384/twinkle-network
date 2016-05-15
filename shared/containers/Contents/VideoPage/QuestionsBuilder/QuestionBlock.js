@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ChoiceListItem from './ChoiceListItem';
 import EditChoiceListItem from './EditChoiceListItem';
 import Textarea from 'react-textarea-autosize';
+import { processedString } from 'helpers/StringHelper';
 
 export default class QuestionBlock extends Component {
   state = {
@@ -207,19 +208,4 @@ function determineChecked (choices, index) {
     }
   }
   return checked;
-}
-
-function processedString (string) {
-  return string ?
-  string
-  .replace(/<br\s*[\/]?>/gi, "\n")
-  .replace(/&amp;/gi, "&")
-  .replace(/&lt;/gi, "<")
-  .replace(/&gt;/gi, ">")
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/\\/g, '\\\\')
-  .replace(/\r?\n/g, '<br>') :
-  null;
 }
