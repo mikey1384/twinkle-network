@@ -17,7 +17,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import * as reducers from 'reducers';
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import ReduxThunk from 'redux-thunk';
-import { loadVideoPageAsync, loadVideoPageFromClientSide } from 'actions/VideoActions';
+import { loadVideoPageAsync } from 'actions/VideoActions';
 import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
@@ -68,7 +68,6 @@ export const routes = (
 
 function onVideoPageEnter(nextState, replace, enter) {
   if(browserHistory) {
-    store.dispatch(loadVideoPageFromClientSide(nextState.params.videoId));
     store.dispatch(loadVideoPageAsync(nextState.params.videoId));
     enter();
   } else {

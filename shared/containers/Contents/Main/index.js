@@ -90,7 +90,6 @@ export default class Main extends Component {
         buttonClass: 'btn-default'
       }
     ]
-
     return (
       <div>
         <PlaylistsPanel
@@ -102,6 +101,7 @@ export default class Main extends Component {
           loadMoreButton={loadMorePinnedPlaylists}
           userId={userId}
           playlists={pinnedPlaylists}
+          dispatch={dispatch}
           {...bindActionCreators(PlaylistActions, dispatch)}
         />
         <PlaylistsPanel
@@ -113,6 +113,7 @@ export default class Main extends Component {
           loadMoreButton={loadMorePlaylistsButton}
           userId={userId}
           playlists={playlists}
+          dispatch={dispatch}
           {...bindActionCreators(PlaylistActions, dispatch)}
         />
         <AllVideosPanel
@@ -123,6 +124,7 @@ export default class Main extends Component {
           userId={userId}
           videos={videos}
           onAddVideoClick={() => dispatch(VideoActions.openAddVideoModal())}
+          dispatch={dispatch}
           {...bindActionCreators(VideoActions, dispatch)}
         />
         { addVideoModalShown &&

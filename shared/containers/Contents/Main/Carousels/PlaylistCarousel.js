@@ -23,8 +23,11 @@ export default class PlaylistCarousel extends Component {
           video={{
             videocode: thumb.videocode,
             title: thumb.video_title,
+            description: thumb.video_description,
             uploadername: thumb.video_uploader
           }}
+          loadVideoPage={this.props.loadVideoPage}
+          dispatch={this.props.dispatch}
         />
       )
     })

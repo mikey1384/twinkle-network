@@ -50,13 +50,6 @@ export function loadVideoPage(data) {
   }
 }
 
-export function loadVideoPageFromClientSide(videoId) {
-  return {
-    type: 'LOAD_VIDEO_PAGE_FROM_CLIENT',
-    videoId
-  }
-}
-
 export function loadVideoPageAsync(videoId, cb) {
   return dispatch => {
     request.get(`${API_URL}/loadPage?videoId=${videoId}`).then(
@@ -66,6 +59,20 @@ export function loadVideoPageAsync(videoId, cb) {
         if (cb) cb();
       }
     )
+  }
+}
+
+export function loadVideoPageFromClientSide(data) {
+  return {
+    type: 'LOAD_VIDEO_PAGE_FROM_CLIENT',
+    data
+  }
+}
+
+export function loadVideoPageFromClientSideAsync(params, to) {
+  return dispatch => {
+    dispatch(loadVideoPageFromClientSide(params))
+    dispatch(push(`/${to}`))
   }
 }
 

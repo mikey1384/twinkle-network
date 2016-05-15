@@ -3,7 +3,7 @@ import async from 'async';
 
 const fetchPlaylistVideos = ({playlists, playlistArrayGroup, index}) => callback => {
   let query = [
-    'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
+    'SELECT a.id, a.videoid, b.title AS video_title, b.description AS video_description, b.videocode, c.username AS video_uploader ',
     'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
     'WHERE a.playlistid = ? ORDER BY a.id'
   ].join('');
