@@ -115,6 +115,29 @@ export default function VideoReducer(state = defaultState, action) {
           comments: []
         }
       }
+    case 'LOAD_VIDEO_PAGE_FROM_CLIENT':
+      const videoId = action.videoId;
+      const allVideoThumbs = state.allVideoThumbs;
+      let title;
+      let description;
+      let videocode;
+      for (let i = 0; i < allVideoThumbs.length; i++) {
+        if (allVideoThumbs[i].id == videoId) {
+          title = allVideoThumbs[i].title;
+          description = allVideoThumbs[i].description;
+          videocode = allVideoThumbs[i].videocode;
+        }
+      }
+      if (!title) return state;
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          videoId,
+          title,
+          description
+        }
+      }
     case 'LOAD_VIDEO_COMMENTS':
       if (action.data.error) {
         console.error(action.data.error);

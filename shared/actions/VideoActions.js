@@ -50,12 +50,19 @@ export function loadVideoPage(data) {
   }
 }
 
-export function loadVideoPageAsync(params, cb) {
+export function loadVideoPageFromClientSide(videoId) {
+  return {
+    type: 'LOAD_VIDEO_PAGE_FROM_CLIENT',
+    videoId
+  }
+}
+
+export function loadVideoPageAsync(videoId, cb) {
   return dispatch => {
-    request.get(`${API_URL}/loadPage?videoId=${params.videoId}`).then(
+    request.get(`${API_URL}/loadPage?videoId=${videoId}`).then(
       response => {
         dispatch(loadVideoPage(response.data));
-        dispatch(loadVideoCommentsAsync(params.videoId));
+        dispatch(loadVideoCommentsAsync(videoId));
         if (cb) cb();
       }
     )
