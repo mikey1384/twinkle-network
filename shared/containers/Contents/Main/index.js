@@ -38,6 +38,10 @@ import { connect } from 'react-redux';
 )
 
 export default class Main extends Component {
+  componentWillMount() {
+    this.props.dispatch(VideoActions.resetVideoPage())
+  }
+
   render() {
     const {
       userType,

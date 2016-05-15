@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {
   editVideoPageAsync,
-  resetVideoPage,
   deleteVideoAsync,
   uploadQuestionsAsync,
   loadVideoCommentsAsync,
@@ -36,10 +35,6 @@ export default class VideoPage extends Component {
     confirmModalShown: false,
     questionsBuilderShown: false,
     userListModalShown: false
-  }
-
-  componentWillUnmount() {
-    this.props.dispatch(resetVideoPage())
   }
 
   render() {
