@@ -121,7 +121,8 @@ export default class VideoThumb extends Component {
     this.props.dispatch(loadVideoPageFromClientSideAsync({
       title: this.props.video.title,
       description: this.props.video.description,
-      videocode: this.props.video.videocode
+      videocode: this.props.video.videocode,
+      uploaderName: this.props.video.uploadername
     }, this.props.to))
   }
 

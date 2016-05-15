@@ -122,7 +122,8 @@ export default function VideoReducer(state = defaultState, action) {
           ...state.videoPage,
           title: action.data.title,
           description: action.data.description,
-          videocode: action.data.videocode
+          videocode: action.data.videocode,
+          uploaderName: action.data.uploaderName
         }
       }
     case 'LOAD_VIDEO_COMMENTS':
