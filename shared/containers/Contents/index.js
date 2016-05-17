@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { getInitialVideos, resetVideoState } from 'actions/VideoActions';
-import { getPinnedPlaylistsAsync, getPlaylistsAsync, resetPlaylistState } from 'actions/PlaylistActions';
+import { getInitialVideos, resetVideoState } from 'redux_helpers/actions/VideoActions';
+import { getPinnedPlaylistsAsync, getPlaylistsAsync, resetPlaylistState } from 'redux_helpers/actions/PlaylistActions';
 import { connect } from 'react-redux';
 
 @connect()

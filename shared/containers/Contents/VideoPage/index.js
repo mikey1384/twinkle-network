@@ -5,7 +5,7 @@ import {
   deleteVideoAsync,
   uploadQuestionsAsync,
   loadVideoCommentsAsync,
-  likeVideoAsync } from 'actions/VideoActions';
+  likeVideoAsync } from 'redux_helpers/actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
 import PageTab from './PageTab';

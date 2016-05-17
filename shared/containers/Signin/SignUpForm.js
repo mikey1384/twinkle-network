@@ -42,6 +42,13 @@ class SignUpForm extends Component {
               {userNameFieldError ? username.error : ''}
             </span>
           </div>
+          <div className={`form-group ${passwordFieldError ? 'has-error' : ''}`}>
+            <label>Password</label>
+            <input type="password" className="form-control" placeholder="Password" {...password} />
+            <span className="help-block">
+              {passwordFieldError ? password.error : ''}
+            </span>
+          </div>
           <div className={`form-group ${firstNameFieldError ? 'has-error' : ''}`}>
             <label>First Name</label>
             <input type="text" className="form-control" placeholder="Your first name" {...firstname} />
@@ -54,13 +61,6 @@ class SignUpForm extends Component {
             <input type="text" className="form-control" placeholder="Your lastname" {...lastname} />
             <span className="help-block">
               {lastNameFieldError ? lastname.error : ''}
-            </span>
-          </div>
-          <div className={`form-group ${passwordFieldError ? 'has-error' : ''}`}>
-            <label>Password</label>
-            <input type="password" className="form-control" placeholder="Password" {...password} />
-            <span className="help-block">
-              {passwordFieldError ? password.error : ''}
             </span>
           </div>
           <div className="form-group">

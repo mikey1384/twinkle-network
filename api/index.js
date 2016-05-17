@@ -5,7 +5,12 @@ import passwordHash from 'password-hash';
 import crypto from 'crypto';
 import { pool, siteSession } from '../siteConfig';
 import { userExists, isFalseClaim } from './UserHelper';
-import { fetchedVideoCodeFromURL, processedTitleString, processedString, capitalize } from './StringHelper';
+import {
+  fetchedVideoCodeFromURL,
+  processedTitleString,
+  processedString,
+  capitalize,
+  stringIsEmpty } from './StringHelper';
 import { fetchPlaylists } from './PlaylistHelper';
 
 const app = express();
@@ -34,15 +39,17 @@ app.get('/video', (req, res) => {
 });
 
 app.post('/video', (req, res) => {
-  const rawDescription = (!req.body.description || req.body.description === '') ? "No description" : req.body.description,
-        title = processedTitleString(req.body.title),
-        description = processedString(rawDescription),
-        videocode = fetchedVideoCodeFromURL(req.body.url),
-        session = req.session.sessioncode;
+  const rawDescription = (!req.body.description || req.body.description === '') ?
+  "No description" : req.body.description;
+  const title = processedTitleString(req.body.title);
+  const description = processedString(rawDescription);
+  const videocode = fetchedVideoCodeFromURL(req.body.url);
+  const session = req.session.sessioncode;
+
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) return;
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -58,30 +65,25 @@ app.post('/video', (req, res) => {
   ], (err, result) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({result});
   });
 });
 
 app.delete('/video', (req, res) => {
-  const videoId = typeof req.query.videoId !== 'undefined' ? req.query.videoId : 0,
-        lastVideoId = typeof req.query.lastVideoId !== 'undefined' ? req.query.lastVideoId : 0,
-        session = req.session.sessioncode;
+  const videoId = typeof req.query.videoId !== 'undefined' ? req.query.videoId : 0;
+  const lastVideoId = typeof req.query.lastVideoId !== 'undefined' ? req.query.lastVideoId : 0;
+  const session = req.session.sessioncode;
 
   async.parallel([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (err) {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        const userId = rows[0].id;
+        pool.query('DELETE FROM vq_videos WHERE id = ? AND uploader = ?', [videoId, userId], (err) => {
           callback(err);
-        } else {
-          if (!rows) return;
-          const userId = rows[0].id;
-          pool.query('DELETE FROM vq_videos WHERE id = ? AND uploader = ?', [videoId, userId], (err) => {
-            callback(err);
-          })
-        }
+        })
       })
     },
     (callback) => {
@@ -98,8 +100,7 @@ app.delete('/video', (req, res) => {
   ], (err, results) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({result: results[1]});
   });
@@ -114,7 +115,7 @@ app.post('/video/edit/title', (req, res) => {
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) return;
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -127,8 +128,7 @@ app.post('/video/edit/title', (req, res) => {
   ], (err, result) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({result});
   });
@@ -136,9 +136,8 @@ app.post('/video/edit/title', (req, res) => {
 
 app.post('/video/edit/page', (req, res) => {
   let { videoId, title, description } = req.body;
-  if (title === '') {
-    res.send({error: "Title is empty"});
-    return;
+  if (stringIsEmpty(title)) {
+    return res.send({error: "Title is empty"});
   }
   if (description === '') description = 'No description';
   const session = req.session.sessioncode;
@@ -146,10 +145,7 @@ app.post('/video/edit/page', (req, res) => {
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) {
-          res.json({error: "User not found"});
-          return;
-        };
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -162,8 +158,7 @@ app.post('/video/edit/page', (req, res) => {
   ], (err, success) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({success});
   });
@@ -178,8 +173,7 @@ app.get('/video/loadPage', (req, res) => {
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {
-      res.send({error: err});
-      return;
+      return res.send({error: err});
     }
     if (rows[0]) {
       const { videoId, title, description, videocode, uploaderId, uploaderName } = rows[0];
@@ -249,14 +243,12 @@ app.get('/video/loadComments', (req, res) => {
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {
-      res.send({error: err});
-      return;
+      return res.send({error: err});
     }
     if (rows.length === 0) {
-      res.send({
+      return res.send({
         noComments: true
       })
-      return;
     }
     res.send({
       comments: rows.map(row => {
@@ -279,10 +271,7 @@ app.post('/video/questions', (req, res) => {
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) {
-          res.json({error: "noUser"})
-          return;
-        };
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -321,10 +310,7 @@ app.post('/video/like', (req, res) => {
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) {
-          res.json({error: "noUser"})
-          return;
-        };
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -349,8 +335,7 @@ app.post('/video/like', (req, res) => {
   ], (err) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     let likes = [];
     let query = [
@@ -423,16 +408,17 @@ app.get('/playlist/list', (req, res) => {
 })
 
 app.post('/playlist', (req, res) => {
-  const rawDescription = (!req.body.description || req.body.description === '') ? "No description" : req.body.description,
-        title = processedTitleString(req.body.title),
-        description = processedString(rawDescription),
-        videos = req.body.videos,
-        taskArray = [],
-        session = req.session.sessioncode;
+  const rawDescription = (!req.body.description || req.body.description === '') ?
+        "No description" : req.body.description;
+  const title = processedTitleString(req.body.title);
+  const description = processedString(rawDescription);
+  const videos = req.body.videos;
+  const taskArray = [];
+  const session = req.session.sessioncode;
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) return;
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -474,8 +460,7 @@ app.post('/playlist', (req, res) => {
   ], (err, result) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({result});
   });
@@ -491,9 +476,7 @@ app.post('/playlist/pinned', (req, res) => {
   async.waterfall([
     callback => {
       pool.query('SELECT usertype FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) {
-          return callback('Invalid User');
-        };
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -546,8 +529,7 @@ app.post('/playlist/pinned', (req, res) => {
       fetchPlaylists(query, (err, playlists) =>{
         if (err) {
           console.error(err);
-          res.send({error: err});
-          return;
+          return res.send({error: err});
         }
         res.json({playlists});
       })
@@ -556,14 +538,12 @@ app.post('/playlist/pinned', (req, res) => {
 })
 
 app.delete('/playlist', (req, res) => {
-  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : 0,
-        session = req.session.sessioncode;
+  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : 0;
+  const session = req.session.sessioncode;
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) {
-          return callback('Invalid User');
-        }
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -598,8 +578,7 @@ app.delete('/playlist', (req, res) => {
   ], (err, result) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({success: true});
   });
@@ -616,7 +595,7 @@ app.post('/playlist/edit/title', (req, res) => {
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) return;
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -629,8 +608,7 @@ app.post('/playlist/edit/title', (req, res) => {
   ], (err, result) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({result});
   });
@@ -644,7 +622,7 @@ app.post('/playlist/change/videos', (req, res) => {
   async.waterfall([
     (callback) => {
       pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
-        if (!rows) return;
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
         callback(err, rows);
       })
     },
@@ -683,8 +661,7 @@ app.post('/playlist/change/videos', (req, res) => {
   ], (err, result) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({result});
   });
@@ -742,8 +719,8 @@ app.get('/user/logout', function (req, res) {
 
 app.post('/user/login', function (req, res) {
   const { username, password } = req.body;
-  const usernameCapped = username.toUpperCase();
-  pool.query('SELECT * FROM users WHERE username = ?', usernameCapped, function (err, rows) {
+  const usernameLowered = username.toLowerCase();
+  pool.query('SELECT * FROM users WHERE username = ?', usernameLowered, function (err, rows) {
     if (!err) {
       if (userExists(rows)) {
         var hashedPass = rows[0].password;
@@ -751,7 +728,7 @@ app.post('/user/login', function (req, res) {
           req.session.sessioncode = rows[0].sessioncode;
           res.json({
             result: "success",
-            username: usernameCapped,
+            username: usernameLowered,
             usertype: rows[0].usertype,
             userId: rows[0].id
           });
@@ -798,9 +775,9 @@ app.post('/user/signup', function (req, res) {
     const hashedPass = passwordHash.generate(password);
     const sessioncode = crypto.randomBytes(64).toString('hex');
     const usertype = isTeacher ? "teacher" : "user";
-    const usernameCapped = username.toUpperCase();
+    const usernameLowered = username.toLowerCase();
     const post = {
-      username: usernameCapped,
+      username: usernameLowered,
       realname,
       email,
       password: hashedPass,
@@ -813,7 +790,7 @@ app.post('/user/signup', function (req, res) {
         req.session.sessioncode = sessioncode;
         res.json({
           result: "success",
-          username: usernameCapped,
+          username: usernameLowered,
           usertype,
           userId: result.insertId
         });

@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import Textarea from 'react-textarea-autosize';
 import { reduxForm } from 'redux-form';
 import { Modal, Button } from 'react-bootstrap';
-import { closeAddPlaylistModal, uploadPlaylistAsync, getMoreVideosForModalAsync } from 'actions/PlaylistActions';
+import {
+  closeAddPlaylistModal,
+  uploadPlaylistAsync,
+  getMoreVideosForModalAsync } from 'redux_helpers/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';

@@ -1,10 +1,10 @@
-export const fetchedVideoCodeFromURL = url => {
+export function fetchedVideoCodeFromURL(url) {
   var trimmedUrl = url.split("v=")[1].split("#")[0];
   var videoCode = trimmedUrl.split("&")[0];
   return videoCode;
 }
 
-export const processedTitleString = string => {
+export function processedTitleString(string) {
   var processedString = string
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -13,7 +13,7 @@ export const processedTitleString = string => {
   return processedString;
 }
 
-export const processedString = string => {
+export function processedString(string) {
   var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
   var tempString = string
   .replace(/&/g, '&amp;')
@@ -38,13 +38,18 @@ export const processedString = string => {
   return newString;
 }
 
-export const cleanString = (string) => {
+export function cleanString(string) {
 	var regexBr = /<br\s*[\/]?>/gi;
 	var regexAnchor = /<a[^>]*>|<\/a>/g;
 	var cleanedString = string.replace(regexBr, "\n").replace(regexAnchor, "");
 	return cleanedString;
 }
 
-export const capitalize = string => {
+export function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function stringIsEmpty(string) {
+	var checkedString = string.replace(/\s/g, "").replace(/\r?\n/g, "");
+  return (checkedString === "") ? true : false;
 }

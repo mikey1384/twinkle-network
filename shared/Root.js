@@ -14,10 +14,10 @@ import AdminOnly from 'component_wrappers/AdminOnly';
 import NotFound from 'components/NotFound';
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import * as reducers from 'reducers';
+import * as reducers from 'redux_helpers/reducers';
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import ReduxThunk from 'redux-thunk';
-import { loadVideoPageAsync } from 'actions/VideoActions';
+import { loadVideoPageAsync } from 'redux_helpers/actions/VideoActions';
 import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
@@ -66,11 +66,6 @@ export const routes = (
   </Route>
 );
 
-function onVideoPageEnter(nextState, replace, enter) {
-  if(browserHistory) {
-    store.dispatch(loadVideoPageAsync(nextState.params.videoId));
-    enter();
-  } else {
-    store.dispatch(loadVideoPageAsync(nextState.params.videoId, enter));
-  }
+function onVideoPageEnter(nextState) {
+  store.dispatch(loadVideoPageAsync(nextState.params.videoId));
 }

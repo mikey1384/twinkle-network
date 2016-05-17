@@ -3,7 +3,7 @@ import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ConfirmModal from './Modals/ConfirmModal';
 import { Link } from 'react-router';
-import { loadVideoPageFromClientSideAsync } from 'actions/VideoActions';
+import { loadVideoPageFromClientSideAsync } from 'redux_helpers/actions/VideoActions';
 
 export default class VideoThumb extends Component {
   state = {
@@ -104,7 +104,7 @@ export default class VideoThumb extends Component {
               whiteSpace: 'nowrap',
               textOverflow:'ellipsis',
               overflow:'hidden'
-            }}>{video.uploadername}</small>
+            }}>Added by <strong>{video.uploadername}</strong></small>
           </div>
         </div>
         <ConfirmModal
@@ -151,7 +151,7 @@ export default class VideoThumb extends Component {
   onDeleteConfirm () {
     const { deleteVideo, video, arrayNumber, lastVideoId } = this.props;
     const videoId = video.id;
-    deleteVideo({videoId, arrayNumber, lastVideoId}, this);
+    deleteVideo({videoId, arrayNumber, lastVideoId});
   }
 
   onHideModal () {

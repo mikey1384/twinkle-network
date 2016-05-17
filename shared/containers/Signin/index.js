@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import LoginForm from 'components/LoginForm';
-import SignUpForm from 'components/SignUpForm';
+import LoginForm from './LoginForm';
+import SignUpForm from './SignUpForm';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
-import * as UserActions from 'actions/UserActions';
+import * as UserActions from 'redux_helpers/actions/UserActions';
 
 class SigninModal extends Component {
   state = {

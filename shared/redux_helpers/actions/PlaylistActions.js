@@ -1,5 +1,7 @@
 import request from 'axios';
 import {URL} from './URL';
+import { logout, openSigninModal } from './UserActions';
+
 
 const API_URL = `${URL}/api/playlist`;
 
@@ -89,18 +91,70 @@ export function uploadPlaylist(data) {
   }
 }
 
-export function closeAddPlaylistModal() {
-  return {
-    type: 'ADD_PL_MODAL_CLOSE'
-  }
-}
-
 export function uploadPlaylistAsync(params) {
   return dispatch => {
     return request.post(API_URL, params).then(
       response => {
-        dispatch(uploadPlaylist(response.data))
-        dispatch(closeAddPlaylistModal())
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.result) {
+          dispatch(uploadPlaylist(data.result))
+          dispatch(closeAddPlaylistModal())
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function changePlaylistVideos(playlistId, data) {
+  return {
+    type: 'CHANGE_PLAYLIST_VIDEOS',
+    playlistId,
+    data
+  }
+}
+
+export function changePlaylistVideosAsync(playlistId, selectedVideos, sender) {
+  return dispatch => {
+    request.post(`${API_URL}/change/videos`, {playlistId, selectedVideos}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.result) {
+          dispatch(changePlaylistVideos(playlistId, data.result))
+          sender.props.onHide()
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function changePinnedPlaylists(data) {
+  return {
+    type: 'CHANGE_PINNED_PLAYLISTS',
+    data
+  }
+}
+
+export function changePinnedPlaylistsAsync(selectedPlaylists, callback) {
+  return dispatch => {
+    request.post(`${API_URL}/pinned`, {selectedPlaylists}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.playlists) {
+          dispatch(changePinnedPlaylists(data.playlists))
+          callback()
+        }
+        return;
       }
     )
   }
@@ -119,8 +173,40 @@ export function editPlaylistTitleAsync(params, arrayNumber, sender) {
   return dispatch => {
     request.post(`${API_URL}/edit/title`, params).then(
       response => {
-        dispatch(editPlaylistTitle(arrayNumber, params.playlistId, response.data))
-        sender.setState({onEdit: false})
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.result) {
+          dispatch(editPlaylistTitle(arrayNumber, params.playlistId, data.result))
+          sender.setState({onEdit: false})
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function deletePlaylist(data) {
+  return {
+    type: 'DELETE_PLAYLIST',
+    data
+  }
+}
+
+export function deletePlaylistAsync(playlistId, sender) {
+  return dispatch => {
+    request.delete(`${API_URL}?playlistId=${playlistId}`).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.success) {
+          dispatch(deletePlaylist(playlistId))
+          sender.setState({deleteConfirmModalShown: false})
+        }
+        return;
       }
     )
   }
@@ -140,44 +226,6 @@ export function openChangePlaylistVideosModalAsync(sender) {
       response => {
         dispatch(openChangePlaylistVideosModal(response.data))
         sender.setState({editPlaylistModalShown: true})
-      }
-    )
-  }
-}
-
-export function changePlaylistVideos(playlistId, data) {
-  return {
-    type: 'CHANGE_PLAYLIST_VIDEOS',
-    playlistId,
-    data
-  }
-}
-
-export function changePlaylistVideosAsync(playlistId, selectedVideos, sender) {
-  return dispatch => {
-    request.post(`${API_URL}/change/videos`, {playlistId, selectedVideos}).then(
-      response => {
-        dispatch(changePlaylistVideos(playlistId, response.data))
-        sender.props.onHide()
-      }
-    )
-  }
-}
-
-export function deletePlaylist(playlistId, data) {
-  return {
-    type: 'DELETE_PLAYLIST',
-    playlistId,
-    data
-  }
-}
-
-export function deletePlaylistAsync(playlistId, sender) {
-  return dispatch => {
-    request.delete(`${API_URL}?playlistId=${playlistId}`).then(
-      response => {
-        dispatch(deletePlaylist(playlistId, response.data))
-        sender.setState({deleteConfirmModalShown: false})
       }
     )
   }
@@ -213,21 +261,9 @@ export function loadMorePlaylistListAsync(playlistId) {
   }
 }
 
-export function changePinnedPlaylists(data) {
+export function closeAddPlaylistModal() {
   return {
-    type: 'CHANGE_PINNED_PLAYLISTS',
-    data
-  }
-}
-
-export function changePinnedPlaylistsAsync(selectedPlaylists, callback) {
-  return dispatch => {
-    request.post(`${API_URL}/pinned`, {selectedPlaylists}).then(
-      response => {
-        dispatch(changePinnedPlaylists(response.data))
-        callback()
-      }
-    )
+    type: 'ADD_PL_MODAL_CLOSE'
   }
 }
 
@@ -266,5 +302,14 @@ export function resetPlaylistModalState() {
 export function resetPlaylistState() {
   return {
     type: 'RESET_PL_STATE'
+  }
+}
+
+function handleError(error, dispatch) {
+  if (error.invalidSession) {
+    dispatch(logout());
+    dispatch(openSigninModal());
+  } else {
+    console.error(error);
   }
 }

@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import activeComponent from 'react-router-active-component'
 
-import * as UserActions from 'actions/UserActions';
+import * as UserActions from 'redux_helpers/actions/UserActions';
 
-import SigninModal from 'containers/SigninModal';
+import SigninModal from '../Signin';
 
 import { bindActionCreators } from 'redux';
-import AccountMenu from 'components/AccountMenu';
+import AccountMenu from './AccountMenu';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 class Header extends Component {

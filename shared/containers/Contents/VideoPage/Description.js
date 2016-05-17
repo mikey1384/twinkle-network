@@ -79,7 +79,7 @@ export default class Description extends Component {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
                 lineHeight: 'normal'
-              }}>Added by {this.props.uploaderName}
+              }}>Added by <strong>{this.props.uploaderName}</strong>
             </small>
           </div>
         </div>

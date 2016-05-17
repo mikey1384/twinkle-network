@@ -47,3 +47,8 @@ export function processedStringWithURL (string) {
   }
   return newString;
 }
+
+export function stringIsEmpty(string) {
+	var checkedString = string.replace(/\s/g, "").replace(/\r?\n/g, "");
+  return (checkedString === "") ? true : false;
+}

@@ -7,8 +7,8 @@ import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from './Modals/AddPlaylistModal';
 import { bindActionCreators } from 'redux';
-import * as VideoActions from 'actions/VideoActions';
-import * as PlaylistActions from 'actions/PlaylistActions';
+import * as VideoActions from 'redux_helpers/actions/VideoActions';
+import * as PlaylistActions from 'redux_helpers/actions/PlaylistActions';
 import { connect } from 'react-redux';
 
 @connect(

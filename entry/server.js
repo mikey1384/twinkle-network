@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import path from 'path';
 import session from 'client-sessions';
 import { routes, store } from 'Root';
-import { initActions } from '../shared/actions';
+import { initActions } from 'redux_helpers/actions';
 import { siteSession } from '../siteConfig';
 
 const app = express();
@@ -50,7 +50,6 @@ app.use((req, res) => {
           <meta charset="utf-8">
           <title>Twinkle</title>
           <link rel="stylesheet" href="/css/bootstrap.min.css">
-          <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.3.15/slick.css" />
           <link rel="stylesheet" href="/css/styles.css">
         </head>
         <body>

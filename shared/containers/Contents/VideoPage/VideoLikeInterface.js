@@ -60,7 +60,7 @@ export default class VideoLikeInterface extends Component {
           let otherLikerName = otherLikes[0].username;
           return (
             <div>
-              You and { otherLikerName } like this video.
+              You and <strong>{ otherLikerName }</strong> like this video.
             </div>
           )
         } else {
@@ -84,7 +84,7 @@ export default class VideoLikeInterface extends Component {
         const likerName = likes[0].username;
         return (
           <div>
-            {likerName} likes this video.
+            <strong>{likerName}</strong> likes this video.
           </div>
         )
       } else {
