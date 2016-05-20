@@ -234,12 +234,12 @@ app.get('/video/loadPage', (req, res) => {
   })
 })
 
-app.get('/video/loadComments', (req, res) => {
+app.get('/video/comments', (req, res) => {
   const { videoId } = req.query;
   const query = [
     'SELECT a.id, a.userid, a.content, a.timeposted, b.username ',
     'FROM vq_comments a JOIN users b ON a.userid = b.id ',
-    'WHERE videoid = ?'
+    'WHERE videoid = ? ORDER BY a.id DESC'
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {
@@ -262,6 +262,83 @@ app.get('/video/loadComments', (req, res) => {
       }),
       noComments: false
     })
+  })
+})
+
+app.post('/video/comments', (req, res) => {
+  const { videoId, comment } = req.body;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      const post = {
+        userid: userId,
+        content: processedString(comment),
+        timeposted: Math.floor(Date.now()/1000),
+        videoid: videoId
+      }
+      pool.query('INSERT INTO vq_comments SET ?', post, (err) => {
+        callback(err)
+      })
+    }
+  ], (err) => {
+    if (err) {
+      console.error(err);
+      return res.json({error: err});
+    }
+    const query = [
+      'SELECT a.id, a.userid, a.content, a.timeposted, b.username ',
+      'FROM vq_comments a JOIN users b ON a.userid = b.id ',
+      'WHERE videoid = ? ORDER BY a.id DESC'
+    ].join('');
+    pool.query(query, videoId, (err, rows) => {
+      if (err) {
+        return res.send({error: err});
+      }
+      res.send({
+        result: rows.map(row => {
+          return {
+            id: row.id,
+            posterId: row.userid,
+            posterName: row.username,
+            content: row.content,
+            timeStamp: row.timeposted
+          }
+        })
+      })
+    })
+  })
+})
+
+app.post('/video/comments/edit', (req, res) => {
+  const content = processedString(req.body.editedComment);
+  const commentId = req.body.commentId;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows);
+      })
+    },
+    (rows, callback) => {
+      const userId = rows[0].id;
+      pool.query('UPDATE vq_comments SET ? WHERE id = ? AND userid = ?', [{content}, commentId, userId], err => {
+        callback(err, true)
+      })
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      return res.send({error: err});
+    }
+    res.send({success})
   })
 })
 
@@ -297,8 +374,7 @@ app.post('/video/questions', (req, res) => {
   ], (err, success) => {
     if (err) {
       console.error(err);
-      res.json({error: err});
-      return;
+      return res.json({error: err});
     }
     res.json({success});
   });

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import listensToClickOutside from 'react-onclickoutside/decorator';
+import onClickOutside from 'react-onclickoutside';
 
-@listensToClickOutside()
-export default class EditTitleForm extends Component {
+
+class EditTitleForm extends Component {
   state = {
     title: this.props.title
   }
@@ -35,3 +35,5 @@ export default class EditTitleForm extends Component {
     )
   }
 }
+
+export default onClickOutside(EditTitleForm)

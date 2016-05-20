@@ -1,4 +1,4 @@
-export function cleanString (string) {
+export function cleanString(string) {
 	return string ?
   string
   .replace(/<br\s*[\/]?>/gi, "\n")
@@ -7,7 +7,14 @@ export function cleanString (string) {
   .replace(/&gt;/gi, ">") : '';
 }
 
-export function processedString (string) {
+export function cleanStringWithURL(string) {
+	return string ?
+	string
+	.replace(/<br\s*[\/]?>/gi, "\n")
+	.replace(/<a[^>]*>|<\/a>/g, "") : '';
+}
+
+export function processedString(string) {
   return string ?
   string
   .replace(/<br\s*[\/]?>/gi, "\n")
@@ -22,7 +29,7 @@ export function processedString (string) {
   null;
 }
 
-export function processedStringWithURL (string) {
+export function processedStringWithURL(string) {
 	if (!string) return null;
   var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
   var tempString = string

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import Textarea from 'react-textarea-autosize';
+import { cleanStringWithURL } from 'helpers/StringHelper';
 
 export default class Description extends Component {
   state = {
     onEdit: false,
     editedTitle: this.props.title,
-    editedDescription: this.cleanString(this.props.description),
+    editedDescription: cleanStringWithURL(this.props.description),
     editDoneButtonDisabled: true
   }
 
@@ -18,7 +19,7 @@ export default class Description extends Component {
     }
     if (nextProps.description !== this.props.description) {
       this.setState({
-        editedDescription: this.cleanString(nextProps.description)
+        editedDescription: cleanStringWithURL(nextProps.description)
       })
     }
   }
@@ -126,16 +127,6 @@ export default class Description extends Component {
     )
   }
 
-  cleanString(string) {
-    if (typeof string !== 'undefined') {
-      const regexBr = /<br\s*[\/]?>/gi;
-      const regexAnchor = /<a[^>]*>|<\/a>/g;
-      const cleanedString = string.replace(regexBr, "\n").replace(regexAnchor, "");
-      return cleanedString;
-    }
-    return '';
-  }
-
   onEdit() {
     this.setState({onEdit: true})
   }
@@ -143,7 +134,7 @@ export default class Description extends Component {
   determineEditButtonDoneStatus() {
     const titleIsEmpty = this.state.editedTitle === '' ? true : false;
     const titleChanged = this.state.editedTitle === this.props.title ? false : true;
-    const descriptionChanged = this.state.editedDescription === this.cleanString(this.props.description) ? false : true;
+    const descriptionChanged = this.state.editedDescription === cleanStringWithURL(this.props.description) ? false : true;
     const editDoneButtonDisabled = (!titleIsEmpty && (titleChanged || descriptionChanged)) ? false : true;
     this.setState({editDoneButtonDisabled});
   }
@@ -160,7 +151,7 @@ export default class Description extends Component {
   onEditCancel() {
     this.setState({
       editedTitle: this.props.title,
-      editedDescription: this.cleanString(this.props.description),
+      editedDescription: cleanStringWithURL(this.props.description),
       onEdit: false,
       editDoneButtonDisabled: true
     });

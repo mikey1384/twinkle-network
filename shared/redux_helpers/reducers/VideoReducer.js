@@ -123,6 +123,31 @@ export default function VideoReducer(state = defaultState, action) {
           noComments: action.data.noComments
         }
       }
+    case 'UPLOAD_VIDEO_COMMENT':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: action.data,
+          noComments: false
+        }
+      }
+    case 'EDIT_VIDEO_COMMENT':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.map(comment => {
+            if (comment.id === action.data.commentId) {
+              return {
+                ...comment,
+                content: processedStringWithURL(action.data.editedComment)
+              }
+            }
+            return comment;
+          })
+        }
+      }
     case 'VIDEO_LIKE':
       return {
         ...state,

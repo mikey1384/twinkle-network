@@ -5,7 +5,9 @@ import {
   deleteVideoAsync,
   uploadQuestionsAsync,
   loadVideoCommentsAsync,
-  likeVideoAsync } from 'redux_helpers/actions/VideoActions';
+  uploadVideoCommentAsync,
+  likeVideoAsync,
+  editVideoCommentAsync  } from 'redux_helpers/actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
 import PageTab from './PageTab';
@@ -16,6 +18,7 @@ import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import UserListModal from 'components/Modals/UserListModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import { bindActionCreators } from 'redux';
 
 @connect(
   state => ({
@@ -43,7 +46,8 @@ export default class VideoPage extends Component {
         <div>Video Not Found</div>
       )
     }
-    const {
+    let {
+      dispatch,
       uploaderId,
       uploaderName,
       description,
@@ -54,6 +58,8 @@ export default class VideoPage extends Component {
       likes,
       comments,
       noComments } = this.props;
+    likes = likes || [];
+    questions = questions || [];
     const { watchTabActive } = this.state;
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
@@ -143,7 +149,10 @@ export default class VideoPage extends Component {
         </div>
         <Comments
           comments={comments}
+          userId={userId}
           noComments={noComments}
+          onSubmit={this.onCommentSubmit.bind(this)}
+          { ...bindActionCreators({editVideoCommentAsync}, dispatch) }
         />
         { this.state.resultModalShown &&
           <ResultModal
@@ -288,6 +297,11 @@ export default class VideoPage extends Component {
         userAnswers: []
       })
     }));
+  }
+
+  onCommentSubmit(comment) {
+    const { videoId } = this.props;
+    this.props.dispatch(uploadVideoCommentAsync(comment, videoId));
   }
 
   onVideoLikeClick() {

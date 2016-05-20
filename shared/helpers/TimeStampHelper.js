@@ -18,7 +18,7 @@ export function timeSince(date) {
   }
   interval = Math.floor(seconds / 3600);
   if (interval >= 1) {
-    if (interval === 1) {interval = 'a'; s = '';};
+    if (interval === 1) {interval = 'an'; s = '';};
     return interval + " hour"+s+" ago";
   }
   interval = Math.floor(seconds / 60);

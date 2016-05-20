@@ -7,7 +7,9 @@ export default class CommentsSection extends Component {
     return (
       <div className="row container-fluid">
         <div className="container-fluid">
-          <CommentInputArea />
+          <CommentInputArea
+            onSubmit={ comment => this.props.onSubmit(comment) }
+          />
           <div className="container-fluid">
             <ul className="media-list">
               { this.renderComments() }
@@ -26,12 +28,15 @@ export default class CommentsSection extends Component {
     else if (comments.length === 0) {
       return <li className="text-center">Loading...</li>
     }
-    return comments.map(comment => {
+    return comments.map((comment, index) => {
       return (
         <Comment
+          onEditDone={this.props.editVideoCommentAsync}
+          marginTop={index !== 0}
           key={comment.id}
           commentId={comment.id}
           comment={comment}
+          userIsOwner={comment.posterId == this.props.userId}
         />
       )
     })

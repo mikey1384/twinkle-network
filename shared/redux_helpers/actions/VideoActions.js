@@ -176,6 +176,55 @@ export function uploadQuestionsAsync(params, callback) {
   }
 }
 
+export function uploadVideoComment(data) {
+  return {
+    type: 'UPLOAD_VIDEO_COMMENT',
+    data
+  }
+}
+
+export function uploadVideoCommentAsync(comment, videoId) {
+  return dispatch => {
+    request.post(`${API_URL}/comments`, {comment, videoId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.result) {
+          dispatch(uploadVideoComment(data.result));
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function editVideoComment(data) {
+  return {
+    type: 'EDIT_VIDEO_COMMENT',
+    data
+  }
+}
+
+export function editVideoCommentAsync(editedComment, commentId, cb) {
+  return dispatch => {
+    request.post(`${API_URL}/comments/edit`, {editedComment, commentId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.success) {
+          dispatch(editVideoComment({editedComment, commentId}));
+          cb();
+        }
+        return;
+      }
+    )
+  }
+}
+
 export function likeVideo(data) {
   return {
     type: 'VIDEO_LIKE',
@@ -240,7 +289,7 @@ export function loadVideoComments(data) {
 
 export function loadVideoCommentsAsync(videoId) {
   return dispatch => {
-    request.get(`${API_URL}/loadComments?videoId=${videoId}`).then(
+    request.get(`${API_URL}/comments?videoId=${videoId}`).then(
       response => {
         dispatch(loadVideoComments(response.data))
       }

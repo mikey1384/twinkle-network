@@ -42,6 +42,7 @@ export default class VideoLikeInterface extends Component {
   }
 
   renderPeopleThatLikedText(likes) {
+    //Make a component out of this.
     let userLiked = false;
     let totalLikes = 0;
     if (likes) {

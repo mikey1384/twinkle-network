@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import listensToClickOutside from 'react-onclickoutside/decorator';
+import onClickOutside from 'react-onclickoutside';
 
 class SmallDropdownButton extends Component {
   state = {
@@ -61,4 +61,4 @@ class SmallDropdownButton extends Component {
   }
 }
 
-export default listensToClickOutside(SmallDropdownButton);
+export default onClickOutside(SmallDropdownButton)
