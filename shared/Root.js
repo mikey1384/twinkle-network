@@ -18,7 +18,6 @@ import * as reducers from 'redux_helpers/reducers';
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import ReduxThunk from 'redux-thunk';
 import { loadVideoPageAsync } from 'redux_helpers/actions/VideoActions';
-import { initSessionAsync } from 'redux_helpers/actions/UserActions';
 import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
@@ -47,12 +46,7 @@ export const store = createStore(
 export const history = browserHistory ? syncHistoryWithStore(browserHistory, store) : null;
 
 export const routes = (
-  <Route
-    name="app"
-    component={App}
-    path="/"
-    onEnter={onAppEnter}
-  >
+  <Route name="app" component={App} path="/">
     <IndexRoute component={Home}/>
 
     <Route path="/profile" component={Profile}/>
@@ -74,9 +68,4 @@ export const routes = (
 
 function onVideoPageEnter(nextState) {
   store.dispatch(loadVideoPageAsync(nextState.params.videoId));
-}
-
-function onAppEnter(nextState, cb) {
-  if (browserHistory) store.dispatch(initSessionAsync());
-  cb();
 }

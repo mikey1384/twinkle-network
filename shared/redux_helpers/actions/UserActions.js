@@ -10,9 +10,9 @@ export function initSession(data) {
   }
 }
 
-export function initSessionAsync() {
+export function initSessionAsync(session) {
   return dispatch => {
-    return request.get(`${API_URL}/session`).then(
+    return request.post(`${API_URL}/session`, {session}).then(
       response => dispatch(initSession(response.data))
     )
   }

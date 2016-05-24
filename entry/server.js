@@ -20,7 +20,6 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/api', require('../api'));
 app.use(siteSession());
 app.use((req, res) => {
-  global.SESSION = req.session;
   const location = createLocation(req.url);
 
   match({ routes, location }, (err, redirectLocation, renderProps) => {
@@ -31,7 +30,7 @@ app.use((req, res) => {
 
     if(!renderProps) return res.status(404).end('Not found');
 
-    store.dispatch(initActions(renderProps.components, renderProps.params))
+    store.dispatch(initActions(req.session))
     .then(() => res.end(renderView()))
     .catch(err => res.end(err.message))
 
