@@ -1013,14 +1013,12 @@ app.post('/user/session', function (req, res) {
         return res.json({loggedIn: false});
       };
       if (rows.length > 0) {
-        res.json({
+        return res.json({
           loggedIn: true,
           userId: rows[0].id,
           usertype: rows[0].usertype,
           username: rows[0].username
         })
-      } else {
-        res.json({loggedIn: false})
       }
     })
   } else {
