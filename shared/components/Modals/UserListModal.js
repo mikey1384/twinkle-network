@@ -10,7 +10,7 @@ export default class UserListModal extends Component {
         bsSize="sm"
       >
         <Modal.Header closeButton>
-          <h4>{this.props.title}</h4>
+          <h5>{this.props.title}</h5>
         </Modal.Header>
         <Modal.Body>
           <ul

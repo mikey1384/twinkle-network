@@ -31,12 +31,18 @@ export default class CommentsSection extends Component {
     return comments.map((comment, index) => {
       return (
         <Comment
+          {...this.props}
+          comment={comment}
           onEditDone={this.props.editVideoCommentAsync}
+          onDelete={this.props.deleteVideoCommentAsync}
+          onReplyEditDone={this.props.editVideoReplyAsync}
+          onReplyDelete={this.props.deleteVideoReplyAsync}
+          onReplyLike={this.props.likeVideoReplyAsync}
+          onLikeClick={this.props.likeVideoCommentAsync}
+          onReplySubmit={this.props.uploadVideoReplyAsync}
           marginTop={index !== 0}
           key={comment.id}
           commentId={comment.id}
-          comment={comment}
-          userIsOwner={comment.posterId == this.props.userId}
         />
       )
     })

@@ -12,6 +12,7 @@ import {
   capitalize,
   stringIsEmpty } from './StringHelper';
 import { fetchPlaylists } from './PlaylistHelper';
+import { returnComments } from './VideoHelper';
 
 const app = express();
 
@@ -250,17 +251,15 @@ app.get('/video/comments', (req, res) => {
         noComments: true
       })
     }
-    res.send({
-      comments: rows.map(row => {
-        return {
-          id: row.id,
-          posterId: row.userid,
-          posterName: row.username,
-          content: row.content,
-          timeStamp: row.timeposted
-        }
-      }),
-      noComments: false
+    returnComments(rows, (err, commentsArray) => {
+      if (err) {
+        console.error(err);
+        return res.send({error: err})
+      }
+      res.send({
+        comments: commentsArray,
+        noComments: false
+      })
     })
   })
 })
@@ -301,17 +300,102 @@ app.post('/video/comments', (req, res) => {
       if (err) {
         return res.send({error: err});
       }
-      res.send({
-        result: rows.map(row => {
-          return {
-            id: row.id,
-            posterId: row.userid,
-            posterName: row.username,
-            content: row.content,
-            timeStamp: row.timeposted
-          }
+      if (rows.length === 0) {
+        return res.send({
+          noComments: true
+        })
+      }
+      returnComments(rows, (err, commentsArray) => {
+        if (err) {
+          console.error(err);
+          return res.send({error: err})
+        }
+        res.send({
+          comments: commentsArray,
+          noComments: false
         })
       })
+    })
+  })
+})
+
+app.delete('/video/comments', (req, res) => {
+  const { commentId } = req.query;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows[0].id);
+      })
+    },
+    (userId, callback) => {
+      pool.query('DELETE FROM vq_comments WHERE id = ? AND userid = ?', [commentId, userId], err => {
+        callback(err, true)
+      })
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      return res.send({error: err});
+    }
+    res.send({success})
+  })
+})
+
+app.post('/video/comments/like', (req, res) => {
+  const { commentId } = req.body;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows[0].id);
+      })
+    },
+    (userId, callback) => {
+      const query = 'SELECT * FROM vq_commentupvotes WHERE commentid = ? AND userid = ?';
+      pool.query(query, [commentId, userId], (err, rows) => {
+        callback(err, userId, rows);
+      })
+    },
+    (userId, rows, callback) => {
+      if (rows.length > 0) {
+        let query = 'DELETE FROM vq_commentupvotes WHERE commentid = ? AND userid = ?';
+        pool.query(query, [commentId, userId], err => {
+          callback(err, true);
+        })
+      } else {
+        let query = 'INSERT INTO vq_commentupvotes SET ?';
+        pool.query(query, {commentid: commentId, userid: userId}, err => {
+          callback(err, true);
+        })
+      }
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      return res.send({error: err});
+    }
+    let query = [
+      'SELECT a.id, a.userid, b.username FROM ',
+      'vq_commentupvotes a JOIN users b ON ',
+      'a.userid = b.id WHERE ',
+      'a.commentid = ?'
+    ].join('')
+    pool.query(query, commentId, (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.send({error: err});
+      }
+      res.send({
+        likes: rows.map(row => {
+          return {
+            userId: row.userid,
+            username: row.username
+          }
+        })
+      });
     })
   })
 })
@@ -330,6 +414,163 @@ app.post('/video/comments/edit', (req, res) => {
     (rows, callback) => {
       const userId = rows[0].id;
       pool.query('UPDATE vq_comments SET ? WHERE id = ? AND userid = ?', [{content}, commentId, userId], err => {
+        callback(err, true)
+      })
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      return res.send({error: err});
+    }
+    res.send({success})
+  })
+})
+
+app.post('/video/replies', (req, res) => {
+  const { commentId, videoId, reply } = req.body;
+  const processedReply = processedString(reply);
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows[0].id);
+      })
+    },
+    (userId, callback) => {
+      const post = {
+        userid: userId,
+        content: processedReply,
+        timeposted: Math.floor(Date.now()/1000),
+        commentid: commentId,
+        videoid: videoId
+      }
+      pool.query('INSERT INTO vq_replies SET ?', post, (err, result) => {
+        callback(err, result.insertId)
+      })
+    }
+  ], (err, replyId) => {
+    if (err) {
+      console.error(err);
+      return res.send({error: err});
+    }
+    let query = [
+      'SELECT a.id, a.content, a.timeposted, a.userid, b.username FROM ',
+      'vq_replies a JOIN users b ON a.userid = b.id WHERE ',
+      'a.id = ?'
+    ].join('')
+    pool.query(query, replyId, (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.send({error: err});
+      }
+      res.send({
+        result: {
+          id: rows[0].id,
+          content: rows[0].content,
+          timeStamp: rows[0].timeposted,
+          userId: rows[0].userid,
+          username: rows[0].username
+        }
+      })
+    })
+  })
+})
+
+app.delete('/video/replies', (req, res) => {
+  const replyId = req.query.replyId || 0;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows[0].id);
+      })
+    },
+    (userId, callback) => {
+      pool.query('DELETE FROM vq_replies WHERE id = ? AND userid = ?', [replyId, userId], err => {
+        callback(err, true)
+      })
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      return res.send({error: err});
+    }
+    res.send({success})
+  })
+})
+
+app.post('/video/replies/like', (req, res) => {
+  const { replyId, commentId } = req.body;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows[0].id);
+      })
+    },
+    (userId, callback) => {
+      const query = 'SELECT * FROM vq_replyupvotes WHERE replyid = ? AND userid = ?';
+      pool.query(query, [replyId, userId], (err, rows) => {
+        callback(err, userId, rows);
+      })
+    },
+    (userId, rows, callback) => {
+      if (rows.length > 0) {
+        let query = 'DELETE FROM vq_replyupvotes WHERE replyid = ? AND userid = ?';
+        pool.query(query, [replyId, userId], err => {
+          callback(err, true);
+        })
+      } else {
+        let query = 'INSERT INTO vq_replyupvotes SET ?';
+        pool.query(query, {replyid: replyId, commentid: commentId, userid: userId}, err => {
+          callback(err, true);
+        })
+      }
+    }
+  ], (err, success) => {
+    if (err) {
+      console.error(err);
+      return res.send({error: err});
+    }
+    let query = [
+      'SELECT a.id, a.userid, b.username FROM ',
+      'vq_replyupvotes a JOIN users b ON ',
+      'a.userid = b.id WHERE ',
+      'a.replyid = ?'
+    ].join('')
+    pool.query(query, replyId, (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.send({error: err});
+      }
+      res.send({
+        likes: rows.map(row => {
+          return {
+            userId: row.userid,
+            username: row.username
+          }
+        })
+      });
+    })
+  })
+})
+
+app.post('/video/replies/edit', (req, res) => {
+  const content = processedString(req.body.editedReply);
+  const { replyId } = req.body;
+  const session = req.session.sessioncode;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT id, username FROM users WHERE sessioncode = ?', session, (err, rows) => {
+        if (!rows || rows.length === 0) return callback({invalidSession: true});
+        callback(err, rows[0].id);
+      })
+    },
+    (userId, callback) => {
+      pool.query('UPDATE vq_replies SET ? WHERE id = ? AND userid = ?', [{content}, replyId, userId], err => {
         callback(err, true)
       })
     }

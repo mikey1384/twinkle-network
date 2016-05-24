@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Textarea from 'react-textarea-autosize';
 
-export default class EditCommentTextArea extends Component {
+export default class EditTextArea extends Component {
   state = {
     editedText: this.props.text
   }

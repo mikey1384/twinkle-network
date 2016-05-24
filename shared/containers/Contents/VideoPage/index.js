@@ -7,7 +7,14 @@ import {
   loadVideoCommentsAsync,
   uploadVideoCommentAsync,
   likeVideoAsync,
-  editVideoCommentAsync  } from 'redux_helpers/actions/VideoActions';
+  likeVideoCommentAsync,
+  editVideoCommentAsync,
+  deleteVideoCommentAsync,
+  editVideoReplyAsync,
+  deleteVideoReplyAsync,
+  uploadVideoReplyAsync,
+  likeVideoReplyAsync
+} from 'redux_helpers/actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
 import PageTab from './PageTab';
@@ -148,11 +155,17 @@ export default class VideoPage extends Component {
           </div>
         </div>
         <Comments
-          comments={comments}
-          userId={userId}
-          noComments={noComments}
+          {...this.props}
           onSubmit={this.onCommentSubmit.bind(this)}
-          { ...bindActionCreators({editVideoCommentAsync}, dispatch) }
+          { ...bindActionCreators({
+            editVideoCommentAsync,
+            deleteVideoCommentAsync,
+            likeVideoCommentAsync,
+            uploadVideoReplyAsync,
+            editVideoReplyAsync,
+            deleteVideoReplyAsync,
+            likeVideoReplyAsync
+          }, dispatch) }
         />
         { this.state.resultModalShown &&
           <ResultModal

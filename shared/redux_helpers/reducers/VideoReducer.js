@@ -128,8 +128,8 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          comments: action.data,
-          noComments: false
+          comments: action.data.comments,
+          noComments: action.data.noComments
         }
       }
     case 'EDIT_VIDEO_COMMENT':
@@ -142,6 +142,117 @@ export default function VideoReducer(state = defaultState, action) {
               return {
                 ...comment,
                 content: processedStringWithURL(action.data.editedComment)
+              }
+            }
+            return comment;
+          })
+        }
+      }
+    case 'DELETE_VIDEO_COMMENT':
+      let newComments = state.videoPage.comments.filter(comment => {
+        return (comment.id === action.data.commentId) ? false : true;
+      })
+      let noComments = newComments.length === 0;
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: newComments,
+          noComments
+        }
+      }
+    case 'UPLOAD_VIDEO_REPLY':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.map(comment => {
+            if (comment.id === action.data.commentId) {
+              return {
+                ...comment,
+                replies: comment.replies.concat(action.data.reply)
+              }
+            }
+            return comment;
+          })
+        }
+      }
+    case 'EDIT_VIDEO_REPLY':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.map(comment => {
+            if (comment.id === action.data.commentId) {
+              return {
+                ...comment,
+                replies: comment.replies.map(reply => {
+                  if (reply.id === action.data.replyId) {
+                    return {
+                      ...reply,
+                      content: processedStringWithURL(action.data.editedReply)
+                    }
+                  }
+                  return reply;
+                })
+              }
+            }
+            return comment;
+          })
+        }
+      }
+    case 'DELETE_VIDEO_REPLY':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.map(comment => {
+            if (comment.id === action.data.commentId) {
+              return {
+                ...comment,
+                replies: comment.replies.filter(reply => {
+                  return (reply.id === action.data.replyId) ? false : true;
+                })
+              }
+            }
+            return comment;
+          })
+        }
+      }
+    case 'VIDEO_COMMENT_LIKE':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.map(comment => {
+            if (comment.id === action.data.commentId) {
+              return {
+                ...comment,
+                likes: action.data.likes
+              }
+            }
+            return comment;
+          })
+        }
+      }
+    case 'VIDEO_REPLY_LIKE':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.map(comment => {
+            if (comment.id === action.data.commentId) {
+              return {
+                ...comment,
+                replies: comment.replies.map(reply => {
+                  if (reply.id === action.data.replyId) {
+                    return {
+                      ...reply,
+                      likes: action.data.likes
+                    }
+                  }
+                  return reply;
+                })
               }
             }
             return comment;

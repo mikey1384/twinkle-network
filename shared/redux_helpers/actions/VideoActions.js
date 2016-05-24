@@ -176,55 +176,6 @@ export function uploadQuestionsAsync(params, callback) {
   }
 }
 
-export function uploadVideoComment(data) {
-  return {
-    type: 'UPLOAD_VIDEO_COMMENT',
-    data
-  }
-}
-
-export function uploadVideoCommentAsync(comment, videoId) {
-  return dispatch => {
-    request.post(`${API_URL}/comments`, {comment, videoId}).then(
-      response => {
-        const { data } = response;
-        if (data.error) {
-          handleError(data.error, dispatch);
-        }
-        if (data.result) {
-          dispatch(uploadVideoComment(data.result));
-        }
-        return;
-      }
-    )
-  }
-}
-
-export function editVideoComment(data) {
-  return {
-    type: 'EDIT_VIDEO_COMMENT',
-    data
-  }
-}
-
-export function editVideoCommentAsync(editedComment, commentId, cb) {
-  return dispatch => {
-    request.post(`${API_URL}/comments/edit`, {editedComment, commentId}).then(
-      response => {
-        const { data } = response;
-        if (data.error) {
-          handleError(data.error, dispatch);
-        }
-        if (data.success) {
-          dispatch(editVideoComment({editedComment, commentId}));
-          cb();
-        }
-        return;
-      }
-    )
-  }
-}
-
 export function likeVideo(data) {
   return {
     type: 'VIDEO_LIKE',
@@ -243,6 +194,55 @@ export function likeVideoAsync(videoId) {
         if (data.likes) {
           dispatch(likeVideo(data.likes));
         }
+        return;
+      }
+    )
+  }
+}
+
+export function likeVideoComment(data) {
+  return {
+    type: 'VIDEO_COMMENT_LIKE',
+    data
+  }
+}
+
+export function likeVideoCommentAsync(commentId) {
+  return dispatch => {
+    request.post(`${API_URL}/comments/like`, {commentId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.likes) {
+          dispatch(likeVideoComment({commentId, likes: data.likes}))
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function likeVideoReply(data) {
+  return {
+    type: 'VIDEO_REPLY_LIKE',
+    data
+  }
+}
+
+export function likeVideoReplyAsync(replyId, commentId) {
+  return dispatch => {
+    request.post(`${API_URL}/replies/like`, {replyId, commentId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.likes) {
+          dispatch(likeVideoReply({replyId, commentId, likes: data.likes}))
+        }
+        return;
       }
     )
   }
@@ -292,6 +292,150 @@ export function loadVideoCommentsAsync(videoId) {
     request.get(`${API_URL}/comments?videoId=${videoId}`).then(
       response => {
         dispatch(loadVideoComments(response.data))
+      }
+    )
+  }
+}
+
+export function uploadVideoComment(data) {
+  return {
+    type: 'UPLOAD_VIDEO_COMMENT',
+    data
+  }
+}
+
+export function uploadVideoCommentAsync(comment, videoId) {
+  return dispatch => {
+    request.post(`${API_URL}/comments`, {comment, videoId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          return handleError(data.error, dispatch);
+        }
+        dispatch(uploadVideoComment(data));
+      }
+    )
+  }
+}
+
+export function uploadVideoReply(data) {
+  return {
+    type: 'UPLOAD_VIDEO_REPLY',
+    data
+  }
+}
+
+export function uploadVideoReplyAsync(reply, commentId, videoId) {
+  return dispatch => {
+    request.post(`${API_URL}/replies`, {reply, commentId, videoId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.result) {
+          dispatch(uploadVideoReply({commentId, reply: data.result}))
+        }
+        return;
+      }
+    )
+  }
+}
+
+
+export function editVideoComment(data) {
+  return {
+    type: 'EDIT_VIDEO_COMMENT',
+    data
+  }
+}
+
+export function editVideoCommentAsync(editedComment, commentId, cb) {
+  return dispatch => {
+    request.post(`${API_URL}/comments/edit`, {editedComment, commentId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch);
+        }
+        if (data.success) {
+          dispatch(editVideoComment({editedComment, commentId}));
+          cb();
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function deleteVideoComment(data) {
+  return {
+    type: 'DELETE_VIDEO_COMMENT',
+    data
+  }
+}
+
+export function deleteVideoCommentAsync(commentId) {
+  return dispatch => {
+    request.delete(`${API_URL}/comments?commentId=${commentId}`).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch)
+        }
+        if (data.success) {
+          dispatch(deleteVideoComment({commentId}));
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function editVideoReply(data) {
+  return {
+    type: 'EDIT_VIDEO_REPLY',
+    data
+  }
+}
+
+export function editVideoReplyAsync({editedReply, replyId, commentId}, cb) {
+  return dispatch => {
+    request.post(`${API_URL}/replies/edit`, {editedReply, replyId}).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch)
+        }
+        if (data.success) {
+          dispatch(editVideoReply({editedReply, replyId, commentId}));
+          cb();
+        }
+        return;
+      }
+    )
+  }
+}
+
+export function deleteVideoReply(data) {
+  return {
+    type: 'DELETE_VIDEO_REPLY',
+    data
+  }
+}
+
+export function deleteVideoReplyAsync(replyId, commentId) {
+  return dispatch => {
+    request.delete(`${API_URL}/replies?replyId=${replyId}`).then(
+      response => {
+        const { data } = response;
+        if (data.error) {
+          handleError(data.error, dispatch)
+        }
+        if (data.success) {
+          dispatch(deleteVideoReply({replyId, commentId}))
+        }
+        return;
       }
     )
   }

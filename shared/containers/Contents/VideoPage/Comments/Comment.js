@@ -1,25 +1,35 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { timeSince } from 'helpers/TimeStampHelper';
-import ReplyInputArea from './ReplyInputArea';
-import EditCommentTextArea from './EditCommentTextArea';
 import { cleanStringWithURL } from 'helpers/StringHelper';
 import SmallDropdownButton from 'components/SmallDropdownButton';
+import Likers from 'components/Likers';
+import UserListModal from 'components/Modals/UserListModal';
+import ReplyInputArea from './Replies/ReplyInputArea';
+import Replies from './Replies';
+import EditTextArea from './EditTextArea';
+
 
 export default class Comment extends Component {
   state = {
     replyInputShown: false,
-    onEdit: false
+    onEdit: false,
+    userListModalShown: false
   }
   render() {
-    const { replyInputShown, onEdit } = this.state;
-    const { comment } = this.props;
+    const { replyInputShown, onEdit, userListModalShown } = this.state;
+    const { comment, userId } = this.props;
+    const userIsOwner = comment.posterId == userId;
+    let userLikedThis = false;
+    for (let i = 0; i < comment.likes.length; i++) {
+      if (comment.likes[i].userId == userId) userLikedThis = true;
+    }
     return (
       <li
         className="media"
         style={{marginTop: this.props.marginTop && '2em'}}
       >
-        { this.props.userIsOwner && !onEdit &&
+        { userIsOwner && !onEdit &&
           <SmallDropdownButton
             rightMargin='3em'
             menuProps={[
@@ -29,7 +39,7 @@ export default class Comment extends Component {
               },
               {
                 label: "Remove",
-                onClick: () => console.log("clicked!!")
+                onClick: this.onDelete.bind(this)
               }
             ]}
           />
@@ -48,7 +58,7 @@ export default class Comment extends Component {
             { comment.posterName } <small>&nbsp;{ timeSince(comment.timeStamp) }</small>
           </h4>
           { onEdit ?
-            <EditCommentTextArea
+            <EditTextArea
               text={cleanStringWithURL(comment.content)}
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone.bind(this)}
@@ -56,27 +66,71 @@ export default class Comment extends Component {
             <div className="container-fluid">
               <div
                 className="row"
-                style={{paddingBottom: '2em'}}
+                style={{paddingBottom: '1.7em'}}
                 dangerouslySetInnerHTML={{__html: comment.content}}
               ></div>
-              <div className="row">
-                <button
-                  className="btn btn-default btn-sm"
-                  onClick={ () => this.setState({replyInputShown: true}) }
-                >
-                  <span className="glyphicon glyphicon-comment"></span> Reply
-                </button>
-                <button
-                  className="btn btn-default btn-sm"
-                  style={{marginLeft: '0.5em'}}
-                >
-                  <span className="glyphicon glyphicon-thumbs-up"></span> Like
-                </button>
+              <div
+                className="row flexbox-container"
+              >
+                <div className="pull-left">
+                  <button
+                    className="btn btn-warning btn-sm"
+                    onClick={ () => this.setState({replyInputShown: true}) }
+                  >
+                    <span className="glyphicon glyphicon-comment"></span> Reply
+                  </button>
+                  <button
+                    className="btn btn-info btn-sm"
+                    style={{marginLeft: '0.5em'}}
+                    onClick={this.onLikeClick.bind(this)}
+                  >
+                    <span className="glyphicon glyphicon-thumbs-up"></span> {`${userLikedThis ? 'Liked!' : 'Like'}`}
+                  </button>
+                </div>
+                <small>
+                  <Likers
+                    className="pull-left"
+                    style={{
+                      marginLeft: '0.8em',
+                      color: '#f0ad4e',
+                      marginTop: '1em'
+                    }}
+                    userId={userId}
+                    likes={comment.likes}
+                    onLinkClick={() => this.setState({userListModalShown: true})}
+                  />
+                </small>
               </div>
             </div>
           }
-          { replyInputShown && <ReplyInputArea /> }
+          <Replies
+            userId={userId}
+            replies={comment.replies}
+            onEditDone={
+              ({replyId, editedReply}, cb) =>
+              this.props.onReplyEditDone({
+                replyId,
+                editedReply,
+                commentId: this.props.commentId
+              }, cb)
+            }
+            onLikeClick={ replyId => this.props.onReplyLike(replyId, this.props.commentId) }
+            onDelete={ replyId => this.props.onReplyDelete(replyId, this.props.commentId) }
+          />
+          { replyInputShown && <ReplyInputArea
+              onSubmit={this.onReplySubmit.bind(this)}
+            />
+          }
         </div>
+        { userListModalShown &&
+          <UserListModal
+            show={true}
+            onHide={ () => this.setState({userListModalShown: false}) }
+            title="People who liked this comment"
+            userId={userId}
+            likers={comment.likes}
+          />
+        }
       </li>
     )
   }
@@ -86,5 +140,20 @@ export default class Comment extends Component {
     this.props.onEditDone(editedComment, commentId, () => {
       this.setState({onEdit: false})
     })
+  }
+
+  onLikeClick() {
+    const { commentId } = this.props;
+    this.props.onLikeClick(commentId);
+  }
+
+  onReplySubmit(reply) {
+    const { commentId, videoId } = this.props;
+    this.props.onReplySubmit(reply, commentId, videoId);
+  }
+
+  onDelete() {
+    const { commentId } = this.props;
+    this.props.onDelete(commentId);
   }
 }
