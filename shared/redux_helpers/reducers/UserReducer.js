@@ -16,7 +16,7 @@ function isAdmin (userType) {
 export default function UserReducer(state = defaultState, action) {
   switch (action.type) {
     case 'FETCH_SESSION':
-    if (typeof action.data !== 'undefined' && action.data.loggedIn) {
+    if (action.data !== undefined && action.data.loggedIn) {
       return {
         ...state,
         loggedIn: true,

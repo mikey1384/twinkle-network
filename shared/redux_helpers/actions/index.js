@@ -1,11 +1,9 @@
-import { initSessionAsync } from './UserActions';
 import { getInitialVideos } from './VideoActions';
 import { getPinnedPlaylistsAsync, getPlaylistsAsync } from './PlaylistActions';
 
 export function initActions (components, params) {
   return dispatch => {
     const needs = [
-      initSessionAsync,
       getPinnedPlaylistsAsync,
       getPlaylistsAsync,
       getInitialVideos
