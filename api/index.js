@@ -989,16 +989,12 @@ app.get('/user/session', function (req, res) {
   if (session !== undefined) {
     pool.query("SELECT * FROM users WHERE sessioncode = ?", session, (err, rows) => {
       if (!rows || rows.length === 0) return res.json({loggedIn: false});
-      if (rows.length > 0) {
-        res.json({
-          loggedIn: true,
-          userId: rows[0].id,
-          usertype: rows[0].usertype,
-          username: rows[0].username
-        })
-      } else {
-        res.json({loggedIn: false})
-      }
+      res.json({
+        loggedIn: true,
+        userId: rows[0].id,
+        usertype: rows[0].usertype,
+        username: rows[0].username
+      })
     })
   } else {
     res.json({loggedIn: false})
