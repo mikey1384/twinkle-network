@@ -470,7 +470,8 @@ app.post('/video/replies', (req, res) => {
           content: rows[0].content,
           timeStamp: rows[0].timeposted,
           userId: rows[0].userid,
-          username: rows[0].username
+          username: rows[0].username,
+          likes: []
         }
       })
     })

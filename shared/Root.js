@@ -76,7 +76,6 @@ function onVideoPageEnter(nextState) {
   store.dispatch(loadVideoPageAsync(nextState.params.videoId));
 }
 
-function onAppEnter(nextState, cb) {
+function onAppEnter() {
   if (browserHistory) store.dispatch(initSessionAsync());
-  cb();
 }

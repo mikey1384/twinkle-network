@@ -18,7 +18,8 @@ class Header extends Component {
   }
 
   state = {
-    tabClicked: false
+    tabClicked: false,
+    chatMode: false
   }
 
   handleClick() {
@@ -29,38 +30,34 @@ class Header extends Component {
 
   render () {
     const { signinModalShown, loggedIn, username, userType, isAdmin, userId, dispatch } = this.props;
+    const { chatMode, alphaMode } = this.state;
     const { openSigninModal, closeSigninModal } = UserActions;
-    const NavLink = activeComponent('li')
     return (
       <Navbar staticTop fluid>
         <Navbar.Toggle />
+        <Link
+          className="navbar-brand"
+          style={{cursor: 'pointer'}}
+          to="/"
+          onClick={this.handleClick.bind(this)}
+        >
+          Twinkle
+        </Link>
         <Navbar.Collapse>
-          <Nav onClick={this.handleClick.bind(this)}>
-            <NavLink
-              to="/"
-              onlyActiveOnIndex
-              linkProps={{className: 'navbar-brand'}}>
-              Twinkle
-            </NavLink>
-            <NavLink to="/profile">
-              Profile
-            </NavLink>
-            <NavLink to="/posts">
-              Posts
-            </NavLink>
-            <NavLink to="/discussion">
-              Discussion
-            </NavLink>
-            <NavLink to="/contents">
-              Contents
-            </NavLink>
-            { isAdmin &&
-              <NavLink to="/management">
-                Management
-              </NavLink>
-            }
-          </Nav>
-          <Nav pullRight>
+          { this.renderTabs() }
+          <Nav pullRight className="flexbox-container">
+            <li>
+              <a
+                className="well unselectable"
+                style={{
+                  padding: '0.7em',
+                  margin: '0px',
+                  cursor: 'pointer'
+                }}
+                onClick={ this.onChatButtonClick.bind(this) }
+              >Messages
+              </a>
+            </li>
             {
               loggedIn ?
               <AccountMenu title={ username }
@@ -73,6 +70,46 @@ class Header extends Component {
           <SigninModal show={true} onHide={ () => dispatch(closeSigninModal()) } />
         }
       </Navbar>
+    )
+  }
+
+  onChatButtonClick() {
+    this.setState({chatMode: !this.state.chatMode});
+    this.props.onChatButtonClick();
+  }
+
+  renderTabs() {
+    const NavLink = activeComponent('li');
+    const { chatMode } = this.state;
+    return chatMode ? null : (
+      <Nav onClick={this.handleClick.bind(this)}>
+        <NavLink
+          to="/"
+          onlyActiveOnIndex
+        >
+          Home
+        </NavLink>
+        <NavLink to="/contents">
+          Contents
+        </NavLink>
+        { /*
+          <NavLink to="/profile">
+            Profile
+          </NavLink>
+          <NavLink to="/posts">
+            Posts
+          </NavLink>
+          <NavLink to="/discussion">
+            Discussion
+          </NavLink>
+          { this.props.isAdmin &&
+            <NavLink to="/management">
+              Management
+            </NavLink>
+          }
+          */
+        }
+      </Nav>
     )
   }
 }

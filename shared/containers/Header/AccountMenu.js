@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavDropdown, MenuItem } from 'react-bootstrap';
 
-class AccountMenu extends Component {
+export default class AccountMenu extends Component {
   render () {
     return (
       <NavDropdown eventKey={5} title={this.props.title} id="user-menu">
@@ -14,5 +14,3 @@ class AccountMenu extends Component {
     )
   }
 }
-
-export default AccountMenu;
