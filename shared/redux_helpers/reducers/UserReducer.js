@@ -23,7 +23,7 @@ export default function UserReducer(state = defaultState, action) {
         username: action.data.username,
         userType: action.data.usertype,
         isAdmin: isAdmin(action.data.usertype),
-        userId: action.data.userId
+        userId: action.data.id
       }
     } else {
       return {
@@ -87,6 +87,7 @@ export default function UserReducer(state = defaultState, action) {
     return {
       ...state,
       signupError: null,
+      loginError: null,
       signinModalShown: false
     };
     case 'SIGNIN_HIDEALERT':

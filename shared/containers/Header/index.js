@@ -26,6 +26,10 @@ class Header extends Component {
     this.setState({
       tabClicked: true
     })
+    if (this.state.chatMode) {
+      this.setState({chatMode: false});
+      this.props.onChatButtonClick();
+    }
   }
 
   render () {

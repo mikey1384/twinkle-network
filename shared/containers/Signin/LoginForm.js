@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
 import { Modal, Button, Alert } from 'react-bootstrap';
+import { stringIsEmpty } from 'helpers/StringHelper';
 
 class LoginForm extends Component {
   onSubmit(props) {
@@ -9,6 +10,8 @@ class LoginForm extends Component {
 
   render () {
     const {fields: {username, password}, handleSubmit, errorMessage, hideErrorAlert} = this.props;
+    let userNameFieldError = username.touched && username.invalid ? true : false;
+    let passwordFieldError = password.touched && password.invalid ? true : false;
     return (
       <form onSubmit={handleSubmit(this.onSubmit.bind(this))} onInput={() => hideErrorAlert()} >
         { errorMessage &&
@@ -17,14 +20,20 @@ class LoginForm extends Component {
           </Alert>
         }
         <div className="container-fluid">
-          <div className="form-group">
+          <fieldset className={`form-group ${userNameFieldError ? 'has-error' : ''}`}>
             <label>Username</label>
             <input type="text" className="form-control" placeholder="Username" {...username} />
-          </div>
-          <div className="form-group">
+            <span className="help-block">
+              {userNameFieldError ? username.error : ''}
+            </span>
+          </fieldset>
+          <fieldset className={`form-group ${passwordFieldError ? 'has-error' : ''}`}>
             <label>Password</label>
             <input type="password" className="form-control" placeholder="Password" {...password} />
-          </div>
+            <span className="help-block">
+              {passwordFieldError ? password.error : ''}
+            </span>
+          </fieldset>
         </div>
         <br />
         <Modal.Footer>
@@ -35,9 +44,22 @@ class LoginForm extends Component {
   }
 }
 
+function validate (values) {
+  const { username, password } = values;
+  const errors = {};
+  if (stringIsEmpty(username)) {
+    errors.username = 'Enter username';
+  }
+  if (password === '') {
+    errors.password = 'Enter password';
+  }
+  return errors;
+}
+
 LoginForm = reduxForm({
   form: 'LoginForm',
-  fields: ['username', 'password']
+  fields: ['username', 'password'],
+  validate
 })(LoginForm);
 
 export default LoginForm;

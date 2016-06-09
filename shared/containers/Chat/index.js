@@ -1,6 +1,22 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import MessagesContainer from './MessagesContainer';
+import Textarea from 'react-textarea-autosize'
 
 export default class Chat extends Component {
+  state = {
+    messages: [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 3
+      }
+    ]
+  }
   render() {
     return (
       <div
@@ -18,14 +34,14 @@ export default class Chat extends Component {
             }}
           >
             <div className="text-center col-sm-12 col-sm-offset-2">
-              <h4>Channels</h4>
+              <h4>Twinkle Chat</h4>
             </div>
             <button className="btn btn-default btn-sm pull-right">+ New</button>
           </div>
           <div className="row container-fluid">
             <input
               className="form-control"
-              placeholder="Search for channels"
+              placeholder="Search for channels / usernames"
             />
           </div>
           <div className="row container-fluid">
@@ -60,48 +76,9 @@ export default class Chat extends Component {
             position: 'absolute'
           }}
         >
-          <div
-            style={{
-              top: '60px',
-              bottom: '50px',
-              position: 'absolute',
-              width: '95%',
-              border: '1px red solid'
-            }}
-          >
-            <div className="media">
-              <div className="media-left">
-                <a><img className="media-object" style={{width: '64px'}} src="/img/default.jpg"/></a>
-              </div>
-              <div className="media-body">
-                <h5 className="media-heading">sonic</h5>hi guys my name is sonic
-              </div>
-            </div>
-            <div className="media">
-              <div className="media-left">
-                <a><img className="media-object" style={{width: '64px'}} src="/img/default.jpg"/></a>
-              </div>
-              <div className="media-body">
-                <h5 className="media-heading">sonic</h5>hi guys my name is sonic
-              </div>
-            </div>
-            <div className="media">
-              <div className="media-left">
-                <a><img className="media-object" style={{width: '64px'}} src="/img/default.jpg"/></a>
-              </div>
-              <div className="media-body">
-                <h5 className="media-heading">sonic</h5>hi guys my name is sonic
-              </div>
-            </div>
-            <div className="media">
-              <div className="media-left">
-                <a><img className="media-object" style={{width: '64px'}} src="/img/default.jpg"/></a>
-              </div>
-              <div className="media-body">
-                <h5 className="media-heading">sonic</h5>hi guys my name is sonic
-              </div>
-            </div>
-          </div>
+          <MessagesContainer
+            messages={this.state.messages}
+          />
           <div
             style={{
               position: 'absolute',
@@ -109,13 +86,27 @@ export default class Chat extends Component {
               bottom: '10px'
             }}
           >
-            <input
+            <Textarea
+              rows={1}
               className="form-control"
               placeholder="Type a message..."
+              onKeyDown={ this.onMessageSubmit.bind(this)}
+              autoFocus
             />
           </div>
         </div>
       </div>
     )
+  }
+  onMessageSubmit(event) {
+    const shiftKeyPressed = event.shiftKey;
+    const enterKeyPressed = event.keyCode === 13;
+    if (enterKeyPressed && !shiftKeyPressed) {
+      event.preventDefault();
+      const newMessage = {
+        id: this.state.messages.length + 1
+      }
+      this.setState({messages: this.state.messages.concat([newMessage])})
+    }
   }
 }

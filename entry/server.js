@@ -8,7 +8,6 @@ import path from 'path';
 import session from 'client-sessions';
 import { routes, store } from 'Root';
 import { initActions } from 'redux_helpers/actions';
-import { siteSession } from '../siteConfig';
 
 const app = express();
 
@@ -17,8 +16,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use(express.static(path.join(__dirname, 'dist')));
-app.use('/api', require('../api'));
-app.use(siteSession());
 app.use((req, res) => {
   const location = createLocation(req.url);
 
@@ -53,10 +50,14 @@ app.use((req, res) => {
         </head>
         <body>
           <div id="react-view">${componentHTML}</div>
+          <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
           <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
           </script>
           <script type="application/javascript" src="/bundle.js"></script>
+          <script>
+            var socket = io.connect('http://localhost:3500');
+          </script>
         </body>
       </html>
       `;

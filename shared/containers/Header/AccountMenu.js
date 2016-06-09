@@ -9,7 +9,7 @@ export default class AccountMenu extends Component {
         <MenuItem eventKey={5.2}>Another action</MenuItem>
         <MenuItem eventKey={5.3}>Something else here</MenuItem>
         <MenuItem divider />
-        <MenuItem eventKey={5.4} onClick={()=>this.props.logoutAsync()}>Log out</MenuItem>
+        <MenuItem eventKey={5.4} onClick={()=>this.props.logout()}>Log out</MenuItem>
       </NavDropdown>
     )
   }

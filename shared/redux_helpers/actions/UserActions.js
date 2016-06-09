@@ -1,7 +1,14 @@
 import request from 'axios';
 import {URL} from './URL';
 
-const API_URL = `${URL}/api/user`;
+const API_URL = `${URL}/user`;
+
+const token = () => typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+const auth = () => ({
+  headers: {
+    authorization: token()
+  }
+})
 
 export function initSession(data) {
   return {
@@ -12,8 +19,14 @@ export function initSession(data) {
 
 export function initSessionAsync() {
   return dispatch => {
-    return request.get(`${API_URL}/session`).then(
-      response => dispatch(initSession(response.data))
+    if (token() === null) return;
+    return request.get(`${API_URL}/session`, auth()).then(
+      response => dispatch(initSession({...response.data, loggedIn: true}))
+    ).catch(
+      error => {
+        console.error(error);
+        dispatch(initSession({loggedIn: false}));
+      }
     )
   }
 }
@@ -28,22 +41,25 @@ export function login(data) {
 export function loginAsync(params) {
   return dispatch => {
     return request.post(`${API_URL}/login`, params).then(
-      response => dispatch(login(response.data))
+      response => {
+        localStorage.setItem('token', response.data.token);
+        dispatch(login(response.data));
+      }
+    ).catch(
+      error => {
+        if (error.data === "Unauthorized") {
+          return dispatch(login({result: "Incorrect username/password combination"}))
+        }
+        dispatch(login({result: error.data}))
+      }
     )
   }
 }
 
 export function logout() {
+  localStorage.removeItem('token');
   return {
     type: 'SIGNIN_LOGOUT'
-  }
-}
-
-export function logoutAsync() {
-  return dispatch => {
-    return request.get(`${API_URL}/logout`).then(
-      response => dispatch(logout())
-    )
   }
 }
 
@@ -57,7 +73,10 @@ export function signup(data) {
 export function signupAsync(params) {
   return dispatch => {
     return request.post(`${API_URL}/signup`, params).then(
-      response => dispatch(signup(response.data))
+      response => {
+        if (response.data.token) localStorage.setItem('token', response.data.token);
+        dispatch(signup(response.data))
+      }
     )
   }
 }

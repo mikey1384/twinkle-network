@@ -56,6 +56,6 @@ export function processedStringWithURL(string) {
 }
 
 export function stringIsEmpty(string) {
-	var checkedString = string.replace(/\s/g, "").replace(/\r?\n/g, "");
+	var checkedString = string ? string.replace(/\s/g, "").replace(/\r?\n/g, "") : "";
   return (checkedString === "") ? true : false;
 }

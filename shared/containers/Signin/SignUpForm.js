@@ -35,49 +35,49 @@ class SignUpForm extends Component {
           </Alert>
         }
         <div className="container-fluid">
-          <div className={`form-group ${userNameFieldError ? 'has-error' : ''}`}>
+          <fieldset className={`form-group ${userNameFieldError ? 'has-error' : ''}`}>
             <label>Username</label>
             <input type="text" className="form-control" placeholder="Your account username for logging in" {...username} />
             <span className="help-block">
               {userNameFieldError ? username.error : ''}
             </span>
-          </div>
-          <div className={`form-group ${passwordFieldError ? 'has-error' : ''}`}>
+          </fieldset>
+          <fieldset className={`form-group ${passwordFieldError ? 'has-error' : ''}`}>
             <label>Password</label>
             <input type="password" className="form-control" placeholder="Password" {...password} />
             <span className="help-block">
               {passwordFieldError ? password.error : ''}
             </span>
-          </div>
-          <div className={`form-group ${firstNameFieldError ? 'has-error' : ''}`}>
+          </fieldset>
+          <fieldset className={`form-group ${firstNameFieldError ? 'has-error' : ''}`}>
             <label>First Name</label>
             <input type="text" className="form-control" placeholder="Your first name" {...firstname} />
             <span className="help-block">
               {firstNameFieldError ? firstname.error : ''}
             </span>
-          </div>
-          <div className={`form-group ${lastNameFieldError ? 'has-error' : ''}`}>
+          </fieldset>
+          <fieldset className={`form-group ${lastNameFieldError ? 'has-error' : ''}`}>
             <label>Last Name</label>
             <input type="text" className="form-control" placeholder="Your lastname" {...lastname} />
             <span className="help-block">
               {lastNameFieldError ? lastname.error : ''}
             </span>
-          </div>
-          <div className="form-group">
+          </fieldset>
+          <fieldset className="form-group">
             <label>I'm a Teacher:&nbsp;&nbsp;&nbsp;</label>
             <input
               type="checkbox"
               checked={checkedTeacher}
               onClick={()=>this.setState({checkedTeacher:!checkedTeacher})}
               {...isTeacher} />
-          </div>
-          <div className={`form-group ${emailFieldError ? 'has-error' : ''}`}>
+          </fieldset>
+          <fieldset className={`form-group ${emailFieldError ? 'has-error' : ''}`}>
             <label>Email</label>
             <input type="email" className="form-control" placeholder="Email is not required except for teachers" {...email} />
             <span className="help-block">
               {emailFieldError ? email.error : ''}
             </span>
-          </div>
+          </fieldset>
         </div>
         <br />
         <Modal.Footer>

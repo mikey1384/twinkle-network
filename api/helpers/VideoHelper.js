@@ -1,22 +1,29 @@
-import { pool } from '../siteConfig';
-import async from 'async';
+"use strict"
 
-export function returnComments(commentRows, cb) {
-  let commentsArray = [];
-  let taskArray = [];
-  if (commentRows.length === 0) {
-    return cb(null, []);
+const pool = require('../siteConfig').pool;
+const async = require('async');
+
+module.exports = {
+  returnComments: function(commentRows, cb) {
+    let commentsArray = [];
+    let taskArray = [];
+    if (commentRows.length === 0) {
+      return cb(null, []);
+    }
+    for (let index = 0; index < commentRows.length; index++) {
+      let commentRow = commentRows[index];
+      taskArray.push(fetchCommentElements({commentRow, commentsArray, index}));
+    }
+    async.parallel(taskArray, err => {
+      cb(err, commentsArray)
+    });
   }
-  for (let index = 0; index < commentRows.length; index++) {
-    let commentRow = commentRows[index];
-    taskArray.push(fetchCommentElements({commentRow, commentsArray, index}));
-  }
-  async.parallel(taskArray, err => {
-    cb(err, commentsArray)
-  });
 }
 
-const fetchCommentElements = ({commentRow, commentsArray, index}) => cb => {
+const fetchCommentElements = (params) => cb => {
+  let commentRow = params.commentRow;
+  let commentsArray = params.commentsArray;
+  let index = params.index;
   let commentId = commentRow.id;
   async.parallel([
     callback => {
@@ -79,7 +86,10 @@ function returnReplies(replyRows, cb) {
   });
 }
 
-const fetchReplyElements = ({replyRow, repliesArray, index}) => cb => {
+const fetchReplyElements = (params) => cb => {
+  let replyRow = params.replyRow;
+  let repliesArray = params.repliesArray;
+  let index = params.index;
   let replyId = replyRow.id;
   let query = [
     'SELECT a.userid, b.username ',
