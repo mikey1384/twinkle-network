@@ -170,12 +170,13 @@ export function loadVideoPage(data) {
   }
 }
 
-export function loadVideoPageAsync(videoId) {
+export function loadVideoPageAsync(videoId, callback) {
   return dispatch => {
     request.get(`${API_URL}/loadPage?videoId=${videoId}`).then(
       response => {
         dispatch(loadVideoPage(response.data));
         dispatch(loadVideoCommentsAsync(videoId));
+        if (callback) callback();
       }
     ).catch(
       error => handleError(error, dispatch)
@@ -183,18 +184,9 @@ export function loadVideoPageAsync(videoId) {
   }
 }
 
-export function loadVideoPageFromClientSide(data) {
-  return {
-    type: 'LOAD_VIDEO_PAGE_FROM_CLIENT',
-    data
-  }
-}
-
-export function loadVideoPageFromClientSideAsync(params, to) {
+export function loadVideoPageFromClientSideAsync(videoId, to) {
   return dispatch => {
-    dispatch(loadVideoPageFromClientSide(params))
-    dispatch(push(`/${to}`))
-    dispatch(loadVideoPageAsync(params.videoId))
+    dispatch(loadVideoPageAsync(videoId, dispatch(push(`/${to}`))))
   }
 }
 

@@ -99,17 +99,6 @@ export default function VideoReducer(state = defaultState, action) {
           comments: []
         }
       }
-    case 'LOAD_VIDEO_PAGE_FROM_CLIENT':
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          title: action.data.title,
-          description: action.data.description,
-          videocode: action.data.videocode,
-          uploaderName: action.data.uploaderName
-        }
-      }
     case 'LOAD_VIDEO_COMMENTS':
       if (action.data.error) {
         console.error(action.data.error);
