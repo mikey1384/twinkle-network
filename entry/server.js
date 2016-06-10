@@ -55,9 +55,6 @@ app.use((req, res) => {
             window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
           </script>
           <script type="application/javascript" src="/bundle.js"></script>
-          <script>
-            var socket = io.connect('http://localhost:3500');
-          </script>
         </body>
       </html>
       `;

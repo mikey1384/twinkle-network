@@ -73,7 +73,8 @@ export const routes = (
 );
 
 function onVideoPageEnter(nextState) {
-  if (!browserHistory) store.dispatch(loadVideoPageAsync(nextState.params.videoId));
+  const action = nextState.location.action;
+  if (action === "POP") store.dispatch(loadVideoPageAsync(nextState.params.videoId));
 }
 
 function onAppEnter() {

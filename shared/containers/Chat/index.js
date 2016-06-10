@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MessagesContainer from './MessagesContainer';
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'react-textarea-autosize';
+import { connect } from 'react-redux';
+import * as ChatActions from 'redux_helpers/actions/ChatActions';
 
+@connect()
 export default class Chat extends Component {
   state = {
     messages: [
@@ -17,6 +20,12 @@ export default class Chat extends Component {
       }
     ]
   }
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch(ChatActions.openChat())
+  }
+
   render() {
     return (
       <div

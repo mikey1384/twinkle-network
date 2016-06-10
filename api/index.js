@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const siteSession = require('./siteConfig').siteSession;
 const router = require('./router');
+const socket = require('./socket');
 const cors = require('cors');
 
 const app = express();
@@ -13,10 +14,7 @@ app.use(bodyParser.json());
 router(app);
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
-io.on('connection', function (socket) {
-  console.log("a user connected");
-});
+socket(io);
 
 const PORT = 3500;
 
