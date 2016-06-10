@@ -89,8 +89,19 @@ export default function VideoReducer(state = defaultState, action) {
           }
         };
       }
-      const videoPageVariables = {
+      let videoPageVariables = {
         ...action.data
+      };
+      if (action.browserHistory) {
+        videoPageVariables = {
+          videoId: videoPageVariables.videoId,
+          title: videoPageVariables.title,
+          description: videoPageVariables.description,
+          uploaderId: videoPageVariables.uploaderId,
+          uploaderName: videoPageVariables.uploaderName,
+          questions: videoPageVariables.questions,
+          likes: videoPageVariables.likes
+        }
       };
       return {
         ...state,

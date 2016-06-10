@@ -163,18 +163,19 @@ export function editVideoPageAsync(params, sender) {
   }
 }
 
-export function loadVideoPage(data) {
+export function loadVideoPage(data, browserHistory) {
   return {
     type: 'LOAD_VIDEO_PAGE',
-    data
+    data,
+    browserHistory
   }
 }
 
-export function loadVideoPageAsync(videoId) {
+export function loadVideoPageAsync(videoId, browserHistory) {
   return dispatch => {
     request.get(`${API_URL}/loadPage?videoId=${videoId}`).then(
       response => {
-        dispatch(loadVideoPage(response.data));
+        dispatch(loadVideoPage(response.data, browserHistory));
         dispatch(loadVideoCommentsAsync(videoId));
       }
     ).catch(
