@@ -95,6 +95,7 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         videoPage: {
+          ...state.videoPage,
           ...videoPageVariables,
           comments: []
         }
