@@ -21,6 +21,7 @@ export default class PlaylistCarousel extends Component {
           to={`contents/videos/${thumb.videoid}`}
           key={index}
           video={{
+            id: thumb.videoid,
             videocode: thumb.videocode,
             title: thumb.video_title,
             description: thumb.video_description,

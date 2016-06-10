@@ -119,6 +119,7 @@ export default class VideoThumb extends Component {
   onLinkClick(e) {
     e.preventDefault();
     this.props.dispatch(loadVideoPageFromClientSideAsync({
+      videoId: this.props.video.id,
       title: this.props.video.title,
       description: this.props.video.description,
       videocode: this.props.video.videocode,

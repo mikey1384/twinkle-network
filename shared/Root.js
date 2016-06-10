@@ -73,7 +73,7 @@ export const routes = (
 );
 
 function onVideoPageEnter(nextState) {
-  store.dispatch(loadVideoPageAsync(nextState.params.videoId, browserHistory));
+  if (!browserHistory) store.dispatch(loadVideoPageAsync(nextState.params.videoId));
 }
 
 function onAppEnter() {

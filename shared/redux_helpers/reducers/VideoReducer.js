@@ -84,29 +84,17 @@ export default function VideoReducer(state = defaultState, action) {
         return {
           ...state,
           videoPage: {
-            videoId: 0,
-            comments: []
+            comments: [],
+            noComments: false
           }
         };
       }
-      let videoPageVariables = {
+      const videoPageVariables = {
         ...action.data
-      };
-      if (action.browserHistory) {
-        videoPageVariables = {
-          videoId: videoPageVariables.videoId,
-          title: videoPageVariables.title,
-          description: videoPageVariables.description,
-          uploaderId: videoPageVariables.uploaderId,
-          uploaderName: videoPageVariables.uploaderName,
-          questions: videoPageVariables.questions,
-          likes: videoPageVariables.likes
-        }
       };
       return {
         ...state,
         videoPage: {
-          ...state.videoPage,
           ...videoPageVariables,
           comments: []
         }

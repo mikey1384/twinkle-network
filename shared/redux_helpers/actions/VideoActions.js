@@ -163,24 +163,38 @@ export function editVideoPageAsync(params, sender) {
   }
 }
 
-export function loadVideoPage(data, browserHistory) {
+export function loadVideoPage(data) {
   return {
     type: 'LOAD_VIDEO_PAGE',
-    data,
-    browserHistory
+    data
   }
 }
 
-export function loadVideoPageAsync(videoId, browserHistory) {
+export function loadVideoPageAsync(videoId) {
   return dispatch => {
     request.get(`${API_URL}/loadPage?videoId=${videoId}`).then(
       response => {
-        dispatch(loadVideoPage(response.data, browserHistory));
+        dispatch(loadVideoPage(response.data));
         dispatch(loadVideoCommentsAsync(videoId));
       }
     ).catch(
       error => handleError(error, dispatch)
     )
+  }
+}
+
+export function loadVideoPageFromClientSide(data) {
+  return {
+    type: 'LOAD_VIDEO_PAGE_FROM_CLIENT',
+    data
+  }
+}
+
+export function loadVideoPageFromClientSideAsync(params, to) {
+  return dispatch => {
+    dispatch(loadVideoPageFromClientSide(params))
+    dispatch(push(`/${to}`))
+    dispatch(loadVideoPageAsync(params.videoId))
   }
 }
 
@@ -420,20 +434,6 @@ export function uploadQuestionsAsync(params, callback) {
     ).catch(
       error => handleError(error, dispatch)
     )
-  }
-}
-
-export function loadVideoPageFromClientSide(data) {
-  return {
-    type: 'LOAD_VIDEO_PAGE_FROM_CLIENT',
-    data
-  }
-}
-
-export function loadVideoPageFromClientSideAsync(params, to) {
-  return dispatch => {
-    dispatch(loadVideoPageFromClientSide(params))
-    dispatch(push(`/${to}`))
   }
 }
 
