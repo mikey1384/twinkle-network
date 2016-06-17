@@ -4,7 +4,7 @@ const pool = require('../siteConfig').pool;
 const async = require('async');
 
 module.exports = {
-  returnComments: function(commentRows, cb) {
+  returnComments(commentRows, cb) {
     let commentsArray = [];
     let taskArray = [];
     if (commentRows.length === 0) {

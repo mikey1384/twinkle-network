@@ -27,10 +27,6 @@ export default function PlaylistReducer(state = defaultState, action) {
   let loadMorePlaylistsToPinButton = false;
   switch(action.type) {
     case 'GET_PLAYLISTS':
-      if (action.data.error) {
-        console.error(action.data.error);
-        return state;
-      }
       let loadMoreButton = false;
       if (action.data.playlists.length > 3) {
         action.data.playlists.pop();

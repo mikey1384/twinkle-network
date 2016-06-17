@@ -21,7 +21,6 @@ class PlaylistsPanel extends Component {
           deletePlaylist={this.props.deletePlaylistAsync}
           openChangePlaylistVideosModal={this.props.openChangePlaylistVideosModalAsync}
           openReorderPlaylistVideosModal={this.props.openReorderPlaylistVideosModal}
-          dispatch={this.props.dispatch}
         />
       )
     })

@@ -4,7 +4,7 @@ import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
-import * as UserActions from 'redux_helpers/actions/UserActions';
+import * as UserActions from 'redux/actions/UserActions';
 
 class SigninModal extends Component {
   state = {

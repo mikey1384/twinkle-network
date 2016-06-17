@@ -46,7 +46,6 @@ export default class AllVideosPanel extends Component {
                   lastVideoId={last(videos) ? last(videos).id : 0}
                   editVideoTitle={this.props.editVideoTitleAsync}
                   deleteVideo={this.props.deleteVideoAsync}
-                  dispatch={this.props.dispatch}
                 />
               )
             })

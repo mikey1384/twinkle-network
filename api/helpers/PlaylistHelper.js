@@ -25,7 +25,7 @@ const fetchPlaylistVideos = params => callback => {
 }
 
 module.exports = {
-  fetchPlaylists: (query, callback) => {
+  fetchPlaylists(query, callback) {
     let playlistArrayGroup = [];
     let taskArray = [];
     pool.query(query, (err, playlists) => {

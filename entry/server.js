@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import path from 'path';
 import session from 'client-sessions';
 import { routes, store } from 'Root';
-import { initActions } from 'redux_helpers/actions';
+import { initActions } from 'redux/actions';
 
 const app = express();
 
@@ -50,7 +50,6 @@ app.use((req, res) => {
         </head>
         <body>
           <div id="react-view">${componentHTML}</div>
-          <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
           <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
           </script>

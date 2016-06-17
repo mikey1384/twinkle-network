@@ -14,13 +14,14 @@ import AdminOnly from 'component_wrappers/AdminOnly';
 import NotFound from 'components/NotFound';
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import * as reducers from 'redux_helpers/reducers';
+import * as reducers from 'redux/reducers';
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import ReduxThunk from 'redux-thunk';
-import { loadVideoPageAsync } from 'redux_helpers/actions/VideoActions';
-import { initSessionAsync } from 'redux_helpers/actions/UserActions';
+import { loadVideoPageAsync } from 'redux/actions/VideoActions';
+import { initSessionAsync } from 'redux/actions/UserActions';
 import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
+
 
 let storeElements = [
   combineReducers({

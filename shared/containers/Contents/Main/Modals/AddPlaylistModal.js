@@ -5,7 +5,7 @@ import { Modal, Button } from 'react-bootstrap';
 import {
   closeAddPlaylistModal,
   uploadPlaylistAsync,
-  getMoreVideosForModalAsync } from 'redux_helpers/actions/PlaylistActions';
+  getMoreVideosForModalAsync } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
@@ -119,9 +119,7 @@ export default class AddPlaylistModal extends Component {
         dialogClassName={section >= 1 ? "modal-extra-lg" : ""}
       >
         <Modal.Header closeButton>
-          {
-            this.renderTitle()
-          }
+          { this.renderTitle() }
         </Modal.Header>
 
         <Modal.Body>

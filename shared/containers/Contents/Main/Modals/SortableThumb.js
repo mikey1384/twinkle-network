@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
-import ItemTypes from 'component_constants/itemTypes';
+import ItemTypes from 'constants/itemTypes';
 
 const thumbSource = {
   beginDrag(props) {

@@ -64,6 +64,10 @@
 	height: 16.2rem;
 }
 
+.chat-channel-item:hover {
+	background-color: #eee;
+}
+
 @media (min-width: 1192px) {
 	.modal-extra-lg{
 	    min-width: 1180px !important;

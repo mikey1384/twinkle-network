@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {
   closeEditPlaylistModal,
   changePlaylistVideosAsync,
-  getMoreVideosForModalAsync } from 'redux_helpers/actions/PlaylistActions';
+  getMoreVideosForModalAsync } from 'redux/actions/PlaylistActions';
 import SelectVideosForm from './SelectVideosForm';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';

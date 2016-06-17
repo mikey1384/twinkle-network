@@ -4,7 +4,18 @@ import Header from '../Header';
 import Chat from '../Chat';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import io from 'socket.io-client';
+import { URL } from 'constants/URL';
+import { connect } from 'react-redux';
+import { initChatAsync } from 'redux/actions/ChatActions';
 
+const socket = io.connect(URL);
+@connect(
+  state => ({
+    loggedIn: state.UserReducer.loggedIn
+  }),
+  { initChat: initChatAsync }
+)
 export default class App extends React.Component {
   state={
     chatMode: false
@@ -18,15 +29,19 @@ export default class App extends React.Component {
     return (
       <div id="main-view">
         <Header
+          chatMode={this.state.chatMode}
           onChatButtonClick={ this.onChatButtonClick.bind(this) }
         />
         <div
-          style={{display: this.state.chatMode && 'none'}}
+          style={{display: this.state.chatMode && this.props.loggedIn && 'none'}}
         >
           {this.props.children}
         </div>
-        { this.state.chatMode ?
-          <Chat /> :
+        { this.state.chatMode && this.props.loggedIn ?
+          <Chat
+            socket={socket}
+            onUnmount={() => this.setState({chatMode: false})}
+          /> :
           <footer
             className="footer col-md-12"
             style={{
@@ -41,6 +56,8 @@ export default class App extends React.Component {
   }
 
   onChatButtonClick() {
-    this.setState({chatMode: !this.state.chatMode})
+    this.props.initChat(() => {
+      this.setState({chatMode: !this.state.chatMode})
+    })
   }
 }

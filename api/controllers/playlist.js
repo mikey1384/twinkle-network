@@ -199,8 +199,7 @@ router.get('/pinned', (req, res) => {
   fetchPlaylists(query, (err, playlists) =>{
     if (err) {
       console.error(err);
-      res.status(500).send({error: err});
-      return;
+      return res.status(500).send({error: err});
     }
     res.send({playlists});
   })

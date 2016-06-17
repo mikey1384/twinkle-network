@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import activeComponent from 'react-router-active-component'
 
-import * as UserActions from 'redux_helpers/actions/UserActions';
+import * as UserActions from 'redux/actions/UserActions';
 
 import SigninModal from '../Signin';
 
@@ -18,23 +18,20 @@ class Header extends Component {
   }
 
   state = {
-    tabClicked: false,
-    chatMode: false
+    tabClicked: false
   }
 
   handleClick() {
     this.setState({
       tabClicked: true
     })
-    if (this.state.chatMode) {
-      this.setState({chatMode: false});
+    if (this.props.chatMode) {
       this.props.onChatButtonClick();
     }
   }
 
   render () {
-    const { signinModalShown, loggedIn, username, userType, isAdmin, userId, dispatch } = this.props;
-    const { chatMode, alphaMode } = this.state;
+    const { signinModalShown, loggedIn, username, userType, isAdmin, userId, chatMode, dispatch } = this.props;
     const { openSigninModal, closeSigninModal } = UserActions;
     return (
       <Navbar staticTop fluid>
@@ -50,18 +47,20 @@ class Header extends Component {
         <Navbar.Collapse>
           { this.renderTabs() }
           <Nav pullRight className="flexbox-container">
-            <li>
-              <a
-                className="well unselectable"
-                style={{
-                  padding: '0.7em',
-                  margin: '0px',
-                  cursor: 'pointer'
-                }}
-                onClick={ this.onChatButtonClick.bind(this) }
-              >Messages
-              </a>
-            </li>
+            { loggedIn &&
+              <li>
+                <a
+                  className="well unselectable"
+                  style={{
+                    padding: '0.7em',
+                    margin: '0px',
+                    cursor: 'pointer'
+                  }}
+                  onClick={ this.onChatButtonClick.bind(this) }
+                >Messages
+                </a>
+              </li>
+            }
             {
               loggedIn ?
               <AccountMenu title={ username }
@@ -78,13 +77,12 @@ class Header extends Component {
   }
 
   onChatButtonClick() {
-    this.setState({chatMode: !this.state.chatMode});
     this.props.onChatButtonClick();
   }
 
   renderTabs() {
     const NavLink = activeComponent('li');
-    const { chatMode } = this.state;
+    const { chatMode } = this.props;
     return chatMode ? null : (
       <Nav onClick={this.handleClick.bind(this)}>
         <NavLink

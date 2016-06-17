@@ -7,8 +7,8 @@ import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from './Modals/AddPlaylistModal';
 import { bindActionCreators } from 'redux';
-import * as VideoActions from 'redux_helpers/actions/VideoActions';
-import * as PlaylistActions from 'redux_helpers/actions/PlaylistActions';
+import * as VideoActions from 'redux/actions/VideoActions';
+import * as PlaylistActions from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 
 @connect(
@@ -101,7 +101,6 @@ export default class Main extends Component {
           loadMoreButton={loadMorePinnedPlaylists}
           userId={userId}
           playlists={pinnedPlaylists}
-          dispatch={dispatch}
           {...bindActionCreators(PlaylistActions, dispatch)}
         />
         <PlaylistsPanel
@@ -113,7 +112,6 @@ export default class Main extends Component {
           loadMoreButton={loadMorePlaylistsButton}
           userId={userId}
           playlists={playlists}
-          dispatch={dispatch}
           {...bindActionCreators(PlaylistActions, dispatch)}
         />
         <AllVideosPanel
@@ -124,7 +122,6 @@ export default class Main extends Component {
           userId={userId}
           videos={videos}
           onAddVideoClick={() => dispatch(VideoActions.openAddVideoModal())}
-          dispatch={dispatch}
           {...bindActionCreators(VideoActions, dispatch)}
         />
         { addVideoModalShown &&

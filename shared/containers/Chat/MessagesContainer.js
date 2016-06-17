@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import moment from 'moment';
 
 export default class MessagesContainer extends Component {
   state = {
-    fillerHeight: 0,
-    atBottom: false
+    fillerHeight: 0
   }
 
   componentDidMount() {
@@ -21,20 +21,18 @@ export default class MessagesContainer extends Component {
     const scrollTop = ReactDOM.findDOMNode(this.refs.messagesContainer).scrollTop;
     const containerHeight = ReactDOM.findDOMNode(this.refs.messagesContainer).getBoundingClientRect().height;
     const messagesPlusFillerHeight = ReactDOM.findDOMNode(this.refs.messagesPlusFiller).getBoundingClientRect().height;
-    if (scrollTop + containerHeight - messagesPlusFillerHeight === 0) {
-      this.setState({atBottom: true})
-    };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const messagesPlusFillerHeight = ReactDOM.findDOMNode(this.refs.messagesPlusFiller).getBoundingClientRect().height;
-    if (this.state.atBottom) {
-      ReactDOM.findDOMNode(this.refs.messagesContainer).scrollTop = messagesPlusFillerHeight;
-      this.setState({atBottom: false})
-    }
+    const containerHeight = ReactDOM.findDOMNode(this.refs.messagesContainer).getBoundingClientRect().height;
+    const messagesHeight = ReactDOM.findDOMNode(this.refs.messages).getBoundingClientRect().height;
+    if(prevProps.currentChannelId !== this.props.currentChannelId) console.log("new channel");
+    if(prevProps.messages !== this.props.messages) console.log("new message")
   }
 
   render() {
+    const { loadMoreButton } = this.props;
     return (
       <div
         ref="messagesContainer"
@@ -51,17 +49,38 @@ export default class MessagesContainer extends Component {
           <div
             ref="messages"
           >
+            { loadMoreButton &&
+              <div className="text-center">
+                <button
+                  className="btn btn-info"
+                  style={{
+                    marginTop: '1em',
+                    marginBottom: '0.5em',
+                    width: '20%'
+                  }}
+                  onClick={ this.onLoadMoreButtonClick.bind(this) }
+                >Load More</button>
+              </div>
+            }
             { this.renderMessages() }
           </div>
         </div>
       </div>
     )
   }
+
+  onLoadMoreButtonClick() {
+    const messageId = this.props.messages[0].id;
+    const roomId = this.props.messages[0].roomid;
+    const userId = this.props.userId;
+    this.props.loadMoreMessages(userId, messageId, roomId);
+  }
+
   renderMessages() {
-    return this.props.messages.map(message => {
+    return this.props.messages.map((message, index) => {
       return (
         <div
-          key={message.id}
+          key={index}
           className="media"
           style={{
             minHeight: '64px',
@@ -72,7 +91,8 @@ export default class MessagesContainer extends Component {
             <a><img className="media-object" style={{width: '64px'}} src="/img/default.jpg"/></a>
           </div>
           <div className="media-body">
-            <h5 className="media-heading">sonic</h5>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            <h5 className="media-heading">{message.username} <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
+            { message.content }
           </div>
         </div>
       )

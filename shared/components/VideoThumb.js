@@ -3,8 +3,13 @@ import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ConfirmModal from './Modals/ConfirmModal';
 import { Link } from 'react-router';
-import { loadVideoPageFromClientSideAsync } from 'redux_helpers/actions/VideoActions';
+import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions';
+import { connect } from 'react-redux';
 
+@connect(
+  null,
+  {loadVideoPage: loadVideoPageFromClientSideAsync}
+)
 export default class VideoThumb extends Component {
   state = {
     onEdit: false,
@@ -118,7 +123,8 @@ export default class VideoThumb extends Component {
 
   onLinkClick(e) {
     e.preventDefault();
-    this.props.dispatch(loadVideoPageFromClientSideAsync(this.props.video.id, this.props.to))
+    const { video, to } = this.props;
+    this.props.loadVideoPage(video.id, to);
   }
 
   onEditTitle () {

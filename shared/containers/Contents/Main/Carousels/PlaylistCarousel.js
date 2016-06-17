@@ -27,8 +27,6 @@ export default class PlaylistCarousel extends Component {
             description: thumb.video_description,
             uploadername: thumb.video_uploader
           }}
-          loadVideoPage={this.props.loadVideoPage}
-          dispatch={this.props.dispatch}
         />
       )
     })
@@ -133,7 +131,7 @@ export default class PlaylistCarousel extends Component {
           slidesToShow={5}
           slidesToScroll={5}
           cellSpacing={20}
-          dragging={false}
+          dragging={true}
         >
           { this.renderThumbs() }
         </Carousel>

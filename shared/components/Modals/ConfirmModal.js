@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 class ConfirmModal extends Component {
-  static contextTypes = {
-    store: React.PropTypes.object
-  }
-
   onConfirm () {
-    const { store } = this.context;
     this.props.onConfirm();
   }
 
