@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import activeComponent from 'react-router-active-component'
-
-import * as UserActions from 'redux/actions/UserActions';
-
+import activeComponent from 'react-router-active-component';
+import { openSigninModal, closeSigninModal, logout } from 'redux/actions/UserActions';
 import SigninModal from '../Signin';
-
 import { bindActionCreators } from 'redux';
 import AccountMenu from './AccountMenu';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
-class Header extends Component {
-  static contextTypes = {
-    router: React.PropTypes.object,
-    location: React.PropTypes.object
-  }
 
+@connect(
+  state => ({
+    loggedIn: state.UserReducer.loggedIn,
+    username: state.UserReducer.username,
+    userType: state.UserReducer.userType,
+    isAdmin: state.UserReducer.isAdmin,
+    userId: state.UserReducer.userId,
+    signinModalShown: state.UserReducer.signinModalShown
+  }),
+  { openSigninModal, closeSigninModal, logout }
+)
+export default class Header extends Component {
   state = {
     tabClicked: false
   }
@@ -26,13 +30,23 @@ class Header extends Component {
       tabClicked: true
     })
     if (this.props.chatMode) {
-      this.props.onChatButtonClick();
+      this.props.turnChatOff();
     }
   }
 
   render () {
-    const { signinModalShown, loggedIn, username, userType, isAdmin, userId, chatMode, dispatch } = this.props;
-    const { openSigninModal, closeSigninModal } = UserActions;
+    const {
+      signinModalShown,
+      loggedIn,
+      username,
+      userType,
+      isAdmin,
+      userId,
+      chatMode,
+      openSigninModal,
+      closeSigninModal
+    } = this.props;
+
     return (
       <Navbar staticTop fluid>
         <Navbar.Toggle />
@@ -63,14 +77,16 @@ class Header extends Component {
             }
             {
               loggedIn ?
-              <AccountMenu title={ username }
-                {...bindActionCreators(UserActions, dispatch)} />
-              : <NavItem onClick={ () => dispatch(openSigninModal()) }>Log In | Sign Up</NavItem>
+              <AccountMenu
+                title={ username }
+                logout={ this.props.logout }
+              /> :
+              <NavItem onClick={ () => openSigninModal() }>Log In | Sign Up</NavItem>
             }
           </Nav>
         </Navbar.Collapse>
         { signinModalShown &&
-          <SigninModal show={true} onHide={ () => dispatch(closeSigninModal()) } />
+          <SigninModal show={true} onHide={ () => closeSigninModal() } />
         }
       </Navbar>
     )
@@ -115,14 +131,3 @@ class Header extends Component {
     )
   }
 }
-
-export default connect(
-  state => ({
-    loggedIn: state.UserReducer.loggedIn,
-    username: state.UserReducer.username,
-    userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
-    userId: state.UserReducer.userId,
-    signinModalShown: state.UserReducer.signinModalShown
-  })
-)(Header);

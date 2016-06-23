@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SortableListGroup from 'components/SortableListGroup';
+import { connect } from 'react-redux';
+import { changePinnedPlaylistsAsync } from 'redux/actions/PlaylistActions';
 
+@connect(
+  null,
+  { changePinnedPlaylists: changePinnedPlaylistsAsync }
+)
 export default class ReorderPinnedPlaylistsModal extends Component {
   state = {
     playlists: this.props.pinnedPlaylists,
@@ -53,6 +59,6 @@ export default class ReorderPinnedPlaylistsModal extends Component {
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylistsAsync(this.state.playlistIds, () => this.props.onHide());
+    this.props.changePinnedPlaylists(this.state.playlistIds, () => this.props.onHide());
   }
 }

@@ -8,9 +8,11 @@ const fetchPlaylistVideos = params => callback => {
   let playlistArrayGroup = params.playlistArrayGroup;
   let index = params.index;
   let query = [
-    'SELECT a.id, a.videoid, b.title AS video_title, b.description AS video_description, b.videocode, c.username AS video_uploader ',
+    'SELECT a.id, a.videoid, b.title AS video_title, b.description AS video_description, ',
+    'b.videocode, c.username AS video_uploader, COUNT(d.id) AS numLikes ',
     'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-    'WHERE a.playlistid = ? ORDER BY a.id'
+    'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
+    'WHERE a.playlistid = ? GROUP BY a.videoid ORDER BY a.id'
   ].join('');
   pool.query(query, playlists[index].id, (err, rows) => {
     playlistArrayGroup[index] = {
@@ -20,7 +22,7 @@ const fetchPlaylistVideos = params => callback => {
       uploader: playlists[index].uploader,
       uploaderId: playlists[index].uploaderid
     }
-    callback(null);
+    callback(err);
   })
 }
 
@@ -30,8 +32,7 @@ module.exports = {
     let taskArray = [];
     pool.query(query, (err, playlists) => {
       if (!playlists) {
-        callback("Load Error");
-        return;
+        return callback("Load Error");
       }
       for (let index = 0; index < playlists.length; index++) {
         taskArray.push(fetchPlaylistVideos({playlists, playlistArrayGroup, index}));

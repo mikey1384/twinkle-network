@@ -2,10 +2,22 @@ import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
 import { reduxForm } from 'redux-form';
 import { Modal, Button } from 'react-bootstrap';
+import { uploadVideoAsync } from 'redux/actions/VideoActions';
+import { connect } from 'react-redux';
 
-class AddVideoForm extends Component {
+
+@reduxForm({
+  form: 'UploadVideoForm',
+  fields: ['url', 'title', 'description'],
+  validate
+})
+@connect(
+  null,
+  {uploadVideo: uploadVideoAsync}
+)
+export default class AddVideoForm extends Component {
   onSubmit(props) {
-    this.props.uploadVideoAsync(props)
+    this.props.uploadVideo(props)
   }
 
   render () {
@@ -75,11 +87,3 @@ function isValidYoutubeUrl (url) {
 function containsOnlySpaces (string) {
   return string.replace(/\s/g, "").replace(/\r?\n/g, "") === "" ? true : false;
 }
-
-AddVideoForm = reduxForm({
-  form: 'UploadVideoForm',
-  fields: ['url', 'title', 'description'],
-  validate
-})(AddVideoForm);
-
-export default AddVideoForm;

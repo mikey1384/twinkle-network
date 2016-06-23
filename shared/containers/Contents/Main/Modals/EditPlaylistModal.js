@@ -16,7 +16,11 @@ import HTML5Backend from 'react-dnd-html5-backend';
     modalType: state.PlaylistReducer.editPlaylistModalType,
     videos: state.PlaylistReducer.videoThumbsForModal,
     loadMoreVideosButton: state.PlaylistReducer.loadMoreButtonForModal
-  })
+  }),
+  {
+    changePlaylistVideos: changePlaylistVideosAsync,
+    getMoreVideosForModal: getMoreVideosForModalAsync
+  }
 )
 export default class EditPlaylistModal extends Component {
   state = {
@@ -27,18 +31,18 @@ export default class EditPlaylistModal extends Component {
   }
   handleSave() {
     const { selectedVideos } = this.state;
-    const { playlistId, dispatch } = this.props;
-    dispatch(changePlaylistVideosAsync(playlistId, selectedVideos, this));
+    const { playlistId, changePlaylistVideos } = this.props;
+    changePlaylistVideos(playlistId, selectedVideos, this);
   }
   render() {
-    const { modalType, videos, loadMoreVideosButton,  dispatch } = this.props;
+    const { modalType, videos, loadMoreVideosButton,  getMoreVideosForModal } = this.props;
     const { selectedVideos } = this.state;
     const last = (array) => {
       return array[array.length - 1];
     };
     const lastId = last(videos) ? last(videos).id : 0;
     const loadMoreVideos = () => {
-      dispatch(getMoreVideosForModalAsync(lastId));
+      getMoreVideosForModal(lastId);
     }
     const modalBody = (modalType) => {
       switch (modalType) {

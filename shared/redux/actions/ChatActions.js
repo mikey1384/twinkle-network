@@ -50,6 +50,23 @@ export const updateChannelList = (data) => ({
   data
 })
 
+export const searchUserToInvite = data => ({
+  type: 'SEARCH_USERS_FOR_CHANNEL',
+  data
+})
+
+export const searchUserToInviteAsync = text => dispatch =>
+request.get(`${API_URL}/search?text=${text}`)
+.then(
+  response => dispatch(searchUserToInvite(response.data))
+).catch(
+  error => handleError(error, dispatch)
+)
+
+export const clearSearchResults = () => ({
+  type: 'CLEAR_RESULTS_FOR_CHANNEL'
+})
+
 export const submitMessageAsync = (params, callback) => dispatch =>
 request.post(API_URL, {params}, auth())
 .then(
@@ -75,28 +92,56 @@ request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
   error => handleError(error, dispatch)
 )
 
-export const searchUserToInvite = data => ({
-  type: 'SEARCH_USERS_FOR_CHANNEL',
-  data
+export const openNewTwoPeopleChannel = partnerId => ({
+  type: 'OPEN_NEW_TWO_PEOPLE_CHANNEL',
+  partnerId
 })
 
-export const searchUserToInviteAsync = text => dispatch =>
-request.get(`${API_URL}/search?text=${text}`)
+export const enterEmptyTwoPeopleChannel = () => ({
+  type: 'ENTER_EMPTY_TWO_PEOPLE_CHANNEL'
+})
+
+export const checkChannelExistsAsync = (userId, callback) => dispatch =>
+request.get(`${API_URL}/channel/check?partnerId=${userId}`, auth())
 .then(
-  response => dispatch(searchUserToInvite(response.data))
+  response => {
+    callback()
+    if (response.data.channelExists) {
+      dispatch(enterChannelAsync(response.data.channelId))
+    } else {
+      dispatch(openNewTwoPeopleChannel(userId))
+    }
+  }
 ).catch(
   error => handleError(error, dispatch)
 )
 
-export const clearSearchResults = () => ({
-  type: 'CLEAR_RESULTS_FOR_CHANNEL'
+export const createNewTwoPeopleChannelAsync = params => dispatch =>
+request.post(`${API_URL}/channel/bidirectional`, params, auth())
+.then(
+  response => console.log(response)
+).catch(
+  error => handleError(error, dispatch)
+)
+
+export const createNewChannelAsync = (params, callback) => dispatch =>
+request.post(`${API_URL}/channel`, { params }, auth())
+.then(
+  response => {
+    console.log(response)
+    callback()
+  }
+).catch(
+  error => handleError(error, dispatch)
+)
+
+export const resetChat = () => ({
+  type: 'RESET_CHAT'
 })
 
 function handleError(error, dispatch) {
   if (error.data === 'Unauthorized') {
     dispatch(logout());
     dispatch(openSigninModal());
-  } else {
-    console.error(error);
   }
 }

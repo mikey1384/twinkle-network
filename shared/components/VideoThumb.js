@@ -1,32 +1,43 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ConfirmModal from './Modals/ConfirmModal';
-import { Link } from 'react-router';
-import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions';
-import { connect } from 'react-redux';
+import {Link} from 'react-router';
+import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions';
+import {connect} from 'react-redux';
+import UsernameText from './UsernameText';
 
 @connect(
   null,
   {loadVideoPage: loadVideoPageFromClientSideAsync}
 )
 export default class VideoThumb extends Component {
-  state = {
-    onEdit: false,
-    confirmModalShown: false
+  constructor() {
+    super()
+    this.state = {
+      onEdit: false,
+      confirmModalShown: false
+    }
+    this.onEditTitle = this.onEditTitle.bind(this)
+    this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
+    this.onEditTitleCancel = this.onEditTitleCancel.bind(this)
+    this.onDeleteClick = this.onDeleteClick.bind(this)
+    this.onDeleteConfirm = this.onDeleteConfirm.bind(this)
+    this.onLinkClick = this.onLinkClick.bind(this)
+    this.onHideModal = this.onHideModal.bind(this)
   }
 
-  render () {
-    const { onEdit, confirmModalShown } = this.state;
-    const { size, editable, video } = this.props;
+  render() {
+    const {onEdit, confirmModalShown} = this.state;
+    const {size, editable, video, to} = this.props;
     const menuProps = [
       {
         label: 'Edit',
-        onClick: this.onEditTitle.bind(this)
+        onClick: this.onEditTitle
       },
       {
         label: 'Remove',
-        onClick: this.onDeleteClick.bind(this)
+        onClick: this.onDeleteClick
       }
     ]
     return (
@@ -44,8 +55,8 @@ export default class VideoThumb extends Component {
             />
           }
           <a
-            href={`/${this.props.to}`}
-            onClick={ this.onLinkClick.bind(this) }
+            href={`/${to}`}
+            onClick={this.onLinkClick}
           >
             <div
               style={{
@@ -73,8 +84,7 @@ export default class VideoThumb extends Component {
               height: '8rem'
             }}
           >
-            {
-              onEdit ?
+            { onEdit ?
               <div
                 className="input-group col-sm-12"
                 style={{
@@ -83,9 +93,9 @@ export default class VideoThumb extends Component {
               >
                 <EditTitleForm
                   title={video.title}
-                  onEditSubmit={ this.onEditedTitleSubmit.bind(this) }
-                  onEditCancel={ this.onEditTitleCancel.bind(this) }
-                  onClickOutSide={ this.onEditTitleCancel.bind(this) }
+                  onEditSubmit={this.onEditedTitleSubmit}
+                  onEditCancel={this.onEditTitleCancel}
+                  onClickOutSide={this.onEditTitleCancel}
                 />
               </div>
               :
@@ -97,10 +107,10 @@ export default class VideoThumb extends Component {
                   lineHeight: 'normal'
                 }}>
                   <a
-                    href={`/${this.props.to}`}
-                    onClick={ this.onLinkClick.bind(this) }
+                    href={`/${to}`}
+                    onClick={this.onLinkClick}
                   >
-                    { video.title }
+                    {video.title}
                   </a>
                 </h5>
               </div>
@@ -109,33 +119,36 @@ export default class VideoThumb extends Component {
               whiteSpace: 'nowrap',
               textOverflow:'ellipsis',
               overflow:'hidden'
-            }}>Added by <strong>{video.uploadername}</strong></small>
+            }}>Added by <UsernameText user={{name: video.uploadername, id: video.uploaderid}} /></small>
+            { video.numLikes > 0 &&
+              <small className="pull-right"><span className="glyphicon glyphicon-thumbs-up"></span>&times;{video.numLikes}</small>
+            }
           </div>
         </div>
         <ConfirmModal
           title="Remove Video"
           show={confirmModalShown}
-          onHide={this.onHideModal.bind(this)}
-          onConfirm={this.onDeleteConfirm.bind(this)} />
+          onHide={this.onHideModal}
+          onConfirm={this.onDeleteConfirm} />
       </div>
     )
   }
 
   onLinkClick(e) {
     e.preventDefault();
-    const { video, to } = this.props;
+    const {video, to} = this.props;
     this.props.loadVideoPage(video.id, to);
   }
 
-  onEditTitle () {
+  onEditTitle() {
     this.setState({onEdit: true})
   }
 
   onEditedTitleSubmit(title) {
-    const { video } = this.props;
+    const {video, editVideoTitle} = this.props;
     const videoId = video.id;
     if (title && title !== video.title) {
-      this.props.editVideoTitle({title, videoId}, this);
+      editVideoTitle({title, videoId}, this);
     } else {
       this.setState({onEdit: false})
     }
@@ -145,17 +158,17 @@ export default class VideoThumb extends Component {
     this.setState({onEdit: false});
   }
 
-  onDeleteClick () {
+  onDeleteClick() {
     this.setState({confirmModalShown: true});
   }
 
-  onDeleteConfirm () {
-    const { deleteVideo, video, arrayNumber, lastVideoId } = this.props;
+  onDeleteConfirm() {
+    const {deleteVideo, video, arrayNumber, lastVideoId} = this.props;
     const videoId = video.id;
     deleteVideo({videoId, arrayNumber, lastVideoId});
   }
 
-  onHideModal () {
+  onHideModal() {
     this.setState({confirmModalShown: false});
   }
 }

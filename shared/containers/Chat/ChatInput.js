@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
+import {stringIsEmpty} from 'helpers/StringHelper';
 
 export default class ChatInput extends Component {
-  constructor(props) {
+  constructor() {
     super()
     this.state = {
       message: ''
     }
+    this.onMessageSubmit = this.onMessageSubmit.bind(this);
   }
 
   render() {
@@ -15,9 +17,9 @@ export default class ChatInput extends Component {
         rows={1}
         className="form-control"
         placeholder="Type a message..."
-        onKeyDown={this.onMessageSubmit.bind(this)}
+        onKeyDown={this.onMessageSubmit}
         value={this.state.message}
-        onChange={ event => this.setState({message: event.target.value}) }
+        onChange={event => this.setState({message: event.target.value})}
         autoFocus
       />
     )
@@ -26,9 +28,11 @@ export default class ChatInput extends Component {
   onMessageSubmit(event) {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
+    const {message} = this.state;
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault();
-      this.props.onMessageSubmit(this.state.message);
+      if (stringIsEmpty(message)) return;
+      this.props.onMessageSubmit(message);
       this.setState({message: ''})
     }
   }

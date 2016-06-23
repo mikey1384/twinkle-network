@@ -25,7 +25,8 @@ export default class PlaylistCarousel extends Component {
             videocode: thumb.videocode,
             title: thumb.video_title,
             description: thumb.video_description,
-            uploadername: thumb.video_uploader
+            uploadername: thumb.video_uploader,
+            numLikes: thumb.numLikes
           }}
         />
       )
@@ -37,7 +38,7 @@ export default class PlaylistCarousel extends Component {
   }
 
   onChangeVideos() {
-    this.props.openChangePlaylistVideosModal(this);
+    this.props.openChangePlaylistVideosModalAsync(this);
   }
 
   onReorderVideos() {
@@ -47,10 +48,10 @@ export default class PlaylistCarousel extends Component {
   }
 
   onEditedTitleSubmit(title) {
-    const { editPlaylistTitle, id } = this.props;
+    const { editPlaylistTitleAsync, id } = this.props;
     const playlistId = id;
     if (title && title !== this.props.title) {
-      editPlaylistTitle({title, playlistId}, this.props.arrayNumber, this);
+      editPlaylistTitleAsync({title, playlistId}, this.props.arrayNumber, this);
     } else {
       this.setState({onEdit: false})
     }
@@ -65,8 +66,8 @@ export default class PlaylistCarousel extends Component {
   }
 
   onDeleteConfirm() {
-    const { deletePlaylist, id } = this.props;
-    deletePlaylist(id, this);
+    const { deletePlaylistAsync, id } = this.props;
+    deletePlaylistAsync(id, this);
   }
 
   render () {

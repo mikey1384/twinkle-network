@@ -2,6 +2,7 @@ import request from 'axios';
 import { URL } from 'constants/URL';
 import { push } from 'react-router-redux';
 import { logout, openSigninModal } from './UserActions';
+import { likePlaylistVideo } from './PlaylistActions';
 
 const API_URL = `${URL}/video`;
 
@@ -94,9 +95,10 @@ request.post(`${API_URL}/edit/title`, params, auth())
   error => handleError(error, dispatch)
 )
 
-export const likeVideo = data => ({
+export const likeVideo = (data, videoId) => ({
   type: 'VIDEO_LIKE',
-  data
+  data,
+  videoId
 })
 
 export const likeVideoAsync = videoId => dispatch => request.post(`${API_URL}/like`, {videoId}, auth())
@@ -104,7 +106,8 @@ export const likeVideoAsync = videoId => dispatch => request.post(`${API_URL}/li
   response => {
     const { data } = response;
     if (data.likes) {
-      dispatch(likeVideo(data.likes));
+      dispatch(likeVideo(data.likes, videoId));
+      dispatch(likePlaylistVideo(data.likes, videoId));
     }
     return;
   }

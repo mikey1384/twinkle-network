@@ -4,6 +4,7 @@ import EditChoiceListItem from './EditChoiceListItem';
 import Textarea from 'react-textarea-autosize';
 import { processedString } from 'helpers/StringHelper';
 
+
 export default class QuestionBlock extends Component {
   state = {
     editedChoiceTitles: this.props.choices.map(choice => {

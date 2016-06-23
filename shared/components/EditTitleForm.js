@@ -1,22 +1,20 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import onClickOutside from 'react-onclickoutside';
 
-
 class EditTitleForm extends Component {
-  state = {
-    title: this.props.title
-  }
-
   handleClickOutside = (event) => {
     this.props.onClickOutSide();
   }
-  onEditSubmit(event, title) {
-    event.preventDefault();
-    this.props.onEditSubmit(title);
+
+  constructor(props) {
+    super()
+    this.state = {
+      title: props.title
+    }
   }
 
   render () {
-    const { title } = this.state;
+    const {title} = this.state;
     return (
       <form
         {...this.props}
@@ -33,6 +31,11 @@ class EditTitleForm extends Component {
         />
       </form>
     )
+  }
+
+  onEditSubmit(event, title) {
+    event.preventDefault();
+    this.props.onEditSubmit(title);
   }
 }
 

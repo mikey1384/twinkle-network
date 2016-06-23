@@ -59,9 +59,11 @@ router.post('/', requireAuth, (req, res) => {
       }
       async.series(taskArray, function (err) {
         const query = [
-          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
+          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader, ',
+          'COUNT(d.id) AS numLikes ',
           'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-          'WHERE a.playlistid = ? ORDER BY a.id'
+          'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
+          'WHERE a.playlistid = ? GROUP BY a.videoid ORDER BY a.id'
         ].join('');
         pool.query(query, playlistId, (err, rows) => {
           callback(err, {
@@ -131,9 +133,11 @@ router.post('/edit/videos', requireAuth, (req, res) => {
       }
       async.series(taskArray, (err) => {
         const query = [
-          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader ',
+          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader, ',
+          'COUNT(d.id) AS numLikes ',
           'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
-          'WHERE a.playlistid = ? ORDER BY a.id'
+          'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
+          'WHERE a.playlistid = ? GROUP BY a.videoid ORDER BY a.id'
         ].join('');
         pool.query(query, playlistId, (err, rows) => {
           callback(err, rows)

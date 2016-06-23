@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import CheckListGroup from 'components/CheckListGroup';
+import { loadMorePlaylistListAsync, changePinnedPlaylistsAsync } from 'redux/actions/PlaylistActions';
+import { connect } from 'react-redux';
 
+@connect(
+  null,
+  {
+    loadMorePlaylist: loadMorePlaylistListAsync,
+    changePinnedPlaylists: changePinnedPlaylistsAsync
+  }
+)
 export default class SelectPlaylistsToPinModal extends Component {
   state = {
     selectedPlaylists: this.props.selectedPlaylists,
@@ -49,7 +58,7 @@ export default class SelectPlaylistsToPinModal extends Component {
                   playlistsToPin.map(playlist => {
                     return {
                       label: playlist.title,
-                      checked: selectedPlaylists.indexOf(playlist.id) !== -1 ? true : false
+                      checked: selectedPlaylists.indexOf(playlist.id) !== -1
                     }
                   })
                 }
@@ -129,7 +138,7 @@ export default class SelectPlaylistsToPinModal extends Component {
   }
 
   loadMorePlaylists(lastPlaylistId) {
-    this.props.loadMorePlaylistListAsync(lastPlaylistId);
+    this.props.loadMorePlaylist(lastPlaylistId);
   }
 
   onSelect(index) {
@@ -155,6 +164,6 @@ export default class SelectPlaylistsToPinModal extends Component {
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylistsAsync(this.state.selectedPlaylists, () => this.props.onHide());
+    this.props.changePinnedPlaylists(this.state.selectedPlaylists, () => this.props.onHide());
   }
 }

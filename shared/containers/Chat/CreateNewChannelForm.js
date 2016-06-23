@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { searchUserToInviteAsync, clearSearchResults } from 'redux/actions/ChatActions';
-import { stringIsEmpty } from 'helpers/StringHelper';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {searchUserToInviteAsync, clearSearchResults} from 'redux/actions/ChatActions';
+import {stringIsEmpty} from 'helpers/StringHelper';
+import InvitePeopleInput from './InvitePeopleInput';
 
 @connect(
   state => ({
@@ -13,98 +14,90 @@ import { stringIsEmpty } from 'helpers/StringHelper';
   }
 )
 export default class CreateNewChannelForm extends Component {
-  constructor(props) {
+  constructor() {
     super()
-    this.state = {
-      selectedUsers: []
+    this.state={
+      searchText: ''
     }
+    this.onUserSearch = this.onUserSearch.bind(this)
+    this.onAddUser = this.onAddUser.bind(this)
   }
 
   componentWillUnmount() {
-    const { clearSearchResults } = this.props;
+    const {clearSearchResults} = this.props;
     clearSearchResults()
   }
 
   render() {
+    const {numSelected, searchResult, userId, onChange, clearSearchResults} = this.props;
+    const {searchText} = this.state;
+    const filteredResults = searchResult.filter(result => {
+      return result.id !== userId
+    })
     return (
-      <form>
+      <form onSubmit={event => event.preventDefault()}>
         <div className="form-group">
-          <label>Name</label>
-          <input className="form-control" placeholder="Enter channel name" />
-          <small>Channel names should be lowercase, with no spaces.</small>
+          <label>People</label>
+          {this.renderTags()}
+          <InvitePeopleInput
+            value={searchText}
+            onChange={this.onUserSearch}
+            onClickOutSide={() => {
+              this.setState({searchText: ''})
+              clearSearchResults()
+            }}
+            searchResults={filteredResults}
+            selectedUsers={this.props.selectedUsers}
+            onAddUser={this.onAddUser}
+          />
         </div>
-        <div className="form-group">
-          <label>Invite Members</label>
-          { this.renderTags() }
-          <div className="input-group dropdown">
-            <span className="input-group-addon"><span className="glyphicon glyphicon-search"></span></span>
+        { numSelected > 1 &&
+          <div className="form-group">
+            <label>Channel name</label>
             <input
               className="form-control"
-              placeholder="Invite people to this channel"
-              onChange={ this.onUserSearch.bind(this) }
+              placeholder="Enter channel name"
+              value={this.props.channelName}
+              onChange={event => onChange(event.target.value)}
             />
-            { this.renderDropdownList() }
           </div>
-        </div>
+        }
       </form>
     )
   }
 
   renderTags() {
-    const { selectedUsers } = this.state;
+    const {selectedUsers, onRemoveUser} = this.props;
     return selectedUsers.length > 0 ?
     <div
-      style={{marginBottom: '0.5em'}}
+      style={{
+        marginBottom: '0.5em'
+      }}
     >
-      {
-        selectedUsers.map((user, index) => {
-          return <span
-            key={index}
-            style={{
-              marginLeft: index > 0 && '0.2em',
-              backgroundColor: '#18aae0',
-              color: '#fff',
-              paddingTop: '3px',
-              paddingBottom: '3px',
-              paddingLeft: '8px',
-              paddingRight: '8px',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-            onClick={ (() => this.onRemoveUser(user)).bind(this) }
-          >{user.username} &times;</span>
-        })
-      }
+      {selectedUsers.map((user, index) => {
+        return <span
+          key={index}
+          style={{
+            marginLeft: index > 0 && '0.2em',
+            backgroundColor: '#18aae0',
+            color: '#fff',
+            paddingTop: '3px',
+            paddingBottom: '3px',
+            paddingLeft: '8px',
+            paddingRight: '8px',
+            borderRadius: '3px',
+            cursor: 'pointer'
+          }}
+          onClick={() => onRemoveUser(user)}
+        >{user.username} &times;</span>
+      })}
     </div> : null
   }
 
-  renderDropdownList() {
-    const { searchResult } = this.props;
-    return searchResult.length > 0 ?
-    <ul
-      className="dropdown-menu"
-      style={{
-        width: '100%',
-        cursor: 'pointer',
-        display: 'block'
-      }}
-    >
-      {
-        searchResult.map((user, index) => {
-          return (
-            <li
-              key={index}
-              onClick={ () => this.onAddUser(user) }
-            ><a>{user.realname} <small>{`(${user.username})`}</small></a></li>
-          )
-        })
-      }
-    </ul> : null
-  }
-
   onUserSearch(event) {
-    const { searchUserToInvite, clearSearchResults } = this.props;
+    const {searchUserToInvite, clearSearchResults} = this.props;
     const text = event.target.value;
+    this.setState({searchText: text})
     if (stringIsEmpty(text)) {
       return clearSearchResults()
     }
@@ -112,20 +105,8 @@ export default class CreateNewChannelForm extends Component {
   }
 
   onAddUser(user) {
-    this.setState({
-      selectedUsers: this.state.selectedUsers.concat([{
-        userId: user.id,
-        username: user.username
-      }])
-    })
-  }
-
-  onRemoveUser(user) {
-    const { selectedUsers } = this.state;
-    this.setState({
-      selectedUsers: selectedUsers.filter(selectedUser => {
-        return selectedUser.userId === user.userId ? false : true
-      })
-    })
+    this.setState({searchText: ''})
+    this.props.onAddUser(user)
+    this.props.clearSearchResults()
   }
 }

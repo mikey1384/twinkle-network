@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as ChatActions from 'redux/actions/ChatActions';
 import ChatInput from './ChatInput';
-import CreateNewChatModal from './CreateNewChatModal';
+import CreateNewChannelModal from './CreateNewChannelModal';
+import { cleanStringWithURL } from 'helpers/StringHelper';
 
 @connect(
   state => ({
@@ -14,53 +15,81 @@ import CreateNewChatModal from './CreateNewChatModal';
     currentChannelId: state.ChatReducer.currentChannelId,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
-    loadMoreButton: state.ChatReducer.loadMoreButton
+    loadMoreButton: state.ChatReducer.loadMoreButton,
+    chatPartnerId: state.ChatReducer.chatPartnerId
   }),
   {
     receiveMessage: ChatActions.receiveMessage,
     enterChannel: ChatActions.enterChannelAsync,
+    enterEmptyTwoPeopleChannel: ChatActions.enterEmptyTwoPeopleChannel,
     submitMessage: ChatActions.submitMessageAsync,
-    loadMoreMessages: ChatActions.loadMoreMessagesAsync
+    loadMoreMessages: ChatActions.loadMoreMessagesAsync,
+    createNewChannel: ChatActions.createNewChannelAsync,
+    createNewTwoPeopleChannel: ChatActions.createNewTwoPeopleChannelAsync,
+    checkChannelExists: ChatActions.checkChannelExistsAsync
   }
 )
 export default class Chat extends Component {
   constructor(props) {
     super()
     this.state = {
-      currentChannelId: props.currentChannelId,
-      createNewChatModalShown: false
+      createNewChannelModalShown: false
     }
     const { socket, receiveMessage } = props;
     const callback = (function(data) {
-      if (data.channelId === this.state.currentChannelId) {
+      if (data.channelId === this.props.currentChannelId) {
         receiveMessage(data)
       }
     }).bind(this)
     socket.on('incoming message', callback)
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({
-      currentChannelId: props.currentChannelId
-    })
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentChannelId !== this.props.currentChannelId) {
+      ReactDOM.findDOMNode(this.refs.chatInput).focus()
+    }
+  }
+
+  componentWillMount() {
+    const { socket, channels } = this.props;
+    for (let i = 0; i < channels.length; i ++) {
+      let channelId = channels[i].id;
+      socket.emit('join chat channel', channelId)
+    }
   }
 
   componentWillUnmount() {
-    const { socket } = this.props;
+    const { socket, channels } = this.props;
+    for (let i = 0; i < channels.length; i ++) {
+      let channelId = channels[i].id;
+      socket.emit('leave chat channel', channelId)
+    }
     socket.removeListener('incoming message');
     this.props.onUnmount();
   }
 
   render() {
+    const { channels, currentChannelId } = this.props;
+    const channelName = () => {
+      for (let i = 0; i < channels.length; i ++) {
+        if (Number(channels[i].id) === Number(currentChannelId)) {
+          return channels[i].roomname
+        }
+      }
+      return null;
+    }
     return (
       <div
         style={{
           display: 'flex'
         }}
       >
-        { this.state.createNewChatModalShown &&
-          <CreateNewChatModal show
-            onHide={ () => this.setState({createNewChatModalShown: false}) }
+        { this.state.createNewChannelModalShown &&
+          <CreateNewChannelModal
+            show
+            userId={this.props.userId}
+            onHide={ () => this.setState({createNewChannelModalShown: false}) }
+            onDone={ this.onCreateNewChannel.bind(this) }
           />
         }
         <div className="col-sm-3">
@@ -73,7 +102,7 @@ export default class Chat extends Component {
             }}
           >
             <div className="text-center col-sm-8 col-sm-offset-2">
-              <h4>Twinkle Chat</h4>
+              <h4>{ channelName() }</h4>
             </div>
             <button
               className="btn btn-default btn-sm pull-right"
@@ -104,6 +133,7 @@ export default class Chat extends Component {
           }}
         >
           <MessagesContainer
+            ref="messagesContainer"
             currentChannelId={this.props.currentChannelId}
             loadMoreButton={this.props.loadMoreButton}
             messages={this.props.messages}
@@ -118,30 +148,13 @@ export default class Chat extends Component {
             }}
           >
             <ChatInput
+              ref="chatInput"
               onMessageSubmit={this.onMessageSubmit.bind(this)}
             />
           </div>
         </div>
       </div>
     )
-  }
-
-  onMessageSubmit(message) {
-    const { socket, submitMessage } = this.props;
-    let params = {
-      userid: this.props.userId,
-      username: this.props.username,
-      content: message,
-      channelId: this.props.currentChannelId
-    }
-    submitMessage(params, (messageId, timeposted) => {
-      let data = {
-        ...params,
-        id: messageId,
-        timeposted
-      }
-      socket.emit('new message', data);
-    })
   }
 
   renderChannels() {
@@ -160,23 +173,82 @@ export default class Chat extends Component {
           onClick={ () => this.onChannelEnter(id) }
           key={id}
         >
-          <div
-            className="media-body"
-          >
+          <div className="media-body">
             <h4 className="media-heading">{roomname}</h4>
-            <small>{`${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${lastMessage}`}</small>
+            <small
+              style={{
+                whiteSpace: 'nowrap',
+                textOverflow:'ellipsis',
+                overflow:'hidden',
+                width: '25em',
+                display: 'block',
+                lineHeight: 'normal'
+              }}
+            >
+              <span>
+                { lastMessageSender && lastMessage &&
+                  `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}`
+                }
+              </span>
+            </small>
           </div>
         </div>
       )
     })
   }
 
+  onMessageSubmit(message) {
+    const {
+      socket,
+      submitMessage,
+      userId,
+      username,
+      currentChannelId,
+      createNewTwoPeopleChannel,
+      chatPartnerId
+    } = this.props;
+
+    if (currentChannelId === 0) {
+      return createNewTwoPeopleChannel({message, chatPartnerId})
+    }
+
+    let params = {
+      userid: userId,
+      username,
+      content: message,
+      channelId: currentChannelId
+    }
+    submitMessage(params, (messageId, timeposted) => {
+      let data = {
+        ...params,
+        id: messageId,
+        timeposted
+      }
+      socket.emit('new chat message', data);
+    })
+  }
+
   onNewButtonClick() {
-    this.setState({createNewChatModalShown: true})
+    this.setState({createNewChannelModalShown: true})
   }
 
   onChannelEnter(id) {
-    const { enterChannel } = this.props;
+    const { enterChannel, enterEmptyTwoPeopleChannel } = this.props;
+    if (id === 0) {
+      return enterEmptyTwoPeopleChannel()
+    }
     enterChannel(id)
+  }
+
+  onCreateNewChannel(params) {
+    if (params.selectedUsers.length === 1) {
+      return this.props.checkChannelExists(params.selectedUsers[0].userId, () => {
+        this.setState({createNewChannelModalShown: false})
+      })
+    }
+
+    this.props.createNewChannel(params, () => {
+      this.setState({createNewChannelModalShown: false})
+    })
   }
 }

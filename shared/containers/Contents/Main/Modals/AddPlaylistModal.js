@@ -22,7 +22,12 @@ import SelectVideosForm from './SelectVideosForm';
   state => ({
     videos: state.PlaylistReducer.videoThumbsForModal,
     loadMoreVideosButton: state.PlaylistReducer.loadMoreButtonForModal
-  })
+  }),
+  {
+    closeAddPlaylistModal,
+    uploadPlaylist: uploadPlaylistAsync,
+    getMoreVideosForModal: getMoreVideosForModalAsync
+  }
 )
 export default class AddPlaylistModal extends Component {
   state = {
@@ -34,7 +39,6 @@ export default class AddPlaylistModal extends Component {
   }
 
   handlePrev() {
-    const {dispatch} = this.props;
     const currentSection = this.state.section;
     const prevSection = Math.max(currentSection - 1, 0);
     this.setState({section: prevSection});
@@ -42,7 +46,7 @@ export default class AddPlaylistModal extends Component {
 
   handleNext() {
     const currentSection = this.state.section;
-    const {fields: {title, description}, dispatch} = this.props;
+    const {fields: {title, description}} = this.props;
     switch (currentSection) {
       case 0:
       let titleError = title.invalid ? true : false;
@@ -62,7 +66,7 @@ export default class AddPlaylistModal extends Component {
   }
 
   handleHide() {
-    const { dispatch, resetForm } = this.props;
+    const { closeAddPlaylistModal, resetForm } = this.props;
     resetForm();
     this.setState({
       section: 0,
@@ -71,18 +75,18 @@ export default class AddPlaylistModal extends Component {
       selectedVideos: [],
       titleError: false
     })
-    dispatch(closeAddPlaylistModal());
+    closeAddPlaylistModal();
   }
 
   handleFinish() {
-    const { dispatch, subscribe, resetForm } = this.props;
+    const { uploadPlaylist, subscribe, resetForm } = this.props;
     const params = {
       title: this.state.title,
       description: this.state.description,
       videos: this.state.selectedVideos
     }
     resetForm();
-    dispatch(uploadPlaylistAsync(params));
+    uploadPlaylist(params);
   }
 
   renderTitle() {
@@ -100,7 +104,7 @@ export default class AddPlaylistModal extends Component {
   }
 
   render() {
-    const {fields: {title, description}, videos, loadMoreVideosButton, dispatch} = this.props;
+    const {fields: {title, description}, videos, loadMoreVideosButton, getMoreVideosForModal} = this.props;
     const {section} = this.state;
     let titleError = (title.touched && title.invalid) || this.state.titleError ? true : false;
     const last = (array) => {
@@ -108,7 +112,7 @@ export default class AddPlaylistModal extends Component {
     };
     const lastId = last(videos) ? last(videos).id : 0;
     const loadMoreVideos = () => {
-      dispatch(getMoreVideosForModalAsync(lastId));
+      getMoreVideosForModal(lastId);
     }
     return (
       <Modal

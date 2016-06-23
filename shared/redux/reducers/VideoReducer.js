@@ -254,7 +254,13 @@ export default function VideoReducer(state = defaultState, action) {
         videoPage: {
           ...state.videoPage,
           likes: action.data
-        }
+        },
+        allVideoThumbs: state.allVideoThumbs.map(thumb => {
+          if (thumb.id === action.videoId) {
+            thumb.numLikes = action.data.length
+          }
+          return thumb;
+        })
       }
     case 'UPLOAD_QUESTIONS':
       return {

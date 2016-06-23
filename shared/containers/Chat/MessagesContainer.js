@@ -2,68 +2,122 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
+
 export default class MessagesContainer extends Component {
   state = {
-    fillerHeight: 0
+    fillerHeight: 0,
+    scrollAtBottom: true,
+    newUnseenMessage: false
   }
 
   componentDidMount() {
-    const containerHeight = ReactDOM.findDOMNode(this.refs.messagesContainer).getBoundingClientRect().height;
-    const messagesHeight = ReactDOM.findDOMNode(this.refs.messages).getBoundingClientRect().height;
-    if (messagesHeight < containerHeight) {
-      this.setState({fillerHeight: containerHeight - messagesHeight})
-    } else {
-      ReactDOM.findDOMNode(this.refs.messagesContainer).scrollTop = messagesHeight;
-    }
+    this.setFillerHeight();
   }
 
   componentWillReceiveProps() {
-    const scrollTop = ReactDOM.findDOMNode(this.refs.messagesContainer).scrollTop;
-    const containerHeight = ReactDOM.findDOMNode(this.refs.messagesContainer).getBoundingClientRect().height;
-    const messagesPlusFillerHeight = ReactDOM.findDOMNode(this.refs.messagesPlusFiller).getBoundingClientRect().height;
+    const content = ReactDOM.findDOMNode(this.refs.content);
+    const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
+    this.setState({scrollAtBottom: scrollIsAtTheBottom(content, container)})
   }
 
-  componentDidUpdate(prevProps) {
-    const messagesPlusFillerHeight = ReactDOM.findDOMNode(this.refs.messagesPlusFiller).getBoundingClientRect().height;
-    const containerHeight = ReactDOM.findDOMNode(this.refs.messagesContainer).getBoundingClientRect().height;
-    const messagesHeight = ReactDOM.findDOMNode(this.refs.messages).getBoundingClientRect().height;
-    if(prevProps.currentChannelId !== this.props.currentChannelId) console.log("new channel");
-    if(prevProps.messages !== this.props.messages) console.log("new message")
+  componentDidUpdate(prevProps, prevState) {
+    const content = ReactDOM.findDOMNode(this.refs.content);
+    const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
+
+    const switchedChannel = prevProps.currentChannelId !== this.props.currentChannelId;
+    const newMessageArrived = this.props.messages.length !== 0 && prevProps.messages !== this.props.messages;
+    const loadedPrevMessage = !switchedChannel && prevProps.messages[0] !== this.props.messages[0];
+
+    if (loadedPrevMessage) return;
+    if (switchedChannel) return this.setFillerHeight();
+    if (newMessageArrived) {
+      let { messages, userId } = this.props;
+      let messageSenderId = messages[messages.length - 1].userid;
+      if (messageSenderId === userId || this.state.scrollAtBottom) {
+        container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight);
+      }
+      else {
+        this.setState({newUnseenMessage: true})
+      }
+    }
+  }
+
+  setFillerHeight = () => {
+    const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
+    const content = ReactDOM.findDOMNode(this.refs.content);
+    const containerHeight = container.offsetHeight;
+    const contentHeight = content.offsetHeight;
+    let state = contentHeight < containerHeight ?
+    {fillerHeight: containerHeight - contentHeight} : {fillerHeight: 20};
+    this.setState(state, () => {
+      container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight)
+    })
   }
 
   render() {
     const { loadMoreButton } = this.props;
     return (
-      <div
-        ref="messagesContainer"
-        style={{
-          top: '55px',
-          bottom: '50px',
-          position: 'absolute',
-          width: '95%',
-          overflow: 'scroll'
-        }}
-      >
-        <div ref="messagesPlusFiller">
-          <div style={{height: this.state.fillerHeight + 'px'}}></div>
-          <div
-            ref="messages"
-          >
-            { loadMoreButton &&
-              <div className="text-center">
+      <div>
+        <div
+          ref="messagesContainer"
+          style={{
+            overflow: 'scroll',
+            position: 'absolute',
+            top: '55px',
+            bottom: '50px'
+          }}
+          onScroll={
+            () => {
+              const content = ReactDOM.findDOMNode(this.refs.content);
+              const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
+              if (scrollIsAtTheBottom(content, container)) this.setState({newUnseenMessage: false})
+            }
+          }
+        >
+          <div>
+            { loadMoreButton ?
+              <div
+                className="text-center"
+                style={{
+                  marginTop: '1em',
+                  marginBottom: '2em'
+                }}
+              >
                 <button
                   className="btn btn-info"
-                  style={{
-                    marginTop: '1em',
-                    marginBottom: '0.5em',
-                    width: '20%'
-                  }}
+                  style={{width: '20%'}}
                   onClick={ this.onLoadMoreButtonClick.bind(this) }
                 >Load More</button>
-              </div>
+              </div> : <div style={{
+                height: this.state.fillerHeight + 'px'
+              }}></div>
             }
-            { this.renderMessages() }
+            <div ref="content">
+              { this.renderMessages() }
+            </div>
           </div>
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '60px',
+            textAlign: 'center',
+            width: '100%'
+          }}
+        >
+          { this.state.newUnseenMessage &&
+            <button
+              className="btn btn-warning"
+              onClick={
+                () => {
+                  this.setState({newUnseenMessage: false})
+                  const content = ReactDOM.findDOMNode(this.refs.content);
+                  const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
+                  container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight);
+                }
+              }
+            >New Message</button>
+          }
         </div>
       </div>
     )
@@ -92,10 +146,14 @@ export default class MessagesContainer extends Component {
           </div>
           <div className="media-body">
             <h5 className="media-heading">{message.username} <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
-            { message.content }
+            <span dangerouslySetInnerHTML={{__html: message.content}}></span>
           </div>
         </div>
       )
     })
   }
+}
+
+const scrollIsAtTheBottom = (content, container) => {
+  return content.offsetHeight === container.offsetHeight + container.scrollTop;
 }

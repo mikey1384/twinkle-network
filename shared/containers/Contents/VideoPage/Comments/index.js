@@ -1,7 +1,30 @@
 import React, { Component } from 'react';
 import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import {
+  editVideoCommentAsync,
+  deleteVideoCommentAsync,
+  editVideoReplyAsync,
+  deleteVideoReplyAsync,
+  likeVideoReplyAsync,
+  likeVideoCommentAsync,
+  uploadVideoReplyAsync
+} from 'redux/actions/VideoActions';
 
+@connect(
+  null,
+  {
+    onEditDone: editVideoCommentAsync,
+    onDelete: deleteVideoCommentAsync,
+    onReplyEditDone: editVideoReplyAsync,
+    onReplyDelete: deleteVideoReplyAsync,
+    onReplyLike: likeVideoReplyAsync,
+    onLikeClick: likeVideoCommentAsync,
+    onReplySubmit: uploadVideoReplyAsync
+  }
+)
 export default class CommentsSection extends Component {
   render() {
     return (
@@ -33,13 +56,13 @@ export default class CommentsSection extends Component {
         <Comment
           {...this.props}
           comment={comment}
-          onEditDone={this.props.editVideoCommentAsync}
-          onDelete={this.props.deleteVideoCommentAsync}
-          onReplyEditDone={this.props.editVideoReplyAsync}
-          onReplyDelete={this.props.deleteVideoReplyAsync}
-          onReplyLike={this.props.likeVideoReplyAsync}
-          onLikeClick={this.props.likeVideoCommentAsync}
-          onReplySubmit={this.props.uploadVideoReplyAsync}
+          onEditDone={this.props.onEditDone}
+          onDelete={this.props.onDelete}
+          onReplyEditDone={this.props.onReplyEditDone}
+          onReplyDelete={this.props.onReplyDelete}
+          onReplyLike={this.props.onReplyLike}
+          onLikeClick={this.props.onLikeClick}
+          onReplySubmit={this.props.onReplySubmit}
           marginTop={index !== 0}
           key={comment.id}
           commentId={comment.id}

@@ -1,27 +1,19 @@
-import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React from 'react';
+import {Modal, Button} from 'react-bootstrap';
 
-class ConfirmModal extends Component {
-  onConfirm () {
-    this.props.onConfirm();
-  }
-
-  render () {
-    return (
-      <Modal {...this.props} animation={false}>
-        <Modal.Header closeButton>
-          <h4>{this.props.title}</h4>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Are you sure?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.props.onHide}>Cancel</Button>
-          <Button bsStyle="primary" onClick={this.onConfirm.bind(this)}>Confirm</Button>
-        </Modal.Footer>
-      </Modal>
-    )
-  }
+export default function ConfirmModal(props) {
+  return (
+    <Modal {...props} animation={false}>
+      <Modal.Header closeButton>
+        <h4>{props.title}</h4>
+      </Modal.Header>
+      <Modal.Body>
+        <p>Are you sure?</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={props.onHide}>Cancel</Button>
+        <Button bsStyle="primary" onClick={() => props.onConfirm()}>Confirm</Button>
+      </Modal.Footer>
+    </Modal>
+  )
 }
-
-export default ConfirmModal;

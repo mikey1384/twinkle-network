@@ -4,16 +4,9 @@ import {
   editVideoPageAsync,
   deleteVideoAsync,
   uploadQuestionsAsync,
-  loadVideoCommentsAsync,
   uploadVideoCommentAsync,
-  likeVideoAsync,
-  likeVideoCommentAsync,
-  editVideoCommentAsync,
-  deleteVideoCommentAsync,
-  editVideoReplyAsync,
-  deleteVideoReplyAsync,
   uploadVideoReplyAsync,
-  likeVideoReplyAsync
+  likeVideoAsync
 } from 'redux/actions/VideoActions';
 import Carousel from './Carousel';
 import CheckListGroup from 'components/CheckListGroup';
@@ -33,7 +26,14 @@ import { bindActionCreators } from 'redux';
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId
-  })
+  }),
+  {
+    editVideoPage: editVideoPageAsync,
+    deleteVideo: deleteVideoAsync,
+    uploadQuestions: uploadQuestionsAsync,
+    uploadVideoComment: uploadVideoCommentAsync,
+    likeVideo: likeVideoAsync
+  }
 )
 export default class VideoPage extends Component {
   state = {
@@ -54,7 +54,6 @@ export default class VideoPage extends Component {
       )
     }
     let {
-      dispatch,
       uploaderId,
       uploaderName,
       description,
@@ -157,15 +156,6 @@ export default class VideoPage extends Component {
         <Comments
           {...this.props}
           onSubmit={this.onCommentSubmit.bind(this)}
-          { ...bindActionCreators({
-            editVideoCommentAsync,
-            deleteVideoCommentAsync,
-            likeVideoCommentAsync,
-            uploadVideoReplyAsync,
-            editVideoReplyAsync,
-            deleteVideoReplyAsync,
-            likeVideoReplyAsync
-          }, dispatch) }
         />
         { this.state.resultModalShown &&
           <ResultModal
@@ -199,7 +189,7 @@ export default class VideoPage extends Component {
             onHide={ () => this.setState({userListModalShown: false}) }
             title="People who liked this video"
             userId={userId}
-            likers={likes.map(like => {
+            users={likes.map(like => {
               return {
                 username: like.username,
                 userId: like.userId
@@ -269,12 +259,12 @@ export default class VideoPage extends Component {
   }
 
   onDescriptionEditFinish(params, sender) {
-    this.props.dispatch(editVideoPageAsync(params, sender));
+    this.props.editVideoPage(params, sender);
   }
 
   onVideoDelete() {
     const { videoId } = this.props;
-    this.props.dispatch(deleteVideoAsync({videoId}));
+    this.props.deleteVideo({videoId});
   }
 
   onQuestionsSubmit(questions) {
@@ -303,23 +293,23 @@ export default class VideoPage extends Component {
         }
       })
     }
-    this.props.dispatch(uploadQuestionsAsync(data, () => {
+    this.props.uploadQuestions(data, () => {
       this.setState({
         questionsBuilderShown: false,
         currentSlide: 0,
         userAnswers: []
       })
-    }));
+    });
   }
 
   onCommentSubmit(comment) {
     const { videoId } = this.props;
-    this.props.dispatch(uploadVideoCommentAsync(comment, videoId));
+    this.props.uploadVideoComment(comment, videoId);
   }
 
   onVideoLikeClick() {
     const { videoId } = this.props;
-    this.props.dispatch(likeVideoAsync(videoId));
+    this.props.likeVideo(videoId);
   }
 
   showLikerList() {

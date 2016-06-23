@@ -10,7 +10,7 @@ import Contents from 'containers/Contents';
 import ContentsMain from 'containers/Contents/Main';
 import VideoPage from 'containers/Contents/VideoPage';
 import Management from 'containers/Management';
-import AdminOnly from 'component_wrappers/AdminOnly';
+import AdminOnly from 'components/HigherOrder/AdminOnly';
 import NotFound from 'components/NotFound';
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';

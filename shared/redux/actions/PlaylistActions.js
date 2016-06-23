@@ -229,6 +229,12 @@ export const openReorderPlaylistVideosModal = playlistVideos => ({
   playlistVideos
 })
 
+export const likePlaylistVideo = (data, videoId) => ({
+  type: 'PLAYLIST_VIDEO_LIKE',
+  data,
+  videoId
+})
+
 export const closeSelectPlaylistsToPinModal = () => ({
   type: 'SELECT_PL_TO_PIN_CLOSE'
 })

@@ -1,23 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class Likers extends Component {
-  render() {
-    return (
-      <div
-        {...this.props}
-      >
-        { this.renderLikers() }
-      </div>
-    )
-  }
+export default function Likers(props) {
+  return (
+    <div {...props}>
+      {renderLikers()}
+    </div>
+  )
 
-  renderLikers() {
+  function renderLikers() {
     let userLiked = false;
     let totalLikes = 0;
-    const { likes, target } = this.props;
+    const {likes, target, userId, onLinkClick} = props;
     if (likes) {
-      for (let i = 0; i < likes.length; i ++) {
-        if(likes[i].userId == this.props.userId) userLiked = true;
+      for (let i = 0; i < likes.length; i++) {
+        if(likes[i].userId == userId) userLiked = true;
         totalLikes ++;
       }
     }
@@ -25,21 +21,19 @@ export default class Likers extends Component {
       totalLikes --;
       if (totalLikes > 0) {
         if (totalLikes === 1) {
-          let otherLikes = likes.filter(like => {
-            return (like.userId == this.props.userId) ? false : true;
-          })
-          let otherLikerName = otherLikes[0] && otherLikes[0].username;
+          let otherLikes = likes.filter(like => like.userId != userId);
+          let otherLikerName = otherLikes[0].username;
           return (
             <div>
-              You and <strong>{ otherLikerName }</strong> like {`this${target ? (' ' + target) : ''}.`}
+              You and <strong>{otherLikerName}</strong> like {`this${target ? (' ' + target) : ''}.`}
             </div>
           )
         } else {
           return (
             <div>
               You and <strong><a style={{cursor: 'pointer'}}
-                onClick={ () => this.props.onLinkClick() }
-              >{ totalLikes } others</a></strong> like {`this${target ? (' ' + target) : ''}.`}
+                onClick={() => onLinkClick()}
+              >{totalLikes} others</a></strong> like {`this${target ? (' ' + target) : ''}.`}
             </div>
           )
         }
@@ -58,12 +52,13 @@ export default class Likers extends Component {
             <strong>{likerName}</strong> likes {`this${target ? (' ' + target) : ''}.`}
           </div>
         )
-      } else {
+      }
+      else {
         return (
           <div>
             <strong><a style={{cursor: 'pointer'}}
-              onClick={ () => this.props.onLinkClick() }
-            >{ totalLikes } people</a></strong> like {`this${target ? (' ' + target) : ''}.`}
+              onClick={() => onLinkClick()}
+            >{totalLikes} people</a></strong> like {`this${target ? (' ' + target) : ''}.`}
           </div>
         )
       }

@@ -6,6 +6,8 @@ const requireAuth = require('../auth').requireAuth;
 const fetchChat = require('../helpers/ChatHelper').fetchChat;
 const fetchChannels = require('../helpers/ChatHelper').fetchChannels;
 
+const processedString = require('../helpers/StringHelper').processedString;
+
 const async = require('async');
 const express = require('express');
 const router = express.Router();
@@ -36,7 +38,7 @@ router.post('/', requireAuth, (req, res) => {
   const post = {
     roomid: params.channelId,
     userid: user.id,
-    content: params.content,
+    content: processedString(params.content),
     timeposted
   }
   async.waterfall([
@@ -107,6 +109,120 @@ router.get('/channel', requireAuth, (req, res) => {
       currentChannelId: channelId,
       messages: results[1]
     })
+  })
+})
+
+router.get('/channel/check', requireAuth, (req, res) => {
+  let partnerId = req.query.partnerId;
+  let myUserId = req.user.id;
+  const query = [
+    'SELECT * FROM msg_chatrooms WHERE ',
+    '(memberOne = '+partnerId+' AND memberTwo = '+myUserId+') OR ',
+    '(memberOne = '+myUserId+' AND memberTwo = '+partnerId+')'
+  ].join('');
+  pool.query(query, (err, rows) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send({error: err})
+    }
+    res.send({
+      channelExists: rows.length > 0,
+      channelId: rows.length > 0 ? rows[0].id : null
+    })
+  })
+})
+
+router.post('/channel', requireAuth, (req, res) => {
+  const user = req.user;
+  const params = req.body.params;
+  const roomname = params.channelName;
+
+  async.waterfall([
+    callback => {
+      pool.query('INSERT INTO msg_chatrooms SET ?', { roomname }, (err, result) => {
+        callback(err, result.insertId)
+      })
+    },
+    (channelId, callback) => {
+      const members = [user.id].concat(params.selectedUsers.map(user => {
+        return user.userId
+      }));
+      let taskArray = [];
+      for (let i = 0; i < members.length; i++) {
+        let task = callback => {
+          let post = {
+            roomid: channelId,
+            userid: members[i]
+          }
+          pool.query('INSERT INTO msg_chatroom_members SET ?', post, (err, result) => {
+            callback(err, result)
+          })
+        }
+        taskArray.push(task);
+      }
+      async.series(taskArray, (err, results) => {
+        callback(err)
+      })
+    }
+  ], err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err})
+    }
+    res.send({success: true})
+  })
+})
+
+router.post('/channel/bidirectional', requireAuth, (req, res) => {
+  const user = req.user;
+  const partnerId = req.body.chatPartnerId;
+  const firstMessage = processedString(req.body.message);
+  let post = {
+    bidirectional: true,
+    memberOne: user.id,
+    memberTwo: partnerId
+  }
+  async.waterfall([
+    callback => {
+      pool.query('INSERT INTO msg_chatrooms SET ?', post, (err, result) => {
+        callback(err, result.insertId)
+      })
+    },
+    (insertId, callback) => {
+      const members = [user.id, partnerId];
+      let taskArray = [];
+      for (let i = 0; i < members.length; i++) {
+        let task = callback => {
+          let post = {
+            roomid: insertId,
+            userid: members[i]
+          }
+          pool.query('INSERT INTO msg_chatroom_members SET ?', post, (err, result) => {
+            callback(err, result)
+          })
+        }
+        taskArray.push(task);
+      }
+      post = {
+        roomid: insertId,
+        userid: user.id,
+        content: firstMessage,
+        timeposted: Math.floor(Date.now()/1000)
+      }
+      let finalTask = callback => pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
+        callback(err, result)
+      })
+      taskArray.push(finalTask);
+      async.series(taskArray, (err, results) => {
+        callback(err)
+      })
+    },
+  ], err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err})
+    }
+    res.send({success: true})
   })
 })
 

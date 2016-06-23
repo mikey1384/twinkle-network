@@ -1,19 +1,27 @@
 import React, { Component, PropTypes } from 'react';
 import VideoThumb from 'components/VideoThumb';
 import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as VideoActions from 'redux/actions/VideoActions';
 
+@connect(
+  null,
+  dispatch => ({
+    actions: bindActionCreators(VideoActions, dispatch)
+  })
+)
 export default class AllVideosPanel extends Component {
   onAddVideoClick() {
     this.props.onAddVideoClick();
   }
   render (){
-    const { loadMoreButton, getMoreVideos, videos, title, isAdmin } = this.props;
+    const { loadMoreButton, actions, videos, title, isAdmin } = this.props;
     const last = (array) => {
       return array[array.length - 1];
     };
     const loadMoreVideos = () => {
       const lastId = last(videos) ? last(videos).id : 0;
-      getMoreVideos(lastId);
+      actions.getMoreVideos(lastId);
     }
     return (
       <div className="panel panel-primary">
@@ -44,8 +52,8 @@ export default class AllVideosPanel extends Component {
                   editable={editable}
                   video={video}
                   lastVideoId={last(videos) ? last(videos).id : 0}
-                  editVideoTitle={this.props.editVideoTitleAsync}
-                  deleteVideo={this.props.deleteVideoAsync}
+                  editVideoTitle={this.props.actions.editVideoTitleAsync}
+                  deleteVideo={this.props.actions.deleteVideoAsync}
                 />
               )
             })

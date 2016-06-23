@@ -8,6 +8,7 @@ import UserListModal from 'components/Modals/UserListModal';
 import ReplyInputArea from './Replies/ReplyInputArea';
 import Replies from './Replies';
 import EditTextArea from './EditTextArea';
+import UsernameText from 'components/UsernameText';
 
 
 export default class Comment extends Component {
@@ -55,7 +56,10 @@ export default class Comment extends Component {
         </div>
         <div className="media-body">
           <h4 className="media-heading">
-            { comment.posterName } <small>&nbsp;{ timeSince(comment.timeStamp) }</small>
+            <UsernameText user={{
+              name: comment.posterName,
+              id: comment.posterId
+            }} /> <small>&nbsp;{ timeSince(comment.timeStamp) }</small>
           </h4>
           { onEdit ?
             <EditTextArea
@@ -128,7 +132,7 @@ export default class Comment extends Component {
             onHide={ () => this.setState({userListModalShown: false}) }
             title="People who liked this comment"
             userId={userId}
-            likers={comment.likes}
+            users={comment.likes}
           />
         }
       </li>

@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import PlaylistCarousel from '../Carousels/PlaylistCarousel';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as PlaylistActions from 'redux/actions/PlaylistActions';
 
-class PlaylistsPanel extends Component {
+@connect(
+  null,
+  dispatch => ({
+    actions: bindActionCreators(PlaylistActions, dispatch)
+  })
+)
+export default class PlaylistsPanel extends Component {
   state = {
     addPlaylistModalShown: false
   }
@@ -16,11 +25,7 @@ class PlaylistsPanel extends Component {
           arrayNumber={index}
           {...playlist}
           editable={editable}
-          editPlaylistTitle={this.props.editPlaylistTitleAsync}
-          resetPlaylistModalState={this.props.resetPlaylistModalState}
-          deletePlaylist={this.props.deletePlaylistAsync}
-          openChangePlaylistVideosModal={this.props.openChangePlaylistVideosModalAsync}
-          openReorderPlaylistVideosModal={this.props.openReorderPlaylistVideosModal}
+          {...this.props.actions}
         />
       )
     })
@@ -41,13 +46,13 @@ class PlaylistsPanel extends Component {
   }
 
   render() {
-    const { loadMoreButton, getMorePlaylistsAsync, playlists, buttonGroupShown } = this.props;
+    const { loadMoreButton, actions, playlists, buttonGroupShown } = this.props;
     const loadMorePlaylists = () => {
       const last = (array) => {
         return array[array.length - 1];
       };
       const lastId = last(playlists).id;
-      getMorePlaylistsAsync(lastId);
+      actions.getMorePlaylistsAsync(lastId);
     }
     return (
       <div className="panel panel-primary">
@@ -72,7 +77,4 @@ class PlaylistsPanel extends Component {
       </div>
     );
   }
-
 }
-
-export default PlaylistsPanel;

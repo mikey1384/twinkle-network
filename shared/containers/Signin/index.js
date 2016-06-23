@@ -6,7 +6,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import * as UserActions from 'redux/actions/UserActions';
 
-class SigninModal extends Component {
+@connect(
+  state => ({
+    loginError: state.UserReducer.loginError,
+    signupError: state.UserReducer.signupError
+  })
+)
+export default class SigninModal extends Component {
   state = {
     loginTabActive: true
   }
@@ -53,10 +59,3 @@ class SigninModal extends Component {
     )
   }
 }
-
-export default connect(
-  state => ({
-    loginError: state.UserReducer.loginError,
-    signupError: state.UserReducer.signupError
-  })
-)(SigninModal)

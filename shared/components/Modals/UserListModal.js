@@ -1,54 +1,50 @@
-import React, { Component } from 'react';
-import { Modal } from 'react-bootstrap';
+import React from 'react';
+import {Modal} from 'react-bootstrap';
 
-export default class UserListModal extends Component {
-  render() {
-    return (
-      <Modal
-        {...this.props}
-        animation={false}
-        bsSize="sm"
-      >
-        <Modal.Header closeButton>
-          <h5>{this.props.title}</h5>
-        </Modal.Header>
-        <Modal.Body>
-          <ul
-            className="list-group"
-            style={{marginBottom: '0px'}}
-          >
-            {
-              this.renderList()
-            }
-          </ul>
-        </Modal.Body>
-        <Modal.Footer>
-          <button
-            className="btn btn-default"
-            onClick={ () => this.props.onHide() }
-          >
-            Close
-          </button>
-        </Modal.Footer>
-      </Modal>
-    )
-  }
+export default function UserListModal(props) {
+  return (
+    <Modal
+      {...props}
+      animation={false}
+      bsSize="sm"
+    >
+      <Modal.Header closeButton>
+        <h5>{props.title}</h5>
+      </Modal.Header>
+      <Modal.Body>
+        <ul
+          className="list-group"
+          style={{marginBottom: '0px'}}
+        >
+          {renderList()}
+        </ul>
+      </Modal.Body>
+      <Modal.Footer>
+        <button
+          className="btn btn-default"
+          onClick={() => props.onHide()}
+        >
+          Close
+        </button>
+      </Modal.Footer>
+    </Modal>
+  )
 
-  renderList() {
-    const { likers } = this.props;
-    const otherLikers = likers.filter(liker => {
-      return (liker.userId == this.props.userId) ? false : true;
+  function renderList() {
+    const { users, userId } = props;
+    const otherUsers = users.filter(user => {
+      return (user.userId == userId) ? false : true;
     })
-    let likerArray = [];
-    for (let i = 0; i < likers.length; i++) {
-      if (likers[i].userId == this.props.userId) likerArray.push(likers[i])
+    let userArray = [];
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].userId == userId) userArray.push(users[i])
     }
-    return likerArray.concat(otherLikers).map(liker => {
+    return userArray.concat(otherUsers).map(user => {
       return (
         <li
           className="list-group-item"
-          key={liker.userId}
-        >{`${liker.username}${liker.userId == this.props.userId ? " (You)" : ""}`}
+          key={user.userId}
+        >{`${user.username}${user.userId == userId ? " (You)" : ""}`}
         </li>
       )
     })

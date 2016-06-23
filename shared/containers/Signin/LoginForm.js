@@ -3,7 +3,13 @@ import { reduxForm } from 'redux-form';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { stringIsEmpty } from 'helpers/StringHelper';
 
-class LoginForm extends Component {
+
+@reduxForm({
+  form: 'LoginForm',
+  fields: ['username', 'password'],
+  validate
+})
+export default class LoginForm extends Component {
   onSubmit(props) {
     this.props.loginAsync(props)
   }
@@ -55,11 +61,3 @@ function validate (values) {
   }
   return errors;
 }
-
-LoginForm = reduxForm({
-  form: 'LoginForm',
-  fields: ['username', 'password'],
-  validate
-})(LoginForm);
-
-export default LoginForm;

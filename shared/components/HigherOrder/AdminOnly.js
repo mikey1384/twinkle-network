@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
 export default function(ComposedComponent) {
   class AdminOnly extends Component {
@@ -20,7 +20,7 @@ export default function(ComposedComponent) {
     }
 
     render () {
-      const { isAdmin } = this.props;
+      const {isAdmin} = this.props;
       return isAdmin ?
       <ComposedComponent {...this.props} /> : null
     }

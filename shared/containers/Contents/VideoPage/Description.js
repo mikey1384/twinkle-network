@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SmallDropdownButton from 'components/SmallDropdownButton';
+import UsernameText from 'components/UsernameText';
 import Textarea from 'react-textarea-autosize';
 import { cleanStringWithURL } from 'helpers/StringHelper';
 
@@ -80,7 +81,7 @@ export default class Description extends Component {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
                 lineHeight: 'normal'
-              }}>Added by <strong>{this.props.uploaderName}</strong>
+              }}>Added by <UsernameText user={{name:this.props.uploaderName, id:this.props.uploaderId}} />
             </small>
           </div>
         </div>

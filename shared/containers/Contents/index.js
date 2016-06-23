@@ -3,19 +3,26 @@ import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions';
 import { getPinnedPlaylistsAsync, getPlaylistsAsync, resetPlaylistState } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 
-@connect()
+@connect(
+  null,
+  {
+    getInitialVideos,
+    resetVideoState,
+    resetPlaylistState,
+    getPinnedPlaylists: getPinnedPlaylistsAsync,
+    getPlaylists: getPlaylistsAsync
+  }
+)
 export default class Contents extends Component {
   componentWillMount() {
-    const { dispatch } = this.props;
-    dispatch(getInitialVideos());
-    dispatch(getPinnedPlaylistsAsync());
-    dispatch(getPlaylistsAsync());
+    this.props.getInitialVideos();
+    this.props.getPinnedPlaylists();
+    this.props.getPlaylists();
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch(resetVideoState());
-    dispatch(resetPlaylistState());
+    this.props.resetVideoState();
+    this.props.resetPlaylistState();
   }
 
   render() {

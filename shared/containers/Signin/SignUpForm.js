@@ -3,7 +3,12 @@ import { reduxForm } from 'redux-form';
 import { Modal, Button, Alert } from 'react-bootstrap';
 
 
-class SignUpForm extends Component {
+@reduxForm({
+  form: 'SignupForm',
+  fields: ['username', 'firstname', 'lastname', 'password', 'isTeacher', 'email'],
+  validate
+})
+export default class SignUpForm extends Component {
   componentWillMount() {
     this.setState({
       checkedTeacher: false
@@ -143,9 +148,3 @@ function isValidUsername (username) {
   var pattern = new RegExp(/^[a-zA-Z0-9]+$/);
   return pattern.test(username);
 }
-
-export default reduxForm({
-  form: 'SignupForm',
-  fields: ['username', 'firstname', 'lastname', 'password', 'isTeacher', 'email'],
-  validate
-})(SignUpForm);

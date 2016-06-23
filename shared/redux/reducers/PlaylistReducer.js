@@ -238,25 +238,37 @@ export default function PlaylistReducer(state = defaultState, action) {
         pinnedPlaylists: defaultPinnedPlaylists,
         allPlaylists: defaultPlaylists
       }
+    case 'PLAYLIST_VIDEO_LIKE':
+      return {
+        ...state,
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist => {
+          return {
+            ...playlist,
+            playlist: playlist.playlist.map(video =>  {
+              if (video.videoid === action.videoId) {
+                video.numLikes = action.data.length
+              }
+              return video
+            })
+          }
+        }),
+        allPlaylists: state.allPlaylists.map(playlist => {
+          return {
+            ...playlist,
+            playlist: playlist.playlist.map(video =>  {
+              if (video.videoid === action.videoId) {
+                video.numLikes = action.data.length
+              }
+              return video
+            })
+          }
+        })
+      }
     case 'RESET_PL_STATE':
       return {
+        ...defaultState,
         allPlaylists: defaultPlaylists,
-        pinnedPlaylists: defaultPinnedPlaylists,
-        loadMoreButton: false,
-
-        videoThumbsForModal: [],
-        loadMoreButtonForModal: false,
-        allVideosLoadedForModal: false,
-
-        addPlaylistModalShown: false,
-        editPlaylistModalType: null,
-        selectedModalThumbs: [],
-
-        selectPlaylistsToPinModalShown: false,
-        loadMorePlaylistsToPinButton: false,
-        playlistsToPin: [],
-
-        reorderPinnedPlaylistsModalShown: false
+        pinnedPlaylists: defaultPinnedPlaylists
       }
     case 'RESET_PL_MODAL_STATE':
       return {

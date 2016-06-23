@@ -18,15 +18,18 @@ router.get('/', (req, res) => {
   const numberToLoad = parseInt(req.query.numberToLoad) + 1 || 13;
   const where = videoId === 0 ? '' : 'WHERE a.id < ? ';
   const query = [
-    'SELECT a.id, a.title, a.description, a.videocode, a.uploader AS uploaderid, b.username AS uploadername ',
+    'SELECT a.id, a.title, a.description, a.videocode, a.uploader AS uploaderid, b.username AS uploadername, ',
+    'COUNT(c.id) AS numLikes ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
+    'LEFT JOIN vq_video_likes c ON a.id = c.videoId ',
     where,
+    'GROUP BY a.id ',
     'ORDER BY a.id DESC LIMIT ' + numberToLoad
   ].join('');
   pool.query(query, videoId, (err, rows) => {
-    if (!rows) {
-      res.status(500).send({error: "No Videos"});
-      return;
+    if (err) {
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.json(rows);
   });
@@ -44,7 +47,7 @@ router.post('/', requireAuth, (req, res) => {
   const uploadername = user.username;
   const post = {title, description, videocode, uploader: uploaderid};
   pool.query('INSERT INTO vq_videos SET?', post, (err, row) => {
-    let result = {id: row.insertId, title, description, videocode, uploaderid, uploadername};
+    let result = {id: row.insertId, title, description, videocode, uploaderid, uploadername, numLikes: 0};
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});

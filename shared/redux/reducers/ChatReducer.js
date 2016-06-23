@@ -3,7 +3,8 @@ const defaultState = {
   channels: [],
   messages: [],
   searchResult: [],
-  loadMoreButton: false
+  loadMoreButton: false,
+  chatPartnerId: null
 };
 
 export default function ChatReducer(state = defaultState, action) {
@@ -47,11 +48,37 @@ export default function ChatReducer(state = defaultState, action) {
         action.data.messages.pop();
         loadMoreButton = true;
       }
+      action.data.messages.reverse();
       return {
         ...state,
         currentChannelId: action.data.currentChannelId,
         messages: action.data.messages,
         loadMoreButton
+      }
+    case 'ENTER_EMPTY_TWO_PEOPLE_CHANNEL':
+      return {
+        ...state,
+        currentChannelId: 0,
+        messages: [],
+        loadMoreButton: false
+      }
+    case 'OPEN_NEW_TWO_PEOPLE_CHANNEL':
+      let filteredChannel = state.channels.filter(channel => {
+        return channel.id !== 0
+      })
+      return {
+        ...state,
+        channels: [{
+          id: 0,
+          roomname: 'New Chat',
+          lastMessage: null,
+          lastUpdate: null,
+          lastMessageSender: null
+        }].concat(filteredChannel),
+        currentChannelId: 0,
+        messages: [],
+        loadMoreButton: false,
+        chatPartnerId: action.partnerId
       }
     case 'UPDATE_CHANNEL_LIST':
       return {
@@ -69,6 +96,8 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         searchResult: []
       }
+    case 'RESET_CHAT':
+      return defaultState;
     default:
       return state;
   }

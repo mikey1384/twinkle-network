@@ -4,16 +4,13 @@ import AddVideoForm from './AddVideoForm';
 
 class AddVideoModal extends Component {
   render() {
-    const { dispatch, addVideoError } = this.props;
     return (
       <Modal {...this.props} animation={false}>
         <Modal.Header closeButton>
           <h4>Add Videos</h4>
         </Modal.Header>
         <Modal.Body>
-          <AddVideoForm
-            {...this.props}
-          />
+          <AddVideoForm />
         </Modal.Body>
       </Modal>
     )

@@ -5,6 +5,7 @@ import EditTextArea from '../EditTextArea';
 import { cleanStringWithURL } from 'helpers/StringHelper';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
+import UsernameText from 'components/UsernameText';
 
 
 export default class Reply extends Component {
@@ -49,7 +50,11 @@ export default class Reply extends Component {
           </a>
         </div>
         <div className="media-body">
-          <h4 className="media-heading">{username} <small>&nbsp;{timeSince(timeStamp)}</small></h4>
+          <h4 className="media-heading">
+            <UsernameText
+              user={{
+                name: username, id: userId
+              }} /> <small>&nbsp;{timeSince(timeStamp)}</small></h4>
           <div>
             { onEdit ?
               <EditTextArea
@@ -100,7 +105,7 @@ export default class Reply extends Component {
             onHide={ () => this.setState({userListModalShown: false}) }
             title="People who liked this reply"
             userId={userId}
-            likers={likes}
+            users={likes}
           />
         }
       </div>
