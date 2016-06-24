@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {Modal, Button} from 'react-bootstrap';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux'
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux'
 import * as UserActions from 'redux/actions/UserActions';
 
 @connect(
@@ -13,12 +13,16 @@ import * as UserActions from 'redux/actions/UserActions';
   })
 )
 export default class SigninModal extends Component {
-  state = {
-    loginTabActive: true
+  constructor() {
+    super()
+    this.state = {
+      loginTabActive: true
+    }
   }
+
   render() {
-    const { loginTabActive } = this.state;
-    const { signupError, loginError, dispatch } = this.props;
+    const {loginTabActive} = this.state;
+    const {signupError, loginError, dispatch} = this.props;
     return (
       <Modal {...this.props} animation={false}>
         <Modal.Header closeButton>
@@ -43,13 +47,13 @@ export default class SigninModal extends Component {
           <div className="tab-content container-fluid">
             <div className={`tab-pane ${loginTabActive ? "active" : ""}`}>
               <LoginForm
-                errorMessage={ loginError }
+                errorMessage={loginError}
                 {...bindActionCreators(UserActions, dispatch)}
               />
             </div>
             <div className={`tab-pane ${loginTabActive ? "" : "active"}`}>
               <SignUpForm
-                errorMessage={ signupError }
+                errorMessage={signupError}
                 {...bindActionCreators(UserActions, dispatch)}
               />
             </div>

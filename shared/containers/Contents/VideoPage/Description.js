@@ -2,14 +2,19 @@ import React, { Component } from 'react';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import UsernameText from 'components/UsernameText';
 import Textarea from 'react-textarea-autosize';
-import { cleanStringWithURL } from 'helpers/StringHelper';
+import {cleanStringWithURL} from 'helpers/StringHelper';
 
 export default class Description extends Component {
-  state = {
-    onEdit: false,
-    editedTitle: this.props.title,
-    editedDescription: cleanStringWithURL(this.props.description),
-    editDoneButtonDisabled: true
+  constructor(props) {
+    super()
+    this.state = {
+      onEdit: false,
+      editedTitle: props.title,
+      editedDescription: cleanStringWithURL(props.description),
+      editDoneButtonDisabled: true
+    }
+    this.onEditFinish = this.onEditFinish.bind(this)
+    this.onEditCancel = this.onEditCancel.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -29,35 +34,35 @@ export default class Description extends Component {
     const menuProps = [
       {
         label: 'Edit',
-        onClick: this.onEdit.bind(this)
+        onClick: () => this.setState({onEdit: true})
       },
       {
         label: 'Delete',
-        onClick: this.onDeleteClick.bind(this)
+        onClick: () => this.props.onDelete()
       }
     ]
 
-    const { onEdit } = this.state;
-
+    const {uploaderId, userId, uploaderName, title, description} = this.props;
+    const {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
     return (
       <div>
         <div
           className="row page-header text-center"
           style={{paddingBottom: '1em'}}
         >
-          { this.props.uploaderId == this.props.userId && !onEdit &&
+          {uploaderId == userId && !onEdit &&
             <SmallDropdownButton menuProps={menuProps} />
           }
           <div>
-            { onEdit ?
-              <form className="col-sm-6 col-sm-offset-3" onSubmit={ e => e.preventDefault() }>
+            {onEdit ?
+              <form className="col-sm-6 col-sm-offset-3" onSubmit={event => event.preventDefault()}>
                 <input
                   ref="editTitleInput"
                   type="text"
                   className="form-control"
                   placeholder="Enter Title..."
-                  value={this.state.editedTitle}
-                  onChange={ event => {
+                  value={editedTitle}
+                  onChange={event => {
                     this.setState({editedTitle: event.target.value}, () => {
                       this.determineEditButtonDoneStatus();
                     });
@@ -65,14 +70,14 @@ export default class Description extends Component {
                 />
               </form> :
               <h1>
-                <span>{this.props.title}</span>
+                <span>{title}</span>
               </h1>
             }
           </div>
           <div
             className="col-sm-12"
             style={{
-              paddingTop: onEdit ? '1em' : null
+              paddingTop: onEdit && '1em'
             }}
           >
             <small
@@ -81,21 +86,21 @@ export default class Description extends Component {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
                 lineHeight: 'normal'
-              }}>Added by <UsernameText user={{name:this.props.uploaderName, id:this.props.uploaderId}} />
+              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} />
             </small>
           </div>
         </div>
         <div className="row container-fluid">
           <h2>Description</h2>
-          { onEdit ?
+          {onEdit ?
             <div>
               <form>
                 <Textarea
                   minRows={4}
                   className="form-control"
                   placeholder="Enter Description"
-                  value={this.state.editedDescription}
-                  onChange={ event => {
+                  value={editedDescription}
+                  onChange={event => {
                     this.determineEditButtonDoneStatus();
                     this.setState({editedDescription: event.target.value}, () => {
                       this.determineEditButtonDoneStatus();
@@ -111,32 +116,28 @@ export default class Description extends Component {
               >
                 <button
                   className="btn btn-default btn-sm"
-                  disabled={this.state.editDoneButtonDisabled}
-                  onClick={this.onEditFinish.bind(this)}
+                  disabled={editDoneButtonDisabled}
+                  onClick={this.onEditFinish}
                 >Done</button>
                 <button
                   className="btn btn-default btn-sm"
                   style={{marginLeft: '5px'}}
-                  onClick={this.onEditCancel.bind(this)}
+                  onClick={this.onEditCancel}
                 >Cancel</button>
               </div>
             </div> :
-            <p dangerouslySetInnerHTML={{__html: this.props.description}}/>
+            <p dangerouslySetInnerHTML={{__html: description}}/>
           }
         </div>
       </div>
     )
   }
 
-  onEdit() {
-    this.setState({onEdit: true})
-  }
-
   determineEditButtonDoneStatus() {
-    const titleIsEmpty = this.state.editedTitle === '' ? true : false;
-    const titleChanged = this.state.editedTitle === this.props.title ? false : true;
-    const descriptionChanged = this.state.editedDescription === cleanStringWithURL(this.props.description) ? false : true;
-    const editDoneButtonDisabled = (!titleIsEmpty && (titleChanged || descriptionChanged)) ? false : true;
+    const titleIsEmpty = this.state.editedTitle === '';
+    const titleChanged = this.state.editedTitle !== this.props.title;
+    const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description);
+    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged);
     this.setState({editDoneButtonDisabled});
   }
 
@@ -156,9 +157,5 @@ export default class Description extends Component {
       onEdit: false,
       editDoneButtonDisabled: true
     });
-  }
-
-  onDeleteClick() {
-    this.props.onDelete();
   }
 }

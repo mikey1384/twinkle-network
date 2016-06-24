@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import {
   editVideoCommentAsync,
   deleteVideoCommentAsync,
@@ -27,15 +27,16 @@ import {
 )
 export default class CommentsSection extends Component {
   render() {
+    const {onSubmit} = this.props;
     return (
       <div className="row container-fluid">
         <div className="container-fluid">
           <CommentInputArea
-            onSubmit={ comment => this.props.onSubmit(comment) }
+            onSubmit={comment => onSubmit(comment)}
           />
           <div className="container-fluid">
             <ul className="media-list">
-              { this.renderComments() }
+              {this.renderComments()}
             </ul>
           </div>
         </div>
@@ -44,7 +45,7 @@ export default class CommentsSection extends Component {
   }
 
   renderComments() {
-    const { comments, noComments } = this.props;
+    const {comments, noComments} = this.props;
     if (noComments) {
       return <li className="text-center">There are no comments, yet.</li>
     }

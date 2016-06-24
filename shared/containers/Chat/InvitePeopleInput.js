@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import onClickOutside from 'react-onclickoutside';
 
 
@@ -17,15 +17,15 @@ class InvitePeopleInput extends Component {
           value={this.props.value}
           className="form-control"
           placeholder="Search and select people you want to chat with"
-          onChange={ event => this.props.onChange(event) }
+          onChange={event => this.props.onChange(event)}
         />
-        { this.renderDropdownList() }
+        {this.renderDropdownList()}
       </div>
     )
   }
 
   renderDropdownList() {
-    let { searchResults, selectedUsers } = this.props;
+    let {searchResults, selectedUsers} = this.props;
     searchResults = searchResults.filter(user => {
       let result = true;
       for (let i = 0; i < selectedUsers.length; i++) {
@@ -45,16 +45,14 @@ class InvitePeopleInput extends Component {
         display: 'block'
       }}
     >
-      {
-        searchResults.map((user, index) => {
-          return (
-            <li
-              key={index}
-              onClick={ () => this.props.onAddUser(user) }
-            ><a>{user.realname} <small>{`(${user.username})`}</small></a></li>
-          )
-        })
-      }
+      {searchResults.map((user, index) => {
+        return (
+          <li
+            key={index}
+            onClick={ () => this.props.onAddUser(user) }
+          ><a>{user.realname} <small>{`(${user.username})`}</small></a></li>
+        )
+      })}
     </ul> : null
   }
 }

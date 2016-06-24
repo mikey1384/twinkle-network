@@ -1,21 +1,28 @@
-import React, { Component } from 'react';
-import { timeSince } from 'helpers/TimeStampHelper';
+import React, {Component} from 'react';
+import {timeSince} from 'helpers/TimeStampHelper';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from '../EditTextArea';
-import { cleanStringWithURL } from 'helpers/StringHelper';
+import {cleanStringWithURL} from 'helpers/StringHelper';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';
 
 
 export default class Reply extends Component {
-  state={
-    onEdit: false,
-    userListModalShown: false
+  constructor() {
+    super()
+    this.state={
+      onEdit: false,
+      userListModalShown: false
+    }
+    this.onEditDone = this.onEditDone.bind(this)
+    this.onLikeClick = this.onLikeClick.bind(this)
+    this.onDelete = this.onDelete.bind(this)
   }
+
   render() {
-    const { id, username, timeStamp, content, userIsOwner, likes, userId } = this.props;
-    const { onEdit, userListModalShown } = this.state;
+    const {id, username, timeStamp, content, userIsOwner, likes, userId} = this.props;
+    const {onEdit, userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId == userId) userLikedThis = true;
@@ -25,7 +32,7 @@ export default class Reply extends Component {
         className="media"
         key={id}
       >
-        { userIsOwner && !onEdit &&
+        {userIsOwner && !onEdit &&
           <SmallDropdownButton
             rightMargin='3em'
             menuProps={[
@@ -35,7 +42,7 @@ export default class Reply extends Component {
               },
               {
                 label: "Remove",
-                onClick: this.onDelete.bind(this)
+                onClick: this.onDelete
               }
             ]}
           />
@@ -60,7 +67,7 @@ export default class Reply extends Component {
               <EditTextArea
                 text={cleanStringWithURL(content)}
                 onCancel={() => this.setState({onEdit: false})}
-                onEditDone={this.onEditDone.bind(this)}
+                onEditDone={this.onEditDone}
               /> :
               <div className="container-fluid">
                 <div
@@ -74,7 +81,7 @@ export default class Reply extends Component {
                   <div className="pull-left">
                     <button
                       className="btn btn-info btn-sm"
-                      onClick={this.onLikeClick.bind(this)}
+                      onClick={this.onLikeClick}
                     >
                       <span className="glyphicon glyphicon-thumbs-up"></span> {
                         `${userLikedThis ? 'Liked!' : 'Like'}`
@@ -102,7 +109,7 @@ export default class Reply extends Component {
         { userListModalShown &&
           <UserListModal
             show={true}
-            onHide={ () => this.setState({userListModalShown: false}) }
+            onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this reply"
             userId={userId}
             users={likes}

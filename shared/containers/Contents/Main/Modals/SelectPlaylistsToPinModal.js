@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {Modal, Button} from 'react-bootstrap';
 import CheckListGroup from 'components/CheckListGroup';
-import { loadMorePlaylistListAsync, changePinnedPlaylistsAsync } from 'redux/actions/PlaylistActions';
-import { connect } from 'react-redux';
+import {loadMorePlaylistListAsync, changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions';
+import {connect} from 'react-redux';
 
 @connect(
   null,
@@ -12,14 +12,20 @@ import { connect } from 'react-redux';
   }
 )
 export default class SelectPlaylistsToPinModal extends Component {
-  state = {
-    selectedPlaylists: this.props.selectedPlaylists,
-    selectTabActive: true
+  constructor(props) {
+    super()
+    this.state = {
+      selectedPlaylists: props.selectedPlaylists,
+      selectTabActive: true
+    }
+    this.onSelect = this.onSelect.bind(this)
+    this.onDeselect = this.onDeselect.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   render() {
-    const { selectedPlaylists, selectTabActive } = this.state;
-    const { loadMoreButton, playlistsToPin, pinnedPlaylists } = this.props;
+    const {selectedPlaylists, selectTabActive} = this.state;
+    const {loadMoreButton, playlistsToPin, pinnedPlaylists} = this.props;
     const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
     return (
       <Modal {...this.props} animation={false}>
@@ -40,7 +46,7 @@ export default class SelectPlaylistsToPinModal extends Component {
               onClick={() => this.setState({selectTabActive: false})}
               style={{cursor:"pointer"}}
             >
-              <a>Deselect</a>
+              <a>Selected</a>
             </li>
           </ul>
           <div
@@ -49,26 +55,22 @@ export default class SelectPlaylistsToPinModal extends Component {
               paddingTop: '2em'
             }}
           >
-          { selectTabActive &&
+          {selectTabActive &&
             <div>
               <CheckListGroup
                 inputType="checkbox"
-                onSelect={this.onSelect.bind(this)}
-                listItems={
-                  playlistsToPin.map(playlist => {
-                    return {
-                      label: playlist.title,
-                      checked: selectedPlaylists.indexOf(playlist.id) !== -1
-                    }
-                  })
-                }
+                onSelect={this.onSelect}
+                listItems={playlistsToPin.map(playlist => {
+                  return {
+                    label: playlist.title,
+                    checked: selectedPlaylists.indexOf(playlist.id) !== -1
+                  }
+                })}
               />
-              { loadMoreButton &&
+              {loadMoreButton &&
                 <div
                   className="text-center"
-                  style={{
-                    marginTop: '1em'
-                  }}
+                  style={{marginTop: '1em'}}
                 >
                   <button
                     className="btn btn-default"
@@ -76,16 +78,16 @@ export default class SelectPlaylistsToPinModal extends Component {
                   >Load More</button>
                 </div>
               }
-              { playlistsToPin.length === 0 &&
+              {playlistsToPin.length === 0 &&
                 <div className="text-center">No Playlists</div>
               }
             </div>
           }
-          { !selectTabActive &&
+          {!selectTabActive &&
             <div>
               <CheckListGroup
                 inputType="checkbox"
-                onSelect={this.onDeselect.bind(this)}
+                onSelect={this.onDeselect}
                 listItems={
                   selectedPlaylists.map(playlistId => {
                     let label = '';
@@ -110,7 +112,7 @@ export default class SelectPlaylistsToPinModal extends Component {
                   })
                 }
               />
-              { selectedPlaylists.length === 0 &&
+              {selectedPlaylists.length === 0 &&
                 <div className="text-center">No Playlist Selected</div>
               }
             </div>
@@ -118,7 +120,7 @@ export default class SelectPlaylistsToPinModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          { selectedPlaylists.length > 3 &&
+          {selectedPlaylists.length > 3 &&
             <span
               className="help-block pull-left"
               style={{color: '#843534'}}
@@ -129,8 +131,8 @@ export default class SelectPlaylistsToPinModal extends Component {
           <Button onClick={this.props.onHide}>Cancel</Button>
           <Button
             bsStyle="primary"
-            onClick={this.onSubmit.bind(this)}
-            disabled={selectedPlaylists.length > 3 ? true : false}
+            onClick={this.onSubmit}
+            disabled={selectedPlaylists.length > 3}
           >Done</Button>
         </Modal.Footer>
       </Modal>
@@ -146,19 +148,20 @@ export default class SelectPlaylistsToPinModal extends Component {
     let newSelectedPlaylists;
     if (this.state.selectedPlaylists.indexOf(playlistId) == -1) {
       newSelectedPlaylists = [playlistId].concat(this.state.selectedPlaylists);
-    } else {
+    }
+    else {
       newSelectedPlaylists = this.state.selectedPlaylists.filter(id => {
-        return id == playlistId ? false : true;
+        return id != playlistId;
       })
     }
     this.setState({selectedPlaylists: newSelectedPlaylists});
   }
 
   onDeselect(index) {
-    const { selectedPlaylists } = this.state;
+    const {selectedPlaylists} = this.state;
     let playlistIndex = 0;
     const newSelectedPlaylists = selectedPlaylists.filter(playlist => {
-      return playlistIndex++ === index ? false : true;
+      return playlistIndex++ !== index;
     })
     this.setState({selectedPlaylists: newSelectedPlaylists});
   }

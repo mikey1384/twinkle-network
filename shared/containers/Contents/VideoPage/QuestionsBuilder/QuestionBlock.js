@@ -1,24 +1,30 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ChoiceListItem from './ChoiceListItem';
 import EditChoiceListItem from './EditChoiceListItem';
 import Textarea from 'react-textarea-autosize';
-import { processedString } from 'helpers/StringHelper';
-
+import {processedString} from 'helpers/StringHelper';
 
 export default class QuestionBlock extends Component {
-  state = {
-    editedChoiceTitles: this.props.choices.map(choice => {
-      return choice.label
-    }),
-    editedQuestionTitle: this.props.title,
-    choiceIndices: this.props.choices.map(choice => {
-      return choice.id
-    })
+  constructor(props) {
+    super()
+    this.state = {
+      editedChoiceTitles: props.choices.map(choice => {
+        return choice.label
+      }),
+      editedQuestionTitle: props.title,
+      choiceIndices: props.choices.map(choice => {
+        return choice.id
+      })
+    }
+    this.onMove = this.onMove.bind(this)
+    this.onDrop = this.onDrop.bind(this)
+    this.onEditChoice = this.onEditChoice.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.choices !== nextProps.choices) {
       this.setState({
+        editedQuestionTitle: nextProps.title,
         choiceIndices: nextProps.choices.map(choice => {
           return choice.id
         }),
@@ -30,8 +36,8 @@ export default class QuestionBlock extends Component {
   }
 
   render() {
-    const { editedChoiceTitles, editedQuestionTitle, choiceIndices } = this.state;
-    const { inputType, onSelectChoice, questionIndex, onEdit, deleted, title, choices } = this.props;
+    const {editedChoiceTitles, editedQuestionTitle, choiceIndices} = this.state;
+    const {inputType, onSelectChoice, questionIndex, onEdit, deleted, title, choices} = this.props;
     const choicePlaceHolder = [
       "Choice A",
       "Choice B",
@@ -42,7 +48,7 @@ export default class QuestionBlock extends Component {
     return (
       <div>
         <div className="clearfix">
-          { !onEdit ?
+          {!onEdit ?
             <h4
               className="pull-left col-sm-10"
               style={{
@@ -52,7 +58,8 @@ export default class QuestionBlock extends Component {
               }}
             >
               <span dangerouslySetInnerHTML={{__html: title || "Question Title"}} />
-            </h4> :
+            </h4>
+            :
             <form
               onSubmit={ event => event.preventDefault() }
               style={{
@@ -70,13 +77,13 @@ export default class QuestionBlock extends Component {
               </Textarea>
             </form>
           }
-          { !onEdit && !deleted &&
+          {!onEdit && !deleted &&
             <button
               className="col-sm-2 btn btn-danger btn-sm"
               onClick={ () => this.props.onRemove(questionIndex) }
             >Remove</button>
           }
-          { deleted &&
+          {deleted &&
             <button
               className="col-sm-2 btn btn-default btn-sm"
               onClick={ () => this.props.onUndoRemove(questionIndex) }
@@ -88,37 +95,36 @@ export default class QuestionBlock extends Component {
           style={{opacity: deleted && '0.2'}}
           {...this.props}
         >
-          {
-            choiceIndices.map((choiceIndex, index) => {
-              return !onEdit ? <ChoiceListItem
-                  key={index}
-                  placeholder={choicePlaceHolder[index]}
-                  questionIndex={questionIndex}
-                  id={choiceIndex}
-                  onSelect={() => onSelectChoice(questionIndex, index)}
-                  label={determineLabel(choices, choiceIndex)}
-                  inputType={inputType}
-                  checked={determineChecked(choices, choiceIndex)}
-                  onMove={this.onMove.bind(this)}
-                  onDrop={this.onDrop.bind(this)}
-                  checkDisabled={deleted}
-                /> :
-                <EditChoiceListItem
-                  key={index}
-                  placeholder={choicePlaceHolder[index]}
-                  onSelect={() => onSelectChoice(questionIndex, index)}
-                  checked={determineChecked(choices, choiceIndex)}
-                  index={index}
-                  text={editedChoiceTitles[index]}
-                  onEdit={this.onEditChoice.bind(this)}
-                />
-            })
-          }
+          {choiceIndices.map((choiceIndex, index) => (
+            !onEdit ?
+            <ChoiceListItem
+              key={index}
+              placeholder={choicePlaceHolder[index]}
+              questionIndex={questionIndex}
+              id={choiceIndex}
+              onSelect={() => onSelectChoice(questionIndex, index)}
+              label={determineLabel(choices, choiceIndex)}
+              inputType={inputType}
+              checked={determineChecked(choices, choiceIndex)}
+              onMove={this.onMove}
+              onDrop={this.onDrop}
+              checkDisabled={deleted}
+            /> :
+            <EditChoiceListItem
+              key={index}
+              placeholder={choicePlaceHolder[index]}
+              onSelect={() => onSelectChoice(questionIndex, index)}
+              checked={determineChecked(choices, choiceIndex)}
+              index={index}
+              text={editedChoiceTitles[index]}
+              onEdit={this.onEditChoice}
+            />
+          ))}
         </div>
         <div
           className="text-center"
         >
-          { !onEdit ?
+          {!onEdit ?
             <button
               className="btn btn-info"
               onClick={() => this.props.onEditStart(questionIndex)}
@@ -185,8 +191,8 @@ export default class QuestionBlock extends Component {
   }
 
   onDrop() {
-    const { questionIndex } = this.props;
-    const { choiceIndices } = this.state;
+    const {questionIndex} = this.props;
+    const {choiceIndices} = this.state;
     this.props.onRearrange({questionIndex, choiceIndices});
   }
 }

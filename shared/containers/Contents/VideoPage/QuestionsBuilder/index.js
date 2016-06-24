@@ -1,75 +1,86 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { Modal } from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 import QuestionBlock from './QuestionBlock';
 import ButtonGroup from 'components/ButtonGroup';
 import HTML5Backend from 'react-dnd-html5-backend'
-import { DragDropContext } from 'react-dnd';
+import {DragDropContext} from 'react-dnd';
 import QuestionsListGroup from './QuestionsListGroup';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
+
+const defaultChoices = () => [
+  {
+    label: '',
+    checked: false,
+    id: 0
+  },
+  {
+    label: '',
+    checked: false,
+    id: 1
+  },
+  {
+    label: '',
+    checked: false,
+    id: 2
+  },
+  {
+    label: '',
+    checked: false,
+    id: 3
+  },
+  {
+    label: '',
+    checked: false,
+    id: 4
+  }
+]
+
+const defaultState = props => ({
+  questions: props.questions.length === 0 ? [
+    {
+      title: '',
+      id: 0,
+      onEdit: true,
+      choices: defaultChoices(),
+      errorMessage: '',
+      deleted: false
+    }
+  ] : props.questions.map((question, index) => {
+    return {
+      title: question.title,
+      id: index,
+      onEdit: false,
+      choices: question.choices.map((choice, index) => {
+        return {
+          label: choice,
+          checked: index + 1 === question.correctChoice ? true : false,
+          id: index
+        }
+      }),
+      errorMessage: '',
+      deleted: false
+    }
+  }),
+  interfaceMarginTop: 0,
+  editedQuestionOrder: [],
+  reorderModeOn: false
+})
 
 @DragDropContext(HTML5Backend)
 export default class QuestionsBuilder extends Component {
-  defaultState = {
-    questions: this.props.questions.length === 0 ? [
-      {
-        title: undefined,
-        id: 0,
-        onEdit: false,
-        choices: [
-          {
-            label: undefined,
-            checked: false,
-            id: 0
-          },
-          {
-            label: undefined,
-            checked: false,
-            id: 1
-          },
-          {
-            label: undefined,
-            checked: false,
-            id: 2
-          },
-          {
-            label: undefined,
-            checked: false,
-            id: 3
-          },
-          {
-            label: undefined,
-            checked: false,
-            id: 4
-          }
-        ],
-        errorMessage: null,
-        deleted: false
-      }
-    ] : this.props.questions.map((question, index) => {
-      return {
-        title: question.title,
-        id: index,
-        onEdit: false,
-        choices: question.choices.map((choice, index) => {
-          return {
-            label: choice,
-            checked: index + 1 === question.correctChoice ? true : false,
-            id: index
-          }
-        }),
-        errorMessage: null,
-        deleted: false
-      }
-    }),
-    interfaceMarginTop: 0,
-    editedQuestionOrder: [],
-    reorderModeOn: false
-  }
-
-  state = {
-    ...this.defaultState
+  constructor(props) {
+    super()
+    this.state = defaultState(props);
+    this.onAddQuestion = this.onAddQuestion.bind(this)
+    this.onRemoveQuestion = this.onRemoveQuestion.bind(this)
+    this.onUndoRemove = this.onUndoRemove.bind(this)
+    this.onQuestionsRearrange = this.onQuestionsRearrange.bind(this)
+    this.onSelectChoice = this.onSelectChoice.bind(this)
+    this.onChoicesRearrange = this.onChoicesRearrange.bind(this)
+    this.onReset = this.onReset.bind(this)
+    this.handleScroll = this.handleScroll.bind(this)
   }
 
   componentWillMount() {
@@ -79,55 +90,12 @@ export default class QuestionsBuilder extends Component {
   }
 
   render() {
-    const { reorderModeOn, questions, editedQuestionOrder } = this.state;
+    const {reorderModeOn, questions, editedQuestionOrder} = this.state;
+    const {title} = this.props;
     const topButtons = [
       {
         label: "+ Add",
-        onClick: () => {
-          const questions = this.state.questions;
-          const newQuestions = questions.concat([{
-            title: undefined,
-            id: questions.length,
-            onEdit: true,
-            choices: [
-              {
-                label: undefined,
-                checked: false,
-                id: 0
-              },
-              {
-                label: undefined,
-                checked: false,
-                id: 1
-              },
-              {
-                label: undefined,
-                checked: false,
-                id: 2
-              },
-              {
-                label: undefined,
-                checked: false,
-                id: 3
-              },
-              {
-                label: undefined,
-                checked: false,
-                id: 4
-              }
-            ],
-            errorMessage: null,
-            deleted: false
-          }]);
-          this.setState({
-            questions: newQuestions,
-            editedQuestionOrder: newQuestions.map(question => {
-              return question.id
-            })
-          }, () => {
-            ReactDOM.findDOMNode(this.refs[questions[questions.length-1].id]).scrollIntoView();
-          })
-        },
+        onClick: this.onAddQuestion,
         buttonClass: "btn-primary"
       },
       {
@@ -140,7 +108,7 @@ export default class QuestionsBuilder extends Component {
       },
       {
         label: "Reset",
-        onClick: () => this.onReset(),
+        onClick: this.onReset,
         buttonClass: "btn-warning"
       }
     ]
@@ -150,10 +118,10 @@ export default class QuestionsBuilder extends Component {
         animation={false}
         backdrop="static"
         dialogClassName="modal-extra-lg"
-        onScroll={this.handleScroll.bind(this)}
+        onScroll={this.handleScroll}
       >
         <Modal.Header closeButton>
-          <h2 className="text-center">{this.props.title}</h2>
+          <h2 className="text-center">{title}</h2>
         </Modal.Header>
         <Modal.Body>
           <div
@@ -164,7 +132,7 @@ export default class QuestionsBuilder extends Component {
               className="col-sm-5"
               style={{marginLeft: '3%'}}
             >
-              { reorderModeOn &&
+              {reorderModeOn &&
                 <QuestionsListGroup
                   questions={questions}
                   questionIds={editedQuestionOrder}
@@ -172,10 +140,10 @@ export default class QuestionsBuilder extends Component {
                     paddingTop: '1em',
                     cursor: 'ns-resize'
                   }}
-                  onMove={this.onQuestionsRearrange.bind(this)}
+                  onMove={this.onQuestionsRearrange}
                 />
               }
-              { !reorderModeOn &&
+              {!reorderModeOn &&
                 questions.map((question, index) => {
                   return (
                     <div
@@ -185,19 +153,19 @@ export default class QuestionsBuilder extends Component {
                         paddingTop: index === 0 ? '1em' : '3em'
                       }}
                     >
-                      { question.errorMessage &&
+                      {question.errorMessage &&
                         <span className="error-detected">
-                          { question.errorMessage }
+                          {question.errorMessage}
                         </span>
                       }
                       <QuestionBlock
                         {...question}
                         questionIndex={index}
                         inputType="radio"
-                        onSelectChoice={this.onSelectChoice.bind(this)}
-                        onRearrange={this.onChoicesRearrange.bind(this)}
-                        onRemove={this.onRemoveQuestion.bind(this)}
-                        onUndoRemove={this.onUndoRemove.bind(this)}
+                        onSelectChoice={this.onSelectChoice}
+                        onRearrange={this.onChoicesRearrange}
+                        onRemove={this.onRemoveQuestion}
+                        onUndoRemove={this.onUndoRemove}
                         onEditStart={
                           questionIndex => {
                             const newQuestions = this.state.questions.map((question, index) => {
@@ -220,13 +188,7 @@ export default class QuestionsBuilder extends Component {
                             this.setState({questions: newQuestions})
                           }
                         }
-                        onEditDone={
-                          ({
-                            questionIndex,
-                            newChoicesArray,
-                            newTitle
-                          }) => this.onChoiceEditDone({questionIndex, newChoicesArray, newTitle})
-                        }
+                        onEditDone={params => this.onChoiceEditDone(params)}
                       />
                     </div>
                   )
@@ -298,6 +260,26 @@ export default class QuestionsBuilder extends Component {
     )
   }
 
+  onAddQuestion() {
+    const questions = this.state.questions;
+    const newQuestions = questions.concat([{
+      title: undefined,
+      id: questions.length,
+      onEdit: true,
+      choices: defaultChoices(),
+      errorMessage: null,
+      deleted: false
+    }]);
+    this.setState({
+      questions: newQuestions,
+      editedQuestionOrder: newQuestions.map(question => {
+        return question.id
+      })
+    }, () => {
+      ReactDOM.findDOMNode(this.refs[questions[questions.length-1].id]).scrollIntoView();
+    })
+  }
+
   onRemoveQuestion(questionIndex) {
     this.setState({
       questions: this.state.questions.map((question, index) => {
@@ -332,7 +314,6 @@ export default class QuestionsBuilder extends Component {
       }
       return question;
     })
-
     this.setState({
       questions: newQuestions
     })
@@ -409,9 +390,8 @@ export default class QuestionsBuilder extends Component {
   }
 
   onReset() {
-    this.setState({
-      ...this.defaultState
-    }, () => this.setState({editedQuestionOrder: this.state.questions.map(question => {
+    this.setState(defaultState(this.props), () =>
+    this.setState({editedQuestionOrder: this.state.questions.map(question => {
       return question.id
     })}))
   }

@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Link} from 'react-router';
 import activeComponent from 'react-router-active-component';
-import { openSigninModal, closeSigninModal, logout } from 'redux/actions/UserActions';
+import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions';
 import SigninModal from '../Signin';
-import { bindActionCreators } from 'redux';
+import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 
 @connect(
   state => ({
@@ -18,34 +17,30 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
     userId: state.UserReducer.userId,
     signinModalShown: state.UserReducer.signinModalShown
   }),
-  { openSigninModal, closeSigninModal, logout }
+  {openSigninModal, closeSigninModal, logout}
 )
 export default class Header extends Component {
-  state = {
-    tabClicked: false
-  }
-
-  handleClick() {
-    this.setState({
-      tabClicked: true
-    })
-    if (this.props.chatMode) {
-      this.props.turnChatOff();
+  constructor() {
+    super()
+    this.state = {
+      tabClicked: false
     }
+    this.handleClick = this.handleClick.bind(this)
   }
 
   render () {
     const {
       signinModalShown,
       loggedIn,
+      logout,
       username,
       userType,
       isAdmin,
       userId,
       chatMode,
       openSigninModal,
-      closeSigninModal
-    } = this.props;
+      closeSigninModal,
+      onChatButtonClick } = this.props;
 
     return (
       <Navbar staticTop fluid>
@@ -54,14 +49,14 @@ export default class Header extends Component {
           className="navbar-brand"
           style={{cursor: 'pointer'}}
           to="/"
-          onClick={this.handleClick.bind(this)}
+          onClick={this.handleClick}
         >
           Twinkle
         </Link>
         <Navbar.Collapse>
-          { this.renderTabs() }
+          {this.renderTabs()}
           <Nav pullRight className="flexbox-container">
-            { loggedIn &&
+            {loggedIn &&
               <li>
                 <a
                   className="well unselectable"
@@ -70,37 +65,32 @@ export default class Header extends Component {
                     margin: '0px',
                     cursor: 'pointer'
                   }}
-                  onClick={ this.onChatButtonClick.bind(this) }
+                  onClick={() => onChatButtonClick()}
                 >Messages
                 </a>
               </li>
             }
-            {
-              loggedIn ?
+            {loggedIn ?
               <AccountMenu
-                title={ username }
-                logout={ this.props.logout }
+                title={username}
+                logout={logout}
               /> :
-              <NavItem onClick={ () => openSigninModal() }>Log In | Sign Up</NavItem>
+              <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
             }
           </Nav>
         </Navbar.Collapse>
-        { signinModalShown &&
-          <SigninModal show={true} onHide={ () => closeSigninModal() } />
+        {signinModalShown &&
+          <SigninModal show onHide={() => closeSigninModal()} />
         }
       </Navbar>
     )
   }
 
-  onChatButtonClick() {
-    this.props.onChatButtonClick();
-  }
-
   renderTabs() {
     const NavLink = activeComponent('li');
-    const { chatMode } = this.props;
+    const {chatMode} = this.props;
     return chatMode ? null : (
-      <Nav onClick={this.handleClick.bind(this)}>
+      <Nav onClick={this.handleClick}>
         <NavLink
           to="/"
           onlyActiveOnIndex
@@ -129,5 +119,12 @@ export default class Header extends Component {
         }
       </Nav>
     )
+  }
+
+  handleClick() {
+    this.setState({tabClicked: true})
+    if (this.props.chatMode) {
+      this.props.turnChatOff();
+    }
   }
 }

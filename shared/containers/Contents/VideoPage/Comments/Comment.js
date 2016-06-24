@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { timeSince } from 'helpers/TimeStampHelper';
-import { cleanStringWithURL } from 'helpers/StringHelper';
+import {timeSince} from 'helpers/TimeStampHelper';
+import {cleanStringWithURL} from 'helpers/StringHelper';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
@@ -12,14 +12,22 @@ import UsernameText from 'components/UsernameText';
 
 
 export default class Comment extends Component {
-  state = {
-    replyInputShown: false,
-    onEdit: false,
-    userListModalShown: false
+  constructor() {
+    super()
+    this.state = {
+      replyInputShown: false,
+      onEdit: false,
+      userListModalShown: false
+    }
+    this.onReplySubmit = this.onReplySubmit.bind(this)
+    this.onEditDone = this.onEditDone.bind(this)
+    this.onLikeClick = this.onLikeClick.bind(this)
+    this.onDelete = this.onDelete.bind(this)
   }
+
   render() {
-    const { replyInputShown, onEdit, userListModalShown } = this.state;
-    const { comment, userId } = this.props;
+    const {replyInputShown, onEdit, userListModalShown} = this.state;
+    const {comment, userId} = this.props;
     const userIsOwner = comment.posterId == userId;
     let userLikedThis = false;
     for (let i = 0; i < comment.likes.length; i++) {
@@ -30,7 +38,7 @@ export default class Comment extends Component {
         className="media"
         style={{marginTop: this.props.marginTop && '2em'}}
       >
-        { userIsOwner && !onEdit &&
+        {userIsOwner && !onEdit &&
           <SmallDropdownButton
             rightMargin='3em'
             menuProps={[
@@ -40,7 +48,7 @@ export default class Comment extends Component {
               },
               {
                 label: "Remove",
-                onClick: this.onDelete.bind(this)
+                onClick: this.onDelete
               }
             ]}
           />
@@ -59,13 +67,13 @@ export default class Comment extends Component {
             <UsernameText user={{
               name: comment.posterName,
               id: comment.posterId
-            }} /> <small>&nbsp;{ timeSince(comment.timeStamp) }</small>
+            }} /> <small>&nbsp;{timeSince(comment.timeStamp)}</small>
           </h4>
           { onEdit ?
             <EditTextArea
               text={cleanStringWithURL(comment.content)}
               onCancel={() => this.setState({onEdit: false})}
-              onEditDone={this.onEditDone.bind(this)}
+              onEditDone={this.onEditDone}
             /> :
             <div className="container-fluid">
               <div
@@ -79,14 +87,14 @@ export default class Comment extends Component {
                 <div className="pull-left">
                   <button
                     className="btn btn-warning btn-sm"
-                    onClick={ () => this.setState({replyInputShown: true}) }
+                    onClick={() => this.setState({replyInputShown: true})}
                   >
                     <span className="glyphicon glyphicon-comment"></span> Reply
                   </button>
                   <button
                     className="btn btn-info btn-sm"
                     style={{marginLeft: '0.5em'}}
-                    onClick={this.onLikeClick.bind(this)}
+                    onClick={this.onLikeClick}
                   >
                     <span className="glyphicon glyphicon-thumbs-up"></span> {`${userLikedThis ? 'Liked!' : 'Like'}`}
                   </button>
@@ -122,7 +130,7 @@ export default class Comment extends Component {
             onDelete={ replyId => this.props.onReplyDelete(replyId, this.props.commentId) }
           />
           { replyInputShown && <ReplyInputArea
-              onSubmit={this.onReplySubmit.bind(this)}
+              onSubmit={this.onReplySubmit}
             />
           }
         </div>
@@ -140,24 +148,24 @@ export default class Comment extends Component {
   }
 
   onEditDone(editedComment) {
-    const { commentId } = this.props;
+    const {commentId} = this.props;
     this.props.onEditDone(editedComment, commentId, () => {
       this.setState({onEdit: false})
     })
   }
 
   onLikeClick() {
-    const { commentId } = this.props;
+    const {commentId} = this.props;
     this.props.onLikeClick(commentId);
   }
 
   onReplySubmit(reply) {
-    const { commentId, videoId } = this.props;
+    const {commentId, videoId} = this.props;
     this.props.onReplySubmit(reply, commentId, videoId);
   }
 
   onDelete() {
-    const { commentId } = this.props;
+    const {commentId} = this.props;
     this.props.onDelete(commentId);
   }
 }

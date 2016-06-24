@@ -120,8 +120,10 @@ export default class VideoThumb extends Component {
               textOverflow:'ellipsis',
               overflow:'hidden'
             }}>Added by <UsernameText user={{name: video.uploadername, id: video.uploaderid}} /></small>
-            { video.numLikes > 0 &&
-              <small className="pull-right"><span className="glyphicon glyphicon-thumbs-up"></span>&times;{video.numLikes}</small>
+            {video.numLikes > 0 &&
+              <small className="pull-right">
+                <span className="glyphicon glyphicon-thumbs-up" />&times;{video.numLikes}
+              </small>
             }
           </div>
         </div>

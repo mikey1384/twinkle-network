@@ -36,7 +36,7 @@ router.post('/', requireAuth, (req, res) => {
         "No description" : req.body.description;
   const title = processedTitleString(req.body.title);
   const description = processedString(rawDescription);
-  const videos = req.body.videos;
+  const videos = req.body.selectedVideos;
   const taskArray = [];
   async.waterfall([
     (callback) => {

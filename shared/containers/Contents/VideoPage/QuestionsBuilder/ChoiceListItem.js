@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
+import React, {Component} from 'react';
+import {DragSource, DropTarget} from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 
 const ListItemSource = {
@@ -44,7 +44,15 @@ const ListItemTarget = {
 }))
 export default class ChoiceListItem extends Component {
   render() {
-    const {connectDragSource, connectDropTarget, isDragging, inputType, onSelect, checked, checkDisabled} = this.props;
+    const {
+      connectDragSource,
+      connectDropTarget,
+      isDragging,
+      inputType,
+      onSelect,
+      checked,
+      checkDisabled
+    } = this.props;
     return connectDragSource(connectDropTarget(
       <div
         className="list-group-item container-fluid"

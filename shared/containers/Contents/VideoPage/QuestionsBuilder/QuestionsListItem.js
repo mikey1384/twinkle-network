@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
+import React, {Component} from 'react';
+import {DragSource, DropTarget} from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 
 const listItemSource = {
@@ -34,7 +34,7 @@ const listItemTarget = {
 }))
 export default class QuestionsListItem extends Component {
   render() {
-    const { connectDragSource, connectDropTarget, isDragging } = this.props;
+    const {connectDragSource, connectDropTarget, isDragging} = this.props;
     return connectDragSource(connectDropTarget(
       <li
         className="list-group-item"
@@ -43,7 +43,7 @@ export default class QuestionsListItem extends Component {
           color: (!this.props.item.label || this.props.item.deleted) && '#999'
         }}
       >
-        { this.props.item.label ?
+        {this.props.item.label ?
           `${this.props.item.label} ${this.props.item.deleted ? '(removed)' : ''}`
           :
           `Untitled Question ${this.props.item.id + 1} ${this.props.item.deleted ? '(removed)' : ''}`

@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {Modal, Button} from 'react-bootstrap';
+import {connect} from 'react-redux';
 import {
   closeEditPlaylistModal,
   changePlaylistVideosAsync,
-  getMoreVideosForModalAsync } from 'redux/actions/PlaylistActions';
+  getMoreVideosForModalAsync
+} from 'redux/actions/PlaylistActions';
 import SelectVideosForm from './SelectVideosForm';
 import SortableThumb from './SortableThumb';
-import { DragDropContext } from 'react-dnd';
+import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 @DragDropContext(HTML5Backend)
@@ -23,105 +24,98 @@ import HTML5Backend from 'react-dnd-html5-backend';
   }
 )
 export default class EditPlaylistModal extends Component {
-  state = {
-    selectedVideos: this.props.selectedVideos
+  constructor(props) {
+    super()
+    this.state = {
+      selectedVideos: props.selectedVideos
+    }
+    this.handleHide = this.handleHide.bind(this)
+    this.handleSave = this.handleSave.bind(this)
   }
-  handleHide() {
-    this.props.onHide();
-  }
-  handleSave() {
-    const { selectedVideos } = this.state;
-    const { playlistId, changePlaylistVideos } = this.props;
-    changePlaylistVideos(playlistId, selectedVideos, this);
-  }
+
   render() {
-    const { modalType, videos, loadMoreVideosButton,  getMoreVideosForModal } = this.props;
-    const { selectedVideos } = this.state;
+    const {modalType, videos, loadMoreVideosButton,  getMoreVideosForModal} = this.props;
+    const {selectedVideos} = this.state;
     const last = (array) => {
       return array[array.length - 1];
     };
     const lastId = last(videos) ? last(videos).id : 0;
-    const loadMoreVideos = () => {
-      getMoreVideosForModal(lastId);
-    }
-    const modalBody = (modalType) => {
-      switch (modalType) {
-        case 'change':
-        return (
-          <SelectVideosForm
-            videos={videos}
-            selectedVideos={selectedVideos}
-            loadMoreVideosButton={loadMoreVideosButton}
-            onSelect={(selected, videoId) => this.setState({ selectedVideos: selected.concat([videoId]) })}
-            onDeselect={selected => this.setState({ selectedVideos: selected })}
-            loadMoreVideos={loadMoreVideos}
-          />
-        )
-        case 'reorder':
-        return (
-          <div className="row">
-            {
-              this.state.selectedVideos.map(videoId => {
-                let index = -1;
-                for(let i = 0; i < videos.length; i++) {
-                    if (videos[i].id === videoId) {
-                      index = i;
-                      break;
-                    }
-                }
-                return (
-                  <SortableThumb
-                    key={videos[index].id}
-                    video={videos[index]}
-                    onMove={
-                      ({sourceId, targetId}) => {
-                        const selectedVideoArray = this.state.selectedVideos;
-                        const sourceIndex = selectedVideoArray.indexOf(sourceId);
-                        const targetIndex = selectedVideoArray.indexOf(targetId);
-                        selectedVideoArray.splice(sourceIndex, 1);
-                        selectedVideoArray.splice(targetIndex, 0, sourceId);
-                        this.setState({
-                          selectedVideos: selectedVideoArray
-                        });
-                      }
-                    }
-                  />
-                )
-              })
-            }
-          </div>
-        )
-      }
-    }
     return (
       <Modal
         {...this.props}
         animation={false}
         backdrop="static"
         dialogClassName="modal-extra-lg"
-        onHide={this.handleHide.bind(this)}
+        onHide={this.handleHide}
       >
         <Modal.Header closeButton>
-          {
-            modalType === 'change' ?
+          {modalType === 'change' ?
             <h4>Add or Remove Videos</h4>
             :
             <h4>Reorder Videos</h4>
           }
         </Modal.Header>
         <Modal.Body>
-          {modalBody(modalType)}
+          {modalType === 'change' &&
+            <SelectVideosForm
+              videos={videos}
+              selectedVideos={selectedVideos}
+              loadMoreVideosButton={loadMoreVideosButton}
+              onSelect={(selected, videoId) => this.setState({selectedVideos: selected.concat([videoId])})}
+              onDeselect={selected => this.setState({selectedVideos: selected})}
+              loadMoreVideos={() => {getMoreVideosForModal(lastId)}}
+            />
+          }
+          {modalType === 'reorder' &&
+            <div className="row">
+              {selectedVideos.map(videoId => {
+                let index = -1;
+                for(let i = 0; i < videos.length; i++) {
+                  if (videos[i].id === videoId) {
+                    index = i;
+                    break;
+                  }
+                }
+                return (
+                  <SortableThumb
+                    key={videos[index].id}
+                    video={videos[index]}
+                    onMove={({sourceId, targetId}) => {
+                      const selectedVideoArray = selectedVideos;
+                      const sourceIndex = selectedVideoArray.indexOf(sourceId);
+                      const targetIndex = selectedVideoArray.indexOf(targetId);
+                      selectedVideoArray.splice(sourceIndex, 1);
+                      selectedVideoArray.splice(targetIndex, 0, sourceId);
+                      this.setState({
+                        selectedVideos: selectedVideoArray
+                      });
+                    }}
+                  />
+                )
+              })}
+            </div>
+          }
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.handleHide.bind(this)}>Cancel</Button>
+          <Button onClick={this.handleHide}>Cancel</Button>
           <Button
             bsStyle="primary"
-            onClick={this.handleSave.bind(this)}
-            disabled={this.state.selectedVideos.length < 2 ? true : false}
+            onClick={this.handleSave}
+            disabled={selectedVideos.length < 2}
           >
             Save</Button>
         </Modal.Footer>
       </Modal>
     )
+  }
+
+  handleHide() {
+    this.props.onHide();
+  }
+
+  handleSave() {
+    const {selectedVideos} = this.state;
+    const {playlistId, changePlaylistVideos} = this.props;
+    changePlaylistVideos(playlistId, selectedVideos, this);
   }
 }

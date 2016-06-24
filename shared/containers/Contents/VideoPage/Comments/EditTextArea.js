@@ -1,10 +1,15 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
 
 export default class EditTextArea extends Component {
-  state = {
-    editedText: this.props.text
+  constructor(props) {
+    super()
+    this.state = {
+      editedText: props.text
+    }
+    this.onSubmit = this.onSubmit.bind(this)
   }
+
   render() {
     return (
       <div>
@@ -16,7 +21,7 @@ export default class EditTextArea extends Component {
           }}
           rows={4}
           value={this.state.editedText}
-          onChange={ e => this.setState({editedText: e.target.value}) }
+          onChange={event => this.setState({editedText: event.target.value})}
         />
         <div
           style={{
@@ -25,7 +30,7 @@ export default class EditTextArea extends Component {
         >
           <button
             className="btn btn-default btn-sm"
-            onClick={ this.onSubmit.bind(this) }
+            onClick={this.onSubmit}
           >
             Done
           </button>
@@ -34,7 +39,7 @@ export default class EditTextArea extends Component {
             style={{
               marginLeft: '0.5em'
             }}
-            onClick={ () => this.props.onCancel() }
+            onClick={() => this.props.onCancel()}
           >
             Cancel
           </button>
@@ -44,7 +49,7 @@ export default class EditTextArea extends Component {
   }
 
   onSubmit() {
-    const { editedText } = this.state;
+    const {editedText} = this.state;
     this.props.onEditDone(editedText);
   }
 }

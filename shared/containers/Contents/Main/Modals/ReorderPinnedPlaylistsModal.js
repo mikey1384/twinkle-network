@@ -1,20 +1,26 @@
-import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {Modal, Button} from 'react-bootstrap';
 import SortableListGroup from 'components/SortableListGroup';
-import { connect } from 'react-redux';
-import { changePinnedPlaylistsAsync } from 'redux/actions/PlaylistActions';
+import {connect} from 'react-redux';
+import {changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions';
 
 @connect(
   null,
-  { changePinnedPlaylists: changePinnedPlaylistsAsync }
+  {changePinnedPlaylists: changePinnedPlaylistsAsync}
 )
 export default class ReorderPinnedPlaylistsModal extends Component {
-  state = {
-    playlists: this.props.pinnedPlaylists,
-    playlistIds: this.props.playlistIds
+  constructor(props) {
+    super()
+    this.state = {
+      playlists: props.pinnedPlaylists,
+      playlistIds: props.playlistIds
+    }
+    this.onMove = this.onMove.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
+
   render() {
-    const { playlists, playlistIds } = this.state;
+    const {playlists, playlistIds} = this.state;
     const listItems = playlistIds.map(playlistId => {
       for (let i = 0; i < playlists.length; i ++) {
         if (playlists[i].id === playlistId) {
@@ -26,21 +32,21 @@ export default class ReorderPinnedPlaylistsModal extends Component {
       }
     })
     return (
-      <Modal  {...this.props} animation={false}>
+      <Modal {...this.props} animation={false}>
         <Modal.Header closeButton>
           <h4>Reorder Pinned Playlists</h4>
         </Modal.Header>
         <Modal.Body>
           <SortableListGroup
             listItems={listItems}
-            onMove={this.onMove.bind(this)}
+            onMove={this.onMove}
           />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.onHide}>Cancel</Button>
           <Button
             bsStyle="primary"
-            onClick={this.onSubmit.bind(this)}
+            onClick={this.onSubmit}
           >Done</Button>
         </Modal.Footer>
       </Modal>
@@ -48,7 +54,7 @@ export default class ReorderPinnedPlaylistsModal extends Component {
   }
 
   onMove({sourceId, targetId}) {
-    const { playlistIds } = this.state;
+    const {playlistIds} = this.state;
     const sourceIndex = playlistIds.indexOf(sourceId);
     const targetIndex = playlistIds.indexOf(targetId);
     playlistIds.splice(sourceIndex, 1);

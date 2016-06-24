@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
   editVideoPageAsync,
   deleteVideoAsync,
@@ -18,7 +18,8 @@ import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import UserListModal from 'components/Modals/UserListModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { bindActionCreators } from 'redux';
+import {bindActionCreators} from 'redux';
+import {stringIsEmpty} from 'helpers/StringHelper';
 
 @connect(
   state => ({
@@ -36,29 +37,38 @@ import { bindActionCreators } from 'redux';
   }
 )
 export default class VideoPage extends Component {
-  state = {
-    watchTabActive: true,
-    currentSlide: 0,
-    userAnswers: [],
-    resultModalShown: false,
-    editModalShown: false,
-    confirmModalShown: false,
-    questionsBuilderShown: false,
-    userListModalShown: false
+  constructor() {
+    super()
+    this.state = {
+      watchTabActive: true,
+      currentSlide: 0,
+      userAnswers: [],
+      resultModalShown: false,
+      editModalShown: false,
+      confirmModalShown: false,
+      questionsBuilderShown: false,
+      userListModalShown: false
+    }
+    this.onDescriptionEditFinish = this.onDescriptionEditFinish.bind(this)
+    this.onVideoLikeClick = this.onVideoLikeClick.bind(this)
+    this.showLikerList = this.showLikerList.bind(this)
+    this.onSlide = this.onSlide.bind(this)
+    this.onQuestionsFinish = this.onQuestionsFinish.bind(this)
+    this.onQuestionsSubmit = this.onQuestionsSubmit.bind(this)
+    this.numberCorrect = this.numberCorrect.bind(this)
+    this.onCommentSubmit = this.onCommentSubmit.bind(this)
+    this.onVideoDelete = this.onVideoDelete.bind(this)
+    this.onSelectChoice = this.onSelectChoice.bind(this)
   }
 
   render() {
-    if (this.props.videoId === 0) {
-      return (
-        <div>Video Not Found</div>
-      )
-    }
     let {
       uploaderId,
       uploaderName,
       description,
       userId,
       videoId,
+      videocode,
       title,
       questions,
       likes,
@@ -66,7 +76,18 @@ export default class VideoPage extends Component {
       noComments } = this.props;
     likes = likes || [];
     questions = questions || [];
-    const { watchTabActive } = this.state;
+    const {
+      watchTabActive,
+      questionsBuilderShown,
+      resultModalShown,
+      confirmModalShown,
+      userListModalShown,
+      currentSlide } = this.state;
+    if (videoId === 0) {
+      return (
+        <div>Video Not Found</div>
+      )
+    }
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
     'video-container-fixed-left';
@@ -86,8 +107,8 @@ export default class VideoPage extends Component {
           description={description}
           uploaderId={uploaderId}
           userId={userId}
-          onEditFinish={this.onDescriptionEditFinish.bind(this)}
-          onDelete={ () => this.setState({confirmModalShown: true}) }
+          onEditFinish={this.onDescriptionEditFinish}
+          onDelete={() => this.setState({confirmModalShown: true})}
         />
         <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
           <PageTab
@@ -101,52 +122,52 @@ export default class VideoPage extends Component {
               paddingTop: '3em'
             }}
           >
-            { !this.state.questionsBuilderShown &&
+            {!questionsBuilderShown &&
               <div>
                 <div className={`${youtubeIframeContainerClassName}`}>
                   <iframe
-                    key={this.props.videoId}
+                    key={videoId}
                     className={`${youtubeIframeClassName}`}
                     frameBorder="0"
                     allowFullScreen="1"
-                    title={this.props.title}
+                    title={title}
                     width="640"
                     height="360"
-                    src={`https://www.youtube.com/embed/${this.props.videocode}`}>
+                    src={`https://www.youtube.com/embed/${videocode}`}>
                   </iframe>
                 </div>
-                { watchTabActive &&
+                {watchTabActive &&
                   <VideoLikeInterface
                     userId={userId}
                     likes={likes}
-                    onLikeClick={this.onVideoLikeClick.bind(this)}
-                    showLikerList={this.showLikerList.bind(this)}
+                    onLikeClick={this.onVideoLikeClick}
+                    showLikerList={this.showLikerList}
                   />
                 }
               </div>
             }
-            { !watchTabActive && questions.length > 0 &&
+            {!watchTabActive && questions.length > 0 &&
               <Carousel
                 showQuestionsBuilder={ () => this.setState({questionsBuilderShown: true})}
                 userIsUploader={userId == uploaderId}
                 slidesToShow={1}
                 slidesToScroll={1}
-                slideIndex={this.state.currentSlide}
+                slideIndex={currentSlide}
                 dragging={false}
-                afterSlide={this.onSlide.bind(this)}
-                onFinish={this.onQuestionsFinish.bind(this)}
+                afterSlide={this.onSlide}
+                onFinish={this.onQuestionsFinish}
               >
                 {this.renderSlides()}
               </Carousel>
             }
-            { !watchTabActive && questions.length === 0 &&
+            {!watchTabActive && questions.length === 0 &&
               <div className="text-center">
                 <p>There are no questions yet.</p>
-                { userId == uploaderId &&
+                {userId == uploaderId &&
                   <button
                     className="btn btn-default"
                     style={{marginTop: '1em'}}
-                    onClick={ () => this.setState({questionsBuilderShown: true}) }
+                    onClick={() => this.setState({questionsBuilderShown: true})}
                   >Add Questions</button>
                 }
               </div>
@@ -155,38 +176,38 @@ export default class VideoPage extends Component {
         </div>
         <Comments
           {...this.props}
-          onSubmit={this.onCommentSubmit.bind(this)}
+          onSubmit={this.onCommentSubmit}
         />
-        { this.state.resultModalShown &&
+        {resultModalShown &&
           <ResultModal
-            show={true}
-            onHide={ () => this.setState({resultModalShown: false}) }
-            numberCorrect={this.numberCorrect.bind(this)}
+            show
+            onHide={() => this.setState({resultModalShown: false})}
+            numberCorrect={this.numberCorrect}
             totalQuestions={questions.length}
           />
         }
-        { this.state.confirmModalShown &&
+        {confirmModalShown &&
           <ConfirmModal
-            show={true}
+            show
             title="Remove Video"
-            onHide={ () => this.setState({confirmModalShown: false}) }
-            onConfirm={this.onVideoDelete.bind(this)}
+            onHide={() => this.setState({confirmModalShown: false})}
+            onConfirm={this.onVideoDelete}
           />
         }
-        { this.state.questionsBuilderShown &&
+        {questionsBuilderShown &&
           <QuestionsBuilder
-            show={true}
+            show
             questions={questions}
             title={title}
-            videocode={this.props.videocode}
-            onSubmit={this.onQuestionsSubmit.bind(this)}
-            onHide={ () => this.setState({questionsBuilderShown: false}) }
+            videocode={videocode}
+            onSubmit={this.onQuestionsSubmit}
+            onHide={() => this.setState({questionsBuilderShown: false})}
           />
         }
-        { this.state.userListModalShown &&
+        {userListModalShown &&
           <UserListModal
-            show={true}
-            onHide={ () => this.setState({userListModalShown: false}) }
+            show
+            onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this video"
             userId={userId}
             users={likes.map(like => {
@@ -206,14 +227,14 @@ export default class VideoPage extends Component {
     const {currentSlide, userAnswers} = this.state;
     return questions.map((question, index) => {
       const filteredChoices = question.choices.filter(choice => {
-        return choice === null ? false : true;
+        return choice !== null;
       })
-      let isCurrentSlide = index === currentSlide ? true : false;
+      let isCurrentSlide = index === currentSlide;
       const listItems = filteredChoices.map((choice, index) => {
-        let isSelectedChoice = index === userAnswers[currentSlide] ? true : false;
+        let isSelectedChoice = index === userAnswers[currentSlide];
         return {
           label: choice,
-          checked: isCurrentSlide && isSelectedChoice ? true : false
+          checked: isCurrentSlide && isSelectedChoice
         }
       })
       return (
@@ -225,7 +246,7 @@ export default class VideoPage extends Component {
             style={{marginTop: '2em'}}
             listItems={listItems}
             inputType="radio"
-            onSelect={this.onSelectChoice.bind(this)}
+            onSelect={this.onSelectChoice}
           />
         </div>
       )
@@ -233,7 +254,7 @@ export default class VideoPage extends Component {
   }
 
   numberCorrect() {
-    const { userAnswers } = this.state;
+    const {userAnswers} = this.state;
     const correctAnswers = this.props.questions.map(question => {
       return question.correctChoice;
     })
@@ -253,8 +274,8 @@ export default class VideoPage extends Component {
   }
 
   onSelectChoice(index) {
-    let userAnswers = this.state.userAnswers;
-    userAnswers[this.state.currentSlide] = index;
+    let {userAnswers, currentSlide} = this.state;
+    userAnswers[currentSlide] = index;
     this.setState({userAnswers})
   }
 
@@ -263,7 +284,7 @@ export default class VideoPage extends Component {
   }
 
   onVideoDelete() {
-    const { videoId } = this.props;
+    const {videoId} = this.props;
     this.props.deleteVideo({videoId});
   }
 
@@ -272,7 +293,7 @@ export default class VideoPage extends Component {
       videoId: this.props.videoId,
       questions: questions.map(question => {
         const choices = question.choices.filter(choice => {
-          return !choice.label || choice.label === '' ? false : true;
+          return choice.label && !stringIsEmpty(choice.label);
         })
         return {
           videoid: this.props.videoId,
@@ -303,12 +324,12 @@ export default class VideoPage extends Component {
   }
 
   onCommentSubmit(comment) {
-    const { videoId } = this.props;
+    const {videoId} = this.props;
     this.props.uploadVideoComment(comment, videoId);
   }
 
   onVideoLikeClick() {
-    const { videoId } = this.props;
+    const {videoId} = this.props;
     this.props.likeVideo(videoId);
   }
 

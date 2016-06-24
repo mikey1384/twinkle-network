@@ -1,10 +1,15 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
 
 export default class CommentInputArea extends Component {
-  state = {
-    text: ''
+  constructor() {
+    super()
+    this.state = {
+      text: ''
+    }
+    this.onSubmit = this.onSubmit.bind(this)
   }
+
   render() {
     return (
       <div className="page-header">
@@ -16,13 +21,13 @@ export default class CommentInputArea extends Component {
               rows={4}
               value={this.state.text}
               placeholder="Post your thoughts here."
-              onChange={ e => this.setState({text: e.target.value}) }
+              onChange={event => this.setState({text: event.target.value})}
             />
           </div>
           <div className="row">
             <button
               className="btn btn-default btn-sm"
-              onClick={this.onSubmit.bind(this)}
+              onClick={this.onSubmit}
             >Submit</button>
           </div>
         </div>

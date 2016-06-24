@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
-import { Modal, Button, Alert } from 'react-bootstrap';
-import { stringIsEmpty } from 'helpers/StringHelper';
+import React, {Component} from 'react';
+import {reduxForm} from 'redux-form';
+import {Modal, Button, Alert} from 'react-bootstrap';
+import {stringIsEmpty} from 'helpers/StringHelper';
 
 
 @reduxForm({
@@ -10,16 +10,17 @@ import { stringIsEmpty } from 'helpers/StringHelper';
   validate
 })
 export default class LoginForm extends Component {
-  onSubmit(props) {
-    this.props.loginAsync(props)
+  constructor() {
+    super()
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   render () {
     const {fields: {username, password}, handleSubmit, errorMessage, hideErrorAlert} = this.props;
-    let userNameFieldError = username.touched && username.invalid ? true : false;
-    let passwordFieldError = password.touched && password.invalid ? true : false;
+    let userNameFieldError = username.touched && username.invalid;
+    let passwordFieldError = password.touched && password.invalid;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit.bind(this))} onInput={() => hideErrorAlert()} >
+      <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()} >
         { errorMessage &&
           <Alert bsStyle="danger">
             {errorMessage}
@@ -47,6 +48,10 @@ export default class LoginForm extends Component {
         </Modal.Footer>
       </form>
     )
+  }
+
+  onSubmit(props) {
+    this.props.loginAsync(props)
   }
 }
 

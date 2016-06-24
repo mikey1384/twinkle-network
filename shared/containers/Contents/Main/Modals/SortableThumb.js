@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
+import React, {Component} from 'react';
+import {DragSource, DropTarget} from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 
 const thumbSource = {
@@ -34,11 +34,11 @@ const thumbTarget = {
 }))
 export default class SortableThumb extends Component {
   render () {
-    const { connectDragSource, connectDropTarget, isDragging, video } = this.props;
+    const {connectDragSource, connectDropTarget, isDragging, video} = this.props;
     return connectDragSource(connectDropTarget(
       <div
         className="col-sm-2"
-        key={ video.id }
+        key={video.id}
         style={{
           opacity: isDragging ? 0.5 : 1
         }}

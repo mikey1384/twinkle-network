@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import MessagesContainer from './MessagesContainer';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import * as ChatActions from 'redux/actions/ChatActions';
 import ChatInput from './ChatInput';
 import CreateNewChannelModal from './CreateNewChannelModal';
-import { cleanStringWithURL } from 'helpers/StringHelper';
+import {cleanStringWithURL} from 'helpers/StringHelper';
 
 @connect(
   state => ({
@@ -31,17 +31,27 @@ import { cleanStringWithURL } from 'helpers/StringHelper';
 )
 export default class Chat extends Component {
   constructor(props) {
-    super()
+    super(props)
     this.state = {
       createNewChannelModalShown: false
     }
-    const { socket, receiveMessage } = props;
-    const callback = (function(data) {
+    const {socket, receiveMessage} = props;
+    socket.on('incoming message', data => {
       if (data.channelId === this.props.currentChannelId) {
         receiveMessage(data)
       }
-    }).bind(this)
-    socket.on('incoming message', callback)
+    })
+    this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
+    this.onNewButtonClick = this.onNewButtonClick.bind(this)
+    this.onMessageSubmit = this.onMessageSubmit.bind(this)
+  }
+
+  componentWillMount() {
+    const {socket, channels} = this.props;
+    for (let i = 0; i < channels.length; i ++) {
+      let channelId = channels[i].id;
+      socket.emit('join chat channel', channelId)
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -50,26 +60,19 @@ export default class Chat extends Component {
     }
   }
 
-  componentWillMount() {
-    const { socket, channels } = this.props;
-    for (let i = 0; i < channels.length; i ++) {
-      let channelId = channels[i].id;
-      socket.emit('join chat channel', channelId)
-    }
-  }
-
   componentWillUnmount() {
-    const { socket, channels } = this.props;
+    const {socket, channels, onUnmount} = this.props;
     for (let i = 0; i < channels.length; i ++) {
       let channelId = channels[i].id;
       socket.emit('leave chat channel', channelId)
     }
     socket.removeListener('incoming message');
-    this.props.onUnmount();
+    onUnmount();
   }
 
   render() {
-    const { channels, currentChannelId } = this.props;
+    const {channels, currentChannelId, userId} = this.props;
+    const {createNewChannelModalShown} = this.state;
     const channelName = () => {
       for (let i = 0; i < channels.length; i ++) {
         if (Number(channels[i].id) === Number(currentChannelId)) {
@@ -84,12 +87,12 @@ export default class Chat extends Component {
           display: 'flex'
         }}
       >
-        { this.state.createNewChannelModalShown &&
+        {createNewChannelModalShown &&
           <CreateNewChannelModal
             show
-            userId={this.props.userId}
-            onHide={ () => this.setState({createNewChannelModalShown: false}) }
-            onDone={ this.onCreateNewChannel.bind(this) }
+            userId={userId}
+            onHide={() => this.setState({createNewChannelModalShown: false})}
+            onDone={this.onCreateNewChannel}
           />
         }
         <div className="col-sm-3">
@@ -106,7 +109,7 @@ export default class Chat extends Component {
             </div>
             <button
               className="btn btn-default btn-sm pull-right"
-              onClick={ this.onNewButtonClick.bind(this) }
+              onClick={this.onNewButtonClick}
             >+ New</button>
           </div>
           <div className="row container-fluid">
@@ -149,7 +152,7 @@ export default class Chat extends Component {
           >
             <ChatInput
               ref="chatInput"
-              onMessageSubmit={this.onMessageSubmit.bind(this)}
+              onMessageSubmit={this.onMessageSubmit}
             />
           </div>
         </div>
@@ -158,9 +161,9 @@ export default class Chat extends Component {
   }
 
   renderChannels() {
-    const { userId, currentChannelId } = this.props;
-    return this.props.channels.map(channel => {
-      const { lastMessageSender, lastMessage, id, roomname } = channel;
+    const {userId, currentChannelId, channels} = this.props;
+    return channels.map(channel => {
+      const {lastMessageSender, lastMessage, id, roomname} = channel;
       return (
         <div
           className="media chat-channel-item container-fluid"
@@ -170,7 +173,7 @@ export default class Chat extends Component {
             padding: '1em',
             marginTop: '0px'
           }}
-          onClick={ () => this.onChannelEnter(id) }
+          onClick={() => this.onChannelEnter(id)}
           key={id}
         >
           <div className="media-body">
@@ -186,7 +189,7 @@ export default class Chat extends Component {
               }}
             >
               <span>
-                { lastMessageSender && lastMessage &&
+                {lastMessageSender && lastMessage &&
                   `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}`
                 }
               </span>
@@ -233,7 +236,7 @@ export default class Chat extends Component {
   }
 
   onChannelEnter(id) {
-    const { enterChannel, enterEmptyTwoPeopleChannel } = this.props;
+    const {enterChannel, enterEmptyTwoPeopleChannel} = this.props;
     if (id === 0) {
       return enterEmptyTwoPeopleChannel()
     }
@@ -241,13 +244,13 @@ export default class Chat extends Component {
   }
 
   onCreateNewChannel(params) {
+    const {checkChannelExists, createNewChannel} = this.props;
     if (params.selectedUsers.length === 1) {
-      return this.props.checkChannelExists(params.selectedUsers[0].userId, () => {
+      return checkChannelExists(params.selectedUsers[0].userId, () => {
         this.setState({createNewChannelModalShown: false})
       })
     }
-
-    this.props.createNewChannel(params, () => {
+    createNewChannel(params, () => {
       this.setState({createNewChannelModalShown: false})
     })
   }

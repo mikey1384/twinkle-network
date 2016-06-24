@@ -36,7 +36,8 @@ export const uploadPlaylist = data => ({
   data
 })
 
-export const uploadPlaylistAsync = params => dispatch => request.post(API_URL, params, auth())
+export const uploadPlaylistAsync = params => dispatch =>
+request.post(API_URL, params, auth())
 .then(
   response => {
     const { data } = response;

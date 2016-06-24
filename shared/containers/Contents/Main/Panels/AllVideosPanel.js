@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component} from 'react';
 import VideoThumb from 'components/VideoThumb';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 import * as VideoActions from 'redux/actions/VideoActions';
 
 @connect(
@@ -11,14 +11,11 @@ import * as VideoActions from 'redux/actions/VideoActions';
   })
 )
 export default class AllVideosPanel extends Component {
-  onAddVideoClick() {
-    this.props.onAddVideoClick();
-  }
   render (){
-    const { loadMoreButton, actions, videos, title, isAdmin } = this.props;
+    const {loadMoreButton, actions, videos, title, isAdmin, onAddVideoClick} = this.props;
     const last = (array) => {
       return array[array.length - 1];
-    };
+    }
     const loadMoreVideos = () => {
       const lastId = last(videos) ? last(videos).id : 0;
       actions.getMoreVideos(lastId);
@@ -27,38 +24,35 @@ export default class AllVideosPanel extends Component {
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
           <h3 className="panel-title pull-left">{title}</h3>
-          {
-            isAdmin &&
+          {isAdmin &&
             <button
               className="btn btn-default pull-right"
               style={{
                 marginLeft: 'auto'
               }}
-              onClick={this.onAddVideoClick.bind(this)}
+              onClick={() => onAddVideoClick()}
             >+ Add Video</button>
           }
           <div className="clearfix"></div>
         </div>
         <div className="panel-body">
-          {
-            videos.map((video, index) => {
-              const editable = this.props.userId == video.uploaderid ? true : false;
-              return (
-                <VideoThumb
-                  to={`contents/videos/${video.id}`}
-                  size="col-sm-3"
-                  key={video.id}
-                  arrayNumber={index}
-                  editable={editable}
-                  video={video}
-                  lastVideoId={last(videos) ? last(videos).id : 0}
-                  editVideoTitle={this.props.actions.editVideoTitleAsync}
-                  deleteVideo={this.props.actions.deleteVideoAsync}
-                />
-              )
-            })
-          }
-          { loadMoreButton &&
+          {videos.map((video, index) => {
+            const editable = this.props.userId == video.uploaderid;
+            return (
+              <VideoThumb
+                to={`contents/videos/${video.id}`}
+                size="col-sm-3"
+                key={video.id}
+                arrayNumber={index}
+                editable={editable}
+                video={video}
+                lastVideoId={last(videos) ? last(videos).id : 0}
+                editVideoTitle={actions.editVideoTitleAsync}
+                deleteVideo={actions.deleteVideoAsync}
+              />
+            )
+          })}
+          {loadMoreButton &&
             <div className="text-center col-sm-12">
               <button className="btn btn-default" onClick={loadMoreVideos}>Load More</button>
             </div>

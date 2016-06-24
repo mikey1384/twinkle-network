@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal';
 import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal';
 import ButtonGroup from 'components/ButtonGroup';
@@ -6,8 +6,8 @@ import AddVideoModal from './Modals/AddVideoModal';
 import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from './Modals/AddPlaylistModal';
-import { bindActionCreators } from 'redux';
-import { openAddVideoModal, closeAddVideoModal, resetVideoPage } from 'redux/actions/VideoActions';
+import {bindActionCreators} from 'redux';
+import {openAddVideoModal, closeAddVideoModal, resetVideoPage} from 'redux/actions/VideoActions';
 import {
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModalAsync,
@@ -15,7 +15,7 @@ import {
   closeReorderPinnedPlaylistsModal,
   closeSelectPlaylistsToPinModal
 } from 'redux/actions/PlaylistActions';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 @connect(
   state => ({
@@ -54,6 +54,11 @@ import { connect } from 'react-redux';
 )
 
 export default class Main extends Component {
+  constructor() {
+    super()
+    this.showAddPlaylistModal = this.showAddPlaylistModal.bind(this)
+  }
+
   componentWillMount() {
     this.props.resetVideoPage()
   }
@@ -68,11 +73,9 @@ export default class Main extends Component {
       loadMoreVideosButton,
 
       playlists,
-      playlistTitles,
       loadMorePlaylistsButton,
 
       pinnedPlaylists,
-      pinnedPlaylistTitles,
       loadMorePinnedPlaylists,
 
       addVideoModalShown,
@@ -95,7 +98,7 @@ export default class Main extends Component {
     const allPlaylistButtons = [
       {
         label: '+ Add Playlist',
-        onClick: this.showAddPlaylistModal.bind(this),
+        onClick: this.showAddPlaylistModal,
         buttonClass: 'btn-default'
       }
     ]
@@ -116,7 +119,7 @@ export default class Main extends Component {
         <PlaylistsPanel
           key={"pinnedPlaylists"}
           buttonGroupShown={userType === 'master'}
-          buttonGroup={ () => this.renderPlaylistButton(pinnedPlaylistButtons) }
+          buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
           playlistType="pinned"
           title="Pinned Playlists"
           loadMoreButton={loadMorePinnedPlaylists}
@@ -126,7 +129,7 @@ export default class Main extends Component {
         <PlaylistsPanel
           key={"allplaylists"}
           buttonGroupShown={isAdmin}
-          buttonGroup={ () => this.renderPlaylistButton(allPlaylistButtons) }
+          buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
           playlistType="all"
           title="All Playlists"
           loadMoreButton={loadMorePlaylistsButton}
@@ -140,15 +143,15 @@ export default class Main extends Component {
           loadMoreButton={loadMoreVideosButton}
           userId={userId}
           videos={videos}
-          onAddVideoClick={ () => openAddVideoModal() }
+          onAddVideoClick={() => openAddVideoModal()}
         />
-        { addVideoModalShown &&
+        {addVideoModalShown &&
           <AddVideoModal
             show
-            onHide={ () => closeAddVideoModal() }
+            onHide={() => closeAddVideoModal()}
           />
         }
-        { addPlaylistModalShown && <AddPlaylistModal show /> }
+        {addPlaylistModalShown && <AddPlaylistModal show />}
         {selectPlaylistsToPinModalShown &&
           <SelectPlaylistsToPinModal
             show
@@ -160,7 +163,7 @@ export default class Main extends Component {
               })
             }
             loadMoreButton={loadMorePlaylistsToPinButton}
-            onHide={ () => closeSelectPlaylistsToPinModal() }
+            onHide={() => closeSelectPlaylistsToPinModal()}
           />
         }
         {reorderPinnedPlaylistsModalShown &&
@@ -172,7 +175,7 @@ export default class Main extends Component {
                 return playlist.id
               })
             }
-            onHide={ () => closeReorderPinnedPlaylistsModal() }
+            onHide={() => closeReorderPinnedPlaylistsModal()}
           />
         }
       </div>
@@ -191,7 +194,7 @@ export default class Main extends Component {
   }
 
   showAddPlaylistModal() {
-    const { getVideosForModal } = this.props;
+    const {getVideosForModal} = this.props;
     getVideosForModal();
   }
 }

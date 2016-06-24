@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
-import { Modal, Button, Alert } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {reduxForm} from 'redux-form';
+import {Modal, Button, Alert} from 'react-bootstrap';
 
 
 @reduxForm({
@@ -9,31 +9,32 @@ import { Modal, Button, Alert } from 'react-bootstrap';
   validate
 })
 export default class SignUpForm extends Component {
+  constructor() {
+    super()
+    this.onSubmit = this.onSubmit.bind(this)
+  }
+
   componentWillMount() {
     this.setState({
       checkedTeacher: false
     })
   }
 
-  onSubmit(props) {
-    this.props.signupAsync(props)
-  }
-
   render () {
-    const { checkedTeacher } = this.state;
+    const {checkedTeacher} = this.state;
     const {
       fields: {username, firstname, lastname, password, isTeacher, email},
       handleSubmit,
       errorMessage,
       hideErrorAlert
     } = this.props;
-    let userNameFieldError = username.touched && username.invalid ? true : false;
-    let firstNameFieldError = firstname.touched && firstname.invalid ? true : false;
-    let lastNameFieldError = lastname.touched && lastname.invalid ? true : false;
-    let passwordFieldError = password.touched && password.invalid ? true : false;
-    let emailFieldError = email.touched && email.invalid ? true : false;
+    let userNameFieldError = username.touched && username.invalid;
+    let firstNameFieldError = firstname.touched && firstname.invalid;
+    let lastNameFieldError = lastname.touched && lastname.invalid;
+    let passwordFieldError = password.touched && password.invalid;
+    let emailFieldError = email.touched && email.invalid;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit.bind(this))} onInput={() => hideErrorAlert()}>
+      <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()}>
         { errorMessage &&
           <Alert bsStyle="danger">
             {errorMessage}
@@ -90,6 +91,10 @@ export default class SignUpForm extends Component {
         </Modal.Footer>
       </form>
     )
+  }
+
+  onSubmit(props) {
+    this.props.signupAsync(props)
   }
 }
 

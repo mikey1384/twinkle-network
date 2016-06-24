@@ -1,13 +1,21 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
 
+const scrollIsAtTheBottom = (content, container) => {
+  return content.offsetHeight === container.offsetHeight + container.scrollTop;
+}
+
 export default class MessagesContainer extends Component {
-  state = {
-    fillerHeight: 0,
-    scrollAtBottom: true,
-    newUnseenMessage: false
+  constructor() {
+    super()
+    this.state = {
+      fillerHeight: 0,
+      scrollAtBottom: true,
+      newUnseenMessage: false
+    }
+    this.onLoadMoreButtonClick = this.onLoadMoreButtonClick.bind(this)
   }
 
   componentDidMount() {
@@ -31,7 +39,7 @@ export default class MessagesContainer extends Component {
     if (loadedPrevMessage) return;
     if (switchedChannel) return this.setFillerHeight();
     if (newMessageArrived) {
-      let { messages, userId } = this.props;
+      let {messages, userId} = this.props;
       let messageSenderId = messages[messages.length - 1].userid;
       if (messageSenderId === userId || this.state.scrollAtBottom) {
         container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight);
@@ -55,7 +63,8 @@ export default class MessagesContainer extends Component {
   }
 
   render() {
-    const { loadMoreButton } = this.props;
+    const {loadMoreButton} = this.props;
+    const {fillerHeight, newUnseenMessage} = this.state;
     return (
       <div>
         <div
@@ -75,7 +84,7 @@ export default class MessagesContainer extends Component {
           }
         >
           <div>
-            { loadMoreButton ?
+            {loadMoreButton ?
               <div
                 className="text-center"
                 style={{
@@ -86,14 +95,16 @@ export default class MessagesContainer extends Component {
                 <button
                   className="btn btn-info"
                   style={{width: '20%'}}
-                  onClick={ this.onLoadMoreButtonClick.bind(this) }
+                  onClick={this.onLoadMoreButtonClick}
                 >Load More</button>
-              </div> : <div style={{
-                height: this.state.fillerHeight + 'px'
-              }}></div>
+              </div>
+              :
+              <div style={{
+                height: fillerHeight + 'px'
+              }} />
             }
             <div ref="content">
-              { this.renderMessages() }
+              {this.renderMessages()}
             </div>
           </div>
         </div>
@@ -105,7 +116,7 @@ export default class MessagesContainer extends Component {
             width: '100%'
           }}
         >
-          { this.state.newUnseenMessage &&
+          {newUnseenMessage &&
             <button
               className="btn btn-warning"
               onClick={
@@ -126,12 +137,13 @@ export default class MessagesContainer extends Component {
   onLoadMoreButtonClick() {
     const messageId = this.props.messages[0].id;
     const roomId = this.props.messages[0].roomid;
-    const userId = this.props.userId;
-    this.props.loadMoreMessages(userId, messageId, roomId);
+    const {userId, loadMoreMessages} = this.props;
+    loadMoreMessages(userId, messageId, roomId);
   }
 
   renderMessages() {
-    return this.props.messages.map((message, index) => {
+    const {messages} = this.props;
+    return messages.map((message, index) => {
       return (
         <div
           key={index}
@@ -152,8 +164,4 @@ export default class MessagesContainer extends Component {
       )
     })
   }
-}
-
-const scrollIsAtTheBottom = (content, container) => {
-  return content.offsetHeight === container.offsetHeight + container.scrollTop;
 }

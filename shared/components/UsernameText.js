@@ -19,7 +19,7 @@ export default class UsernameText extends Component {
           style={{cursor: 'pointer'}}
           onMouseEnter={() => this.setState({menuShown: true})}
         >{this.props.user.name}</strong>
-        { menuShown &&
+        {menuShown &&
           <ul className="dropdown-menu"
             style={{
               position: 'absolute',
