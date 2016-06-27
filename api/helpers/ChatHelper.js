@@ -3,24 +3,25 @@
 const pool = require('../siteConfig').pool;
 const async = require('async');
 const access = require('../auth/access');
+const defaultChatroomId = 2;
 
 const fetchChat = (params, callback) => {
   const user = params.user;
   let channelId = params.channelId;
   async.waterfall([
     callback => {
-      if (channelId !== 1) {
+      if (channelId !== defaultChatroomId) {
         pool.query('SELECT * FROM msg_chatroom_members WHERE roomid = ?', channelId, (err, rows) => {
           if (!rows || rows.length === 0) {
-            return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: 1}, user.id], err => {
-              channelId = 1;
+            return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: defaultChatroomId}, user.id], err => {
+              channelId = defaultChatroomId;
               callback(null);
             })
           }
           if (rows[0].condition !== null) {
             if (access.level[user.usertype] < Number(rows[0].condition)) {
-              return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: 1}, user.id], err => {
-                channelId = 1;
+              return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: defaultChatroomId}, user.id], err => {
+                channelId = defaultChatroomId;
                 callback(null);
               })
             }
@@ -28,8 +29,8 @@ const fetchChat = (params, callback) => {
           } else {
             pool.query('SELECT * FROM msg_chatroom_members WHERE roomid = ? AND userid = ?', [channelId, user.id], (err, rows) => {
               if (!rows || rows.length === 0) {
-                return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: 1}, user.id], err => {
-                  channelId = 1;
+                return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: defaultChatroomId}, user.id], err => {
+                  channelId = defaultChatroomId;
                   callback(null);
                 })
               }

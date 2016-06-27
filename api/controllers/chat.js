@@ -11,10 +11,11 @@ const processedString = require('../helpers/StringHelper').processedString;
 const async = require('async');
 const express = require('express');
 const router = express.Router();
+const defaultChatroomId = 2;
 
 router.get('/', requireAuth, (req, res) => {
   const user = req.user;
-  const lastChatRoomId = user.lastChatRoom || 1;
+  const lastChatRoomId = user.lastChatRoom || defaultChatroomId;
   fetchChat({user, channelId: lastChatRoomId}, (err, results) => {
     if (err) {
       console.error(err);
