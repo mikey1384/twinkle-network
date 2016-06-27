@@ -99,7 +99,7 @@ export default class Chat extends Component {
         }
         <div className="col-xs-3">
           <div
-            className="row flexbox-container"
+            className="flexbox-container"
             style={{
               marginBottom: '1em',
               paddingBottom: '0.5em',
@@ -133,7 +133,7 @@ export default class Chat extends Component {
           </div>
         </div>
         <div
-          className="col-xs-9"
+          className="col-xs-9 pull-right"
           style={{
             height: '100%',
             width: '73%',
