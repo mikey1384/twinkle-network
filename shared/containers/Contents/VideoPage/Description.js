@@ -43,7 +43,8 @@ export default class Description extends Component {
     ]
 
     const {uploaderId, userId, uploaderName, title, description} = this.props;
-    const {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
+    let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
+    editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription;
     return (
       <div>
         <div
@@ -151,9 +152,11 @@ export default class Description extends Component {
   }
 
   onEditCancel() {
+    const {description} = this.props;
+    const editedDescription = description === 'No description' ? '' : description;
     this.setState({
       editedTitle: this.props.title,
-      editedDescription: cleanStringWithURL(this.props.description),
+      editedDescription,
       onEdit: false,
       editDoneButtonDisabled: true
     });

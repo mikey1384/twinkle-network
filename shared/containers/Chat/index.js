@@ -20,12 +20,13 @@ import {cleanStringWithURL} from 'helpers/StringHelper';
   }),
   {
     receiveMessage: ChatActions.receiveMessage,
+    receiveFirstBidirectionalMsg: ChatActions.receiveFirstBidirectionalMsg,
     enterChannel: ChatActions.enterChannelAsync,
-    enterEmptyTwoPeopleChannel: ChatActions.enterEmptyTwoPeopleChannel,
+    enterEmptyBidirectionalChat: ChatActions.enterEmptyBidirectionalChat,
     submitMessage: ChatActions.submitMessageAsync,
     loadMoreMessages: ChatActions.loadMoreMessagesAsync,
     createNewChannel: ChatActions.createNewChannelAsync,
-    createNewTwoPeopleChannel: ChatActions.createNewTwoPeopleChannelAsync,
+    createBidirectionalChannel: ChatActions.createBidirectionalChannelAsync,
     checkChannelExists: ChatActions.checkChannelExistsAsync
   }
 )
@@ -35,11 +36,15 @@ export default class Chat extends Component {
     this.state = {
       createNewChannelModalShown: false
     }
-    const {socket, receiveMessage} = props;
+    const {socket, receiveMessage, receiveFirstBidirectionalMsg} = props;
     socket.on('incoming message', data => {
       if (data.channelId === this.props.currentChannelId) {
         receiveMessage(data)
       }
+    })
+    socket.on('incoming chat invitation', data => {
+      receiveFirstBidirectionalMsg(data);
+      socket.emit('join chat channel', data.roomid);
     })
     this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
     this.onNewButtonClick = this.onNewButtonClick.bind(this)
@@ -50,7 +55,7 @@ export default class Chat extends Component {
     const {socket, channels} = this.props;
     for (let i = 0; i < channels.length; i ++) {
       let channelId = channels[i].id;
-      socket.emit('join chat channel', channelId)
+      socket.emit('join chat channel', channelId);
     }
   }
 
@@ -67,6 +72,7 @@ export default class Chat extends Component {
       socket.emit('leave chat channel', channelId)
     }
     socket.removeListener('incoming message');
+    socket.removeListener('incoming chat invitation');
     onUnmount();
   }
 
@@ -82,11 +88,7 @@ export default class Chat extends Component {
       return null;
     }
     return (
-      <div
-        style={{
-          display: 'flex'
-        }}
-      >
+      <div style={{display: 'flex'}}>
         {createNewChannelModalShown &&
           <CreateNewChannelModal
             show
@@ -95,7 +97,7 @@ export default class Chat extends Component {
             onDone={this.onCreateNewChannel}
           />
         }
-        <div className="col-sm-3">
+        <div className="col-xs-3">
           <div
             className="row flexbox-container"
             style={{
@@ -104,8 +106,8 @@ export default class Chat extends Component {
               borderBottom: '1px solid #eee'
             }}
           >
-            <div className="text-center col-sm-8 col-sm-offset-2">
-              <h4>{ channelName() }</h4>
+            <div className="text-center col-xs-8 col-xs-offset-2">
+              <h4>{channelName()}</h4>
             </div>
             <button
               className="btn btn-default btn-sm pull-right"
@@ -121,14 +123,17 @@ export default class Chat extends Component {
           <div
             className="row"
             style={{
-              marginTop: '1em'
+              marginTop: '1em',
+              height: '33em',
+              overflow: 'scroll',
+              border: '1px solid #eee'
             }}
           >
-            { this.renderChannels() }
+            {this.renderChannels()}
           </div>
         </div>
         <div
-          className="col-sm-9"
+          className="col-xs-9"
           style={{
             height: '100%',
             top: 0,
@@ -188,9 +193,9 @@ export default class Chat extends Component {
                 lineHeight: 'normal'
               }}
             >
-              <span>
-                {lastMessageSender && lastMessage &&
-                  `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}`
+              <span style={{whiteSpace: 'pre-wrap'}}>
+                {lastMessageSender && lastMessage ?
+                  `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : ' '
                 }
               </span>
             </small>
@@ -207,12 +212,17 @@ export default class Chat extends Component {
       userId,
       username,
       currentChannelId,
-      createNewTwoPeopleChannel,
+      createBidirectionalChannel,
       chatPartnerId
     } = this.props;
 
     if (currentChannelId === 0) {
-      return createNewTwoPeopleChannel({message, chatPartnerId})
+      return createBidirectionalChannel({message, userId, chatPartnerId}, message => {
+        socket.emit('join chat channel', String(message.roomid));
+        socket.emit('invite user to bidirectional chat', chatPartnerId, message);
+        //invite yourself and the chat partner to the socket channel, if they are online.
+        //notification channel will be necessary here.
+      })
     }
 
     let params = {
@@ -236,9 +246,9 @@ export default class Chat extends Component {
   }
 
   onChannelEnter(id) {
-    const {enterChannel, enterEmptyTwoPeopleChannel} = this.props;
+    const {enterChannel, enterEmptyBidirectionalChat} = this.props;
     if (id === 0) {
-      return enterEmptyTwoPeopleChannel()
+      return enterEmptyBidirectionalChat()
     }
     enterChannel(id)
   }
@@ -246,7 +256,8 @@ export default class Chat extends Component {
   onCreateNewChannel(params) {
     const {checkChannelExists, createNewChannel} = this.props;
     if (params.selectedUsers.length === 1) {
-      return checkChannelExists(params.selectedUsers[0].userId, () => {
+      const {userId, username} = params.selectedUsers[0];
+      return checkChannelExists(userId, username, () => {
         this.setState({createNewChannelModalShown: false})
       })
     }

@@ -70,7 +70,7 @@ export default class QuestionBlock extends Component {
                 ref="editTitleInput"
                 type="text"
                 className="form-control"
-                placeholder="Enter Title..."
+                placeholder="Enter Question..."
                 value={editedQuestionTitle}
                 onChange={event => this.setState({editedQuestionTitle: event.target.value})}
               >

@@ -1,6 +1,6 @@
 import request from 'axios';
-import { URL } from 'constants/URL';
-import { logout, openSigninModal } from './UserActions';
+import {URL} from 'constants/URL';
+import {logout, openSigninModal} from './UserActions';
 
 const API_URL = `${URL}/playlist`;
 
@@ -21,14 +21,20 @@ export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
 .then(
   response => dispatch(getPlaylists(response.data, true))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const getMorePlaylistsAsync = playlistId => dispatch => request.get(`${API_URL}?playlistId=${playlistId}`)
 .then(
   response => dispatch(getPlaylists(response.data, false))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const uploadPlaylist = data => ({
@@ -48,7 +54,10 @@ request.post(API_URL, params, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const editPlaylistTitle = (arrayNumber, playlistId, data) => ({
@@ -70,7 +79,10 @@ request.post(`${API_URL}/edit/title`, params, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const changePlaylistVideos = (playlistId, data) => ({
@@ -91,7 +103,10 @@ request.post(`${API_URL}/edit/videos`, {playlistId, selectedVideos}, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const deletePlaylist = data => ({
@@ -103,7 +118,7 @@ export const deletePlaylistAsync = (playlistId, sender) => dispatch =>
 request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.success) {
       dispatch(deletePlaylist(playlistId))
       sender.setState({deleteConfirmModalShown: false})
@@ -111,7 +126,10 @@ request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const getPinnedPlaylists = data => ({
@@ -123,7 +141,10 @@ export const getPinnedPlaylistsAsync = () => dispatch => request.get(`${API_URL}
 .then(
   response => dispatch(getPinnedPlaylists(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const changePinnedPlaylists = data => ({
@@ -135,7 +156,7 @@ export const changePinnedPlaylistsAsync = (selectedPlaylists, callback) => dispa
 request.post(`${API_URL}/pinned`, {selectedPlaylists}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.playlists) {
       dispatch(changePinnedPlaylists(data.playlists))
       callback()
@@ -143,7 +164,10 @@ request.post(`${API_URL}/pinned`, {selectedPlaylists}, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const openSelectPlaylistsToPinModal = data => ({
@@ -155,7 +179,10 @@ export const openSelectPlaylistsToPinModalAsync = () => dispatch => request.get(
 .then(
   response => dispatch(openSelectPlaylistsToPinModal(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const loadMorePlaylistList = data => ({
@@ -168,7 +195,10 @@ request.get(`${API_URL}/list?playlistId=${playlistId}`)
 .then(
   response => dispatch(loadMorePlaylistList(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const openAddPlaylistModal = () => ({
@@ -188,7 +218,10 @@ export const getVideosForModalAsync = () => dispatch => request.get(`${URL}/vide
     dispatch(openAddPlaylistModal())
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const getMoreVideosForModal = data => ({
@@ -201,7 +234,10 @@ request.get(`${URL}/video?numberToLoad=18&videoId=${videoId}`)
 .then(
   response => dispatch(getMoreVideosForModal(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const openChangePlaylistVideosModal = data => ({
@@ -217,7 +253,10 @@ export const openChangePlaylistVideosModalAsync = sender => dispatch => request.
     sender.setState({editPlaylistModalShown: true})
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const closeAddPlaylistModal = () => ({
@@ -257,10 +296,8 @@ export const resetPlaylistState = () => ({
 })
 
 function handleError(error, dispatch) {
-  if (error.data === 'Unauthorized') {
+  if (error.status === 401) {
     dispatch(logout());
     dispatch(openSigninModal());
-  } else {
-    console.error(error);
   }
 }

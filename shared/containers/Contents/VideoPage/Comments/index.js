@@ -10,8 +10,7 @@ import {
   deleteVideoReplyAsync,
   likeVideoReplyAsync,
   likeVideoCommentAsync,
-  uploadVideoReplyAsync
-} from 'redux/actions/VideoActions';
+  uploadVideoReplyAsync } from 'redux/actions/VideoActions';
 
 @connect(
   null,

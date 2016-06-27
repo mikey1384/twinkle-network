@@ -55,14 +55,28 @@ export default function ChatReducer(state = defaultState, action) {
         messages: action.data.messages,
         loadMoreButton
       }
-    case 'ENTER_EMPTY_TWO_PEOPLE_CHANNEL':
+    case 'ENTER_EMPTY_BIDIRECTIONAL_CHAT':
       return {
         ...state,
         currentChannelId: 0,
         messages: [],
         loadMoreButton: false
       }
-    case 'OPEN_NEW_TWO_PEOPLE_CHANNEL':
+    case 'RECEIVE_FIRST_BIDIRECTIONAL_MSG':
+      return {
+        ...state,
+        channels: [{
+          id: action.data.roomid,
+          roomname: action.data.username,
+          lastMessage: action.data.content,
+          lastUpdate: action.data.timeposted,
+          lastMessageSender: {
+            id: action.data.userid,
+            username: action.data.username
+          }
+        }].concat(state.channels)  
+      }
+    case 'OPEN_BIDIRECTIONAL_CHAT':
       let filteredChannel = state.channels.filter(channel => {
         return channel.id !== 0
       })
@@ -70,7 +84,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         channels: [{
           id: 0,
-          roomname: 'New Chat',
+          roomname: action.username,
           lastMessage: null,
           lastUpdate: null,
           lastMessageSender: null
@@ -78,7 +92,27 @@ export default function ChatReducer(state = defaultState, action) {
         currentChannelId: 0,
         messages: [],
         loadMoreButton: false,
-        chatPartnerId: action.partnerId
+        chatPartnerId: action.userId
+      }
+    case 'CREATE_BIDIRECTIONAL_CHANNEL':
+      return {
+        ...state,
+        channels: state.channels.map(channel => {
+          if (channel.id === 0) {
+            channel = {
+              ...channel,
+              id: action.data.roomid,
+              lastMessage: action.data.content,
+              lastMessageSender: {
+                id: action.data.userid,
+                username: action.data.username
+              },
+              lastUpdate: action.data.timeposted
+            }
+          }
+          return channel;
+        }),
+        currentChannelId: action.data.roomid
       }
     case 'UPDATE_CHANNEL_LIST':
       return {

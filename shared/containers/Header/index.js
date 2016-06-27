@@ -6,6 +6,7 @@ import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActio
 import SigninModal from '../Signin';
 import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
+import ChatButton from './ChatButton';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 
 @connect(
@@ -20,15 +21,27 @@ import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
   {openSigninModal, closeSigninModal, logout}
 )
 export default class Header extends Component {
-  constructor() {
+  constructor(props) {
     super()
     this.state = {
       tabClicked: false
     }
+    const {socket} = props;
+    socket.on('incoming notification', data => {
+      console.log(data)
+    })
     this.handleClick = this.handleClick.bind(this)
   }
 
-  render () {
+  componentDidUpdate(prevProps) {
+    const {socket, userId} = this.props;
+    if (userId !== prevProps.userId) {
+      if (prevProps.userId !== null) socket.emit('leave my notification channel', prevProps.userId);
+      socket.emit('enter my notification channel', userId);
+    }
+  }
+
+  render() {
     const {
       signinModalShown,
       loggedIn,
@@ -56,20 +69,7 @@ export default class Header extends Component {
         <Navbar.Collapse>
           {this.renderTabs()}
           <Nav pullRight className="flexbox-container">
-            {loggedIn &&
-              <li>
-                <a
-                  className="well unselectable"
-                  style={{
-                    padding: '0.7em',
-                    margin: '0px',
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => onChatButtonClick()}
-                >Messages
-                </a>
-              </li>
-            }
+            {loggedIn && <ChatButton onClick={() => onChatButtonClick()} chatMode={chatMode} />}
             {loggedIn ?
               <AccountMenu
                 title={username}

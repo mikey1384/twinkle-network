@@ -1,9 +1,8 @@
 import request from 'axios';
-import { URL } from 'constants/URL';
-import { logout, openSigninModal } from './UserActions';
+import {URL} from 'constants/URL';
+import {logout, openSigninModal} from './UserActions';
 
 const API_URL = `${URL}/chat`;
-
 const token = () => typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
 const auth = () => ({
   headers: {
@@ -24,7 +23,10 @@ request.get(API_URL, auth())
     callback();
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const loadMoreMessages = (data) => ({
@@ -37,7 +39,10 @@ request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&roomId=${ro
 .then(
   response => dispatch(loadMoreMessages(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const receiveMessage = (data) => ({
@@ -60,7 +65,10 @@ request.get(`${API_URL}/search?text=${text}`)
 .then(
   response => dispatch(searchUserToInvite(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const clearSearchResults = () => ({
@@ -76,7 +84,10 @@ request.post(API_URL, {params}, auth())
     callback(messageId, timeposted);
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const enterChannel = (data) => ({
@@ -89,19 +100,23 @@ request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
 .then(
   response => dispatch(enterChannel(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
-export const openNewTwoPeopleChannel = partnerId => ({
-  type: 'OPEN_NEW_TWO_PEOPLE_CHANNEL',
-  partnerId
+export const enterEmptyBidirectionalChat = () => ({
+  type: 'ENTER_EMPTY_BIDIRECTIONAL_CHAT'
 })
 
-export const enterEmptyTwoPeopleChannel = () => ({
-  type: 'ENTER_EMPTY_TWO_PEOPLE_CHANNEL'
+export const openBidirectionalChat = (userId, username) => ({
+  type: 'OPEN_BIDIRECTIONAL_CHAT',
+  userId,
+  username
 })
 
-export const checkChannelExistsAsync = (userId, callback) => dispatch =>
+export const checkChannelExistsAsync = (userId, username, callback) => dispatch =>
 request.get(`${API_URL}/channel/check?partnerId=${userId}`, auth())
 .then(
   response => {
@@ -109,30 +124,51 @@ request.get(`${API_URL}/channel/check?partnerId=${userId}`, auth())
     if (response.data.channelExists) {
       dispatch(enterChannelAsync(response.data.channelId))
     } else {
-      dispatch(openNewTwoPeopleChannel(userId))
+      dispatch(openBidirectionalChat(userId, username))
     }
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
-export const createNewTwoPeopleChannelAsync = params => dispatch =>
+export const receiveFirstBidirectionalMsg = data => ({
+  type: 'RECEIVE_FIRST_BIDIRECTIONAL_MSG',
+  data
+})
+
+export const createBidirectionalChannel = data => ({
+  type: 'CREATE_BIDIRECTIONAL_CHANNEL',
+  data
+})
+
+export const createBidirectionalChannelAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/channel/bidirectional`, params, auth())
 .then(
-  response => console.log(response)
+  response => {
+    dispatch(createBidirectionalChannel(response.data));
+    callback(response.data);
+  }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const createNewChannelAsync = (params, callback) => dispatch =>
-request.post(`${API_URL}/channel`, { params }, auth())
+request.post(`${API_URL}/channel`, {params}, auth())
 .then(
   response => {
-    console.log(response)
     callback()
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const resetChat = () => ({
@@ -140,7 +176,7 @@ export const resetChat = () => ({
 })
 
 function handleError(error, dispatch) {
-  if (error.data === 'Unauthorized') {
+  if (error.status === 401) {
     dispatch(logout());
     dispatch(openSigninModal());
   }

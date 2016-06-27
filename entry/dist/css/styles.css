@@ -68,6 +68,20 @@
 	background-color: #eee;
 }
 
+.chat-on {
+	-moz-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
+	-webkit-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
+	box-shadow: inset 0px 0px 15px 0px #c8e6fe;
+	color: #f0ad4e !important;
+}
+
+.chat-off:hover {
+	-moz-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
+	-webkit-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
+	box-shadow: inset 0px 0px 15px 0px #c8e6fe;
+	color: #777 !important;
+}
+
 @media (min-width: 1192px) {
 	.modal-extra-lg{
 	    min-width: 1180px !important;

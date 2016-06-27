@@ -1,8 +1,8 @@
 import request from 'axios';
-import { URL } from 'constants/URL';
-import { push } from 'react-router-redux';
-import { logout, openSigninModal } from './UserActions';
-import { likePlaylistVideo } from './PlaylistActions';
+import {URL} from 'constants/URL';
+import {push} from 'react-router-redux';
+import {logout, openSigninModal} from './UserActions';
+import {likePlaylistVideo} from './PlaylistActions';
 
 const API_URL = `${URL}/video`;
 
@@ -23,7 +23,10 @@ export const getInitialVideos = () => dispatch => request.get(`${API_URL}`)
 .then(
   response => dispatch(getVideos(response.data, true))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const getMoreVideos = videoId => dispatch => request.get(`${API_URL}?videoId=${videoId}`)
@@ -39,14 +42,17 @@ export const uploadVideo = data => ({
 export const uploadVideoAsync = params => dispatch => request.post(API_URL, params, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.result) {
       dispatch(uploadVideo([data.result]));
     }
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const deleteVideo = (arrayNumber, data) => ({
@@ -59,7 +65,7 @@ export const deleteVideoAsync = ({videoId, arrayNumber, lastVideoId}) => dispatc
 request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.result) {
       if (!lastVideoId) {
         dispatch(getInitialVideos())
@@ -71,7 +77,10 @@ request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth(
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const editVideoTitle = (videoId, data) => ({
@@ -84,7 +93,7 @@ export const editVideoTitleAsync = (params, sender) => dispatch =>
 request.post(`${API_URL}/edit/title`, params, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.result) {
       dispatch(editVideoTitle(params.videoId, data.result))
       sender.setState({onEdit: false});
@@ -92,7 +101,10 @@ request.post(`${API_URL}/edit/title`, params, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const likeVideo = (data, videoId) => ({
@@ -104,7 +116,7 @@ export const likeVideo = (data, videoId) => ({
 export const likeVideoAsync = videoId => dispatch => request.post(`${API_URL}/like`, {videoId}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.likes) {
       dispatch(likeVideo(data.likes, videoId));
       dispatch(likePlaylistVideo(data.likes, videoId));
@@ -112,7 +124,10 @@ export const likeVideoAsync = videoId => dispatch => request.post(`${API_URL}/li
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const editVideoPage = params => ({
@@ -124,7 +139,7 @@ export const editVideoPageAsync = (params, sender) => dispatch =>
 request.post(`${API_URL}/edit/page`, params, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.success) {
       dispatch(editVideoPage(params));
       sender.setState({
@@ -135,7 +150,10 @@ request.post(`${API_URL}/edit/page`, params, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const loadVideoPage = data => ({
@@ -152,7 +170,10 @@ request.get(`${API_URL}/loadPage?videoId=${videoId}`)
     if (callback) callback();
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const loadVideoPageFromClientSideAsync = (videoId, to) =>
@@ -167,7 +188,10 @@ export const loadVideoCommentsAsync = videoId => dispatch => request.get(`${API_
 .then(
   response => dispatch(loadVideoComments(response.data))
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const uploadVideoComment = data => ({
@@ -179,11 +203,14 @@ export const uploadVideoCommentAsync = (comment, videoId) => dispatch =>
 request.post(`${API_URL}/comments`, {comment, videoId}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     dispatch(uploadVideoComment(data));
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const editVideoComment = data => ({
@@ -195,7 +222,7 @@ export const editVideoCommentAsync = (editedComment, commentId, cb) => dispatch 
 request.post(`${API_URL}/comments/edit`, {editedComment, commentId}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.success) {
       dispatch(editVideoComment({editedComment, commentId}));
       cb();
@@ -203,7 +230,10 @@ request.post(`${API_URL}/comments/edit`, {editedComment, commentId}, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const deleteVideoComment = data => ({
@@ -222,7 +252,10 @@ request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const likeVideoComment = data => ({
@@ -234,14 +267,17 @@ export const likeVideoCommentAsync = commentId => dispatch =>
 request.post(`${API_URL}/comments/like`, {commentId}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.likes) {
       dispatch(likeVideoComment({commentId, likes: data.likes}))
     }
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const uploadVideoReply = data => ({
@@ -253,14 +289,17 @@ export const uploadVideoReplyAsync = (reply, commentId, videoId) => dispatch =>
 request.post(`${API_URL}/replies`, {reply, commentId, videoId}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.result) {
       dispatch(uploadVideoReply({commentId, reply: data.result}))
     }
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const editVideoReply = data => ({
@@ -272,7 +311,7 @@ export const editVideoReplyAsync = ({editedReply, replyId, commentId}, cb) => di
 request.post(`${API_URL}/replies/edit`, {editedReply, replyId}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.success) {
       dispatch(editVideoReply({editedReply, replyId, commentId}));
       cb();
@@ -280,7 +319,10 @@ request.post(`${API_URL}/replies/edit`, {editedReply, replyId}, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const deleteVideoReply = data => ({
@@ -292,14 +334,17 @@ export const deleteVideoReplyAsync = (replyId, commentId) => dispatch =>
 request.delete(`${API_URL}/replies?replyId=${replyId}`, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.success) {
       dispatch(deleteVideoReply({replyId, commentId}))
     }
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const likeVideoReply = data => ({
@@ -311,14 +356,17 @@ export const likeVideoReplyAsync = (replyId, commentId) => dispatch =>
 request.post(`${API_URL}/replies/like`, {replyId, commentId}, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.likes) {
       dispatch(likeVideoReply({replyId, commentId, likes: data.likes}))
     }
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const uploadQuestions = data => ({
@@ -330,7 +378,7 @@ export const uploadQuestionsAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/questions`, params, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.success) {
       const questions = params.questions.map(question => {
         return {
@@ -351,7 +399,10 @@ request.post(`${API_URL}/questions`, params, auth())
     return;
   }
 ).catch(
-  error => handleError(error, dispatch)
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
 )
 
 export const openAddVideoModal = () => ({
@@ -371,10 +422,8 @@ export const resetVideoState = () => ({
 })
 
 function handleError(error, dispatch) {
-  if (error.data === 'Unauthorized') {
+  if (error.status === 401) {
     dispatch(logout());
     dispatch(openSigninModal());
-  } else {
-    console.error(error);
   }
 }

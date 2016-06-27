@@ -19,12 +19,9 @@ export const initSessionAsync = () => dispatch => {
   if (token() === null) return;
   return request.get(`${API_URL}/session`, auth())
   .then(
-    response => dispatch(initSession({...response.data, loggedIn: true}))
+    response => dispatch(initSession({...response.data, loggedIn: true})),
   ).catch(
-    error => {
-      console.error(error);
-      dispatch(initSession({loggedIn: false}));
-    }
+    error => dispatch(initSession({loggedIn: false}))
   )
 }
 
@@ -41,7 +38,7 @@ export const loginAsync = params => dispatch => request.post(`${API_URL}/login`,
   }
 ).catch(
   error => {
-    if (error.data === "Unauthorized") {
+    if (error.status === 401) {
       return dispatch(login({result: "Incorrect username/password combination"}))
     }
     dispatch(login({result: error.data}))

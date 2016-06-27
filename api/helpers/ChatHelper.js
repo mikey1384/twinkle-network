@@ -1,25 +1,37 @@
 "use strict"
 
-var pool = require('../siteConfig').pool;
-var async = require('async');
+const pool = require('../siteConfig').pool;
+const async = require('async');
 const access = require('../auth/access');
 
 const fetchChat = (params, callback) => {
   const user = params.user;
-  const channelId = params.channelId;
+  let channelId = params.channelId;
   async.waterfall([
     callback => {
       if (channelId !== 1) {
         pool.query('SELECT * FROM msg_chatroom_members WHERE roomid = ?', channelId, (err, rows) => {
           if (!rows || rows.length === 0) {
-            return callback("The channel does not exist");
+            return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: 1}, user.id], err => {
+              channelId = 1;
+              callback(null);
+            })
           }
           if (rows[0].condition !== null) {
+            if (access.level[user.usertype] < Number(rows[0].condition)) {
+              return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: 1}, user.id], err => {
+                channelId = 1;
+                callback(null);
+              })
+            }
             callback(err)
           } else {
             pool.query('SELECT * FROM msg_chatroom_members WHERE roomid = ? AND userid = ?', [channelId, user.id], (err, rows) => {
               if (!rows || rows.length === 0) {
-                return callback("The user is not a member of this channel");
+                return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: 1}, user.id], err => {
+                  channelId = 1;
+                  callback(null);
+                })
               }
               callback(err)
             })
@@ -50,6 +62,7 @@ const fetchChat = (params, callback) => {
         callback(err, results)
       })
     }], (err, results) => {
+      if (results) results.push(channelId);
       callback(err, results)
     }
   )
@@ -134,7 +147,7 @@ const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
   function generateTitle(rows) {
     let partnerName;
     for (let i = 0; i < rows.length; i++) {
-      if (rows[i].userid !== userId) {
+      if (rows[i].userid !== String(userId)) {
         partnerName = rows[i].username;
       }
     }

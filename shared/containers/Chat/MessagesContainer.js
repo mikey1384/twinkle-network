@@ -52,13 +52,13 @@ export default class MessagesContainer extends Component {
 
   setFillerHeight = () => {
     const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
-    const content = ReactDOM.findDOMNode(this.refs.content);
+    const messages = ReactDOM.findDOMNode(this.refs.messages);
     const containerHeight = container.offsetHeight;
-    const contentHeight = content.offsetHeight;
-    let state = contentHeight < containerHeight ?
-    {fillerHeight: containerHeight - contentHeight} : {fillerHeight: 20};
+    const messagesHeight = messages.offsetHeight;
+    let state = messagesHeight < containerHeight ?
+    {fillerHeight: containerHeight - messagesHeight} : {fillerHeight: 20};
     this.setState(state, () => {
-      container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight)
+      container.scrollTop = Math.max(container.offsetHeight, messages.offsetHeight)
     })
   }
 
@@ -83,7 +83,7 @@ export default class MessagesContainer extends Component {
             }
           }
         >
-          <div>
+          <div ref="content">
             {loadMoreButton ?
               <div
                 className="text-center"
@@ -103,7 +103,7 @@ export default class MessagesContainer extends Component {
                 height: fillerHeight + 'px'
               }} />
             }
-            <div ref="content">
+            <div ref="messages">
               {this.renderMessages()}
             </div>
           </div>

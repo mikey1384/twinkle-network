@@ -18,12 +18,13 @@ router.get('/', requireAuth, (req, res) => {
   fetchChat({user, channelId: lastChatRoomId}, (err, results) => {
     if (err) {
       console.error(err);
+      if (err.status) return res.status(err.status).send({error: err})
       return res.status(500).send({error: err})
     }
     res.send({
-      currentChannelId: lastChatRoomId,
       channels: results[0],
-      messages: results[1]
+      messages: results[1],
+      currentChannelId: results[2]
     })
   })
 })
@@ -89,25 +90,27 @@ router.get('/more', requireAuth, (req, res) => {
 router.get('/channel', requireAuth, (req, res) => {
   const user = req.user;
   const channelId = req.query.channelId;
-  async.parallel([
-    callback => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: channelId}, user.id], (err) => {
-        callback(err, null)
-      })
-    },
+  async.waterfall([
     callback => {
       fetchChat({user, channelId}, (err, results) => {
+        if (err) return callback(err);
         callback(err, results[1])
       })
+    },
+    (messages, callback) => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: channelId}, user.id], (err) => {
+        callback(err, messages)
+      })
     }
-  ], (err, results) => {
+  ], (err, messages) => {
     if (err) {
       console.error(err);
+      if (err.status) return res.status(err.status).send({error: err})
       return res.status(500).send({error: err})
     }
     res.send({
       currentChannelId: channelId,
-      messages: results[1]
+      messages
     })
   })
 })
@@ -177,6 +180,9 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
   const user = req.user;
   const partnerId = req.body.chatPartnerId;
   const firstMessage = processedString(req.body.message);
+  if (user.id !== req.body.userId) {
+    return res.status(401).send({error: "Session mismatch"})
+  }
   let post = {
     bidirectional: true,
     memberOne: user.id,
@@ -214,15 +220,26 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
       })
       taskArray.push(finalTask);
       async.series(taskArray, (err, results) => {
-        callback(err)
+        callback(err, insertId)
       })
     },
-  ], err => {
+    (insertId, callback) => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: insertId}, user.id], err => {
+        callback(err, insertId)
+      })
+    }
+  ], (err, insertId) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err})
     }
-    res.send({success: true})
+    res.send({
+      roomid: String(insertId),
+      userid: String(user.id),
+      username: user.username,
+      content: firstMessage,
+      timeposted: Math.floor(Date.now()/1000)
+    })
   })
 })
 

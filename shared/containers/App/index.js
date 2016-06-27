@@ -37,6 +37,7 @@ export default class App extends Component {
     return (
       <div id="main-view">
         <Header
+          socket={socket}
           chatMode={this.state.chatMode}
           onChatButtonClick={this.onChatButtonClick}
           turnChatOff={() => this.setState({chatMode: false})}
@@ -46,7 +47,7 @@ export default class App extends Component {
         >
           {this.props.children}
         </div>
-        { this.state.chatMode && this.props.loggedIn ?
+        {this.state.chatMode && this.props.loggedIn ?
           <Chat
             socket={socket}
             onUnmount={() => {

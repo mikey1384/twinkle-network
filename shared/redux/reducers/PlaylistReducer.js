@@ -85,10 +85,6 @@ export default function PlaylistReducer(state = defaultState, action) {
         addPlaylistModalShown: false
       }
     case 'SELECT_PL_TO_PIN_OPEN':
-      if (action.data.error) {
-        console.error(action.data.error);
-        return state;
-      }
       if (action.data.result.length > 10) {
         action.data.result.pop();
         loadMorePlaylistsToPinButton = true;
@@ -112,10 +108,6 @@ export default function PlaylistReducer(state = defaultState, action) {
         selectPlaylistsToPinModalShown: false
       }
     case 'LOAD_MORE_PLAYLIST_LIST':
-      if (action.data.error) {
-        console.error(action.data.error);
-        return state;
-      }
       if (action.data.result.length > 10) {
         action.data.result.pop();
         loadMorePlaylistsToPinButton = true;
@@ -228,10 +220,10 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'DELETE_PLAYLIST':
       defaultPlaylists = state.allPlaylists.filter(playlist => {
-        return (playlist.id === action.data) ? false : true;
+        return playlist.id !== action.data;
       })
       defaultPinnedPlaylists = state.pinnedPlaylists.filter(playlist => {
-        return (playlist.id === action.data) ? false : true;
+        return playlist.id !== action.data;
       })
       return {
         ...state,
