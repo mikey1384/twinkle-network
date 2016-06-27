@@ -72,9 +72,8 @@ export default class MessagesContainer extends Component {
           style={{
             overflow: 'scroll',
             position: 'absolute',
-            top: '55px',
-            bottom: '50px',
-            width: '100%'
+            width: '100%',
+            height: '90%'
           }}
           onScroll={
             () => {

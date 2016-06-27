@@ -88,7 +88,7 @@ export default class Chat extends Component {
       return null;
     }
     return (
-      <div style={{display: 'flex'}}>
+      <div style={{display: 'flex', height: '88%'}}>
         {createNewChannelModalShown &&
           <CreateNewChannelModal
             show
@@ -124,7 +124,7 @@ export default class Chat extends Component {
             className="row"
             style={{
               marginTop: '1em',
-              height: '33em',
+              height: '80%',
               overflow: 'scroll',
               border: '1px solid #eee'
             }}
@@ -137,8 +137,7 @@ export default class Chat extends Component {
           style={{
             height: '100%',
             width: '73%',
-            top: 0,
-            position: 'absolute'
+            top: 0
           }}
         >
           <MessagesContainer
