@@ -74,7 +74,7 @@ export default function ChatReducer(state = defaultState, action) {
             id: action.data.userid,
             username: action.data.username
           }
-        }].concat(state.channels)  
+        }].concat(state.channels)
       }
     case 'OPEN_BIDIRECTIONAL_CHAT':
       let filteredChannel = state.channels.filter(channel => {

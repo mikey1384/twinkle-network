@@ -136,6 +136,7 @@ export default class Chat extends Component {
           className="col-xs-9"
           style={{
             height: '100%',
+            width: '73%',
             top: 0,
             position: 'absolute'
           }}

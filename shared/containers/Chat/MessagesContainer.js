@@ -73,7 +73,8 @@ export default class MessagesContainer extends Component {
             overflow: 'scroll',
             position: 'absolute',
             top: '55px',
-            bottom: '50px'
+            bottom: '50px',
+            width: '100%'
           }}
           onScroll={
             () => {
@@ -86,10 +87,10 @@ export default class MessagesContainer extends Component {
           <div ref="content">
             {loadMoreButton ?
               <div
-                className="text-center"
                 style={{
                   marginTop: '1em',
-                  marginBottom: '2em'
+                  marginBottom: '2em',
+                  textAlign: 'center'
                 }}
               >
                 <button
@@ -150,13 +151,21 @@ export default class MessagesContainer extends Component {
           className="media"
           style={{
             minHeight: '64px',
-            height: 'auto'
+            height: 'auto',
+            width: '100%'
           }}
         >
           <div className="media-left">
             <a><img className="media-object" style={{width: '64px'}} src="/img/default.jpg"/></a>
           </div>
-          <div className="media-body">
+          <div
+            className="media-body"
+            style={{
+              width: '100%',
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word'
+            }}
+          >
             <h5 className="media-heading">{message.username} <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
             <span dangerouslySetInnerHTML={{__html: message.content}}></span>
           </div>
