@@ -50,7 +50,7 @@ class InvitePeopleInput extends Component {
           <li
             key={index}
             onClick={ () => this.props.onAddUser(user) }
-          ><a>{user.realname} <small>{`(${user.username})`}</small></a></li>
+          ><a>{user.username} {user.realname && <small>{`(${user.realname})`}</small>}</a></li>
         )
       })}
     </ul> : null

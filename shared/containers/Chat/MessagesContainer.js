@@ -34,7 +34,8 @@ export default class MessagesContainer extends Component {
 
     const switchedChannel = prevProps.currentChannelId !== this.props.currentChannelId;
     const newMessageArrived = this.props.messages.length !== 0 && prevProps.messages !== this.props.messages;
-    const loadedPrevMessage = !switchedChannel && prevProps.messages[0] !== this.props.messages[0];
+    const loadedPrevMessage =
+      !switchedChannel && prevProps.messages.length !== 0 && prevProps.messages[0] !== this.props.messages[0];
 
     if (loadedPrevMessage) return;
     if (switchedChannel) return this.setFillerHeight();

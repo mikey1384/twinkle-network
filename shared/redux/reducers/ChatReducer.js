@@ -94,7 +94,7 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreButton: false,
         chatPartnerId: action.userId
       }
-    case 'CREATE_BIDIRECTIONAL_CHANNEL':
+    case 'IF_BIDIRECTIONAL_CHANNEL_EXISTS':
       return {
         ...state,
         channels: state.channels.map(channel => {
@@ -113,6 +113,33 @@ export default function ChatReducer(state = defaultState, action) {
           return channel;
         }),
         currentChannelId: action.data.roomid
+      }
+    case 'CREATE_BIDIRECTIONAL_CHANNEL':
+      return {
+        ...state,
+        channels: state.channels.map(channel => {
+          if (channel.id === 0) {
+            channel = {
+              ...channel,
+              id: action.data.roomid,
+              lastMessage: action.data.content,
+              lastMessageSender: {
+                id: action.data.userid,
+                username: action.data.username
+              },
+              lastUpdate: action.data.timeposted
+            }
+          }
+          return channel;
+        }),
+        currentChannelId: action.data.roomid,
+        messages: [{
+          id: action.data.messageId,
+          roomid: action.data.roomid,
+          content: action.data.content,
+          timeposted: action.data.timeposted,
+          username: action.data.username
+        }]
       }
     case 'UPDATE_CHANNEL_LIST':
       return {

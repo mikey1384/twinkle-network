@@ -139,6 +139,11 @@ export const receiveFirstBidirectionalMsg = data => ({
   data
 })
 
+export const ifBidrectionalChannelExists = data => ({
+  type: 'IF_BIDIRECTIONAL_CHANNEL_EXISTS',
+  data
+})
+
 export const createBidirectionalChannel = data => ({
   type: 'CREATE_BIDIRECTIONAL_CHANNEL',
   data
@@ -148,6 +153,10 @@ export const createBidirectionalChannelAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/channel/bidirectional`, params, auth())
 .then(
   response => {
+    if (response.data.alreadyExists) {
+      dispatch(ifBidrectionalChannelExists(response.data.alreadyExists.message));
+      return callback(response.data);
+    }
     dispatch(createBidirectionalChannel(response.data));
     callback(response.data);
   }

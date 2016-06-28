@@ -146,17 +146,38 @@ const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
   })
 
   function generateTitle(rows) {
-    let partnerName;
+    let partnerName = '';
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].userid !== String(userId)) {
         partnerName = rows[i].username;
       }
     }
-    return `${partnerName}`;
+    return partnerName;
   }
+}
+
+const handleCaseWhereBidirectionalChatAlreadyExists = (roomid, userid, content, callback) => {
+  const timeposted = Math.floor(Date.now()/1000);
+  const message = {roomid, userid, content, timeposted};
+
+  async.parallel([
+    callback => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: roomid}, userid], (err) => {
+        callback(err)
+      })
+    },
+    callback => {
+      pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
+        callback(err, {message, messageId: result.insertId});
+      })
+    }
+  ], (err, results) => {
+    callback(err, results[1])
+  })
 }
 
 module.exports = {
   fetchChat,
-  fetchChannels
+  fetchChannels,
+  handleCaseWhereBidirectionalChatAlreadyExists
 }

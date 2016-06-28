@@ -67,7 +67,7 @@ export default class Chat extends Component {
 
   componentWillUnmount() {
     const {socket, channels, onUnmount} = this.props;
-    for (let i = 0; i < channels.length; i ++) {
+    for (let i = 0; i < channels.length; i++) {
       let channelId = channels[i].id;
       socket.emit('leave chat channel', channelId)
     }
@@ -97,7 +97,14 @@ export default class Chat extends Component {
             onDone={this.onCreateNewChannel}
           />
         }
-        <div className="col-xs-3">
+        <div
+          className="col-xs-3"
+          style={{
+            border: '1px solid #eee',
+            marginLeft: '0.5em',
+            paddingTop: '0.5em'
+          }}
+        >
           <div
             className="flexbox-container"
             style={{
@@ -125,8 +132,7 @@ export default class Chat extends Component {
             style={{
               marginTop: '1em',
               height: '80%',
-              overflow: 'scroll',
-              border: '1px solid #eee'
+              overflow: 'scroll'
             }}
           >
             {this.renderChannels()}
@@ -217,11 +223,22 @@ export default class Chat extends Component {
     } = this.props;
 
     if (currentChannelId === 0) {
-      return createBidirectionalChannel({message, userId, chatPartnerId}, message => {
-        socket.emit('join chat channel', String(message.roomid));
-        socket.emit('invite user to bidirectional chat', chatPartnerId, message);
-        //invite yourself and the chat partner to the socket channel, if they are online.
-        //notification channel will be necessary here.
+      return createBidirectionalChannel({message, userId, chatPartnerId}, chat => {
+        if (chat.alreadyExists) {
+          let {message, messageId} = chat.alreadyExists;
+          socket.emit('join chat channel', message.roomid);
+          socket.emit('new chat message', {
+            userid: userId,
+            username,
+            content: message.content,
+            channelId: message.roomid,
+            id: messageId,
+            timeposted: message.timeposted
+          })
+          return;
+        }
+        socket.emit('join chat channel', String(chat.roomid));
+        socket.emit('invite user to bidirectional chat', chatPartnerId, chat);
       })
     }
 
