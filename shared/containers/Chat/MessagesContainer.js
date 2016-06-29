@@ -4,7 +4,7 @@ import moment from 'moment';
 
 
 const scrollIsAtTheBottom = (content, container) => {
-  return content.offsetHeight === container.offsetHeight + container.scrollTop;
+  return content.offsetHeight <= container.offsetHeight + container.scrollTop;
 }
 
 export default class MessagesContainer extends Component {
@@ -89,7 +89,7 @@ export default class MessagesContainer extends Component {
               <div
                 style={{
                   marginTop: '1em',
-                  marginBottom: '2em',
+                  marginBottom: '4em',
                   textAlign: 'center'
                 }}
               >
