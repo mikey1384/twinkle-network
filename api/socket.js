@@ -15,6 +15,7 @@ module.exports = function (io) {
 
     socket.on('new chat message', function(data) {
       const channelId = data.channelId;
+      console.log(channelId);
       data.content = processedString(data.content);
       io.to('chatChannel'+channelId).emit('incoming message', data);
     })

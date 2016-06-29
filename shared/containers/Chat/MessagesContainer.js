@@ -88,8 +88,7 @@ export default class MessagesContainer extends Component {
             {loadMoreButton ?
               <div
                 style={{
-                  marginTop: '1em',
-                  marginBottom: '4em',
+                  marginBottom: '2em',
                   textAlign: 'center'
                 }}
               >

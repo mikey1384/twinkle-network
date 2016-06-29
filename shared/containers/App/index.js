@@ -33,7 +33,14 @@ export default class App extends Component {
   }
 
   render() {
-    const display = this.state.chatMode && this.props.loggedIn ? 'none' : 'block';
+    const style = this.state.chatMode && this.props.loggedIn ? {
+      position: 'fixed',
+      opacity: '0'
+    } : {
+      position: 'relative',
+      opacity: '1'
+    }
+
     return (
       <div id="main-view">
         <Header
@@ -43,7 +50,7 @@ export default class App extends Component {
           turnChatOff={() => this.setState({chatMode: false})}
         />
         <div
-          style={{display}}
+          style={style}
         >
           {this.props.children}
         </div>

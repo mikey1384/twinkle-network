@@ -38,7 +38,7 @@ export default class Chat extends Component {
     }
     const {socket, receiveMessage, receiveFirstBidirectionalMsg} = props;
     socket.on('incoming message', data => {
-      if (data.channelId === this.props.currentChannelId) {
+      if (String(data.channelId) === String(this.props.currentChannelId)) {
         receiveMessage(data)
       }
     })
