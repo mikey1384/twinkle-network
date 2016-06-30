@@ -61,7 +61,7 @@ function validate (values) {
   if (stringIsEmpty(username)) {
     errors.username = 'Enter username';
   }
-  if (password === '') {
+  if (stringIsEmpty(password)) {
     errors.password = 'Enter password';
   }
   return errors;
