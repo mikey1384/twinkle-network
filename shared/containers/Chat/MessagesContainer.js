@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
+import UsernameText from 'components/UsernameText';
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop;
@@ -166,7 +167,12 @@ export default class MessagesContainer extends Component {
               wordWrap: 'break-word'
             }}
           >
-            <h5 className="media-heading">{message.username} <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
+            <h5 className="media-heading">
+              <UsernameText
+                user={{
+                  id: message.userid,
+                  name: message.username
+                }} /> <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
             <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>
           </div>
         </div>
