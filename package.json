@@ -5,8 +5,8 @@
   "description": "Twinkle: educational website for children",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production NODE_PATH=$NODE_PATH:./shared forever start -c \"node --harmony .\" index.js",
-    "stop": "forever stop index.js",
+    "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./shared forever start -c \"node --harmony .\" index.js",
+    "stop": "sudo forever stop index.js",
     "dev": "NODE_PATH=$NODE_PATH:./shared node --harmony .",
     "build": "webpack --progress --color -p --config webpack.prod.config.js",
     "startapi": "forever start api",
