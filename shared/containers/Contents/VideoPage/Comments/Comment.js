@@ -126,18 +126,18 @@ export default class Comment extends Component {
                 commentId: this.props.commentId
               }, cb)
             }
-            onLikeClick={ replyId => this.props.onReplyLike(replyId, this.props.commentId) }
-            onDelete={ replyId => this.props.onReplyDelete(replyId, this.props.commentId) }
+            onLikeClick={replyId => this.props.onReplyLike(replyId, this.props.commentId)}
+            onDelete={replyId => this.props.onReplyDelete(replyId, this.props.commentId)}
           />
-          { replyInputShown && <ReplyInputArea
+          {replyInputShown && <ReplyInputArea
               onSubmit={this.onReplySubmit}
             />
           }
         </div>
-        { userListModalShown &&
+        {userListModalShown &&
           <UserListModal
             show={true}
-            onHide={ () => this.setState({userListModalShown: false}) }
+            onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this comment"
             userId={userId}
             users={comment.likes}

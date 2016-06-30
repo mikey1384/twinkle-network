@@ -15,7 +15,6 @@ export default function VideoLikeInterface(props) {
             fontSize: '3rem'
           }}
           onClick={() => onLikeClick()}
-          disabled={userId === null}
         >
           <span className="glyphicon glyphicon-thumbs-up"></span>
           {renderLikeButtonText(likes)}

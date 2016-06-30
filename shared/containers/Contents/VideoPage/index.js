@@ -70,12 +70,10 @@ export default class VideoPage extends Component {
       videoId,
       videocode,
       title,
-      questions,
-      likes,
+      questions = [],
+      likes = [],
       comments,
       noComments } = this.props;
-    likes = likes || [];
-    questions = questions || [];
     const {
       watchTabActive,
       questionsBuilderShown,
