@@ -129,7 +129,8 @@ export default class Chat extends Component {
                 style={{
                   whiteSpace: 'nowrap',
                   textOverflow:'ellipsis',
-                  overflow:'hidden'
+                  overflow:'hidden',
+                  lineHeight: 'normal'
                 }}
               >{channelName()}</h4>
             </div>

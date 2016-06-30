@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import activeComponent from 'react-router-active-component';
 import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions';
+import {turnChatOff} from 'redux/actions/ChatActions';
 import SigninModal from '../Signin';
 import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
@@ -18,7 +19,7 @@ import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
     userId: state.UserReducer.userId,
     signinModalShown: state.UserReducer.signinModalShown
   }),
-  {openSigninModal, closeSigninModal, logout}
+  {openSigninModal, closeSigninModal, logout, turnChatOff}
 )
 export default class Header extends Component {
   constructor(props) {
@@ -26,9 +27,12 @@ export default class Header extends Component {
     this.state = {
       tabClicked: false
     }
-    const {socket} = props;
+    const {socket, turnChatOff} = props;
     socket.on('incoming notification', data => {
       console.log(data)
+    })
+    socket.on('disconnect', function () {
+      turnChatOff()
     })
     this.handleClick = this.handleClick.bind(this)
   }
