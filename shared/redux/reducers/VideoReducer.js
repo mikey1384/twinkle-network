@@ -100,10 +100,6 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'LOAD_VIDEO_COMMENTS':
-      if (action.data.error) {
-        console.error(action.data.error);
-        return state;
-      }
       return {
         ...state,
         videoPage: {

@@ -21,11 +21,11 @@ export default class Reply extends Component {
   }
 
   render() {
-    const {id, username, timeStamp, content, userIsOwner, likes, userId} = this.props;
+    const {id, username, timeStamp, content, userIsOwner, likes, userId, myId} = this.props;
     const {onEdit, userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId == userId) userLikedThis = true;
+      if (likes[i].userId == myId) userLikedThis = true;
     }
     return (
       <div
@@ -96,7 +96,7 @@ export default class Reply extends Component {
                         color: '#f0ad4e',
                         marginTop: '1em'
                       }}
-                      userId={userId}
+                      userId={myId}
                       likes={likes}
                       onLinkClick={() => this.setState({userListModalShown: true})}
                     />
@@ -111,7 +111,7 @@ export default class Reply extends Component {
             show={true}
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this reply"
-            userId={userId}
+            userId={myId}
             users={likes}
           />
         }
