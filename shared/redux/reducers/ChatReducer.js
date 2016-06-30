@@ -1,3 +1,5 @@
+import {processedStringWithURL} from 'helpers/StringHelper';
+
 const defaultState = {
   chatMode: false,
   currentChannelId: null,
@@ -79,7 +81,7 @@ export default function ChatReducer(state = defaultState, action) {
         messages: state.messages.concat([{
           id: action.message.messageId,
           roomid: action.message.roomid,
-          content: action.message.content,
+          content: processedStringWithURL(action.message.content),
           timeposted: action.message.timeposted,
           username: action.message.username
         }])
