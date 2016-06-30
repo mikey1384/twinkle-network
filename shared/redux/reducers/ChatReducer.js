@@ -88,7 +88,7 @@ export default function ChatReducer(state = defaultState, action) {
       let channel = {};
       let channels = state.channels;
       for (let i = 0; i < channels.length; i++) {
-        if (String(channels[i].id) === action.data.channelId) {
+        if (String(channels[i].id) === String(action.data.channelId)) {
           channel = {
             ...channels[i],
             lastMessage: action.data.content,
@@ -103,7 +103,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: [channel].concat(state.channels.filter(channel => {
-          return String(channel.id) !== action.data.channelId
+          return String(channel.id) !== String(action.data.channelId)
         }))
       }
     case 'RECEIVE_MSG':
