@@ -40,12 +40,13 @@ export default class AllVideosPanel extends Component {
             const editable = this.props.userId == video.uploaderid;
             return (
               <VideoThumb
-                to={`contents/videos/${video.id}`}
+                to={`videos/${video.id}`}
                 size="col-sm-3"
                 key={video.id}
                 arrayNumber={index}
                 editable={editable}
                 video={video}
+                user={{name: video.uploadername, id: video.uploaderid}}
                 lastVideoId={last(videos) ? last(videos).id : 0}
                 editVideoTitle={actions.editVideoTitleAsync}
                 deleteVideo={actions.deleteVideoAsync}

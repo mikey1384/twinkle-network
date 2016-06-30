@@ -1,4 +1,5 @@
 const defaultState = {
+  chatMode: false,
   currentChannelId: null,
   channels: [],
   messages: [],
@@ -10,6 +11,21 @@ const defaultState = {
 export default function ChatReducer(state = defaultState, action) {
   let loadMoreButton;
   switch(action.type) {
+    case 'TOGGLE_CHAT':
+      return {
+        ...state,
+        chatMode: !state.chatMode
+      }
+    case 'TURN_CHAT_ON':
+      return {
+        ...state,
+        chatMode: true
+      }
+    case 'TURN_CHAT_OFF':
+      return {
+        ...state,
+        chatMode: false
+      }
     case 'INIT_CHAT':
       loadMoreButton = false;
       if (action.data.messages.length === 21) {
@@ -37,11 +53,6 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreButton,
         messages: action.data.concat(state.messages)
       }
-    case 'RECEIVE_MSG':
-      return {
-        ...state,
-        messages: state.messages.concat([action.data])
-      }
     case 'ENTER_CHANNEL':
       loadMoreButton = false;
       if (action.data.messages.length === 21) {
@@ -62,12 +73,64 @@ export default function ChatReducer(state = defaultState, action) {
         messages: [],
         loadMoreButton: false
       }
-    case 'RECEIVE_FIRST_BIDIRECTIONAL_MSG':
+    case 'SUBMIT_MESSAGE':
+      return {
+        ...state,
+        messages: state.messages.concat([{
+          id: action.message.messageId,
+          roomid: action.message.roomid,
+          content: action.message.content,
+          timeposted: action.message.timeposted,
+          username: action.message.username
+        }])
+      }
+    case 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL':
+      let channel = {};
+      let channels = state.channels;
+      for (let i = 0; i < channels.length; i++) {
+        if (String(channels[i].id) === action.data.channelId) {
+          channel = {
+            ...channels[i],
+            lastMessage: action.data.content,
+            lastUpdate: action.data.timeposted,
+            lastMessageSender: {
+              id: action.data.userid,
+              username: action.data.username
+            }
+          }
+        }
+      }
+      return {
+        ...state,
+        channels: [channel].concat(state.channels.filter(channel => {
+          return String(channel.id) !== action.data.channelId
+        }))
+      }
+    case 'RECEIVE_MSG':
+      return {
+        ...state,
+        messages: state.messages.concat([action.data]),
+        channels: state.channels.map(channel => {
+          if (String(channel.id) === String(action.data.channelId)) {
+            channel = {
+              ...channel,
+              lastUpdate: action.data.timeposted,
+              lastMessageSender: {
+                id: action.data.userid,
+                username: action.data.username
+              },
+              lastMessage: action.data.content
+            }
+          }
+          return channel;
+        })
+      }
+    case 'RECEIVE_FIRST_MSG':
       return {
         ...state,
         channels: [{
           id: action.data.roomid,
-          roomname: action.data.username,
+          roomname: action.data.roomname || action.data.username,
           lastMessage: action.data.content,
           lastUpdate: action.data.timeposted,
           lastMessageSender: {
@@ -113,6 +176,29 @@ export default function ChatReducer(state = defaultState, action) {
           return channel;
         }),
         currentChannelId: action.data.roomid
+      }
+    case 'CREATE_NEW_CHANNEL':
+      return {
+        ...state,
+        channels: [{
+          id: action.data.roomid,
+          roomname: action.data.roomname,
+          lastMessage: action.data.content,
+          lastUpdate: action.data.timeposted,
+          lastMessageSender: {
+            id: action.data.userid,
+            username: action.data.username
+          }
+        }].concat(state.channels),
+        currentChannelId: action.data.roomid,
+        messages: [{
+          id: action.data.messageId,
+          roomid: action.data.roomid,
+          content: action.data.content,
+          timeposted: action.data.timeposted,
+          username: action.data.username,
+          isNotification: action.data.isNotification
+        }]
       }
     case 'CREATE_BIDIRECTIONAL_CHANNEL':
       return {

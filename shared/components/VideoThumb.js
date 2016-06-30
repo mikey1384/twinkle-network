@@ -29,7 +29,7 @@ export default class VideoThumb extends Component {
 
   render() {
     const {onEdit, confirmModalShown} = this.state;
-    const {size, editable, video, to} = this.props;
+    const {size, editable, video, to, user} = this.props;
     const menuProps = [
       {
         label: 'Edit',
@@ -119,7 +119,7 @@ export default class VideoThumb extends Component {
               whiteSpace: 'nowrap',
               textOverflow:'ellipsis',
               overflow:'hidden'
-            }}>Added by <UsernameText user={{name: video.uploadername, id: video.uploaderid}} /></small>
+            }}>Added by <UsernameText user={user} /></small>
             {video.numLikes > 0 &&
               <small className="pull-right">
                 <span className="glyphicon glyphicon-thumbs-up" />&times;{video.numLikes}

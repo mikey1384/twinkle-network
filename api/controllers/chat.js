@@ -8,6 +8,7 @@ const fetchChannels = require('../helpers/ChatHelper').fetchChannels;
 const handleCaseWhereBidirectionalChatAlreadyExists = require('../helpers/ChatHelper').handleCaseWhereBidirectionalChatAlreadyExists;
 
 const processedString = require('../helpers/StringHelper').processedString;
+const processedTitleString = require('../helpers/StringHelper').processedTitleString;
 
 const async = require('async');
 const express = require('express');
@@ -140,11 +141,11 @@ router.get('/channel/check', requireAuth, (req, res) => {
 router.post('/channel', requireAuth, (req, res) => {
   const user = req.user;
   const params = req.body.params;
-  const roomname = params.channelName;
+  const roomname = processedTitleString(params.channelName);
 
   async.waterfall([
     callback => {
-      pool.query('INSERT INTO msg_chatrooms SET ?', { roomname }, (err, result) => {
+      pool.query('INSERT INTO msg_chatrooms SET ?', {roomname}, (err, result) => {
         callback(err, result.insertId)
       })
     },
@@ -165,16 +166,41 @@ router.post('/channel', requireAuth, (req, res) => {
         }
         taskArray.push(task);
       }
-      async.series(taskArray, (err, results) => {
-        callback(err)
+      taskArray.push(
+        callback => {
+          let message = {
+            roomid: channelId,
+            userid: user.id,
+            content: `Created channel "${roomname}"`,
+            timeposted: Math.floor(Date.now()/1000),
+            isNotification: true
+          }
+          pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
+            message = Object.assign({}, message, {
+              username: user.username,
+              messageId: result.insertId,
+              roomname
+            });
+            callback(err, message)
+          })
+        }
+      )
+      async.parallel(taskArray, (err, results) => {
+        callback(err, results[results.length - 1])
+      })
+    },
+    (message, callback) => {
+      const roomId = message.roomid;
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: roomId}, user.id], err => {
+        callback(err, message)
       })
     }
-  ], err => {
+  ], (err, message) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err})
     }
-    res.send({success: true})
+    res.send({message})
   })
 })
 

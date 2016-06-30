@@ -20,7 +20,8 @@ import {cleanStringWithURL} from 'helpers/StringHelper';
   }),
   {
     receiveMessage: ChatActions.receiveMessage,
-    receiveFirstBidirectionalMsg: ChatActions.receiveFirstBidirectionalMsg,
+    receiveMessageOnDifferentChannel: ChatActions.receiveMessageOnDifferentChannel,
+    receiveFirstMsg: ChatActions.receiveFirstMsg,
     enterChannel: ChatActions.enterChannelAsync,
     enterEmptyBidirectionalChat: ChatActions.enterEmptyBidirectionalChat,
     submitMessage: ChatActions.submitMessageAsync,
@@ -36,14 +37,24 @@ export default class Chat extends Component {
     this.state = {
       createNewChannelModalShown: false
     }
-    const {socket, receiveMessage, receiveFirstBidirectionalMsg} = props;
+    const {
+      socket,
+      receiveMessage,
+      receiveMessageOnDifferentChannel,
+      receiveFirstMsg} = props;
+
     socket.on('incoming message', data => {
-      if (String(data.channelId) === String(this.props.currentChannelId)) {
+      let messageIsForCurrentChannel = String(data.channelId) === String(this.props.currentChannelId);
+      let senderIsNotTheUser = String(data.userid) !== String(this.props.userId);
+      if (messageIsForCurrentChannel && senderIsNotTheUser) {
         receiveMessage(data)
+      }
+      if (!messageIsForCurrentChannel) {
+        receiveMessageOnDifferentChannel(data)
       }
     })
     socket.on('incoming chat invitation', data => {
-      receiveFirstBidirectionalMsg(data);
+      receiveFirstMsg(data);
       socket.emit('join chat channel', data.roomid);
     })
     this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
@@ -59,8 +70,8 @@ export default class Chat extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.currentChannelId !== this.props.currentChannelId) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.currentChannelId !== this.props.currentChannelId) {
       ReactDOM.findDOMNode(this.refs.chatInput).focus()
     }
   }
@@ -114,25 +125,35 @@ export default class Chat extends Component {
             }}
           >
             <div className="text-center col-xs-8 col-xs-offset-2">
-              <h4>{channelName()}</h4>
+              <h4
+                style={{
+                  whiteSpace: 'nowrap',
+                  textOverflow:'ellipsis',
+                  overflow:'hidden'
+                }}
+              >{channelName()}</h4>
             </div>
             <button
               className="btn btn-default btn-sm pull-right"
               onClick={this.onNewButtonClick}
-            >+ New</button>
+            >+New</button>
           </div>
-          <div className="row container-fluid">
-            <input
-              className="form-control"
-              placeholder="Search for channels / usernames"
-            />
-          </div>
+          {
+            /*<div className="row container-fluid">
+              <input
+                className="form-control"
+                placeholder="Search for channels / usernames"
+              />
+            </div>*/
+          }
           <div
             className="row"
             style={{
               marginTop: '1em',
+              overflow: 'scroll',
+              position: 'absolute',
               height: '80%',
-              overflow: 'scroll'
+              width: '100%'
             }}
           >
             {this.renderChannels()}
@@ -179,6 +200,7 @@ export default class Chat extends Component {
         <div
           className="media chat-channel-item container-fluid"
           style={{
+            width: '100%',
             backgroundColor: id == currentChannelId && '#f7f7f7',
             cursor: 'pointer',
             padding: '1em',
@@ -248,13 +270,8 @@ export default class Chat extends Component {
       content: message,
       channelId: currentChannelId
     }
-    submitMessage(params, (messageId, timeposted) => {
-      let data = {
-        ...params,
-        id: messageId,
-        timeposted
-      }
-      socket.emit('new chat message', data);
+    submitMessage(params, message => {
+      socket.emit('new chat message', message);
     })
   }
 
@@ -271,15 +288,21 @@ export default class Chat extends Component {
   }
 
   onCreateNewChannel(params) {
-    const {checkChannelExists, createNewChannel} = this.props;
+    const {checkChannelExists, createNewChannel, socket} = this.props;
     if (params.selectedUsers.length === 1) {
       const {userId, username} = params.selectedUsers[0];
       return checkChannelExists(userId, username, () => {
         this.setState({createNewChannelModalShown: false})
       })
     }
-    createNewChannel(params, () => {
+
+    createNewChannel(params, message => {
+      const users = params.selectedUsers.map(user => {
+        return user.userId;
+      })
+      socket.emit('invite users to group channel', users, message);
       this.setState({createNewChannelModalShown: false})
+      ReactDOM.findDOMNode(this.refs.chatInput).focus()
     })
   }
 }

@@ -51,8 +51,8 @@ const fetchChat = (params, callback) => {
         },
         callback => {
           const query = [
-            'SELECT a.id, a.roomid, a.userid, a.content, a.timeposted, b.username FROM ',
-            'msg_chats a JOIN users b ON a.userid = b.id ',
+            'SELECT a.id, a.roomid, a.userid, a.content, a.timeposted, a.isNotification, b.username FROM ',
+            'msg_chats a LEFT JOIN users b ON a.userid = b.id ',
             'WHERE roomid = ? ORDER BY id DESC LIMIT 21'
           ].join('');
           pool.query(query, channelId, (err, messages) => {

@@ -10,6 +10,18 @@ const auth = () => ({
   }
 })
 
+export const toggleChat = () => ({
+  type: 'TOGGLE_CHAT'
+})
+
+export const turnChatOff = () => ({
+  type: 'TURN_CHAT_OFF'
+})
+
+export const turnChatOn = () => ({
+  type: 'TURN_CHAT_ON'
+})
+
 export const initChat = (data) => ({
   type: 'INIT_CHAT',
   data
@@ -20,7 +32,7 @@ request.get(API_URL, auth())
 .then(
   response => {
     dispatch(initChat(response.data));
-    callback();
+    callback(dispatch);
   }
 ).catch(
   error => {
@@ -28,6 +40,13 @@ request.get(API_URL, auth())
     handleError(error, dispatch)
   }
 )
+
+export const openDirectMessage = (targetId, targetUsername) => dispatch => {
+  let cb = dispatch => {
+    dispatch(checkChannelExistsAsync(targetId, targetUsername, () => dispatch(turnChatOn())))
+  }
+  dispatch(initChatAsync(cb))
+}
 
 export const loadMoreMessages = (data) => ({
   type: 'LOAD_MORE_MSG',
@@ -44,11 +63,6 @@ request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&roomId=${ro
     handleError(error, dispatch)
   }
 )
-
-export const receiveMessage = (data) => ({
-  type: 'RECEIVE_MSG',
-  data
-})
 
 export const updateChannelList = (data) => ({
   type: 'UPDATE_CHANNEL_LIST',
@@ -75,13 +89,24 @@ export const clearSearchResults = () => ({
   type: 'CLEAR_RESULTS_FOR_CHANNEL'
 })
 
+export const submitMessage = message => ({
+  type: 'SUBMIT_MESSAGE',
+  message
+})
+
 export const submitMessageAsync = (params, callback) => dispatch =>
 request.post(API_URL, {params}, auth())
 .then(
   response => {
     const {messageId, timeposted, channels} = response.data;
+    let message = {
+      ...params,
+      id: messageId,
+      timeposted
+    }
+    dispatch(submitMessage(message))
     dispatch(updateChannelList({channels}))
-    callback(messageId, timeposted);
+    callback(message);
   }
 ).catch(
   error => {
@@ -120,7 +145,7 @@ export const checkChannelExistsAsync = (userId, username, callback) => dispatch 
 request.get(`${API_URL}/channel/check?partnerId=${userId}`, auth())
 .then(
   response => {
-    callback()
+    if (callback) callback();
     if (response.data.channelExists) {
       dispatch(enterChannelAsync(response.data.channelId))
     } else {
@@ -134,8 +159,18 @@ request.get(`${API_URL}/channel/check?partnerId=${userId}`, auth())
   }
 )
 
-export const receiveFirstBidirectionalMsg = data => ({
-  type: 'RECEIVE_FIRST_BIDIRECTIONAL_MSG',
+export const receiveMessage = data => ({
+  type: 'RECEIVE_MSG',
+  data
+})
+
+export const receiveMessageOnDifferentChannel = data => ({
+  type: 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL',
+  data
+})
+
+export const receiveFirstMsg = data => ({
+  type: 'RECEIVE_FIRST_MSG',
   data
 })
 
@@ -167,11 +202,17 @@ request.post(`${API_URL}/channel/bidirectional`, params, auth())
   }
 )
 
+export const createNewChannel = data => ({
+  type: 'CREATE_NEW_CHANNEL',
+  data
+})
+
 export const createNewChannelAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/channel`, {params}, auth())
 .then(
   response => {
-    callback()
+    dispatch(createNewChannel(response.data.message))
+    callback(response.data.message)
   }
 ).catch(
   error => {

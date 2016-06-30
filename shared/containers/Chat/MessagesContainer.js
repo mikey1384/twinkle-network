@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
-
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop;
 }
@@ -144,6 +143,8 @@ export default class MessagesContainer extends Component {
   renderMessages() {
     const {messages} = this.props;
     return messages.map((message, index) => {
+      let {isNotification} = message;
+      let messageStyle = isNotification ? {color: '#7c7c7c'} : null;
       return (
         <div
           key={index}
@@ -166,7 +167,7 @@ export default class MessagesContainer extends Component {
             }}
           >
             <h5 className="media-heading">{message.username} <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
-            <span dangerouslySetInnerHTML={{__html: message.content}}></span>
+            <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>
           </div>
         </div>
       )

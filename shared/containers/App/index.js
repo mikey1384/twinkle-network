@@ -6,16 +6,19 @@ import {LinkContainer} from 'react-router-bootstrap';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import io from 'socket.io-client';
 import {connect} from 'react-redux';
-import {initChatAsync, resetChat} from 'redux/actions/ChatActions';
+import {initChatAsync, resetChat, toggleChat, turnChatOn, turnChatOff} from 'redux/actions/ChatActions';
 import {URL} from 'constants/URL';
 
 
 const socket = io.connect(URL);
 @connect(
   state => ({
-    loggedIn: state.UserReducer.loggedIn
+    loggedIn: state.UserReducer.loggedIn,
+    chatMode: state.ChatReducer.chatMode
   }),
   {
+    toggleChat,
+    turnChatOff,
     initChat: initChatAsync,
     resetChat
   }
@@ -23,17 +26,18 @@ const socket = io.connect(URL);
 export default class App extends Component {
   constructor() {
     super()
-    this.state={chatMode: false}
     this.onChatButtonClick = this.onChatButtonClick.bind(this)
   }
 
   componentDidUpdate(prevProps) {
+    const {turnChatOff} = this.props;
     ReactDOM.findDOMNode(this).scrollIntoView();
-    if (this.props.children !== prevProps.children) this.setState({chatMode: false})
+    if (this.props.children !== prevProps.children) turnChatOff();
   }
 
   render() {
-    const style = this.state.chatMode && this.props.loggedIn ? {
+    const {chatMode, turnChatOff} = this.props;
+    const style = chatMode && this.props.loggedIn ? {
       position: 'fixed',
       opacity: '0'
     } : {
@@ -45,21 +49,23 @@ export default class App extends Component {
       <div id="main-view">
         <Header
           socket={socket}
-          chatMode={this.state.chatMode}
+          chatMode={chatMode}
           onChatButtonClick={this.onChatButtonClick}
-          turnChatOff={() => this.setState({chatMode: false})}
+          turnChatOff={() => turnChatOff()}
         />
         <div
           style={style}
         >
           {this.props.children}
         </div>
-        {this.state.chatMode && this.props.loggedIn ?
+        {chatMode && this.props.loggedIn ?
           <Chat
             socket={socket}
-            onUnmount={() => {
-              this.props.resetChat();
-              this.setState({chatMode: false})}
+            onUnmount={
+              () => {
+                this.props.resetChat();
+                turnChatOff();
+              }
             }
           /> :
           <footer
@@ -74,8 +80,9 @@ export default class App extends Component {
   }
 
   onChatButtonClick() {
+    const {toggleChat} = this.props;
     this.props.initChat(() => {
-      this.setState({chatMode: !this.state.chatMode});
+      toggleChat();
     })
   }
 }

@@ -116,7 +116,7 @@ export default class PlaylistCarousel extends Component {
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
-          to={`contents/videos/${thumb.videoid}`}
+          to={`videos/${thumb.videoid}`}
           key={index}
           video={{
             id: thumb.videoid,
@@ -126,6 +126,7 @@ export default class PlaylistCarousel extends Component {
             uploadername: thumb.video_uploader,
             numLikes: thumb.numLikes
           }}
+          user={{name: thumb.video_uploader, id: thumb.video_uploader_id}}
         />
       )
     })

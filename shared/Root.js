@@ -54,19 +54,17 @@ export const routes = (
     path="/"
     onEnter={onAppEnter}
   >
-    <IndexRoute component={Home}/>
-
-    <Route path="/profile" component={Profile}/>
-    <Route path="/posts" component={Posts}/>
-    <Route path="/discussion" component={Discussion}/>
-    <Route path="/contents" component={Contents}>
-      <IndexRoute component={ContentsMain}/>
+    <Route component={Contents}>
+      <IndexRoute component={ContentsMain} />
       <Route
         path="videos/:videoId"
         component={VideoPage}
         onEnter={onVideoPageEnter}
       />
     </Route>
+    <Route path="/profile" component={Profile}/>
+    <Route path="/posts" component={Posts}/>
+    <Route path="/discussion" component={Discussion}/>
     <Route path="/management" component={AdminOnly(Management)}/>
 
     <Route path="*" component={NotFound} status={404} />

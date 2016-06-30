@@ -1,3 +1,5 @@
+"use strict"
+
 const processedString = require('./helpers/StringHelper').processedString;
 
 module.exports = function (io) {
@@ -15,7 +17,6 @@ module.exports = function (io) {
 
     socket.on('new chat message', function(data) {
       const channelId = data.channelId;
-      console.log(channelId);
       data.content = processedString(data.content);
       io.to('chatChannel'+channelId).emit('incoming message', data);
     })
@@ -29,8 +30,13 @@ module.exports = function (io) {
     })
 
     socket.on('invite user to bidirectional chat', function(userId, data) {
-      console.log('notificationChannel'+userId)
       io.to('notificationChannel'+userId).emit('incoming chat invitation', data);
+    })
+
+    socket.on('invite users to group channel', function(users, data) {
+      for (let i = 0; i < users.length; i++) {
+        io.to('notificationChannel'+users[i]).emit('incoming chat invitation', data);
+      }
     })
 
     socket.on('disconnect', function(){

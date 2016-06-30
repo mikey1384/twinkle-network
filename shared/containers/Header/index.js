@@ -91,6 +91,7 @@ export default class Header extends Component {
     const {chatMode} = this.props;
     return chatMode ? null : (
       <Nav onClick={this.handleClick}>
+        { /*
         <NavLink
           to="/"
           onlyActiveOnIndex
@@ -100,7 +101,6 @@ export default class Header extends Component {
         <NavLink to="/contents">
           Contents
         </NavLink>
-        { /*
           <NavLink to="/profile">
             Profile
           </NavLink>
