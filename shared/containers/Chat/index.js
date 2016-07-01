@@ -218,11 +218,13 @@ export default class Chat extends Component {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
                 width: '25em',
-                display: 'block',
-                lineHeight: 'normal'
+                display: 'block'
               }}
             >
-              <span style={{whiteSpace: 'pre-wrap'}}>
+              <span style={{
+                overflow:'hidden',
+                lineHeight: 'normal'
+              }}>
                 {lastMessageSender && lastMessage ?
                   `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : ' '
                 }
