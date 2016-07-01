@@ -12,7 +12,7 @@ export default function ChatButton({onClick, chatMode}) {
           cursor: 'pointer'
         }}
         onClick={() => onClick()}
-      >Messages
+      >{`${chatMode ? 'Close Chat' : 'Open Chat'}`}
       </a>
     </li>
   )

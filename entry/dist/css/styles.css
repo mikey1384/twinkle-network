@@ -84,7 +84,7 @@ html, body {
 	-moz-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
 	-webkit-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
 	box-shadow: inset 0px 0px 15px 0px #c8e6fe;
-	color: #f0ad4e !important;
+	color: #a94442 !important;
 }
 
 .chat-off:hover {
