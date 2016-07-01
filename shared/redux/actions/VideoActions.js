@@ -69,7 +69,7 @@ request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth(
     if (data.result) {
       if (!lastVideoId) {
         dispatch(getInitialVideos())
-        dispatch(push('/contents'))
+        dispatch(push('/'))
       } else {
         dispatch(deleteVideo(arrayNumber, data.result));
       }
@@ -245,7 +245,7 @@ export const deleteVideoCommentAsync = commentId => dispatch =>
 request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.success) {
       dispatch(deleteVideoComment({commentId}));
     }
