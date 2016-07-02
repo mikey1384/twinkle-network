@@ -48,7 +48,7 @@ html, body {
 }
 
 .choice-item-unchecked:hover {
-	background-color: #e9f2e9 !important;
+	background-color: #f5f5f5 !important;
 }
 
 .choice-item-checked {
