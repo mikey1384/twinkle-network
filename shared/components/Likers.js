@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default function Likers(props) {
+export default function Likers({likes, target, userId, onLinkClick}) {
   return (
-    <div {...props}>
+    <div>
       {renderLikers()}
     </div>
   )
@@ -10,7 +10,6 @@ export default function Likers(props) {
   function renderLikers() {
     let userLiked = false;
     let totalLikes = 0;
-    const {likes, target, userId, onLinkClick} = props;
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
         if(likes[i].userId == userId) userLiked = true;

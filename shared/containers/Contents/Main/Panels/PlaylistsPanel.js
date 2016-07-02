@@ -23,7 +23,7 @@ export default class PlaylistsPanel extends Component {
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
-          <h3 className="panel-title pull-left">{ this.props.title }</h3>
+          <h3 className="panel-title pull-left">{this.props.title}</h3>
           {buttonGroupShown &&
             buttonGroup()
           }

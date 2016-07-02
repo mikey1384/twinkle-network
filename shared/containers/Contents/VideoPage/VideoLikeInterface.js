@@ -25,8 +25,7 @@ export default function VideoLikeInterface(props) {
         style={{marginTop: '1em'}}
       >
         <Likers
-          userId={userId}
-          likes={likes}
+          {...props}
           onLinkClick={showLikerList}
           target="video"
         />

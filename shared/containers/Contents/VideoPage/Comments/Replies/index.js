@@ -9,7 +9,6 @@ export default function Replies(props) {
       style={{paddingLeft: '0px'}}
     >
       {replies.map(reply => {
-        console.log(reply)
         return (
           <Reply
             {...reply}

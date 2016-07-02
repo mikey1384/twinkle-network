@@ -51,7 +51,6 @@ export default class VideoPage extends Component {
     }
     this.onDescriptionEditFinish = this.onDescriptionEditFinish.bind(this)
     this.onVideoLikeClick = this.onVideoLikeClick.bind(this)
-    this.showLikerList = this.showLikerList.bind(this)
     this.onSlide = this.onSlide.bind(this)
     this.onQuestionsFinish = this.onQuestionsFinish.bind(this)
     this.onQuestionsSubmit = this.onQuestionsSubmit.bind(this)
@@ -139,7 +138,7 @@ export default class VideoPage extends Component {
                     userId={userId}
                     likes={likes}
                     onLikeClick={this.onVideoLikeClick}
-                    showLikerList={this.showLikerList}
+                    showLikerList={() => this.setState({userListModalShown: true})}
                   />
                 }
               </div>
@@ -329,9 +328,5 @@ export default class VideoPage extends Component {
   onVideoLikeClick() {
     const {videoId} = this.props;
     this.props.likeVideo(videoId);
-  }
-
-  showLikerList() {
-    this.setState({userListModalShown: true})
   }
 }
