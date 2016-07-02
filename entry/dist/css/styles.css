@@ -98,10 +98,16 @@ html, body {
 }
 
 .chat-on {
-	-moz-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
-	-webkit-box-shadow: inset 0px 0px 15px 0px #c8e6fe;
-	box-shadow: inset 0px 0px 15px 0px #c8e6fe;
+	-moz-box-shadow: inset 0px 0px 15px 0px #a94442;
+	-webkit-box-shadow: inset 0px 0px 15px 0px #a94442;
+	box-shadow: inset 0px 0px 15px 0px #a94442;
 	color: #a94442 !important;
+}
+
+.chat-on:hover {
+	-moz-box-shadow: inset 0px 0px 15px 0px #d57a78;
+	-webkit-box-shadow: inset 0px 0px 15px 0px #d57a78;
+	box-shadow: inset 0px 0px 15px 0px #d57a78;
 }
 
 .chat-off:hover {
