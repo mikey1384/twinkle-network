@@ -223,10 +223,11 @@ export default class Chat extends Component {
             >
               <span style={{
                 overflow:'hidden',
-                lineHeight: 'normal'
+                lineHeight: 'normal',
+                whiteSpace: 'nowrap'
               }}>
                 {lastMessageSender && lastMessage ?
-                  `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : ' '
+                  `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : '\u00a0'
                 }
               </span>
             </small>
