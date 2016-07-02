@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default function Likers({likes, target, userId, onLinkClick}) {
+export default function Likers({likes, target, userId, onLinkClick, style = null}) {
   return (
-    <div>
+    <div style={style}>
       {renderLikers()}
     </div>
   )
