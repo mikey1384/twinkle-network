@@ -1,12 +1,13 @@
 import React from 'react';
 
-export default function ListGroup(props) {
+export default function CheckListGroup(props) {
   const {listItems, inputType, onSelect} = props;
   return (
     <div
       className="row container-fluid unselectable"
       {...props}
     >
+      <form>
       {listItems.map((listItem, index) => {
         let leftStyle = {
           borderTopLeftRadius: '0px',
@@ -66,11 +67,8 @@ export default function ListGroup(props) {
             >
               <input
                 type={inputType}
-                onChange={() => onSelect(index)}
                 checked={listItem.checked}
-                style={{
-                  cursor: 'pointer'
-                }}
+                onChange={() => onSelect(index)}
               />
             </label>
             <div
@@ -78,10 +76,11 @@ export default function ListGroup(props) {
               style={rightStyle}
               onClick={() => onSelect(index)}
               dangerouslySetInnerHTML={{__html: listItem.label}}
-            />
+            ></div>
           </div>
         )
       })}
+      </form>
     </div>
   )
 }

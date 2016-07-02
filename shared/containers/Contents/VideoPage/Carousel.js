@@ -100,7 +100,7 @@ const Carousel = React.createClass({
     const slideFraction = (this.state.currentSlide + 1)/this.state.slideCount;
     return (
       <div className={['slider', this.props.className || ''].join(' ')} ref="slider" style={assign(this.getSliderStyles(), this.props.style || {})}>
-        { this.props.userIsUploader && 
+        { this.props.userIsUploader &&
           <a
             style={{
               position: 'absolute',
@@ -133,7 +133,7 @@ const Carousel = React.createClass({
           style={{marginTop: '2rem'}}
         >
           <div
-            className="progress-bar progress-bar-success"
+            className="progress-bar"
             role="progressbar"
             aria-valuenow="0"
             aria-valuemin="0"

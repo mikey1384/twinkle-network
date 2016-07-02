@@ -9,7 +9,7 @@ import {
   likeVideoAsync
 } from 'redux/actions/VideoActions';
 import Carousel from './Carousel';
-import CheckListGroup from 'components/CheckListGroup';
+import ChoiceListGroup from './ChoiceListGroup';
 import PageTab from './PageTab';
 import VideoLikeInterface from './VideoLikeInterface';
 import Comments from './Comments';
@@ -145,7 +145,7 @@ export default class VideoPage extends Component {
             }
             {!watchTabActive && questions.length > 0 &&
               <Carousel
-                showQuestionsBuilder={ () => this.setState({questionsBuilderShown: true})}
+                showQuestionsBuilder={() => this.setState({questionsBuilderShown: true})}
                 userIsUploader={userId == uploaderId}
                 slidesToShow={1}
                 slidesToScroll={1}
@@ -239,10 +239,8 @@ export default class VideoPage extends Component {
           <div>
             <h3 style={{marginTop: '1rem'}}>{question.title}</h3>
           </div>
-          <CheckListGroup
-            style={{marginTop: '2em'}}
+          <ChoiceListGroup
             listItems={listItems}
-            inputType="radio"
             onSelect={this.onSelectChoice}
           />
         </div>
