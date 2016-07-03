@@ -86,7 +86,7 @@ router.get('/more', requireAuth, (req, res) => {
   const messageId = req.query.messageId;
   const roomId = req.query.roomId;
   const query = [
-    'SELECT a.id, a.roomid, a.userid, a.content, a.timeposted, b.username FROM ',
+    'SELECT a.id, a.roomid, a.userid, a.content, a.timeposted, a.isNotification, b.username FROM ',
     'msg_chats a JOIN users b ON a.userid = b.id ',
     'WHERE a.id < ? AND a.roomid = ? ORDER BY id DESC LIMIT 21'
   ].join('');
