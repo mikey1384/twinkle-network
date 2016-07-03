@@ -182,10 +182,14 @@ request.get(`${API_URL}/channel/check?partnerId=${userId}`, auth())
   }
 )
 
-export const receiveMessage = data => ({
-  type: 'RECEIVE_MSG',
-  data
-})
+export const receiveMessage = data => {
+  const {channelId, timeposted} = data;
+  request.post(`${API_URL}/lastRead`, {channelId, timeposted} , auth())
+  return {
+    type: 'RECEIVE_MSG',
+    data
+  }
+}
 
 export const receiveMessageOnDifferentChannel = data => ({
   type: 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL',

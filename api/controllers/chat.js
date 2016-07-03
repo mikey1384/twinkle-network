@@ -45,7 +45,7 @@ router.post('/', requireAuth, (req, res) => {
     content: processedString(params.content),
     timeposted
   }
-  
+
   pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, params.channelId], (err, rows) => {
     if(Number(rows[0].num) > 0) {
       pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, params.channelId]);
@@ -187,6 +187,20 @@ router.get('/channel/check', requireAuth, (req, res) => {
       channelExists: rows.length > 0,
       channelId: rows.length > 0 ? rows[0].id : null
     })
+  })
+})
+
+router.post('/lastRead', requireAuth, (req, res) => {
+  const user = req.user;
+  const channelId = req.body.channelId;
+  const timeposted = req.body.timeposted;
+
+  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, channelId], (err, rows) => {
+    if(Number(rows[0].num) > 0) {
+      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, channelId]);
+    } else {
+      pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: channelId, timeStamp: timeposted});
+    }
   })
 })
 
