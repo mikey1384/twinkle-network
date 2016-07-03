@@ -1,6 +1,7 @@
 "use strict"
 
 const processedString = require('./helpers/StringHelper').processedString;
+const pool = require('./siteConfig').pool;
 
 module.exports = function (io) {
   const connections = [];
@@ -19,6 +20,17 @@ module.exports = function (io) {
       const channelId = data.channelId;
       data.content = processedString(data.content);
       io.to('chatChannel'+channelId).emit('incoming message', data);
+      pool.query('SELECT userid FROM msg_chatroom_members WHERE roomid = ?', channelId, (err, rows) => {
+        const users = rows.map(row => {
+          return row.userid
+        })
+        if (users.length > 1) {
+          for (let i = 0; i < users.length; i++) {
+            let userId = users[i];
+            io.to('notificationChannel'+userId).emit('incoming notification', {type: 'message'})
+          }
+        }
+      })
     })
 
     socket.on('enter my notification channel', function(userId) {
@@ -31,11 +43,13 @@ module.exports = function (io) {
 
     socket.on('invite user to bidirectional chat', function(userId, data) {
       io.to('notificationChannel'+userId).emit('incoming chat invitation', data);
+      io.to('notificationChannel'+userId).emit('incoming notification', {type: 'message'})
     })
 
     socket.on('invite users to group channel', function(users, data) {
       for (let i = 0; i < users.length; i++) {
         io.to('notificationChannel'+users[i]).emit('incoming chat invitation', data);
+        io.to('notificationChannel'+users[i]).emit('incoming notification', {type: 'message'})
       }
     })
 

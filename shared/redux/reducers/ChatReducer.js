@@ -7,7 +7,8 @@ const defaultState = {
   messages: [],
   searchResult: [],
   loadMoreButton: false,
-  chatPartnerId: null
+  chatPartnerId: null,
+  numUnreads: 0
 };
 
 export default function ChatReducer(state = defaultState, action) {
@@ -38,11 +39,26 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         currentChannelId: action.data.currentChannelId,
-        channels: action.data.channels,
+        channels: action.data.channels.map(channel => {
+          if (Number(channel.id) === Number(action.data.currentChannelId)) {
+            channel.numUnreads = 0;
+          }
+          return channel;
+        }),
         messages: action.data.messages,
         loadMoreButton,
         searchResult: []
       };
+    case 'GET_NUM_UNREAD_MSGS':
+      return {
+        ...state,
+        numUnreads: action.numUnreads
+      };
+    case 'INCREASE_NUM_UNREAD_MSGS':
+      return {
+        ...state,
+        numUnreads: state.numUnreads + 1
+      }
     case 'LOAD_MORE_MSG':
       loadMoreButton = false;
       if (action.data.length === 21) {
@@ -65,6 +81,12 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         currentChannelId: action.data.currentChannelId,
+        channels: state.channels.map(channel => {
+          if (Number(channel.id) === Number(action.data.currentChannelId)) {
+            channel.numUnreads = 0
+          }
+          return channel;
+        }),
         messages: action.data.messages,
         loadMoreButton
       }

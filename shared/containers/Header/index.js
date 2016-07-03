@@ -3,6 +3,9 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import activeComponent from 'react-router-active-component';
 import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions';
+import {
+  getNumberOfUnreadMessagesAsync,
+  increaseNumberOfUnreadMessages } from 'redux/actions/ChatActions';
 import {turnChatOff} from 'redux/actions/ChatActions';
 import SigninModal from '../Signin';
 import {bindActionCreators} from 'redux';
@@ -17,9 +20,17 @@ import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
-    signinModalShown: state.UserReducer.signinModalShown
+    signinModalShown: state.UserReducer.signinModalShown,
+    numUnreads: state.ChatReducer.numUnreads
   }),
-  {openSigninModal, closeSigninModal, logout, turnChatOff}
+  {
+    openSigninModal,
+    closeSigninModal,
+    logout,
+    turnChatOff,
+    getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
+    increaseNumberOfUnreadMessages
+  }
 )
 export default class Header extends Component {
   constructor(props) {
@@ -27,14 +38,29 @@ export default class Header extends Component {
     this.state = {
       tabClicked: false
     }
-    const {socket, turnChatOff} = props;
+    const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
     socket.on('incoming notification', data => {
-      console.log(data)
+      switch(data.type) {
+        case 'message':
+          increaseNumberOfUnreadMessages();
+          break;
+        default: return;
+      }
     })
     socket.on('disconnect', function () {
       turnChatOff()
     })
     this.handleClick = this.handleClick.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {getNumberOfUnreadMessages} = this.props;
+    if (nextProps.userId && nextProps.userId !== this.props.userId) {
+      getNumberOfUnreadMessages()
+    }
+    if (nextProps.userId && nextProps.chatMode !== this.props.chatMode && nextProps.chatMode === false) {
+      getNumberOfUnreadMessages()
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -57,7 +83,8 @@ export default class Header extends Component {
       chatMode,
       openSigninModal,
       closeSigninModal,
-      onChatButtonClick } = this.props;
+      onChatButtonClick,
+      numUnreads } = this.props;
 
     return (
       <Navbar staticTop fluid>
@@ -73,7 +100,13 @@ export default class Header extends Component {
         <Navbar.Collapse>
           {this.renderTabs()}
           <Nav pullRight className="flexbox-container">
-            {loggedIn && <ChatButton onClick={() => onChatButtonClick()} chatMode={chatMode} />}
+            {loggedIn &&
+              <ChatButton
+                onClick={() => onChatButtonClick()}
+                chatMode={chatMode}
+                numUnreads={numUnreads}
+              />
+            }
             {loggedIn ?
               <AccountMenu
                 title={username}

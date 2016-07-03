@@ -1,13 +1,13 @@
 import express from 'express';
 import React from 'react';
-import { renderToString } from 'react-dom/server'
-import { RouterContext, match } from 'react-router';
+import {renderToString} from 'react-dom/server'
+import {RouterContext, match} from 'react-router';
 import createLocation from 'history/lib/createLocation';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import path from 'path';
 import session from 'client-sessions';
-import { routes, store } from 'Root';
-import { initActions } from 'redux/actions';
+import {routes, store} from 'Root';
+import {initActions} from 'redux/actions';
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use((req, res) => {
   const location = createLocation(req.url);
 
-  match({ routes, location }, (err, redirectLocation, renderProps) => {
+  match({routes, location}, (err, redirectLocation, renderProps) => {
     if(err) {
       console.error(err);
       return res.status(500).end('Internal server error');

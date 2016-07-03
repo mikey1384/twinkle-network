@@ -196,7 +196,7 @@ export default class Chat extends Component {
   renderChannels() {
     const {userId, currentChannelId, channels} = this.props;
     return channels.map(channel => {
-      const {lastMessageSender, lastMessage, id, roomname} = channel;
+      const {lastMessageSender, lastMessage, id, roomname, numUnreads} = channel;
       return (
         <div
           className="media chat-channel-item container-fluid"
@@ -211,7 +211,9 @@ export default class Chat extends Component {
           key={id}
         >
           <div className="media-body">
-            <h4 className="media-heading">{roomname}</h4>
+            <h4 className="media-heading">{roomname} {numUnreads > 0 &&
+              <span className="badge">{numUnreads}</span>
+            }</h4>
             <small
               style={{
                 whiteSpace: 'nowrap',

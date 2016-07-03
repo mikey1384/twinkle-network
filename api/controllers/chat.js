@@ -45,6 +45,15 @@ router.post('/', requireAuth, (req, res) => {
     content: processedString(params.content),
     timeposted
   }
+  
+  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, params.channelId], (err, rows) => {
+    if(Number(rows[0].num) > 0) {
+      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, params.channelId]);
+    } else {
+      pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: params.channelId, timeStamp: timeposted});
+    }
+  })
+
   async.waterfall([
     callback => {
       pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
@@ -87,6 +96,49 @@ router.get('/more', requireAuth, (req, res) => {
       return res.status(500).send({error: err})
     }
     res.send(rows)
+  })
+})
+
+router.get('/numUnreads', requireAuth, (req, res) => {
+  const user = req.user;
+  async.waterfall([
+    callback => {
+      pool.query('SELECT channel, timeStamp FROM msg_lastRead WHERE userId = ?', user.id, (err, lastReads) => {
+        callback(err, lastReads)
+      })
+    },
+    (lastReads, callback) => {
+      let query = [
+        'SELECT roomid, timeposted FROM msg_chats WHERE roomid IN ',
+        '(SELECT roomid FROM msg_chatroom_members WHERE userid = ?)'
+      ].join('')
+      pool.query(query, user.id, (err, messages) => {
+        let counter = 0;
+        for (let i = 0; i < lastReads.length; i++) {
+          const channel = lastReads[i].channel;
+          const timeStamp = Number(lastReads[i].timeStamp);
+          for (let j = 0; j < messages.length; j++) {
+            if (Number(messages[j].roomid) === Number(channel) && messages[j].timeposted > timeStamp) {
+              counter ++
+            }
+          }
+        }
+        let readChannels = lastReads.map(lastRead => {
+          return String(lastRead.channel);
+        })
+        let messagesInUnreadChannel = messages.filter(message => {
+          return (readChannels.indexOf(String(message.roomid)) === -1)
+        })
+        counter += messagesInUnreadChannel.length;
+        callback(err, counter)
+      })
+    }
+  ], (err, numUnreads) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err})
+    }
+    res.send({numUnreads})
   })
 })
 

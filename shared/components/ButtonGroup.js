@@ -1,10 +1,9 @@
 import React from 'react';
 
-export default function ButtonGroup(props) {
-  const {buttons} = props;
+export default function ButtonGroup({buttons, style}) {
   return (
     <div
-      {...props}
+      style={style}
       className='btn-group'
     >
       {buttons.map((button, index) => {

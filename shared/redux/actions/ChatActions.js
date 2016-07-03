@@ -41,6 +41,29 @@ request.get(API_URL, auth())
   }
 )
 
+export const getNumberOfUnreadMessages = numUnreads => ({
+  type: 'GET_NUM_UNREAD_MSGS',
+  numUnreads
+})
+
+export const getNumberOfUnreadMessagesAsync = () => dispatch => {
+  if (auth() === null) return;
+  request.get(`${API_URL}/numUnreads`, auth()).then(
+    response => {
+      dispatch(getNumberOfUnreadMessages(response.data.numUnreads))
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      handleError(error, dispatch)
+    }
+  )
+}
+
+export const increaseNumberOfUnreadMessages = () => ({
+  type: 'INCREASE_NUM_UNREAD_MSGS'
+})
+
 export const openDirectMessage = (targetId, targetUsername) => dispatch => {
   let cb = dispatch => {
     dispatch(checkChannelExistsAsync(targetId, targetUsername, () => dispatch(turnChatOn())))
