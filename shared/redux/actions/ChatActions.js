@@ -117,26 +117,26 @@ export const submitMessage = message => ({
   message
 })
 
-export const submitMessageAsync = (params, callback) => dispatch =>
-request.post(API_URL, {params}, auth())
-.then(
-  response => {
-    const {messageId, timeposted, channels} = response.data;
-    let message = {
-      ...params,
-      id: messageId,
-      timeposted
+export const submitMessageAsync = (params, callback) => dispatch => {
+  let message = {
+    ...params,
+    timeposted: Math.floor(Date.now()/1000)
+  }
+  dispatch(submitMessage(message))
+  request.post(API_URL, {params}, auth())
+  .then(
+    response => {
+      const {channels} = response.data;
+      dispatch(updateChannelList({channels}))
+      callback(message);
     }
-    dispatch(submitMessage(message))
-    dispatch(updateChannelList({channels}))
-    callback(message);
-  }
-).catch(
-  error => {
-    console.error(error)
-    handleError(error, dispatch)
-  }
-)
+  ).catch(
+    error => {
+      console.error(error)
+      handleError(error, dispatch)
+    }
+  )
+}
 
 export const enterChannel = (data) => ({
   type: 'ENTER_CHANNEL',
