@@ -56,12 +56,14 @@ export default class UsernameText extends Component {
 
   onMouseEnter() {
     const {userId, user} = this.props;
-    if (String(user.id) !== String(userId)) this.setState({menuShown: true});
+    if (Number(user.id) !== Number(userId)) {
+      this.setState({menuShown: true})
+    }
   }
 
   onLinkClick() {
     const {openDirectMessage, checkChannelExists, user, userId} = this.props;
-    if (String(user.id) !== String(userId)) {
+    if (Number(user.id) !== Number(userId)) {
       openDirectMessage(user.id, user.name)
     }
   }

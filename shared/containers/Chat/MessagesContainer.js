@@ -145,6 +145,7 @@ export default class MessagesContainer extends Component {
   renderMessages() {
     const {messages} = this.props;
     return messages.map((message, index) => {
+      console.log(message)
       let {isNotification} = message;
       let messageStyle = isNotification ? {color: '#7c7c7c'} : null;
       return (

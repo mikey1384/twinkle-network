@@ -102,10 +102,11 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         messages: state.messages.concat([{
           id: action.message.messageId,
-          roomid: action.message.roomid,
+          roomid: action.message.channelId,
           content: processedStringWithURL(action.message.content),
           timeposted: action.message.timeposted,
-          username: action.message.username
+          username: action.message.username,
+          userid: action.message.userid
         }])
       }
     case 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL':
@@ -261,7 +262,6 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         searchResult: action.data
       }
-      return state;
     case 'CLEAR_RESULTS_FOR_CHANNEL':
       return {
         ...state,
