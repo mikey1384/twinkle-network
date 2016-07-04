@@ -306,6 +306,7 @@ export default class Chat extends Component {
       const users = params.selectedUsers.map(user => {
         return user.userId;
       })
+      socket.emit('join chat channel', String(message.roomid));
       socket.emit('invite users to group channel', users, message);
       this.setState({createNewChannelModalShown: false})
       ReactDOM.findDOMNode(this.refs.chatInput).focus()

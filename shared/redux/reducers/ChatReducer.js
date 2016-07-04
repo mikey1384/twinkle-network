@@ -137,7 +137,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         messages: state.messages.concat([action.data]),
         channels: state.channels.map(channel => {
-          if (String(channel.id) === String(action.data.channelId)) {
+          if (Number(channel.id) === Number(action.data.channelId)) {
             channel = {
               ...channel,
               lastUpdate: action.data.timeposted,
@@ -145,6 +145,7 @@ export default function ChatReducer(state = defaultState, action) {
                 id: action.data.userid,
                 username: action.data.username
               },
+              numUnreads: 0,
               lastMessage: action.data.content
             }
           }
@@ -159,6 +160,7 @@ export default function ChatReducer(state = defaultState, action) {
           roomname: action.data.roomname || action.data.username,
           lastMessage: action.data.content,
           lastUpdate: action.data.timeposted,
+          numUnreads: 1,
           lastMessageSender: {
             id: action.data.userid,
             username: action.data.username
