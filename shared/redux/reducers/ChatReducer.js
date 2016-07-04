@@ -118,6 +118,7 @@ export default function ChatReducer(state = defaultState, action) {
             ...channels[i],
             lastMessage: action.data.content,
             lastUpdate: action.data.timeposted,
+            numUnreads: Number(channels[i].numUnreads) + 1,
             lastMessageSender: {
               id: action.data.userid,
               username: action.data.username
@@ -223,7 +224,8 @@ export default function ChatReducer(state = defaultState, action) {
           timeposted: action.data.timeposted,
           username: action.data.username,
           isNotification: action.data.isNotification
-        }]
+        }],
+        loadMoreButton: false
       }
     case 'CREATE_BIDIRECTIONAL_CHANNEL':
       return {

@@ -220,8 +220,19 @@ const handleCaseWhereBidirectionalChatAlreadyExists = (roomid, userid, content, 
   })
 }
 
+const updateLastRead = ({userId, channelId, time}) => {
+  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [userId, channelId], (err, rows) => {
+    if(Number(rows[0].num) > 0) {
+      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: time}, userId, channelId]);
+    } else {
+      pool.query('INSERT INTO msg_lastRead SET ?', {userId: userId, channel: channelId, timeStamp: time});
+    }
+  })
+}
+
 module.exports = {
   fetchChat,
   fetchChannels,
-  handleCaseWhereBidirectionalChatAlreadyExists
+  handleCaseWhereBidirectionalChatAlreadyExists,
+  updateLastRead
 }

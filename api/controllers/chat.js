@@ -6,6 +6,7 @@ const requireAuth = require('../auth').requireAuth;
 const fetchChat = require('../helpers/ChatHelper').fetchChat;
 const fetchChannels = require('../helpers/ChatHelper').fetchChannels;
 const handleCaseWhereBidirectionalChatAlreadyExists = require('../helpers/ChatHelper').handleCaseWhereBidirectionalChatAlreadyExists;
+const updateLastRead = require('../helpers/ChatHelper').updateLastRead;
 
 const processedString = require('../helpers/StringHelper').processedString;
 const processedTitleString = require('../helpers/StringHelper').processedTitleString;
@@ -208,6 +209,7 @@ router.post('/channel', requireAuth, (req, res) => {
   const user = req.user;
   const params = req.body.params;
   const roomname = processedTitleString(params.channelName);
+  const time = Math.floor(Date.now()/1000);
 
   async.waterfall([
     callback => {
@@ -238,7 +240,7 @@ router.post('/channel', requireAuth, (req, res) => {
             roomid: channelId,
             userid: user.id,
             content: `Created channel "${roomname}"`,
-            timeposted: Math.floor(Date.now()/1000),
+            timeposted: time,
             isNotification: true
           }
           pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
@@ -254,6 +256,7 @@ router.post('/channel', requireAuth, (req, res) => {
       async.parallel(taskArray, (err, results) => {
         callback(err, results[results.length - 1])
       })
+      updateLastRead({userId: user.id, channelId, time})
     },
     (message, callback) => {
       const roomId = message.roomid;
