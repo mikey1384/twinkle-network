@@ -4,7 +4,7 @@ export default function VideoThumb(props) {
   const {video, selected, onSelect, onDeselect} = props;
   return (
     <div
-      className="col-sm-2"
+      className="col-xs-2"
     >
       <div
         className={`thumbnail ${selected && 'thumbnail-selected'}`}

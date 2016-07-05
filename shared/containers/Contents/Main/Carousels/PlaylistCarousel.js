@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Carousel from 'nuka-carousel';
+import Carousel from 'components/Carousel';
 import VideoThumb from 'components/VideoThumb';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTitleForm from 'components/EditTitleForm';
@@ -84,6 +84,7 @@ export default class PlaylistCarousel extends Component {
           }
         </div>
         <Carousel
+          progressBar={false}
           slidesToShow={5}
           slidesToScroll={5}
           cellSpacing={20}

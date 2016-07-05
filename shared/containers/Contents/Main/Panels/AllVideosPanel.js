@@ -41,7 +41,7 @@ export default class AllVideosPanel extends Component {
             return (
               <VideoThumb
                 to={`videos/${video.id}`}
-                size="col-sm-3"
+                size="col-xs-3"
                 key={video.id}
                 arrayNumber={index}
                 editable={editable}

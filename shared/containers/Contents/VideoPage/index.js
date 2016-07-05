@@ -8,7 +8,7 @@ import {
   uploadVideoReplyAsync,
   likeVideoAsync
 } from 'redux/actions/VideoActions';
-import Carousel from './Carousel';
+import Carousel from 'components/Carousel';
 import ChoiceListGroup from './ChoiceListGroup';
 import PageTab from './PageTab';
 import VideoLikeInterface from './VideoLikeInterface';
@@ -145,6 +145,7 @@ export default class VideoPage extends Component {
             }
             {!watchTabActive && questions.length > 0 &&
               <Carousel
+                progressBar
                 showQuestionsBuilder={() => this.setState({questionsBuilderShown: true})}
                 userIsUploader={userId == uploaderId}
                 slidesToShow={1}

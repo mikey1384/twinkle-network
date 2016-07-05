@@ -86,7 +86,7 @@ export default class VideoThumb extends Component {
           >
             { onEdit ?
               <div
-                className="input-group col-sm-12"
+                className="input-group col-xs-12"
                 style={{
                   paddingBottom: '0.3em'
                 }}
