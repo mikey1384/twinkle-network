@@ -60,10 +60,10 @@ const Carousel = React.createClass({
       slideCount: nextProps.children.length
     });
 
-    if(!this.props.chatMode) {
+    if(nextProps.chatMode === this.props.chatMode) {
       this.setDimensions();
     }
-    
+
     if (nextProps.slideIndex !== this.state.currentSlide) {
       this.goToSlide(nextProps.slideIndex);
     }

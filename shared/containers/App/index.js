@@ -38,7 +38,8 @@ export default class App extends Component {
   render() {
     const {chatMode, turnChatOff} = this.props;
     const style = chatMode && this.props.loggedIn ? {
-      display: 'none'
+      position: 'fixed',
+      opacity: 0
     } : null
 
     return (
