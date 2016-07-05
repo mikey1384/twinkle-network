@@ -6,6 +6,22 @@ import ExecutionEnvironment from 'exenv';
 import ButtonGroup from 'components/ButtonGroup';
 import NavButton from './NavButton';
 import {connect} from 'react-redux';
+import {
+  getListStyles,
+  getFrameStyles,
+  getSliderStyles,
+  getSlideStyles,
+  getStyleTagStyles } from './styles';
+
+import {
+  formatChildren,
+  setInitialDimensions,
+  setDimensions,
+  setExternalData } from './helpers';
+
+import {
+  onResize,
+  onReadyStateChange } from './listeners';
 
 
 const Carousel = React.createClass({
@@ -45,14 +61,34 @@ const Carousel = React.createClass({
   },
 
   componentWillMount() {
-    this.setInitialDimensions();
+    setInitialDimensions.bind(this)();
   },
 
   componentDidMount() {
-    console.log("did mount")
-    this.setDimensions();
-    this.bindEvents();
-    this.setExternalData();
+    setDimensions.bind(this)();
+    bindListeners.bind(this)();
+    setExternalData.bind(this)();
+
+    function bindListeners() {
+      var self = this;
+      if (ExecutionEnvironment.canUseDOM) {
+        addEvent(window, 'resize', onResize.bind(self));
+        addEvent(document, 'readystatechange', onReadyStateChange.bind(self));
+      }
+
+      function addEvent(elem, type, eventHandle) {
+        if (elem === null || typeof (elem) === 'undefined') {
+          return;
+        }
+        if (elem.addEventListener) {
+          elem.addEventListener(type, eventHandle, false);
+        } else if (elem.attachEvent) {
+          elem.attachEvent('on' + type, eventHandle);
+        } else {
+          elem['on' + type] = eventHandle;
+        }
+      }
+    }
   },
 
   componentWillReceiveProps(nextProps) {
@@ -61,7 +97,7 @@ const Carousel = React.createClass({
     });
 
     if(nextProps.chatMode === this.props.chatMode) {
-      this.setDimensions();
+      setDimensions.bind(this)();
     }
 
     if (nextProps.slideIndex !== this.state.currentSlide) {
@@ -70,15 +106,36 @@ const Carousel = React.createClass({
   },
 
   componentWillUnmount() {
-    this.unbindEvents();
+    unbindListeners.bind(this)();
+
+    function unbindListeners() {
+      var self = this;
+      if (ExecutionEnvironment.canUseDOM) {
+        removeEvent(window, 'resize', onResize);
+        removeEvent(document, 'readystatechange', onReadyStateChange);
+      }
+
+      function removeEvent(elem, type, eventHandle) {
+        if (elem === null || typeof (elem) === 'undefined') {
+          return;
+        }
+        if (elem.removeEventListener) {
+          elem.removeEventListener(type, eventHandle, false);
+        } else if (elem.detachEvent) {
+          elem.detachEvent('on' + type, eventHandle);
+        } else {
+          elem['on' + type] = null;
+        }
+      };
+    }
   },
 
   render() {
     var self = this;
-    var children = React.Children.count(this.props.children) > 1 ? this.formatChildren(this.props.children) : this.props.children;
+    var children = React.Children.count(this.props.children) > 1 ? formatChildren.bind(this)(this.props.children) : this.props.children;
     const slideFraction = (this.state.currentSlide + 1)/this.state.slideCount;
     return (
-      <div className={['slider', this.props.className || ''].join(' ')} ref="slider" style={assign(this.getSliderStyles(), this.props.style || {})}>
+      <div className={['slider', this.props.className || ''].join(' ')} ref="slider" style={assign(getSliderStyles.bind(this)(), this.props.style || {})}>
         { this.props.userIsUploader &&
           <a
             style={{
@@ -126,11 +183,11 @@ const Carousel = React.createClass({
         }
         <div className="slider-frame"
           ref="frame"
-          style={this.getFrameStyles()}
+          style={getFrameStyles.bind(this)()}
           {...this.getTouchEvents()}
           {...this.getMouseEvents()}
           onClick={this.handleClick}>
-          <ul className="slider-list" ref="list" style={this.getListStyles()}>
+          <ul className="slider-list" ref="list" style={getListStyles.bind(this)()}>
             {children}
           </ul>
         </div>
@@ -149,7 +206,7 @@ const Carousel = React.createClass({
             />
           ]
         }
-        <style type="text/css" dangerouslySetInnerHTML={{__html: self.getStyleTagStyles()}}/>
+        <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.bind(self)()}}/>
       </div>
     )
   },
@@ -357,7 +414,7 @@ const Carousel = React.createClass({
     }, function() {
       self.animateSlide();
       this.props.afterSlide(index);
-      self.setExternalData();
+      setExternalData.bind(this)();
     });
   },
 
@@ -411,222 +468,7 @@ const Carousel = React.createClass({
     offset -= touchOffset || 0;
 
     return ((this.state.slideWidth * this.state.currentSlide) - offset) * -1;
-  },
-
-  // Bootstrapping
-
-  bindEvents() {
-    var self = this;
-    if (ExecutionEnvironment.canUseDOM) {
-      addEvent(window, 'resize', self.onResize);
-      addEvent(document, 'readystatechange', self.onReadyStateChange);
-    }
-
-    function addEvent(elem, type, eventHandle) {
-      if (elem === null || typeof (elem) === 'undefined') {
-        return;
-      }
-      if (elem.addEventListener) {
-        elem.addEventListener(type, eventHandle, false);
-      } else if (elem.attachEvent) {
-        elem.attachEvent('on' + type, eventHandle);
-      } else {
-        elem['on' + type] = eventHandle;
-      }
-    }
-  },
-
-  onResize() {
-    if (!this.props.chatMode) {
-      this.setDimensions();
-    }
-  },
-
-  onReadyStateChange() {
-    this.setDimensions();
-  },
-
-  unbindEvents() {
-    var self = this;
-    if (ExecutionEnvironment.canUseDOM) {
-      removeEvent(window, 'resize', self.onResize);
-      removeEvent(document, 'readystatechange', self.onReadyStateChange);
-    }
-
-    function removeEvent(elem, type, eventHandle) {
-      if (elem === null || typeof (elem) === 'undefined') {
-        return;
-      }
-      if (elem.removeEventListener) {
-        elem.removeEventListener(type, eventHandle, false);
-      } else if (elem.detachEvent) {
-        elem.detachEvent('on' + type, eventHandle);
-      } else {
-        elem['on' + type] = null;
-      }
-    };
-  },
-
-  formatChildren(children) {
-    var self = this;
-    return React.Children.map(children, function(child, index) {
-      return <li className="slider-slide" style={self.getSlideStyles()} key={index}>{child}</li>
-    });
-  },
-
-  setInitialDimensions() {
-    var self = this, slideWidth, frameHeight, slideHeight;
-
-    slideWidth = this.props.initialSlideWidth || 0;
-    slideHeight = this.props.initialSlideHeight ? this.props.initialSlideHeight * this.props.slidesToShow : 0;
-
-    frameHeight = slideHeight + ((this.props.cellSpacing / 2) * (this.props.slidesToShow - 1));
-
-    this.setState({
-      frameWidth: '100%',
-      slideCount: React.Children.count(this.props.children),
-      slideWidth: slideWidth
-    }, function() {
-      self.setLeft();
-      self.setExternalData();
-    });
-  },
-
-  setDimensions() {
-    var self = this,
-      slideWidth,
-      slidesToScroll,
-      firstSlide,
-      frame,
-      frameWidth,
-      frameHeight,
-      slideHeight;
-
-    slidesToScroll = this.props.slidesToScroll;
-    frame = this.refs.frame;
-    firstSlide = frame.childNodes[0].childNodes[0];
-    if (firstSlide) {
-      firstSlide.style.height = 'auto';
-      slideHeight = firstSlide.offsetHeight * this.props.slidesToShow;
-    } else {
-      slideHeight = 100;
-    }
-
-    if (typeof this.props.slideWidth !== 'number') {
-      slideWidth = parseInt(this.props.slideWidth);
-    } else {
-      slideWidth = (frame.offsetWidth / this.props.slidesToShow) * this.props.slideWidth;
-    }
-
-    slideWidth -= this.props.cellSpacing * ((100 - (100 / this.props.slidesToShow)) / 100);
-
-    frameHeight = slideHeight + ((this.props.cellSpacing / 2) * (this.props.slidesToShow - 1));
-    frameWidth = frame.offsetWidth;
-
-    if (this.props.slidesToScroll === 'auto') {
-      slidesToScroll = Math.floor(frameWidth / (slideWidth + this.props.cellSpacing));
-    }
-
-    this.setState({
-      frameWidth: frameWidth,
-      slideWidth: slideWidth,
-      slidesToScroll: slidesToScroll,
-      left: this.getTargetLeft(),
-      top: 0
-    }, function() {
-      self.setLeft()
-    });
-  },
-
-  setLeft() {
-    this.setState({
-      left: this.getTargetLeft(),
-      top: 0
-    })
-  },
-
-  // Data
-
-  setExternalData() {
-    if (this.props.data) {
-      this.props.data();
-    }
-  },
-
-  // Styles
-
-  getListStyles() {
-    var listWidth = this.state.slideWidth * React.Children.count(this.props.children);
-    var spacingOffset = this.props.cellSpacing * React.Children.count(this.props.children);
-    var transform = 'translate3d(' +
-      this.getTweeningValue('left') + 'px, ' +
-      this.getTweeningValue('top') + 'px, 0)'
-    return {
-      transform,
-      WebkitTransform: transform,
-      msTransform: 'translate(' +
-        this.getTweeningValue('left') + 'px, ' +
-        this.getTweeningValue('top') + 'px)',
-      position: 'relative',
-      display: 'block',
-      margin: '0px ' + (this.props.cellSpacing / 2) * -1 + 'px',
-      padding: 0,
-      height: 'auto',
-      width: listWidth + spacingOffset,
-      cursor: this.state.dragging === true ? 'pointer' : 'inherit',
-      boxSizing: 'border-box',
-      MozBoxSizing: 'border-box'
-    }
-  },
-
-  getFrameStyles() {
-    return {
-      position: 'relative',
-      display: 'block',
-      overflow: 'hidden',
-      height: 'auto',
-      margin: this.props.framePadding,
-      padding: 0,
-      transform: 'translate3d(0, 0, 0)',
-      WebkitTransform: 'translate3d(0, 0, 0)',
-      msTransform: 'translate(0, 0)',
-      boxSizing: 'border-box',
-      MozBoxSizing: 'border-box'
-    }
-  },
-
-  getSlideStyles() {
-    return {
-      display: 'inline-block',
-      listStyleType: 'none',
-      verticalAlign: 'top',
-      width: this.state.slideWidth,
-      height: 'auto',
-      boxSizing: 'border-box',
-      MozBoxSizing: 'border-box',
-      marginLeft: this.props.cellSpacing / 2,
-      marginRight: this.props.cellSpacing / 2,
-      marginTop: 'auto',
-      marginBottom: 'auto'
-    }
-  },
-
-  getSliderStyles() {
-    return {
-      position: 'relative',
-      display: 'block',
-      width: this.props.width,
-      height: 'auto',
-      boxSizing: 'border-box',
-      MozBoxSizing: 'border-box',
-      visibility: this.state.slideWidth ? 'visible' : 'hidden'
-    }
-  },
-
-  getStyleTagStyles() {
-    return '.slider-slide > img {width: 100%; display: block;}'
   }
-
 });
 
 Carousel.ControllerMixin = {
