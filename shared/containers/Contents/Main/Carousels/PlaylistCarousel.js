@@ -5,7 +5,14 @@ import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTitleForm from 'components/EditTitleForm';
 import EditPlaylistModal from '../Modals/EditPlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import {connect} from 'react-redux';
 
+
+@connect(
+  state => ({
+    clickSafe: state.PlaylistReducer.clickSafe
+  })
+)
 export default class PlaylistCarousel extends Component {
   constructor() {
     super()
@@ -113,11 +120,12 @@ export default class PlaylistCarousel extends Component {
   }
 
   renderThumbs () {
-    const {playlist} = this.props;
+    const {playlist, clickSafe} = this.props;
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
           to={`videos/${thumb.videoid}`}
+          clickSafe={clickSafe}
           key={index}
           video={{
             id: thumb.videoid,

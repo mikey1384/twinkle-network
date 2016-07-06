@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-export default function(ComposedComponent) {
+export default function(InnerComponent) {
   class AdminOnly extends Component {
     static contextTypes = {
       router: React.PropTypes.object
@@ -22,7 +22,7 @@ export default function(ComposedComponent) {
     render () {
       const {isAdmin} = this.props;
       return isAdmin ?
-      <ComposedComponent {...this.props} /> : null
+      <InnerComponent {...this.props} /> : null
     }
   }
 

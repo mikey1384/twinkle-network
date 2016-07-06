@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import tweenState from './tweenState';
+import TweenState from 'components/HigherOrder/TweenState';
 import assign from 'object-assign';
 import ExecutionEnvironment from 'exenv';
 import ButtonGroup from 'components/ButtonGroup';
@@ -23,46 +23,51 @@ import {
   goToSlide,
   nextSlide,
   previousSlide } from './helpers/actions';
+import {
+  getTouchEvents,
+  getMouseEvents,
+  handleClick } from './helpers/interfaceEvents';
 
-const Carousel = React.createClass({
-  mixins: [tweenState.Mixin],
 
-  getDefaultProps() {
-    return {
-      afterSlide: function() { },
-      beforeSlide: function() { },
-      cellAlign: 'left',
-      cellSpacing: 0,
-      data: function() {},
-      dragging: true,
-      easing: 'easeOutCirc',
-      edgeEasing: 'easeOutElastic',
-      framePadding: '0px',
-      slideIndex: 0,
-      slidesToScroll: 1,
-      slidesToShow: 1,
-      slideWidth: 1,
-      speed: 500,
-      width: '100%'
-    }
-  },
+class Carousel extends Component {
+  static defaultProps = {
+    afterSlide: function() { },
+    beforeSlide: function() { },
+    cellAlign: 'left',
+    cellSpacing: 0,
+    data: function() {},
+    dragging: true,
+    easing: 'easeOutCirc',
+    edgeEasing: 'easeOutElastic',
+    framePadding: '0px',
+    slideIndex: 0,
+    slidesToScroll: 1,
+    slidesToShow: 1,
+    slideWidth: 1,
+    speed: 500,
+    width: '100%'
+  }
 
-  getInitialState() {
-    return {
-      currentSlide: this.props.slideIndex,
+  static touchObject = {}
+
+  constructor(props) {
+    super()
+    this.state = {
+      tweenQueue: props.tweenQueue,
+      currentSlide: props.slideIndex,
       dragging: false,
       frameWidth: 0,
       left: 0,
       slideCount: 0,
-      slidesToScroll: this.props.slidesToScroll,
+      slidesToScroll: props.slidesToScroll,
       slideWidth: 0,
       top: 0
     }
-  },
+  }
 
   componentWillMount() {
     setInitialDimensions.call(this);
-  },
+  }
 
   componentDidMount() {
     setDimensions.call(this);
@@ -89,7 +94,7 @@ const Carousel = React.createClass({
         }
       }
     }
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -103,7 +108,7 @@ const Carousel = React.createClass({
     if (nextProps.slideIndex !== this.state.currentSlide) {
       goToSlide.call(this, nextProps.slideIndex);
     }
-  },
+  }
 
   componentWillUnmount() {
     unbindListeners.call(this);
@@ -128,7 +133,7 @@ const Carousel = React.createClass({
         }
       };
     }
-  },
+  }
 
   render() {
     var self = this;
@@ -184,9 +189,9 @@ const Carousel = React.createClass({
         <div className="slider-frame"
           ref="frame"
           style={getFrameStyles.call(this)}
-          {...this.getTouchEvents()}
-          {...this.getMouseEvents()}
-          onClick={this.handleClick}>
+          {...getTouchEvents.call(this)}
+          {...getMouseEvents.call(this)}
+          onClick={handleClick.bind(this)}>
           <ul className="slider-list" ref="list" style={getListStyles.call(this)}>
             {children}
           </ul>
@@ -209,207 +214,6 @@ const Carousel = React.createClass({
         <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.call(self)}}/>
       </div>
     )
-  },
-
-  // Touch Events
-
-  touchObject: {},
-
-  getTouchEvents() {
-    var self = this;
-
-    return {
-      onTouchStart(e) {
-        self.touchObject = {
-          startX: e.touches[0].pageX,
-          startY: e.touches[0].pageY
-        }
-      },
-      onTouchMove(e) {
-        var direction = self.swipeDirection(
-          self.touchObject.startX,
-          e.touches[0].pageX,
-          self.touchObject.startY,
-          e.touches[0].pageY
-        );
-
-        if (direction !== 0) {
-          e.preventDefault();
-        }
-
-        var length = Math.round(Math.sqrt(Math.pow(e.touches[0].pageX - self.touchObject.startX, 2)))
-
-        self.touchObject = {
-          startX: self.touchObject.startX,
-          startY: self.touchObject.startY,
-          endX: e.touches[0].pageX,
-          endY: e.touches[0].pageY,
-          length: length,
-          direction: direction
-        }
-
-        self.setState({
-          left: getTargetLeft.call(self, self.touchObject.length * self.touchObject.direction),
-          top: 0
-        });
-      },
-      onTouchEnd(e) {
-        self.handleSwipe(e);
-      },
-      onTouchCancel(e) {
-        self.handleSwipe(e);
-      }
-    }
-  },
-
-  getMouseEvents() {
-    var self = this;
-
-    if (this.props.dragging === false) {
-      return null;
-    }
-
-    return {
-      onMouseDown(e) {
-        self.touchObject = {
-          startX: e.clientX,
-          startY: e.clientY
-        };
-
-        self.setState({
-          dragging: true
-        });
-      },
-      onMouseMove(e) {
-        if (!self.state.dragging) {
-          return;
-        }
-
-        var direction = self.swipeDirection(
-          self.touchObject.startX,
-          e.clientX,
-          self.touchObject.startY,
-          e.clientY
-        );
-
-        if (direction !== 0) {
-          e.preventDefault();
-        }
-
-        var length = Math.round(Math.sqrt(Math.pow(e.clientX - self.touchObject.startX, 2)))
-
-        self.touchObject = {
-          startX: self.touchObject.startX,
-          startY: self.touchObject.startY,
-          endX: e.clientX,
-          endY: e.clientY,
-          length: length,
-          direction: direction
-        };
-
-        self.setState({
-          left: getTargetLeft.call(self, self.touchObject.length * self.touchObject.direction),
-          top: 0
-        });
-      },
-      onMouseUp(e) {
-        if (!self.state.dragging) {
-          return;
-        }
-
-        self.handleSwipe(e);
-      },
-      onMouseLeave(e) {
-        if (!self.state.dragging) {
-          return;
-        }
-
-        self.handleSwipe(e);
-      }
-    }
-  },
-
-  handleClick(e) {
-    if (this.props.clickSafe) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (e.nativeEvent) {
-        e.nativeEvent.stopPropagation();
-      }
-    }
-  },
-
-  handleSwipe(e) {
-    if (typeof (this.touchObject.length) !== 'undefined' && this.touchObject.length > 44) {
-      this.props.clickSafeOn();
-    } else {
-      this.props.clickSafeOff();
-    }
-
-    if (this.touchObject.length > (this.state.slideWidth / this.props.slidesToShow) / 5) {
-      if (this.touchObject.direction === 1) {
-        if (this.state.currentSlide >= React.Children.count(this.props.children) - this.props.slidesToShow) {
-          animateSlide.call(this, tweenState.easingTypes[this.props.edgeEasing]);
-        } else {
-          nextSlide.call(this);
-        }
-      } else if (this.touchObject.direction === -1) {
-        if (this.state.currentSlide <= 0) {
-          animateSlide.call(this, tweenState.easingTypes[this.props.edgeEasing]);
-        } else {
-          previousSlide.call(this);
-        }
-      }
-    } else {
-      goToSlide.call(this, this.state.currentSlide);
-    }
-
-    this.touchObject = {};
-
-    this.setState({
-      dragging: false
-    });
-  },
-
-  swipeDirection(x1, x2, y1, y2) {
-
-    var xDist, yDist, r, swipeAngle;
-
-    xDist = x1 - x2;
-    yDist = y1 - y2;
-    r = Math.atan2(yDist, xDist);
-
-    swipeAngle = Math.round(r * 180 / Math.PI);
-    if (swipeAngle < 0) {
-      swipeAngle = 360 - Math.abs(swipeAngle);
-    }
-    if ((swipeAngle <= 45) && (swipeAngle >= 0)) {
-      return 1;
-    }
-    if ((swipeAngle <= 360) && (swipeAngle >= 315)) {
-      return 1;
-    }
-    if ((swipeAngle >= 135) && (swipeAngle <= 225)) {
-      return -1;
-    }
-    return 0;
-
-  }
-});
-
-Carousel.ControllerMixin = {
-  getInitialState() {
-    return {
-      carousels: {}
-    }
-  },
-  setCarouselData(carousel) {
-    var data = this.state.carousels;
-    data[carousel] = this.refs[carousel];
-    this.setState({
-      carousels: data
-    });
   }
 }
 
@@ -419,4 +223,4 @@ export default connect(
     clickSafe: state.PlaylistReducer.clickSafe
   }),
   {clickSafeOn, clickSafeOff}
-)(Carousel)
+)(TweenState(Carousel))

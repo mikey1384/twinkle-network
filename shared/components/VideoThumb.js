@@ -8,9 +8,7 @@ import {connect} from 'react-redux';
 import UsernameText from './UsernameText';
 
 @connect(
-  state => ({
-    clickSafe: state.PlaylistReducer.clickSafe
-  }),
+  null,
   {loadVideoPage: loadVideoPageFromClientSideAsync}
 )
 export default class VideoThumb extends Component {

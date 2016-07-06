@@ -1,8 +1,8 @@
-import tweenState from '../tweenState';
+import easingTypes from 'tween-functions';
 
 export function animateSlide(easing, duration, endValue) {
-  this.tweenState('left', {
-    easing: easing || tweenState.easingTypes[this.props.easing],
+  this.props.tweenState.call(this, 'left', {
+    easing: easing || easingTypes[this.props.easing],
     duration: duration || this.props.speed,
     endValue: endValue || getTargetLeft.call(this)
   });
