@@ -6,6 +6,10 @@ import easingTypes from 'tween-functions';
 export function getTouchEvents() {
   var self = this;
 
+  if (this.props.dragging === false) {
+    return null;
+  }
+
   return {
     onTouchStart(e) {
       self.touchObject = {
@@ -129,7 +133,7 @@ export function handleClick(e) {
 }
 
 function handleSwipe(e) {
-  if (typeof (this.touchObject.length) !== 'undefined' && this.touchObject.length > 44) {
+  if (typeof this.touchObject.length !== 'undefined' && this.touchObject.length > 44) {
     this.props.clickSafeOn();
   } else {
     this.props.clickSafeOff();

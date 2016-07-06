@@ -75,7 +75,6 @@ class Carousel extends Component {
     setExternalData.call(this);
 
     function bindListeners() {
-      var self = this;
       if (ExecutionEnvironment.canUseDOM) {
         addEvent(window, 'resize', onResize.bind(this));
         addEvent(document, 'readystatechange', onReadyStateChange.bind(this));
@@ -114,7 +113,6 @@ class Carousel extends Component {
     unbindListeners.call(this);
 
     function unbindListeners() {
-      var self = this;
       if (ExecutionEnvironment.canUseDOM) {
         removeEvent(window, 'resize', onResize);
         removeEvent(document, 'readystatechange', onReadyStateChange);
@@ -136,7 +134,6 @@ class Carousel extends Component {
   }
 
   render() {
-    var self = this;
     var children = React.Children.count(this.props.children) > 1 ? formatChildren.call(this, this.props.children) : this.props.children;
     const slideFraction = (this.state.currentSlide + 1)/this.state.slideCount;
     return (
@@ -201,17 +198,17 @@ class Carousel extends Component {
             <NavButton
               left
               key={0}
-              disabled={self.state.currentSlide === 0}
-              nextSlide={previousSlide.bind(self)}
+              disabled={this.state.currentSlide === 0}
+              nextSlide={previousSlide.bind(this)}
             />,
             <NavButton
               key={1}
               disabled={this.state.currentSlide + this.state.slidesToScroll >= this.state.slideCount}
-              nextSlide={nextSlide.bind(self)}
+              nextSlide={nextSlide.bind(this)}
             />
           ]
         }
-        <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.call(self)}}/>
+        <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.call(this)}}/>
       </div>
     )
   }
