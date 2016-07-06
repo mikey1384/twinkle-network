@@ -1,11 +1,11 @@
-import {setDimensions} from './helpers';
+import {setDimensions} from './styles';
 
 export function onResize() {
   if (!this.props.chatMode) {
-    setDimensions.bind(this)();
+    setDimensions.call(this);
   }
 }
 
 export function onReadyStateChange() {
-  setDimensions.bind(this)();
+  setDimensions.call(this);
 }

@@ -295,6 +295,14 @@ export const resetPlaylistState = () => ({
   type: 'RESET_PL_STATE'
 })
 
+export const clickSafeOn = () => ({
+  type: 'CLICK_SAFE_ON'
+})
+
+export const clickSafeOff = () => ({
+  type: 'CLICK_SAFE_OFF'
+})
+
 function handleError(error, dispatch) {
   if (error.status === 401) {
     dispatch(logout());

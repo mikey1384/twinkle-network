@@ -8,7 +8,9 @@ import {connect} from 'react-redux';
 import UsernameText from './UsernameText';
 
 @connect(
-  null,
+  state => ({
+    clickSafe: state.PlaylistReducer.clickSafe
+  }),
   {loadVideoPage: loadVideoPageFromClientSideAsync}
 )
 export default class VideoThumb extends Component {
@@ -138,8 +140,10 @@ export default class VideoThumb extends Component {
 
   onLinkClick(e) {
     e.preventDefault();
-    const {video, to} = this.props;
-    this.props.loadVideoPage(video.id, to);
+    const {video, to, clickSafe} = this.props;
+    if (!clickSafe) {
+      this.props.loadVideoPage(video.id, to);
+    }
   }
 
   onEditTitle() {

@@ -15,7 +15,9 @@ const defaultState = {
   loadMorePlaylistsToPinButton: false,
   playlistsToPin: [],
 
-  reorderPinnedPlaylistsModalShown: false
+  reorderPinnedPlaylistsModalShown: false,
+
+  clickSafe: true
 };
 
 let defaultPlaylists;
@@ -276,6 +278,16 @@ export default function PlaylistReducer(state = defaultState, action) {
         selectPlaylistsToPinModalShown: false,
         loadMorePlaylistsToPinButton: false,
         playlistsToPin: []
+      }
+    case 'CLICK_SAFE_ON':
+      return {
+        ...state,
+        clickSafe: true
+      }
+    case 'CLICK_SAFE_OFF':
+      return {
+        ...state,
+        clickSafe: false
       }
     default:
       return state;

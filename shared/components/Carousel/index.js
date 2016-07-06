@@ -6,23 +6,23 @@ import ExecutionEnvironment from 'exenv';
 import ButtonGroup from 'components/ButtonGroup';
 import NavButton from './NavButton';
 import {connect} from 'react-redux';
+import {clickSafeOn, clickSafeOff} from 'redux/actions/PlaylistActions';
 import {
   getListStyles,
   getFrameStyles,
   getSliderStyles,
   getSlideStyles,
-  getStyleTagStyles } from './styles';
-
-import {
+  getStyleTagStyles,
   formatChildren,
   setInitialDimensions,
   setDimensions,
-  setExternalData } from './helpers';
-
+  setExternalData } from './helpers/styles';
+import {onResize, onReadyStateChange} from './helpers/listeners';
+import {animateSlide, getTargetLeft} from './helpers/animations';
 import {
-  onResize,
-  onReadyStateChange } from './listeners';
-
+  goToSlide,
+  nextSlide,
+  previousSlide } from './helpers/actions';
 
 const Carousel = React.createClass({
   mixins: [tweenState.Mixin],
@@ -61,23 +61,23 @@ const Carousel = React.createClass({
   },
 
   componentWillMount() {
-    setInitialDimensions.bind(this)();
+    setInitialDimensions.call(this);
   },
 
   componentDidMount() {
-    setDimensions.bind(this)();
-    bindListeners.bind(this)();
-    setExternalData.bind(this)();
+    setDimensions.call(this);
+    bindListeners.call(this);
+    setExternalData.call(this);
 
     function bindListeners() {
       var self = this;
       if (ExecutionEnvironment.canUseDOM) {
-        addEvent(window, 'resize', onResize.bind(self));
-        addEvent(document, 'readystatechange', onReadyStateChange.bind(self));
+        addEvent(window, 'resize', onResize.bind(this));
+        addEvent(document, 'readystatechange', onReadyStateChange.bind(this));
       }
 
       function addEvent(elem, type, eventHandle) {
-        if (elem === null || typeof (elem) === 'undefined') {
+        if (elem === null || typeof elem === 'undefined') {
           return;
         }
         if (elem.addEventListener) {
@@ -97,16 +97,16 @@ const Carousel = React.createClass({
     });
 
     if(nextProps.chatMode === this.props.chatMode) {
-      setDimensions.bind(this)();
+      setDimensions.call(this);
     }
 
     if (nextProps.slideIndex !== this.state.currentSlide) {
-      this.goToSlide(nextProps.slideIndex);
+      goToSlide.call(this, nextProps.slideIndex);
     }
   },
 
   componentWillUnmount() {
-    unbindListeners.bind(this)();
+    unbindListeners.call(this);
 
     function unbindListeners() {
       var self = this;
@@ -132,17 +132,17 @@ const Carousel = React.createClass({
 
   render() {
     var self = this;
-    var children = React.Children.count(this.props.children) > 1 ? formatChildren.bind(this)(this.props.children) : this.props.children;
+    var children = React.Children.count(this.props.children) > 1 ? formatChildren.call(this, this.props.children) : this.props.children;
     const slideFraction = (this.state.currentSlide + 1)/this.state.slideCount;
     return (
-      <div className={['slider', this.props.className || ''].join(' ')} ref="slider" style={assign(getSliderStyles.bind(this)(), this.props.style || {})}>
+      <div className={['slider', this.props.className || ''].join(' ')} ref="slider" style={assign(getSliderStyles.call(this), this.props.style || {})}>
         { this.props.userIsUploader &&
           <a
             style={{
               position: 'absolute',
               cursor: 'pointer'
             }}
-            onClick={ () => this.props.showQuestionsBuilder() }
+            onClick={() => this.props.showQuestionsBuilder()}
           >Add/Edit Questions</a>
         }
         {this.props.progressBar &&
@@ -154,13 +154,13 @@ const Carousel = React.createClass({
                 buttons={[
                   {
                     label: 'Prev',
-                    onClick: this.previousSlide,
+                    onClick: previousSlide.bind(this),
                     buttonClass: 'btn-default',
                     disabled: this.state.currentSlide === 0
                   },
                   {
                     label: this.state.currentSlide + 1 === this.state.slideCount ? 'Finish' : 'Next',
-                    onClick: this.state.currentSlide + 1 === this.state.slideCount ? this.props.onFinish : this.nextSlide,
+                    onClick: this.state.currentSlide + 1 === this.state.slideCount ? this.props.onFinish : nextSlide.bind(this),
                     buttonClass: 'btn-default',
                   }
                 ]}
@@ -183,11 +183,11 @@ const Carousel = React.createClass({
         }
         <div className="slider-frame"
           ref="frame"
-          style={getFrameStyles.bind(this)()}
+          style={getFrameStyles.call(this)}
           {...this.getTouchEvents()}
           {...this.getMouseEvents()}
           onClick={this.handleClick}>
-          <ul className="slider-list" ref="list" style={getListStyles.bind(this)()}>
+          <ul className="slider-list" ref="list" style={getListStyles.call(this)}>
             {children}
           </ul>
         </div>
@@ -197,16 +197,16 @@ const Carousel = React.createClass({
               left
               key={0}
               disabled={self.state.currentSlide === 0}
-              nextSlide={self.previousSlide}
+              nextSlide={previousSlide.bind(self)}
             />,
             <NavButton
               key={1}
               disabled={this.state.currentSlide + this.state.slidesToScroll >= this.state.slideCount}
-              nextSlide={self.nextSlide}
+              nextSlide={nextSlide.bind(self)}
             />
           ]
         }
-        <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.bind(self)()}}/>
+        <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.call(self)}}/>
       </div>
     )
   },
@@ -249,7 +249,7 @@ const Carousel = React.createClass({
         }
 
         self.setState({
-          left: self.getTargetLeft(self.touchObject.length * self.touchObject.direction),
+          left: getTargetLeft.call(self, self.touchObject.length * self.touchObject.direction),
           top: 0
         });
       },
@@ -261,8 +261,6 @@ const Carousel = React.createClass({
       }
     }
   },
-
-  clickSafe: true,
 
   getMouseEvents() {
     var self = this;
@@ -310,7 +308,7 @@ const Carousel = React.createClass({
         };
 
         self.setState({
-          left: self.getTargetLeft(self.touchObject.length * self.touchObject.direction),
+          left: getTargetLeft.call(self, self.touchObject.length * self.touchObject.direction),
           top: 0
         });
       },
@@ -332,7 +330,7 @@ const Carousel = React.createClass({
   },
 
   handleClick(e) {
-    if (this.clickSafe === true) {
+    if (this.props.clickSafe) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -344,27 +342,27 @@ const Carousel = React.createClass({
 
   handleSwipe(e) {
     if (typeof (this.touchObject.length) !== 'undefined' && this.touchObject.length > 44) {
-      this.clickSafe = true;
+      this.props.clickSafeOn();
     } else {
-      this.clickSafe = false;
+      this.props.clickSafeOff();
     }
 
     if (this.touchObject.length > (this.state.slideWidth / this.props.slidesToShow) / 5) {
       if (this.touchObject.direction === 1) {
         if (this.state.currentSlide >= React.Children.count(this.props.children) - this.props.slidesToShow) {
-          this.animateSlide(tweenState.easingTypes[this.props.edgeEasing]);
+          animateSlide.call(this, tweenState.easingTypes[this.props.edgeEasing]);
         } else {
-          this.nextSlide();
+          nextSlide.call(this);
         }
       } else if (this.touchObject.direction === -1) {
         if (this.state.currentSlide <= 0) {
-          this.animateSlide(tweenState.easingTypes[this.props.edgeEasing]);
+          animateSlide.call(this, tweenState.easingTypes[this.props.edgeEasing]);
         } else {
-          this.previousSlide();
+          previousSlide.call(this);
         }
       }
     } else {
-      this.goToSlide(this.state.currentSlide);
+      goToSlide.call(this, this.state.currentSlide);
     }
 
     this.touchObject = {};
@@ -397,77 +395,6 @@ const Carousel = React.createClass({
     }
     return 0;
 
-  },
-
-  // Action Methods
-
-  goToSlide(index) {
-    var self = this;
-    if (index >= React.Children.count(this.props.children) || index < 0) {
-      return;
-    }
-
-    this.props.beforeSlide(this.state.currentSlide, index);
-
-    this.setState({
-      currentSlide: index
-    }, function() {
-      self.animateSlide();
-      this.props.afterSlide(index);
-      setExternalData.bind(this)();
-    });
-  },
-
-  nextSlide() {
-    var childrenCount = React.Children.count(this.props.children);
-    if (this.state.currentSlide >= childrenCount - this.props.slidesToShow) {
-      return;
-    }
-
-    this.goToSlide(Math.min(this.state.currentSlide + this.state.slidesToScroll, childrenCount - this.props.slidesToShow));
-  },
-
-  previousSlide() {
-    if (this.state.currentSlide <= 0) {
-      return;
-    }
-
-    this.goToSlide(Math.max(0, this.state.currentSlide - this.state.slidesToScroll));
-  },
-
-  // Animation
-
-  animateSlide(easing, duration, endValue) {
-    this.tweenState('left', {
-      easing: easing || tweenState.easingTypes[this.props.easing],
-      duration: duration || this.props.speed,
-      endValue: endValue || this.getTargetLeft()
-    });
-  },
-
-  getTargetLeft(touchOffset) {
-    var offset;
-    switch (this.props.cellAlign) {
-    case 'left': {
-      offset = 0;
-      offset -= this.props.cellSpacing * (this.state.currentSlide);
-      break;
-    }
-    case 'center': {
-      offset = (this.state.frameWidth - this.state.slideWidth) / 2;
-      offset -= this.props.cellSpacing * (this.state.currentSlide);
-      break;
-    }
-    case 'right': {
-      offset = this.state.frameWidth - this.state.slideWidth;
-      offset -= this.props.cellSpacing * (this.state.currentSlide);
-      break;
-    }
-    }
-
-    offset -= touchOffset || 0;
-
-    return ((this.state.slideWidth * this.state.currentSlide) - offset) * -1;
   }
 });
 
@@ -488,6 +415,8 @@ Carousel.ControllerMixin = {
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode
-  })
+    chatMode: state.ChatReducer.chatMode,
+    clickSafe: state.PlaylistReducer.clickSafe
+  }),
+  {clickSafeOn, clickSafeOff}
 )(Carousel)
