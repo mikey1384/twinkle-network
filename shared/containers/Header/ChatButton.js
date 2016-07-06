@@ -1,9 +1,11 @@
 import React from 'react';
 
-export default function ChatButton({onClick, chatMode, numUnreads = 0}) {
+export default function ChatButton({onClick, chatMode, numUnreads = 0, style = null}) {
   const buttonClass = chatMode ? 'chat-on' : 'chat-off';
   return (
-    <li>
+    <li
+      style={style}
+    >
       <a
         className={`well unselectable ${buttonClass}`}
         style={{

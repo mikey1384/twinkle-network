@@ -84,10 +84,20 @@ export default class Header extends Component {
       openSigninModal,
       closeSigninModal,
       onChatButtonClick,
+      staticTop,
       numUnreads } = this.props;
 
+    let staticTopOn;
+    let fixedTopOn;
+    if (staticTop) {
+      staticTopOn = true;
+      fixedTopOn = false;
+    } else {
+      staticTopOn = false;
+      fixedTopOn = true;
+    }
     return (
-      <Navbar staticTop fluid>
+      <Navbar staticTop={staticTopOn} fixedTop={fixedTopOn} fluid>
         <Navbar.Toggle />
         <Link
           className="navbar-brand"

@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import {connect} from 'react-redux';
 import {initChatAsync, resetChat, toggleChat, turnChatOn, turnChatOff} from 'redux/actions/ChatActions';
 import {URL} from 'constants/URL';
+import ChatButton from 'containers/Header/ChatButton';
 
 
 const socket = io.connect(URL);
@@ -40,11 +41,12 @@ export default class App extends Component {
     const style = chatMode && this.props.loggedIn ? {
       position: 'fixed',
       opacity: 0
-    } : null
+    } : {paddingTop: '65px'}
 
     return (
       <div id="main-view">
         <Header
+          staticTop={chatMode}
           socket={socket}
           chatMode={chatMode}
           onChatButtonClick={this.onChatButtonClick}
