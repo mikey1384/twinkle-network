@@ -1,7 +1,7 @@
 import easingTypes from 'tween-functions';
 
 export function animateSlide(easing, duration, endValue) {
-  this.props.tweenState.call(this, 'left', {
+  this.tweenState.call(this,'left', {
     easing: easing || easingTypes[this.props.easing],
     duration: duration || this.props.speed,
     endValue: endValue || getTargetLeft.call(this)

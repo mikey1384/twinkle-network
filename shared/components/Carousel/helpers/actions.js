@@ -13,7 +13,7 @@ export function goToSlide(index) {
   this.setState({
     currentSlide: index
   }, function() {
-    animateSlide.call(self);
+    animateSlide.call(this);
     this.props.afterSlide(index);
     setExternalData.call(this);
   });
