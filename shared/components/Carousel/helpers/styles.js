@@ -5,14 +5,14 @@ export function getListStyles() {
   var listWidth = this.state.slideWidth * React.Children.count(this.props.children);
   var spacingOffset = this.props.cellSpacing * React.Children.count(this.props.children);
   var transform = 'translate3d(' +
-    this.getTweeningValue.call(this, 'left') + 'px, ' +
-    this.getTweeningValue.call(this, 'top') + 'px, 0)'
+    this.getTweeningValue('left') + 'px, ' +
+    this.getTweeningValue('top') + 'px, 0)'
   return {
     transform,
     WebkitTransform: transform,
     msTransform: 'translate(' +
-      this.getTweeningValue.call(this, 'left') + 'px, ' +
-      this.getTweeningValue.call(this, 'top') + 'px)',
+      this.getTweeningValue('left') + 'px, ' +
+      this.getTweeningValue('top') + 'px)',
     position: 'relative',
     display: 'block',
     margin: '0px ' + (this.props.cellSpacing / 2) * -1 + 'px',

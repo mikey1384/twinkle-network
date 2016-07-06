@@ -81,6 +81,8 @@ export default class Carousel extends Component {
       slideWidth: 0,
       top: 0
     }
+    this.rafCb = this.rafCb.bind(this);
+    this.getTweeningValue = this.getTweeningValue.bind(this);
   }
 
   componentWillMount() {
@@ -114,6 +116,7 @@ export default class Carousel extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.clickSafe !== nextProps.clickSafe) return;
     this.setState({
       slideCount: nextProps.children.length
     });
@@ -235,7 +238,6 @@ export default class Carousel extends Component {
 
   tweenState(path, {easing, duration, delay, beginValue, endValue, onEnd, stackBehavior: configSB}) {
     this.setState(state => {
-      console.log(state);
       let cursor = state;
       let stateName;
       // see comment below on pash hash
@@ -280,7 +282,7 @@ export default class Carousel extends Component {
       // we can stop worrying about nonesense like this
       cursor[stateName] = newConfig.endValue;
       if (newTweenQueue.length === 1) {
-        this.rafID = requestAnimationFrame(this.rafCb.bind(this));
+        this.rafID = requestAnimationFrame(this.rafCb);
       }
 
       // this will also include the above mutated update
@@ -363,6 +365,6 @@ export default class Carousel extends Component {
       tweenQueue: newTweenQueue,
     });
 
-    this.rafID = requestAnimationFrame(this.rafCb.bind(this));
+    this.rafID = requestAnimationFrame(this.rafCb);
   }
 }

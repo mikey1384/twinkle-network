@@ -6,10 +6,6 @@ import easingTypes from 'tween-functions';
 export function getTouchEvents() {
   var self = this;
 
-  if (this.props.dragging === false) {
-    return null;
-  }
-
   return {
     onTouchStart(e) {
       self.touchObject = {
@@ -76,7 +72,6 @@ export function getMouseEvents() {
       if (!self.state.dragging) {
         return;
       }
-
       var direction = swipeDirection.call(self,
         self.touchObject.startX,
         e.clientX,
