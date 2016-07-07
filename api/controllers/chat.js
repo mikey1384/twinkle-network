@@ -28,7 +28,7 @@ router.get('/', requireAuth, (req, res) => {
     res.send({
       channels: results[0],
       messages: results[1],
-      currentChannelId: results[2]
+      currentChannel: results[2]
     })
   })
 })
@@ -164,9 +164,15 @@ router.get('/channel', requireAuth, (req, res) => {
       if (err.status) return res.status(err.status).send({error: err})
       return res.status(500).send({error: err})
     }
-    res.send({
-      currentChannelId: channelId,
-      messages
+    pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+      res.send({
+        currentChannel: {
+          id: channelId,
+          bidirectional: Boolean(rows[0].bidirectional),
+          creatorId: rows[0].creator
+        },
+        messages
+      })
     })
   })
 })

@@ -2,7 +2,7 @@ import {processedStringWithURL} from 'helpers/StringHelper';
 
 const defaultState = {
   chatMode: false,
-  currentChannelId: null,
+  currentChannel: {},
   channels: [],
   messages: [],
   searchResult: [],
@@ -38,9 +38,9 @@ export default function ChatReducer(state = defaultState, action) {
       action.data.messages.reverse()
       return {
         ...state,
-        currentChannelId: action.data.currentChannelId,
+        currentChannel: action.data.currentChannel,
         channels: action.data.channels.map(channel => {
-          if (Number(channel.id) === Number(action.data.currentChannelId)) {
+          if (Number(channel.id) === Number(action.data.currentChannel.id)) {
             channel.numUnreads = 0;
           }
           return channel;
@@ -80,9 +80,9 @@ export default function ChatReducer(state = defaultState, action) {
       action.data.messages.reverse();
       return {
         ...state,
-        currentChannelId: action.data.currentChannelId,
+        currentChannel: action.data.currentChannel,
         channels: state.channels.map(channel => {
-          if (Number(channel.id) === Number(action.data.currentChannelId)) {
+          if (Number(channel.id) === Number(action.data.currentChannel.id)) {
             channel.numUnreads = 0
           }
           return channel;
@@ -93,7 +93,10 @@ export default function ChatReducer(state = defaultState, action) {
     case 'ENTER_EMPTY_BIDIRECTIONAL_CHAT':
       return {
         ...state,
-        currentChannelId: 0,
+        currentChannel: {
+          id: 0,
+          bidirectional: true
+        },
         messages: [],
         loadMoreButton: false
       }
@@ -180,7 +183,10 @@ export default function ChatReducer(state = defaultState, action) {
           lastUpdate: null,
           lastMessageSender: null
         }].concat(filteredChannel),
-        currentChannelId: 0,
+        currentChannel: {
+          id: 0,
+          bidirectional: true
+        },
         messages: [],
         loadMoreButton: false,
         chatPartnerId: action.userId
@@ -203,7 +209,10 @@ export default function ChatReducer(state = defaultState, action) {
           }
           return channel;
         }),
-        currentChannelId: action.data.roomid
+        currentChannel: {
+          id: action.data.roomid,
+          bidirectional: true
+        }
       }
     case 'CREATE_NEW_CHANNEL':
       return {
@@ -218,7 +227,10 @@ export default function ChatReducer(state = defaultState, action) {
             username: action.data.username
           }
         }].concat(state.channels),
-        currentChannelId: action.data.roomid,
+        currentChannel: {
+          id: action.data.roomid,
+          bidirectional: false
+        },
         messages: [{
           id: action.data.messageId,
           roomid: action.data.roomid,
@@ -247,7 +259,10 @@ export default function ChatReducer(state = defaultState, action) {
           }
           return channel;
         }),
-        currentChannelId: action.data.roomid,
+        currentChannel: {
+          id: action.data.roomid,
+          bidirectional: true
+        },
         messages: [{
           id: action.data.messageId,
           roomid: action.data.roomid,

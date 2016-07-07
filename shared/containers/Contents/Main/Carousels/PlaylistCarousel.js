@@ -85,8 +85,15 @@ export default class PlaylistCarousel extends Component {
           }
           {editable &&
             <SmallDropdownButton
+              style={{
+                position: 'absolute',
+                right: '1em',
+                marginRight: '1em',
+                zIndex: '1'
+              }}
+              shape="button"
+              icon="pencil"
               menuProps={menuProps}
-              rightMargin="1em"
             />
           }
         </div>

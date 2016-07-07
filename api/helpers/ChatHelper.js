@@ -63,7 +63,6 @@ const fetchChat = (params, callback) => {
         callback(err, results)
       })
     }], (err, results) => {
-      if (results) results.push(channelId);
       let timeStamp = Math.floor(Date.now()/1000);
       let post = {userId: user.id, channel: channelId, timeStamp};
       pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, channelId], (err, rows) => {
@@ -73,7 +72,16 @@ const fetchChat = (params, callback) => {
           pool.query('INSERT INTO msg_lastRead SET ?', post);
         }
       })
-      callback(err, results)
+
+      pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+        const channel = {
+          id: channelId,
+          bidirectional: Boolean(rows[0].bidirectional),
+          creatorId: rows[0].creator
+        }
+        if (results) results.push(channel);
+        callback(err, results)
+      })
     }
   )
 }

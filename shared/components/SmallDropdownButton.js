@@ -2,10 +2,23 @@ import React, {Component} from 'react';
 import onClickOutside from 'react-onclickoutside';
 
 class SmallDropdownButton extends Component {
+  static defaultProps = {
+    menuProps: [
+      {
+        label: 'Edit',
+        onClick: () => console.log("edit pressed")
+      },
+      {
+        label: 'Remove',
+        onClick: () => console.log("remove pressed")
+      }
+    ]
+  }
+
   handleClickOutside = event => {
     this.setState({menuDisplayed: false});
   }
-  
+
   constructor() {
     super()
     this.state = {
@@ -15,18 +28,17 @@ class SmallDropdownButton extends Component {
 
   render () {
     const {menuDisplayed} = this.state;
+    const {style, icon, shape} = this.props;
+    const buttonIcon = icon === 'pencil' ? 'glyphicon glyphicon-pencil' : 'glyphicon glyphicon-align-justify';
+    const buttonShape = shape === 'button' ? 'btn btn-sm btn-default' : 'dropdown-toggle'
     const menuDisplay = menuDisplayed ? 'block' : 'none';
+
     return (
       <span
         className="dropdown pull-right"
-        style={{
-          position: 'absolute',
-          right: this.props.rightMargin || '0px',
-          marginRight: '2rem',
-          zIndex: '1'
-        }}>
-        <button className="dropdown-toggle" onClick={() => this.setState({menuDisplayed: !menuDisplayed})}>
-          <span className="glyphicon glyphicon-pencil"></span>
+        style={style}>
+        <button className={buttonShape} onClick={() => this.setState({menuDisplayed: !menuDisplayed})}>
+          <span className={buttonIcon}></span>
         </button>
         <ul className="dropdown-menu"
           style={{

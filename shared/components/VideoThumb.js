@@ -51,6 +51,13 @@ export default class VideoThumb extends Component {
           {
             editable &&
             <SmallDropdownButton
+              style={{
+                position: 'absolute',
+                right: '0px',
+                marginRight: '2rem',
+                zIndex: '1'
+              }}
+              icon="pencil"
               menuProps={menuProps}
             />
           }

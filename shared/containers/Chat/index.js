@@ -5,14 +5,16 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ChatActions from 'redux/actions/ChatActions';
 import ChatInput from './ChatInput';
-import CreateNewChannelModal from './CreateNewChannelModal';
+import CreateNewChannelModal from './Modals/CreateNewChannel';
+import InviteUsersModal from './Modals/InviteUsers';
 import {cleanStringWithURL} from 'helpers/StringHelper';
+import SmallDropdownButton from 'components/SmallDropdownButton';
 
 @connect(
   state => ({
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    currentChannelId: state.ChatReducer.currentChannelId,
+    currentChannel: state.ChatReducer.currentChannel,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
     loadMoreButton: state.ChatReducer.loadMoreButton,
@@ -35,7 +37,8 @@ export default class Chat extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      createNewChannelModalShown: false
+      createNewChannelModalShown: false,
+      inviteUsersModalShown: false
     }
     const {
       socket,
@@ -44,7 +47,7 @@ export default class Chat extends Component {
       receiveFirstMsg} = props;
 
     socket.on('incoming message', data => {
-      let messageIsForCurrentChannel = Number(data.channelId) === Number(this.props.currentChannelId);
+      let messageIsForCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
       let senderIsNotTheUser = Number(data.userid) !== Number(this.props.userId);
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
         receiveMessage(data)
@@ -71,7 +74,7 @@ export default class Chat extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.currentChannelId !== this.props.currentChannelId) {
+    if (nextProps.currentChannel.id !== this.props.currentChannel.id) {
       ReactDOM.findDOMNode(this.refs.chatInput).focus()
     }
   }
@@ -88,16 +91,43 @@ export default class Chat extends Component {
   }
 
   render() {
-    const {channels, currentChannelId, userId} = this.props;
-    const {createNewChannelModalShown} = this.state;
+    const {channels, currentChannel, userId} = this.props;
+    const {createNewChannelModalShown, inviteUsersModalShown} = this.state;
     const channelName = () => {
       for (let i = 0; i < channels.length; i ++) {
-        if (Number(channels[i].id) === Number(currentChannelId)) {
+        if (Number(channels[i].id) === Number(currentChannel.id)) {
           return channels[i].roomname
         }
       }
       return null;
     }
+
+    let menuProps = [];
+    if (!currentChannel.bidirectional) {
+      menuProps.push({
+        label: 'Invite People',
+        onClick: () => this.setState({inviteUsersModalShown: true})
+      })
+    }
+
+    if ((Number(currentChannel.creatorId) === Number(userId)) && !currentChannel.bidirectional) {
+      menuProps.push({
+        label: 'Edit Title',
+        onClick: () => console.log("edit channel title")
+      })
+    }
+
+    if (menuProps.length > 0) {
+      menuProps.push({
+        separator: true
+      })
+    }
+
+    menuProps.push({
+      label: `Leave ${currentChannel.bidirectional ? 'Chat' : 'Channel'}`,
+      onClick: () => console.log("leave channel")
+    })
+
     return (
       <div style={{display: 'flex', height: '88%'}}>
         {createNewChannelModalShown &&
@@ -106,6 +136,12 @@ export default class Chat extends Component {
             userId={userId}
             onHide={() => this.setState({createNewChannelModalShown: false})}
             onDone={this.onCreateNewChannel}
+          />
+        }
+        {inviteUsersModalShown &&
+          <InviteUsersModal
+            show
+            onHide={() => this.setState({inviteUsersModalShown: false})}
           />
         }
         <div
@@ -172,21 +208,19 @@ export default class Chat extends Component {
             top: 0
           }}
         >
-          <button
-            className="btn btn-default btn-sm"
+          <SmallDropdownButton
             style={{
               position: "absolute",
               zIndex: 100,
-              opacity: 0.7,
               top: "0px",
               right: "0px"
             }}
-          >
-            <span className="glyphicon glyphicon-align-justify" />
-          </button>
+            shape="button"
+            menuProps={menuProps}
+          />
           <MessagesContainer
             ref="messagesContainer"
-            currentChannelId={this.props.currentChannelId}
+            currentChannelId={this.props.currentChannel.id}
             loadMoreButton={this.props.loadMoreButton}
             messages={this.props.messages}
             userId={this.props.userId}
@@ -210,7 +244,7 @@ export default class Chat extends Component {
   }
 
   renderChannels() {
-    const {userId, currentChannelId, channels} = this.props;
+    const {userId, currentChannel, channels} = this.props;
     return channels.map(channel => {
       const {lastMessageSender, lastMessage, id, roomname, numUnreads} = channel;
       return (
@@ -218,7 +252,7 @@ export default class Chat extends Component {
           className="media chat-channel-item container-fluid"
           style={{
             width: '100%',
-            backgroundColor: id == currentChannelId && '#f7f7f7',
+            backgroundColor: id == currentChannel.id && '#f7f7f7',
             cursor: 'pointer',
             padding: '1em',
             marginTop: '0px'
@@ -261,12 +295,12 @@ export default class Chat extends Component {
       submitMessage,
       userId,
       username,
-      currentChannelId,
+      currentChannel,
       createBidirectionalChannel,
       chatPartnerId
     } = this.props;
 
-    if (currentChannelId === 0) {
+    if (currentChannel.id === 0) {
       return createBidirectionalChannel({message, userId, chatPartnerId}, chat => {
         if (chat.alreadyExists) {
           let {message, messageId} = chat.alreadyExists;
@@ -290,7 +324,7 @@ export default class Chat extends Component {
       userid: userId,
       username,
       content: message,
-      channelId: currentChannelId
+      channelId: currentChannel.id
     }
     submitMessage(params, message => {
       socket.emit('new chat message', message);
