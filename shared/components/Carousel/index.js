@@ -85,6 +85,10 @@ export default class Carousel extends Component {
     this.getTweeningValue = this.getTweeningValue.bind(this);
   }
 
+  componentWillMount() {
+    setInitialDimensions.call(this)
+  }
+
   componentDidMount() {
     setDimensions.call(this);
     bindListeners.call(this);
@@ -210,7 +214,7 @@ export default class Carousel extends Component {
           {...getTouchEvents.call(this)}
           {...getMouseEvents.call(this)}
           onClick={handleClick.bind(this)}>
-          <ul ref="slider" className="slider-list" ref="list" style={getListStyles.call(this)}>
+          <ul className="slider-list" ref="list" style={getListStyles.call(this)}>
             {children}
           </ul>
         </div>

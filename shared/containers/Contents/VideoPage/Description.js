@@ -52,7 +52,7 @@ export default class Description extends Component {
           style={{paddingBottom: '1em'}}
         >
           {uploaderId == userId && !onEdit &&
-            <SmallDropdownButton menuProps={menuProps} />
+            <SmallDropdownButton shape="button" icon="pencil" menuProps={menuProps} />
           }
           <div>
             {onEdit ?

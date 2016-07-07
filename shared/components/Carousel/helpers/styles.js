@@ -80,6 +80,24 @@ export function formatChildren(children) {
   });
 }
 
+export function setInitialDimensions() {
+  var self = this, slideWidth, frameHeight, slideHeight;
+
+  slideWidth = this.props.initialSlideWidth || 0;
+  slideHeight = this.props.initialSlideHeight ? this.props.initialSlideHeight * this.props.slidesToShow : 0;
+
+  frameHeight = slideHeight + ((this.props.cellSpacing / 2) * (this.props.slidesToShow - 1));
+
+  this.setState({
+    frameWidth: '100%',
+    slideCount: React.Children.count(this.props.children),
+    slideWidth: slideWidth
+  }, function() {
+    self.setLeft.call(self);
+    self.setExternalData.call(self);
+  });
+}
+
 export function setDimensions() {
   var self = this,
     slideWidth,

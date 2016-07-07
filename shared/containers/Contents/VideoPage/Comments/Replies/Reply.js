@@ -34,7 +34,13 @@ export default class Reply extends Component {
       >
         {userIsOwner && !onEdit &&
           <SmallDropdownButton
-            rightMargin='3em'
+            shape="button"
+            icon="pencil"
+            style={{
+              position: 'absolute',
+              right: '0px',
+              marginRight: '3em'
+            }}
             menuProps={[
               {
                 label: "Edit",
