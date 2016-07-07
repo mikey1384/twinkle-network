@@ -92,8 +92,8 @@ export default class PlaylistCarousel extends Component {
         </div>
         <Carousel
           progressBar={false}
-          slidesToShow={5}
-          slidesToScroll={5}
+          slidesToShow={7}
+          slidesToScroll={7}
           cellSpacing={20}
           dragging={true}
         >

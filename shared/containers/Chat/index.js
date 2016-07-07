@@ -44,8 +44,8 @@ export default class Chat extends Component {
       receiveFirstMsg} = props;
 
     socket.on('incoming message', data => {
-      let messageIsForCurrentChannel = String(data.channelId) === String(this.props.currentChannelId);
-      let senderIsNotTheUser = String(data.userid) !== String(this.props.userId);
+      let messageIsForCurrentChannel = Number(data.channelId) === Number(this.props.currentChannelId);
+      let senderIsNotTheUser = Number(data.userid) !== Number(this.props.userId);
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
         receiveMessage(data)
       }
@@ -130,9 +130,13 @@ export default class Chat extends Component {
                   whiteSpace: 'nowrap',
                   textOverflow:'ellipsis',
                   overflow:'hidden',
-                  lineHeight: 'normal'
+                  lineHeight: 'normal',
+                  marginBottom: '0px'
                 }}
               >{channelName()}</h4>
+              <small><a style={{
+                cursor: 'pointer'
+              }}>1/5</a> online</small>
             </div>
             <button
               className="btn btn-default btn-sm pull-right"
@@ -168,6 +172,18 @@ export default class Chat extends Component {
             top: 0
           }}
         >
+          <button
+            className="btn btn-default btn-sm"
+            style={{
+              position: "absolute",
+              zIndex: 100,
+              opacity: 0.7,
+              top: "0px",
+              right: "0px"
+            }}
+          >
+            <span className="glyphicon glyphicon-align-justify" />
+          </button>
           <MessagesContainer
             ref="messagesContainer"
             currentChannelId={this.props.currentChannelId}
