@@ -9,7 +9,6 @@ module.exports = {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/\\/g, '\\\\');
     return processedString;
   },
   processedString(string) {
@@ -18,7 +17,6 @@ module.exports = {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/\\/g, '\\\\')
     .replace(/\r?\n/g, '<br>')
     .replace(regex,"<a href=\"$1\" target=\"_blank\">$1</a>");
     var newString = "";
