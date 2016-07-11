@@ -48,10 +48,20 @@ export default class CreateNewChatModal extends Component {
             selectedUsers={selectedUsers}
             onAddUser={this.onAddUser}
             onRemoveUser={this.onRemoveUser}
-            onChange={this.onChannelNameInput}
-            userId={userId}
             numSelected={selectedUsers.length}
-          />
+          >
+            {selectedUsers.length > 1 &&
+              <div className="form-group">
+                <label>Channel name</label>
+                <input
+                  className="form-control"
+                  placeholder="Enter channel name"
+                  value={channelName}
+                  onChange={event => this.onChannelNameInput(event.target.value)}
+                />
+              </div>
+            }
+          </TagPeopleForm>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onHide}>Cancel</Button>

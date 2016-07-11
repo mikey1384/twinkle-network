@@ -4,7 +4,9 @@ import {Modal} from 'react-bootstrap';
 export default function UserListModal(props) {
   return (
     <Modal
-      {...props}
+      style={props.style}
+      show={props.show}
+      onHide={props.onHide}
       animation={false}
       bsSize="sm"
     >
@@ -31,10 +33,8 @@ export default function UserListModal(props) {
   )
 
   function renderList() {
-    const { users, userId } = props;
-    const otherUsers = users.filter(user => {
-      return (user.userId == userId) ? false : true;
-    })
+    const {users, userId} = props;
+    const otherUsers = users.filter(user => Number(user.userId) !== Number(userId))
     let userArray = [];
     for (let i = 0; i < users.length; i++) {
       if (users[i].userId == userId) userArray.push(users[i])

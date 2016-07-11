@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Modal, Button} from 'react-bootstrap';
 import TagPeopleForm from 'components/TagPeopleForm';
 import {connect} from 'react-redux';
-import {clearSearchResults} from 'redux/actions/ChatActions';
+import {clearSearchResults, searchUserToInviteAsync} from 'redux/actions/ChatActions';
 
 
 @connect(
@@ -10,16 +10,20 @@ import {clearSearchResults} from 'redux/actions/ChatActions';
     searchResult: state.ChatReducer.searchResult
   }),
   {
-    clearSearchResults
+    clearSearchResults,
+    searchUserToInvite: searchUserToInviteAsync
   }
 )
 export default class InviteUsersModal extends Component {
   render() {
-    const {clearSearchResults, userId, searchResult, onHide} = this.props;
+    const {clearSearchResults, searchUserToInvite, searchResult, onHide, style, currentMembers, show} = this.props;
     const selectedUsers = [];
+    const currentMembersUID = currentMembers.map(member => member.userid);
     return (
       <Modal
-        {...this.props}
+        show={show}
+        style={style}
+        onHide={onHide}
         animation={false}
       >
         <Modal.Header closeButton>
@@ -28,13 +32,12 @@ export default class InviteUsersModal extends Component {
         <Modal.Body>
           <TagPeopleForm
             searchResult={searchResult}
-            filter={result => result.id !== userId}
-            onSearch={this.onSearch}
+            filter={result => currentMembersUID.indexOf(result.id) === -1}
+            onSearch={searchUserToInvite}
             onClear={clearSearchResults}
             selectedUsers={selectedUsers}
             onAddUser={this.onAddUser}
             onRemoveUser={this.onRemoveUser}
-            userId={userId}
             numSelected={selectedUsers.length}
           />
         </Modal.Body>
@@ -43,10 +46,6 @@ export default class InviteUsersModal extends Component {
         </Modal.Footer>
       </Modal>
     )
-  }
-
-  onSearch() {
-    console.log("on search")
   }
 
   onAddUser() {

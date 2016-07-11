@@ -238,8 +238,8 @@ export const createNewChannelAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/channel`, {params}, auth())
 .then(
   response => {
-    dispatch(createNewChannel(response.data.message))
-    callback(response.data.message)
+    dispatch(createNewChannel(response.data))
+    callback(response.data)
   }
 ).catch(
   error => {

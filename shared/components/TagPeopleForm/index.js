@@ -23,12 +23,11 @@ export default class CreateNewChannelForm extends Component {
     const {
       numSelected,
       searchResult,
-      userId,
-      onChange,
       onClear,
       channelName,
       selectedUsers,
-      filter } = this.props;
+      filter,
+      children } = this.props;
     const {searchText} = this.state;
     const filteredResults = searchResult.filter(filter);
     return (
@@ -37,6 +36,7 @@ export default class CreateNewChannelForm extends Component {
           <label>People</label>
           {this.renderTags()}
           <TagPeopleInput
+            autoFocus
             value={searchText}
             onChange={this.onUserSearch}
             onClickOutSide={() => {
@@ -48,17 +48,7 @@ export default class CreateNewChannelForm extends Component {
             onAddUser={this.onAddUser}
           />
         </div>
-        { numSelected > 1 &&
-          <div className="form-group">
-            <label>Channel name</label>
-            <input
-              className="form-control"
-              placeholder="Enter channel name"
-              value={channelName}
-              onChange={event => onChange(event.target.value)}
-            />
-          </div>
-        }
+        {children}
       </form>
     )
   }

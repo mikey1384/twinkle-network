@@ -22,6 +22,7 @@ class TagPeopleInput extends Component {
           <span className="glyphicon glyphicon-search"></span>
         </span>
         <input
+          autoFocus={this.props.autoFocus}
           value={this.props.value}
           className="form-control"
           placeholder="Search and select people you want to chat with"

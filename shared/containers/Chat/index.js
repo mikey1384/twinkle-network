@@ -7,6 +7,7 @@ import * as ChatActions from 'redux/actions/ChatActions';
 import ChatInput from './ChatInput';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import InviteUsersModal from './Modals/InviteUsers';
+import UserListModal from 'components/Modals/UserListModal';
 import {cleanStringWithURL} from 'helpers/StringHelper';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 
@@ -37,8 +38,11 @@ export default class Chat extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      currentChannelOnline: 1,
       createNewChannelModalShown: false,
-      inviteUsersModalShown: false
+      inviteUsersModalShown: false,
+      userListModalShown: false,
+      membersOnline: []
     }
     const {
       socket,
@@ -59,6 +63,34 @@ export default class Chat extends Component {
     socket.on('incoming chat invitation', data => {
       receiveFirstMsg(data);
       socket.emit('join chat channel', data.roomid);
+    })
+    socket.on('change in channel members online', data => {
+      let {membersOnline} = this.state;
+      let changeIsForCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
+      if (changeIsForCurrentChannel) {
+        this.setState({currentChannelOnline: data.members.length})
+      }
+      let channelObjectExists = false;
+      for (let i = 0; i < membersOnline.length; i++) {
+        if (Number(membersOnline[i].channelId) === Number(data.channelId)) {
+          channelObjectExists = true;
+          break;
+        }
+      }
+      if (channelObjectExists) {
+        this.setState({
+          membersOnline: membersOnline.map(elem => {
+            if (Number(elem.channelId) === Number(data.channelId)) {
+              elem.members = data.members
+            }
+            return elem;
+          })
+        })
+      } else {
+        this.setState({
+          membersOnline: membersOnline.concat([data])
+        })
+      }
     })
     this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
     this.onNewButtonClick = this.onNewButtonClick.bind(this)
@@ -92,7 +124,7 @@ export default class Chat extends Component {
 
   render() {
     const {channels, currentChannel, userId} = this.props;
-    const {createNewChannelModalShown, inviteUsersModalShown} = this.state;
+    const {createNewChannelModalShown, inviteUsersModalShown, userListModalShown, membersOnline} = this.state;
     const channelName = () => {
       for (let i = 0; i < channels.length; i ++) {
         if (Number(channels[i].id) === Number(currentChannel.id)) {
@@ -142,6 +174,15 @@ export default class Chat extends Component {
           <InviteUsersModal
             show
             onHide={() => this.setState({inviteUsersModalShown: false})}
+            currentMembers={currentChannel.members}
+          />
+        }
+        {userListModalShown &&
+          <UserListModal
+            show
+            onHide={() => this.setState({userListModalShown: false})}
+            users={currentChannel.members.map(member => ({username: member.username, userId: member.userid}))}
+            userId={userId}
           />
         }
         <div
@@ -170,9 +211,13 @@ export default class Chat extends Component {
                   marginBottom: '0px'
                 }}
               >{channelName()}</h4>
-              <small><a style={{
-                cursor: 'pointer'
-              }}>1/5</a> online</small>
+              <small>
+                <a
+                  style={{
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => this.setState({userListModalShown: true})}
+                >{this.renderNumberOfMembers()}</a> online</small>
             </div>
             <button
               className="btn btn-default btn-sm pull-right"
@@ -289,6 +334,13 @@ export default class Chat extends Component {
     })
   }
 
+  renderNumberOfMembers() {
+    const {currentChannel} = this.props;
+    const {currentChannelOnline} = this.state;
+    const numberOfMembers = currentChannel.members.length;
+    return `${currentChannelOnline}${numberOfMembers === 0 ? '' : '/' + numberOfMembers}`
+  }
+
   onMessageSubmit(message) {
     const {
       socket,
@@ -337,8 +389,15 @@ export default class Chat extends Component {
 
   onChannelEnter(id) {
     const {enterChannel, enterEmptyBidirectionalChat} = this.props;
+    const {membersOnline} = this.state;
     if (id === 0) {
+      this.setState({currentChannelOnline: 1})
       return enterEmptyBidirectionalChat()
+    }
+    for (let i = 0; i < membersOnline.length; i++) {
+      if (Number(membersOnline[i].channelId) === Number(id)) {
+        this.setState({currentChannelOnline: membersOnline[i].members.length})
+      }
     }
     enterChannel(id)
   }

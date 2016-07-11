@@ -164,12 +164,30 @@ router.get('/channel', requireAuth, (req, res) => {
       if (err.status) return res.status(err.status).send({error: err})
       return res.status(500).send({error: err})
     }
-    pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+
+    async.parallel([
+      callback => {
+        pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+          callback(err, rows[0])
+        })
+      },
+      callback => {
+        let query = [
+          'SELECT a.userid, b.username FROM ',
+          'msg_chatroom_members a JOIN users b ON ',
+          'a.userid = b.id WHERE a.roomid = ?'
+        ].join('')
+        pool.query(query, channelId, (err, rows) => {
+          callback(err, rows)
+        })
+      }
+    ], (err, results) => {
       res.send({
         currentChannel: {
           id: channelId,
-          bidirectional: Boolean(rows[0].bidirectional),
-          creatorId: rows[0].creator
+          bidirectional: Boolean(results[0].bidirectional),
+          creatorId: results[0].creator,
+          members: results[1]
         },
         messages
       })
@@ -219,7 +237,7 @@ router.post('/channel', requireAuth, (req, res) => {
 
   async.waterfall([
     callback => {
-      pool.query('INSERT INTO msg_chatrooms SET ?', {roomname}, (err, result) => {
+      pool.query('INSERT INTO msg_chatrooms SET ?', {roomname, creator: user.id}, (err, result) => {
         callback(err, result.insertId)
       })
     },
@@ -265,8 +283,7 @@ router.post('/channel', requireAuth, (req, res) => {
       updateLastRead({userId: user.id, channelId, time})
     },
     (message, callback) => {
-      const roomId = message.roomid;
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: roomId}, user.id], err => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: message.roomid}, user.id], err => {
         callback(err, message)
       })
     }
@@ -275,7 +292,14 @@ router.post('/channel', requireAuth, (req, res) => {
       console.error(err);
       return res.status(500).send({error: err})
     }
-    res.send({message})
+    let query = [
+      'SELECT a.userid, b.username FROM ',
+      'msg_chatroom_members a JOIN users b ON ',
+      'a.userid = b.id WHERE a.roomid = ?'
+    ].join('')
+    pool.query(query, message.roomid, (err, rows) => {
+      res.send({message, members: rows})
+    })
   })
 })
 
@@ -353,13 +377,21 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
       console.error(err);
       return res.status(500).send({error: err})
     }
-    res.send({
-      messageId: String(messageId),
-      roomid: String(roomId),
-      userid: String(user.id),
-      username: user.username,
-      content: firstMessage,
-      timeposted: Math.floor(Date.now()/1000)
+    let query = [
+      'SELECT a.userid, b.username FROM ',
+      'msg_chatroom_members a JOIN users b ON ',
+      'a.userid = b.id WHERE a.roomid = ?'
+    ].join('')
+    pool.query(query, roomId, (err, rows) => {
+      res.send({
+        messageId,
+        roomid: roomId,
+        userid: user.id,
+        username: user.username,
+        content: firstMessage,
+        members: rows,
+        timeposted: Math.floor(Date.now()/1000)
+      })
     })
   })
 })

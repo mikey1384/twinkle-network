@@ -73,11 +73,28 @@ const fetchChat = (params, callback) => {
         }
       })
 
-      pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+      async.parallel([
+        callback => {
+          pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+            callback(err, rows[0])
+          })
+        },
+        callback => {
+          let query = [
+            'SELECT a.userid, b.username FROM ',
+            'msg_chatroom_members a JOIN users b ON ',
+            'a.userid = b.id WHERE a.roomid = ?'
+          ].join('')
+          pool.query(query, channelId, (err, rows) => {
+            callback(err, rows)
+          })
+        }
+      ], (err, res) => {
         const channel = {
           id: channelId,
-          bidirectional: Boolean(rows[0].bidirectional),
-          creatorId: rows[0].creator
+          bidirectional: Boolean(res[0].bidirectional),
+          creatorId: res[0].creator,
+          members: res[1]
         }
         if (results) results.push(channel);
         callback(err, results)

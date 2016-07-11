@@ -47,14 +47,17 @@ export default class Header extends Component {
         default: return;
       }
     })
-    socket.on('disconnect', function () {
+    socket.on('disconnect', () => {
       turnChatOff()
     })
     this.handleClick = this.handleClick.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    const {getNumberOfUnreadMessages} = this.props;
+    const {getNumberOfUnreadMessages, socket} = this.props;
+    if (nextProps.userId && !this.props.userId) {
+      socket.emit('associate user id to socket id', nextProps.userId);
+    }
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
       getNumberOfUnreadMessages()
     }

@@ -93,8 +93,8 @@ export function setInitialDimensions() {
     slideCount: React.Children.count(this.props.children),
     slideWidth: slideWidth
   }, function() {
-    self.setLeft.call(self);
-    self.setExternalData.call(self);
+    setLeft.call(self);
+    setExternalData.call(self);
   });
 }
 

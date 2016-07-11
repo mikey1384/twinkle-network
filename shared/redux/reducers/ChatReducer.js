@@ -218,26 +218,28 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: [{
-          id: action.data.roomid,
-          roomname: action.data.roomname,
-          lastMessage: action.data.content,
-          lastUpdate: action.data.timeposted,
+          id: action.data.message.roomid,
+          roomname: action.data.message.roomname,
+          lastMessage: action.data.message.content,
+          lastUpdate: action.data.message.timeposted,
           lastMessageSender: {
-            id: action.data.userid,
-            username: action.data.username
+            id: action.data.message.userid,
+            username: action.data.message.username
           }
         }].concat(state.channels),
         currentChannel: {
-          id: action.data.roomid,
-          bidirectional: false
+          id: action.data.message.roomid,
+          bidirectional: false,
+          creatorId: action.data.message.userid,
+          members: action.data.members
         },
         messages: [{
-          id: action.data.messageId,
-          roomid: action.data.roomid,
-          content: action.data.content,
-          timeposted: action.data.timeposted,
-          username: action.data.username,
-          isNotification: action.data.isNotification
+          id: action.data.message.messageId,
+          roomid: action.data.message.roomid,
+          content: action.data.message.content,
+          timeposted: action.data.message.timeposted,
+          username: action.data.message.username,
+          isNotification: action.data.message.isNotification
         }],
         loadMoreButton: false
       }
@@ -261,7 +263,9 @@ export default function ChatReducer(state = defaultState, action) {
         }),
         currentChannel: {
           id: action.data.roomid,
-          bidirectional: true
+          bidirectional: true,
+          creatorId: action.data.userid,
+          members: action.data.members
         },
         messages: [{
           id: action.data.messageId,

@@ -16,7 +16,6 @@ import {
   setInitialDimensions,
   setDimensions,
   setExternalData } from './helpers/styles';
-import {onResize, onReadyStateChange} from './helpers/listeners';
 import {
   goToSlide,
   nextSlide,
@@ -83,6 +82,8 @@ export default class Carousel extends Component {
     }
     this.rafCb = this.rafCb.bind(this);
     this.getTweeningValue = this.getTweeningValue.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.onReadyStateChange = this.onReadyStateChange.bind(this);
   }
 
   componentWillMount() {
@@ -96,8 +97,8 @@ export default class Carousel extends Component {
 
     function bindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
-        addEvent(window, 'resize', onResize.bind(this));
-        addEvent(document, 'readystatechange', onReadyStateChange.bind(this));
+        addEvent(window, 'resize', this.onResize);
+        addEvent(document, 'readystatechange', this.onReadyStateChange);
       }
 
       function addEvent(elem, type, eventHandle) {
@@ -139,12 +140,12 @@ export default class Carousel extends Component {
 
     function unbindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
-        removeEvent(window, 'resize', onResize);
-        removeEvent(document, 'readystatechange', onReadyStateChange);
+        removeEvent(window, 'resize', this.onResize);
+        removeEvent(document, 'readystatechange', this.onReadyStateChange);
       }
 
       function removeEvent(elem, type, eventHandle) {
-        if (elem === null || typeof (elem) === 'undefined') {
+        if (elem === null || typeof elem === 'undefined') {
           return;
         }
         if (elem.removeEventListener) {
@@ -368,5 +369,15 @@ export default class Carousel extends Component {
     });
 
     this.rafID = requestAnimationFrame(this.rafCb);
+  }
+
+  onResize() {
+    if (!this.props.chatMode) {
+      setDimensions.call(this);
+    }
+  }
+
+  onReadyStateChange() {
+    setDimensions.call(this);
   }
 }
