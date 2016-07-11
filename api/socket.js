@@ -15,13 +15,14 @@ module.exports = function(io) {
       socket.join('chatChannel' + channelId)
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
         if (error) throw error;
-        const members = clients.map(client => {
+        let members = clients.map(client => {
           for (let i = 0; i < connections.length; i++) {
             if (connections[i].socketId === client) {
               return connections[i].userId;
             }
           }
         })
+        members = Array.from(new Set(members));
         let data = {channelId, members}
         io.to('chatChannel' + channelId).emit('change in channel members online', data);
       });
