@@ -64,9 +64,9 @@ export const increaseNumberOfUnreadMessages = () => ({
   type: 'INCREASE_NUM_UNREAD_MSGS'
 })
 
-export const openDirectMessage = (targetId, targetUsername) => dispatch => {
+export const openDirectMessage = (user, partner) => dispatch => {
   let cb = dispatch => {
-    dispatch(checkChannelExistsAsync(targetId, targetUsername, () => dispatch(turnChatOn())))
+    dispatch(checkChannelExistsAsync(user, partner, () => dispatch(turnChatOn())))
   }
   dispatch(initChatAsync(cb))
 }

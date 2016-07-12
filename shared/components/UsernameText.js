@@ -4,6 +4,7 @@ import {checkChannelExistsAsync, openDirectMessage} from 'redux/actions/ChatActi
 
 @connect(
   state => ({
+    username: state.UserReducer.username,
     userId: state.UserReducer.userId
   }),
   {openDirectMessage}
@@ -57,9 +58,9 @@ export default class UsernameText extends Component {
   }
 
   onLinkClick() {
-    const {openDirectMessage, user, userId} = this.props;
+    const {openDirectMessage, user, userId, username} = this.props;
     if (Number(user.id) !== Number(userId)) {
-      openDirectMessage(user.id, user.name)
+      openDirectMessage({userId, username}, {userId: user.id, username: user.name})
     }
   }
 }
