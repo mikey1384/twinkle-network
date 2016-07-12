@@ -75,6 +75,7 @@ module.exports = function(io) {
         }
         for (let i = 0; i < channels.length; i++) {
           let channelId = channels[i];
+          console.log(channelId);
           socket.join('chatChannel' + channelId);
           notifyChannelMembersChanged(channelId);
         }
