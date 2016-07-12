@@ -178,18 +178,28 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         channels: [{
           id: 0,
-          roomname: action.username,
+          roomname: action.partner.username,
           lastMessage: null,
           lastUpdate: null,
           lastMessageSender: null
         }].concat(filteredChannel),
         currentChannel: {
           id: 0,
-          bidirectional: true
+          bidirectional: true,
+          members: [
+            {
+              username: action.user.username,
+              userid: action.user.userId
+            },
+            {
+              username: action.partner.username,
+              userid: action.partner.userId
+            }
+          ]
         },
         messages: [],
         loadMoreButton: false,
-        chatPartnerId: action.userId
+        chatPartnerId: action.partner.userId
       }
     case 'IF_BIDIRECTIONAL_CHANNEL_EXISTS':
       return {

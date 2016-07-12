@@ -12,6 +12,7 @@ import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import {GENERAL_CHAT_ID} from 'constants/database';
 
 @connect(
   state => ({
@@ -35,28 +36,35 @@ import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 export default class Header extends Component {
   constructor(props) {
     super()
+
     this.state = {
       tabClicked: false
     }
+
+    this.handleClick = this.handleClick.bind(this)
+
     const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
-    socket.on('incoming notification', data => {
-      switch(data.type) {
-        case 'message':
-          increaseNumberOfUnreadMessages();
-          break;
-        default: return;
+    socket.on('NOTIFICATION', data => {
+      console.log(data);
+    })
+    socket.on('RECEIVE_MESSAGE', data => {
+      if (Number(data.channelId) !== GENERAL_CHAT_ID) {
+        increaseNumberOfUnreadMessages()
       }
+    })
+    socket.on('CHAT_INVITATION', data => {
+      socket.emit('JOIN_CHAT_CHANNEL', data.roomid);
+      increaseNumberOfUnreadMessages();
     })
     socket.on('disconnect', () => {
       turnChatOff()
     })
-    this.handleClick = this.handleClick.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
     const {getNumberOfUnreadMessages, socket} = this.props;
     if (nextProps.userId && !this.props.userId) {
-      socket.emit('associate user id to socket id', nextProps.userId);
+      socket.emit('BIND_UID_TO_SOCKET', nextProps.userId);
     }
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
       getNumberOfUnreadMessages()
@@ -69,8 +77,8 @@ export default class Header extends Component {
   componentDidUpdate(prevProps) {
     const {socket, userId} = this.props;
     if (userId !== prevProps.userId) {
-      if (prevProps.userId !== null) socket.emit('leave my notification channel', prevProps.userId);
-      socket.emit('enter my notification channel', userId);
+      if (prevProps.userId !== null) socket.emit('LEAVE_MY_NOTIFICATION_CHANNEL', prevProps.userId);
+      socket.emit('ENTER_MY_NOTIFICATION_CHANNEL', userId);
     }
   }
 

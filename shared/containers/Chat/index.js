@@ -44,30 +44,20 @@ export default class Chat extends Component {
       userListModalShown: false,
       membersOnline: []
     }
-    const {
-      socket,
-      receiveMessage,
-      receiveMessageOnDifferentChannel,
-      receiveFirstMsg} = props;
 
-    socket.on('incoming message', data => {
-      let messageIsForCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
-      let senderIsNotTheUser = Number(data.userid) !== Number(this.props.userId);
-      if (messageIsForCurrentChannel && senderIsNotTheUser) {
-        receiveMessage(data)
-      }
-      if (!messageIsForCurrentChannel) {
-        receiveMessageOnDifferentChannel(data)
-      }
-    })
-    socket.on('incoming chat invitation', data => {
-      receiveFirstMsg(data);
-      socket.emit('join chat channel', data.roomid);
-    })
-    socket.on('change in channel members online', data => {
+    this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
+    this.onNewButtonClick = this.onNewButtonClick.bind(this)
+    this.onMessageSubmit = this.onMessageSubmit.bind(this)
+    this.onReceiveMessage = this.onReceiveMessage.bind(this)
+    this.onChatInvitation = this.onChatInvitation.bind(this)
+
+    const {socket} = props;
+    socket.on('RECEIVE_MESSAGE', this.onReceiveMessage)
+    socket.on('CHAT_INVITATION', this.onChatInvitation)
+    socket.on('CHANGE_IN_MEMBERS_ONLINE', data => {
       let {membersOnline} = this.state;
-      let changeIsForCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
-      if (changeIsForCurrentChannel) {
+      let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
+      if (forCurrentChannel) {
         this.setState({currentChannelOnline: data.members.length})
       }
       let channelObjectExists = false;
@@ -92,16 +82,40 @@ export default class Chat extends Component {
         })
       }
     })
-    this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
-    this.onNewButtonClick = this.onNewButtonClick.bind(this)
-    this.onMessageSubmit = this.onMessageSubmit.bind(this)
   }
 
   componentWillMount() {
     const {socket, channels} = this.props;
     for (let i = 0; i < channels.length; i ++) {
       let channelId = channels[i].id;
-      socket.emit('join chat channel', channelId);
+      socket.emit('CHECK_ONLINE_MEMBERS', channelId, (err, data) => {
+        let {membersOnline} = this.state;
+        let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
+        if (forCurrentChannel) {
+          this.setState({currentChannelOnline: data.members.length})
+        }
+        let channelObjectExists = false;
+        for (let i = 0; i < membersOnline.length; i++) {
+          if (Number(membersOnline[i].channelId) === Number(data.channelId)) {
+            channelObjectExists = true;
+            break;
+          }
+        }
+        if (channelObjectExists) {
+          this.setState({
+            membersOnline: membersOnline.map(elem => {
+              if (Number(elem.channelId) === Number(data.channelId)) {
+                elem.members = data.members
+              }
+              return elem;
+            })
+          })
+        } else {
+          this.setState({
+            membersOnline: membersOnline.concat([data])
+          })
+        }
+      });
     }
   }
 
@@ -113,12 +127,9 @@ export default class Chat extends Component {
 
   componentWillUnmount() {
     const {socket, channels, onUnmount} = this.props;
-    for (let i = 0; i < channels.length; i++) {
-      let channelId = channels[i].id;
-      socket.emit('leave chat channel', channelId)
-    }
-    socket.removeListener('incoming message');
-    socket.removeListener('incoming chat invitation');
+    socket.removeListener('RECEIVE_MESSAGE', this.onReceiveMessage);
+    socket.removeListener('CHAT_INVITATION', this.onChatInvitation);
+    socket.removeListener('CHANGE_IN_MEMBERS_ONLINE');
     onUnmount();
   }
 
@@ -356,8 +367,8 @@ export default class Chat extends Component {
       return createBidirectionalChannel({message, userId, chatPartnerId}, chat => {
         if (chat.alreadyExists) {
           let {message, messageId} = chat.alreadyExists;
-          socket.emit('join chat channel', message.roomid);
-          socket.emit('new chat message', {
+          socket.emit('JOIN_CHAT_CHANNEL', message.roomid);
+          socket.emit('NEW_CHAT_MESSAGE', {
             userid: userId,
             username,
             content: message.content,
@@ -367,8 +378,8 @@ export default class Chat extends Component {
           })
           return;
         }
-        socket.emit('join chat channel', String(chat.roomid));
-        socket.emit('invite user to bidirectional chat', chatPartnerId, chat);
+        socket.emit('JOIN_CHAT_CHANNEL', String(chat.roomid));
+        socket.emit('SEND_BI_CHAT_INVITATION', chatPartnerId, chat);
       })
     }
 
@@ -379,7 +390,7 @@ export default class Chat extends Component {
       channelId: currentChannel.id
     }
     submitMessage(params, message => {
-      socket.emit('new chat message', message);
+      socket.emit('NEW_CHAT_MESSAGE', message);
     })
   }
 
@@ -394,31 +405,51 @@ export default class Chat extends Component {
       this.setState({currentChannelOnline: 1})
       return enterEmptyBidirectionalChat()
     }
+    let currentChannelOnline = 1;
     for (let i = 0; i < membersOnline.length; i++) {
       if (Number(membersOnline[i].channelId) === Number(id)) {
-        this.setState({currentChannelOnline: membersOnline[i].members.length})
+        currentChannelOnline = membersOnline[i].members.length;
       }
     }
-    enterChannel(id)
+    enterChannel(id, () => this.setState({currentChannelOnline}))
   }
 
   onCreateNewChannel(params) {
-    const {checkChannelExists, createNewChannel, socket} = this.props;
+    const {checkChannelExists, createNewChannel, socket, username, userId} = this.props;
     if (params.selectedUsers.length === 1) {
-      const {userId, username} = params.selectedUsers[0];
-      return checkChannelExists(userId, username, () => {
+      const partner = params.selectedUsers[0];
+      return checkChannelExists({username, userId}, partner, () => {
         this.setState({createNewChannelModalShown: false})
       })
     }
 
-    createNewChannel(params, message => {
+    createNewChannel(params, data => {
       const users = params.selectedUsers.map(user => {
         return user.userId;
       })
-      socket.emit('join chat channel', String(message.roomid));
-      socket.emit('invite users to group channel', users, message);
+      socket.emit('JOIN_CHAT_CHANNEL', data.message.roomid);
+      socket.emit('SEND_GROUP_CHAT_INVITATION', users, data);
       this.setState({createNewChannelModalShown: false})
       ReactDOM.findDOMNode(this.refs.chatInput).focus()
     })
+  }
+
+  onReceiveMessage(data) {
+    const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props;
+    let messageIsForCurrentChannel = Number(data.channelId) === Number(currentChannel.id);
+    let senderIsNotTheUser = Number(data.userid) !== Number(userId);
+    if (messageIsForCurrentChannel && senderIsNotTheUser) {
+      receiveMessage(data)
+    }
+    if (!messageIsForCurrentChannel) {
+      console.log(currentChannel.id)
+      receiveMessageOnDifferentChannel(data)
+    }
+  }
+
+  onChatInvitation(data) {
+    const {receiveFirstMsg, socket} = this.props;
+    receiveFirstMsg(data);
+    socket.emit('JOIN_CHAT_CHANNEL', data.roomid);
   }
 }

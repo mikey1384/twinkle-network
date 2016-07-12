@@ -138,15 +138,18 @@ export const submitMessageAsync = (params, callback) => dispatch => {
   )
 }
 
-export const enterChannel = (data) => ({
+export const enterChannel = (data, currentChannelOnline) => ({
   type: 'ENTER_CHANNEL',
   data
 })
 
-export const enterChannelAsync = channelId => dispatch =>
+export const enterChannelAsync = (channelId, callback) => dispatch =>
 request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
 .then(
-  response => dispatch(enterChannel(response.data))
+  response => {
+    dispatch(enterChannel(response.data));
+    callback();
+  }
 ).catch(
   error => {
     console.error(error)
@@ -158,21 +161,21 @@ export const enterEmptyBidirectionalChat = () => ({
   type: 'ENTER_EMPTY_BIDIRECTIONAL_CHAT'
 })
 
-export const openBidirectionalChat = (userId, username) => ({
+export const openBidirectionalChat = (user, partner) => ({
   type: 'OPEN_BIDIRECTIONAL_CHAT',
-  userId,
-  username
+  user,
+  partner
 })
 
-export const checkChannelExistsAsync = (userId, username, callback) => dispatch =>
-request.get(`${API_URL}/channel/check?partnerId=${userId}`, auth())
+export const checkChannelExistsAsync = (user, partner, callback) => dispatch =>
+request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth())
 .then(
   response => {
     if (callback) callback();
     if (response.data.channelExists) {
       dispatch(enterChannelAsync(response.data.channelId))
     } else {
-      dispatch(openBidirectionalChat(userId, username))
+      dispatch(openBidirectionalChat(user, partner))
     }
   }
 ).catch(
