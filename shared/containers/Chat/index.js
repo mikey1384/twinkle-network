@@ -359,12 +359,10 @@ export default class Chat extends Component {
     const {myChannels} = this.state;
 
     if (Number(user.userId) === Number(userId)) return '(You)';
-    console.log(myChannels
-      .filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0]
-      .membersOnline.map(member => member.userId))
+
     const result = myChannels
       .filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0]
-      .membersOnline.map(member => member.userId).indexOf(user.userId) !== -1 && '(Online)';
+      .membersOnline.map(member => Number(member.userId)).indexOf(Number(user.userId)) !== -1 && '(Online)';
     return result;
   }
 
