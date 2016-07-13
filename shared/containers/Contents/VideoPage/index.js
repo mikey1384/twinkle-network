@@ -109,6 +109,7 @@ export default class VideoPage extends Component {
         />
         <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
           <PageTab
+            questions={questions}
             watchTabActive={watchTabActive}
             onWatchTabClick={() => this.setState({watchTabActive: true})}
             onQuestionTabClick={() => this.setState({watchTabActive: false})}

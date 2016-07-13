@@ -16,7 +16,7 @@ export default function PageTab(props) {
           style={{cursor: 'pointer'}}
           onClick={props.onQuestionTabClick}
         >
-          <a>Questions</a>
+          <a>Questions{` ${props.questions.length > 0 ? '(' + props.questions.length + ')' : ''}`}</a>
         </li>
       </ul>
     </div>
