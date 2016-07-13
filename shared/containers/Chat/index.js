@@ -52,9 +52,9 @@ export default class Chat extends Component {
     this.onChatInvitation = this.onChatInvitation.bind(this)
 
     const {socket} = props;
-    socket.on('RECEIVE_MESSAGE', this.onReceiveMessage)
-    socket.on('CHAT_INVITATION', this.onChatInvitation)
-    socket.on('CHANGE_IN_MEMBERS_ONLINE', data => {
+    socket.on('receive_message', this.onReceiveMessage)
+    socket.on('chat_invitation', this.onChatInvitation)
+    socket.on('change_in_members_online', data => {
       let {membersOnline} = this.state;
       let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
       if (forCurrentChannel) {
@@ -88,7 +88,7 @@ export default class Chat extends Component {
     const {socket, channels} = this.props;
     for (let i = 0; i < channels.length; i ++) {
       let channelId = channels[i].id;
-      socket.emit('CHECK_ONLINE_MEMBERS', channelId, (err, data) => {
+      socket.emit('check_online_members', channelId, (err, data) => {
         let {membersOnline} = this.state;
         let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
         if (forCurrentChannel) {
@@ -127,9 +127,9 @@ export default class Chat extends Component {
 
   componentWillUnmount() {
     const {socket, channels, onUnmount} = this.props;
-    socket.removeListener('RECEIVE_MESSAGE', this.onReceiveMessage);
-    socket.removeListener('CHAT_INVITATION', this.onChatInvitation);
-    socket.removeListener('CHANGE_IN_MEMBERS_ONLINE');
+    socket.removeListener('receive_message', this.onReceiveMessage);
+    socket.removeListener('chat_invitation', this.onChatInvitation);
+    socket.removeListener('change_in_members_online');
     onUnmount();
   }
 
@@ -367,8 +367,8 @@ export default class Chat extends Component {
       return createBidirectionalChannel({message, userId, chatPartnerId}, chat => {
         if (chat.alreadyExists) {
           let {message, messageId} = chat.alreadyExists;
-          socket.emit('JOIN_CHAT_CHANNEL', message.roomid);
-          socket.emit('NEW_CHAT_MESSAGE', {
+          socket.emit('join_chat_channel', message.roomid);
+          socket.emit('new_chat_message', {
             userid: userId,
             username,
             content: message.content,
@@ -378,8 +378,8 @@ export default class Chat extends Component {
           })
           return;
         }
-        socket.emit('JOIN_CHAT_CHANNEL', String(chat.roomid));
-        socket.emit('SEND_BI_CHAT_INVITATION', chatPartnerId, chat);
+        socket.emit('join_chat_channel', String(chat.roomid));
+        socket.emit('send_bi_chat_invitation', chatPartnerId, chat);
       })
     }
 
@@ -390,7 +390,7 @@ export default class Chat extends Component {
       channelId: currentChannel.id
     }
     submitMessage(params, message => {
-      socket.emit('NEW_CHAT_MESSAGE', message);
+      socket.emit('new_chat_message', message);
     })
   }
 
@@ -427,8 +427,8 @@ export default class Chat extends Component {
       const users = params.selectedUsers.map(user => {
         return user.userId;
       })
-      socket.emit('JOIN_CHAT_CHANNEL', data.message.roomid);
-      socket.emit('SEND_GROUP_CHAT_INVITATION', users, data);
+      socket.emit('join_chat_channel', data.message.roomid);
+      socket.emit('send_group_chat_invitation', users, data);
       this.setState({createNewChannelModalShown: false})
       ReactDOM.findDOMNode(this.refs.chatInput).focus()
     })
@@ -442,7 +442,6 @@ export default class Chat extends Component {
       receiveMessage(data)
     }
     if (!messageIsForCurrentChannel) {
-      console.log(currentChannel.id)
       receiveMessageOnDifferentChannel(data)
     }
   }
@@ -450,6 +449,6 @@ export default class Chat extends Component {
   onChatInvitation(data) {
     const {receiveFirstMsg, socket} = this.props;
     receiveFirstMsg(data);
-    socket.emit('JOIN_CHAT_CHANNEL', data.roomid);
+    socket.emit('join_chat_channel', data.roomid);
   }
 }

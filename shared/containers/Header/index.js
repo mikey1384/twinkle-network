@@ -44,16 +44,21 @@ export default class Header extends Component {
     this.handleClick = this.handleClick.bind(this)
 
     const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
-    socket.on('NOTIFICATION', data => {
+    socket.on('connect', () => {
+      if (this.props.userId) {
+        socket.emit('bind_uid_to_socket', this.props.userId);
+      }
+    })
+    socket.on('receive_notification', data => {
       console.log(data);
     })
-    socket.on('RECEIVE_MESSAGE', data => {
+    socket.on('receive_message', data => {
       if (Number(data.channelId) !== GENERAL_CHAT_ID) {
         increaseNumberOfUnreadMessages()
       }
     })
-    socket.on('CHAT_INVITATION', data => {
-      socket.emit('JOIN_CHAT_CHANNEL', data.roomid);
+    socket.on('chat_invitation', data => {
+      socket.emit('join_chat_channel', data.roomid);
       increaseNumberOfUnreadMessages();
     })
     socket.on('disconnect', () => {
@@ -64,7 +69,11 @@ export default class Header extends Component {
   componentWillReceiveProps(nextProps) {
     const {getNumberOfUnreadMessages, socket} = this.props;
     if (nextProps.userId && !this.props.userId) {
-      socket.emit('BIND_UID_TO_SOCKET', nextProps.userId);
+      socket.connect();
+      socket.emit('bind_uid_to_socket', nextProps.userId);
+    }
+    if (!nextProps.userId && this.props.userId) {
+      socket.disconnect();
     }
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
       getNumberOfUnreadMessages()
@@ -77,8 +86,8 @@ export default class Header extends Component {
   componentDidUpdate(prevProps) {
     const {socket, userId} = this.props;
     if (userId !== prevProps.userId) {
-      if (prevProps.userId !== null) socket.emit('LEAVE_MY_NOTIFICATION_CHANNEL', prevProps.userId);
-      socket.emit('ENTER_MY_NOTIFICATION_CHANNEL', userId);
+      if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId);
+      socket.emit('enter_my_notification_channel', userId);
     }
   }
 

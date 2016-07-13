@@ -12,15 +12,15 @@ module.exports = function(io) {
       channels: []
     });
 
-    socket.on('ENTER_MY_NOTIFICATION_CHANNEL', userId => {
+    socket.on('enter_my_notification_channel', userId => {
       socket.join('notificationChannel'+userId)
     })
 
-    socket.on('LEAVE_MY_NOTIFICATION_CHANNEL', userId => {
+    socket.on('leave_my_notification_channel', userId => {
       socket.leave('notificationChannel'+userId)
     })
 
-    socket.on('CHECK_ONLINE_MEMBERS', (channelId, callback) => {
+    socket.on('check_online_members', (channelId, callback) => {
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
         let members = clients.map(client => {
           for (let i = 0; i < connections.length; i++) {
@@ -35,7 +35,7 @@ module.exports = function(io) {
       })
     })
 
-    socket.on('JOIN_CHAT_CHANNEL', (channelId, callback) => {
+    socket.on('join_chat_channel', (channelId, callback) => {
       socket.join('chatChannel' + channelId);
       for (let i = 0; i < connections.length; i++) {
         if (connections[i].socketId === socket.id) {
@@ -46,7 +46,7 @@ module.exports = function(io) {
       notifyChannelMembersChanged(channelId);
     })
 
-    socket.on('LEAVE_CHAT_CHANNEL', channelId => {
+    socket.on('leave_chat_channel', channelId => {
       socket.leave('chatChannel' + channelId);
       for (let i = 0; i < connections.length; i++) {
         if (connections[i].socketId === socket.id) {
@@ -58,7 +58,7 @@ module.exports = function(io) {
       notifyChannelMembersChanged(channelId);
     })
 
-    socket.on('BIND_UID_TO_SOCKET', userId => {
+    socket.on('bind_uid_to_socket', userId => {
       const query = [
         'SELECT a.id AS channel FROM msg_chatrooms a WHERE a.id IN ',
         '(SELECT b.roomid FROM msg_chatroom_members b WHERE b.roomid = ? ',
@@ -81,19 +81,19 @@ module.exports = function(io) {
       })
     })
 
-    socket.on('NEW_CHAT_MESSAGE', data => {
+    socket.on('new_chat_message', data => {
       const channelId = data.channelId;
       data.content = processedString(data.content);
-      io.to('chatChannel' + channelId).emit('RECEIVE_MESSAGE', data);
+      io.to('chatChannel' + channelId).emit('receive_message', data);
     })
 
-    socket.on('SEND_BI_CHAT_INVITATION', (userId, data) => {
-      io.to('notificationChannel'+userId).emit('CHAT_INVITATION', data);
+    socket.on('send_bi_chat_invitation', (userId, data) => {
+      io.to('notificationChannel'+userId).emit('chat_invitation', data);
     })
 
-    socket.on('SEND_GROUP_CHAT_INVITATION', (users, data) => {
+    socket.on('send_group_chat_invitation', (users, data) => {
       for (let i = 0; i < users.length; i++) {
-        io.to('notificationChannel'+users[i]).emit('CHAT_INVITATION', data.message);
+        io.to('notificationChannel'+users[i]).emit('chat_invitation', data.message);
       }
     })
 
@@ -125,7 +125,7 @@ module.exports = function(io) {
       })
       members = Array.from(new Set(members))
       let data = {channelId, members}
-      io.to('chatChannel' + channelId).emit('CHANGE_IN_MEMBERS_ONLINE', data);
+      io.to('chatChannel' + channelId).emit('change_in_members_online', data);
     })
   }
 }
