@@ -147,6 +147,7 @@ export default class Comment extends Component {
             title="People who liked this comment"
             userId={userId}
             users={comment.likes}
+            description={user => Number(user.userId) === Number(userId) && '(You)'}
           />
         }
       </li>

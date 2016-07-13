@@ -185,7 +185,7 @@ router.get('/channel', requireAuth, (req, res) => {
       res.send({
         currentChannel: {
           id: channelId,
-          bidirectional: Boolean(results[0].bidirectional),
+          bidirectional: results[0] ? Boolean(results[0].bidirectional) : false,
           creatorId: results[0].creator,
           members: results[1]
         },

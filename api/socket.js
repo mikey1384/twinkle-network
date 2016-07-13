@@ -8,6 +8,7 @@ module.exports = function(io) {
   io.on('connection', socket => {
     connections.push({
       socketId: socket.id,
+      username: '',
       userId: null,
       channels: []
     });
@@ -22,15 +23,27 @@ module.exports = function(io) {
 
     socket.on('check_online_members', (channelId, callback) => {
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
-        let members = clients.map(client => {
+        let membersOnline = clients.map(client => {
           for (let i = 0; i < connections.length; i++) {
             if (connections[i].socketId === client) {
-              return connections[i].userId;
+              return {
+                userId: connections[i].userId,
+                username: connections[i].username
+              };
             }
           }
         })
-        members = Array.from(new Set(members))
-        let data = {channelId, members}
+        membersOnline = membersOnline.reduce(
+          (resultingArray, obj) => {
+            if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== obj.userId) {
+              return resultingArray.concat(obj)
+            }
+            else {
+              return resultingArray;
+            }
+          }, []
+        )
+        let data = {channelId, membersOnline}
         callback(error, data);
       })
     })
@@ -58,7 +71,7 @@ module.exports = function(io) {
       notifyChannelMembersChanged(channelId);
     })
 
-    socket.on('bind_uid_to_socket', userId => {
+    socket.on('bind_uid_to_socket', (userId, username) => {
       const query = [
         'SELECT a.id AS channel FROM msg_chatrooms a WHERE a.id IN ',
         '(SELECT b.roomid FROM msg_chatroom_members b WHERE b.roomid = ? ',
@@ -69,6 +82,7 @@ module.exports = function(io) {
         for (let i = 0; i < connections.length; i++) {
           if (connections[i].socketId === socket.id) {
             connections[i].userId = userId;
+            connections[i].username = username;
             connections[i].channels = channels;
             break;
           }
@@ -116,15 +130,27 @@ module.exports = function(io) {
   function notifyChannelMembersChanged(channelId) {
     io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
       if (error) throw error;
-      let members = clients.map(client => {
+      let membersOnline = clients.map(client => {
         for (let i = 0; i < connections.length; i++) {
           if (connections[i].socketId === client) {
-            return connections[i].userId;
+            return {
+              userId: connections[i].userId,
+              username: connections[i].username
+            };
           }
         }
       })
-      members = Array.from(new Set(members))
-      let data = {channelId, members}
+      membersOnline = membersOnline.reduce(
+        (resultingArray, obj) => {
+          if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== obj.userId) {
+            return resultingArray.concat(obj)
+          }
+          else {
+            return resultingArray;
+          }
+        }, []
+      )
+      let data = {channelId, membersOnline}
       io.to('chatChannel' + channelId).emit('change_in_members_online', data);
     })
   }

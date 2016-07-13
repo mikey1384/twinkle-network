@@ -46,7 +46,7 @@ export default class Header extends Component {
     const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
     socket.on('connect', () => {
       if (this.props.userId) {
-        socket.emit('bind_uid_to_socket', this.props.userId);
+        socket.emit('bind_uid_to_socket', this.props.userId, this.props.username);
       }
     })
     socket.on('receive_notification', data => {
@@ -70,7 +70,7 @@ export default class Header extends Component {
     const {getNumberOfUnreadMessages, socket} = this.props;
     if (nextProps.userId && !this.props.userId) {
       socket.connect();
-      socket.emit('bind_uid_to_socket', nextProps.userId);
+      socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username);
     }
     if (!nextProps.userId && this.props.userId) {
       socket.disconnect();

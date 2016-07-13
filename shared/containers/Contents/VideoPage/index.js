@@ -215,6 +215,7 @@ export default class VideoPage extends Component {
                 userId: like.userId
               }
             })}
+            description={user => Number(user.userId) === Number(userId) && '(You)'}
           />
         }
       </div>

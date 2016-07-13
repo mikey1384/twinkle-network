@@ -2,6 +2,12 @@ import React from 'react';
 import {Modal} from 'react-bootstrap';
 
 export default function UserListModal(props) {
+  const {users, userId, description = ''} = props;
+  const otherUsers = users.filter(user => Number(user.userId) !== Number(userId))
+  let userArray = [];
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].userId == userId) userArray.push(users[i])
+  }
   return (
     <Modal
       style={props.style}
@@ -18,7 +24,16 @@ export default function UserListModal(props) {
           className="list-group"
           style={{marginBottom: '0px'}}
         >
-          {renderList()}
+          {userArray.concat(otherUsers).map(user => {
+              return (
+                <li
+                  className="list-group-item"
+                  key={user.userId}
+                >{user.username} {description && description(user)}
+                </li>
+              )
+            })
+          }
         </ul>
       </Modal.Body>
       <Modal.Footer>
@@ -31,22 +46,4 @@ export default function UserListModal(props) {
       </Modal.Footer>
     </Modal>
   )
-
-  function renderList() {
-    const {users, userId} = props;
-    const otherUsers = users.filter(user => Number(user.userId) !== Number(userId))
-    let userArray = [];
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].userId == userId) userArray.push(users[i])
-    }
-    return userArray.concat(otherUsers).map(user => {
-      return (
-        <li
-          className="list-group-item"
-          key={user.userId}
-        >{`${user.username}${user.userId == userId ? " (You)" : ""}`}
-        </li>
-      )
-    })
-  }
 }

@@ -42,7 +42,7 @@ export default class Chat extends Component {
       createNewChannelModalShown: false,
       inviteUsersModalShown: false,
       userListModalShown: false,
-      membersOnline: []
+      myChannels: []
     }
 
     this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
@@ -50,35 +50,36 @@ export default class Chat extends Component {
     this.onMessageSubmit = this.onMessageSubmit.bind(this)
     this.onReceiveMessage = this.onReceiveMessage.bind(this)
     this.onChatInvitation = this.onChatInvitation.bind(this)
+    this.renderUserListDescription = this.renderUserListDescription.bind(this)
 
     const {socket} = props;
     socket.on('receive_message', this.onReceiveMessage)
     socket.on('chat_invitation', this.onChatInvitation)
     socket.on('change_in_members_online', data => {
-      let {membersOnline} = this.state;
+      let {myChannels} = this.state;
       let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
       if (forCurrentChannel) {
-        this.setState({currentChannelOnline: data.members.length})
+        this.setState({currentChannelOnline: data.membersOnline.length})
       }
       let channelObjectExists = false;
-      for (let i = 0; i < membersOnline.length; i++) {
-        if (Number(membersOnline[i].channelId) === Number(data.channelId)) {
+      for (let i = 0; i < myChannels.length; i++) {
+        if (Number(myChannels[i].channelId) === Number(data.channelId)) {
           channelObjectExists = true;
           break;
         }
       }
       if (channelObjectExists) {
         this.setState({
-          membersOnline: membersOnline.map(elem => {
-            if (Number(elem.channelId) === Number(data.channelId)) {
-              elem.members = data.members
+          myChannels: myChannels.map(channel => {
+            if (Number(channel.channelId) === Number(data.channelId)) {
+              channel.membersOnline = data.membersOnline
             }
-            return elem;
+            return channel;
           })
         })
       } else {
         this.setState({
-          membersOnline: membersOnline.concat([data])
+          myChannels: myChannels.concat([data])
         })
       }
     })
@@ -89,30 +90,30 @@ export default class Chat extends Component {
     for (let i = 0; i < channels.length; i ++) {
       let channelId = channels[i].id;
       socket.emit('check_online_members', channelId, (err, data) => {
-        let {membersOnline} = this.state;
+        let {myChannels} = this.state;
         let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
         if (forCurrentChannel) {
-          this.setState({currentChannelOnline: data.members.length})
+          this.setState({currentChannelOnline: data.membersOnline.length})
         }
         let channelObjectExists = false;
-        for (let i = 0; i < membersOnline.length; i++) {
-          if (Number(membersOnline[i].channelId) === Number(data.channelId)) {
+        for (let i = 0; i < myChannels.length; i++) {
+          if (Number(myChannels[i].channelId) === Number(data.channelId)) {
             channelObjectExists = true;
             break;
           }
         }
         if (channelObjectExists) {
           this.setState({
-            membersOnline: membersOnline.map(elem => {
-              if (Number(elem.channelId) === Number(data.channelId)) {
-                elem.members = data.members
+            myChannels: myChannels.map(channel => {
+              if (Number(channel.channelId) === Number(data.channelId)) {
+                channel.membersOnline = data.membersOnline
               }
-              return elem;
+              return channel;
             })
           })
         } else {
           this.setState({
-            membersOnline: membersOnline.concat([data])
+            myChannels: myChannels.concat([data])
           })
         }
       });
@@ -135,7 +136,7 @@ export default class Chat extends Component {
 
   render() {
     const {channels, currentChannel, userId} = this.props;
-    const {createNewChannelModalShown, inviteUsersModalShown, userListModalShown, membersOnline} = this.state;
+    const {createNewChannelModalShown, inviteUsersModalShown, userListModalShown, myChannels} = this.state;
     const channelName = () => {
       for (let i = 0; i < channels.length; i ++) {
         if (Number(channels[i].id) === Number(currentChannel.id)) {
@@ -192,8 +193,9 @@ export default class Chat extends Component {
           <UserListModal
             show
             onHide={() => this.setState({userListModalShown: false})}
-            users={currentChannel.members.map(member => ({username: member.username, userId: member.userid}))}
+            users={this.returnUsers(currentChannel, myChannels)}
             userId={userId}
+            description={this.renderUserListDescription}
           />
         }
         <div
@@ -352,6 +354,26 @@ export default class Chat extends Component {
     return `${currentChannelOnline}${numberOfMembers === 0 ? '' : '/' + numberOfMembers}`
   }
 
+  renderUserListDescription(user) {
+    const {userId, currentChannel} = this.props;
+    const {myChannels} = this.state;
+
+    if (Number(user.userId) === Number(userId)) return '(You)';
+
+    const result = myChannels
+      .filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0]
+      .membersOnline.map(member => member.userId).indexOf(user.userId) !== -1 && '(Online)';
+    return result;
+  }
+
+  returnUsers(currentChannel, myChannels) {
+    let members = Number(currentChannel.id) === 2 ?
+    myChannels.filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0]
+      .membersOnline.map(member => ({username: member.username, userid: member.userId}))
+    : currentChannel.members;
+    return members.map(member => ({username: member.username, userId: member.userid}))
+  }
+
   onMessageSubmit(message) {
     const {
       socket,
@@ -400,15 +422,15 @@ export default class Chat extends Component {
 
   onChannelEnter(id) {
     const {enterChannel, enterEmptyBidirectionalChat} = this.props;
-    const {membersOnline} = this.state;
+    const {myChannels} = this.state;
     if (id === 0) {
       this.setState({currentChannelOnline: 1})
       return enterEmptyBidirectionalChat()
     }
     let currentChannelOnline = 1;
-    for (let i = 0; i < membersOnline.length; i++) {
-      if (Number(membersOnline[i].channelId) === Number(id)) {
-        currentChannelOnline = membersOnline[i].members.length;
+    for (let i = 0; i < myChannels.length; i++) {
+      if (Number(myChannels[i].channelId) === Number(id)) {
+        currentChannelOnline = myChannels[i].membersOnline.length;
       }
     }
     enterChannel(id, () => this.setState({currentChannelOnline}))

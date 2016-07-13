@@ -119,6 +119,7 @@ export default class Reply extends Component {
             title="People who liked this reply"
             userId={myId}
             users={likes}
+            description={user => Number(user.userId) === Number(myId) && '(You)'}
           />
         }
       </div>
