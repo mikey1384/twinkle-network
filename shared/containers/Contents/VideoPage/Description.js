@@ -9,7 +9,7 @@ export default class Description extends Component {
     super()
     this.state = {
       onEdit: false,
-      editedTitle: props.title,
+      editedTitle: cleanStringWithURL(props.title),
       editedDescription: cleanStringWithURL(props.description),
       editDoneButtonDisabled: true
     }
@@ -20,7 +20,7 @@ export default class Description extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.title !== this.props.title) {
       this.setState({
-        editedTitle: nextProps.title
+        editedTitle: cleanStringWithURL(nextProps.title)
       })
     }
     if (nextProps.description !== this.props.description) {
@@ -71,7 +71,7 @@ export default class Description extends Component {
                 />
               </form> :
               <h1>
-                <span>{title}</span>
+                <span>{cleanStringWithURL(title)}</span>
               </h1>
             }
           </div>
@@ -153,9 +153,9 @@ export default class Description extends Component {
 
   onEditCancel() {
     const {description} = this.props;
-    const editedDescription = description === 'No description' ? '' : description;
+    const editedDescription = description === 'No description' ? '' : cleanStringWithURL(description);
     this.setState({
-      editedTitle: this.props.title,
+      editedTitle: cleanStringWithURL(this.props.title),
       editedDescription,
       onEdit: false,
       editDoneButtonDisabled: true
