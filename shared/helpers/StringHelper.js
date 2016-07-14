@@ -10,6 +10,9 @@ export function cleanString(string) {
 export function cleanStringWithURL(string) {
 	return string ?
 	string
+  .replace(/&amp;/gi, "&")
+  .replace(/&lt;/gi, "<")
+  .replace(/&gt;/gi, ">")
 	.replace(/<br\s*[\/]?>/gi, "\n")
 	.replace(/<a[^>]*>|<\/a>/g, "") : '';
 }

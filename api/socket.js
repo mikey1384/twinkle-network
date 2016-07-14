@@ -14,11 +14,11 @@ module.exports = function(io) {
     });
 
     socket.on('enter_my_notification_channel', userId => {
-      socket.join('notificationChannel'+userId)
+      socket.join('notificationChannel' + userId)
     })
 
     socket.on('leave_my_notification_channel', userId => {
-      socket.leave('notificationChannel'+userId)
+      socket.leave('notificationChannel' + userId)
     })
 
     socket.on('check_online_members', (channelId, callback) => {
@@ -29,14 +29,14 @@ module.exports = function(io) {
               return {
                 userId: connections[i].userId,
                 username: connections[i].username
-              };
+              }
             }
           }
         })
         membersOnline = membersOnline.reduce(
-          (resultingArray, obj) => {
-            if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== obj.userId) {
-              return resultingArray.concat(obj)
+          (resultingArray, member) => {
+            if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== member.userId) {
+              return resultingArray.concat(member)
             }
             else {
               return resultingArray;
@@ -136,14 +136,14 @@ module.exports = function(io) {
             return {
               userId: connections[i].userId,
               username: connections[i].username
-            };
+            }
           }
         }
       })
       membersOnline = membersOnline.reduce(
-        (resultingArray, obj) => {
-          if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== obj.userId) {
-            return resultingArray.concat(obj)
+        (resultingArray, member) => {
+          if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== member.userId) {
+            return resultingArray.concat(member)
           }
           else {
             return resultingArray;
