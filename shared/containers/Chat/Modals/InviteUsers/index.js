@@ -29,7 +29,7 @@ export default class InviteUsersModal extends Component {
   render() {
     const {clearSearchResults, searchUserToInvite, searchResult, onHide, style, currentChannel, show} = this.props;
     const {selectedUsers} = this.state;
-    const currentMembersUID = currentChannel.members.map(member => member.userid);
+    const currentMembersUID = currentChannel.members.map(member => Number(member.userid));
     return (
       <Modal
         show={show}
@@ -43,7 +43,7 @@ export default class InviteUsersModal extends Component {
         <Modal.Body>
           <TagPeopleForm
             searchResult={searchResult}
-            filter={result => currentMembersUID.indexOf(result.id) === -1}
+            filter={result => currentMembersUID.indexOf(Number(result.id)) === -1}
             onSearch={searchUserToInvite}
             onClear={clearSearchResults}
             selectedUsers={selectedUsers}
