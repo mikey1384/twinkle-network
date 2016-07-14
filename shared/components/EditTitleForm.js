@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import onClickOutside from 'react-onclickoutside';
+import {cleanStringWithURL} from 'helpers/StringHelper';
 
 class EditTitleForm extends Component {
   handleClickOutside = (event) => {
@@ -9,7 +10,7 @@ class EditTitleForm extends Component {
   constructor(props) {
     super()
     this.state = {
-      title: props.title
+      title: cleanStringWithURL(props.title)
     }
   }
 
@@ -18,7 +19,7 @@ class EditTitleForm extends Component {
     return (
       <form
         {...this.props}
-        onSubmit={ event => this.onEditSubmit(event, title) }
+        onSubmit={event => this.onEditSubmit(event, title)}
       >
         <input
           autoFocus
