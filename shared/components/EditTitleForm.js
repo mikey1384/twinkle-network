@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import onClickOutside from 'react-onclickoutside';
-import {cleanStringWithURL} from 'helpers/StringHelper';
+import {cleanString} from 'helpers/StringHelper';
 
 class EditTitleForm extends Component {
   handleClickOutside = (event) => {
@@ -10,7 +10,7 @@ class EditTitleForm extends Component {
   constructor(props) {
     super()
     this.state = {
-      title: cleanStringWithURL(props.title)
+      title: cleanString(props.title)
     }
   }
 

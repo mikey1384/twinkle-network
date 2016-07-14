@@ -112,6 +112,30 @@ export const clearSearchResults = () => ({
   type: 'CLEAR_RESULTS_FOR_CHANNEL'
 })
 
+export const inviteUsersToChannel = data => ({
+  type: 'INVITE_USERS_TO_CHANNEL',
+  data
+})
+
+export const inviteUsersToChannelAsync = (params, callback) => dispatch =>
+request.post(`${API_URL}/invite`, params, auth())
+.then(
+  response => {
+    const {message} = response.data;
+    let data = {
+      ...params,
+      message
+    }
+    dispatch(inviteUsersToChannel(data));
+    callback(message);
+  }
+).catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
 export const submitMessage = message => ({
   type: 'SUBMIT_MESSAGE',
   message
@@ -148,7 +172,7 @@ request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
 .then(
   response => {
     dispatch(enterChannel(response.data));
-    callback();
+    if (callback) callback();
   }
 ).catch(
   error => {

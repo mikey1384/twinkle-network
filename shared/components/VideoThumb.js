@@ -6,7 +6,7 @@ import {Link} from 'react-router';
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions';
 import {connect} from 'react-redux';
 import UsernameText from './UsernameText';
-import {cleanStringWithURL} from 'helpers/StringHelper';
+import {cleanString} from 'helpers/StringHelper';
 
 
 @connect(
@@ -119,7 +119,7 @@ export default class VideoThumb extends Component {
                     href={`/${to}`}
                     onClick={this.onLinkClick}
                   >
-                    {cleanStringWithURL(video.title)}
+                    {cleanString(video.title)}
                   </a>
                 </h5>
               </div>

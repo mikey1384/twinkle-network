@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import UsernameText from 'components/UsernameText';
 import Textarea from 'react-textarea-autosize';
-import {cleanStringWithURL} from 'helpers/StringHelper';
+import {cleanString, cleanStringWithURL} from 'helpers/StringHelper';
 
 export default class Description extends Component {
   constructor(props) {
     super()
     this.state = {
       onEdit: false,
-      editedTitle: cleanStringWithURL(props.title),
+      editedTitle: cleanString(props.title),
       editedDescription: cleanStringWithURL(props.description),
       editDoneButtonDisabled: true
     }
@@ -20,7 +20,7 @@ export default class Description extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.title !== this.props.title) {
       this.setState({
-        editedTitle: cleanStringWithURL(nextProps.title)
+        editedTitle: cleanString(nextProps.title)
       })
     }
     if (nextProps.description !== this.props.description) {
@@ -71,7 +71,7 @@ export default class Description extends Component {
                 />
               </form> :
               <h1>
-                <span>{cleanStringWithURL(title)}</span>
+                <span>{cleanString(title)}</span>
               </h1>
             }
           </div>
@@ -155,7 +155,7 @@ export default class Description extends Component {
     const {description} = this.props;
     const editedDescription = description === 'No description' ? '' : cleanStringWithURL(description);
     this.setState({
-      editedTitle: cleanStringWithURL(this.props.title),
+      editedTitle: cleanString(this.props.title),
       editedDescription,
       onEdit: false,
       editDoneButtonDisabled: true

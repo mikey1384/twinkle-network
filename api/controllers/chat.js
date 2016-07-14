@@ -396,6 +396,81 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
   })
 })
 
+router.post('/invite', requireAuth, (req, res) => {
+  const {user} = req;
+  const {channelId, selectedUsers} = req.body;
+  const timeposted = Math.floor(Date.now()/1000);
+  async.waterfall([
+    callback => {
+      let query = [
+        'SELECT a.roomname FROM msg_chatrooms a WHERE a.id IN ',
+        '(SELECT b.roomid FROM msg_chatroom_members b WHERE roomid = ? AND userid = ?)'
+      ].join('');
+      pool.query(query, [channelId, user.id], (err, rows) => {
+        if (rows[0].length === 0) {
+          return callback('not_a_member')
+        }
+        callback(err, rows[0].roomname)
+      })
+    },
+    (roomname, callback) => {
+      let query = 'INSERT INTO msg_chatroom_members SET ?';
+      let taskArray = selectedUsers.reduce(
+        (taskArray, user) => {
+          return taskArray.concat([
+            callback => {
+              pool.query(query, {roomid: channelId, userid: user.userId}, err => {
+                callback(err)
+              })
+            }
+          ])
+        }, []
+      )
+      taskArray.push(
+        callback => {
+          let usernames = selectedUsers.map(user => user.username);
+          let lastUser = usernames[usernames.length - 1];
+          usernames.pop();
+          if (usernames.length === 1) {
+            usernames = `${usernames[0]} and ${lastUser}`;
+          }
+          else if (usernames.length > 1) {
+            usernames = `${usernames.join(', ')} and ${lastUser}`
+          }
+          else {
+            usernames = lastUser;
+          }
+
+          let content = `Invited ${usernames} to the channel`;
+          let query = 'INSERT INTO msg_chats SET ?';
+          let message = {isNotification: true, roomid: channelId, userid: user.id, content, timeposted};
+          pool.query(query, message, (err, res) => {
+            let messageId = res.insertId;
+            message = Object.assign({}, message, {id: messageId, username: user.username, roomname});
+            callback(err, message);
+          })
+        }
+      )
+      async.parallel(taskArray, (err, results) => {
+        callback(err, results[results.length - 1])
+      })
+    }
+  ], (err, message) => {
+    if (err) {
+      let status = (err === 'not_a_member') ? 401 : 500;
+      return res.status(status).send({error: err})
+    }
+    pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, channelId], (err, rows) => {
+      if(Number(rows[0].num) > 0) {
+        pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, channelId]);
+      } else {
+        pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: channelId, timeStamp: timeposted});
+      }
+    })
+    res.send({message})
+  })
+})
+
 router.get('/search', (req, res) => {
   const text = req.query.text;
   const query = 'SELECT * FROM users WHERE (username LIKE ?) OR (realname LIKE ?) LIMIT 5';

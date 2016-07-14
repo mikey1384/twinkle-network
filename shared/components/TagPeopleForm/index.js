@@ -21,17 +21,20 @@ export default class CreateNewChannelForm extends Component {
 
   render() {
     const {
-      numSelected,
       searchResult,
       onClear,
       channelName,
       selectedUsers,
       filter,
+      onSubmit,
       children } = this.props;
     const {searchText} = this.state;
     const filteredResults = searchResult.filter(filter);
     return (
-      <form onSubmit={event => event.preventDefault()}>
+      <form onSubmit={event => {
+        event.preventDefault();
+        onSubmit && onSubmit();
+      }}>
         <div className="form-group">
           <label>People</label>
           {this.renderTags()}

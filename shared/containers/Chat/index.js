@@ -10,6 +10,7 @@ import InviteUsersModal from './Modals/InviteUsers';
 import UserListModal from 'components/Modals/UserListModal';
 import {cleanStringWithURL} from 'helpers/StringHelper';
 import SmallDropdownButton from 'components/SmallDropdownButton';
+import {GENERAL_CHAT_ID} from 'constants/database';
 
 @connect(
   state => ({
@@ -51,6 +52,7 @@ export default class Chat extends Component {
     this.onReceiveMessage = this.onReceiveMessage.bind(this)
     this.onChatInvitation = this.onChatInvitation.bind(this)
     this.renderUserListDescription = this.renderUserListDescription.bind(this)
+    this.onInviteUsersDone = this.onInviteUsersDone.bind(this)
 
     const {socket} = props;
     socket.on('receive_message', this.onReceiveMessage)
@@ -154,7 +156,7 @@ export default class Chat extends Component {
       })
     }
 
-    if ((Number(currentChannel.creatorId) === Number(userId)) && !currentChannel.bidirectional) {
+    if (Number(currentChannel.creatorId) === Number(userId) && !currentChannel.bidirectional) {
       menuProps.push({
         label: 'Edit Title',
         onClick: () => console.log("edit channel title")
@@ -167,10 +169,18 @@ export default class Chat extends Component {
       })
     }
 
-    menuProps.push({
-      label: `Leave ${currentChannel.bidirectional ? 'Chat' : 'Channel'}`,
-      onClick: () => console.log("leave channel")
-    })
+    if (currentChannel.bidirectional) {
+      menuProps.push({
+        label: 'Hide Chat',
+        onClick: () => console.log("leave chat")
+      })
+    }
+    else {
+      menuProps.push({
+        label: 'Leave Channel',
+        onClick: () => console.log("leave channel")
+      })
+    }
 
     return (
       <div style={{display: 'flex', height: '88%'}}>
@@ -186,7 +196,8 @@ export default class Chat extends Component {
           <InviteUsersModal
             show
             onHide={() => this.setState({inviteUsersModalShown: false})}
-            currentMembers={currentChannel.members}
+            currentChannel={currentChannel}
+            onDone={this.onInviteUsersDone}
           />
         }
         {userListModalShown &&
@@ -266,16 +277,18 @@ export default class Chat extends Component {
             top: 0
           }}
         >
-          <SmallDropdownButton
-            style={{
-              position: "absolute",
-              zIndex: 100,
-              top: "0px",
-              right: "0px"
-            }}
-            shape="button"
-            menuProps={menuProps}
-          />
+          {Number(currentChannel.id) !== GENERAL_CHAT_ID &&
+            <SmallDropdownButton
+              style={{
+                position: "absolute",
+                zIndex: 100,
+                top: "0px",
+                right: "0px"
+              }}
+              shape="button"
+              menuProps={menuProps}
+            />
+          }
           <MessagesContainer
             ref="messagesContainer"
             currentChannelId={this.props.currentChannel.id}
@@ -367,7 +380,7 @@ export default class Chat extends Component {
   }
 
   returnUsers(currentChannel, myChannels) {
-    let members = Number(currentChannel.id) === 2 ?
+    let members = Number(currentChannel.id) === GENERAL_CHAT_ID ?
     myChannels.filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0]
       .membersOnline.map(member => ({username: member.username, userid: member.userId}))
     : currentChannel.members;
@@ -472,5 +485,15 @@ export default class Chat extends Component {
     const {receiveFirstMsg, socket} = this.props;
     receiveFirstMsg(data);
     socket.emit('join_chat_channel', data.roomid);
+  }
+
+  onInviteUsersDone(users, message) {
+    const {socket} = this.props;
+    socket.emit('new_chat_message', {
+      ...message,
+      channelId: message.roomid
+    });
+    socket.emit('send_group_chat_invitation', users, {message: {...message, messageId: message.id}});
+    this.setState({inviteUsersModalShown: false});
   }
 }

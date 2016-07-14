@@ -48,7 +48,6 @@ export default class CreateNewChatModal extends Component {
             selectedUsers={selectedUsers}
             onAddUser={this.onAddUser}
             onRemoveUser={this.onRemoveUser}
-            numSelected={selectedUsers.length}
           >
             {selectedUsers.length > 1 &&
               <div className="form-group">
@@ -88,9 +87,7 @@ export default class CreateNewChatModal extends Component {
   onRemoveUser(user) {
     const {selectedUsers} = this.state;
     this.setState({
-      selectedUsers: selectedUsers.filter(selectedUser => {
-        return selectedUser.userId === user.userId ? false : true
-      })
+      selectedUsers: selectedUsers.filter(selectedUser => selectedUser.userId !== user.userId)
     })
   }
 

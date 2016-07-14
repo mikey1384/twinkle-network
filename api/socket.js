@@ -35,7 +35,10 @@ module.exports = function(io) {
         })
         membersOnline = membersOnline.reduce(
           (resultingArray, member) => {
-            if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== member.userId) {
+            if (resultingArray.length === 0) {
+              return resultingArray.concat(member)
+            }
+            else if (resultingArray[Math.max(resultingArray.length - 1, 0)].userId !== member.userId) {
               return resultingArray.concat(member)
             }
             else {
@@ -95,7 +98,7 @@ module.exports = function(io) {
       })
     })
 
-    socket.on('new_chat_message', data => {
+    socket.on('new_chat_message', (data) => {
       const channelId = data.channelId;
       data.content = processedString(data.content);
       io.to('chatChannel' + channelId).emit('receive_message', data);
@@ -142,7 +145,10 @@ module.exports = function(io) {
       })
       membersOnline = membersOnline.reduce(
         (resultingArray, member) => {
-          if (resultingArray.length === 0 || resultingArray[resultingArray.length - 1].userId !== member.userId) {
+          if (resultingArray.length === 0) {
+            return resultingArray.concat(member)
+          }
+          else if (resultingArray[Math.max(resultingArray.length - 1, 0)].userId !== member.userId) {
             return resultingArray.concat(member)
           }
           else {

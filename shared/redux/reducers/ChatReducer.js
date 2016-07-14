@@ -224,6 +224,20 @@ export default function ChatReducer(state = defaultState, action) {
           bidirectional: true
         }
       }
+    case 'INVITE_USERS_TO_CHANNEL':
+      return {
+        ...state,
+        currentChannel: {
+          ...state.currentChannel,
+          members: state.currentChannel.members.concat(
+            action.data.selectedUsers.map(user => ({
+              userid: user.userId,
+              username: user.username
+            }))
+          )
+        },
+        messages: state.messages.concat([action.data.message])
+      }
     case 'CREATE_NEW_CHANNEL':
       return {
         ...state,
