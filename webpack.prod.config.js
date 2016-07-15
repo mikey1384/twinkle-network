@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {
-    vendor: ['react', 'redux'],
+    vendor: ['react', 'redux', 'react-dom'],
     app: './entry/client'
   },
   resolve: {
