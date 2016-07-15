@@ -23,37 +23,32 @@ app.use((req, res) => {
       return res.status(500).end('Internal server error');
     }
     if(!renderProps) return res.status(404).end('Not found');
-    res.end(renderView())
+    const InitialView = (
+      <Provider store={store}>
+        <RouterContext {...renderProps} />
+      </Provider>
+    );
 
-    function renderView() {
-      const InitialView = (
-        <Provider store={store}>
-          <RouterContext {...renderProps} />
-        </Provider>
-      );
-
-      const componentHTML = renderToString(InitialView);
-      const HTML = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <title>Twinkle</title>
-          <link rel="stylesheet" href="/css/bootstrap.min.css">
-          <link rel="stylesheet" href="/css/styles.css">
-        </head>
-        <body>
-          <div id="react-view">${componentHTML}</div>
-          <script>
-            window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
-          </script>
-          <script type="application/javascript" src="/vendor.js"></script>
-          <script type="application/javascript" src="/bundle.js"></script>
-        </body>
-      </html>
-      `;
-      return HTML;
-    }
+    const componentHTML = renderToString(InitialView);
+    const HTML = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Twinkle</title>
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/styles.css">
+      </head>
+      <body>
+        <div id="react-view">${componentHTML}</div>
+        <script>
+          window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
+        </script>
+        <script type="application/javascript" src="/vendor.js"></script>
+        <script type="application/javascript" src="/bundle.js"></script>
+      </body>
+    </html>`;
+    res.end(HTML)
   });
 });
 
