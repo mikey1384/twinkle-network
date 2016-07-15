@@ -2,7 +2,6 @@
 
 require('babel-core/register')({});
 require('babel-polyfill');
-require('./memory');
 
 var server = require('./entry/server').default;
 var http = require('http').Server(server);
