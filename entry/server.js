@@ -53,6 +53,7 @@ app.use((req, res) => {
           <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
           </script>
+          <script type="application/javascript" src="/vendor.js"></script>
           <script type="application/javascript" src="/bundle.js"></script>
         </body>
       </html>
