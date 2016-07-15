@@ -5,9 +5,7 @@ import {RouterContext, match} from 'react-router';
 import createLocation from 'history/lib/createLocation';
 import {Provider} from 'react-redux';
 import path from 'path';
-import session from 'client-sessions';
 import {routes, store} from 'Root';
-import {initActions} from 'redux/actions';
 
 const app = express();
 
@@ -24,12 +22,8 @@ app.use((req, res) => {
       console.error(err);
       return res.status(500).end('Internal server error');
     }
-
     if(!renderProps) return res.status(404).end('Not found');
-
-    store.dispatch(initActions(req.session))
-    .then(() => res.end(renderView()))
-    .catch(err => res.end(err.message))
+    res.end(renderView())
 
     function renderView() {
       const InitialView = (
