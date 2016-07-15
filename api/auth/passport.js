@@ -6,17 +6,7 @@ const LocalStrategy = require('passport-local');
 const passwordHash = require('password-hash');
 const localOptions = {};
 
-const mysql = require('mysql');
-const pool = mysql.createPool({
-  connectionLimit: 100,
-  host: 'localhost',
-  user: config.mysqlUser,
-  password: config.mysqlPassword,
-  database: config.mysqlDatabase,
-  supportBigNumbers: true,
-  bigNumberStrings: true,
-  debug: false
-})
+const pool = require('../pool');
 
 const localLogin = new LocalStrategy(localOptions, function(username, password, done) {
   const usernameLowered = username.toLowerCase();

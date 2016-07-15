@@ -1,16 +1,3 @@
-const config = require('../siteConfig');
-const mysql = require('mysql');
-const pool = mysql.createPool({
-  connectionLimit: 100,
-  host: 'localhost',
-  user: config.mysqlUser,
-  password: config.mysqlPassword,
-  database: config.mysqlDatabase,
-  supportBigNumbers: true,
-  bigNumberStrings: true,
-  debug: false
-})
-
 const passwordHash = require('password-hash');
 
 const capitalize = require('../helpers/StringHelper').capitalize;
@@ -23,6 +10,8 @@ const requireSignin = require('../auth').requireSignin;
 
 const express = require('express');
 const router = express.Router();
+
+const pool = require('../pool');
 
 router.get('/session', requireAuth, function (req, res) {
   res.send(req.user)

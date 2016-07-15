@@ -4,7 +4,6 @@ const siteSession = require('./siteConfig').siteSession;
 const router = require('./router');
 const socket = require('./socket');
 const cors = require('cors');
-
 const app = express();
 
 app.use(cors());

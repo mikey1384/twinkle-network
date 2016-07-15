@@ -1,17 +1,6 @@
 const config = require('../siteConfig');
-const mysql = require('mysql');
-const pool = mysql.createPool({
-  connectionLimit: 100,
-  host: 'localhost',
-  user: config.mysqlUser,
-  password: config.mysqlPassword,
-  database: config.mysqlDatabase,
-  supportBigNumbers: true,
-  bigNumberStrings: true,
-  debug: false
-})
-
-var async = require('async');
+const async = require('async');
+const pool = require('../pool');
 
 const fetchPlaylistVideos = params => callback => {
   let playlists = params.playlists;

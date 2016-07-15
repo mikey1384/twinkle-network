@@ -1,18 +1,6 @@
-const config = require('./siteConfig');
-const mysql = require('mysql');
-const pool = mysql.createPool({
-  connectionLimit: 100,
-  host: 'localhost',
-  user: config.mysqlUser,
-  password: config.mysqlPassword,
-  database: config.mysqlDatabase,
-  supportBigNumbers: true,
-  bigNumberStrings: true,
-  debug: false
-})
-
 const processedString = require('./helpers/StringHelper').processedString;
-const generalChatId = config.generalChatId;
+const generalChatId = require('./siteConfig').generalChatId;
+const pool = require('./pool');
 
 module.exports = function(io) {
   const connections = [];
