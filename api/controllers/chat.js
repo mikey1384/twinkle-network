@@ -460,9 +460,11 @@ router.post('/invite', requireAuth, (req, res) => {
       let status = (err === 'not_a_member') ? 401 : 500;
       return res.status(status).send({error: err})
     }
-    pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, channelId], (err, rows) => {
-      if(Number(rows[0].num) > 0) {
-        pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, channelId]);
+    let query = 'SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?';
+    pool.query(query, [user.id, channelId], (err, rows) => {
+      if (Number(rows[0].num) > 0) {
+        let query = 'UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?';
+        pool.query(query, [{timeStamp: timeposted}, user.id, channelId]);
       } else {
         pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: channelId, timeStamp: timeposted});
       }
