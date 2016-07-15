@@ -4,10 +4,19 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local');
 const passwordHash = require('password-hash');
-
-const pool = config.pool;
-
 const localOptions = {};
+
+const mysql = require('mysql');
+const pool = mysql.createPool({
+  connectionLimit: 100,
+  host: 'localhost',
+  user: config.mysqlUser,
+  password: config.mysqlPassword,
+  database: config.mysqlDatabase,
+  supportBigNumbers: true,
+  bigNumberStrings: true,
+  debug: false
+})
 
 const localLogin = new LocalStrategy(localOptions, function(username, password, done) {
   const usernameLowered = username.toLowerCase();

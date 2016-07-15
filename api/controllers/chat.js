@@ -1,8 +1,17 @@
-"use strict"
+const config = require('../siteConfig');
+const mysql = require('mysql');
+const pool = mysql.createPool({
+  connectionLimit: 100,
+  host: 'localhost',
+  user: config.mysqlUser,
+  password: config.mysqlPassword,
+  database: config.mysqlDatabase,
+  supportBigNumbers: true,
+  bigNumberStrings: true,
+  debug: false
+})
 
-const pool = require('../siteConfig').pool;
 const requireAuth = require('../auth').requireAuth;
-
 const fetchChat = require('../helpers/ChatHelper').fetchChat;
 const fetchChannels = require('../helpers/ChatHelper').fetchChannels;
 const handleCaseWhereBidirectionalChatAlreadyExists = require('../helpers/ChatHelper').handleCaseWhereBidirectionalChatAlreadyExists;
