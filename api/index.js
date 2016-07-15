@@ -12,8 +12,10 @@ app.use(bodyParser.json());
 
 router(app);
 const http = require('http').Server(app);
+/*
 const io = require('socket.io')(http);
 socket(io);
+*/
 
 const PORT = 3500;
 
