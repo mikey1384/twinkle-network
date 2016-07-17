@@ -34,11 +34,6 @@ request.get(API_URL, auth())
     dispatch(initChat(response.data));
     callback(dispatch);
   }
-).catch(
-  error => {
-    console.error(error)
-    handleError(error, dispatch)
-  }
 )
 
 export const getNumberOfUnreadMessages = numUnreads => ({

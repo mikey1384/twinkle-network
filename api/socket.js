@@ -149,10 +149,10 @@ module.exports = function(io) {
       membersOnline = membersOnline.reduce(
         (resultingArray, member) => {
           if (resultingArray.length === 0) {
-            return resultingArray.concat(member)
+            return resultingArray.concat([member])
           }
           else if (resultingArray[Math.max(resultingArray.length - 1, 0)].userId !== member.userId) {
-            return resultingArray.concat(member)
+            return resultingArray.concat([member])
           }
           else {
             return resultingArray;

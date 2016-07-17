@@ -31,11 +31,11 @@ export default function ChatReducer(state = defaultState, action) {
       }
     case 'INIT_CHAT':
       loadMoreButton = false;
-      if (action.data.messages.length === 21) {
+      if (action.data.messages && action.data.messages.length === 21) {
         action.data.messages.pop();
         loadMoreButton = true;
       }
-      action.data.messages.reverse()
+      action.data.messages && action.data.messages.reverse()
       return {
         ...state,
         currentChannel: action.data.currentChannel,
