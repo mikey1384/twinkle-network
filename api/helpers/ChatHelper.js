@@ -157,7 +157,7 @@ const fetchNumberOfUnreadMessages = (channel, lastReads) => callback => {
   const channelId = channel.id;
   let lastReadTime = null;
   for (let i = 0; i < lastReads.length; i++) {
-    if (lastReads[i].channel === channelId) {
+    if (Number(lastReads[i].channel) === Number(channelId)) {
       lastReadTime = Number(lastReads[i].timeStamp);
     }
   }
