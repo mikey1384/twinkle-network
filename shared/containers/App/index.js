@@ -12,6 +12,7 @@ import ChatButton from 'containers/Header/ChatButton';
 
 
 const socket = io.connect(URL);
+
 @connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,

@@ -3,7 +3,7 @@ const generalChatId = require('./siteConfig').generalChatId;
 const pool = require('./pool');
 
 module.exports = function(io) {
-  const connections = [];
+  let connections = [];
   io.on('connection', socket => {
     connections.push({
       socketId: socket.id,
@@ -17,7 +17,7 @@ module.exports = function(io) {
     })
 
     socket.on('leave_my_notification_channel', userId => {
-      socket.leave('notificationChannel' + userId)
+      socket.leave('notificationChannel' + userId);
     })
 
     socket.on('check_online_members', (channelId, callback) => {
@@ -57,7 +57,6 @@ module.exports = function(io) {
           if (connections[i].channels.indexOf(Number(channelId)) === -1) {
             connections[i].channels.push(Number(channelId));
           }
-          console.log(connections[i].channels);
           break;
         }
       }
@@ -70,7 +69,6 @@ module.exports = function(io) {
         if (connections[i].socketId === socket.id) {
           let index = connections[i].channels.indexOf(channelId);
           connections[i].channels.splice(index, 1);
-          console.log(connections[i].channels)
           break;
         }
       }

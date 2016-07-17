@@ -24,11 +24,10 @@ app.use((req, res) => {
       return res.status(500).end('Internal server error');
     }
 
-    if(!renderProps) return res.status(404).send('Not found');
-
+    if(!renderProps) return res.status(404).end('Not found');
     store.dispatch(initActions(req.session))
-      .then(() => res.send(renderView()))
-      .catch(err => res.status(500).send(err.message))
+      .then(() => res.end(renderView()))
+      .catch(err => res.status(500).end(err.message))
 
     function renderView() {
       const InitialView = (
