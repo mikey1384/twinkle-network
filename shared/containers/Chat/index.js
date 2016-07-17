@@ -32,7 +32,8 @@ import {GENERAL_CHAT_ID} from 'constants/database';
     loadMoreMessages: ChatActions.loadMoreMessagesAsync,
     createNewChannel: ChatActions.createNewChannelAsync,
     createBidirectionalChannel: ChatActions.createBidirectionalChannelAsync,
-    checkChannelExists: ChatActions.checkChannelExistsAsync
+    checkChannelExists: ChatActions.checkChannelExistsAsync,
+    leaveChannel: ChatActions.leaveChannelAsync
   }
 )
 export default class Chat extends Component {
@@ -53,6 +54,7 @@ export default class Chat extends Component {
     this.onChatInvitation = this.onChatInvitation.bind(this)
     this.renderUserListDescription = this.renderUserListDescription.bind(this)
     this.onInviteUsersDone = this.onInviteUsersDone.bind(this)
+    this.onLeaveChannel = this.onLeaveChannel.bind(this)
 
     const {socket} = props;
     socket.on('receive_message', this.onReceiveMessage)
@@ -178,7 +180,7 @@ export default class Chat extends Component {
     else {
       menuProps.push({
         label: 'Leave Channel',
-        onClick: () => console.log("leave channel")
+        onClick: this.onLeaveChannel
       })
     }
 
@@ -495,5 +497,15 @@ export default class Chat extends Component {
     });
     socket.emit('send_group_chat_invitation', users, {message: {...message, messageId: message.id}});
     this.setState({inviteUsersModalShown: false});
+  }
+
+  onLeaveChannel() {
+    const {leaveChannel, currentChannel, socket} = this.props;
+    leaveChannel(currentChannel.id);
+    socket.emit('leave_chat_channel')
+    // on other user's client side
+    // 1. notification on the leaver's departure should be displayed
+    // 2. total number of members on the left menu should be adjusted
+    // 3. members online number should be adjusted
   }
 }

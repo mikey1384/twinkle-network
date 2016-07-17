@@ -275,6 +275,25 @@ request.post(`${API_URL}/channel`, {params}, auth())
   }
 )
 
+export const leaveChannel = channelId => ({
+  type: 'LEAVE_CHANNEL',
+  channelId
+})
+
+export const leaveChannelAsync = channelId => dispatch =>
+request.delete(`${API_URL}/channel?channelId=${channelId}`, auth())
+.then(
+  response => {
+    dispatch(leaveChannel(channelId))
+    dispatch(enterChannelAsync(2))
+  }
+).catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
 export const resetChat = () => ({
   type: 'RESET_CHAT'
 })

@@ -100,6 +100,11 @@ export default function ChatReducer(state = defaultState, action) {
         messages: [],
         loadMoreButton: false
       }
+    case 'LEAVE_CHANNEL':
+      return {
+        ...state,
+        channels: state.channels.filter(channel => Number(channel.id) !== Number(action.channelId))
+      }
     case 'SUBMIT_MESSAGE':
       return {
         ...state,

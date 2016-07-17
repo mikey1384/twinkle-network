@@ -144,7 +144,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
 
 router.get('/channel', requireAuth, (req, res) => {
   const user = req.user;
-  const channelId = req.query.channelId;
+  const channelId = req.query.channelId || defaultChatroomId;
   async.waterfall([
     callback => {
       fetchChat({user, channelId}, (err, results) => {
@@ -392,6 +392,20 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
         timeposted: Math.floor(Date.now()/1000)
       })
     })
+  })
+})
+
+router.delete('/channel', requireAuth, (req, res) => {
+  const {user} = req;
+  const {channelId} = req.query;
+
+  let query = 'DELETE FROM msg_chatroom_members WHERE roomid = ? AND userid = ?';
+  pool.query(query, [channelId, user.id], err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err})
+    }
+    res.send({success: true})
   })
 })
 

@@ -54,7 +54,10 @@ module.exports = function(io) {
       socket.join('chatChannel' + channelId);
       for (let i = 0; i < connections.length; i++) {
         if (connections[i].socketId === socket.id) {
-          connections[i].channels.push(channelId);
+          if (connections[i].channels.indexOf(Number(channelId)) === -1) {
+            connections[i].channels.push(Number(channelId));
+          }
+          console.log(connections[i].channels);
           break;
         }
       }
@@ -67,6 +70,7 @@ module.exports = function(io) {
         if (connections[i].socketId === socket.id) {
           let index = connections[i].channels.indexOf(channelId);
           connections[i].channels.splice(index, 1);
+          console.log(connections[i].channels)
           break;
         }
       }
@@ -80,7 +84,7 @@ module.exports = function(io) {
         'OR b.userid = ?)'
       ].join('')
       pool.query(query, [generalChatId, userId], (err, rows) => {
-        let channels = rows.map(row => row.channel);
+        let channels = rows.map(row => Number(row.channel));
         for (let i = 0; i < connections.length; i++) {
           if (connections[i].socketId === socket.id) {
             connections[i].userId = userId;
