@@ -135,7 +135,7 @@ module.exports = function(io) {
 
   function notifyChannelMembersChanged(channelId) {
     io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
-      if (error) throw error;
+      if (error) return console.error(error);
       let membersOnline = clients.map(client => {
         for (let i = 0; i < connections.length; i++) {
           if (connections[i].socketId === client) {
