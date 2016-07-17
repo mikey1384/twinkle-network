@@ -9,7 +9,7 @@
     "stop": "sudo forever stop index.js",
     "dev": "NODE_PATH=$NODE_PATH:./shared PORT=3000 node --harmony .",
     "build": "webpack --progress --color -p --config webpack.prod.config.js",
-    "startapi": "forever -o out.log -e err.log start api",
+    "startapi": "sudo forever -o out.log -e err.log start api",
     "stopapi": "forever stop api",
     "devapi": "nodemon api"
   },
