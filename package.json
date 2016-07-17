@@ -5,11 +5,11 @@
   "description": "Twinkle: educational website for children",
   "main": "index.js",
   "scripts": {
-    "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./shared forever -o out.log -e err.log start -c \"node --harmony .\" index.js",
+    "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./shared forever -o content_out.log -e content_err.log start -c \"node --harmony .\" index.js",
     "stop": "sudo forever stop index.js",
     "dev": "NODE_PATH=$NODE_PATH:./shared PORT=3000 node --harmony .",
     "build": "webpack --progress --color -p --config webpack.prod.config.js",
-    "startapi": "sudo forever -o out.log -e err.log start api",
+    "startapi": "sudo forever -o api_out.log -e api_err.log start api",
     "stopapi": "forever stop api",
     "devapi": "nodemon api"
   },
