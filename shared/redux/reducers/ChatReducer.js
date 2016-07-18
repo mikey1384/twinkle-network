@@ -87,6 +87,7 @@ export default function ChatReducer(state = defaultState, action) {
           }
           return channel;
         }),
+        chatMode: true,
         messages: action.data.messages,
         loadMoreButton
       }
@@ -183,6 +184,7 @@ export default function ChatReducer(state = defaultState, action) {
       })
       return {
         ...state,
+        chatMode: true,
         channels: [{
           id: 0,
           roomname: action.partner.username,

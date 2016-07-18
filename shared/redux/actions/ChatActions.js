@@ -64,28 +64,6 @@ export const increaseNumberOfUnreadMessages = () => ({
   type: 'INCREASE_NUM_UNREAD_MSGS'
 })
 
-export const fetchChannelsAsync = callback => dispatch => {
-  request.get(`${API_URL}/channels`, auth())
-  .then(
-    response => {
-      dispatch(updateChannelList(response.data))
-      callback(dispatch)
-    }
-  ).catch(
-    error => {
-      console.error(error)
-      handleError(error, dispatch)
-    }
-  )
-}
-
-export const openDirectMessageAsync = (user, partner) => dispatch => {
-  let cb = dispatch => {
-    dispatch(checkChannelExistsAsync(user, partner, () => dispatch(turnChatOn())))
-  }
-  dispatch(fetchChannelsAsync(cb))
-}
-
 export const loadMoreMessages = (data) => ({
   type: 'LOAD_MORE_MSG',
   data
@@ -101,11 +79,6 @@ request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&roomId=${ro
     handleError(error, dispatch)
   }
 )
-
-export const updateChannelList = (data) => ({
-  type: 'UPDATE_CHANNEL_LIST',
-  data
-})
 
 export const searchUserToInvite = data => ({
   type: 'SEARCH_USERS_FOR_CHANNEL',
@@ -223,6 +196,31 @@ request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth())
     handleError(error, dispatch)
   }
 )
+
+export const updateChannelList = (data) => ({
+  type: 'UPDATE_CHANNEL_LIST',
+  data
+})
+
+export const fetchChannelsAsync = callback => dispatch => {
+  request.get(`${API_URL}/channels`, auth())
+  .then(
+    response => {
+      dispatch(updateChannelList(response.data))
+      callback(dispatch)
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      handleError(error, dispatch)
+    }
+  )
+}
+
+export const openDirectMessageAsync = (user, partner) => dispatch => {
+  let cb = dispatch => dispatch(checkChannelExistsAsync(user, partner))
+  dispatch(fetchChannelsAsync(cb))
+}
 
 export const receiveMessage = data => {
   const {channelId, timeposted} = data;
