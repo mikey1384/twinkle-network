@@ -10,16 +10,7 @@ render(
     <Router
       children={routes}
       history={history}
-      render={applyRouterMiddleware(useScroll(
-        (prevRouterProps, {location}) => {
-          if (!prevRouterProps) {
-            return [0, 0];
-          }
-          else {
-            return true;
-          }
-        }
-      ))}
+      render={applyRouterMiddleware(useScroll(prevRouterProps => prevRouterProps ? true : [0, 0]))}
     />
   </Provider>,
   document.getElementById('react-view')

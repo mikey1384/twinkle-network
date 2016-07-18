@@ -29,12 +29,12 @@ app.use((req, res) => {
       .catch(err => res.status(500).end(err.message))
 
     function renderView() {
-      const InitialView = (
+      const view = (
         <Provider store={store}>
           <RouterContext {...props} />
         </Provider>
       )
-      const componentHTML = renderToString(InitialView);
+      const ReactView = renderToString(view);
       return (
         `<!DOCTYPE html>
         <html>
@@ -45,7 +45,7 @@ app.use((req, res) => {
            <link rel="stylesheet" href="/css/styles.css">
           </head>
           <body>
-            <div id="react-view">${componentHTML}</div>
+            <div id="react-view">${ReactView}</div>
             <script>
               window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
             </script>

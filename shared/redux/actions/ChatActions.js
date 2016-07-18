@@ -195,12 +195,12 @@ export const checkChannelExistsAsync = (user, partner, callback) => dispatch =>
 request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth())
 .then(
   response => {
-    if (callback) callback();
     if (response.data.channelExists) {
       dispatch(enterChannelAsync(response.data.channelId))
     } else {
       dispatch(openBidirectionalChat(user, partner))
     }
+    if (callback) callback();
   }
 ).catch(
   error => {
