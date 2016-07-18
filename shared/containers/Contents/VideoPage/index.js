@@ -6,7 +6,8 @@ import {
   uploadQuestionsAsync,
   uploadVideoCommentAsync,
   uploadVideoReplyAsync,
-  likeVideoAsync
+  likeVideoAsync,
+  resetVideoPage
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import ChoiceListGroup from './ChoiceListGroup';
@@ -33,7 +34,8 @@ import {stringIsEmpty} from 'helpers/StringHelper';
     deleteVideo: deleteVideoAsync,
     uploadQuestions: uploadQuestionsAsync,
     uploadVideoComment: uploadVideoCommentAsync,
-    likeVideo: likeVideoAsync
+    likeVideo: likeVideoAsync,
+    resetVideoPage
   }
 )
 export default class VideoPage extends Component {
@@ -58,6 +60,10 @@ export default class VideoPage extends Component {
     this.onCommentSubmit = this.onCommentSubmit.bind(this)
     this.onVideoDelete = this.onVideoDelete.bind(this)
     this.onSelectChoice = this.onSelectChoice.bind(this)
+  }
+
+  componentWillUnmount() {
+    this.props.resetVideoPage()
   }
 
   render() {

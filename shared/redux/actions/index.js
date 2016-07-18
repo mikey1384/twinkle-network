@@ -1,15 +1,15 @@
 import {getInitialVideos} from './VideoActions';
 import {getPinnedPlaylistsAsync, getPlaylistsAsync} from './PlaylistActions';
 
-export function initActions(session) {
+export function initActions() {
   return dispatch => {
-    const needs = [
+    const actions = [
       getPinnedPlaylistsAsync,
       getPlaylistsAsync,
       getInitialVideos
     ];
 
-    const promises = needs.map(need => dispatch(need(session)));
+    const promises = actions.map(action => dispatch(action()));
 
     return Promise.all(promises);
   }

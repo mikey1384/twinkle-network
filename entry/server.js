@@ -5,7 +5,6 @@ import {RouterContext, match} from 'react-router';
 import createLocation from 'history/lib/createLocation';
 import {Provider} from 'react-redux';
 import path from 'path';
-import session from 'client-sessions';
 import {routes, store} from 'Root';
 import {initActions} from 'redux/actions';
 
@@ -25,7 +24,7 @@ app.use((req, res) => {
     }
 
     if(!props) return res.status(404).end('Not found');
-    store.dispatch(initActions(req.session))
+    store.dispatch(initActions())
       .then(() => res.end(renderView()))
       .catch(err => res.status(500).end(err.message))
 

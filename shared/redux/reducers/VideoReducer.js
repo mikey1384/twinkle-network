@@ -1,4 +1,4 @@
-import { processedStringWithURL, stringIsEmpty } from 'helpers/StringHelper';
+import {processedStringWithURL, stringIsEmpty} from 'helpers/StringHelper';
 
 const defaultState = {
   allVideoThumbs: [],
