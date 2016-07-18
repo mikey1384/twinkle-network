@@ -22,6 +22,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import {bindActionCreators} from 'redux';
 import {stringIsEmpty} from 'helpers/StringHelper';
 
+
 @connect(
   state => ({
     ...state.VideoReducer.videoPage,

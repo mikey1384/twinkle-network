@@ -23,14 +23,16 @@ module.exports = function(io) {
     socket.on('check_online_members', (channelId, callback) => {
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
         let membersOnline = clients.map(client => {
+          let member = {};
           for (let i = 0; i < connections.length; i++) {
             if (connections[i].socketId === client) {
-              return {
+              member = {
                 userId: connections[i].userId,
                 username: connections[i].username
               }
             }
           }
+          return member;
         })
         membersOnline = membersOnline.reduce(
           (resultingArray, member) => {
@@ -135,14 +137,16 @@ module.exports = function(io) {
     io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
       if (error) return console.error(error);
       let membersOnline = clients.map(client => {
+        let member = {};
         for (let i = 0; i < connections.length; i++) {
           if (connections[i].socketId === client) {
-            return {
+            member = {
               userId: connections[i].userId,
               username: connections[i].username
             }
           }
         }
+        return member;
       })
       membersOnline = membersOnline.reduce(
         (resultingArray, member) => {

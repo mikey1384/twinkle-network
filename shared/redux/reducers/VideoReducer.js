@@ -14,10 +14,6 @@ const defaultState = {
 export default function VideoReducer(state = defaultState, action) {
   switch(action.type) {
     case 'GET_VIDEOS':
-      if (action.videos.error) {
-        console.error(action.videos.error);
-        return state;
-      }
       let loadMoreButton = false;
       let allVideosLoaded = false;
       if (action.videos.length > 12) {
