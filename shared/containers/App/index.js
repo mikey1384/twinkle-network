@@ -33,10 +33,7 @@ export default class App extends Component {
 
   componentDidUpdate(prevProps) {
     const {turnChatOff} = this.props;
-    if (this.props.children !== prevProps.children) {
-      turnChatOff()
-      ReactDOM.findDOMNode(this).scrollIntoView();
-    }
+    if (this.props.children !== prevProps.children) turnChatOff()
   }
 
   render() {
