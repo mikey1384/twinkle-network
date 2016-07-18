@@ -27,7 +27,7 @@ export const initChat = (data) => ({
   data
 })
 
-export const initChatAsync = (callback) => dispatch =>
+export const initChatAsync = callback => dispatch =>
 request.get(API_URL, auth())
 .then(
   response => {
@@ -63,6 +63,13 @@ export const getNumberOfUnreadMessagesAsync = () => dispatch => {
 export const increaseNumberOfUnreadMessages = () => ({
   type: 'INCREASE_NUM_UNREAD_MSGS'
 })
+
+export const openDirectMessage = (user, partner) => dispatch => {
+  let cb = dispatch => {
+    dispatch(checkChannelExistsAsync(user, partner, () => dispatch(turnChatOn())))
+  }
+  dispatch(initChatAsync(cb))
+}
 
 export const loadMoreMessages = (data) => ({
   type: 'LOAD_MORE_MSG',
@@ -155,13 +162,6 @@ export const submitMessageAsync = (params, callback) => dispatch => {
   )
 }
 
-export const openDirectMessage = (user, partner) => dispatch => {
-  let cb = dispatch => {
-    dispatch(checkChannelExistsAsync(user, partner, () => dispatch(turnChatOn())))
-  }
-  dispatch(initChatAsync(cb))
-}
-
 export const enterChannel = (data, currentChannelOnline) => ({
   type: 'ENTER_CHANNEL',
   data
@@ -195,15 +195,12 @@ export const checkChannelExistsAsync = (user, partner, callback) => dispatch =>
 request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth())
 .then(
   response => {
-    Promise.resolve(() => {
-      if (response.data.channelExists) {
-        dispatch(enterChannelAsync(response.data.channelId))
-      } else {
-        dispatch(openBidirectionalChat(user, partner))
-      }
-    }).then(
-      () => {if (callback) callback()}
-    )
+    if (response.data.channelExists) {
+      dispatch(enterChannelAsync(response.data.channelId))
+    } else {
+      dispatch(openBidirectionalChat(user, partner))
+    }
+    if (callback) callback();
   }
 ).catch(
   error => {
