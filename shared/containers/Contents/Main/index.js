@@ -16,6 +16,7 @@ import {
   closeSelectPlaylistsToPinModal
 } from 'redux/actions/PlaylistActions';
 import {connect} from 'react-redux';
+import {browserHistory} from 'react-router';
 
 @connect(
   state => ({
@@ -60,7 +61,9 @@ export default class Main extends Component {
   }
 
   componentWillMount() {
-    this.props.resetVideoPage()
+    if (!!browserHistory) {
+       this.props.resetVideoPage()
+    }
   }
 
   render() {

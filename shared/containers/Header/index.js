@@ -13,6 +13,7 @@ import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
+import {browserHistory} from 'react-router';
 
 @connect(
   state => ({
@@ -44,26 +45,28 @@ export default class Header extends Component {
     this.handleClick = this.handleClick.bind(this)
 
     const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
-    socket.on('connect', () => {
-      if (this.props.userId) {
-        socket.emit('bind_uid_to_socket', this.props.userId, this.props.username);
-      }
-    })
-    socket.on('receive_notification', data => {
-      console.log(data);
-    })
-    socket.on('receive_message', data => {
-      if (Number(data.channelId) !== GENERAL_CHAT_ID) {
-        increaseNumberOfUnreadMessages()
-      }
-    })
-    socket.on('chat_invitation', data => {
-      socket.emit('join_chat_channel', data.roomid);
-      increaseNumberOfUnreadMessages();
-    })
-    socket.on('disconnect', () => {
-      turnChatOff()
-    })
+    if (!!browserHistory) {
+      socket.on('connect', () => {
+        if (this.props.userId) {
+          socket.emit('bind_uid_to_socket', this.props.userId, this.props.username);
+        }
+      })
+      socket.on('receive_notification', data => {
+        console.log(data);
+      })
+      socket.on('receive_message', data => {
+        if (Number(data.channelId) !== GENERAL_CHAT_ID) {
+          increaseNumberOfUnreadMessages()
+        }
+      })
+      socket.on('chat_invitation', data => {
+        socket.emit('join_chat_channel', data.roomid);
+        increaseNumberOfUnreadMessages();
+      })
+      socket.on('disconnect', () => {
+        turnChatOff()
+      })
+    }
   }
 
   componentWillReceiveProps(nextProps) {

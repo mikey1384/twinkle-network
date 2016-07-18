@@ -18,13 +18,13 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use((req, res) => {
   const location = createLocation(req.url);
-  match({routes, location}, (err, redirectLocation, renderProps) => {
+  match({routes, location}, (err, redirectLocation, props) => {
     if(err) {
       console.error(err);
       return res.status(500).end('Internal server error');
     }
 
-    if(!renderProps) return res.status(404).end('Not found');
+    if(!props) return res.status(404).end('Not found');
     store.dispatch(initActions(req.session))
       .then(() => res.end(renderView()))
       .catch(err => res.status(500).end(err.message))
@@ -32,7 +32,7 @@ app.use((req, res) => {
     function renderView() {
       const InitialView = (
         <Provider store={store}>
-          <RouterContext {...renderProps} />
+          <RouterContext {...props} />
         </Provider>
       )
       const componentHTML = renderToString(InitialView);

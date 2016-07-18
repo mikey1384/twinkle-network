@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {getInitialVideos, resetVideoState} from 'redux/actions/VideoActions';
 import {getPinnedPlaylistsAsync, getPlaylistsAsync, resetPlaylistState} from 'redux/actions/PlaylistActions';
 import {connect} from 'react-redux';
+import {browserHistory} from 'react-router';
 
 @connect(
   null,
@@ -15,9 +16,11 @@ import {connect} from 'react-redux';
 )
 export default class Contents extends Component {
   componentWillMount() {
-    this.props.getInitialVideos();
-    this.props.getPinnedPlaylists();
-    this.props.getPlaylists();
+    if (!!browserHistory) {
+      this.props.getInitialVideos();
+      this.props.getPinnedPlaylists();
+      this.props.getPlaylists();
+    }
   }
 
   componentWillUnmount() {
