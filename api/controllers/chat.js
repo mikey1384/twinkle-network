@@ -13,22 +13,18 @@ const async = require('async');
 const express = require('express');
 const access = require('../auth/access');
 const router = express.Router();
-const defaultChatroomId = 2;
+const generalChatId = require('../siteConfig').generalChatId;
 
 router.get('/', requireAuth, (req, res) => {
   const user = req.user;
-  const lastChatRoomId = user.lastChatRoom || defaultChatroomId;
+  const lastChatRoomId = user.lastChatRoom || generalChatId;
   fetchChat({user, channelId: lastChatRoomId}, (err, results) => {
     if (err) {
       console.error(err);
       if (err.status) return res.status(err.status).send({error: err})
       return res.status(500).send({error: err})
     }
-    res.send({
-      channels: results[0],
-      messages: results[1],
-      currentChannel: results[2]
-    })
+    res.send(results)
   })
 })
 
@@ -142,14 +138,22 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   })
 })
 
+router.get('/channels', requireAuth, (req, res) => {
+  const user = req.user;
+  fetchChat({user}, (err, results) => {
+    if (err) return res.status(500).send({error: err});
+    res.send(results);
+  })
+})
+
 router.get('/channel', requireAuth, (req, res) => {
   const user = req.user;
-  const channelId = req.query.channelId || defaultChatroomId;
+  const channelId = req.query.channelId || generalChatId;
   async.waterfall([
     callback => {
       fetchChat({user, channelId}, (err, results) => {
         if (err) return callback(err);
-        callback(err, results[1])
+        callback(err, results.messages)
       })
     },
     (messages, callback) => {

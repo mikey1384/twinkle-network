@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {checkChannelExistsAsync, openDirectMessage} from 'redux/actions/ChatActions';
+import {checkChannelExistsAsync, openDirectMessageAsync} from 'redux/actions/ChatActions';
 
 @connect(
   state => ({
     username: state.UserReducer.username,
     userId: state.UserReducer.userId
   }),
-  {openDirectMessage}
+  {openDirectMessage: openDirectMessageAsync}
 )
 export default class UsernameText extends Component {
   constructor() {

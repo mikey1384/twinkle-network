@@ -95,7 +95,9 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         currentChannel: {
           id: 0,
-          bidirectional: true
+          bidirectional: true,
+          //TODO: needs major refactoring...
+          members: state.channels[0].members
         },
         messages: [],
         loadMoreButton: false
@@ -186,11 +188,23 @@ export default function ChatReducer(state = defaultState, action) {
           roomname: action.partner.username,
           lastMessage: null,
           lastUpdate: null,
-          lastMessageSender: null
+          lastMessageSender: null,
+          members: [
+            {
+              username: action.user.username,
+              userid: action.user.userId
+            },
+            {
+              username: action.partner.username,
+              userid: action.partner.userId
+            }
+          ]
         }].concat(filteredChannel),
         currentChannel: {
           id: 0,
           bidirectional: true,
+          // members should not be in currentChannel. Rather, it should be in channels.
+          // TODO: Refactoring required.
           members: [
             {
               username: action.user.username,

@@ -64,11 +64,26 @@ export const increaseNumberOfUnreadMessages = () => ({
   type: 'INCREASE_NUM_UNREAD_MSGS'
 })
 
-export const openDirectMessage = (user, partner) => dispatch => {
+export const fetchChannelsAsync = callback => dispatch => {
+  request.get(`${API_URL}/channels`, auth())
+  .then(
+    response => {
+      dispatch(updateChannelList(response.data))
+      callback(dispatch)
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      handleError(error, dispatch)
+    }
+  )
+}
+
+export const openDirectMessageAsync = (user, partner) => dispatch => {
   let cb = dispatch => {
     dispatch(checkChannelExistsAsync(user, partner, () => dispatch(turnChatOn())))
   }
-  dispatch(initChatAsync(cb))
+  dispatch(fetchChannelsAsync(cb))
 }
 
 export const loadMoreMessages = (data) => ({
