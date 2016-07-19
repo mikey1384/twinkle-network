@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {checkChannelExistsAsync, openDirectMessageAsync} from 'redux/actions/ChatActions';
+import {openDirectMessageAsync} from 'redux/actions/ChatActions';
 
 @connect(
   state => ({

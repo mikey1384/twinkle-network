@@ -6,7 +6,7 @@ import {LinkContainer} from 'react-router-bootstrap';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import io from 'socket.io-client';
 import {connect} from 'react-redux';
-import {initChatAsync, resetChat, toggleChat, turnChatOn, turnChatOff} from 'redux/actions/ChatActions';
+import {initChatAsync, resetChat, toggleChat, turnChatOff} from 'redux/actions/ChatActions';
 import {URL} from 'constants/URL';
 import ChatButton from 'containers/Header/ChatButton';
 

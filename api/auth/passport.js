@@ -11,7 +11,7 @@ const pool = require('../pool');
 const localLogin = new LocalStrategy(localOptions, function(username, password, done) {
   const usernameLowered = username.toLowerCase();
   pool.query('SELECT * FROM users WHERE username = ?', usernameLowered, function (err, rows) {
-    if (err) return done(err);
+    if (err) return done(err, false);
     if (!rows || rows.length === 0) return done(null, false);
 
     var hashedPass = rows[0].password;

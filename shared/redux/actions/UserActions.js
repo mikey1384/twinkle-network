@@ -38,7 +38,7 @@ export const loginAsync = params => dispatch => request.post(`${API_URL}/login`,
   }
 ).catch(
   error => {
-    if (error.status === 401) {
+    if (error.response.status === 401) {
       return dispatch(login({result: "Incorrect username/password combination"}))
     }
     dispatch(login({result: error.data}))

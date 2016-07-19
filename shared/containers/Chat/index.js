@@ -26,13 +26,13 @@ import {GENERAL_CHAT_ID} from 'constants/database';
     receiveMessage: ChatActions.receiveMessage,
     receiveMessageOnDifferentChannel: ChatActions.receiveMessageOnDifferentChannel,
     receiveFirstMsg: ChatActions.receiveFirstMsg,
-    enterChannel: ChatActions.enterChannelAsync,
+    enterChannel: ChatActions.enterChannel,
     enterEmptyBidirectionalChat: ChatActions.enterEmptyBidirectionalChat,
     submitMessage: ChatActions.submitMessageAsync,
     loadMoreMessages: ChatActions.loadMoreMessagesAsync,
     createNewChannel: ChatActions.createNewChannelAsync,
     createBidirectionalChannel: ChatActions.createBidirectionalChannelAsync,
-    checkChannelExists: ChatActions.checkChannelExistsAsync,
+    createNewChatOrEnterExistingChat: ChatActions.checkChatExistsThenOpenNewChatOrEnterExistingChat,
     leaveChannel: ChatActions.leaveChannelAsync
   }
 )
@@ -237,13 +237,15 @@ export default class Chat extends Component {
                   marginBottom: '0px'
                 }}
               >{channelName()}</h4>
-              <small>
-                <a
-                  style={{
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => this.setState({userListModalShown: true})}
-                >{this.renderNumberOfMembers()}</a> online</small>
+              {currentChannel.id !== 0 &&
+                <small>
+                  <a
+                    style={{
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => this.setState({userListModalShown: true})}
+                  >{this.renderNumberOfMembers()}</a> online</small>
+              }
             </div>
             <button
               className="btn btn-default btn-sm pull-right"
@@ -452,10 +454,10 @@ export default class Chat extends Component {
   }
 
   onCreateNewChannel(params) {
-    const {checkChannelExists, createNewChannel, socket, username, userId} = this.props;
+    const {createNewChatOrEnterExistingChat, createNewChannel, socket, username, userId} = this.props;
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0];
-      return checkChannelExists({username, userId}, partner, () => {
+      return createNewChatOrEnterExistingChat({username, userId}, partner, () => {
         this.setState({createNewChannelModalShown: false})
       })
     }

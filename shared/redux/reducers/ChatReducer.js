@@ -97,7 +97,6 @@ export default function ChatReducer(state = defaultState, action) {
         currentChannel: {
           id: 0,
           bidirectional: true,
-          //TODO: needs major refactoring...
           members: state.channels[0].members
         },
         messages: [],
@@ -124,7 +123,7 @@ export default function ChatReducer(state = defaultState, action) {
       let channel = {};
       let channels = state.channels;
       for (let i = 0; i < channels.length; i++) {
-        if (String(channels[i].id) === String(action.data.channelId)) {
+        if (Number(channels[i].id) === Number(action.data.channelId)) {
           channel = {
             ...channels[i],
             lastMessage: action.data.content,
@@ -205,8 +204,6 @@ export default function ChatReducer(state = defaultState, action) {
         currentChannel: {
           id: 0,
           bidirectional: true,
-          // members should not be in currentChannel. Rather, it should be in channels.
-          // TODO: Refactoring required.
           members: [
             {
               username: action.user.username,

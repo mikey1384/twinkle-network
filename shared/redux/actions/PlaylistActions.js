@@ -304,7 +304,7 @@ export const clickSafeOff = () => ({
 })
 
 function handleError(error, dispatch) {
-  if (error.status === 401) {
+  if (error.response.status === 401) {
     dispatch(logout());
     dispatch(openSigninModal());
   }
