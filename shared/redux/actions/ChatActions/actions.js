@@ -1,6 +1,5 @@
 import request from 'axios';
-import {logout, openSigninModal} from '../UserActions';
-import {API_URL, token, auth} from './constants';
+import {API_URL, token, auth, handleError} from './constants';
 
 
 export const checkChatExists = (user, partner, {then}) => dispatch =>
@@ -108,10 +107,3 @@ export const updateChannelList = (data) => ({
   type: 'UPDATE_CHANNEL_LIST',
   data
 })
-
-export function handleError(error, dispatch) {
-  if (error.response.status === 401) {
-    dispatch(logout());
-    dispatch(openSigninModal());
-  }
-}

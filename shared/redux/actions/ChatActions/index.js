@@ -1,7 +1,7 @@
 import request from 'axios';
 import {URL} from 'constants/URL';
 import {logout, openSigninModal} from '../UserActions';
-import {API_URL, token, auth} from './constants';
+import {API_URL, token, auth, handleError} from './constants';
 import * as actions from './actions';
 
 
