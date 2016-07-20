@@ -237,14 +237,15 @@ export default class Chat extends Component {
                   marginBottom: '0px'
                 }}
               >{channelName()}</h4>
-              {currentChannel.id !== 0 &&
+              {currentChannel.id !== 0 ?
                 <small>
                   <a
                     style={{
                       cursor: 'pointer'
                     }}
                     onClick={() => this.setState({userListModalShown: true})}
-                  >{this.renderNumberOfMembers()}</a> online</small>
+                  >{this.renderNumberOfMembers()}</a> online
+                </small> : <small>{'\u00a0'}</small>
               }
             </div>
             <button
