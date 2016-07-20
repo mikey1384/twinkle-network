@@ -5,7 +5,6 @@ export function initActions() {
   return dispatch => {
     const actions = [
       getPinnedPlaylistsAsync,
-      getPlaylistsAsync,
       getInitialVideos
     ];
 

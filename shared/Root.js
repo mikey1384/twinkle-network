@@ -17,6 +17,7 @@ import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import * as reducers from 'redux/reducers';
 import {routerReducer, routerMiddleware} from 'react-router-redux'
 import ReduxThunk from 'redux-thunk';
+import {getPlaylistsAsync} from 'redux/actions/PlaylistActions';
 import {loadVideoPageAsync} from 'redux/actions/VideoActions';
 import {initSessionAsync} from 'redux/actions/UserActions';
 import {browserHistory} from 'react-router';
@@ -55,7 +56,10 @@ export const routes = (
     onEnter={onAppEnter}
   >
     <Route component={Contents}>
-      <IndexRoute component={ContentsMain} />
+      <IndexRoute
+        component={ContentsMain}
+        onEnter={onContentsMainEnter}
+      />
       <Route
         path="videos/:videoId"
         component={VideoPage}
@@ -70,6 +74,10 @@ export const routes = (
     <Route path="*" component={NotFound} status={404} />
   </Route>
 );
+
+function onContentsMainEnter() {
+  store.dispatch(getPlaylistsAsync())
+}
 
 function onVideoPageEnter(nextState) {
   const action = nextState.location.action;

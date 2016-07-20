@@ -170,7 +170,7 @@ export default function PlaylistReducer(state = defaultState, action) {
         videoThumbsForModal: videoThumbs
       }
     case 'UPLOAD_PLAYLIST':
-      let loadMoreButtonDisplayed = false;
+      let loadMoreButtonDisplayed = state.loadMoreButton;
       if (defaultPlaylists.length > 2) {
         defaultPlaylists.pop();
         defaultPlaylists = [action.data].concat(defaultPlaylists);
