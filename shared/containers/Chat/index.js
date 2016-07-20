@@ -66,6 +66,7 @@ export default class Chat extends Component {
       if (forCurrentChannel) {
         if (data.leftChannel) {
           const {userId, username} = data.leftChannel;
+          console.log({channelId: data.channelId, userId, username});
           notifyThatMemberLeftChannel({channelId: data.channelId, userId, username})
         }
         this.setState({currentChannelOnline: data.membersOnline.length})
@@ -511,7 +512,7 @@ export default class Chat extends Component {
   }
 
   onLeaveChannel() {
-    const {leaveChannel, currentChannel, userId, socket} = this.props;
+    const {leaveChannel, currentChannel, userId, username, socket} = this.props;
     leaveChannel(currentChannel.id);
     socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username});
     // on other user's client side

@@ -200,6 +200,7 @@ export default function ChatReducer(state = defaultState, action) {
           roomid: action.data.channelId,
           content: "Left the channel",
           timeposted: time,
+          isNotification: true,
           username: action.data.username,
           userid: action.data.userId
         }])
