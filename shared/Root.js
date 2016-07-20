@@ -56,10 +56,7 @@ export const routes = (
     onEnter={onAppEnter}
   >
     <Route component={Contents}>
-      <IndexRoute
-        component={ContentsMain}
-        onEnter={onContentsMainEnter}
-      />
+      <IndexRoute component={ContentsMain} />
       <Route
         path="videos/:videoId"
         component={VideoPage}
@@ -74,10 +71,6 @@ export const routes = (
     <Route path="*" component={NotFound} status={404} />
   </Route>
 );
-
-function onContentsMainEnter() {
-  store.dispatch(getPlaylistsAsync())
-}
 
 function onVideoPageEnter(nextState) {
   const action = nextState.location.action;

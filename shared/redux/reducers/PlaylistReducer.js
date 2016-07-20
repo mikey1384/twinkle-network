@@ -171,6 +171,7 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'UPLOAD_PLAYLIST':
       let loadMoreButtonDisplayed = state.loadMoreButton;
+      defaultPlaylists = defaultPlaylists || [];
       if (defaultPlaylists.length > 2) {
         defaultPlaylists.pop();
         defaultPlaylists = [action.data].concat(defaultPlaylists);
