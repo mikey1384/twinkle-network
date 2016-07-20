@@ -39,7 +39,7 @@ export const uploadPlaylistAsync = params => dispatch =>
 request.post(API_URL, params, auth())
 .then(
   response => {
-    const { data } = response;
+    const {data} = response;
     if (data.result) {
       dispatch(uploadPlaylist(data.result))
       dispatch(closeAddPlaylistModal())
@@ -282,10 +282,6 @@ export const closeReorderPinnedPlaylistsModal = () => ({
 
 export const resetPlaylistModalState = () => ({
   type: 'RESET_PL_MODAL_STATE'
-})
-
-export const resetPlaylistState = () => ({
-  type: 'RESET_PL_STATE'
 })
 
 export const clickSafeOn = () => ({
