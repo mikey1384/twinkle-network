@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {timeSince} from 'helpers/TimeStampHelper';
+import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from '../EditTextArea';
-import {cleanStringWithURL} from 'helpers/StringHelper';
+import {cleanStringWithURL} from 'helpers/stringHelpers';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
-import {stringIsEmpty} from 'helpers/StringHelper';
+import {stringIsEmpty} from 'helpers/stringHelpers';
 
 export default class ChatInput extends Component {
   constructor() {

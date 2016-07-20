@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
 import {Modal, Button, Alert} from 'react-bootstrap';
-import {stringIsEmpty} from 'helpers/StringHelper';
+import {stringIsEmpty} from 'helpers/stringHelpers';
 
 
 @reduxForm({

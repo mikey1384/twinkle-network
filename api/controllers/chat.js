@@ -1,13 +1,13 @@
 const pool = require('../pool');
 
 const requireAuth = require('../auth').requireAuth;
-const processedString = require('../helpers/StringHelper').processedString;
-const processedTitleString = require('../helpers/StringHelper').processedTitleString;
+const processedString = require('../helpers/stringHelpers').processedString;
+const processedTitleString = require('../helpers/stringHelpers').processedTitleString;
 
-const fetchChat = require('../helpers/ChatHelper').fetchChat;
-const fetchChannels = require('../helpers/ChatHelper').fetchChannels;
-const handleCaseWhereBidirectionalChatAlreadyExists = require('../helpers/ChatHelper').handleCaseWhereBidirectionalChatAlreadyExists;
-const updateLastRead = require('../helpers/ChatHelper').updateLastRead;
+const fetchChat = require('../helpers/chatHelpers').fetchChat;
+const fetchChannels = require('../helpers/chatHelpers').fetchChannels;
+const handleCaseWhereBidirectionalChatAlreadyExists = require('../helpers/chatHelpers').handleCaseWhereBidirectionalChatAlreadyExists;
+const updateLastRead = require('../helpers/chatHelpers').updateLastRead;
 
 const async = require('async');
 const express = require('express');
@@ -30,23 +30,23 @@ router.get('/', requireAuth, (req, res) => {
 
 router.post('/', requireAuth, (req, res) => {
   const user = req.user;
-  const params = req.body.params;
-  if (params.userid !== user.id) {
+  const message = req.body.message;
+  const {channelId, content, timeposted} = message;
+  if (message.userid !== user.id) {
     return res.status(401).send("Unauthorized")
   }
-  const timeposted = Math.floor(Date.now()/1000);
   const post = {
-    roomid: params.channelId,
+    roomid: channelId,
     userid: user.id,
-    content: processedString(params.content),
+    content: processedString(content),
     timeposted
   }
 
-  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, params.channelId], (err, rows) => {
+  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, channelId], (err, rows) => {
     if(Number(rows[0].num) > 0) {
-      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, params.channelId]);
+      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, channelId]);
     } else {
-      pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: params.channelId, timeStamp: timeposted});
+      pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: channelId, timeStamp: timeposted});
     }
   })
 
@@ -76,7 +76,7 @@ router.post('/', requireAuth, (req, res) => {
 
 router.get('/more', requireAuth, (req, res) => {
   const user = req.user;
-  if (Number(req.query.userId) !== user.id) {
+  if (Number(req.query.userId) !== Number(user.id)) {
     return res.status(401).send("Unauthorized")
   }
   const messageId = req.query.messageId;
@@ -186,7 +186,7 @@ router.get('/channel', requireAuth, (req, res) => {
       }
     ], (err, results) => {
       res.send({
-        currentChannel: {
+        channel: {
           id: channelId,
           bidirectional: results[0] ? Boolean(results[0].bidirectional) : false,
           creatorId: results[0].creator,
@@ -401,16 +401,36 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
 
 router.delete('/channel', requireAuth, (req, res) => {
   const {user} = req;
-  const {channelId} = req.query;
+  const {channelId, time} = req.query;
 
-  let query = 'DELETE FROM msg_chatroom_members WHERE roomid = ? AND userid = ?';
-  pool.query(query, [channelId, user.id], err => {
+  async.parallel([postLeaveNotification, leaveChannel], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err})
     }
     res.send({success: true})
   })
+
+  function postLeaveNotification(callback) {
+    let post = {
+      roomid: channelId,
+      userid: user.id,
+      content: 'Left the channel',
+      timeposted: time,
+      isNotification: true
+    }
+    let query = 'INSERT INTO msg_chats SET ?';
+    pool.query(query, post, err => {
+      callback(err)
+    })
+  }
+
+  function leaveChannel(callback) {
+    let query = 'DELETE FROM msg_chatroom_members WHERE roomid = ? AND userid = ?';
+    pool.query(query, [channelId, user.id], err => {
+      callback(err)
+    })
+  }
 })
 
 router.post('/invite', requireAuth, (req, res) => {

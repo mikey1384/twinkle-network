@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {stringIsEmpty} from 'helpers/StringHelper';
+import {stringIsEmpty} from 'helpers/stringHelpers';
 import TagPeopleInput from './Input';
 
 

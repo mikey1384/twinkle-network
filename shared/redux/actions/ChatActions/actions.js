@@ -1,6 +1,8 @@
 import request from 'axios';
-import {API_URL, token, auth, handleError} from './constants';
+import {auth, handleError} from '../constants';
+import {URL} from 'constants/URL';
 
+const API_URL = `${URL}/chat`;
 
 export const checkChatExists = (user, partner, {then}) => dispatch =>
 request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth())
@@ -13,28 +15,25 @@ request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth())
   }
 )
 
-export const createBidirectionalChannel = data => ({
-  type: 'CREATE_BIDIRECTIONAL_CHANNEL',
-  data
-})
-
 export const createNewChannel = data => ({
   type: 'CREATE_NEW_CHANNEL',
   data
 })
 
-export const enterChannel = (data, currentChannelOnline) => ({
+export const createNewChat = data => ({
+  type: 'CREATE_NEW_CHAT',
+  data
+})
+
+export const enterChannel = data => ({
   type: 'ENTER_CHANNEL',
   data
 })
 
-export const enterChannelAsync = (channelId, callback) => dispatch =>
+export const fetchChannelWithId = (channelId, {then}) => dispatch =>
 request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
 .then(
-  response => {
-    dispatch(enterChannel(response.data));
-    if (callback) callback();
-  }
+  response => then(response.data)
 ).catch(
   error => {
     console.error(error)
@@ -42,13 +41,10 @@ request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
   }
 )
 
-export const fetchChannelsAsync = callback => dispatch => {
+export const fetchChannelsAsync = ({then}) => dispatch => {
   request.get(`${API_URL}/channels`, auth())
   .then(
-    response => {
-      dispatch(updateChannelList(response.data))
-      callback(dispatch)
-    }
+    response => then(response.data)
   ).catch(
     error => {
       console.error(error)
@@ -60,11 +56,6 @@ export const fetchChannelsAsync = callback => dispatch => {
 export const getNumberOfUnreadMessages = numUnreads => ({
   type: 'GET_NUM_UNREAD_MSGS',
   numUnreads
-})
-
-export const ifBidrectionalChannelExists = data => ({
-  type: 'IF_BIDIRECTIONAL_CHANNEL_EXISTS',
-  data
 })
 
 export const initChat = (data) => ({
@@ -87,10 +78,15 @@ export const loadMoreMessages = (data) => ({
   data
 })
 
-export const openBidirectionalChat = (user, partner) => ({
-  type: 'OPEN_BIDIRECTIONAL_CHAT',
+export const openNewChatTab = (user, partner) => ({
+  type: 'OPEN_NEW_CHAT_TAB',
   user,
   partner
+})
+
+export const receiveExistingChatData = data => ({
+  type: 'RECEIVE_EXISTING_CHAT_DATA',
+  data
 })
 
 export const searchUserToInvite = data => ({

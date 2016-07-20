@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import onClickOutside from 'react-onclickoutside';
-import {cleanString} from 'helpers/StringHelper';
+import {cleanString} from 'helpers/stringHelpers';
 
 class EditTitleForm extends Component {
   handleClickOutside = (event) => {

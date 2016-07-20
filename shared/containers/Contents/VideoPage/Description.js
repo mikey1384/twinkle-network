@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import UsernameText from 'components/UsernameText';
 import Textarea from 'react-textarea-autosize';
-import {cleanString, cleanStringWithURL} from 'helpers/StringHelper';
+import {cleanString, cleanStringWithURL} from 'helpers/stringHelpers';
 
 export default class Description extends Component {
   constructor(props) {

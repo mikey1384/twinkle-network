@@ -1,6 +1,6 @@
 import React from 'react';
 import Textarea from 'react-textarea-autosize';
-import {cleanString} from 'helpers/StringHelper';
+import {cleanString} from 'helpers/stringHelpers';
 
 export default function EditChoiceListItem(props) {
   return (

@@ -1,17 +1,10 @@
 import request from 'axios';
-import {URL} from 'constants/URL';
 import {push} from 'react-router-redux';
-import {logout, openSigninModal} from './UserActions';
 import {likePlaylistVideo} from './PlaylistActions';
+import {auth, handleError} from './constants';
+import {URL} from 'constants/URL';
 
 const API_URL = `${URL}/video`;
-
-const token = () => typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
-const auth = () => ({
-  headers: {
-    authorization: token()
-  }
-})
 
 export const getVideos = (videos, initialRun) => ({
   type: 'GET_VIDEOS',
@@ -420,10 +413,3 @@ export const resetVideoPage = () => ({
 export const resetVideoState = () => ({
   type: 'RESET_VID_STATE'
 })
-
-function handleError(error, dispatch) {
-  if (error.response.status === 401) {
-    dispatch(logout());
-    dispatch(openSigninModal());
-  }
-}

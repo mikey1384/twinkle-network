@@ -1,19 +1,20 @@
 import request from 'axios';
-import {URL} from 'constants/URL';
-import {logout, openSigninModal} from '../UserActions';
-import {API_URL, token, auth, handleError} from './constants';
+import {auth, handleError} from '../constants';
 import * as actions from './actions';
+import {GENERAL_CHAT_ID} from 'constants/database';
+import {URL} from 'constants/URL';
 
+const API_URL = `${URL}/chat`;
 
-export const checkChatExistsThenOpenNewChatOrEnterExistingChat = (user, partner, callback) => dispatch => {
-  const {checkChatExists} = actions;
+export const checkChatExistsThenOpenNewChatTabOrEnterExistingChat = (user, partner, callback) => dispatch => {
+  const {checkChatExists, openNewChatTab} = actions;
   dispatch(checkChatExists(user, partner, {then: followUp}));
   function followUp(data) {
     if (data.channelExists) {
-      dispatch(actions.enterChannelAsync(data.channelId))
+      dispatch(enterChannelWithId(data.channelId))
     }
     else {
-      dispatch(actions.openBidirectionalChat(user, partner))
+      dispatch(openNewChatTab(user, partner))
     }
     if (callback) callback()
   }
@@ -23,15 +24,15 @@ export const clearSearchResults = () => ({
   type: 'CLEAR_RESULTS_FOR_CHANNEL'
 })
 
-export const createBidirectionalChannelAsync = (params, callback) => dispatch =>
+export const checkChatExistsThenCreateNewChatOrReceiveExistingChatData = (params, callback) => dispatch =>
 request.post(`${API_URL}/channel/bidirectional`, params, auth())
 .then(
   response => {
-    if (response.data.alreadyExists) {
-      dispatch(actions.ifBidrectionalChannelExists(response.data.alreadyExists.message));
+    if (!!response.data.alreadyExists) {
+      dispatch(actions.receiveExistingChatData(response.data.alreadyExists.message));
       return callback(response.data);
     }
-    dispatch(actions.createBidirectionalChannel(response.data));
+    dispatch(actions.createNewChat(response.data));
     callback(response.data);
   }
 ).catch(
@@ -55,10 +56,18 @@ request.post(`${API_URL}/channel`, {params}, auth())
   }
 )
 
-export const enterChannel = (channelId, callback) => actions.enterChannelAsync(channelId, callback)
+export const enterChannelWithId = (channelId, callback) => dispatch => {
+  const {fetchChannelWithId, enterChannel} = actions;
+  dispatch(fetchChannelWithId(channelId, {then: followUp}));
 
-export const enterEmptyBidirectionalChat = () => ({
-  type: 'ENTER_EMPTY_BIDIRECTIONAL_CHAT'
+  function followUp(data) {
+    dispatch(enterChannel(data))
+    if (callback) callback()
+  }
+}
+
+export const enterEmptyChat = () => ({
+  type: 'ENTER_EMPTY_CHAT'
 })
 
 export const getNumberOfUnreadMessagesAsync = () => dispatch => {
@@ -123,23 +132,33 @@ request.post(`${API_URL}/invite`, params, auth())
   }
 )
 
-export const leaveChannelAsync = channelId => dispatch =>
-request.delete(`${API_URL}/channel?channelId=${channelId}`, auth())
-.then(
-  response => {
-    dispatch(actions.leaveChannel(channelId))
-    dispatch(enterChannelAsync(2))
-  }
-).catch(
-  error => {
-    console.error(error)
-    handleError(error, dispatch)
-  }
-)
+export const leaveChannelAsync = channelId => dispatch => {
+  const time = Math.floor(Date.now()/1000);
+  request.delete(`${API_URL}/channel?channelId=${channelId}&time=${time}`, auth())
+  .then(
+    response => {
+      dispatch(actions.leaveChannel(channelId))
+      dispatch(enterChannelWithId(GENERAL_CHAT_ID))
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      handleError(error, dispatch)
+    }
+  )
+}
 
-export const openDirectMessageAsync = (user, partner) => dispatch => {
-  let cb = dispatch => dispatch(checkChatExistsThenOpenNewChatOrEnterExistingChat(user, partner))
-  dispatch(actions.fetchChannelsAsync(cb))
+export const notifyThatMemberLeftChannel = data => ({
+  type: 'NOTIFY_MEMBER_LEFT',
+  data
+})
+
+export const openDirectMessage = (user, partner) => dispatch => {
+  dispatch(actions.fetchChannelsAsync({then: followUp}))
+  function followUp(data) {
+    dispatch(actions.updateChannelList(data))
+    dispatch(checkChatExistsThenOpenNewChatTabOrEnterExistingChat(user, partner))
+  }
 }
 
 export const receiveMessage = data => {
@@ -182,7 +201,7 @@ export const submitMessageAsync = (params, callback) => dispatch => {
     timeposted: Math.floor(Date.now()/1000)
   }
   dispatch(actions.submitMessage(message))
-  request.post(API_URL, {params}, auth())
+  request.post(API_URL, {message}, auth())
   .then(
     response => {
       const {channels} = response.data;

@@ -1,4 +1,4 @@
-const processedString = require('./helpers/StringHelper').processedString;
+const processedString = require('./helpers/stringHelpers').processedString;
 const generalChatId = require('./siteConfig').generalChatId;
 const pool = require('./pool');
 
@@ -65,7 +65,7 @@ module.exports = function(io) {
       notifyChannelMembersChanged(channelId);
     })
 
-    socket.on('leave_chat_channel', channelId => {
+    socket.on('leave_chat_channel', ({channelId, userId, username}) => {
       socket.leave('chatChannel' + channelId);
       for (let i = 0; i < connections.length; i++) {
         if (connections[i].socketId === socket.id) {
@@ -74,7 +74,7 @@ module.exports = function(io) {
           break;
         }
       }
-      notifyChannelMembersChanged(channelId);
+      notifyChannelMembersChanged(channelId, {userId, username});
     })
 
     socket.on('bind_uid_to_socket', (userId, username) => {
@@ -133,7 +133,7 @@ module.exports = function(io) {
     })
   })
 
-  function notifyChannelMembersChanged(channelId) {
+  function notifyChannelMembersChanged(channelId, leftChannel) {
     io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
       if (error) return console.error(error);
       let membersOnline = clients.map(client => {
@@ -161,7 +161,7 @@ module.exports = function(io) {
           }
         }, []
       )
-      let data = {channelId, membersOnline}
+      let data = {channelId, membersOnline, leftChannel}
       io.to('chatChannel' + channelId).emit('change_in_members_online', data);
     })
   }

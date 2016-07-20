@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ChoiceListItem from './ChoiceListItem';
 import EditChoiceListItem from './EditChoiceListItem';
 import Textarea from 'react-textarea-autosize';
-import {processedString} from 'helpers/StringHelper';
+import {processedString} from 'helpers/stringHelpers';
 
 export default class QuestionBlock extends Component {
   constructor(props) {

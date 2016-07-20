@@ -1,15 +1,8 @@
 import request from 'axios';
+import {auth, handleError} from './constants';
 import {URL} from 'constants/URL';
-import {logout, openSigninModal} from './UserActions';
 
 const API_URL = `${URL}/playlist`;
-
-const token = () => typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
-const auth = () => ({
-  headers: {
-    authorization: token()
-  }
-})
 
 export const getPlaylists = (data, initialRun) => ({
   type: 'GET_PLAYLISTS',
@@ -302,10 +295,3 @@ export const clickSafeOn = () => ({
 export const clickSafeOff = () => ({
   type: 'CLICK_SAFE_OFF'
 })
-
-function handleError(error, dispatch) {
-  if (error.response.status === 401) {
-    dispatch(logout());
-    dispatch(openSigninModal());
-  }
-}

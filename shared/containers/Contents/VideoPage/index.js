@@ -20,7 +20,7 @@ import QuestionsBuilder from './QuestionsBuilder';
 import UserListModal from 'components/Modals/UserListModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import {bindActionCreators} from 'redux';
-import {stringIsEmpty} from 'helpers/StringHelper';
+import {stringIsEmpty} from 'helpers/stringHelpers';
 
 
 @connect(

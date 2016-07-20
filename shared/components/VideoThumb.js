@@ -6,7 +6,7 @@ import {Link} from 'react-router';
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions';
 import {connect} from 'react-redux';
 import UsernameText from './UsernameText';
-import {cleanString} from 'helpers/StringHelper';
+import {cleanString} from 'helpers/stringHelpers';
 
 
 @connect(

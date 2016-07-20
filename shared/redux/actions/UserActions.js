@@ -1,14 +1,8 @@
 import request from 'axios';
+import {token, auth} from './constants';
 import {URL} from 'constants/URL';
 
 const API_URL = `${URL}/user`;
-
-const token = () => typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
-const auth = () => ({
-  headers: {
-    authorization: token()
-  }
-})
 
 export const initSession = data => ({
   type: 'FETCH_SESSION',

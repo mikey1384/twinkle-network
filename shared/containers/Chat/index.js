@@ -8,7 +8,7 @@ import ChatInput from './ChatInput';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import InviteUsersModal from './Modals/InviteUsers';
 import UserListModal from 'components/Modals/UserListModal';
-import {cleanStringWithURL} from 'helpers/StringHelper';
+import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import {GENERAL_CHAT_ID} from 'constants/database';
 
@@ -26,14 +26,15 @@ import {GENERAL_CHAT_ID} from 'constants/database';
     receiveMessage: ChatActions.receiveMessage,
     receiveMessageOnDifferentChannel: ChatActions.receiveMessageOnDifferentChannel,
     receiveFirstMsg: ChatActions.receiveFirstMsg,
-    enterChannel: ChatActions.enterChannel,
-    enterEmptyBidirectionalChat: ChatActions.enterEmptyBidirectionalChat,
+    enterChannelWithId: ChatActions.enterChannelWithId,
+    enterEmptyChat: ChatActions.enterEmptyChat,
     submitMessage: ChatActions.submitMessageAsync,
     loadMoreMessages: ChatActions.loadMoreMessagesAsync,
     createNewChannel: ChatActions.createNewChannelAsync,
-    createBidirectionalChannel: ChatActions.createBidirectionalChannelAsync,
-    createNewChatOrEnterExistingChat: ChatActions.checkChatExistsThenOpenNewChatOrEnterExistingChat,
-    leaveChannel: ChatActions.leaveChannelAsync
+    createNewChatOrReceiveExistingChatData: ChatActions.checkChatExistsThenCreateNewChatOrReceiveExistingChatData,
+    openNewChatTabOrEnterExistingChat: ChatActions.checkChatExistsThenOpenNewChatTabOrEnterExistingChat,
+    leaveChannel: ChatActions.leaveChannelAsync,
+    notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel
   }
 )
 export default class Chat extends Component {
@@ -56,15 +57,20 @@ export default class Chat extends Component {
     this.onInviteUsersDone = this.onInviteUsersDone.bind(this)
     this.onLeaveChannel = this.onLeaveChannel.bind(this)
 
-    const {socket} = props;
+    const {socket, notifyThatMemberLeftChannel} = props;
     socket.on('receive_message', this.onReceiveMessage)
     socket.on('chat_invitation', this.onChatInvitation)
     socket.on('change_in_members_online', data => {
       let {myChannels} = this.state;
       let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
       if (forCurrentChannel) {
+        if (data.leftChannel) {
+          const {userId, username} = data.leftChannel;
+          notifyThatMemberLeftChannel({channelId: data.channelId, userId, username})
+        }
         this.setState({currentChannelOnline: data.membersOnline.length})
       }
+
       let channelObjectExists = false;
       for (let i = 0; i < myChannels.length; i++) {
         if (Number(myChannels[i].channelId) === Number(data.channelId)) {
@@ -328,7 +334,7 @@ export default class Chat extends Component {
           className="media chat-channel-item container-fluid"
           style={{
             width: '100%',
-            backgroundColor: id == currentChannel.id && '#f7f7f7',
+            backgroundColor: Number(id) === Number(currentChannel.id) && '#f7f7f7',
             cursor: 'pointer',
             padding: '1em',
             marginTop: '0px'
@@ -337,9 +343,11 @@ export default class Chat extends Component {
           key={id}
         >
           <div className="media-body">
-            <h4 className="media-heading">{roomname} {numUnreads > 0 &&
-              <span className="badge">{numUnreads}</span>
-            }</h4>
+            <h4 className="media-heading">{roomname}&nbsp;
+              {numUnreads > 0 &&
+                <span className="badge">{numUnreads}</span>
+              }
+            </h4>
             <small
               style={{
                 whiteSpace: 'nowrap',
@@ -399,12 +407,12 @@ export default class Chat extends Component {
       userId,
       username,
       currentChannel,
-      createBidirectionalChannel,
+      createNewChatOrReceiveExistingChatData,
       chatPartnerId
     } = this.props;
 
     if (currentChannel.id === 0) {
-      return createBidirectionalChannel({message, userId, chatPartnerId}, chat => {
+      return createNewChatOrReceiveExistingChatData({message, userId, chatPartnerId}, chat => {
         if (chat.alreadyExists) {
           let {message, messageId} = chat.alreadyExists;
           socket.emit('join_chat_channel', message.roomid);
@@ -439,11 +447,11 @@ export default class Chat extends Component {
   }
 
   onChannelEnter(id) {
-    const {enterChannel, enterEmptyBidirectionalChat} = this.props;
+    const {enterChannelWithId, enterEmptyChat} = this.props;
     const {myChannels} = this.state;
     if (id === 0) {
       this.setState({currentChannelOnline: 1})
-      return enterEmptyBidirectionalChat()
+      return enterEmptyChat()
     }
     let currentChannelOnline = 1;
     for (let i = 0; i < myChannels.length; i++) {
@@ -451,14 +459,14 @@ export default class Chat extends Component {
         currentChannelOnline = myChannels[i].membersOnline.length;
       }
     }
-    enterChannel(id, () => this.setState({currentChannelOnline}))
+    enterChannelWithId(id, () => this.setState({currentChannelOnline}))
   }
 
   onCreateNewChannel(params) {
-    const {createNewChatOrEnterExistingChat, createNewChannel, socket, username, userId} = this.props;
+    const {openNewChatTabOrEnterExistingChat, createNewChannel, socket, username, userId} = this.props;
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0];
-      return createNewChatOrEnterExistingChat({username, userId}, partner, () => {
+      return openNewChatTabOrEnterExistingChat({username, userId}, partner, () => {
         this.setState({createNewChannelModalShown: false})
       })
     }
@@ -503,9 +511,9 @@ export default class Chat extends Component {
   }
 
   onLeaveChannel() {
-    const {leaveChannel, currentChannel, socket} = this.props;
+    const {leaveChannel, currentChannel, userId, socket} = this.props;
     leaveChannel(currentChannel.id);
-    socket.emit('leave_chat_channel')
+    socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username});
     // on other user's client side
     // 1. notification on the leaver's departure should be displayed
     // 2. total number of members on the left menu should be adjusted
