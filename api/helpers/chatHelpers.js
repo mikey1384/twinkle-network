@@ -14,6 +14,7 @@ const fetchChat = (params, callback) => {
   };
 
   async.waterfall([
+    determineIfLastChannelExists,
     determineDestinationChannel,
     fetchChannelsAndMessages,
     fetchCurrentChannel
@@ -22,6 +23,20 @@ const fetchChat = (params, callback) => {
       callback(err, results);
     }
   )
+
+  function determineIfLastChannelExists(callback) {
+    if (channelId === generalChatId) return callback(null);
+    let query = 'SELECT * FROM msg_chatrooms WHERE id = ?';
+    pool.query(query, channelId, (err, rows) => {
+      if (!rows || rows.length === 0) {
+        return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: generalChatId}, user.id], err => {
+          channelId = generalChatId;
+          callback(null);
+        })
+      }
+      callback(err)
+    })
+  }
 
   function determineDestinationChannel(callback) {
     if (channelId === generalChatId) return callback(null);
