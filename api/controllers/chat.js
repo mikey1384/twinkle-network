@@ -106,7 +106,8 @@ router.get('/numUnreads', requireAuth, (req, res) => {
     (lastReads, callback) => {
       let query = [
         'SELECT roomid, timeposted FROM msg_chats WHERE roomid IN ',
-        '(SELECT roomid FROM msg_chatroom_members WHERE userid = ?)'
+        '(SELECT roomid FROM msg_chatroom_members WHERE userid = ?) ',
+        'AND roomid IN (SELECT id FROM msg_chatrooms)'
       ].join('')
       pool.query(query, user.id, (err, messages) => {
         let counter = 0;

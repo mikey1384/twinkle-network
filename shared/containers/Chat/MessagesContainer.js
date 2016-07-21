@@ -172,7 +172,7 @@ export default class MessagesContainer extends Component {
               <UsernameText
                 user={{
                   id: message.userid,
-                  name: message.username
+                  name: message.username || '(Deleted)'
                 }} /> <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
             <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>
           </div>

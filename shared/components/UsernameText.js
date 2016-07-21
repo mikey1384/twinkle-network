@@ -21,15 +21,19 @@ export default class UsernameText extends Component {
 
   render() {
     const {menuShown} = this.state;
+    const {user} = this.props;
     return (
       <span
         className="dropdown"
         onMouseLeave={() => this.setState({menuShown: false})}
       >
         <strong
-          style={{cursor: 'pointer'}}
+          style={{
+            cursor: 'pointer',
+            color: user.name === '(Deleted)' && '#7c7c7c'
+          }}
           onMouseEnter={this.onMouseEnter}
-        >{this.props.user.name}</strong>
+        >{user.name}</strong>
         {menuShown &&
           <ul className="dropdown-menu"
             style={{
@@ -52,7 +56,7 @@ export default class UsernameText extends Component {
 
   onMouseEnter() {
     const {userId, user} = this.props;
-    if (Number(user.id) !== Number(userId)) {
+    if (user.name !== '(Deleted)' && Number(user.id) !== Number(userId)) {
       this.setState({menuShown: true})
     }
   }

@@ -250,9 +250,10 @@ export default class Chat extends Component {
                   textOverflow:'ellipsis',
                   overflow:'hidden',
                   lineHeight: 'normal',
-                  marginBottom: '0px'
+                  marginBottom: '0px',
+                  color: !channelName() && '#7c7c7c'
                 }}
-              >{channelName()}</h4>
+              >{`${channelName() || '(Deleted)'}`}</h4>
               {currentChannel.id !== 0 ?
                 <small>
                   <a
@@ -353,7 +354,10 @@ export default class Chat extends Component {
           key={id}
         >
           <div className="media-body">
-            <h4 className="media-heading">{roomname}&nbsp;
+            <h4
+              className="media-heading"
+              style={{color: !roomname && '#7c7c7c'}}
+            >{`${roomname || '(Deleted)'}`}&nbsp;
               {numUnreads > 0 &&
                 <span className="badge">{numUnreads}</span>
               }
