@@ -56,13 +56,12 @@ request.post(`${API_URL}/channel`, {params}, auth())
   }
 )
 
-export const enterChannelWithId = (channelId, callback) => dispatch => {
+export const enterChannelWithId = (channelId) => dispatch => {
   const {fetchChannelWithId, enterChannel} = actions;
   dispatch(fetchChannelWithId(channelId, {then: followUp}));
 
   function followUp(data) {
     dispatch(enterChannel(data))
-    if (callback) callback()
   }
 }
 

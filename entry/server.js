@@ -24,7 +24,7 @@ app.use((req, res) => {
     }
 
     if(!props) return res.status(404).end('Not found');
-    store.dispatch(initActions())
+    store.dispatch(initActions(location))
       .then(() => res.end(renderView()))
       .catch(err => res.status(500).end(err.message))
 

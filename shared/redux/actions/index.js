@@ -1,7 +1,8 @@
 import {getInitialVideos} from './VideoActions';
 import {getPinnedPlaylistsAsync, getPlaylistsAsync} from './PlaylistActions';
 
-export function initActions() {
+export function initActions(location) {
+  //console.log(location);
   return dispatch => {
     const actions = [
       getPinnedPlaylistsAsync,

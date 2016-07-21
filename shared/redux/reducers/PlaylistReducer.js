@@ -20,8 +20,8 @@ const defaultState = {
   clickSafe: true
 };
 
-let defaultPlaylists;
-let defaultPinnedPlaylists;
+let defaultPlaylists = [];
+let defaultPinnedPlaylists = [];
 
 export default function PlaylistReducer(state = defaultState, action) {
   let loadMoreButtonForModal = false;
@@ -171,7 +171,6 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'UPLOAD_PLAYLIST':
       let loadMoreButtonDisplayed = state.loadMoreButton;
-      defaultPlaylists = defaultPlaylists || [];
       if (defaultPlaylists.length > 2) {
         defaultPlaylists.pop();
         defaultPlaylists = [action.data].concat(defaultPlaylists);

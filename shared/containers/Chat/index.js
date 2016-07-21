@@ -66,7 +66,6 @@ export default class Chat extends Component {
       if (forCurrentChannel) {
         if (data.leftChannel) {
           const {userId, username} = data.leftChannel;
-          console.log({channelId: data.channelId, userId, username});
           notifyThatMemberLeftChannel({channelId: data.channelId, userId, username})
         }
         this.setState({currentChannelOnline: data.membersOnline.length})
@@ -131,9 +130,35 @@ export default class Chat extends Component {
     }
   }
 
+  componentDidMount() {
+    const {currentChannel} = this.props;
+    const {myChannels} = this.state;
+    let currentChannelOnline = 1;
+    for (let i = 0; i < myChannels.length; i++) {
+      if (Number(myChannels[i].channelId) === Number(currentChannel.id)) {
+        currentChannelOnline = myChannels[i].membersOnline.length;
+      }
+    }
+    this.setState({currentChannelOnline})
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentChannel.id !== this.props.currentChannel.id) {
       ReactDOM.findDOMNode(this.refs.chatInput).focus()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const {currentChannel} = this.props;
+    const {myChannels} = this.state;
+    let currentChannelOnline = 1;
+    if (prevProps.currentChannel.id !== this.props.currentChannel.id) {
+      for (let i = 0; i < myChannels.length; i++) {
+        if (Number(myChannels[i].channelId) === Number(currentChannel.id)) {
+          currentChannelOnline = myChannels[i].membersOnline.length;
+        }
+      }
+      this.setState({currentChannelOnline})
     }
   }
 
@@ -449,18 +474,11 @@ export default class Chat extends Component {
 
   onChannelEnter(id) {
     const {enterChannelWithId, enterEmptyChat} = this.props;
-    const {myChannels} = this.state;
     if (id === 0) {
       this.setState({currentChannelOnline: 1})
       return enterEmptyChat()
     }
-    let currentChannelOnline = 1;
-    for (let i = 0; i < myChannels.length; i++) {
-      if (Number(myChannels[i].channelId) === Number(id)) {
-        currentChannelOnline = myChannels[i].membersOnline.length;
-      }
-    }
-    enterChannelWithId(id, () => this.setState({currentChannelOnline}))
+    enterChannelWithId(id)
   }
 
   onCreateNewChannel(params) {

@@ -70,7 +70,7 @@ export const routes = (
 
     <Route path="*" component={NotFound} status={404} />
   </Route>
-);
+)
 
 function onVideoPageEnter(nextState) {
   const action = nextState.location.action;
