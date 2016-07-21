@@ -163,7 +163,7 @@ export default class Chat extends Component {
   }
 
   componentWillUnmount() {
-    const {socket, channels, onUnmount} = this.props;
+    const {socket, onUnmount} = this.props;
     socket.removeListener('receive_message', this.onReceiveMessage);
     socket.removeListener('chat_invitation', this.onChatInvitation);
     socket.removeListener('change_in_members_online');
@@ -182,39 +182,23 @@ export default class Chat extends Component {
       return null;
     }
 
-    let menuProps = [];
-    if (!currentChannel.bidirectional) {
-      menuProps.push({
+    let menuProps = [
+      {
         label: 'Invite People',
         onClick: () => this.setState({inviteUsersModalShown: true})
-      })
-    }
-
-    if (Number(currentChannel.creatorId) === Number(userId) && !currentChannel.bidirectional) {
-      menuProps.push({
+      },
+      {
         label: 'Edit Title',
         onClick: () => console.log("edit channel title")
-      })
-    }
-
-    if (menuProps.length > 0) {
-      menuProps.push({
+      },
+      {
         separator: true
-      })
-    }
-
-    if (currentChannel.bidirectional) {
-      menuProps.push({
-        label: 'Hide Chat',
-        onClick: () => console.log("leave chat")
-      })
-    }
-    else {
-      menuProps.push({
+      },
+      {
         label: 'Leave Channel',
         onClick: this.onLeaveChannel
-      })
-    }
+      }
+    ]
 
     return (
       <div style={{display: 'flex', height: '88%'}}>
@@ -314,7 +298,7 @@ export default class Chat extends Component {
             top: 0
           }}
         >
-          {Number(currentChannel.id) !== GENERAL_CHAT_ID &&
+          {Number(currentChannel.id) !== GENERAL_CHAT_ID && !currentChannel.bidirectional &&
             <SmallDropdownButton
               style={{
                 position: "absolute",
@@ -533,9 +517,5 @@ export default class Chat extends Component {
     const {leaveChannel, currentChannel, userId, username, socket} = this.props;
     leaveChannel(currentChannel.id);
     socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username});
-    // on other user's client side
-    // 1. notification on the leaver's departure should be displayed
-    // 2. total number of members on the left menu should be adjusted
-    // 3. members online number should be adjusted
   }
 }
