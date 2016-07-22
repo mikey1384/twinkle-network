@@ -35,36 +35,10 @@ router.post('/', requireAuth, (req, res) => {
   if (message.userid !== user.id) {
     return res.status(401).send("Unauthorized")
   }
-  const post = {
-    roomid: channelId,
-    userid: user.id,
-    content: processedString(content),
-    timeposted
-  }
-
-  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, channelId], (err, rows) => {
-    if(Number(rows[0].num) > 0) {
-      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, channelId]);
-    } else {
-      pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: channelId, timeStamp: timeposted});
-    }
-  })
-
+  updateLastRead({userId: user.id, channelId, time: timeposted})
   async.waterfall([
-    callback => {
-      pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
-        callback(err, result.insertId)
-      })
-    },
-    (insertId, callback) => {
-      fetchChannels(user, (err, channels) => {
-        callback(err, {
-          messageId: insertId,
-          timeposted,
-          channels
-        })
-      })
-    }
+    saveMessageToDatabase,
+    fetchAndSortChannelsByLastUpdateTime
   ], (err, results) => {
     if (err) {
       console.error(err);
@@ -72,6 +46,28 @@ router.post('/', requireAuth, (req, res) => {
     }
     res.send(results)
   })
+
+  function saveMessageToDatabase(callback) {
+    const post = {
+      roomid: channelId,
+      userid: user.id,
+      content: processedString(content),
+      timeposted
+    }
+    pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
+      callback(err, result.insertId)
+    })
+  }
+
+  function fetchAndSortChannelsByLastUpdateTime(insertId, callback) {
+    fetchChannels(user, (err, channels) => {
+      callback(err, {
+        messageId: insertId,
+        timeposted,
+        channels
+      })
+    })
+  }
 })
 
 router.get('/more', requireAuth, (req, res) => {
@@ -99,7 +95,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   const user = req.user;
   async.waterfall([
     callback => {
-      pool.query('SELECT channel, timeStamp FROM msg_lastRead WHERE userId = ?', user.id, (err, lastReads) => {
+      pool.query('SELECT channel, lastRead FROM msg_channel_info WHERE userId = ?', user.id, (err, lastReads) => {
         callback(err, lastReads)
       })
     },
@@ -113,7 +109,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
         let counter = 0;
         for (let i = 0; i < lastReads.length; i++) {
           const channel = lastReads[i].channel;
-          const timeStamp = Number(lastReads[i].timeStamp);
+          const timeStamp = Number(lastReads[i].lastRead);
           for (let j = 0; j < messages.length; j++) {
             if (Number(messages[j].roomid) === Number(channel) && messages[j].timeposted > timeStamp) {
               counter ++
@@ -223,14 +219,7 @@ router.post('/lastRead', requireAuth, (req, res) => {
   const user = req.user;
   const channelId = req.body.channelId;
   const timeposted = req.body.timeposted;
-
-  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [user.id, channelId], (err, rows) => {
-    if(Number(rows[0].num) > 0) {
-      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: timeposted}, user.id, channelId]);
-    } else {
-      pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: channelId, timeStamp: timeposted});
-    }
-  })
+  updateLastRead({userId: user.id, channelId, time: timeposted})
 })
 
 router.post('/channel', requireAuth, (req, res) => {
@@ -498,15 +487,7 @@ router.post('/invite', requireAuth, (req, res) => {
       let status = (err === 'not_a_member') ? 401 : 500;
       return res.status(status).send({error: err})
     }
-    let query = 'SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?';
-    pool.query(query, [user.id, channelId], (err, rows) => {
-      if (Number(rows[0].num) > 0) {
-        let query = 'UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?';
-        pool.query(query, [{timeStamp: timeposted}, user.id, channelId]);
-      } else {
-        pool.query('INSERT INTO msg_lastRead SET ?', {userId: user.id, channel: channelId, timeStamp: timeposted});
-      }
-    })
+    updateLastRead({userId: user.id, channelId, time: timeposted})
     res.send({message})
   })
 })

@@ -14,8 +14,8 @@ const fetchChat = (params, callback) => {
   };
 
   async.waterfall([
-    determineIfLastChannelExists,
-    determineDestinationChannel,
+    checkIfLastChannelExists,
+    checkIfUserIsAMember,
     fetchChannelsAndMessages,
     fetchCurrentChannel
   ], err => {
@@ -24,7 +24,7 @@ const fetchChat = (params, callback) => {
     }
   )
 
-  function determineIfLastChannelExists(callback) {
+  function checkIfLastChannelExists(callback) {
     if (channelId === generalChatId) return callback(null);
     let query = 'SELECT * FROM msg_chatrooms WHERE id = ?';
     pool.query(query, channelId, (err, rows) => {
@@ -38,7 +38,7 @@ const fetchChat = (params, callback) => {
     })
   }
 
-  function determineDestinationChannel(callback) {
+  function checkIfUserIsAMember(callback) {
     if (channelId === generalChatId) return callback(null);
     let query = 'SELECT * FROM msg_chatroom_members WHERE roomid = ? AND userid = ?';
     pool.query(query, [channelId, user.id], (err, rows) => {
@@ -108,53 +108,59 @@ const fetchChat = (params, callback) => {
 
 const fetchChannels = (user, callback) => {
   async.waterfall([
-    callback => {
-      pool.query('SELECT channel, timeStamp FROM msg_lastRead WHERE userId = ?', user.id, (err, lastReads) => {
-        callback(err, lastReads);
-      })
-    },
-    (lastReads, callback) => {
-      const query = [
-        'SELECT a.id, a.bidirectional, a.roomname FROM msg_chatrooms a WHERE a.id IN ',
-        '(SELECT b.roomid FROM msg_chatroom_members b WHERE (b.userid = 0 AND b.condition <= ?) ',
-        'OR (b.userid = ?))'
-      ].join('')
-      pool.query(query, [access.level[user.usertype], user.id], (err, channels) => {
-        let taskArray = [];
-        for (let i = 0; i < channels.length; i++) {
-          taskArray.push(fetchNumberOfUnreadMessages(channels[i], lastReads))
-        }
-        async.parallel(taskArray, (err, unreads) => {
-          let rows = channels.map((channel, index) => {
-            return Object.assign(channel, unreads[index])
-          })
-          callback(err, rows)
-        })
-      })
-    },
-    (rows, callback) => {
-      let taskArray = [];
-      for (let i = 0; i < rows.length; i++) {
-        taskArray.push(fetchChannelTitleAndLastMessage(rows[i].id, user.id))
-      }
-      async.parallel(taskArray, (err, results) => {
-        let channels = rows.map((row, index) => {
-          return {
-            id: row.id,
-            roomname: results[index][1] ? results[index][1] : row.roomname,
-            lastMessage: results[index][0].content || '',
-            lastUpdate: results[index][0].timeposted || '',
-            lastMessageSender: {username: results[index][0].username, id: results[index][0].userid},
-            numUnreads: row.numUnreads
-          }
-        })
-        channels.sort(function(a, b) {return b.lastUpdate - a.lastUpdate})
-        callback(err, channels)
-      })
-    }
+    fetchLastReads,
+    fetchBasicChannelData,
+    fetchChannelTitlesAndLastMessages
   ], (err, channels) => {
     callback(err, channels)
   })
+
+  function fetchLastReads(callback) {
+    pool.query('SELECT channel, lastRead FROM msg_channel_info WHERE userId = ?', user.id, (err, lastReads) => {
+      callback(err, lastReads);
+    })
+  }
+
+  function fetchBasicChannelData(lastReads, callback) {
+    const query = [
+      'SELECT a.id, a.bidirectional, a.roomname FROM msg_chatrooms a WHERE a.id IN ',
+      '(SELECT b.roomid FROM msg_chatroom_members b WHERE b.roomid = ? ',
+      'OR b.userid = ?)'
+    ].join('')
+    pool.query(query, [generalChatId, user.id], (err, channels) => {
+      let taskArray = [];
+      for (let i = 0; i < channels.length; i++) {
+        taskArray.push(fetchNumberOfUnreadMessages(channels[i], lastReads))
+      }
+      async.parallel(taskArray, (err, unreads) => {
+        let rows = channels.map((channel, index) => {
+          return Object.assign(channel, unreads[index])
+        })
+        callback(err, rows)
+      })
+    })
+  }
+
+  function fetchChannelTitlesAndLastMessages(rows, callback) {
+    let taskArray = [];
+    for (let i = 0; i < rows.length; i++) {
+      taskArray.push(fetchChannelTitleAndLastMessage(rows[i].id, user.id))
+    }
+    async.parallel(taskArray, (err, results) => {
+      let channels = rows.map((row, index) => {
+        return {
+          id: row.id,
+          roomname: results[index][1] ? results[index][1] : row.roomname,
+          lastMessage: results[index][0].content || '',
+          lastUpdate: results[index][0].timeposted || '',
+          lastMessageSender: {username: results[index][0].username, id: results[index][0].userid},
+          numUnreads: row.numUnreads
+        }
+      })
+      channels.sort(function(a, b) {return b.lastUpdate - a.lastUpdate})
+      callback(err, channels)
+    })
+  }
 }
 
 const fetchNumberOfUnreadMessages = (channel, lastReads) => callback => {
@@ -162,7 +168,7 @@ const fetchNumberOfUnreadMessages = (channel, lastReads) => callback => {
   let lastReadTime = null;
   for (let i = 0; i < lastReads.length; i++) {
     if (Number(lastReads[i].channel) === Number(channelId)) {
-      lastReadTime = Number(lastReads[i].timeStamp);
+      lastReadTime = Number(lastReads[i].lastRead);
     }
   }
   if (!lastReadTime) {
@@ -249,11 +255,12 @@ const handleCaseWhereBidirectionalChatAlreadyExists = (roomid, userid, content, 
 }
 
 const updateLastRead = ({userId, channelId, time}) => {
-  pool.query('SELECT COUNT(*) AS num FROM msg_lastRead WHERE userId = ? AND channel = ?', [userId, channelId], (err, rows) => {
+  let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channel = ?';
+  pool.query(query, [userId, channelId], (err, rows) => {
     if(Number(rows[0].num) > 0) {
-      pool.query('UPDATE msg_lastRead SET ? WHERE userId = ? AND channel = ?', [{timeStamp: time}, userId, channelId]);
+      pool.query('UPDATE msg_channel_info SET ? WHERE userId = ? AND channel = ?', [{lastRead: time}, userId, channelId]);
     } else {
-      pool.query('INSERT INTO msg_lastRead SET ?', {userId: userId, channel: channelId, timeStamp: time});
+      pool.query('INSERT INTO msg_channel_info SET ?', {userId: userId, channel: channelId, lastRead: time});
     }
   })
 }
