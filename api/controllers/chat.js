@@ -117,10 +117,10 @@ router.get('/numUnreads', requireAuth, (req, res) => {
           }
         }
         let readChannels = lastReads.map(lastRead => {
-          return String(lastRead.channel);
+          return Number(lastRead.channel);
         })
         let messagesInUnreadChannel = messages.filter(message => {
-          return (readChannels.indexOf(String(message.roomid)) === -1)
+          return (readChannels.indexOf(Number(message.roomid)) === -1)
         })
         counter += messagesInUnreadChannel.length;
         callback(err, counter)
@@ -501,6 +501,16 @@ router.get('/search', (req, res) => {
       res.status(500).send({error: err})
     }
     res.send(rows)
+  })
+})
+
+router.post('/title', requireAuth, (req, res) => {
+  const {user} = req;
+  const {title, channelId} = req.body;
+  const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channel = ?';
+  pool.query(query, [{channelName: title}, user.id, channelId], err => {
+    if (err) return res.status(500).send({error: err})
+    res.send({success: true})
   })
 })
 

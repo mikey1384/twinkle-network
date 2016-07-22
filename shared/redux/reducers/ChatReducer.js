@@ -14,6 +14,16 @@ const defaultState = {
 export default function ChatReducer(state = defaultState, action) {
   let loadMoreButton;
   switch(action.type) {
+    case 'APPLY_CHANGED_CHANNEL_TITLE':
+      return {
+        ...state,
+        channels: state.channels.map(channel => {
+          if (Number(channel.id) === Number(action.data.channelId)) {
+            channel.roomname = action.data.title;
+          }
+          return channel;
+        })
+      }
     case 'CLEAR_RESULTS_FOR_CHANNEL':
       return {
         ...state,

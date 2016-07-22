@@ -32,7 +32,8 @@ export default class CreateNewChatModal extends Component {
     const {channelName, selectedUsers} = this.state;
     return (
       <Modal
-        {...this.props}
+        show={this.props.show}
+        onHide={this.props.onHide}
         animation={false}
       >
         <Modal.Header closeButton>

@@ -56,6 +56,20 @@ request.post(`${API_URL}/channel`, {params}, auth())
   }
 )
 
+export const editChannelTitle = (params, callback) => dispatch =>
+request.post(`${API_URL}/title`, params, auth())
+.then(
+  response => {
+    dispatch(actions.applyChangedChannelTitle(params));
+    if (callback) callback();
+  }
+).catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
 export const enterChannelWithId = (channelId) => dispatch => {
   const {fetchChannelWithId, enterChannel} = actions;
   dispatch(fetchChannelWithId(channelId, {then: followUp}));

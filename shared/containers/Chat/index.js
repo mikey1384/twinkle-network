@@ -7,6 +7,7 @@ import * as ChatActions from 'redux/actions/ChatActions';
 import ChatInput from './ChatInput';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import InviteUsersModal from './Modals/InviteUsers';
+import EditTitleModal from './Modals/EditTitle';
 import UserListModal from 'components/Modals/UserListModal';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
@@ -34,6 +35,7 @@ import {GENERAL_CHAT_ID} from 'constants/database';
     createNewChatOrReceiveExistingChatData: ChatActions.checkChatExistsThenCreateNewChatOrReceiveExistingChatData,
     openNewChatTabOrEnterExistingChat: ChatActions.checkChatExistsThenOpenNewChatTabOrEnterExistingChat,
     leaveChannel: ChatActions.leaveChannelAsync,
+    editChannelTitle: ChatActions.editChannelTitle,
     notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel
   }
 )
@@ -45,6 +47,7 @@ export default class Chat extends Component {
       createNewChannelModalShown: false,
       inviteUsersModalShown: false,
       userListModalShown: false,
+      editTitleModalShown: false,
       myChannels: []
     }
 
@@ -55,6 +58,7 @@ export default class Chat extends Component {
     this.onChatInvitation = this.onChatInvitation.bind(this)
     this.renderUserListDescription = this.renderUserListDescription.bind(this)
     this.onInviteUsersDone = this.onInviteUsersDone.bind(this)
+    this.onEditTitleDone = this.onEditTitleDone.bind(this)
     this.onLeaveChannel = this.onLeaveChannel.bind(this)
 
     const {socket, notifyThatMemberLeftChannel} = props;
@@ -172,7 +176,13 @@ export default class Chat extends Component {
 
   render() {
     const {channels, currentChannel, userId} = this.props;
-    const {createNewChannelModalShown, inviteUsersModalShown, userListModalShown, myChannels} = this.state;
+    const {
+      createNewChannelModalShown,
+      inviteUsersModalShown,
+      userListModalShown,
+      editTitleModalShown,
+      myChannels
+    } = this.state;
     const channelName = () => {
       for (let i = 0; i < channels.length; i ++) {
         if (Number(channels[i].id) === Number(currentChannel.id)) {
@@ -189,7 +199,7 @@ export default class Chat extends Component {
       },
       {
         label: 'Edit Title',
-        onClick: () => console.log("edit channel title")
+        onClick: () => this.setState({editTitleModalShown: true})
       },
       {
         separator: true
@@ -216,6 +226,14 @@ export default class Chat extends Component {
             onHide={() => this.setState({inviteUsersModalShown: false})}
             currentChannel={currentChannel}
             onDone={this.onInviteUsersDone}
+          />
+        }
+        {editTitleModalShown &&
+          <EditTitleModal
+            show
+            title={channelName()}
+            onHide={() => this.setState({editTitleModalShown: false})}
+            onDone={this.onEditTitleDone}
           />
         }
         {userListModalShown &&
@@ -515,6 +533,13 @@ export default class Chat extends Component {
     });
     socket.emit('send_group_chat_invitation', users, {message: {...message, messageId: message.id}});
     this.setState({inviteUsersModalShown: false});
+  }
+
+  onEditTitleDone(title) {
+    const {editChannelTitle, currentChannel} = this.props;
+    editChannelTitle({title, channelId: currentChannel.id}, () => {
+      this.setState({editTitleModalShown: false})
+    });
   }
 
   onLeaveChannel() {

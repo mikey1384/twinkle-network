@@ -144,7 +144,7 @@ const fetchChannels = (user, callback) => {
   function fetchChannelTitlesAndLastMessages(rows, callback) {
     let taskArray = [];
     for (let i = 0; i < rows.length; i++) {
-      taskArray.push(fetchChannelTitleAndLastMessage(rows[i].id, user.id))
+      taskArray.push(fetchChannelTitleAndLastMessage(rows[i], user.id))
     }
     async.parallel(taskArray, (err, results) => {
       let channels = rows.map((row, index) => {
@@ -183,29 +183,34 @@ const fetchNumberOfUnreadMessages = (channel, lastReads) => callback => {
   })
 }
 
-const fetchChannelTitleAndLastMessage = (channelId, userId) => callback => {
+const fetchChannelTitleAndLastMessage = (channel, userId) => callback => {
   async.parallel([
-    callback => fetchLastMessage(channelId, (err, lastMessage) => {
-      callback(err, lastMessage)
-    }),
-    callback => generateTitleForBidirectionalChannel(channelId, userId, (err, title) => {
-      callback(err, title)
-    }),
+    fetchLastMessage,
+    fetchChannelTitle,
   ], (err, results) => {
     callback(err, results)
   })
-}
 
-const fetchLastMessage = (channelId, callback) => {
-  const query = [
-    'SELECT a.content, a.userid, a.timeposted, b.username ',
-    'FROM msg_chats a JOIN users b ',
-    'ON a.userid = b.id ',
-    'WHERE roomid = ? ORDER BY a.timeposted DESC LIMIT 1'
-  ].join('')
-  pool.query(query, channelId, (err, rows) => {
-    callback(err, rows[0] || {})
-  })
+  function fetchLastMessage(callback) {
+    const query = [
+      'SELECT a.content, a.userid, a.timeposted, b.username ',
+      'FROM msg_chats a JOIN users b ',
+      'ON a.userid = b.id ',
+      'WHERE roomid = ? ORDER BY a.timeposted DESC LIMIT 1'
+    ].join('')
+    pool.query(query, channel.id, (err, rows) => {
+      callback(err, rows[0] || {})
+    })
+  }
+
+  function fetchChannelTitle(callback) {
+
+    let generateTitle = channel.bidirectional ?
+      generateTitleForBidirectionalChannel : generateTitleForGroupChannel;
+    return generateTitle(channel.id, userId, (err, title) => {
+      callback(err, title)
+    })
+  }
 }
 
 const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
@@ -232,6 +237,14 @@ const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
     }
     return partnerName;
   }
+}
+
+const generateTitleForGroupChannel = (channelId, userId, callback) => {
+  const query = 'SELECT channelName FROM msg_channel_info WHERE userId = ? AND channel = ?';
+  pool.query(query, [userId, channelId], (err, rows) => {
+    if (!rows || rows.length === 0) return callback(err, null);
+    return callback(err, rows[0].channelName);
+  })
 }
 
 const handleCaseWhereBidirectionalChatAlreadyExists = (roomid, userid, content, callback) => {
