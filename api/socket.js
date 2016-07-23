@@ -39,7 +39,7 @@ module.exports = function(io) {
             if (resultingArray.length === 0) {
               return resultingArray.concat(member)
             }
-            else if (resultingArray[Math.max(resultingArray.length - 1, 0)].userId !== member.userId) {
+            else if (Number(resultingArray[Math.max(resultingArray.length - 1, 0)].userId) !== Number(member.userId)) {
               return resultingArray.concat(member)
             }
             else {
