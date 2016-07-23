@@ -198,7 +198,7 @@ export default class Chat extends Component {
         onClick: () => this.setState({inviteUsersModalShown: true})
       },
       {
-        label: 'Edit Title',
+        label: 'Edit Channel Name',
         onClick: () => this.setState({editTitleModalShown: true})
       },
       {
