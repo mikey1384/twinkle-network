@@ -63,6 +63,11 @@ export const getNumberOfUnreadMessages = numUnreads => ({
   numUnreads
 })
 
+export const hideChat = channelId => ({
+  type: 'HIDE_CHAT',
+  channelId
+})
+
 export const initChat = (data) => ({
   type: 'INIT_CHAT',
   data

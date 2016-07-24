@@ -423,6 +423,20 @@ router.delete('/channel', requireAuth, (req, res) => {
   }
 })
 
+router.post('/hideChat', requireAuth, (req, res) => {
+  const {user} = req;
+  const {channelId} = req.body;
+
+  const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channel = ?';
+  pool.query(query, [{isHidden: true}, user.id, channelId], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err});
+    }
+    res.send({success: true})
+  })
+})
+
 router.post('/invite', requireAuth, (req, res) => {
   const {user} = req;
   const {channelId, selectedUsers} = req.body;

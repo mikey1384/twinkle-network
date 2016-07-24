@@ -102,7 +102,8 @@ export default function ChatReducer(state = defaultState, action) {
         currentChannel: action.data.channel,
         channels: state.channels.map(channel => {
           if (Number(channel.id) === Number(action.data.channel.id)) {
-            channel.numUnreads = 0
+            channel.numUnreads = 0,
+            channel.isHidden = false
           }
           return channel;
         }),
@@ -125,6 +126,16 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         numUnreads: action.numUnreads
+      }
+    case 'HIDE_CHAT':
+      return {
+        ...state,
+        channels: state.channels.map(channel => {
+          if (Number(channel.id) === Number(action.channelId)) {
+            channel.isHidden = true
+          }
+          return channel;
+        })
       }
     case 'INCREASE_NUM_UNREAD_MSGS':
       return {
@@ -309,7 +320,8 @@ export default function ChatReducer(state = defaultState, action) {
                 username: action.data.username
               },
               numUnreads: 0,
-              lastMessage: action.data.content
+              lastMessage: action.data.content,
+              isHidden: false
             }
           }
           return channel;
@@ -328,7 +340,8 @@ export default function ChatReducer(state = defaultState, action) {
             lastMessageSender: {
               id: action.data.userid,
               username: action.data.username
-            }
+            },
+            isHidden: false
           }
         }
       }

@@ -108,20 +108,21 @@ const fetchChat = (params, callback) => {
 
 const fetchChannels = (user, callback) => {
   async.waterfall([
-    fetchLastReads,
+    fetchChannelInfos,
     fetchBasicChannelData,
     fetchChannelTitlesAndLastMessages
   ], (err, channels) => {
     callback(err, channels)
   })
 
-  function fetchLastReads(callback) {
-    pool.query('SELECT channel, lastRead FROM msg_channel_info WHERE userId = ?', user.id, (err, lastReads) => {
-      callback(err, lastReads);
+  function fetchChannelInfos(callback) {
+    let query = 'SELECT channel, lastRead, isHidden FROM msg_channel_info WHERE userId = ?';
+    pool.query(query, user.id, (err, channelInfos) => {
+      callback(err, channelInfos);
     })
   }
 
-  function fetchBasicChannelData(lastReads, callback) {
+  function fetchBasicChannelData(channelInfos, callback) {
     const query = [
       'SELECT a.id, a.bidirectional, a.roomname FROM msg_chatrooms a WHERE a.id IN ',
       '(SELECT b.roomid FROM msg_chatroom_members b WHERE b.roomid = ? ',
@@ -130,7 +131,7 @@ const fetchChannels = (user, callback) => {
     pool.query(query, [generalChatId, user.id], (err, channels) => {
       let taskArray = [];
       for (let i = 0; i < channels.length; i++) {
-        taskArray.push(fetchNumberOfUnreadMessages(channels[i], lastReads))
+        taskArray.push(fetchUserSpecificChannelData(channels[i], channelInfos));
       }
       async.parallel(taskArray, (err, unreads) => {
         let rows = channels.map((channel, index) => {
@@ -154,7 +155,8 @@ const fetchChannels = (user, callback) => {
           lastMessage: results[index][0].content || '',
           lastUpdate: results[index][0].timeposted || '',
           lastMessageSender: {username: results[index][0].username, id: results[index][0].userid},
-          numUnreads: row.numUnreads
+          numUnreads: row.numUnreads,
+          isHidden: row.isHidden
         }
       })
       channels.sort(function(a, b) {return b.lastUpdate - a.lastUpdate})
@@ -163,12 +165,14 @@ const fetchChannels = (user, callback) => {
   }
 }
 
-const fetchNumberOfUnreadMessages = (channel, lastReads) => callback => {
+const fetchUserSpecificChannelData = (channel, channelInfos) => callback => {
   const channelId = channel.id;
   let lastReadTime = null;
-  for (let i = 0; i < lastReads.length; i++) {
-    if (Number(lastReads[i].channel) === Number(channelId)) {
-      lastReadTime = Number(lastReads[i].lastRead);
+  let isHidden = false;
+  for (let i = 0; i < channelInfos.length; i++) {
+    if (Number(channelInfos[i].channel) === Number(channelId)) {
+      lastReadTime = Number(channelInfos[i].lastRead);
+      isHidden = Boolean(channelInfos[i].isHidden);
     }
   }
   if (!lastReadTime) {
@@ -179,7 +183,7 @@ const fetchNumberOfUnreadMessages = (channel, lastReads) => callback => {
   }
   let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE roomid = ? AND timeposted > ?';
   pool.query(query, [channelId, lastReadTime], (err, rows) => {
-    callback(err, {numUnreads: rows[0].numUnreads});
+    callback(err, {numUnreads: rows[0].numUnreads, isHidden});
   })
 }
 
@@ -204,7 +208,6 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => callback => {
   }
 
   function fetchChannelTitle(callback) {
-
     let generateTitle = channel.bidirectional ?
       generateTitleForBidirectionalChannel : generateTitleForGroupChannel;
     return generateTitle(channel.id, userId, (err, title) => {
@@ -276,6 +279,7 @@ const updateLastRead = ({userId, channelId, time}) => {
       pool.query('INSERT INTO msg_channel_info SET ?', {userId: userId, channel: channelId, lastRead: time});
     }
   })
+  pool.query('UPDATE msg_channel_info SET ? WHERE channel = ?', [{isHidden: false}, channelId]);
 }
 
 module.exports = {

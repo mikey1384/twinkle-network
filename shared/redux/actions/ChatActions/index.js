@@ -97,20 +97,23 @@ export const getNumberOfUnreadMessagesAsync = () => dispatch => {
   )
 }
 
-export const increaseNumberOfUnreadMessages = () => ({
-  type: 'INCREASE_NUM_UNREAD_MSGS'
-})
-
-export const loadMoreMessagesAsync = (userId, messageId, roomId) => dispatch =>
-request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&roomId=${roomId}`, auth())
+export const hideChatAsync = channelId => dispatch =>
+request.post(`${API_URL}/hideChat`, {channelId}, auth())
 .then(
-  response => dispatch(actions.loadMoreMessages(response.data))
+  response => {
+    dispatch(actions.hideChat(channelId))
+    dispatch(enterChannelWithId(GENERAL_CHAT_ID))
+  }
 ).catch(
   error => {
     console.error(error)
     handleError(error, dispatch)
   }
 )
+
+export const increaseNumberOfUnreadMessages = () => ({
+  type: 'INCREASE_NUM_UNREAD_MSGS'
+})
 
 export const initChatAsync = callback => dispatch =>
 request.get(API_URL, auth())
@@ -138,6 +141,17 @@ request.post(`${API_URL}/invite`, params, auth())
     dispatch(actions.inviteUsersToChannel(data));
     callback(message);
   }
+).catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
+export const loadMoreMessagesAsync = (userId, messageId, roomId) => dispatch =>
+request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&roomId=${roomId}`, auth())
+.then(
+  response => dispatch(actions.loadMoreMessages(response.data))
 ).catch(
   error => {
     console.error(error)

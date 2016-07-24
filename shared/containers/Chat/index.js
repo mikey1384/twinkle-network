@@ -34,6 +34,7 @@ import {GENERAL_CHAT_ID} from 'constants/database';
     createNewChannel: ChatActions.createNewChannelAsync,
     createNewChatOrReceiveExistingChatData: ChatActions.checkChatExistsThenCreateNewChatOrReceiveExistingChatData,
     openNewChatTabOrEnterExistingChat: ChatActions.checkChatExistsThenOpenNewChatTabOrEnterExistingChat,
+    hideChat: ChatActions.hideChatAsync,
     leaveChannel: ChatActions.leaveChannelAsync,
     editChannelTitle: ChatActions.editChannelTitle,
     notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel
@@ -59,6 +60,7 @@ export default class Chat extends Component {
     this.renderUserListDescription = this.renderUserListDescription.bind(this)
     this.onInviteUsersDone = this.onInviteUsersDone.bind(this)
     this.onEditTitleDone = this.onEditTitleDone.bind(this)
+    this.onHideChat = this.onHideChat.bind(this)
     this.onLeaveChannel = this.onLeaveChannel.bind(this)
 
     const {socket, notifyThatMemberLeftChannel} = props;
@@ -192,23 +194,23 @@ export default class Chat extends Component {
       return null;
     }
 
-    let menuProps = [
-      {
-        label: 'Invite People',
-        onClick: () => this.setState({inviteUsersModalShown: true})
-      },
-      {
-        label: 'Edit Channel Name',
-        onClick: () => this.setState({editTitleModalShown: true})
-      },
-      {
-        separator: true
-      },
-      {
-        label: 'Leave Channel',
-        onClick: this.onLeaveChannel
-      }
-    ]
+    let menuProps = (currentChannel.bidirectional) ?
+    [{label: 'Hide Chat', onClick: this.onHideChat}] :
+    [{
+     label: 'Invite People',
+     onClick: () => this.setState({inviteUsersModalShown: true})
+    },
+    {
+     label: 'Edit Channel Name',
+     onClick: () => this.setState({editTitleModalShown: true})
+    },
+    {
+     separator: true
+    },
+    {
+     label: 'Leave Channel',
+     onClick: this.onLeaveChannel
+    }]
 
     return (
       <div style={{display: 'flex', height: '88%'}}>
@@ -317,7 +319,7 @@ export default class Chat extends Component {
             top: 0
           }}
         >
-          {Number(currentChannel.id) !== GENERAL_CHAT_ID && !currentChannel.bidirectional &&
+          {Number(currentChannel.id) !== GENERAL_CHAT_ID &&
             <SmallDropdownButton
               style={{
                 position: "absolute",
@@ -356,7 +358,7 @@ export default class Chat extends Component {
 
   renderChannels() {
     const {userId, currentChannel, channels} = this.props;
-    return channels.map(channel => {
+    return channels.filter(channel => !channel.isHidden).map(channel => {
       const {lastMessageSender, lastMessage, id, roomname, numUnreads} = channel;
       return (
         <div
@@ -540,6 +542,11 @@ export default class Chat extends Component {
     editChannelTitle({title, channelId: currentChannel.id}, () => {
       this.setState({editTitleModalShown: false})
     });
+  }
+
+  onHideChat() {
+    const {hideChat, currentChannel} = this.props;
+    hideChat(currentChannel.id);
   }
 
   onLeaveChannel() {
