@@ -79,9 +79,9 @@ module.exports = function(io) {
 
     socket.on('bind_uid_to_socket', (userId, username) => {
       const query = [
-        'SELECT a.id AS channel FROM msg_chatrooms a WHERE a.id IN ',
-        '(SELECT b.roomid FROM msg_chatroom_members b WHERE b.roomid = ? ',
-        'OR b.userid = ?)'
+        'SELECT a.id AS channel FROM msg_channels a WHERE a.id IN ',
+        '(SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ? ',
+        'OR b.userId = ?)'
       ].join('')
       pool.query(query, [generalChatId, userId], (err, rows) => {
         let channels = rows.map(row => Number(row.channel));

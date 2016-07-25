@@ -1,24 +1,24 @@
 const pool = require('../pool');
-
-const requireAuth = require('../auth').requireAuth;
-const processedString = require('../helpers/stringHelpers').processedString;
-const processedTitleString = require('../helpers/stringHelpers').processedTitleString;
-
-const fetchChat = require('../helpers/chatHelpers').fetchChat;
-const fetchChannels = require('../helpers/chatHelpers').fetchChannels;
-const handleCaseWhereBidirectionalChatAlreadyExists = require('../helpers/chatHelpers').handleCaseWhereBidirectionalChatAlreadyExists;
-const updateLastRead = require('../helpers/chatHelpers').updateLastRead;
-
 const async = require('async');
 const express = require('express');
 const access = require('../auth/access');
 const router = express.Router();
-const generalChatId = require('../siteConfig').generalChatId;
+
+const {requireAuth} = require('../auth');
+const {processedString, processedTitleString} = require('../helpers/stringHelpers');
+const {generalChatId} = require('../siteConfig');
+const {
+  fetchChat,
+  fetchChannels,
+  handleCaseWhereBidirectionalChatAlreadyExists,
+  updateLastRead
+} = require('../helpers/chatHelpers');
+
 
 router.get('/', requireAuth, (req, res) => {
   const user = req.user;
-  const lastChatRoomId = user.lastChatRoom || generalChatId;
-  fetchChat({user, channelId: lastChatRoomId}, (err, results) => {
+  const lastChannelId = user.lastChannelId || generalChatId;
+  fetchChat({user, channelId: lastChannelId}, (err, results) => {
     if (err) {
       console.error(err);
       if (err.status) return res.status(err.status).send({error: err})
@@ -32,13 +32,14 @@ router.post('/', requireAuth, (req, res) => {
   const user = req.user;
   const message = req.body.message;
   const {channelId, content, timeposted} = message;
-  if (message.userid !== user.id) {
+  if (Number(message.userId) !== Number(user.id)) {
     return res.status(401).send("Unauthorized")
   }
-  updateLastRead({userId: user.id, channelId, time: timeposted})
+
   async.waterfall([
+    markMyMessageAsRead,
     saveMessageToDatabase,
-    fetchAndSortChannelsByLastUpdateTime
+    fetchUpdatedChannels
   ], (err, results) => {
     if (err) {
       console.error(err);
@@ -47,26 +48,22 @@ router.post('/', requireAuth, (req, res) => {
     res.send(results)
   })
 
+  function markMyMessageAsRead(callback) {
+    updateLastRead({userId: user.id, channelId, time: timeposted}, err => callback(err))
+  }
+
   function saveMessageToDatabase(callback) {
     const post = {
-      roomid: channelId,
-      userid: user.id,
+      channelId,
+      userId: user.id,
       content: processedString(content),
       timeposted
     }
-    pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
-      callback(err, result.insertId)
-    })
+    pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => callback(err, result.insertId))
   }
 
-  function fetchAndSortChannelsByLastUpdateTime(insertId, callback) {
-    fetchChannels(user, (err, channels) => {
-      callback(err, {
-        messageId: insertId,
-        timeposted,
-        channels
-      })
-    })
+  function fetchUpdatedChannels(messageId, callback) {
+    fetchChannels(user, (err, channels) => callback(err, {messageId, timeposted, channels}))
   }
 })
 
@@ -75,14 +72,13 @@ router.get('/more', requireAuth, (req, res) => {
   if (Number(req.query.userId) !== Number(user.id)) {
     return res.status(401).send("Unauthorized")
   }
-  const messageId = req.query.messageId;
-  const roomId = req.query.roomId;
+  const {messageId, channelId} = req.query;
   const query = [
-    'SELECT a.id, a.roomid, a.userid, a.content, a.timeposted, a.isNotification, b.username FROM ',
-    'msg_chats a JOIN users b ON a.userid = b.id ',
-    'WHERE a.id < ? AND a.roomid = ? ORDER BY id DESC LIMIT 21'
+    'SELECT a.id, a.channelId, a.userId, a.content, a.timeposted, a.isNotification, b.username FROM ',
+    'msg_chats a JOIN users b ON a.userId = b.id ',
+    'WHERE a.id < ? AND a.channelId = ? ORDER BY id DESC LIMIT 21'
   ].join('');
-  pool.query(query, [messageId, roomId], (err, rows) => {
+  pool.query(query, [messageId, channelId], (err, rows) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err})
@@ -95,32 +91,31 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   const user = req.user;
   async.waterfall([
     callback => {
-      pool.query('SELECT channel, lastRead FROM msg_channel_info WHERE userId = ?', user.id, (err, lastReads) => {
-        callback(err, lastReads)
-      })
+      let query = 'SELECT channelId, lastRead FROM msg_channel_info WHERE userId = ?';
+      pool.query(query, user.id, (err, lastReads) => callback(err, lastReads))
     },
     (lastReads, callback) => {
       let query = [
-        'SELECT roomid, timeposted FROM msg_chats WHERE roomid IN ',
-        '(SELECT roomid FROM msg_chatroom_members WHERE userid = ?) ',
-        'AND roomid IN (SELECT id FROM msg_chatrooms)'
+        'SELECT channelId, timeposted FROM msg_chats WHERE channelId IN ',
+        '(SELECT channelId FROM msg_channel_members WHERE userId = ?) ',
+        'AND channelId IN (SELECT id FROM msg_channels)'
       ].join('')
       pool.query(query, user.id, (err, messages) => {
         let counter = 0;
         for (let i = 0; i < lastReads.length; i++) {
-          const channel = lastReads[i].channel;
+          const {channelId} = lastReads[i];
           const timeStamp = Number(lastReads[i].lastRead);
           for (let j = 0; j < messages.length; j++) {
-            if (Number(messages[j].roomid) === Number(channel) && messages[j].timeposted > timeStamp) {
+            if (Number(messages[j].channelId) === Number(channelId) && messages[j].timeposted > timeStamp) {
               counter ++
             }
           }
         }
         let readChannels = lastReads.map(lastRead => {
-          return Number(lastRead.channel);
+          return Number(lastRead.channelId);
         })
         let messagesInUnreadChannel = messages.filter(message => {
-          return (readChannels.indexOf(Number(message.roomid)) === -1)
+          return (readChannels.indexOf(Number(message.channelId)) === -1)
         })
         counter += messagesInUnreadChannel.length;
         callback(err, counter)
@@ -154,7 +149,7 @@ router.get('/channel', requireAuth, (req, res) => {
       })
     },
     (messages, callback) => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: channelId}, user.id], (err) => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id], (err) => {
         callback(err, messages)
       })
     }
@@ -167,15 +162,15 @@ router.get('/channel', requireAuth, (req, res) => {
 
     async.parallel([
       callback => {
-        pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+        pool.query('SELECT bidirectional, creator FROM msg_channels WHERE id = ?', channelId, (err, rows) => {
           callback(err, rows[0])
         })
       },
       callback => {
         let query = [
-          'SELECT a.userid, b.username FROM ',
-          'msg_chatroom_members a JOIN users b ON ',
-          'a.userid = b.id WHERE a.roomid = ?'
+          'SELECT a.userId, b.username FROM ',
+          'msg_channel_members a JOIN users b ON ',
+          'a.userId = b.id WHERE a.channelId = ?'
         ].join('')
         pool.query(query, channelId, (err, rows) => {
           callback(err, rows)
@@ -199,7 +194,7 @@ router.get('/channel/check', requireAuth, (req, res) => {
   let partnerId = req.query.partnerId;
   let myUserId = req.user.id;
   const query = [
-    'SELECT * FROM msg_chatrooms WHERE ',
+    'SELECT * FROM msg_channels WHERE ',
     '(memberOne = '+partnerId+' AND memberTwo = '+myUserId+') OR ',
     '(memberOne = '+myUserId+' AND memberTwo = '+partnerId+')'
   ].join('');
@@ -225,12 +220,12 @@ router.post('/lastRead', requireAuth, (req, res) => {
 router.post('/channel', requireAuth, (req, res) => {
   const user = req.user;
   const params = req.body.params;
-  const roomname = processedTitleString(params.channelName);
+  const channelName = processedTitleString(params.channelName);
   const time = Math.floor(Date.now()/1000);
 
   async.waterfall([
     callback => {
-      pool.query('INSERT INTO msg_chatrooms SET ?', {roomname, creator: user.id}, (err, result) => {
+      pool.query('INSERT INTO msg_channels SET ?', {channelName, creator: user.id}, (err, result) => {
         callback(err, result.insertId)
       })
     },
@@ -242,10 +237,10 @@ router.post('/channel', requireAuth, (req, res) => {
       for (let i = 0; i < members.length; i++) {
         let task = callback => {
           let post = {
-            roomid: channelId,
-            userid: members[i]
+            channelId,
+            userId: members[i]
           }
-          pool.query('INSERT INTO msg_chatroom_members SET ?', post, (err, result) => {
+          pool.query('INSERT INTO msg_channel_members SET ?', post, (err, result) => {
             callback(err, result)
           })
         }
@@ -254,9 +249,9 @@ router.post('/channel', requireAuth, (req, res) => {
       taskArray.push(
         callback => {
           let message = {
-            roomid: channelId,
-            userid: user.id,
-            content: `Created channel "${roomname}"`,
+            channelId,
+            userId: user.id,
+            content: `Created channel "${channelName}"`,
             timeposted: time,
             isNotification: true
           }
@@ -264,7 +259,7 @@ router.post('/channel', requireAuth, (req, res) => {
             message = Object.assign({}, message, {
               username: user.username,
               messageId: result.insertId,
-              roomname
+              channelName
             });
             callback(err, message)
           })
@@ -276,7 +271,7 @@ router.post('/channel', requireAuth, (req, res) => {
       updateLastRead({userId: user.id, channelId, time})
     },
     (message, callback) => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: message.roomid}, user.id], err => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: message.channelId}, user.id], err => {
         callback(err, message)
       })
     }
@@ -286,11 +281,11 @@ router.post('/channel', requireAuth, (req, res) => {
       return res.status(500).send({error: err})
     }
     let query = [
-      'SELECT a.userid, b.username FROM ',
-      'msg_chatroom_members a JOIN users b ON ',
-      'a.userid = b.id WHERE a.roomid = ?'
+      'SELECT a.userId, b.username FROM ',
+      'msg_channel_members a JOIN users b ON ',
+      'a.userId = b.id WHERE a.channelId = ?'
     ].join('')
-    pool.query(query, message.roomid, (err, rows) => {
+    pool.query(query, message.channelId, (err, rows) => {
       res.send({message, members: rows})
     })
   })
@@ -306,7 +301,7 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
   async.waterfall([
     callback => {
       let query = [
-        'SELECT * FROM msg_chatrooms WHERE ',
+        'SELECT * FROM msg_channels WHERE ',
         '(memberOne = '+user.id+' AND memberTwo = '+partnerId+') OR ',
         '(memberOne = '+partnerId+' AND memberTwo = '+user.id+')'
       ].join('')
@@ -327,7 +322,7 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
         memberOne: user.id,
         memberTwo: partnerId
       }
-      pool.query('INSERT INTO msg_chatrooms SET ?', post, (err, result) => {
+      pool.query('INSERT INTO msg_channels SET ?', post, (err, result) => {
         callback(err, result.insertId)
       })
     },
@@ -337,18 +332,18 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
       for (let i = 0; i < members.length; i++) {
         let task = callback => {
           let post = {
-            roomid: insertId,
-            userid: members[i]
+            channelId: insertId,
+            userId: members[i]
           }
-          pool.query('INSERT INTO msg_chatroom_members SET ?', post, (err, result) => {
+          pool.query('INSERT INTO msg_channel_members SET ?', post, (err, result) => {
             callback(err, result)
           })
         }
         taskArray.push(task);
       }
       let post = {
-        roomid: insertId,
-        userid: user.id,
+        channelId: insertId,
+        userId: user.id,
         content: firstMessage,
         timeposted: Math.floor(Date.now()/1000)
       }
@@ -360,26 +355,26 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
         callback(err, insertId, results[results.length-1])
       })
     },
-    (roomId, messageId, callback) => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: roomId}, user.id], err => {
-        callback(err, roomId, messageId)
+    (channelId, messageId, callback) => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id], err => {
+        callback(err, channelId, messageId)
       })
     }
-  ], (err, roomId, messageId) => {
+  ], (err, channelId, messageId) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err})
     }
     let query = [
-      'SELECT a.userid, b.username FROM ',
-      'msg_chatroom_members a JOIN users b ON ',
-      'a.userid = b.id WHERE a.roomid = ?'
+      'SELECT a.userId, b.username FROM ',
+      'msg_channel_members a JOIN users b ON ',
+      'a.userId = b.id WHERE a.channelId = ?'
     ].join('')
-    pool.query(query, roomId, (err, rows) => {
+    pool.query(query, channelID, (err, rows) => {
       res.send({
         messageId,
-        roomid: roomId,
-        userid: user.id,
+        channelId,
+        userId: user.id,
         username: user.username,
         content: firstMessage,
         members: rows,
@@ -403,8 +398,8 @@ router.delete('/channel', requireAuth, (req, res) => {
 
   function postLeaveNotification(callback) {
     let post = {
-      roomid: channelId,
-      userid: user.id,
+      channelId,
+      userId: user.id,
       content: 'Left the channel',
       timeposted: time,
       isNotification: true
@@ -416,7 +411,7 @@ router.delete('/channel', requireAuth, (req, res) => {
   }
 
   function leaveChannel(callback) {
-    let query = 'DELETE FROM msg_chatroom_members WHERE roomid = ? AND userid = ?';
+    let query = 'DELETE FROM msg_channel_members WHERE channelId = ? AND userId = ?';
     pool.query(query, [channelId, user.id], err => {
       callback(err)
     })
@@ -427,7 +422,7 @@ router.post('/hideChat', requireAuth, (req, res) => {
   const {user} = req;
   const {channelId} = req.body;
 
-  const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channel = ?';
+  const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?';
   pool.query(query, [{isHidden: true}, user.id, channelId], (err) => {
     if (err) {
       console.error(err);
@@ -444,23 +439,23 @@ router.post('/invite', requireAuth, (req, res) => {
   async.waterfall([
     callback => {
       let query = [
-        'SELECT a.roomname FROM msg_chatrooms a WHERE a.id IN ',
-        '(SELECT b.roomid FROM msg_chatroom_members b WHERE roomid = ? AND userid = ?)'
+        'SELECT a.channelName FROM msg_channels a WHERE a.id IN ',
+        '(SELECT b.channelId FROM msg_channel_members b WHERE channelId = ? AND userId = ?)'
       ].join('');
       pool.query(query, [channelId, user.id], (err, rows) => {
         if (rows[0].length === 0) {
           return callback('not_a_member')
         }
-        callback(err, rows[0].roomname)
+        callback(err, rows[0].channelName)
       })
     },
-    (roomname, callback) => {
-      let query = 'INSERT INTO msg_chatroom_members SET ?';
+    (channelName, callback) => {
+      let query = 'INSERT INTO msg_channel_members SET ?';
       let taskArray = selectedUsers.reduce(
         (taskArray, user) => {
           return taskArray.concat([
             callback => {
-              pool.query(query, {roomid: channelId, userid: user.userId}, err => {
+              pool.query(query, {channelId, userId: user.userId}, err => {
                 callback(err)
               })
             }
@@ -484,10 +479,10 @@ router.post('/invite', requireAuth, (req, res) => {
 
           let content = `Invited ${usernames} to the channel`;
           let query = 'INSERT INTO msg_chats SET ?';
-          let message = {isNotification: true, roomid: channelId, userid: user.id, content, timeposted};
+          let message = {isNotification: true, channelId, userId: user.id, content, timeposted};
           pool.query(query, message, (err, res) => {
             let messageId = res.insertId;
-            message = Object.assign({}, message, {id: messageId, username: user.username, roomname});
+            message = Object.assign({}, message, {id: messageId, username: user.username, channelName});
             callback(err, message);
           })
         }
@@ -521,7 +516,7 @@ router.get('/search', (req, res) => {
 router.post('/title', requireAuth, (req, res) => {
   const {user} = req;
   const {title, channelId} = req.body;
-  const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channel = ?';
+  const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?';
   pool.query(query, [{channelName: title}, user.id, channelId], err => {
     if (err) return res.status(500).send({error: err})
     res.send({success: true})

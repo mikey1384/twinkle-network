@@ -21,7 +21,7 @@ export default class LoginForm extends Component {
     let passwordFieldError = password.touched && password.invalid;
     return (
       <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()} >
-        { errorMessage &&
+        {errorMessage &&
           <Alert bsStyle="danger">
             {errorMessage}
           </Alert>
@@ -55,8 +55,8 @@ export default class LoginForm extends Component {
   }
 }
 
-function validate (values) {
-  const { username, password } = values;
+function validate(values) {
+  const {username, password} = values;
   const errors = {};
   if (stringIsEmpty(username)) {
     errors.username = 'Enter username';

@@ -188,7 +188,7 @@ export default class Chat extends Component {
     const channelName = () => {
       for (let i = 0; i < channels.length; i ++) {
         if (Number(channels[i].id) === Number(currentChannel.id)) {
-          return channels[i].roomname
+          return channels[i].channelName
         }
       }
       return null;
@@ -359,7 +359,7 @@ export default class Chat extends Component {
   renderChannels() {
     const {userId, currentChannel, channels} = this.props;
     return channels.filter(channel => !channel.isHidden).map(channel => {
-      const {lastMessageSender, lastMessage, id, roomname, numUnreads} = channel;
+      const {lastMessageSender, lastMessage, id, channelName, numUnreads} = channel;
       return (
         <div
           className="media chat-channel-item container-fluid"
@@ -376,8 +376,8 @@ export default class Chat extends Component {
           <div className="media-body">
             <h4
               className="media-heading"
-              style={{color: !roomname && '#7c7c7c'}}
-            >{`${roomname || '(Deleted)'}`}&nbsp;
+              style={{color: !channelName && '#7c7c7c'}}
+            >{`${channelName || '(Deleted)'}`}&nbsp;
               {numUnreads > 0 &&
                 <span className="badge">{numUnreads}</span>
               }
@@ -429,9 +429,9 @@ export default class Chat extends Component {
   returnUsers(currentChannel, myChannels) {
     let members = Number(currentChannel.id) === GENERAL_CHAT_ID ?
     myChannels.filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0]
-      .membersOnline.map(member => ({username: member.username, userid: member.userId}))
+      .membersOnline.map(member => ({username: member.username, userId: member.userId}))
     : currentChannel.members;
-    return members.map(member => ({username: member.username, userId: member.userid}))
+    return members.map(member => ({username: member.username, userId: member.userId}))
   }
 
   onMessageSubmit(message) {
@@ -449,24 +449,24 @@ export default class Chat extends Component {
       return createNewChatOrReceiveExistingChatData({message, userId, chatPartnerId}, chat => {
         if (chat.alreadyExists) {
           let {message, messageId} = chat.alreadyExists;
-          socket.emit('join_chat_channel', message.roomid);
+          socket.emit('join_chat_channel', message.channelId);
           socket.emit('new_chat_message', {
-            userid: userId,
+            userId,
             username,
             content: message.content,
-            channelId: message.roomid,
+            channelId: message.channelId,
             id: messageId,
             timeposted: message.timeposted
           })
           return;
         }
-        socket.emit('join_chat_channel', String(chat.roomid));
+        socket.emit('join_chat_channel', String(chat.channelId));
         socket.emit('send_bi_chat_invitation', chatPartnerId, chat);
       })
     }
 
     let params = {
-      userid: userId,
+      userId,
       username,
       content: message,
       channelId: currentChannel.id
@@ -502,7 +502,7 @@ export default class Chat extends Component {
       const users = params.selectedUsers.map(user => {
         return user.userId;
       })
-      socket.emit('join_chat_channel', data.message.roomid);
+      socket.emit('join_chat_channel', data.message.channelId);
       socket.emit('send_group_chat_invitation', users, data);
       this.setState({createNewChannelModalShown: false})
       ReactDOM.findDOMNode(this.refs.chatInput).focus()
@@ -512,7 +512,7 @@ export default class Chat extends Component {
   onReceiveMessage(data) {
     const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props;
     let messageIsForCurrentChannel = Number(data.channelId) === Number(currentChannel.id);
-    let senderIsNotTheUser = Number(data.userid) !== Number(userId);
+    let senderIsNotTheUser = Number(data.userId) !== Number(userId);
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
       receiveMessage(data)
     }
@@ -524,14 +524,14 @@ export default class Chat extends Component {
   onChatInvitation(data) {
     const {receiveFirstMsg, socket} = this.props;
     receiveFirstMsg(data);
-    socket.emit('join_chat_channel', data.roomid);
+    socket.emit('join_chat_channel', data.channelId);
   }
 
   onInviteUsersDone(users, message) {
     const {socket} = this.props;
     socket.emit('new_chat_message', {
       ...message,
-      channelId: message.roomid
+      channelId: message.channelId
     });
     socket.emit('send_group_chat_invitation', users, {message: {...message, messageId: message.id}});
     this.setState({inviteUsersModalShown: false});

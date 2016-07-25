@@ -24,7 +24,11 @@ export default class SigninModal extends Component {
     const {loginTabActive} = this.state;
     const {signupError, loginError, dispatch} = this.props;
     return (
-      <Modal {...this.props} animation={false}>
+      <Modal
+        show={this.props.show}
+        onHide={this.props.onHide}
+        animation={false}
+      >
         <Modal.Header closeButton>
           <ul className="nav nav-pills nav-justified">
             <li

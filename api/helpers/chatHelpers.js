@@ -26,10 +26,10 @@ const fetchChat = (params, callback) => {
 
   function checkIfLastChannelExists(callback) {
     if (channelId === generalChatId) return callback(null);
-    let query = 'SELECT * FROM msg_chatrooms WHERE id = ?';
+    let query = 'SELECT * FROM msg_channels WHERE id = ?';
     pool.query(query, channelId, (err, rows) => {
       if (!rows || rows.length === 0) {
-        return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: generalChatId}, user.id], err => {
+        return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChannelId: generalChatId}, user.id], err => {
           channelId = generalChatId;
           callback(null);
         })
@@ -40,10 +40,10 @@ const fetchChat = (params, callback) => {
 
   function checkIfUserIsAMember(callback) {
     if (channelId === generalChatId) return callback(null);
-    let query = 'SELECT * FROM msg_chatroom_members WHERE roomid = ? AND userid = ?';
+    let query = 'SELECT * FROM msg_channel_members WHERE channelId = ? AND userId = ?';
     pool.query(query, [channelId, user.id], (err, rows) => {
       if (!rows || rows.length === 0) {
-        return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChatRoom: generalChatId}, user.id], err => {
+        return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChannelId: generalChatId}, user.id], err => {
           channelId = generalChatId;
           callback(null);
         })
@@ -61,9 +61,9 @@ const fetchChat = (params, callback) => {
       },
       callback => {
         const query = [
-          'SELECT a.id, a.roomid, a.userid, a.content, a.timeposted, a.isNotification, b.username FROM ',
-          'msg_chats a LEFT JOIN users b ON a.userid = b.id ',
-          'WHERE roomid = ? ORDER BY id DESC LIMIT 21'
+          'SELECT a.id, a.channelId, a.userId, a.content, a.timeposted, a.isNotification, b.username FROM ',
+          'msg_chats a LEFT JOIN users b ON a.userId = b.id ',
+          'WHERE channelId = ? ORDER BY id DESC LIMIT 21'
         ].join('');
         pool.query(query, channelId, (err, messages) => {
           callback(err, messages);
@@ -79,15 +79,15 @@ const fetchChat = (params, callback) => {
   function fetchCurrentChannel(callback) {
     async.parallel([
       callback => {
-        pool.query('SELECT bidirectional, creator FROM msg_chatrooms WHERE id = ?', channelId, (err, rows) => {
+        pool.query('SELECT bidirectional, creator FROM msg_channels WHERE id = ?', channelId, (err, rows) => {
           callback(err, rows[0])
         })
       },
       callback => {
         let query = [
-          'SELECT a.userid, b.username FROM ',
-          'msg_chatroom_members a JOIN users b ON ',
-          'a.userid = b.id WHERE a.roomid = ?'
+          'SELECT a.userId, b.username FROM ',
+          'msg_channel_members a JOIN users b ON ',
+          'a.userId = b.id WHERE a.channelId = ?'
         ].join('')
         pool.query(query, channelId, (err, rows) => {
           callback(err, rows)
@@ -116,7 +116,7 @@ const fetchChannels = (user, callback) => {
   })
 
   function fetchChannelInfos(callback) {
-    let query = 'SELECT channel, lastRead, isHidden FROM msg_channel_info WHERE userId = ?';
+    let query = 'SELECT channelId, lastRead, isHidden FROM msg_channel_info WHERE userId = ?';
     pool.query(query, user.id, (err, channelInfos) => {
       callback(err, channelInfos);
     })
@@ -124,9 +124,9 @@ const fetchChannels = (user, callback) => {
 
   function fetchBasicChannelData(channelInfos, callback) {
     const query = [
-      'SELECT a.id, a.bidirectional, a.roomname FROM msg_chatrooms a WHERE a.id IN ',
-      '(SELECT b.roomid FROM msg_chatroom_members b WHERE b.roomid = ? ',
-      'OR b.userid = ?)'
+      'SELECT a.id, a.bidirectional, a.channelName FROM msg_channels a WHERE a.id IN ',
+      '(SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ? ',
+      'OR b.userId = ?)'
     ].join('')
     pool.query(query, [generalChatId, user.id], (err, channels) => {
       let taskArray = [];
@@ -151,10 +151,10 @@ const fetchChannels = (user, callback) => {
       let channels = rows.map((row, index) => {
         return {
           id: row.id,
-          roomname: results[index][1] ? results[index][1] : row.roomname,
+          channelName: results[index][1] ? results[index][1] : row.channelName,
           lastMessage: results[index][0].content || '',
           lastUpdate: results[index][0].timeposted || '',
-          lastMessageSender: {username: results[index][0].username, id: results[index][0].userid},
+          lastMessageSender: {username: results[index][0].username, id: results[index][0].userId},
           numUnreads: row.numUnreads,
           isHidden: row.isHidden
         }
@@ -170,18 +170,18 @@ const fetchUserSpecificChannelData = (channel, channelInfos) => callback => {
   let lastReadTime = null;
   let isHidden = false;
   for (let i = 0; i < channelInfos.length; i++) {
-    if (Number(channelInfos[i].channel) === Number(channelId)) {
+    if (Number(channelInfos[i].channelId) === Number(channelId)) {
       lastReadTime = Number(channelInfos[i].lastRead);
       isHidden = Boolean(channelInfos[i].isHidden);
     }
   }
   if (!lastReadTime) {
-    let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE roomid = ?';
+    let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ?';
     return pool.query(query, channelId, (err, rows) => {
       callback(err, {numUnreads: rows[0].numUnreads});
     })
   }
-  let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE roomid = ? AND timeposted > ?';
+  let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeposted > ?';
   pool.query(query, [channelId, lastReadTime], (err, rows) => {
     callback(err, {numUnreads: rows[0].numUnreads, isHidden});
   })
@@ -197,10 +197,10 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => callback => {
 
   function fetchLastMessage(callback) {
     const query = [
-      'SELECT a.content, a.userid, a.timeposted, b.username ',
+      'SELECT a.content, a.userId, a.timeposted, b.username ',
       'FROM msg_chats a JOIN users b ',
-      'ON a.userid = b.id ',
-      'WHERE roomid = ? ORDER BY a.timeposted DESC LIMIT 1'
+      'ON a.userId = b.id ',
+      'WHERE channelId = ? ORDER BY a.timeposted DESC LIMIT 1'
     ].join('')
     pool.query(query, channel.id, (err, rows) => {
       callback(err, rows[0] || {})
@@ -218,12 +218,12 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => callback => {
 
 const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
   const query = [
-    'SELECT b.userid, c.username ',
-    'FROM msg_chatrooms a ',
-    'JOIN msg_chatroom_members b ON ',
-    'a.id = b.roomid ',
+    'SELECT b.userId, c.username ',
+    'FROM msg_channels a ',
+    'JOIN msg_channel_members b ON ',
+    'a.id = b.channelId ',
     'JOIN users c ON ',
-    'b.userid = c.id ',
+    'b.userId = c.id ',
     'WHERE a.id = ? AND a.bidirectional = 1'
   ].join('')
   pool.query(query, channelId, (err, rows) => {
@@ -234,7 +234,7 @@ const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
   function generateTitle(rows) {
     let partnerName = '';
     for (let i = 0; i < rows.length; i++) {
-      if (rows[i].userid !== String(userId)) {
+      if (Number(rows[i].userId) !== Number(userId)) {
         partnerName = rows[i].username;
       }
     }
@@ -243,20 +243,20 @@ const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
 }
 
 const generateTitleForGroupChannel = (channelId, userId, callback) => {
-  const query = 'SELECT channelName FROM msg_channel_info WHERE userId = ? AND channel = ?';
+  const query = 'SELECT channelName FROM msg_channel_info WHERE userId = ? AND channelId = ?';
   pool.query(query, [userId, channelId], (err, rows) => {
     if (!rows || rows.length === 0) return callback(err, null);
     return callback(err, rows[0].channelName);
   })
 }
 
-const handleCaseWhereBidirectionalChatAlreadyExists = (roomid, userid, content, callback) => {
+const handleCaseWhereBidirectionalChatAlreadyExists = (channelId, userId, content, callback) => {
   const timeposted = Math.floor(Date.now()/1000);
-  const message = {roomid, userid, content, timeposted};
+  const message = {channelId, userId, content, timeposted};
 
   async.parallel([
     callback => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChatRoom: roomid}, userid], (err) => {
+      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, userId], (err) => {
         callback(err)
       })
     },
@@ -270,16 +270,17 @@ const handleCaseWhereBidirectionalChatAlreadyExists = (roomid, userid, content, 
   })
 }
 
-const updateLastRead = ({userId, channelId, time}) => {
-  let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channel = ?';
+const updateLastRead = ({userId, channelId, time}, callback) => {
+  let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?';
   pool.query(query, [userId, channelId], (err, rows) => {
     if(Number(rows[0].num) > 0) {
-      pool.query('UPDATE msg_channel_info SET ? WHERE userId = ? AND channel = ?', [{lastRead: time}, userId, channelId]);
+      pool.query('UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?', [{lastRead: time}, userId, channelId]);
     } else {
-      pool.query('INSERT INTO msg_channel_info SET ?', {userId: userId, channel: channelId, lastRead: time});
+      pool.query('INSERT INTO msg_channel_info SET ?', {userId, channelId, lastRead: time});
     }
+    if (callback) callback(err);
   })
-  pool.query('UPDATE msg_channel_info SET ? WHERE channel = ?', [{isHidden: false}, channelId]);
+  pool.query('UPDATE msg_channel_info SET ? WHERE channelId = ?', [{isHidden: false}, channelId]);
 }
 
 module.exports = {

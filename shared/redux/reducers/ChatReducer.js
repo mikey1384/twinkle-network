@@ -19,7 +19,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         channels: state.channels.map(channel => {
           if (Number(channel.id) === Number(action.data.channelId)) {
-            channel.roomname = action.data.title;
+            channel.channelName = action.data.title;
           }
           return channel;
         })
@@ -33,24 +33,24 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: [{
-          id: action.data.message.roomid,
-          roomname: action.data.message.roomname,
+          id: action.data.message.channelId,
+          channelName: action.data.message.channelName,
           lastMessage: action.data.message.content,
           lastUpdate: action.data.message.timeposted,
           lastMessageSender: {
-            id: action.data.message.userid,
+            id: action.data.message.userId,
             username: action.data.message.username
           }
         }].concat(state.channels),
         currentChannel: {
-          id: action.data.message.roomid,
+          id: action.data.message.channelId,
           bidirectional: false,
-          creatorId: action.data.message.userid,
+          creatorId: action.data.message.userId,
           members: action.data.members
         },
         messages: [{
           id: action.data.message.messageId,
-          roomid: action.data.message.roomid,
+          channelId: action.data.message.channelId,
           content: action.data.message.content,
           timeposted: action.data.message.timeposted,
           username: action.data.message.username,
@@ -65,10 +65,10 @@ export default function ChatReducer(state = defaultState, action) {
           if (channel.id === 0) {
             channel = {
               ...channel,
-              id: action.data.roomid,
+              id: action.data.channelId,
               lastMessage: action.data.content,
               lastMessageSender: {
-                id: action.data.userid,
+                id: action.data.userId,
                 username: action.data.username
               },
               lastUpdate: action.data.timeposted
@@ -77,14 +77,14 @@ export default function ChatReducer(state = defaultState, action) {
           return channel;
         }),
         currentChannel: {
-          id: action.data.roomid,
+          id: action.data.channelId,
           bidirectional: true,
-          creatorId: action.data.userid,
+          creatorId: action.data.userId,
           members: action.data.members
         },
         messages: [{
           id: action.data.messageId,
-          roomid: action.data.roomid,
+          channelId: action.data.channelId,
           content: action.data.content,
           timeposted: action.data.timeposted,
           username: action.data.username
@@ -169,7 +169,7 @@ export default function ChatReducer(state = defaultState, action) {
           ...state.currentChannel,
           members: state.currentChannel.members.concat(
             action.data.selectedUsers.map(user => ({
-              userid: user.userId,
+              userId: user.userId,
               username: user.username
             }))
           )
@@ -214,16 +214,16 @@ export default function ChatReducer(state = defaultState, action) {
         }),
         currentChannel: {
           ...state.currentChannel,
-          members: state.currentChannel.members.filter(member => Number(member.userid) !== Number(action.data.userId))
+          members: state.currentChannel.members.filter(member => Number(member.userId) !== Number(action.data.userId))
         },
         messages: state.messages.concat([{
           id: null,
-          roomid: action.data.channelId,
+          channelId: action.data.channelId,
           content: "Left the channel",
           timeposted: time,
           isNotification: true,
           username: action.data.username,
-          userid: action.data.userId
+          userId: action.data.userId
         }])
       }
     case 'OPEN_NEW_CHAT_TAB':
@@ -235,18 +235,18 @@ export default function ChatReducer(state = defaultState, action) {
         chatMode: true,
         channels: [{
           id: 0,
-          roomname: action.partner.username,
+          channelName: action.partner.username,
           lastMessage: null,
           lastUpdate: null,
           lastMessageSender: null,
           members: [
             {
               username: action.user.username,
-              userid: action.user.userId
+              userId: action.user.userId
             },
             {
               username: action.partner.username,
-              userid: action.partner.userId
+              userId: action.partner.userId
             }
           ]
         }].concat(filteredChannel),
@@ -256,11 +256,11 @@ export default function ChatReducer(state = defaultState, action) {
           members: [
             {
               username: action.user.username,
-              userid: action.user.userId
+              userId: action.user.userId
             },
             {
               username: action.partner.username,
-              userid: action.partner.userId
+              userId: action.partner.userId
             }
           ]
         },
@@ -275,10 +275,10 @@ export default function ChatReducer(state = defaultState, action) {
           if (channel.id === 0) {
             channel = {
               ...channel,
-              id: action.data.roomid,
+              id: action.data.channelId,
               lastMessage: action.data.content,
               lastMessageSender: {
-                id: action.data.userid,
+                id: action.data.userId,
                 username: action.data.username
               },
               lastUpdate: action.data.timeposted
@@ -287,7 +287,7 @@ export default function ChatReducer(state = defaultState, action) {
           return channel;
         }),
         currentChannel: {
-          id: action.data.roomid,
+          id: action.data.channelId,
           bidirectional: true
         }
       }
@@ -295,13 +295,13 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: [{
-          id: action.data.roomid,
-          roomname: action.data.roomname || action.data.username,
+          id: action.data.channelId,
+          channelName: action.data.channelName || action.data.username,
           lastMessage: action.data.content,
           lastUpdate: action.data.timeposted,
           numUnreads: 1,
           lastMessageSender: {
-            id: action.data.userid,
+            id: action.data.userID,
             username: action.data.username
           }
         }].concat(state.channels)
@@ -316,7 +316,7 @@ export default function ChatReducer(state = defaultState, action) {
               ...channel,
               lastUpdate: action.data.timeposted,
               lastMessageSender: {
-                id: action.data.userid,
+                id: action.data.userId,
                 username: action.data.username
               },
               numUnreads: 0,
@@ -338,7 +338,7 @@ export default function ChatReducer(state = defaultState, action) {
             lastUpdate: action.data.timeposted,
             numUnreads: Number(channels[i].numUnreads) + 1,
             lastMessageSender: {
-              id: action.data.userid,
+              id: action.data.userId,
               username: action.data.username
             },
             isHidden: false
@@ -361,11 +361,11 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         messages: state.messages.concat([{
           id: action.message.messageId,
-          roomid: action.message.channelId,
+          channelId: action.message.channelId,
           content: processedStringWithURL(action.message.content),
           timeposted: action.message.timeposted,
           username: action.message.username,
-          userid: action.message.userid
+          userId: action.message.userId
         }])
       }
     case 'TOGGLE_CHAT':

@@ -41,7 +41,7 @@ export default class MessagesContainer extends Component {
     if (switchedChannel) return this.setFillerHeight();
     if (newMessageArrived) {
       let {messages, userId} = this.props;
-      let messageSenderId = messages[messages.length - 1].userid;
+      let messageSenderId = messages[messages.length - 1].userId;
       if (messageSenderId === userId || this.state.scrollAtBottom) {
         container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight);
       }
@@ -137,9 +137,9 @@ export default class MessagesContainer extends Component {
 
   onLoadMoreButtonClick() {
     const messageId = this.props.messages[0].id;
-    const roomId = this.props.messages[0].roomid;
+    const channelId = this.props.messages[0].channelId;
     const {userId, loadMoreMessages} = this.props;
-    loadMoreMessages(userId, messageId, roomId);
+    loadMoreMessages(userId, messageId, channelId);
   }
 
   renderMessages() {
@@ -171,7 +171,7 @@ export default class MessagesContainer extends Component {
             <h5 className="media-heading">
               <UsernameText
                 user={{
-                  id: message.userid,
+                  id: message.userId,
                   name: message.username || '(Deleted)'
                 }} /> <small>{moment.unix(message.timeposted).format("LLL")}</small></h5>
             <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>

@@ -148,8 +148,8 @@ request.post(`${API_URL}/invite`, params, auth())
   }
 )
 
-export const loadMoreMessagesAsync = (userId, messageId, roomId) => dispatch =>
-request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&roomId=${roomId}`, auth())
+export const loadMoreMessagesAsync = (userId, messageId, channelId) => dispatch =>
+request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&channelId=${channelId}`, auth())
 .then(
   response => dispatch(actions.loadMoreMessages(response.data))
 ).catch(
