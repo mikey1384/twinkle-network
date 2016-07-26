@@ -370,7 +370,7 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
       'msg_channel_members a JOIN users b ON ',
       'a.userId = b.id WHERE a.channelId = ?'
     ].join('')
-    pool.query(query, channelID, (err, rows) => {
+    pool.query(query, channelId, (err, rows) => {
       res.send({
         messageId,
         channelId,
