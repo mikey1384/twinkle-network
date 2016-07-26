@@ -22,31 +22,7 @@ module.exports = function(io) {
 
     socket.on('check_online_members', (channelId, callback) => {
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
-        let membersOnline = clients.map(client => {
-          let member = {};
-          for (let i = 0; i < connections.length; i++) {
-            if (connections[i].socketId === client) {
-              member = {
-                userId: Number(connections[i].userId),
-                username: connections[i].username
-              }
-            }
-          }
-          return member;
-        })
-        membersOnline = membersOnline.reduce(
-          (resultingArray, member) => {
-            if (resultingArray.length === 0) {
-              return resultingArray.concat(member)
-            }
-            else if (Number(resultingArray[Math.max(resultingArray.length - 1, 0)].userId) !== Number(member.userId)) {
-              return resultingArray.concat(member)
-            }
-            else {
-              return resultingArray;
-            }
-          }, []
-        )
+        const membersOnline = returnMembersOnline(clients);
         let data = {channelId, membersOnline}
         callback(error, data);
       })
@@ -136,33 +112,38 @@ module.exports = function(io) {
   function notifyChannelMembersChanged(channelId, leftChannel) {
     io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
       if (error) return console.error(error);
-      let membersOnline = clients.map(client => {
-        let member = {};
-        for (let i = 0; i < connections.length; i++) {
-          if (connections[i].socketId === client) {
-            member = {
-              userId: Number(connections[i].userId),
-              username: connections[i].username
-            }
-          }
-        }
-        return member;
-      })
-      membersOnline = membersOnline.reduce(
-        (resultingArray, member) => {
-          if (resultingArray.length === 0) {
-            return resultingArray.concat([member])
-          }
-          else if (Number(resultingArray[Math.max(resultingArray.length - 1, 0)].userId) !== Number(member.userId)) {
-            return resultingArray.concat([member])
-          }
-          else {
-            return resultingArray;
-          }
-        }, []
-      )
+      const membersOnline = returnMembersOnline(clients);
       let data = {channelId, membersOnline, leftChannel}
       io.to('chatChannel' + channelId).emit('change_in_members_online', data);
     })
+  }
+
+  function returnMembersOnline(clients) {
+    let membersOnline = clients.map(client => {
+      let member = {};
+      for (let i = 0; i < connections.length; i++) {
+        if (connections[i].socketId === client) {
+          member = {
+            userId: Number(connections[i].userId),
+            username: connections[i].username
+          }
+        }
+      }
+      return member;
+    })
+    membersOnline = membersOnline.reduce(
+      (resultingArray, member) => {
+        if (resultingArray.length === 0) {
+          return resultingArray.concat([member])
+        }
+        else if (resultingArray.map(elem => Number(elem.userId)).indexOf(Number(member.userId)) === -1) {
+          return resultingArray.concat([member])
+        }
+        else {
+          return resultingArray;
+        }
+      }, []
+    )
+    return membersOnline;
   }
 }
