@@ -1,7 +1,17 @@
 import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
+import {reduxForm, Field} from 'redux-form';
 import {Modal, Button, Alert} from 'react-bootstrap';
 
+
+const renderInput = field => (
+  <div style={{display: 'inline'}}>
+    <input {...field.input} />
+    <span
+      className="help-block"
+      style={{color: 'red'}}
+    >{field.touched && field.error && field.error}</span>
+  </div>
+)
 
 @reduxForm({
   form: 'SignupForm',
@@ -34,48 +44,65 @@ export default class SignUpForm extends Component {
           </Alert>
         }
         <div className="container-fluid">
-          <fieldset>
+          <fieldset className="form-group">
             <label>Username</label>
-            <input type="text" className="form-control" placeholder="Your account username for logging in" />
-            <span className="help-block">
-              {/*userNameFieldError ? username.error : ''*/}
-            </span>
+            <Field
+              name="username"
+              placeholder="Username"
+              className="form-control"
+              component={renderInput}
+              type="text"
+            />
           </fieldset>
-          <fieldset>
+          <fieldset className="form-group">
             <label>Password</label>
-            <input type="password" className="form-control" placeholder="Password" />
-            <span className="help-block">
-              {/*passwordFieldError ? password.error : ''*/}
-            </span>
+            <Field
+              name="password"
+              placeholder="Password"
+              className="form-control"
+              component={renderInput}
+              type="password"
+            />
           </fieldset>
-          <fieldset>
+          <fieldset className="form-group">
             <label>First Name</label>
-            <input type="text" className="form-control" placeholder="Your first name" />
-            <span className="help-block">
-              {/*firstNameFieldError ? firstname.error : ''*/}
-            </span>
+            <Field
+              name="firstname"
+              placeholder="Your first name"
+              className="form-control"
+              component={renderInput}
+              type="text"
+            />
           </fieldset>
-          <fieldset>
+          <fieldset className="form-group">
             <label>Last Name</label>
-            <input type="text" className="form-control" placeholder="Your lastname" />
-            <span className="help-block">
-              {/*lastNameFieldError ? lastname.error : ''*/}
-            </span>
+            <Field
+              name="lastname"
+              placeholder="Your last name"
+              className="form-control"
+              component={renderInput}
+              type="text"
+            />
           </fieldset>
           <fieldset className="form-group">
             <label>I'm a Teacher:&nbsp;&nbsp;&nbsp;</label>
-            <input
-              type="checkbox"
+            <Field
+              name="isTeacher"
               checked={checkedTeacher}
               onClick={()=>this.setState({checkedTeacher:!checkedTeacher})}
+              component={renderInput}
+              type="checkbox"
             />
           </fieldset>
-          <fieldset>
+          <fieldset className="form-group">
             <label>Email</label>
-            <input type="email" className="form-control" placeholder="Email is not required except for teachers" />
-            <span className="help-block">
-              {/*emailFieldError ? email.error : ''*/}
-            </span>
+            <Field
+              name="email"
+              placeholder="Email is not required except for teachers"
+              className="form-control"
+              component={renderInput}
+              type="email"
+            />
           </fieldset>
         </div>
         <br />
@@ -92,7 +119,7 @@ export default class SignUpForm extends Component {
 }
 
 function validate (values) {
-  const { username, firstname, lastname, password, email, isTeacher } = values;
+  const {username, firstname, lastname, password, email, isTeacher} = values;
   const errors = {};
 
   if (!isValidUsername(username)) {

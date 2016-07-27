@@ -3,12 +3,14 @@ import {reduxForm, Field} from 'redux-form';
 import {Modal, Button, Alert} from 'react-bootstrap';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 
-// className={`form-group ${userNameFieldError ? 'has-error' : ''}`}
 
 const renderInput = field => (
   <div>
-    <input {...field.input}/>
-    <span className="help-block">{field.touched && field.error && field.error}</span>
+    <input {...field.input} />
+    <span
+      className="help-block"
+      style={{color: 'red'}}
+    >{field.touched && field.error && field.error}</span>
   </div>
 )
 
@@ -32,23 +34,21 @@ export default class LoginForm extends Component {
           </Alert>
         }
         <div className="container-fluid">
-          <fieldset>
+          <fieldset className="form-group">
             <label>Username</label>
             <Field
               name="username"
               placeholder="Username"
-              type="text"
               className="form-control"
               component={renderInput}
               type="text"
             />
           </fieldset>
-          <fieldset>
+          <fieldset className="form-group">
             <label>Password</label>
             <Field
               name="password"
               placeholder="Password"
-              type="text"
               className="form-control"
               component={renderInput}
               type="password"

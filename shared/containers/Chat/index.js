@@ -245,6 +245,7 @@ export default class Chat extends Component {
             users={this.returnUsers(currentChannel, myChannels)}
             userId={userId}
             description={this.renderUserListDescription}
+            descriptionColor='green'
           />
         }
         <div
@@ -418,11 +419,11 @@ export default class Chat extends Component {
     const {userId, currentChannel} = this.props;
     const {myChannels} = this.state;
 
-    if (Number(user.userId) === Number(userId)) return '(You)';
+    if (Number(user.userId) === Number(userId)) return '(online)';
 
     const result = myChannels
       .filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0].membersOnline
-      .map(member => Number(member.userId)).indexOf(Number(user.userId)) !== -1 && '(Online)';
+      .map(member => Number(member.userId)).indexOf(Number(user.userId)) !== -1 && '(online)';
     return result;
   }
 
