@@ -5,7 +5,6 @@ import {Modal, Button, Alert} from 'react-bootstrap';
 
 @reduxForm({
   form: 'SignupForm',
-  fields: ['username', 'firstname', 'lastname', 'password', 'isTeacher', 'email'],
   validate
 })
 export default class SignUpForm extends Component {
@@ -23,16 +22,10 @@ export default class SignUpForm extends Component {
   render () {
     const {checkedTeacher} = this.state;
     const {
-      fields: {username, firstname, lastname, password, isTeacher, email},
       handleSubmit,
       errorMessage,
       hideErrorAlert
     } = this.props;
-    let userNameFieldError = username.touched && username.invalid;
-    let firstNameFieldError = firstname.touched && firstname.invalid;
-    let lastNameFieldError = lastname.touched && lastname.invalid;
-    let passwordFieldError = password.touched && password.invalid;
-    let emailFieldError = email.touched && email.invalid;
     return (
       <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()}>
         { errorMessage &&
@@ -41,32 +34,32 @@ export default class SignUpForm extends Component {
           </Alert>
         }
         <div className="container-fluid">
-          <fieldset className={`form-group ${userNameFieldError ? 'has-error' : ''}`}>
+          <fieldset>
             <label>Username</label>
-            <input type="text" className="form-control" placeholder="Your account username for logging in" {...username} />
+            <input type="text" className="form-control" placeholder="Your account username for logging in" />
             <span className="help-block">
-              {userNameFieldError ? username.error : ''}
+              {/*userNameFieldError ? username.error : ''*/}
             </span>
           </fieldset>
-          <fieldset className={`form-group ${passwordFieldError ? 'has-error' : ''}`}>
+          <fieldset>
             <label>Password</label>
-            <input type="password" className="form-control" placeholder="Password" {...password} />
+            <input type="password" className="form-control" placeholder="Password" />
             <span className="help-block">
-              {passwordFieldError ? password.error : ''}
+              {/*passwordFieldError ? password.error : ''*/}
             </span>
           </fieldset>
-          <fieldset className={`form-group ${firstNameFieldError ? 'has-error' : ''}`}>
+          <fieldset>
             <label>First Name</label>
-            <input type="text" className="form-control" placeholder="Your first name" {...firstname} />
+            <input type="text" className="form-control" placeholder="Your first name" />
             <span className="help-block">
-              {firstNameFieldError ? firstname.error : ''}
+              {/*firstNameFieldError ? firstname.error : ''*/}
             </span>
           </fieldset>
-          <fieldset className={`form-group ${lastNameFieldError ? 'has-error' : ''}`}>
+          <fieldset>
             <label>Last Name</label>
-            <input type="text" className="form-control" placeholder="Your lastname" {...lastname} />
+            <input type="text" className="form-control" placeholder="Your lastname" />
             <span className="help-block">
-              {lastNameFieldError ? lastname.error : ''}
+              {/*lastNameFieldError ? lastname.error : ''*/}
             </span>
           </fieldset>
           <fieldset className="form-group">
@@ -75,13 +68,13 @@ export default class SignUpForm extends Component {
               type="checkbox"
               checked={checkedTeacher}
               onClick={()=>this.setState({checkedTeacher:!checkedTeacher})}
-              {...isTeacher} />
+            />
           </fieldset>
-          <fieldset className={`form-group ${emailFieldError ? 'has-error' : ''}`}>
+          <fieldset>
             <label>Email</label>
-            <input type="email" className="form-control" placeholder="Email is not required except for teachers" {...email} />
+            <input type="email" className="form-control" placeholder="Email is not required except for teachers" />
             <span className="help-block">
-              {emailFieldError ? email.error : ''}
+              {/*emailFieldError ? email.error : ''*/}
             </span>
           </fieldset>
         </div>
