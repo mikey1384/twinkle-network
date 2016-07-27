@@ -1,14 +1,25 @@
 import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
-import {reduxForm} from 'redux-form';
+import {reduxForm, Field} from 'redux-form';
 import {Modal, Button} from 'react-bootstrap';
 import {uploadVideoAsync} from 'redux/actions/VideoActions';
 import {connect} from 'react-redux';
 
 
+const renderInput = field => (
+  <div style={{display: 'inline'}}>
+    <input {...field.input} />
+    <span
+      className="help-block"
+      style={{color: 'red'}}
+    >{field.touched && field.error && field.error}</span>
+  </div>
+)
+
+const renderTextarea = field => <Textarea {...field.input} />
+
 @reduxForm({
   form: 'UploadVideoForm',
-  fields: ['url', 'title', 'description'],
   validate
 })
 @connect(
@@ -22,35 +33,39 @@ export default class AddVideoForm extends Component {
   }
 
   render () {
-    const {fields: {url, title, description}, handleSubmit} = this.props;
-    let urlError = url.touched && url.invalid;
-    let titleError = title.touched && title.invalid;
+    const {handleSubmit} = this.props;
     return (
       <form className="container-fluid" onSubmit={handleSubmit(this.onSubmit)} >
-        <div className={`form-group ${urlError ? 'has-error' : ''}`}>
+        <fieldset className="form-group">
           <label>Video Url</label>
-          <input type="text" className="form-control" placeholder="Paste video's YouTube url here" {...url} />
-          <span className="help-block">
-            {urlError ? url.error : ''}
-          </span>
-        </div>
-        <div className={`form-group ${titleError ? 'has-error' : ''}`}>
+          <Field
+            name="url"
+            placeholder="Paste video's YouTube url here"
+            className="form-control"
+            component={renderInput}
+            type="text"
+          />
+        </fieldset>
+        <fieldset className="form-group">
           <label>Title</label>
-          <input type="text" className="form-control" placeholder="Enter Title" {...title} />
-          <span className="help-block">
-            {titleError ? title.error : ''}
-          </span>
-        </div>
-        <div className="form-group">
+          <Field
+            name="title"
+            placeholder="Enter Title"
+            className="form-control"
+            component={renderInput}
+            type="text"
+          />
+        </fieldset>
+        <fieldset className="form-group">
           <label>Description</label>
-          <Textarea
+          <Field
+            name="description"
             className="form-control"
             minRows={4}
             placeholder="Enter Description (Optional)"
-            {...description}
-          >
-          </Textarea>
-        </div>
+            component={renderTextarea}
+          />
+        </fieldset>
         <Modal.Footer>
           <Button bsStyle="primary" type="submit">Add</Button>
         </Modal.Footer>

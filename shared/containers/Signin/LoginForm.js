@@ -1,12 +1,21 @@
 import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
+import {reduxForm, Field} from 'redux-form';
 import {Modal, Button, Alert} from 'react-bootstrap';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 
 
+const renderInput = field => (
+  <div>
+    <input {...field.input} />
+    <span
+      className="help-block"
+      style={{color: 'red'}}
+    >{field.touched && field.error && field.error}</span>
+  </div>
+)
+
 @reduxForm({
   form: 'LoginForm',
-  fields: ['username', 'password'],
   validate
 })
 export default class LoginForm extends Component {
@@ -16,9 +25,7 @@ export default class LoginForm extends Component {
   }
 
   render () {
-    const {fields: {username, password}, handleSubmit, errorMessage, hideErrorAlert} = this.props;
-    let userNameFieldError = username.touched && username.invalid;
-    let passwordFieldError = password.touched && password.invalid;
+    const {handleSubmit, errorMessage, hideErrorAlert} = this.props;
     return (
       <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()} >
         {errorMessage &&
@@ -27,19 +34,25 @@ export default class LoginForm extends Component {
           </Alert>
         }
         <div className="container-fluid">
-          <fieldset className={`form-group ${userNameFieldError ? 'has-error' : ''}`}>
+          <fieldset className="form-group">
             <label>Username</label>
-            <input type="text" className="form-control" placeholder="Username" {...username} />
-            <span className="help-block">
-              {userNameFieldError ? username.error : ''}
-            </span>
+            <Field
+              name="username"
+              placeholder="Username"
+              className="form-control"
+              component={renderInput}
+              type="text"
+            />
           </fieldset>
-          <fieldset className={`form-group ${passwordFieldError ? 'has-error' : ''}`}>
+          <fieldset className="form-group">
             <label>Password</label>
-            <input type="password" className="form-control" placeholder="Password" {...password} />
-            <span className="help-block">
-              {passwordFieldError ? password.error : ''}
-            </span>
+            <Field
+              name="password"
+              placeholder="Password"
+              className="form-control"
+              component={renderInput}
+              type="password"
+            />
           </fieldset>
         </div>
         <br />
