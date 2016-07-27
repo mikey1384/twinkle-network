@@ -164,9 +164,9 @@ function isValidEmailAddress (email) {
   return pattern.test(email);
 };
 
-function isValidRealname (realname) {
+function isValidRealname(realName) {
   var pattern = new RegExp(/^[a-zA-Z]+$/);
-  return pattern.test(realname);
+  return pattern.test(realName);
 }
 
 function isValidUsername (username) {

@@ -25,7 +25,7 @@ export const clearSearchResults = () => ({
 })
 
 export const checkChatExistsThenCreateNewChatOrReceiveExistingChatData = (params, callback) => dispatch =>
-request.post(`${API_URL}/channel/bidirectional`, params, auth())
+request.post(`${API_URL}/channel/twoPeople`, params, auth())
 .then(
   response => {
     if (!!response.data.alreadyExists) {
@@ -160,8 +160,8 @@ request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&channelId=$
 )
 
 export const leaveChannelAsync = channelId => dispatch => {
-  const time = Math.floor(Date.now()/1000);
-  request.delete(`${API_URL}/channel?channelId=${channelId}&time=${time}`, auth())
+  const timeStamp = Math.floor(Date.now()/1000);
+  request.delete(`${API_URL}/channel?channelId=${channelId}&timeStamp=${timeStamp}`, auth())
   .then(
     response => {
       dispatch(actions.leaveChannel(channelId))
@@ -189,8 +189,8 @@ export const openDirectMessage = (user, partner) => dispatch => {
 }
 
 export const receiveMessage = data => {
-  const {channelId, timeposted} = data;
-  request.post(`${API_URL}/lastRead`, {channelId, timeposted} , auth())
+  const {channelId, timeStamp} = data;
+  request.post(`${API_URL}/lastRead`, {channelId, timeStamp} , auth())
   return {
     type: 'RECEIVE_MSG',
     data
@@ -225,7 +225,7 @@ request.get(`${API_URL}/search?text=${text}`)
 export const submitMessageAsync = (params, callback) => dispatch => {
   let message = {
     ...params,
-    timeposted: Math.floor(Date.now()/1000)
+    timeStamp: Math.floor(Date.now()/1000)
   }
   dispatch(actions.submitMessage(message))
   request.post(API_URL, {message}, auth())

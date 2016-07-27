@@ -28,7 +28,11 @@ export default class SelectPlaylistsToPinModal extends Component {
     const {loadMoreButton, playlistsToPin, pinnedPlaylists} = this.props;
     const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
     return (
-      <Modal {...this.props} animation={false}>
+      <Modal
+        show={this.props.show}
+        onHide={this.props.onHide}
+        animation={false}
+      >
         <Modal.Header closeButton>
           <h4>Select up to 3 playlists</h4>
         </Modal.Header>

@@ -15,8 +15,8 @@ router.get('/', (req, res) => {
   const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null;
   const where = playlistId !== null ? 'WHERE a.id < ' + playlistId + ' ' : '';
   const query = [
-    'SELECT a.id, a.title, a.createdby AS uploaderid, b.username AS uploader ',
-    'FROM vq_playlists a JOIN users b ON a.createdby = b.id ',
+    'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
+    'FROM vq_playlists a JOIN users b ON a.creator = b.id ',
     where,
     'ORDER BY a.id DESC LIMIT 4'
   ].join('');
@@ -40,18 +40,18 @@ router.post('/', requireAuth, (req, res) => {
   const taskArray = [];
   async.waterfall([
     (callback) => {
-      const uploaderid = user.id;
-      const uploadername = user.username;
-      const post = {title, description, createdby: uploaderid};
+      const uploaderId = user.id;
+      const uploaderName = user.username;
+      const post = {title, description, creator: uploaderId};
       pool.query('INSERT INTO vq_playlists SET ?', post, (err, res) => {
         const playlistId = res.insertId;
-        callback(err, playlistId, uploadername, uploaderid);
+        callback(err, playlistId, uploaderName, uploaderId);
       })
     },
-    (playlistId, uploadername, uploaderid, callback) => {
+    (playlistId, uploaderName, uploaderId, callback) => {
       for (let i = 0; i < videos.length; i ++) {
         taskArray.push(callback => {
-          let playlistVideo = {playlistid: playlistId, videoid: videos[i]};
+          let playlistVideo = {playlistId: playlistId, videoId: videos[i]};
           pool.query("INSERT INTO vq_playlistvideos SET ?", playlistVideo, function (err) {
             callback(err);
           })
@@ -59,19 +59,19 @@ router.post('/', requireAuth, (req, res) => {
       }
       async.series(taskArray, function (err) {
         const query = [
-          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader, ',
+          'SELECT a.id, a.videoId, b.title AS video_title, b.videoCode, c.username AS video_uploader, ',
           'COUNT(d.id) AS numLikes ',
-          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
+          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id ',
           'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
-          'WHERE a.playlistid = ? GROUP BY a.videoid ORDER BY a.id'
+          'WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id'
         ].join('');
         pool.query(query, playlistId, (err, rows) => {
           callback(err, {
             playlist: rows,
             title: title,
             id: playlistId,
-            uploader: uploadername,
-            uploaderId: uploaderid
+            uploader: uploaderName,
+            uploaderId: uploaderId
           })
         })
       })
@@ -94,7 +94,7 @@ router.post('/edit/title', requireAuth, (req, res) => {
     title: newTitle
   };
   const userId = user.id;
-  pool.query('UPDATE vq_playlists SET ? WHERE id = ? AND createdby = ?', [post, playlistId, userId], err => {
+  pool.query('UPDATE vq_playlists SET ? WHERE id = ? AND creator = ?', [post, playlistId, userId], err => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -112,20 +112,20 @@ router.post('/edit/videos', requireAuth, (req, res) => {
   async.waterfall([
     (callback) => {
       const userId = user.id;
-      pool.query('SELECT * FROM vq_playlists WHERE createdby = ? AND id = ?', [userId, playlistId], (err, rows) => {
+      pool.query('SELECT * FROM vq_playlists WHERE creator = ? AND id = ?', [userId, playlistId], (err, rows) => {
         callback(err, rows);
       })
     },
     (rows, callback) => {
       if (!rows || rows.length === 0) return callback('User is not the owner of the playlist');
-      pool.query('DELETE FROM vq_playlistvideos WHERE playlistid = ?', playlistId, err => {
+      pool.query('DELETE FROM vq_playlistvideos WHERE playlistId = ?', playlistId, err => {
         callback(err)
       })
     },
     (callback) => {
       for (let i = 0; i < selectedVideos.length; i ++) {
         taskArray.push(callback => {
-          let playlistVideo = {playlistid: playlistId, videoid: selectedVideos[i]};
+          let playlistVideo = {playlistId: playlistId, videoId: selectedVideos[i]};
           pool.query("INSERT INTO vq_playlistvideos SET ?", playlistVideo, function (err) {
             callback(err);
           })
@@ -133,11 +133,11 @@ router.post('/edit/videos', requireAuth, (req, res) => {
       }
       async.series(taskArray, (err) => {
         const query = [
-          'SELECT a.id, a.videoid, b.title AS video_title, b.videocode, c.username AS video_uploader, ',
+          'SELECT a.id, a.videoId, b.title AS video_title, b.videoCode, c.username AS video_uploader, ',
           'COUNT(d.id) AS numLikes ',
-          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
+          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id ',
           'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
-          'WHERE a.playlistid = ? GROUP BY a.videoid ORDER BY a.id'
+          'WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id'
         ].join('');
         pool.query(query, playlistId, (err, rows) => {
           callback(err, rows)
@@ -159,7 +159,7 @@ router.delete('/', requireAuth, (req, res) => {
   async.waterfall([
     (callback) => {
       const userId = user.id;
-      pool.query('SELECT * FROM vq_playlists WHERE createdby = ? AND id = ?', [userId, playlistId], (err, rows) => {
+      pool.query('SELECT * FROM vq_playlists WHERE creator = ? AND id = ?', [userId, playlistId], (err, rows) => {
         if (!rows || rows.length === 0) return callback('User is not the owner of the playlist');
         callback(err, userId);
       })
@@ -167,7 +167,7 @@ router.delete('/', requireAuth, (req, res) => {
     (userId, callback) => {
       async.parallel([
         (callback) => {
-          pool.query('DELETE FROM vq_playlists WHERE createdby = ? AND id = ?', [userId, playlistId], (err, result) => {
+          pool.query('DELETE FROM vq_playlists WHERE creator = ? AND id = ?', [userId, playlistId], (err, result) => {
             callback(err, result);
           })
         },
@@ -196,9 +196,9 @@ router.delete('/', requireAuth, (req, res) => {
 
 router.get('/pinned', (req, res) => {
   const query = [
-    'SELECT a.id, a.title, a.createdby AS uploaderid, b.username AS uploader ',
+    'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
     'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
-    'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
+    'JOIN users b ON a.creator = b.id ORDER BY c.id DESC'
   ].join('');
   fetchPlaylists(query, (err, playlists) =>{
     if (err) {
@@ -218,7 +218,7 @@ router.post('/pinned', requireAuth, (req, res) => {
   }
   async.waterfall([
     (callback) => {
-      const userType = user.usertype;
+      const userType = user.userType;
       if (userType !== 'master') {
         return callback('User is not authorized to perform this action');
       }
@@ -254,9 +254,9 @@ router.post('/pinned', requireAuth, (req, res) => {
     },
     callback => {
       const query = [
-        'SELECT a.id, a.title, a.createdby AS uploaderid, b.username AS uploader ',
+        'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
         'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
-        'JOIN users b ON a.createdby = b.id ORDER BY c.id DESC'
+        'JOIN users b ON a.creator = b.id ORDER BY c.id DESC'
       ].join('');
       fetchPlaylists(query, (err, playlists) =>{
         callback(err, playlists)

@@ -35,7 +35,7 @@ export default class PlaylistCarousel extends Component {
     const {onEdit, editPlaylistModalShown, deleteConfirmModalShown} = this.state;
     const {title, uploader, editable, id} = this.props;
     const selectedVideos = this.props.playlist.map(thumb => {
-      return thumb.videoid;
+      return thumb.videoId;
     })
     const menuProps = [
       {
@@ -131,15 +131,15 @@ export default class PlaylistCarousel extends Component {
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
-          to={`videos/${thumb.videoid}`}
+          to={`videos/${thumb.videoId}`}
           clickSafe={clickSafe}
           key={index}
           video={{
-            id: thumb.videoid,
-            videocode: thumb.videocode,
+            id: thumb.videoId,
+            videoCode: thumb.videoCode,
             title: thumb.video_title,
             description: thumb.video_description,
-            uploadername: thumb.video_uploader,
+            uploaderName: thumb.video_uploader,
             numLikes: thumb.numLikes
           }}
           user={{name: thumb.video_uploader, id: thumb.video_uploader_id}}

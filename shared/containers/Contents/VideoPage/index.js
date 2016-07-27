@@ -74,7 +74,7 @@ export default class VideoPage extends Component {
       description,
       userId,
       videoId,
-      videocode,
+      videoCode,
       title,
       questions = [],
       likes = [],
@@ -138,7 +138,7 @@ export default class VideoPage extends Component {
                     title={title}
                     width="640"
                     height="360"
-                    src={`https://www.youtube.com/embed/${videocode}`}>
+                    src={`https://www.youtube.com/embed/${videoCode}`}>
                   </iframe>
                 </div>
                 {watchTabActive &&
@@ -205,7 +205,7 @@ export default class VideoPage extends Component {
             show
             questions={questions}
             title={title}
-            videocode={videocode}
+            videoCode={videoCode}
             onSubmit={this.onQuestionsSubmit}
             onHide={() => this.setState({questionsBuilderShown: false})}
           />
@@ -301,9 +301,9 @@ export default class VideoPage extends Component {
           return choice.label && !stringIsEmpty(choice.label);
         })
         return {
-          videoid: this.props.videoId,
-          questiontitle: question.title,
-          correctchoice: (() => {
+          videoId: this.props.videoId,
+          title: question.title,
+          correctChoice: (() => {
             let correctChoice = 0;
             for (let i = 0; i < choices.length; i ++) {
               if (choices[i].checked) correctChoice = i+1;
@@ -315,7 +315,7 @@ export default class VideoPage extends Component {
           choice3: choices[2] ? choices[2].label : null,
           choice4: choices[3] ? choices[3].label : null,
           choice5: choices[4] ? choices[4].label : null,
-          createdby: this.props.userId
+          creator: this.props.userId
         }
       })
     }

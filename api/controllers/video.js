@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
   const numberToLoad = parseInt(req.query.numberToLoad) + 1 || 13;
   const where = videoId === 0 ? '' : 'WHERE a.id < ? ';
   const query = [
-    'SELECT a.id, a.title, a.description, a.videocode, a.uploader AS uploaderid, b.username AS uploadername, ',
+    'SELECT a.id, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName, ',
     'COUNT(c.id) AS numLikes ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
     'LEFT JOIN vq_video_likes c ON a.id = c.videoId ',
@@ -39,13 +39,13 @@ router.post('/', requireAuth, (req, res) => {
   "No description" : req.body.description;
   const title = processedTitleString(req.body.title);
   const description = processedString(rawDescription);
-  const videocode = fetchedVideoCodeFromURL(req.body.url);
+  const videoCode = fetchedVideoCodeFromURL(req.body.url);
 
-  const uploaderid = user.id;
-  const uploadername = user.username;
-  const post = {title, description, videocode, uploader: uploaderid};
+  const uploaderId = user.id;
+  const uploaderName = user.username;
+  const post = {title, description, videoCode, uploader: uploaderId};
   pool.query('INSERT INTO vq_videos SET?', post, (err, row) => {
-    let result = {id: row.insertId, title, description, videocode, uploaderid, uploadername, numLikes: 0};
+    let result = {id: row.insertId, title, description, videoCode, uploaderId, uploaderName, numLikes: 0};
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -67,7 +67,7 @@ router.delete('/', requireAuth, (req, res) => {
     },
     (callback) => {
       const query = [
-        'SELECT a.id, a.title, a.description, a.videocode, a.uploader AS uploaderid, b.username AS uploadername ',
+        'SELECT a.id, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName ',
         'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
         'WHERE a.id < ? ',
         'ORDER BY a.id DESC LIMIT 1'
@@ -172,7 +172,7 @@ router.post('/edit/page', requireAuth, (req, res) => {
 router.get('/loadPage', (req, res) => {
   const videoId = req.query.videoId;
   let query = [
-    'SELECT a.id AS videoId, a.title, a.description, a.videocode, a.uploader AS uploaderId, b.username AS uploaderName ',
+    'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
     'WHERE a.id = ?'
   ].join('');
@@ -184,17 +184,17 @@ router.get('/loadPage', (req, res) => {
       const videoId = rows[0].videoId;
       const title = rows[0].title;
       const description = rows[0].description;
-      const videocode = rows[0].videocode;
+      const videoCode = rows[0].videoCode;
       const uploaderId = rows[0].uploaderId;
       const uploaderName = rows[0].uploaderName;
       async.parallel([
         (callback) => {
-          pool.query('SELECT * FROM vq_questions WHERE videoid = ? AND isdraft = 0', videoId, (err, rows) => {
+          pool.query('SELECT * FROM vq_questions WHERE videoId = ? AND isDraft = 0', videoId, (err, rows) => {
             let questions = [];
             if (rows) {
               questions = rows.map(row => {
                 return {
-                  title: row.questiontitle,
+                  title: row.title,
                   choices: [
                     row.choice1,
                     row.choice2,
@@ -202,7 +202,7 @@ router.get('/loadPage', (req, res) => {
                     row.choice4,
                     row.choice5
                   ],
-                  correctChoice: row.correctchoice
+                  correctChoice: row.correctChoice
                 }
               })
             }
@@ -232,7 +232,7 @@ router.get('/loadPage', (req, res) => {
           videoId,
           title,
           description,
-          videocode,
+          videoCode,
           uploaderId,
           uploaderName,
           questions: results[0],
@@ -248,9 +248,9 @@ router.get('/loadPage', (req, res) => {
 router.get('/comments', (req, res) => {
   const videoId = req.query.videoId;
   const query = [
-    'SELECT a.id, a.userid, a.content, a.timeposted, b.username ',
-    'FROM vq_comments a JOIN users b ON a.userid = b.id ',
-    'WHERE videoid = ? ORDER BY a.id DESC'
+    'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
+    'FROM vq_comments a JOIN users b ON a.userId = b.id ',
+    'WHERE videoId = ? ORDER BY a.id DESC'
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {
@@ -282,10 +282,10 @@ router.post('/comments', requireAuth, (req, res) => {
     (callback) => {
       const userId = user.id;
       const post = {
-        userid: userId,
+        userId,
         content: processedString(comment),
-        timeposted: Math.floor(Date.now()/1000),
-        videoid: videoId
+        timeStamp: Math.floor(Date.now()/1000),
+        videoId
       }
       pool.query('INSERT INTO vq_comments SET ?', post, (err) => {
         callback(err)
@@ -293,9 +293,9 @@ router.post('/comments', requireAuth, (req, res) => {
     },
     (callback) => {
       const query = [
-        'SELECT a.id, a.userid, a.content, a.timeposted, b.username ',
-        'FROM vq_comments a JOIN users b ON a.userid = b.id ',
-        'WHERE videoid = ? ORDER BY a.id DESC'
+        'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
+        'FROM vq_comments a JOIN users b ON a.userId = b.id ',
+        'WHERE videoId = ? ORDER BY a.id DESC'
       ].join('');
       pool.query(query, videoId, (err, rows) => {
         callback(err, rows)
@@ -331,7 +331,7 @@ router.post('/comments/edit', requireAuth, (req, res) => {
   const content = processedString(req.body.editedComment);
   const commentId = req.body.commentId;
   const userId = user.id;
-  pool.query('UPDATE vq_comments SET ? WHERE id = ? AND userid = ?', [{content}, commentId, userId], err => {
+  pool.query('UPDATE vq_comments SET ? WHERE id = ? AND userId = ?', [{content}, commentId, userId], err => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -343,7 +343,7 @@ router.post('/comments/edit', requireAuth, (req, res) => {
 router.delete('/comments', requireAuth, (req, res) => {
   const user = req.user;
   const commentId = req.query.commentId;
-  pool.query('DELETE FROM vq_comments WHERE id = ? AND userid = ?', [commentId, user.id], err => {
+  pool.query('DELETE FROM vq_comments WHERE id = ? AND userId = ?', [commentId, user.id], err => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -357,30 +357,30 @@ router.post('/comments/like', requireAuth, (req, res) => {
   const commentId = req.body.commentId;
   async.waterfall([
     (callback) => {
-      const query = 'SELECT * FROM vq_commentupvotes WHERE commentid = ? AND userid = ?';
+      const query = 'SELECT * FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
       pool.query(query, [commentId, user.id], (err, rows) => {
         callback(err, user.id, rows);
       })
     },
     (userId, rows, callback) => {
       if (rows.length > 0) {
-        let query = 'DELETE FROM vq_commentupvotes WHERE commentid = ? AND userid = ?';
+        let query = 'DELETE FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
         pool.query(query, [commentId, userId], err => {
           callback(err);
         })
       } else {
         let query = 'INSERT INTO vq_commentupvotes SET ?';
-        pool.query(query, {commentid: commentId, userid: userId}, err => {
+        pool.query(query, {commentId: commentId, userId: userId}, err => {
           callback(err);
         })
       }
     },
     (callback) => {
       let query = [
-        'SELECT a.id, a.userid, b.username FROM ',
+        'SELECT a.id, a.userId, b.username FROM ',
         'vq_commentupvotes a JOIN users b ON ',
-        'a.userid = b.id WHERE ',
-        'a.commentid = ?'
+        'a.userId = b.id WHERE ',
+        'a.commentId = ?'
       ].join('')
       pool.query(query, commentId, (err, rows) => {
         callback(err, rows);
@@ -394,7 +394,7 @@ router.post('/comments/like', requireAuth, (req, res) => {
     res.send({
       likes: rows.map(row => {
         return {
-          userId: row.userid,
+          userId: row.userId,
           username: row.username
         }
       })
@@ -411,11 +411,11 @@ router.post('/replies', requireAuth, (req, res) => {
   async.waterfall([
     (callback) => {
       const post = {
-        userid: user.id,
+        userId: user.id,
         content: processedReply,
-        timeposted: Math.floor(Date.now()/1000),
-        commentid: commentId,
-        videoid: videoId
+        timeStamp: Math.floor(Date.now()/1000),
+        commentId,
+        videoId
       }
       pool.query('INSERT INTO vq_replies SET ?', post, (err, result) => {
         callback(err, result.insertId)
@@ -423,8 +423,8 @@ router.post('/replies', requireAuth, (req, res) => {
     },
     (replyId, callback) => {
       let query = [
-        'SELECT a.id, a.content, a.timeposted, a.userid, b.username FROM ',
-        'vq_replies a JOIN users b ON a.userid = b.id WHERE ',
+        'SELECT a.id, a.content, a.timeStamp, a.userId, b.username FROM ',
+        'vq_replies a JOIN users b ON a.userId = b.id WHERE ',
         'a.id = ?'
       ].join('')
       pool.query(query, replyId, (err, rows) => {
@@ -440,8 +440,8 @@ router.post('/replies', requireAuth, (req, res) => {
       result: {
         id: rows[0].id,
         content: rows[0].content,
-        timeStamp: rows[0].timeposted,
-        userId: rows[0].userid,
+        timeStamp: rows[0].timeStamp,
+        userId: rows[0].userId,
         username: rows[0].username,
         likes: []
       }
@@ -454,7 +454,7 @@ router.post('/replies/edit', requireAuth, (req, res) => {
   const content = processedString(req.body.editedReply);
   const replyId = req.body.replyId;
 
-  pool.query('UPDATE vq_replies SET ? WHERE id = ? AND userid = ?', [{content}, replyId, user.id], err => {
+  pool.query('UPDATE vq_replies SET ? WHERE id = ? AND userId = ?', [{content}, replyId, user.id], err => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -466,7 +466,7 @@ router.post('/replies/edit', requireAuth, (req, res) => {
 router.delete('/replies', requireAuth, (req, res) => {
   const user = req.user;
   const replyId = req.query.replyId || 0;
-  pool.query('DELETE FROM vq_replies WHERE id = ? AND userid = ?', [replyId, user.id], err => {
+  pool.query('DELETE FROM vq_replies WHERE id = ? AND userId = ?', [replyId, user.id], err => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -482,30 +482,30 @@ router.post('/replies/like', requireAuth, (req, res) => {
 
   async.waterfall([
     (callback) => {
-      const query = 'SELECT * FROM vq_replyupvotes WHERE replyid = ? AND userid = ?';
+      const query = 'SELECT * FROM vq_replyupvotes WHERE replyId = ? AND userId = ?';
       pool.query(query, [replyId, user.id], (err, rows) => {
         callback(err, rows);
       })
     },
     (rows, callback) => {
       if (rows.length > 0) {
-        let query = 'DELETE FROM vq_replyupvotes WHERE replyid = ? AND userid = ?';
+        let query = 'DELETE FROM vq_replyupvotes WHERE replyId = ? AND userId = ?';
         pool.query(query, [replyId, user.id], err => {
           callback(err);
         })
       } else {
         let query = 'INSERT INTO vq_replyupvotes SET ?';
-        pool.query(query, {replyid: replyId, commentid: commentId, userid: user.id}, err => {
+        pool.query(query, {replyId: replyId, commentId: commentId, userId: user.id}, err => {
           callback(err);
         })
       }
     },
     (callback) => {
       let query = [
-        'SELECT a.id, a.userid, b.username FROM ',
+        'SELECT a.id, a.userId, b.username FROM ',
         'vq_replyupvotes a JOIN users b ON ',
-        'a.userid = b.id WHERE ',
-        'a.replyid = ?'
+        'a.userId = b.id WHERE ',
+        'a.replyId = ?'
       ].join('')
       pool.query(query, replyId, (err, rows) => {
         callback(err, rows)
@@ -519,7 +519,7 @@ router.post('/replies/like', requireAuth, (req, res) => {
     res.send({
       likes: rows.map(row => {
         return {
-          userId: row.userid,
+          userId: row.userId,
           username: row.username
         }
       })
@@ -534,7 +534,7 @@ router.post('/questions', requireAuth, (req, res) => {
   async.waterfall([
     (callback) => {
       const userId = user.id;
-      pool.query('DELETE FROM vq_questions WHERE videoid = ? AND createdby = ?', [videoId, userId], err => {
+      pool.query('DELETE FROM vq_questions WHERE videoId = ? AND creator = ?', [videoId, userId], err => {
         callback(err, userId)
       })
     },

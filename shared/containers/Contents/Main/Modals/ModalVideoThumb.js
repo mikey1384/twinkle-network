@@ -25,7 +25,7 @@ export default function VideoThumb(props) {
           }}
         >
           <img
-            src={`http://img.youtube.com/vi/${video.videocode}/0.jpg`}
+            src={`http://img.youtube.com/vi/${video.videoCode}/0.jpg`}
             style={{
               width: '100%',
               position: 'absolute',
@@ -50,7 +50,7 @@ export default function VideoThumb(props) {
             whiteSpace: 'nowrap',
             textOverflow:'ellipsis',
             overflow:'hidden'
-          }}>{video.uploadername}</small>
+          }}>{video.uploaderName}</small>
         </div>
       </div>
     </div>

@@ -7,11 +7,11 @@ const fetchPlaylistVideos = params => callback => {
   let playlistArrayGroup = params.playlistArrayGroup;
   let index = params.index;
   let query = [
-    'SELECT a.id, a.videoid, b.title AS video_title, b.description AS video_description, ',
-    'b.videocode, c.id AS video_uploader_id, c.username AS video_uploader, COUNT(d.id) AS numLikes ',
-    'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoid = b.id JOIN users c ON b.uploader = c.id ',
+    'SELECT a.id, a.videoId, b.title AS video_title, b.description AS video_description, ',
+    'b.videoCode, c.id AS video_uploader_id, c.username AS video_uploader, COUNT(d.id) AS numLikes ',
+    'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id ',
     'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
-    'WHERE a.playlistid = ? GROUP BY a.videoid ORDER BY a.id'
+    'WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id'
   ].join('');
   pool.query(query, playlists[index].id, (err, rows) => {
     playlistArrayGroup[index] = {
@@ -19,7 +19,7 @@ const fetchPlaylistVideos = params => callback => {
       title: playlists[index].title,
       id: playlists[index].id,
       uploader: playlists[index].uploader,
-      uploaderId: playlists[index].uploaderid
+      uploaderId: playlists[index].uploaderId
     }
     callback(err);
   })

@@ -50,7 +50,7 @@ export default class SortableThumb extends Component {
           }}
         >
           <img
-            src={`http://img.youtube.com/vi/${video.videocode}/0.jpg`}
+            src={`http://img.youtube.com/vi/${video.videoCode}/0.jpg`}
           />
           <div className="caption">
             <div>
@@ -65,7 +65,7 @@ export default class SortableThumb extends Component {
               whiteSpace: 'nowrap',
               textOverflow:'ellipsis',
               overflow:'hidden'
-            }}>{video.uploadername}</small>
+            }}>{video.uploaderName}</small>
           </div>
         </div>
       </div>

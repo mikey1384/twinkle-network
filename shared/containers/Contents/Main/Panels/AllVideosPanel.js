@@ -4,6 +4,10 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as VideoActions from 'redux/actions/VideoActions';
 
+const last = (array) => {
+  return array[array.length - 1];
+}
+
 @connect(
   null,
   dispatch => ({
@@ -11,15 +15,13 @@ import * as VideoActions from 'redux/actions/VideoActions';
   })
 )
 export default class AllVideosPanel extends Component {
-  render (){
+  constructor() {
+    super()
+    this.loadMoreVideos = this.loadMoreVideos.bind(this)
+  }
+
+  render() {
     const {loadMoreButton, actions, videos, title, isAdmin, onAddVideoClick} = this.props;
-    const last = (array) => {
-      return array[array.length - 1];
-    }
-    const loadMoreVideos = () => {
-      const lastId = last(videos) ? last(videos).id : 0;
-      actions.getMoreVideos(lastId);
-    }
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -37,7 +39,7 @@ export default class AllVideosPanel extends Component {
         </div>
         <div className="panel-body">
           {videos.map((video, index) => {
-            const editable = Number(this.props.userId) === Number(video.uploaderid);
+            const editable = Number(this.props.userId) === Number(video.uploaderId);
             return (
               <VideoThumb
                 to={`videos/${video.id}`}
@@ -46,7 +48,7 @@ export default class AllVideosPanel extends Component {
                 arrayNumber={index}
                 editable={editable}
                 video={video}
-                user={{name: video.uploadername, id: video.uploaderid}}
+                user={{name: video.uploaderName, id: video.uploaderId}}
                 lastVideoId={last(videos) ? last(videos).id : 0}
                 editVideoTitle={actions.editVideoTitleAsync}
                 deleteVideo={actions.deleteVideoAsync}
@@ -55,11 +57,17 @@ export default class AllVideosPanel extends Component {
           })}
           {loadMoreButton &&
             <div className="text-center col-sm-12">
-              <button className="btn btn-default" onClick={loadMoreVideos}>Load More</button>
+              <button className="btn btn-default" onClick={this.loadMoreVideos}>Load More</button>
             </div>
           }
         </div>
       </div>
     );
+  }
+
+  loadMoreVideos() {
+    const {videos, actions} = this.props;
+    const lastId = last(videos) ? last(videos).id : 0;
+    actions.getMoreVideos(lastId);
   }
 }

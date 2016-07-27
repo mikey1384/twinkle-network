@@ -41,7 +41,7 @@ export default class InvitePeopleDropdown extends Component {
               key={index}
               onClick={() => this.props.onAddUser(user)}
               style={style}
-            ><a>{user.username} {user.realname && <small>{`(${user.realname})`}</small>}</a></li>
+            ><a>{user.username} {user.realName && <small>{`(${user.realName})`}</small>}</a></li>
           )
         })}
       </ul>

@@ -26,10 +26,10 @@ const fetchCommentElements = (params) => cb => {
   async.parallel([
     callback => {
       let query = [
-        'SELECT a.id, a.userid, b.username FROM ',
+        'SELECT a.id, a.userId, b.username FROM ',
         'vq_commentupvotes a JOIN users b ON ',
-        'a.userid = b.id WHERE ',
-        'a.commentid = ?'
+        'a.userId = b.id WHERE ',
+        'a.commentId = ?'
       ].join('')
       pool.query(query, commentId, (err, rows) => {
         callback(err, rows);
@@ -37,10 +37,10 @@ const fetchCommentElements = (params) => cb => {
     },
     callback => {
       let query = [
-        'SELECT a.id, a.userid, a.content, a.timeposted, b.username FROM ',
+        'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
         'vq_replies a JOIN users b ON ',
-        'a.userid = b.id WHERE ',
-        'a.commentid = ?'
+        'a.userId = b.id WHERE ',
+        'a.commentId = ?'
       ].join('')
       pool.query(query, commentId, (err, rows) => {
         returnReplies(rows, (err, repliesArray) => {
@@ -51,17 +51,17 @@ const fetchCommentElements = (params) => cb => {
   ], (err, results) => {
     const likes = results[0].map(like => {
       return {
-        userId: like.userid,
+        userId: like.userId,
         username: like.username
       }
     });
     const replies = results[1];
     commentsArray[index] = {
       id: commentId,
-      posterId: commentRow.userid,
+      posterId: commentRow.userId,
       posterName: commentRow.username,
       content: commentRow.content,
-      timeStamp: commentRow.timeposted,
+      timeStamp: commentRow.timeStamp,
       likes,
       replies
     }
@@ -90,21 +90,21 @@ const fetchReplyElements = (params) => cb => {
   let index = params.index;
   let replyId = replyRow.id;
   let query = [
-    'SELECT a.userid, b.username ',
+    'SELECT a.userId, b.username ',
     'FROM vq_replyupvotes a JOIN users b ON ',
-    'a.userid = b.id WHERE ',
-    'a.replyid = ?'
+    'a.userId = b.id WHERE ',
+    'a.replyId = ?'
   ].join('')
   pool.query(query, replyId, (err, rows) => {
     repliesArray[index] = {
       id: replyId,
       content: replyRow.content,
-      timeStamp: replyRow.timeposted,
-      userId: replyRow.userid,
+      timeStamp: replyRow.timeStamp,
+      userId: replyRow.userId,
       username: replyRow.username,
       likes: rows.map(like => {
         return {
-          userId: like.userid,
+          userId: like.userId,
           username: like.username
         }
       })

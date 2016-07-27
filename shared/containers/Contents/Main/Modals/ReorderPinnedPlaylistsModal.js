@@ -32,7 +32,11 @@ export default class ReorderPinnedPlaylistsModal extends Component {
       }
     })
     return (
-      <Modal {...this.props} animation={false}>
+      <Modal
+        show={this.props.show}
+        onHide={this.props.onHide}
+        animation={false}
+      >
         <Modal.Header closeButton>
           <h4>Reorder Pinned Playlists</h4>
         </Modal.Header>

@@ -375,7 +375,7 @@ request.post(`${API_URL}/questions`, params, auth())
     if (data.success) {
       const questions = params.questions.map(question => {
         return {
-          title: question.questiontitle,
+          title: question.title,
           choices: [
             question.choice1,
             question.choice2,
@@ -383,7 +383,7 @@ request.post(`${API_URL}/questions`, params, auth())
             question.choice4,
             question.choice5
           ],
-          correctChoice: question.correctchoice
+          correctChoice: question.correctChoice
         }
       })
       dispatch(uploadQuestions(questions));

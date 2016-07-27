@@ -158,10 +158,10 @@ export default function PlaylistReducer(state = defaultState, action) {
     case 'REORDER_PL_VIDS_MODAL_OPEN':
       const videoThumbs = action.playlistVideos.map(video => {
         return {
-          id: video.videoid,
+          id: video.videoId,
           title: video.video_title,
-          uploadername: video.video_uploader,
-          videocode: video.videocode
+          uploaderName: video.video_uploader,
+          videoCode: video.videoCode
         }
       })
       return {
@@ -239,7 +239,7 @@ export default function PlaylistReducer(state = defaultState, action) {
           return {
             ...playlist,
             playlist: playlist.playlist.map(video =>  {
-              if (video.videoid === action.videoId) {
+              if (video.videoId === action.videoId) {
                 video.numLikes = action.data.length
               }
               return video
@@ -250,7 +250,7 @@ export default function PlaylistReducer(state = defaultState, action) {
           return {
             ...playlist,
             playlist: playlist.playlist.map(video =>  {
-              if (video.videoid === action.videoId) {
+              if (video.videoId === action.videoId) {
                 video.numLikes = action.data.length
               }
               return video

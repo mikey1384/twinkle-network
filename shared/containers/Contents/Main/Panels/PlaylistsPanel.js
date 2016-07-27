@@ -4,6 +4,10 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as PlaylistActions from 'redux/actions/PlaylistActions';
 
+const last = array => {
+  return array[array.length - 1];
+};
+
 @connect(
   null,
   dispatch => ({
@@ -11,15 +15,13 @@ import * as PlaylistActions from 'redux/actions/PlaylistActions';
   })
 )
 export default class PlaylistsPanel extends Component {
+  constructor() {
+    super()
+    this.loadMorePlaylists = this.loadMorePlaylists.bind(this)
+  }
+
   render() {
     const {loadMoreButton, actions, playlists, buttonGroupShown, buttonGroup} = this.props;
-    const loadMorePlaylists = () => {
-      const last = (array) => {
-        return array[array.length - 1];
-      };
-      const lastId = last(playlists).id;
-      actions.getMorePlaylistsAsync(lastId);
-    }
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -35,7 +37,7 @@ export default class PlaylistsPanel extends Component {
           }
           {loadMoreButton &&
             <div className="text-center">
-              <button className="btn btn-default" onClick={loadMorePlaylists}>Load More</button>
+              <button className="btn btn-default" onClick={this.loadMorePlaylists}>Load More</button>
             </div>
           }
         </div>
@@ -57,5 +59,11 @@ export default class PlaylistsPanel extends Component {
         />
       )
     })
+  }
+
+  loadMorePlaylists() {
+    const {playlists, actions} = this.props;
+    const lastId = last(playlists).id;
+    actions.getMorePlaylistsAsync(lastId);
   }
 }

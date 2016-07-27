@@ -36,7 +36,7 @@ export default function ChatReducer(state = defaultState, action) {
           id: action.data.message.channelId,
           channelName: action.data.message.channelName,
           lastMessage: action.data.message.content,
-          lastUpdate: action.data.message.timeposted,
+          lastUpdate: action.data.message.timeStamp,
           lastMessageSender: {
             id: action.data.message.userId,
             username: action.data.message.username
@@ -44,7 +44,7 @@ export default function ChatReducer(state = defaultState, action) {
         }].concat(state.channels),
         currentChannel: {
           id: action.data.message.channelId,
-          bidirectional: false,
+          twoPeople: false,
           creatorId: action.data.message.userId,
           members: action.data.members
         },
@@ -52,7 +52,7 @@ export default function ChatReducer(state = defaultState, action) {
           id: action.data.message.messageId,
           channelId: action.data.message.channelId,
           content: action.data.message.content,
-          timeposted: action.data.message.timeposted,
+          timeStamp: action.data.message.timeStamp,
           username: action.data.message.username,
           isNotification: action.data.message.isNotification
         }],
@@ -71,14 +71,14 @@ export default function ChatReducer(state = defaultState, action) {
                 id: action.data.userId,
                 username: action.data.username
               },
-              lastUpdate: action.data.timeposted
+              lastUpdate: action.data.timeStamp
             }
           }
           return channel;
         }),
         currentChannel: {
           id: action.data.channelId,
-          bidirectional: true,
+          twoPeople: true,
           creatorId: action.data.userId,
           members: action.data.members
         },
@@ -86,7 +86,7 @@ export default function ChatReducer(state = defaultState, action) {
           id: action.data.messageId,
           channelId: action.data.channelId,
           content: action.data.content,
-          timeposted: action.data.timeposted,
+          timeStamp: action.data.timeStamp,
           username: action.data.username
         }]
       }
@@ -116,7 +116,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         currentChannel: {
           id: 0,
-          bidirectional: true,
+          twoPeople: true,
           members: state.channels[0].members
         },
         messages: [],
@@ -194,14 +194,14 @@ export default function ChatReducer(state = defaultState, action) {
         messages: action.data.concat(state.messages)
       }
     case 'NOTIFY_MEMBER_LEFT':
-      let time = Math.floor(Date.now()/1000);
+      let timeStamp = Math.floor(Date.now()/1000);
       return {
         ...state,
         channels: state.channels.map(channel => {
           if (Number(channel.id) === Number(action.data.channelId)) {
             channel = {
               ...channel,
-              lastUpdate: time,
+              lastUpdate: timeStamp,
               lastMessageSender: {
                 id: action.data.userId,
                 username: action.data.username
@@ -220,7 +220,7 @@ export default function ChatReducer(state = defaultState, action) {
           id: null,
           channelId: action.data.channelId,
           content: "Left the channel",
-          timeposted: time,
+          timeStamp: timeStamp,
           isNotification: true,
           username: action.data.username,
           userId: action.data.userId
@@ -252,7 +252,7 @@ export default function ChatReducer(state = defaultState, action) {
         }].concat(filteredChannel),
         currentChannel: {
           id: 0,
-          bidirectional: true,
+          twoPeople: true,
           members: [
             {
               username: action.user.username,
@@ -281,14 +281,14 @@ export default function ChatReducer(state = defaultState, action) {
                 id: action.data.userId,
                 username: action.data.username
               },
-              lastUpdate: action.data.timeposted
+              lastUpdate: action.data.timeStamp
             }
           }
           return channel;
         }),
         currentChannel: {
           id: action.data.channelId,
-          bidirectional: true
+          twoPeople: true
         }
       }
     case 'RECEIVE_FIRST_MSG':
@@ -298,7 +298,7 @@ export default function ChatReducer(state = defaultState, action) {
           id: action.data.channelId,
           channelName: action.data.channelName || action.data.username,
           lastMessage: action.data.content,
-          lastUpdate: action.data.timeposted,
+          lastUpdate: action.data.timeStamp,
           numUnreads: 1,
           lastMessageSender: {
             id: action.data.userID,
@@ -314,7 +314,7 @@ export default function ChatReducer(state = defaultState, action) {
           if (Number(channel.id) === Number(action.data.channelId)) {
             channel = {
               ...channel,
-              lastUpdate: action.data.timeposted,
+              lastUpdate: action.data.timeStamp,
               lastMessageSender: {
                 id: action.data.userId,
                 username: action.data.username
@@ -335,7 +335,7 @@ export default function ChatReducer(state = defaultState, action) {
           channel = {
             ...channels[i],
             lastMessage: action.data.content,
-            lastUpdate: action.data.timeposted,
+            lastUpdate: action.data.timeStamp,
             numUnreads: Number(channels[i].numUnreads) + 1,
             lastMessageSender: {
               id: action.data.userId,
@@ -363,7 +363,7 @@ export default function ChatReducer(state = defaultState, action) {
           id: action.message.messageId,
           channelId: action.message.channelId,
           content: processedStringWithURL(action.message.content),
-          timeposted: action.message.timeposted,
+          timeStamp: action.message.timeStamp,
           username: action.message.username,
           userId: action.message.userId
         }])

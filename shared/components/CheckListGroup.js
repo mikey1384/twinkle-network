@@ -5,7 +5,7 @@ export default function CheckListGroup(props) {
   return (
     <div
       className="row container-fluid unselectable"
-      {...props}
+      style={props.style}
     >
       <form>
       {listItems.map((listItem, index) => {

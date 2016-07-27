@@ -213,7 +213,7 @@ export default class QuestionsBuilder extends Component {
                   title={this.props.title}
                   width="640"
                   height="360"
-                  src={`https://www.youtube.com/embed/${this.props.videocode}`}>
+                  src={`https://www.youtube.com/embed/${this.props.videoCode}`}>
                 </iframe>
               </div>
               <div

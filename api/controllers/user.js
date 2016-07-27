@@ -23,7 +23,7 @@ router.post('/login', requireSignin, function (req, res) {
     result: "success",
     username: req.user.username,
     userId: userId,
-    usertype: req.user.usertype,
+    userType: req.user.userType,
     token: tokenForUser(userId)
   })
 })
@@ -35,7 +35,7 @@ router.post('/signup', function (req, res) {
   const lastname = req.body.lastname;
   const email = req.body.email;
   const password = req.body.password;
-  const realname = capitalize(firstname) + ' ' + capitalize(lastname);
+  const realName = capitalize(firstname) + ' ' + capitalize(lastname);
   pool.query('SELECT * FROM users WHERE username = ?', username, (err, rows) => {
     if (!err) {
       if (userExists(rows)) {
@@ -61,22 +61,22 @@ router.post('/signup', function (req, res) {
 
   function saveUserData() {
     const hashedPass = passwordHash.generate(password);
-    const usertype = isTeacher ? "teacher" : "user";
+    const userType = isTeacher ? "teacher" : "user";
     const usernameLowered = username.toLowerCase();
     const post = {
       username: usernameLowered,
-      realname,
+      realName,
       email,
       password: hashedPass,
-      usertype,
-      joindate: Math.floor(Date.now()/1000)
+      userType,
+      joinDate: Math.floor(Date.now()/1000)
     }
     pool.query('INSERT INTO users SET?', post, function (err, result) {
       if (!err) {
         res.json({
           result: "success",
           username: usernameLowered,
-          usertype,
+          userType,
           userId: result.insertId,
           token: tokenForUser(result.insertId)
         });

@@ -194,7 +194,7 @@ export default class Chat extends Component {
       return null;
     }
 
-    let menuProps = (currentChannel.bidirectional) ?
+    let menuProps = (currentChannel.twoPeople) ?
     [{label: 'Hide Chat', onClick: this.onHideChat}] :
     [{
      label: 'Invite People',
@@ -457,7 +457,7 @@ export default class Chat extends Component {
             content: message.content,
             channelId: message.channelId,
             id: messageId,
-            timeposted: message.timeposted
+            timeStamp: message.timeStamp
           })
           return;
         }

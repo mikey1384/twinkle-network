@@ -21,8 +21,8 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         loggedIn: true,
         username: action.data.username,
-        userType: action.data.usertype,
-        isAdmin: isAdmin(action.data.usertype),
+        userType: action.data.userType,
+        isAdmin: isAdmin(action.data.userType),
         userId: action.data.id
       }
     } else {
@@ -40,11 +40,11 @@ export default function UserReducer(state = defaultState, action) {
       return {
         ...state,
         loggedIn: true,
+        signinModalShown: false,
+        isAdmin: isAdmin(action.data.userType),
         username: action.data.username,
-        userType: action.data.usertype,
-        isAdmin: isAdmin(action.data.usertype),
-        userId: action.data.userId,
-        signinModalShown: false
+        userType: action.data.userType,
+        userId: action.data.userId
       }
     } else {
       return {
@@ -67,8 +67,8 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         loggedIn: true,
         username: action.data.username,
-        userType: action.data.usertype,
-        isAdmin: isAdmin(action.data.usertype),
+        userType: action.data.userType,
+        isAdmin: isAdmin(action.data.userType),
         userId: action.data.userId,
         signinModalShown: false
       }

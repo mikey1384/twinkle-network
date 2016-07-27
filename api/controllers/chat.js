@@ -31,7 +31,7 @@ router.get('/', requireAuth, (req, res) => {
 router.post('/', requireAuth, (req, res) => {
   const user = req.user;
   const message = req.body.message;
-  const {channelId, content, timeposted} = message;
+  const {channelId, content, timeStamp} = message;
   if (Number(message.userId) !== Number(user.id)) {
     return res.status(401).send("Unauthorized")
   }
@@ -49,7 +49,7 @@ router.post('/', requireAuth, (req, res) => {
   })
 
   function markMyMessageAsRead(callback) {
-    updateLastRead({userId: user.id, channelId, time: timeposted}, err => callback(err))
+    updateLastRead({userId: user.id, channelId, timeStamp: timeStamp}, err => callback(err))
   }
 
   function saveMessageToDatabase(callback) {
@@ -57,13 +57,13 @@ router.post('/', requireAuth, (req, res) => {
       channelId,
       userId: user.id,
       content: processedString(content),
-      timeposted
+      timeStamp
     }
     pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => callback(err, result.insertId))
   }
 
   function fetchUpdatedChannels(messageId, callback) {
-    fetchChannels(user, (err, channels) => callback(err, {messageId, timeposted, channels}))
+    fetchChannels(user, (err, channels) => callback(err, {messageId, timeStamp, channels}))
   }
 })
 
@@ -74,7 +74,7 @@ router.get('/more', requireAuth, (req, res) => {
   }
   const {messageId, channelId} = req.query;
   const query = [
-    'SELECT a.id, a.channelId, a.userId, a.content, a.timeposted, a.isNotification, b.username FROM ',
+    'SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username FROM ',
     'msg_chats a JOIN users b ON a.userId = b.id ',
     'WHERE a.id < ? AND a.channelId = ? ORDER BY id DESC LIMIT 21'
   ].join('');
@@ -96,7 +96,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
     },
     (lastReads, callback) => {
       let query = [
-        'SELECT channelId, timeposted FROM msg_chats WHERE channelId IN ',
+        'SELECT channelId, timeStamp FROM msg_chats WHERE channelId IN ',
         '(SELECT channelId FROM msg_channel_members WHERE userId = ?) ',
         'AND channelId IN (SELECT id FROM msg_channels)'
       ].join('')
@@ -106,7 +106,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
           const {channelId} = lastReads[i];
           const timeStamp = Number(lastReads[i].lastRead);
           for (let j = 0; j < messages.length; j++) {
-            if (Number(messages[j].channelId) === Number(channelId) && messages[j].timeposted > timeStamp) {
+            if (Number(messages[j].channelId) === Number(channelId) && messages[j].timeStamp > timeStamp) {
               counter ++
             }
           }
@@ -162,7 +162,7 @@ router.get('/channel', requireAuth, (req, res) => {
 
     async.parallel([
       callback => {
-        pool.query('SELECT bidirectional, creator FROM msg_channels WHERE id = ?', channelId, (err, rows) => {
+        pool.query('SELECT twoPeople, creator FROM msg_channels WHERE id = ?', channelId, (err, rows) => {
           callback(err, rows[0])
         })
       },
@@ -180,7 +180,7 @@ router.get('/channel', requireAuth, (req, res) => {
       res.send({
         channel: {
           id: channelId,
-          bidirectional: results[0] ? Boolean(results[0].bidirectional) : false,
+          twoPeople: results[0] ? Boolean(results[0].twoPeople) : false,
           creatorId: results[0].creator,
           members: results[1]
         },
@@ -213,15 +213,15 @@ router.get('/channel/check', requireAuth, (req, res) => {
 router.post('/lastRead', requireAuth, (req, res) => {
   const user = req.user;
   const channelId = req.body.channelId;
-  const timeposted = req.body.timeposted;
-  updateLastRead({userId: user.id, channelId, time: timeposted})
+  const timeStamp = req.body.timeStamp;
+  updateLastRead({userId: user.id, channelId, timeStamp: timeStamp})
 })
 
 router.post('/channel', requireAuth, (req, res) => {
   const user = req.user;
   const params = req.body.params;
   const channelName = processedTitleString(params.channelName);
-  const time = Math.floor(Date.now()/1000);
+  const timeStamp = Math.floor(Date.now()/1000);
 
   async.waterfall([
     callback => {
@@ -252,7 +252,7 @@ router.post('/channel', requireAuth, (req, res) => {
             channelId,
             userId: user.id,
             content: `Created channel "${channelName}"`,
-            timeposted: time,
+            timeStamp: timeStamp,
             isNotification: true
           }
           pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
@@ -268,7 +268,7 @@ router.post('/channel', requireAuth, (req, res) => {
       async.parallel(taskArray, (err, results) => {
         callback(err, results[results.length - 1])
       })
-      updateLastRead({userId: user.id, channelId, time})
+      updateLastRead({userId: user.id, channelId, timeStamp})
     },
     (message, callback) => {
       pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: message.channelId}, user.id], err => {
@@ -291,7 +291,7 @@ router.post('/channel', requireAuth, (req, res) => {
   })
 })
 
-router.post('/channel/bidirectional', requireAuth, (req, res) => {
+router.post('/channel/twoPeople', requireAuth, (req, res) => {
   const user = req.user;
   const partnerId = req.body.chatPartnerId;
   const firstMessage = processedString(req.body.message);
@@ -318,7 +318,7 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
     },
     callback => {
       let post = {
-        bidirectional: true,
+        twoPeople: true,
         memberOne: user.id,
         memberTwo: partnerId
       }
@@ -345,7 +345,7 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
         channelId: insertId,
         userId: user.id,
         content: firstMessage,
-        timeposted: Math.floor(Date.now()/1000)
+        timeStamp: Math.floor(Date.now()/1000)
       }
       let finalTask = callback => pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
         callback(err, result.insertId)
@@ -378,7 +378,7 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
         username: user.username,
         content: firstMessage,
         members: rows,
-        timeposted: Math.floor(Date.now()/1000)
+        timeStamp: Math.floor(Date.now()/1000)
       })
     })
   })
@@ -386,7 +386,7 @@ router.post('/channel/bidirectional', requireAuth, (req, res) => {
 
 router.delete('/channel', requireAuth, (req, res) => {
   const {user} = req;
-  const {channelId, time} = req.query;
+  const {channelId, timeStamp} = req.query;
 
   async.parallel([postLeaveNotification, leaveChannel], (err, results) => {
     if (err) {
@@ -401,7 +401,7 @@ router.delete('/channel', requireAuth, (req, res) => {
       channelId,
       userId: user.id,
       content: 'Left the channel',
-      timeposted: time,
+      timeStamp: timeStamp,
       isNotification: true
     }
     let query = 'INSERT INTO msg_chats SET ?';
@@ -435,7 +435,7 @@ router.post('/hideChat', requireAuth, (req, res) => {
 router.post('/invite', requireAuth, (req, res) => {
   const {user} = req;
   const {channelId, selectedUsers} = req.body;
-  const timeposted = Math.floor(Date.now()/1000);
+  const timeStamp = Math.floor(Date.now()/1000);
   async.waterfall([
     callback => {
       let query = [
@@ -479,7 +479,7 @@ router.post('/invite', requireAuth, (req, res) => {
 
           let content = `Invited ${usernames} to the channel`;
           let query = 'INSERT INTO msg_chats SET ?';
-          let message = {isNotification: true, channelId, userId: user.id, content, timeposted};
+          let message = {isNotification: true, channelId, userId: user.id, content, timeStamp};
           pool.query(query, message, (err, res) => {
             let messageId = res.insertId;
             message = Object.assign({}, message, {id: messageId, username: user.username, channelName});
@@ -496,14 +496,14 @@ router.post('/invite', requireAuth, (req, res) => {
       let status = (err === 'not_a_member') ? 401 : 500;
       return res.status(status).send({error: err})
     }
-    updateLastRead({userId: user.id, channelId, time: timeposted})
+    updateLastRead({userId: user.id, channelId, timeStamp: timeStamp})
     res.send({message})
   })
 })
 
 router.get('/search', (req, res) => {
   const text = req.query.text;
-  const query = 'SELECT * FROM users WHERE (username LIKE ?) OR (realname LIKE ?) LIMIT 5';
+  const query = 'SELECT * FROM users WHERE (username LIKE ?) OR (realName LIKE ?) LIMIT 5';
   pool.query(query, [text + '%', text + '%'], (err, rows) => {
     if (err) {
       console.error(err);
