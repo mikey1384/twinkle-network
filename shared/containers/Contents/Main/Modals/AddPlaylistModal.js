@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
-import {reduxForm} from 'redux-form';
 import {Modal, Button} from 'react-bootstrap';
 import {
   closeAddPlaylistModal,
   uploadPlaylistAsync,
   getMoreVideosForModalAsync
 } from 'redux/actions/PlaylistActions';
+import {stringIsEmpty} from 'helpers/stringHelpers';
 import {connect} from 'react-redux';
 import SortableThumb from './SortableThumb';
 import {DragDropContext} from 'react-dnd';
@@ -15,17 +15,12 @@ import SelectVideosForm from './SelectVideosForm';
 
 const defaultState = {
   section: 0,
-  title: null,
-  description: null,
+  title: '',
+  description: '',
   selectedVideos: [],
   titleError: false
 }
 
-@reduxForm({
-  form: 'UploadPlaylistForm',
-  fields: ['title', 'description'],
-  validate
-})
 @DragDropContext(HTML5Backend)
 @connect(
   state => ({
@@ -49,9 +44,8 @@ export default class AddPlaylistModal extends Component {
   }
 
   render() {
-    const {fields: {title, description}, videos, loadMoreVideosButton, getMoreVideosForModal} = this.props;
-    const {section} = this.state;
-    let titleError = (title.touched && title.invalid) || this.state.titleError;
+    const {videos, loadMoreVideosButton, getMoreVideosForModal} = this.props;
+    const {section, titleError, title, description} = this.state;
     const last = array => {
       return array[array.length - 1];
     };
@@ -61,7 +55,7 @@ export default class AddPlaylistModal extends Component {
     }
     return (
       <Modal
-        {...this.props}
+        show={this.props.show}
         animation={false}
         backdrop="static"
         onHide={this.handleHide}
@@ -78,27 +72,32 @@ export default class AddPlaylistModal extends Component {
               onSubmit={event => event.preventDefault()}
               onChange={() => this.setState({titleError: false})}
             >
-              <div className={`form-group ${titleError ? 'has-error' : ''}`}>
+              <fieldset className="form-group">
                 <label>Playlist Title</label>
                 <input
-                  type="text"
-                  className="form-control"
+                  name="title"
                   placeholder="Enter Playlist Title"
-                  {...title}
+                  className="form-control"
+                  type="text"
+                  value={title}
+                  onChange={e => this.setState({title: e.target.value})}
                 />
-                <span className="help-block">
-                  {titleError ? title.error : ''}
-                </span>
-              </div>
-              <div className="form-group">
+                <span
+                  className="help-block"
+                  style={{color: 'red'}}
+                >{titleError && "Enter title"}</span>
+              </fieldset>
+              <fieldset className="form-group">
                 <label>Description</label>
                 <Textarea
+                  name="description"
+                  placeholder="Enter Description (Optional)"
                   className="form-control"
                   minRows={4}
-                  placeholder="Enter Description (Optional)"
-                  {...description}
+                  value={description}
+                  onChange={e => this.setState({description: e.target.value})}
                 />
-              </div>
+              </fieldset>
             </form>
           }
           {section === 1 &&
@@ -187,45 +186,21 @@ export default class AddPlaylistModal extends Component {
 
   handleNext() {
     const currentSection = this.state.section;
-    const {fields: {title, description}} = this.props;
-    if (currentSection === 0) {
-      let titleError = title.invalid;
-      if (titleError) {
-        return this.setState({titleError: true});
-      }
-      this.setState({
-        title: title.value || null,
-        description: description.value || null
-      })
-    }
+    const {title} = this.state;
+    if (currentSection === 0 && stringIsEmpty(title)) return this.setState({titleError: true});
     const nextSection = Math.min(currentSection + 1, 2);
     this.setState({section: nextSection});
   }
 
   handleFinish() {
-    const {uploadPlaylist, subscribe, resetForm} = this.props;
+    const {uploadPlaylist, subscribe} = this.props;
     const {title, description, selectedVideos} = this.state;
-    resetForm();
     uploadPlaylist({title, description, selectedVideos});
   }
 
   handleHide() {
-    const {closeAddPlaylistModal, resetForm} = this.props;
-    resetForm();
+    const {closeAddPlaylistModal} = this.props;
     this.setState(defaultState);
     closeAddPlaylistModal();
   }
-}
-
-function validate(values) {
-  const {title} = values;
-  const errors = {};
-  if ((title && containsOnlySpaces(title)) || !title) {
-    errors.title = 'Enter title';
-  }
-  return errors;
-}
-
-function containsOnlySpaces(string) {
-  return string.replace(/\s/g, "").replace(/\r?\n/g, "") === "";
 }
