@@ -2,7 +2,7 @@ import React from 'react';
 import {Modal} from 'react-bootstrap';
 
 export default function UserListModal(props) {
-  const {users, userId, description = ''} = props;
+  const {users, userId, description = '', descriptionColor} = props;
   const otherUsers = users.filter(user => Number(user.userId) !== Number(userId))
   let userArray = [];
   for (let i = 0; i < users.length; i++) {
@@ -29,7 +29,7 @@ export default function UserListModal(props) {
                 <li
                   className="list-group-item"
                   key={user.userId}
-                >{user.username} {description && description(user)}
+                >{user.username} <span style={{color: descriptionColor && descriptionColor}}>{description && description(user)}</span>
                 </li>
               )
             })
