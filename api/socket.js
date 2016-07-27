@@ -136,12 +136,10 @@ module.exports = function(io) {
         if (resultingArray.length === 0) {
           return resultingArray.concat([member])
         }
-        else if (resultingArray.map(elem => Number(elem.userId)).indexOf(Number(member.userId)) === -1) {
+        if (resultingArray.map(elem => Number(elem.userId)).indexOf(Number(member.userId)) === -1) {
           return resultingArray.concat([member])
         }
-        else {
-          return resultingArray;
-        }
+        return resultingArray;
       }, []
     )
     return membersOnline;
