@@ -1,9 +1,13 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ConfirmModal from './Modals/ConfirmModal';
 import {Link} from 'react-router';
-import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions';
+import {
+  loadVideoPageFromClientSideAsync,
+  editVideoTitleAsync,
+  deleteVideoAsync
+} from 'redux/actions/VideoActions';
 import {connect} from 'react-redux';
 import UsernameText from './UsernameText';
 import {cleanString} from 'helpers/stringHelpers';
@@ -11,9 +15,24 @@ import {cleanString} from 'helpers/stringHelpers';
 
 @connect(
   null,
-  {loadVideoPage: loadVideoPageFromClientSideAsync}
+  {
+    loadVideoPage: loadVideoPageFromClientSideAsync,
+    editVideoTitle: editVideoTitleAsync,
+    deleteVideo: deleteVideoAsync
+  }
 )
 export default class VideoThumb extends Component {
+  static propTypes = {
+    video: PropTypes.object.isRequired,
+    to: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
+    size: PropTypes.string,
+    editable: PropTypes.bool,
+    arrayIndex: PropTypes.number,
+    clickSafe: PropTypes.bool,
+    lastVideoId: PropTypes.number
+  }
+
   constructor() {
     super()
     this.state = {
@@ -103,7 +122,6 @@ export default class VideoThumb extends Component {
                 <EditTitleForm
                   title={video.title}
                   onEditSubmit={this.onEditedTitleSubmit}
-                  onEditCancel={this.onEditTitleCancel}
                   onClickOutSide={this.onEditTitleCancel}
                 />
               </div>
@@ -176,9 +194,9 @@ export default class VideoThumb extends Component {
   }
 
   onDeleteConfirm() {
-    const {deleteVideo, video, arrayNumber, lastVideoId} = this.props;
+    const {deleteVideo, video, arrayIndex, lastVideoId} = this.props;
     const videoId = video.id;
-    deleteVideo({videoId, arrayNumber, lastVideoId});
+    deleteVideo({videoId, arrayIndex, lastVideoId});
   }
 
   onHideModal() {

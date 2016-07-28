@@ -1,10 +1,24 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 import TagPeopleInput from './Input';
 
 
-export default class CreateNewChannelForm extends Component {
+export default class TagPeopleForm extends Component {
+  static propTypes = {
+    searchResult: PropTypes.array.isRequired,
+    selectedUsers: PropTypes.array.isRequired,
+    filter: PropTypes.func.isRequired,
+    onSearch: PropTypes.func.isRequired,
+    onClear: PropTypes.func.isRequired,
+    onAddUser: PropTypes.func.isRequired,
+    onRemoveUser: PropTypes.func.isRequired,
+    onSubmit: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.func
+    ])
+  }
+
   constructor() {
     super()
     this.state={

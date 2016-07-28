@@ -72,7 +72,6 @@ export default class PlaylistCarousel extends Component {
               <EditTitleForm
                 title={title}
                 onEditSubmit={this.onEditedTitleSubmit}
-                onEditCancel={this.onEditTitleCancel}
                 onClickOutSide={this.onEditTitleCancel}
               />
             </div>

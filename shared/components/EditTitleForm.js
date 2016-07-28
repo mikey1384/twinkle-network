@@ -1,8 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import onClickOutside from 'react-onclickoutside';
 import {cleanString} from 'helpers/stringHelpers';
 
 class EditTitleForm extends Component {
+  static propTypes = {
+    onClickOutSide: PropTypes.func.isRequired,
+    onEditSubmit: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired
+  }
+
   handleClickOutside = (event) => {
     this.props.onClickOutSide();
   }
@@ -17,10 +23,7 @@ class EditTitleForm extends Component {
   render () {
     const {title} = this.state;
     return (
-      <form
-        {...this.props}
-        onSubmit={event => this.onEditSubmit(event, title)}
-      >
+      <form onSubmit={event => this.onEditSubmit(event, title)}>
         <input
           autoFocus
           ref="editTitleInput"

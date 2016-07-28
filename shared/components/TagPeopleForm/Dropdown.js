@@ -1,6 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 
 export default class InvitePeopleDropdown extends Component {
+  static propTypes = {
+    onUpdate: PropTypes.func.isRequired,
+    onUnmount: PropTypes.func.isRequired,
+    onAddUser: PropTypes.func.isRequired,
+    dropdownItemToHighlight: PropTypes.number.isRequired,
+    searchResults: PropTypes.array.isRequired
+  }
+
   componentWillReceiveProps(nextProps) {
     let searchResultsChanged = false;
     if (this.props.searchResults.length !== nextProps.searchResults.length) {
@@ -13,7 +21,7 @@ export default class InvitePeopleDropdown extends Component {
         }
       }
     }
-    
+
     if (searchResultsChanged && (nextProps.dropdownItemToHighlight !== 0)) {
       this.props.onUpdate();
     }

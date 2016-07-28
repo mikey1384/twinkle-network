@@ -59,7 +59,7 @@ export default function VideoReducer(state = defaultState, action) {
       }
     case 'DELETE_VIDEO':
       const newVideoThumbs = state.allVideoThumbs;
-      newVideoThumbs.splice(action.arrayNumber, 1);
+      newVideoThumbs.splice(action.arrayIndex, 1);
       return {
         ...state,
         allVideoThumbs: newVideoThumbs.concat(action.data)
@@ -267,6 +267,12 @@ export default function VideoReducer(state = defaultState, action) {
       'No description' : processedStringWithURL(action.params.description);
       return {
         ...state,
+        allVideoThumbs: state.allVideoThumbs.map(thumb => {
+          if (thumb.id === action.params.videoId) {
+            thumb.title = action.params.title
+          }
+          return thumb;
+        }),
         videoPage: {
           ...state.videoPage,
           title: action.params.title,

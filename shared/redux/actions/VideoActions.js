@@ -48,13 +48,13 @@ export const uploadVideoAsync = params => dispatch => request.post(API_URL, para
   }
 )
 
-export const deleteVideo = (arrayNumber, data) => ({
+export const deleteVideo = (arrayIndex, data) => ({
   type: 'DELETE_VIDEO',
-  arrayNumber,
+  arrayIndex,
   data
 })
 
-export const deleteVideoAsync = ({videoId, arrayNumber, lastVideoId}) => dispatch =>
+export const deleteVideoAsync = ({videoId, arrayIndex, lastVideoId}) => dispatch =>
 request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth())
 .then(
   response => {
@@ -64,7 +64,7 @@ request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth(
         dispatch(getInitialVideos())
         dispatch(push('/'))
       } else {
-        dispatch(deleteVideo(arrayNumber, data.result));
+        dispatch(deleteVideo(arrayIndex, data.result));
       }
     }
     return;

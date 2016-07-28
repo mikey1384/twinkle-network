@@ -3,7 +3,11 @@ import {Modal, Button} from 'react-bootstrap';
 
 export default function ConfirmModal(props) {
   return (
-    <Modal {...props} animation={false}>
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+      animation={false}
+    >
       <Modal.Header closeButton>
         <h4>{props.title}</h4>
       </Modal.Header>

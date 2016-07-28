@@ -45,13 +45,11 @@ export default class AllVideosPanel extends Component {
                 to={`videos/${video.id}`}
                 size="col-xs-3"
                 key={video.id}
-                arrayNumber={index}
+                arrayIndex={index}
                 editable={editable}
                 video={video}
                 user={{name: video.uploaderName, id: video.uploaderId}}
-                lastVideoId={last(videos) ? last(videos).id : 0}
-                editVideoTitle={actions.editVideoTitleAsync}
-                deleteVideo={actions.deleteVideoAsync}
+                lastVideoId={last(videos) ? Number(last(videos).id) : 0}
               />
             )
           })}

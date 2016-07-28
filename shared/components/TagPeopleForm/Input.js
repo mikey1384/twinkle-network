@@ -1,8 +1,18 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import onClickOutside from 'react-onclickoutside';
 import Dropdown from './Dropdown';
 
 class TagPeopleInput extends Component {
+  static propTypes = {
+    autoFocus: PropTypes.bool.isRequired,
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onClickOutSide: PropTypes.func.isRequired,
+    searchResults: PropTypes.array.isRequired,
+    selectedUsers: PropTypes.array.isRequired,
+    onAddUser: PropTypes.func.isRequired
+  }
+
   constructor() {
     super()
     this.state = {
