@@ -18,7 +18,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: state.channels.map(channel => {
-          if (Number(channel.id) === Number(action.data.channelId)) {
+          if (channel.id === action.data.channelId) {
             channel.channelName = action.data.title;
           }
           return channel;
@@ -101,7 +101,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         currentChannel: action.data.channel,
         channels: state.channels.map(channel => {
-          if (Number(channel.id) === Number(action.data.channel.id)) {
+          if (channel.id === action.data.channel.id) {
             channel.numUnreads = 0,
             channel.isHidden = false
           }
@@ -131,7 +131,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: state.channels.map(channel => {
-          if (Number(channel.id) === Number(action.channelId)) {
+          if (channel.id === action.channelId) {
             channel.isHidden = true
           }
           return channel;
@@ -153,7 +153,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         currentChannel: action.data.currentChannel,
         channels: action.data.channels.map(channel => {
-          if (Number(channel.id) === Number(action.data.currentChannel.id)) {
+          if (channel.id === action.data.currentChannel.id) {
             channel.numUnreads = 0;
           }
           return channel;
@@ -179,7 +179,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'LEAVE_CHANNEL':
       return {
         ...state,
-        channels: state.channels.filter(channel => Number(channel.id) !== Number(action.channelId))
+        channels: state.channels.filter(channel => channel.id !== action.channelId)
       }
     case 'LOAD_MORE_MSG':
       loadMoreButton = false;
@@ -198,7 +198,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: state.channels.map(channel => {
-          if (Number(channel.id) === Number(action.data.channelId)) {
+          if (channel.id === action.data.channelId) {
             channel = {
               ...channel,
               lastUpdate: timeStamp,
@@ -214,7 +214,7 @@ export default function ChatReducer(state = defaultState, action) {
         }),
         currentChannel: {
           ...state.currentChannel,
-          members: state.currentChannel.members.filter(member => Number(member.userId) !== Number(action.data.userId))
+          members: state.currentChannel.members.filter(member => member.userId !== action.data.userId)
         },
         messages: state.messages.concat([{
           id: null,
@@ -311,7 +311,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         messages: state.messages.concat([action.data]),
         channels: state.channels.map(channel => {
-          if (Number(channel.id) === Number(action.data.channelId)) {
+          if (channel.id === action.data.channelId) {
             channel = {
               ...channel,
               lastUpdate: action.data.timeStamp,
@@ -331,12 +331,12 @@ export default function ChatReducer(state = defaultState, action) {
       let channel = {};
       let channels = state.channels;
       for (let i = 0; i < channels.length; i++) {
-        if (Number(channels[i].id) === Number(action.data.channelId)) {
+        if (channels[i].id === action.data.channelId) {
           channel = {
             ...channels[i],
             lastMessage: action.data.content,
             lastUpdate: action.data.timeStamp,
-            numUnreads: Number(channels[i].numUnreads) + 1,
+            numUnreads: channels[i].numUnreads + 1,
             lastMessageSender: {
               id: action.data.userId,
               username: action.data.username
@@ -347,9 +347,9 @@ export default function ChatReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        channels: [channel].concat(state.channels.filter(channel => {
-          return String(channel.id) !== String(action.data.channelId)
-        }))
+        channels: [channel].concat(
+          state.channels.filter(channel => channel.id !== action.data.channelId)
+        )
       }
     case 'SEARCH_USERS_FOR_CHANNEL':
       return {

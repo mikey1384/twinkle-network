@@ -1,20 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import onClickOutside from 'react-onclickoutside';
 
 class SmallDropdownButton extends Component {
-  static defaultProps = {
-    menuProps: [
-      {
-        label: 'Edit',
-        onClick: () => console.log("edit pressed")
-      },
-      {
-        label: 'Remove',
-        onClick: () => console.log("remove pressed")
-      }
-    ]
+  static propTypes = {
+    menuProps: PropTypes.array.isRequired,
+    icon: PropTypes.string,
+    shape: PropTypes.string,
+    style: PropTypes.object
   }
-
+  
   handleClickOutside = event => {
     this.setState({menuDisplayed: false});
   }

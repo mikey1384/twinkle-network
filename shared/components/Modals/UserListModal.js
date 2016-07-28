@@ -3,7 +3,7 @@ import {Modal} from 'react-bootstrap';
 
 export default function UserListModal(props) {
   const {users, userId, description = '', descriptionColor} = props;
-  const otherUsers = users.filter(user => Number(user.userId) !== Number(userId))
+  const otherUsers = users.filter(user => user.userId !== userId);
   let userArray = [];
   for (let i = 0; i < users.length; i++) {
     if (users[i].userId == userId) userArray.push(users[i])

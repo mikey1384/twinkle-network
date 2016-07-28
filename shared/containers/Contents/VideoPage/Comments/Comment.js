@@ -28,10 +28,10 @@ export default class Comment extends Component {
   render() {
     const {replyInputShown, onEdit, userListModalShown} = this.state;
     const {comment, userId} = this.props;
-    const userIsOwner = comment.posterId == userId;
+    const userIsOwner = comment.posterId === userId;
     let userLikedThis = false;
     for (let i = 0; i < comment.likes.length; i++) {
-      if (comment.likes[i].userId == userId) userLikedThis = true;
+      if (comment.likes[i].userId === userId) userLikedThis = true;
     }
     return (
       <li
@@ -147,7 +147,7 @@ export default class Comment extends Component {
             title="People who liked this comment"
             userId={userId}
             users={comment.likes}
-            description={user => Number(user.userId) === Number(userId) && '(You)'}
+            description={user => user.userId === userId && '(You)'}
           />
         }
       </li>

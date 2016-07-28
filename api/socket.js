@@ -32,8 +32,8 @@ module.exports = function(io) {
       socket.join('chatChannel' + channelId);
       for (let i = 0; i < connections.length; i++) {
         if (connections[i].socketId === socket.id) {
-          if (connections[i].channels.indexOf(Number(channelId)) === -1) {
-            connections[i].channels.push(Number(channelId));
+          if (connections[i].channels.indexOf(channelId) === -1) {
+            connections[i].channels.push(channelId);
           }
           break;
         }
@@ -60,7 +60,7 @@ module.exports = function(io) {
         'OR b.userId = ?)'
       ].join('')
       pool.query(query, [generalChatId, userId], (err, rows) => {
-        let channels = rows.map(row => Number(row.channel));
+        let channels = rows.map(row => row.channel);
         for (let i = 0; i < connections.length; i++) {
           if (connections[i].socketId === socket.id) {
             connections[i].userId = userId;
@@ -124,7 +124,7 @@ module.exports = function(io) {
       for (let i = 0; i < connections.length; i++) {
         if (connections[i].socketId === client) {
           member = {
-            userId: Number(connections[i].userId),
+            userId: connections[i].userId,
             username: connections[i].username
           }
         }
@@ -136,7 +136,7 @@ module.exports = function(io) {
         if (resultingArray.length === 0) {
           return resultingArray.concat([member])
         }
-        if (resultingArray.map(elem => Number(elem.userId)).indexOf(Number(member.userId)) === -1) {
+        if (resultingArray.map(elem => elem.userId).indexOf(member.userId) === -1) {
           return resultingArray.concat([member])
         }
         return resultingArray;

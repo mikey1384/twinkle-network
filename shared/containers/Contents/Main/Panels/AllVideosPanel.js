@@ -39,7 +39,7 @@ export default class AllVideosPanel extends Component {
         </div>
         <div className="panel-body">
           {videos.map((video, index) => {
-            const editable = Number(this.props.userId) === Number(video.uploaderId);
+            const editable = this.props.userId === video.uploaderId;
             return (
               <VideoThumb
                 to={`videos/${video.id}`}
@@ -49,7 +49,7 @@ export default class AllVideosPanel extends Component {
                 editable={editable}
                 video={video}
                 user={{name: video.uploaderName, id: video.uploaderId}}
-                lastVideoId={last(videos) ? Number(last(videos).id) : 0}
+                lastVideoId={last(videos) ? last(videos).id : 0}
               />
             )
           })}

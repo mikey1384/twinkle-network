@@ -55,7 +55,7 @@ export default class Header extends Component {
         console.log(data);
       })
       socket.on('receive_message', data => {
-        if (Number(data.channelId) !== GENERAL_CHAT_ID && Number(data.userId) !== Number(this.props.userId)) {
+        if (data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
           increaseNumberOfUnreadMessages()
         }
       })

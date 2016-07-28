@@ -51,7 +51,7 @@ export default class Description extends Component {
           className="row page-header text-center"
           style={{paddingBottom: '1em'}}
         >
-          {uploaderId == userId && !onEdit &&
+          {uploaderId === userId && !onEdit &&
             <SmallDropdownButton shape="button" icon="pencil" menuProps={menuProps} />
           }
           <div>

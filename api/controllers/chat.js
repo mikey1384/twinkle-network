@@ -32,7 +32,7 @@ router.post('/', requireAuth, (req, res) => {
   const user = req.user;
   const message = req.body.message;
   const {channelId, content, timeStamp} = message;
-  if (Number(message.userId) !== Number(user.id)) {
+  if (message.userId !== user.id) {
     return res.status(401).send("Unauthorized")
   }
 
@@ -69,10 +69,11 @@ router.post('/', requireAuth, (req, res) => {
 
 router.get('/more', requireAuth, (req, res) => {
   const user = req.user;
-  if (Number(req.query.userId) !== Number(user.id)) {
+  if (Number(req.query.userId) !== user.id) {
     return res.status(401).send("Unauthorized")
   }
-  const {messageId, channelId} = req.query;
+  const messageId = Number(req.query.messageId);
+  const channelId = Number(req.query.channelId);
   const query = [
     'SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username FROM ',
     'msg_chats a JOIN users b ON a.userId = b.id ',
@@ -106,16 +107,16 @@ router.get('/numUnreads', requireAuth, (req, res) => {
           const {channelId} = lastReads[i];
           const timeStamp = Number(lastReads[i].lastRead);
           for (let j = 0; j < messages.length; j++) {
-            if (Number(messages[j].channelId) === Number(channelId) && messages[j].timeStamp > timeStamp) {
+            if (messages[j].channelId === channelId && Number(messages[j].timeStamp) > timeStamp) {
               counter ++
             }
           }
         }
         let readChannels = lastReads.map(lastRead => {
-          return Number(lastRead.channelId);
+          return lastRead.channelId;
         })
         let messagesInUnreadChannel = messages.filter(message => {
-          return (readChannels.indexOf(Number(message.channelId)) === -1)
+          return (readChannels.indexOf(message.channelId) === -1)
         })
         counter += messagesInUnreadChannel.length;
         callback(err, counter)
@@ -140,7 +141,7 @@ router.get('/channels', requireAuth, (req, res) => {
 
 router.get('/channel', requireAuth, (req, res) => {
   const user = req.user;
-  const channelId = req.query.channelId || generalChatId;
+  const channelId = Number(req.query.channelId) || generalChatId;
   async.waterfall([
     callback => {
       fetchChat({user, channelId}, (err, results) => {
@@ -191,7 +192,7 @@ router.get('/channel', requireAuth, (req, res) => {
 })
 
 router.get('/channel/check', requireAuth, (req, res) => {
-  let partnerId = req.query.partnerId;
+  let partnerId = Number(req.query.partnerId);
   let myUserId = req.user.id;
   const query = [
     'SELECT * FROM msg_channels WHERE ',
@@ -386,7 +387,8 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
 
 router.delete('/channel', requireAuth, (req, res) => {
   const {user} = req;
-  const {channelId, timeStamp} = req.query;
+  const channelId = Number(req.query.channelId);
+  const timeStamp = Number(req.query.timeStamp)
 
   async.parallel([postLeaveNotification, leaveChannel], (err, results) => {
     if (err) {

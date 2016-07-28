@@ -12,7 +12,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null;
+  const playlistId = typeof req.query.playlistId !== 'undefined' ? Number(req.query.playlistId) : null;
   const where = playlistId !== null ? 'WHERE a.id < ' + playlistId + ' ' : '';
   const query = [
     'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
@@ -155,7 +155,7 @@ router.post('/edit/videos', requireAuth, (req, res) => {
 
 router.delete('/', requireAuth, (req, res) => {
   const user = req.user;
-  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : 0;
+  const playlistId = typeof req.query.playlistId !== 'undefined' ? Number(req.query.playlistId) : 0;
   async.waterfall([
     (callback) => {
       const userId = user.id;
@@ -272,7 +272,7 @@ router.post('/pinned', requireAuth, (req, res) => {
 })
 
 router.get('/list', (req, res) => {
-  const playlistId = req.query.playlistId ? req.query.playlistId : 0;
+  const playlistId = req.query.playlistId ? Number(req.query.playlistId) : 0;
   const where = playlistId !== 0 ? 'WHERE id < ' + playlistId + ' ' : '';
   const query = [
     'SELECT id, title FROM vq_playlists ',

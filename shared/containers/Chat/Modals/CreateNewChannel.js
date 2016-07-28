@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Modal, Button} from 'react-bootstrap';
 import {searchUserToInviteAsync, clearSearchResults} from 'redux/actions/ChatActions';
 import {connect} from 'react-redux';
@@ -14,7 +14,14 @@ import TagPeopleForm from 'components/TagPeopleForm';
     searchUserToInvite: searchUserToInviteAsync
   }
 )
-export default class CreateNewChatModal extends Component {
+export default class CreateNewChannelModal extends Component {
+  static propTypes = {
+    show: PropTypes.bool.isRequired,
+    userId: PropTypes.number.isRequired,
+    onHide: PropTypes.func.isRequired,
+    onDone: PropTypes.func.isRequired
+  }
+
   constructor() {
     super()
     this.state = {

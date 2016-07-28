@@ -6,7 +6,7 @@ const generalChatId = require('../siteConfig').generalChatId;
 
 const fetchChat = (params, callback) => {
   const user = params.user;
-  let channelId = params.channelId ? Number(params.channelId) : generalChatId;
+  let channelId = params.channelId ? params.channelId : generalChatId;
   let results = {
     channels: [],
     messages: [],
@@ -170,8 +170,8 @@ const fetchUserSpecificChannelData = (channel, channelInfos) => callback => {
   let lastReadTime = null;
   let isHidden = false;
   for (let i = 0; i < channelInfos.length; i++) {
-    if (Number(channelInfos[i].channelId) === Number(channelId)) {
-      lastReadTime = Number(channelInfos[i].lastRead);
+    if (channelInfos[i].channelId === channelId) {
+      lastReadTime = channelInfos[i].lastRead;
       isHidden = Boolean(channelInfos[i].isHidden);
     }
   }
@@ -234,7 +234,7 @@ const generateTitleForBidirectionalChannel = (channelId, userId, callback) => {
   function generateTitle(rows) {
     let partnerName = '';
     for (let i = 0; i < rows.length; i++) {
-      if (Number(rows[i].userId) !== Number(userId)) {
+      if (rows[i].userId !== userId) {
         partnerName = rows[i].username;
       }
     }

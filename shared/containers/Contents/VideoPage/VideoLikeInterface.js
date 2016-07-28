@@ -37,7 +37,7 @@ export default function VideoLikeInterface(props) {
     let text = " Like";
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if(likes[i].userId == userId) text = " Liked!"
+        if(likes[i].userId === userId) text = " Liked!"
       }
     }
     return text;

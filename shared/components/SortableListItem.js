@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {DragSource, DropTarget} from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 
@@ -33,8 +33,11 @@ const listItemTarget = {
   connectDropTarget: connect.dropTarget()
 }))
 export default class SortableListItem extends Component {
+  static propTypes = {
+    item: PropTypes.object.isRequired
+  }
   render() {
-    const {connectDragSource, connectDropTarget, isDragging} = this.props;
+    const {connectDragSource, connectDropTarget, isDragging, item} = this.props;
     return connectDragSource(connectDropTarget(
       <li
         className="list-group-item"
@@ -42,7 +45,7 @@ export default class SortableListItem extends Component {
           opacity: isDragging ? 0 : 1
         }}
       >
-        {this.props.item.label}<span className="glyphicon glyphicon-align-justify pull-right grey-color" />
+        {item.label}<span className="glyphicon glyphicon-align-justify pull-right grey-color" />
       </li>
     ))
   }

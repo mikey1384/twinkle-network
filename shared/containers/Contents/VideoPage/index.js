@@ -155,7 +155,7 @@ export default class VideoPage extends Component {
               <Carousel
                 progressBar
                 showQuestionsBuilder={() => this.setState({questionsBuilderShown: true})}
-                userIsUploader={userId == uploaderId}
+                userIsUploader={userId === uploaderId}
                 slidesToShow={1}
                 slidesToScroll={1}
                 slideIndex={currentSlide}
@@ -169,7 +169,7 @@ export default class VideoPage extends Component {
             {!watchTabActive && questions.length === 0 &&
               <div className="text-center">
                 <p>There are no questions yet.</p>
-                {userId == uploaderId &&
+                {userId === uploaderId &&
                   <button
                     className="btn btn-default"
                     style={{marginTop: '1em'}}
@@ -222,7 +222,7 @@ export default class VideoPage extends Component {
                 userId: like.userId
               }
             })}
-            description={user => Number(user.userId) === Number(userId) && '(You)'}
+            description={user => user.userId === userId && '(You)'}
           />
         }
       </div>

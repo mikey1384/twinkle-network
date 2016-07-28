@@ -13,6 +13,15 @@ import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import {GENERAL_CHAT_ID} from 'constants/database';
 
+const channelName = (channels, currentChannel) => {
+  for (let i = 0; i < channels.length; i ++) {
+    if (channels[i].id === currentChannel.id) {
+      return channels[i].channelName
+    }
+  }
+  return null;
+}
+
 @connect(
   state => ({
     userId: state.UserReducer.userId,
@@ -68,7 +77,7 @@ export default class Chat extends Component {
     socket.on('chat_invitation', this.onChatInvitation)
     socket.on('change_in_members_online', data => {
       let {myChannels} = this.state;
-      let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
+      let forCurrentChannel = data.channelId === this.props.currentChannel.id;
       if (forCurrentChannel) {
         if (data.leftChannel) {
           const {userId, username} = data.leftChannel;
@@ -79,7 +88,7 @@ export default class Chat extends Component {
 
       let channelObjectExists = false;
       for (let i = 0; i < myChannels.length; i++) {
-        if (Number(myChannels[i].channelId) === Number(data.channelId)) {
+        if (myChannels[i].channelId === data.channelId) {
           channelObjectExists = true;
           break;
         }
@@ -87,7 +96,7 @@ export default class Chat extends Component {
       if (channelObjectExists) {
         this.setState({
           myChannels: myChannels.map(channel => {
-            if (Number(channel.channelId) === Number(data.channelId)) {
+            if (channel.channelId === data.channelId) {
               channel.membersOnline = data.membersOnline
             }
             return channel;
@@ -107,13 +116,13 @@ export default class Chat extends Component {
       let channelId = channels[i].id;
       socket.emit('check_online_members', channelId, (err, data) => {
         let {myChannels} = this.state;
-        let forCurrentChannel = Number(data.channelId) === Number(this.props.currentChannel.id);
+        let forCurrentChannel = data.channelId === this.props.currentChannel.id;
         if (forCurrentChannel) {
           this.setState({currentChannelOnline: data.membersOnline.length})
         }
         let channelObjectExists = false;
         for (let i = 0; i < myChannels.length; i++) {
-          if (Number(myChannels[i].channelId) === Number(data.channelId)) {
+          if (myChannels[i].channelId === data.channelId) {
             channelObjectExists = true;
             break;
           }
@@ -121,7 +130,7 @@ export default class Chat extends Component {
         if (channelObjectExists) {
           this.setState({
             myChannels: myChannels.map(channel => {
-              if (Number(channel.channelId) === Number(data.channelId)) {
+              if (channel.channelId === data.channelId) {
                 channel.membersOnline = data.membersOnline
               }
               return channel;
@@ -141,7 +150,7 @@ export default class Chat extends Component {
     const {myChannels} = this.state;
     let currentChannelOnline = 1;
     for (let i = 0; i < myChannels.length; i++) {
-      if (Number(myChannels[i].channelId) === Number(currentChannel.id)) {
+      if (myChannels[i].channelId === currentChannel.id) {
         currentChannelOnline = myChannels[i].membersOnline.length;
       }
     }
@@ -160,7 +169,7 @@ export default class Chat extends Component {
     let currentChannelOnline = 1;
     if (prevProps.currentChannel.id !== this.props.currentChannel.id) {
       for (let i = 0; i < myChannels.length; i++) {
-        if (Number(myChannels[i].channelId) === Number(currentChannel.id)) {
+        if (myChannels[i].channelId === currentChannel.id) {
           currentChannelOnline = myChannels[i].membersOnline.length;
         }
       }
@@ -185,14 +194,6 @@ export default class Chat extends Component {
       editTitleModalShown,
       myChannels
     } = this.state;
-    const channelName = () => {
-      for (let i = 0; i < channels.length; i ++) {
-        if (Number(channels[i].id) === Number(currentChannel.id)) {
-          return channels[i].channelName
-        }
-      }
-      return null;
-    }
 
     let menuProps = (currentChannel.twoPeople) ?
     [{label: 'Hide Chat', onClick: this.onHideChat}] :
@@ -233,7 +234,7 @@ export default class Chat extends Component {
         {editTitleModalShown &&
           <EditTitleModal
             show
-            title={channelName()}
+            title={channelName(channels, currentChannel)}
             onHide={() => this.setState({editTitleModalShown: false})}
             onDone={this.onEditTitleDone}
           />
@@ -272,9 +273,9 @@ export default class Chat extends Component {
                   overflow:'hidden',
                   lineHeight: 'normal',
                   marginBottom: '0px',
-                  color: !channelName() && '#7c7c7c'
+                  color: !channelName(channels, currentChannel) && '#7c7c7c'
                 }}
-              >{`${channelName() || '(Deleted)'}`}</h4>
+              >{`${channelName(channels, currentChannel) || '(Deleted)'}`}</h4>
               {currentChannel.id !== 0 ?
                 <small>
                   <a
@@ -320,7 +321,7 @@ export default class Chat extends Component {
             top: 0
           }}
         >
-          {Number(currentChannel.id) !== GENERAL_CHAT_ID &&
+          {currentChannel.id !== GENERAL_CHAT_ID &&
             <SmallDropdownButton
               style={{
                 position: "absolute",
@@ -366,7 +367,7 @@ export default class Chat extends Component {
           className="media chat-channel-item container-fluid"
           style={{
             width: '100%',
-            backgroundColor: Number(id) === Number(currentChannel.id) && '#f7f7f7',
+            backgroundColor: id === currentChannel.id && '#f7f7f7',
             cursor: 'pointer',
             padding: '1em',
             marginTop: '0px'
@@ -419,17 +420,17 @@ export default class Chat extends Component {
     const {userId, currentChannel} = this.props;
     const {myChannels} = this.state;
 
-    if (Number(user.userId) === Number(userId)) return '(online)';
+    if (user.userId === userId) return '(online)';
 
     const result = myChannels
-      .filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0].membersOnline
-      .map(member => Number(member.userId)).indexOf(Number(user.userId)) !== -1 && '(online)';
+      .filter(channel => channel.channelId === currentChannel.id)[0].membersOnline
+      .map(member => member.userId).indexOf(user.userId) !== -1 && '(online)';
     return result;
   }
 
   returnUsers(currentChannel, myChannels) {
-    let members = Number(currentChannel.id) === GENERAL_CHAT_ID ?
-    myChannels.filter(channel => Number(channel.channelId) === Number(currentChannel.id))[0]
+    let members = currentChannel.id === GENERAL_CHAT_ID ?
+    myChannels.filter(channel => channel.channelId === currentChannel.id)[0]
       .membersOnline.map(member => ({username: member.username, userId: member.userId}))
     : currentChannel.members;
     return members.map(member => ({username: member.username, userId: member.userId}))
@@ -461,7 +462,7 @@ export default class Chat extends Component {
           })
           return;
         }
-        socket.emit('join_chat_channel', String(chat.channelId));
+        socket.emit('join_chat_channel', chat.channelId);
         socket.emit('send_bi_chat_invitation', chatPartnerId, chat);
       })
     }
@@ -512,8 +513,8 @@ export default class Chat extends Component {
 
   onReceiveMessage(data) {
     const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props;
-    let messageIsForCurrentChannel = Number(data.channelId) === Number(currentChannel.id);
-    let senderIsNotTheUser = Number(data.userId) !== Number(userId);
+    let messageIsForCurrentChannel = data.channelId === currentChannel.id;
+    let senderIsNotTheUser = data.userId !== userId;
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
       receiveMessage(data)
     }

@@ -12,8 +12,8 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  const videoId = req.query.videoId || 0;
-  const numberToLoad = parseInt(req.query.numberToLoad) + 1 || 13;
+  const videoId = Number(req.query.videoId) || 0;
+  const numberToLoad = Number(req.query.numberToLoad) + 1 || 13;
   const where = videoId === 0 ? '' : 'WHERE a.id < ? ';
   const query = [
     'SELECT a.id, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName, ',
@@ -56,8 +56,8 @@ router.post('/', requireAuth, (req, res) => {
 
 router.delete('/', requireAuth, (req, res) => {
   const user = req.user;
-  const videoId = typeof req.query.videoId !== 'undefined' ? req.query.videoId : 0;
-  const lastVideoId = typeof req.query.lastVideoId !== 'undefined' ? req.query.lastVideoId : 0;
+  const videoId = typeof req.query.videoId !== 'undefined' ? Number(req.query.videoId) : 0;
+  const lastVideoId = typeof req.query.lastVideoId !== 'undefined' ? Number(req.query.lastVideoId) : 0;
 
   async.parallel([
     (callback) => {
@@ -170,7 +170,7 @@ router.post('/edit/page', requireAuth, (req, res) => {
 })
 
 router.get('/loadPage', (req, res) => {
-  const videoId = req.query.videoId;
+  const videoId = Number(req.query.videoId);
   let query = [
     'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
@@ -246,7 +246,7 @@ router.get('/loadPage', (req, res) => {
 })
 
 router.get('/comments', (req, res) => {
-  const videoId = req.query.videoId;
+  const videoId = Number(req.query.videoId);
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
     'FROM vq_comments a JOIN users b ON a.userId = b.id ',
@@ -342,7 +342,7 @@ router.post('/comments/edit', requireAuth, (req, res) => {
 
 router.delete('/comments', requireAuth, (req, res) => {
   const user = req.user;
-  const commentId = req.query.commentId;
+  const commentId = Number(req.query.commentId);
   pool.query('DELETE FROM vq_comments WHERE id = ? AND userId = ?', [commentId, user.id], err => {
     if (err) {
       console.error(err);
@@ -465,7 +465,7 @@ router.post('/replies/edit', requireAuth, (req, res) => {
 
 router.delete('/replies', requireAuth, (req, res) => {
   const user = req.user;
-  const replyId = req.query.replyId || 0;
+  const replyId = Number(req.query.replyId) || 0;
   pool.query('DELETE FROM vq_replies WHERE id = ? AND userId = ?', [replyId, user.id], err => {
     if (err) {
       console.error(err);

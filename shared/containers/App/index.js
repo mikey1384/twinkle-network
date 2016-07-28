@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import Header from '../Header';
 import Chat from '../Chat';
@@ -26,6 +26,10 @@ const socket = io.connect(URL);
   }
 )
 export default class App extends Component {
+  static propTypes = {
+    children: PropTypes.object.isRequired
+  }
+
   constructor() {
     super()
     this.onChatButtonClick = this.onChatButtonClick.bind(this)

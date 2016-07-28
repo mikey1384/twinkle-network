@@ -17,7 +17,7 @@ export default function Replies(props) {
             onDelete={onDelete}
             myId={userId}
             key={reply.id}
-            userIsOwner={reply.userId == userId}
+            userIsOwner={reply.userId === userId}
           />
         )
       })}

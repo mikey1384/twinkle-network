@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {openDirectMessage} from 'redux/actions/ChatActions';
 
@@ -10,6 +10,10 @@ import {openDirectMessage} from 'redux/actions/ChatActions';
   {openDirectMessage}
 )
 export default class UsernameText extends Component {
+  static propTypes = {
+    user: PropTypes.object.isRequired
+  }
+
   constructor() {
     super()
     this.state = {
@@ -56,14 +60,14 @@ export default class UsernameText extends Component {
 
   onMouseEnter() {
     const {userId, user} = this.props;
-    if (user.name !== '(Deleted)' && Number(user.id) !== Number(userId)) {
+    if (user.name !== '(Deleted)' && user.id !== userId) {
       this.setState({menuShown: true})
     }
   }
 
   onLinkClick() {
     const {openDirectMessage, user, userId, username} = this.props;
-    if (Number(user.id) !== Number(userId)) {
+    if (user.id !== userId) {
       openDirectMessage({userId, username}, {userId: user.id, username: user.name})
     }
   }
