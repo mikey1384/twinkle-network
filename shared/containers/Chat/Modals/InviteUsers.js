@@ -27,12 +27,12 @@ export default class InviteUsersModal extends Component {
   }
 
   render() {
-    const {clearSearchResults, searchUserToInvite, searchResult, onHide, style, currentChannel, show} = this.props;
+    const {clearSearchResults, searchUserToInvite, searchResult, onHide, style, currentChannel} = this.props;
     const {selectedUsers} = this.state;
     const currentMembersUID = currentChannel.members.map(member => member.userId);
     return (
       <Modal
-        show={show}
+        show
         style={style}
         onHide={onHide}
         animation={false}

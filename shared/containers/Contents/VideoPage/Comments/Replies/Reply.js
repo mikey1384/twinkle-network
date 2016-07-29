@@ -114,7 +114,6 @@ export default class Reply extends Component {
         </div>
         { userListModalShown &&
           <UserListModal
-            show={true}
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this reply"
             userId={myId}

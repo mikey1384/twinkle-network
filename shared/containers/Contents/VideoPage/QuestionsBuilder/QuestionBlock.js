@@ -61,7 +61,7 @@ export default class QuestionBlock extends Component {
             </h4>
             :
             <form
-              onSubmit={ event => event.preventDefault() }
+              onSubmit={event => event.preventDefault()}
               style={{
                 marginBottom: '1em'
               }}
@@ -93,7 +93,6 @@ export default class QuestionBlock extends Component {
         <div
           className="list-group"
           style={{opacity: deleted && '0.2'}}
-          {...this.props}
         >
           {choiceIndices.map((choiceIndex, index) => (
             !onEdit ?

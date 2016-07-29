@@ -6,7 +6,7 @@ export default function ResultModal(props) {
   const {totalQuestions, onHide} = props;
   const perfect = numberCorrect === totalQuestions;
   return (
-    <Modal {...props} animation={false}>
+    <Modal show onHide={props.onHide} animation={false}>
       <Modal.Header closeButton>
         <h4>Your Results</h4>
       </Modal.Header>

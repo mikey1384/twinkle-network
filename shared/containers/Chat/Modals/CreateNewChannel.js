@@ -16,7 +16,6 @@ import TagPeopleForm from 'components/TagPeopleForm';
 )
 export default class CreateNewChannelModal extends Component {
   static propTypes = {
-    show: PropTypes.bool.isRequired,
     userId: PropTypes.number.isRequired,
     onHide: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired
@@ -39,7 +38,7 @@ export default class CreateNewChannelModal extends Component {
     const {channelName, selectedUsers} = this.state;
     return (
       <Modal
-        show={this.props.show}
+        show
         onHide={this.props.onHide}
         animation={false}
       >

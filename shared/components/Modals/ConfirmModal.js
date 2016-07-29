@@ -4,7 +4,7 @@ import {Modal, Button} from 'react-bootstrap';
 export default function ConfirmModal(props) {
   return (
     <Modal
-      show={props.show}
+      show
       onHide={props.onHide}
       animation={false}
     >

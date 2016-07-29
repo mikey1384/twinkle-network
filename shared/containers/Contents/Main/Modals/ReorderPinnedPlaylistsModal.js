@@ -33,7 +33,7 @@ export default class ReorderPinnedPlaylistsModal extends Component {
     })
     return (
       <Modal
-        show={this.props.show}
+        show
         onHide={this.props.onHide}
         animation={false}
       >

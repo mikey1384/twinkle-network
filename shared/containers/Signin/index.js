@@ -25,7 +25,7 @@ export default class SigninModal extends Component {
     const {signupError, loginError, dispatch} = this.props;
     return (
       <Modal
-        show={this.props.show}
+        show
         onHide={this.props.onHide}
         animation={false}
       >

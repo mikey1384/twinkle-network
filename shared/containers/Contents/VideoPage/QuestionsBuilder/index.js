@@ -114,7 +114,8 @@ export default class QuestionsBuilder extends Component {
     ]
     return (
       <Modal
-        {...this.props}
+        show
+        onHide={this.props.onHide}
         animation={false}
         backdrop="static"
         dialogClassName="modal-extra-lg"

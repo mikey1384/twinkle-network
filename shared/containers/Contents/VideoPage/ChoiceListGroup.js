@@ -12,6 +12,7 @@ export default function ChoiceListGroup({listItems, onSelect}) {
       {listItems.map((item, index) => {
         return (
           <li
+            key={index}
             className={`list-group-item ${item.checked ? 'choice-item-checked' : 'choice-item-unchecked'}`}
             dangerouslySetInnerHTML={{__html: item.label}}
             onClick={() => onSelect(index)}

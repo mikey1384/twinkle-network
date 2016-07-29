@@ -186,7 +186,6 @@ export default class VideoPage extends Component {
         />
         {resultModalShown &&
           <ResultModal
-            show
             onHide={() => this.setState({resultModalShown: false})}
             numberCorrect={this.numberCorrect}
             totalQuestions={questions.length}
@@ -194,7 +193,6 @@ export default class VideoPage extends Component {
         }
         {confirmModalShown &&
           <ConfirmModal
-            show
             title="Remove Video"
             onHide={() => this.setState({confirmModalShown: false})}
             onConfirm={this.onVideoDelete}
@@ -202,7 +200,6 @@ export default class VideoPage extends Component {
         }
         {questionsBuilderShown &&
           <QuestionsBuilder
-            show
             questions={questions}
             title={title}
             videoCode={videoCode}
@@ -212,7 +209,6 @@ export default class VideoPage extends Component {
         }
         {userListModalShown &&
           <UserListModal
-            show
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this video"
             userId={userId}

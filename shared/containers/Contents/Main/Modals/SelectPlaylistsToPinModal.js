@@ -29,7 +29,7 @@ export default class SelectPlaylistsToPinModal extends Component {
     const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
     return (
       <Modal
-        show={this.props.show}
+        show
         onHide={this.props.onHide}
         animation={false}
       >

@@ -55,7 +55,7 @@ export default class AddPlaylistModal extends Component {
     }
     return (
       <Modal
-        show={this.props.show}
+        show
         animation={false}
         backdrop="static"
         onHide={this.handleHide}

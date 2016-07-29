@@ -107,7 +107,6 @@ export default class PlaylistCarousel extends Component {
         </Carousel>
         {editPlaylistModalShown &&
           <EditPlaylistModal
-            show={true}
             selectedVideos={selectedVideos}
             playlistId={id}
             onHide={this.onEditPlaylistHide}
@@ -115,7 +114,6 @@ export default class PlaylistCarousel extends Component {
         }
         {deleteConfirmModalShown &&
           <ConfirmModal
-            show={true}
             title="Remove Playlist"
             onConfirm={this.onDeleteConfirm}
             onHide={() => this.setState({deleteConfirmModalShown: false})}

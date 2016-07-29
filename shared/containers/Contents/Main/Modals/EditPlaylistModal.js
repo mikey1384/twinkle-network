@@ -42,7 +42,7 @@ export default class EditPlaylistModal extends Component {
     const lastId = last(videos) ? last(videos).id : 0;
     return (
       <Modal
-        show={this.props.show}
+        show
         onHide={this.props.onHide}
         animation={false}
         backdrop="static"

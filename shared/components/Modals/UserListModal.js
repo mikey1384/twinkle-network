@@ -10,8 +10,8 @@ export default function UserListModal(props) {
   }
   return (
     <Modal
+      show
       style={props.style}
-      show={props.show}
       onHide={props.onHide}
       animation={false}
       bsSize="sm"

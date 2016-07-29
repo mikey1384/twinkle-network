@@ -147,14 +147,12 @@ export default class Main extends Component {
         />
         {addVideoModalShown &&
           <AddVideoModal
-            show
             onHide={() => closeAddVideoModal()}
           />
         }
-        {addPlaylistModalShown && <AddPlaylistModal show />}
+        {addPlaylistModalShown && <AddPlaylistModal />}
         {selectPlaylistsToPinModalShown &&
           <SelectPlaylistsToPinModal
-            show
             playlistsToPin={playlistsToPin}
             pinnedPlaylists={pinnedPlaylists}
             selectedPlaylists={
@@ -168,7 +166,6 @@ export default class Main extends Component {
         }
         {reorderPinnedPlaylistsModalShown &&
           <ReorderPinnedPlaylistsModal
-            show
             pinnedPlaylists={pinnedPlaylists}
             playlistIds={
               pinnedPlaylists.map(playlist => {

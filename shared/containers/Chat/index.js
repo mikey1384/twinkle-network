@@ -217,7 +217,6 @@ export default class Chat extends Component {
       <div style={{display: 'flex', height: '88%'}}>
         {createNewChannelModalShown &&
           <CreateNewChannelModal
-            show
             userId={userId}
             onHide={() => this.setState({createNewChannelModalShown: false})}
             onDone={this.onCreateNewChannel}
@@ -225,7 +224,6 @@ export default class Chat extends Component {
         }
         {inviteUsersModalShown &&
           <InviteUsersModal
-            show
             onHide={() => this.setState({inviteUsersModalShown: false})}
             currentChannel={currentChannel}
             onDone={this.onInviteUsersDone}
@@ -233,7 +231,6 @@ export default class Chat extends Component {
         }
         {editTitleModalShown &&
           <EditTitleModal
-            show
             title={channelName(channels, currentChannel)}
             onHide={() => this.setState({editTitleModalShown: false})}
             onDone={this.onEditTitleDone}
@@ -241,7 +238,6 @@ export default class Chat extends Component {
         }
         {userListModalShown &&
           <UserListModal
-            show
             onHide={() => this.setState({userListModalShown: false})}
             users={this.returnUsers(currentChannel, myChannels)}
             userId={userId}

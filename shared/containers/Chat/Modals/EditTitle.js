@@ -1,7 +1,12 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Button, Modal} from 'react-bootstrap';
 
 export default class editTitleModal extends Component {
+  static propTypes = {
+    onHide: PropTypes.func.isRequired,
+    onDone: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super()
     this.state = {
@@ -10,11 +15,11 @@ export default class editTitleModal extends Component {
   }
 
   render() {
-    const {show, onHide, onDone} = this.props;
+    const {onHide, onDone} = this.props;
     const {title} = this.state;
     return (
       <Modal
-        show={show}
+        show
         onHide={onHide}
         animation={false}
       >
