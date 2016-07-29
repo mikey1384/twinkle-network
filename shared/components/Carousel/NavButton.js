@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from 'components/Button';
 
 export default function NavButton({disabled, nextSlide, left, endIndex}) {
   const style = left ?
@@ -20,13 +21,13 @@ export default function NavButton({disabled, nextSlide, left, endIndex}) {
 
   return(
     <div style={style}>
-      <button
+      <Button
         className="btn btn-default btn-small"
         onClick={handleClick}
         disabled={disabled}
       >
         <span className={`glyphicon ${left ? 'glyphicon-chevron-left' :'glyphicon-chevron-right'}`} />
-      </button>
+      </Button>
     </div>
   )
 

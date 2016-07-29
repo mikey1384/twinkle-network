@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import UsernameText from 'components/UsernameText';
 import Textarea from 'react-textarea-autosize';
+import Button from 'components/Button';
 import {cleanString, cleanStringWithURL} from 'helpers/stringHelpers';
 
 export default class Description extends Component {
@@ -115,16 +116,16 @@ export default class Description extends Component {
                   marginTop: '1em'
                 }}
               >
-                <button
+                <Button
                   className="btn btn-default btn-sm"
                   disabled={editDoneButtonDisabled}
                   onClick={this.onEditFinish}
-                >Done</button>
-                <button
+                >Done</Button>
+                <Button
                   className="btn btn-default btn-sm"
                   style={{marginLeft: '5px'}}
                   onClick={this.onEditCancel}
-                >Cancel</button>
+                >Cancel</Button>
               </div>
             </div> :
             <p dangerouslySetInnerHTML={{__html: description}}/>

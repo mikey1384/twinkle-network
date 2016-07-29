@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 import UsernameText from 'components/UsernameText';
@@ -9,6 +9,14 @@ const scrollIsAtTheBottom = (content, container) => {
 }
 
 export default class MessagesContainer extends Component {
+  static propTypes = {
+    userId: PropTypes.number.isRequired,
+    currentChannelId: PropTypes.number.isRequired,
+    loadMoreButton: PropTypes.bool,
+    messages: PropTypes.array,
+    loadMoreMessages: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {

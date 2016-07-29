@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Modal, Button} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
+import Button from 'components/Button';
 import CheckListGroup from 'components/CheckListGroup';
 import {loadMorePlaylistListAsync, changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions';
 import {connect} from 'react-redux';
@@ -76,10 +77,10 @@ export default class SelectPlaylistsToPinModal extends Component {
                   className="text-center"
                   style={{marginTop: '1em'}}
                 >
-                  <button
+                  <Button
                     className="btn btn-default"
                     onClick={() => this.loadMorePlaylists(lastPlaylistId)}
-                  >Load More</button>
+                  >Load More</Button>
                 </div>
               }
               {playlistsToPin.length === 0 &&
@@ -132,9 +133,9 @@ export default class SelectPlaylistsToPinModal extends Component {
               Please limit your selection to 3 playlists
             </span>
           }
-          <Button onClick={this.props.onHide}>Cancel</Button>
+          <Button className="btn btn-default" onClick={this.props.onHide}>Cancel</Button>
           <Button
-            bsStyle="primary"
+            className="btn btn-primary"
             onClick={this.onSubmit}
             disabled={selectedPlaylists.length > 3}
           >Done</Button>

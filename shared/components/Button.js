@@ -16,9 +16,9 @@ export default class Button extends Component {
       <button
         {...this.props}
         ref={ref => this.Button = ref}
-        onClick={() => {
+        onClick={event => {
           if (this.Button !== null) this.Button.blur();
-          onClick()
+          onClick(event)
         }}
       >
         {children}

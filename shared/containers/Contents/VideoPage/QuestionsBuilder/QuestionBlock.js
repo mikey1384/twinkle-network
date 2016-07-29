@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ChoiceListItem from './ChoiceListItem';
 import EditChoiceListItem from './EditChoiceListItem';
 import Textarea from 'react-textarea-autosize';
+import Button from 'components/Button';
 import {processedString} from 'helpers/stringHelpers';
 
 export default class QuestionBlock extends Component {
@@ -78,16 +79,16 @@ export default class QuestionBlock extends Component {
             </form>
           }
           {!onEdit && !deleted &&
-            <button
+            <Button
               className="col-sm-2 btn btn-danger btn-sm"
-              onClick={ () => this.props.onRemove(questionIndex) }
-            >Remove</button>
+              onClick={() => this.props.onRemove(questionIndex)}
+            >Remove</Button>
           }
           {deleted &&
-            <button
+            <Button
               className="col-sm-2 btn btn-default btn-sm"
-              onClick={ () => this.props.onUndoRemove(questionIndex) }
-            >Undo</button>
+              onClick={() => this.props.onUndoRemove(questionIndex)}
+            >Undo</Button>
           }
         </div>
         <div
@@ -124,26 +125,26 @@ export default class QuestionBlock extends Component {
           className="text-center"
         >
           {!onEdit ?
-            <button
+            <Button
               className="btn btn-info"
               onClick={() => this.props.onEditStart(questionIndex)}
               style={{opacity: deleted && '0.2'}}
               disabled={deleted && true}
-            >Edit</button> :
+            >Edit</Button> :
             <div>
-              <button
+              <Button
                 className="btn btn-default"
                 onClick={() => this.onEditCancel(questionIndex)}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 className="btn btn-primary"
                 style={{marginLeft: '0.5em'}}
                 onClick={() => this.onEditDone(questionIndex)}
               >
                 Done
-              </button>
+              </Button>
             </div>
           }
         </div>

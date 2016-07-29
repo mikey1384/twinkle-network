@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
+import Button from 'components/Button';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 
 export default class CommentInputArea extends Component {
@@ -26,11 +27,11 @@ export default class CommentInputArea extends Component {
             />
           </div>
           <div className="row">
-            <button
+            <Button
               className="btn btn-default btn-sm"
               disabled={stringIsEmpty(this.state.text)}
               onClick={this.onSubmit}
-            >Submit</button>
+            >Submit</Button>
           </div>
         </div>
       </div>
