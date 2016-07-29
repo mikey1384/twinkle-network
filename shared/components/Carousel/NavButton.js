@@ -24,7 +24,8 @@ export default function NavButton({disabled, nextSlide, left, endIndex}) {
         className="btn btn-default btn-small"
         onClick={handleClick}
         disabled={disabled}
-      ><span className={`glyphicon ${left ? 'glyphicon-chevron-left' :'glyphicon-chevron-right'}`} />
+      >
+        <span className={`glyphicon ${left ? 'glyphicon-chevron-left' :'glyphicon-chevron-right'}`} />
       </button>
     </div>
   )

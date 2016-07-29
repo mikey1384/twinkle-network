@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from 'components/Button';
 import Likers from 'components/Likers';
 
 export default function VideoLikeInterface(props) {
@@ -9,7 +10,7 @@ export default function VideoLikeInterface(props) {
         className="text-center"
         style={{marginTop: '4em'}}
       >
-        <button
+        <Button
           className="btn btn-info"
           style={{
             fontSize: '3rem'
@@ -18,7 +19,7 @@ export default function VideoLikeInterface(props) {
         >
           <span className="glyphicon glyphicon-thumbs-up"></span>
           {renderLikeButtonText(likes)}
-        </button>
+        </Button>
       </div>
       <div
         className="text-center"

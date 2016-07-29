@@ -1,5 +1,6 @@
 import React from 'react';
 import VideoThumb from './ModalVideoThumb';
+import Button from 'components/Button';
 
 export default function SelectVideosForm(props) {
   const {
@@ -33,7 +34,7 @@ export default function SelectVideosForm(props) {
       })}
       {loadMoreVideosButton &&
         <div className="text-center">
-          <button className="btn btn-default" onClick={loadMoreVideos}>Load More</button>
+          <Button className="btn btn-default" onClick={loadMoreVideos}>Load More</Button>
         </div>
       }
     </div>

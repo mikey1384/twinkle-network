@@ -79,7 +79,7 @@ html, body {
 }
 
 .error-detected {
-	color: #a94442
+	color: red
 }
 
 .video-container-fixed-left {

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 import UsernameText from 'components/UsernameText';
+import Button from 'components/Button';
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop;
@@ -93,11 +94,11 @@ export default class MessagesContainer extends Component {
                   textAlign: 'center'
                 }}
               >
-                <button
+                <Button
                   className="btn btn-info"
                   style={{width: '20%'}}
                   onClick={this.onLoadMoreButtonClick}
-                >Load More</button>
+                >Load More</Button>
               </div>
               :
               <div style={{
@@ -118,7 +119,7 @@ export default class MessagesContainer extends Component {
           }}
         >
           {newUnseenMessage &&
-            <button
+            <Button
               className="btn btn-warning"
               onClick={
                 () => {
@@ -128,7 +129,7 @@ export default class MessagesContainer extends Component {
                   container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight);
                 }
               }
-            >New Message</button>
+            >New Message</Button>
           }
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Button from 'components/Button';
 import Textarea from 'react-textarea-autosize';
 
 export default class EditTextArea extends Component {
@@ -28,13 +29,13 @@ export default class EditTextArea extends Component {
             marginTop: '1em'
           }}
         >
-          <button
+          <Button
             className="btn btn-default btn-sm"
             onClick={this.onSubmit}
           >
             Done
-          </button>
-          <button
+          </Button>
+          <Button
             className="btn btn-default btn-sm"
             style={{
               marginLeft: '0.5em'
@@ -42,7 +43,7 @@ export default class EditTextArea extends Component {
             onClick={() => this.props.onCancel()}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     )

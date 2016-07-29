@@ -1,5 +1,6 @@
 import React from 'react';
 import {Modal} from 'react-bootstrap';
+import Button from 'components/Button';
 
 export default function UserListModal(props) {
   const {users, userId, description = '', descriptionColor} = props;
@@ -37,12 +38,12 @@ export default function UserListModal(props) {
         </ul>
       </Modal.Body>
       <Modal.Footer>
-        <button
+        <Button
           className="btn btn-default"
           onClick={() => props.onHide()}
         >
           Close
-        </button>
+        </Button>
       </Modal.Footer>
     </Modal>
   )

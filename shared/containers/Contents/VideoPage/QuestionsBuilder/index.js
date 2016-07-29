@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Modal} from 'react-bootstrap';
 import QuestionBlock from './QuestionBlock';
 import ButtonGroup from 'components/ButtonGroup';
+import Button from 'components/Button';
 import HTML5Backend from 'react-dnd-html5-backend'
 import {DragDropContext} from 'react-dnd';
 import QuestionsListGroup from './QuestionsListGroup';
@@ -221,9 +222,9 @@ export default class QuestionsBuilder extends Component {
                 className="text-center"
                 style={{marginTop: '1em'}}
               >
-                { reorderModeOn ?
+                {reorderModeOn ?
                   <div>
-                    <button
+                    <Button
                       className="btn btn-primary"
                       style={{
                         marginRight: '0.5em'
@@ -231,25 +232,25 @@ export default class QuestionsBuilder extends Component {
                       onClick={() => this.onReorderDone()}
                     >
                       Done
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       className="btn btn-default"
                       onClick={() => this.onReorderCancel()}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div> :
                   <div>
                     <ButtonGroup
                       buttons={topButtons}
                     />
                     <div style={{marginTop: '1em'}}>
-                      <button
+                      <Button
                         className="btn btn-success col-sm-2 col-sm-offset-5"
                         onClick={ () => this.onSubmit() }
                       >
                         Submit
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 }

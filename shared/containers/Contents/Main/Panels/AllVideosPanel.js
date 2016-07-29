@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import VideoThumb from 'components/VideoThumb';
+import Button from 'components/Button';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as VideoActions from 'redux/actions/VideoActions';
@@ -27,13 +28,13 @@ export default class AllVideosPanel extends Component {
         <div className="panel-heading flexbox-container">
           <h3 className="panel-title pull-left">{title}</h3>
           {isAdmin &&
-            <button
+            <Button
               className="btn btn-default pull-right"
               style={{
                 marginLeft: 'auto'
               }}
               onClick={() => onAddVideoClick()}
-            >+ Add Video</button>
+            >+ Add Video</Button>
           }
           <div className="clearfix"></div>
         </div>
@@ -55,7 +56,7 @@ export default class AllVideosPanel extends Component {
           })}
           {loadMoreButton &&
             <div className="text-center col-sm-12">
-              <button className="btn btn-default" onClick={this.loadMoreVideos}>Load More</button>
+              <Button className="btn btn-default" onClick={this.loadMoreVideos}>Load More</Button>
             </div>
           }
         </div>

@@ -11,6 +11,7 @@ import EditTitleModal from './Modals/EditTitle';
 import UserListModal from 'components/Modals/UserListModal';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
+import Button from 'components/Button';
 import {GENERAL_CHAT_ID} from 'constants/database';
 
 const channelName = (channels, currentChannel) => {
@@ -283,10 +284,10 @@ export default class Chat extends Component {
                 </small> : <small>{'\u00a0'}</small>
               }
             </div>
-            <button
+            <Button
               className="btn btn-default btn-sm pull-right"
               onClick={this.onNewButtonClick}
-            >+New</button>
+            >+New</Button>
           </div>
           {
             /*<div className="row container-fluid">

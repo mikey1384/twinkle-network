@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from 'components/Button';
 
 export default function ButtonGroup({buttons, style}) {
   return (
@@ -8,7 +9,7 @@ export default function ButtonGroup({buttons, style}) {
     >
       {buttons.map((button, index) => {
         return (
-          <button
+          <Button
             key={index}
             type="button"
             className={`btn ${button.buttonClass}`}
@@ -16,7 +17,7 @@ export default function ButtonGroup({buttons, style}) {
             disabled={button.disabled}
           >
             {button.label}
-          </button>
+          </Button>
         )
       })}
     </div>

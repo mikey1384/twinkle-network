@@ -1,8 +1,7 @@
 import React from 'react';
 import QuestionsListItem from './QuestionsListItem';
 
-export default function SortableListGroup(props) {
-  const { questions, questionIds } = this.props;
+export default function QuestionsListGroup({questions, questionIds, style, onMove}) {
   const listItems = questionIds.map(questionId => {
     for (let i = 0; i < questions.length; i ++) {
       if (questions[i].id === questionId) {
@@ -17,13 +16,13 @@ export default function SortableListGroup(props) {
   return (
     <ul
       className="list-group unselectable"
-      {...props}
+      style={style}
     >
       {listItems.map((item, index) => (
         <QuestionsListItem
           key={index}
           item={item}
-          onMove={({sourceId, targetId}) => props.onMove({sourceId, targetId})}
+          onMove={({sourceId, targetId}) => onMove({sourceId, targetId})}
         />
       ))}
     </ul>

@@ -10,6 +10,7 @@ import {
   resetVideoPage
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
+import Button from 'components/Button';
 import ChoiceListGroup from './ChoiceListGroup';
 import PageTab from './PageTab';
 import VideoLikeInterface from './VideoLikeInterface';
@@ -170,11 +171,11 @@ export default class VideoPage extends Component {
               <div className="text-center">
                 <p>There are no questions yet.</p>
                 {userId === uploaderId &&
-                  <button
+                  <Button
                     className="btn btn-default"
                     style={{marginTop: '1em'}}
                     onClick={() => this.setState({questionsBuilderShown: true})}
-                  >Add Questions</button>
+                  >Add Questions</Button>
                 }
               </div>
             }

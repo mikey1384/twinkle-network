@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import onClickOutside from 'react-onclickoutside';
+import Button from './Button';
 
 class SmallDropdownButton extends Component {
   static propTypes = {
@@ -8,7 +9,7 @@ class SmallDropdownButton extends Component {
     shape: PropTypes.string,
     style: PropTypes.object
   }
-  
+
   handleClickOutside = event => {
     this.setState({menuDisplayed: false});
   }
@@ -31,9 +32,9 @@ class SmallDropdownButton extends Component {
       <span
         className="dropdown pull-right"
         style={style}>
-        <button className={buttonShape} onClick={() => this.setState({menuDisplayed: !menuDisplayed})}>
+        <Button className={buttonShape} onClick={() => this.setState({menuDisplayed: !menuDisplayed})}>
           <span className={buttonIcon}></span>
-        </button>
+        </Button>
         <ul className="dropdown-menu"
           style={{
             cursor: 'pointer',
