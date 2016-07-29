@@ -296,6 +296,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
   const user = req.user;
   const partnerId = req.body.chatPartnerId;
   const firstMessage = processedString(req.body.message);
+  const timeStamp = Math.floor(Date.now()/1000);
   if (user.id !== req.body.userId) {
     return res.status(401).send({error: "Session mismatch"})
   }
@@ -346,7 +347,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
         channelId: insertId,
         userId: user.id,
         content: firstMessage,
-        timeStamp: Math.floor(Date.now()/1000)
+        timeStamp,
       }
       let finalTask = callback => pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
         callback(err, result.insertId)
@@ -379,7 +380,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
         username: user.username,
         content: firstMessage,
         members: rows,
-        timeStamp: Math.floor(Date.now()/1000)
+        timeStamp
       })
     })
   })
