@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PlaylistCarousel from '../Carousels/PlaylistCarousel';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import Button from 'components/Button';
 import * as PlaylistActions from 'redux/actions/PlaylistActions';
 
 const last = array => {
@@ -37,7 +38,7 @@ export default class PlaylistsPanel extends Component {
           }
           {loadMoreButton &&
             <div className="text-center">
-              <button className="btn btn-default" onClick={this.loadMorePlaylists}>Load More</button>
+              <Button className="btn btn-default" onClick={this.loadMorePlaylists}>Load More</Button>
             </div>
           }
         </div>
