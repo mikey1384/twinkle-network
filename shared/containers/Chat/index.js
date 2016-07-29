@@ -31,7 +31,7 @@ const channelName = (channels, currentChannel) => {
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
     loadMoreButton: state.ChatReducer.loadMoreButton,
-    chatPartnerId: state.ChatReducer.chatPartnerId
+    partnerId: state.ChatReducer.partnerId
   }),
   {
     receiveMessage: ChatActions.receiveMessage,
@@ -446,11 +446,11 @@ export default class Chat extends Component {
       username,
       currentChannel,
       createNewChatOrReceiveExistingChatData,
-      chatPartnerId
+      partnerId
     } = this.props;
 
     if (currentChannel.id === 0) {
-      return createNewChatOrReceiveExistingChatData({message, userId, chatPartnerId}, chat => {
+      return createNewChatOrReceiveExistingChatData({message, userId, partnerId}, chat => {
         if (chat.alreadyExists) {
           let {message, messageId} = chat.alreadyExists;
           socket.emit('join_chat_channel', message.channelId);
@@ -465,7 +465,7 @@ export default class Chat extends Component {
           return;
         }
         socket.emit('join_chat_channel', chat.channelId);
-        socket.emit('send_bi_chat_invitation', chatPartnerId, chat);
+        socket.emit('send_bi_chat_invitation', partnerId, chat);
       })
     }
 

@@ -294,9 +294,8 @@ router.post('/channel', requireAuth, (req, res) => {
 
 router.post('/channel/twoPeople', requireAuth, (req, res) => {
   const user = req.user;
-  const partnerId = req.body.chatPartnerId;
+  const {partnerId, timeStamp} = req.body;
   const firstMessage = processedString(req.body.message);
-  const timeStamp = Math.floor(Date.now()/1000);
   if (user.id !== req.body.userId) {
     return res.status(401).send({error: "Session mismatch"})
   }

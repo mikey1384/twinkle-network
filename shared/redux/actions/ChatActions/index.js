@@ -25,7 +25,7 @@ export const clearSearchResults = () => ({
 })
 
 export const checkChatExistsThenCreateNewChatOrReceiveExistingChatData = (params, callback) => dispatch =>
-request.post(`${API_URL}/channel/twoPeople`, params, auth())
+request.post(`${API_URL}/channel/twoPeople`, {...params, timeStamp: Math.floor(Date.now()/1000)}, auth())
 .then(
   response => {
     if (!!response.data.alreadyExists) {

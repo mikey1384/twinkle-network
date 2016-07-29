@@ -7,7 +7,7 @@ const defaultState = {
   messages: [],
   searchResult: [],
   loadMoreButton: false,
-  chatPartnerId: null,
+  partnerId: null,
   numUnreads: 0
 };
 
@@ -266,7 +266,7 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [],
         loadMoreButton: false,
-        chatPartnerId: action.partner.userId
+        partnerId: action.partner.userId
       }
     case 'RECEIVE_EXISTING_CHAT_DATA':
       return {
