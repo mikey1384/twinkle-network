@@ -1,8 +1,12 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import Textarea from 'react-textarea-autosize';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 
 export default class ChatInput extends Component {
+  static propTypes = {
+    onMessageSubmit: PropTypes.func.isRequired
+  }
+
   constructor() {
     super()
     this.state = {

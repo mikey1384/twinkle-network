@@ -44,7 +44,7 @@ export default class MessagesContainer extends Component {
       let {messages, userId} = this.props;
       let messageSenderId = messages[messages.length - 1].userId;
       if (messageSenderId === userId || this.state.scrollAtBottom) {
-        container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight);
+        this.setFillerHeight();
       }
       else {
         this.setState({newUnseenMessage: true})
@@ -52,7 +52,7 @@ export default class MessagesContainer extends Component {
     }
   }
 
-  setFillerHeight = () => {
+  setFillerHeight() {
     const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
     const messages = ReactDOM.findDOMNode(this.refs.messages);
     const containerHeight = container.offsetHeight;

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Modal, Button} from 'react-bootstrap';
 import TagPeopleForm from 'components/TagPeopleForm';
 import {connect} from 'react-redux';
@@ -16,6 +16,12 @@ import {clearSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} 
   }
 )
 export default class InviteUsersModal extends Component {
+  static propTypes = {
+    onHide: PropTypes.func.isRequired,
+    currentChannel: PropTypes.object.isRequired,
+    onDone: PropTypes.func.isRequired
+  }
+
   constructor() {
     super()
     this.state = {

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import MessagesContainer from './MessagesContainer';
 import {connect} from 'react-redux';
@@ -51,6 +51,11 @@ const channelName = (channels, currentChannel) => {
   }
 )
 export default class Chat extends Component {
+  static propTypes = {
+    socket: PropTypes.object.isRequired,
+    onUnmount: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
     this.state = {
