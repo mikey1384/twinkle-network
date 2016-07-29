@@ -6,6 +6,7 @@ import {cleanStringWithURL} from 'helpers/stringHelpers';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';
+import Button from 'components/Button';
 
 
 export default class Reply extends Component {
@@ -85,14 +86,14 @@ export default class Reply extends Component {
                   className="row flexbox-container"
                 >
                   <div className="pull-left">
-                    <button
+                    <Button
                       className="btn btn-info btn-sm"
                       onClick={this.onLikeClick}
                     >
                       <span className="glyphicon glyphicon-thumbs-up"></span> {
                         `${userLikedThis ? 'Liked!' : 'Like'}`
                       }
-                    </button>
+                    </Button>
                   </div>
                   <small>
                     <Likers

@@ -9,6 +9,7 @@ import ReplyInputArea from './Replies/ReplyInputArea';
 import Replies from './Replies';
 import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
+import Button from 'components/Button';
 
 
 export default class Comment extends Component {
@@ -91,19 +92,19 @@ export default class Comment extends Component {
                 className="row flexbox-container"
               >
                 <div className="pull-left">
-                  <button
+                  <Button
                     className="btn btn-warning btn-sm"
                     onClick={() => this.setState({replyInputShown: true})}
                   >
                     <span className="glyphicon glyphicon-comment"></span> Reply
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     className="btn btn-info btn-sm"
                     style={{marginLeft: '0.5em'}}
                     onClick={this.onLikeClick}
                   >
                     <span className="glyphicon glyphicon-thumbs-up"></span> {`${userLikedThis ? 'Liked!' : 'Like'}`}
-                  </button>
+                  </Button>
                 </div>
                 <small>
                   <Likers
