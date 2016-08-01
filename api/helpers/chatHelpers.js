@@ -155,7 +155,7 @@ const fetchChannels = (user, callback) => {
           lastMessage: results[index][0].content || '',
           lastUpdate: results[index][0].timeStamp || '',
           lastMessageSender: {username: results[index][0].username, id: results[index][0].userId},
-          numUnreads: row.numUnreads,
+          numUnreads: Number(row.numUnreads),
           isHidden: row.isHidden
         }
       })

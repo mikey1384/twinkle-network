@@ -116,21 +116,21 @@ export default class Main extends Component {
     ]
     return (
       <div>
-        <PlaylistsPanel
-          key={"pinnedPlaylists"}
-          buttonGroupShown={userType === 'master'}
-          buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
-          playlistType="pinned"
-          title="Pinned Playlists"
-          loadMoreButton={loadMorePinnedPlaylists}
-          userId={userId}
-          playlists={pinnedPlaylists}
-        />
+        {(pinnedPlaylists.length > 0 || userType === 'master') &&
+          <PlaylistsPanel
+            key={"pinnedPlaylists"}
+            buttonGroupShown={userType === 'master'}
+            buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
+            title="Pinned Playlists"
+            loadMoreButton={loadMorePinnedPlaylists}
+            userId={userId}
+            playlists={pinnedPlaylists}
+          />
+        }
         <PlaylistsPanel
           key={"allplaylists"}
           buttonGroupShown={isAdmin}
           buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
-          playlistType="all"
           title="All Playlists"
           loadMoreButton={loadMorePlaylistsButton}
           userId={userId}

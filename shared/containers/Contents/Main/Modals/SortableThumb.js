@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {DragSource, DropTarget} from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 
@@ -33,6 +33,10 @@ const thumbTarget = {
   connectDropTarget: connect.dropTarget()
 }))
 export default class SortableThumb extends Component {
+  static propTypes = {
+    video: PropTypes.object.isRequired
+  }
+
   render () {
     const {connectDragSource, connectDropTarget, isDragging, video} = this.props;
     return connectDragSource(connectDropTarget(

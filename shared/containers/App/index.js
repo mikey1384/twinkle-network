@@ -1,14 +1,10 @@
 import React, {Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
 import Header from '../Header';
 import Chat from '../Chat';
-import {LinkContainer} from 'react-router-bootstrap';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import io from 'socket.io-client';
 import {connect} from 'react-redux';
 import {initChatAsync, resetChat, toggleChat, turnChatOff} from 'redux/actions/ChatActions';
 import {URL} from 'constants/URL';
-import ChatButton from 'containers/Header/ChatButton';
 
 
 const socket = io.connect(URL);

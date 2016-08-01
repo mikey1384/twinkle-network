@@ -1,7 +1,6 @@
 import React from 'react';
 
-export default function VideoThumb(props) {
-  const {video, selected, onSelect, onDeselect} = props;
+export default function VideoThumb({video, selected, onSelect, onDeselect}) {
   return (
     <div
       className="col-xs-2"

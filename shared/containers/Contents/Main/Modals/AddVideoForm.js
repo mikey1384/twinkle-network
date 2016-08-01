@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
 import {reduxForm, Field} from 'redux-form';
-import {Modal, Button} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
+import Button from 'components/Button';
 import {uploadVideoAsync} from 'redux/actions/VideoActions';
 import {connect} from 'react-redux';
 
@@ -67,7 +68,7 @@ export default class AddVideoForm extends Component {
           />
         </fieldset>
         <Modal.Footer>
-          <Button bsStyle="primary" type="submit">Add</Button>
+          <Button className="btn btn-primary" type="submit">Add</Button>
         </Modal.Footer>
       </form>
     )

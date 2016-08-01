@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import VideoThumb from 'components/VideoThumb';
 import Button from 'components/Button';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as VideoActions from 'redux/actions/VideoActions';
+import {getMoreVideos} from 'redux/actions/VideoActions';
 
 const last = (array) => {
   return array[array.length - 1];
@@ -11,18 +11,24 @@ const last = (array) => {
 
 @connect(
   null,
-  dispatch => ({
-    actions: bindActionCreators(VideoActions, dispatch)
-  })
+  {getMoreVideos}
 )
 export default class AllVideosPanel extends Component {
+  static propTypes = {
+    isAdmin: PropTypes.bool.isRequired,
+    videos: PropTypes.array.isRequired,
+    onAddVideoClick: PropTypes.func.isRequired,
+    title: PropTypes.string,
+    loadMoreButton: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.loadMoreVideos = this.loadMoreVideos.bind(this)
   }
 
   render() {
-    const {loadMoreButton, actions, videos, title, isAdmin, onAddVideoClick} = this.props;
+    const {loadMoreButton, videos, title = 'All Videos', isAdmin, onAddVideoClick} = this.props;
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -65,8 +71,8 @@ export default class AllVideosPanel extends Component {
   }
 
   loadMoreVideos() {
-    const {videos, actions} = this.props;
+    const {videos, getMoreVideos} = this.props;
     const lastId = last(videos) ? last(videos).id : 0;
-    actions.getMoreVideos(lastId);
+    getMoreVideos(lastId);
   }
 }

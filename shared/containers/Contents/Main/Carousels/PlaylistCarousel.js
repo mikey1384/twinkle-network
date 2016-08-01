@@ -1,19 +1,42 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import Carousel from 'components/Carousel';
 import VideoThumb from 'components/VideoThumb';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTitleForm from 'components/EditTitleForm';
 import EditPlaylistModal from '../Modals/EditPlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import {
+  editPlaylistTitleAsync,
+  openChangePlaylistVideosModalAsync,
+  openReorderPlaylistVideosModal,
+  deletePlaylistAsync,
+  resetPlaylistModalState
+} from 'redux/actions/PlaylistActions';
 import {connect} from 'react-redux';
 
 
 @connect(
   state => ({
     clickSafe: state.PlaylistReducer.clickSafe
-  })
+  }),
+  {
+    editPlaylistTitleAsync,
+    openChangePlaylistVideosModalAsync,
+    openReorderPlaylistVideosModal,
+    deletePlaylistAsync,
+    resetPlaylistModalState
+  }
 )
 export default class PlaylistCarousel extends Component {
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    uploader: PropTypes.string.isRequired,
+    playlist: PropTypes.array.isRequired,
+    arrayIndex: PropTypes.number.isRequired,
+    editable: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.state = {
@@ -160,10 +183,10 @@ export default class PlaylistCarousel extends Component {
   }
 
   onEditedTitleSubmit(title) {
-    const {editPlaylistTitleAsync, id, arrayNumber} = this.props;
+    const {editPlaylistTitleAsync, id, arrayIndex} = this.props;
     const playlistId = id;
     if (title && title !== this.props.title) {
-      editPlaylistTitleAsync({title, playlistId}, arrayNumber, this);
+      editPlaylistTitleAsync({title, playlistId}, arrayIndex, this);
     } else {
       this.setState({onEdit: false})
     }

@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
-import {Modal, Button} from 'react-bootstrap';
+import React, {Component, PropTypes} from 'react';
+import {Modal} from 'react-bootstrap';
+import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
 import {connect} from 'react-redux';
 import {changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions';
@@ -9,6 +10,12 @@ import {changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions';
   {changePinnedPlaylists: changePinnedPlaylistsAsync}
 )
 export default class ReorderPinnedPlaylistsModal extends Component {
+  static propTypes = {
+    pinnedPlaylists: PropTypes.array.isRequired,
+    playlistIds: PropTypes.array.isRequired,
+    onHide: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super()
     this.state = {
@@ -47,9 +54,9 @@ export default class ReorderPinnedPlaylistsModal extends Component {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.onHide}>Cancel</Button>
+          <Button className="btn btn-default" onClick={this.props.onHide}>Cancel</Button>
           <Button
-            bsStyle="primary"
+            className="btn btn-primary"
             onClick={this.onSubmit}
           >Done</Button>
         </Modal.Footer>

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from '../EditTextArea';

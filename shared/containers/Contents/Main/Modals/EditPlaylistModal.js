@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
-import {Modal, Button} from 'react-bootstrap';
+import React, {Component, PropTypes} from 'react';
+import {Modal} from 'react-bootstrap';
+import Button from 'components/Button';
 import {connect} from 'react-redux';
 import {
   closeEditPlaylistModal,
@@ -24,6 +25,12 @@ import HTML5Backend from 'react-dnd-html5-backend';
   }
 )
 export default class EditPlaylistModal extends Component {
+  static propTypes = {
+    selectedVideos: PropTypes.array.isRequired,
+    playlistId: PropTypes.number.isRequired,
+    onHide: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super()
     this.state = {
@@ -98,9 +105,9 @@ export default class EditPlaylistModal extends Component {
           }
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.handleHide}>Cancel</Button>
+          <Button className="btn btn-default" onClick={this.handleHide}>Cancel</Button>
           <Button
-            bsStyle="primary"
+            className="btn btn-primary"
             onClick={this.handleSave}
             disabled={selectedVideos.length < 2}
           >

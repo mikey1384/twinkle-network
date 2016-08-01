@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Textarea from 'react-textarea-autosize';
-import {Modal, Button} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
+import Button from 'components/Button';
 import {
   closeAddPlaylistModal,
   uploadPlaylistAsync,
@@ -145,15 +146,15 @@ export default class AddPlaylistModal extends Component {
 
         <Modal.Footer>
           {section === 0 ?
-            <Button onClick={this.handleHide}>Cancel</Button>
+            <Button className="btn btn-default" onClick={this.handleHide}>Cancel</Button>
             :
-            <Button onClick={this.handlePrev}>Prev</Button>
+            <Button className="btn btn-default" onClick={this.handlePrev}>Prev</Button>
           }
           {section === 2 ?
-            <Button bsStyle="primary" onClick={this.handleFinish}>Finish</Button>
+            <Button className="btn btn-primary" onClick={this.handleFinish}>Finish</Button>
             :
             <Button
-              bsStyle="primary"
+              className="btn btn-primary"
               type="submit"
               disabled={section === 1 && this.state.selectedVideos.length < 2}
               onClick={this.handleNext}

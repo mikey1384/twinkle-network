@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Modal} from 'react-bootstrap';
 import Button from 'components/Button';
 import CheckListGroup from 'components/CheckListGroup';
@@ -13,6 +13,14 @@ import {connect} from 'react-redux';
   }
 )
 export default class SelectPlaylistsToPinModal extends Component {
+  static propTypes = {
+    playlistsToPin: PropTypes.array,
+    pinnedPlaylists: PropTypes.array,
+    selectedPlaylists: PropTypes.array,
+    loadMoreButton: PropTypes.bool,
+    onHide: PropTypes.func
+  }
+
   constructor(props) {
     super()
     this.state = {
