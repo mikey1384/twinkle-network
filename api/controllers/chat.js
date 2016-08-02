@@ -215,7 +215,10 @@ router.post('/lastRead', requireAuth, (req, res) => {
   const user = req.user;
   const channelId = req.body.channelId;
   const timeStamp = req.body.timeStamp;
-  updateLastRead({userId: user.id, channelId, timeStamp: timeStamp})
+  updateLastRead({userId: user.id, channelId, timeStamp}, err => {
+    if (err) return res.status(500).send({error: err})
+    res.send({success: true})
+  })
 })
 
 router.post('/channel', requireAuth, (req, res) => {
@@ -498,7 +501,7 @@ router.post('/invite', requireAuth, (req, res) => {
       let status = (err === 'not_a_member') ? 401 : 500;
       return res.status(status).send({error: err})
     }
-    updateLastRead({userId: user.id, channelId, timeStamp: timeStamp})
+    updateLastRead({userId: user.id, channelId, timeStamp})
     res.send({message})
   })
 })

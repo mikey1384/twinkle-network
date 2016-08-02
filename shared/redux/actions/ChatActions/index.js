@@ -188,13 +188,19 @@ export const openDirectMessage = (user, partner) => dispatch => {
   }
 }
 
-export const receiveMessage = data => {
+export const receiveMessage = data => dispatch => {
   const {channelId, timeStamp} = data;
-  request.post(`${API_URL}/lastRead`, {channelId, timeStamp} , auth())
-  return {
-    type: 'RECEIVE_MSG',
-    data
-  }
+  request.post(`${API_URL}/lastRead`, {channelId, timeStamp}, auth()).then(
+    response => dispatch({
+      type: 'RECEIVE_MSG',
+      data
+    })
+  ).catch(
+    error => {
+      console.error(error)
+      handleError(error, dispatch)
+    }
+  )
 }
 
 export const receiveMessageOnDifferentChannel = data => ({
