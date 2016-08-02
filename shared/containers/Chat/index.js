@@ -382,7 +382,7 @@ export default class Chat extends Component {
               className="media-heading"
               style={{color: !channelName && '#7c7c7c'}}
             >{`${channelName || '(Deleted)'}`}&nbsp;
-              {numUnreads > 0 &&
+              {id !== currentChannel.id && numUnreads > 0 &&
                 <span className="badge">{numUnreads}</span>
               }
             </h4>
