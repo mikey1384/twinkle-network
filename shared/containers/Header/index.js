@@ -60,7 +60,7 @@ export default class Header extends Component {
         }
       })
       socket.on('chat_invitation', data => {
-        socket.emit('join_chat_channel', data.roomid);
+        socket.emit('join_chat_channel', data.channelId);
         increaseNumberOfUnreadMessages();
       })
       socket.on('disconnect', () => {
