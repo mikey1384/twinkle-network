@@ -1,7 +1,7 @@
 const pool = require('../pool');
 const async = require('async');
 const access = require('../auth/access');
-const generalChatId = require('../siteConfig').generalChatId;
+const {generalChatId} = require('../siteConfig');
 
 
 const fetchChat = (params, callback) => {
@@ -273,7 +273,7 @@ const handleCaseWhereBidirectionalChatAlreadyExists = (channelId, userId, conten
 const updateLastRead = ({userId, channelId, timeStamp}, callback) => {
   let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?';
   pool.query(query, [userId, channelId], (err, rows) => {
-    if (err && callback) return callback(err); 
+    if (err && callback) return callback(err);
     if(Number(rows[0].num) > 0) {
       let query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?';
       pool.query(query, [{lastRead: timeStamp}, userId, channelId], err => {

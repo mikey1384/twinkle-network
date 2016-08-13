@@ -1,11 +1,13 @@
 const pool = require('../pool');
 
-const requireAuth = require('../auth').requireAuth;
-const processedString = require('../helpers/stringHelpers').processedString;
-const processedTitleString = require('../helpers/stringHelpers').processedTitleString;
-const fetchedVideoCodeFromURL = require('../helpers/stringHelpers').fetchedVideoCodeFromURL;
-const stringIsEmpty = require('../helpers/stringHelpers').stringIsEmpty;
-const returnComments = require('../helpers/videoHelpers').returnComments;
+const {requireAuth} = require('../auth');
+const {
+  processedString,
+  processedTitleString,
+  fetchedVideoCodeFromURL,
+  stringIsEmpty
+} = require('../helpers/stringHelpers');
+const {returnComments} = require('../helpers/videoHelpers');
 
 const async = require('async');
 const express = require('express');

@@ -1,11 +1,10 @@
 const pool = require('../pool');
 
-const requireAuth = require('../auth').requireAuth;
+const {requireAuth} = require('../auth');
 
-const processedString = require('../helpers/stringHelpers').processedString;
-const processedTitleString = require('../helpers/stringHelpers').processedTitleString;
+const {processedString, processedTitleString} = require('../helpers/stringHelpers');
 
-const fetchPlaylists = require('../helpers/playlistHelpers').fetchPlaylists;
+const {fetchPlaylists} = require('../helpers/playlistHelpers');
 
 const async = require('async');
 const express = require('express');

@@ -3,7 +3,7 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {routes, store, history} from 'Root';
 import {Router, applyRouterMiddleware} from 'react-router';
-import useScroll from 'react-router-scroll';
+import {useScroll} from 'react-router-scroll';
 
 render(
   <Provider store={store}>

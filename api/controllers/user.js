@@ -1,12 +1,9 @@
 const passwordHash = require('password-hash');
 
-const capitalize = require('../helpers/stringHelpers').capitalize;
-const userExists = require('../helpers/userHelpers').userExists;
-const isFalseClaim = require('../helpers/userHelpers').isFalseClaim;
+const {capitalize} = require('../helpers/stringHelpers');
+const {userExists, isFalseClaim} = require('../helpers/userHelpers');
 
-const tokenForUser = require('../auth').tokenForUser;
-const requireAuth = require('../auth').requireAuth;
-const requireSignin = require('../auth').requireSignin;
+const {tokenForUser, requireAuth, requireSignin} = require('../auth');
 
 const express = require('express');
 const router = express.Router();

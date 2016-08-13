@@ -4,7 +4,8 @@ import {stringIsEmpty} from 'helpers/stringHelpers';
 
 export default class ChatInput extends Component {
   static propTypes = {
-    onMessageSubmit: PropTypes.func.isRequired
+    onMessageSubmit: PropTypes.func.isRequired,
+    currentChannelId: PropTypes.number.isRequired
   }
 
   constructor() {
@@ -13,6 +14,12 @@ export default class ChatInput extends Component {
       message: ''
     }
     this.onMessageSubmit = this.onMessageSubmit.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentChannelId !== this.props.currentChannelId) {
+      this.setState({message: ''})
+    }
   }
 
   render() {

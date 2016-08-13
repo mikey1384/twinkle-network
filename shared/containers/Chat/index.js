@@ -352,6 +352,7 @@ export default class Chat extends Component {
           >
             <ChatInput
               ref="chatInput"
+              currentChannelId={this.props.currentChannel.id}
               onMessageSubmit={this.onMessageSubmit}
             />
           </div>
