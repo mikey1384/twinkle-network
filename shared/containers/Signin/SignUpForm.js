@@ -3,13 +3,18 @@ import {reduxForm, Field} from 'redux-form';
 import {Modal, Button, Alert} from 'react-bootstrap';
 
 
-const renderInput = field => (
+const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
   <div style={{display: 'inline'}}>
-    <input {...field.input} />
+    <input
+      {...input}
+      className={className}
+      placeholder={placeholder}
+      type={type}
+    />
     <span
       className="help-block"
       style={{color: 'red'}}
-    >{field.touched && field.error && field.error}</span>
+    >{touched && error && error}</span>
   </div>
 )
 

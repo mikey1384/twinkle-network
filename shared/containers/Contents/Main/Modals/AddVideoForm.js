@@ -7,17 +7,28 @@ import {uploadVideoAsync} from 'redux/actions/VideoActions';
 import {connect} from 'react-redux';
 
 
-const renderInput = field => (
+const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
   <div style={{display: 'inline'}}>
-    <input {...field.input} />
+    <input
+      {...input}
+      className={className}
+      placeholder={placeholder}
+      type={type}
+    />
     <span
       className="help-block"
       style={{color: 'red'}}
-    >{field.touched && field.error && field.error}</span>
+    >{touched && error && error}</span>
   </div>
 )
 
-const renderTextarea = field => <Textarea {...field.input} />
+const renderTextarea = ({input, className, minRows, placeholder}) =>
+  <Textarea
+    {...input}
+    className={className}
+    minRows={minRows}
+    placeholder={placeholder}
+  />
 
 @reduxForm({
   form: 'UploadVideoForm',

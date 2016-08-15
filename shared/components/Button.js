@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 
 export default class Button extends Component {
   static propTypes = {
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.element,
@@ -18,7 +18,7 @@ export default class Button extends Component {
         ref={ref => this.Button = ref}
         onClick={event => {
           if (this.Button !== null) this.Button.blur();
-          onClick(event)
+          if (!!onClick) onClick(event)
         }}
       >
         {children}

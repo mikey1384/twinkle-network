@@ -4,13 +4,18 @@ import {Modal, Button, Alert} from 'react-bootstrap';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 
 
-const renderInput = field => (
+const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
   <div>
-    <input {...field.input} />
+    <input
+      {...input}
+      className={className}
+      placeholder={placeholder}
+      type={type}
+    />
     <span
       className="help-block"
       style={{color: 'red'}}
-    >{field.touched && field.error && field.error}</span>
+    >{touched && error && error}</span>
   </div>
 )
 
@@ -40,8 +45,8 @@ export default class LoginForm extends Component {
               name="username"
               placeholder="Username"
               className="form-control"
-              component={renderInput}
               type="text"
+              component={renderInput}
             />
           </fieldset>
           <fieldset className="form-group">
@@ -50,8 +55,8 @@ export default class LoginForm extends Component {
               name="password"
               placeholder="Password"
               className="form-control"
-              component={renderInput}
               type="password"
+              component={renderInput}
             />
           </fieldset>
         </div>
