@@ -35,7 +35,7 @@ export default class ChatSearchBox extends Component {
     return (
       <div className="row container-fluid">
         <SearchInput
-          placeholder="Search for channels / usernames"
+          placeholder="Search for channels / users"
           onChange={this.onChatSearch}
           value={searchText}
           searchResults={searchResult}
