@@ -7,7 +7,7 @@ import TagPeopleForm from 'components/TagPeopleForm';
 
 @connect(
   state => ({
-    searchResult: state.ChatReducer.searchResult
+    searchResult: state.ChatReducer.userSearchResult
   }),
   {
     clearSearchResults,

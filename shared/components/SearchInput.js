@@ -1,16 +1,14 @@
 import React, {Component, PropTypes} from 'react';
+import ReactDOM from 'react-dom';
+import SearchDropdown from './SearchDropdown';
 import onClickOutside from 'react-onclickoutside';
-import SearchDropdown from '../SearchDropdown';
 
-class Input extends Component {
+class SearchInput extends Component {
   static propTypes = {
-    autoFocus: PropTypes.bool,
-    value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onClickOutSide: PropTypes.func.isRequired,
+    renderItemLabel: PropTypes.func.isRequired,
     searchResults: PropTypes.array.isRequired,
-    selectedUsers: PropTypes.array.isRequired,
-    onAddUser: PropTypes.func.isRequired
+    onClickOutSide: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired
   }
 
   handleClickOutside = (event) => {
@@ -26,16 +24,17 @@ class Input extends Component {
   }
 
   render() {
+    const {placeholder} = this.props;
     return (
       <div className="input-group dropdown">
         <span className="input-group-addon">
           <span className="glyphicon glyphicon-search"></span>
         </span>
         <input
-          autoFocus={this.props.autoFocus}
-          value={this.props.value}
+          ref="searchInput"
           className="form-control"
-          placeholder="Search and select people you want to chat with"
+          placeholder={placeholder}
+          value={this.props.value}
           onChange={event => this.props.onChange(event)}
           onKeyDown={this.onKeyDown}
         />
@@ -45,45 +44,20 @@ class Input extends Component {
   }
 
   renderDropdownList() {
-    let {searchResults, selectedUsers} = this.props;
-    searchResults = searchResults.filter(user => {
-      let result = true;
-      for (let i = 0; i < selectedUsers.length; i++) {
-        if (selectedUsers[i].userId === user.id) {
-          result = false;
-          break;
-        }
-      }
-      return result;
-    })
-    return searchResults.length > 0 ?
-    <SearchDropdown
+    const {searchResults, renderItemLabel, onSelect} = this.props;
+    return searchResults.length > 0 ? <SearchDropdown
       searchResults={searchResults}
       onUpdate={() => this.setState({dropdownItemToHighlight: 0})}
       onUnmount={() => this.setState({dropdownItemToHighlight: 0})}
       dropdownItemToHighlight={this.state.dropdownItemToHighlight}
-      onItemClick={user => this.props.onAddUser(user)}
-      renderItemLabel={
-        item => (
-          <span>{item.username} {item.realName && <small>{`(${item.realName})`}</small>}</span>
-        )
-      }
-    /> : null
+      onItemClick={item => onSelect(item)}
+      renderItemLabel={renderItemLabel}
+    /> : null;
   }
 
   onKeyDown(event) {
-    let {searchResults, selectedUsers} = this.props;
-    searchResults = searchResults.filter(user => {
-      let result = true;
-      for (let i = 0; i < selectedUsers.length; i++) {
-        if (selectedUsers[i].userId === user.id) {
-          result = false;
-          break;
-        }
-      }
-      return result;
-    })
     const {dropdownItemToHighlight} = this.state;
+    const  {searchResults, onSelect} = this.props;
     let index = dropdownItemToHighlight;
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
@@ -100,11 +74,12 @@ class Input extends Component {
 
       if (event.keyCode === 13) {
         event.preventDefault();
-        let user = searchResults[index];
-        this.props.onAddUser(user);
+        ReactDOM.findDOMNode(this.refs.searchInput).blur();
+        let item = searchResults[index];
+        onSelect(item);
       }
     }
   }
 }
 
-export default onClickOutside(Input)
+export default onClickOutside(SearchInput)

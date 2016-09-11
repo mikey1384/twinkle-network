@@ -5,7 +5,8 @@ const defaultState = {
   currentChannel: {},
   channels: [],
   messages: [],
-  searchResult: [],
+  userSearchResult: [],
+  chatSearchResult: [],
   loadMoreButton: false,
   partnerId: null,
   numUnreads: 0
@@ -24,10 +25,11 @@ export default function ChatReducer(state = defaultState, action) {
           return channel;
         })
       }
-    case 'CLEAR_RESULTS_FOR_CHANNEL':
+    case 'CLEAR_CHAT_SEARCH_RESULTS':
       return {
         ...state,
-        searchResult: []
+        userSearchResult: [],
+        chatSearchResult: []
       }
     case 'CREATE_NEW_CHANNEL':
       return {
@@ -100,13 +102,16 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         currentChannel: action.data.channel,
-        channels: state.channels.map(channel => {
-          if (channel.id === action.data.channel.id) {
-            channel.numUnreads = 0,
-            channel.isHidden = false
-          }
-          return channel;
-        }),
+        channels: state.channels.reduce(
+          (resultingArray, channel) => {
+            if (channel.id === action.data.channel.id) {
+              channel.numUnreads = 0;
+              channel.isHidden = false;
+              if (action.showOnTop) return [channel].concat(resultingArray)
+            }
+            return resultingArray.concat([channel])
+          }, []
+        ),
         chatMode: true,
         messages: action.data.messages,
         loadMoreButton
@@ -152,15 +157,18 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         currentChannel: action.data.currentChannel,
-        channels: action.data.channels.map(channel => {
-          if (channel.id === action.data.currentChannel.id) {
-            channel.numUnreads = 0;
-          }
-          return channel;
-        }),
+        channels: action.data.channels.reduce(
+          (resultingArray, channel) => {
+            if (channel.id === action.data.currentChannel.id) {
+              channel.numUnreads = 0;
+              return [channel].concat(resultingArray)
+            }
+            return resultingArray.concat([channel])
+          }, []
+        ),
         messages: action.data.messages,
         loadMoreButton,
-        searchResult: []
+        userSearchResult: []
       }
     case 'INVITE_USERS_TO_CHANNEL':
       return {
@@ -351,10 +359,15 @@ export default function ChatReducer(state = defaultState, action) {
           state.channels.filter(channel => channel.id !== action.data.channelId)
         )
       }
+    case 'SEARCH_CHAT':
+      return {
+        ...state,
+        chatSearchResult: action.data
+      }
     case 'SEARCH_USERS_FOR_CHANNEL':
       return {
         ...state,
-        searchResult: action.data
+        userSearchResult: action.data
       }
     case 'SUBMIT_MESSAGE':
       return {

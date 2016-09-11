@@ -506,7 +506,84 @@ router.post('/invite', requireAuth, (req, res) => {
   })
 })
 
-router.get('/search', (req, res) => {
+router.get('/search/chat', requireAuth, (req, res) => {
+  const {user} = req;
+  const text = req.query.text;
+  async.waterfall([
+    callback => {
+      let query = [
+        'SELECT a.channelId, COALESCE(c.channelName, b.channelName, d.username) AS label, ',
+        'b.twoPeople, d.id AS userId, d.realName AS subLabel FROM ',
+        'msg_channel_members a JOIN msg_channels b ',
+        'ON a.channelId = b.id JOIN msg_channel_info c ',
+        'ON b.id = c.channelId AND c.userId = ? LEFT JOIN users d ',
+        'ON a.userId = d.id ',
+        'WHERE ((a.userId = ? AND b.twoPeople = 0) ',
+        'AND (IFNULL(c.channelName, b.channelName) LIKE ?)) OR ',
+        '((a.userId != ? AND b.twoPeople = 1) AND (d.username LIKE ?)) OR ',
+        '((b.id = 2) AND (b.channelName LIKE ?)) LIMIT 10'
+      ].join('');
+      pool.query(query, [user.id, user.id, text + '%', user.id, text + '%', text + '%'], (err, primaryRes) => {
+        callback(err, primaryRes);
+      })
+    },
+    (primaryRes, callback) => {
+      const remainder = 10 - primaryRes.length;
+      if (remainder > 0) {
+        let query = [
+          'SELECT username AS label, realName AS subLabel, id AS userId FROM users ',
+          'WHERE ((username LIKE ?) OR (realName LIKE ?)) AND id != ? LIMIT ' + remainder
+        ].join('');
+        pool.query(query, [text + '%', text + '%', user.id], (err, rows) => {
+          let secondaryRes = rows.filter(row => {
+            let allowed = true;
+            for (let i = 0; i < primaryRes.length; i++) {
+              if (row.label === primaryRes[i].label) {
+                allowed = false;
+                break;
+              }
+            }
+            return allowed;
+          })
+
+          let finalRes = primaryRes.map(res => ({
+            primary: true,
+            label: res.label,
+            subLabel: res.subLabel,
+            twoPeople: res.twoPeople,
+            channelId: res.channelId,
+            userId: res.userId
+          })).concat(secondaryRes.map(res => ({
+            primary: false,
+            label: res.label,
+            subLabel: res.subLabel,
+            userId: res.userId
+          })));
+          callback(err, finalRes);
+        })
+      }
+      else {
+        let finalRes = primaryRes.map(res => ({
+          primary: true,
+          label: res.label,
+          subLabel: res.subLabel,
+          twoPeople: res.twoPeople,
+          channelId: res.channelId,
+          userId: res.userId
+        }))
+        callback(null, finalRes)
+      }
+    }
+  ], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({error: err})
+    }
+    res.send(result)
+  })
+})
+
+router.get('/search/users', (req, res) => {
   const text = req.query.text;
   const query = 'SELECT * FROM users WHERE (username LIKE ?) OR (realName LIKE ?) LIMIT 5';
   pool.query(query, [text + '%', text + '%'], (err, rows) => {

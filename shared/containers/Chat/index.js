@@ -12,6 +12,7 @@ import UserListModal from 'components/Modals/UserListModal';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import Button from 'components/Button';
+import ChatSearchBox from './ChatSearchBox';
 import {GENERAL_CHAT_ID} from 'constants/database';
 
 const channelName = (channels, currentChannel) => {
@@ -192,13 +193,14 @@ export default class Chat extends Component {
   }
 
   render() {
-    const {channels, currentChannel, userId} = this.props;
+    const {channels, currentChannel, userId, searchResult} = this.props;
     const {
       createNewChannelModalShown,
       inviteUsersModalShown,
       userListModalShown,
       editTitleModalShown,
-      myChannels
+      myChannels,
+      searchText
     } = this.state;
 
     let menuProps = (currentChannel.twoPeople) ?
@@ -294,21 +296,14 @@ export default class Chat extends Component {
               onClick={this.onNewButtonClick}
             >+New</Button>
           </div>
-          {
-            /*<div className="row container-fluid">
-              <input
-                className="form-control"
-                placeholder="Search for channels / usernames"
-              />
-            </div>*/
-          }
+          <ChatSearchBox />
           <div
             className="row"
             style={{
               marginTop: '1em',
               overflow: 'scroll',
               position: 'absolute',
-              height: '80%',
+              height: '75%',
               width: '100%'
             }}
           >

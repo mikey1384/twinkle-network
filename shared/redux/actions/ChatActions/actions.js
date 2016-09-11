@@ -30,9 +30,10 @@ export const createNewChat = data => ({
   data
 })
 
-export const enterChannel = data => ({
+export const enterChannel = (data, showOnTop = false) => ({
   type: 'ENTER_CHANNEL',
-  data
+  data,
+  showOnTop
 })
 
 export const fetchChannelWithId = (channelId, {then}) => dispatch =>
@@ -96,6 +97,11 @@ export const openNewChatTab = (user, partner) => ({
 
 export const receiveExistingChatData = data => ({
   type: 'RECEIVE_EXISTING_CHAT_DATA',
+  data
+})
+
+export const searchChat = data => ({
+  type: 'SEARCH_CHAT',
   data
 })
 

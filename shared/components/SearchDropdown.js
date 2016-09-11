@@ -1,10 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 
-export default class InvitePeopleDropdown extends Component {
+export default class Dropdown extends Component {
   static propTypes = {
     onUpdate: PropTypes.func.isRequired,
     onUnmount: PropTypes.func.isRequired,
-    onAddUser: PropTypes.func.isRequired,
+    onItemClick: PropTypes.func.isRequired,
+    renderItemLabel: PropTypes.func.isRequired,
     dropdownItemToHighlight: PropTypes.number.isRequired,
     searchResults: PropTypes.array.isRequired
   }
@@ -42,14 +43,17 @@ export default class InvitePeopleDropdown extends Component {
           display: 'block'
         }}
       >
-        {searchResults.map((user, index) => {
-          let style = index === dropdownItemToHighlight ? {background: '#f5f5f5'} : null;
+        {searchResults.map((item, index) => {
+          let style = index === dropdownItemToHighlight ? {background: '#f5f5f5', color: '#333333'} : null;
           return (
             <li
               key={index}
-              onClick={() => this.props.onAddUser(user)}
-              style={style}
-            ><a>{user.username} {user.realName && <small>{`(${user.realName})`}</small>}</a></li>
+              onClick={() => this.props.onItemClick(item)}
+            >
+              <a style={style}>
+                {this.props.renderItemLabel(item)}
+              </a>
+            </li>
           )
         })}
       </ul>

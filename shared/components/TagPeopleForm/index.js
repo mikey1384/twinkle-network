@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {stringIsEmpty} from 'helpers/stringHelpers';
-import TagPeopleInput from './Input';
+import Input from './Input';
 
 
 export default class TagPeopleForm extends Component {
@@ -52,7 +52,7 @@ export default class TagPeopleForm extends Component {
         <div className="form-group">
           <label>People</label>
           {this.renderTags()}
-          <TagPeopleInput
+          <Input
             autoFocus
             value={searchText}
             onChange={this.onUserSearch}

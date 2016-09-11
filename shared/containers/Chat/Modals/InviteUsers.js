@@ -7,7 +7,7 @@ import {clearSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} 
 
 @connect(
   state => ({
-    searchResult: state.ChatReducer.searchResult
+    searchResult: state.ChatReducer.userSearchResult
   }),
   {
     clearSearchResults,

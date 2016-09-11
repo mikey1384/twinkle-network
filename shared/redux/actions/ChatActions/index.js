@@ -21,7 +21,7 @@ export const checkChatExistsThenOpenNewChatTabOrEnterExistingChat = (user, partn
 }
 
 export const clearSearchResults = () => ({
-  type: 'CLEAR_RESULTS_FOR_CHANNEL'
+  type: 'CLEAR_CHAT_SEARCH_RESULTS'
 })
 
 export const checkChatExistsThenCreateNewChatOrReceiveExistingChatData = (params, callback) => dispatch =>
@@ -70,12 +70,12 @@ request.post(`${API_URL}/title`, params, auth())
   }
 )
 
-export const enterChannelWithId = (channelId) => dispatch => {
-  const {fetchChannelWithId, enterChannel} = actions;
+export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
+  const {fetchChannelWithId, enterChannel, enterChannelShowOnTop} = actions;
   dispatch(fetchChannelWithId(channelId, {then: followUp}));
 
   function followUp(data) {
-    dispatch(enterChannel(data))
+    dispatch(enterChannel(data, showOnTop))
   }
 }
 
@@ -217,8 +217,19 @@ export const resetChat = () => ({
   type: 'RESET_CHAT'
 })
 
+export const searchChatAsync = text => dispatch =>
+request.get(`${API_URL}/search/chat?text=${text}`, auth())
+.then(
+  response => dispatch(actions.searchChat(response.data))
+).catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
 export const searchUserToInviteAsync = text => dispatch =>
-request.get(`${API_URL}/search?text=${text}`)
+request.get(`${API_URL}/search/users?text=${text}`)
 .then(
   response => dispatch(actions.searchUserToInvite(response.data))
 ).catch(
