@@ -455,8 +455,7 @@ export default class Chat extends Component {
             username,
             content: message.content,
             channelId: message.channelId,
-            id: messageId,
-            timeStamp: message.timeStamp
+            id: messageId
           })
           return;
         }

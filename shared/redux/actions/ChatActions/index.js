@@ -250,7 +250,7 @@ export const submitMessageAsync = (params, callback) => dispatch => {
     response => {
       const {channels} = response.data;
       dispatch(actions.updateChannelList({channels}))
-      callback(message);
+      callback(params);
     }
   ).catch(
     error => {

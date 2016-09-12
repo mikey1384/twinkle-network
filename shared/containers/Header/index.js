@@ -11,6 +11,7 @@ import SigninModal from '../Signin';
 import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
+import Notifications from './Notifications';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
 import {browserHistory} from 'react-router';
@@ -133,13 +134,12 @@ export default class Header extends Component {
         <Navbar.Collapse>
           {this.renderTabs()}
           <Nav pullRight className="flexbox-container">
-            {loggedIn &&
-              <ChatButton
-                onClick={() => onChatButtonClick()}
-                chatMode={chatMode}
-                numUnreads={numUnreads}
-              />
-            }
+            {loggedIn && <ChatButton
+              key={1}
+              onClick={() => onChatButtonClick()}
+              chatMode={chatMode}
+              numUnreads={numUnreads}
+            />}
             {loggedIn ?
               <AccountMenu
                 title={username}

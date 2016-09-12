@@ -31,7 +31,8 @@ router.get('/', requireAuth, (req, res) => {
 router.post('/', requireAuth, (req, res) => {
   const user = req.user;
   const message = req.body.message;
-  const {channelId, content, timeStamp} = message;
+  const {channelId, content} = message;
+  const timeStamp = Math.floor(Date.now()/1000);
   if (message.userId !== user.id) {
     return res.status(401).send("Unauthorized")
   }
