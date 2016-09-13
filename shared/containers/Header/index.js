@@ -11,7 +11,7 @@ import SigninModal from '../Signin';
 import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
-import Notifications from './Notifications';
+import Notifications from './NotificationsButton';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
 import {browserHistory} from 'react-router';
@@ -122,7 +122,6 @@ export default class Header extends Component {
     }
     return (
       <Navbar staticTop={staticTopOn} fixedTop={fixedTopOn} fluid>
-        <Navbar.Toggle />
         <Link
           className="navbar-brand"
           style={{cursor: 'pointer'}}
@@ -131,24 +130,32 @@ export default class Header extends Component {
         >
           Twinkle
         </Link>
-        <Navbar.Collapse>
-          {this.renderTabs()}
-          <Nav pullRight className="flexbox-container">
-            {loggedIn && <ChatButton
+        <Nav pullRight className="flexbox-container">
+          {loggedIn &&
+            <ChatButton
               key={1}
               onClick={() => onChatButtonClick()}
               chatMode={chatMode}
               numUnreads={numUnreads}
-            />}
-            {loggedIn ?
-              <AccountMenu
-                title={username}
-                logout={logout}
-              /> :
-              <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
-            }
-          </Nav>
-        </Navbar.Collapse>
+            />
+          }
+          {/*loggedIn && [
+            <ChatButton
+              key={1}
+              onClick={() => onChatButtonClick()}
+              chatMode={chatMode}
+              numUnreads={numUnreads}
+            />,
+            <Notifications key={2} />
+          ]*/}
+          {loggedIn ?
+            <AccountMenu
+              title={username}
+              logout={logout}
+            /> :
+            <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
+          }
+        </Nav>
         {signinModalShown &&
           <SigninModal show onHide={() => closeSigninModal()} />
         }

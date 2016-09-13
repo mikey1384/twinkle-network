@@ -1,4 +1,6 @@
 import React, {Component, PropTypes} from 'react';
+import ExecutionEnvironment from 'exenv';
+import ReactDOM from 'react-dom';
 import Carousel from 'components/Carousel';
 import VideoThumb from 'components/VideoThumb';
 import SmallDropdownButton from 'components/SmallDropdownButton';
@@ -13,7 +15,6 @@ import {
   resetPlaylistModalState
 } from 'redux/actions/PlaylistActions';
 import {connect} from 'react-redux';
-
 
 @connect(
   state => ({
@@ -39,10 +40,15 @@ export default class PlaylistCarousel extends Component {
 
   constructor() {
     super()
+    let numSlides = 7;
+    if(ExecutionEnvironment.canUseDOM) {
+      numSlides = document.documentElement.clientWidth < 768 ? 3 : 7
+    }
     this.state = {
       onEdit: false,
       editPlaylistModalShown: false,
-      deleteConfirmModalShown: false
+      deleteConfirmModalShown: false,
+      numSlides
     }
     this.onEditTitle = this.onEditTitle.bind(this)
     this.onChangeVideos = this.onChangeVideos.bind(this)
@@ -52,10 +58,55 @@ export default class PlaylistCarousel extends Component {
     this.onEditTitleCancel = this.onEditTitleCancel.bind(this)
     this.onEditPlaylistHide = this.onEditPlaylistHide.bind(this)
     this.onDeleteConfirm = this.onDeleteConfirm.bind(this)
+    this.onResize = this.onResize.bind(this)
+  }
+
+  componentDidMount() {
+    bindListeners.call(this);
+    function bindListeners() {
+      if (ExecutionEnvironment.canUseDOM) {
+        addEvent(window, 'resize', this.onResize);
+      }
+
+      function addEvent(elem, type, eventHandle) {
+        if (elem === null || typeof elem === 'undefined') {
+          return;
+        }
+        if (elem.addEventListener) {
+          elem.addEventListener(type, eventHandle, false);
+        } else if (elem.attachEvent) {
+          elem.attachEvent('on' + type, eventHandle);
+        } else {
+          elem['on' + type] = eventHandle;
+        }
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    unbindListeners.call(this);
+    function unbindListeners() {
+      if (ExecutionEnvironment.canUseDOM) {
+        removeEvent(window, 'resize', this.onResize);
+      }
+
+      function removeEvent(elem, type, eventHandle) {
+        if (elem === null || typeof elem === 'undefined') {
+          return;
+        }
+        if (elem.removeEventListener) {
+          elem.removeEventListener(type, eventHandle, false);
+        } else if (elem.detachEvent) {
+          elem.detachEvent('on' + type, eventHandle);
+        } else {
+          elem['on' + type] = null;
+        }
+      };
+    }
   }
 
   render () {
-    const {onEdit, editPlaylistModalShown, deleteConfirmModalShown} = this.state;
+    const {onEdit, editPlaylistModalShown, deleteConfirmModalShown, numSlides} = this.state;
     const {title, uploader, editable, id} = this.props;
     const selectedVideos = this.props.playlist.map(thumb => {
       return thumb.videoId;
@@ -121,8 +172,8 @@ export default class PlaylistCarousel extends Component {
         </div>
         <Carousel
           progressBar={false}
-          slidesToShow={7}
-          slidesToScroll={7}
+          slidesToShow={numSlides}
+          slidesToScroll={numSlides}
           cellSpacing={20}
           dragging={true}
         >
@@ -208,5 +259,11 @@ export default class PlaylistCarousel extends Component {
   onEditPlaylistHide() {
     this.props.resetPlaylistModalState();
     this.setState({editPlaylistModalShown: false});
+  }
+
+  onResize() {
+    if(ExecutionEnvironment.canUseDOM) {
+      this.setState({numSlides: document.documentElement.clientWidth < 768 ? 3 : 7})
+    }
   }
 }

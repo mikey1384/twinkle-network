@@ -3,6 +3,7 @@ import {Route, IndexRoute} from 'react-router';
 import App from 'containers/App';
 import Home from 'containers/Home';
 
+import Notifications from 'containers/Notifications';
 import Profile from 'containers/Profile';
 import Posts from 'containers/Posts';
 import Discussion from 'containers/Discussion';
@@ -63,6 +64,7 @@ export const routes = (
         onEnter={onVideoPageEnter}
       />
     </Route>
+    <Route path="notifications" component={Notifications}/>
     <Route path="/profile" component={Profile}/>
     <Route path="/posts" component={Posts}/>
     <Route path="/discussion" component={Discussion}/>
