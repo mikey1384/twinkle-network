@@ -38,7 +38,7 @@ const fetchCommentElements = (params) => cb => {
     callback => {
       let query = [
         'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
-        'vq_replies a JOIN users b ON ',
+        'vq_comments a JOIN users b ON ',
         'a.userId = b.id WHERE ',
         'a.commentId = ?'
       ].join('')
@@ -91,9 +91,9 @@ const fetchReplyElements = (params) => cb => {
   let replyId = replyRow.id;
   let query = [
     'SELECT a.userId, b.username ',
-    'FROM vq_replyupvotes a JOIN users b ON ',
+    'FROM vq_commentupvotes a JOIN users b ON ',
     'a.userId = b.id WHERE ',
-    'a.replyId = ?'
+    'a.commentId = ?'
   ].join('')
   pool.query(query, replyId, (err, rows) => {
     repliesArray[index] = {

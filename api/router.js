@@ -3,4 +3,5 @@ module.exports = function (app, pool) {
   app.use('/video', require('./controllers/video'));
   app.use('/playlist', require('./controllers/playlist'));
   app.use('/chat', require('./controllers/chat'));
+  app.use('/notifications', require('./controllers/notifications'));
 }

@@ -6,6 +6,11 @@ export default class Notifications extends Component {
     return (
       <div className="container-fluid">
         <div
+          style={{paddingBottom: '1em', marginTop: '15px'}}
+        >
+          <h4>All Notifications</h4>
+        </div>
+        <div
           className="list-group"
           style={{
             cursor: 'pointer',

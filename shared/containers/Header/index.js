@@ -5,13 +5,14 @@ import activeComponent from 'react-router-active-component';
 import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions';
 import {
   getNumberOfUnreadMessagesAsync,
-  increaseNumberOfUnreadMessages } from 'redux/actions/ChatActions';
-import {turnChatOff} from 'redux/actions/ChatActions';
+  increaseNumberOfUnreadMessages,
+  turnChatOff } from 'redux/actions/ChatActions';
+import {fetchNotificationsAsync} from 'redux/actions/NotiActions';
 import SigninModal from '../Signin';
 import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
-import Notifications from './NotificationsButton';
+import NotificationsButton from './NotificationsButton';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
 import {browserHistory} from 'react-router';
@@ -24,7 +25,8 @@ import {browserHistory} from 'react-router';
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
     signinModalShown: state.UserReducer.signinModalShown,
-    numUnreads: state.ChatReducer.numUnreads
+    numChatUnreads: state.ChatReducer.numUnreads,
+    notifications: state.NotiReducer.notifications
   }),
   {
     openSigninModal,
@@ -32,7 +34,8 @@ import {browserHistory} from 'react-router';
     logout,
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
-    increaseNumberOfUnreadMessages
+    increaseNumberOfUnreadMessages,
+    fetchNotifications: fetchNotificationsAsync
   }
 )
 export default class Header extends Component {
@@ -40,7 +43,8 @@ export default class Header extends Component {
     super()
 
     this.state = {
-      tabClicked: false
+      tabClicked: false,
+      notificationsMenuShown: false
     }
 
     this.handleClick = this.handleClick.bind(this)
@@ -71,7 +75,7 @@ export default class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {getNumberOfUnreadMessages, socket} = this.props;
+    const {getNumberOfUnreadMessages, socket, fetchNotifications} = this.props;
     if (nextProps.userId && !this.props.userId) {
       socket.connect();
       socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username);
@@ -80,7 +84,8 @@ export default class Header extends Component {
       socket.disconnect();
     }
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
-      getNumberOfUnreadMessages()
+      getNumberOfUnreadMessages();
+      fetchNotifications();
     }
     if (nextProps.userId && nextProps.chatMode !== this.props.chatMode && nextProps.chatMode === false) {
       getNumberOfUnreadMessages()
@@ -109,7 +114,11 @@ export default class Header extends Component {
       closeSigninModal,
       onChatButtonClick,
       staticTop,
-      numUnreads } = this.props;
+      numChatUnreads,
+      notifications
+    } = this.props;
+
+    const {notificationsMenuShown} = this.state;
 
     let staticTopOn;
     let fixedTopOn;
@@ -131,23 +140,21 @@ export default class Header extends Component {
           Twinkle
         </Link>
         <Nav pullRight className="flexbox-container">
-          {loggedIn &&
+          {loggedIn && [
             <ChatButton
               key={1}
               onClick={() => onChatButtonClick()}
               chatMode={chatMode}
-              numUnreads={numUnreads}
-            />
-          }
-          {/*loggedIn && [
-            <ChatButton
-              key={1}
-              onClick={() => onChatButtonClick()}
-              chatMode={chatMode}
-              numUnreads={numUnreads}
-            />,
-            <Notifications key={2} />
-          ]*/}
+              numUnreads={numChatUnreads}
+            />/*,
+            <NotificationsButton
+              onHideMenu={() => this.setState({notificationsMenuShown: false})}
+              onClick={() => this.setState({notificationsMenuShown: !notificationsMenuShown})}
+              menuShown={notificationsMenuShown}
+              notifications={notifications}
+              key={2}
+            />*/
+          ]}
           {loggedIn ?
             <AccountMenu
               title={username}

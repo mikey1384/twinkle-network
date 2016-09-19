@@ -58,8 +58,8 @@ router.post('/', requireAuth, (req, res) => {
 
 router.delete('/', requireAuth, (req, res) => {
   const user = req.user;
-  const videoId = typeof req.query.videoId !== 'undefined' ? Number(req.query.videoId) : 0;
-  const lastVideoId = typeof req.query.lastVideoId !== 'undefined' ? Number(req.query.lastVideoId) : 0;
+  const videoId = req.query.videoId != 'undefined' ? Number(req.query.videoId) : 0;
+  const lastVideoId = req.query.lastVideoId != 'undefined' ? Number(req.query.lastVideoId) : 0;
 
   async.parallel([
     (callback) => {
@@ -252,7 +252,7 @@ router.get('/comments', (req, res) => {
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
     'FROM vq_comments a JOIN users b ON a.userId = b.id ',
-    'WHERE videoId = ? ORDER BY a.id DESC'
+    'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC'
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {
@@ -419,14 +419,14 @@ router.post('/replies', requireAuth, (req, res) => {
         commentId,
         videoId
       }
-      pool.query('INSERT INTO vq_replies SET ?', post, (err, result) => {
+      pool.query('INSERT INTO vq_comments SET ?', post, (err, result) => {
         callback(err, result.insertId)
       })
     },
     (replyId, callback) => {
       let query = [
         'SELECT a.id, a.content, a.timeStamp, a.userId, b.username FROM ',
-        'vq_replies a JOIN users b ON a.userId = b.id WHERE ',
+        'vq_comments a JOIN users b ON a.userId = b.id WHERE ',
         'a.id = ?'
       ].join('')
       pool.query(query, replyId, (err, rows) => {
@@ -456,7 +456,7 @@ router.post('/replies/edit', requireAuth, (req, res) => {
   const content = processedString(req.body.editedReply);
   const replyId = req.body.replyId;
 
-  pool.query('UPDATE vq_replies SET ? WHERE id = ? AND userId = ?', [{content}, replyId, user.id], err => {
+  pool.query('UPDATE vq_comments SET ? WHERE id = ? AND userId = ?', [{content}, replyId, user.id], err => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -468,7 +468,7 @@ router.post('/replies/edit', requireAuth, (req, res) => {
 router.delete('/replies', requireAuth, (req, res) => {
   const user = req.user;
   const replyId = Number(req.query.replyId) || 0;
-  pool.query('DELETE FROM vq_replies WHERE id = ? AND userId = ?', [replyId, user.id], err => {
+  pool.query('DELETE FROM vq_comments WHERE id = ? AND userId = ?', [replyId, user.id], err => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -484,20 +484,20 @@ router.post('/replies/like', requireAuth, (req, res) => {
 
   async.waterfall([
     (callback) => {
-      const query = 'SELECT * FROM vq_replyupvotes WHERE replyId = ? AND userId = ?';
+      const query = 'SELECT * FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
       pool.query(query, [replyId, user.id], (err, rows) => {
         callback(err, rows);
       })
     },
     (rows, callback) => {
       if (rows.length > 0) {
-        let query = 'DELETE FROM vq_replyupvotes WHERE replyId = ? AND userId = ?';
+        let query = 'DELETE FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
         pool.query(query, [replyId, user.id], err => {
           callback(err);
         })
       } else {
-        let query = 'INSERT INTO vq_replyupvotes SET ?';
-        pool.query(query, {replyId: replyId, commentId: commentId, userId: user.id}, err => {
+        let query = 'INSERT INTO vq_commentupvotes SET ?';
+        pool.query(query, {commentId: replyId, userId: user.id}, err => {
           callback(err);
         })
       }
@@ -505,9 +505,9 @@ router.post('/replies/like', requireAuth, (req, res) => {
     (callback) => {
       let query = [
         'SELECT a.id, a.userId, b.username FROM ',
-        'vq_replyupvotes a JOIN users b ON ',
+        'vq_commentupvotes a JOIN users b ON ',
         'a.userId = b.id WHERE ',
-        'a.replyId = ?'
+        'a.commentId = ?'
       ].join('')
       pool.query(query, replyId, (err, rows) => {
         callback(err, rows)
