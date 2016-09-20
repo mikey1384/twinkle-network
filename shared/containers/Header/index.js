@@ -146,14 +146,14 @@ export default class Header extends Component {
               onClick={() => onChatButtonClick()}
               chatMode={chatMode}
               numUnreads={numChatUnreads}
-            />/*,
+            />,
             <NotificationsButton
               onHideMenu={() => this.setState({notificationsMenuShown: false})}
               onClick={() => this.setState({notificationsMenuShown: !notificationsMenuShown})}
               menuShown={notificationsMenuShown}
               notifications={notifications}
               key={2}
-            />*/
+            />
           ]}
           {loggedIn ?
             <AccountMenu

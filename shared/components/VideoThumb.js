@@ -37,7 +37,8 @@ export default class VideoThumb extends Component {
     super()
     this.state = {
       onEdit: false,
-      confirmModalShown: false
+      confirmModalShown: false,
+      onTitleHover: false
     }
     this.onEditTitle = this.onEditTitle.bind(this)
     this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
@@ -49,7 +50,7 @@ export default class VideoThumb extends Component {
   }
 
   render() {
-    const {onEdit, confirmModalShown} = this.state;
+    const {onEdit, confirmModalShown, onTitleHover} = this.state;
     const {size, editable, video, to, user} = this.props;
     const menuProps = [
       {
@@ -136,10 +137,23 @@ export default class VideoThumb extends Component {
                   <a
                     href={`/${to}`}
                     onClick={this.onLinkClick}
+                    onMouseOver={() => this.setState({onTitleHover: true})}
+                    onMouseLeave={() => this.setState({onTitleHover: false})}
                   >
                     {cleanString(video.title)}
                   </a>
                 </h5>
+                <div
+                  className="alert alert-info"
+                  style={{
+                    position: 'absolute',
+                    zIndex: '10',
+                    padding: '5px',
+                    display: onTitleHover ? 'block' : 'none',
+                    width: 'auto',
+                    maxWidth: '500px'
+                  }}
+                >{video.title}</div>
               </div>
             }
             <small style={{
