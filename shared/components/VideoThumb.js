@@ -153,7 +153,7 @@ export default class VideoThumb extends Component {
                     width: 'auto',
                     maxWidth: '500px'
                   }}
-                >{video.title}</div>
+                >{cleanString(video.title)}</div>
               </div>
             }
             <small style={{
