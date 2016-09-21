@@ -86,8 +86,6 @@ export default class VideoThumb extends Component {
           <a
             href={`/${to}`}
             onClick={this.onLinkClick}
-            onMouseOver={() => this.setState({onTitleHover: true})}
-            onMouseLeave={() => this.setState({onTitleHover: false})}
           >
             <div
               style={{
