@@ -8,11 +8,17 @@ const defaultState = {
   videoPage: {
     comments: [],
     noComments: false
-  }
+  },
+  searchResult: []
 };
 
 export default function VideoReducer(state = defaultState, action) {
   switch(action.type) {
+    case 'CLEAR_CONTENT_SEARCH_RESULTS':
+      return {
+        ...state,
+        searchResult: []
+      }
     case 'GET_VIDEOS':
       let loadMoreButton = false;
       let allVideosLoaded = false;
@@ -294,6 +300,11 @@ export default function VideoReducer(state = defaultState, action) {
         loadMoreButton: false,
         allVideosLoaded: false,
         addVideoModalShown: false
+      }
+    case 'SEARCH_CONTENT':
+      return {
+        ...state,
+        searchResult: action.data.result
       }
     default:
       return state;

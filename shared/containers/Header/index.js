@@ -16,6 +16,7 @@ import NotificationsButton from './NotificationsButton';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
 import {browserHistory} from 'react-router';
+import SearchBox from './SearchBox';
 
 @connect(
   state => ({
@@ -139,6 +140,7 @@ export default class Header extends Component {
         >
           Twinkle
         </Link>
+        {!chatMode && <SearchBox />}
         <Nav pullRight className="flexbox-container">
           {loggedIn && [
             <ChatButton
