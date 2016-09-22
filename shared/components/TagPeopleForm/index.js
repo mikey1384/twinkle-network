@@ -102,7 +102,7 @@ export default class TagPeopleForm extends Component {
     const {onSearch, onClear} = this.props;
     const text = event.target.value;
     this.setState({searchText: text})
-    if (stringIsEmpty(text)) {
+    if (stringIsEmpty(text) || text.length < 2) {
       return onClear()
     }
     onSearch(text)

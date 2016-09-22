@@ -523,7 +523,7 @@ router.get('/search/chat', requireAuth, (req, res) => {
         '((a.userId != ? AND b.twoPeople = 1) AND (d.username LIKE ?)) OR ',
         '((b.id = 2) AND (b.channelName LIKE ?)) LIMIT 10'
       ].join('');
-      pool.query(query, [user.id, user.id, text + '%', user.id, text + '%', text + '%'], (err, primaryRes) => {
+      pool.query(query, [user.id, user.id, '%' + text + '%', user.id, '%' + text + '%', '%' + text + '%'], (err, primaryRes) => {
         callback(err, primaryRes);
       })
     },
@@ -534,7 +534,7 @@ router.get('/search/chat', requireAuth, (req, res) => {
           'SELECT username AS label, realName AS subLabel, id AS userId FROM users ',
           'WHERE ((username LIKE ?) OR (realName LIKE ?)) AND id != ? LIMIT ' + remainder
         ].join('');
-        pool.query(query, [text + '%', text + '%', user.id], (err, rows) => {
+        pool.query(query, ['%' + text + '%', '%' + text + '%', user.id], (err, rows) => {
           let secondaryRes = rows.filter(row => {
             let allowed = true;
             for (let i = 0; i < primaryRes.length; i++) {
@@ -586,7 +586,7 @@ router.get('/search/chat', requireAuth, (req, res) => {
 router.get('/search/users', (req, res) => {
   const text = req.query.text;
   const query = 'SELECT * FROM users WHERE (username LIKE ?) OR (realName LIKE ?) LIMIT 5';
-  pool.query(query, [text + '%', text + '%'], (err, rows) => {
+  pool.query(query, ['%' + text + '%', '%' + text + '%'], (err, rows) => {
     if (err) {
       console.error(err);
       res.status(500).send({error: err})

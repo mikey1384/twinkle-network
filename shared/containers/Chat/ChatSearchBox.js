@@ -58,7 +58,7 @@ export default class ChatSearchBox extends Component {
     const {searchChat, clearSearchResults} = this.props;
     const text = event.target.value;
     this.setState({searchText: text});
-    if (stringIsEmpty(text)) {
+    if (stringIsEmpty(text) || text.length < 2) {
       return clearSearchResults()
     }
     searchChat(text);

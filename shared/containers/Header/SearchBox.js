@@ -30,7 +30,7 @@ export default class SearchBox extends Component {
   }
 
   render() {
-    const {searchResult} = this.props;
+    const {searchResult, clearSearchResults} = this.props;
     const {searchText} = this.state;
     return (
       <div className="navbar-left col-xs-7" style={{paddingTop: '6px'}}>
@@ -42,7 +42,10 @@ export default class SearchBox extends Component {
           renderItemLabel={
             item => <span>{item.label}</span>
           }
-          onClickOutSide={() => console.log("clicked outside")}
+          onClickOutSide={() => {
+            this.setState({searchText: ''})
+            clearSearchResults()
+          }}
           onSelect={this.onSelect}
         />
       </div>
