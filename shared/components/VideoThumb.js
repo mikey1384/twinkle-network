@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactDOM from 'react-dom';
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ConfirmModal from './Modals/ConfirmModal';
@@ -47,6 +48,7 @@ export default class VideoThumb extends Component {
     this.onDeleteConfirm = this.onDeleteConfirm.bind(this)
     this.onLinkClick = this.onLinkClick.bind(this)
     this.onHideModal = this.onHideModal.bind(this)
+    this.onMouseOver = this.onMouseOver.bind(this)
   }
 
   render() {
@@ -128,16 +130,19 @@ export default class VideoThumb extends Component {
               </div>
               :
               <div>
-                <h5 style={{
-                  whiteSpace: 'nowrap',
-                  textOverflow:'ellipsis',
-                  overflow:'hidden',
-                  lineHeight: 'normal'
-                }}>
+                <h5
+                  ref="thumbLabel"
+                  style={{
+                    whiteSpace: 'nowrap',
+                    textOverflow:'ellipsis',
+                    overflow:'hidden',
+                    lineHeight: 'normal'
+                  }}
+                >
                   <a
                     href={`/${to}`}
                     onClick={this.onLinkClick}
-                    onMouseOver={() => this.setState({onTitleHover: true})}
+                    onMouseOver={this.onMouseOver}
                     onMouseLeave={() => this.setState({onTitleHover: false})}
                   >
                     {cleanString(video.title)}
@@ -217,5 +222,15 @@ export default class VideoThumb extends Component {
 
   onHideModal() {
     this.setState({confirmModalShown: false});
+  }
+
+  onMouseOver() {
+    if (textIsOverflown(ReactDOM.findDOMNode(this.refs.thumbLabel))) {
+      this.setState({onTitleHover: true})
+    }
+
+    function textIsOverflown(element) {
+      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+    }
   }
 }

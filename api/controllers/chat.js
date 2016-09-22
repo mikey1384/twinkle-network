@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 const {requireAuth} = require('../auth');
-const {processedString, processedTitleString} = require('../helpers/stringHelpers');
+const {processedString, processedTitleString, stringIsEmpty} = require('../helpers/stringHelpers');
 const {generalChatId} = require('../siteConfig');
 const {
   fetchChat,
@@ -585,6 +585,7 @@ router.get('/search/chat', requireAuth, (req, res) => {
 
 router.get('/search/users', (req, res) => {
   const text = req.query.text;
+  if (stringIsEmpty(text) || text.length < 2) return res.send([]);
   const query = 'SELECT * FROM users WHERE (username LIKE ?) OR (realName LIKE ?) LIMIT 5';
   pool.query(query, ['%' + text + '%', '%' + text + '%'], (err, rows) => {
     if (err) {
