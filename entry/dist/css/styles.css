@@ -1,5 +1,6 @@
 html, body {
 	height: 100%;
+	background-color: #f1f3f6;
 }
 
 #react-view {
@@ -29,7 +30,7 @@ html, body {
 }
 
 .footer {
-	background-color: #f5f5f5;
+	background-color: #f1f3f6;
   bottom: 0;
 	height: auto;
 	padding: 2em;
@@ -100,6 +101,21 @@ html, body {
 
 .dropdown-menu > li > a:hover {
 	background-color: #f5f5f5;
+}
+
+.glyphicon.spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
 }
 
 @media (min-width: 1192px) {

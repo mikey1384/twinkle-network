@@ -1,11 +1,10 @@
 import React from 'react';
 import {Route, IndexRoute} from 'react-router';
 import App from 'containers/App';
-import Home from 'containers/Home';
 
 import Notifications from 'containers/Notifications';
 import Profile from 'containers/Profile';
-import Posts from 'containers/Posts';
+import Home from 'containers/Home';
 import Discussion from 'containers/Discussion';
 import Contents from 'containers/Contents';
 import ContentsMain from 'containers/Contents/Main';
@@ -21,6 +20,7 @@ import ReduxThunk from 'redux-thunk';
 import {getPlaylistsAsync} from 'redux/actions/PlaylistActions';
 import {loadVideoPageAsync} from 'redux/actions/VideoActions';
 import {initSessionAsync} from 'redux/actions/UserActions';
+import {fetchFeedsAsync} from 'redux/actions/FeedActions';
 import {browserHistory} from 'react-router';
 import {syncHistoryWithStore} from 'react-router-redux';
 
@@ -56,17 +56,17 @@ export const routes = (
     path="/"
     onEnter={onAppEnter}
   >
-    <Route component={Contents}>
+    <IndexRoute component={Home}/>
+    <Route path="/videos" component={Contents}>
       <IndexRoute component={ContentsMain} />
       <Route
-        path="videos/:videoId"
+        path=":videoId"
         component={VideoPage}
         onEnter={onVideoPageEnter}
       />
     </Route>
-    <Route path="notifications" component={Notifications}/>
+    <Route path="/notifications" component={Notifications}/>
     <Route path="/profile" component={Profile}/>
-    <Route path="/posts" component={Posts}/>
     <Route path="/discussion" component={Discussion}/>
     <Route path="/management" component={AdminOnly(Management)}/>
 
@@ -80,5 +80,8 @@ function onVideoPageEnter(nextState) {
 }
 
 function onAppEnter() {
-  if (browserHistory) store.dispatch(initSessionAsync());
+  if (browserHistory) {
+    store.dispatch(initSessionAsync())
+    store.dispatch(fetchFeedsAsync())
+  }
 }

@@ -1,6 +1,6 @@
 module.exports = {
   userExists(rows) {
-    var result = (rows.length === 0) ? false : true;
+    var result = rows.length !== 0;
     return result;
   },
   isFalseClaim(email, isTeacher) {

@@ -104,7 +104,13 @@ export default class VideoPage extends Component {
     'container';
 
     return (
-      <div className="container-fluid">
+      <div
+        className="container-fluid"
+        style={{
+          backgroundColor: '#fff',
+          marginBottom: '2em'
+        }}
+      >
         <Description
           videoId={videoId}
           title={title}

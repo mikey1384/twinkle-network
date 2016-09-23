@@ -37,15 +37,16 @@ export default class App extends Component {
   }
 
   render() {
-    const {chatMode, turnChatOff} = this.props;
+    const {chatMode, turnChatOff, location} = this.props;
     const style = chatMode && this.props.loggedIn ? {
       position: 'fixed',
       opacity: 0
     } : {paddingTop: '65px'}
 
     return (
-      <div id="main-view">
+      <div id="main-view" style={{backgroundColor: chatMode && '#fff'}}>
         <Header
+          location={location}
           staticTop={chatMode}
           socket={socket}
           chatMode={chatMode}
@@ -69,7 +70,7 @@ export default class App extends Component {
           /> :
           <footer
             className="footer col-md-12"
-            style={{marginTop: '1em'}}
+            style={{paddingTop: '5px'}}
           >
             <p className="text-muted text-center">Twinkle © 2016</p>
           </footer>

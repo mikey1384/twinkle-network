@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Modal, Button} from 'react-bootstrap';
-import {searchUserToInviteAsync, clearSearchResults} from 'redux/actions/ChatActions';
+import {searchUserToInviteAsync, clearUserSearchResults} from 'redux/actions/ChatActions';
 import {connect} from 'react-redux';
 import TagPeopleForm from 'components/TagPeopleForm';
 
@@ -10,7 +10,7 @@ import TagPeopleForm from 'components/TagPeopleForm';
     searchResult: state.ChatReducer.userSearchResult
   }),
   {
-    clearSearchResults,
+    clearSearchResults: clearUserSearchResults,
     searchUserToInvite: searchUserToInviteAsync
   }
 )

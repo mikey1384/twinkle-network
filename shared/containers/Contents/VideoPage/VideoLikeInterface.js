@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'components/Button';
 import Likers from 'components/Likers';
+import LikeButton from 'components/LikeButton';
 
 export default function VideoLikeInterface(props) {
   const {userId, likes, onLikeClick, showLikerList} = props;
@@ -10,16 +11,11 @@ export default function VideoLikeInterface(props) {
         className="text-center"
         style={{marginTop: '4em'}}
       >
-        <Button
-          className="btn btn-info"
-          style={{
-            fontSize: '3rem'
-          }}
+        <LikeButton
+          style={{marginLeft: '0.5em', fontSize: '3rem'}}
           onClick={() => onLikeClick()}
-        >
-          <span className="glyphicon glyphicon-thumbs-up"></span>
-          {renderLikeButtonText(likes)}
-        </Button>
+          liked={isLiked(likes)}
+        />
       </div>
       <div
         className="text-center"
@@ -34,13 +30,13 @@ export default function VideoLikeInterface(props) {
     </div>
   )
 
-  function renderLikeButtonText(likes) {
-    let text = " Like";
+  function isLiked(likes) {
+    let liked = false;
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if(likes[i].userId === userId) text = " Liked!"
+        if(likes[i].userId === userId) liked = true;
       }
     }
-    return text;
+    return liked;
   }
 }

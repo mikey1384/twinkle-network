@@ -45,6 +45,6 @@ module.exports = {
   },
   stringIsEmpty(string) {
     var checkedString = string.replace(/\s/g, "").replace(/\r?\n/g, "");
-    return (checkedString === "") ? true : false;
+    return checkedString === "";
   }
 }

@@ -28,7 +28,7 @@ export default class CommentsSection extends Component {
   render() {
     const {onSubmit} = this.props;
     return (
-      <div className="row container-fluid">
+      <div className="row container-fluid" style={{paddingBottom: '1em'}}>
         <div className="container-fluid">
           <CommentInputArea
             onSubmit={comment => onSubmit(comment)}

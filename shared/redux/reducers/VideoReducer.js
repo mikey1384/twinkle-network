@@ -136,9 +136,7 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'DELETE_VIDEO_COMMENT':
-      let newComments = state.videoPage.comments.filter(comment => {
-        return (comment.id === action.data.commentId) ? false : true;
-      })
+      let newComments = state.videoPage.comments.filter(comment => comment.id !== action.data.commentId)
       let noComments = newComments.length === 0;
       return {
         ...state,
@@ -197,9 +195,7 @@ export default function VideoReducer(state = defaultState, action) {
             if (comment.id === action.data.commentId) {
               return {
                 ...comment,
-                replies: comment.replies.filter(reply => {
-                  return (reply.id === action.data.replyId) ? false : true;
-                })
+                replies: comment.replies.filter(reply => reply.id !== action.data.replyId)
               }
             }
             return comment;

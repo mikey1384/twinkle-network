@@ -8,6 +8,8 @@ import {
   increaseNumberOfUnreadMessages,
   turnChatOff } from 'redux/actions/ChatActions';
 import {fetchNotificationsAsync} from 'redux/actions/NotiActions';
+import {getInitialVideos} from 'redux/actions/VideoActions';
+import {getPinnedPlaylistsAsync, getPlaylistsAsync} from 'redux/actions/PlaylistActions';
 import SigninModal from '../Signin';
 import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
@@ -17,6 +19,7 @@ import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
 import {browserHistory} from 'react-router';
 import SearchBox from './SearchBox';
+import HeaderNav from 'components/HeaderNav';
 
 @connect(
   state => ({
@@ -36,19 +39,22 @@ import SearchBox from './SearchBox';
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
     increaseNumberOfUnreadMessages,
-    fetchNotifications: fetchNotificationsAsync
+    fetchNotifications: fetchNotificationsAsync,
+    getInitialVideos,
+    getPinnedPlaylists: getPinnedPlaylistsAsync,
+    getPlaylists: getPlaylistsAsync
   }
 )
 export default class Header extends Component {
   constructor(props) {
     super()
-
     this.state = {
-      tabClicked: false,
-      notificationsMenuShown: false
+      notificationsMenuShown: false,
+      selectedTab: !props.location || props.location.pathname === '/' ?
+      'home' : props.location.pathname.split('/')[1]
     }
 
-    this.handleClick = this.handleClick.bind(this)
+    this.onLogoClick = this.onLogoClick.bind(this)
 
     const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
     if (!!browserHistory) {
@@ -94,10 +100,16 @@ export default class Header extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {socket, userId} = this.props;
+    const {socket, userId, location} = this.props;
     if (userId !== prevProps.userId) {
       if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId);
       socket.emit('enter_my_notification_channel', userId);
+    }
+    if (prevProps.location.pathname !== location.pathname) {
+      const pathname = location.pathname.split('/')[1] || location.pathname
+      this.setState({
+        selectedTab: !location || location.pathname === '/' ? 'home' : pathname
+      })
     }
   }
 
@@ -116,11 +128,14 @@ export default class Header extends Component {
       onChatButtonClick,
       staticTop,
       numChatUnreads,
-      notifications
+      notifications,
+      getInitialVideos,
+      getPinnedPlaylists,
+      getPlaylists,
+      fetchFeeds
     } = this.props;
 
-    const {notificationsMenuShown} = this.state;
-
+    const {notificationsMenuShown, selectedTab} = this.state;
     let staticTopOn;
     let fixedTopOn;
     if (staticTop) {
@@ -136,11 +151,35 @@ export default class Header extends Component {
           className="navbar-brand"
           style={{cursor: 'pointer'}}
           to="/"
-          onClick={this.handleClick}
+          onClick={this.onLogoClick}
         >
           Twinkle
         </Link>
-        {!chatMode && <SearchBox />}
+        {!chatMode && [
+            <ul className="nav navbar-nav" key="navItems">
+              <HeaderNav
+                key="home"
+                to="/"
+                selected={selectedTab === 'home'}
+              >
+                Home
+              </HeaderNav>
+              <HeaderNav
+                key="videos"
+                to="videos"
+                onClick={() => {
+                  getInitialVideos()
+                  getPinnedPlaylists()
+                  getPlaylists()
+                }}
+                selected={selectedTab === 'videos'}
+              >
+                Videos
+              </HeaderNav>
+            </ul>,
+            <SearchBox key="searchBox" />
+          ]
+        }
         <Nav pullRight className="flexbox-container">
           {loggedIn && [
             <ChatButton
@@ -172,43 +211,8 @@ export default class Header extends Component {
     )
   }
 
-  renderTabs() {
-    const NavLink = activeComponent('li');
-    const {chatMode} = this.props;
-    return chatMode ? null : (
-      <Nav onClick={this.handleClick}>
-        { /*
-        <NavLink
-          to="/"
-          onlyActiveOnIndex
-        >
-          Home
-        </NavLink>
-        <NavLink to="/contents">
-          Contents
-        </NavLink>
-          <NavLink to="/profile">
-            Profile
-          </NavLink>
-          <NavLink to="/posts">
-            Posts
-          </NavLink>
-          <NavLink to="/discussion">
-            Discussion
-          </NavLink>
-          { this.props.isAdmin &&
-            <NavLink to="/management">
-              Management
-            </NavLink>
-          }
-          */
-        }
-      </Nav>
-    )
-  }
-
-  handleClick() {
-    this.setState({tabClicked: true})
+  onLogoClick() {
+    this.setState({selectedTab: 'home'})
     if (this.props.chatMode) {
       this.props.turnChatOff();
     }

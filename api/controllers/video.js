@@ -297,7 +297,7 @@ router.post('/comments', requireAuth, (req, res) => {
       const query = [
         'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
         'FROM vq_comments a JOIN users b ON a.userId = b.id ',
-        'WHERE videoId = ? ORDER BY a.id DESC'
+        'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC'
       ].join('');
       pool.query(query, videoId, (err, rows) => {
         callback(err, rows)

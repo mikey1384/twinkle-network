@@ -64,9 +64,7 @@ class Input extends Component {
       dropdownItemToHighlight={this.state.dropdownItemToHighlight}
       onItemClick={user => this.props.onAddUser(user)}
       renderItemLabel={
-        item => (
-          <span>{item.username} {item.realName && <small>{`(${item.realName})`}</small>}</span>
-        )
+        item => <span>{item.username} {item.realName && <small>{`(${item.realName})`}</small>}</span>
       }
     /> : null
   }

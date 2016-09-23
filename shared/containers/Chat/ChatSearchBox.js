@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import SearchInput from 'components/SearchInput';
 import {stringIsEmpty} from 'helpers/stringHelpers';
-import {searchChatAsync, clearSearchResults, enterChannelWithId} from 'redux/actions/ChatActions';
+import {searchChatAsync, clearChatSearchResults, enterChannelWithId} from 'redux/actions/ChatActions';
 import {openNewChatTab} from 'redux/actions/ChatActions/actions';
 
 
@@ -14,7 +14,7 @@ import {openNewChatTab} from 'redux/actions/ChatActions/actions';
   }),
   {
     searchChat: searchChatAsync,
-    clearSearchResults,
+    clearSearchResults: clearChatSearchResults,
     enterChannelWithId,
     openNewChatTab
   }

@@ -62,8 +62,8 @@ const fetchCommentElements = (params) => cb => {
       posterName: commentRow.username,
       content: commentRow.content,
       timeStamp: commentRow.timeStamp,
-      likes,
-      replies
+      replies,
+      likes
     }
     cb(err);
   })

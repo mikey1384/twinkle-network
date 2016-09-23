@@ -20,8 +20,12 @@ export const checkChatExistsThenOpenNewChatTabOrEnterExistingChat = (user, partn
   }
 }
 
-export const clearSearchResults = () => ({
+export const clearChatSearchResults = () => ({
   type: 'CLEAR_CHAT_SEARCH_RESULTS'
+})
+
+export const clearUserSearchResults = () => ({
+  type: 'CLEAR_USER_SEARCH_RESULTS'
 })
 
 export const checkChatExistsThenCreateNewChatOrReceiveExistingChatData = (params, callback) => dispatch =>

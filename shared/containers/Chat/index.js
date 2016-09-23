@@ -222,7 +222,7 @@ export default class Chat extends Component {
     }]
 
     return (
-      <div style={{display: 'flex', height: '88%'}}>
+      <div style={{display: 'flex', height: '88%', backgroundColor: '#fff'}}>
         {createNewChannelModalShown &&
           <CreateNewChannelModal
             userId={userId}
@@ -258,7 +258,8 @@ export default class Chat extends Component {
           style={{
             border: '1px solid #eee',
             marginLeft: '0.5em',
-            paddingTop: '0.5em'
+            paddingTop: '0.5em',
+            height: '96%'
           }}
         >
           <div

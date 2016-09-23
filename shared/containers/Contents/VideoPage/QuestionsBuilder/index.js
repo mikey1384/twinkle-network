@@ -56,7 +56,7 @@ const defaultState = props => ({
       choices: question.choices.map((choice, index) => {
         return {
           label: choice,
-          checked: index + 1 === question.correctChoice ? true : false,
+          checked: index + 1 === question.correctChoice,
           id: index
         }
       }),
@@ -420,16 +420,14 @@ export default class QuestionsBuilder extends Component {
     }
     else {
       const finishedQuestions = questions.filter(question => {
-        return question.deleted ? false : true;
+        return !question.deleted;
       })
       this.props.onSubmit(finishedQuestions);
     }
 
     function errorInQuestionChoices(question) {
       let validCheckExists = false;
-      const validChoices = question.choices.filter(choice => {
-        return !choice.label || choice.label === '' ? false : true;
-      })
+      const validChoices = question.choices.filter(choice => choice.label && choice.label !== '')
       if (validChoices.length < 2) {
         return "There must be at least 2 choices.";
       }

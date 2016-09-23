@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Modal, Button} from 'react-bootstrap';
 import TagPeopleForm from 'components/TagPeopleForm';
 import {connect} from 'react-redux';
-import {clearSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} from 'redux/actions/ChatActions';
+import {clearUserSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} from 'redux/actions/ChatActions';
 
 
 @connect(
@@ -10,7 +10,7 @@ import {clearSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} 
     searchResult: state.ChatReducer.userSearchResult
   }),
   {
-    clearSearchResults,
+    clearSearchResults: clearUserSearchResults,
     searchUserToInvite: searchUserToInviteAsync,
     inviteUsersToChannel: inviteUsersToChannelAsync
   }

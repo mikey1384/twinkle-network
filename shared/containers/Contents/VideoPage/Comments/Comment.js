@@ -10,6 +10,7 @@ import Replies from './Replies';
 import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
+import LikeButton from 'components/LikeButton';
 
 
 export default class Comment extends Component {
@@ -98,13 +99,12 @@ export default class Comment extends Component {
                   >
                     <span className="glyphicon glyphicon-comment"></span> Reply
                   </Button>
-                  <Button
-                    className="btn btn-info btn-sm"
+                  <LikeButton
                     style={{marginLeft: '0.5em'}}
                     onClick={this.onLikeClick}
-                  >
-                    <span className="glyphicon glyphicon-thumbs-up"></span> {`${userLikedThis ? 'Liked!' : 'Like'}`}
-                  </Button>
+                    liked={userLikedThis}
+                    small
+                  />
                 </div>
                 <small>
                   <Likers

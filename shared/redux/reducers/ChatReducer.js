@@ -28,8 +28,12 @@ export default function ChatReducer(state = defaultState, action) {
     case 'CLEAR_CHAT_SEARCH_RESULTS':
       return {
         ...state,
-        userSearchResult: [],
         chatSearchResult: []
+      }
+    case 'CLEAR_USER_SEARCH_RESULTS':
+      return {
+        ...state,
+        userSearchResult: []
       }
     case 'CREATE_NEW_CHANNEL':
       return {
