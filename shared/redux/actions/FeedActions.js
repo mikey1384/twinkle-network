@@ -22,6 +22,24 @@ export const fetchFeedsAsync = () => dispatch => {
   )
 }
 
+export const fetchMoreFeeds = data => ({
+  type: 'FETCH_MORE_FEEDS',
+  data
+})
+
+export const fetchMoreFeedsAsync = feedLength => dispatch => {
+  request.get(`${API_URL}?feedLength=${feedLength}`).then(
+    response => {
+      dispatch(fetchMoreFeeds(response.data))
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      handleError(error, dispatch)
+    }
+  )
+}
+
 export const likeVideoComment = data => ({
   type: 'FEED_VIDEO_COMMENT_LIKE',
   data

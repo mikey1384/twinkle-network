@@ -26,7 +26,7 @@ export default class SiblingContent extends Component {
     }
     return (
       <div className="well" style={{marginTop: '1em'}}>
-        <UserLink user={uploader} />'s comment:
+        <UserLink user={uploader} /> commented:
         <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
         <LikeButton
           style={{marginTop: '1em'}}

@@ -1,13 +1,34 @@
 const defaultState = {
-  feeds: []
+  feeds: [],
+  loadMoreButton: false
 };
 
+let loadMoreButton = false;
 export default function FeedReducer(state = defaultState, action) {
   switch(action.type) {
     case 'FETCH_FEEDS':
+      if (action.data.length > 20) {
+        action.data.pop()
+        loadMoreButton = true;
+      } else {
+        loadMoreButton = false;
+      }
       return {
         ...state,
-        feeds: action.data
+        feeds: action.data,
+        loadMoreButton
+      };
+    case 'FETCH_MORE_FEEDS':
+      if (action.data.length > 20) {
+        action.data.pop()
+        loadMoreButton = true;
+      } else {
+        loadMoreButton = false;
+      }
+      return {
+        ...state,
+        feeds: state.feeds.concat(action.data),
+        loadMoreButton
       };
     case 'FEED_VIDEO_COMMENT_LIKE':
       return {
