@@ -42,7 +42,6 @@ export default class Home extends Component {
 
   loadMoreFeeds() {
     const {feeds, fetchMoreFeeds} = this.props;
-    console.log(feeds.length);
     fetchMoreFeeds(feeds.length);
   }
 }

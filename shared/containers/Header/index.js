@@ -8,6 +8,7 @@ import {
   increaseNumberOfUnreadMessages,
   turnChatOff } from 'redux/actions/ChatActions';
 import {fetchNotificationsAsync} from 'redux/actions/NotiActions';
+import {fetchFeedsAsync} from 'redux/actions/FeedActions';
 import {getInitialVideos} from 'redux/actions/VideoActions';
 import {getPinnedPlaylistsAsync, getPlaylistsAsync} from 'redux/actions/PlaylistActions';
 import SigninModal from '../Signin';
@@ -42,7 +43,8 @@ import HeaderNav from 'components/HeaderNav';
     fetchNotifications: fetchNotificationsAsync,
     getInitialVideos,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
-    getPlaylists: getPlaylistsAsync
+    getPlaylists: getPlaylistsAsync,
+    fetchFeedsAsync
   }
 )
 export default class Header extends Component {
@@ -132,7 +134,7 @@ export default class Header extends Component {
       getInitialVideos,
       getPinnedPlaylists,
       getPlaylists,
-      fetchFeeds
+      fetchFeedsAsync
     } = this.props;
 
     const {notificationsMenuShown, selectedTab} = this.state;
@@ -161,6 +163,7 @@ export default class Header extends Component {
                 key="home"
                 to="/"
                 selected={selectedTab === 'home'}
+                onClick={() => fetchFeedsAsync()}
               >
                 Home
               </HeaderNav>
