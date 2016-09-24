@@ -4,6 +4,7 @@ import LikeButton from 'components/LikeButton';
 import Likers from 'components/Likers';
 import {connect} from 'react-redux';
 import {likeSiblingVideoCommentAsync} from 'redux/actions/FeedActions';
+import UserListModal from 'components/Modals/UserListModal';
 
 
 @connect(
@@ -15,11 +16,15 @@ import {likeSiblingVideoCommentAsync} from 'redux/actions/FeedActions';
 export default class SiblingContent extends Component {
   constructor() {
     super()
+    this.state = {
+      userListModalShown: false
+    }
     this.onLikeClick = this.onLikeClick.bind(this)
   }
 
   render() {
     const {uploader, content, myId, likes} = this.props;
+    const {userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId == myId) userLikedThis = true;
@@ -45,6 +50,15 @@ export default class SiblingContent extends Component {
           likes={likes}
           onLinkClick={() => this.setState({userListModalShown: true})}
         />
+        {userListModalShown &&
+          <UserListModal
+            onHide={() => this.setState({userListModalShown: false})}
+            title="People who liked this comment"
+            userId={myId}
+            users={likes}
+            description={user => user.userId === myId && '(You)'}
+          />
+        }
       </div>
     )
   }
