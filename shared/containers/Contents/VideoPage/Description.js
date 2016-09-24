@@ -78,7 +78,7 @@ export default class Description extends Component {
                 />
               </form> :
               <h1>
-                <span>{cleanString(title)}</span>
+                <span style={{wordWrap: 'break-word'}}>{cleanString(title)}</span>
               </h1>
             }
           </div>
@@ -134,7 +134,7 @@ export default class Description extends Component {
                 >Cancel</Button>
               </div>
             </div> :
-            <p dangerouslySetInnerHTML={{__html: description}}/>
+            <p style={{wordWrap: 'break-word'}} dangerouslySetInnerHTML={{__html: description}}/>
           }
         </div>
       </div>
