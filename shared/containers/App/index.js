@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactDOM from 'react-dom';
 import Header from '../Header';
 import Chat from '../Chat';
 import io from 'socket.io-client';
@@ -44,7 +45,10 @@ export default class App extends Component {
     } : {paddingTop: '65px'}
 
     return (
-      <div id="main-view" style={{backgroundColor: chatMode && '#fff'}}>
+      <div
+        id="main-view"
+        style={{backgroundColor: chatMode && '#fff'}}
+      >
         <Header
           location={location}
           staticTop={chatMode}

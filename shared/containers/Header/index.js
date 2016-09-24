@@ -169,7 +169,7 @@ export default class Header extends Component {
               </HeaderNav>
               <HeaderNav
                 key="videos"
-                to="videos"
+                to="/videos"
                 onClick={() => {
                   getInitialVideos()
                   getPinnedPlaylists()
