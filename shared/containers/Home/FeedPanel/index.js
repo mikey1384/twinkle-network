@@ -36,12 +36,6 @@ export default class FeedPanel extends Component {
           timeStamp={feed.timeStamp}
         />
         <div className="panel-body">
-          <MainContent
-            content={feed.content}
-            likes={feed.contentLikers}
-            myId={userId}
-            contentId={feed.contentId}
-          />
           {!!feed.commentId &&
             <SiblingContent
               uploader={{name: feed.siblingContentUploaderName, id: feed.siblingContentUploaderId}}
@@ -51,6 +45,12 @@ export default class FeedPanel extends Component {
               contentId={feed.commentId}
             />
           }
+          <MainContent
+            content={feed.content}
+            likes={feed.contentLikers}
+            myId={userId}
+            contentId={feed.contentId}
+          />
           {/*
           <MyReply />
           {!replyLeft && (inputBoxShown ?
