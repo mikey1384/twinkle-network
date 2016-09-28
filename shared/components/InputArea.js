@@ -14,12 +14,12 @@ export default class InputArea extends Component {
 
   render() {
     const {text} = this.state;
-    const {placeholder, rows} = this.props;
+    const {placeholder, rows, autoFocus} = this.props;
     return (
       <div className="container-fluid">
         <div className="row form-group">
           <Textarea
-            autoFocus
+            autoFocus={autoFocus}
             className="form-control"
             rows={rows}
             value={text}

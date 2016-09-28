@@ -55,6 +55,7 @@ export default class FeedPanel extends Component {
           <MyReply />
           {!replyLeft && (inputBoxShown ?
             <InputArea
+              autoFocus
               onSubmit={() => console.log("submitted")}
               rows={4}
               placeholder="Leave a reply here"

@@ -6,6 +6,7 @@ export default function ReplyInputArea(props) {
     <div className="media">
       <div className="media-body">
         <InputArea
+          autoFocus
           onSubmit={text => props.onSubmit(text)}
           rows={4}
           placeholder="Post your reply"
