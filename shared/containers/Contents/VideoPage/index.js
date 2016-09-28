@@ -250,7 +250,7 @@ export default class VideoPage extends Component {
       return (
         <div key={index}>
           <div>
-            <h3 style={{marginTop: '1rem'}}>{question.title}</h3>
+            <h3 style={{marginTop: '1rem'}} dangerouslySetInnerHTML={{__html: question.title}} />
           </div>
           <ChoiceListGroup
             listItems={listItems}
