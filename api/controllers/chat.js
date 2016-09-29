@@ -72,8 +72,7 @@ router.get('/more', requireAuth, (req, res) => {
   if (Number(req.query.userId) !== user.id) {
     return res.status(401).send("Unauthorized")
   }
-  const messageId = Number(req.query.messageId);
-  const channelId = Number(req.query.channelId);
+  const {messageId, channelId} = req.query;
   const query = [
     'SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username FROM ',
     'msg_chats a JOIN users b ON a.userId = b.id ',

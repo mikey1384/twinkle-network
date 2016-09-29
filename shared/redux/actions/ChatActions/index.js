@@ -152,10 +152,13 @@ request.post(`${API_URL}/invite`, params, auth())
   }
 )
 
-export const loadMoreMessagesAsync = (userId, messageId, channelId) => dispatch =>
+export const loadMoreMessagesAsync = (userId, messageId, channelId, callback) => dispatch =>
 request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&channelId=${channelId}`, auth())
 .then(
-  response => dispatch(actions.loadMoreMessages(response.data))
+  response => {
+    dispatch(actions.loadMoreMessages(response.data))
+    callback()
+  }
 ).catch(
   error => {
     console.error(error)

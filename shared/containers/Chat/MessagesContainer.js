@@ -22,7 +22,8 @@ export default class MessagesContainer extends Component {
     this.state = {
       fillerHeight: 0,
       scrollAtBottom: true,
-      newUnseenMessage: false
+      newUnseenMessage: false,
+      loadMoreButtonLock: false
     }
     this.onLoadMoreButtonClick = this.onLoadMoreButtonClick.bind(this)
   }
@@ -148,7 +149,13 @@ export default class MessagesContainer extends Component {
     const messageId = this.props.messages[0].id;
     const channelId = this.props.messages[0].channelId;
     const {userId, loadMoreMessages} = this.props;
-    loadMoreMessages(userId, messageId, channelId);
+    const {loadMoreButtonLock} = this.state;
+    if (!loadMoreButtonLock) {
+      this.setState({loadMoreButtonLock: true})
+      loadMoreMessages(userId, messageId, channelId, () => {
+        this.setState({loadMoreButtonLock: false})
+      });
+    }
   }
 
   renderMessages() {
