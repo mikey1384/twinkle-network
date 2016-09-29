@@ -27,6 +27,7 @@ import {
 
 import {easeInOutQuad} from 'tween-functions';
 import requestAnimationFrame from 'raf';
+import {addEvent, removeEvent} from 'helpers/listenerHelpers';
 
 const DEFAULT_STACK_BEHAVIOR = 'ADDITIVE';
 const DEFAULT_EASING = easeInOutQuad;
@@ -100,19 +101,6 @@ export default class Carousel extends Component {
         addEvent(window, 'resize', this.onResize);
         addEvent(document, 'readystatechange', this.onReadyStateChange);
       }
-
-      function addEvent(elem, type, eventHandle) {
-        if (elem === null || typeof elem === 'undefined') {
-          return;
-        }
-        if (elem.addEventListener) {
-          elem.addEventListener(type, eventHandle, false);
-        } else if (elem.attachEvent) {
-          elem.attachEvent('on' + type, eventHandle);
-        } else {
-          elem['on' + type] = eventHandle;
-        }
-      }
     }
   }
 
@@ -143,19 +131,6 @@ export default class Carousel extends Component {
         removeEvent(window, 'resize', this.onResize);
         removeEvent(document, 'readystatechange', this.onReadyStateChange);
       }
-
-      function removeEvent(elem, type, eventHandle) {
-        if (elem === null || typeof elem === 'undefined') {
-          return;
-        }
-        if (elem.removeEventListener) {
-          elem.removeEventListener(type, eventHandle, false);
-        } else if (elem.detachEvent) {
-          elem.detachEvent('on' + type, eventHandle);
-        } else {
-          elem['on' + type] = null;
-        }
-      };
     }
   }
 

@@ -6,6 +6,8 @@ import io from 'socket.io-client';
 import {connect} from 'react-redux';
 import {initChatAsync, resetChat, toggleChat, turnChatOff} from 'redux/actions/ChatActions';
 import {URL} from 'constants/URL';
+import ExecutionEnvironment from 'exenv';
+import {addEvent, removeEvent} from 'helpers/listenerHelpers';
 
 
 const socket = io.connect(URL);
@@ -29,16 +31,37 @@ export default class App extends Component {
 
   constructor() {
     super()
+    this.state = {
+      trackScroll: true,
+      scrollPosition: 0
+    }
     this.onChatButtonClick = this.onChatButtonClick.bind(this)
+    this.onScroll = this.onScroll.bind(this)
   }
 
   componentDidUpdate(prevProps) {
     const {turnChatOff} = this.props;
-    if (this.props.children !== prevProps.children) turnChatOff()
+    if (this.props.children !== prevProps.children) {
+      this.setState({trackScroll: true})
+      turnChatOff()
+    }
+  }
+
+  componentDidMount() {
+    if (ExecutionEnvironment.canUseDOM) {
+      addEvent(window, 'scroll', this.onScroll);
+    }
+  }
+
+  componentWillUnmount() {
+    if (ExecutionEnvironment.canUseDOM) {
+      removeEvent(window, 'scroll', this.onScroll);
+    }
   }
 
   render() {
     const {chatMode, turnChatOff, location} = this.props;
+    const {scrollPosition} = this.state;
     const style = chatMode && this.props.loggedIn ? {
       position: 'fixed',
       opacity: 0
@@ -48,6 +71,7 @@ export default class App extends Component {
       <div
         id="main-view"
         style={{backgroundColor: chatMode && '#fff'}}
+        ref="app"
       >
         <Header
           location={location}
@@ -55,7 +79,10 @@ export default class App extends Component {
           socket={socket}
           chatMode={chatMode}
           onChatButtonClick={this.onChatButtonClick}
-          turnChatOff={() => turnChatOff()}
+          turnChatOff={() => {
+            this.setState({trackScroll: true})
+            turnChatOff()
+          }}
         />
         <div
           style={style}
@@ -67,6 +94,8 @@ export default class App extends Component {
             socket={socket}
             onUnmount={
               () => {
+                this.setState({trackScroll: true})
+                window.scrollTo(0, scrollPosition)
                 this.props.resetChat();
                 turnChatOff();
               }
@@ -84,9 +113,19 @@ export default class App extends Component {
   }
 
   onChatButtonClick() {
-    const {toggleChat} = this.props;
-    this.props.initChat(() => {
+    const {trackScroll} = this.state;
+    const {toggleChat, initChat} = this.props;
+
+    this.setState({trackScroll: false})
+    initChat(() => {
       toggleChat();
     })
+  }
+
+  onScroll() {
+    const {trackScroll} = this.state;
+    if (trackScroll) {
+      this.setState({scrollPosition: window.scrollY})
+    }
   }
 }
