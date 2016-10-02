@@ -15,7 +15,8 @@ const socket = io.connect(URL);
 @connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
-    chatMode: state.ChatReducer.chatMode
+    chatMode: state.ChatReducer.chatMode,
+    chatNumUnreads: state.ChatReducer.numUnreads
   }),
   {
     toggleChat,
@@ -39,17 +40,39 @@ export default class App extends Component {
     this.onScroll = this.onScroll.bind(this)
   }
 
+  componentDidMount() {
+    if (ExecutionEnvironment.canUseDOM) {
+      addEvent(window, 'scroll', this.onScroll);
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const {turnChatOff} = this.props;
     if (this.props.children !== prevProps.children) {
       this.setState({trackScroll: true})
       turnChatOff()
     }
-  }
 
-  componentDidMount() {
-    if (ExecutionEnvironment.canUseDOM) {
-      addEvent(window, 'scroll', this.onScroll);
+    if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
+      const {chatMode, chatNumUnreads} = this.props;
+      let title = '';
+      if (!!chatMode) {
+        title = "Twinkle Chat"
+      } else {
+        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
+      }
+      document.title = title;
+    }
+
+    if (this.props.chatMode !== prevProps.chatMode) {
+      const {chatMode, chatNumUnreads} = this.props;
+      let title = '';
+      if (!!chatMode) {
+        title = "Twinkle Chat"
+      } else {
+        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
+      }
+      document.title = title;
     }
   }
 
