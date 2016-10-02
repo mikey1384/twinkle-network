@@ -41,6 +41,7 @@ app.use((req, res) => {
           <head>
            <meta charset="utf-8">
            <title>Twinkle</title>
+           <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
            <link rel="stylesheet" href="/css/bootstrap.min.css">
            <link rel="stylesheet" href="/css/theme.css">
            <link rel="stylesheet" href="/css/styles.css">
