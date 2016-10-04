@@ -4,6 +4,7 @@ import ContentLink from '../ContentLink';
 import {timeSince} from 'helpers/timeStampHelpers';
 
 export default function Heading({
+  type,
   videoTitle,
   action,
   uploader,
@@ -14,9 +15,16 @@ export default function Heading({
   const siblingAction = !!siblingContentUploader ?
   <span><UserLink user={siblingContentUploader} />'s comment on</span> : '';
 
-  return (
-    <div className="panel-heading">
-      <UserLink user={uploader} /> {action} {siblingAction} video: "<ContentLink content={parentContent}/>" ({timeSince(timeStamp)})
-    </div>
-  )
+  switch (type) {
+    case 'video':
+      return <div className="panel-heading">
+        <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/>
+      </div>
+    case 'comment':
+      return <div className="panel-heading">
+        <UserLink user={uploader} /> {action} {siblingAction} video: <ContentLink content={parentContent}/> ({timeSince(timeStamp)})
+      </div>
+    default:
+      return <div className="panel-heading">Error</div>
+  }
 }

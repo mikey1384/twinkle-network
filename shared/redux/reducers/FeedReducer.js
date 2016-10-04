@@ -30,15 +30,32 @@ export default function FeedReducer(state = defaultState, action) {
         feeds: state.feeds.concat(action.data),
         loadMoreButton
       };
+    case 'FEED_VIDEO_LIKE':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          if (feed.type === 'video') {
+            if (feed.contentId === action.data.contentId) {
+              feed.contentLikers = action.data.likes
+            }
+            if (feed.commentId === action.data.contentId) {
+              feed.siblingContentLikers = action.data.likes
+            }
+          }
+          return feed;
+        })
+      }
     case 'FEED_VIDEO_COMMENT_LIKE':
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.contentId === action.data.contentId) {
-            feed.contentLikers = action.data.likes
-          }
-          if (feed.commentId === action.data.contentId) {
-            feed.siblingContentLikers = action.data.likes
+          if (feed.type === 'comment') {
+            if (feed.contentId === action.data.contentId) {
+              feed.contentLikers = action.data.likes
+            }
+            if (feed.commentId === action.data.contentId) {
+              feed.siblingContentLikers = action.data.likes
+            }
           }
           return feed;
         })

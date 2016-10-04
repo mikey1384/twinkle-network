@@ -210,7 +210,8 @@ export const likeVideo = (data, videoId) => ({
   videoId
 })
 
-export const likeVideoAsync = videoId => dispatch => request.post(`${API_URL}/like`, {videoId}, auth())
+export const likeVideoAsync = videoId => dispatch =>
+request.post(`${API_URL}/like`, {videoId}, auth())
 .then(
   response => {
     const {data} = response;

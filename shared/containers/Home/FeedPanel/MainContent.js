@@ -4,13 +4,15 @@ import LikeButton from 'components/LikeButton';
 import Likers from 'components/Likers';
 import {connect} from 'react-redux';
 import {likeVideoCommentAsync} from 'redux/actions/FeedActions';
+import {likeVideoAsync} from 'redux/actions/FeedActions';
 import UserListModal from 'components/Modals/UserListModal';
 
 
 @connect(
   null,
   {
-    onLikeClick: likeVideoCommentAsync
+    onLikeCommentClick: likeVideoCommentAsync,
+    onLikeVideoClick: likeVideoAsync
   }
 )
 export default class MainContent extends Component {
@@ -23,7 +25,7 @@ export default class MainContent extends Component {
   }
 
   render() {
-    const {myId, content, likes = [], contentId} = this.props;
+    const {myId, content, likes = [], contentId, type, title} = this.props;
     const {userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
@@ -31,9 +33,23 @@ export default class MainContent extends Component {
     }
     return (
       <div>
-        <span style={{fontSize: '1.2em'}}>
-          <p dangerouslySetInnerHTML={{__html: content}} />
-        </span>
+        {
+          (type === 'comment') ?
+            <span style={{fontSize: '1.2em'}}>
+              <p dangerouslySetInnerHTML={{__html: content}} />
+            </span> :
+            <div className="embed-responsive embed-responsive-16by9">
+              <iframe
+                className="embed-responsive-item"
+                frameBorder="0"
+                allowFullScreen="1"
+                title={title}
+                width="640"
+                height="360"
+                src={`https://www.youtube.com/embed/${content}`}>
+              </iframe>
+            </div>
+        }
         <LikeButton
           style={{marginTop: '1em'}}
           onClick={this.onLikeClick}
@@ -65,7 +81,11 @@ export default class MainContent extends Component {
   }
 
   onLikeClick() {
-    const {contentId} = this.props;
-    this.props.onLikeClick(contentId);
+    const {contentId, type} = this.props;
+    if (type === 'comment') {
+      this.props.onLikeCommentClick(contentId);
+    } else {
+      this.props.onLikeVideoClick(contentId);
+    }
   }
 }

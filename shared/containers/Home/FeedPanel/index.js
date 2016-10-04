@@ -28,15 +28,16 @@ export default class FeedPanel extends Component {
         style={{borderTop: '#e7e7e7 1px solid'}}
       >
         <Heading
-          videoTitle={feed.parentContentTitle}
+          videoTitle={feed.videoContentTitle}
+          type={feed.type}
           action={!!feed.commentId ? 'replied to' : 'commented on'}
           uploader={{name: feed.uploaderName, id: feed.uploaderId}}
           siblingContentUploader={!!feed.siblingContentUploaderName && {name: feed.siblingContentUploaderName, id: feed.siblingContentUploaderId}}
-          parentContent={{id: feed.parentContentId, title: feed.parentContentTitle}}
+          parentContent={{id: feed.parentContentId, title: feed.videoContentTitle}}
           timeStamp={feed.timeStamp}
         />
         <div className="panel-body">
-          {!!feed.commentId &&
+          {feed.type === 'comment' && !!feed.commentId &&
             <SiblingContent
               uploader={{name: feed.siblingContentUploaderName, id: feed.siblingContentUploaderId}}
               likes={feed.siblingContentLikers}
@@ -46,9 +47,11 @@ export default class FeedPanel extends Component {
             />
           }
           <MainContent
+            type={feed.type}
             content={feed.content}
             likes={feed.contentLikers}
             myId={userId}
+            title={feed.videoContentTitle}
             contentId={feed.contentId}
           />
           {/*

@@ -95,7 +95,7 @@ export default class Description extends Component {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
                 lineHeight: 'normal'
-              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${!!timeStamp ? timeSince(timeStamp) : ''}`}
+              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
             </small>
           </div>
         </div>

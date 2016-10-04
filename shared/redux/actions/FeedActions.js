@@ -40,6 +40,28 @@ export const fetchMoreFeedsAsync = feedLength => dispatch => {
   )
 }
 
+export const likeVideo = data => ({
+  type: 'FEED_VIDEO_LIKE',
+  data
+})
+
+export const likeVideoAsync = contentId => dispatch =>
+request.post(`${URL}/video/like`, {videoId: contentId}, auth())
+.then(
+  response => {
+    const {data} = response;
+    if (data.likes) {
+      dispatch(likeVideo({contentId, likes: data.likes}));
+    }
+    return;
+  }
+).catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
 export const likeVideoComment = data => ({
   type: 'FEED_VIDEO_COMMENT_LIKE',
   data

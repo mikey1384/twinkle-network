@@ -20,17 +20,24 @@ export default class Home extends Component {
 
   render() {
     const {userId, feeds, loadMoreButton} = this.props;
-    return !!feeds && feeds.length > 0 ? (
-      <div className="container-fluid">
-        {feeds.map(feed => {
-          return <FeedPanel key={feed.contentId} feed={feed} userId={userId} />;
-        })}
-        {loadMoreButton &&
-          <div className="text-center" style={{paddingBottom: '1em'}}>
-            <Button className="btn btn-warning" onClick={this.loadMoreFeeds}>Load More</Button>
-          </div>
-        }
-      </div>
+    return !!userId ? (
+      feeds.length > 0 ?
+        <div className="container-fluid col-md-offset-3 col-md-6">
+          {feeds.map(feed => {
+            return <FeedPanel key={`${feed.type}${feed.contentId}`} feed={feed} userId={userId} />;
+          })}
+          {loadMoreButton &&
+            <div className="text-center" style={{paddingBottom: '1em'}}>
+              <Button className="btn btn-warning" onClick={this.loadMoreFeeds}>Load More</Button>
+            </div>
+          }
+        </div>
+      : <p style={{
+        textAlign: 'center',
+        paddingTop: '1em',
+        paddingBottom: '1em',
+        fontSize: '2em'
+      }}><span>Yikes! Home is empty!</span></p>
     ) :
     <p style={{
       textAlign: 'center',
