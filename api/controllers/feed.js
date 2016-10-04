@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
     'UNION SELECT \'video\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.videoCode AS content, ', 'a.timeStamp, a.id AS parentContentId, \'none\' AS commentId, a.title AS videoContentTitle, ',
     'b.username AS uploaderName, \'none\' AS siblingContentUploaderId, \'none\' AS siblingContent, ',
     '\'none\' AS siblingContentUploaderName FROM vq_videos a JOIN users b ON a.uploader = b.id ',
-    'ORDER BY timeStamp DESC LIMIT ' + limit
+    'WHERE timeStamp IS NOT NULL ORDER BY timeStamp DESC LIMIT ' + limit
   ].join('')
   pool.query(query, (err, feeds) => {
     if (err) {

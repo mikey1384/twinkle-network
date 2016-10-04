@@ -18,7 +18,7 @@ export default function Heading({
   switch (type) {
     case 'video':
       return <div className="panel-heading">
-        <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/>
+        <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> {`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
       </div>
     case 'comment':
       return <div className="panel-heading">

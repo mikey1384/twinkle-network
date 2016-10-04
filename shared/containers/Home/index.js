@@ -37,7 +37,7 @@ export default class Home extends Component {
         paddingTop: '1em',
         paddingBottom: '1em',
         fontSize: '2em'
-      }}><span>Yikes! Home is empty!</span></p>
+      }}><span>Hello!</span></p>
     ) :
     <p style={{
       textAlign: 'center',
