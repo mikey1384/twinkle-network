@@ -91,13 +91,10 @@ export default function VideoReducer(state = defaultState, action) {
           }
         };
       }
-      const videoPageVariables = {
-        ...action.data
-      };
       return {
         ...state,
         videoPage: {
-          ...videoPageVariables,
+          ...action.data,
           comments: []
         }
       }

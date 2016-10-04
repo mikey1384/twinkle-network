@@ -42,16 +42,16 @@ router.post('/', requireAuth, (req, res) => {
   const title = processedTitleString(req.body.title);
   const description = processedString(rawDescription);
   const videoCode = fetchedVideoCodeFromURL(req.body.url);
-
   const uploaderId = user.id;
   const uploaderName = user.username;
-  const post = {title, description, videoCode, uploader: uploaderId};
-  pool.query('INSERT INTO vq_videos SET?', post, (err, row) => {
-    let result = {id: row.insertId, title, description, videoCode, uploaderId, uploaderName, numLikes: 0};
+  const timeStamp = Math.floor(Date.now()/1000);
+  const post = {title, description, videoCode, uploader: uploaderId, timeStamp};
+  pool.query('INSERT INTO vq_videos SET ?', post, (err, row) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
     }
+    let result = {id: row.insertId, title, description, videoCode, uploaderId, uploaderName, timeStamp, numLikes: 0};
     res.json({result});
   })
 });
@@ -174,7 +174,7 @@ router.post('/edit/page', requireAuth, (req, res) => {
 router.get('/loadPage', (req, res) => {
   const videoId = Number(req.query.videoId);
   let query = [
-    'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName ',
+    'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.timeStamp, a.uploader AS uploaderId, b.username AS uploaderName ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
     'WHERE a.id = ?'
   ].join('');
@@ -189,6 +189,7 @@ router.get('/loadPage', (req, res) => {
       const videoCode = rows[0].videoCode;
       const uploaderId = rows[0].uploaderId;
       const uploaderName = rows[0].uploaderName;
+      const timeStamp = rows[0].timeStamp;
       async.parallel([
         (callback) => {
           pool.query('SELECT * FROM vq_questions WHERE videoId = ? AND isDraft = 0', videoId, (err, rows) => {
@@ -237,6 +238,7 @@ router.get('/loadPage', (req, res) => {
           videoCode,
           uploaderId,
           uploaderName,
+          timeStamp,
           questions: results[0],
           likes: results[1]
         })

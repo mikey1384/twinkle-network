@@ -3,6 +3,7 @@ import SmallDropdownButton from 'components/SmallDropdownButton';
 import UsernameText from 'components/UsernameText';
 import Textarea from 'react-textarea-autosize';
 import Button from 'components/Button';
+import {timeSince} from 'helpers/timeStampHelpers';
 import {cleanString, cleanStringWithURL} from 'helpers/stringHelpers';
 
 export default class Description extends Component {
@@ -43,7 +44,7 @@ export default class Description extends Component {
       }
     ]
 
-    const {uploaderId, userId, uploaderName, title, description} = this.props;
+    const {uploaderId, userId, uploaderName, title, description, timeStamp} = this.props;
     let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
     editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription;
     return (
@@ -94,7 +95,7 @@ export default class Description extends Component {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
                 lineHeight: 'normal'
-              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} />
+              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${!!timeStamp ? timeSince(timeStamp) : ''}`}
             </small>
           </div>
         </div>

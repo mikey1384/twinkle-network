@@ -77,6 +77,7 @@ export default class VideoPage extends Component {
       videoId,
       videoCode,
       title,
+      timeStamp,
       questions = [],
       likes = [],
       comments,
@@ -114,6 +115,7 @@ export default class VideoPage extends Component {
         <Description
           videoId={videoId}
           title={title}
+          timeStamp={timeStamp}
           uploaderName={uploaderName}
           description={description}
           uploaderId={uploaderId}
