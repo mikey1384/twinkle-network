@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
-import activeComponent from 'react-router-active-component';
 import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions';
 import {
   getNumberOfUnreadMessagesAsync,
@@ -187,19 +186,12 @@ export default class Header extends Component {
           }
           <Nav pullRight>
             {loggedIn && [
-              <li>
-                <a style={{
-                  paddingTop: '6px',
-                  paddingBottom: '0px'
-                }}>
-                  <ChatButton
-                    key={1}
-                    onClick={() => onChatButtonClick()}
-                    chatMode={chatMode}
-                    numUnreads={numChatUnreads}
-                  />
-                </a>
-              </li>
+              <ChatButton
+                key={1}
+                onClick={() => onChatButtonClick()}
+                chatMode={chatMode}
+                numUnreads={numChatUnreads}
+              />
               /*,
               <NotificationsButton
                 onHideMenu={() => this.setState({notificationsMenuShown: false})}
