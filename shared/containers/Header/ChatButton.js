@@ -9,7 +9,7 @@ export default class ChatButton extends Component {
         className={`btn ${chatMode ? 'btn-warning' : 'btn-default'}`}
         onClick={() => onClick()}
       >
-        {`${chatMode ? 'Close Chat' : 'Open Chat'} `}
+        {`${chatMode ? 'Close Chat' : (numUnreads > 0 ? 'Messages' : 'Open Chat')} `}
         {!chatMode && numUnreads > 0 &&
           <span
             className="badge"

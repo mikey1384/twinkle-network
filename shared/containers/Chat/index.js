@@ -380,7 +380,7 @@ export default class Chat extends Component {
               style={{color: !channelName && '#7c7c7c'}}
             >{`${channelName || '(Deleted)'}`}&nbsp;
               {id !== currentChannel.id && numUnreads > 0 &&
-                <span className="badge">{numUnreads}</span>
+                <span className="badge" style={{backgroundColor: 'red'}}>{numUnreads}</span>
               }
             </h4>
             <small
