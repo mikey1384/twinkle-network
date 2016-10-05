@@ -29,7 +29,7 @@ request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth(
     if (data.result) {
       if (!lastVideoId) {
         dispatch(getInitialVideos())
-        dispatch(push('/'))
+        dispatch(push('/videos'))
       } else {
         dispatch(deleteVideo(arrayIndex, data.result));
       }
