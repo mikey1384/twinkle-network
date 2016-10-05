@@ -20,7 +20,7 @@ export default class Home extends Component {
 
   render() {
     const {userId, feeds, loadMoreButton} = this.props;
-    return !!userId ? (
+    return !!feeds ? (
       feeds.length > 0 ?
         <div className="container-fluid col-md-offset-3 col-md-6">
           {feeds.map(feed => {

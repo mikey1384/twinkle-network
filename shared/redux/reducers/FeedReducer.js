@@ -1,5 +1,5 @@
 const defaultState = {
-  feeds: [],
+  feeds: null,
   loadMoreButton: false
 };
 

@@ -3,6 +3,14 @@ html, body {
 	background-color: #f1f3f6;
 }
 
+.embed-responsive {
+	background-color: #f1f3f6;
+}
+
+.navbar-collapse {
+	padding-right: 0px;
+}
+
 #react-view {
 	height: 100%;
 }

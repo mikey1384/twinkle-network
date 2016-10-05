@@ -30,10 +30,10 @@ export default class SearchBox extends Component {
   }
 
   render() {
-    const {searchResult, clearSearchResults} = this.props;
+    const {searchResult, clearSearchResults, className, style} = this.props;
     const {searchText} = this.state;
     return (
-      <div className="navbar-left col-xs-7" style={{paddingTop: '6px'}}>
+      <form className={className} style={style}>
         <SearchInput
           placeholder="Search for Videos"
           onChange={this.onContentSearch}
@@ -48,7 +48,7 @@ export default class SearchBox extends Component {
           }}
           onSelect={this.onSelect}
         />
-      </div>
+      </form>
     )
   }
 

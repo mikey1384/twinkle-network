@@ -20,7 +20,7 @@ import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
 import {browserHistory} from 'react-router';
 import SearchBox from './SearchBox';
-import HeaderNav from 'components/HeaderNav';
+import HeaderNav from './HeaderNav';
 
 @connect(
   state => ({
@@ -94,7 +94,7 @@ export default class Header extends Component {
     }
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
       getNumberOfUnreadMessages();
-      fetchNotifications();
+      //fetchNotifications();
     }
     if (nextProps.userId && nextProps.chatMode !== this.props.chatMode && nextProps.chatMode === false) {
       getNumberOfUnreadMessages()
@@ -148,65 +148,77 @@ export default class Header extends Component {
       fixedTopOn = true;
     }
     return (
-      <Navbar staticTop={staticTopOn} fixedTop={fixedTopOn} fluid>
-        <Link
-          className="navbar-brand"
-          style={{cursor: 'pointer'}}
-          to="/"
-          onClick={this.onLogoClick}
-        >
-          Twinkle
-        </Link>
-        {!chatMode && [
-            <ul className="nav navbar-nav" key="navItems">
-              <HeaderNav
-                key="home"
-                to="/"
-                selected={selectedTab === 'home'}
-                onClick={() => fetchFeedsAsync()}
-              >
-                Home
-              </HeaderNav>
-              <HeaderNav
-                key="videos"
-                to="/videos"
-                onClick={() => {
-                  getInitialVideos()
-                  getPinnedPlaylists()
-                  getPlaylists()
-                }}
-                selected={selectedTab === 'videos'}
-              >
-                Videos
-              </HeaderNav>
-            </ul>,
-            <SearchBox key="searchBox" />
-          ]
-        }
-        <Nav pullRight className="flexbox-container">
-          {loggedIn && [
-            <ChatButton
-              key={1}
-              onClick={() => onChatButtonClick()}
-              chatMode={chatMode}
-              numUnreads={numChatUnreads}
-            />/*,
-            <NotificationsButton
-              onHideMenu={() => this.setState({notificationsMenuShown: false})}
-              onClick={() => this.setState({notificationsMenuShown: !notificationsMenuShown})}
-              menuShown={notificationsMenuShown}
-              notifications={notifications}
-              key={2}
-            />*/
-          ]}
-          {loggedIn ?
-            <AccountMenu
-              title={username}
-              logout={logout}
-            /> :
-            <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
+      <Navbar fluid fixedTop={!chatMode}>
+        <Navbar.Header>
+          <Link
+            className="navbar-brand"
+            style={{cursor: 'pointer'}}
+            to="/"
+            onClick={this.onLogoClick}
+          >
+            Twinkle
+          </Link>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          {!chatMode && [
+              <Nav key="navItems">
+                <HeaderNav
+                  to="/"
+                  selected={selectedTab === 'home'}
+                  onClick={() => fetchFeedsAsync()}
+                >
+                  Home
+                </HeaderNav>
+                <HeaderNav
+                  to="/videos"
+                  onClick={() => {
+                    getInitialVideos()
+                    getPinnedPlaylists()
+                    getPlaylists()
+                  }}
+                  selected={selectedTab === 'videos'}
+                >
+                  Videos
+                </HeaderNav>
+              </Nav>,
+              <SearchBox className="col-xs-6" style={{marginTop: '6px'}} key="searchBox" />
+            ]
           }
-        </Nav>
+          <Nav pullRight>
+            {loggedIn && [
+              <li>
+                <a style={{
+                  paddingTop: '6px',
+                  paddingBottom: '0px'
+                }}>
+                  <ChatButton
+                    key={1}
+                    onClick={() => onChatButtonClick()}
+                    chatMode={chatMode}
+                    numUnreads={numChatUnreads}
+                  />
+                </a>
+              </li>
+              /*,
+              <NotificationsButton
+                onHideMenu={() => this.setState({notificationsMenuShown: false})}
+                onClick={() => this.setState({notificationsMenuShown: !notificationsMenuShown})}
+                menuShown={notificationsMenuShown}
+                notifications={notifications}
+                key={2}
+              />*/
+            ]}
+            {loggedIn ?
+              <AccountMenu
+                title={username}
+                logout={logout}
+              />
+              :
+              <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
+            }
+          </Nav>
+        </Navbar.Collapse>
         {signinModalShown &&
           <SigninModal show onHide={() => closeSigninModal()} />
         }
