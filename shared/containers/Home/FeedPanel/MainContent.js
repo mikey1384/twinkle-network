@@ -39,9 +39,15 @@ export default class MainContent extends Component {
               <p dangerouslySetInnerHTML={{__html: content}} />
             </span> :
             <div className="embed-responsive embed-responsive-16by9">
-              <object
-                data={`https://www.youtube.com/embed/${content}`}
-              />
+              <iframe
+                className="embed-responsive-item"
+                frameBorder="0"
+                allowFullScreen="1"
+                title={title}
+                width="640"
+                height="360"
+                src={`https://www.youtube.com/embed/${content}`}>
+              </iframe>
             </div>
         }
         <LikeButton
