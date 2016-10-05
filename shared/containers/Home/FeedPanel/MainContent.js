@@ -39,13 +39,8 @@ export default class MainContent extends Component {
               <p dangerouslySetInnerHTML={{__html: content}} />
             </span> :
             <div className="embed-responsive embed-responsive-16by9">
-              <embed
-                src={`https://www.youtube.com/v/${content}`}
-                wmode="transparent"
-                type="application/x-shockwave-flash"
-                width="100%"
-                height="100%"
-                allowfullscreen="true"
+              <object
+                data={`https://www.youtube.com/embed/${content}`}
               />
             </div>
         }
