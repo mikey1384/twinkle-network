@@ -264,6 +264,7 @@ router.get('/comments', (req, res) => {
     }
     if (rows.length === 0) {
       return res.send({
+        comments: [],
         noComments: true
       })
     }
