@@ -7,11 +7,14 @@ const defaultState = {
   addVideoModalShown: false,
   videoPage: {
     comments: [],
-    noComments: false
+    noComments: false,
+    loadMoreButton: false
   },
   searchResult: []
 };
 
+let loadMoreButton = false;
+let allVideosLoaded = false;
 export default function VideoReducer(state = defaultState, action) {
   switch(action.type) {
     case 'CLEAR_CONTENT_SEARCH_RESULTS':
@@ -20,8 +23,6 @@ export default function VideoReducer(state = defaultState, action) {
         searchResult: []
       }
     case 'GET_VIDEOS':
-      let loadMoreButton = false;
-      let allVideosLoaded = false;
       if (action.videos.length > 12) {
         action.videos.pop();
         loadMoreButton = true;
@@ -79,18 +80,23 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         addVideoModalShown: false
-      };
-    case 'LOAD_VIDEO_PAGE':
-      if (action.data.error) {
-        console.error(action.data.error);
-        return {
-          ...state,
-          videoPage: {
-            comments: [],
-            noComments: false
-          }
-        };
       }
+    case 'LOAD_MORE_COMMENTS':
+      loadMoreButton = false;
+      if (action.data.comments.length > 20) {
+        action.data.comments.pop()
+        loadMoreButton = true;
+      }
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.concat(action.data.comments),
+          noComments: action.data.noComments,
+          loadMoreButton
+        }
+      }
+    case 'LOAD_VIDEO_PAGE':
       return {
         ...state,
         videoPage: {
@@ -99,12 +105,18 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'LOAD_VIDEO_COMMENTS':
+      loadMoreButton = false;
+      if (action.data.comments.length > 20) {
+        action.data.comments.pop()
+        loadMoreButton = true;
+      }
       return {
         ...state,
         videoPage: {
           ...state.videoPage,
           comments: action.data.comments,
-          noComments: action.data.noComments
+          noComments: action.data.noComments,
+          loadMoreButton
         }
       }
     case 'UPLOAD_VIDEO_COMMENT':

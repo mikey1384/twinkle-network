@@ -19,11 +19,10 @@ export default function FeedReducer(state = defaultState, action) {
         loadMoreButton
       };
     case 'FETCH_MORE_FEEDS':
+      loadMoreButton = false;
       if (action.data.length > 20) {
         action.data.pop()
         loadMoreButton = true;
-      } else {
-        loadMoreButton = false;
       }
       return {
         ...state,

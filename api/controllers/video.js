@@ -251,10 +251,12 @@ router.get('/loadPage', (req, res) => {
 
 router.get('/comments', (req, res) => {
   const videoId = Number(req.query.videoId);
+  const commentLength = Number(req.query.commentLength) || 0;
+  const limit = commentLength === 0 ? '21' : commentLength + ', 21';
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
     'FROM vq_comments a JOIN users b ON a.userId = b.id ',
-    'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC'
+    'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {

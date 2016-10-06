@@ -272,6 +272,27 @@ request.post(`${API_URL}/replies/like`, {replyId, commentId}, auth())
   }
 )
 
+export const loadMoreComments = data => ({
+  type: 'LOAD_MORE_COMMENTS',
+  data
+})
+
+export const loadMoreCommentsAsync = (videoId, commentLength) => dispatch =>
+request.get(`${API_URL}/comments?videoId=${videoId}&commentLength=${commentLength}`)
+.then(
+  response => dispatch(loadMoreComments(response.data))
+).catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
+export const loadVideoComments = data => ({
+  type: 'LOAD_VIDEO_COMMENTS',
+  data
+})
+
 export const loadVideoCommentsAsync = videoId => dispatch => request.get(`${API_URL}/comments?videoId=${videoId}`)
 .then(
   response => dispatch(loadVideoComments(response.data))
@@ -304,11 +325,6 @@ request.get(`${API_URL}/loadPage?videoId=${videoId}`)
 
 export const loadVideoPageFromClientSideAsync = (videoId, to) =>
 dispatch => dispatch(loadVideoPageAsync(videoId, dispatch(push(`/${to}`))))
-
-export const loadVideoComments = data => ({
-  type: 'LOAD_VIDEO_COMMENTS',
-  data
-})
 
 export const openAddVideoModal = () => ({
   type: 'VID_MODAL_OPEN'

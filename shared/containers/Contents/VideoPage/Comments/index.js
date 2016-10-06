@@ -3,6 +3,7 @@ import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import Button from 'components/Button';
 import {
   editVideoCommentAsync,
   deleteVideoCommentAsync,
@@ -10,10 +11,14 @@ import {
   deleteVideoReplyAsync,
   likeVideoReplyAsync,
   likeVideoCommentAsync,
-  uploadVideoReplyAsync } from 'redux/actions/VideoActions';
+  uploadVideoReplyAsync,
+  loadMoreCommentsAsync
+} from 'redux/actions/VideoActions';
 
 @connect(
-  null,
+  state => ({
+    loadMoreButton: state.VideoReducer.videoPage.loadMoreButton
+  }),
   {
     onEditDone: editVideoCommentAsync,
     onDelete: deleteVideoCommentAsync,
@@ -21,12 +26,18 @@ import {
     onReplyDelete: deleteVideoReplyAsync,
     onReplyLike: likeVideoReplyAsync,
     onLikeClick: likeVideoCommentAsync,
-    onReplySubmit: uploadVideoReplyAsync
+    onReplySubmit: uploadVideoReplyAsync,
+    loadMoreComments: loadMoreCommentsAsync
   }
 )
 export default class CommentsSection extends Component {
+  constructor() {
+    super()
+    this.loadMoreComments = this.loadMoreComments.bind(this)
+  }
+
   render() {
-    const {onSubmit} = this.props;
+    const {onSubmit, loadMoreButton} = this.props;
     return (
       <div className="row container-fluid" style={{paddingBottom: '1em'}}>
         <div className="container-fluid">
@@ -36,11 +47,21 @@ export default class CommentsSection extends Component {
           <div className="container-fluid">
             <ul className="media-list">
               {this.renderComments()}
+              {loadMoreButton &&
+                <div className="text-center" style={{paddingTop: '2em'}}>
+                  <Button className="btn btn-warning" onClick={this.loadMoreComments}>Load More</Button>
+                </div>
+              }
             </ul>
           </div>
         </div>
       </div>
     )
+  }
+
+  loadMoreComments() {
+    const {videoId, comments, loadMoreComments} = this.props;
+    loadMoreComments(videoId, comments.length);
   }
 
   renderComments() {
