@@ -16,10 +16,11 @@ router.get('/', (req, res) => {
     'FROM vq_comments a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON a.userId = c.id ',
     'LEFT JOIN vq_comments d ON a.commentId = d.id LEFT JOIN users e ON d.userId = e.id ',
     'LEFT JOIN vq_comments f ON a.replyId = f.id LEFT JOIN users g ON f.userId = g.id ',
-    'UNION SELECT \'video\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.videoCode AS content, ', 'a.timeStamp, a.id AS parentContentId, \'none\' AS commentId, \'none\' AS replyId, ',
+    'UNION SELECT \'video\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.videoCode AS content, ', 'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
     'a.title AS videoContentTitle, ',
-    'b.username AS uploaderName, \'none\' AS siblingContentUploaderId, \'none\' AS siblingContent, ',
-    '\'none\' AS siblingContentUploaderName, \'none\' AS replyContentUploaderId, \'none\' AS replyContent, ', '\'none\' AS replyContentUploaderName FROM vq_videos a JOIN users b ON a.uploader = b.id ',
+    'b.username AS uploaderName, NULL AS siblingContentUploaderId, NULL AS siblingContent, ',
+    'NULL AS siblingContentUploaderName, NULL AS replyContentUploaderId, NULL AS replyContent, ',
+    'NULL AS replyContentUploaderName FROM vq_videos a JOIN users b ON a.uploader = b.id ',
     'WHERE timeStamp IS NOT NULL ORDER BY timeStamp DESC LIMIT ' + limit
   ].join('')
   pool.query(query, (err, feeds) => {

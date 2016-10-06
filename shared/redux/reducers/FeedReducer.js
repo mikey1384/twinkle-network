@@ -34,10 +34,10 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: state.feeds.map(feed => {
           if (feed.type === 'video') {
-            if (feed.contentId == action.data.contentId) {
+            if (feed.contentId === action.data.contentId) {
               feed.contentLikers = action.data.likes
             }
-            if (feed.commentId == action.data.contentId) {
+            if (feed.commentId === action.data.contentId) {
               feed.siblingContentLikers = action.data.likes
             }
           }
@@ -49,13 +49,13 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: state.feeds.map(feed => {
           if (feed.type === 'comment') {
-            if (feed.contentId == action.data.contentId) {
+            if (feed.contentId === action.data.contentId) {
               feed.contentLikers = action.data.likes
             }
-            if (feed.commentId == action.data.contentId) {
+            if (!feed.replyId && feed.commentId === action.data.contentId) {
               feed.siblingContentLikers = action.data.likes
             }
-            if (feed.replyId == action.data.contentId) {
+            if (feed.replyId === action.data.contentId) {
               feed.siblingContentLikers = action.data.likes
             }
           }
@@ -67,13 +67,13 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: state.feeds.map(feed => {
           if (feed.type === 'comment') {
-            if (feed.contentId == action.data.contentId) {
+            if (feed.contentId === action.data.contentId) {
               feed.contentLikers = action.data.likes
             }
-            if (feed.commentId == action.data.contentId) {
+            if (!feed.replyId && feed.commentId === action.data.contentId) {
               feed.siblingContentLikers = action.data.likes
             }
-            if (feed.replyId == action.data.contentId) {
+            if (feed.replyId === action.data.contentId) {
               feed.siblingContentLikers = action.data.likes
             }
           }
