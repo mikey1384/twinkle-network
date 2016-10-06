@@ -55,6 +55,9 @@ export default function FeedReducer(state = defaultState, action) {
             if (feed.commentId === action.data.contentId) {
               feed.siblingContentLikers = action.data.likes
             }
+            if (feed.replyId === action.data.contentId) {
+              feed.siblingContentLikers = action.data.likes
+            }
           }
           return feed;
         })
@@ -67,6 +70,9 @@ export default function FeedReducer(state = defaultState, action) {
             feed.contentLikers = action.data.likes
           }
           if (feed.commentId === action.data.contentId) {
+            feed.siblingContentLikers = action.data.likes
+          }
+          if (feed.replyId === action.data.contentId) {
             feed.siblingContentLikers = action.data.likes
           }
           return feed;

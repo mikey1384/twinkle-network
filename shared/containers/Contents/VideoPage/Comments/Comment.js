@@ -29,7 +29,7 @@ export default class Comment extends Component {
 
   render() {
     const {replyInputShown, onEdit, userListModalShown} = this.state;
-    const {comment, userId} = this.props;
+    const {comment, userId, commentId, videoId} = this.props;
     const userIsOwner = comment.posterId === userId;
     let userLikedThis = false;
     for (let i = 0; i < comment.likes.length; i++) {
@@ -77,7 +77,7 @@ export default class Comment extends Component {
               id: comment.posterId
             }} /> <small>&nbsp;{timeSince(comment.timeStamp)}</small>
           </h4>
-          { onEdit ?
+          {onEdit ?
             <EditTextArea
               text={cleanStringWithURL(comment.content)}
               onCancel={() => this.setState({onEdit: false})}
@@ -125,6 +125,8 @@ export default class Comment extends Component {
           <Replies
             userId={userId}
             replies={comment.replies}
+            commentId={commentId}
+            videoId={videoId}
             onEditDone={
               ({replyId, editedReply}, cb) =>
               this.props.onReplyEditDone({
@@ -133,6 +135,7 @@ export default class Comment extends Component {
                 commentId: this.props.commentId
               }, cb)
             }
+            onReplySubmit={this.props.onReplySubmit}
             onLikeClick={replyId => this.props.onReplyLike(replyId, this.props.commentId)}
             onDelete={replyId => this.props.onReplyDelete(replyId, this.props.commentId)}
           />

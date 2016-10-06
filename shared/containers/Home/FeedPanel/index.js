@@ -33,11 +33,22 @@ export default class FeedPanel extends Component {
           action={!!feed.commentId ? 'replied to' : 'commented on'}
           uploader={{name: feed.uploaderName, id: feed.uploaderId}}
           siblingContentUploader={!!feed.siblingContentUploaderName && {name: feed.siblingContentUploaderName, id: feed.siblingContentUploaderId}}
+          replyContentUploader={!!feed.replyContentUploaderName && {name: feed.replyContentUploaderName, id: feed.replyContentUploaderId}}
           parentContent={{id: feed.parentContentId, title: feed.videoContentTitle}}
           timeStamp={feed.timeStamp}
         />
         <div className="panel-body">
-          {feed.type === 'comment' && !!feed.commentId &&
+          {feed.type === 'comment' && !!feed.replyId &&
+            <SiblingContent
+              isReplyContent={true}
+              uploader={{name: feed.replyContentUploaderName, id: feed.replyContentUploaderId}}
+              likes={feed.siblingContentLikers}
+              content={feed.replyContent}
+              myId={userId}
+              contentId={feed.replyId}
+            />
+          }
+          {feed.type === 'comment' && !!feed.commentId && !feed.replyId &&
             <SiblingContent
               uploader={{name: feed.siblingContentUploaderName, id: feed.siblingContentUploaderId}}
               likes={feed.siblingContentLikers}

@@ -8,6 +8,7 @@ import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
+import ReplyInputArea from './ReplyInputArea';
 
 
 export default class Reply extends Component {
@@ -15,16 +16,21 @@ export default class Reply extends Component {
     super()
     this.state={
       onEdit: false,
+      replyInputShown: false,
       userListModalShown: false
     }
     this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onDelete = this.onDelete.bind(this)
+    this.onReplySubmit = this.onReplySubmit.bind(this)
   }
 
   render() {
-    const {id, username, timeStamp, content, userIsOwner, likes, userId, myId} = this.props;
-    const {onEdit, userListModalShown} = this.state;
+    const {
+      id, username, timeStamp, content, userIsOwner,
+      likes, userId, myId, targetUserName, targetUserId, autoFocus
+    } = this.props;
+    const {onEdit, userListModalShown, replyInputShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId == myId) userLikedThis = true;
@@ -69,9 +75,15 @@ export default class Reply extends Component {
             <UsernameText
               user={{
                 name: username, id: userId
-              }} /> <small>&nbsp;{timeSince(timeStamp)}</small></h4>
+              }}
+            /> <small>&nbsp;{timeSince(timeStamp)}</small></h4>
           <div>
-            { onEdit ?
+            {targetUserId &&
+              <span style={{color: '#158cba'}}>
+                to: <UsernameText user={{name: targetUserName, id: targetUserId}} />
+              </span>
+            }
+            {onEdit ?
               <EditTextArea
                 text={cleanStringWithURL(content)}
                 onCancel={() => this.setState({onEdit: false})}
@@ -87,7 +99,14 @@ export default class Reply extends Component {
                   className="row flexbox-container"
                 >
                   <div className="pull-left">
+                    <Button
+                      className="btn btn-warning btn-sm"
+                      onClick={() => this.setState({replyInputShown: true})}
+                    >
+                      <span className="glyphicon glyphicon-comment"></span> Reply
+                    </Button>
                     <LikeButton
+                      style={{marginLeft: '0.5em'}}
                       onClick={this.onLikeClick}
                       liked={userLikedThis}
                       small
@@ -110,6 +129,10 @@ export default class Reply extends Component {
               </div>
             }
           </div>
+          {replyInputShown && <ReplyInputArea
+              onSubmit={this.onReplySubmit}
+            />
+          }
         </div>
         { userListModalShown &&
           <UserListModal
@@ -139,5 +162,11 @@ export default class Reply extends Component {
   onDelete() {
     const replyId = this.props.id;
     this.props.onDelete(replyId);
+  }
+
+  onReplySubmit(reply) {
+    const {onReplySubmit, commentId, videoId, id} = this.props;
+    this.setState({replyInputShown: false})
+    onReplySubmit(reply, commentId, videoId, id)
   }
 }

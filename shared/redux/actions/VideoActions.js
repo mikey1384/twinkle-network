@@ -433,8 +433,8 @@ export const uploadVideoReply = data => ({
   data
 })
 
-export const uploadVideoReplyAsync = (reply, commentId, videoId) => dispatch =>
-request.post(`${API_URL}/replies`, {reply, commentId, videoId}, auth())
+export const uploadVideoReplyAsync = (reply, commentId, videoId, replyId) => dispatch =>
+request.post(`${API_URL}/replies`, {reply, commentId, videoId, replyId}, auth())
 .then(
   response => {
     const {data} = response;

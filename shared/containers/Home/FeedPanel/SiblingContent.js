@@ -23,7 +23,7 @@ export default class SiblingContent extends Component {
   }
 
   render() {
-    const {uploader, content, myId, likes} = this.props;
+    const {uploader, content, myId, likes, isReplyContent} = this.props;
     const {userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
@@ -31,7 +31,7 @@ export default class SiblingContent extends Component {
     }
     return (
       <div className="well" style={{marginTop: '1em'}}>
-        <UserLink user={uploader} /> commented:
+        <UserLink user={uploader} /> {`${isReplyContent ? 'wrote' : 'commented'}`}:
         <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
         <LikeButton
           style={{marginTop: '1em'}}

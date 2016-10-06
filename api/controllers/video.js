@@ -412,6 +412,7 @@ router.post('/replies', requireAuth, (req, res) => {
   const user = req.user;
   const commentId = req.body.commentId;
   const videoId = req.body.videoId;
+  const replyId = req.body.replyId ? req.body.replyId : null;
   const reply = req.body.reply;
   const processedReply = processedString(reply);
   async.waterfall([
@@ -420,6 +421,7 @@ router.post('/replies', requireAuth, (req, res) => {
         userId: user.id,
         content: processedReply,
         timeStamp: Math.floor(Date.now()/1000),
+        replyId,
         commentId,
         videoId
       }
@@ -429,9 +431,10 @@ router.post('/replies', requireAuth, (req, res) => {
     },
     (replyId, callback) => {
       let query = [
-        'SELECT a.id, a.content, a.timeStamp, a.userId, b.username FROM ',
-        'vq_comments a JOIN users b ON a.userId = b.id WHERE ',
-        'a.id = ?'
+        'SELECT a.id, a.userId, a.content, a.timeStamp, a.replyId, b.username, ',
+        'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
+        'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
+        'LEFT JOIN users d ON c.userId = d.id WHERE a.id = ?'
       ].join('')
       pool.query(query, replyId, (err, rows) => {
         callback(err, rows)
@@ -449,6 +452,9 @@ router.post('/replies', requireAuth, (req, res) => {
         timeStamp: rows[0].timeStamp,
         userId: rows[0].userId,
         username: rows[0].username,
+        targetUserId: rows[0].targetUserId,
+        targetUserName: rows[0].targetUserName,
+        newlyAdded: true,
         likes: []
       }
     })

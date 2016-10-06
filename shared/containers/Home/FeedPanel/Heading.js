@@ -8,12 +8,19 @@ export default function Heading({
   videoTitle,
   action,
   uploader,
+  replyContentUploader,
   siblingContentUploader,
   parentContent,
   timeStamp
 }) {
-  const siblingAction = !!siblingContentUploader ?
-  <span><UserLink user={siblingContentUploader} />'s comment on</span> : '';
+  let siblingAction;
+
+  if (!!replyContentUploader) {
+    siblingAction = <span><UserLink user={replyContentUploader} />'s reply on</span>
+  }
+  else if (!!siblingContentUploader) {
+    siblingAction = <span><UserLink user={siblingContentUploader} />'s comment on</span>
+  }
 
   switch (type) {
     case 'video':

@@ -37,18 +37,26 @@ const fetchCommentElements = (params) => cb => {
     },
     callback => {
       let query = [
-        'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
-        'vq_comments a JOIN users b ON ',
-        'a.userId = b.id WHERE ',
-        'a.commentId = ?'
+        'SELECT a.id, a.userId, a.content, a.timeStamp, a.replyId, b.username, ',
+        'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
+        'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
+        'LEFT JOIN users d ON c.userId = d.id WHERE a.commentId = ?'
       ].join('')
       pool.query(query, commentId, (err, rows) => {
+        if (err) {
+          console.error(err)
+          return callback(err)
+        }
         returnReplies(rows, (err, repliesArray) => {
           callback(err, repliesArray);
         })
       })
     }
   ], (err, results) => {
+    if (err) {
+      console.error(err)
+      return cb(err)
+    }
     const likes = results[0].map(like => {
       return {
         userId: like.userId,
@@ -102,6 +110,8 @@ const fetchReplyElements = (params) => cb => {
       timeStamp: replyRow.timeStamp,
       userId: replyRow.userId,
       username: replyRow.username,
+      targetUserId: replyRow.targetUserId,
+      targetUserName: replyRow.targetUserName,
       likes: rows.map(like => {
         return {
           userId: like.userId,
