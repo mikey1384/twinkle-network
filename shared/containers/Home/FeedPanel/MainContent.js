@@ -35,7 +35,11 @@ export default class MainContent extends Component {
       <div>
         {
           (type === 'comment') ?
-            <span style={{fontSize: '1.2em'}}>
+            <span style={{
+              fontSize: '1.2em',
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word'
+            }}>
               <p dangerouslySetInnerHTML={{__html: content}} />
             </span> :
             <div className="embed-responsive embed-responsive-16by9">

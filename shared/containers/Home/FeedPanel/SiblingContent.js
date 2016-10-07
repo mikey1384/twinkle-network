@@ -30,7 +30,14 @@ export default class SiblingContent extends Component {
       if (likes[i].userId == myId) userLikedThis = true;
     }
     return (
-      <div className="well" style={{marginTop: '1em'}}>
+      <div
+        className="well"
+        style={{
+          marginTop: '1em',
+          whiteSpace: 'pre-wrap',
+          wordWrap: 'break-word'
+        }}
+      >
         <UserLink user={uploader} /> {`${isReplyContent ? 'wrote' : 'commented'}`}:
         <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
         <LikeButton
