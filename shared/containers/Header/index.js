@@ -52,7 +52,8 @@ export default class Header extends Component {
     this.state = {
       notificationsMenuShown: false,
       selectedTab: !props.location || props.location.pathname === '/' ?
-      'home' : props.location.pathname.split('/')[1]
+      'home' : props.location.pathname.split('/')[1],
+      logoColor: !!browserHistory && '#' + Math.floor(Math.random()*16777215).toString(16)
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
@@ -136,7 +137,7 @@ export default class Header extends Component {
       fetchFeedsAsync
     } = this.props;
 
-    const {notificationsMenuShown, selectedTab} = this.state;
+    const {notificationsMenuShown, selectedTab, logoColor} = this.state;
     let staticTopOn;
     let fixedTopOn;
     if (staticTop) {
@@ -154,7 +155,7 @@ export default class Header extends Component {
             style={{
               cursor: 'pointer',
               fontWeight: 'bold',
-              color: !!browserHistory && '#' + Math.floor(Math.random()*16777215).toString(16)
+              color: logoColor
             }}
             to="/"
             onClick={this.onLogoClick}
