@@ -3,11 +3,11 @@ import Button from 'components/Button';
 
 export default function LikeButton({style, liked, onClick, small}) {
   let buttonStyle = Object.assign({}, style, {
-    color: liked ? '#f5eb00' : '#fff'
+    color: liked ? 'yellow' : '#fff'
   })
   return (
     <Button
-      className={`btn btn-info${small ? ' btn-sm' : ''}`}
+      className={`btn btn-${liked ? 'primary' : 'info'}${small ? ' btn-sm' : ''}`}
       style={buttonStyle}
       onClick={onClick}
     >
