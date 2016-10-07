@@ -151,7 +151,11 @@ export default class Header extends Component {
         <Navbar.Header>
           <Link
             className="navbar-brand"
-            style={{cursor: 'pointer'}}
+            style={{
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              color: !!browserHistory && '#' + Math.floor(Math.random()*16777215).toString(16)
+            }}
             to="/"
             onClick={this.onLogoClick}
           >
