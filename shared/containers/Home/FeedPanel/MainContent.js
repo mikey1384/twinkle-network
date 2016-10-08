@@ -64,7 +64,7 @@ export default class MainContent extends Component {
           liked={userLikedThis}
           small
         />
-        {type === 'video' && views > 0 &&
+        {type === 'video' && views > 10 &&
           <span
             className="pull-right"
             style={{

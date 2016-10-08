@@ -11,7 +11,7 @@ export default function VideoLikeInterface(props) {
         className="text-center"
         style={{marginTop: '4em'}}
       >
-        {views > 0 &&
+        {views > 10 &&
           <span
             style={{
               right: '13px',
