@@ -33,15 +33,13 @@ export default class AllVideosPanel extends Component {
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
           <h3 className="panel-title pull-left">{title}</h3>
-          {isAdmin &&
-            <Button
-              className="btn btn-default pull-right"
-              style={{
-                marginLeft: 'auto'
-              }}
-              onClick={() => onAddVideoClick()}
-            >+ Add Video</Button>
-          }
+          <Button
+            className="btn btn-default pull-right"
+            style={{
+              marginLeft: 'auto'
+            }}
+            onClick={() => onAddVideoClick()}
+          >+ Add Video</Button>
           <div className="clearfix"></div>
         </div>
         <div className="panel-body">
