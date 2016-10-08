@@ -14,7 +14,7 @@ export default function VideoLikeInterface(props) {
         {views > 0 &&
           <span
             style={{
-              right: '10px',
+              right: '13px',
               fontSize: '1.5em',
               position: 'absolute'
             }}
