@@ -175,11 +175,11 @@ router.get('/loadPage', (req, res) => {
   const videoId = Number(req.query.videoId);
   let query = [
     'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.timeStamp, a.uploader AS uploaderId, b.username AS uploaderName, ',
-    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = a.id) AS videoViews ',
+    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = ?) AS videoViews ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
     'WHERE a.id = ?'
   ].join('');
-  pool.query(query, videoId, (err, rows) => {
+  pool.query(query, [videoId, videoId], (err, rows) => {
     if (err) {
       return res.status(500).send({error: err});
     }
