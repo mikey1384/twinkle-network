@@ -53,7 +53,7 @@ export default class Header extends Component {
       notificationsMenuShown: false,
       selectedTab: !props.location || props.location.pathname === '/' ?
       'home' : props.location.pathname.split('/')[1],
-      logoColor: !!browserHistory && '#' + Math.floor(Math.random()*16777215).toString(16)
+      logoColor: '#555555'
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
@@ -79,6 +79,14 @@ export default class Header extends Component {
       })
       socket.on('disconnect', () => {
         turnChatOff()
+      })
+    }
+  }
+
+  componentDidMount() {
+    if (!!browserHistory) {
+      this.setState({
+        logoColor: '#' + Math.floor(Math.random()*16777215).toString(16)
       })
     }
   }

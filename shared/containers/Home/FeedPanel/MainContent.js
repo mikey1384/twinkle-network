@@ -3,14 +3,16 @@ import UserLink from '../UserLink';
 import LikeButton from 'components/LikeButton';
 import Likers from 'components/Likers';
 import {connect} from 'react-redux';
-import {likeVideoCommentAsync} from 'redux/actions/FeedActions';
-import {likeVideoAsync} from 'redux/actions/FeedActions';
+import {likeVideoAsync, likeVideoCommentAsync} from 'redux/actions/FeedActions';
+import {addVideoViewAsync} from 'redux/actions/VideoActions';
 import UserListModal from 'components/Modals/UserListModal';
+import YouTube from 'react-youtube';
 
 
 @connect(
   null,
   {
+    addVideoView: addVideoViewAsync,
     onLikeCommentClick: likeVideoCommentAsync,
     onLikeVideoClick: likeVideoAsync
   }
@@ -22,10 +24,11 @@ export default class MainContent extends Component {
       userListModalShown: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
+    this.onVideoPlay = this.onVideoPlay.bind(this)
   }
 
   render() {
-    const {myId, content, likes = [], contentId, type, title} = this.props;
+    const {myId, content, likes = [], contentId, type, title, views} = this.props;
     const {userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
@@ -43,15 +46,16 @@ export default class MainContent extends Component {
               <p dangerouslySetInnerHTML={{__html: content}} />
             </span> :
             <div className="embed-responsive embed-responsive-16by9">
-              <iframe
+              <YouTube
                 className="embed-responsive-item"
-                frameBorder="0"
-                allowFullScreen="1"
-                title={title}
-                width="640"
-                height="360"
-                src={`https://www.youtube.com/embed/${content}`}>
-              </iframe>
+                opts={{
+                  title: title,
+                  height: '360',
+                  width: '640'
+                }}
+                videoId={content}
+                onPlay={this.onVideoPlay}
+              />
             </div>
         }
         <LikeButton
@@ -60,6 +64,15 @@ export default class MainContent extends Component {
           liked={userLikedThis}
           small
         />
+        {type === 'video' && views > 0 &&
+          <span
+            className="pull-right"
+            style={{
+              fontSize: '1.5em',
+              marginTop: '10px'
+            }}
+          >{views} view{`${views > 1 ? 's' : ''}`}</span>
+        }
         <Likers
           style={{
             fontSize: '11px',
@@ -90,6 +103,14 @@ export default class MainContent extends Component {
       this.props.onLikeCommentClick(contentId);
     } else {
       this.props.onLikeVideoClick(contentId);
+    }
+  }
+
+  onVideoPlay(event) {
+    const {contentId, myId, addVideoView} = this.props;
+    const time = event.target.getCurrentTime()
+    if (Math.floor(time) === 0) {
+      addVideoView({videoId: contentId, userId: myId})
     }
   }
 }

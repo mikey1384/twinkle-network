@@ -60,6 +60,7 @@ export default class FeedPanel extends Component {
           <MainContent
             type={feed.type}
             content={feed.content}
+            views={feed.videoViews}
             likes={feed.contentLikers}
             myId={userId}
             title={feed.videoContentTitle}

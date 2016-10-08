@@ -4,13 +4,22 @@ import Likers from 'components/Likers';
 import LikeButton from 'components/LikeButton';
 
 export default function VideoLikeInterface(props) {
-  const {userId, likes, onLikeClick, showLikerList} = props;
+  const {userId, likes, onLikeClick, showLikerList, views} = props;
   return (
     <div>
       <div
         className="text-center"
         style={{marginTop: '4em'}}
       >
+        {views > 0 &&
+          <span
+            style={{
+              right: '10px',
+              fontSize: '1.5em',
+              position: 'absolute'
+            }}
+          >{views} view{`${views > 1 ? 's' : ''}`}</span>
+        }
         <LikeButton
           style={{marginLeft: '0.5em', fontSize: '3rem'}}
           onClick={() => onLikeClick()}

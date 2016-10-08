@@ -7,6 +7,15 @@ import {URL} from 'constants/URL';
 const API_URL = `${URL}/video`;
 
 
+export const addVideoViewAsync = params => dispatch =>
+request.post(`${API_URL}/view`, params)
+.catch(
+  error => {
+    console.error(error)
+    handleError(error, dispatch)
+  }
+)
+
 export const clearSearchResults = () => ({
   type: 'CLEAR_CONTENT_SEARCH_RESULTS'
 })

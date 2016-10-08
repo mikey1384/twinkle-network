@@ -174,7 +174,8 @@ router.post('/edit/page', requireAuth, (req, res) => {
 router.get('/loadPage', (req, res) => {
   const videoId = Number(req.query.videoId);
   let query = [
-    'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.timeStamp, a.uploader AS uploaderId, b.username AS uploaderName ',
+    'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.timeStamp, a.uploader AS uploaderId, b.username AS uploaderName, ',
+    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = a.id) AS videoViews ',
     'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
     'WHERE a.id = ?'
   ].join('');
@@ -190,6 +191,7 @@ router.get('/loadPage', (req, res) => {
       const uploaderId = rows[0].uploaderId;
       const uploaderName = rows[0].uploaderName;
       const timeStamp = rows[0].timeStamp;
+      const videoViews = rows[0].videoViews;
       async.parallel([
         (callback) => {
           pool.query('SELECT * FROM vq_questions WHERE videoId = ? AND isDraft = 0', videoId, (err, rows) => {
@@ -239,6 +241,7 @@ router.get('/loadPage', (req, res) => {
           uploaderId,
           uploaderName,
           timeStamp,
+          videoViews,
           questions: results[0],
           likes: results[1]
         })
@@ -589,6 +592,18 @@ router.get('/search', (req, res) => {
       return res.status(500).send({error: err});
     }
     res.send({result})
+  })
+})
+
+router.post('/view', (req, res) => {
+  const {videoId, userId} = req.body;
+  const post = {videoId, userId, timeStamp: Math.floor(Date.now()/1000)};
+  pool.query('INSERT INTO vq_video_views SET ?', post, err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err});
+    }
+    res.send({success: true})
   })
 })
 

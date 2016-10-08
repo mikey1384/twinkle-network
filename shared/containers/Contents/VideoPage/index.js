@@ -7,7 +7,8 @@ import {
   uploadVideoCommentAsync,
   uploadVideoReplyAsync,
   likeVideoAsync,
-  resetVideoPage
+  resetVideoPage,
+  addVideoViewAsync
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
@@ -22,6 +23,7 @@ import UserListModal from 'components/Modals/UserListModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import {bindActionCreators} from 'redux';
 import {stringIsEmpty} from 'helpers/stringHelpers';
+import YouTube from 'react-youtube';
 
 
 @connect(
@@ -37,6 +39,7 @@ import {stringIsEmpty} from 'helpers/stringHelpers';
     uploadQuestions: uploadQuestionsAsync,
     uploadVideoComment: uploadVideoCommentAsync,
     likeVideo: likeVideoAsync,
+    addVideoView: addVideoViewAsync,
     resetVideoPage
   }
 )
@@ -62,6 +65,7 @@ export default class VideoPage extends Component {
     this.onCommentSubmit = this.onCommentSubmit.bind(this)
     this.onVideoDelete = this.onVideoDelete.bind(this)
     this.onSelectChoice = this.onSelectChoice.bind(this)
+    this.onVideoPlay = this.onVideoPlay.bind(this)
   }
 
   componentWillUnmount() {
@@ -81,6 +85,7 @@ export default class VideoPage extends Component {
       questions = [],
       likes = [],
       comments,
+      videoViews,
       noComments } = this.props;
     const {
       watchTabActive,
@@ -139,16 +144,17 @@ export default class VideoPage extends Component {
             {!questionsBuilderShown &&
               <div>
                 <div className={`${youtubeIframeContainerClassName}`}>
-                  <iframe
+                  <YouTube
                     key={videoId}
                     className={`${youtubeIframeClassName}`}
-                    frameBorder="0"
-                    allowFullScreen="1"
-                    title={title}
-                    width="640"
-                    height="360"
-                    src={`https://www.youtube.com/embed/${videoCode}`}>
-                  </iframe>
+                    opts={{
+                      title: title,
+                      height: '360',
+                      width: '640'
+                    }}
+                    videoId={videoCode}
+                    onPlay={this.onVideoPlay}
+                  />
                 </div>
                 {watchTabActive &&
                   <VideoLikeInterface
@@ -156,6 +162,7 @@ export default class VideoPage extends Component {
                     likes={likes}
                     onLikeClick={this.onVideoLikeClick}
                     showLikerList={() => this.setState({userListModalShown: true})}
+                    views={videoViews}
                   />
                 }
               </div>
@@ -334,12 +341,20 @@ export default class VideoPage extends Component {
   }
 
   onCommentSubmit(comment) {
-    const {videoId} = this.props;
-    this.props.uploadVideoComment(comment, videoId);
+    const {videoId, uploadVideoComment} = this.props;
+    uploadVideoComment(comment, videoId);
   }
 
   onVideoLikeClick() {
     const {videoId} = this.props;
     this.props.likeVideo(videoId);
+  }
+
+  onVideoPlay(event) {
+    const {videoId, userId, addVideoView} = this.props;
+    const time = event.target.getCurrentTime()
+    if (Math.floor(time) === 0) {
+      addVideoView({videoId, userId})
+    }
   }
 }
