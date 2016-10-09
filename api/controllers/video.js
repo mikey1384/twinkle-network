@@ -581,7 +581,7 @@ router.get('/search', (req, res) => {
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send({result: []})
   async.waterfall([
     callback => {
-      let query = 'SELECT id, title AS label FROM vq_videos WHERE title LIKE ? LIMIT 10';
+      let query = 'SELECT id, title AS label FROM vq_videos WHERE title LIKE ? LIMIT 20';
       pool.query(query, '%' + searchQuery + '%', (err, result) => {
         callback(err, result)
       })
