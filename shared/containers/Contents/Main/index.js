@@ -121,7 +121,7 @@ export default class Main extends Component {
             key={"pinnedPlaylists"}
             buttonGroupShown={userType === 'master'}
             buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
-            title="Pinned Playlists"
+            title="Featured Playlists"
             loadMoreButton={loadMorePinnedPlaylists}
             userId={userId}
             playlists={pinnedPlaylists}
