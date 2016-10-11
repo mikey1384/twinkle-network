@@ -43,7 +43,7 @@ export default class SelectPlaylistsToPinModal extends Component {
         animation={false}
       >
         <Modal.Header closeButton>
-          <h4>Select up to 3 playlists</h4>
+          <h4>Select up to 5 playlists</h4>
         </Modal.Header>
         <Modal.Body>
           <ul className="nav nav-tabs nav-justified">
@@ -133,19 +133,19 @@ export default class SelectPlaylistsToPinModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          {selectedPlaylists.length > 3 &&
+          {selectedPlaylists.length > 5 &&
             <span
               className="help-block pull-left"
               style={{color: '#843534'}}
             >
-              Please limit your selection to 3 playlists
+              Please limit your selection to 5 playlists
             </span>
           }
           <Button className="btn btn-default" onClick={this.props.onHide}>Cancel</Button>
           <Button
             className="btn btn-primary"
             onClick={this.onSubmit}
-            disabled={selectedPlaylists.length > 3}
+            disabled={selectedPlaylists.length > 5}
           >Done</Button>
         </Modal.Footer>
       </Modal>

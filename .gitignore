@@ -5,6 +5,7 @@ siteConfig.js
 .fuse_hidden*
 .DS_Store
 URL.js
+keys.js
 entry/dist/bundle.js
 entry/dist/vendor.js
 memstats

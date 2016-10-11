@@ -212,7 +212,7 @@ router.post('/pinned', requireAuth, (req, res) => {
   const user = req.user;
   const selectedPlaylists = req.body.selectedPlaylists;
 
-  if (selectedPlaylists.length > 3) {
+  if (selectedPlaylists.length > 5) {
     return res.status(500).send({error: 'Maximum playlist number exceeded'});
   }
   async.waterfall([

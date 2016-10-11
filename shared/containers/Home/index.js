@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import Button from 'components/Button';
 import FeedPanel from './FeedPanel';
 import {fetchMoreFeedsAsync} from 'redux/actions/FeedActions';
+import LinkPanel from './FeedPanel/LinkPanel';
 
 @connect(
   state => ({
