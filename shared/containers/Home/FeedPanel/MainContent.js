@@ -8,7 +8,7 @@ import {addVideoViewAsync} from 'redux/actions/VideoActions';
 import UserListModal from 'components/Modals/UserListModal';
 import YouTube from 'react-youtube';
 import {embedlyKey} from 'constants/keys';
-import Embedly from 'react-embedly';
+import Embedly from 'components/Embedly';
 
 
 @connect(
