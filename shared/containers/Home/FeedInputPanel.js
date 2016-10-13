@@ -40,6 +40,7 @@ const renderTextarea = ({input, className, minRows, placeholder}) =>
 })
 @connect(
   state => ({
+    username: state.UserReducer.username,
     categorySearchResult: state.FeedReducer.categorySearchResult
   }),
   {
@@ -67,7 +68,7 @@ export default class FeedInputPanel extends Component {
   }
 
   render() {
-    const {categorySearchResult = [], handleSubmit} = this.props;
+    const {categorySearchResult = [], handleSubmit, username} = this.props;
     const {checkedVideo, categoryText, selectedCategoryLabel, categoryNotSelected} = this.state;
     return (
       <div className="panel panel-default"
@@ -76,7 +77,7 @@ export default class FeedInputPanel extends Component {
         }}
       >
         <div className="panel-heading">
-          <strong>Hello mikey! Is there anything interesting you'd like to share today?</strong>
+          <strong>Hello{`${username ? ' ' + username : ''}`}! Is there anything interesting you'd like to share today?</strong>
         </div>
         <div className="panel-body">
           <form className="container-fluid" onSubmit={handleSubmit(this.onSubmit)}>
