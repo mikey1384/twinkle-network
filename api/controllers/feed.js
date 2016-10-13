@@ -88,6 +88,10 @@ router.get('/', (req, res) => {
             }
           } else {
             return callback => {
+              if (feed.type === 'url') {
+                feed['contentLikers'] = [];
+                return callback();
+              }
               pool.query(query, feed.contentId, (err, rows) => {
                 feed['contentLikers'] = rows;
                 callback();
