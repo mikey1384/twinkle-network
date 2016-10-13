@@ -1,11 +1,22 @@
 const defaultState = {
   feeds: null,
-  loadMoreButton: false
+  loadMoreButton: false,
+  categorySearchResult: []
 };
 
 let loadMoreButton = false;
 export default function FeedReducer(state = defaultState, action) {
   switch(action.type) {
+    case 'CLEAR_CATEGORIES_SEARCH':
+      return {
+        ...state,
+        categorySearchResult: []
+      }
+    case 'FETCH_CATEGORIES':
+      return {
+        ...state,
+        categorySearchResult: action.data
+      };
     case 'FETCH_FEEDS':
       if (action.data.length > 20) {
         action.data.pop()
@@ -80,6 +91,12 @@ export default function FeedReducer(state = defaultState, action) {
           return feed;
         })
       }
+    case 'UPLOAD_CONTENT':
+      return {
+        ...state,
+        categorySearchResult: [],
+        feeds: [action.data].concat(state.feeds)
+      };
     default:
       return state;
   }

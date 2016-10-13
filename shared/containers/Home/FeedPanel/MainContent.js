@@ -7,6 +7,8 @@ import {likeVideoAsync, likeVideoCommentAsync} from 'redux/actions/FeedActions';
 import {addVideoViewAsync} from 'redux/actions/VideoActions';
 import UserListModal from 'components/Modals/UserListModal';
 import YouTube from 'react-youtube';
+import {embedlyKey} from 'constants/keys';
+import Embedly from 'react-embedly';
 
 
 @connect(
@@ -45,25 +47,29 @@ export default class MainContent extends Component {
             }}>
               <p dangerouslySetInnerHTML={{__html: content}} />
             </span> :
-            <div className="embed-responsive embed-responsive-16by9">
-              <YouTube
-                className="embed-responsive-item"
-                opts={{
-                  title: title,
-                  height: '360',
-                  width: '640'
-                }}
-                videoId={content}
-                onPlay={this.onVideoPlay}
-              />
-            </div>
+            ((type === 'video') ?
+              <div className="embed-responsive embed-responsive-16by9">
+                <YouTube
+                  className="embed-responsive-item"
+                  opts={{
+                    title: title,
+                    height: '360',
+                    width: '640'
+                  }}
+                  videoId={content}
+                  onPlay={this.onVideoPlay}
+                />
+              </div> :
+              <Embedly url={content} apiKey={embedlyKey} />
+            )
         }
-        <LikeButton
-          style={{marginTop: '1em'}}
-          onClick={this.onLikeClick}
-          liked={userLikedThis}
-          small
-        />
+        {type !== 'url' && <LikeButton
+            style={{marginTop: '1em'}}
+            onClick={this.onLikeClick}
+            liked={userLikedThis}
+            small
+          />
+        }
         {type === 'video' && views > 10 &&
           <span
             className="pull-right"

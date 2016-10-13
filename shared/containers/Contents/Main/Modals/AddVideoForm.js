@@ -23,12 +23,12 @@ const renderInput = ({input, type, className, placeholder, meta: {touched, error
 )
 
 const renderTextarea = ({input, className, minRows, placeholder}) =>
-  <Textarea
-    {...input}
-    className={className}
-    minRows={minRows}
-    placeholder={placeholder}
-  />
+<Textarea
+  {...input}
+  className={className}
+  minRows={minRows}
+  placeholder={placeholder}
+/>
 
 @reduxForm({
   form: 'UploadVideoForm',

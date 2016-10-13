@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import Button from 'components/Button';
 import FeedPanel from './FeedPanel';
 import {fetchMoreFeedsAsync} from 'redux/actions/FeedActions';
-import LinkPanel from './FeedPanel/LinkPanel';
+import FeedInputPanel from './FeedInputPanel';
 
 @connect(
   state => ({
@@ -24,6 +24,7 @@ export default class Home extends Component {
     return !!feeds ? (
       feeds.length > 0 ?
         <div className="container-fluid col-md-offset-3 col-md-6">
+          {!!userId && <FeedInputPanel />}
           {feeds.map(feed => {
             return <FeedPanel key={`${feed.type}${feed.contentId}`} feed={feed} userId={userId} />;
           })}

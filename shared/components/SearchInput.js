@@ -24,7 +24,7 @@ class SearchInput extends Component {
   }
 
   render() {
-    const {placeholder} = this.props;
+    const {placeholder, onFocus, onBlur} = this.props;
     return (
       <div className="input-group dropdown">
         <span className="input-group-addon">
@@ -32,6 +32,7 @@ class SearchInput extends Component {
         </span>
         <input
           ref="searchInput"
+          onFocus={onFocus && onFocus}
           className="form-control"
           placeholder={placeholder}
           value={this.props.value}
@@ -57,7 +58,7 @@ class SearchInput extends Component {
 
   onKeyDown(event) {
     const {dropdownItemToHighlight} = this.state;
-    const  {searchResults, onSelect} = this.props;
+    const  {searchResults, onSelect, onClear} = this.props;
     let index = dropdownItemToHighlight;
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
@@ -77,6 +78,10 @@ class SearchInput extends Component {
         ReactDOM.findDOMNode(this.refs.searchInput).blur();
         let item = searchResults[index];
         onSelect(item);
+      }
+
+      if (event.keyCode === 9) {
+        if(onClear) onClear()
       }
     }
   }
