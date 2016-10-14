@@ -128,7 +128,7 @@ export default class FeedInputPanel extends Component {
             <fieldset className="form-group">
               <Field
                 name="url"
-                placeholder="Enter url. For example: www.naver.com"
+                placeholder="Enter url. For example: www.google.com"
                 className="form-control"
                 component={renderInput}
                 type="text"
