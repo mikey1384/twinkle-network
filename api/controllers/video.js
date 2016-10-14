@@ -181,6 +181,7 @@ router.get('/loadPage', (req, res) => {
   ].join('');
   pool.query(query, [videoId, videoId], (err, rows) => {
     if (err) {
+      console.error(err);
       return res.status(500).send({error: err});
     }
     if (rows[0]) {
