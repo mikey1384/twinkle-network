@@ -5,12 +5,6 @@ const pool = require('./pool');
 module.exports = function(io) {
   let connections = [];
   io.on('connection', socket => {
-    connections.push({
-      socketId: socket.id,
-      username: '',
-      userId: null,
-      channels: []
-    });
 
     socket.on('enter_my_notification_channel', userId => {
       socket.join('notificationChannel' + userId)
