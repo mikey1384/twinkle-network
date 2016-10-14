@@ -61,7 +61,7 @@ var Embedly = function (_React$Component) {
       };
 
       _superagent2.default.get(this.apiUrl).query(params).end(function (err, res) {
-        _this2.setState(res.body);
+        _this2.setState(Object.assign({}, params, res.body));
       });
     }
   }, {
