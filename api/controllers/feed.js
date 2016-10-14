@@ -119,7 +119,7 @@ router.get('/category', (req, res) => {
       pool.query('SELECT COUNT(*) AS numCategories FROM content_categories', (err, rows) => {
         const numCategories = Number(rows[0].numCategories);
         let result = [];
-        if (numCategories > 5) {
+        if (searchText === 'undefined' && numCategories > 7) {
           return callback(err, [])
         }
         callback(err)
