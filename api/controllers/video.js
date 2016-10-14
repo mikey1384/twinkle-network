@@ -184,6 +184,7 @@ router.get('/loadPage', (req, res) => {
       console.error(err);
       return res.status(500).send({error: err});
     }
+    console.log("got here")
     if (rows[0]) {
       const videoId = rows[0].videoId;
       const title = rows[0].title;
