@@ -176,7 +176,7 @@ router.get('/loadPage', (req, res) => {
   let query = [
     'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.timeStamp, a.uploader AS uploaderId, b.username AS uploaderName, ',
     '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = ?) AS videoViews ',
-    'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
+    'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
     'WHERE a.id = ?'
   ].join('');
   pool.query(query, [videoId, videoId], (err, rows) => {
@@ -248,7 +248,6 @@ router.get('/loadPage', (req, res) => {
         })
       });
     } else {
-      console.log("doesnt exist")
       res.status(500).send({error: 'Video doesn\'t exist'})
     }
   })
