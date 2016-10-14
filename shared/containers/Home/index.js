@@ -9,7 +9,8 @@ import FeedInputPanel from './FeedInputPanel';
   state => ({
     feeds: state.FeedReducer.feeds,
     loadMoreButton: state.FeedReducer.loadMoreButton,
-    userId: state.UserReducer.userId
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username
   }),
   {fetchMoreFeeds: fetchMoreFeedsAsync}
 )
@@ -20,7 +21,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {userId, feeds, loadMoreButton} = this.props;
+    const {userId, feeds, loadMoreButton, username} = this.props;
     return !!feeds ? (
       feeds.length > 0 ?
         <div className="container-fluid col-md-offset-3 col-md-6">

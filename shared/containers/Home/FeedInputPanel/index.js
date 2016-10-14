@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {reduxForm, Field} from 'redux-form';
+import {reduxForm, Field, reset} from 'redux-form';
 import {connect} from 'react-redux';
 import Textarea from 'react-textarea-autosize';
 import Button from 'components/Button';
 import SearchInput from 'components/SearchInput';
-import {reset} from 'redux-form';
 import {
   fetchCategoriesAsync,
   clearCategoriesSearchResults,
@@ -51,6 +50,10 @@ const renderTextarea = ({input, className, minRows, placeholder}) =>
   }
 )
 export default class FeedInputPanel extends Component {
+  handleClickOutside = (event) => {
+    console.log("clicked outside")
+  }
+
   constructor() {
     super()
     this.state = {
@@ -68,7 +71,7 @@ export default class FeedInputPanel extends Component {
   }
 
   render() {
-    const {categorySearchResult = [], handleSubmit, username} = this.props;
+    const {categorySearchResult = [], handleSubmit, username, submitting} = this.props;
     const {checkedVideo, categoryText, selectedCategoryLabel, categoryNotSelected} = this.state;
     return (
       <div className="panel panel-default"
@@ -155,6 +158,7 @@ export default class FeedInputPanel extends Component {
             <Button
               className="btn btn-primary"
               type="submit"
+              disabled={submitting}
             >
               Share!
             </Button>

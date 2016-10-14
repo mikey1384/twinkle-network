@@ -21,6 +21,7 @@ module.exports = function(io) {
     })
 
     socket.on('check_online_members', (channelId, callback) => {
+          console.log(connections);
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
         const membersOnline = returnMembersOnline(clients);
         let data = {channelId, membersOnline}
