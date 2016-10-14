@@ -1,6 +1,7 @@
 const processedString = require('./helpers/stringHelpers').processedString;
 const generalChatId = require('./siteConfig').generalChatId;
 const pool = require('./pool');
+const {requireAuth} = require('./auth');
 
 module.exports = function(io) {
   let connections = [];

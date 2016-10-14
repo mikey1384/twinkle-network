@@ -50,10 +50,6 @@ const renderTextarea = ({input, className, minRows, placeholder}) =>
   }
 )
 export default class FeedInputPanel extends Component {
-  handleClickOutside = (event) => {
-    console.log("clicked outside")
-  }
-
   constructor() {
     super()
     this.state = {
@@ -80,7 +76,7 @@ export default class FeedInputPanel extends Component {
         }}
       >
         <div className="panel-heading">
-          <strong>Hello{`${username ? ' ' + username : ''}`}! Is there anything interesting you'd like to share today?</strong>
+          <strong>Hello{`${username ? ' ' + username : ''}`}! Got anything interesting you want to share?</strong>
         </div>
         <div className="panel-body">
           <form className="container-fluid" onSubmit={handleSubmit(this.onSubmit)}>
