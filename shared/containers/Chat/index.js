@@ -412,7 +412,7 @@ export default class Chat extends Component {
     const {currentChannel} = this.props;
     const {currentChannelOnline} = this.state;
     const numberOfMembers = currentChannel.members.length;
-    return `${currentChannelOnline}${numberOfMembers === 0 ? '' : '/' + numberOfMembers}`
+    return `${currentChannelOnline}${numberOfMembers <= 1 ? '' : '/' + numberOfMembers}`
   }
 
   renderUserListDescription(user) {
