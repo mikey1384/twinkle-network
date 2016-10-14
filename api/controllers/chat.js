@@ -75,7 +75,7 @@ router.get('/more', requireAuth, (req, res) => {
   const {messageId, channelId} = req.query;
   const query = [
     'SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username FROM ',
-    'msg_chats a JOIN users b ON a.userId = b.id ',
+    'msg_chats a LEFT JOIN users b ON a.userId = b.id ',
     'WHERE a.id < ? AND a.channelId = ? ORDER BY id DESC LIMIT 21'
   ].join('');
   pool.query(query, [messageId, channelId], (err, rows) => {
@@ -169,7 +169,7 @@ router.get('/channel', requireAuth, (req, res) => {
       callback => {
         let query = [
           'SELECT a.userId, b.username FROM ',
-          'msg_channel_members a JOIN users b ON ',
+          'msg_channel_members a LEFT JOIN users b ON ',
           'a.userId = b.id WHERE a.channelId = ?'
         ].join('')
         pool.query(query, channelId, (err, rows) => {
@@ -285,7 +285,7 @@ router.post('/channel', requireAuth, (req, res) => {
     }
     let query = [
       'SELECT a.userId, b.username FROM ',
-      'msg_channel_members a JOIN users b ON ',
+      'msg_channel_members a LEFT JOIN users b ON ',
       'a.userId = b.id WHERE a.channelId = ?'
     ].join('')
     pool.query(query, message.channelId, (err, rows) => {
@@ -370,7 +370,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
     }
     let query = [
       'SELECT a.userId, b.username FROM ',
-      'msg_channel_members a JOIN users b ON ',
+      'msg_channel_members a LEFT JOIN users b ON ',
       'a.userId = b.id WHERE a.channelId = ?'
     ].join('')
     pool.query(query, channelId, (err, rows) => {

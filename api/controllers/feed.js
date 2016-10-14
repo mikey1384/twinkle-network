@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
     'e.username AS siblingContentUploaderName, f.userId AS replyContentUploaderId, f.content AS replyContent, ',
     'g.username AS replyContentUploaderName, NULL AS videoViews ',
 
-    'FROM vq_comments a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON a.userId = c.id ',
+    'FROM vq_comments a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON a.userId = c.id ',
     'LEFT JOIN vq_comments d ON a.commentId = d.id LEFT JOIN users e ON d.userId = e.id ',
     'LEFT JOIN vq_comments f ON a.replyId = f.id LEFT JOIN users g ON f.userId = g.id ',
 
@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
     'NULL AS replyContentUploaderName, ',
     '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = contentId) AS videoViews ',
 
-    'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
+    'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
 
     'UNION SELECT \'url\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.url AS content, ',
     'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
     'NULL AS replyContentUploaderName, ',
     'NULL AS videoViews ',
 
-    'FROM content_urls a JOIN users b ON a.uploader = b.id ',
+    'FROM content_urls a LEFT JOIN users b ON a.uploader = b.id ',
 
     'WHERE timeStamp IS NOT NULL ORDER BY timeStamp DESC LIMIT ' + limit
   ].join('')
@@ -57,12 +57,12 @@ router.get('/', (req, res) => {
         function attachContentLikersToFeed(feed) {
           let query = feed.type === 'comment' ? [
             'SELECT a.userId, b.username ',
-            'FROM vq_commentupvotes a JOIN users b ON ',
+            'FROM vq_commentupvotes a LEFT JOIN users b ON ',
             'a.userId = b.id WHERE ',
             'a.commentId = ?'
           ].join('') : [
             'SELECT a.userId, b.username ',
-            'FROM vq_video_likes a JOIN users b ON ',
+            'FROM vq_video_likes a LEFT JOIN users b ON ',
             'a.userId = b.id WHERE ',
             'a.videoId = ?'
           ].join('')

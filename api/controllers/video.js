@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
   const query = [
     'SELECT a.id, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName, ',
     'COUNT(c.id) AS numLikes ',
-    'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
+    'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
     'LEFT JOIN vq_video_likes c ON a.id = c.videoId ',
     where,
     'GROUP BY a.id ',
@@ -70,7 +70,7 @@ router.delete('/', requireAuth, (req, res) => {
     (callback) => {
       const query = [
         'SELECT a.id, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName ',
-        'FROM vq_videos a JOIN users b ON a.uploader = b.id ',
+        'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
         'WHERE a.id < ? ',
         'ORDER BY a.id DESC LIMIT 1'
       ].join('');
@@ -129,7 +129,7 @@ router.post('/like', requireAuth, (req, res) => {
     (callback) => {
       let query = [
         'SELECT a.userId, b.username ',
-        'FROM vq_video_likes a JOIN users b ON a.userId = b.id ',
+        'FROM vq_video_likes a LEFT JOIN users b ON a.userId = b.id ',
         'WHERE a.videoId = ?'
       ].join('');
       pool.query(query, videoId, (err, rows) => {
@@ -219,7 +219,7 @@ router.get('/loadPage', (req, res) => {
           let likes = [];
           let query = [
             'SELECT a.userId, b.username ',
-            'FROM vq_video_likes a JOIN users b ON a.userId = b.id ',
+            'FROM vq_video_likes a LEFT JOIN users b ON a.userId = b.id ',
             'WHERE a.videoId = ?'
           ].join('');
           pool.query(query, videoId, (err, rows) => {
@@ -259,7 +259,7 @@ router.get('/comments', (req, res) => {
   const limit = commentLength === 0 ? '21' : commentLength + ', 21';
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
-    'FROM vq_comments a JOIN users b ON a.userId = b.id ',
+    'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
     'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
   pool.query(query, videoId, (err, rows) => {
@@ -305,7 +305,7 @@ router.post('/comments', requireAuth, (req, res) => {
     (callback) => {
       const query = [
         'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
-        'FROM vq_comments a JOIN users b ON a.userId = b.id ',
+        'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
         'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC'
       ].join('');
       pool.query(query, videoId, (err, rows) => {
@@ -389,7 +389,7 @@ router.post('/comments/like', requireAuth, (req, res) => {
     (callback) => {
       let query = [
         'SELECT a.id, a.userId, b.username FROM ',
-        'vq_commentupvotes a JOIN users b ON ',
+        'vq_commentupvotes a LEFT JOIN users b ON ',
         'a.userId = b.id WHERE ',
         'a.commentId = ?'
       ].join('')
@@ -437,7 +437,7 @@ router.post('/replies', requireAuth, (req, res) => {
     (replyId, callback) => {
       let query = [
         'SELECT a.id, a.userId, a.content, a.timeStamp, a.replyId, b.username, ',
-        'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
+        'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a LEFT JOIN users b ON ',
         'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
         'LEFT JOIN users d ON c.userId = d.id WHERE a.id = ?'
       ].join('')
@@ -520,7 +520,7 @@ router.post('/replies/like', requireAuth, (req, res) => {
     (callback) => {
       let query = [
         'SELECT a.id, a.userId, b.username FROM ',
-        'vq_commentupvotes a JOIN users b ON ',
+        'vq_commentupvotes a LEFT JOIN users b ON ',
         'a.userId = b.id WHERE ',
         'a.commentId = ?'
       ].join('')
@@ -582,7 +582,7 @@ router.get('/search', (req, res) => {
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send({result: []})
   async.waterfall([
     callback => {
-      let query = 'SELECT id, title AS label FROM vq_videos WHERE title LIKE ? LIMIT 20';
+      let query = 'SELECT id, title AS label FROM vq_videos WHERE title LIKE ? ORDER BY id DESC LIMIT 20';
       pool.query(query, '%' + searchQuery + '%', (err, result) => {
         callback(err, result)
       })

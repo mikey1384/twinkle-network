@@ -10,10 +10,6 @@ import {openDirectMessage} from 'redux/actions/ChatActions';
   {openDirectMessage}
 )
 export default class UsernameText extends Component {
-  static propTypes = {
-    user: PropTypes.object.isRequired
-  }
-
   constructor() {
     super()
     this.state = {
@@ -34,10 +30,10 @@ export default class UsernameText extends Component {
         <strong
           style={{
             cursor: 'pointer',
-            color: user.name === '(Deleted)' ? '#7c7c7c' : (color && color)
+            color: user.name === '(Deleted)' || user.name === null ? '#7c7c7c' : (color && color)
           }}
           onMouseEnter={this.onMouseEnter}
-        >{user.name}</strong>
+        >{user.name || '(Deleted)'}</strong>
         {menuShown &&
           <ul className="dropdown-menu"
             style={{
@@ -60,7 +56,7 @@ export default class UsernameText extends Component {
 
   onMouseEnter() {
     const {userId, user} = this.props;
-    if (user.name !== '(Deleted)' && user.id !== userId) {
+    if (user.name !== '(Deleted)' && user.name !== null && user.id !== userId) {
       this.setState({menuShown: true})
     }
   }

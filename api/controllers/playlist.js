@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
   const where = playlistId !== null ? 'WHERE a.id < ' + playlistId + ' ' : '';
   const query = [
     'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
-    'FROM vq_playlists a JOIN users b ON a.creator = b.id ',
+    'FROM vq_playlists a LEFT JOIN users b ON a.creator = b.id ',
     where,
     'ORDER BY a.id DESC LIMIT 4'
   ].join('');
@@ -60,7 +60,7 @@ router.post('/', requireAuth, (req, res) => {
         const query = [
           'SELECT a.id, a.videoId, b.title AS video_title, b.videoCode, c.username AS video_uploader, ',
           'COUNT(d.id) AS numLikes ',
-          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id ',
+          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON b.uploader = c.id ',
           'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
           'WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id'
         ].join('');
@@ -134,7 +134,7 @@ router.post('/edit/videos', requireAuth, (req, res) => {
         const query = [
           'SELECT a.id, a.videoId, b.title AS video_title, b.videoCode, c.username AS video_uploader, ',
           'COUNT(d.id) AS numLikes ',
-          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id ',
+          'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON b.uploader = c.id ',
           'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
           'WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id'
         ].join('');
@@ -197,7 +197,7 @@ router.get('/pinned', (req, res) => {
   const query = [
     'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
     'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
-    'JOIN users b ON a.creator = b.id ORDER BY c.id DESC'
+    'LEFT JOIN users b ON a.creator = b.id ORDER BY c.id DESC'
   ].join('');
   fetchPlaylists(query, (err, playlists) =>{
     if (err) {
@@ -255,7 +255,7 @@ router.post('/pinned', requireAuth, (req, res) => {
       const query = [
         'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
         'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
-        'JOIN users b ON a.creator = b.id ORDER BY c.id DESC'
+        'LEFT JOIN users b ON a.creator = b.id ORDER BY c.id DESC'
       ].join('');
       fetchPlaylists(query, (err, playlists) =>{
         callback(err, playlists)
