@@ -5,6 +5,12 @@ const pool = require('./pool');
 module.exports = function(io) {
   let connections = [];
   io.on('connection', socket => {
+    connections.push({
+      socketId: socket.id,
+      username: '',
+      userId: null,
+      channels: []
+    });
 
     socket.on('enter_my_notification_channel', userId => {
       socket.join('notificationChannel' + userId)
@@ -15,7 +21,6 @@ module.exports = function(io) {
     })
 
     socket.on('check_online_members', (channelId, callback) => {
-          console.log(connections);
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
         const membersOnline = returnMembersOnline(clients);
         let data = {channelId, membersOnline}
