@@ -28,6 +28,7 @@ export default function VideoReducer(state = defaultState, action) {
         loadMoreButton = true;
       } else {
         allVideosLoaded = true;
+        loadMoreButton = false;
       }
       if (action.initialRun) {
         return {
