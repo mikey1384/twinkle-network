@@ -184,7 +184,6 @@ router.get('/loadPage', (req, res) => {
       console.error(err);
       return res.status(500).send({error: err});
     }
-    console.log("got here")
     if (rows[0]) {
       const videoId = rows[0].videoId;
       const title = rows[0].title;
@@ -249,6 +248,7 @@ router.get('/loadPage', (req, res) => {
         })
       });
     } else {
+      console.log("doesnt exist")
       res.status(500).send({error: 'Video doesn\'t exist'})
     }
   })
