@@ -17,11 +17,12 @@ const renderInput = ({input, type, className, placeholder, meta: {touched, error
       className={className}
       placeholder={placeholder}
       type={type}
+      style={{borderColor: touched && error ? 'red' : '#e7e7e7'}}
     />
     <span
       className="help-block"
       style={{color: 'red'}}
-    >{touched && error && error}</span>
+    >{touched && error && (error !== 'Enter url') && (error !== 'Enter title') && error}</span>
   </div>
 )
 
