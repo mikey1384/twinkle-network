@@ -6,7 +6,7 @@ require('babel-polyfill');
 var server = require('./entry/server').default;
 var http = require('http').Server(server);
 
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 80;
 
 http.listen(PORT, function () {
   console.log('Server listening on: ' + PORT);
