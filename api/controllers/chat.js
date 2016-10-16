@@ -169,7 +169,7 @@ router.get('/channel', requireAuth, (req, res) => {
       callback => {
         let query = [
           'SELECT a.userId, b.username FROM ',
-          'msg_channel_members a LEFT JOIN users b ON ',
+          'msg_channel_members a JOIN users b ON ',
           'a.userId = b.id WHERE a.channelId = ?'
         ].join('')
         pool.query(query, channelId, (err, rows) => {
