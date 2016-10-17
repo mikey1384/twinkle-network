@@ -2,12 +2,25 @@
 
 require('babel-core/register')({});
 require('babel-polyfill');
-
+var http = require('http');
 var server = require('./entry/server').default;
-var http = require('http').Server(server);
+var TestPort = process.env.PORT;
 
-const PORT = process.env.PORT || 80;
+if (!!TestPort) {
+  return http.createServer(server).listen(TestPort, function () {
+    console.log('Server listening on: ' + TestPort);
+  });
+}
 
-http.listen(PORT, function () {
-  console.log('Server listening on: ' + PORT);
+require('letsencrypt-express').create({
+
+  server: 'staging',
+  email: 'twinkle.andrew@gmail.com',
+  agreeTos: true,
+  approveDomains: [ 'twin-kle.com' ]
+
+, app: server
+
+}).listen(80, 443, function() {
+  console.log('Server listening on port 80 and 443');
 });
