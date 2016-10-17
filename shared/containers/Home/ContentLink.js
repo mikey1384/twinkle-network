@@ -17,7 +17,11 @@ export default class ContentLink extends Component {
         style={{
           fontWeight: 'bold', cursor: 'pointer'
         }}
-        onClick={() => loadVideoPage(content.id, `videos/${content.id}`)}
+        onClick={event => {
+          event.preventDefault();
+          loadVideoPage(content.id, `videos/${content.id}`);
+        }}
+        href={`videos/${content.id}`}
       >
         {content.title}
       </a>

@@ -7,6 +7,7 @@ export default function Heading({
   type,
   videoTitle,
   action,
+  content,
   uploader,
   replyContentUploader,
   siblingContentUploader,
@@ -33,7 +34,7 @@ export default function Heading({
       </div>
     case 'url':
     return <div className="panel-heading">
-        <UserLink user={uploader} /> shared a link: <strong>{parentContent.title}</strong> {`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
+        <UserLink user={uploader} /> shared a link: <a href={content} target="_blank"><strong>{parentContent.title}</strong></a> {`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
       </div>
     default:
       return <div className="panel-heading">Error</div>

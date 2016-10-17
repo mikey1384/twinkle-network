@@ -36,6 +36,7 @@ export default class FeedPanel extends Component {
           replyContentUploader={!!feed.replyContentUploaderName && {name: feed.replyContentUploaderName, id: feed.replyContentUploaderId}}
           parentContent={{id: feed.parentContentId, title: feed.contentTitle}}
           timeStamp={feed.timeStamp}
+          content={feed.content}
         />
         <div className="panel-body">
           {feed.type === 'comment' && !!feed.replyId &&
