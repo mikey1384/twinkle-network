@@ -90,7 +90,6 @@ export default class MainContent extends Component {
                 style={{marginLeft: '0.5em'}}
                 className="btn btn-warning btn-sm"
                 onClick={this.onCommentButtonClick}
-                disabled={commentsShown}
               >
                 <span className="glyphicon glyphicon-comment"></span>&nbsp;
                 {`${type === 'video' ? 'Comment' : 'Reply'} ${numChildComments > 0 && !commentsShown ? '(' + numChildComments + ')'

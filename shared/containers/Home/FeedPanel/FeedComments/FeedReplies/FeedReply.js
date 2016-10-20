@@ -20,7 +20,7 @@ import {likeFeedVideoCommentAsync, uploadFeedVideoReplyAsync} from 'redux/action
     onReplySubmit: uploadFeedVideoReplyAsync
   }
 )
-export default class Reply extends Component {
+export default class FeedReply extends Component {
   constructor() {
     super()
     this.state={

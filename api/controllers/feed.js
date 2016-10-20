@@ -217,6 +217,7 @@ router.post('/content', requireAuth, (req, res) => {
       targetReply: null,
       targetReplyUploaderName: null,
       videoViews: null,
+      childComments: [],
       contentLikers: [],
       targetContentLikers: []
     })
