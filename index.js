@@ -3,7 +3,6 @@
 require('babel-core/register')({});
 require('babel-polyfill');
 var http = require('http');
-var https = require('https');
 var server = require('./entry/server').default;
 var fs = require('fs');
 const DEV_PORT = process.env.PORT || 80;
