@@ -12,10 +12,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 const PORT = 3500;
 
+/*
 const options = {
   key: fs.readFileSync('./certs/server/privkey.pem'),
   cert: fs.readFileSync('./certs/certificate.pem')
 }
+*/
 
 router(app);
 //const https = require('https').Server(options, app);
