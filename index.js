@@ -8,14 +8,17 @@ var server = require('./entry/server').default;
 var fs = require('fs');
 const DEV_PORT = process.env.PORT || 80;
 
+http.createServer(server).listen(DEV_PORT, function () {
+  console.log('Server listening on port:', DEV_PORT);
+})
+
+
+/*
 const options = {
   key: fs.readFileSync('./certs/server/privkey.pem'),
   cert: fs.readFileSync('./certs/certificate.pem')
 }
-
-http.createServer(server).listen(DEV_PORT, function () {
-  console.log('Server listening on port:', DEV_PORT);
-})
+*/
 
 /*
 if (!!DEV_PORT) {
