@@ -10,19 +10,34 @@ import {
   uploadContentAsync
 } from 'redux/actions/FeedActions';
 
-const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
+const renderInput = (
+  {input, type, className, placeholder, checked, checkIfYouTubeVideo, toggleCheck, meta: {touched, error}}
+) => (
   <div style={{display: 'inline'}}>
     <input
       {...input}
+      onChange={event => {
+        input.onChange(event)
+        if (input.name === 'url') {
+          checkIfYouTubeVideo(event.target.value);
+        }
+      }}
+      checked={checked}
+      onClick={() => {if (input.name === 'isVideo') toggleCheck()}}
       className={className}
       placeholder={placeholder}
       type={type}
       style={{borderColor: touched && error ? 'red' : '#e7e7e7'}}
     />
-    <span
-      className="help-block"
-      style={{color: 'red'}}
-    >{touched && error && (error !== 'Enter url') && (error !== 'Enter title') && error}</span>
+    {touched && error && (error !== 'Enter url') && (error !== 'Enter title') &&
+      <span
+        className="help-block"
+        style={{
+          color: 'red',
+          marginBottom: '0px'
+        }}
+      >{error}</span>
+    }
   </div>
 )
 
@@ -60,6 +75,7 @@ export default class FeedInputPanel extends Component {
       selectedCategory: null,
       categoryNotSelected: false
     }
+    this.checkIfYouTubeVideo = this.checkIfYouTubeVideo.bind(this)
     this.onCategorySelect = this.onCategorySelect.bind(this)
     this.onSearchInputChange = this.onSearchInputChange.bind(this)
     this.onSearchInputFocus = this.onSearchInputFocus.bind(this)
@@ -81,15 +97,20 @@ export default class FeedInputPanel extends Component {
         </div>
         <div className="panel-body">
           <form className="container-fluid" onSubmit={handleSubmit(this.onSubmit)}>
-            <fieldset className="form-group" style={{marginBottom: '0px'}}>
-              <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
-              <Field
-                name="isVideo"
-                checked={checkedVideo}
-                onClick={()=>this.setState({checkedVideo:!checkedVideo})}
-                component={renderInput}
-                type="checkbox"
-              />
+            <fieldset className="form-group">
+              <strong>
+                <span
+                  style={{fontSize: selectedCategoryLabel ? '1.5em' : '1em',}}
+                >Category:</span>&nbsp;&nbsp;&nbsp;<span
+                  style={{
+                    fontSize: selectedCategoryLabel ? '1.5em' : '1em',
+                    color: selectedCategoryLabel ? '#158cba' : '#999999',
+                    fontStyle: selectedCategoryLabel ? 'normal' : 'italic'
+                  }}
+                >
+                  {`${selectedCategoryLabel ? selectedCategoryLabel : 'Not Selected'}`}
+                </span>
+              </strong>
             </fieldset>
             <fieldset className="form-group">
               <SearchInput
@@ -110,28 +131,24 @@ export default class FeedInputPanel extends Component {
                 style={{color: 'red'}}
               >{`${categoryNotSelected ? 'Select category' : ''}`}</span>
             </fieldset>
-            <fieldset className="form-group">
-              <strong>
-                <span
-                  style={{fontSize: selectedCategoryLabel ? '1.5em' : '1em',}}
-                >Category:</span>&nbsp;&nbsp;&nbsp;<span
-                  style={{
-                    fontSize: selectedCategoryLabel ? '1.5em' : '1em',
-                    color: selectedCategoryLabel ? '#158cba' : '#999999',
-                    fontStyle: selectedCategoryLabel ? 'normal' : 'italic'
-                  }}
-                >
-                  {`${selectedCategoryLabel ? selectedCategoryLabel : 'Not Selected'}`}
-                </span>
-              </strong>
-            </fieldset>
-            <fieldset className="form-group">
+            <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
               <Field
                 name="url"
                 placeholder="Enter url. For example: www.google.com"
                 className="form-control"
                 component={renderInput}
+                checkIfYouTubeVideo={this.checkIfYouTubeVideo}
                 type="text"
+              />
+            </fieldset>
+            <fieldset className="form-group">
+              <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
+              <Field
+                name="isVideo"
+                toggleCheck={() => this.setState({checkedVideo: !this.state.checkedVideo})}
+                checked={checkedVideo}
+                component={renderInput}
+                type="checkbox"
               />
             </fieldset>
             <fieldset className="form-group">
@@ -165,6 +182,12 @@ export default class FeedInputPanel extends Component {
     )
   }
 
+  checkIfYouTubeVideo(url) {
+    if (isValidYoutubeUrl(url)) {
+      this.setState({checkedVideo: true})
+    }
+  }
+
   onCategorySelect(item) {
     const {clearSearchResults} = this.props;
     this.setState({
@@ -196,12 +219,15 @@ export default class FeedInputPanel extends Component {
   }
 
   onSubmit(props) {
-    const {selectedCategory} = this.state;
+    const {selectedCategory, checkedVideo} = this.state;
     const {uploadContent, resetForm} = this.props;
     if (selectedCategory === null) {
       return this.setState({categoryNotSelected: true})
     }
-    let params = Object.assign({}, props, {categoryId: selectedCategory})
+    let params = Object.assign({}, props, {
+      categoryId: selectedCategory,
+      checkedVideo
+    })
     resetForm('UploadVideoForm')
     this.setState({
       checkedVideo: false,

@@ -258,7 +258,7 @@ router.get('/comments', (req, res) => {
   const commentLength = Number(req.query.commentLength) || 0;
   const limit = commentLength === 0 ? '21' : commentLength + ', 21';
   const query = [
-    'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
+    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username ',
     'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
     'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
@@ -436,7 +436,7 @@ router.post('/replies', requireAuth, (req, res) => {
     },
     (replyId, callback) => {
       let query = [
-        'SELECT a.id, a.userId, a.content, a.timeStamp, a.replyId, b.username, ',
+        'SELECT a.id, a.userId, a.content, a.timeStamp, a.commentId, a.replyId, b.username, ',
         'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a LEFT JOIN users b ON ',
         'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
         'LEFT JOIN users d ON c.userId = d.id WHERE a.id = ?'
@@ -451,17 +451,10 @@ router.post('/replies', requireAuth, (req, res) => {
       return res.status(500).send({error: err});
     }
     res.send({
-      result: {
-        id: rows[0].id,
-        content: rows[0].content,
-        timeStamp: rows[0].timeStamp,
-        userId: rows[0].userId,
-        username: rows[0].username,
-        targetUserId: rows[0].targetUserId,
-        targetUserName: rows[0].targetUserName,
+      result: Object.assign({}, rows[0], {
         newlyAdded: true,
         likes: []
-      }
+      })
     })
   })
 })

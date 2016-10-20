@@ -7,8 +7,7 @@ import Textarea from 'react-textarea-autosize';
 import InputArea from 'components/InputArea';
 import Heading from './Heading';
 import MainContent from './MainContent';
-import SiblingContent from './SiblingContent';
-import MyReply from './MyReply';
+import TargetContent from './TargetContent';
 
 
 export default class FeedPanel extends Component {
@@ -28,62 +27,37 @@ export default class FeedPanel extends Component {
         style={{borderTop: '#e7e7e7 1px solid'}}
       >
         <Heading
-          videoTitle={feed.contentTitle}
-          type={feed.type}
+          {...feed}
+          targetCommentUploader={!!feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
+          targetReplyUploader={!!feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
+          parentContent={{id: feed.parentContentId, title: feed.contentTitle}}
           action={!!feed.commentId ? 'replied to' : 'commented on'}
           uploader={{name: feed.uploaderName, id: feed.uploaderId}}
-          siblingContentUploader={!!feed.siblingContentUploaderName && {name: feed.siblingContentUploaderName, id: feed.siblingContentUploaderId}}
-          replyContentUploader={!!feed.replyContentUploaderName && {name: feed.replyContentUploaderName, id: feed.replyContentUploaderId}}
-          parentContent={{id: feed.parentContentId, title: feed.contentTitle}}
-          timeStamp={feed.timeStamp}
-          content={feed.content}
         />
         <div className="panel-body">
           {feed.type === 'comment' && !!feed.replyId &&
-            <SiblingContent
+            <TargetContent
               isReplyContent={true}
-              uploader={{name: feed.replyContentUploaderName, id: feed.replyContentUploaderId}}
-              likes={feed.siblingContentLikers}
-              content={feed.replyContent}
+              uploader={{name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
+              likes={feed.targetContentLikers}
+              content={feed.targetReply}
               myId={userId}
               contentId={feed.replyId}
             />
           }
           {feed.type === 'comment' && !!feed.commentId && !feed.replyId &&
-            <SiblingContent
-              uploader={{name: feed.siblingContentUploaderName, id: feed.siblingContentUploaderId}}
-              likes={feed.siblingContentLikers}
-              content={feed.siblingContent}
+            <TargetContent
+              uploader={{name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
+              likes={feed.targetContentLikers}
+              content={feed.targetComment}
               myId={userId}
               contentId={feed.commentId}
             />
           }
           <MainContent
-            type={feed.type}
-            content={feed.content}
-            views={feed.videoViews}
-            likes={feed.contentLikers}
+            {...feed}
             myId={userId}
-            title={feed.videoContentTitle}
-            contentId={feed.contentId}
           />
-          {/*
-          <MyReply />
-          {!replyLeft && (inputBoxShown ?
-            <InputArea
-              autoFocus
-              onSubmit={() => console.log("submitted")}
-              rows={4}
-              placeholder="Leave a reply here"
-            /> :
-            <Button
-              className="btn btn-primary"
-              onClick={() => this.setState({inputBoxShown: true})}
-            >
-              Leave a reply
-            </Button>)
-          }
-        */}
         </div>
       </div>
     )

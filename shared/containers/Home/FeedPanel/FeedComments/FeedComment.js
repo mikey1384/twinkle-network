@@ -1,19 +1,28 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import ReactDOM from 'react-dom';
 import {timeSince} from 'helpers/timeStampHelpers';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
-import ReplyInputArea from './Replies/ReplyInputArea';
-import Replies from './Replies';
+import FeedReplies from './FeedReplies';
+import ReplyInputArea from './FeedReplies/ReplyInputArea';
 import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
+import {likeFeedVideoCommentAsync, uploadFeedVideoReplyAsync} from 'redux/actions/FeedActions';
 
 
-export default class Comment extends Component {
+@connect(
+  null,
+  {
+    onLikeClick: likeFeedVideoCommentAsync,
+    onReplySubmit: uploadFeedVideoReplyAsync
+  }
+)
+export default class FeedComment extends Component {
   constructor() {
     super()
     this.state = {
@@ -29,7 +38,8 @@ export default class Comment extends Component {
 
   render() {
     const {replyInputShown, onEdit, userListModalShown} = this.state;
-    const {comment, userId, commentId, videoId} = this.props;
+    const {comment, userId, parent} = this.props;
+
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;
     for (let i = 0; i < comment.likes.length; i++) {
@@ -38,9 +48,9 @@ export default class Comment extends Component {
     return (
       <li
         className="media"
-        style={{marginTop: this.props.marginTop && '2em'}}
+        style={{marginTop: this.props.marginTop && '1em'}}
       >
-        {userIsOwner && !onEdit &&
+        {userIsOwner && !onEdit && false &&
           <SmallDropdownButton
             shape="button"
             icon="pencil"
@@ -66,17 +76,22 @@ export default class Comment extends Component {
             <img
               className="media-object"
               src="/img/default.jpg"
-              style={{width: '64px'}}
+              style={{width: '45px'}}
             />
           </a>
         </div>
         <div className="media-body">
-          <h4 className="media-heading">
+          <h5 className="media-heading">
             <UsernameText user={{
               name: comment.username,
               id: comment.userId
             }} /> <small>&nbsp;{timeSince(comment.timeStamp)}</small>
-          </h4>
+          </h5>
+          {comment.targetUserId && !!comment.replyId && comment.replyId !== parent.id &&
+            <span style={{color: '#158cba'}}>
+              to: <UsernameText user={{name: comment.targetUserName, id: comment.targetUserId}} />
+            </span>
+          }
           {onEdit ?
             <EditTextArea
               text={cleanStringWithURL(comment.content)}
@@ -86,7 +101,7 @@ export default class Comment extends Component {
             <div className="container-fluid">
               <div
                 className="row"
-                style={{paddingBottom: '1.7em'}}
+                style={{paddingBottom: '1.3em'}}
                 dangerouslySetInnerHTML={{__html: comment.content}}
               ></div>
               <div
@@ -123,22 +138,11 @@ export default class Comment extends Component {
               </div>
             </div>
           }
-          <Replies
+          <FeedReplies
             userId={userId}
             replies={comment.replies}
-            commentId={commentId}
-            videoId={videoId}
-            onEditDone={
-              ({replyId, editedReply}, cb) =>
-              this.props.onReplyEditDone({
-                replyId,
-                editedReply,
-                commentId: this.props.commentId
-              }, cb)
-            }
-            onReplySubmit={this.props.onReplySubmit}
-            onLikeClick={replyId => this.props.onReplyLike(replyId, this.props.commentId)}
-            onDelete={replyId => this.props.onReplyDelete(replyId, this.props.commentId)}
+            comment={comment}
+            parent={parent}
           />
           {replyInputShown && <ReplyInputArea
               onSubmit={this.onReplySubmit}
@@ -159,24 +163,24 @@ export default class Comment extends Component {
   }
 
   onEditDone(editedComment) {
-    const {commentId} = this.props;
-    this.props.onEditDone(editedComment, commentId, () => {
+    const {comment} = this.props;
+    this.props.onEditDone(editedComment, comment.id, () => {
       this.setState({onEdit: false})
     })
   }
 
   onLikeClick() {
-    const {commentId} = this.props;
-    this.props.onLikeClick(commentId);
+    const {comment} = this.props;
+    this.props.onLikeClick(comment.id);
   }
 
-  onReplySubmit(reply) {
-    const {commentId, videoId} = this.props;
-    this.props.onReplySubmit(reply, commentId, videoId);
+  onReplySubmit(replyContent) {
+    const {parent, comment, onReplySubmit} = this.props;
+    onReplySubmit(parent, comment, replyContent);
   }
 
   onDelete() {
-    const {commentId} = this.props;
-    this.props.onDelete(commentId);
+    const {comment} = this.props;
+    this.props.onDelete(comment.id);
   }
 }

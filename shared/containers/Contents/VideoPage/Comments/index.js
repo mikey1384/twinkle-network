@@ -30,7 +30,7 @@ import {
     loadMoreComments: loadMoreCommentsAsync
   }
 )
-export default class CommentsSection extends Component {
+export default class Comments extends Component {
   constructor() {
     super()
     this.loadMoreComments = this.loadMoreComments.bind(this)

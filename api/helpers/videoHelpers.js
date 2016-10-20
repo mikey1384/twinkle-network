@@ -37,7 +37,7 @@ const fetchCommentElements = (params) => cb => {
     },
     callback => {
       let query = [
-        'SELECT a.id, a.userId, a.content, a.timeStamp, a.replyId, b.username, ',
+        'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
         'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
         'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
         'LEFT JOIN users d ON c.userId = d.id WHERE a.commentId = ?'
@@ -64,15 +64,8 @@ const fetchCommentElements = (params) => cb => {
       }
     });
     const replies = results[1];
-    commentsArray[index] = {
-      id: commentId,
-      posterId: commentRow.userId,
-      posterName: commentRow.username,
-      content: commentRow.content,
-      timeStamp: commentRow.timeStamp,
-      replies,
-      likes
-    }
+    commentsArray[index] = Object.assign({}, commentRow, {replies}, {likes});
+    console.log(commentsArray[index]);
     cb(err);
   })
 }
@@ -104,21 +97,11 @@ const fetchReplyElements = (params) => cb => {
     'a.commentId = ?'
   ].join('')
   pool.query(query, replyId, (err, rows) => {
-    repliesArray[index] = {
-      id: replyId,
-      content: replyRow.content,
-      timeStamp: replyRow.timeStamp,
-      userId: replyRow.userId,
-      username: replyRow.username,
-      targetUserId: replyRow.targetUserId,
-      targetUserName: replyRow.targetUserName,
-      likes: rows.map(like => {
-        return {
-          userId: like.userId,
-          username: like.username
-        }
-      })
-    }
+    repliesArray[index] = Object.assign({}, replyRow, 
+      {likes: rows.map(like => ({
+        userId: like.userId,
+        username: like.username
+      }))})
     cb(err);
   })
 }

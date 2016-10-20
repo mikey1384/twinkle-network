@@ -9,18 +9,18 @@ export default function Heading({
   action,
   content,
   uploader,
-  replyContentUploader,
-  siblingContentUploader,
+  targetReplyUploader,
+  targetCommentUploader,
   parentContent,
   timeStamp
 }) {
-  let siblingAction;
+  let targetAction;
 
-  if (!!replyContentUploader) {
-    siblingAction = <span><UserLink user={replyContentUploader} />'s reply on</span>
+  if (!!targetReplyUploader) {
+    targetAction = <span><UserLink user={targetReplyUploader} />'s reply on</span>
   }
-  else if (!!siblingContentUploader) {
-    siblingAction = <span><UserLink user={siblingContentUploader} />'s comment on</span>
+  else if (!!targetCommentUploader) {
+    targetAction = <span><UserLink user={targetCommentUploader} />'s comment on</span>
   }
 
   switch (type) {
@@ -30,7 +30,7 @@ export default function Heading({
       </div>
     case 'comment':
       return <div className="panel-heading">
-        <UserLink user={uploader} /> {action} {siblingAction} video: <ContentLink content={parentContent}/> ({timeSince(timeStamp)})
+        <UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> ({timeSince(timeStamp)})
       </div>
     case 'url':
     return <div className="panel-heading">

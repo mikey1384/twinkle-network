@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
 import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from '../EditTextArea';
@@ -9,8 +10,16 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
+import {likeFeedVideoCommentAsync, uploadFeedVideoReplyAsync} from 'redux/actions/FeedActions';
 
 
+@connect(
+  null,
+  {
+    onLikeClick: likeFeedVideoCommentAsync,
+    onReplySubmit: uploadFeedVideoReplyAsync
+  }
+)
 export default class Reply extends Component {
   constructor() {
     super()
@@ -26,21 +35,15 @@ export default class Reply extends Component {
   }
 
   render() {
-    const {
-      id, username, timeStamp, content, userIsOwner,
-      likes, userId, myId, targetUserName, targetUserId, autoFocus
-    } = this.props;
+    const {parent, comment, reply, userId, userIsOwner} = this.props;
     const {onEdit, userListModalShown, replyInputShown} = this.state;
     let userLikedThis = false;
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId == myId) userLikedThis = true;
+    for (let i = 0; i < reply.likes.length; i++) {
+      if (reply.likes[i].userId == userId) userLikedThis = true;
     }
     return (
-      <div
-        className="media"
-        key={id}
-      >
-        {userIsOwner && !onEdit &&
+      <div className="media">
+        {userIsOwner && !onEdit && false &&
           <SmallDropdownButton
             shape="button"
             icon="pencil"
@@ -66,33 +69,34 @@ export default class Reply extends Component {
             <img
               className="media-object"
               src="/img/default.jpg"
-              style={{width: '64px'}}
+              style={{width: '45px'}}
             />
           </a>
         </div>
         <div className="media-body">
-          <h4 className="media-heading">
+          <h5 className="media-heading">
             <UsernameText
               user={{
-                name: username, id: userId
+                name: reply.username, id: reply.userId
               }}
-            /> <small>&nbsp;{timeSince(timeStamp)}</small></h4>
+            /> <small>&nbsp;{timeSince(reply.timeStamp)}</small>
+          </h5>
           <div>
-            {targetUserId &&
+            {reply.targetUserId && !!reply.replyId && reply.replyId !== comment.id &&
               <span style={{color: '#158cba'}}>
-                to: <UsernameText user={{name: targetUserName, id: targetUserId}} />
+                to: <UsernameText user={{name: reply.targetUserName, id: reply.targetUserId}} />
               </span>
             }
             {onEdit ?
               <EditTextArea
-                text={cleanStringWithURL(content)}
+                text={cleanStringWithURL(reply.content)}
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}
               /> :
               <div className="container-fluid">
                 <div
                   className="row"
-                  dangerouslySetInnerHTML={{__html: content}}
+                  dangerouslySetInnerHTML={{__html: reply.content}}
                   style={{paddingBottom: '1.7em'}}
                 ></div>
                 <div
@@ -121,8 +125,8 @@ export default class Reply extends Component {
                         color: '#f0ad4e',
                         marginTop: '1em'
                       }}
-                      userId={myId}
-                      likes={likes}
+                      userId={userId}
+                      likes={reply.likes}
                       onLinkClick={() => this.setState({userListModalShown: true})}
                     />
                   </small>
@@ -139,9 +143,9 @@ export default class Reply extends Component {
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this reply"
-            userId={myId}
-            users={likes}
-            description={user => user.userId === myId && '(You)'}
+            userId={userId}
+            users={reply.likes}
+            description={user => user.userId === userId && '(You)'}
           />
         }
       </div>
@@ -149,25 +153,24 @@ export default class Reply extends Component {
   }
 
   onEditDone(editedReply) {
-    const replyId = this.props.id;
+    const replyId = this.props.reply.id;
     this.props.onEditDone({replyId, editedReply}, () => {
       this.setState({onEdit: false})
     })
   }
 
   onLikeClick() {
-    const replyId = this.props.id;
+    const replyId = this.props.reply.id;
     this.props.onLikeClick(replyId);
   }
 
   onDelete() {
-    const replyId = this.props.id;
+    const replyId = this.props.reply.id;
     this.props.onDelete(replyId);
   }
 
-  onReplySubmit(reply) {
-    const {onReplySubmit, commentId, videoId, id} = this.props;
-    this.setState({replyInputShown: false})
-    onReplySubmit(reply, commentId, videoId, id)
+  onReplySubmit(replyContent) {
+    const {parent, reply, onReplySubmit} = this.props;
+    onReplySubmit(parent, reply, replyContent);
   }
 }

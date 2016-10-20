@@ -34,6 +34,12 @@ module.exports = {
     }
     return newString;
   },
+  processedURL(url) {
+    if (url.indexOf("://") === -1) {
+      url = "http://" + url;
+    }
+    return url;
+  },
   cleanString(string) {
     var regexBr = /<br\s*[\/]?>/gi;
   	var regexAnchor = /<a[^>]*>|<\/a>/g;

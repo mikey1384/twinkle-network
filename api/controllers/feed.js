@@ -7,8 +7,10 @@ const {
   processedString,
   processedTitleString,
   fetchedVideoCodeFromURL,
+  processedURL,
   stringIsEmpty
 } = require('../helpers/stringHelpers');
+const {returnComments} = require('../helpers/videoHelpers');
 
 router.get('/', (req, res) => {
   const feedLength = Number(req.query.feedLength) || 0;
@@ -16,9 +18,11 @@ router.get('/', (req, res) => {
   const query = [
     'SELECT \'comment\' AS type, a.id AS contentId, a.userId AS uploaderId, a.content, a.timeStamp, ',
     'a.videoId AS parentContentId, a.commentId, a.replyId, b.title AS contentTitle, ',
-    'c.username AS uploaderName, d.userId AS siblingContentUploaderId, d.content AS siblingContent, ',
-    'e.username AS siblingContentUploaderName, f.userId AS replyContentUploaderId, f.content AS replyContent, ',
-    'g.username AS replyContentUploaderName, NULL AS videoViews ',
+    'c.username AS uploaderName, d.userId AS targetCommentUploaderId, d.content AS targetComment, ',
+    'e.username AS targetCommentUploaderName, f.userId AS targetReplyUploaderId, f.content AS targetReply, ',
+    'g.username AS targetReplyUploaderName, NULL AS videoViews, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE commentId = contentId) AS numChildComments, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE replyId = contentId) AS numChildReplies ',
 
     'FROM vq_comments a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON a.userId = c.id ',
     'LEFT JOIN vq_comments d ON a.commentId = d.id LEFT JOIN users e ON d.userId = e.id ',
@@ -26,20 +30,22 @@ router.get('/', (req, res) => {
 
     'UNION SELECT \'video\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.videoCode AS content, ', 'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
     'a.title AS contentTitle ,',
-    'b.username AS uploaderName, NULL AS siblingContentUploaderId, NULL AS siblingContent, ',
-    'NULL AS siblingContentUploaderName, NULL AS replyContentUploaderId, NULL AS replyContent, ',
-    'NULL AS replyContentUploaderName, ',
-    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = contentId) AS videoViews ',
+    'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
+    'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
+    'NULL AS targetReplyUploaderName, ',
+    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = contentId) AS videoViews, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE videoId = contentId) AS numChildComments, ',
+    'NULL AS numChildReplies ',
 
     'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
 
     'UNION SELECT \'url\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.url AS content, ',
     'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
     'a.title AS contentTitle ,',
-    'b.username AS uploaderName, NULL AS siblingContentUploaderId, NULL AS siblingContent, ',
-    'NULL AS siblingContentUploaderName, NULL AS replyContentUploaderId, NULL AS replyContent, ',
-    'NULL AS replyContentUploaderName, ',
-    'NULL AS videoViews ',
+    'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
+    'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
+    'NULL AS targetReplyUploaderName, ',
+    'NULL AS videoViews, NULL AS numChildComments, NULL AS numChildReplies ',
 
     'FROM content_urls a LEFT JOIN users b ON a.uploader = b.id ',
 
@@ -53,8 +59,12 @@ router.get('/', (req, res) => {
     }
     let taskArray = feeds.reduce(
       (resultingArray, feed) => {
-        return resultingArray.concat([attachContentLikersToFeed(feed)])
-        function attachContentLikersToFeed(feed) {
+        feed['commentsShown'] = false;
+        feed['childComments'] = [];
+        feed['commentsLoadMoreButton'] = false;
+        feed['isReply'] = false;
+        return resultingArray.concat([finalizeFeed(feed)])
+        function finalizeFeed(feed) {
           let query = feed.type === 'comment' ? [
             'SELECT a.userId, b.username ',
             'FROM vq_commentupvotes a LEFT JOIN users b ON ',
@@ -82,7 +92,7 @@ router.get('/', (req, res) => {
                 }
               ], (err, results) => {
                 feed['contentLikers'] = results[0];
-                feed['siblingContentLikers'] = results[1];
+                feed['targetContentLikers'] = results[1];
                 callback()
               })
             }
@@ -141,17 +151,47 @@ router.get('/category', (req, res) => {
   })
 })
 
+router.get('/comments', (req, res) => {
+  const {type, contentId, commentLength, isReply} = req.query;
+  const numberedLength = Number(commentLength) || 0;
+  const limit = numberedLength === 0 ? '4' : numberedLength + ', 4';
+  const where = type === 'video' ? 'videoId = ? AND a.commentId IS NULL' : (isReply === 'true' ? 'replyId = ?' : 'commentId = ?');
+  const query = [
+    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
+    'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
+    'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
+    'LEFT JOIN users d ON c.userId = d.id ',
+    'WHERE a.'+ where +' ORDER BY a.id DESC LIMIT ' + limit
+  ].join('');
+  pool.query(query, contentId, (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err});
+    }
+    if (rows.length === 0) {
+      return res.send([])
+    }
+    returnComments(rows, (err, commentsArray) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send({error: err})
+      }
+      res.send(commentsArray)
+    })
+  })
+})
+
 router.post('/content', requireAuth, (req, res) => {
   const {user} = req;
-  const {url, title, description, categoryId, isVideo} = req.body.params;
-  const type = !!isVideo ? 'video' : 'url';
-  const query = !!isVideo ?
+  const {url, title, description, categoryId, checkedVideo} = req.body.params;
+  const type = !!checkedVideo ? 'video' : 'url';
+  const query = !!checkedVideo ?
   'INSERT INTO vq_videos SET ?' :
   'INSERT INTO content_urls SET ?';
-  const content = !!isVideo ? fetchedVideoCodeFromURL(url) : url;
+  const content = !!checkedVideo ? fetchedVideoCodeFromURL(url) : processedURL(url);
   const post = Object.assign({},
     {title, description, uploader: user.id, timeStamp: Math.floor(Date.now()/1000), categoryId},
-    (!!isVideo ? {videocode: content} : {url: content})
+    (!!checkedVideo ? {videocode: content} : {url: content})
   )
   pool.query(query, post, (err, result) => {
     if (err) {
@@ -170,15 +210,15 @@ router.post('/content', requireAuth, (req, res) => {
       replyId: null,
       contentTitle: post.title,
       uploaderName: user.username,
-      siblingContentUploaderId: null,
-      siblingContent: null,
-      siblingContentUploaderName: null,
-      replyContentUploaderId: null,
-      replyContent: null,
-      replyContentUploaderName: null,
+      targetCommentUploaderId: null,
+      targetComment: null,
+      targetCommentUploaderName: null,
+      targetReplyUploaderId: null,
+      targetReply: null,
+      targetReplyUploaderName: null,
       videoViews: null,
       contentLikers: [],
-      siblingContentLikers: []
+      targetContentLikers: []
     })
   })
 })
