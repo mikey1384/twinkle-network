@@ -29,7 +29,7 @@ export const fetchFeedsAsync = () => dispatch => {
     response => dispatch(fetchFeeds(response.data))
   ).catch(
     error => {
-      console.error(error)
+      console.error(error.response)
       handleError(error, dispatch)
     }
   )
@@ -47,7 +47,7 @@ export const fetchMoreFeedsAsync = feedLength => dispatch => {
     }
   ).catch(
     error => {
-      console.error(error)
+      console.error(error.response)
       handleError(error, dispatch)
     }
   )
@@ -70,7 +70,7 @@ request.post(`${URL}/video/comments/like`, {commentId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -92,7 +92,7 @@ request.post(`${URL}/video/like`, {videoId: contentId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -114,7 +114,7 @@ request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -136,7 +136,7 @@ request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -153,7 +153,7 @@ request.get(
   response => dispatch(loadMoreFeedComments({type, contentId, childComments: response.data}))
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -171,7 +171,7 @@ request.get(
   response => dispatch(showFeedComments({type, contentId, childComments: response.data}))
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -190,7 +190,7 @@ request.post(`${API_URL}/content`, {params}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -219,7 +219,7 @@ export const uploadFeedVideoCommentAsync = (parent, commentContent) => dispatch 
     }
   ).catch(
     error => {
-      console.error(error)
+      console.error(error.response)
       handleError(error, dispatch)
     }
   )
@@ -238,7 +238,7 @@ dispatch => {
     }
   ).catch(
     error => {
-      console.error(error)
+      console.error(error.response)
       handleError(error, dispatch)
     }
   )

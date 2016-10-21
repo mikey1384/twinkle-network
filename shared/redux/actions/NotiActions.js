@@ -16,7 +16,7 @@ export const fetchNotificationsAsync = () => dispatch => {
     }
   ).catch(
     error => {
-      console.error(error)
+      console.error(error.response)
       handleError(error, dispatch)
     }
   )

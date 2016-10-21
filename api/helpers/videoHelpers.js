@@ -65,7 +65,6 @@ const fetchCommentElements = (params) => cb => {
     });
     const replies = results[1];
     commentsArray[index] = Object.assign({}, commentRow, {replies}, {likes});
-    console.log(commentsArray[index]);
     cb(err);
   })
 }
@@ -97,7 +96,7 @@ const fetchReplyElements = (params) => cb => {
     'a.commentId = ?'
   ].join('')
   pool.query(query, replyId, (err, rows) => {
-    repliesArray[index] = Object.assign({}, replyRow, 
+    repliesArray[index] = Object.assign({}, replyRow,
       {likes: rows.map(like => ({
         userId: like.userId,
         username: like.username

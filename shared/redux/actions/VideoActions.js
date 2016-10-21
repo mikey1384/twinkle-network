@@ -11,7 +11,7 @@ export const addVideoViewAsync = params => dispatch =>
 request.post(`${API_URL}/view`, params)
 .catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -47,7 +47,7 @@ request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth(
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -69,7 +69,7 @@ request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -91,7 +91,7 @@ request.delete(`${API_URL}/replies?replyId=${replyId}`, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -114,7 +114,7 @@ request.post(`${API_URL}/comments/edit`, {editedComment, commentId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -140,7 +140,7 @@ request.post(`${API_URL}/edit/page`, params, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -163,7 +163,7 @@ request.post(`${API_URL}/replies/edit`, {editedReply, replyId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -187,7 +187,7 @@ request.post(`${API_URL}/edit/title`, params, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -197,7 +197,7 @@ export const getInitialVideos = () => dispatch => request.get(API_URL)
   response => dispatch(getVideos(response.data, true))
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -232,7 +232,7 @@ request.post(`${API_URL}/like`, {videoId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -254,7 +254,7 @@ request.post(`${API_URL}/comments/like`, {commentId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -276,7 +276,7 @@ request.post(`${API_URL}/replies/like`, {replyId, commentId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -292,7 +292,7 @@ request.get(`${API_URL}/comments?videoId=${videoId}&commentLength=${commentLengt
   response => dispatch(loadMoreComments(response.data))
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -307,7 +307,7 @@ export const loadVideoCommentsAsync = videoId => dispatch => request.get(`${API_
   response => dispatch(loadVideoComments(response.data))
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -327,7 +327,7 @@ request.get(`${API_URL}/loadPage?videoId=${videoId}`)
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -356,7 +356,7 @@ request.get(`${API_URL}/search?query=${text}`)
   })
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -392,7 +392,7 @@ request.post(`${API_URL}/questions`, params, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -413,7 +413,7 @@ export const uploadVideoAsync = params => dispatch => request.post(API_URL, para
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -432,7 +432,7 @@ request.post(`${API_URL}/comments`, {comment, videoId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -454,7 +454,7 @@ request.post(`${API_URL}/replies`, {reply, commentId, videoId, replyId}, auth())
   }
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )

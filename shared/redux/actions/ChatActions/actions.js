@@ -15,7 +15,7 @@ request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth())
   response => then(response.data)
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -42,7 +42,7 @@ request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
   response => then(response.data)
 ).catch(
   error => {
-    console.error(error)
+    console.error(error.response)
     handleError(error, dispatch)
   }
 )
@@ -53,7 +53,7 @@ export const fetchChannelsAsync = ({then}) => dispatch => {
     response => then(response.data)
   ).catch(
     error => {
-      console.error(error)
+      console.error(error.response)
       handleError(error, dispatch)
     }
   )
