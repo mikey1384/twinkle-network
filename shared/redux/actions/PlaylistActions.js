@@ -15,7 +15,7 @@ export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
   response => dispatch(getPlaylists(response.data, true))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -25,7 +25,7 @@ export const getMorePlaylistsAsync = playlistId => dispatch => request.get(`${AP
   response => dispatch(getPlaylists(response.data, false))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -48,7 +48,7 @@ request.post(API_URL, params, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -73,7 +73,7 @@ request.post(`${API_URL}/edit/title`, params, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -97,7 +97,7 @@ request.post(`${API_URL}/edit/videos`, {playlistId, selectedVideos}, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -120,7 +120,7 @@ request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -135,7 +135,7 @@ export const getPinnedPlaylistsAsync = () => dispatch => request.get(`${API_URL}
   response => dispatch(getPinnedPlaylists(response.data))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -158,7 +158,7 @@ request.post(`${API_URL}/pinned`, {selectedPlaylists}, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -173,7 +173,7 @@ export const openSelectPlaylistsToPinModalAsync = () => dispatch => request.get(
   response => dispatch(openSelectPlaylistsToPinModal(response.data))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -189,7 +189,7 @@ request.get(`${API_URL}/list?playlistId=${playlistId}`)
   response => dispatch(loadMorePlaylistList(response.data))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -212,7 +212,7 @@ export const getVideosForModalAsync = () => dispatch => request.get(`${URL}/vide
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -228,7 +228,7 @@ request.get(`${URL}/video?numberToLoad=18&videoId=${videoId}`)
   response => dispatch(getMoreVideosForModal(response.data))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -247,7 +247,7 @@ export const openChangePlaylistVideosModalAsync = sender => dispatch => request.
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )

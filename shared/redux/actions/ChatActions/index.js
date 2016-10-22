@@ -41,7 +41,7 @@ request.post(`${API_URL}/channel/twoPeople`, {...params, timeStamp: Math.floor(D
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -55,7 +55,7 @@ request.post(`${API_URL}/channel`, {params}, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -69,7 +69,7 @@ request.post(`${API_URL}/title`, params, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -95,7 +95,7 @@ export const getNumberOfUnreadMessagesAsync = () => dispatch => {
     }
   ).catch(
     error => {
-      console.error(error.response)
+      console.error(error.response || error)
       handleError(error, dispatch)
     }
   )
@@ -110,7 +110,7 @@ request.post(`${API_URL}/hideChat`, {channelId}, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -128,7 +128,7 @@ request.get(API_URL, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -147,7 +147,7 @@ request.post(`${API_URL}/invite`, params, auth())
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -161,7 +161,7 @@ request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&channelId=$
   }
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -176,7 +176,7 @@ export const leaveChannelAsync = channelId => dispatch => {
     }
   ).catch(
     error => {
-      console.error(error.response)
+      console.error(error.response || error)
       handleError(error, dispatch)
     }
   )
@@ -204,7 +204,7 @@ export const receiveMessage = data => dispatch => {
     })
   ).catch(
     error => {
-      console.error(error.response)
+      console.error(error.response || error)
       handleError(error, dispatch)
     }
   )
@@ -230,7 +230,7 @@ request.get(`${API_URL}/search/chat?text=${text}`, auth())
   response => dispatch(actions.searchChat(response.data))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -241,7 +241,7 @@ request.get(`${API_URL}/search/users?text=${text}`)
   response => dispatch(actions.searchUserToInvite(response.data))
 ).catch(
   error => {
-    console.error(error.response)
+    console.error(error.response || error)
     handleError(error, dispatch)
   }
 )
@@ -261,7 +261,7 @@ export const submitMessageAsync = (params, callback) => dispatch => {
     }
   ).catch(
     error => {
-      console.error(error.response)
+      console.error(error.response || error)
       handleError(error, dispatch)
     }
   )

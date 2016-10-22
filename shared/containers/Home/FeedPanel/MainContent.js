@@ -36,7 +36,7 @@ export default class MainContent extends Component {
   render() {
     const {
       myId, content, contentLikers = [],
-      contentId, type, title, views, numChildComments, numChildReplies, replyId, commentId,
+      contentId, type, title, videoViews, numChildComments, numChildReplies, replyId, commentId,
       videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId
     } = this.props;
     const {userListModalShown} = this.state;
@@ -70,14 +70,14 @@ export default class MainContent extends Component {
               <Embedly url={content} apiKey={embedlyKey} />
             )
         }
-        {type === 'video' && views > 10 &&
+        {type === 'video' && videoViews > 10 &&
           <span
             className="pull-right"
             style={{
               fontSize: '1.5em',
               marginTop: '1em'
             }}
-          >{views} view{`${views > 1 ? 's' : ''}`}</span>
+          >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}</span>
         }
         {type !== 'url' && (
             <div style={{marginTop: '2em'}}>
