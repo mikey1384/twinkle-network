@@ -190,7 +190,8 @@ router.post('/content', requireAuth, (req, res) => {
   'INSERT INTO content_urls SET ?';
   const content = !!checkedVideo ? fetchedVideoCodeFromURL(url) : processedURL(url);
   const post = Object.assign({},
-    {title, description, uploader: user.id, timeStamp: Math.floor(Date.now()/1000), categoryId},
+    {title, description: (!description || description === '') ?
+    "No description" : description, uploader: user.id, timeStamp: Math.floor(Date.now()/1000), categoryId},
     (!!checkedVideo ? {videocode: content} : {url: content})
   )
   pool.query(query, post, (err, result) => {
