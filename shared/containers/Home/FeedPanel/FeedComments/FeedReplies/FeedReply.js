@@ -10,13 +10,20 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
-import {likeFeedVideoCommentAsync, uploadFeedVideoReplyAsync} from 'redux/actions/FeedActions';
+import {
+  feedVideoCommentDeleteAsync,
+  feedVideoCommentLikeAsync,
+  feedVideoCommentEditAsync,
+  uploadFeedVideoReplyAsync
+} from 'redux/actions/FeedActions';
 
 
 @connect(
   null,
   {
-    onLikeClick: likeFeedVideoCommentAsync,
+    onDelete: feedVideoCommentDeleteAsync,
+    onLikeClick: feedVideoCommentLikeAsync,
+    onEditDone: feedVideoCommentEditAsync,
     onReplySubmit: uploadFeedVideoReplyAsync
   }
 )
@@ -43,7 +50,7 @@ export default class FeedReply extends Component {
     }
     return (
       <div className="media">
-        {userIsOwner && !onEdit && false &&
+        {userIsOwner && !onEdit &&
           <SmallDropdownButton
             shape="button"
             icon="pencil"
@@ -153,8 +160,8 @@ export default class FeedReply extends Component {
   }
 
   onEditDone(editedReply) {
-    const replyId = this.props.reply.id;
-    this.props.onEditDone({replyId, editedReply}, () => {
+    const {onEditDone, reply} = this.props;
+    onEditDone({editedComment: editedReply, commentId: reply.id}, () => {
       this.setState({onEdit: false})
     })
   }

@@ -8,6 +8,61 @@ export const clearCategoriesSearchResults = () => ({
   type: 'CLEAR_CATEGORIES_SEARCH'
 })
 
+export const feedVideoCommentDeleteAsync = commentId => dispatch =>
+request.delete(`${URL}/video/comments?commentId=${commentId}`, auth())
+.then(
+  response => dispatch({
+    type: 'FEED_VIDEO_COMMENT_DELETE',
+    commentId
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const feedVideoCommentEditAsync = (params, cb) => dispatch =>
+request.post(`${URL}/video/comments/edit`, params, auth())
+.then(
+  response => {
+    const {success} = response.data;
+    if (!success) return;
+    dispatch({
+      type: 'FEED_VIDEO_COMMENT_EDIT',
+      data: params
+    })
+    cb();
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const feedVideoCommentLike = data => ({
+  type: 'FEED_VIDEO_COMMENT_LIKE',
+  data
+})
+
+export const feedVideoCommentLikeAsync = commentId => dispatch =>
+request.post(`${URL}/video/comments/like`, {commentId}, auth())
+.then(
+  response => {
+    const {data} = response;
+    if (data.likes) {
+      dispatch(feedVideoCommentLike({contentId: commentId, likes: data.likes}))
+    }
+    return;
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const fetchCategories = data => ({
   type: 'FETCH_CATEGORIES',
   data
@@ -52,28 +107,6 @@ export const fetchMoreFeedsAsync = feedLength => dispatch => {
     }
   )
 }
-
-export const likeFeedVideoComment = data => ({
-  type: 'FEED_VIDEO_COMMENT_LIKE',
-  data
-})
-
-export const likeFeedVideoCommentAsync = commentId => dispatch =>
-request.post(`${URL}/video/comments/like`, {commentId}, auth())
-.then(
-  response => {
-    const {data} = response;
-    if (data.likes) {
-      dispatch(likeFeedVideoComment({contentId: commentId, likes: data.likes}))
-    }
-    return;
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
 
 export const likeVideo = data => ({
   type: 'FEED_VIDEO_LIKE',

@@ -39,20 +39,77 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: state.feeds.concat(action.data),
         loadMoreButton
-      };
-    case 'FEED_VIDEO_LIKE':
+      }
+    case 'FEED_TARGET_VIDEO_COMMENT_LIKE':
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === 'video') {
+          if (feed.type === 'comment') {
             if (feed.contentId === action.data.contentId) {
               feed.contentLikers = action.data.likes
             }
-            if (feed.commentId === action.data.contentId) {
+            if (!feed.replyId && feed.commentId === action.data.contentId) {
+              feed.targetContentLikers = action.data.likes
+            }
+            if (feed.replyId === action.data.contentId) {
               feed.targetContentLikers = action.data.likes
             }
           }
           return feed;
+        })
+      }
+    case 'FEED_VIDEO_COMMENT_DELETE':
+      return {
+        ...state,
+        feeds: state.feeds.reduce((resultingArray, feed) => {
+          if (feed.contentId === action.commentId || feed.commentId === action.commentId || feed.replyId === action.commentId) return resultingArray;
+          return resultingArray.concat([{
+            ...feed,
+            childComments: feed.childComments.reduce((resultingArray, childComment) => {
+              if (childComment.id === action.commentId) return resultingArray;
+              return resultingArray.concat([{
+                ...childComment,
+                replies: childComment.replies.reduce((resultingArray, reply) => {
+                  if (reply.id === action.commentId) return resultingArray;
+                  return resultingArray.concat([reply])
+                }, [])
+              }])
+            }, [])
+          }])
+        }, [])
+      }
+    case 'FEED_VIDEO_COMMENT_EDIT':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          if (feed.type === 'comment') {
+            if (feed.contentId === action.data.commentId) {
+              feed.content = action.data.editedComment
+            }
+            if (feed.commentId === action.data.commentId) {
+              feed.targetComment = action.data.editedComment
+            }
+            if (feed.replyId === action.data.commentId) {
+              feed.targetReply = action.data.editedComment
+            }
+          }
+          return {
+            ...feed,
+            childComments: feed.childComments.map(childComment => {
+              if (childComment.id === action.data.commentId) {
+                childComment.content = action.data.editedComment
+              }
+              return {
+                ...childComment,
+                replies: childComment.replies.map(reply => {
+                  if (reply.id === action.data.commentId) {
+                    reply.content = action.data.editedComment
+                  }
+                  return reply;
+                })
+              }
+            })
+          }
         })
       }
     case 'FEED_VIDEO_COMMENT_LIKE':
@@ -95,18 +152,15 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_TARGET_VIDEO_COMMENT_LIKE':
+    case 'FEED_VIDEO_LIKE':
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === 'comment') {
+          if (feed.type === 'video') {
             if (feed.contentId === action.data.contentId) {
               feed.contentLikers = action.data.likes
             }
-            if (!feed.replyId && feed.commentId === action.data.contentId) {
-              feed.targetContentLikers = action.data.likes
-            }
-            if (feed.replyId === action.data.contentId) {
+            if (feed.commentId === action.data.contentId) {
               feed.targetContentLikers = action.data.likes
             }
           }

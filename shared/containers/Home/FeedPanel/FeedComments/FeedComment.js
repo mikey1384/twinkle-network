@@ -12,13 +12,20 @@ import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
-import {likeFeedVideoCommentAsync, uploadFeedVideoReplyAsync} from 'redux/actions/FeedActions';
+import {
+  feedVideoCommentDeleteAsync,
+  feedVideoCommentLikeAsync,
+  feedVideoCommentEditAsync,
+  uploadFeedVideoReplyAsync
+} from 'redux/actions/FeedActions';
 
 
 @connect(
   null,
   {
-    onLikeClick: likeFeedVideoCommentAsync,
+    onDelete: feedVideoCommentDeleteAsync,
+    onLikeClick: feedVideoCommentLikeAsync,
+    onEditDone: feedVideoCommentEditAsync,
     onReplySubmit: uploadFeedVideoReplyAsync
   }
 )
@@ -50,7 +57,7 @@ export default class FeedComment extends Component {
         className="media"
         style={{marginTop: this.props.marginTop && '1em'}}
       >
-        {userIsOwner && !onEdit && false &&
+        {userIsOwner && !onEdit &&
           <SmallDropdownButton
             shape="button"
             icon="pencil"
@@ -163,8 +170,8 @@ export default class FeedComment extends Component {
   }
 
   onEditDone(editedComment) {
-    const {comment} = this.props;
-    this.props.onEditDone(editedComment, comment.id, () => {
+    const {onEditDone, comment} = this.props;
+    onEditDone({editedComment, commentId: comment.id}, () => {
       this.setState({onEdit: false})
     })
   }
