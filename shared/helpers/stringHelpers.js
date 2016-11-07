@@ -60,3 +60,9 @@ export function stringIsEmpty(string) {
 	var checkedString = string ? string.replace(/\s/g, "").replace(/\r?\n/g, "") : "";
   return checkedString === '';
 }
+
+export function isValidYoutubeUrl(url) {
+	let trimOne = url.split("v=")[1];
+	let trimTwo = url.split("youtu.be/")[1];
+  return typeof trimOne !== "undefined" || typeof trimTwo !== "undefined";
+}

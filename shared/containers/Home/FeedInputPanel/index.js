@@ -9,6 +9,7 @@ import {
   clearCategoriesSearchResults,
   uploadContentAsync
 } from 'redux/actions/FeedActions';
+import {isValidYoutubeUrl} from 'helpers/stringHelpers';
 
 const renderInput = (
   {input, type, className, placeholder, checked, checkIfYouTubeVideo, toggleCheck, meta: {touched, error}}
@@ -269,9 +270,4 @@ function containsOnlySpaces(string) {
 function isValidUrl(url) {
   const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
   return regex.test(url);
-}
-
-function isValidYoutubeUrl(url) {
-  var trimmedUrl = url.split("v=")[1];
-  return typeof trimmedUrl !== "undefined";
 }

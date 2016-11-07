@@ -5,6 +5,7 @@ import {Modal} from 'react-bootstrap';
 import Button from 'components/Button';
 import {uploadVideoAsync} from 'redux/actions/VideoActions';
 import {connect} from 'react-redux';
+import {isValidYoutubeUrl} from 'helpers/stringHelpers';
 
 
 const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
@@ -105,11 +106,6 @@ function validate (values) {
   }
 
   return errors;
-}
-
-function isValidYoutubeUrl (url) {
-  var trimmedUrl = url.split("v=")[1];
-  return typeof trimmedUrl !== "undefined";
 }
 
 function containsOnlySpaces (string) {

@@ -1,7 +1,13 @@
 module.exports = {
   fetchedVideoCodeFromURL(url) {
-    var trimmedUrl = url.split("v=")[1].split("#")[0];
-    var videoCode = trimmedUrl.split("&")[0];
+    let videoCode = '';
+    if (typeof url.split("v=")[1] !== 'undefined') {
+      let trimmedUrl = url.split("v=")[1].split("#")[0];
+      videoCode = trimmedUrl.split("&")[0];
+    } else {
+      let trimmedUrl = url.split("youtu.be/")[1].split("#")[0];
+      videoCode = trimmedUrl.split("&")[0].split("?")[0];
+    }
     return videoCode;
   },
   processedTitleString(string) {
