@@ -63,6 +63,7 @@ export default class FeedComment extends Component {
             icon="pencil"
             style={{
               position: 'absolute',
+              opacity: 0.8,
               right: '0px',
               marginRight: '3em'
             }}
