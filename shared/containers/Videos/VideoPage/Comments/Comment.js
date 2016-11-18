@@ -92,7 +92,7 @@ export default class Comment extends Component {
                     marginBottom: '0.5em'
                   }}
                 >
-                  Debate Topic: {comment.debateTopic}
+                  Discussion Topic: {comment.debateTopic}
                 </div>
               }
               <div

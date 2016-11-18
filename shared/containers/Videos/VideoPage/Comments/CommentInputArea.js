@@ -76,7 +76,7 @@ export default class CommentInputArea extends Component {
                   }
                 </div>
                 <div className="container-fluid">
-                  {!!debates && debates.length > 0 && <h3 style={{marginTop: '1em'}}>Active Debates</h3>}
+                  {!!debates && debates.length > 0 && <h3 style={{marginTop: '1em'}}>Active Discussions</h3>}
                   {!!debates && debates.map(debate =>
                     <DebatePanel
                       key={debate.id}
