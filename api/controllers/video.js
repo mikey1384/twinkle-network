@@ -258,12 +258,15 @@ router.get('/comments', (req, res) => {
   const commentLength = Number(req.query.commentLength) || 0;
   const limit = commentLength === 0 ? '21' : commentLength + ', 21';
   const query = [
-    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username ',
+    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
+    'c.title AS debateTopic ',
     'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
+    'LEFT JOIN debateTopics c ON a.debateId = c.id ',
     'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {
+      console.error(err);
       return res.status(500).send({error: err});
     }
     if (rows.length === 0) {
@@ -413,6 +416,107 @@ router.post('/comments/like', requireAuth, (req, res) => {
   })
 })
 
+router.get('/debates', (req, res) => {
+  const videoId = Number(req.query.videoId);
+  const debateLength = Number(req.query.debateLength) || 0;
+  const limit = debateLength === 0 ? '4' : debateLength + ', 4';
+  const query = [
+    'SELECT a.id, a.userId, a.title, a.description, a.timeStamp, b.username, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE debateId = a.id) AS numComments ',
+    'FROM debateTopics a LEFT JOIN users b ON a.userId = b.id ',
+    'WHERE a.refContentType = \'video\' AND a.refContentId = ? ',
+    'ORDER BY a.id DESC LIMIT ' + limit
+  ].join('');
+  pool.query(query, videoId, (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err});
+    }
+    res.send(rows.map(row => Object.assign({}, row, {
+      comments: [],
+      loadMoreDebateCommentsButton: false
+    })));
+  })
+})
+
+router.get('/debates/comments', (req, res) => {
+  const {debateId, commentLength} = req.query;
+  const numberedLength = Number(commentLength) || 0;
+  const limit = numberedLength === 0 ? '4' : numberedLength + ', 4';
+  const query = [
+    'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
+    'vq_comments a LEFT JOIN users b ON a.userId = b.id WHERE ',
+    'a.debateId = ? AND a.commentId IS NULL ORDER BY a.id DESC LIMIT ' + limit
+  ].join('');
+  pool.query(query, debateId, (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err});
+    }
+    if (rows.length === 0) {
+      return res.send([])
+    }
+    returnComments(rows, (err, commentsArray) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send({error: err})
+      }
+      res.send(commentsArray)
+    })
+  })
+})
+
+router.post('/debates', requireAuth, (req, res) => {
+  const {title, description, videoId} = req.body;
+  const {user} = req;
+  const query = 'INSERT INTO debateTopics SET ?';
+  const post = {
+    title: processedString(title),
+    description: !!description && description !== '' ? processedString(description) : null,
+    userId: user.id,
+    refContentType: 'video',
+    refContentId: videoId,
+    timeStamp: Math.floor(Date.now()/1000)
+  }
+  pool.query(query, post, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err})
+    }
+    res.send(Object.assign({}, post, {
+      id: result.insertId,
+      username: user.username,
+      comments: [],
+      loadMoreDebateCommentsButton: false
+    }))
+  })
+})
+
+router.post('/debates/comments', requireAuth, (req, res) => {
+  const {videoId, debateId, comment} = req.body;
+  const {user} = req;
+  const query = "INSERT INTO vq_comments SET ?";
+  const post = {
+    userId: user.id,
+    content: comment,
+    timeStamp: Math.floor(Date.now()/1000),
+    videoId,
+    debateId
+  }
+  pool.query(query, post, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err})
+    }
+    res.send(Object.assign({}, post, {
+      id: result.insertId,
+      likes: [],
+      replies: [],
+      username: user.username
+    }))
+  })
+})
+
 router.post('/replies', requireAuth, (req, res) => {
   const user = req.user;
   const commentId = req.body.commentId;
@@ -421,14 +525,20 @@ router.post('/replies', requireAuth, (req, res) => {
   const reply = req.body.reply;
   const processedReply = processedString(reply);
   async.waterfall([
-    (callback) => {
+    callback => {
+      pool.query('SELECT debateId FROM vq_comments WHERE id = ?', commentId, (err, rows) => {
+        callback(err, rows[0].debateId)
+      })
+    },
+    (debateId, callback) => {
       const post = {
         userId: user.id,
         content: processedReply,
         timeStamp: Math.floor(Date.now()/1000),
         replyId,
         commentId,
-        videoId
+        videoId,
+        debateId
       }
       pool.query('INSERT INTO vq_comments SET ?', post, (err, result) => {
         callback(err, result.insertId)

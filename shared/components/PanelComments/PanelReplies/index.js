@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import FeedReply from './FeedReply';
+import PanelReply from './PanelReply';
 
-export default class FeedReplies extends Component {
+export default class PanelReplies extends Component {
   componentDidUpdate(prevProps) {
+    const {contentId} = this.props;
     const length = this.props.replies.length;
     const lastReply = this.props.replies[length - 1] || [];
     const newlyAdded = lastReply ? lastReply.newlyAdded : false;
@@ -15,7 +16,7 @@ export default class FeedReplies extends Component {
 
   render() {
     const {
-      replies, userId, onEditDone, onLikeClick, onDelete, onReplySubmit, comment, contentId, parent
+      type, replies, userId, onEditDone, onLikeClick, onDelete, onReplySubmit, comment, contentId, parent
     } = this.props;
     return (
       <div
@@ -24,14 +25,19 @@ export default class FeedReplies extends Component {
       >
         {replies.map(reply => {
           return (
-            <FeedReply
+            <PanelReply
               ref={reply.id}
               key={reply.id}
+              type={type}
               parent={parent}
               comment={comment}
               reply={reply}
               userId={userId}
               userIsOwner={reply.userId === userId}
+              onDelete={onDelete}
+              onLikeClick={onLikeClick}
+              onEditDone={onEditDone}
+              onReplySubmit={onReplySubmit}
             />
           )
         })}

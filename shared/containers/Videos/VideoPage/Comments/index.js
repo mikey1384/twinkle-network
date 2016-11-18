@@ -8,48 +8,46 @@ import {
   editVideoCommentAsync,
   deleteVideoCommentAsync,
   editVideoReplyAsync,
-  deleteVideoReplyAsync,
   likeVideoReplyAsync,
-  likeVideoCommentAsync,
+  likeVideoComment,
   uploadVideoReplyAsync,
   loadMoreCommentsAsync
 } from 'redux/actions/VideoActions';
 
 @connect(
   state => ({
-    loadMoreButton: state.VideoReducer.videoPage.loadMoreButton
+    loadMoreCommentsButton: state.VideoReducer.videoPage.loadMoreCommentsButton
   }),
   {
     onEditDone: editVideoCommentAsync,
     onDelete: deleteVideoCommentAsync,
     onReplyEditDone: editVideoReplyAsync,
-    onReplyDelete: deleteVideoReplyAsync,
     onReplyLike: likeVideoReplyAsync,
-    onLikeClick: likeVideoCommentAsync,
+    onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoReplyAsync,
     loadMoreComments: loadMoreCommentsAsync
   }
 )
 export default class Comments extends Component {
-  constructor() {
-    super()
-    this.loadMoreComments = this.loadMoreComments.bind(this)
-  }
-
   render() {
-    const {onSubmit, loadMoreButton} = this.props;
+    const {
+      loadMoreCommentsButton, loadMoreDebatesButton, loadMoreComments, videoId, comments, debates
+    } = this.props;
     return (
       <div className="row container-fluid" style={{paddingBottom: '1em'}}>
         <div className="container-fluid">
-          <CommentInputArea
-            onSubmit={comment => onSubmit(comment)}
-          />
+          <CommentInputArea videoId={videoId} debates={debates} loadMoreDebatesButton={loadMoreDebatesButton} />
           <div className="container-fluid">
             <ul className="media-list">
               {this.renderComments()}
-              {loadMoreButton &&
+              {loadMoreCommentsButton &&
                 <div className="text-center" style={{paddingTop: '2em'}}>
-                  <Button className="btn btn-warning" onClick={this.loadMoreComments}>Load More</Button>
+                  <Button
+                    className="btn btn-success"
+                    onClick={() => loadMoreComments(videoId, comments.length)}
+                  >
+                    Load More
+                  </Button>
                 </div>
               }
             </ul>
@@ -57,11 +55,6 @@ export default class Comments extends Component {
         </div>
       </div>
     )
-  }
-
-  loadMoreComments() {
-    const {videoId, comments, loadMoreComments} = this.props;
-    loadMoreComments(videoId, comments.length);
   }
 
   renderComments() {
@@ -80,7 +73,6 @@ export default class Comments extends Component {
           onEditDone={this.props.onEditDone}
           onDelete={this.props.onDelete}
           onReplyEditDone={this.props.onReplyEditDone}
-          onReplyDelete={this.props.onReplyDelete}
           onReplyLike={this.props.onReplyLike}
           onLikeClick={this.props.onLikeClick}
           onReplySubmit={this.props.onReplySubmit}

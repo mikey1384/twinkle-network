@@ -24,12 +24,11 @@ export default class Comment extends Component {
     this.onReplySubmit = this.onReplySubmit.bind(this)
     this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
-    this.onDelete = this.onDelete.bind(this)
   }
 
   render() {
     const {replyInputShown, onEdit, userListModalShown} = this.state;
-    const {comment, userId, commentId, videoId} = this.props;
+    const {comment, userId, commentId, videoId, onEditDone} = this.props;
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;
     for (let i = 0; i < comment.likes.length; i++) {
@@ -56,7 +55,7 @@ export default class Comment extends Component {
               },
               {
                 label: "Remove",
-                onClick: this.onDelete
+                onClick: () => this.props.onDelete(commentId)
               }
             ]}
           />
@@ -84,6 +83,18 @@ export default class Comment extends Component {
               onEditDone={this.onEditDone}
             /> :
             <div className="container-fluid">
+              {!!comment.debateTopic &&
+                <div
+                  className="row"
+                  style={{
+                    color: '#158cba',
+                    fontWeight: 'bold',
+                    marginBottom: '0.5em'
+                  }}
+                >
+                  Debate Topic: {comment.debateTopic}
+                </div>
+              }
               <div
                 className="row"
                 style={{paddingBottom: '1.7em'}}
@@ -128,17 +139,10 @@ export default class Comment extends Component {
             replies={comment.replies}
             commentId={commentId}
             videoId={videoId}
-            onEditDone={
-              ({replyId, editedReply}, cb) =>
-              this.props.onReplyEditDone({
-                replyId,
-                editedReply,
-                commentId: this.props.commentId
-              }, cb)
-            }
+            onEditDone={onEditDone}
             onReplySubmit={this.props.onReplySubmit}
             onLikeClick={replyId => this.props.onReplyLike(replyId, this.props.commentId)}
-            onDelete={replyId => this.props.onReplyDelete(replyId, this.props.commentId)}
+            onDelete={replyId => this.props.onDelete(replyId)}
           />
           {replyInputShown && <ReplyInputArea
               onSubmit={this.onReplySubmit}
@@ -160,7 +164,7 @@ export default class Comment extends Component {
 
   onEditDone(editedComment) {
     const {commentId} = this.props;
-    this.props.onEditDone(editedComment, commentId, () => {
+    this.props.onEditDone({editedComment, commentId}, () => {
       this.setState({onEdit: false})
     })
   }
@@ -173,10 +177,5 @@ export default class Comment extends Component {
   onReplySubmit(reply) {
     const {commentId, videoId} = this.props;
     this.props.onReplySubmit(reply, commentId, videoId);
-  }
-
-  onDelete() {
-    const {commentId} = this.props;
-    this.props.onDelete(commentId);
   }
 }

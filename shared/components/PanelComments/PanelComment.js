@@ -6,30 +6,14 @@ import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
-import FeedReplies from './FeedReplies';
-import ReplyInputArea from './FeedReplies/ReplyInputArea';
+import PanelReplies from './PanelReplies';
+import ReplyInputArea from './PanelReplies/ReplyInputArea';
 import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
-import {
-  feedVideoCommentDeleteAsync,
-  feedVideoCommentLikeAsync,
-  feedVideoCommentEditAsync,
-  uploadFeedVideoReplyAsync
-} from 'redux/actions/FeedActions';
 
-
-@connect(
-  null,
-  {
-    onDelete: feedVideoCommentDeleteAsync,
-    onLikeClick: feedVideoCommentLikeAsync,
-    onEditDone: feedVideoCommentEditAsync,
-    onReplySubmit: uploadFeedVideoReplyAsync
-  }
-)
-export default class FeedComment extends Component {
+export default class PanelComment extends Component {
   constructor() {
     super()
     this.state = {
@@ -45,7 +29,9 @@ export default class FeedComment extends Component {
 
   render() {
     const {replyInputShown, onEdit, userListModalShown} = this.state;
-    const {comment, userId, parent} = this.props;
+    const {
+      comment, userId, parent, type, onEditDone, onLikeClick, onDelete, onReplySubmit
+    } = this.props;
 
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;
@@ -58,26 +44,27 @@ export default class FeedComment extends Component {
         style={{marginTop: this.props.marginTop && '1em'}}
       >
         {userIsOwner && !onEdit &&
-          <SmallDropdownButton
-            shape="button"
-            icon="pencil"
-            style={{
-              position: 'absolute',
-              opacity: 0.8,
-              right: '0px',
-              marginRight: '3em'
-            }}
-            menuProps={[
-              {
-                label: "Edit",
-                onClick: () => this.setState({onEdit: true})
-              },
-              {
-                label: "Remove",
-                onClick: this.onDelete
-              }
-            ]}
-          />
+          <div className="row">
+            <SmallDropdownButton
+              shape="button"
+              icon="pencil"
+              style={{
+                position: 'absolute',
+                right: '5.5%',
+                opacity: 0.7
+              }}
+              menuProps={[
+                {
+                  label: "Edit",
+                  onClick: () => this.setState({onEdit: true})
+                },
+                {
+                  label: "Remove",
+                  onClick: this.onDelete
+                }
+              ]}
+            />
+          </div>
         }
         <div className="media-left">
           <a>
@@ -146,14 +133,20 @@ export default class FeedComment extends Component {
               </div>
             </div>
           }
-          <FeedReplies
+          <PanelReplies
             userId={userId}
             replies={comment.replies}
             comment={comment}
             parent={parent}
+            type={type}
+            onDelete={onDelete}
+            onLikeClick={onLikeClick}
+            onEditDone={onEditDone}
+            onReplySubmit={onReplySubmit}
           />
           {replyInputShown && <ReplyInputArea
               onSubmit={this.onReplySubmit}
+              numReplies={comment.replies.length}
             />
           }
         </div>
@@ -184,7 +177,7 @@ export default class FeedComment extends Component {
 
   onReplySubmit(replyContent) {
     const {parent, comment, onReplySubmit} = this.props;
-    onReplySubmit(parent, comment, replyContent);
+    onReplySubmit(replyContent, comment, parent);
   }
 
   onDelete() {

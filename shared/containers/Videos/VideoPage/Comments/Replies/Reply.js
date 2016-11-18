@@ -19,7 +19,6 @@ export default class Reply extends Component {
       replyInputShown: false,
       userListModalShown: false
     }
-    this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
@@ -27,7 +26,7 @@ export default class Reply extends Component {
 
   render() {
     const {
-      id, username, timeStamp, content, userIsOwner,
+      id, username, timeStamp, content, userIsOwner, onEditDone,
       likes, userId, myId, targetUserName, targetUserId, autoFocus
     } = this.props;
     const {onEdit, userListModalShown, replyInputShown} = this.state;
@@ -87,7 +86,9 @@ export default class Reply extends Component {
               <EditTextArea
                 text={cleanStringWithURL(content)}
                 onCancel={() => this.setState({onEdit: false})}
-                onEditDone={this.onEditDone}
+                onEditDone={editedComment => onEditDone({editedComment, commentId: id}, () => {
+                  this.setState({onEdit: false})
+                })}
               /> :
               <div className="container-fluid">
                 <div
@@ -146,13 +147,6 @@ export default class Reply extends Component {
         }
       </div>
     )
-  }
-
-  onEditDone(editedReply) {
-    const replyId = this.props.id;
-    this.props.onEditDone({replyId, editedReply}, () => {
-      this.setState({onEdit: false})
-    })
   }
 
   onLikeClick() {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Contents(props) {
+export default function Videos(props) {
   return (
     <div id="contents" className="container-fluid">
       {props.children}

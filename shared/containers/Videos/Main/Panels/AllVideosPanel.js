@@ -60,7 +60,7 @@ export default class AllVideosPanel extends Component {
           })}
           {loadMoreButton &&
             <div className="text-center col-sm-12">
-              <Button className="btn btn-default" onClick={this.loadMoreVideos}>Load More</Button>
+              <Button className="btn btn-success" onClick={this.loadMoreVideos}>Load More</Button>
             </div>
           }
         </div>

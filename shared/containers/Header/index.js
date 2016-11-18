@@ -193,6 +193,12 @@ export default class Header extends Component {
                 >
                   Videos
                 </HeaderNav>
+                {false && <HeaderNav
+                  to="/links"
+                  selected={selectedTab === 'links'}
+                >
+                  Links
+                </HeaderNav>}
               </Nav>,
               <SearchBox className="col-xs-6" style={{marginTop: '6px'}} key="searchBox" />
             ]

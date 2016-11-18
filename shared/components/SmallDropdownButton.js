@@ -31,7 +31,10 @@ class SmallDropdownButton extends Component {
     return (
       <span
         className="dropdown pull-right"
-        style={style}>
+        style={{
+          ...style,
+          opacity: menuDisplayed ? 1 : style.opacity
+        }}>
         <Button className={buttonShape} onClick={() => this.setState({menuDisplayed: !menuDisplayed})}>
           <span className={buttonIcon}></span>
         </Button>

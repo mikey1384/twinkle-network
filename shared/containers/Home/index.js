@@ -8,6 +8,7 @@ import FeedInputPanel from './FeedInputPanel';
 @connect(
   state => ({
     feeds: state.FeedReducer.feeds,
+    newFeeds: state.FeedReducer.newFeeds,
     loadMoreButton: state.FeedReducer.loadMoreButton,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username
@@ -31,7 +32,7 @@ export default class Home extends Component {
           })}
           {loadMoreButton &&
             <div className="text-center" style={{paddingBottom: '1em'}}>
-              <Button className="btn btn-warning" onClick={this.loadMoreFeeds}>Load More</Button>
+              <Button className="btn btn-success" onClick={this.loadMoreFeeds}>Load More</Button>
             </div>
           }
         </div>
@@ -51,7 +52,7 @@ export default class Home extends Component {
   }
 
   loadMoreFeeds() {
-    const {feeds, fetchMoreFeeds} = this.props;
-    fetchMoreFeeds(feeds.length);
+    const {feeds, newFeeds, fetchMoreFeeds} = this.props;
+    fetchMoreFeeds(feeds.length + newFeeds.length);
   }
 }

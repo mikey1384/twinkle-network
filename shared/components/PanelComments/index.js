@@ -1,23 +1,11 @@
 import React, {Component} from 'react';
 import CommentInputArea from './CommentInputArea';
-import FeedComment from './FeedComment';
+import PanelComment from './PanelComment';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Button from 'components/Button';
-import {
-  loadMoreFeedCommentsAsync,
-  uploadFeedVideoCommentAsync
-} from 'redux/actions/FeedActions';
 
-
-@connect(
-  null,
-  {
-    loadMoreComments: loadMoreFeedCommentsAsync,
-    onSubmit: uploadFeedVideoCommentAsync
-  }
-)
-export default class FeedComments extends Component {
+export default class PanelComments extends Component {
   constructor() {
     super()
     this.loadMoreComments = this.loadMoreComments.bind(this)
@@ -30,7 +18,7 @@ export default class FeedComments extends Component {
         <div className="container-fluid">
           <CommentInputArea
             inputTypeLabel={inputTypeLabel}
-            onSubmit={commentContent => onSubmit(parent, commentContent)}
+            onSubmit={comment => onSubmit(comment, parent)}
           />
           {comments.length !== 0 &&
             <div style={{marginTop: '1.5em'}}>
@@ -38,7 +26,7 @@ export default class FeedComments extends Component {
                 {this.renderComments()}
                 {loadMoreButton &&
                   <div className="text-center" style={{paddingTop: '1em'}}>
-                    <Button className="btn btn-info" onClick={this.loadMoreComments}>Load More</Button>
+                    <Button className="btn btn-success" onClick={this.loadMoreComments}>Load More</Button>
                   </div>
                 }
               </ul>
@@ -51,14 +39,16 @@ export default class FeedComments extends Component {
 
   loadMoreComments() {
     const {comments, parent, loadMoreComments} = this.props;
-    loadMoreComments(parent.type, parent.id, comments.length);
+    loadMoreComments(comments.length, parent.type, parent.id);
   }
 
   renderComments() {
-    const {comments, userId, parent} = this.props;
+    const {comments, userId, parent, contentId, commentActions, type} = this.props;
     return comments.map((comment, index) => {
       return (
-        <FeedComment
+        <PanelComment
+          {...commentActions}
+          type={type}
           parent={parent}
           comment={comment}
           marginTop={index !== 0}

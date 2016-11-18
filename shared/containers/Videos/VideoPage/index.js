@@ -4,7 +4,6 @@ import {
   editVideoPageAsync,
   deleteVideoAsync,
   uploadQuestionsAsync,
-  uploadVideoCommentAsync,
   uploadVideoReplyAsync,
   likeVideoAsync,
   resetVideoPage,
@@ -37,7 +36,6 @@ import YouTube from 'react-youtube';
     editVideoPage: editVideoPageAsync,
     deleteVideo: deleteVideoAsync,
     uploadQuestions: uploadQuestionsAsync,
-    uploadVideoComment: uploadVideoCommentAsync,
     likeVideo: likeVideoAsync,
     addVideoView: addVideoViewAsync,
     resetVideoPage
@@ -62,7 +60,6 @@ export default class VideoPage extends Component {
     this.onQuestionsFinish = this.onQuestionsFinish.bind(this)
     this.onQuestionsSubmit = this.onQuestionsSubmit.bind(this)
     this.numberCorrect = this.numberCorrect.bind(this)
-    this.onCommentSubmit = this.onCommentSubmit.bind(this)
     this.onVideoDelete = this.onVideoDelete.bind(this)
     this.onSelectChoice = this.onSelectChoice.bind(this)
     this.onVideoPlay = this.onVideoPlay.bind(this)
@@ -196,10 +193,7 @@ export default class VideoPage extends Component {
             }
           </div>
         </div>
-        <Comments
-          {...this.props}
-          onSubmit={this.onCommentSubmit}
-        />
+        <Comments {...this.props} />
         {resultModalShown &&
           <ResultModal
             onHide={() => this.setState({resultModalShown: false})}
@@ -338,11 +332,6 @@ export default class VideoPage extends Component {
         userAnswers: []
       })
     });
-  }
-
-  onCommentSubmit(comment) {
-    const {videoId, uploadVideoComment} = this.props;
-    uploadVideoComment(comment, videoId);
   }
 
   onVideoLikeClick() {

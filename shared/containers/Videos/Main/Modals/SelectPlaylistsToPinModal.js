@@ -86,7 +86,7 @@ export default class SelectPlaylistsToPinModal extends Component {
                   style={{marginTop: '1em'}}
                 >
                   <Button
-                    className="btn btn-default"
+                    className="btn btn-success"
                     onClick={() => this.loadMorePlaylists(lastPlaylistId)}
                   >Load More</Button>
                 </div>

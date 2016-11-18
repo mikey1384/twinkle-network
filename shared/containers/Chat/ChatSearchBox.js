@@ -66,7 +66,7 @@ export default class ChatSearchBox extends Component {
 
   onSelect(item) {
     const {enterChannelWithId, clearSearchResults, userId, username, openNewChatTab} = this.props;
-    if (item.primary) {
+    if (item.primary || !!item.channelId) {
       enterChannelWithId(item.channelId, true)
     } else {
       openNewChatTab({username, userId}, {username: item.label, userId: item.userId})

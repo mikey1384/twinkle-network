@@ -530,10 +530,15 @@ router.get('/search/chat', requireAuth, (req, res) => {
       const remainder = 10 - primaryRes.length;
       if (remainder > 0) {
         let query = [
-          'SELECT username AS label, realName AS subLabel, id AS userId FROM users ',
-          'WHERE ((username LIKE ?) OR (realName LIKE ?)) AND id != ? LIMIT ' + remainder
+          'SELECT a.username AS label, a.realName AS subLabel, a.id AS userId, b.id AS channelId FROM ',
+          'users a LEFT JOIN msg_channels b ON ',
+          '(a.id = b.memberOne AND b.memberTwo = ?) OR (a.id = b.memberTwo AND b.memberOne = ?) ',
+          'WHERE ((a.username LIKE ?) OR (a.realName LIKE ?)) AND a.id != ? LIMIT ' + remainder
         ].join('');
-        pool.query(query, ['%' + text + '%', '%' + text + '%', user.id], (err, rows) => {
+        pool.query(query, [user.id, user.id, '%' + text + '%', '%' + text + '%', user.id], (err, rows) => {
+          if (err) {
+            console.error(err)
+          }
           let secondaryRes = rows.filter(row => {
             let allowed = true;
             for (let i = 0; i < primaryRes.length; i++) {
@@ -545,31 +550,14 @@ router.get('/search/chat', requireAuth, (req, res) => {
             return allowed;
           })
 
-          let finalRes = primaryRes.map(res => ({
-            primary: true,
-            label: res.label,
-            subLabel: res.subLabel,
-            twoPeople: res.twoPeople,
-            channelId: res.channelId,
-            userId: res.userId
-          })).concat(secondaryRes.map(res => ({
-            primary: false,
-            label: res.label,
-            subLabel: res.subLabel,
-            userId: res.userId
-          })));
+          let finalRes = primaryRes.map(res => Object.assign({}, res, {primary: true})).concat(
+            secondaryRes.map(res => Object.assign({}, res, {primary: false}))
+          )
           callback(err, finalRes);
         })
       }
       else {
-        let finalRes = primaryRes.map(res => ({
-          primary: true,
-          label: res.label,
-          subLabel: res.subLabel,
-          twoPeople: res.twoPeople,
-          channelId: res.channelId,
-          userId: res.userId
-        }))
+        let finalRes = primaryRes.map(res => Object.assign({}, res, {primary: true}))
         callback(null, finalRes)
       }
     }

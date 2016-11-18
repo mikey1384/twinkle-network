@@ -104,7 +104,7 @@ export default class MessagesContainer extends Component {
                 }}
               >
                 <Button
-                  className="btn btn-info"
+                  className="btn btn-success"
                   style={{width: '20%'}}
                   onClick={this.onLoadMoreButtonClick}
                 >Load More</Button>

@@ -11,15 +11,7 @@ import TargetContent from './TargetContent';
 
 
 export default class FeedPanel extends Component {
-  constructor() {
-    super()
-    this.state = {
-      inputBoxShown: false,
-      replyLeft: false
-    }
-  }
   render() {
-    const {inputBoxShown, replyLeft} = this.state;
     const {feed, userId} = this.props;
     return (
       <div

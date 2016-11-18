@@ -179,7 +179,7 @@ export const loadMoreFeedComments = data => ({
   data
 })
 
-export const loadMoreFeedCommentsAsync = (type, contentId, commentLength) => dispatch =>
+export const loadMoreFeedCommentsAsync = (commentLength, type, contentId) => dispatch =>
 request.get(
   `${API_URL}/comments?type=${type}&contentId=${contentId}&commentLength=${commentLength}`
 ).then(
@@ -238,10 +238,10 @@ export const uploadFeedVideoReply = data => ({
   data
 })
 
-export const uploadFeedVideoCommentAsync = (parent, commentContent) => dispatch => {
+export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
   const commentType = parent.type === 'comment' ? 'replies' : 'comments';
   const params = parent.type === 'comment' ?
-  {reply: commentContent, videoId: parent.parentContentId, commentId: parent.commentId || parent.id, replyId: parent.commentId ? parent.id : null} : {comment: commentContent, videoId: parent.id};
+  {reply: comment, videoId: parent.parentContentId, commentId: parent.commentId || parent.id, replyId: parent.commentId ? parent.id : null} : {comment, videoId: parent.id};
 
   request.post(`${URL}/video/${commentType}`, params, auth())
   .then(
@@ -258,10 +258,9 @@ export const uploadFeedVideoCommentAsync = (parent, commentContent) => dispatch 
   )
 }
 
-export const uploadFeedVideoReplyAsync = (parent, comment, replyContent) =>
+export const uploadFeedVideoReplyAsync = (replyContent, comment, parent) =>
 dispatch => {
   const params = {reply: replyContent, videoId: parent.parentContentId, commentId: comment.commentId || comment.id, replyId: comment.commentId ? comment.id : null}
-
   request.post(`${URL}/video/replies`, params, auth())
   .then(
     response => {

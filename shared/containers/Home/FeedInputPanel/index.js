@@ -9,7 +9,10 @@ import {
   clearCategoriesSearchResults,
   uploadContentAsync
 } from 'redux/actions/FeedActions';
-import {isValidYoutubeUrl} from 'helpers/stringHelpers';
+import {
+  isValidYoutubeUrl,
+  stringIsEmpty
+} from 'helpers/stringHelpers';
 
 const renderInput = (
   {input, type, className, placeholder, checked, checkIfYouTubeVideo, toggleCheck, meta: {touched, error}}
@@ -244,7 +247,7 @@ function validate (values) {
   const {url, title, isVideo} = values;
   const errors = {};
 
-  if ((title && containsOnlySpaces(title)) || !title) {
+  if ((title && stringIsEmpty(title)) || !title) {
     errors.title = 'Enter title';
   }
   if (!url) {
@@ -261,10 +264,6 @@ function validate (values) {
   }
 
   return errors;
-}
-
-function containsOnlySpaces(string) {
-  return string.replace(/\s/g, "").replace(/\r?\n/g, "") === "";
 }
 
 function isValidUrl(url) {

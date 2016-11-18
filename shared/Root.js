@@ -5,10 +5,10 @@ import App from 'containers/App';
 import Notifications from 'containers/Notifications';
 import Profile from 'containers/Profile';
 import Home from 'containers/Home';
-import Discussion from 'containers/Discussion';
-import Contents from 'containers/Contents';
-import ContentsMain from 'containers/Contents/Main';
-import VideoPage from 'containers/Contents/VideoPage';
+import Links from 'containers/Links';
+import Videos from 'containers/Videos';
+import VideosMain from 'containers/Videos/Main';
+import VideoPage from 'containers/Videos/VideoPage';
 import Management from 'containers/Management';
 import AdminOnly from 'components/HigherOrder/AdminOnly';
 import NotFound from 'components/NotFound';
@@ -57,17 +57,17 @@ export const routes = (
     onEnter={onAppEnter}
   >
     <IndexRoute component={Home}/>
-    <Route path="/videos" component={Contents}>
-      <IndexRoute component={ContentsMain} />
+    <Route path="/videos" component={Videos}>
+      <IndexRoute component={VideosMain} />
       <Route
         path=":videoId"
         component={VideoPage}
         onEnter={onVideoPageEnter}
       />
     </Route>
+    <Route path="/links" component={Links} />
     <Route path="/notifications" component={Notifications}/>
     <Route path="/profile" component={Profile}/>
-    <Route path="/discussion" component={Discussion}/>
     <Route path="/management" component={AdminOnly(Management)}/>
 
     <Route path="*" component={NotFound} status={404} />

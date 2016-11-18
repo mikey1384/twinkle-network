@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
 import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from '../EditTextArea';
@@ -10,23 +9,7 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
-import {
-  feedVideoCommentDeleteAsync,
-  feedVideoCommentLikeAsync,
-  feedVideoCommentEditAsync,
-  uploadFeedVideoReplyAsync
-} from 'redux/actions/FeedActions';
 
-
-@connect(
-  null,
-  {
-    onDelete: feedVideoCommentDeleteAsync,
-    onLikeClick: feedVideoCommentLikeAsync,
-    onEditDone: feedVideoCommentEditAsync,
-    onReplySubmit: uploadFeedVideoReplyAsync
-  }
-)
 export default class FeedReply extends Component {
   constructor() {
     super()
@@ -42,7 +25,7 @@ export default class FeedReply extends Component {
   }
 
   render() {
-    const {parent, comment, reply, userId, userIsOwner} = this.props;
+    const {parent, comment, reply, userId, userIsOwner, type} = this.props;
     const {onEdit, userListModalShown, replyInputShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < reply.likes.length; i++) {
@@ -56,9 +39,8 @@ export default class FeedReply extends Component {
             icon="pencil"
             style={{
               position: 'absolute',
-              opacity: 0.8,
-              right: '0px',
-              marginRight: '3em'
+              right: '5.5%',
+              opacity: 0.7
             }}
             menuProps={[
               {
@@ -116,13 +98,15 @@ export default class FeedReply extends Component {
                       liked={userLikedThis}
                       small
                     />
-                    <Button
-                      style={{marginLeft: '0.5em'}}
-                      className="btn btn-warning btn-sm"
-                      onClick={() => this.setState({replyInputShown: true})}
-                    >
-                      <span className="glyphicon glyphicon-comment"></span> Reply
-                    </Button>
+                    {type !== 'comment' &&
+                      <Button
+                        style={{marginLeft: '0.5em'}}
+                        className="btn btn-warning btn-sm"
+                        onClick={() => this.setState({replyInputShown: true})}
+                      >
+                        <span className="glyphicon glyphicon-comment"></span> Reply
+                      </Button>
+                    }
                   </div>
                   <small>
                     <Likers
@@ -179,6 +163,6 @@ export default class FeedReply extends Component {
 
   onReplySubmit(replyContent) {
     const {parent, reply, onReplySubmit} = this.props;
-    onReplySubmit(parent, reply, replyContent);
+    onReplySubmit(replyContent, reply, parent);
   }
 }

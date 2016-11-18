@@ -34,7 +34,7 @@ export default function SelectVideosForm(props) {
       })}
       {loadMoreVideosButton &&
         <div className="text-center">
-          <Button className="btn btn-default" onClick={loadMoreVideos}>Load More</Button>
+          <Button className="btn btn-success" onClick={loadMoreVideos}>Load More</Button>
         </div>
       }
     </div>

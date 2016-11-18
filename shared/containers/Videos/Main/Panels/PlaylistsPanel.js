@@ -45,7 +45,7 @@ export default class PlaylistsPanel extends Component {
           }
           {loadMoreButton &&
             <div className="text-center">
-              <Button className="btn btn-default" onClick={this.loadMorePlaylists}>Load More</Button>
+              <Button className="btn btn-success" onClick={this.loadMorePlaylists}>Load More</Button>
             </div>
           }
         </div>

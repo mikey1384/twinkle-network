@@ -4,13 +4,24 @@ import LikeButton from 'components/LikeButton';
 import Button from 'components/Button';
 import Likers from 'components/Likers';
 import {connect} from 'react-redux';
-import {likeVideoAsync, likeVideoCommentAsync, showFeedCommentsAsync} from 'redux/actions/FeedActions';
+import {
+  likeVideoAsync,
+  likeVideoCommentAsync,
+  showFeedCommentsAsync,
+  loadMoreFeedCommentsAsync,
+  uploadFeedVideoCommentAsync,
+  feedVideoCommentDeleteAsync,
+  feedVideoCommentLikeAsync,
+  feedVideoCommentEditAsync,
+  uploadFeedVideoReplyAsync
+
+} from 'redux/actions/FeedActions';
 import {addVideoViewAsync} from 'redux/actions/VideoActions';
 import UserListModal from 'components/Modals/UserListModal';
 import YouTube from 'react-youtube';
 import {embedlyKey} from 'constants/keys';
 import Embedly from 'components/Embedly';
-import FeedComments from './FeedComments';
+import PanelComments from 'components/PanelComments';
 
 
 @connect(
@@ -19,7 +30,13 @@ import FeedComments from './FeedComments';
     addVideoView: addVideoViewAsync,
     onLikeCommentClick: likeVideoCommentAsync,
     onLikeVideoClick: likeVideoAsync,
-    showFeedComments: showFeedCommentsAsync
+    showFeedComments: showFeedCommentsAsync,
+    loadMoreComments: loadMoreFeedCommentsAsync,
+    onSubmit: uploadFeedVideoCommentAsync,
+    onDelete: feedVideoCommentDeleteAsync,
+    onLikeClick: feedVideoCommentLikeAsync,
+    onEditDone: feedVideoCommentEditAsync,
+    onReplySubmit: uploadFeedVideoReplyAsync
   }
 )
 export default class MainContent extends Component {
@@ -37,7 +54,8 @@ export default class MainContent extends Component {
     const {
       myId, content, contentLikers = [],
       contentId, type, title, videoViews, numChildComments, numChildReplies, replyId, commentId,
-      videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId
+      videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId,
+      loadMoreComments, onSubmit, onDelete, onLikeClick, onEditDone, onReplySubmit
     } = this.props;
     const {userListModalShown} = this.state;
     let userLikedThis = false;
@@ -110,9 +128,15 @@ export default class MainContent extends Component {
           onLinkClick={() => this.setState({userListModalShown: true})}
         />
         {type !== 'url' && commentsShown &&
-          <FeedComments
+          <PanelComments
             inputTypeLabel={type === 'video' ? 'comment' : 'reply'}
             comments={childComments}
+            loadMoreButton={commentsLoadMoreButton}
+            userId={myId}
+            loadMoreComments={loadMoreComments}
+            onSubmit={onSubmit}
+            contentId={contentId}
+            type={type}
             parent={{
               id: contentId,
               type,
@@ -120,8 +144,12 @@ export default class MainContent extends Component {
               commentId,
               replyId
             }}
-            loadMoreButton={commentsLoadMoreButton}
-            userId={myId}
+            commentActions={{
+              onDelete,
+              onLikeClick,
+              onEditDone,
+              onReplySubmit
+            }}
           />
         }
         {userListModalShown &&

@@ -1,5 +1,7 @@
+import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
 const defaultState = {
   feeds: null,
+  newFeeds: [],
   loadMoreButton: false,
   categorySearchResult: []
 };
@@ -79,31 +81,32 @@ export default function FeedReducer(state = defaultState, action) {
         }, [])
       }
     case 'FEED_VIDEO_COMMENT_EDIT':
+      let editedComment = processedStringWithURL(action.data.editedComment);
       return {
         ...state,
         feeds: state.feeds.map(feed => {
           if (feed.type === 'comment') {
             if (feed.contentId === action.data.commentId) {
-              feed.content = action.data.editedComment
+              feed.content = editedComment
             }
             if (feed.commentId === action.data.commentId) {
-              feed.targetComment = action.data.editedComment
+              feed.targetComment = editedComment
             }
             if (feed.replyId === action.data.commentId) {
-              feed.targetReply = action.data.editedComment
+              feed.targetReply = editedComment
             }
           }
           return {
             ...feed,
             childComments: feed.childComments.map(childComment => {
               if (childComment.id === action.data.commentId) {
-                childComment.content = action.data.editedComment
+                childComment.content = editedComment
               }
               return {
                 ...childComment,
                 replies: childComment.replies.map(reply => {
                   if (reply.id === action.data.commentId) {
-                    reply.content = action.data.editedComment
+                    reply.content = editedComment
                   }
                   return reply;
                 })
@@ -213,9 +216,11 @@ export default function FeedReducer(state = defaultState, action) {
             feed.childComments = action.data.comments;
           }
           return feed;
-        })
+        }),
+        newFeeds: state.newFeeds.concat([action.data.comments[0]])
       }
     case 'UPLOAD_FEED_VIDEO_REPLY':
+      let {reply} = action.data;
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -229,7 +234,6 @@ export default function FeedReducer(state = defaultState, action) {
             ...feed,
             childComments: feed.childComments.map(childComment => {
               let {replies} = childComment;
-              let {reply} = action.data;
               if (childComment.id === action.data.contentId) {
                 replies = replies.concat([reply])
               } else if (feed.type === 'video' && childComment.id === action.data.commentId) {
@@ -243,7 +247,8 @@ export default function FeedReducer(state = defaultState, action) {
               };
             })
           };
-        })
+        }),
+        newFeeds: state.newFeeds.concat([reply])
       }
     default:
       return state;
