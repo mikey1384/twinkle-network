@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import UserLink from '../UserLink';
 import LikeButton from 'components/LikeButton';
 import Button from 'components/Button';
@@ -43,7 +44,8 @@ export default class MainContent extends Component {
   constructor() {
     super()
     this.state = {
-      userListModalShown: false
+      userListModalShown: false,
+      clickListenerState: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onVideoPlay = this.onVideoPlay.bind(this)
@@ -57,7 +59,7 @@ export default class MainContent extends Component {
       videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId,
       loadMoreComments, onSubmit, onDelete, onLikeClick, onEditDone, onReplySubmit
     } = this.props;
-    const {userListModalShown} = this.state;
+    const {userListModalShown, clickListenerState} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId == myId) userLikedThis = true;
@@ -129,6 +131,7 @@ export default class MainContent extends Component {
         />
         {type !== 'url' && commentsShown &&
           <PanelComments
+            clickListenerState={clickListenerState}
             inputTypeLabel={type === 'video' ? 'comment' : 'reply'}
             comments={childComments}
             loadMoreButton={commentsLoadMoreButton}
@@ -167,11 +170,13 @@ export default class MainContent extends Component {
 
   onCommentButtonClick() {
     const {type, contentId, commentId, commentsShown, showFeedComments, childComments} = this.props;
+    const {clickListenerState} = this.state;
     const isReply = !!commentId;
     if (!commentsShown) {
       const commentLength = childComments.length;
-      showFeedComments(type, contentId, commentLength, isReply);
+      return showFeedComments(type, contentId, commentLength, isReply);
     }
+    this.setState({clickListenerState: !clickListenerState})
   }
 
   onLikeClick() {

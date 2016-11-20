@@ -19,15 +19,17 @@ export default class Comment extends Component {
     this.state = {
       replyInputShown: false,
       onEdit: false,
-      userListModalShown: false
+      userListModalShown: false,
+      clickListenerState: false
     }
+    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
     this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
   }
 
   render() {
-    const {replyInputShown, onEdit, userListModalShown} = this.state;
+    const {replyInputShown, onEdit, userListModalShown, clickListenerState} = this.state;
     const {comment, userId, commentId, videoId, onEditDone} = this.props;
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;
@@ -112,7 +114,7 @@ export default class Comment extends Component {
                   <Button
                     style={{marginLeft: '0.5em'}}
                     className="btn btn-warning btn-sm"
-                    onClick={() => this.setState({replyInputShown: true})}
+                    onClick={this.onReplyButtonClick}
                   >
                     <span className="glyphicon glyphicon-comment"></span> Reply
                   </Button>
@@ -145,6 +147,7 @@ export default class Comment extends Component {
             onDelete={replyId => this.props.onDelete(replyId)}
           />
           {replyInputShown && <ReplyInputArea
+              clickListenerState={clickListenerState}
               onSubmit={this.onReplySubmit}
             />
           }
@@ -172,6 +175,14 @@ export default class Comment extends Component {
   onLikeClick() {
     const {commentId} = this.props;
     this.props.onLikeClick(commentId);
+  }
+
+  onReplyButtonClick() {
+    const {replyInputShown, clickListenerState} = this.state;
+    if (!replyInputShown) {
+      return this.setState({replyInputShown: true})
+    }
+    this.setState({clickListenerState: !clickListenerState})
   }
 
   onReplySubmit(reply) {

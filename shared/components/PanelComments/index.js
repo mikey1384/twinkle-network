@@ -12,11 +12,12 @@ export default class PanelComments extends Component {
   }
 
   render() {
-    const {onSubmit, loadMoreButton, comments, inputTypeLabel, parent} = this.props;
+    const {onSubmit, loadMoreButton, comments, inputTypeLabel, parent, clickListenerState} = this.props;
     return (
       <div className="row" style={{paddingBottom: '0.5em'}}>
         <div className="container-fluid">
           <CommentInputArea
+            clickListenerState={clickListenerState}
             inputTypeLabel={inputTypeLabel}
             onSubmit={comment => onSubmit(comment, parent)}
           />

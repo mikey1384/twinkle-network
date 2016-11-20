@@ -19,8 +19,10 @@ export default class PanelComment extends Component {
     this.state = {
       replyInputShown: false,
       onEdit: false,
-      userListModalShown: false
+      userListModalShown: false,
+      clickListenerState: false
     }
+    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
     this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
@@ -28,7 +30,7 @@ export default class PanelComment extends Component {
   }
 
   render() {
-    const {replyInputShown, onEdit, userListModalShown} = this.state;
+    const {replyInputShown, onEdit, userListModalShown, clickListenerState} = this.state;
     const {
       comment, userId, parent, type, onEditDone, onLikeClick, onDelete, onReplySubmit
     } = this.props;
@@ -111,7 +113,7 @@ export default class PanelComment extends Component {
                   <Button
                     style={{marginLeft: '0.5em'}}
                     className="btn btn-warning btn-sm"
-                    onClick={() => this.setState({replyInputShown: true})}
+                    onClick={this.onReplyButtonClick}
                   >
                     <span className="glyphicon glyphicon-comment"></span> Reply
                   </Button>
@@ -145,6 +147,7 @@ export default class PanelComment extends Component {
             onReplySubmit={onReplySubmit}
           />
           {replyInputShown && <ReplyInputArea
+              clickListenerState={clickListenerState}
               onSubmit={this.onReplySubmit}
               numReplies={comment.replies.length}
             />
@@ -173,6 +176,12 @@ export default class PanelComment extends Component {
   onLikeClick() {
     const {comment} = this.props;
     this.props.onLikeClick(comment.id);
+  }
+
+  onReplyButtonClick() {
+    const {clickListenerState, replyInputShown} = this.state;
+    if (!replyInputShown) return this.setState({replyInputShown: true});
+    this.setState({clickListenerState: !clickListenerState})
   }
 
   onReplySubmit(replyContent) {

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import PanelReply from './PanelReply';
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
 export default class PanelReplies extends Component {
   componentDidUpdate(prevProps) {
@@ -10,7 +11,7 @@ export default class PanelReplies extends Component {
     const newlyAdded = lastReply ? lastReply.newlyAdded : false;
     const replyToReply = lastReply ? !!lastReply.targetUserId : false;
     if (length !== prevProps.replies.length && newlyAdded && replyToReply) {
-      window.scrollTo(0, ReactDOM.findDOMNode(this.refs[lastReply.id]).offsetTop - window.innerHeight/2);
+      scrollElementToCenter(this.refs[lastReply.id])
     }
   }
 

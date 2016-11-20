@@ -1,7 +1,9 @@
 import React, {PropTypes, Component} from 'react';
+import ReactDOM from 'react-dom';
 import Button from 'components/Button';
 import Textarea from 'react-textarea-autosize';
 import {stringIsEmpty} from 'helpers/stringHelpers';
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
 export default class InputArea extends Component {
   constructor() {
@@ -12,6 +14,13 @@ export default class InputArea extends Component {
     this.onSubmit = this.onSubmit.bind(this)
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.clickListenerState !== this.props.clickListenerState) {
+      ReactDOM.findDOMNode(this.InputArea).focus();
+      scrollElementToCenter(this.InputArea);
+    }
+  }
+
   render() {
     const {text} = this.state;
     const {placeholder, rows, autoFocus} = this.props;
@@ -20,6 +29,7 @@ export default class InputArea extends Component {
         <div className="row form-group">
           <Textarea
             autoFocus={autoFocus}
+            ref={ref => this.InputArea = ref}
             className="form-control"
             rows={rows}
             value={text}
