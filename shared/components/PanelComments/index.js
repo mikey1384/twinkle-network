@@ -4,17 +4,31 @@ import PanelComment from './PanelComment';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Button from 'components/Button';
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
 export default class PanelComments extends Component {
   constructor() {
     super()
+    this.state = {
+      lastDeletedCommentIndex: null,
+      deleteListenerToggle: false
+    }
     this.loadMoreComments = this.loadMoreComments.bind(this)
+    this.deleteCallback = this.deleteCallback.bind(this)
+  }
+
+  componentDidUpdate(prevProps) {
+    const {deleteListenerToggle} = this.state;
+    if (prevProps.comments.length > this.props.comments.length) {
+      if (this.props.comments.length === 0) return scrollElementToCenter(this.PanelComments)
+      this.setState({deleteListenerToggle: !deleteListenerToggle})
+    }
   }
 
   render() {
     const {onSubmit, loadMoreButton, comments, inputTypeLabel, parent, clickListenerState} = this.props;
     return (
-      <div className="row" style={{paddingBottom: '0.5em'}}>
+      <div className="row" style={{paddingBottom: '0.5em'}} ref={ref => {this.PanelComments = ref}}>
         <div className="container-fluid">
           <CommentInputArea
             clickListenerState={clickListenerState}
@@ -38,25 +52,35 @@ export default class PanelComments extends Component {
     )
   }
 
-  loadMoreComments() {
-    const {comments, parent, loadMoreComments} = this.props;
-    loadMoreComments(comments.length, parent.type, parent.id);
-  }
-
   renderComments() {
     const {comments, userId, parent, contentId, commentActions, type} = this.props;
+    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
     return comments.map((comment, index) => {
       return (
         <PanelComment
           {...commentActions}
+          index={index}
           type={type}
           parent={parent}
           comment={comment}
           marginTop={index !== 0}
           key={comment.id}
           userId={userId}
+          deleteCallback={this.deleteCallback}
+          lastDeletedCommentIndex={lastDeletedCommentIndex}
+          deleteListenerToggle={deleteListenerToggle}
         />
       )
     })
+  }
+
+  deleteCallback(index) {
+    this.setState({lastDeletedCommentIndex: index});
+  }
+
+  loadMoreComments() {
+    const {comments, parent, loadMoreComments} = this.props;
+    const lastCommentId = comments[comments.length - 1].id;
+    loadMoreComments(lastCommentId, parent.type, parent.id);
   }
 }

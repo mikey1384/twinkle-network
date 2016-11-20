@@ -9,8 +9,9 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
-export default class FeedReply extends Component {
+export default class PanelReply extends Component {
   constructor() {
     super()
     this.state={
@@ -24,6 +25,14 @@ export default class FeedReply extends Component {
     this.onReplySubmit = this.onReplySubmit.bind(this)
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
+      if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
+        scrollElementToCenter(this.PanelReply);
+      }
+    }
+  }
+
   render() {
     const {parent, comment, reply, userId, userIsOwner, type} = this.props;
     const {onEdit, userListModalShown, replyInputShown} = this.state;
@@ -32,7 +41,7 @@ export default class FeedReply extends Component {
       if (reply.likes[i].userId == userId) userLikedThis = true;
     }
     return (
-      <div className="media">
+      <div className="media" ref={ref => {this.PanelReply = ref}}>
         {userIsOwner && !onEdit &&
           <SmallDropdownButton
             shape="button"
@@ -158,7 +167,9 @@ export default class FeedReply extends Component {
 
   onDelete() {
     const replyId = this.props.reply.id;
-    this.props.onDelete(replyId);
+    const {deleteCallback, onDelete, index} = this.props;
+    deleteCallback(index);
+    onDelete(replyId);
   }
 
   onReplySubmit(replyContent) {

@@ -12,6 +12,7 @@ import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
 export default class PanelComment extends Component {
   constructor() {
@@ -29,6 +30,14 @@ export default class PanelComment extends Component {
     this.onDelete = this.onDelete.bind(this)
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
+      if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
+        scrollElementToCenter(this.PanelComment);
+      }
+    }
+  }
+
   render() {
     const {replyInputShown, onEdit, userListModalShown, clickListenerState} = this.state;
     const {
@@ -44,6 +53,7 @@ export default class PanelComment extends Component {
       <li
         className="media"
         style={{marginTop: this.props.marginTop && '1em'}}
+        ref={ref => {this.PanelComment = ref}}
       >
         {userIsOwner && !onEdit &&
           <div className="row">
@@ -190,7 +200,8 @@ export default class PanelComment extends Component {
   }
 
   onDelete() {
-    const {comment} = this.props;
-    this.props.onDelete(comment.id);
+    const {comment, onDelete, index, deleteCallback} = this.props;
+    deleteCallback(index);
+    onDelete(comment.id);
   }
 }

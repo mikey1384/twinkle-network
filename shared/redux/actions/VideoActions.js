@@ -234,15 +234,13 @@ request.post(`${API_URL}/replies/like`, {replyId, commentId}, auth())
   }
 )
 
-export const loadMoreComments = data => ({
-  type: 'LOAD_MORE_COMMENTS',
-  data
-})
-
-export const loadMoreCommentsAsync = (videoId, commentLength) => dispatch =>
-request.get(`${API_URL}/comments?videoId=${videoId}&commentLength=${commentLength}`)
+export const loadMoreCommentsAsync = (videoId, lastCommentId) => dispatch =>
+request.get(`${API_URL}/comments?videoId=${videoId}&lastCommentId=${lastCommentId}`)
 .then(
-  response => dispatch(loadMoreComments(response.data))
+  response => dispatch({
+    type: 'LOAD_MORE_COMMENTS',
+    data: response.data
+  })
 ).catch(
   error => {
     console.error(error.response || error)
@@ -250,8 +248,8 @@ request.get(`${API_URL}/comments?videoId=${videoId}&commentLength=${commentLengt
   }
 )
 
-export const loadMoreDebateComments = (commentLength, debateId) => dispatch =>
-request.get(`${API_URL}/debates/comments?debateId=${debateId}&commentLength=${commentLength}`)
+export const loadMoreDebateComments = (lastCommentId, debateId) => dispatch =>
+request.get(`${API_URL}/debates/comments?debateId=${debateId}&lastCommentId=${lastCommentId}`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_VIDEO_DEBATE_COMMENTS',
@@ -265,8 +263,8 @@ request.get(`${API_URL}/debates/comments?debateId=${debateId}&commentLength=${co
   }
 )
 
-export const loadMoreDebates = (videoId, debateLength) => dispatch =>
-request.get(`${API_URL}/debates?videoId=${videoId}&debateLength=${debateLength}`)
+export const loadMoreDebates = (videoId, lastDebateId) => dispatch =>
+request.get(`${API_URL}/debates?videoId=${videoId}&lastDebateId=${lastDebateId}`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_VIDEO_DEBATES',

@@ -90,15 +90,13 @@ export const fetchFeedsAsync = () => dispatch => {
   )
 }
 
-export const fetchMoreFeeds = data => ({
-  type: 'FETCH_MORE_FEEDS',
-  data
-})
-
 export const fetchMoreFeedsAsync = feedLength => dispatch => {
   request.get(`${API_URL}?feedLength=${feedLength}`).then(
     response => {
-      dispatch(fetchMoreFeeds(response.data))
+      dispatch({
+        type: 'FETCH_MORE_FEEDS',
+        data: response.data
+      })
     }
   ).catch(
     error => {
@@ -174,16 +172,14 @@ request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
   }
 )
 
-export const loadMoreFeedComments = data => ({
-  type: 'LOAD_MORE_FEED_COMMENTS',
-  data
-})
-
-export const loadMoreFeedCommentsAsync = (commentLength, type, contentId) => dispatch =>
+export const loadMoreFeedCommentsAsync = (lastCommentId, type, contentId) => dispatch =>
 request.get(
-  `${API_URL}/comments?type=${type}&contentId=${contentId}&commentLength=${commentLength}`
+  `${API_URL}/comments?type=${type}&contentId=${contentId}&lastCommentId=${lastCommentId}`
 ).then(
-  response => dispatch(loadMoreFeedComments({type, contentId, childComments: response.data}))
+  response => dispatch({
+    type: 'LOAD_MORE_FEED_COMMENTS',
+    data: {type, contentId, childComments: response.data}
+  })
 ).catch(
   error => {
     console.error(error.response || error)

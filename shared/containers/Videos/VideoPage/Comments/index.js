@@ -44,7 +44,7 @@ export default class Comments extends Component {
                 <div className="text-center" style={{paddingTop: '2em'}}>
                   <Button
                     className="btn btn-success"
-                    onClick={() => loadMoreComments(videoId, comments.length)}
+                    onClick={() => loadMoreComments(videoId, comments[comments.length - 1].id)}
                   >
                     Load More
                   </Button>

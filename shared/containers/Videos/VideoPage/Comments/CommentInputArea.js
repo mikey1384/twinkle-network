@@ -88,7 +88,7 @@ export default class CommentInputArea extends Component {
                     <div className="text-center" style={{paddingTop: '0.5em'}}>
                       <Button
                         className="btn btn-success"
-                        onClick={() => loadMoreDebates(videoId, debates.length)}
+                        onClick={() => loadMoreDebates(videoId, debates[debates.length - 1].id)}
                       >
                         Load More
                       </Button>

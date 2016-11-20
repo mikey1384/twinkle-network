@@ -254,15 +254,16 @@ router.get('/loadPage', (req, res) => {
 })
 
 router.get('/comments', (req, res) => {
-  const videoId = Number(req.query.videoId);
-  const commentLength = Number(req.query.commentLength) || 0;
-  const limit = commentLength === 0 ? '21' : commentLength + ', 21';
+  const {videoId, lastCommentId} = req.query;
+  const limit = 21;
+  const where = !!lastCommentId ? 'AND a.id < ' + lastCommentId + ' ' : ''
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
     'c.title AS debateTopic ',
     'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
     'LEFT JOIN debateTopics c ON a.debateId = c.id ',
-    'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC LIMIT ' + limit
+    'WHERE videoId = ? AND commentId IS NULL ', where,
+    'ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
   pool.query(query, videoId, (err, rows) => {
     if (err) {
@@ -417,14 +418,14 @@ router.post('/comments/like', requireAuth, (req, res) => {
 })
 
 router.get('/debates', (req, res) => {
-  const videoId = Number(req.query.videoId);
-  const debateLength = Number(req.query.debateLength) || 0;
-  const limit = debateLength === 0 ? '4' : debateLength + ', 4';
+  const {videoId, lastDebateId} = req.query;
+  const limit = 4;
+  const where = !!lastDebateId ? 'AND a.id < ' + lastDebateId + ' ' : '';
   const query = [
     'SELECT a.id, a.userId, a.title, a.description, a.timeStamp, b.username, ',
     '(SELECT COUNT(*) FROM vq_comments WHERE debateId = a.id) AS numComments ',
     'FROM debateTopics a LEFT JOIN users b ON a.userId = b.id ',
-    'WHERE a.refContentType = \'video\' AND a.refContentId = ? ',
+    'WHERE a.refContentType = \'video\' AND a.refContentId = ? ', where,
     'ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
   pool.query(query, videoId, (err, rows) => {
@@ -440,13 +441,14 @@ router.get('/debates', (req, res) => {
 })
 
 router.get('/debates/comments', (req, res) => {
-  const {debateId, commentLength} = req.query;
-  const numberedLength = Number(commentLength) || 0;
-  const limit = numberedLength === 0 ? '4' : numberedLength + ', 4';
+  const {debateId, lastCommentId} = req.query;
+  const limit = 4;
+  const where = !!lastCommentId ? 'AND a.id < ' + lastCommentId + ' ' : ''
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
     'vq_comments a LEFT JOIN users b ON a.userId = b.id WHERE ',
-    'a.debateId = ? AND a.commentId IS NULL ORDER BY a.id DESC LIMIT ' + limit
+    'a.debateId = ? AND a.commentId IS NULL ', where,
+    'ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
   pool.query(query, debateId, (err, rows) => {
     if (err) {
