@@ -9,7 +9,7 @@ import CreateNewChannelModal from './Modals/CreateNewChannel';
 import InviteUsersModal from './Modals/InviteUsers';
 import EditTitleModal from './Modals/EditTitle';
 import UserListModal from 'components/Modals/UserListModal';
-import {cleanStringWithURL} from 'helpers/stringHelpers';
+import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import Button from 'components/Button';
 import ChatSearchBox from './ChatSearchBox';
@@ -287,7 +287,7 @@ export default class Chat extends Component {
                 }}
                 onMouseOver={this.onMouseOverTitle}
                 onMouseLeave={() => this.setState({onTitleHover: false})}
-              >{`${channelName(channels, currentChannel) || '(Deleted)'}`}</h4>
+              >{!!channelName(channels, currentChannel) ? cleanString(channelName(channels, currentChannel)) : '(Deleted)'}</h4>
               <div
                 className="alert alert-info"
                 style={{
@@ -299,7 +299,7 @@ export default class Chat extends Component {
                   width: 'auto',
                   maxWidth: '600px'
                 }}
-              >{`${channelName(channels, currentChannel)}`}</div>
+              >{`${cleanString(channelName(channels, currentChannel))}`}</div>
               {currentChannel.id !== 0 ?
                 <small>
                   <a
@@ -405,7 +405,7 @@ export default class Chat extends Component {
                 lineHeight: 'normal'
               }}
             >
-              {`${channelName || '(Deleted)'}`}
+              {channelName ? cleanString(channelName) : '(Deleted)'}
             </h4>
             <span>
               <span
