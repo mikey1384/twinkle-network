@@ -295,7 +295,8 @@ export default function VideoReducer(state = defaultState, action) {
             }
             return debate;
           }),
-          comments: [action.data].concat(state.videoPage.comments)
+          comments: [action.data].concat(state.videoPage.comments),
+          noComments: false
         }
       }
     case 'UPLOAD_VIDEO_REPLY':

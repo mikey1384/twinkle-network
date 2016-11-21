@@ -11,6 +11,7 @@ import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
 
 export default class Comment extends Component {
@@ -28,9 +29,17 @@ export default class Comment extends Component {
     this.onLikeClick = this.onLikeClick.bind(this)
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
+      if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
+        scrollElementToCenter(this.Comment);
+      }
+    }
+  }
+
   render() {
     const {replyInputShown, onEdit, userListModalShown, clickListenerState} = this.state;
-    const {comment, userId, commentId, videoId, onEditDone} = this.props;
+    const {comment, userId, commentId, videoId, onEditDone, onDelete, deleteCallback, index} = this.props;
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;
     for (let i = 0; i < comment.likes.length; i++) {
@@ -40,6 +49,7 @@ export default class Comment extends Component {
       <li
         className="media"
         style={{marginTop: this.props.marginTop && '2em'}}
+        ref={ref => {this.Comment = ref}}
       >
         {userIsOwner && !onEdit &&
           <SmallDropdownButton
@@ -57,7 +67,10 @@ export default class Comment extends Component {
               },
               {
                 label: "Remove",
-                onClick: () => this.props.onDelete(commentId)
+                onClick: () => {
+                  deleteCallback(index);
+                  onDelete(commentId)
+                }
               }
             ]}
           />

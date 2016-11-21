@@ -50,7 +50,13 @@ export default class Dropdown extends Component {
               key={index}
               onClick={() => this.props.onItemClick(item)}
             >
-              <a style={style}>
+              <a style={{
+                ...style,
+                whiteSpace: 'nowrap',
+                textOverflow:'ellipsis',
+                overflow:'hidden',
+                lineHeight: 'normal'
+              }}>
                 {this.props.renderItemLabel(item)}
               </a>
             </li>

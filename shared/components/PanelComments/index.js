@@ -11,16 +11,17 @@ export default class PanelComments extends Component {
     super()
     this.state = {
       lastDeletedCommentIndex: null,
-      deleteListenerToggle: false
+      deleteListenerToggle: false,
+      deletedLastComment: false
     }
     this.loadMoreComments = this.loadMoreComments.bind(this)
     this.deleteCallback = this.deleteCallback.bind(this)
   }
 
   componentDidUpdate(prevProps) {
-    const {deleteListenerToggle} = this.state;
+    const {deleteListenerToggle, deletedLastComment} = this.state;
     if (prevProps.comments.length > this.props.comments.length) {
-      if (this.props.comments.length === 0) return scrollElementToCenter(this.PanelComments)
+      if (deletedLastComment) return scrollElementToCenter(this.PanelComments)
       this.setState({deleteListenerToggle: !deleteListenerToggle})
     }
   }
@@ -63,6 +64,7 @@ export default class PanelComments extends Component {
           type={type}
           parent={parent}
           comment={comment}
+          isLastComment={comments.length === 1}
           marginTop={index !== 0}
           key={comment.id}
           userId={userId}
@@ -74,8 +76,11 @@ export default class PanelComments extends Component {
     })
   }
 
-  deleteCallback(index) {
-    this.setState({lastDeletedCommentIndex: index});
+  deleteCallback(index, isLastComment) {
+    this.setState({
+      lastDeletedCommentIndex: index,
+      deletedLastComment: isLastComment
+    });
   }
 
   loadMoreComments() {

@@ -200,8 +200,8 @@ export default class PanelComment extends Component {
   }
 
   onDelete() {
-    const {comment, onDelete, index, deleteCallback} = this.props;
-    deleteCallback(index);
+    const {comment, onDelete, index, deleteCallback, isLastComment} = this.props;
+    deleteCallback(index, isLastComment);
     onDelete(comment.id);
   }
 }

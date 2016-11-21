@@ -473,7 +473,7 @@ router.post('/debates', requireAuth, (req, res) => {
   const {user} = req;
   const query = 'INSERT INTO debateTopics SET ?';
   const post = {
-    title: processedString(title),
+    title: processedTitleString(title),
     description: !!description && description !== '' ? processedString(description) : null,
     userId: user.id,
     refContentType: 'video',
@@ -500,7 +500,7 @@ router.post('/debates/comments', requireAuth, (req, res) => {
   const query = "INSERT INTO vq_comments SET ?";
   const post = {
     userId: user.id,
-    content: comment,
+    content: processedString(comment),
     timeStamp: Math.floor(Date.now()/1000),
     videoId,
     debateId

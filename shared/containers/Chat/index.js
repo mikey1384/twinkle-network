@@ -65,7 +65,8 @@ export default class Chat extends Component {
       inviteUsersModalShown: false,
       userListModalShown: false,
       editTitleModalShown: false,
-      myChannels: []
+      myChannels: [],
+      onTitleHover: false
     }
 
     this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
@@ -78,6 +79,7 @@ export default class Chat extends Component {
     this.onEditTitleDone = this.onEditTitleDone.bind(this)
     this.onHideChat = this.onHideChat.bind(this)
     this.onLeaveChannel = this.onLeaveChannel.bind(this)
+    this.onMouseOverTitle = this.onMouseOverTitle.bind(this)
 
     const {socket, notifyThatMemberLeftChannel} = props;
     socket.on('receive_message', this.onReceiveMessage)
@@ -200,7 +202,8 @@ export default class Chat extends Component {
       userListModalShown,
       editTitleModalShown,
       myChannels,
-      searchText
+      searchText,
+      onTitleHover
     } = this.state;
 
     let menuProps = (currentChannel.twoPeople) ?
@@ -272,15 +275,31 @@ export default class Chat extends Component {
           >
             <div className="text-center col-xs-8 col-xs-offset-2">
               <h4
+                ref={ref => {this.channelTitle = ref}}
                 style={{
                   whiteSpace: 'nowrap',
                   textOverflow:'ellipsis',
                   overflow:'hidden',
                   lineHeight: 'normal',
                   marginBottom: '0px',
+                  cursor: 'default',
                   color: !channelName(channels, currentChannel) && '#7c7c7c'
                 }}
+                onMouseOver={this.onMouseOverTitle}
+                onMouseLeave={() => this.setState({onTitleHover: false})}
               >{`${channelName(channels, currentChannel) || '(Deleted)'}`}</h4>
+              <div
+                className="alert alert-info"
+                style={{
+                  position: 'absolute',
+                  marginTop: '0.3em',
+                  zIndex: '10',
+                  padding: '5px',
+                  display: onTitleHover ? 'block' : 'none',
+                  width: 'auto',
+                  maxWidth: '600px'
+                }}
+              >{`${channelName(channels, currentChannel)}`}</div>
               {currentChannel.id !== 0 ?
                 <small>
                   <a
@@ -374,34 +393,42 @@ export default class Chat extends Component {
           onClick={() => this.onChannelEnter(id)}
           key={id}
         >
-          <div className="media-body">
+          <div>
             <h4
-              className="media-heading"
-              style={{color: !channelName && '#7c7c7c'}}
-            >{`${channelName || '(Deleted)'}`}&nbsp;
-              {id !== currentChannel.id && numUnreads > 0 &&
-                <span className="badge" style={{backgroundColor: 'red'}}>{numUnreads}</span>
-              }
-            </h4>
-            <small
               style={{
+                color: !channelName && '#7c7c7c',
+                marginTop: '0px',
+                marginBottom: '0.2em',
                 whiteSpace: 'nowrap',
                 textOverflow:'ellipsis',
                 overflow:'hidden',
-                width: '25em',
-                display: 'block'
+                lineHeight: 'normal'
               }}
             >
-              <span style={{
-                overflow:'hidden',
-                lineHeight: 'normal',
-                whiteSpace: 'nowrap'
-              }}>
+              {`${channelName || '(Deleted)'}`}
+            </h4>
+            <span>
+              <span
+                className="pull-left"
+                style={{
+                  whiteSpace: 'nowrap',
+                  textOverflow:'ellipsis',
+                  overflow:'hidden',
+                  width: '85%',
+                  maxWidth: '20em',
+                  display: 'block'
+                }}
+              >
+                <span>
                 {lastMessageSender && lastMessage ?
                   `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : '\u00a0'
                 }
+                </span>
               </span>
-            </small>
+              {id !== currentChannel.id && numUnreads > 0 &&
+                <span className="pull-right">&nbsp;<span className="badge" style={{backgroundColor: 'red'}}>{numUnreads}</span></span>
+              }
+            </span>
           </div>
         </div>
       )
@@ -553,5 +580,15 @@ export default class Chat extends Component {
     const {leaveChannel, currentChannel, userId, username, socket} = this.props;
     leaveChannel(currentChannel.id);
     socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username});
+  }
+
+  onMouseOverTitle() {
+    if (textIsOverflown(ReactDOM.findDOMNode(this.channelTitle))) {
+      this.setState({onTitleHover: true})
+    }
+
+    function textIsOverflown(element) {
+      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+    }
   }
 }

@@ -9,7 +9,7 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
-
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
 export default class Reply extends Component {
   constructor() {
@@ -22,6 +22,14 @@ export default class Reply extends Component {
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
+      if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
+        scrollElementToCenter(this.PanelReply);
+      }
+    }
   }
 
   render() {

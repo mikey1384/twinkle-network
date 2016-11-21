@@ -13,6 +13,7 @@ import {
   uploadVideoReplyAsync,
   loadMoreCommentsAsync
 } from 'redux/actions/VideoActions';
+import {scrollElementToCenter} from 'helpers/domHelpers';
 
 @connect(
   state => ({
@@ -29,6 +30,23 @@ import {
   }
 )
 export default class Comments extends Component {
+  constructor() {
+    super()
+    this.state = {
+      lastDeletedCommentIndex: null,
+      deleteListenerToggle: false
+    }
+    this.deleteCallback = this.deleteCallback.bind(this)
+  }
+
+  componentDidUpdate(prevProps) {
+    const {deleteListenerToggle} = this.state;
+    if (prevProps.comments.length > this.props.comments.length) {
+      if (this.props.comments.length === 0) return;
+      this.setState({deleteListenerToggle: !deleteListenerToggle})
+    }
+  }
+
   render() {
     const {
       loadMoreCommentsButton, loadMoreDebatesButton, loadMoreComments, videoId, comments, debates
@@ -38,7 +56,7 @@ export default class Comments extends Component {
         <div className="container-fluid">
           <CommentInputArea videoId={videoId} debates={debates} loadMoreDebatesButton={loadMoreDebatesButton} />
           <div className="container-fluid">
-            <ul className="media-list">
+            <ul className="media-list" ref={ref => {this.Comments = ref}}>
               {this.renderComments()}
               {loadMoreCommentsButton &&
                 <div className="text-center" style={{paddingTop: '2em'}}>
@@ -59,6 +77,7 @@ export default class Comments extends Component {
 
   renderComments() {
     const {comments, noComments} = this.props;
+    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
     if (noComments) {
       return <li className="text-center">There are no comments, yet.</li>
     }
@@ -69,6 +88,7 @@ export default class Comments extends Component {
       return (
         <Comment
           {...this.props}
+          index={index}
           comment={comment}
           onEditDone={this.props.onEditDone}
           onDelete={this.props.onDelete}
@@ -79,8 +99,15 @@ export default class Comments extends Component {
           marginTop={index !== 0}
           key={comment.id}
           commentId={comment.id}
+          deleteCallback={this.deleteCallback}
+          lastDeletedCommentIndex={lastDeletedCommentIndex}
+          deleteListenerToggle={deleteListenerToggle}
         />
       )
     })
+  }
+
+  deleteCallback(index) {
+    this.setState({lastDeletedCommentIndex: index});
   }
 }
