@@ -12,6 +12,7 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import {scrollElementToCenter} from 'helpers/domHelpers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
 
 
 export default class Comment extends Component {
@@ -21,10 +22,12 @@ export default class Comment extends Component {
       replyInputShown: false,
       onEdit: false,
       userListModalShown: false,
-      clickListenerState: false
+      clickListenerState: false,
+      confirmModalShown: false
     }
     this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
+    this.onDelete = this.onDelete.bind(this)
     this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
   }
@@ -38,7 +41,7 @@ export default class Comment extends Component {
   }
 
   render() {
-    const {replyInputShown, onEdit, userListModalShown, clickListenerState} = this.state;
+    const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state;
     const {comment, userId, commentId, videoId, onEditDone, onDelete, deleteCallback, index} = this.props;
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;
@@ -67,10 +70,7 @@ export default class Comment extends Component {
               },
               {
                 label: "Remove",
-                onClick: () => {
-                  deleteCallback(index);
-                  onDelete(commentId)
-                }
+                onClick: () => this.setState({confirmModalShown: true})
               }
             ]}
           />
@@ -156,7 +156,7 @@ export default class Comment extends Component {
             videoId={videoId}
             onEditDone={onEditDone}
             onReplySubmit={this.props.onReplySubmit}
-            onLikeClick={replyId => this.props.onReplyLike(replyId, this.props.commentId)}
+            onLikeClick={replyId => this.props.onLikeClick(replyId)}
             onDelete={replyId => this.props.onDelete(replyId)}
           />
           {replyInputShown && <ReplyInputArea
@@ -174,8 +174,21 @@ export default class Comment extends Component {
             description={user => user.userId === userId && '(You)'}
           />
         }
+        {confirmModalShown &&
+          <ConfirmModal
+            onHide={() => this.setState({confirmModalShown: false})}
+            title="Remove Comment"
+            onConfirm={this.onDelete}
+          />
+        }
       </li>
     )
+  }
+
+  onDelete() {
+    const {deleteCallback, onDelete, index, commentId} = this.props;
+    deleteCallback(index);
+    onDelete(commentId)
   }
 
   onEditDone(editedComment) {

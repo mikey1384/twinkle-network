@@ -12,16 +12,16 @@ export default class PanelComments extends Component {
     this.state = {
       lastDeletedCommentIndex: null,
       deleteListenerToggle: false,
-      deletedLastComment: false
+      deletedFirstComment: false
     }
     this.loadMoreComments = this.loadMoreComments.bind(this)
     this.deleteCallback = this.deleteCallback.bind(this)
   }
 
   componentDidUpdate(prevProps) {
-    const {deleteListenerToggle, deletedLastComment} = this.state;
+    const {deleteListenerToggle, deletedFirstComment} = this.state;
     if (prevProps.comments.length > this.props.comments.length) {
-      if (deletedLastComment) return scrollElementToCenter(this.PanelComments)
+      if (deletedFirstComment) return scrollElementToCenter(this.PanelComments)
       this.setState({deleteListenerToggle: !deleteListenerToggle})
     }
   }
@@ -48,6 +48,11 @@ export default class PanelComments extends Component {
               </ul>
             </div>
           }
+          {comments.length === 0 && loadMoreButton &&
+            <div className="text-center" style={{paddingTop: '1em'}}>
+              <Button className="btn btn-success" onClick={this.loadMoreComments}>Load More</Button>
+            </div>
+          }
         </div>
       </div>
     )
@@ -64,7 +69,7 @@ export default class PanelComments extends Component {
           type={type}
           parent={parent}
           comment={comment}
-          isLastComment={comments.length === 1}
+          isFirstComment={index === 0}
           marginTop={index !== 0}
           key={comment.id}
           userId={userId}
@@ -76,16 +81,16 @@ export default class PanelComments extends Component {
     })
   }
 
-  deleteCallback(index, isLastComment) {
+  deleteCallback(index, isFirstComment) {
     this.setState({
       lastDeletedCommentIndex: index,
-      deletedLastComment: isLastComment
+      deletedFirstComment: isFirstComment
     });
   }
 
   loadMoreComments() {
     const {comments, parent, loadMoreComments} = this.props;
-    const lastCommentId = comments[comments.length - 1].id;
+    const lastCommentId = comments[comments.length - 1] ? comments[comments.length - 1].id : 0;
     loadMoreComments(lastCommentId, parent.type, parent.id);
   }
 }

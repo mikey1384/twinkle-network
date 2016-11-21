@@ -23,7 +23,6 @@ import {scrollElementToCenter} from 'helpers/domHelpers';
     onEditDone: editVideoCommentAsync,
     onDelete: deleteVideoCommentAsync,
     onReplyEditDone: editVideoReplyAsync,
-    onReplyLike: likeVideoReplyAsync,
     onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoReplyAsync,
     loadMoreComments: loadMoreCommentsAsync
@@ -93,7 +92,6 @@ export default class Comments extends Component {
           onEditDone={this.props.onEditDone}
           onDelete={this.props.onDelete}
           onReplyEditDone={this.props.onReplyEditDone}
-          onReplyLike={this.props.onReplyLike}
           onLikeClick={this.props.onLikeClick}
           onReplySubmit={this.props.onReplySubmit}
           marginTop={index !== 0}

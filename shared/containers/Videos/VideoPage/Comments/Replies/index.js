@@ -8,7 +8,8 @@ export default class Replies extends Component {
     super()
     this.state = {
       lastDeletedCommentIndex: null,
-      deleteListenerToggle: false
+      deleteListenerToggle: false,
+      deletedFirstReply: false
     }
     this.deleteCallback = this.deleteCallback.bind(this)
   }
@@ -17,12 +18,17 @@ export default class Replies extends Component {
     const length = this.props.replies.length;
     const lastReply = this.props.replies[length - 1] || [];
     const newlyAdded = lastReply ? lastReply.newlyAdded : false;
+    const addedFromPanel = lastReply.addedFromPanel;
     const replyToReply = lastReply ? !!lastReply.targetUserId : false;
-    if (length !== prevProps.replies.length && newlyAdded && replyToReply) {
+    const {deleteListenerToggle, deletedFirstReply} = this.state;
+    if (length > prevProps.replies.length && newlyAdded && replyToReply && !addedFromPanel) {
       scrollElementToCenter(this.refs[lastReply.id])
     }
     if (length < prevProps.replies.length) {
-      if (length === 0) return scrollElementToCenter(this.Replies)
+      if (length === 0) {
+        if (deletedFirstReply) return scrollElementToCenter(this.Replies);
+        return;
+      }
       this.setState({deleteListenerToggle: !deleteListenerToggle})
     }
   }
@@ -56,6 +62,7 @@ export default class Replies extends Component {
               deleteCallback={this.deleteCallback}
               lastDeletedCommentIndex={lastDeletedCommentIndex}
               deleteListenerToggle={deleteListenerToggle}
+              isFirstReply={index === 0}
             />
           )
         })}
@@ -63,7 +70,10 @@ export default class Replies extends Component {
     )
   }
 
-  deleteCallback(index) {
-    this.setState({lastDeletedCommentIndex: index});
+  deleteCallback(index, isFirstReply) {
+    this.setState({
+      lastDeletedCommentIndex: index,
+      deletedFirstReply: isFirstReply
+    });
   }
 }

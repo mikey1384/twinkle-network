@@ -13,6 +13,8 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import {scrollElementToCenter} from 'helpers/domHelpers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+
 
 export default class PanelComment extends Component {
   constructor() {
@@ -21,7 +23,8 @@ export default class PanelComment extends Component {
       replyInputShown: false,
       onEdit: false,
       userListModalShown: false,
-      clickListenerState: false
+      clickListenerState: false,
+      confirmModalShown: false
     }
     this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
@@ -39,7 +42,7 @@ export default class PanelComment extends Component {
   }
 
   render() {
-    const {replyInputShown, onEdit, userListModalShown, clickListenerState} = this.state;
+    const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state;
     const {
       comment, userId, parent, type, onEditDone, onLikeClick, onDelete, onReplySubmit
     } = this.props;
@@ -72,7 +75,7 @@ export default class PanelComment extends Component {
                 },
                 {
                   label: "Remove",
-                  onClick: this.onDelete
+                  onClick: () => this.setState({confirmModalShown: true})
                 }
               ]}
             />
@@ -172,6 +175,13 @@ export default class PanelComment extends Component {
             description={user => user.userId === userId && '(You)'}
           />
         }
+        {confirmModalShown &&
+          <ConfirmModal
+            onHide={() => this.setState({confirmModalShown: false})}
+            title="Remove Comment"
+            onConfirm={this.onDelete}
+          />
+        }
       </li>
     )
   }
@@ -200,8 +210,8 @@ export default class PanelComment extends Component {
   }
 
   onDelete() {
-    const {comment, onDelete, index, deleteCallback, isLastComment} = this.props;
-    deleteCallback(index, isLastComment);
+    const {comment, onDelete, index, deleteCallback, isFirstComment} = this.props;
+    deleteCallback(index, isFirstComment);
     onDelete(comment.id);
   }
 }

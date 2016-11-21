@@ -256,7 +256,7 @@ router.get('/loadPage', (req, res) => {
 router.get('/comments', (req, res) => {
   const {videoId, lastCommentId} = req.query;
   const limit = 21;
-  const where = !!lastCommentId ? 'AND a.id < ' + lastCommentId + ' ' : ''
+  const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : ''
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
     'c.title AS debateTopic ',
@@ -443,7 +443,7 @@ router.get('/debates', (req, res) => {
 router.get('/debates/comments', (req, res) => {
   const {debateId, lastCommentId} = req.query;
   const limit = 4;
-  const where = !!lastCommentId ? 'AND a.id < ' + lastCommentId + ' ' : ''
+  const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : '';
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
     'vq_comments a LEFT JOIN users b ON a.userId = b.id WHERE ',
@@ -521,10 +521,8 @@ router.post('/debates/comments', requireAuth, (req, res) => {
 
 router.post('/replies', requireAuth, (req, res) => {
   const user = req.user;
-  const commentId = req.body.commentId;
-  const videoId = req.body.videoId;
   const replyId = req.body.replyId ? req.body.replyId : null;
-  const reply = req.body.reply;
+  const {addedFromPanel, reply, videoId, commentId} = req.body;
   const processedReply = processedString(reply);
   async.waterfall([
     callback => {
@@ -565,7 +563,8 @@ router.post('/replies', requireAuth, (req, res) => {
     res.send({
       result: Object.assign({}, rows[0], {
         newlyAdded: true,
-        likes: []
+        likes: [],
+        addedFromPanel
       })
     })
   })

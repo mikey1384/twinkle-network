@@ -155,7 +155,7 @@ router.get('/comments', (req, res) => {
   const {type, contentId, lastCommentId, isReply} = req.query;
   const limit = 4;
   let where = type === 'video' ? 'videoId = ? AND a.commentId IS NULL' : (isReply === 'true' ? 'replyId = ?' : 'commentId = ?');
-  if (!!lastCommentId) where += ' AND a.id < ' + lastCommentId;
+  if (!!lastCommentId && lastCommentId !== '0') where += ' AND a.id < ' + lastCommentId;
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
     'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',

@@ -20,7 +20,7 @@ export default class PanelReplies extends Component {
     const lastReply = this.props.replies[length - 1] || [];
     const newlyAdded = lastReply ? lastReply.newlyAdded : false;
     const replyToReply = lastReply ? !!lastReply.targetUserId : false;
-    if (length !== prevProps.replies.length && newlyAdded && replyToReply) {
+    if (length > prevProps.replies.length && newlyAdded && replyToReply) {
       scrollElementToCenter(this.refs[lastReply.id])
     }
     if (length < prevProps.replies.length) {

@@ -10,6 +10,9 @@ import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
 import {scrollElementToCenter} from 'helpers/domHelpers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+
+
 
 export default class PanelReply extends Component {
   constructor() {
@@ -17,7 +20,8 @@ export default class PanelReply extends Component {
     this.state={
       onEdit: false,
       replyInputShown: false,
-      userListModalShown: false
+      userListModalShown: false,
+      confirmModalShown: false
     }
     this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
@@ -35,7 +39,7 @@ export default class PanelReply extends Component {
 
   render() {
     const {parent, comment, reply, userId, userIsOwner, type} = this.props;
-    const {onEdit, userListModalShown, replyInputShown} = this.state;
+    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < reply.likes.length; i++) {
       if (reply.likes[i].userId == userId) userLikedThis = true;
@@ -58,7 +62,7 @@ export default class PanelReply extends Component {
               },
               {
                 label: "Remove",
-                onClick: this.onDelete
+                onClick: () => this.setState({confirmModalShown: true})
               }
             ]}
           />
@@ -147,6 +151,13 @@ export default class PanelReply extends Component {
             userId={userId}
             users={reply.likes}
             description={user => user.userId === userId && '(You)'}
+          />
+        }
+        {confirmModalShown &&
+          <ConfirmModal
+            onHide={() => this.setState({confirmModalShown: false})}
+            title="Remove Reply"
+            onConfirm={this.onDelete}
           />
         }
       </div>

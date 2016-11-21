@@ -308,21 +308,20 @@ export default function VideoReducer(state = defaultState, action) {
             return {
               ...debate,
               comments: debate.comments.map(comment => {
-                if (comment.id === action.data.commentId) {
-                  comment.replies = comment.replies.concat(action.data.reply)
-                }
-                return comment;
+                return {
+                  ...comment,
+                  replies: comment.id === action.data.commentId ?
+                    comment.replies.concat(action.data.reply) : comment.replies
+                };
               })
             }
           }),
           comments: state.videoPage.comments.map(comment => {
-            if (comment.id === action.data.commentId) {
-              return {
-                ...comment,
-                replies: comment.replies.concat(action.data.reply)
-              }
-            }
-            return comment;
+            return {
+              ...comment,
+              replies: comment.id === action.data.commentId ?
+                comment.replies.concat(action.data.reply) : comment.replies
+            };
           })
         }
       }
@@ -335,48 +334,30 @@ export default function VideoReducer(state = defaultState, action) {
             return {
               ...debate,
               comments: debate.comments.map(comment => {
-                if (comment.id === action.data.commentId) {
-                  return {
-                    ...comment,
-                    likes: action.data.likes
-                  }
+                return {
+                  ...comment,
+                  likes: comment.id === action.data.commentId ? action.data.likes : comment.likes,
+                  replies: comment.replies.map(reply => {
+                    return {
+                      ...reply,
+                      likes: reply.id === action.data.commentId ? action.data.likes : reply.likes
+                    }
+                  })
                 }
-                return comment;
               })
             }
           }),
           comments: state.videoPage.comments.map(comment => {
-            if (comment.id === action.data.commentId) {
-              return {
-                ...comment,
-                likes: action.data.likes
-              }
+            return {
+              ...comment,
+              likes: comment.id === action.data.commentId ? action.data.likes : comment.likes,
+              replies: comment.replies.map(reply => {
+                return {
+                  ...reply,
+                  likes: reply.id === action.data.commentId ? action.data.likes : reply.likes
+                }
+              })
             }
-            return comment;
-          })
-        }
-      }
-    case 'VIDEO_REPLY_LIKE':
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          comments: state.videoPage.comments.map(comment => {
-            if (comment.id === action.data.commentId) {
-              return {
-                ...comment,
-                replies: comment.replies.map(reply => {
-                  if (reply.id === action.data.replyId) {
-                    return {
-                      ...reply,
-                      likes: action.data.likes
-                    }
-                  }
-                  return reply;
-                })
-              }
-            }
-            return comment;
           })
         }
       }

@@ -212,28 +212,6 @@ request.post(`${API_URL}/comments/like`, {commentId}, auth())
   }
 )
 
-export const likeVideoReply = data => ({
-  type: 'VIDEO_REPLY_LIKE',
-  data
-})
-
-export const likeVideoReplyAsync = (replyId, commentId) => dispatch =>
-request.post(`${API_URL}/replies/like`, {replyId, commentId}, auth())
-.then(
-  response => {
-    const {data} = response;
-    if (data.likes) {
-      dispatch(likeVideoReply({replyId, commentId, likes: data.likes}))
-    }
-    return;
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
-
 export const loadMoreCommentsAsync = (videoId, lastCommentId) => dispatch =>
 request.get(`${API_URL}/comments?videoId=${videoId}&lastCommentId=${lastCommentId}`)
 .then(
@@ -477,7 +455,7 @@ request.post(`${API_URL}/debates/comments`, {comment, videoId, debateId}, auth()
 )
 
 export const uploadVideoDebateReply = (replyContent, comment, videoId) => dispatch => {
-  const params = {reply: replyContent, videoId, commentId: comment.commentId || comment.id, replyId: comment.commentId ? comment.id : null}
+  const params = {reply: replyContent, videoId, commentId: comment.commentId || comment.id, replyId: comment.commentId ? comment.id : null, addedFromPanel: true}
   request.post(`${API_URL}/replies`, params, auth())
   .then(
     response => dispatch({

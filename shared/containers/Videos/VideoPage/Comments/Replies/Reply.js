@@ -10,6 +10,8 @@ import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
 import {scrollElementToCenter} from 'helpers/domHelpers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+
 
 export default class Reply extends Component {
   constructor() {
@@ -17,7 +19,8 @@ export default class Reply extends Component {
     this.state={
       onEdit: false,
       replyInputShown: false,
-      userListModalShown: false
+      userListModalShown: false,
+      confirmModalShown: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onDelete = this.onDelete.bind(this)
@@ -27,7 +30,7 @@ export default class Reply extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
       if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
-        scrollElementToCenter(this.PanelReply);
+        scrollElementToCenter(this.Reply);
       }
     }
   }
@@ -37,7 +40,7 @@ export default class Reply extends Component {
       id, username, timeStamp, content, userIsOwner, onEditDone,
       likes, userId, myId, targetUserName, targetUserId, autoFocus
     } = this.props;
-    const {onEdit, userListModalShown, replyInputShown} = this.state;
+    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId == myId) userLikedThis = true;
@@ -46,6 +49,7 @@ export default class Reply extends Component {
       <div
         className="media"
         key={id}
+        ref={ref => {this.Reply = ref}}
       >
         {userIsOwner && !onEdit &&
           <SmallDropdownButton
@@ -63,7 +67,7 @@ export default class Reply extends Component {
               },
               {
                 label: "Remove",
-                onClick: this.onDelete
+                onClick: () => this.setState({confirmModalShown: true})
               }
             ]}
           />
@@ -144,13 +148,20 @@ export default class Reply extends Component {
             />
           }
         </div>
-        { userListModalShown &&
+        {userListModalShown &&
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this reply"
             userId={myId}
             users={likes}
             description={user => user.userId === myId && '(You)'}
+          />
+        }
+        {confirmModalShown &&
+          <ConfirmModal
+            onHide={() => this.setState({confirmModalShown: false})}
+            title="Remove Reply"
+            onConfirm={this.onDelete}
           />
         }
       </div>
@@ -163,8 +174,9 @@ export default class Reply extends Component {
   }
 
   onDelete() {
-    const replyId = this.props.id;
-    this.props.onDelete(replyId);
+    const {id, deleteCallback, index, isFirstReply} = this.props;
+    deleteCallback(index, isFirstReply);
+    this.props.onDelete(id);
   }
 
   onReplySubmit(reply) {
