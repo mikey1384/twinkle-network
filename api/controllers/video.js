@@ -519,6 +519,32 @@ router.post('/debates/comments', requireAuth, (req, res) => {
   })
 })
 
+router.get('/replies', (req, res) => {
+  const {lastReplyId, commentId} = req.query;
+  const where = !!lastReplyId && lastReplyId !== '0' ? 'AND a.id < ' + lastReplyId + ' ' : '';
+  let loadMoreReplies = false;
+  const query = [
+    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
+    'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
+    'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
+    'LEFT JOIN users d ON c.userId = d.id WHERE a.commentId = ? ', where,
+    'ORDER BY a.id DESC LIMIT 11'
+  ].join('')
+  pool.query(query, [commentId, lastReplyId], (err, rows) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send({error: err})
+    }
+    if (rows.length > 10) {
+      rows.pop();
+      loadMoreReplies = true;
+    }
+    rows.sort(function(a, b) {return a.id - b.id})
+    const replies = rows.map(row => Object.assign({}, row, {likes: []}));
+    res.send({replies, loadMoreReplies})
+  })
+})
+
 router.post('/replies', requireAuth, (req, res) => {
   const user = req.user;
   const replyId = req.body.replyId ? req.body.replyId : null;

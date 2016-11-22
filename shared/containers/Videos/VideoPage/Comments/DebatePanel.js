@@ -11,7 +11,8 @@ import {
   loadMoreDebateComments,
   uploadVideoDebateComment,
   uploadVideoDebateReply,
-  likeVideoComment
+  likeVideoComment,
+  loadMoreReplies
 } from 'redux/actions/VideoActions';
 
 @connect(
@@ -25,7 +26,8 @@ import {
     loadMoreComments: loadMoreDebateComments,
     onSubmit: uploadVideoDebateComment,
     onLikeClick: likeVideoComment,
-    onReplySubmit: uploadVideoDebateReply
+    onReplySubmit: uploadVideoDebateReply,
+    onLoadMoreReplies: loadMoreReplies
   }
 )
 export default class DebatePanel extends Component {
@@ -44,7 +46,7 @@ export default class DebatePanel extends Component {
     const {
       id, title, description, username, userId, videoId, timeStamp, numComments, myId,
       comments, loadMoreDebateCommentsButton, onSubmit, onLikeClick, onDelete, onEditDone,
-      onReplySubmit
+      onReplySubmit, onLoadMoreReplies
     } = this.props;
     const {expanded} = this.state;
     return (
@@ -69,7 +71,8 @@ export default class DebatePanel extends Component {
                 onDelete,
                 onLikeClick,
                 onEditDone,
-                onReplySubmit: this.onReplySubmit
+                onReplySubmit: this.onReplySubmit,
+                onLoadMoreReplies
               }}
             /> :
             <Button

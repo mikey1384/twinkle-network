@@ -23,6 +23,7 @@ const fetchCommentElements = (params) => cb => {
   let commentsArray = params.commentsArray;
   let index = params.index;
   let commentId = commentRow.id;
+  let loadMoreReplies = false;
   async.parallel([
     callback => {
       let query = [
@@ -40,13 +41,19 @@ const fetchCommentElements = (params) => cb => {
         'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
         'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
         'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
-        'LEFT JOIN users d ON c.userId = d.id WHERE a.commentId = ?'
+        'LEFT JOIN users d ON c.userId = d.id WHERE a.commentId = ? ',
+        'ORDER BY a.id DESC LIMIT 2'
       ].join('')
       pool.query(query, commentId, (err, rows) => {
         if (err) {
           console.error(err)
           return callback(err)
         }
+        if (rows.length > 1) {
+          rows.pop();
+          loadMoreReplies = true;
+        }
+        rows.sort(function(a, b) {return a.id - b.id})
         returnReplies(rows, (err, repliesArray) => {
           callback(err, repliesArray);
         })
@@ -64,7 +71,7 @@ const fetchCommentElements = (params) => cb => {
       }
     });
     const replies = results[1];
-    commentsArray[index] = Object.assign({}, commentRow, {replies}, {likes});
+    commentsArray[index] = Object.assign({}, commentRow, {replies}, {likes}, {loadMoreReplies});
     cb(err);
   })
 }

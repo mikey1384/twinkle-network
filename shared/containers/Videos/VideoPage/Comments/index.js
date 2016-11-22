@@ -11,7 +11,8 @@ import {
   likeVideoReplyAsync,
   likeVideoComment,
   uploadVideoReplyAsync,
-  loadMoreCommentsAsync
+  loadMoreCommentsAsync,
+  loadMoreReplies
 } from 'redux/actions/VideoActions';
 import {scrollElementToCenter} from 'helpers/domHelpers';
 
@@ -25,7 +26,8 @@ import {scrollElementToCenter} from 'helpers/domHelpers';
     onReplyEditDone: editVideoReplyAsync,
     onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoReplyAsync,
-    loadMoreComments: loadMoreCommentsAsync
+    loadMoreComments: loadMoreCommentsAsync,
+    loadMoreReplies
   }
 )
 export default class Comments extends Component {
@@ -90,6 +92,7 @@ export default class Comments extends Component {
           index={index}
           comment={comment}
           onEditDone={this.props.onEditDone}
+          onLoadMoreReplies={this.props.loadMoreReplies}
           onDelete={this.props.onDelete}
           onReplyEditDone={this.props.onReplyEditDone}
           onLikeClick={this.props.onLikeClick}

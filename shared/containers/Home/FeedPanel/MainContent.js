@@ -14,8 +14,8 @@ import {
   feedVideoCommentDeleteAsync,
   feedVideoCommentLikeAsync,
   feedVideoCommentEditAsync,
-  uploadFeedVideoReplyAsync
-
+  uploadFeedVideoReplyAsync,
+  loadMoreFeedReplies
 } from 'redux/actions/FeedActions';
 import {addVideoViewAsync} from 'redux/actions/VideoActions';
 import UserListModal from 'components/Modals/UserListModal';
@@ -37,7 +37,8 @@ import PanelComments from 'components/PanelComments';
     onDelete: feedVideoCommentDeleteAsync,
     onLikeClick: feedVideoCommentLikeAsync,
     onEditDone: feedVideoCommentEditAsync,
-    onReplySubmit: uploadFeedVideoReplyAsync
+    onReplySubmit: uploadFeedVideoReplyAsync,
+    onLoadMoreReplies: loadMoreFeedReplies
   }
 )
 export default class MainContent extends Component {
@@ -57,7 +58,7 @@ export default class MainContent extends Component {
       myId, content, contentLikers = [],
       contentId, type, title, videoViews, numChildComments, numChildReplies, replyId, commentId,
       videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId,
-      loadMoreComments, onSubmit, onDelete, onLikeClick, onEditDone, onReplySubmit
+      loadMoreComments, onSubmit, onDelete, onLikeClick, onEditDone, onReplySubmit, onLoadMoreReplies
     } = this.props;
     const {userListModalShown, clickListenerState} = this.state;
     let userLikedThis = false;
@@ -151,7 +152,8 @@ export default class MainContent extends Component {
               onDelete,
               onLikeClick,
               onEditDone,
-              onReplySubmit
+              onReplySubmit,
+              onLoadMoreReplies
             }}
           />
         }

@@ -42,7 +42,9 @@ export default class Comment extends Component {
 
   render() {
     const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state;
-    const {comment, userId, commentId, videoId, onEditDone, onDelete, deleteCallback, index} = this.props;
+    const {comment, userId, commentId, videoId,
+      onEditDone, onLoadMoreReplies, onDelete, deleteCallback, index
+    } = this.props;
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;
     for (let i = 0; i < comment.likes.length; i++) {
@@ -61,7 +63,8 @@ export default class Comment extends Component {
             style={{
               position: 'absolute',
               right: '0px',
-              marginRight: '3em'
+              marginRight: '3em',
+              opacity: 0.8
             }}
             menuProps={[
               {
@@ -150,7 +153,9 @@ export default class Comment extends Component {
             </div>
           }
           <Replies
+            onLoadMoreReplies={onLoadMoreReplies}
             userId={userId}
+            comment={comment}
             replies={comment.replies}
             commentId={commentId}
             videoId={videoId}

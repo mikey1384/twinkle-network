@@ -169,6 +169,34 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreCommentsButton
         }
       }
+    case 'LOAD_MORE_REPLIES':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.map(comment => {
+            return {
+              ...comment,
+              replies: action.commentType === 'default' && comment.id === action.commentId ?
+                action.data.replies.concat(comment.replies) : comment.replies,
+              loadMoreReplies: action.commentType === 'default' && comment.id === action.commentId ? action.data.loadMoreReplies : comment.loadMoreReplies
+            }
+          }),
+          debates: state.videoPage.debates.map(debate => {
+            return {
+              ...debate,
+              comments: debate.comments.map(comment => {
+                return {
+                  ...comment,
+                  replies: action.commentType !== 'default' && comment.id === action.commentId ?
+                    action.data.replies.concat(comment.replies) : comment.replies,
+                  loadMoreReplies: action.commentType !== 'default' && comment.id === action.commentId ? action.data.loadMoreReplies : comment.loadMoreReplies
+                }
+              })
+            }
+          })
+        }
+      }
     case 'LOAD_MORE_VIDEO_DEBATES':
       loadMoreDebatesButton = false;
       if (action.data.length > 3) {

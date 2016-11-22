@@ -44,7 +44,8 @@ export default class PanelComment extends Component {
   render() {
     const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state;
     const {
-      comment, userId, parent, type, onEditDone, onLikeClick, onDelete, onReplySubmit
+      comment, userId, parent, type, onEditDone,
+      onLikeClick, onDelete, onReplySubmit, onLoadMoreReplies
     } = this.props;
 
     const userIsOwner = comment.userId === userId;
@@ -155,6 +156,7 @@ export default class PanelComment extends Component {
             parent={parent}
             type={type}
             onDelete={onDelete}
+            onLoadMoreReplies={onLoadMoreReplies}
             onLikeClick={onLikeClick}
             onEditDone={onEditDone}
             onReplySubmit={onReplySubmit}

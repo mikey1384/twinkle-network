@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Reply from './Reply';
 import {scrollElementToCenter} from 'helpers/domHelpers';
+import Button from 'components/Button';
 
 export default class Replies extends Component {
   constructor() {
@@ -12,6 +13,7 @@ export default class Replies extends Component {
       deletedFirstReply: false
     }
     this.deleteCallback = this.deleteCallback.bind(this)
+    this.loadMoreReplies = this.loadMoreReplies.bind(this)
   }
 
   componentDidUpdate(prevProps) {
@@ -35,15 +37,27 @@ export default class Replies extends Component {
 
   render() {
     const {
-      replies, userId, onEditDone, onLikeClick, onDelete, onReplySubmit, commentId, videoId
+      comment, replies, userId, onEditDone, onLikeClick, onDelete, onReplySubmit, commentId, videoId
     } = this.props;
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
     return (
       <div
         className="media container-fluid"
-        style={{paddingLeft: '0px'}}
+        style={{paddingLeft: '0px', paddingRight: '0px'}}
         ref={ref => {this.Replies = ref}}
       >
+        {comment.loadMoreReplies &&
+          <Button
+            className="btn btn-default"
+            style={{
+              width: '100%',
+              marginBottom: replies.length === 0 && '1em'
+            }}
+            onClick={this.loadMoreReplies}
+          >
+            Load More
+          </Button>
+        }
         {replies.map((reply, index) => {
           return (
             <Reply
@@ -75,5 +89,11 @@ export default class Replies extends Component {
       lastDeletedCommentIndex: index,
       deletedFirstReply: isFirstReply
     });
+  }
+
+  loadMoreReplies() {
+    const {comment, replies, onLoadMoreReplies} = this.props;
+    const lastReplyId = !!replies[0] ? replies[0].id : '0';
+    onLoadMoreReplies(lastReplyId, comment.id, 'default')
   }
 }

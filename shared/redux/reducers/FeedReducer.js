@@ -31,6 +31,22 @@ export default function FeedReducer(state = defaultState, action) {
         feeds: action.data,
         loadMoreButton
       };
+    case 'FETCH_MORE_FEED_REPLIES':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          return {
+            ...feed,
+            childComments: feed.type === 'video' ? feed.childComments.map(comment => {
+              return {
+                ...comment,
+                replies: comment.id === action.commentId ? action.data.replies.concat(comment.replies) : comment.replies,
+                loadMoreReplies: comment.id === action.commentId ? action.data.loadMoreReplies : comment.loadMoreReplies
+              }
+            }) : feed.childComments
+          }
+        })
+      }
     case 'FETCH_MORE_FEEDS':
       loadMoreButton = false;
       if (action.data.length > 20) {

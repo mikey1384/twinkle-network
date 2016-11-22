@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import PanelReply from './PanelReply';
 import {scrollElementToCenter} from 'helpers/domHelpers';
+import Button from 'components/Button';
 
 export default class PanelReplies extends Component {
   constructor() {
@@ -11,6 +12,7 @@ export default class PanelReplies extends Component {
       deleteListenerToggle: false
     }
     this.deleteCallback = this.deleteCallback.bind(this)
+    this.loadMoreReplies = this.loadMoreReplies.bind(this)
   }
 
   componentDidUpdate(prevProps) {
@@ -31,15 +33,28 @@ export default class PanelReplies extends Component {
 
   render() {
     const {
-      type, replies, userId, onEditDone, onLikeClick, onDelete, onReplySubmit, comment, contentId, parent
+      type, replies, userId, onEditDone, onLikeClick, onDelete,
+      onReplySubmit, comment, contentId, parent
     } = this.props;
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
     return (
       <div
         className="media container-fluid"
-        style={{paddingLeft: '0px'}}
+        style={{paddingLeft: '0px', paddingRight: '0px'}}
         ref={ref => {this.PanelReplies = ref}}
       >
+        {comment.loadMoreReplies &&
+          <Button
+            className="btn btn-default"
+            style={{
+              width: '100%',
+              marginBottom: replies.length === 0 && '1em'
+            }}
+            onClick={this.loadMoreReplies}
+          >
+            Load More
+          </Button>
+        }
         {replies.map((reply, index) => {
           return (
             <PanelReply
@@ -68,5 +83,11 @@ export default class PanelReplies extends Component {
 
   deleteCallback(index) {
     this.setState({lastDeletedCommentIndex: index});
+  }
+
+  loadMoreReplies() {
+    const {comment, replies, onLoadMoreReplies, parent} = this.props;
+    const lastReplyId = !!replies[0] ? replies[0].id : '0';
+    onLoadMoreReplies(lastReplyId, comment.id, parent)
   }
 }

@@ -226,6 +226,22 @@ request.get(`${API_URL}/comments?videoId=${videoId}&lastCommentId=${lastCommentI
   }
 )
 
+export const loadMoreReplies = (lastReplyId, commentId, type) => dispatch =>
+request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}`)
+.then(
+  response => dispatch({
+    type: 'LOAD_MORE_REPLIES',
+    data: response.data,
+    commentId,
+    commentType: type
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const loadMoreDebateComments = (lastCommentId, debateId) => dispatch =>
 request.get(`${API_URL}/debates/comments?debateId=${debateId}&lastCommentId=${lastCommentId}`)
 .then(
