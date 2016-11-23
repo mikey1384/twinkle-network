@@ -15,7 +15,10 @@ import {
 } from 'helpers/stringHelpers';
 
 const renderInput = (
-  {input, type, className, placeholder, checked, checkIfYouTubeVideo, toggleCheck, meta: {touched, error}}
+  {
+    input, type, autoFocus, className, placeholder, checked,
+    checkIfYouTubeVideo, toggleCheck, meta: {touched, error}
+  }
 ) => (
   <div style={{display: 'inline'}}>
     <input
@@ -26,6 +29,7 @@ const renderInput = (
           checkIfYouTubeVideo(event.target.value);
         }
       }}
+      autoFocus={autoFocus}
       checked={checked}
       onClick={() => {if (input.name === 'isVideo') toggleCheck()}}
       className={className}
@@ -105,6 +109,27 @@ export default class FeedInputPanel extends Component {
         </div>
         <div className="panel-body">
           <form className="container-fluid" onSubmit={handleSubmit(this.onSubmit)}>
+            <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
+              <label style={{paddingBottom: '0.3em'}}><strong>Enter Url</strong></label>
+              <Field
+                name="url"
+                placeholder="Enter url. For example: www.google.com"
+                className="form-control"
+                component={renderInput}
+                checkIfYouTubeVideo={this.checkIfYouTubeVideo}
+                type="text"
+              />
+            </fieldset>
+            <fieldset className="form-group">
+              <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
+              <Field
+                name="isVideo"
+                toggleCheck={() => this.setState({checkedVideo: !this.state.checkedVideo})}
+                checked={checkedVideo}
+                component={renderInput}
+                type="checkbox"
+              />
+            </fieldset>
             <fieldset className="form-group">
               <strong>
                 <span
@@ -139,29 +164,10 @@ export default class FeedInputPanel extends Component {
                 style={{color: 'red'}}
               >{`${categoryNotSelected ? 'Select category' : ''}`}</span>
             </fieldset>
-            <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
-              <Field
-                name="url"
-                placeholder="Enter url. For example: www.google.com"
-                className="form-control"
-                component={renderInput}
-                checkIfYouTubeVideo={this.checkIfYouTubeVideo}
-                type="text"
-              />
-            </fieldset>
-            <fieldset className="form-group">
-              <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
-              <Field
-                name="isVideo"
-                toggleCheck={() => this.setState({checkedVideo: !this.state.checkedVideo})}
-                checked={checkedVideo}
-                component={renderInput}
-                type="checkbox"
-              />
-            </fieldset>
             {descriptionFieldsShown && <div>
               <fieldset className="form-group">
                 <Field
+                  autoFocus
                   name="title"
                   placeholder="Enter Title"
                   className="form-control"
