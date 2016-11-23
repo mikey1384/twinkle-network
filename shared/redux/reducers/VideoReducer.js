@@ -71,6 +71,7 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         videoPage: {
+          ...state.videoPage,
           debates: state.videoPage.debates.map(debate => ({
             ...debate,
             comments: debate.comments.map(comment => ({
