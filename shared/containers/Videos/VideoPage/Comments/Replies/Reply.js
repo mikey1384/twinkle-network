@@ -56,10 +56,8 @@ export default class Reply extends Component {
             shape="button"
             icon="pencil"
             style={{
-              position: 'absolute',
-              opacity: 0.8,
-              right: '0px',
-              marginRight: '3em'
+              position: 'relative',
+              float: 'right'
             }}
             menuProps={[
               {
@@ -97,6 +95,7 @@ export default class Reply extends Component {
             }
             {onEdit ?
               <EditTextArea
+                autoFocus
                 text={cleanStringWithURL(content)}
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={editedComment => onEditDone({editedComment, commentId: id}, () => {

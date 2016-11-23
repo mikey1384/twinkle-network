@@ -59,46 +59,49 @@ export default function VideoReducer(state = defaultState, action) {
           noComments
         }
       }
+    case 'DELETE_VIDEO_DEBATE':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          debates: state.videoPage.debates.filter(debate => debate.id !== action.debateId)
+        }
+      }
     case 'EDIT_VIDEO_COMMENT':
       return {
         ...state,
-        debates: state.videoPage.debates.map(debate => ({
-          ...debate,
-          comments: debate.comments.map(comment => {
-          if (comment.id === action.data.commentId) {
-            comment.content = processedStringWithURL(action.data.editedComment)
-          }
-          return {
+        videoPage: {
+          debates: state.videoPage.debates.map(debate => ({
+            ...debate,
+            comments: debate.comments.map(comment => ({
+              ...comment,
+              content: comment.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : comment.content,
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                content: reply.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : reply.content
+              }))
+            }))
+          })),
+          comments: state.videoPage.comments.map(comment => ({
             ...comment,
-            replies: comment.replies.map(reply => {
-              if (reply.id === action.data.commentId) {
-                reply.content = processedStringWithURL(action.data.editedComment);
-              }
-              return reply;
-            })
-          }})
-        })),
+            content: comment.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : comment.content,
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              content: reply.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : reply.content
+            }))
+          }))
+        }
+      }
+    case 'EDIT_VIDEO_DEBATE':
+      return {
+        ...state,
         videoPage: {
           ...state.videoPage,
-          comments: state.videoPage.comments.map(comment => {
-          if (comment.id === action.data.commentId) {
-            return {
-              ...comment,
-              content: processedStringWithURL(action.data.editedComment)
-            }
-          }
-          return {
-            ...comment,
-            replies: comment.replies.map(reply => {
-              if (reply.id === action.data.commentId) {
-                return {
-                  ...reply,
-                  content: processedStringWithURL(action.data.editedComment)
-                }
-              }
-              return reply;
-            })
-          }})
+          debates: state.videoPage.debates.map(debate => ({
+            ...debate,
+            title: debate.id === action.debateId ? action.data.title : debate.title,
+            description: debate.id === action.debateId ? action.data.description : debate.description
+          }))
         }
       }
     case 'GET_VIDEOS':

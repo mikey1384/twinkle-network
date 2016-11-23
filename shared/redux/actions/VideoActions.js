@@ -74,6 +74,20 @@ request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
   }
 )
 
+export const deleteVideoDebate = (debateId, callback) => dispatch =>
+request.delete(`${API_URL}/debates?debateId=${debateId}`, auth())
+.then(
+  response => dispatch({
+    type: 'DELETE_VIDEO_DEBATE',
+    debateId
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const editVideoComment = data => ({
   type: 'EDIT_VIDEO_COMMENT',
   data
@@ -89,6 +103,24 @@ request.post(`${API_URL}/comments/edit`, {editedComment, commentId}, auth())
       cb();
     }
     return;
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const editVideoDebate = (debateId, editedTitle, editedDescription, callback) => dispatch =>
+request.post(`${API_URL}/debates/edit`, {debateId, editedTitle, editedDescription}, auth())
+.then(
+  response => {
+    dispatch({
+      type: 'EDIT_VIDEO_DEBATE',
+      data: response.data,
+      debateId
+    })
+    callback()
   }
 ).catch(
   error => {

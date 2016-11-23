@@ -15,10 +15,12 @@ export default class EditTextArea extends Component {
 
   render() {
     const {editedText} = this.state;
+    const {autoFocus, placeholder} = this.props;
     return (
       <div>
         <Textarea
-          autoFocus
+          placeholder={placeholder}
+          autoFocus={autoFocus}
           className="form-control"
           style={{
             marginTop: '1em'

@@ -56,28 +56,6 @@ export default class Comment extends Component {
         style={{marginTop: this.props.marginTop && '2em'}}
         ref={ref => {this.Comment = ref}}
       >
-        {userIsOwner && !onEdit &&
-          <SmallDropdownButton
-            shape="button"
-            icon="pencil"
-            style={{
-              position: 'absolute',
-              right: '0px',
-              marginRight: '3em',
-              opacity: 0.8
-            }}
-            menuProps={[
-              {
-                label: "Edit",
-                onClick: () => this.setState({onEdit: true})
-              },
-              {
-                label: "Remove",
-                onClick: () => this.setState({confirmModalShown: true})
-              }
-            ]}
-          />
-        }
         <div className="media-left">
           <a>
             <img
@@ -88,6 +66,26 @@ export default class Comment extends Component {
           </a>
         </div>
         <div className="media-body">
+          {userIsOwner && !onEdit &&
+            <SmallDropdownButton
+              shape="button"
+              icon="pencil"
+              style={{
+                position: 'relative',
+                float: 'right'
+              }}
+              menuProps={[
+                {
+                  label: "Edit",
+                  onClick: () => this.setState({onEdit: true})
+                },
+                {
+                  label: "Remove",
+                  onClick: () => this.setState({confirmModalShown: true})
+                }
+              ]}
+            />
+          }
           <h4 className="media-heading">
             <UsernameText user={{
               name: comment.username,
@@ -96,6 +94,7 @@ export default class Comment extends Component {
           </h4>
           {onEdit ?
             <EditTextArea
+              autoFocus
               text={cleanStringWithURL(comment.content)}
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}

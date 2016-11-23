@@ -417,6 +417,19 @@ router.post('/comments/like', requireAuth, (req, res) => {
   })
 })
 
+router.delete('/debates', requireAuth, (req, res) => {
+  const {user} = req;
+  const {debateId} = req.query;
+  const query  = 'DELETE FROM debateTopics WHERE id = ? AND userId = ?';
+  pool.query(query, [debateId, user.id], err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send(err)
+    }
+    res.send({success: true})
+  })
+})
+
 router.get('/debates', (req, res) => {
   const {videoId, lastDebateId} = req.query;
   const limit = 4;
@@ -491,6 +504,20 @@ router.post('/debates', requireAuth, (req, res) => {
       comments: [],
       loadMoreDebateCommentsButton: false
     }))
+  })
+})
+
+router.post('/debates/edit', requireAuth, (req, res) => {
+  const {user} = req;
+  const {debateId, editedTitle, editedDescription} = req.body;
+  const post = {title: editedTitle, description: processedString(editedDescription)};
+  const query = 'UPDATE debateTopics SET ? WHERE id = ? AND userId = ?';
+  pool.query(query, [post, debateId, user.id], (err) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send({error: err})
+    }
+    res.send(post)
   })
 })
 

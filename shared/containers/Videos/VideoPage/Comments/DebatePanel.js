@@ -3,7 +3,11 @@ import Button from 'components/Button';
 import {timeSince} from 'helpers/timeStampHelpers';
 import UsernameText from 'components/UsernameText';
 import PanelComments from 'components/PanelComments';
+import SmallDropdownButton from 'components/SmallDropdownButton';
 import {connect} from 'react-redux';
+import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
+import Textarea from 'react-textarea-autosize';
+import ConfirmModal from 'components/Modals/ConfirmModal';
 import {
   deleteVideoCommentAsync,
   editVideoCommentAsync,
@@ -12,7 +16,9 @@ import {
   uploadVideoDebateComment,
   uploadVideoDebateReply,
   likeVideoComment,
-  loadMoreReplies
+  loadMoreReplies,
+  editVideoDebate,
+  deleteVideoDebate
 } from 'redux/actions/VideoActions';
 
 @connect(
@@ -27,15 +33,24 @@ import {
     onSubmit: uploadVideoDebateComment,
     onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoDebateReply,
-    onLoadMoreReplies: loadMoreReplies
+    onLoadMoreReplies: loadMoreReplies,
+    onDebateEditDone: editVideoDebate,
+    onDebateDelete: deleteVideoDebate
   }
 )
 export default class DebatePanel extends Component {
-  constructor() {
+  constructor(props) {
     super()
     this.state = {
-      expanded: false
+      expanded: false,
+      onEdit: false,
+      confirmModalShown: false,
+      editedTitle: cleanString(props.title),
+      editedDescription: cleanStringWithURL(props.description),
+      editDoneButtonDisabled: true
     }
+    this.onDelete = this.onDelete.bind(this)
+    this.onEditDone = this.onEditDone.bind(this)
     this.onExpand = this.onExpand.bind(this)
     this.onCommentSubmit = this.onCommentSubmit.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
@@ -48,38 +63,118 @@ export default class DebatePanel extends Component {
       comments, loadMoreDebateCommentsButton, onSubmit, onLikeClick, onDelete, onEditDone,
       onReplySubmit, onLoadMoreReplies
     } = this.props;
-    const {expanded} = this.state;
+    const {expanded, onEdit, confirmModalShown, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
+    const userIsOwner = myId === userId;
     return (
       <div
         className="panel panel-default"
         style={{borderTop: '#e7e7e7 1px solid'}}
       >
         <div className="panel-body">
-          <p style={{fontSize: '2rem'}}>{title}</p>
-          {expanded && !!description && <p dangerouslySetInnerHTML={{__html: description}} />}
-          {expanded ?
-            <PanelComments
-              inputTypeLabel={'comment'}
-              comments={comments}
-              loadMoreButton={loadMoreDebateCommentsButton}
-              userId={myId}
-              onSubmit={this.onCommentSubmit}
-              contentId={id}
-              loadMoreComments={this.loadMoreComments}
-              parent={{type: 'debate', id}}
-              commentActions={{
-                onDelete,
-                onLikeClick,
-                onEditDone,
-                onReplySubmit: this.onReplySubmit,
-                onLoadMoreReplies
+          {userIsOwner && !onEdit &&
+            <SmallDropdownButton
+              shape="button"
+              icon="pencil"
+              style={{
+                float: 'right',
+                position: 'relative'
               }}
-            /> :
-            <Button
-              style={{marginTop: '0.5em'}}
-              className="btn btn-warning"
-              onClick={this.onExpand}
-            >Answer{!!numComments && numComments > 0 ? ` (${numComments})` : ''}</Button>
+              menuProps={[
+                {
+                  label: "Edit",
+                  onClick: () => this.setState({onEdit: true})
+                },
+                {
+                  label: "Remove",
+                  onClick: () => this.setState({confirmModalShown: true})
+                }
+              ]}
+            />
+          }
+          {!onEdit &&
+            <p style={{fontSize: '2rem'}}>{cleanString(title)}</p>
+          }
+          {!onEdit && expanded && !!description && <p dangerouslySetInnerHTML={{__html: description}} />}
+          {onEdit &&
+            <form onSubmit={event => event.preventDefault()}>
+              <input
+                autoFocus
+                ref="editTitleInput"
+                type="text"
+                className="form-control"
+                placeholder="Enter Title..."
+                value={editedTitle}
+                onChange={event => {
+                  this.setState({editedTitle: event.target.value}, () => {
+                    this.determineEditButtonDoneStatus();
+                  });
+                }}
+              />
+            </form>
+          }
+          {onEdit &&
+            <div>
+              <Textarea
+                placeholder="Enter Description (Optional)"
+                className="form-control"
+                style={{marginTop: '1em'}}
+                rows={4}
+                value={editedDescription}
+                onChange={event => this.setState({editedDescription: event.target.value}, () => {
+                  this.determineEditButtonDoneStatus();
+                })}
+              />
+              <div style={{marginTop: '1em'}}>
+                <Button
+                  className="btn btn-default btn-sm"
+                  onClick={this.onEditDone}
+                  disabled={editDoneButtonDisabled}
+                >
+                  Done
+                </Button>
+                <Button
+                  className="btn btn-default btn-sm"
+                  style={{
+                    marginLeft: '0.5em'
+                  }}
+                  onClick={() => this.setState({
+                    onEdit: false,
+                    editedTitle: cleanString(title),
+                    editedDescription: cleanStringWithURL(description)
+                  })}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          }
+          {!onEdit &&
+            <div>
+              {expanded ?
+                <PanelComments
+                  inputTypeLabel={'comment'}
+                  comments={comments}
+                  loadMoreButton={loadMoreDebateCommentsButton}
+                  userId={myId}
+                  onSubmit={this.onCommentSubmit}
+                  contentId={id}
+                  loadMoreComments={this.loadMoreComments}
+                  parent={{type: 'debate', id}}
+                  commentActions={{
+                    onDelete,
+                    onLikeClick,
+                    onEditDone,
+                    onReplySubmit: this.onReplySubmit,
+                    onLoadMoreReplies
+                  }}
+                /> :
+                <Button
+                  style={{marginTop: '0.5em'}}
+                  className="btn btn-warning"
+                  onClick={this.onExpand}
+                >Answer{!!numComments && numComments > 0 ? ` (${numComments})` : ''}</Button>
+              }
+            </div>
           }
         </div>
         <div className="panel-footer">
@@ -90,13 +185,42 @@ export default class DebatePanel extends Component {
               }} />
             </strong> &nbsp;|&nbsp; Published {timeSince(timeStamp)}
         </div>
+        {confirmModalShown &&
+          <ConfirmModal
+            onHide={() => this.setState({confirmModalShown: false})}
+            title="Remove Discussion"
+            onConfirm={this.onDelete}
+          />
+        }
       </div>
     )
+  }
+
+  determineEditButtonDoneStatus() {
+    const {editedTitle, editedDescription} = this.state;
+    const {title, description} = this.props;
+    const titleIsEmpty = stringIsEmpty(editedTitle);
+    const titleChanged = editedTitle !== title;
+    const descriptionChanged = editedDescription !== cleanStringWithURL(description);
+    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged);
+    this.setState({editDoneButtonDisabled});
   }
 
   loadMoreComments(commentLength) {
     const {id, loadMoreComments} = this.props;
     loadMoreComments(commentLength, id);
+  }
+
+  onCommentSubmit(comment) {
+    const {onSubmit, videoId, id, title} = this.props;
+    onSubmit({comment, videoId, debateId: id, debateTopic: title})
+  }
+
+  onDelete() {
+    const {id, onDebateDelete} = this.props;
+    onDebateDelete(id, () => {
+      this.setState({confirmModalShown: false})
+    })
   }
 
   onExpand() {
@@ -105,9 +229,15 @@ export default class DebatePanel extends Component {
     loadComments(id);
   }
 
-  onCommentSubmit(comment) {
-    const {onSubmit, videoId, id, title} = this.props;
-    onSubmit({comment, videoId, debateId: id, debateTopic: title})
+  onEditDone() {
+    const {editedTitle, editedDescription} = this.state;
+    const {id, onDebateEditDone} = this.props;
+    onDebateEditDone(id, editedTitle, editedDescription, () => {
+      this.setState({
+        onEdit: false,
+        editDoneButtonDisabled: true
+      })
+    })
   }
 
   onReplySubmit(replyContent, comment) {

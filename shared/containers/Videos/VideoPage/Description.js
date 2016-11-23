@@ -4,7 +4,7 @@ import UsernameText from 'components/UsernameText';
 import Textarea from 'react-textarea-autosize';
 import Button from 'components/Button';
 import {timeSince} from 'helpers/timeStampHelpers';
-import {cleanString, cleanStringWithURL} from 'helpers/stringHelpers';
+import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
 
 export default class Description extends Component {
   constructor(props) {
@@ -143,7 +143,7 @@ export default class Description extends Component {
   }
 
   determineEditButtonDoneStatus() {
-    const titleIsEmpty = this.state.editedTitle === '';
+    const titleIsEmpty = stringIsEmpty(this.state.editedTitle);
     const titleChanged = this.state.editedTitle !== this.props.title;
     const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description);
     const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged);
