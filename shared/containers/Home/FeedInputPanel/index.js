@@ -77,7 +77,8 @@ export default class FeedInputPanel extends Component {
       categoryText: '',
       selectedCategoryLabel: '',
       selectedCategory: null,
-      categoryNotSelected: false
+      categoryNotSelected: false,
+      descriptionFieldsShown: false
     }
     this.checkIfYouTubeVideo = this.checkIfYouTubeVideo.bind(this)
     this.onCategorySelect = this.onCategorySelect.bind(this)
@@ -89,7 +90,10 @@ export default class FeedInputPanel extends Component {
 
   render() {
     const {categorySearchResult = [], handleSubmit, username, submitting} = this.props;
-    const {checkedVideo, categoryText, selectedCategoryLabel, categoryNotSelected} = this.state;
+    const {
+      checkedVideo, categoryText, descriptionFieldsShown,
+      selectedCategoryLabel, categoryNotSelected
+    } = this.state;
     return (
       <div className="panel panel-default"
         style={{
@@ -155,24 +159,26 @@ export default class FeedInputPanel extends Component {
                 type="checkbox"
               />
             </fieldset>
-            <fieldset className="form-group">
-              <Field
-                name="title"
-                placeholder="Enter Title"
-                className="form-control"
-                component={renderInput}
-                type="text"
-              />
-            </fieldset>
-            <fieldset className="form-group">
-              <Field
-                name="description"
-                className="form-control"
-                minRows={4}
-                placeholder="Enter Description (Optional, you don't need to write this)"
-                component={renderTextarea}
-              />
-            </fieldset>
+            {descriptionFieldsShown && <div>
+              <fieldset className="form-group">
+                <Field
+                  name="title"
+                  placeholder="Enter Title"
+                  className="form-control"
+                  component={renderInput}
+                  type="text"
+                />
+              </fieldset>
+              <fieldset className="form-group">
+                <Field
+                  name="description"
+                  className="form-control"
+                  minRows={4}
+                  placeholder="Enter Description (Optional, you don't need to write this)"
+                  component={renderTextarea}
+                />
+              </fieldset>
+            </div>}
             <Button
               className="btn btn-primary"
               type="submit"
@@ -197,7 +203,8 @@ export default class FeedInputPanel extends Component {
     this.setState({
       categoryText: '',
       selectedCategoryLabel: item.label,
-      selectedCategory: item.id
+      selectedCategory: item.id,
+      descriptionFieldsShown: true
     })
     clearSearchResults()
   }
