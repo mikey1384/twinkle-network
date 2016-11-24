@@ -23,6 +23,7 @@ import YouTube from 'react-youtube';
 import {embedlyKey} from 'constants/keys';
 import Embedly from 'components/Embedly';
 import PanelComments from 'components/PanelComments';
+import TargetContent from './TargetContent';
 
 
 @connect(
@@ -56,9 +57,10 @@ export default class MainContent extends Component {
   render() {
     const {
       myId, content, contentLikers = [],
-      contentId, type, title, videoViews, numChildComments, numChildReplies, replyId, commentId,
-      videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId,
-      loadMoreComments, onSubmit, onDelete, onLikeClick, onEditDone, onReplySubmit, onLoadMoreReplies
+      contentId, type, title, videoViews, numChildComments, numChildReplies, replyId, commentId, targetReply,
+      targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
+      onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
+      attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props;
     const {userListModalShown, clickListenerState} = this.state;
     let userLikedThis = false;
@@ -67,7 +69,42 @@ export default class MainContent extends Component {
     }
     return (
       <div>
-        {(type === 'comment') ?
+        {type === 'comment' && attachedVideoShown &&
+          <div className="embed-responsive embed-responsive-16by9" style={{marginBottom: '1em'}}>
+            <YouTube
+              className="embed-responsive-item"
+              opts={{
+                title: contentTitle,
+                height: '360',
+                width: '640'
+              }}
+              videoId={videoCode}
+              onReady={event => {
+                event.target.playVideo()
+                this.onVideoPlay(event)
+              }}
+            />
+        </div>}
+        {type === 'comment' && !!replyId &&
+          <TargetContent
+            isReplyContent={true}
+            uploader={{name: targetReplyUploaderName, id: targetReplyUploaderId}}
+            likes={targetContentLikers}
+            content={targetReply}
+            myId={myId}
+            contentId={replyId}
+          />
+        }
+        {type === 'comment' && !!commentId && !replyId &&
+          <TargetContent
+            uploader={{name: targetCommentUploaderName, id: targetCommentUploaderId}}
+            likes={targetContentLikers}
+            content={targetComment}
+            myId={myId}
+            contentId={commentId}
+          />
+        }
+        {type === 'comment' ?
             <span style={{
               fontSize: '1.2em',
               whiteSpace: 'pre-wrap',
@@ -191,10 +228,10 @@ export default class MainContent extends Component {
   }
 
   onVideoPlay(event) {
-    const {contentId, myId, addVideoView} = this.props;
+    const {parentContentId, myId, addVideoView} = this.props;
     const time = event.target.getCurrentTime()
     if (Math.floor(time) === 0) {
-      addVideoView({videoId: contentId, userId: myId})
+      addVideoView({videoId: parentContentId, userId: myId})
     }
   }
 }

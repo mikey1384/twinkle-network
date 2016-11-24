@@ -7,12 +7,19 @@ import Textarea from 'react-textarea-autosize';
 import InputArea from 'components/InputArea';
 import Heading from './Heading';
 import MainContent from './MainContent';
-import TargetContent from './TargetContent';
 
 
 export default class FeedPanel extends Component {
+  constructor() {
+    super()
+    this.state = {
+      attachedVideoShown: false
+    }
+  }
+
   render() {
     const {feed, userId} = this.props;
+    const {attachedVideoShown} = this.state;
     return (
       <div
         className="panel panel-default"
@@ -25,29 +32,12 @@ export default class FeedPanel extends Component {
           parentContent={{id: feed.parentContentId, title: feed.contentTitle}}
           action={!!feed.commentId ? 'replied to' : 'commented on'}
           uploader={{name: feed.uploaderName, id: feed.uploaderId}}
+          onPlayVideoClick={() => this.setState({attachedVideoShown: true})}
         />
         <div className="panel-body">
-          {feed.type === 'comment' && !!feed.replyId &&
-            <TargetContent
-              isReplyContent={true}
-              uploader={{name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
-              likes={feed.targetContentLikers}
-              content={feed.targetReply}
-              myId={userId}
-              contentId={feed.replyId}
-            />
-          }
-          {feed.type === 'comment' && !!feed.commentId && !feed.replyId &&
-            <TargetContent
-              uploader={{name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
-              likes={feed.targetContentLikers}
-              content={feed.targetComment}
-              myId={userId}
-              contentId={feed.commentId}
-            />
-          }
           <MainContent
             {...feed}
+            attachedVideoShown={attachedVideoShown}
             myId={userId}
           />
         </div>

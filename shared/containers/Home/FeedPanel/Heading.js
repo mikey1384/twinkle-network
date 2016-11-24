@@ -12,7 +12,8 @@ export default function Heading({
   targetReplyUploader,
   targetCommentUploader,
   parentContent,
-  timeStamp
+  timeStamp,
+  onPlayVideoClick
 }) {
   let targetAction;
 
@@ -31,6 +32,16 @@ export default function Heading({
     case 'comment':
       return <div className="panel-heading">
         <UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> ({timeSince(timeStamp)})
+        <a
+          className="pull-right"
+          style={{
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+          onClick={() => onPlayVideoClick()}
+        >
+          <span className="glyphicon glyphicon-play"></span> Play Video
+        </a>
       </div>
     case 'url':
     return <div className="panel-heading">

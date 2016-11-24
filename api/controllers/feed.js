@@ -18,6 +18,7 @@ router.get('/', (req, res) => {
   const query = [
     'SELECT \'comment\' AS type, a.id AS contentId, a.userId AS uploaderId, a.content, a.timeStamp, ',
     'a.videoId AS parentContentId, a.commentId, a.replyId, b.title AS contentTitle, ',
+    'b.videoCode AS videoCode, ',
     'c.username AS uploaderName, d.userId AS targetCommentUploaderId, d.content AS targetComment, ',
     'e.username AS targetCommentUploaderName, f.userId AS targetReplyUploaderId, f.content AS targetReply, ',
     'g.username AS targetReplyUploaderName, NULL AS videoViews, ',
@@ -30,6 +31,7 @@ router.get('/', (req, res) => {
 
     'UNION SELECT \'video\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.videoCode AS content, ', 'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
     'a.title AS contentTitle ,',
+    'NULL AS videoCode, ',
     'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
     'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
     'NULL AS targetReplyUploaderName, ',
@@ -42,6 +44,7 @@ router.get('/', (req, res) => {
     'UNION SELECT \'url\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.url AS content, ',
     'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
     'a.title AS contentTitle ,',
+    'NULL AS videoCode, ',
     'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
     'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
     'NULL AS targetReplyUploaderName, ',
