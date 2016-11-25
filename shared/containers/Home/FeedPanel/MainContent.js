@@ -6,7 +6,6 @@ import Button from 'components/Button';
 import Likers from 'components/Likers';
 import {connect} from 'react-redux';
 import {
-  likeVideoAsync,
   likeVideoCommentAsync,
   showFeedCommentsAsync,
   loadMoreFeedCommentsAsync,
@@ -15,7 +14,8 @@ import {
   feedVideoCommentLikeAsync,
   feedVideoCommentEditAsync,
   uploadFeedVideoReplyAsync,
-  loadMoreFeedReplies
+  loadMoreFeedReplies,
+  likeVideoAsync
 } from 'redux/actions/FeedActions';
 import {addVideoViewAsync} from 'redux/actions/VideoActions';
 import UserListModal from 'components/Modals/UserListModal';
@@ -31,7 +31,6 @@ import TargetContent from './TargetContent';
   {
     addVideoView: addVideoViewAsync,
     onLikeCommentClick: likeVideoCommentAsync,
-    onLikeVideoClick: likeVideoAsync,
     showFeedComments: showFeedCommentsAsync,
     loadMoreComments: loadMoreFeedCommentsAsync,
     onSubmit: uploadFeedVideoCommentAsync,
@@ -39,7 +38,8 @@ import TargetContent from './TargetContent';
     onLikeClick: feedVideoCommentLikeAsync,
     onEditDone: feedVideoCommentEditAsync,
     onReplySubmit: uploadFeedVideoReplyAsync,
-    onLoadMoreReplies: loadMoreFeedReplies
+    onLoadMoreReplies: loadMoreFeedReplies,
+    onLikeVideoClick: likeVideoAsync
   }
 )
 export default class MainContent extends Component {

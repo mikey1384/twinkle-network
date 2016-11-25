@@ -68,34 +68,41 @@ router.get('/', (req, res) => {
         feed['isReply'] = false;
         return resultingArray.concat([finalizeFeed(feed)])
         function finalizeFeed(feed) {
-          let query = feed.type === 'comment' ? [
+          let commentQuery = [
             'SELECT a.userId, b.username ',
             'FROM vq_commentupvotes a LEFT JOIN users b ON ',
             'a.userId = b.id WHERE ',
             'a.commentId = ?'
-          ].join('') : [
+          ].join('');
+          let videoQuery = [
             'SELECT a.userId, b.username ',
             'FROM vq_video_likes a LEFT JOIN users b ON ',
             'a.userId = b.id WHERE ',
             'a.videoId = ?'
-          ].join('')
+          ].join('');
           let targetId = feed.replyId ? feed.replyId : feed.commentId;
-          if (feed.type === 'comment' && !!targetId) {
+          if (feed.type === 'comment') {
             return callback => {
               async.parallel([
                 cb => {
-                  pool.query(query, feed.contentId, (err, rows) => {
+                  pool.query(commentQuery, feed.contentId, (err, rows) => {
                     cb(err, rows)
                   })
                 },
                 cb => {
-                  pool.query(query, targetId, (err, rows) => {
+                  pool.query(commentQuery, targetId || '0', (err, rows) => {
+                    cb(err, rows)
+                  })
+                },
+                cb => {
+                  pool.query(videoQuery, feed.parentContentId, (err, rows) => {
                     cb(err, rows)
                   })
                 }
               ], (err, results) => {
                 feed['contentLikers'] = results[0];
                 feed['targetContentLikers'] = results[1];
+                feed['parentContentLikers'] = results[2];
                 callback()
               })
             }
@@ -103,9 +110,10 @@ router.get('/', (req, res) => {
             return callback => {
               if (feed.type === 'url') {
                 feed['contentLikers'] = [];
+                feed['parentContentLikers'] = results[2];
                 return callback();
               }
-              pool.query(query, feed.contentId, (err, rows) => {
+              pool.query(videoQuery, feed.contentId, (err, rows) => {
                 feed['contentLikers'] = rows;
                 callback();
               })
@@ -120,6 +128,7 @@ router.get('/', (req, res) => {
         res.status(500).send({error: err});
         return;
       }
+
       res.send(feeds);
     })
   })

@@ -174,17 +174,13 @@ export default function FeedReducer(state = defaultState, action) {
     case 'FEED_VIDEO_LIKE':
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
-          if (feed.type === 'video') {
-            if (feed.contentId === action.data.contentId) {
-              feed.contentLikers = action.data.likes
-            }
-            if (feed.commentId === action.data.contentId) {
-              feed.targetContentLikers = action.data.likes
-            }
-          }
-          return feed;
-        })
+        feeds: state.feeds.map(feed => ({
+          ...feed,
+          contentLikers: feed.contentId === action.data.contentId ?
+            action.data.likes : feed.contentLikers,
+          parentContentLikers: feed.type === 'comment' && feed.parentContentId === action.data.contentId ?
+            action.data.likes : feed.parentContentLikers
+        }))
       }
     case 'LOAD_MORE_FEED_COMMENTS':
       return {

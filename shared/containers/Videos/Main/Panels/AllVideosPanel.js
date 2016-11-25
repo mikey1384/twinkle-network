@@ -35,9 +35,7 @@ export default class AllVideosPanel extends Component {
           <h3 className="panel-title pull-left">{title}</h3>
           <Button
             className="btn btn-default pull-right"
-            style={{
-              marginLeft: 'auto'
-            }}
+            style={{marginLeft: 'auto'}}
             onClick={() => onAddVideoClick()}
           >+ Add Video</Button>
           <div className="clearfix"></div>

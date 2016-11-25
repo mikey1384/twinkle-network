@@ -8,7 +8,6 @@ import InputArea from 'components/InputArea';
 import Heading from './Heading';
 import MainContent from './MainContent';
 
-
 export default class FeedPanel extends Component {
   constructor() {
     super()
@@ -18,7 +17,7 @@ export default class FeedPanel extends Component {
   }
 
   render() {
-    const {feed, userId} = this.props;
+    const {feed, userId, onLikeVideoClick} = this.props;
     const {attachedVideoShown} = this.state;
     return (
       <div
@@ -27,16 +26,20 @@ export default class FeedPanel extends Component {
       >
         <Heading
           {...feed}
+          myId={userId}
           targetCommentUploader={!!feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
           targetReplyUploader={!!feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
           parentContent={{id: feed.parentContentId, title: feed.contentTitle}}
           action={!!feed.commentId ? 'replied to' : 'commented on'}
           uploader={{name: feed.uploaderName, id: feed.uploaderId}}
           onPlayVideoClick={() => this.setState({attachedVideoShown: true})}
+          attachedVideoShown={attachedVideoShown}
+          onLikeVideoClick={onLikeVideoClick}
         />
         <div className="panel-body">
           <MainContent
             {...feed}
+            onLikeVideoClick={onLikeVideoClick}
             attachedVideoShown={attachedVideoShown}
             myId={userId}
           />

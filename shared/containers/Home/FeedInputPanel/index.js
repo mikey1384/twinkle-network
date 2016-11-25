@@ -104,8 +104,8 @@ export default class FeedInputPanel extends Component {
           borderTop: '1px solid rgb(231, 231, 231)'
         }}
       >
-        <div className="panel-heading">
-          <strong>Hello{`${username ? ' ' + username : ''}`}! Got anything interesting you want to share?</strong>
+        <div className="panel-heading flexbox-container">
+          <p className="panel-title pull-left" style={{fontWeight: 'bold'}}>Hello{`${username ? ' ' + username : ''}`}! Got anything interesting you want to share?</p>
         </div>
         <div className="panel-body">
           <form className="container-fluid" onSubmit={handleSubmit(this.onSubmit)}>
