@@ -45,14 +45,16 @@ export default class Heading extends Component {
       if (parentContentLikers[i].userId == myId) userLikedVideo = true;
     }
 
+    const pStyle = {fontSize: '1.4rem'};
+
     switch (type) {
       case 'video':
         return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left"><UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
+          <p className="panel-title pull-left" style={pStyle}><UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
         </div>
       case 'comment':
         return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left col-xs-11" style={{padding: '0px'}}><UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small></p>
+          <p className="panel-title pull-left col-xs-11" style={{...pStyle, padding: '0px'}}><UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small></p>
           {attachedVideoShown ?
             <LikeButton
               small
@@ -79,7 +81,7 @@ export default class Heading extends Component {
         </div>
       case 'url':
         return <div className="panel-heading flexbox-container">
-            <p className="panel-title pull-left"><UserLink user={uploader} /> shared a link: <a href={content} target="_blank" style={{color: '#158cba'}}><strong>{cleanString(parentContent.title)}</strong></a> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
+            <p className="panel-title pull-left" style={pStyle}><UserLink user={uploader} /> shared a link: <a href={content} target="_blank" style={{color: '#158cba'}}><strong>{cleanString(parentContent.title)}</strong></a> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
           </div>
       default:
         return <div className="panpanel-heading flexbox-container">Error</div>
