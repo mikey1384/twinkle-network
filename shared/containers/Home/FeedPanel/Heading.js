@@ -71,7 +71,8 @@ export default class Heading extends Component {
                 marginLeft: 'auto',
                 float: 'right',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                color: '#28b62c'
               }}
               onClick={() => onPlayVideoClick()}
             >
