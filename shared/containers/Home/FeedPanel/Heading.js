@@ -5,6 +5,7 @@ import {timeSince} from 'helpers/timeStampHelpers';
 import LikeButton from 'components/LikeButton';
 import {connect} from 'react-redux';
 import {likeVideoAsync} from 'redux/actions/FeedActions';
+import {cleanString} from 'helpers/stringHelpers';
 
 
 @connect(
@@ -51,7 +52,7 @@ export default class Heading extends Component {
         </div>
       case 'comment':
         return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left"><UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small></p>
+          <p className="panel-title pull-left col-xs-11" style={{padding: '0px'}}><UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small></p>
           {attachedVideoShown ?
             <LikeButton
               small
@@ -77,9 +78,9 @@ export default class Heading extends Component {
           }
         </div>
       case 'url':
-      return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left"><UserLink user={uploader} /> shared a link: <a href={content} target="_blank"><strong>{parentContent.title}</strong></a> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
-        </div>
+        return <div className="panel-heading flexbox-container">
+            <p className="panel-title pull-left"><UserLink user={uploader} /> shared a link: <a href={content} target="_blank" style={{color: '#158cba'}}><strong>{cleanString(parentContent.title)}</strong></a> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
+          </div>
       default:
         return <div className="panpanel-heading flexbox-container">Error</div>
     }

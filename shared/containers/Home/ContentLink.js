@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions';
+import {cleanString} from 'helpers/stringHelpers';
 
 @connect(
   null,
@@ -25,7 +26,7 @@ export default class ContentLink extends Component {
         }}
         href={`videos/${content.id}`}
       >
-        {content.title}
+        {cleanString(content.title)}
       </span>
     )
   }
