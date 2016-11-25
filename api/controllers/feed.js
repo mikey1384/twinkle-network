@@ -110,7 +110,7 @@ router.get('/', (req, res) => {
             return callback => {
               if (feed.type === 'url') {
                 feed['contentLikers'] = [];
-                feed['parentContentLikers'] = results[2];
+                feed['parentContentLikers'] = [];
                 return callback();
               }
               pool.query(videoQuery, feed.contentId, (err, rows) => {
