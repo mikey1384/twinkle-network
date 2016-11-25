@@ -58,7 +58,7 @@ export default class MainContent extends Component {
     const {
       myId, content, contentLikers = [],
       contentId, type, title, videoViews, numChildComments, numChildReplies, replyId, commentId, targetReply,
-      targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
+      targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props;
@@ -127,6 +127,16 @@ export default class MainContent extends Component {
               </div> :
               <Embedly url={content} apiKey={embedlyKey} />
             )
+        }
+        {type === 'video' && !!contentDescription && contentDescription !== 'No description' &&
+          <div style={{
+            marginTop: '1em',
+            fontSize: '1.2em',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
+          }}>
+            <p dangerouslySetInnerHTML={{__html: contentDescription}} />
+          </div>
         }
         {type === 'video' && videoViews > 10 &&
           <span

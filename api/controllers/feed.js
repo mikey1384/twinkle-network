@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
   const limit = feedLength === 0 ? '21' : feedLength + ', 21';
   const query = [
     'SELECT \'comment\' AS type, a.id AS contentId, a.userId AS uploaderId, a.content, a.timeStamp, ',
-    'a.videoId AS parentContentId, a.commentId, a.replyId, b.title AS contentTitle, ',
+    'a.videoId AS parentContentId, a.commentId, a.replyId, b.title AS contentTitle, NULL AS contentDescription, ',
     'b.videoCode AS videoCode, ',
     'c.username AS uploaderName, d.userId AS targetCommentUploaderId, d.content AS targetComment, ',
     'e.username AS targetCommentUploaderName, f.userId AS targetReplyUploaderId, f.content AS targetReply, ',
@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
     'LEFT JOIN vq_comments f ON a.replyId = f.id LEFT JOIN users g ON f.userId = g.id ',
 
     'UNION SELECT \'video\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.videoCode AS content, ', 'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
-    'a.title AS contentTitle ,',
+    'a.title AS contentTitle, a.description AS contentDescription, ',
     'NULL AS videoCode, ',
     'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
     'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
@@ -43,7 +43,7 @@ router.get('/', (req, res) => {
 
     'UNION SELECT \'url\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.url AS content, ',
     'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
-    'a.title AS contentTitle ,',
+    'a.title AS contentTitle, NULL AS contentDescription, ',
     'NULL AS videoCode, ',
     'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
     'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
