@@ -222,6 +222,8 @@ router.post('/content', requireAuth, (req, res) => {
       commentId: null,
       replyId: null,
       contentTitle: post.title,
+      contentDescription: (!description || description === '') ?
+      "No description" : processedString(description),
       uploaderName: user.username,
       targetCommentUploaderId: null,
       targetComment: null,
