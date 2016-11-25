@@ -14,7 +14,7 @@ export default class ContentLink extends Component {
   render() {
     const {content, loadVideoPage} = this.props;
     return (
-      <span
+      <a
         style={{
           fontWeight: 'bold',
           cursor: 'pointer',
@@ -27,7 +27,7 @@ export default class ContentLink extends Component {
         href={`videos/${content.id}`}
       >
         {cleanString(content.title)}
-      </span>
+      </a>
     )
   }
 }
