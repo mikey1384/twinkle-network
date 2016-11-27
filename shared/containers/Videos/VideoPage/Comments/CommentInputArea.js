@@ -94,12 +94,16 @@ export default class CommentInputArea extends Component {
                       </Button>
                     </div>
                   }
-                  <h3 style={{marginTop: '1em'}}>Comment on this video</h3>
-                  <InputArea
-                    onSubmit={text => uploadComment(text, videoId)}
-                    rows={4}
-                    placeholder="Write your comment here..."
-                  />
+                  {!debates || debates.length === 0 &&
+                    <div>
+                      <h3 style={{marginTop: '1em'}}>Comment on this video</h3>
+                      <InputArea
+                        onSubmit={text => uploadComment(text, videoId)}
+                        rows={4}
+                        placeholder="Write your comment here..."
+                      />
+                    </div>
+                  }
                 </div>
               </div>
             </div>
