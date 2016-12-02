@@ -13,47 +13,50 @@ const {
 const {returnComments} = require('../helpers/videoHelpers');
 
 router.get('/', (req, res) => {
-  const feedLength = Number(req.query.feedLength) || 0;
-  const limit = feedLength === 0 ? '21' : feedLength + ', 21';
+  const feedId = Number(req.query.lastFeedId) || 0;
+  let where = 'WHERE a.timeStamp IS NOT NULL ';
+  if(feedId !== 0) where += 'AND a.id < ' + feedId + ' ';
   const query = [
-    'SELECT \'comment\' AS type, a.id AS contentId, a.userId AS uploaderId, a.content, a.timeStamp, ',
-    'a.videoId AS parentContentId, a.commentId, a.replyId, b.title AS contentTitle, NULL AS contentDescription, ',
-    'b.videoCode AS videoCode, ',
-    'c.username AS uploaderName, d.userId AS targetCommentUploaderId, d.content AS targetComment, ',
-    'e.username AS targetCommentUploaderName, f.userId AS targetReplyUploaderId, f.content AS targetReply, ',
-    'g.username AS targetReplyUploaderName, NULL AS videoViews, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE commentId = contentId) AS numChildComments, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE replyId = contentId) AS numChildReplies ',
+    'SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.content, ',
+    'b.commentId, b.replyId, c.title AS contentTitle, NULL AS contentDescription, c.videoCode AS videoCode, ',
+    'd.username AS uploaderName, e.userId AS targetCommentUploaderId, e.content AS targetComment, ',
+    'f.username AS targetCommentUploaderName, ',
+    'g.userId AS targetReplyUploaderId, g.content AS targetReply, h.username AS targetReplyUploaderName, ',
+    'NULL AS videoViews, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE commentId = a.contentId) AS numChildComments, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE replyId = a.contentId) AS numChildReplies ',
 
-    'FROM vq_comments a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON a.userId = c.id ',
-    'LEFT JOIN vq_comments d ON a.commentId = d.id LEFT JOIN users e ON d.userId = e.id ',
-    'LEFT JOIN vq_comments f ON a.replyId = f.id LEFT JOIN users g ON f.userId = g.id ',
+    'FROM noti_feeds a JOIN vq_comments b ON a.type = \'comment\' AND a.contentId = b.id LEFT JOIN vq_videos c ',
+    'ON a.parentContentId = c.id LEFT JOIN users d ON a.uploaderId = d.id LEFT JOIN vq_comments e ON ',
+    'b.commentId = e.id LEFT JOIN users f ON e.userId = f.id LEFT JOIN vq_comments g ON b.replyId = g.id ',
+    'LEFT JOIN users h ON g.userId = h.id ',
+    where,
 
-    'UNION SELECT \'video\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.videoCode AS content, ', 'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
-    'a.title AS contentTitle, a.description AS contentDescription, ',
-    'NULL AS videoCode, ',
-    'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.videoCode AS ', 'content, NULL AS commentId, NULL AS replyId, b.title AS contentTitle, b.description AS contentDescription, ',
+    'b.videoCode AS videoCode, c.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
     'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
     'NULL AS targetReplyUploaderName, ',
-    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = contentId) AS videoViews, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE videoId = contentId) AS numChildComments, ',
+    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = a.contentId) AS videoViews, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE videoId = a.contentId) AS numChildComments, ',
     'NULL AS numChildReplies ',
 
-    'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
+    'FROM noti_feeds a JOIN vq_videos b ON a.type = \'video\' AND a.contentId = b.id ',
+    'LEFT JOIN users c ON b.uploader = c.id ',
+    where,
 
-    'UNION SELECT \'url\' AS type, a.id AS contentId, a.uploader AS uploaderId, a.url AS content, ',
-    'a.timeStamp, a.id AS parentContentId, NULL AS commentId, NULL AS replyId, ',
-    'a.title AS contentTitle, NULL AS contentDescription, ',
-    'NULL AS videoCode, ',
-    'b.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.url AS content, ',
+    'NULL AS commentId, NULL AS replyId, b.title AS contentTitle, NULL AS contentDescription, NULL AS videoCode, ', 'c.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
     'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
     'NULL AS targetReplyUploaderName, ',
     'NULL AS videoViews, NULL AS numChildComments, NULL AS numChildReplies ',
 
-    'FROM content_urls a LEFT JOIN users b ON a.uploader = b.id ',
+    'FROM noti_feeds a JOIN content_urls b ON a.type = \'url\' AND a.contentId = b.id ',
+    'LEFT JOIN users c ON b.uploader = c.id ',
+    where,
+    
+    'ORDER BY id DESC LIMIT 21'
+  ].join('');
 
-    'WHERE timeStamp IS NOT NULL ORDER BY timeStamp DESC LIMIT ' + limit
-  ].join('')
   pool.query(query, (err, feeds) => {
     if (err) {
       console.error(err);
@@ -128,7 +131,6 @@ router.get('/', (req, res) => {
         res.status(500).send({error: err});
         return;
       }
-
       res.send(feeds);
     })
   })

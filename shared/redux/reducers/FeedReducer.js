@@ -1,7 +1,7 @@
 import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
 const defaultState = {
   feeds: null,
-  newFeeds: [],
+  newFeeds: [], // may need later but delete it if revealed otherwise
   loadMoreButton: false,
   categorySearchResult: []
 };

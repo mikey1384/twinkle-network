@@ -90,8 +90,8 @@ export const fetchFeedsAsync = () => dispatch => {
   )
 }
 
-export const fetchMoreFeedsAsync = feedLength => dispatch => {
-  request.get(`${API_URL}?feedLength=${feedLength}`).then(
+export const fetchMoreFeedsAsync = lastFeedId => dispatch => {
+  request.get(`${API_URL}?lastFeedId=${lastFeedId}`).then(
     response => {
       dispatch({
         type: 'FETCH_MORE_FEEDS',
