@@ -54,7 +54,7 @@ export default class Heading extends Component {
         </div>
       case 'comment':
         return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left col-xs-11" style={{...pStyle, padding: '0px'}}><UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small></p>
+          <p className="panel-title pull-left col-xs-10" style={{...pStyle, padding: '0px'}}><UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small></p>
           {attachedVideoShown ?
             <LikeButton
               small
@@ -76,7 +76,7 @@ export default class Heading extends Component {
               }}
               onClick={() => onPlayVideoClick()}
             >
-              <span className="glyphicon glyphicon-play"></span> Play
+              <span className="glyphicon glyphicon-play"></span> Watch
             </a>
           }
         </div>
