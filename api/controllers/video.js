@@ -261,7 +261,7 @@ router.get('/comments', (req, res) => {
     'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
     'c.title AS debateTopic ',
     'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
-    'LEFT JOIN debateTopics c ON a.debateId = c.id ',
+    'LEFT JOIN content_discussions c ON a.debateId = c.id ',
     'WHERE videoId = ? AND commentId IS NULL ', where,
     'ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
@@ -420,7 +420,7 @@ router.post('/comments/like', requireAuth, (req, res) => {
 router.delete('/debates', requireAuth, (req, res) => {
   const {user} = req;
   const {debateId} = req.query;
-  const query  = 'DELETE FROM debateTopics WHERE id = ? AND userId = ?';
+  const query  = 'DELETE FROM content_discussions WHERE id = ? AND userId = ?';
   pool.query(query, [debateId, user.id], err => {
     if (err) {
       console.error(err);
@@ -437,7 +437,7 @@ router.get('/debates', (req, res) => {
   const query = [
     'SELECT a.id, a.userId, a.title, a.description, a.timeStamp, b.username, ',
     '(SELECT COUNT(*) FROM vq_comments WHERE debateId = a.id) AS numComments ',
-    'FROM debateTopics a LEFT JOIN users b ON a.userId = b.id ',
+    'FROM content_discussions a LEFT JOIN users b ON a.userId = b.id ',
     'WHERE a.refContentType = \'video\' AND a.refContentId = ? ', where,
     'ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
@@ -484,7 +484,7 @@ router.get('/debates/comments', (req, res) => {
 router.post('/debates', requireAuth, (req, res) => {
   const {title, description, videoId} = req.body;
   const {user} = req;
-  const query = 'INSERT INTO debateTopics SET ?';
+  const query = 'INSERT INTO content_discussions SET ?';
   const post = {
     title: processedTitleString(title),
     description: !!description && description !== '' ? processedString(description) : null,
@@ -511,7 +511,7 @@ router.post('/debates/edit', requireAuth, (req, res) => {
   const {user} = req;
   const {debateId, editedTitle, editedDescription} = req.body;
   const post = {title: editedTitle, description: processedString(editedDescription)};
-  const query = 'UPDATE debateTopics SET ? WHERE id = ? AND userId = ?';
+  const query = 'UPDATE content_discussions SET ? WHERE id = ? AND userId = ?';
   pool.query(query, [post, debateId, user.id], (err) => {
     if (err) {
       console.error(err)
