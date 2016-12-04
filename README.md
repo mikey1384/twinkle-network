@@ -4,10 +4,11 @@ Currently this is a small social media website used almost exclusively by studen
 
 Ultimately, I want this website to help children all around the world to:
 
-- build relationships with students of different countries and culture early on in their lives
+- build relationships with students of different countries, ethnicities and cultures early on in their lives
+
 - find and connect with life long mentors from all over the world
 
-- find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity instead of the pressure put on to them by their parents.
+- find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity instead of the pressure put on to them by grownups
 
 - have opportunity to teach and help other children
 
