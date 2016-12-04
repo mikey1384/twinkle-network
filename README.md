@@ -14,7 +14,9 @@ Ultimately I want this website to help children all around the world to:
 
 - learn to discuss and debate
 
-- have equal opportunity in education. Be able to follow their passions and actually make sure that whichever passion they choose would deliver them the means to make living and be happy. 
+- have equal opportunity in education
+
+- be able to follow their passions and actually make sure that whichever passion they choose would deliver them the means to make living and be happy. 
 
 - have their minds filled with wonder
 
