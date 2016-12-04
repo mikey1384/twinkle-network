@@ -2,7 +2,7 @@
 
 Currently this is a small social media website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web urls, create discussion topics, and chat inside channels or send private messages to other users.
 
-My ultimate aim in this project is for this tool to help children all around the world to
+Ultimately, I want this website to help children all around the world to:
 
 - build relationships with students of different countries and culture early on in their lives
 - find and connect with life long mentors from all over the world
