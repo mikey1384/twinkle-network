@@ -32,28 +32,22 @@ router.get('/', (req, res) => {
     'LEFT JOIN users h ON g.userId = h.id ',
     where,
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.videoCode AS ', 'content, NULL AS commentId, NULL AS replyId, b.title AS contentTitle, b.description AS contentDescription, ',
-    'b.videoCode AS videoCode, c.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
-    'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
-    'NULL AS targetReplyUploaderName, ',
-    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = a.contentId) AS videoViews, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE videoId = a.contentId) AS numChildComments, ',
-    'NULL AS numChildReplies ',
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.videoCode, ',
+    'NULL, NULL, b.title, b.description, b.videoCode, c.username, NULL, NULL, NULL, NULL, NULL, NULL, ',
+    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = a.contentId), ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE videoId = a.contentId), NULL ',
 
     'FROM noti_feeds a JOIN vq_videos b ON a.type = \'video\' AND a.contentId = b.id ',
     'LEFT JOIN users c ON b.uploader = c.id ',
     where,
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.url AS content, ',
-    'NULL AS commentId, NULL AS replyId, b.title AS contentTitle, NULL AS contentDescription, NULL AS videoCode, ', 'c.username AS uploaderName, NULL AS targetCommentUploaderId, NULL AS targetComment, ',
-    'NULL AS targetCommentUploaderName, NULL AS targetReplyUploaderId, NULL AS targetReply, ',
-    'NULL AS targetReplyUploaderName, ',
-    'NULL AS videoViews, NULL AS numChildComments, NULL AS numChildReplies ',
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.url, ',
+    'NULL, NULL, b.title, NULL, NULL, c.username, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL ',
 
     'FROM noti_feeds a JOIN content_urls b ON a.type = \'url\' AND a.contentId = b.id ',
     'LEFT JOIN users c ON b.uploader = c.id ',
     where,
-    
+
     'ORDER BY id DESC LIMIT 21'
   ].join('');
 
