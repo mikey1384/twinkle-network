@@ -16,8 +16,11 @@ Ultimately I want this website to help children all around the world to:
 
 - have equal opportunity in education
 
-- be able to follow their passions and actually make sure that whichever passion they choose would deliver them the means to make living and be happy. 
+- be able to follow their passions and actually make sure that whichever passion they choose would deliver them the means to make living and be happy.
 
 - have their minds filled with wonder
 
 There's no fixed long term direction for this website other than the above mission. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
+
+Feel free to use this source code anyway you want.
+And join us at http://www.twin-kle.com 
