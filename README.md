@@ -20,6 +20,8 @@ Ultimately I want this website to help children all around the world to:
 
 - have opportunity to teach and help other children
 
+- become critical thinkers
+
 - learn to discuss and debate
 
 - have equal opportunity in education
