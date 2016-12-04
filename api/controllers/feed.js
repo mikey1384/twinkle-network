@@ -48,6 +48,13 @@ router.get('/', (req, res) => {
     'LEFT JOIN users c ON b.uploader = c.id ',
     where,
 
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, NULL, ',
+    'NULL, NULL, b.title, b.description, NULL, c.username, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL ',
+
+    'FROM noti_feeds a JOIN content_discussions b ON a.type = \'discussion\' AND a.contentId = b.id ',
+    'LEFT JOIN users c ON b.userId = c.id ',
+    where,
+
     'ORDER BY id DESC LIMIT 21'
   ].join('');
 

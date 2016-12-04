@@ -4,11 +4,14 @@ Currently this is a small social media website used almost exclusively by studen
 
 My ultimate aim in this project is for this tool to help children all around the world to
 
-- build relationships with students of different country and culture early on in their lives
+- build relationships with students of different countries and culture early on in their lives
 - find and connect with life long mentors from all over the world
 
-- find motivation in learning, to become active learners instead of passive ones, driven by their own curiosity instead of the pressure put on to them by their parents.
+- find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity instead of the pressure put on to them by their parents.
+
 - have opportunity to teach and help other children
+
+- learn to discuss and debate
 
 - have equal opportunity in both education and careers.
 
