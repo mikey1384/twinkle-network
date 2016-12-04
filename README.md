@@ -2,7 +2,7 @@
 
 To run:
 - import db.sql to your mysql
-- in /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to siteConfig.js and modify the content for your own use
+- in /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
 - same applies to /shared/constants/change this filename to ... files
 - first npm install, then run: npm run dev & npm run devapi for development (separate instances). Or npm run build, then npm run startapi & npm run start for release version.
 
