@@ -18,4 +18,4 @@ Ultimately, I want this website to help children all around the world to:
 
 - have their minds filled with wonder
 
-There's no fixed long term direction for this website other than the above mission. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside this country, and my primary focus at this point is to make that possible.
+There's no fixed long term direction for this website other than the above mission. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
