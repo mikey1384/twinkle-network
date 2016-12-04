@@ -1,12 +1,12 @@
 ## Twinkle Website
 
-To run:
+#To run:
 - import db.sql to your mysql
 - in /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
 - same applies to /shared/constants/change this filename to ... files
 - first npm install, then run: npm run dev & npm run devapi for development (separate instances). Or npm run build, then npm run startapi & npm run start for release version.
 
-About this project:
+#About this project:
 
 Currently this is a small social media website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web urls, create discussion topics, and chat within channels or send private messages to other users.
 
