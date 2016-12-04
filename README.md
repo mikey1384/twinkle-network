@@ -1,5 +1,8 @@
 ## Twinkle Website
 
+- in /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to siteConfig.js and modify the content for your own
+- same applies to /shared/constants/change this filename to ... files
+
 Currently this is a small social media website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web urls, create discussion topics, and chat within channels or send private messages to other users.
 
 Ultimately I want this website to help children all around the world to:
@@ -23,4 +26,4 @@ Ultimately I want this website to help children all around the world to:
 There's no fixed long term direction for this website other than the above mission. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
 
 Feel free to use this source code anyway you want.
-And join us at http://www.twin-kle.com 
+And join us at http://www.twin-kle.com
