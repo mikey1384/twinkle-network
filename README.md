@@ -1,11 +1,11 @@
 ## Twinkle Website
 
 ###To run:
-#### 1. Import db.sql to your mysql
-#### 2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
-#### 3. Do the same to /shared/constants/"change this filename to ..." files
-#### 4. Run `npm install`
-#### 5. Development / Production builds
+1. Import db.sql to your mysql
+2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
+3. Do the same to /shared/constants/"change this filename to ..." files
+4. Run `npm install`
+5. Development / Production builds
 
 If you want to run development version, run:
 ```shell
