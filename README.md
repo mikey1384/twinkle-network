@@ -1,10 +1,31 @@
 ## Twinkle Website
 
 ###To run:
-- import db.sql to your mysql
-- in /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
-- same applies to /shared/constants/"change this filename to ..." files
-- first npm install, then run: npm run dev & npm run devapi for development (separate instances). Or npm run build, then npm run startapi & npm run start for release version.
+#### 1. Import db.sql to your mysql
+#### 2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
+#### 3. Do the same to /shared/constants/"change this filename to ..." files
+#### 4. Run `npm install`
+#### 5. Development / Production builds
+
+If you want to run development version, run:
+```shell
+npm run dev
+```
+on one console instance and,
+```shell
+npm run devapi
+```
+on another.
+
+If you want to run production verion, run:
+```shell
+npm run build
+```
+then,
+```shell
+npm run startapi
+npm run start
+```
 
 ###About this project:
 
@@ -16,7 +37,7 @@ Ultimately I want this website to help children all around the world to:
 
 - find and connect with life long mentors from all over the world
 
-- find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity instead of the pressure imposed to them by grownups
+- find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity rather than the pressure imposed to them by grownups
 
 - have opportunity to teach and help other children
 
@@ -30,7 +51,7 @@ Ultimately I want this website to help children all around the world to:
 
 - have their minds filled with wonder
 
-There's no fixed long term direction for this website other than the above mission. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
+There's no fixed long term direction for this website other than the above missions. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
 
 Feel free to use this source code anyway you want.
 And join us at http://www.twin-kle.com
