@@ -17,7 +17,7 @@ npm run devapi
 ```
 on another.
 
-If you want to run production verion, run:
+If you want to run production version, run:
 ```shell
 npm run build
 ```
