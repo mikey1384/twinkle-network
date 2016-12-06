@@ -150,7 +150,7 @@ export default class MainContent extends Component {
         {type === 'discussion' &&
         !!contentDescription &&
           <div style={{
-            marginTop: '1em',
+            marginBottom: '1em',
             fontSize: '1.2em',
             whiteSpace: 'pre-wrap',
             wordWrap: 'break-word'
