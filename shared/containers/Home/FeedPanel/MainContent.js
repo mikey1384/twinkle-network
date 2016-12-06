@@ -131,7 +131,11 @@ export default class MainContent extends Component {
           <Embedly url={content} apiKey={embedlyKey} />
         }
         {type === 'discussion' &&
-          <div style={{fontSize: '2rem', marginTop: '1em', marginBottom: '1em'}}>
+          <div style={{
+            fontSize: '2rem',
+            marginTop: '1em',
+            marginBottom: !!contentDescription ? '0.5em' : '1em'
+          }}>
             <p><b style={{color: '#28b62c'}}>Discuss:</b></p>
             <p>{contentTitle}</p>
           </div>
