@@ -194,7 +194,7 @@ request.get(`${URL}/video/replies?lastReplyId=${lastReplyId}&commentId=${comment
     type: 'FETCH_MORE_FEED_REPLIES',
     data: response.data,
     commentId,
-    videoId: parent.id
+    contentType: parent.type
   })
 ).catch(
   error => {
@@ -203,17 +203,15 @@ request.get(`${URL}/video/replies?lastReplyId=${lastReplyId}&commentId=${comment
   }
 )
 
-export const showFeedComments = data =>({
-  type: 'SHOW_FEED_COMMENTS',
-  data
-})
-
 export const showFeedCommentsAsync = (type, contentId, commentLength, isReply) => dispatch =>
 request.get(
   `${API_URL}/comments?type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`
 )
 .then(
-  response => dispatch(showFeedComments({type, contentId, childComments: response.data}))
+  response => dispatch({
+    type: 'SHOW_FEED_COMMENTS',
+    data: {type, contentId, childComments: response.data}
+  })
 ).catch(
   error => {
     console.error(error.response || error)
@@ -251,15 +249,45 @@ export const uploadFeedVideoReply = data => ({
 })
 
 export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
-  const commentType = parent.type === 'comment' ? 'replies' : 'comments';
-  const params = parent.type === 'comment' ?
-  {reply: comment, videoId: parent.parentContentId, commentId: parent.commentId || parent.id, replyId: parent.commentId ? parent.id : null} : {comment, videoId: parent.id};
+  const parentType = parent.type;
+  let commentType;
+  let params;
+  switch(parentType) {
+    case 'comment':
+      params = {
+        reply: comment,
+        videoId: parent.parentContentId,
+        commentId: parent.commentId || parent.id,
+        replyId: parent.commentId ? parent.id : null
+      }
+      commentType = 'replies';
+    break;
+    case 'video':
+      params = {comment, videoId: parent.id}
+      commentType = 'comments';
+    break;
+    case 'discussion':
+      params = {comment, videoId: parent.parentContentId, debateId: parent.id}
+      commentType = 'debates/comments';
+    break;
+    default: return console.error("Invalid content type")
+  }
 
   request.post(`${URL}/video/${commentType}`, params, auth())
   .then(
     response => {
       const {data} = response;
-      const action = parent.type === 'comment' ? uploadFeedVideoReply({type: parent.type, contentId: parent.id, reply: {...data.result, replies: []}}) : uploadFeedVideoComment({...data, type: parent.type, contentId: parent.id})
+      const action = (parentType === 'comment') ?
+      uploadFeedVideoReply({
+          type: parent.type,
+          contentId: parent.id,
+          reply: {...data.result, replies: []}
+      }) :
+      uploadFeedVideoComment({
+        ...data,
+        type: parent.type,
+        contentId: parent.id
+      })
       dispatch(action);
     }
   ).catch(

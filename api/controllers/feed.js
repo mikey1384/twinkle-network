@@ -17,9 +17,9 @@ router.get('/', (req, res) => {
   let where = 'WHERE a.timeStamp IS NOT NULL ';
   if(feedId !== 0) where += 'AND a.id < ' + feedId + ' ';
   const query = [
-    'SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.content, ',
-    'b.commentId, b.replyId, c.title AS contentTitle, NULL AS contentDescription, c.videoCode AS videoCode, ',
-    'd.username AS uploaderName, e.userId AS targetCommentUploaderId, e.content AS targetComment, ',
+    'SELECT a.id, a.type, a.contentId, a.parentContentId, c.title AS parentContentTitle, ',
+    'c.description AS parentContentDescription, a.uploaderId, d.username AS uploaderName, a.timeStamp, ',
+    'b.content, c.title AS contentTitle, NULL AS contentDescription, c.videoCode AS videoCode, b.commentId, ', 'b.replyId, e.userId AS targetCommentUploaderId, e.content AS targetComment, ',
     'f.username AS targetCommentUploaderName, ',
     'g.userId AS targetReplyUploaderId, g.content AS targetReply, h.username AS targetReplyUploaderName, ',
     'NULL AS videoViews, ',
@@ -32,8 +32,9 @@ router.get('/', (req, res) => {
     'LEFT JOIN users h ON g.userId = h.id ',
     where,
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.videoCode, ',
-    'NULL, NULL, b.title, b.description, b.videoCode, c.username, NULL, NULL, NULL, NULL, NULL, NULL, ',
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, b.title, b.description, a.uploaderId, c.username, ',
+    'a.timeStamp, b.videoCode, b.title, b.description, b.videoCode, NULL, NULL, ',
+    'NULL, NULL, NULL, NULL, NULL, NULL, ',
     '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = a.contentId), ',
     '(SELECT COUNT(*) FROM vq_comments WHERE videoId = a.contentId), NULL ',
 
@@ -41,18 +42,24 @@ router.get('/', (req, res) => {
     'LEFT JOIN users c ON b.uploader = c.id ',
     where,
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, b.url, ',
-    'NULL, NULL, b.title, NULL, NULL, c.username, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL ',
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, b.title, b.description, a.uploaderId, ',
+    'c.username, a.timeStamp, b.url, ',
+    'b.title, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ',
+    'NULL, NULL, NULL ',
 
     'FROM noti_feeds a JOIN content_urls b ON a.type = \'url\' AND a.contentId = b.id ',
     'LEFT JOIN users c ON b.uploader = c.id ',
     where,
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, a.uploaderId, a.timeStamp, NULL, ',
-    'NULL, NULL, b.title, b.description, NULL, c.username, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL ',
+    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, c.title, c.description, a.uploaderId, ',
+    'd.username, a.timeStamp,  NULL, ',
+    'b.title, b.description, c.videoCode, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ',
+    'NULL, ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE debateId = b.id), NULL ',
 
     'FROM noti_feeds a JOIN content_discussions b ON a.type = \'discussion\' AND a.contentId = b.id ',
-    'LEFT JOIN users c ON b.userId = c.id ',
+    'LEFT JOIN vq_videos c ON b.refContentType = \'video\' AND refContentId = c.id ',
+    'LEFT JOIN users d ON b.userId = d.id ',
     where,
 
     'ORDER BY id DESC LIMIT 21'
@@ -169,7 +176,22 @@ router.get('/category', (req, res) => {
 router.get('/comments', (req, res) => {
   const {type, contentId, lastCommentId, isReply} = req.query;
   const limit = 4;
-  let where = type === 'video' ? 'videoId = ? AND a.commentId IS NULL' : (isReply === 'true' ? 'replyId = ?' : 'commentId = ?');
+  let where;
+  switch (type) {
+    case 'video':
+      where = 'videoId = ? AND a.commentId IS NULL';
+    break;
+    case 'comment':
+      where = isReply === 'true' ? 'replyId = ?' : 'commentId = ?';
+    break;
+    case 'discussion':
+      where = 'debateId = ? AND a.commentId IS NULL';
+    break;
+    default:
+      console.error("Invalid Content Type");
+      return res.status(500).send({error: "Invalid Content Type"});
+    break;
+  }
   if (!!lastCommentId && lastCommentId !== '0') where += ' AND a.id < ' + lastCommentId;
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
@@ -220,8 +242,11 @@ router.post('/content', requireAuth, (req, res) => {
       contentId: result.insertId,
       uploaderId: user.id,
       content,
+      videoCode: content,
       timeStamp: post.timeStamp,
       parentContentId: result.insertId,
+      parentContentTitle: post.title,
+      parentContentDescription: post.description,
       commentId: null,
       replyId: null,
       contentTitle: post.title,

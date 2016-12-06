@@ -104,31 +104,51 @@ export default class MainContent extends Component {
             contentId={commentId}
           />
         }
-        {type === 'comment' ?
-            <span style={{
-              fontSize: '1.2em',
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word'
-            }}>
-              <p dangerouslySetInnerHTML={{__html: content}} />
-            </span> :
-            ((type === 'video') ?
-              <div className="embed-responsive embed-responsive-16by9">
-                <YouTube
-                  className="embed-responsive-item"
-                  opts={{
-                    title: title,
-                    height: '360',
-                    width: '640'
-                  }}
-                  videoId={content}
-                  onPlay={this.onVideoPlay}
-                />
-              </div> :
-              <Embedly url={content} apiKey={embedlyKey} />
-            )
+        {type === 'comment' &&
+          <span style={{
+            fontSize: '1.2em',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
+          }}>
+            <p dangerouslySetInnerHTML={{__html: content}} />
+          </span>
         }
-        {type === 'video' && !!contentDescription && contentDescription !== 'No description' &&
+        {(type === 'video' || type === 'discussion') &&
+          <div className="embed-responsive embed-responsive-16by9">
+            <YouTube
+              className="embed-responsive-item"
+              opts={{
+                title: title,
+                height: '360',
+                width: '640'
+              }}
+              videoId={videoCode}
+              onPlay={this.onVideoPlay}
+            />
+          </div>
+        }
+        {type === 'url' &&
+          <Embedly url={content} apiKey={embedlyKey} />
+        }
+        {type === 'discussion' &&
+          <div style={{fontSize: '2rem', marginTop: '1em', marginBottom: '1em'}}>
+            <p><b style={{color: '#28b62c'}}>Discuss:</b></p>
+            <p>{contentTitle}</p>
+          </div>
+        }
+        {type === 'video' &&
+        !!contentDescription && contentDescription !== 'No description' &&
+          <div style={{
+            marginTop: '1em',
+            fontSize: '1.2em',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
+          }}>
+            <p dangerouslySetInnerHTML={{__html: contentDescription}} />
+          </div>
+        }
+        {type === 'discussion' &&
+        !!contentDescription &&
           <div style={{
             marginTop: '1em',
             fontSize: '1.2em',
@@ -147,24 +167,33 @@ export default class MainContent extends Component {
             }}
           >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}</span>
         }
-        {type !== 'url' && (
-            <div style={{marginTop: '2em'}}>
-              <LikeButton
-                onClick={this.onLikeClick}
-                liked={userLikedThis}
-                small
-              />
-              <Button
-                style={{marginLeft: '0.5em'}}
-                className="btn btn-warning btn-sm"
-                onClick={this.onCommentButtonClick}
-              >
-                <span className="glyphicon glyphicon-comment"></span>&nbsp;
-                {`${type === 'video' ? 'Comment' : 'Reply'} ${numChildComments > 0 && !commentsShown ? '(' + numChildComments + ')'
-                : (numChildReplies > 0 && !commentsShown ? '(' + numChildReplies + ')' : '')}`}
-              </Button>
-            </div>
-          )
+        {type !== 'url' && type !== 'discussion' &&
+          <div style={{marginTop: '2em'}}>
+            <LikeButton
+              onClick={this.onLikeClick}
+              liked={userLikedThis}
+              small
+            />
+            <Button
+              style={{marginLeft: '0.5em'}}
+              className="btn btn-warning btn-sm"
+              onClick={this.onCommentButtonClick}
+            >
+              <span className="glyphicon glyphicon-comment"></span>&nbsp;
+              {type === 'video' ? 'Comment' : 'Reply'}&nbsp;
+              {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
+              (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')}
+            </Button>
+          </div>
+        }
+        {type === 'discussion' &&
+          <Button
+            style={{marginTop: '0.5em'}}
+            className="btn btn-warning"
+            onClick={this.onCommentButtonClick}
+          >
+            Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
+          </Button>
         }
         <Likers
           style={{
@@ -180,7 +209,7 @@ export default class MainContent extends Component {
         {type !== 'url' && commentsShown &&
           <PanelComments
             clickListenerState={clickListenerState}
-            inputTypeLabel={type === 'video' ? 'comment' : 'reply'}
+            inputTypeLabel={type === 'comment' ? 'reply' : 'comment'}
             comments={childComments}
             loadMoreButton={commentsLoadMoreButton}
             userId={myId}

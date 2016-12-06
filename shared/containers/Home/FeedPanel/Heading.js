@@ -84,6 +84,10 @@ export default class Heading extends Component {
         return <div className="panel-heading flexbox-container">
             <p className="panel-title pull-left" style={pStyle}><UserLink user={uploader} /> shared a link: <a href={content} target="_blank" style={{color: '#158cba'}}><strong>{cleanString(parentContent.title)}</strong></a> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
           </div>
+      case 'discussion':
+        return <div className="panel-heading flexbox-container">
+          <p className="panel-title pull-left" style={pStyle}><UserLink user={uploader} /> started a <b style={{color: '#28b62c'}}>discussion</b> on video: <ContentLink content={parentContent}/> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
+        </div>
       default:
         return <div className="panpanel-heading flexbox-container">Error</div>
     }

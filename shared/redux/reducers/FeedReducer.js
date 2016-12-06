@@ -37,7 +37,7 @@ export default function FeedReducer(state = defaultState, action) {
         feeds: state.feeds.map(feed => {
           return {
             ...feed,
-            childComments: feed.type === 'video' ? feed.childComments.map(comment => {
+            childComments: feed.type === action.contentType ? feed.childComments.map(comment => {
               return {
                 ...comment,
                 replies: comment.id === action.commentId ? action.data.replies.concat(comment.replies) : comment.replies,
@@ -224,15 +224,20 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === action.data.type && feed.contentId == action.data.contentId) {
-            feed.childComments = action.data.comments;
-          }
-          return feed;
+          return {
+            ...feed,
+            childComments: feed.type === action.data.type && feed.contentId == action.data.contentId ?
+              (
+                action.data.type === 'video' ?
+                action.data.comments : [action.data].concat(feed.childComments)
+              ) :
+              feed.childComments
+          };
         }),
-        newFeeds: state.newFeeds.concat([action.data.comments[0]])
+        newFeeds: action.data.type === 'video' ? state.newFeeds.concat([action.data.comments[0]]) : state.newFeeds.concat([action.data])
       }
     case 'UPLOAD_FEED_VIDEO_REPLY':
-      let {reply} = action.data;
+      let {reply, type} = action.data;
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -246,13 +251,11 @@ export default function FeedReducer(state = defaultState, action) {
             ...feed,
             childComments: feed.childComments.map(childComment => {
               let {replies} = childComment;
-              if (childComment.id === action.data.contentId) {
-                replies = replies.concat([reply])
-              } else if (feed.type === 'video' && childComment.id === action.data.commentId) {
-                replies = replies.concat([reply])
-              } else if (feed.type === 'video' && childComment.id === action.data.reply.commentId) {
-                replies = replies.concat([reply])
-              }
+              replies = (
+                (feed.type === 'comment' && childComment.id === action.data.contentId) ||
+                (feed.type !== 'comment' && childComment.id === action.data.commentId) ||
+                (feed.type !== 'comment' && childComment.id === action.data.reply.commentId)
+              ) ? replies.concat([reply]) : replies;
               return {
                 ...childComment,
                 replies
