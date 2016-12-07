@@ -6,8 +6,9 @@
 2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
 3. Do the same to /shared/constants/"change this filename to ..." files
 4. Run `npm install`
-5. Development / Production builds
-6. Have fun!
+5. Install nodemon `npm install -g nodemon`
+6. Development / Production builds
+7. Have fun!
 
 If you want to run development version, run:
 ```shell
@@ -18,6 +19,8 @@ on one console instance and,
 npm run devapi
 ```
 on another.
+
+
 ---
 If you want to run production version, run:
 ```shell
