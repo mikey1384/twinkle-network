@@ -119,7 +119,7 @@ router.get('/', (req, res) => {
             }
           } else {
             return callback => {
-              if (feed.type === 'url') {
+              if (feed.type === 'url' || feed.type === 'discussion') {
                 feed['contentLikers'] = [];
                 feed['parentContentLikers'] = [];
                 return callback();
