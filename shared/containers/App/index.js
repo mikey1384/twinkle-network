@@ -33,7 +33,6 @@ export default class App extends Component {
   constructor() {
     super()
     this.state = {
-      trackScroll: true,
       scrollPosition: 0
     }
     this.onChatButtonClick = this.onChatButtonClick.bind(this)
@@ -48,11 +47,7 @@ export default class App extends Component {
 
   componentDidUpdate(prevProps) {
     const {turnChatOff} = this.props;
-    if (this.props.children !== prevProps.children) {
-      this.setState({trackScroll: true})
-      turnChatOff()
-    }
-
+    if (this.props.children !== prevProps.children) turnChatOff()
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
       const {chatMode, chatNumUnreads} = this.props;
       let title = '';
@@ -102,10 +97,7 @@ export default class App extends Component {
           socket={socket}
           chatMode={chatMode}
           onChatButtonClick={this.onChatButtonClick}
-          turnChatOff={() => {
-            this.setState({trackScroll: true})
-            turnChatOff()
-          }}
+          turnChatOff={() => turnChatOff()}
         />
         <div
           style={style}
@@ -117,7 +109,6 @@ export default class App extends Component {
             socket={socket}
             onUnmount={
               () => {
-                this.setState({trackScroll: true})
                 window.scrollTo(0, scrollPosition)
                 this.props.resetChat();
                 turnChatOff();
@@ -136,18 +127,15 @@ export default class App extends Component {
   }
 
   onChatButtonClick() {
-    const {trackScroll} = this.state;
     const {toggleChat, initChat} = this.props;
-
-    this.setState({trackScroll: false})
     initChat(() => {
       toggleChat();
     })
   }
 
   onScroll() {
-    const {trackScroll} = this.state;
-    if (trackScroll) {
+    const {chatMode} = this.props;
+    if (!chatMode) {
       this.setState({scrollPosition: window.scrollY})
     }
   }
