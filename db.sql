@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.14)
 # Database: twinkle
-# Generation Time: 2016-12-04 11:39:05 +0000
+# Generation Time: 2016-12-07 11:39:53 +0000
 # ************************************************************
 
 
@@ -86,10 +86,28 @@ VALUES
 	(15,205,'four',NULL,'video',28,1479629544),
 	(16,205,'lets see',NULL,'video',30,1479656928),
 	(17,205,'let\'s test this!!','Hello world','video',42,1480251298),
-	(19,205,'new discussion','random topic','video',45,1480731431);
+	(19,205,'new discussion','random topic','video',45,1480731431),
+	(23,205,'this is a new discussion. hellloooo?',NULL,'video',53,1480993102);
 
 /*!40000 ALTER TABLE `content_discussions` ENABLE KEYS */;
 UNLOCK TABLES;
+
+DELIMITER ;;
+/*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
+/*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `content_discussions_after_insert` AFTER INSERT ON `content_discussions` FOR EACH ROW BEGIN
+
+INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
+VALUES ('discussion', NEW.refContentType, NEW.id, NEW.refContentId, NEW.userId, NEW.timeStamp);
+
+END */;;
+/*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
+/*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `content_discussions_after_delete` AFTER DELETE ON `content_discussions` FOR EACH ROW BEGIN
+
+DELETE FROM noti_feeds WHERE type = 'discussion' AND contentId = OLD.id;
+
+END */;;
+DELIMITER ;
+/*!50003 SET SESSION SQL_MODE=@OLD_SQL_MODE */;
 
 
 # Dump of table content_urls
@@ -123,7 +141,9 @@ VALUES
 	(28,'Final fantasy just link',NULL,5,'https://www.youtube.com/watch?v=YtFt5XpaSbQ',5,1476855751),
 	(31,'JS StackOF',NULL,7,'http://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs',5,1476863130),
 	(32,'ALF link',NULL,5,'https://www.youtube.com/watch?v=awNjw4x8rMo',5,1476863171),
-	(33,'Youtube','No description',7,'https://www.youtube.com/',5,1480038445);
+	(33,'Youtube','No description',7,'https://www.youtube.com/',5,1480038445),
+	(34,'Andrew\'s old student','No description',7,'https://vimeo.com/193898447',205,1480989861),
+	(35,'Andrew\'s old student','No description',7,'https://vimeo.com/193898447',205,1480992487);
 
 /*!40000 ALTER TABLE `content_urls` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -132,8 +152,8 @@ DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
 /*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `content_urls_after_insert` AFTER INSERT ON `content_urls` FOR EACH ROW BEGIN
 
-INSERT INTO noti_feeds (type, contentId, parentContentId, uploaderId, timeStamp)
-VALUES ('url', NEW.id, NEW.id, NEW.uploader, NEW.timeStamp);
+INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
+VALUES ('url', 'url', NEW.id, NEW.id, NEW.uploader, NEW.timeStamp);
 
 END */;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
@@ -168,7 +188,7 @@ INSERT INTO `msg_channel_info` (`id`, `userId`, `channelId`, `lastRead`, `channe
 VALUES
 	(203,218,2,1473864700,NULL,0),
 	(204,218,186,1468849612,NULL,0),
-	(205,5,2,1480004175,NULL,0),
+	(205,5,2,1481071240,NULL,0),
 	(206,5,186,1468679661,NULL,0),
 	(207,5,187,1468849599,NULL,0),
 	(208,218,187,1468846565,NULL,0),
@@ -222,11 +242,11 @@ VALUES
 	(256,5,208,1473585426,NULL,0),
 	(257,210,207,1470147795,NULL,0),
 	(258,210,208,1470147804,NULL,0),
-	(259,5,209,1480004177,NULL,0),
+	(259,5,209,1481091273,NULL,0),
 	(260,5,210,1471259741,NULL,1),
 	(261,5,211,1475136677,NULL,0),
-	(262,205,2,1479701240,NULL,0),
-	(263,205,209,1479629170,NULL,0),
+	(262,205,2,1480998383,NULL,0),
+	(263,205,209,1481071218,NULL,0),
 	(264,205,212,1479474564,NULL,0),
 	(265,209,212,1470482869,NULL,0),
 	(266,5,213,1473585562,NULL,0),
@@ -838,7 +858,8 @@ VALUES
 	(1465,224,205,'x',1479991521,0),
 	(1466,224,205,'vc',1479991521,0),
 	(1467,224,205,'cx',1479991521,0),
-	(1468,224,205,'vc',1479991521,0);
+	(1468,224,205,'vc',1479991521,0),
+	(1469,209,5,'INSERT INTO noti_feeds (type, contentId, parentContentType, parentContentId, uploaderId, timeStamp) <br>SELECT type, contentId, parentContentType, parentContentId, uploaderId, timeStamp FROM (<br>	SELECT \'comment\' AS type, id AS contentId, \'video\' AS parentContentType, videoId AS parentContentId, userId AS uploaderId, timeStamp <br>	FROM vq_comments <br>	UNION <br>	SELECT \'video\', id, \'video\', id, uploader, timeStamp FROM vq_videos <br>	UNION<br>	SELECT \'url\', id, \'url\', id, uploader, timeStamp FROM content_urls <br>	UNION<br>	SELECT \'discussion\', id, refContentType, refContentId, userId, timeStamp FROM content_discussions <br>	ORDER BY timeStamp<br>) AS data',1481090399,0);
 
 /*!40000 ALTER TABLE `msg_chats` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -948,16 +969,25 @@ VALUES
 	(81,'video',40,'video',40,205,1480090049),
 	(82,'video',41,'video',41,205,1480121023),
 	(83,'video',42,'video',42,205,1480121083),
-	(84,'comment',623,'video',43,205,1480172807),
 	(85,'discussion',17,'video',42,205,1480251298),
-	(86,'comment',624,'video',42,205,1480473070),
-	(87,'comment',625,'video',42,205,1480473097),
-	(88,'comment',626,'video',42,205,1480473132),
 	(89,'video',43,'video',43,205,1480622019),
 	(90,'video',45,'video',45,205,1480688893),
 	(91,'discussion',19,'video',45,205,1480731431),
 	(92,'video',46,'video',46,205,1480734334),
-	(128,'video',47,NULL,47,205,1480833968);
+	(128,'video',47,'video',47,205,1480833968),
+	(129,'video',48,'video',48,205,1480867325),
+	(130,'video',49,'video',49,205,1480900274),
+	(131,'video',50,'video',50,205,1480923085),
+	(132,'video',51,'video',51,205,1480989488),
+	(134,'video',53,'video',53,205,1480989798),
+	(136,'url',35,'url',35,205,1480992487),
+	(139,'discussion',23,'video',53,205,1480993102),
+	(163,'comment',650,'video',53,205,1481032132),
+	(164,'comment',651,'video',53,205,1481032144),
+	(166,'comment',653,'video',50,205,1481039583),
+	(169,'comment',656,'video',53,205,1481040333),
+	(170,'comment',657,'video',53,205,1481040343),
+	(171,'video',54,'video',54,5,1481094754);
 
 /*!40000 ALTER TABLE `noti_feeds` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1024,7 +1054,7 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` (`id`, `username`, `realName`, `class`, `email`, `userType`, `joinDate`, `password`, `lastChannelId`)
 VALUES
 	(5,'mikey','',NULL,'twinkle.mikey@gmail.com','master',NULL,'sha1$a1b4e5d8$1$9d276b32dfd2bd1aeabbde0c7d9f4b40820f16a8',209),
-	(205,'charlie','Charlie Shin',NULL,'twinkle.teacher@gmail.com','teacher',1459947370,'sha1$bb97bb36$1$bf37ba395a3a281fe6f60dac9df35700926cc0c2',224),
+	(205,'charlie','Charlie Shin',NULL,'twinkle.teacher@gmail.com','teacher',1459947370,'sha1$bb97bb36$1$bf37ba395a3a281fe6f60dac9df35700926cc0c2',209),
 	(206,'user','mike Ser',NULL,NULL,'user',1459947427,'sha1$7d1504e0$1$853f1b45bbe54f120bdef7a7c187edd992ae8dd3',NULL),
 	(208,'testingsignup','Testing Signup',NULL,'twinkle.contact@gmail.com','teacher',1461661347,'sha1$bd66bf25$1$e7eab82f167ef1ab1fac89b357484d234d600627',211),
 	(209,'student','Studious Lee',NULL,'','user',1463215894,'sha1$eaa3076d$1$f20549e534f34cf04fe4a3c7110ab4e959f76825',216),
@@ -1094,10 +1124,11 @@ VALUES
 	(620,5,'tes',1480036622,31,619,NULL,NULL),
 	(621,5,'comment',1480038879,33,NULL,NULL,NULL),
 	(622,5,'reply',1480038883,33,621,NULL,NULL),
-	(623,205,'test',1480172807,43,NULL,NULL,NULL),
-	(624,205,'test',1480473070,42,NULL,NULL,NULL),
-	(625,205,'another',1480473097,42,NULL,NULL,NULL),
-	(626,205,'reply',1480473132,42,625,NULL,NULL);
+	(650,205,'hi!!',1481032132,53,NULL,NULL,23),
+	(651,205,'hey...',1481032144,53,650,NULL,23),
+	(653,205,'Testing comment',1481039583,50,NULL,NULL,NULL),
+	(656,205,'please work',1481040333,53,NULL,NULL,23),
+	(657,205,'yaa!',1481040343,53,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `vq_comments` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1106,8 +1137,8 @@ DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
 /*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `vq_comments_after_insert` AFTER INSERT ON `vq_comments` FOR EACH ROW BEGIN
 
-INSERT INTO noti_feeds (type, contentId, parentContentId, uploaderId, timeStamp)
-VALUES ('comment', NEW.id, NEW.videoId, NEW.userId, NEW.timeStamp);
+INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
+VALUES ('comment', 'video', NEW.id, NEW.videoId, NEW.userId, NEW.timeStamp);
 
 END */;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
@@ -1449,7 +1480,10 @@ VALUES
 	(85,41,205,1480421767),
 	(86,43,205,1480646411),
 	(87,46,205,1480786021),
-	(88,47,205,1480833972);
+	(88,47,205,1480833972),
+	(89,48,205,1480867329),
+	(90,50,205,1480952089),
+	(91,54,5,1481094823);
 
 /*!40000 ALTER TABLE `vq_video_views` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1511,7 +1545,13 @@ VALUES
 	(43,'FFXV','No description',1,'ODEWcGdOp4g',205,1480622019),
 	(45,'test','No description',1,'ADT1imaYZW0',205,1480688893),
 	(46,'Why Dark Souls doesn\'t hate you','No description',5,'g4tqmo_mF5U',205,1480734334),
-	(47,'The last of us 2','No description',7,'W2Wnvvj33Wo',205,1480833968);
+	(47,'The last of us 2','No description',7,'W2Wnvvj33Wo',205,1480833968),
+	(48,'MVC','No description',7,'tpQ_l1XHL_g',205,1480867325),
+	(49,'이재명 시장','No description',7,'2awkwWmE_U4',205,1480900274),
+	(50,'Teenager brains','This is a brainy description',1,'hiduiTq1ei8',205,1480923085),
+	(51,'BloodBorne','No description',7,'xksTdvvtN2w',205,1480989488),
+	(53,'Breath of the wild lets play video','No description',7,'Na1cIOmfBlU',205,1480989798),
+	(54,'Breath of the wild towns and villages','No description',5,'8zWan118_CM',5,1481094754);
 
 /*!40000 ALTER TABLE `vq_videos` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1520,8 +1560,8 @@ DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
 /*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `vq_videos_after_insert` AFTER INSERT ON `vq_videos` FOR EACH ROW BEGIN
 
-INSERT INTO noti_feeds (type, contentId, parentContentId, uploaderId, timeStamp)
-VALUES ('video', NEW.id, NEW.id, NEW.uploader, NEW.timeStamp);
+INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
+VALUES ('video', 'video', NEW.id, NEW.id, NEW.uploader, NEW.timeStamp);
 
 END */;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
