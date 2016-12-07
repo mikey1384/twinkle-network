@@ -7,6 +7,7 @@
 3. Do the same to /shared/constants/"change this filename to ..." files
 4. Run `npm install`
 5. Development / Production builds
+6. Have fun!
 
 If you want to run development version, run:
 ```shell
