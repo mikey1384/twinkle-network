@@ -26,6 +26,17 @@ export default class Home extends Component {
       feeds.length > 0 ?
         <div className="container-fluid col-md-offset-3 col-md-6">
           {!!userId && <FeedInputPanel />}
+
+          <nav className="navbar navbar-inverse">
+            <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
+              <li className="active"><a style={{cursor: 'pointer'}}>All</a></li>
+              <li><a style={{cursor: 'pointer'}}>Discussions</a></li>
+              <li><a style={{cursor: 'pointer'}}>Videos</a></li>
+              <li><a style={{cursor: 'pointer'}}>Links</a></li>
+              <li><a style={{cursor: 'pointer'}}>Comments</a></li>
+            </ul>
+          </nav>
+
           {feeds.map(feed => {
             return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />;
           })}
