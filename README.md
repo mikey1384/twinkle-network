@@ -10,6 +10,8 @@
 6. Development / Production builds
 7. Have fun!
 
+---
+
 If you want to run development version, run:
 ```shell
 npm run dev
@@ -19,7 +21,6 @@ on one console instance and,
 npm run devapi
 ```
 on another.
-
 
 ---
 If you want to run production version, run:
