@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {reduxForm, Field, reset} from 'redux-form';
 import {connect} from 'react-redux';
 import Textarea from 'react-textarea-autosize';
 import Button from 'components/Button';
 import SearchInput from 'components/SearchInput';
+import {Color} from 'constants/css';
 import {
   fetchCategoriesAsync,
   clearCategoriesSearchResults,
@@ -14,53 +14,7 @@ import {
   stringIsEmpty
 } from 'helpers/stringHelpers';
 
-const renderInput = (
-  {
-    input, type, autoFocus, className, placeholder, checked,
-    checkIfYouTubeVideo, toggleCheck, meta: {touched, error}
-  }
-) => (
-  <div style={{display: 'inline'}}>
-    <input
-      {...input}
-      onChange={event => {
-        input.onChange(event)
-        if (input.name === 'url') {
-          checkIfYouTubeVideo(event.target.value);
-        }
-      }}
-      autoFocus={autoFocus}
-      checked={checked}
-      onClick={() => {if (input.name === 'isVideo') toggleCheck()}}
-      className={className}
-      placeholder={placeholder}
-      type={type}
-      style={{borderColor: touched && error ? 'red' : '#e7e7e7'}}
-    />
-    {touched && error && (error !== 'Enter url') && (error !== 'Enter title') &&
-      <span
-        className="help-block"
-        style={{
-          color: 'red',
-          marginBottom: '0px'
-        }}
-      >{error}</span>
-    }
-  </div>
-)
 
-const renderTextarea = ({input, className, minRows, placeholder}) =>
-<Textarea
-  {...input}
-  className={className}
-  minRows={minRows}
-  placeholder={placeholder}
-/>
-
-@reduxForm({
-  form: 'UploadVideoForm',
-  validate
-})
 @connect(
   state => ({
     username: state.UserReducer.username,
@@ -69,20 +23,28 @@ const renderTextarea = ({input, className, minRows, placeholder}) =>
   {
     fetchCategories: fetchCategoriesAsync,
     clearSearchResults: clearCategoriesSearchResults,
-    uploadContent: uploadContentAsync,
-    resetForm: reset
+    uploadContent: uploadContentAsync
   }
 )
 export default class FeedInputPanel extends Component {
   constructor() {
     super()
     this.state = {
-      checkedVideo: false,
-      categoryText: '',
+      categorySearchText: '',
       selectedCategoryLabel: '',
-      selectedCategory: null,
       categoryNotSelected: false,
-      descriptionFieldsShown: false
+      descriptionFieldsShown: false,
+      form: {
+        url: '',
+        checkedVideo: false,
+        selectedCategory: null,
+        title: '',
+        description: ''
+      },
+      errors: {
+        url: null,
+        title: null
+      }
     }
     this.checkIfYouTubeVideo = this.checkIfYouTubeVideo.bind(this)
     this.onCategorySelect = this.onCategorySelect.bind(this)
@@ -93,9 +55,9 @@ export default class FeedInputPanel extends Component {
   }
 
   render() {
-    const {categorySearchResult = [], handleSubmit, username, submitting} = this.props;
+    const {categorySearchResult = [], username, submitting} = this.props;
     const {
-      checkedVideo, categoryText, descriptionFieldsShown,
+      form, categorySearchText, descriptionFieldsShown,
       selectedCategoryLabel, categoryNotSelected
     } = this.state;
     return (
@@ -108,25 +70,29 @@ export default class FeedInputPanel extends Component {
           <p className="panel-title pull-left" style={{fontWeight: 'bold'}}>Hello{`${username ? ' ' + username : ''}`}! Got anything interesting you want to share?</p>
         </div>
         <div className="panel-body">
-          <form className="container-fluid" onSubmit={handleSubmit(this.onSubmit)}>
+          <form className="container-fluid">
             <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
               <label style={{paddingBottom: '0.3em'}}><strong>Enter Url</strong></label>
-              <Field
-                name="url"
-                placeholder="Enter url. For example: www.google.com"
-                className="form-control"
-                component={renderInput}
-                checkIfYouTubeVideo={this.checkIfYouTubeVideo}
-                type="text"
-              />
+              <div style={{display: 'inline'}}>
+                <input
+                  value={form.url}
+                  onChange={event => this.setState({form: {...form, url: event.target.value}})}
+                  className="form-control"
+                  placeholder="Enter url. For example: www.google.com"
+                  type="text"
+                />
+              </div>
             </fieldset>
             <fieldset className="form-group">
               <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
-              <Field
-                name="isVideo"
-                toggleCheck={() => this.setState({checkedVideo: !this.state.checkedVideo})}
-                checked={checkedVideo}
-                component={renderInput}
+              <input
+                onClick={() => this.setState({
+                  form: {
+                    ...form,
+                    checkedVideo: !form.checkedVideo
+                  }
+                })}
+                checked={form.checkedVideo}
                 type="checkbox"
               />
             </fieldset>
@@ -137,7 +103,7 @@ export default class FeedInputPanel extends Component {
                 >Category:</span>&nbsp;&nbsp;&nbsp;<span
                   style={{
                     fontSize: selectedCategoryLabel ? '1.5em' : '1em',
-                    color: selectedCategoryLabel ? '#158cba' : '#999999',
+                    color: selectedCategoryLabel ? Color.blue : Color.gray,
                     fontStyle: selectedCategoryLabel ? 'normal' : 'italic'
                   }}
                 >
@@ -149,7 +115,7 @@ export default class FeedInputPanel extends Component {
               <SearchInput
                 placeholder="Select Category"
                 onChange={this.onSearchInputChange}
-                value={categoryText}
+                value={categorySearchText}
                 searchResults={categorySearchResult}
                 renderItemLabel={
                   item => <span>{item.label}</span>
@@ -165,26 +131,29 @@ export default class FeedInputPanel extends Component {
               >{`${categoryNotSelected ? 'Select category' : ''}`}</span>
             </fieldset>
             {descriptionFieldsShown && <div>
-              <fieldset className="form-group">
-                <Field
-                  autoFocus
-                  name="title"
-                  placeholder="Enter Title"
-                  className="form-control"
-                  component={renderInput}
-                  type="text"
-                />
-              </fieldset>
-              <fieldset className="form-group">
-                <Field
-                  name="description"
-                  className="form-control"
-                  minRows={4}
-                  placeholder="Enter Description (Optional, you don't need to write this)"
-                  component={renderTextarea}
-                />
-              </fieldset>
-            </div>}
+                <fieldset className="form-group">
+                  <div style={{display: 'inline'}}>
+                    <input
+                      autoFocus
+                      value={form.title}
+                      onChange={event => this.setState({form: {...form, title: event.target.value}})}
+                      className="form-control"
+                      placeholder="Enter Title"
+                      type="text"
+                    />
+                  </div>
+                </fieldset>
+                <fieldset className="form-group">
+                  <Textarea
+                    value={form.description}
+                    className="form-control"
+                    minRows={4}
+                    placeholder="Enter Description (Optional, you don't need to write this)"
+                    onChange={event => this.setState({form: {...form, description: event.target.value}})}
+                  />
+                </fieldset>
+              </div>
+            }
             <Button
               className="btn btn-primary"
               type="submit"
@@ -200,32 +169,46 @@ export default class FeedInputPanel extends Component {
 
   checkIfYouTubeVideo(url) {
     if (isValidYoutubeUrl(url)) {
-      this.setState({checkedVideo: true})
+      this.setState({
+        form: {
+          ...this.state.form,
+          checkedVideo: true
+        }
+      })
     }
   }
 
   onCategorySelect(item) {
     const {clearSearchResults} = this.props;
+    const {form, errors} = this.state;
     this.setState({
-      categoryText: '',
+      categorySearchText: '',
       selectedCategoryLabel: item.label,
-      selectedCategory: item.id,
-      descriptionFieldsShown: true
+      form: {
+        ...form,
+        selectedCategory: item.id,
+      }
     })
     clearSearchResults()
+    if (stringIsEmpty(form.url))
+    return this.setState({errors: {...errors, url: 'Enter url'}});
+    if (!isValidUrl) return this.setState({errors: {...errors, url: 'That is not a valid url'}})
+    if (forms.checkedVideo && !isValidYoutubeUrl(form.url))
+    return this.setState({errors: {...errors, url: 'That is not a valid YouTube url'}});
+    this.setState({descriptionFieldsShown: true})
   }
 
   onClickOutSideSearch() {
     const {clearSearchResults} = this.props;
     this.setState({
-      categoryText: ''
+      categorySearchText: ''
     })
     clearSearchResults()
   }
 
   onSearchInputChange(event) {
     const {fetchCategories} = this.props;
-    this.setState({categoryText: event.target.value})
+    this.setState({categorySearchText: event.target.value})
     fetchCategories(event.target.value)
   }
 
@@ -236,21 +219,27 @@ export default class FeedInputPanel extends Component {
   }
 
   onSubmit(props) {
-    const {selectedCategory, checkedVideo} = this.state;
+    const {form} = this.state;
+    const {selectedCategory} = form;
     const {uploadContent, resetForm} = this.props;
     if (selectedCategory === null) {
       return this.setState({categoryNotSelected: true})
     }
     let params = Object.assign({}, props, {
       categoryId: selectedCategory,
-      checkedVideo
+      checkedVideo: form.checkedVideo
     })
     resetForm('UploadVideoForm')
     this.setState({
-      checkedVideo: false,
-      categoryText: '',
+      categorySearchText: '',
       selectedCategoryLabel: '',
-      selectedCategory: null
+      form: {
+        url: '',
+        checkedVideo: false,
+        selectedCategory: null,
+        title: '',
+        description: ''
+      }
     })
     uploadContent(params)
   }
