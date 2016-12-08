@@ -227,11 +227,12 @@ export const uploadContent = data => ({
   data
 })
 
-export const uploadContentAsync = params => dispatch =>
-request.post(`${API_URL}/content`, params, auth())
+export const uploadContentAsync = form => dispatch =>
+request.post(`${API_URL}/content`, form, auth())
 .then(
   response => {
     const {data} = response;
+    console.log(data);
     dispatch(uploadContent(data))
   }
 ).catch(

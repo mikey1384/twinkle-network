@@ -241,6 +241,7 @@ router.post('/content', requireAuth, (req, res) => {
 
     res.send({
       type,
+      id: type + result.insertId,
       contentId: result.insertId,
       uploaderId: user.id,
       content,

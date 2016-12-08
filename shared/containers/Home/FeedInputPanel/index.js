@@ -42,10 +42,7 @@ export default class FeedInputPanel extends Component {
         title: '',
         description: ''
       },
-      errors: {
-        url: null,
-        title: false
-      }
+      urlError: null
     }
 
     this.onCategorySelect = this.onCategorySelect.bind(this)
@@ -60,7 +57,7 @@ export default class FeedInputPanel extends Component {
   render() {
     const {categorySearchResult = [], username} = this.props;
     const {
-      form, errors, categorySearchText, descriptionFieldsShown,
+      form, urlError, categorySearchText, descriptionFieldsShown,
       selectedCategoryLabel, categoryNotSelected
     } = this.state;
     const {url, title, description, selectedCategory} = form;
@@ -79,7 +76,7 @@ export default class FeedInputPanel extends Component {
               <label style={{paddingBottom: '0.3em'}}><strong>Enter Url</strong></label>
               <div style={{display: 'inline'}}>
                 <input
-                  style={{borderColor: !!errors.url && 'red'}}
+                  style={{borderColor: !!urlError && 'red'}}
                   value={form.url}
                   onChange={this.onUrlFieldChange}
                   className="form-control"
@@ -87,7 +84,7 @@ export default class FeedInputPanel extends Component {
                   type="text"
                 />
               </div>
-              {!!errors.url &&
+              {urlError &&
                 <span
                   className="help-block"
                   style={{
@@ -95,7 +92,7 @@ export default class FeedInputPanel extends Component {
                     marginBottom: '0px'
                   }}
                 >
-                  {errors.url}
+                  {urlError}
                 </span>
               }
             </fieldset>
@@ -107,7 +104,8 @@ export default class FeedInputPanel extends Component {
                     form: {
                       ...form,
                       checkedVideo: !form.checkedVideo
-                    }
+                    },
+                    urlError: null
                   })
                 }}
                 checked={form.checkedVideo}
@@ -157,7 +155,6 @@ export default class FeedInputPanel extends Component {
                       className="form-control"
                       placeholder="Enter Title"
                       type="text"
-                      style={{borderColor: !!errors.title && 'red'}}
                     />
                   </div>
                 </fieldset>
@@ -175,7 +172,7 @@ export default class FeedInputPanel extends Component {
             <Button
               className="btn btn-primary"
               type="submit"
-              disabled={url === '' || title === '' || !selectedCategory}
+              disabled={stringIsEmpty(url) || stringIsEmpty(title) || !selectedCategory}
               onClick={this.onSubmit}
             >
               Share!
@@ -188,7 +185,7 @@ export default class FeedInputPanel extends Component {
 
   onCategorySelect(item) {
     const {clearSearchResults} = this.props;
-    const {form, errors, descriptionFieldsShown} = this.state;
+    const {form, urlError, descriptionFieldsShown} = this.state;
     this.setState({
       categorySearchText: '',
       selectedCategoryLabel: item.label,
@@ -223,20 +220,13 @@ export default class FeedInputPanel extends Component {
     const {uploadContent} = this.props;
     const {form} = this.state;
     const {url, title, checkedVideo, selectedCategory} = form;
-    let errors = {url: null, title: false};
+    let urlError;
     event.preventDefault()
 
-    if (!isValidUrl(url)) errors.url = 'This is not a valid url';
-    if (checkedVideo && !isValidYoutubeUrl(url)) errors.url = 'This is not a valid YouTube url';
-    if (stringIsEmpty(title)) errors.title = true;
+    if (!isValidUrl(url)) urlError = 'This is not a valid url';
+    if (checkedVideo && !isValidYoutubeUrl(url)) urlError = 'This is not a valid YouTube url';
 
-
-    if (errors.url || errors.title) return this.setState({
-      errors: {
-        url: errors.url,
-        title: errors.title
-      }
-    })
+    if (!!urlError) return this.setState({urlError})
 
     this.setState({
       categorySearchText: '',
@@ -249,20 +239,17 @@ export default class FeedInputPanel extends Component {
         title: '',
         description: ''
       },
-      errors: {
-        url: null,
-        title: false
-      }
+      urlError: null
     })
     uploadContent(form)
   }
 
   onUrlFieldChange(event) {
-    const {form, errors} = this.state;
+    const {form} = this.state;
     const url = event.target.value;
     this.setState({
       form: {...form, url, checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo},
-      errors: {...errors, url: null}
+      urlError: null
     })
   }
 }
