@@ -14,8 +14,10 @@ const {returnComments} = require('../helpers/videoHelpers');
 
 router.get('/', (req, res) => {
   const feedId = Number(req.query.lastFeedId) || 0;
+  const filter = req.query.filter;
   let where = 'WHERE a.timeStamp IS NOT NULL ';
-  if(feedId !== 0) where += 'AND a.id < ' + feedId + ' ';
+  if (feedId !== 0) where += 'AND a.id < ' + feedId + ' ';
+  if (filter !== 'undefined' && filter !== 'all') where += 'AND a.type = "' + filter + '" ';
   const query = [
     'SELECT a.id, a.type, a.contentId, a.parentContentId, c.title AS parentContentTitle, ',
     'c.description AS parentContentDescription, a.uploaderId, d.username AS uploaderName, a.timeStamp, ',

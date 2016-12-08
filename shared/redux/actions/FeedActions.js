@@ -79,9 +79,12 @@ export const fetchFeeds = data => ({
   data
 })
 
-export const fetchFeedsAsync = () => dispatch => {
-  request.get(API_URL).then(
-    response => dispatch(fetchFeeds(response.data))
+export const fetchFeedsAsync = (filter, callback) => dispatch => {
+  request.get(`${API_URL}?filter=${filter}`).then(
+    response => {
+      dispatch(fetchFeeds(response.data));
+      if (!!callback) callback();
+    }
   ).catch(
     error => {
       console.error(error.response || error)

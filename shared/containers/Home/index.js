@@ -2,7 +2,7 @@ import React, {Component , PropTypes} from 'react';
 import {connect} from 'react-redux';
 import Button from 'components/Button';
 import FeedPanel from './FeedPanel';
-import {fetchMoreFeedsAsync} from 'redux/actions/FeedActions';
+import {fetchMoreFeedsAsync, fetchFeedsAsync} from 'redux/actions/FeedActions';
 import FeedInputPanel from './FeedInputPanel';
 
 @connect(
@@ -12,16 +12,24 @@ import FeedInputPanel from './FeedInputPanel';
     userId: state.UserReducer.userId,
     username: state.UserReducer.username
   }),
-  {fetchMoreFeeds: fetchMoreFeedsAsync}
+  {
+    fetchMoreFeeds: fetchMoreFeedsAsync,
+    fetchFeeds: fetchFeedsAsync
+  }
 )
 export default class Home extends Component {
   constructor() {
     super()
+    this.state = {
+      selectedFilter: 'all'
+    }
     this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
+    this.applyFilter = this.applyFilter.bind(this)
   }
 
   render() {
     const {userId, feeds, loadMoreButton, username} = this.props;
+    const {selectedFilter} = this.state;
     return !!feeds ? (
       feeds.length > 0 ?
         <div className="container-fluid col-md-offset-3 col-md-6">
@@ -29,11 +37,56 @@ export default class Home extends Component {
 
           <nav className="navbar navbar-inverse">
             <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
-              <li className="active"><a style={{cursor: 'pointer'}}>All</a></li>
-              <li><a style={{cursor: 'pointer'}}>Discussions</a></li>
-              <li><a style={{cursor: 'pointer'}}>Videos</a></li>
-              <li><a style={{cursor: 'pointer'}}>Links</a></li>
-              <li><a style={{cursor: 'pointer'}}>Comments</a></li>
+              <li className={selectedFilter === 'all' && 'active'}>
+                <a
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => this.applyFilter('all')}
+                >
+                  All
+                </a>
+              </li>
+              <li className={selectedFilter === 'discussion' && 'active'}>
+                <a
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => this.applyFilter('discussion')}
+                >
+                  Discussions
+                </a>
+              </li>
+              <li className={selectedFilter === 'video' && 'active'}>
+                <a
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => this.applyFilter('video')}
+                >
+                  Videos
+                </a>
+              </li>
+              <li className={selectedFilter === 'url' && 'active'}>
+                <a
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => this.applyFilter('url')}
+                >
+                  Links
+                </a>
+              </li>
+              <li className={selectedFilter === 'comment' && 'active'}>
+                <a
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => this.applyFilter('comment')}
+                >
+                  Comments
+                </a>
+              </li>
             </ul>
           </nav>
 
@@ -59,6 +112,15 @@ export default class Home extends Component {
       paddingBottom: '1em',
       fontSize: '3em'
     }}><span className="glyphicon glyphicon-refresh spinning"></span> <span>Loading...</span></p>
+  }
+
+  applyFilter(filter) {
+    const {selectedFilter} = this.state;
+    const {fetchFeeds} = this.props;
+    if (filter === selectedFilter) return;
+    fetchFeeds(filter, () => {
+      this.setState({selectedFilter: filter})
+    })
   }
 
   loadMoreFeeds() {
