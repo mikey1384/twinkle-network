@@ -125,6 +125,7 @@ export default class Home extends Component {
 
   loadMoreFeeds() {
     const {feeds, fetchMoreFeeds} = this.props;
-    fetchMoreFeeds(feeds[feeds.length - 1].id);
+    const {selectedFilter} = this.state;
+    fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter);
   }
 }
