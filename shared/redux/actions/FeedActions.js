@@ -228,7 +228,7 @@ export const uploadContent = data => ({
 })
 
 export const uploadContentAsync = params => dispatch =>
-request.post(`${API_URL}/content`, {params}, auth())
+request.post(`${API_URL}/content`, params, auth())
 .then(
   response => {
     const {data} = response;

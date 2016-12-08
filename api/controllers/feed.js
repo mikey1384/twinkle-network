@@ -222,7 +222,7 @@ router.get('/comments', (req, res) => {
 
 router.post('/content', requireAuth, (req, res) => {
   const {user} = req;
-  const {url, title, description, categoryId, checkedVideo} = req.body.params;
+  const {url, title, description, selectedCategory, checkedVideo} = req.body;
   const type = !!checkedVideo ? 'video' : 'url';
   const query = !!checkedVideo ?
   'INSERT INTO vq_videos SET ?' :
@@ -230,7 +230,7 @@ router.post('/content', requireAuth, (req, res) => {
   const content = !!checkedVideo ? fetchedVideoCodeFromURL(url) : processedURL(url);
   const post = Object.assign({},
     {title: processedTitleString(title), description: (!description || description === '') ?
-    "No description" : processedString(description), uploader: user.id, timeStamp: Math.floor(Date.now()/1000), categoryId},
+    "No description" : processedString(description), uploader: user.id, timeStamp: Math.floor(Date.now()/1000), categoryId: selectedCategory},
     (!!checkedVideo ? {videocode: content} : {url: content})
   )
   pool.query(query, post, (err, result) => {

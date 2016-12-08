@@ -33,8 +33,7 @@ export default class Home extends Component {
     return !!feeds ? (
       feeds.length > 0 ?
         <div className="container-fluid col-md-offset-3 col-md-6">
-          {!!userId && <FeedInputPanel />}
-
+          <FeedInputPanel />
           <nav className="navbar navbar-inverse">
             <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
               <li className={selectedFilter === 'all' && 'active'}>

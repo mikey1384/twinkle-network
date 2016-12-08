@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import Textarea from 'react-textarea-autosize';
 import Button from 'components/Button';
@@ -43,23 +44,26 @@ export default class FeedInputPanel extends Component {
       },
       errors: {
         url: null,
-        title: null
+        title: false
       }
     }
-    this.checkIfYouTubeVideo = this.checkIfYouTubeVideo.bind(this)
+
     this.onCategorySelect = this.onCategorySelect.bind(this)
+    this.onUrlFieldChange = this.onUrlFieldChange.bind(this)
     this.onSearchInputChange = this.onSearchInputChange.bind(this)
     this.onSearchInputFocus = this.onSearchInputFocus.bind(this)
-    this.onClickOutSideSearch = this.onClickOutSideSearch.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+
+    this.onClickOutSideSearch = this.onClickOutSideSearch.bind(this)
   }
 
   render() {
-    const {categorySearchResult = [], username, submitting} = this.props;
+    const {categorySearchResult = [], username} = this.props;
     const {
       form, errors, categorySearchText, descriptionFieldsShown,
       selectedCategoryLabel, categoryNotSelected
     } = this.state;
+    const {url, title, description, selectedCategory} = form;
     return (
       <div className="panel panel-default"
         style={{
@@ -67,7 +71,7 @@ export default class FeedInputPanel extends Component {
         }}
       >
         <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left" style={{fontWeight: 'bold'}}>Hello{`${username ? ' ' + username : ''}`}! Got anything interesting you want to share?</p>
+          <p className="panel-title pull-left" style={{fontWeight: 'bold'}}>Hello{username ? ` ${username}!` : '!'} Got anything interesting you want to share?</p>
         </div>
         <div className="panel-body">
           <form className="container-fluid">
@@ -77,7 +81,7 @@ export default class FeedInputPanel extends Component {
                 <input
                   style={{borderColor: !!errors.url && 'red'}}
                   value={form.url}
-                  onChange={event => this.setState({form: {...form, url: event.target.value}})}
+                  onChange={this.onUrlFieldChange}
                   className="form-control"
                   placeholder="Enter url. For example: www.google.com"
                   type="text"
@@ -98,12 +102,14 @@ export default class FeedInputPanel extends Component {
             <fieldset className="form-group">
               <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
               <input
-                onClick={() => this.setState({
-                  form: {
-                    ...form,
-                    checkedVideo: !form.checkedVideo
-                  }
-                })}
+                onClick={() => {
+                  this.setState({
+                    form: {
+                      ...form,
+                      checkedVideo: !form.checkedVideo
+                    }
+                  })
+                }}
                 checked={form.checkedVideo}
                 type="checkbox"
               />
@@ -132,10 +138,9 @@ export default class FeedInputPanel extends Component {
                 renderItemLabel={
                   item => <span>{item.label}</span>
                 }
-                onClear={this.onClickOutSideSearch}
-                onClickOutSide={this.onClickOutSideSearch}
                 onFocus={this.onSearchInputFocus}
                 onSelect={this.onCategorySelect}
+                onClickOutSide={this.onClickOutSideSearch}
               />
               <span
                 className="help-block"
@@ -152,6 +157,7 @@ export default class FeedInputPanel extends Component {
                       className="form-control"
                       placeholder="Enter Title"
                       type="text"
+                      style={{borderColor: !!errors.title && 'red'}}
                     />
                   </div>
                 </fieldset>
@@ -169,7 +175,8 @@ export default class FeedInputPanel extends Component {
             <Button
               className="btn btn-primary"
               type="submit"
-              disabled={submitting}
+              disabled={url === '' || title === '' || !selectedCategory}
+              onClick={this.onSubmit}
             >
               Share!
             </Button>
@@ -179,20 +186,9 @@ export default class FeedInputPanel extends Component {
     )
   }
 
-  checkIfYouTubeVideo(url) {
-    if (isValidYoutubeUrl(url)) {
-      this.setState({
-        form: {
-          ...this.state.form,
-          checkedVideo: true
-        }
-      })
-    }
-  }
-
   onCategorySelect(item) {
     const {clearSearchResults} = this.props;
-    const {form, errors} = this.state;
+    const {form, errors, descriptionFieldsShown} = this.state;
     this.setState({
       categorySearchText: '',
       selectedCategoryLabel: item.label,
@@ -202,19 +198,12 @@ export default class FeedInputPanel extends Component {
       }
     })
     clearSearchResults()
-    if (stringIsEmpty(form.url))
-    return this.setState({errors: {...errors, url: 'Enter url'}});
-    if (!isValidUrl(form.url)) return this.setState({errors: {...errors, url: 'That is not a valid url'}})
-    if (form.checkedVideo && !isValidYoutubeUrl(form.url))
-    return this.setState({errors: {...errors, url: 'That is not a valid YouTube url'}});
     this.setState({descriptionFieldsShown: true})
   }
 
   onClickOutSideSearch() {
     const {clearSearchResults} = this.props;
-    this.setState({
-      categorySearchText: ''
-    })
+    this.setState({categorySearchText: ''})
     clearSearchResults()
   }
 
@@ -230,54 +219,52 @@ export default class FeedInputPanel extends Component {
     fetchCategories()
   }
 
-  onSubmit(props) {
+  onSubmit(event) {
+    const {uploadContent} = this.props;
     const {form} = this.state;
-    const {selectedCategory} = form;
-    const {uploadContent, resetForm} = this.props;
-    if (selectedCategory === null) {
-      return this.setState({categoryNotSelected: true})
-    }
-    let params = Object.assign({}, props, {
-      categoryId: selectedCategory,
-      checkedVideo: form.checkedVideo
+    const {url, title, checkedVideo, selectedCategory} = form;
+    let errors = {url: null, title: false};
+    event.preventDefault()
+
+    if (!isValidUrl(url)) errors.url = 'This is not a valid url';
+    if (checkedVideo && !isValidYoutubeUrl(url)) errors.url = 'This is not a valid YouTube url';
+    if (stringIsEmpty(title)) errors.title = true;
+
+
+    if (errors.url || errors.title) return this.setState({
+      errors: {
+        url: errors.url,
+        title: errors.title
+      }
     })
-    resetForm('UploadVideoForm')
+
     this.setState({
       categorySearchText: '',
       selectedCategoryLabel: '',
+      descriptionFieldsShown: false,
       form: {
         url: '',
         checkedVideo: false,
         selectedCategory: null,
         title: '',
         description: ''
+      },
+      errors: {
+        url: null,
+        title: false
       }
     })
-    uploadContent(params)
-  }
-}
-
-function validate (values) {
-  const {url, title, isVideo} = values;
-  const errors = {};
-
-  if ((title && stringIsEmpty(title)) || !title) {
-    errors.title = 'Enter title';
-  }
-  if (!url) {
-    errors.url = 'Enter url';
-  }
-  if (url && !isValidYoutubeUrl(url)) {
-    if (isVideo) {
-      errors.url = 'That is not a valid YouTube url';
-    } else {
-      if (!isValidUrl(url)) {
-        errors.url = 'That is not a valid url';
-      }
-    }
+    uploadContent(form)
   }
 
-  return errors;
+  onUrlFieldChange(event) {
+    const {form, errors} = this.state;
+    const url = event.target.value;
+    this.setState({
+      form: {...form, url, checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo},
+      errors: {...errors, url: null}
+    })
+  }
 }
 
 function isValidUrl(url) {
