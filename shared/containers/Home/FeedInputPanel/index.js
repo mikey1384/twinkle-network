@@ -57,7 +57,7 @@ export default class FeedInputPanel extends Component {
   render() {
     const {categorySearchResult = [], username, submitting} = this.props;
     const {
-      form, categorySearchText, descriptionFieldsShown,
+      form, errors, categorySearchText, descriptionFieldsShown,
       selectedCategoryLabel, categoryNotSelected
     } = this.state;
     return (
@@ -75,6 +75,7 @@ export default class FeedInputPanel extends Component {
               <label style={{paddingBottom: '0.3em'}}><strong>Enter Url</strong></label>
               <div style={{display: 'inline'}}>
                 <input
+                  style={{borderColor: !!errors.url && 'red'}}
                   value={form.url}
                   onChange={event => this.setState({form: {...form, url: event.target.value}})}
                   className="form-control"
@@ -82,6 +83,17 @@ export default class FeedInputPanel extends Component {
                   type="text"
                 />
               </div>
+              {!!errors.url &&
+                <span
+                  className="help-block"
+                  style={{
+                    color: 'red',
+                    marginBottom: '0px'
+                  }}
+                >
+                  {errors.url}
+                </span>
+              }
             </fieldset>
             <fieldset className="form-group">
               <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
@@ -192,8 +204,8 @@ export default class FeedInputPanel extends Component {
     clearSearchResults()
     if (stringIsEmpty(form.url))
     return this.setState({errors: {...errors, url: 'Enter url'}});
-    if (!isValidUrl) return this.setState({errors: {...errors, url: 'That is not a valid url'}})
-    if (forms.checkedVideo && !isValidYoutubeUrl(form.url))
+    if (!isValidUrl(form.url)) return this.setState({errors: {...errors, url: 'That is not a valid url'}})
+    if (form.checkedVideo && !isValidYoutubeUrl(form.url))
     return this.setState({errors: {...errors, url: 'That is not a valid YouTube url'}});
     this.setState({descriptionFieldsShown: true})
   }
