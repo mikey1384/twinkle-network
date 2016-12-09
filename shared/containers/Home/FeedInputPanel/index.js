@@ -50,7 +50,6 @@ export default class FeedInputPanel extends Component {
     this.onSearchInputChange = this.onSearchInputChange.bind(this)
     this.onSearchInputFocus = this.onSearchInputFocus.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
-
     this.onClickOutSideSearch = this.onClickOutSideSearch.bind(this)
   }
 
@@ -76,6 +75,7 @@ export default class FeedInputPanel extends Component {
               <label style={{paddingBottom: '0.3em'}}><strong>Enter Url</strong></label>
               <div style={{display: 'inline'}}>
                 <input
+                  ref={ref => this.UrlField = ref}
                   style={{borderColor: !!urlError && 'red'}}
                   value={form.url}
                   onChange={this.onUrlFieldChange}
@@ -226,7 +226,10 @@ export default class FeedInputPanel extends Component {
     if (!isValidUrl(url)) urlError = 'This is not a valid url';
     if (checkedVideo && !isValidYoutubeUrl(url)) urlError = 'This is not a valid YouTube url';
 
-    if (!!urlError) return this.setState({urlError})
+    if (!!urlError) {
+      this.setState({urlError});
+      return ReactDOM.findDOMNode(this.UrlField).focus();
+    }
 
     this.setState({
       categorySearchText: '',
