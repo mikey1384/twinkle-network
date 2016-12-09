@@ -6,6 +6,7 @@ import LikeButton from 'components/LikeButton';
 import {connect} from 'react-redux';
 import {likeVideoAsync} from 'redux/actions/FeedActions';
 import {cleanString} from 'helpers/stringHelpers';
+import {Color} from 'constants/css';
 
 
 @connect(
@@ -49,45 +50,66 @@ export default class Heading extends Component {
 
     switch (type) {
       case 'video':
-        return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left" style={pStyle}><UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
-        </div>
-      case 'comment':
-        return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left col-xs-10" style={{...pStyle, padding: '0px'}}><UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small></p>
-          {attachedVideoShown ?
-            <LikeButton
-              small
-              style={{
-                marginLeft: 'auto',
-                float: 'right'
-              }}
-              targetLabel="Video"
-              liked={userLikedVideo}
-              onClick={() => onLikeVideoClick(parentContentId)}
-            /> :
-            <a
-              style={{
-                marginLeft: 'auto',
-                float: 'right',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                color: '#28b62c'
-              }}
-              onClick={() => onPlayVideoClick()}
-            >
-              <span className="glyphicon glyphicon-play"></span> Watch
-            </a>
-          }
-        </div>
-      case 'url':
-        return <div className="panel-heading flexbox-container">
-            <p className="panel-title pull-left" style={pStyle}><UserLink user={uploader} /> shared a link: <a href={content} target="_blank" style={{color: '#158cba'}}><strong>{cleanString(parentContent.title)}</strong></a> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
+        return (
+          <div className="panel-heading flexbox-container">
+            <span className="panel-title pull-left" style={pStyle}>
+              <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{!!timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
+            </span>
           </div>
+        )
+      case 'comment':
+        return (
+          <div className="panel-heading flexbox-container">
+            <span className="panel-title pull-left col-xs-10" style={{...pStyle, padding: '0px'}}>
+              <UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small>
+            </span>
+            {attachedVideoShown ?
+              <LikeButton
+                small
+                style={{
+                  marginLeft: 'auto',
+                  float: 'right'
+                }}
+                targetLabel="Video"
+                liked={userLikedVideo}
+                onClick={() => onLikeVideoClick(parentContentId)}
+              /> :
+              <a
+                style={{
+                  marginLeft: 'auto',
+                  float: 'right',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  color: Color.green
+                }}
+                onClick={() => onPlayVideoClick()}
+              >
+                <span className="glyphicon glyphicon-play"></span> Watch
+              </a>
+            }
+          </div>
+        )
+      case 'url':
+        return (
+          <div className="panel-heading flexbox-container">
+            <span className="panel-title pull-left" style={pStyle}>
+              <UserLink user={uploader} /> shared a link:&nbsp;
+              <a href={content} target="_blank" style={{color: Color.blue}}>
+                <strong>{cleanString(parentContent.title)}</strong>
+              </a>
+              <small>{!!timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
+            </span>
+          </div>
+        )
       case 'discussion':
-        return <div className="panel-heading flexbox-container">
-          <p className="panel-title pull-left" style={pStyle}><UserLink user={uploader} /> started a <b style={{color: '#28b62c'}}>discussion</b> on video: <ContentLink content={parentContent}/> <small>{`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</small></p>
-        </div>
+        return (
+          <div className="panel-heading flexbox-container">
+            <span className="panel-title pull-left" style={pStyle}>
+              <UserLink user={uploader} /> started a <b style={{color: Color.green}}>discussion</b> on video: <ContentLink content={parentContent}/>
+              <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
+            </span>
+          </div>
+        )
       default:
         return <div className="panpanel-heading flexbox-container">Error</div>
     }

@@ -61,6 +61,11 @@ export function stringIsEmpty(string) {
   return checkedString === '';
 }
 
+export function isValidUrl(url) {
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  return regex.test(url);
+}
+
 export function isValidYoutubeUrl(url) {
 	let trimOne = url.split("v=")[1];
 	let trimTwo = url.split("youtu.be/")[1];

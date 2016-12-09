@@ -11,6 +11,7 @@ import {
   uploadContentAsync
 } from 'redux/actions/FeedActions';
 import {
+  isValidUrl,
   isValidYoutubeUrl,
   stringIsEmpty
 } from 'helpers/stringHelpers';
@@ -33,7 +34,6 @@ export default class FeedInputPanel extends Component {
     this.state = {
       categorySearchText: '',
       selectedCategoryLabel: '',
-      categoryNotSelected: false,
       descriptionFieldsShown: false,
       form: {
         url: '',
@@ -57,7 +57,7 @@ export default class FeedInputPanel extends Component {
     const {categorySearchResult = [], username} = this.props;
     const {
       form, urlError, categorySearchText, descriptionFieldsShown,
-      selectedCategoryLabel, categoryNotSelected
+      selectedCategoryLabel
     } = this.state;
     const {url, title, description, selectedCategory} = form;
     return (
@@ -123,7 +123,7 @@ export default class FeedInputPanel extends Component {
                     fontStyle: selectedCategoryLabel ? 'normal' : 'italic'
                   }}
                 >
-                  {`${selectedCategoryLabel ? selectedCategoryLabel : 'Not Selected'}`}
+                  {!!selectedCategoryLabel ? selectedCategoryLabel : 'Not Selected'}
                 </span>
               </strong>
             </fieldset>
@@ -140,12 +140,9 @@ export default class FeedInputPanel extends Component {
                 onSelect={this.onCategorySelect}
                 onClickOutSide={this.onClickOutSideSearch}
               />
-              <span
-                className="help-block"
-                style={{color: 'red'}}
-              >{`${categoryNotSelected ? 'Select category' : ''}`}</span>
             </fieldset>
-            {descriptionFieldsShown && <div>
+            {descriptionFieldsShown &&
+              <div>
                 <fieldset className="form-group">
                   <div style={{display: 'inline'}}>
                     <input
@@ -185,7 +182,7 @@ export default class FeedInputPanel extends Component {
 
   onCategorySelect(item) {
     const {clearSearchResults} = this.props;
-    const {form, urlError, descriptionFieldsShown} = this.state;
+    const {form, descriptionFieldsShown} = this.state;
     this.setState({
       categorySearchText: '',
       selectedCategoryLabel: item.label,
@@ -212,19 +209,18 @@ export default class FeedInputPanel extends Component {
 
   onSearchInputFocus() {
     const {fetchCategories} = this.props;
-    this.setState({categoryNotSelected: false})
     fetchCategories()
   }
 
   onSubmit(event) {
     const {uploadContent} = this.props;
     const {form} = this.state;
-    const {url, title, checkedVideo, selectedCategory} = form;
+    const {url, checkedVideo} = form;
     let urlError;
     event.preventDefault()
 
-    if (!isValidUrl(url)) urlError = 'This is not a valid url';
-    if (checkedVideo && !isValidYoutubeUrl(url)) urlError = 'This is not a valid YouTube url';
+    if (!isValidUrl(url)) urlError = 'That is not a valid url';
+    if (checkedVideo && !isValidYoutubeUrl(url)) urlError = 'That is not a valid YouTube url';
 
     if (!!urlError) {
       this.setState({urlError});
@@ -255,9 +251,4 @@ export default class FeedInputPanel extends Component {
       urlError: null
     })
   }
-}
-
-function isValidUrl(url) {
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-  return regex.test(url);
 }

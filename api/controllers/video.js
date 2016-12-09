@@ -37,21 +37,29 @@ router.get('/', (req, res) => {
 
 router.post('/', requireAuth, (req, res) => {
   const user = req.user;
-  const rawDescription = (!req.body.description || req.body.description === '') ?
-  "No description" : req.body.description;
-  const title = processedTitleString(req.body.title);
-  const description = processedString(rawDescription);
-  const videoCode = fetchedVideoCodeFromURL(req.body.url);
-  const uploaderId = user.id;
+  const {title, description, url, selectedCategory} = req.body;
+  const rawDescription = !description ? "No description" : req.body.description;
   const uploaderName = user.username;
-  const timeStamp = Math.floor(Date.now()/1000);
-  const post = {title, description, videoCode, uploader: uploaderId, timeStamp};
+  const post = {
+    title: processedTitleString(title),
+    description: processedString(rawDescription),
+    videoCode: fetchedVideoCodeFromURL(url),
+    categoryId: selectedCategory,
+    uploader: user.id,
+    timeStamp: Math.floor(Date.now()/1000)
+  }
+
   pool.query('INSERT INTO vq_videos SET ?', post, (err, row) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
     }
-    let result = {id: row.insertId, title, description, videoCode, uploaderId, uploaderName, timeStamp, numLikes: 0};
+    let result = Object.assign({}, post, {
+      id: row.insertId,
+      uploaderId: user.id,
+      uploaderName: user.username,
+      numLikes: 0
+    });
     res.json({result});
   })
 });

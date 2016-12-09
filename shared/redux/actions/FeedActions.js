@@ -232,7 +232,6 @@ request.post(`${API_URL}/content`, form, auth())
 .then(
   response => {
     const {data} = response;
-    console.log(data);
     dispatch(uploadContent(data))
   }
 ).catch(

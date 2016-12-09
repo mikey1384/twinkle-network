@@ -439,7 +439,8 @@ export const uploadVideo = data => ({
   data
 })
 
-export const uploadVideoAsync = params => dispatch => request.post(API_URL, params, auth())
+export const uploadVideoAsync = params => dispatch =>
+request.post(API_URL, params, auth())
 .then(
   response => {
     const {data} = response;

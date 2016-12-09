@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {openDirectMessage} from 'redux/actions/ChatActions';
+import {Color} from 'constants/css';
 
 @connect(
   state => ({
@@ -30,7 +31,7 @@ export default class UsernameText extends Component {
         <strong
           style={{
             cursor: 'pointer',
-            color: user.name === '(Deleted)' || user.name === null ? '#7c7c7c' : (color && color)
+            color: user.name === '(Deleted)' || user.name === null ? Color.darkGray : (color && color)
           }}
           onMouseEnter={this.onMouseEnter}
         >{user.name || '(Deleted)'}</strong>
