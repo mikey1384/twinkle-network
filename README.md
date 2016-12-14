@@ -7,8 +7,9 @@
 3. Do the same to /shared/constants/"change this filename to ..." files
 4. Run `npm install`
 5. Install nodemon `npm install -g nodemon`
-6. Development / Production builds
-7. Have fun!
+6. Install forever `npm install -g forever`
+7. Development / Production builds
+8. Have fun!
 
 ---
 
