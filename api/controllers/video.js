@@ -7,7 +7,7 @@ const {
   fetchedVideoCodeFromURL,
   stringIsEmpty
 } = require('../helpers/stringHelpers');
-const {returnComments} = require('../helpers/videoHelpers');
+const {returnComments, returnReplies} = require('../helpers/videoHelpers');
 
 const async = require('async');
 const express = require('express');
@@ -575,8 +575,13 @@ router.get('/replies', (req, res) => {
       loadMoreReplies = true;
     }
     rows.sort(function(a, b) {return a.id - b.id})
-    const replies = rows.map(row => Object.assign({}, row, {likes: []}));
-    res.send({replies, loadMoreReplies})
+    returnReplies(rows, (err, replies) => {
+      if (err) {
+        console.error(err)
+        return res.status(500).send({error: err})
+      }
+      res.send({replies, loadMoreReplies})
+    })
   })
 })
 

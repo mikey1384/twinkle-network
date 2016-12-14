@@ -1,21 +1,19 @@
 const pool = require('../pool');
 const async = require('async');
 
-module.exports = {
-  returnComments(commentRows, cb) {
-    let commentsArray = [];
-    let taskArray = [];
-    if (commentRows.length === 0) {
-      return cb(null, []);
-    }
-    for (let index = 0; index < commentRows.length; index++) {
-      let commentRow = commentRows[index];
-      taskArray.push(fetchCommentElements({commentRow, commentsArray, index}));
-    }
-    async.parallel(taskArray, err => {
-      cb(err, commentsArray)
-    });
+function returnComments(commentRows, cb) {
+  let commentsArray = [];
+  let taskArray = [];
+  if (commentRows.length === 0) {
+    return cb(null, []);
   }
+  for (let index = 0; index < commentRows.length; index++) {
+    let commentRow = commentRows[index];
+    taskArray.push(fetchCommentElements({commentRow, commentsArray, index}));
+  }
+  async.parallel(taskArray, err => {
+    cb(err, commentsArray)
+  });
 }
 
 const fetchCommentElements = (params) => cb => {
@@ -111,3 +109,5 @@ const fetchReplyElements = (params) => cb => {
     cb(err);
   })
 }
+
+module.exports = {returnComments, returnReplies}
