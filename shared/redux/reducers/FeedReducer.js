@@ -1,6 +1,7 @@
 import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
 const defaultState = {
   feeds: null,
+  selectedFilter: 'all',
   newFeeds: [], // may need later but delete it if revealed otherwise
   loadMoreButton: false,
   categorySearchResult: []
@@ -29,6 +30,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: action.data,
+        selectedFilter: action.filter,
         loadMoreButton
       };
     case 'FETCH_MORE_FEED_REPLIES':
@@ -56,6 +58,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.concat(action.data),
+        selectedFilter: action.filter,
         loadMoreButton
       }
     case 'FEED_TARGET_VIDEO_COMMENT_LIKE':

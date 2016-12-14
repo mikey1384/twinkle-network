@@ -74,17 +74,13 @@ export const fetchCategoriesAsync = (searchText) => dispatch => {
   )
 }
 
-export const fetchFeeds = data => ({
-  type: 'FETCH_FEEDS',
-  data
-})
-
-export const fetchFeedsAsync = (filter, callback) => dispatch => {
+export const fetchFeedsAsync = (filter = 'all') => dispatch => {
   request.get(`${API_URL}?filter=${filter}`).then(
-    response => {
-      dispatch(fetchFeeds(response.data));
-      if (!!callback) callback();
-    }
+    response => dispatch({
+      type: 'FETCH_FEEDS',
+      data: response.data,
+      filter
+    })
   ).catch(
     error => {
       console.error(error.response || error)
@@ -93,14 +89,13 @@ export const fetchFeedsAsync = (filter, callback) => dispatch => {
   )
 }
 
-export const fetchMoreFeedsAsync = (lastFeedId, filter) => dispatch => {
+export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all') => dispatch => {
   request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}`).then(
-    response => {
-      dispatch({
-        type: 'FETCH_MORE_FEEDS',
-        data: response.data
-      })
-    }
+    response => dispatch({
+      type: 'FETCH_MORE_FEEDS',
+      data: response.data,
+      filter
+    })
   ).catch(
     error => {
       console.error(error.response || error)

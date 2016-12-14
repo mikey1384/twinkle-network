@@ -10,7 +10,8 @@ import FeedInputPanel from './FeedInputPanel';
     feeds: state.FeedReducer.feeds,
     loadMoreButton: state.FeedReducer.loadMoreButton,
     userId: state.UserReducer.userId,
-    username: state.UserReducer.username
+    username: state.UserReducer.username,
+    selectedFilter: state.FeedReducer.selectedFilter
   }),
   {
     fetchMoreFeeds: fetchMoreFeedsAsync,
@@ -20,16 +21,12 @@ import FeedInputPanel from './FeedInputPanel';
 export default class Home extends Component {
   constructor() {
     super()
-    this.state = {
-      selectedFilter: 'all'
-    }
     this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
     this.applyFilter = this.applyFilter.bind(this)
   }
 
   render() {
-    const {userId, feeds, loadMoreButton, username} = this.props;
-    const {selectedFilter} = this.state;
+    const {userId, feeds, loadMoreButton, username, selectedFilter} = this.props;
     return !!feeds ? (
       feeds.length > 0 ?
         <div className="container-fluid col-md-offset-3 col-md-6">
@@ -114,17 +111,13 @@ export default class Home extends Component {
   }
 
   applyFilter(filter) {
-    const {selectedFilter} = this.state;
-    const {fetchFeeds} = this.props;
+    const {fetchFeeds, selectedFilter} = this.props;
     if (filter === selectedFilter) return;
-    fetchFeeds(filter, () => {
-      this.setState({selectedFilter: filter})
-    })
+    fetchFeeds(filter)
   }
 
   loadMoreFeeds() {
-    const {feeds, fetchMoreFeeds} = this.props;
-    const {selectedFilter} = this.state;
+    const {feeds, fetchMoreFeeds, selectedFilter} = this.props;
     fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter);
   }
 }
