@@ -13,6 +13,7 @@ import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import {scrollElementToCenter} from 'helpers/domHelpers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import {Color} from 'constants/css';
 
 
 export default class Comment extends Component {
@@ -100,16 +101,16 @@ export default class Comment extends Component {
               onEditDone={this.onEditDone}
             /> :
             <div className="container-fluid">
-              {!!comment.debateTopic &&
+              {!!comment.discussionTitle &&
                 <div
                   className="row"
                   style={{
-                    color: '#158cba',
+                    color: Color.blue,
                     fontWeight: 'bold',
                     marginBottom: '0.5em'
                   }}
                 >
-                  Discussion Topic: {comment.debateTopic}
+                  Discussion Topic: {comment.discussionTitle}
                 </div>
               }
               <div
@@ -140,7 +141,7 @@ export default class Comment extends Component {
                     style={{
                       fontWeight: 'bold',
                       marginLeft: '0.8em',
-                      color: '#f0ad4e',
+                      color: Color.orange,
                       marginTop: '1em'
                     }}
                     userId={userId}

@@ -5,6 +5,7 @@ import Likers from 'components/Likers';
 import {connect} from 'react-redux';
 import {likeTargetVideoCommentAsync} from 'redux/actions/FeedActions';
 import UserListModal from 'components/Modals/UserListModal';
+import {Color} from 'constants/css'
 
 
 @connect(
@@ -23,7 +24,7 @@ export default class TargetContent extends Component {
   }
 
   render() {
-    const {uploader, content, myId, likes, isReplyContent} = this.props;
+    const {uploader, content, myId, likes = [], isReplyContent, isDiscussionTitle} = this.props;
     const {userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
@@ -39,36 +40,54 @@ export default class TargetContent extends Component {
         }}
       >
         {!!content ?
-          <div>
-            <UserLink user={uploader} /> {isReplyContent ? 'wrote' : 'commented'}:
-            <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
-            <LikeButton
-              style={{marginTop: '1em'}}
-              onClick={this.onLikeClick}
-              liked={userLikedThis}
-              small
-            />
-            <Likers
-              style={{
-                fontSize: '11px',
-                marginTop: '1em',
-                fontWeight: 'bold',
-                color: '#f0ad4e'
-              }}
-              userId={myId}
-              likes={likes}
-              onLinkClick={() => this.setState({userListModalShown: true})}
-            />
-            {userListModalShown &&
-              <UserListModal
-                onHide={() => this.setState({userListModalShown: false})}
-                title="People who liked this comment"
-                userId={myId}
-                users={likes}
-                description={user => user.userId === myId && '(You)'}
+          (!isDiscussionTitle ?
+            <div>
+              <UserLink user={uploader} /> {isReplyContent ? 'wrote' : 'commented'}:
+              <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
+              <LikeButton
+                style={{marginTop: '1em'}}
+                onClick={this.onLikeClick}
+                liked={userLikedThis}
+                small
               />
-            }
-          </div> : <div style={{textAlign: 'center'}}><span>Content removed / no longer available</span></div>
+              <Likers
+                style={{
+                  fontSize: '11px',
+                  marginTop: '1em',
+                  fontWeight: 'bold',
+                  color: '#f0ad4e'
+                }}
+                userId={myId}
+                likes={likes}
+                onLinkClick={() => this.setState({userListModalShown: true})}
+              />
+              {userListModalShown &&
+                <UserListModal
+                  onHide={() => this.setState({userListModalShown: false})}
+                  title="People who liked this comment"
+                  userId={myId}
+                  users={likes}
+                  description={user => user.userId === myId && '(You)'}
+                />
+              }
+            </div> :
+            <div
+              style={{
+                marginTop: '0.2em',
+                marginBottom: '0.2em'
+              }}
+            >
+              <p
+                style={{
+                  fontWeight: 'bold',
+                  color: Color.green
+                }}
+              >
+                Discuss:
+              </p>
+              <p dangerouslySetInnerHTML={{__html: content}}/>
+            </div>
+          ) : <div style={{textAlign: 'center'}}><span>Content removed / no longer available</span></div>
         }
       </div>
     )

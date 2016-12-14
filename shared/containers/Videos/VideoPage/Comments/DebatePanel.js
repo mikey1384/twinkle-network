@@ -213,7 +213,7 @@ export default class DebatePanel extends Component {
 
   onCommentSubmit(comment) {
     const {onSubmit, videoId, id, title} = this.props;
-    onSubmit({comment, videoId, debateId: id, debateTopic: title})
+    onSubmit({comment, videoId, discussionId: id, discussionTitle: title})
   }
 
   onDelete() {

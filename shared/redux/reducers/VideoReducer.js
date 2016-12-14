@@ -64,7 +64,7 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          debates: state.videoPage.debates.filter(debate => debate.id !== action.debateId)
+          debates: state.videoPage.debates.filter(debate => debate.id !== action.discussionId)
         }
       }
     case 'EDIT_VIDEO_COMMENT':
@@ -100,8 +100,8 @@ export default function VideoReducer(state = defaultState, action) {
           ...state.videoPage,
           debates: state.videoPage.debates.map(debate => ({
             ...debate,
-            title: debate.id === action.debateId ? action.data.title : debate.title,
-            description: debate.id === action.debateId ? action.data.description : debate.description
+            title: debate.id === action.discussionId ? action.data.title : debate.title,
+            description: debate.id === action.discussionId ? action.data.description : debate.description
           }))
         }
       }
@@ -226,7 +226,7 @@ export default function VideoReducer(state = defaultState, action) {
         videoPage: {
           ...state.videoPage,
           debates: state.videoPage.debates.map(debate => {
-            if (debate.id === action.debateId) {
+            if (debate.id === action.discussionId) {
               return {
                 ...debate,
                 comments: debate.comments.concat(action.data),
@@ -248,7 +248,7 @@ export default function VideoReducer(state = defaultState, action) {
         videoPage: {
           ...state.videoPage,
           debates: state.videoPage.debates.map(debate => {
-            if (debate.id === action.debateId) {
+            if (debate.id === action.discussionId) {
               return {
                 ...debate,
                 comments: action.data,
@@ -319,7 +319,7 @@ export default function VideoReducer(state = defaultState, action) {
         videoPage: {
           ...state.videoPage,
           debates: state.videoPage.debates.map(debate => {
-            if (debate.id === action.data.debateId) {
+            if (debate.id === action.data.discussionId) {
               return {
                 ...debate,
                 comments: [action.data].concat(debate.comments)

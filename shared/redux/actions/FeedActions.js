@@ -265,7 +265,7 @@ export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
       commentType = 'comments';
     break;
     case 'discussion':
-      params = {comment, videoId: parent.parentContentId, debateId: parent.id}
+      params = {comment, videoId: parent.parentContentId, discussionId: parent.id}
       commentType = 'debates/comments';
     break;
     default: return console.error("Invalid content type")

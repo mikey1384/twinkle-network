@@ -24,6 +24,7 @@ import {embedlyKey} from 'constants/keys';
 import Embedly from 'components/Embedly';
 import PanelComments from 'components/PanelComments';
 import TargetContent from './TargetContent';
+import {Color} from 'constants/css';
 
 
 @connect(
@@ -57,8 +58,7 @@ export default class MainContent extends Component {
   render() {
     const {
       myId, content, contentLikers = [],
-      contentId, type, title, videoViews, numChildComments, numChildReplies, replyId, commentId, targetReply,
-      targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
+      contentId, type, title, discussionTitle, videoViews, numChildComments, numChildReplies, replyId, commentId, targetReply, targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props;
@@ -84,10 +84,11 @@ export default class MainContent extends Component {
                 this.onVideoPlay(event)
               }}
             />
-        </div>}
+          </div>
+        }
         {type === 'comment' && !!replyId &&
           <TargetContent
-            isReplyContent={true}
+            isReplyContent
             uploader={{name: targetReplyUploaderName, id: targetReplyUploaderId}}
             likes={targetContentLikers}
             content={targetReply}
@@ -102,6 +103,12 @@ export default class MainContent extends Component {
             content={targetComment}
             myId={myId}
             contentId={commentId}
+          />
+        }
+        {type === 'comment' && !replyId && !commentId && !!discussionTitle &&
+          <TargetContent
+            isDiscussionTitle
+            content={discussionTitle}
           />
         }
         {type === 'comment' &&

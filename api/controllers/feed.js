@@ -15,57 +15,163 @@ const {returnComments} = require('../helpers/videoHelpers');
 router.get('/', (req, res) => {
   const feedId = Number(req.query.lastFeedId) || 0;
   const filter = req.query.filter;
-  let where = 'WHERE a.timeStamp IS NOT NULL ';
-  if (feedId !== 0) where += 'AND a.id < ' + feedId + ' ';
-  if (filter !== 'undefined' && filter !== 'all') where += 'AND a.type = "' + filter + '" ';
-  const query = [
-    'SELECT a.id, a.type, a.contentId, a.parentContentId, c.title AS parentContentTitle, ',
-    'c.description AS parentContentDescription, a.uploaderId, d.username AS uploaderName, a.timeStamp, ',
-    'b.content, c.title AS contentTitle, NULL AS contentDescription, c.videoCode AS videoCode, b.commentId, ', 'b.replyId, e.userId AS targetCommentUploaderId, e.content AS targetComment, ',
-    'f.username AS targetCommentUploaderName, ',
-    'g.userId AS targetReplyUploaderId, g.content AS targetReply, h.username AS targetReplyUploaderName, ',
-    'NULL AS videoViews, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE commentId = a.contentId) AS numChildComments, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE replyId = a.contentId) AS numChildReplies ',
+  let where = 'WHERE feed.timeStamp IS NOT NULL ';
+  if (feedId !== 0) where += 'AND feed.id < ' + feedId + ' ';
+  if (filter !== 'undefined' && filter !== 'all') where += 'AND feed.type = "' + filter + '" ';
+  const query = `
+    SELECT
+      feed.id AS id,
+      feed.type AS type,
+      feed.contentId AS contentId,
+      feed.parentContentId AS parentContentId,
+      video.title AS parentContentTitle,
+      video.description AS parentContentDescription,
+      feed.uploaderId AS uploaderId,
+      user1.username AS uploaderName,
+      feed.timeStamp AS timeStamp,
+      comment1.content AS content,
+      video.title AS contentTitle,
+      NULL AS contentDescription,
+      video.videoCode AS videoCode,
+      comment1.commentId AS commentId,
+      comment1.replyId AS replyId,
+      comment2.userId AS targetCommentUploaderId,
+      comment2.content AS targetComment,
+      user2.username AS targetCommentUploaderName,
+      comment3.userId AS targetReplyUploaderId,
+      comment3.content AS targetReply,
+      user3.username AS targetReplyUploaderName,
+      discussion.title AS discussionTitle,
+      NULL AS videoViews,
+      (SELECT COUNT(*) FROM vq_comments WHERE commentId = feed.contentId) AS numChildComments,
+      (SELECT COUNT(*) FROM vq_comments WHERE replyId = feed.contentId) AS numChildReplies
 
-    'FROM noti_feeds a JOIN vq_comments b ON a.type = \'comment\' AND a.contentId = b.id LEFT JOIN vq_videos c ',
-    'ON a.parentContentId = c.id LEFT JOIN users d ON a.uploaderId = d.id LEFT JOIN vq_comments e ON ',
-    'b.commentId = e.id LEFT JOIN users f ON e.userId = f.id LEFT JOIN vq_comments g ON b.replyId = g.id ',
-    'LEFT JOIN users h ON g.userId = h.id ',
-    where,
+    FROM noti_feeds feed
+    JOIN vq_comments comment1
+      ON feed.type = \'comment\' AND feed.contentId = comment1.id
+    LEFT JOIN vq_videos video
+      ON feed.parentContentId = video.id
+    LEFT JOIN users user1
+      ON feed.uploaderId = user1.id
+    LEFT JOIN vq_comments comment2
+      ON comment1.commentId = comment2.id
+    LEFT JOIN users user2
+      ON comment2.userId = user2.id
+    LEFT JOIN vq_comments comment3
+      ON comment1.replyId = comment3.id
+    LEFT JOIN users user3
+      ON comment3.userId = user3.id
+    LEFT JOIN content_discussions discussion
+      ON comment1.discussionId = discussion.id
+    ${where}
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, b.title, b.description, a.uploaderId, c.username, ',
-    'a.timeStamp, b.videoCode, b.title, b.description, b.videoCode, NULL, NULL, ',
-    'NULL, NULL, NULL, NULL, NULL, NULL, ',
-    '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = a.contentId), ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE videoId = a.contentId), NULL ',
+    UNION SELECT
+      feed.id AS id,
+      feed.type AS type,
+      feed.contentId AS contentId,
+      feed.parentContentId AS parentContentId,
+      video.title AS parentContentTitle,
+      video.description AS parentContentDescription,
+      feed.uploaderId AS uploaderId,
+      user.username AS uploaderName,
+      feed.timeStamp AS timeStamp,
+      video.videoCode AS content,
+      video.title AS contentTitle,
+      video.description AS contentDescription,
+      video.videoCode AS videoCode,
+      NULL AS commentId,
+      NULL AS replyId,
+      NULL AS targetCommentUploaderId,
+      NULL AS targetComment,
+      NULL AS targetCommentUploaderName,
+      NULL AS targetReplyUploaderId,
+      NULL AS targetReply,
+      NULL AS targetReplyUploaderName,
+      NULL AS discussionTitle,
+      (SELECT COUNT(*) FROM vq_video_views WHERE videoId = feed.contentId) AS videoViews,
+      (SELECT COUNT(*) FROM vq_comments WHERE videoId = feed.contentId) AS numChildComments,
+      NULL AS numChildReplies
 
-    'FROM noti_feeds a JOIN vq_videos b ON a.type = \'video\' AND a.contentId = b.id ',
-    'LEFT JOIN users c ON b.uploader = c.id ',
-    where,
+    FROM noti_feeds feed
+    JOIN vq_videos video
+      ON feed.type = \'video\' AND feed.contentId = video.id
+    LEFT JOIN users user
+      ON video.uploader = user.id
+    ${where}
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, b.title, b.description, a.uploaderId, ',
-    'c.username, a.timeStamp, b.url, ',
-    'b.title, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ',
-    'NULL, NULL, NULL ',
+    UNION SELECT
+      feed.id AS id,
+      feed.type AS type,
+      feed.contentId AS contentId,
+      feed.parentContentId AS parentContentId,
+      url.title AS parentContentTitle,
+      url.description AS parentContentDescription,
+      feed.uploaderId AS uploaderId,
+      user.username AS uploaderName,
+      feed.timeStamp AS timeStamp,
+      url.url AS content,
+      url.title AS contentTitle,
+      NULL AS contentDescription,
+      NULL AS videoCode,
+      NULL AS commentId,
+      NULL AS replyId,
+      NULL AS targetCommentUploaderId,
+      NULL AS targetComment,
+      NULL AS targetCommentUploaderName,
+      NULL AS targetReplyUploaderId,
+      NULL AS targetReply,
+      NULL AS targetReplyUploaderName,
+      NULL AS discussionTitle,
+      NULL AS videoViews,
+      NULL AS numChildComments,
+      NULL AS numChildReplies
 
-    'FROM noti_feeds a JOIN content_urls b ON a.type = \'url\' AND a.contentId = b.id ',
-    'LEFT JOIN users c ON b.uploader = c.id ',
-    where,
+    FROM noti_feeds feed
+    JOIN content_urls url
+      ON feed.type = \'url\' AND feed.contentId = url.id
+    LEFT JOIN users user
+      ON url.uploader = user.id
+    ${where}
 
-    'UNION SELECT a.id, a.type, a.contentId, a.parentContentId, c.title, c.description, a.uploaderId, ',
-    'd.username, a.timeStamp,  NULL, ',
-    'b.title, b.description, c.videoCode, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ',
-    'NULL, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE debateId = b.id), NULL ',
+    UNION SELECT
+      feed.id AS id,
+      feed.type AS type,
+      feed.contentId AS contentId,
+      feed.parentContentId AS parentContentId,
+      video.title AS parentContentTitle,
+      video.description AS parentContentDescription,
+      feed.uploaderId AS uploaderId,
+      user.username AS uploaderName,
+      feed.timeStamp AS timeStamp,
+      NULL AS content,
+      discussion.title AS contentTitle,
+      discussion.description AS contentDescription,
+      video.videoCode AS videoCode,
+      NULL AS commentId,
+      NULL AS replyId,
+      NULL AS targetCommentUploaderId,
+      NULL AS targetComment,
+      NULL AS targetCommentUploaderName,
+      NULL AS targetReplyUploaderId,
+      NULL AS targetReply,
+      NULL AS targetReplyUploaderName,
+      NULL AS discussionTitle,
+      NULL AS videoViews,
+      (SELECT COUNT(*) FROM vq_comments WHERE discussionId = discussion.id) AS numChildComments,
+      NULL AS numChildReplies
 
-    'FROM noti_feeds a JOIN content_discussions b ON a.type = \'discussion\' AND a.contentId = b.id ',
-    'LEFT JOIN vq_videos c ON b.refContentType = \'video\' AND refContentId = c.id ',
-    'LEFT JOIN users d ON b.userId = d.id ',
-    where,
+    FROM noti_feeds feed
+    JOIN content_discussions discussion
+      ON feed.type = \'discussion\' AND feed.contentId =
+    discussion.id
+    LEFT JOIN vq_videos video
+      ON discussion.refContentType = \'video\' AND refContentId = video.id
+    LEFT JOIN users user
+      ON discussion.userId = user.id
+    ${where}
 
-    'ORDER BY id DESC LIMIT 21'
-  ].join('');
+    ORDER BY id DESC LIMIT 21
+  `
 
   pool.query(query, (err, feeds) => {
     if (err) {
@@ -187,7 +293,7 @@ router.get('/comments', (req, res) => {
       where = isReply === 'true' ? 'replyId = ?' : 'commentId = ?';
     break;
     case 'discussion':
-      where = 'debateId = ? AND a.commentId IS NULL';
+      where = 'discussionId = ? AND a.commentId IS NULL';
     break;
     default:
       console.error("Invalid Content Type");

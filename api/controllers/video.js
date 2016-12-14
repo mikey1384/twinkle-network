@@ -267,9 +267,9 @@ router.get('/comments', (req, res) => {
   const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : ''
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
-    'c.title AS debateTopic ',
+    'c.title AS discussionTitle ',
     'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
-    'LEFT JOIN content_discussions c ON a.debateId = c.id ',
+    'LEFT JOIN content_discussions c ON a.discussionId = c.id ',
     'WHERE videoId = ? AND commentId IS NULL ', where,
     'ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
@@ -427,9 +427,9 @@ router.post('/comments/like', requireAuth, (req, res) => {
 
 router.delete('/debates', requireAuth, (req, res) => {
   const {user} = req;
-  const {debateId} = req.query;
+  const {discussionId} = req.query;
   const query  = 'DELETE FROM content_discussions WHERE id = ? AND userId = ?';
-  pool.query(query, [debateId, user.id], err => {
+  pool.query(query, [discussionId, user.id], err => {
     if (err) {
       console.error(err);
       return res.status(500).send(err)
@@ -439,12 +439,12 @@ router.delete('/debates', requireAuth, (req, res) => {
 })
 
 router.get('/debates', (req, res) => {
-  const {videoId, lastDebateId} = req.query;
+  const {videoId, lastDiscussionId} = req.query;
   const limit = 4;
-  const where = !!lastDebateId ? 'AND a.id < ' + lastDebateId + ' ' : '';
+  const where = !!lastDiscussionId ? 'AND a.id < ' + lastDiscussionId + ' ' : '';
   const query = [
     'SELECT a.id, a.userId, a.title, a.description, a.timeStamp, b.username, ',
-    '(SELECT COUNT(*) FROM vq_comments WHERE debateId = a.id) AS numComments ',
+    '(SELECT COUNT(*) FROM vq_comments WHERE discussionId = a.id) AS numComments ',
     'FROM content_discussions a LEFT JOIN users b ON a.userId = b.id ',
     'WHERE a.refContentType = \'video\' AND a.refContentId = ? ', where,
     'ORDER BY a.id DESC LIMIT ' + limit
@@ -462,16 +462,16 @@ router.get('/debates', (req, res) => {
 })
 
 router.get('/debates/comments', (req, res) => {
-  const {debateId, lastCommentId} = req.query;
+  const {discussionId, lastCommentId} = req.query;
   const limit = 4;
   const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : '';
   const query = [
     'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
     'vq_comments a LEFT JOIN users b ON a.userId = b.id WHERE ',
-    'a.debateId = ? AND a.commentId IS NULL ', where,
+    'a.discussionId = ? AND a.commentId IS NULL ', where,
     'ORDER BY a.id DESC LIMIT ' + limit
   ].join('');
-  pool.query(query, debateId, (err, rows) => {
+  pool.query(query, discussionId, (err, rows) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err});
@@ -517,10 +517,10 @@ router.post('/debates', requireAuth, (req, res) => {
 
 router.post('/debates/edit', requireAuth, (req, res) => {
   const {user} = req;
-  const {debateId, editedTitle, editedDescription} = req.body;
+  const {discussionId, editedTitle, editedDescription} = req.body;
   const post = {title: editedTitle, description: processedString(editedDescription)};
   const query = 'UPDATE content_discussions SET ? WHERE id = ? AND userId = ?';
-  pool.query(query, [post, debateId, user.id], (err) => {
+  pool.query(query, [post, discussionId, user.id], (err) => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})
@@ -530,7 +530,7 @@ router.post('/debates/edit', requireAuth, (req, res) => {
 })
 
 router.post('/debates/comments', requireAuth, (req, res) => {
-  const {videoId, debateId, comment} = req.body;
+  const {videoId, discussionId, comment} = req.body;
   const {user} = req;
   const query = "INSERT INTO vq_comments SET ?";
   const post = {
@@ -538,7 +538,7 @@ router.post('/debates/comments', requireAuth, (req, res) => {
     content: processedString(comment),
     timeStamp: Math.floor(Date.now()/1000),
     videoId,
-    debateId
+    discussionId
   }
   pool.query(query, post, (err, result) => {
     if (err) {
@@ -592,11 +592,11 @@ router.post('/replies', requireAuth, (req, res) => {
   const processedReply = processedString(reply);
   async.waterfall([
     callback => {
-      pool.query('SELECT debateId FROM vq_comments WHERE id = ?', commentId, (err, rows) => {
-        callback(err, rows[0].debateId)
+      pool.query('SELECT discussionId FROM vq_comments WHERE id = ?', commentId, (err, rows) => {
+        callback(err, rows[0].discussionId)
       })
     },
-    (debateId, callback) => {
+    (discussionId, callback) => {
       const post = {
         userId: user.id,
         content: processedReply,
@@ -604,7 +604,7 @@ router.post('/replies', requireAuth, (req, res) => {
         replyId,
         commentId,
         videoId,
-        debateId
+        discussionId
       }
       pool.query('INSERT INTO vq_comments SET ?', post, (err, result) => {
         callback(err, result.insertId)

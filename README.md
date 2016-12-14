@@ -1,7 +1,7 @@
 ## Twinkle Website
 
 ###To run:
-0. Ensure that Node 6+ installed
+0. Ensure that Node 7+ installed
 1. Import db.sql to your mysql
 2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
 3. Do the same to /shared/constants/"change this filename to ..." files

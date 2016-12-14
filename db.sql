@@ -1091,14 +1091,14 @@ CREATE TABLE `vq_comments` (
   `videoId` int(11) DEFAULT NULL,
   `commentId` int(11) DEFAULT NULL,
   `replyId` int(11) DEFAULT NULL,
-  `debateId` int(11) DEFAULT NULL,
+  `discussionId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `vq_comments` WRITE;
 /*!40000 ALTER TABLE `vq_comments` DISABLE KEYS */;
 
-INSERT INTO `vq_comments` (`id`, `userId`, `content`, `timeStamp`, `videoId`, `commentId`, `replyId`, `debateId`)
+INSERT INTO `vq_comments` (`id`, `userId`, `content`, `timeStamp`, `videoId`, `commentId`, `replyId`, `discussionId`)
 VALUES
 	(2,5,'This is the first comment!',1475587469,1,NULL,NULL,NULL),
 	(586,205,'comment number 586',1479792644,30,NULL,NULL,NULL),

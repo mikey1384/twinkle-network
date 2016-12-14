@@ -74,12 +74,12 @@ request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
   }
 )
 
-export const deleteVideoDebate = (debateId, callback) => dispatch =>
-request.delete(`${API_URL}/debates?debateId=${debateId}`, auth())
+export const deleteVideoDebate = (discussionId, callback) => dispatch =>
+request.delete(`${API_URL}/debates?discussionId=${discussionId}`, auth())
 .then(
   response => dispatch({
     type: 'DELETE_VIDEO_DEBATE',
-    debateId
+    discussionId
   })
 ).catch(
   error => {
@@ -111,14 +111,14 @@ request.post(`${API_URL}/comments/edit`, {editedComment, commentId}, auth())
   }
 )
 
-export const editVideoDebate = (debateId, editedTitle, editedDescription, callback) => dispatch =>
-request.post(`${API_URL}/debates/edit`, {debateId, editedTitle, editedDescription}, auth())
+export const editVideoDebate = (discussionId, editedTitle, editedDescription, callback) => dispatch =>
+request.post(`${API_URL}/debates/edit`, {discussionId, editedTitle, editedDescription}, auth())
 .then(
   response => {
     dispatch({
       type: 'EDIT_VIDEO_DEBATE',
       data: response.data,
-      debateId
+      discussionId
     })
     callback()
   }
@@ -274,13 +274,13 @@ request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId
   }
 )
 
-export const loadMoreDebateComments = (lastCommentId, debateId) => dispatch =>
-request.get(`${API_URL}/debates/comments?debateId=${debateId}&lastCommentId=${lastCommentId}`)
+export const loadMoreDebateComments = (lastCommentId, discussionId) => dispatch =>
+request.get(`${API_URL}/debates/comments?discussionId=${discussionId}&lastCommentId=${lastCommentId}`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_VIDEO_DEBATE_COMMENTS',
     data: response.data,
-    debateId
+    discussionId
   })
 ).catch(
   error => {
@@ -289,8 +289,8 @@ request.get(`${API_URL}/debates/comments?debateId=${debateId}&lastCommentId=${la
   }
 )
 
-export const loadMoreDebates = (videoId, lastDebateId) => dispatch =>
-request.get(`${API_URL}/debates?videoId=${videoId}&lastDebateId=${lastDebateId}`)
+export const loadMoreDebates = (videoId, lastdiscussionId) => dispatch =>
+request.get(`${API_URL}/debates?videoId=${videoId}&lastdiscussionId=${lastdiscussionId}`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_VIDEO_DEBATES',
@@ -333,12 +333,12 @@ request.get(`${API_URL}/debates?videoId=${videoId}`)
   }
 )
 
-export const loadVideoDebateComments = (debateId) => dispatch =>
-request.get(`${API_URL}/debates/comments?debateId=${debateId}`)
+export const loadVideoDebateComments = (discussionId) => dispatch =>
+request.get(`${API_URL}/debates/comments?discussionId=${discussionId}`)
 .then(
   response => dispatch({
     type: 'LOAD_VIDEO_DEBATE_COMMENTS',
-    debateId,
+    discussionId,
     data: response.data
   })
 ).catch(
@@ -489,12 +489,12 @@ request.post(`${API_URL}/debates`, {title, description, videoId}, auth())
   }
 )
 
-export const uploadVideoDebateComment = ({comment, videoId, debateId, debateTopic}) => dispatch =>
-request.post(`${API_URL}/debates/comments`, {comment, videoId, debateId}, auth())
+export const uploadVideoDebateComment = ({comment, videoId, discussionId, discussionTitle}) => dispatch =>
+request.post(`${API_URL}/debates/comments`, {comment, videoId, discussionId}, auth())
 .then(
   response => dispatch({
     type: 'UPLOAD_VIDEO_DEBATE_COMMENT',
-    data: {...response.data, debateTopic}
+    data: {...response.data, discussionTitle}
   })
 ).catch(
   error => {
