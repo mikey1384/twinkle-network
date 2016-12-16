@@ -1,9 +1,9 @@
 import React, {Component , PropTypes} from 'react';
 import {connect} from 'react-redux';
-import Button from 'components/Button';
-import FeedPanel from './FeedPanel';
 import {fetchMoreFeedsAsync, fetchFeedsAsync} from 'redux/actions/FeedActions';
-import FeedInputPanel from './FeedInputPanel';
+import Feeds from './Feeds';
+import Profile from './Profile';
+import {Color} from 'constants/css';
 
 @connect(
   state => ({
@@ -21,93 +21,84 @@ import FeedInputPanel from './FeedInputPanel';
 export default class Home extends Component {
   constructor() {
     super()
+    this.state = {
+      selectedTab: 'feed'
+    }
     this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
     this.applyFilter = this.applyFilter.bind(this)
+    this.renderFilterBar = this.renderFilterBar.bind(this)
   }
 
   render() {
     const {userId, feeds, loadMoreButton, username, selectedFilter} = this.props;
-    return !!feeds ? (
-      feeds.length > 0 ?
-        <div className="container-fluid col-md-offset-3 col-md-6">
-          <FeedInputPanel />
-          <nav className="navbar navbar-inverse">
-            <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
-              <li className={selectedFilter === 'all' && 'active'}>
-                <a
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => this.applyFilter('all')}
-                >
-                  All
-                </a>
-              </li>
-              <li className={selectedFilter === 'discussion' && 'active'}>
-                <a
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => this.applyFilter('discussion')}
-                >
-                  Discussions
-                </a>
-              </li>
-              <li className={selectedFilter === 'video' && 'active'}>
-                <a
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => this.applyFilter('video')}
-                >
-                  Videos
-                </a>
-              </li>
-              <li className={selectedFilter === 'url' && 'active'}>
-                <a
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => this.applyFilter('url')}
-                >
-                  Links
-                </a>
-              </li>
-              <li className={selectedFilter === 'comment' && 'active'}>
-                <a
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => this.applyFilter('comment')}
-                >
-                  Comments
-                </a>
-              </li>
-            </ul>
-          </nav>
-
-          {feeds.map(feed => {
-            return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />;
-          })}
-          {loadMoreButton &&
-            <div className="text-center" style={{paddingBottom: '1em'}}>
-              <Button className="btn btn-success" onClick={this.loadMoreFeeds}>Load More</Button>
-            </div>
+    const {selectedTab} = this.state;
+    const defaultListStyle = {backgroundColor: Color.backgroundGray, border: 'none', cursor: 'pointer'};
+    const listStyle = {
+      profile: {
+        ...defaultListStyle,
+        backgroundColor: selectedTab === 'profile' ? Color.lightGray : defaultListStyle.backgroundColor,
+        fontWeight: selectedTab === 'profile' && 'bold'
+      },
+      feed: {
+        ...defaultListStyle,
+        backgroundColor: selectedTab === 'feed' ? Color.lightGray : defaultListStyle.backgroundColor,
+        fontWeight: selectedTab === 'feed' && 'bold'
+      },
+      people: {
+        ...defaultListStyle,
+        color: Color.gray,
+        backgroundColor: selectedTab === 'people' ? Color.lightGray : defaultListStyle.backgroundColor,
+        fontWeight: selectedTab === 'people' && 'bold'
+      }
+    };
+    return (
+      <div className="container">
+        <div
+          className="col-xs-2"
+          style={{
+            marginTop: '2em',
+            position: 'fixed'
+          }}
+        >
+          <ul className="list-group" style={{fontSize: '1.3em'}}>
+            <li
+              className="list-group-item"
+              style={listStyle.profile}
+              onClick={() => this.setState({selectedTab: 'profile'})}
+            >
+              My Profile
+            </li>
+            <li
+              className="list-group-item"
+              style={listStyle.feed}
+              onClick={() => this.setState({selectedTab: 'feed'})}
+            >
+              News Feed
+            </li>
+            <li
+              className="list-group-item"
+              style={listStyle.people}
+            >
+              People
+            </li>
+          </ul>
+        </div>
+        <div className="col-xs-8 col-xs-offset-3">
+          {selectedTab === 'feed' &&
+            <Feeds
+              feeds={feeds}
+              loadMoreButton={loadMoreButton}
+              userId={userId}
+              loadMoreFeeds={this.loadMoreFeeds}
+              renderFilterBar={this.renderFilterBar}
+            />
+          }
+          {selectedTab === 'profile' &&
+            <Profile />
           }
         </div>
-      : <p style={{
-        textAlign: 'center',
-        paddingTop: '1em',
-        paddingBottom: '1em',
-        fontSize: '2em'
-      }}><span>Hello!</span></p>
-    ) :
-    <p style={{
-      textAlign: 'center',
-      paddingTop: '1em',
-      paddingBottom: '1em',
-      fontSize: '3em'
-    }}><span className="glyphicon glyphicon-refresh spinning"></span> <span>Loading...</span></p>
+      </div>
+    )
   }
 
   applyFilter(filter) {
@@ -120,4 +111,65 @@ export default class Home extends Component {
     const {feeds, fetchMoreFeeds, selectedFilter} = this.props;
     fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter);
   }
+
+  renderFilterBar() {
+    const {selectedFilter} = this.props;
+    return (
+      <nav className="navbar navbar-inverse">
+        <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
+          <li className={selectedFilter === 'all' && 'active'}>
+            <a
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => this.applyFilter('all')}
+            >
+              All
+            </a>
+          </li>
+          <li className={selectedFilter === 'discussion' && 'active'}>
+            <a
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => this.applyFilter('discussion')}
+            >
+              Discussions
+            </a>
+          </li>
+          <li className={selectedFilter === 'video' && 'active'}>
+            <a
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => this.applyFilter('video')}
+            >
+              Videos
+            </a>
+          </li>
+          <li className={selectedFilter === 'url' && 'active'}>
+            <a
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => this.applyFilter('url')}
+            >
+              Links
+            </a>
+          </li>
+          <li className={selectedFilter === 'comment' && 'active'}>
+            <a
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => this.applyFilter('comment')}
+            >
+              Comments
+            </a>
+          </li>
+        </ul>
+      </nav>
+    )
+  }
+
 }
