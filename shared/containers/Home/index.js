@@ -60,18 +60,26 @@ export default class Home extends Component {
             position: 'fixed'
           }}
         >
-          <ul className="list-group" style={{fontSize: '1.3em'}}>
+          <ul className="list-group unselectable" style={{fontSize: '1.3em'}}>
             <li
               className="list-group-item"
               style={listStyle.profile}
-              onClick={() => this.setState({selectedTab: 'profile'})}
+              onClick={
+                () => {
+                  if (selectedTab !== 'profile') this.setState({selectedTab: 'profile'})
+                }
+              }
             >
               My Profile
             </li>
             <li
               className="list-group-item"
               style={listStyle.feed}
-              onClick={() => this.setState({selectedTab: 'feed'})}
+              onClick={
+                () => {
+                  if (selectedTab !== 'feed') this.setState({selectedTab: 'feed'})
+                }
+              }
             >
               News Feed
             </li>

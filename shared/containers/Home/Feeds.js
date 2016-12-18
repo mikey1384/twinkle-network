@@ -27,7 +27,7 @@ export default function Feeds({feeds, loadMoreButton, userId, renderFilterBar, l
           })}
           {loadMoreButton &&
             <div className="text-center" style={{paddingBottom: '1em'}}>
-              <Button className="btn btn-success" onClick={() => loadMoreFeeds}>Load More</Button>
+              <Button className="btn btn-success" onClick={() => loadMoreFeeds()}>Load More</Button>
             </div>
           }
         </div>

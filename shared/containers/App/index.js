@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-import Header from '../Header';
+import Header from './Header';
 import Chat from '../Chat';
 import io from 'socket.io-client';
 import {connect} from 'react-redux';
@@ -100,11 +100,11 @@ export default class App extends Component {
           turnChatOff={() => turnChatOff()}
         />
         <div
-          style={style}
+          style={{...style, paddingBottom: '1em'}}
         >
           {this.props.children}
         </div>
-        {chatMode && this.props.loggedIn ?
+        {chatMode && this.props.loggedIn &&
           <Chat
             socket={socket}
             onUnmount={
@@ -114,13 +114,7 @@ export default class App extends Component {
                 turnChatOff();
               }
             }
-          /> :
-          <footer
-            className="footer col-md-12"
-            style={{paddingTop: '5px'}}
-          >
-            <p className="text-muted text-center">Twinkle © 2016</p>
-          </footer>
+          />
         }
       </div>
     )

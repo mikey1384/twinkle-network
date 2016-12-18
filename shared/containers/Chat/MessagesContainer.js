@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
+import Color from 'constants/css';
+import ProfilePic from 'components/ProfilePic';
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop;
@@ -162,7 +164,7 @@ export default class MessagesContainer extends Component {
     const {messages} = this.props;
     return messages.map((message, index) => {
       let {isNotification} = message;
-      let messageStyle = isNotification ? {color: '#7c7c7c'} : null;
+      let messageStyle = isNotification ? {color: Color.darkGray} : null;
       return (
         <div
           key={index}
@@ -173,9 +175,7 @@ export default class MessagesContainer extends Component {
             width: '100%'
           }}
         >
-          <div className="media-left">
-            <a><img className="media-object" style={{width: '64px'}} src="/img/default.jpg"/></a>
-          </div>
+          <ProfilePic size='5' />
           <div
             className="media-body"
             style={{
