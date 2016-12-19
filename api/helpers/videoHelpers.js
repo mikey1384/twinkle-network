@@ -35,13 +35,14 @@ const fetchCommentElements = (params) => cb => {
       })
     },
     callback => {
-      let query = [
-        'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
-        'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
-        'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
-        'LEFT JOIN users d ON c.userId = d.id WHERE a.commentId = ? ',
-        'ORDER BY a.id DESC LIMIT 2'
-      ].join('')
+      let query = `
+        SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
+        c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName
+        FROM vq_comments a JOIN users b ON a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId
+        AND c.isProfilePic = '1' LEFT JOIN vq_comments d ON a.replyId = d.id 
+        LEFT JOIN users e ON d.userId = e.id WHERE a.commentId = ?
+        ORDER BY a.id DESC LIMIT 2
+      `;
       pool.query(query, commentId, (err, rows) => {
         if (err) {
           console.error(err)

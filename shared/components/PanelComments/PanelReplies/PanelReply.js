@@ -6,6 +6,7 @@ import {cleanStringWithURL} from 'helpers/stringHelpers';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';
+import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
@@ -67,15 +68,7 @@ export default class PanelReply extends Component {
             ]}
           />
         }
-        <div className="media-left">
-          <a>
-            <img
-              className="media-object"
-              src="/img/default.jpg"
-              style={{width: '45px'}}
-            />
-          </a>
-        </div>
+        <ProfilePic size="3.5" userId={reply.userId} profilePicId={reply.profilePicId} />
         <div className="media-body">
           <h5 className="media-heading">
             <UsernameText

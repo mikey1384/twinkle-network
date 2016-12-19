@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
-import Color from 'constants/css';
+import {Color} from 'constants/css';
 import ProfilePic from 'components/ProfilePic';
 
 const scrollIsAtTheBottom = (content, container) => {
@@ -175,7 +175,7 @@ export default class MessagesContainer extends Component {
             width: '100%'
           }}
         >
-          <ProfilePic size='5' />
+          <ProfilePic size='5' userId={message.userId} profilePicId={message.profilePicId} />
           <div
             className="media-body"
             style={{

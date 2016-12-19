@@ -54,14 +54,7 @@ export default function ChatReducer(state = defaultState, action) {
           creatorId: action.data.message.userId,
           members: action.data.members
         },
-        messages: [{
-          id: action.data.message.messageId,
-          channelId: action.data.message.channelId,
-          content: action.data.message.content,
-          timeStamp: action.data.message.timeStamp,
-          username: action.data.message.username,
-          isNotification: action.data.message.isNotification
-        }],
+        messages: [action.data.message],
         loadMoreButton: false
       }
     case 'CREATE_NEW_CHAT':
@@ -88,13 +81,7 @@ export default function ChatReducer(state = defaultState, action) {
           creatorId: action.data.userId,
           members: action.data.members
         },
-        messages: [{
-          id: action.data.messageId,
-          channelId: action.data.channelId,
-          content: action.data.content,
-          timeStamp: action.data.timeStamp,
-          username: action.data.username
-        }]
+        messages: [action.data]
       }
     case 'ENTER_CHANNEL':
       loadMoreButton = false;
@@ -382,7 +369,8 @@ export default function ChatReducer(state = defaultState, action) {
           content: processedStringWithURL(action.message.content),
           timeStamp: action.message.timeStamp,
           username: action.message.username,
-          userId: action.message.userId
+          userId: action.message.userId,
+          profilePicId: action.message.profilePicId
         }])
       }
     case 'TOGGLE_CHAT':

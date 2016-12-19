@@ -10,6 +10,7 @@ import PanelReplies from './PanelReplies';
 import ReplyInputArea from './PanelReplies/ReplyInputArea';
 import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
+import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import {scrollElementToCenter} from 'helpers/domHelpers';
@@ -82,15 +83,7 @@ export default class PanelComment extends Component {
             />
           </div>
         }
-        <div className="media-left">
-          <a>
-            <img
-              className="media-object"
-              src="/img/default.jpg"
-              style={{width: '45px'}}
-            />
-          </a>
-        </div>
+        <ProfilePic size="3.5" userId={comment.userId} profilePicId={comment.profilePicId} />
         <div className="media-body">
           <h5 className="media-heading">
             <UsernameText user={{

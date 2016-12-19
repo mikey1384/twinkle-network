@@ -301,13 +301,13 @@ router.get('/comments', (req, res) => {
     break;
   }
   if (!!lastCommentId && lastCommentId !== '0') where += ' AND a.id < ' + lastCommentId;
-  const query = [
-    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
-    'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
-    'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
-    'LEFT JOIN users d ON c.userId = d.id ',
-    'WHERE a.'+ where +' ORDER BY a.id DESC LIMIT ' + limit
-  ].join('');
+  const query = `
+    SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
+    c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName FROM vq_comments a JOIN users b ON
+    a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1' LEFT JOIN vq_comments d
+    ON a.replyId = d.id LEFT JOIN users e ON d.userId = e.id
+    WHERE a.${where} ORDER BY a.id DESC LIMIT ${limit}
+  `;
   pool.query(query, contentId, (err, rows) => {
     if (err) {
       console.error(err);

@@ -73,11 +73,10 @@ router.get('/more', requireAuth, (req, res) => {
     return res.status(401).send("Unauthorized")
   }
   const {messageId, channelId} = req.query;
-  const query = [
-    'SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username FROM ',
-    'msg_chats a LEFT JOIN users b ON a.userId = b.id ',
-    'WHERE a.id < ? AND a.channelId = ? ORDER BY id DESC LIMIT 21'
-  ].join('');
+  const query = `
+    SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username, c.id AS profilePicId
+    FROM msg_chats a LEFT JOIN users b ON a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1' WHERE a.id < ? AND a.channelId = ? ORDER BY id DESC LIMIT 21
+  `;
   pool.query(query, [messageId, channelId], (err, rows) => {
     if (err) {
       console.error(err);
@@ -261,6 +260,7 @@ router.post('/channel', requireAuth, (req, res) => {
           pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
             message = Object.assign({}, message, {
               username: user.username,
+              profilePicId: user.profilePicId,
               messageId: result.insertId,
               channelName
             });
@@ -379,6 +379,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
         channelId,
         userId: user.id,
         username: user.username,
+        profilePicId: user.profilePicId,
         content: firstMessage,
         members: rows,
         timeStamp

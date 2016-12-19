@@ -28,6 +28,7 @@ const channelName = (channels, currentChannel) => {
   state => ({
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId,
     currentChannel: state.ChatReducer.currentChannel,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
@@ -195,7 +196,7 @@ export default class Chat extends Component {
   }
 
   render() {
-    const {channels, currentChannel, userId, searchResult} = this.props;
+    const {channels, currentChannel, userId, profilePicId, searchResult} = this.props;
     const {
       createNewChannelModalShown,
       inviteUsersModalShown,
@@ -468,6 +469,7 @@ export default class Chat extends Component {
       submitMessage,
       userId,
       username,
+      profilePicId,
       currentChannel,
       createNewChatOrReceiveExistingChatData,
       partnerId
@@ -481,6 +483,7 @@ export default class Chat extends Component {
           socket.emit('new_chat_message', {
             userId,
             username,
+            profilePicId,
             content: message.content,
             channelId: message.channelId,
             id: messageId
@@ -495,6 +498,7 @@ export default class Chat extends Component {
     let params = {
       userId,
       username,
+      profilePicId,
       content: message,
       channelId: currentChannel.id
     }

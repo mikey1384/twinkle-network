@@ -3,20 +3,30 @@ import ReactDOM from 'react-dom';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import ImageEditModal from './Modals/ImageEditModal';
+import {uploadProfilePic} from 'redux/actions/UserActions';
+import {connect} from 'react-redux';
 
+
+@connect(
+  null,
+  {uploadProfilePic}
+)
 export default class Header extends Component {
   constructor() {
     super()
     this.state = {
       imageUri: null,
+      processing: false,
       imageEditModalShown: false
     }
     this.onChangeProfilePictureClick = this.onChangeProfilePictureClick.bind(this)
     this.handlePicture = this.handlePicture.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   render() {
-    const {imageUri, imageEditModalShown} = this.state;
+    const {imageUri, imageEditModalShown, processing} = this.state;
+    const {userId, profilePicId} = this.props;
     return (
       <div
         className="panel panel-default"
@@ -31,7 +41,9 @@ export default class Header extends Component {
             }}
           >
             <ProfilePic
-              imageSrc="https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/5/1.PNG" size='13'
+              userId={userId}
+              profilePicId={profilePicId}
+              size='13'
             />
             <div className="media-body" style={{paddingLeft: '1em'}}>
               <h2 className="media-heading">mikey <small>(Mikey Lee)</small></h2>
@@ -59,9 +71,14 @@ export default class Header extends Component {
           <ImageEditModal
             imageUri={imageUri}
             onHide={() => {
-              this.setState({imageEditModalShown: false})
+              this.setState({
+                imageUri: null,
+                imageEditModalShown: false,
+                processing: false
+              })
             }}
-            onConfirm={image => console.log(image)}
+            processing={processing}
+            onConfirm={this.handleSubmit}
           />
         }
       </div>
@@ -85,6 +102,22 @@ export default class Header extends Component {
 
     reader.readAsDataURL(file);
     event.target.value = null;
+  }
+
+  handleSubmit(image) {
+    const {uploadProfilePic} = this.props;
+
+    this.setState({
+      imageUri: null,
+      processing: true
+    });
+
+    uploadProfilePic(image, () => {
+      this.setState({
+        processing: false,
+        imageEditModalShown: false
+      });
+    })
   }
 }
 
@@ -142,22 +175,7 @@ export default class Profile extends Component {
     );
   }
 
-  handleSubmit(event) {
-    const {dataUri, fileName} = this.state;
-    const {uploadProfilePic} = this.props;
-    event.preventDefault();
 
-    this.setState({
-      processing: true
-    });
-
-    uploadProfilePic({dataUri, fileName}, data => {
-      this.setState({
-        processing: false,
-        uploaded_uri: data.uri
-      });
-    })
-  }
 
 
 }

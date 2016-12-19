@@ -3,7 +3,6 @@ import {Route, IndexRoute} from 'react-router';
 import App from 'containers/App';
 
 import Notifications from 'containers/Notifications';
-import Profile from 'containers/Profile';
 import Home from 'containers/Home';
 import Links from 'containers/Links';
 import Videos from 'containers/Videos';
@@ -67,7 +66,6 @@ export const routes = (
     </Route>
     <Route path="/links" component={Links} />
     <Route path="/notifications" component={Notifications}/>
-    <Route path="/profile" component={Profile}/>
     <Route path="/management" component={AdminOnly(Management)}/>
 
     <Route path="*" component={NotFound} status={404} />

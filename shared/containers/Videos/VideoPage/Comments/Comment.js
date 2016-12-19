@@ -9,6 +9,7 @@ import ReplyInputArea from './Replies/ReplyInputArea';
 import Replies from './Replies';
 import EditTextArea from './EditTextArea';
 import UsernameText from 'components/UsernameText';
+import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import {scrollElementToCenter} from 'helpers/domHelpers';
@@ -57,15 +58,7 @@ export default class Comment extends Component {
         style={{marginTop: this.props.marginTop && '2em'}}
         ref={ref => {this.Comment = ref}}
       >
-        <div className="media-left">
-          <a>
-            <img
-              className="media-object"
-              src="/img/default.jpg"
-              style={{width: '64px'}}
-            />
-          </a>
-        </div>
+        <ProfilePic size="4.5" userId={comment.userId} profilePicId={comment.profilePicId} />
         <div className="media-body">
           {userIsOwner && !onEdit &&
             <SmallDropdownButton

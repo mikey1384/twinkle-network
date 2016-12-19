@@ -6,6 +6,7 @@ import {cleanStringWithURL} from 'helpers/stringHelpers';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';
+import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
@@ -38,7 +39,7 @@ export default class Reply extends Component {
   render() {
     const {
       id, username, timeStamp, content, userIsOwner, onEditDone,
-      likes, userId, myId, targetUserName, targetUserId, autoFocus
+      likes, userId, profilePicId, myId, targetUserName, targetUserId, autoFocus
     } = this.props;
     const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state;
     let userLikedThis = false;
@@ -71,15 +72,7 @@ export default class Reply extends Component {
             ]}
           />
         }
-        <div className="media-left">
-          <a>
-            <img
-              className="media-object"
-              src="/img/default.jpg"
-              style={{width: '64px'}}
-            />
-          </a>
-        </div>
+        <ProfilePic size="4.5" userId={userId} profilePicId={profilePicId} />
         <div className="media-body">
           <h4 className="media-heading">
             <UsernameText

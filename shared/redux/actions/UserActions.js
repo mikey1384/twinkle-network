@@ -1,5 +1,5 @@
 import request from 'axios';
-import {token, auth} from './constants';
+import {token, auth, handleError} from './constants';
 import {URL} from 'constants/URL';
 
 const API_URL = `${URL}/user`;
@@ -51,11 +51,26 @@ export const signup = data => ({
   data
 })
 
-export const signupAsync = params => dispatch => request.post(`${API_URL}/signup`, params)
+export const signupAsync = params => dispatch =>
+request.post(`${API_URL}/signup`, params)
 .then(
   response => {
     if (response.data.token) localStorage.setItem('token', response.data.token);
     dispatch(signup(response.data))
+  }
+)
+
+export const uploadProfilePic = (image, callback) => dispatch =>
+request.post(`${API_URL}/picture`, {image}, auth())
+.then(
+  response => {
+    console.log(response)
+    callback()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
   }
 )
 

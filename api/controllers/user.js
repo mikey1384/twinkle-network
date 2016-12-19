@@ -1,28 +1,39 @@
 const passwordHash = require('password-hash');
-
 const {capitalize} = require('../helpers/stringHelpers');
 const {userExists, isFalseClaim} = require('../helpers/userHelpers');
-
 const {tokenForUser, requireAuth, requireSignin} = require('../auth');
-
 const express = require('express');
 const router = express.Router();
-
 const pool = require('../pool');
+const async = require('async');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({signatureVersion: 'v4'});
+const bucketName = 'twinkle-seoul';
 
 router.get('/session', requireAuth, function (req, res) {
-  res.send(req.user)
+  res.send(Object.assign({}, req.user, {userId: req.user.id}))
 })
 
 router.post('/login', requireSignin, function (req, res) {
-  const userId = req.user.id;
-  res.send({
-    result: "success",
-    username: req.user.username,
-    userId: userId,
-    userType: req.user.userType,
-    token: tokenForUser(userId)
-  })
+  res.send(
+    Object.assign({}, req.user, {
+      userId: req.user.id,
+      result: "success",
+      token: tokenForUser(req.user.id)
+    })
+  )
+})
+
+router.post('/picture', requireAuth, (req, res) => {
+  const dataUri = req.body.image.replace(/^data:image\/\w+;base64,/, "")
+  const params = {Bucket: bucketName, Key: 'test.jpg', Body: new Buffer(dataUri, 'base64')};
+  s3.putObject(params, function(err, data) {
+    if (err) {
+      console.error(err)
+      return res.status(500).send({error: err})
+    }
+    res.send({success: true})
+  });
 })
 
 router.post('/signup', function (req, res) {

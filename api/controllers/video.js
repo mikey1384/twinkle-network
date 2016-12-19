@@ -265,14 +265,15 @@ router.get('/comments', (req, res) => {
   const {videoId, lastCommentId} = req.query;
   const limit = 21;
   const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : ''
-  const query = [
-    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
-    'c.title AS discussionTitle ',
-    'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
-    'LEFT JOIN content_discussions c ON a.discussionId = c.id ',
-    'WHERE videoId = ? AND commentId IS NULL ', where,
-    'ORDER BY a.id DESC LIMIT ' + limit
-  ].join('');
+  const query = `
+    SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
+    c.id AS profilePicId, d.title AS discussionTitle
+    FROM vq_comments a LEFT JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+    LEFT JOIN content_discussions d ON a.discussionId = d.id
+    WHERE videoId = ? AND commentId IS NULL ${where}
+    ORDER BY a.id DESC LIMIT ${limit}
+  `;
   pool.query(query, videoId, (err, rows) => {
     if (err) {
       console.error(err);
@@ -315,11 +316,12 @@ router.post('/comments', requireAuth, (req, res) => {
       })
     },
     (callback) => {
-      const query = [
-        'SELECT a.id, a.userId, a.content, a.timeStamp, b.username ',
-        'FROM vq_comments a LEFT JOIN users b ON a.userId = b.id ',
-        'WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC'
-      ].join('');
+      const query = `
+        SELECT a.id, a.userId, a.content, a.timeStamp, b.username, c.id AS profilePicId
+        FROM vq_comments a LEFT JOIN users b ON a.userId = b.id
+        LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+        WHERE videoId = ? AND commentId IS NULL ORDER BY a.id DESC
+      `
       pool.query(query, videoId, (err, rows) => {
         callback(err, rows)
       })
@@ -465,12 +467,13 @@ router.get('/debates/comments', (req, res) => {
   const {discussionId, lastCommentId} = req.query;
   const limit = 4;
   const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : '';
-  const query = [
-    'SELECT a.id, a.userId, a.content, a.timeStamp, b.username FROM ',
-    'vq_comments a LEFT JOIN users b ON a.userId = b.id WHERE ',
-    'a.discussionId = ? AND a.commentId IS NULL ', where,
-    'ORDER BY a.id DESC LIMIT ' + limit
-  ].join('');
+  const query = `
+    SELECT a.id, a.userId, a.content, a.timeStamp, b.username, c.id AS profilePicId
+    FROM vq_comments a LEFT JOIN users b ON a.userId = b.id LEFT JOIN users_photos c ON
+    a.userId = c.userId AND c.isProfilePic = '1'
+    WHERE a.discussionId = ? AND a.commentId IS NULL ${where}
+    ORDER BY a.id DESC LIMIT ${limit}
+  `;
   pool.query(query, discussionId, (err, rows) => {
     if (err) {
       console.error(err);
@@ -549,6 +552,7 @@ router.post('/debates/comments', requireAuth, (req, res) => {
       id: result.insertId,
       likes: [],
       replies: [],
+      profilePicId: user.profilePicId,
       username: user.username
     }))
   })
@@ -558,13 +562,15 @@ router.get('/replies', (req, res) => {
   const {lastReplyId, commentId} = req.query;
   const where = !!lastReplyId && lastReplyId !== '0' ? 'AND a.id < ' + lastReplyId + ' ' : '';
   let loadMoreReplies = false;
-  const query = [
-    'SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username, ',
-    'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a JOIN users b ON ',
-    'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
-    'LEFT JOIN users d ON c.userId = d.id WHERE a.commentId = ? ', where,
-    'ORDER BY a.id DESC LIMIT 11'
-  ].join('')
+  const query = `
+    SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
+    c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName
+    FROM vq_comments a JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+    LEFT JOIN vq_comments d ON a.replyId = d.id
+    LEFT JOIN users e ON d.userId = e.id WHERE a.commentId = ? ${where}
+    ORDER BY a.id DESC LIMIT 11
+  `;
   pool.query(query, [commentId, lastReplyId], (err, rows) => {
     if (err) {
       console.error(err)
@@ -611,12 +617,13 @@ router.post('/replies', requireAuth, (req, res) => {
       })
     },
     (replyId, callback) => {
-      let query = [
-        'SELECT a.id, a.userId, a.content, a.timeStamp, a.commentId, a.replyId, b.username, ',
-        'c.userId AS targetUserId, d.username AS targetUserName FROM vq_comments a LEFT JOIN users b ON ',
-        'a.userId = b.id LEFT JOIN vq_comments c ON a.replyId = c.id ',
-        'LEFT JOIN users d ON c.userId = d.id WHERE a.id = ?'
-      ].join('')
+      let query = `
+        SELECT a.id, a.userId, a.content, a.timeStamp, a.commentId, a.replyId, b.username, c.id AS profilePicId,
+        d.userId AS targetUserId, e.username AS targetUserName FROM vq_comments a LEFT JOIN users b ON
+        a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+        LEFT JOIN vq_comments d ON a.replyId = d.id
+        LEFT JOIN users e ON d.userId = e.id WHERE a.id = ?
+      `;
       pool.query(query, replyId, (err, rows) => {
         callback(err, rows)
       })

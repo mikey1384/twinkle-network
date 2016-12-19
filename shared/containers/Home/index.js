@@ -11,6 +11,7 @@ import {Color} from 'constants/css';
     loadMoreButton: state.FeedReducer.loadMoreButton,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId,
     selectedFilter: state.FeedReducer.selectedFilter
   }),
   {
@@ -30,7 +31,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {userId, feeds, loadMoreButton, username, selectedFilter} = this.props;
+    const {userId, feeds, loadMoreButton, username, profilePicId, selectedFilter} = this.props;
     const {selectedTab} = this.state;
     const defaultListStyle = {backgroundColor: Color.backgroundGray, border: 'none', cursor: 'pointer'};
     const listStyle = {
@@ -102,7 +103,7 @@ export default class Home extends Component {
             />
           }
           {selectedTab === 'profile' &&
-            <Profile />
+            <Profile userId={userId} profilePicId={profilePicId} />
           }
         </div>
       </div>

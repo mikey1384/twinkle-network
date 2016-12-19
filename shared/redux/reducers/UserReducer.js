@@ -1,13 +1,4 @@
-const defaultState = {
-  loggedIn: false,
-  username: null,
-  userType: null,
-  isAdmin: false,
-  userId: null,
-  signupError: null,
-  loginError: null,
-  signinModalShown: false
-};
+const defaultState = {};
 
 function isAdmin (userType) {
   return userType === 'teacher' || userType === 'master';
@@ -16,86 +7,56 @@ function isAdmin (userType) {
 export default function UserReducer(state = defaultState, action) {
   switch (action.type) {
     case 'FETCH_SESSION':
-    if (action.data !== undefined && action.data.loggedIn) {
-      return {
+      return (action.data !== undefined && action.data.loggedIn) ?
+      {
         ...state,
-        loggedIn: true,
-        username: action.data.username,
-        userType: action.data.userType,
-        isAdmin: isAdmin(action.data.userType),
-        userId: action.data.id
-      }
-    } else {
-      return {
-        ...state,
-        loggedIn: false,
-        username: null,
-        userType: null,
-        isAdmin: false,
-        userId: null
-      }
-    }
+        ...action.data,
+        isAdmin: isAdmin(action.data.userType)
+      } : {};
     case 'SIGNIN_LOGIN':
-    if (action.data.result === 'success') {
-      return {
+      return (action.data.result === 'success') ?
+      {
         ...state,
+        ...action.data,
         loggedIn: true,
         signinModalShown: false,
-        isAdmin: isAdmin(action.data.userType),
-        username: action.data.username,
-        userType: action.data.userType,
-        userId: action.data.userId
-      }
-    } else {
-      return {
+        isAdmin: isAdmin(action.data.userType)
+      } : {
         ...state,
         loginError: action.data.result
       }
-    }
     case 'SIGNIN_LOGOUT':
-    return {
-      ...state,
-      loggedIn: false,
-      username: null,
-      userType: null,
-      isAdmin: false,
-      userId: null
-    }
+      return {}
     case 'SIGNIN_SIGNUP':
-    if (action.data.result === 'success') {
-      return {
+      return (action.data.result === 'success') ?
+      {
         ...state,
-        loggedIn: true,
-        username: action.data.username,
-        userType: action.data.userType,
+        ...action.data,
         isAdmin: isAdmin(action.data.userType),
-        userId: action.data.userId,
+        loggedIn: true,
         signinModalShown: false
-      }
-    } else {
-      return {
+      } : {
         ...state,
         signupError: action.data.result
       }
-    };
     case 'SIGNIN_OPEN':
-    return {
-      ...state,
-      signinModalShown: true
-    };
+      return {
+        ...state,
+        signinModalShown: true
+      };
     case 'SIGNIN_CLOSE':
-    return {
-      ...state,
-      signupError: null,
-      loginError: null,
-      signinModalShown: false
-    };
+      return {
+        ...state,
+        signupError: null,
+        loginError: null,
+        signinModalShown: false
+      };
     case 'SIGNIN_HIDEALERT':
-    return {
-      ...state,
-      loginError: null,
-      signupError: null
-    }
+      return {
+        ...state,
+        loginError: null,
+        signupError: null
+      }
     default:
       return state;
   }

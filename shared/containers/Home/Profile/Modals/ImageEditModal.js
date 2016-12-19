@@ -4,7 +4,7 @@ import AvatarEditor from 'react-avatar-editor';
 
 export default class ImageEditModal extends Component {
   render() {
-    const {onHide, imageUri, onConfirm} = this.props;
+    const {onHide, imageUri, onConfirm, processing} = this.props;
     return (
       <Modal
         show
@@ -35,9 +35,11 @@ export default class ImageEditModal extends Component {
           <Button
             bsStyle="primary"
             onClick={() => onConfirm(this.refs.editor.getImage().toDataURL("image/jpeg", 0.7))}
+            disabled={processing}
           >
-            Confirm
+            Submit
           </Button>
+          {processing && <span>Uploading...</span>}
         </Modal.Footer>
       </Modal>
     )
