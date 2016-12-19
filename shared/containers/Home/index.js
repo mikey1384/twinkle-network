@@ -70,7 +70,7 @@ export default class Home extends Component {
                 }
               }
             >
-              My Profile
+              Profile
             </li>
             <li
               className="list-group-item"

@@ -56,6 +56,7 @@
     "randomcolor": "^0.4.4",
     "react": "^15.4.1",
     "react-addons-update": "^15.4.1",
+    "react-avatar-editor": "^6.1.0",
     "react-bootstrap": "^0.30.7",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
