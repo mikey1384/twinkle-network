@@ -1,14 +1,34 @@
 const passwordHash = require('password-hash');
-const {capitalize} = require('../helpers/stringHelpers');
+const {capitalize, isValidUsername} = require('../helpers/stringHelpers');
 const {userExists, isFalseClaim} = require('../helpers/userHelpers');
 const {tokenForUser, requireAuth, requireSignin} = require('../auth');
 const express = require('express');
 const router = express.Router();
 const pool = require('../pool');
 const async = require('async');
+const {processedString} = require('../helpers/stringHelpers');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({signatureVersion: 'v4'});
-const bucketName = 'twinkle-seoul';
+const config = require('../siteConfig');
+const {bucketName} = config;
+
+
+router.post('/bio', requireAuth, (req, res) => {
+  const {user} = req;
+  const {firstLine, secondLine, thirdLine} = req.body;
+  const post = {
+    profileFirstRow: processedString(firstLine),
+    profileSecondRow: processedString(secondLine),
+    profileThirdRow: processedString(thirdLine)
+  }
+  pool.query(`UPDATE users SET ? WHERE id = ?`, [post, user.id], (err, rows) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send({error: err})
+    }
+    res.send(post)
+  })
+})
 
 router.get('/session', requireAuth, function (req, res) {
   res.send(Object.assign({}, req.user, {userId: req.user.id}))
@@ -26,14 +46,32 @@ router.post('/login', requireSignin, function (req, res) {
 
 router.post('/picture', requireAuth, (req, res) => {
   const dataUri = req.body.image.replace(/^data:image\/\w+;base64,/, "")
-  const params = {Bucket: bucketName, Key: 'test.jpg', Body: new Buffer(dataUri, 'base64')};
-  s3.putObject(params, function(err, data) {
+  const {user} = req;
+
+  async.waterfall([
+    callback => {
+      pool.query('UPDATE users_photos SET ? WHERE userId = ?', [{isProfilePic: 0}, user.id], err => {
+        callback(err)
+      })
+    },
+    callback => {
+      pool.query('INSERT INTO users_photos SET ?', {userId: user.id, isProfilePic: 1}, (err, result) => {
+        callback(err, result.insertId)
+      })
+    },
+    (insertId, callback) => {
+      const params = {Bucket: bucketName, Key: `pictures/${user.id}/${insertId}.jpg`, Body: new Buffer(dataUri, 'base64')};
+      s3.putObject(params, function(err, data) {
+        callback(err, insertId)
+      });
+    }
+  ], (err, imageId) => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})
     }
-    res.send({success: true})
-  });
+    res.send({imageId})
+  })
 })
 
 router.post('/signup', function (req, res) {
@@ -97,5 +135,25 @@ router.post('/signup', function (req, res) {
     });
   }
 });
+
+router.get('/username/check', (req, res) => {
+  const {username} = req.query;
+  const query = `
+    SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
+    a.profileSecondRow, a.profileThirdRow, b.id AS profilePicId
+    FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE a.username = ?
+  `
+  if (!isValidUsername(username)) return res.send({pageNotExists: true})
+  pool.query(query, username, (err, rows) => {
+    if (err) {
+      console.error(err)
+      return res.send({error: err})
+    }
+    if (rows.length === 0 || !rows) {
+      return res.send({pageNotExists: true})
+    }
+    res.send({user: rows[0]})
+  })
+})
 
 module.exports = router;

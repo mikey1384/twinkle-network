@@ -175,7 +175,7 @@ export default class MessagesContainer extends Component {
             width: '100%'
           }}
         >
-          <ProfilePic size='5' userId={message.userId} profilePicId={message.profilePicId} />
+          <ProfilePic size='4' userId={message.userId} profilePicId={message.profilePicId} />
           <div
             className="media-body"
             style={{

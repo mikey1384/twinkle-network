@@ -1,4 +1,6 @@
-const defaultState = {};
+const defaultState = {
+  profilePage: {}
+};
 
 function isAdmin (userType) {
   return userType === 'teacher' || userType === 'master';
@@ -12,7 +14,21 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         ...action.data,
         isAdmin: isAdmin(action.data.userType)
-      } : {};
+      } : state;
+    case 'SHOW_USER_NOT_EXISTS':
+      return {
+        ...state,
+        profilePage: {
+          unavailable: true
+        }
+      }
+    case 'SHOW_USER_PROFILE':
+      return {
+        ...state,
+        profilePage: {
+          ...action.data
+        }
+      }
     case 'SIGNIN_LOGIN':
       return (action.data.result === 'success') ?
       {
@@ -26,7 +42,11 @@ export default function UserReducer(state = defaultState, action) {
         loginError: action.data.result
       }
     case 'SIGNIN_LOGOUT':
-      return {}
+      return {
+        profilePage: {
+          ...state.profilePage
+        }
+      };
     case 'SIGNIN_SIGNUP':
       return (action.data.result === 'success') ?
       {
@@ -56,6 +76,28 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         loginError: null,
         signupError: null
+      }
+    case 'UPDATE_BIO':
+      return {
+        ...state,
+        profilePage: {
+          ...state.profilePage,
+          ...action.data
+        }
+      }
+    case 'UPDATE_PROFILE_PICTURE':
+      return {
+        ...state,
+        profilePicId: action.data,
+        profilePage: {
+          ...state.profilePage,
+          profilePicId: action.data
+        }
+      }
+    case 'UNMOUNT_PROFILE':
+      return {
+        ...state,
+        profilePage: {}
       }
     default:
       return state;

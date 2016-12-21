@@ -453,6 +453,20 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         searchResult: action.data.result
       }
+    case 'VIDEO_PAGE_UNAVAILABLE':
+      return {
+        ...state,
+        videoPage: {
+          videoUnavailable: true
+        }
+      }
+    case 'VIDEO_PAGE_LOADING_SHOW':
+      return {
+        ...state,
+        videoPage: {
+          videoLoading: true
+        }
+      }
     default:
       return state;
   }

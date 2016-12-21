@@ -54,6 +54,7 @@
     "passport-local": "^1.0.0",
     "password-hash": "^1.2.2",
     "randomcolor": "^0.4.4",
+    "rc-slider": "^5.4.0",
     "react": "^15.4.1",
     "react-addons-update": "^15.4.1",
     "react-avatar-editor": "^6.1.0",

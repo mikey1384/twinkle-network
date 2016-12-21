@@ -128,7 +128,7 @@ function validate (values) {
   const errors = {};
 
   if (!isValidUsername(username)) {
-    errors.username = 'Usernames may only contain letters and numbers';
+    errors.username = 'Invalid username';
   }
   if (!isValidRealname(firstname)) {
     errors.firstname = 'Invalid first name';
@@ -176,5 +176,5 @@ function isValidRealname(realName) {
 
 function isValidUsername (username) {
   var pattern = new RegExp(/^[a-zA-Z0-9]+$/);
-  return pattern.test(username);
+  return !!username && username.length < 20 && pattern.test(username);
 }

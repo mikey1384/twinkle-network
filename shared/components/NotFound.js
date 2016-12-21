@@ -1,10 +1,10 @@
 import React from 'react';
 
-export default function NotFound() {
+export default function NotFound({text}) {
   return (
     <div className="container">
-      <h1>Doh! 404!</h1>
-      <p>These are <em>not</em> the droids you are looking for!</p>
+      <h1>Not Found</h1>
+      <p>{!!text ? text : 'The page you requested does not exist'}</p>
     </div>
   );
 }

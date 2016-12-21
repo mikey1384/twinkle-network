@@ -3,5 +3,6 @@ module.exports = {
   mysqlPassword: 'yourpassword',
   mysqlDatabase: 'yourdb',
   jwtSecret: 'yourjwtsecret',
-  generalChatId: 2
+  generalChatId: 2,
+  bucketName: 'your aws bucket name'
 }

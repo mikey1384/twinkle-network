@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import ImageEditModal from './Modals/ImageEditModal';
-import {uploadProfilePic} from 'redux/actions/UserActions';
+import BioEditModal from './Modals/BioEditModal';
+import {uploadProfilePic, uploadBio} from 'redux/actions/UserActions';
 import {connect} from 'react-redux';
+import {cleanStringWithURL} from 'helpers/stringHelpers';
 
 
 @connect(
   null,
-  {uploadProfilePic}
+  {uploadProfilePic, uploadBio}
 )
 export default class Header extends Component {
   constructor() {
@@ -17,16 +19,19 @@ export default class Header extends Component {
     this.state = {
       imageUri: null,
       processing: false,
-      imageEditModalShown: false
+      imageEditModalShown: false,
+      bioEditModalShown: false
     }
     this.onChangeProfilePictureClick = this.onChangeProfilePictureClick.bind(this)
     this.handlePicture = this.handlePicture.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.uploadBio = this.uploadBio.bind(this)
+    this.uploadImage = this.uploadImage.bind(this)
   }
 
   render() {
-    const {imageUri, imageEditModalShown, processing} = this.state;
-    const {userId, profilePicId} = this.props;
+    const {imageUri, imageEditModalShown, bioEditModalShown, processing} = this.state;
+    const {profilePage, userId} = this.props;
+    const {profileFirstRow, profileSecondRow, profileThirdRow} = profilePage;
     return (
       <div
         className="panel panel-default"
@@ -41,22 +46,44 @@ export default class Header extends Component {
             }}
           >
             <ProfilePic
-              userId={userId}
-              profilePicId={profilePicId}
+              userId={profilePage.id}
+              profilePicId={profilePage.profilePicId}
               size='13'
             />
             <div className="media-body" style={{paddingLeft: '1em'}}>
-              <h2 className="media-heading">mikey <small>(Mikey Lee)</small></h2>
-              <p style={{marginBottom: '0px'}}>Teacher, Programmer, Creator of Twinkle Website</p>
-              <p style={{marginBottom: '0px'}}>Likes to learn, teach and create</p>
-              <p style={{marginBottom: '0px'}}>Born on January 3, 1984</p>
-              <Button className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}>Edit Bio</Button><br/>
-              <Button
-                className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
-                onClick={this.onChangeProfilePictureClick}
-              >
-                Change Profile Picture
-              </Button>
+              <h2 className="media-heading">{profilePage.username} <small>{`(${profilePage.realName})`}</small></h2>
+              {(!!profileFirstRow || !!profileSecondRow || !! profileThirdRow) &&
+                <ul style={{paddingLeft: '1em'}}>
+                  {!!profileFirstRow &&
+                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileFirstRow}} />
+                  }
+                  {!!profileSecondRow &&
+                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileSecondRow}} />
+                  }
+                  {!!profileThirdRow &&
+                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileThirdRow}} />
+                  }
+                </ul>
+              }
+              {!profileFirstRow && !profileSecondRow && !profileThirdRow && userId === profilePage.id &&
+                <p>**Add your bio so that your Twinkle friends can know you better</p>
+              }
+              {userId === profilePage.id &&
+                <div>
+                  <Button
+                    className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
+                    onClick={() => this.setState({bioEditModalShown: true})}
+                  >
+                    Edit Bio
+                  </Button><br/>
+                  <Button
+                    className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
+                    onClick={this.onChangeProfilePictureClick}
+                  >
+                    Change Profile Picture
+                  </Button>
+                </div>
+              }
             </div>
             <input
               ref={ref => this.fileInput = ref}
@@ -67,18 +94,31 @@ export default class Header extends Component {
             />
           </div>
         </div>
+        {bioEditModalShown &&
+          <BioEditModal
+            firstLine={cleanStringWithURL(profileFirstRow)}
+            secondLine={cleanStringWithURL(profileSecondRow)}
+            thirdLine={cleanStringWithURL(profileThirdRow)}
+            onSubmit={this.uploadBio}
+            onHide={() =>
+              this.setState({
+                bioEditModalShown: false
+              })
+            }
+          />
+        }
         {imageEditModalShown &&
           <ImageEditModal
             imageUri={imageUri}
-            onHide={() => {
+            onHide={() =>
               this.setState({
                 imageUri: null,
                 imageEditModalShown: false,
                 processing: false
               })
-            }}
+            }
             processing={processing}
-            onConfirm={this.handleSubmit}
+            onConfirm={this.uploadImage}
           />
         }
       </div>
@@ -104,80 +144,28 @@ export default class Header extends Component {
     event.target.value = null;
   }
 
-  handleSubmit(image) {
+  uploadBio(params) {
+    const {uploadBio} = this.props;
+    uploadBio(params, () => {
+      this.setState({
+        bioEditModalShown: false
+      })
+    })
+  }
+
+  uploadImage(image) {
     const {uploadProfilePic} = this.props;
 
     this.setState({
-      imageUri: null,
       processing: true
     });
 
     uploadProfilePic(image, () => {
       this.setState({
+        imageUri: null,
         processing: false,
         imageEditModalShown: false
       });
     })
   }
 }
-
-/*
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {uploadProfilePic} from 'redux/actions/ProfileActions';
-
-@connect(
-  null,
-  {uploadProfilePic}
-)
-export default class Profile extends Component {
-  constructor() {
-    super()
-    this.state = {
-      dataUri: null,
-      processing: false
-    }
-
-    this.handleFile = this.handleFile.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
-
-  render() {
-    let processing;
-    let uploaded;
-
-    if (this.state.uploaded_uri) {
-      uploaded = (
-        <div>
-          <h4>Image uploaded!</h4>
-          <img className='image-preview' src={this.state.uploaded_uri} />
-          <pre className='image-link-box'>{this.state.uploaded_uri}</pre>
-        </div>
-      );
-    }
-
-    if (this.state.processing) {
-      processing = "Processing image, hang tight";
-    }
-
-    return (
-      <div className='row'>
-        <div className='col-sm-12'>
-          <label>Upload an image</label>
-          <form onSubmit={this.handleSubmit} encType="multipart/form-data">
-            <input type="file" onChange={this.handleFile} />
-            <input disabled={this.state.processing} className='btn btn-primary' type="submit" value="Upload" />
-            {processing}
-          </form>
-          {uploaded}
-        </div>
-      </div>
-    );
-  }
-
-
-
-
-}
-
-*/

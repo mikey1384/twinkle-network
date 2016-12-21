@@ -51,8 +51,7 @@ export default class Header extends Component {
     super()
     this.state = {
       notificationsMenuShown: false,
-      selectedTab: !props.location || props.location.pathname === '/' ?
-      'home' : props.location.pathname.split('/')[1],
+      selectedTab: props.location ? props.location : 'home',
       logoColor: '#555555'
     }
 
@@ -115,10 +114,9 @@ export default class Header extends Component {
       if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId);
       socket.emit('enter_my_notification_channel', userId);
     }
-    if (prevProps.location.pathname !== location.pathname) {
-      const pathname = location.pathname.split('/')[1] || location.pathname
+    if (prevProps.location !== location) {
       this.setState({
-        selectedTab: !location || location.pathname === '/' ? 'home' : pathname
+        selectedTab: location ? location : 'home',
       })
     }
   }

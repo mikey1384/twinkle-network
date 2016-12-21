@@ -4,6 +4,29 @@ import {URL} from 'constants/URL';
 
 const API_URL = `${URL}/user`;
 
+export const checkValidUsername = username => dispatch =>
+request.get(`${API_URL}/username/check?username=${username}`)
+.then(
+  response => {
+    const {data} = response;
+    if (data.pageNotExists) return dispatch({
+      type: 'SHOW_USER_NOT_EXISTS'
+    })
+    dispatch({
+      type: 'SHOW_USER_PROFILE',
+      data: data.user
+    })
+  }
+).catch(
+  error => {
+    dispatch({
+      type: 'SHOW_USER_NOT_EXISTS'
+    })
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const initSession = data => ({
   type: 'FETCH_SESSION',
   data
@@ -24,7 +47,8 @@ export const login = data => ({
   data
 })
 
-export const loginAsync = params => dispatch => request.post(`${API_URL}/login`, params)
+export const loginAsync = params => dispatch =>
+request.post(`${API_URL}/login`, params)
 .then(
   response => {
     localStorage.setItem('token', response.data.token);
@@ -60,11 +84,31 @@ request.post(`${API_URL}/signup`, params)
   }
 )
 
+export const uploadBio = (params, callback) => dispatch =>
+request.post(`${API_URL}/bio`, params, auth())
+.then(
+  response => {
+    dispatch({
+      type: 'UPDATE_BIO',
+      data: response.data
+    })
+    callback()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const uploadProfilePic = (image, callback) => dispatch =>
 request.post(`${API_URL}/picture`, {image}, auth())
 .then(
   response => {
-    console.log(response)
+    dispatch({
+      type: 'UPDATE_PROFILE_PICTURE',
+      data: response.data.imageId
+    })
     callback()
   }
 ).catch(
@@ -84,4 +128,8 @@ export const closeSigninModal = () => ({
 
 export const hideErrorAlert = () => ({
   type: 'SIGNIN_HIDEALERT'
+})
+
+export const unmountProfile = () => ({
+  type: 'UNMOUNT_PROFILE'
 })

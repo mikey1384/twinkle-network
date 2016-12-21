@@ -7,10 +7,13 @@ import {
   uploadVideoReplyAsync,
   likeVideoAsync,
   resetVideoPage,
-  addVideoViewAsync
+  addVideoViewAsync,
+  loadVideoPageAsync
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
+import Loading from 'components/Loading';
+import NotFound from 'components/NotFound';
 import ChoiceListGroup from './ChoiceListGroup';
 import PageTab from './PageTab';
 import VideoLikeInterface from './VideoLikeInterface';
@@ -23,6 +26,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import {bindActionCreators} from 'redux';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 import YouTube from 'react-youtube';
+import ExecutionEnvironment from 'exenv';
 
 
 @connect(
@@ -38,12 +42,15 @@ import YouTube from 'react-youtube';
     uploadQuestions: uploadQuestionsAsync,
     likeVideo: likeVideoAsync,
     addVideoView: addVideoViewAsync,
-    resetVideoPage
+    resetVideoPage,
+    loadVideoPage: loadVideoPageAsync
   }
 )
 export default class VideoPage extends Component {
-  constructor() {
+  constructor(props) {
     super()
+    const {location, params, loadVideoPage} = props;
+    if (ExecutionEnvironment.canUseDOM && location.action === 'POP') loadVideoPage(params.videoId)
     this.state = {
       watchTabActive: true,
       currentSlide: 0,
@@ -71,19 +78,10 @@ export default class VideoPage extends Component {
 
   render() {
     let {
-      uploaderId,
-      uploaderName,
-      description,
-      userId,
-      videoId,
-      videoCode,
-      title,
-      timeStamp,
-      questions = [],
-      likes = [],
-      comments,
-      videoViews,
-      noComments } = this.props;
+      uploaderId, uploaderName, description, userId, videoUnavailable, videoLoading,
+      videoId, videoCode, title, timeStamp, questions = [], likes = [], comments,
+      videoViews, noComments
+    } = this.props;
     const {
       watchTabActive,
       questionsBuilderShown,
@@ -91,11 +89,6 @@ export default class VideoPage extends Component {
       confirmModalShown,
       userListModalShown,
       currentSlide } = this.state;
-    if (videoId === 0) {
-      return (
-        <div>Video Not Found</div>
-      )
-    }
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
     'video-container-fixed-left';
@@ -107,130 +100,138 @@ export default class VideoPage extends Component {
     'container';
 
     return (
-      <div
-        className="container-fluid"
-        style={{
-          backgroundColor: '#fff',
-          marginBottom: '2em'
-        }}
-      >
-        <Description
-          videoId={videoId}
-          title={title}
-          timeStamp={timeStamp}
-          uploaderName={uploaderName}
-          description={description}
-          uploaderId={uploaderId}
-          userId={userId}
-          onEditFinish={this.onDescriptionEditFinish}
-          onDelete={() => this.setState({confirmModalShown: true})}
-        />
-        <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
-          <PageTab
-            questions={questions}
-            watchTabActive={watchTabActive}
-            onWatchTabClick={() => this.setState({watchTabActive: true})}
-            onQuestionTabClick={() => this.setState({watchTabActive: false})}
-          />
-          <div
-            className={`tab-pane ${tabPaneClassName}`}
-            style={{
-              paddingTop: '3em'
-            }}
-          >
-            {!questionsBuilderShown &&
-              <div>
-                <div className={`${youtubeIframeContainerClassName}`}>
-                  <YouTube
-                    key={videoId}
-                    className={`${youtubeIframeClassName}`}
-                    opts={{
-                      title: title,
-                      height: '360',
-                      width: '640'
-                    }}
-                    videoId={videoCode}
-                    onPlay={this.onVideoPlay}
-                  />
+      <div>
+        {videoLoading && <Loading text="Loading Video..."  />}
+        {videoUnavailable && <NotFound text="Video does not exist" />}
+        <div
+          className="container-fluid"
+          style={{
+            backgroundColor: '#fff',
+            marginBottom: '2em'
+          }}
+        >
+          {!videoUnavailable && !!videoCode &&
+            <div>
+              <Description
+                videoId={videoId}
+                title={title}
+                timeStamp={timeStamp}
+                uploaderName={uploaderName}
+                description={description}
+                uploaderId={uploaderId}
+                userId={userId}
+                onEditFinish={this.onDescriptionEditFinish}
+                onDelete={() => this.setState({confirmModalShown: true})}
+              />
+              <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
+                <PageTab
+                  questions={questions}
+                  watchTabActive={watchTabActive}
+                  onWatchTabClick={() => this.setState({watchTabActive: true})}
+                  onQuestionTabClick={() => this.setState({watchTabActive: false})}
+                />
+                <div
+                  className={`tab-pane ${tabPaneClassName}`}
+                  style={{
+                    paddingTop: '3em'
+                  }}
+                >
+                  {!questionsBuilderShown &&
+                    <div>
+                      <div className={`${youtubeIframeContainerClassName}`}>
+                        <YouTube
+                          key={videoId}
+                          className={`${youtubeIframeClassName}`}
+                          opts={{
+                            title: title,
+                            height: '360',
+                            width: '640'
+                          }}
+                          videoId={videoCode}
+                          onPlay={this.onVideoPlay}
+                        />
+                      </div>
+                      {watchTabActive &&
+                        <VideoLikeInterface
+                          userId={userId}
+                          likes={likes}
+                          onLikeClick={this.onVideoLikeClick}
+                          showLikerList={() => this.setState({userListModalShown: true})}
+                          views={videoViews}
+                        />
+                      }
+                    </div>
+                  }
+                  {!watchTabActive && questions.length > 0 &&
+                    <Carousel
+                      progressBar
+                      showQuestionsBuilder={() => this.setState({questionsBuilderShown: true})}
+                      userIsUploader={userId === uploaderId}
+                      slidesToShow={1}
+                      slidesToScroll={1}
+                      slideIndex={currentSlide}
+                      dragging={false}
+                      afterSlide={this.onSlide}
+                      onFinish={this.onQuestionsFinish}
+                    >
+                      {this.renderSlides()}
+                    </Carousel>
+                  }
+                  {!watchTabActive && questions.length === 0 &&
+                    <div className="text-center">
+                      <p>There are no questions yet.</p>
+                      {userId === uploaderId &&
+                        <Button
+                          className="btn btn-default"
+                          style={{marginTop: '1em'}}
+                          onClick={() => this.setState({questionsBuilderShown: true})}
+                        >Add Questions</Button>
+                      }
+                    </div>
+                  }
                 </div>
-                {watchTabActive &&
-                  <VideoLikeInterface
-                    userId={userId}
-                    likes={likes}
-                    onLikeClick={this.onVideoLikeClick}
-                    showLikerList={() => this.setState({userListModalShown: true})}
-                    views={videoViews}
-                  />
-                }
               </div>
-            }
-            {!watchTabActive && questions.length > 0 &&
-              <Carousel
-                progressBar
-                showQuestionsBuilder={() => this.setState({questionsBuilderShown: true})}
-                userIsUploader={userId === uploaderId}
-                slidesToShow={1}
-                slidesToScroll={1}
-                slideIndex={currentSlide}
-                dragging={false}
-                afterSlide={this.onSlide}
-                onFinish={this.onQuestionsFinish}
-              >
-                {this.renderSlides()}
-              </Carousel>
-            }
-            {!watchTabActive && questions.length === 0 &&
-              <div className="text-center">
-                <p>There are no questions yet.</p>
-                {userId === uploaderId &&
-                  <Button
-                    className="btn btn-default"
-                    style={{marginTop: '1em'}}
-                    onClick={() => this.setState({questionsBuilderShown: true})}
-                  >Add Questions</Button>
-                }
-              </div>
-            }
-          </div>
-        </div>
-        <Comments {...this.props} />
-        {resultModalShown &&
-          <ResultModal
-            onHide={() => this.setState({resultModalShown: false})}
-            numberCorrect={this.numberCorrect}
-            totalQuestions={questions.length}
-          />
-        }
-        {confirmModalShown &&
-          <ConfirmModal
-            title="Remove Video"
-            onHide={() => this.setState({confirmModalShown: false})}
-            onConfirm={this.onVideoDelete}
-          />
-        }
-        {questionsBuilderShown &&
-          <QuestionsBuilder
-            questions={questions}
-            title={title}
-            videoCode={videoCode}
-            onSubmit={this.onQuestionsSubmit}
-            onHide={() => this.setState({questionsBuilderShown: false})}
-          />
-        }
-        {userListModalShown &&
-          <UserListModal
-            onHide={() => this.setState({userListModalShown: false})}
-            title="People who liked this video"
-            userId={userId}
-            users={likes.map(like => {
-              return {
-                username: like.username,
-                userId: like.userId
+              <Comments {...this.props} />
+              {resultModalShown &&
+                <ResultModal
+                  onHide={() => this.setState({resultModalShown: false})}
+                  numberCorrect={this.numberCorrect}
+                  totalQuestions={questions.length}
+                />
               }
-            })}
-            description={user => user.userId === userId && '(You)'}
-          />
-        }
+              {confirmModalShown &&
+                <ConfirmModal
+                  title="Remove Video"
+                  onHide={() => this.setState({confirmModalShown: false})}
+                  onConfirm={this.onVideoDelete}
+                />
+              }
+              {questionsBuilderShown &&
+                <QuestionsBuilder
+                  questions={questions}
+                  title={title}
+                  videoCode={videoCode}
+                  onSubmit={this.onQuestionsSubmit}
+                  onHide={() => this.setState({questionsBuilderShown: false})}
+                />
+              }
+              {userListModalShown &&
+                <UserListModal
+                  onHide={() => this.setState({userListModalShown: false})}
+                  title="People who liked this video"
+                  userId={userId}
+                  users={likes.map(like => {
+                    return {
+                      username: like.username,
+                      userId: like.userId
+                    }
+                  })}
+                  description={user => user.userId === userId && '(You)'}
+                />
+              }
+            </div>
+          }
+        </div>
       </div>
     )
   }

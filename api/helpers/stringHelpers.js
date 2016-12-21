@@ -1,4 +1,8 @@
 module.exports = {
+  isValidUsername(username) {
+    var pattern = new RegExp(/^[a-zA-Z0-9]+$/);
+    return username.length < 20 && pattern.test(username);
+  },
   fetchedVideoCodeFromURL(url) {
     let videoCode = '';
     if (typeof url.split("v=")[1] !== 'undefined') {

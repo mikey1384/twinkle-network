@@ -44,6 +44,7 @@ app.use((req, res) => {
            <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
            <link rel="stylesheet" href="/css/bootstrap.min.css">
            <link rel="stylesheet" href="/css/theme.css">
+           <link rel="stylesheet" href="/css/slider.css">
            <link rel="stylesheet" href="/css/styles.css">
           </head>
           <body>

@@ -353,24 +353,29 @@ export const loadVideoPage = data => ({
   data
 })
 
-export const loadVideoPageAsync = (videoId, callback) => dispatch =>
-request.get(`${API_URL}/loadPage?videoId=${videoId}`)
-.then(
-  response => {
-    dispatch(loadVideoPage(response.data));
-    dispatch(loadVideoDebates(videoId));
-    dispatch(loadVideoCommentsAsync(videoId));
-    if (callback) callback();
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+export const loadVideoPageAsync = (videoId, fromClientSide, callback) => dispatch => {
+  if (isNaN(videoId)) return dispatch({type: 'VIDEO_PAGE_UNAVAILABLE'})
+  if (!fromClientSide) dispatch({type: 'VIDEO_PAGE_LOADING_SHOW'})
+  request.get(`${API_URL}/loadPage?videoId=${videoId}`)
+  .then(
+    response => {
+      dispatch(loadVideoPage(response.data));
+      dispatch(loadVideoDebates(videoId));
+      dispatch(loadVideoCommentsAsync(videoId));
+      if (callback) callback();
+    }
+  ).catch(
+    error => {
+      dispatch({type: 'VIDEO_PAGE_UNAVAILABLE'})
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+}
+
 
 export const loadVideoPageFromClientSideAsync = (videoId, to) =>
-dispatch => dispatch(loadVideoPageAsync(videoId, dispatch(push(`/${to}`))))
+dispatch => dispatch(loadVideoPageAsync(videoId, true, dispatch(push(`/${to}`))))
 
 export const openAddVideoModal = () => ({
   type: 'VID_MODAL_OPEN'

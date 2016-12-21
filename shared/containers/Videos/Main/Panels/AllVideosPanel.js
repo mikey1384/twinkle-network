@@ -15,7 +15,6 @@ const last = (array) => {
 )
 export default class AllVideosPanel extends Component {
   static propTypes = {
-    isAdmin: PropTypes.bool.isRequired,
     videos: PropTypes.array.isRequired,
     onAddVideoClick: PropTypes.func.isRequired,
     title: PropTypes.string,
@@ -28,7 +27,7 @@ export default class AllVideosPanel extends Component {
   }
 
   render() {
-    const {loadMoreButton, videos, title = 'All Videos', isAdmin, onAddVideoClick} = this.props;
+    const {loadMoreButton, videos, title = 'All Videos', onAddVideoClick} = this.props;
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">

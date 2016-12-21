@@ -45,6 +45,9 @@ export default class UsernameText extends Component {
             }}
           >
             <li>
+              <a href={`/${user.name}`} target="_blank">
+                Profile
+              </a>
               <a onClick={this.onLinkClick}>
                 Message
               </a>

@@ -1,61 +1,55 @@
 import React, {Component , PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {fetchMoreFeedsAsync, fetchFeedsAsync} from 'redux/actions/FeedActions';
-import Feeds from './Feeds';
-import Profile from './Profile';
 import {Color} from 'constants/css';
+import {connect} from 'react-redux';
+import {browserHistory} from 'react-router';
+
 
 @connect(
   state => ({
-    feeds: state.FeedReducer.feeds,
-    loadMoreButton: state.FeedReducer.loadMoreButton,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
-    selectedFilter: state.FeedReducer.selectedFilter
-  }),
-  {
-    fetchMoreFeeds: fetchMoreFeedsAsync,
-    fetchFeeds: fetchFeedsAsync
-  }
+    username: state.UserReducer.username
+  })
 )
 export default class Home extends Component {
   constructor() {
     super()
     this.state = {
-      selectedTab: 'feed'
+      selectedTab: null
     }
-    this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
-    this.applyFilter = this.applyFilter.bind(this)
-    this.renderFilterBar = this.renderFilterBar.bind(this)
+  }
+
+  componentDidMount() {
+    this.setState({selectedTab: !!this.props.params.username ? 'profile' : 'feed'})
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.params.username !== this.props.params.username) {
+      this.setState({
+        selectedTab: !!this.props.params.username ? 'profile' : 'feed'
+      })
+    }
   }
 
   render() {
-    const {userId, feeds, loadMoreButton, username, profilePicId, selectedFilter} = this.props;
+    const {username} = this.props;
     const {selectedTab} = this.state;
-    const defaultListStyle = {backgroundColor: Color.backgroundGray, border: 'none', cursor: 'pointer'};
     const listStyle = {
       profile: {
-        ...defaultListStyle,
-        backgroundColor: selectedTab === 'profile' ? Color.lightGray : defaultListStyle.backgroundColor,
+        cursor: 'pointer',
+        backgroundColor: selectedTab === 'profile' ? Color.lightGray : Color.backgroundGray,
+        border: 'none',
         fontWeight: selectedTab === 'profile' && 'bold'
       },
       feed: {
-        ...defaultListStyle,
-        backgroundColor: selectedTab === 'feed' ? Color.lightGray : defaultListStyle.backgroundColor,
+        cursor: 'pointer',
+        backgroundColor: selectedTab === 'feed' ? Color.lightGray : Color.backgroundGray,
+        border: 'none',
         fontWeight: selectedTab === 'feed' && 'bold'
-      },
-      people: {
-        ...defaultListStyle,
-        color: Color.gray,
-        backgroundColor: selectedTab === 'people' ? Color.lightGray : defaultListStyle.backgroundColor,
-        fontWeight: selectedTab === 'people' && 'bold'
       }
     };
     return (
-      <div className="container">
+      <div className="container-fluid">
         <div
-          className="col-xs-2"
+          className="col-xs-2 col-xs-offset-1"
           style={{
             marginTop: '2em',
             position: 'fixed'
@@ -63,122 +57,39 @@ export default class Home extends Component {
         >
           <ul className="list-group unselectable" style={{fontSize: '1.3em'}}>
             <li
-              className="list-group-item"
+              className="list-group-item left-menu-item"
               style={listStyle.profile}
-              onClick={
-                () => {
-                  if (selectedTab !== 'profile') this.setState({selectedTab: 'profile'})
-                }
-              }
+              onClick={() => browserHistory.push(`/${username}`)}
             >
-              Profile
+              <a
+                style={{
+                  textDecoration: 'none',
+                  color: selectedTab === 'profile' ? Color.black : Color.darkGray
+                }}
+              >
+                Profile
+              </a>
             </li>
             <li
-              className="list-group-item"
+              className="list-group-item left-menu-item"
               style={listStyle.feed}
-              onClick={
-                () => {
-                  if (selectedTab !== 'feed') this.setState({selectedTab: 'feed'})
-                }
-              }
+              onClick={() => browserHistory.push('/')}
             >
-              News Feed
-            </li>
-            <li
-              className="list-group-item"
-              style={listStyle.people}
-            >
-              People
+              <a
+                style={{
+                  textDecoration: 'none',
+                  color: selectedTab === 'feed' ? Color.black : Color.darkGray
+                }}
+              >
+                News Feed
+              </a>
             </li>
           </ul>
         </div>
-        <div className="col-xs-8 col-xs-offset-3">
-          {selectedTab === 'feed' &&
-            <Feeds
-              feeds={feeds}
-              loadMoreButton={loadMoreButton}
-              userId={userId}
-              loadMoreFeeds={this.loadMoreFeeds}
-              renderFilterBar={this.renderFilterBar}
-            />
-          }
-          {selectedTab === 'profile' &&
-            <Profile userId={userId} profilePicId={profilePicId} />
-          }
+        <div className="col-xs-6 col-xs-offset-4">
+          {this.props.children}
         </div>
       </div>
     )
   }
-
-  applyFilter(filter) {
-    const {fetchFeeds, selectedFilter} = this.props;
-    if (filter === selectedFilter) return;
-    fetchFeeds(filter)
-  }
-
-  loadMoreFeeds() {
-    const {feeds, fetchMoreFeeds, selectedFilter} = this.props;
-    fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter);
-  }
-
-  renderFilterBar() {
-    const {selectedFilter} = this.props;
-    return (
-      <nav className="navbar navbar-inverse">
-        <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
-          <li className={selectedFilter === 'all' && 'active'}>
-            <a
-              style={{
-                cursor: 'pointer',
-              }}
-              onClick={() => this.applyFilter('all')}
-            >
-              All
-            </a>
-          </li>
-          <li className={selectedFilter === 'discussion' && 'active'}>
-            <a
-              style={{
-                cursor: 'pointer',
-              }}
-              onClick={() => this.applyFilter('discussion')}
-            >
-              Discussions
-            </a>
-          </li>
-          <li className={selectedFilter === 'video' && 'active'}>
-            <a
-              style={{
-                cursor: 'pointer',
-              }}
-              onClick={() => this.applyFilter('video')}
-            >
-              Videos
-            </a>
-          </li>
-          <li className={selectedFilter === 'url' && 'active'}>
-            <a
-              style={{
-                cursor: 'pointer',
-              }}
-              onClick={() => this.applyFilter('url')}
-            >
-              Links
-            </a>
-          </li>
-          <li className={selectedFilter === 'comment' && 'active'}>
-            <a
-              style={{
-                cursor: 'pointer',
-              }}
-              onClick={() => this.applyFilter('comment')}
-            >
-              Comments
-            </a>
-          </li>
-        </ul>
-      </nav>
-    )
-  }
-
 }

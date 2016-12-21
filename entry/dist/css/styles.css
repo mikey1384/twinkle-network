@@ -103,6 +103,10 @@ html, body {
 	height: 16.2rem;
 }
 
+.left-menu-item:hover > a {
+	color: rgb(51, 51, 51)!important;
+}
+
 .chat-channel-item:hover {
 	background-color: #eee;
 }

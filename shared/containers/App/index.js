@@ -5,6 +5,7 @@ import Chat from '../Chat';
 import io from 'socket.io-client';
 import {connect} from 'react-redux';
 import {initChatAsync, resetChat, toggleChat, turnChatOff} from 'redux/actions/ChatActions';
+import {initSessionAsync} from 'redux/actions/UserActions';
 import {URL} from 'constants/URL';
 import ExecutionEnvironment from 'exenv';
 import {addEvent, removeEvent} from 'helpers/listenerHelpers';
@@ -19,6 +20,7 @@ const socket = io.connect(URL);
     chatNumUnreads: state.ChatReducer.numUnreads
   }),
   {
+    initSession: initSessionAsync,
     toggleChat,
     turnChatOff,
     initChat: initChatAsync,
@@ -40,7 +42,9 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    const {initSession} = this.props;
     if (ExecutionEnvironment.canUseDOM) {
+      initSession();
       addEvent(window, 'scroll', this.onScroll);
     }
   }
@@ -78,7 +82,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {chatMode, turnChatOff, location} = this.props;
+    const {chatMode, turnChatOff, location, params} = this.props;
     const {scrollPosition} = this.state;
     const style = chatMode && this.props.loggedIn ? {
       position: 'fixed',
@@ -92,7 +96,7 @@ export default class App extends Component {
         ref="app"
       >
         <Header
-          location={location}
+          location={params.username || !location.pathname.split('/')[1] ? null : location.pathname.split('/')[1]}
           staticTop={chatMode}
           socket={socket}
           chatMode={chatMode}
