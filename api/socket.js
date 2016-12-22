@@ -42,7 +42,7 @@ module.exports = function(io) {
       notifyChannelMembersChanged(channelId);
     })
 
-    socket.on('leave_chat_channel', ({channelId, userId, username}) => {
+    socket.on('leave_chat_channel', ({channelId, userId, username, profilePicId}) => {
       socket.leave('chatChannel' + channelId);
       for (let i = 0; i < connections.length; i++) {
         if (connections[i].socketId === socket.id) {
@@ -51,7 +51,7 @@ module.exports = function(io) {
           break;
         }
       }
-      notifyChannelMembersChanged(channelId, {userId, username});
+      notifyChannelMembersChanged(channelId, {userId, username, profilePicId});
     })
 
     socket.on('bind_uid_to_socket', (userId, username) => {

@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import ImageEditModal from './Modals/ImageEditModal';
 import BioEditModal from './Modals/BioEditModal';
 import {uploadProfilePic, uploadBio} from 'redux/actions/UserActions';
+import AlertModal from 'components/Modals/AlertModal';
 import {connect} from 'react-redux';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 
@@ -20,7 +21,8 @@ export default class Header extends Component {
       imageUri: null,
       processing: false,
       imageEditModalShown: false,
-      bioEditModalShown: false
+      bioEditModalShown: false,
+      alertModalShown: false
     }
     this.onChangeProfilePictureClick = this.onChangeProfilePictureClick.bind(this)
     this.handlePicture = this.handlePicture.bind(this)
@@ -29,7 +31,7 @@ export default class Header extends Component {
   }
 
   render() {
-    const {imageUri, imageEditModalShown, bioEditModalShown, processing} = this.state;
+    const {imageUri, imageEditModalShown, bioEditModalShown, alertModalShown, processing} = this.state;
     const {profilePage, userId} = this.props;
     const {profileFirstRow, profileSecondRow, profileThirdRow} = profilePage;
     return (
@@ -121,6 +123,13 @@ export default class Header extends Component {
             onConfirm={this.uploadImage}
           />
         }
+        {alertModalShown &&
+          <AlertModal
+            title="Image is too large (limit: 5mb)"
+            content="Please select a smaller image"
+            onHide={() => this.setState({alertModalShown: false})}
+          />
+        }
       </div>
     )
   }
@@ -131,8 +140,9 @@ export default class Header extends Component {
 
   handlePicture(event) {
     const reader = new FileReader();
+    const maxSize = 5000;
     const file = event.target.files[0];
-
+    if (file.size/1000 > 5000) return this.setState({alertModalShown: true})
     reader.onload = (upload) => {
       this.setState({
         imageEditModalShown: true,

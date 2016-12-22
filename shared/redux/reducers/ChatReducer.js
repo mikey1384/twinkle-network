@@ -222,7 +222,8 @@ export default function ChatReducer(state = defaultState, action) {
           timeStamp: timeStamp,
           isNotification: true,
           username: action.data.username,
-          userId: action.data.userId
+          userId: action.data.userId,
+          profilePicId: action.data.profilePicId
         }])
       }
     case 'OPEN_NEW_CHAT_TAB':

@@ -487,7 +487,12 @@ router.post('/invite', requireAuth, (req, res) => {
           let message = {isNotification: true, channelId, userId: user.id, content, timeStamp};
           pool.query(query, message, (err, res) => {
             let messageId = res.insertId;
-            message = Object.assign({}, message, {id: messageId, username: user.username, channelName});
+            message = Object.assign({}, message, {
+              id: messageId,
+              username: user.username,
+              channelName,
+              profilePicId: user.profilePicId
+            });
             callback(err, message);
           })
         }

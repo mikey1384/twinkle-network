@@ -90,8 +90,8 @@ export default class Chat extends Component {
       let forCurrentChannel = data.channelId === this.props.currentChannel.id;
       if (forCurrentChannel) {
         if (data.leftChannel) {
-          const {userId, username} = data.leftChannel;
-          notifyThatMemberLeftChannel({channelId: data.channelId, userId, username})
+          const {userId, username, profilePicId} = data.leftChannel;
+          notifyThatMemberLeftChannel({channelId: data.channelId, userId, username, profilePicId})
         }
         this.setState({currentChannelOnline: data.membersOnline.length})
       }
@@ -581,9 +581,9 @@ export default class Chat extends Component {
   }
 
   onLeaveChannel() {
-    const {leaveChannel, currentChannel, userId, username, socket} = this.props;
+    const {leaveChannel, currentChannel, userId, username, profilePicId, socket} = this.props;
     leaveChannel(currentChannel.id);
-    socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username});
+    socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username, profilePicId});
   }
 
   onMouseOverTitle() {
