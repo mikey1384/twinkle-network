@@ -27,11 +27,12 @@ export default class Profile extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {checkValidUsername} = this.props;
+    const {checkValidUsername, userId, profilePage} = this.props;
+    const {unavailable} = profilePage;
     if (ExecutionEnvironment.canUseDOM && prevProps.params.username !== this.props.params.username)
     checkValidUsername(this.props.params.username)
 
-    if (!prevProps.userId && !!this.props.userId) browserHistory.push(`/${this.props.username}`)
+    if (!prevProps.userId && !!userId && !!unavailable) browserHistory.push(`/${this.props.username}`)
   }
 
   componentWillUnmount() {
@@ -41,7 +42,7 @@ export default class Profile extends Component {
 
   render() {
     const {profilePage, userId} = this.props;
-    const {unavailable} = this.props.profilePage;
+    const {unavailable} = profilePage;
     return !unavailable ? (
       <div>
         {!profilePage.id && <Loading text="Loading Profile..." />}
@@ -52,6 +53,6 @@ export default class Profile extends Component {
           </div>
         }
       </div>
-    ) : <NotFound title={!userId && 'For Users Only'} text={!userId && 'Please Log In or Sign Up'} />
+    ) : <NotFound title={!userId && 'For Registered Users Only'} text={!userId && 'Please Log In or Sign Up'} />
   }
 }
