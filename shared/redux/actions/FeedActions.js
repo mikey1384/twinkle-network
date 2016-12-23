@@ -296,7 +296,7 @@ export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
   )
 }
 
-export const uploadFeedVideoReplyAsync = (replyContent, comment, parent) =>
+export const uploadFeedVideoReplyAsync = (replyContent, comment, parent, callback) =>
 dispatch => {
   const params = {reply: replyContent, videoId: parent.parentContentId, commentId: comment.commentId || comment.id, replyId: comment.commentId ? comment.id : null}
   request.post(`${URL}/video/replies`, params, auth())
@@ -305,6 +305,7 @@ dispatch => {
       const {data} = response;
       const action = uploadFeedVideoReply({type: parent.type, contentId: parent.type === 'comment' ? comment.id : parent.id, reply: {...data.result, replies: []}, commentId: comment.id})
       dispatch(action);
+      callback();
     }
   ).catch(
     error => {

@@ -12,6 +12,7 @@ export default class PanelReplies extends Component {
     }
     this.deleteCallback = this.deleteCallback.bind(this)
     this.loadMoreReplies = this.loadMoreReplies.bind(this)
+    this.onReplyOfReplySubmit = this.onReplyOfReplySubmit.bind(this)
   }
 
   componentDidUpdate(prevProps) {
@@ -19,11 +20,7 @@ export default class PanelReplies extends Component {
     const {deleteListenerToggle} = this.state;
     const length = this.props.replies.length;
     const lastReply = this.props.replies[length - 1] || [];
-    const newlyAdded = lastReply ? lastReply.newlyAdded : false;
-    const replyToReply = lastReply ? !!lastReply.targetUserId : false;
-    if (length > prevProps.replies.length && newlyAdded && replyToReply) {
-      scrollElementToCenter(this.refs[lastReply.id])
-    }
+
     if (length < prevProps.replies.length) {
       if (length === 0) return scrollElementToCenter(this.PanelReplies)
       this.setState({deleteListenerToggle: !deleteListenerToggle})
@@ -32,8 +29,7 @@ export default class PanelReplies extends Component {
 
   render() {
     const {
-      type, replies, userId, onEditDone, onLikeClick, onDelete,
-      onReplySubmit, comment, contentId, parent
+      type, replies, userId, onEditDone, onLikeClick, onDelete, comment, contentId, parent
     } = this.props;
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
     return (
@@ -69,7 +65,7 @@ export default class PanelReplies extends Component {
               onDelete={onDelete}
               onLikeClick={onLikeClick}
               onEditDone={onEditDone}
-              onReplySubmit={onReplySubmit}
+              onReplySubmit={this.onReplyOfReplySubmit}
               deleteCallback={this.deleteCallback}
               lastDeletedCommentIndex={lastDeletedCommentIndex}
               deleteListenerToggle={deleteListenerToggle}
@@ -88,5 +84,14 @@ export default class PanelReplies extends Component {
     const {comment, replies, onLoadMoreReplies, parent} = this.props;
     const lastReplyId = !!replies[0] ? replies[0].id : '0';
     onLoadMoreReplies(lastReplyId, comment.id, parent)
+  }
+
+  onReplyOfReplySubmit(replyContent, reply, parent) {
+    const {onReplySubmit} = this.props;
+    const length = this.props.replies.length;
+    const lastReply = this.props.replies[length - 1] || [];
+    onReplySubmit(replyContent, reply, parent, () => {
+      scrollElementToCenter(this.refs[lastReply.id])
+    })
   }
 }

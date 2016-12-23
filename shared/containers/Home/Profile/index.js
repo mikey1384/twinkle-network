@@ -6,11 +6,13 @@ import {connect} from 'react-redux';
 import {checkValidUsername, unmountProfile} from 'redux/actions/UserActions';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
+import {browserHistory} from 'react-router';
 
 
 @connect(
   state => ({
     userId: state.UserReducer.userId,
+    username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId,
     profilePage: state.UserReducer.profilePage
   }),
@@ -28,6 +30,8 @@ export default class Profile extends Component {
     const {checkValidUsername} = this.props;
     if (ExecutionEnvironment.canUseDOM && prevProps.params.username !== this.props.params.username)
     checkValidUsername(this.props.params.username)
+
+    if (!prevProps.userId && !!this.props.userId) browserHistory.push(`/${this.props.username}`)
   }
 
   componentWillUnmount() {
@@ -36,7 +40,7 @@ export default class Profile extends Component {
   }
 
   render() {
-    const {profilePage} = this.props;
+    const {profilePage, userId} = this.props;
     const {unavailable} = this.props.profilePage;
     return !unavailable ? (
       <div>
@@ -48,6 +52,6 @@ export default class Profile extends Component {
           </div>
         }
       </div>
-    ) : <NotFound />
+    ) : <NotFound title={!userId && 'For Users Only'} text={!userId && 'Please Log In or Sign Up'} />
   }
 }
