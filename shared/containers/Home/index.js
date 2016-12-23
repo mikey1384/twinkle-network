@@ -49,7 +49,7 @@ export default class Home extends Component {
     return (
       <div className="container-fluid">
         <div
-          className="col-xs-2 col-xs-offset-1"
+          className="col-sm-offset-1 col-xs-2"
           style={{
             marginTop: '2em',
             position: 'fixed'
@@ -86,7 +86,7 @@ export default class Home extends Component {
             </li>
           </ul>
         </div>
-        <div className="col-xs-6 col-xs-offset-4">
+        <div className="col-sm-6 col-sm-offset-4 col-xs-10 col-xs-offset-2">
           {this.props.children}
         </div>
       </div>
