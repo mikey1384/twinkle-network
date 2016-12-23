@@ -29,10 +29,13 @@ export default class Profile extends Component {
   componentDidUpdate(prevProps) {
     const {checkValidUsername, userId, profilePage} = this.props;
     const {unavailable} = profilePage;
-    if (ExecutionEnvironment.canUseDOM && prevProps.params.username !== this.props.params.username)
-    checkValidUsername(this.props.params.username)
+    if (ExecutionEnvironment.canUseDOM) {
+      if (prevProps.params.username !== this.props.params.username)
+      return checkValidUsername(this.props.params.username)
 
-    if (!prevProps.userId && !!userId && !!unavailable) browserHistory.push(`/${this.props.username}`)
+      if (this.props.params.username === 'undefined' && !prevProps.userId && !!userId && !!unavailable)
+        browserHistory.push(`/${this.props.username}`)
+    }
   }
 
   componentWillUnmount() {
@@ -53,6 +56,7 @@ export default class Profile extends Component {
           </div>
         }
       </div>
-    ) : <NotFound title={!userId && 'For Registered Users Only'} text={!userId && 'Please Log In or Sign Up'} />
+    ) :
+    <NotFound title={!userId && 'For Registered Users Only'} text={!userId && 'Please Log In or Sign Up'} />
   }
 }
