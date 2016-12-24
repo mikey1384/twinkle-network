@@ -53,7 +53,7 @@ export default class Heading extends Component {
     switch (type) {
       case 'video':
         return (
-          <div className="panel-heading flexbox-container">
+          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
               <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{!!timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
@@ -62,7 +62,7 @@ export default class Heading extends Component {
         )
       case 'comment':
         return (
-          <div className="panel-heading flexbox-container">
+          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left col-xs-9" style={{...pStyle, padding: '0px'}}>
               <UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small>
@@ -95,7 +95,7 @@ export default class Heading extends Component {
         )
       case 'url':
         return (
-          <div className="panel-heading flexbox-container">
+          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
               <UserLink user={uploader} /> shared a link:&nbsp;
@@ -108,7 +108,7 @@ export default class Heading extends Component {
         )
       case 'discussion':
         return (
-          <div className="panel-heading flexbox-container">
+          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
               <UserLink user={uploader} /> started a <b style={{color: Color.green}}>discussion</b> on video: <ContentLink content={parentContent}/>
