@@ -28,6 +28,7 @@ router.get('/', (req, res) => {
       video.description AS parentContentDescription,
       feed.uploaderId AS uploaderId,
       user1.username AS uploaderName,
+      userPhoto.id AS uploaderPicId,
       feed.timeStamp AS timeStamp,
       comment1.content AS content,
       video.title AS contentTitle,
@@ -53,6 +54,8 @@ router.get('/', (req, res) => {
       ON feed.parentContentId = video.id
     LEFT JOIN users user1
       ON feed.uploaderId = user1.id
+    LEFT JOIN users_photos userPhoto
+      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
     LEFT JOIN vq_comments comment2
       ON comment1.commentId = comment2.id
     LEFT JOIN users user2
@@ -74,6 +77,7 @@ router.get('/', (req, res) => {
       video.description AS parentContentDescription,
       feed.uploaderId AS uploaderId,
       user.username AS uploaderName,
+      userPhoto.id AS uploaderPicId,
       feed.timeStamp AS timeStamp,
       video.videoCode AS content,
       video.title AS contentTitle,
@@ -97,6 +101,8 @@ router.get('/', (req, res) => {
       ON feed.type = \'video\' AND feed.contentId = video.id
     LEFT JOIN users user
       ON video.uploader = user.id
+    LEFT JOIN users_photos userPhoto
+      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
     ${where}
 
     UNION SELECT
@@ -108,6 +114,7 @@ router.get('/', (req, res) => {
       url.description AS parentContentDescription,
       feed.uploaderId AS uploaderId,
       user.username AS uploaderName,
+      userPhoto.id AS uploaderPicId,
       feed.timeStamp AS timeStamp,
       url.url AS content,
       url.title AS contentTitle,
@@ -131,6 +138,8 @@ router.get('/', (req, res) => {
       ON feed.type = \'url\' AND feed.contentId = url.id
     LEFT JOIN users user
       ON url.uploader = user.id
+    LEFT JOIN users_photos userPhoto
+      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
     ${where}
 
     UNION SELECT
@@ -142,6 +151,7 @@ router.get('/', (req, res) => {
       video.description AS parentContentDescription,
       feed.uploaderId AS uploaderId,
       user.username AS uploaderName,
+      userPhoto.id AS uploaderPicId,
       feed.timeStamp AS timeStamp,
       NULL AS content,
       discussion.title AS contentTitle,
@@ -168,6 +178,8 @@ router.get('/', (req, res) => {
       ON discussion.refContentType = \'video\' AND refContentId = video.id
     LEFT JOIN users user
       ON discussion.userId = user.id
+    LEFT JOIN users_photos userPhoto
+      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
     ${where}
 
     ORDER BY id DESC LIMIT 21
