@@ -120,6 +120,19 @@ html, body {
     -webkit-animation: spin2 1s infinite linear;
 }
 
+.video-player { position: relative; }
+.video-player a {
+	position: absolute;
+	display: block;
+	background: url('/img/play-button-image.png');
+	background-size: contain;
+	height: 40px;
+	width: 40px;
+	top: 50%;
+	left: 50%;
+	margin: -20px 0 0 -20px;
+}
+
 @keyframes spin {
     from { transform: scale(1) rotate(0deg); }
     to { transform: scale(1) rotate(360deg); }

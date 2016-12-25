@@ -7,12 +7,12 @@ import {
   uploadVideoReplyAsync,
   likeVideoAsync,
   resetVideoPage,
-  addVideoViewAsync,
   loadVideoPageAsync
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
+import VideoPlayer from 'components/VideoPlayer';
 import NotFound from 'components/NotFound';
 import ChoiceListGroup from './ChoiceListGroup';
 import PageTab from './PageTab';
@@ -25,7 +25,6 @@ import UserListModal from 'components/Modals/UserListModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import {bindActionCreators} from 'redux';
 import {stringIsEmpty} from 'helpers/stringHelpers';
-import YouTube from 'react-youtube';
 import ExecutionEnvironment from 'exenv';
 
 
@@ -41,7 +40,6 @@ import ExecutionEnvironment from 'exenv';
     deleteVideo: deleteVideoAsync,
     uploadQuestions: uploadQuestionsAsync,
     likeVideo: likeVideoAsync,
-    addVideoView: addVideoViewAsync,
     resetVideoPage,
     loadVideoPage: loadVideoPageAsync
   }
@@ -69,7 +67,6 @@ export default class VideoPage extends Component {
     this.numberCorrect = this.numberCorrect.bind(this)
     this.onVideoDelete = this.onVideoDelete.bind(this)
     this.onSelectChoice = this.onSelectChoice.bind(this)
-    this.onVideoPlay = this.onVideoPlay.bind(this)
   }
 
   componentWillUnmount() {
@@ -138,19 +135,15 @@ export default class VideoPage extends Component {
                 >
                   {!questionsBuilderShown &&
                     <div>
-                      <div className={`${youtubeIframeContainerClassName}`}>
-                        <YouTube
-                          key={videoId}
-                          className={`${youtubeIframeClassName}`}
-                          opts={{
-                            title: title,
-                            height: '360',
-                            width: '640'
-                          }}
-                          videoId={videoCode}
-                          onPlay={this.onVideoPlay}
-                        />
-                      </div>
+                      <VideoPlayer
+                        key={videoId}
+                        small={!watchTabActive}
+                        videoId={videoId}
+                        videoCode={videoCode}
+                        title={title}
+                        containerClassName={`${youtubeIframeContainerClassName}`}
+                        className={`${youtubeIframeClassName}`}
+                      />
                       {watchTabActive &&
                         <VideoLikeInterface
                           userId={userId}
@@ -338,13 +331,5 @@ export default class VideoPage extends Component {
   onVideoLikeClick() {
     const {videoId} = this.props;
     this.props.likeVideo(videoId);
-  }
-
-  onVideoPlay(event) {
-    const {videoId, userId, addVideoView} = this.props;
-    const time = event.target.getCurrentTime()
-    if (Math.floor(time) === 0) {
-      addVideoView({videoId, userId})
-    }
   }
 }

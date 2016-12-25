@@ -17,9 +17,8 @@ import {
   loadMoreFeedReplies,
   likeVideoAsync
 } from 'redux/actions/FeedActions';
-import {addVideoViewAsync} from 'redux/actions/VideoActions';
 import UserListModal from 'components/Modals/UserListModal';
-import YouTube from 'react-youtube';
+import VideoPlayer from 'components/VideoPlayer';
 import {embedlyKey} from 'constants/keys';
 import Embedly from 'components/Embedly';
 import PanelComments from 'components/PanelComments';
@@ -30,7 +29,6 @@ import {Color} from 'constants/css';
 @connect(
   null,
   {
-    addVideoView: addVideoViewAsync,
     onLikeCommentClick: likeVideoCommentAsync,
     showFeedComments: showFeedCommentsAsync,
     loadMoreComments: loadMoreFeedCommentsAsync,
@@ -51,7 +49,6 @@ export default class MainContent extends Component {
       clickListenerState: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
-    this.onVideoPlay = this.onVideoPlay.bind(this)
     this.onCommentButtonClick = this.onCommentButtonClick.bind(this)
   }
 
@@ -70,21 +67,15 @@ export default class MainContent extends Component {
     return (
       <div>
         {type === 'comment' && attachedVideoShown &&
-          <div className="embed-responsive embed-responsive-16by9" style={{marginBottom: '1em'}}>
-            <YouTube
-              className="embed-responsive-item"
-              opts={{
-                title: contentTitle,
-                height: '360',
-                width: '640'
-              }}
-              videoId={videoCode}
-              onReady={event => {
-                event.target.playVideo()
-                this.onVideoPlay(event)
-              }}
-            />
-          </div>
+          <VideoPlayer
+            autoplay
+            title={contentTitle}
+            style={{marginBottom: '1em'}}
+            containerClassName="embed-responsive embed-responsive-16by9"
+            className="embed-responsive-item"
+            videoId={parentContentId}
+            videoCode={videoCode}
+          />
         }
         {type === 'comment' && !!replyId &&
           <TargetContent
@@ -125,18 +116,13 @@ export default class MainContent extends Component {
           </span>
         }
         {(type === 'video' || type === 'discussion') &&
-          <div className="embed-responsive embed-responsive-16by9">
-            <YouTube
-              className="embed-responsive-item"
-              opts={{
-                title: title,
-                height: '360',
-                width: '640'
-              }}
-              videoId={videoCode}
-              onPlay={this.onVideoPlay}
-            />
-          </div>
+          <VideoPlayer
+            title={contentTitle}
+            containerClassName="embed-responsive embed-responsive-16by9"
+            className="embed-responsive-item"
+            videoId={parentContentId}
+            videoCode={videoCode}
+          />
         }
         {type === 'url' &&
           <Embedly url={content} apiKey={embedlyKey} />
@@ -278,14 +264,6 @@ export default class MainContent extends Component {
       this.props.onLikeCommentClick(contentId);
     } else {
       this.props.onLikeVideoClick(contentId);
-    }
-  }
-
-  onVideoPlay(event) {
-    const {parentContentId, myId, addVideoView} = this.props;
-    const time = event.target.getCurrentTime()
-    if (Math.floor(time) === 0) {
-      addVideoView({videoId: parentContentId, userId: myId})
     }
   }
 }
