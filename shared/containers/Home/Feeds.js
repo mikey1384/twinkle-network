@@ -2,11 +2,10 @@ import React, {Component} from 'react';
 import {fetchMoreFeedsAsync, fetchFeedsAsync} from 'redux/actions/FeedActions';
 import FeedInputPanel from './FeedInputPanel';
 import FeedPanel from './FeedPanel';
-import Button from 'components/Button';
+import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading';
 import ExecutionEnvironment from 'exenv';
 import {connect} from 'react-redux';
-
 
 
 @connect(
@@ -24,6 +23,9 @@ import {connect} from 'react-redux';
 export default class Feeds extends Component {
   constructor() {
     super()
+    this.state = {
+      loadingMore: false
+    }
     this.applyFilter = this.applyFilter.bind(this)
     this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
     this.renderFilterBar = this.renderFilterBar.bind(this)
@@ -36,6 +38,7 @@ export default class Feeds extends Component {
 
   render() {
     const {feeds, loadMoreButton, userId} = this.props;
+    const {loadingMore} = this.state;
     return (
       <div>
         {!feeds &&
@@ -48,11 +51,7 @@ export default class Feeds extends Component {
             {feeds.map(feed => {
               return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />;
             })}
-            {loadMoreButton &&
-              <div className="text-center" style={{paddingBottom: '1em'}}>
-                <Button className="btn btn-success" onClick={this.loadMoreFeeds}>Load More</Button>
-              </div>
-            }
+            {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loadingMore} />}
           </div>
         }
         {!!feeds && feeds.length === 0 &&
@@ -77,7 +76,10 @@ export default class Feeds extends Component {
 
   loadMoreFeeds() {
     const {feeds, fetchMoreFeeds, selectedFilter} = this.props;
-    fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter);
+    this.setState({loadingMore: true})
+    fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter, () => {
+      this.setState({loadingMore: false})
+    });
   }
 
   renderFilterBar() {

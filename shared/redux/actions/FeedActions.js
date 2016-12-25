@@ -89,13 +89,16 @@ export const fetchFeedsAsync = (filter = 'all') => dispatch => {
   )
 }
 
-export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all') => dispatch => {
+export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all', callback) => dispatch => {
   request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}`).then(
-    response => dispatch({
-      type: 'FETCH_MORE_FEEDS',
-      data: response.data,
-      filter
-    })
+    response => {
+      dispatch({
+        type: 'FETCH_MORE_FEEDS',
+        data: response.data,
+        filter
+      })
+      if (callback) callback();
+    }
   ).catch(
     error => {
       console.error(error.response || error)

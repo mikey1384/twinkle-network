@@ -49,10 +49,6 @@ export default class VideoPlayer extends Component {
     )
   }
 
-  onVideoPlay(event) {
-
-  }
-
   onVideoReady(event) {
     const {videoId, userId, addVideoView} = this.props;
     event.target.playVideo()
