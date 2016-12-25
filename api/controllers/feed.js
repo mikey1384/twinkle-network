@@ -373,6 +373,7 @@ router.post('/content', requireAuth, (req, res) => {
       contentTitle: post.title,
       contentDescription: post.description,
       uploaderName: user.username,
+      uploaderPicId: user.profilePicId,
       targetCommentUploaderId: null,
       targetComment: null,
       targetCommentUploaderName: null,
