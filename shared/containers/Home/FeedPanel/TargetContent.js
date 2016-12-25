@@ -24,7 +24,9 @@ export default class TargetContent extends Component {
   }
 
   render() {
-    const {uploader, content, myId, likes = [], isReplyContent, isDiscussionTitle} = this.props;
+    const {uploader, title, content, contentAvailable,
+      myId, likes = [], isReplyContent, isDiscussionTitle
+    } = this.props;
     const {userListModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
@@ -39,7 +41,7 @@ export default class TargetContent extends Component {
           wordWrap: 'break-word'
         }}
       >
-        {!!content ?
+        {!!contentAvailable ?
           (!isDiscussionTitle ?
             <div>
               <UserLink user={uploader} /> {isReplyContent ? 'wrote' : 'commented'}:
@@ -85,7 +87,8 @@ export default class TargetContent extends Component {
               >
                 Discuss:
               </p>
-              <p dangerouslySetInnerHTML={{__html: content}}/>
+              <p style={{fontWeight: 'bold'}}>{title}</p>
+              {!!content && <p dangerouslySetInnerHTML={{__html: content}}/>}
             </div>
           ) : <div style={{textAlign: 'center'}}><span>Content removed / no longer available</span></div>
         }

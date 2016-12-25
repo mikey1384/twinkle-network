@@ -58,7 +58,7 @@ export default class MainContent extends Component {
   render() {
     const {
       myId, content, contentLikers = [],
-      contentId, type, title, discussionTitle, videoViews, numChildComments, numChildReplies, replyId, commentId, targetReply, targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
+      contentId, type, title, discussionTitle, discussionDescription, videoViews, numChildComments, numChildReplies, replyId, commentId, targetReply, targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props;
@@ -89,6 +89,7 @@ export default class MainContent extends Component {
         {type === 'comment' && !!replyId &&
           <TargetContent
             isReplyContent
+            contentAvailable={!!targetReply}
             uploader={{name: targetReplyUploaderName, id: targetReplyUploaderId}}
             likes={targetContentLikers}
             content={targetReply}
@@ -98,6 +99,7 @@ export default class MainContent extends Component {
         }
         {type === 'comment' && !!commentId && !replyId &&
           <TargetContent
+            contentAvailable={!!targetComment}
             uploader={{name: targetCommentUploaderName, id: targetCommentUploaderId}}
             likes={targetContentLikers}
             content={targetComment}
@@ -108,7 +110,9 @@ export default class MainContent extends Component {
         {type === 'comment' && !replyId && !commentId && !!discussionTitle &&
           <TargetContent
             isDiscussionTitle
-            content={discussionTitle}
+            contentAvailable={!!discussionTitle}
+            title={discussionTitle}
+            content={discussionDescription}
           />
         }
         {type === 'comment' &&

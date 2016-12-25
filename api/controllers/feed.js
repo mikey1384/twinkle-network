@@ -43,6 +43,7 @@ router.get('/', (req, res) => {
       comment3.content AS targetReply,
       user3.username AS targetReplyUploaderName,
       discussion.title AS discussionTitle,
+      discussion.description AS discussionDescription,
       NULL AS videoViews,
       (SELECT COUNT(*) FROM vq_comments WHERE commentId = feed.contentId) AS numChildComments,
       (SELECT COUNT(*) FROM vq_comments WHERE replyId = feed.contentId) AS numChildReplies
@@ -92,6 +93,7 @@ router.get('/', (req, res) => {
       NULL AS targetReply,
       NULL AS targetReplyUploaderName,
       NULL AS discussionTitle,
+      NULL AS discussionDescription,
       (SELECT COUNT(*) FROM vq_video_views WHERE videoId = feed.contentId) AS videoViews,
       (SELECT COUNT(*) FROM vq_comments WHERE videoId = feed.contentId) AS numChildComments,
       NULL AS numChildReplies
@@ -129,6 +131,7 @@ router.get('/', (req, res) => {
       NULL AS targetReply,
       NULL AS targetReplyUploaderName,
       NULL AS discussionTitle,
+      NULL AS discussionDescription,
       NULL AS videoViews,
       NULL AS numChildComments,
       NULL AS numChildReplies
@@ -166,6 +169,7 @@ router.get('/', (req, res) => {
       NULL AS targetReply,
       NULL AS targetReplyUploaderName,
       NULL AS discussionTitle,
+      NULL AS discussionDescription,
       NULL AS videoViews,
       (SELECT COUNT(*) FROM vq_comments WHERE discussionId = discussion.id) AS numChildComments,
       NULL AS numChildReplies
