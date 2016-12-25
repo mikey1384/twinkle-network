@@ -32,8 +32,8 @@ export default class Feeds extends Component {
   }
 
   componentDidMount() {
-    const {fetchFeeds} = this.props;
-    if (ExecutionEnvironment.canUseDOM) fetchFeeds();
+    const {fetchFeeds, location, feeds} = this.props;
+    if (ExecutionEnvironment.canUseDOM && (location.action === 'PUSH' || !feeds)) fetchFeeds();
   }
 
   render() {
