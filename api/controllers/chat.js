@@ -192,7 +192,7 @@ router.post('/channel', requireAuth, (req, res) => {
       const members = [user.id].concat(params.selectedUsers.map(user => {
         return user.userId
       }));
-      updateLastRead({users: members.map(member => ({id: member})), channelId, timeStamp})
+      updateLastRead({users: members.map(member => ({id: member})), channelId, timeStamp: timeStamp - 1})
       let taskArray = [];
       for (let i = 0; i < members.length; i++) {
         let task = callback => {
@@ -465,7 +465,7 @@ router.post('/invite', requireAuth, (req, res) => {
       return res.status(status).send({error: err})
     }
     let allUsers = selectedUsers.concat([{userId: user.id}]).map(user => ({id: user.userId}))
-    updateLastRead({users: allUsers, channelId, timeStamp})
+    updateLastRead({users: allUsers, channelId, timeStamp: timeStamp - 1})
     res.send({message})
   })
 })
@@ -474,9 +474,9 @@ router.post('/invite', requireAuth, (req, res) => {
 router.get('/numUnreads', requireAuth, (req, res) => {
   const user = req.user;
   const query = `
-    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats WHERE channelId = a.channelId AND timeStamp > a.lastRead) AS numUnreads FROM msg_channel_info a WHERE a.userId = ? AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
+    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats WHERE channelId = a.channelId AND timeStamp > a.lastRead AND userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ? AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
   `
-  pool.query(query, [user.id, user.id], (err, rows) => {
+  pool.query(query, [user.id, user.id, user.id], (err, rows) => {
     if (err) {
       console.error(err);
       return res.status(500).send({error: err})

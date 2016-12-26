@@ -131,7 +131,7 @@ const fetchChannels = (user, callback) => {
     pool.query(query, [generalChatId, user.id], (err, channels) => {
       let taskArray = [];
       for (let i = 0; i < channels.length; i++) {
-        taskArray.push(fetchUserSpecificChannelData(channels[i], channelInfos));
+        taskArray.push(fetchUserSpecificChannelData(channels[i], channelInfos, user.id));
       }
       async.parallel(taskArray, (err, unreads) => {
         let rows = channels.map((channel, index) => {
@@ -165,7 +165,7 @@ const fetchChannels = (user, callback) => {
   }
 }
 
-const fetchUserSpecificChannelData = (channel, channelInfos) => callback => {
+const fetchUserSpecificChannelData = (channel, channelInfos, userId) => callback => {
   const channelId = channel.id;
   let lastReadTime = null;
   let isHidden = false;
@@ -176,13 +176,13 @@ const fetchUserSpecificChannelData = (channel, channelInfos) => callback => {
     }
   }
   if (!lastReadTime) {
-    let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ?';
-    return pool.query(query, channelId, (err, rows) => {
+    let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND userId != ?';
+    return pool.query(query, [channelId, userId], (err, rows) => {
       callback(err, {numUnreads: rows[0].numUnreads});
     })
   }
-  let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ?';
-  pool.query(query, [channelId, lastReadTime], (err, rows) => {
+  let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ?';
+  pool.query(query, [channelId, lastReadTime, userId], (err, rows) => {
     callback(err, {numUnreads: rows[0].numUnreads, isHidden});
   })
 }
