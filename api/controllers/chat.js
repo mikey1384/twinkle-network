@@ -49,7 +49,7 @@ router.post('/', requireAuth, (req, res) => {
   })
 
   function markMyMessageAsRead(callback) {
-    updateLastRead({userId: user.id, channelId, timeStamp: timeStamp}, err => callback(err))
+    updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)}, err => callback(err))
   }
 
   function saveMessageToDatabase(callback) {
@@ -170,7 +170,7 @@ router.post('/lastRead', requireAuth, (req, res) => {
   const user = req.user;
   const channelId = req.body.channelId;
   const timeStamp = req.body.timeStamp;
-  updateLastRead({userId: user.id, channelId, timeStamp}, err => {
+  updateLastRead({users: [{id: user.id}], channelId, timeStamp}, err => {
     if (err) return res.status(500).send({error: err})
     res.send({success: true})
   })
@@ -192,6 +192,7 @@ router.post('/channel', requireAuth, (req, res) => {
       const members = [user.id].concat(params.selectedUsers.map(user => {
         return user.userId
       }));
+      updateLastRead({users: members.map(member => ({id: member})), channelId, timeStamp})
       let taskArray = [];
       for (let i = 0; i < members.length; i++) {
         let task = callback => {
@@ -211,7 +212,7 @@ router.post('/channel', requireAuth, (req, res) => {
             channelId,
             userId: user.id,
             content: `Created channel "${channelName}"`,
-            timeStamp: timeStamp,
+            timeStamp,
             isNotification: true
           }
           pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
@@ -228,7 +229,6 @@ router.post('/channel', requireAuth, (req, res) => {
       async.parallel(taskArray, (err, results) => {
         callback(err, results[results.length - 1])
       })
-      updateLastRead({userId: user.id, channelId, timeStamp})
     },
     (message, callback) => {
       pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: message.channelId}, user.id], err => {
@@ -283,6 +283,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
         memberTwo: partnerId
       }
       pool.query('INSERT INTO msg_channels SET ?', post, (err, result) => {
+        updateLastRead({users: [{id: partnerId}], channelId: result.insertId, timeStamp: timeStamp - 1})
         callback(err, result.insertId)
       })
     },
@@ -463,7 +464,8 @@ router.post('/invite', requireAuth, (req, res) => {
       let status = (err === 'not_a_member') ? 401 : 500;
       return res.status(status).send({error: err})
     }
-    updateLastRead({userId: user.id, channelId, timeStamp})
+    let allUsers = selectedUsers.concat([{userId: user.id}]).map(user => ({id: user.userId}))
+    updateLastRead({users: allUsers, channelId, timeStamp})
     res.send({message})
   })
 })

@@ -19,7 +19,7 @@ const fetchChat = (params, callback) => {
     fetchChannelsAndMessages,
     fetchCurrentChannel
   ], err => {
-      updateLastRead({userId: user.id, channelId, timeStamp: Math.floor(Date.now()/1000)})
+      updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
       callback(err, results);
     }
   )
@@ -270,22 +270,36 @@ const handleCaseWhereBidirectionalChatAlreadyExists = (channelId, userId, conten
   })
 }
 
-const updateLastRead = ({userId, channelId, timeStamp}, callback) => {
-  let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?';
-  pool.query(query, [userId, channelId], (err, rows) => {
-    if (err && callback) return callback(err);
-    if(Number(rows[0].num) > 0) {
-      let query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?';
-      pool.query(query, [{lastRead: timeStamp}, userId, channelId], err => {
-        if (callback) callback(err);
-      });
-    } else {
-      pool.query('INSERT INTO msg_channel_info SET ?', {userId, channelId, lastRead: timeStamp}, err => {
-        if (callback) callback(err);
-      });
+const updateLastRead = ({users, channelId, timeStamp}, callback) => {
+  let taskArray = users.map(user => {
+    let userId = user.id;
+    let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?';
+    return function(callback) {
+      async.waterfall([
+        cb => {
+          pool.query(query, [userId, channelId], (err, rows) => cb(err, rows))
+        },
+        (rows, cb) => {
+          if(Number(rows[0].num) > 0) {
+            let query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?';
+            pool.query(query, [{lastRead: timeStamp}, userId, channelId], err => cb(err));
+          } else {
+            pool.query('INSERT INTO msg_channel_info SET ?', {userId, channelId, lastRead: timeStamp}, err => cb(err));
+          }
+        }
+      ], err => callback(err))
     }
+  });
+  taskArray.push(
+    function(callback) {
+      pool.query('UPDATE msg_channel_info SET ? WHERE channelId = ?', [{isHidden: false}, channelId], err => callback(err))
+    }
+  )
+  async.parallel(taskArray, err => {
+    if (err) console.error(err)
+    if (callback) callback(err)
+    return;
   })
-  pool.query('UPDATE msg_channel_info SET ? WHERE channelId = ?', [{isHidden: false}, channelId]);
 }
 
 module.exports = {
