@@ -52,16 +52,18 @@ export default class VideoPlayer extends Component {
             }
           </div>
         }
-        {(!!playing || !!autoplay) && <YouTube
-          className={className}
-          opts={{
-            title: title,
-            height: '360',
-            width: '640'
-          }}
-          videoId={videoCode}
-          onReady={this.onVideoReady}
-        />}
+        {(!!playing || !!autoplay) &&
+          <YouTube
+            className={className}
+            opts={{
+              title: title,
+              height: '360',
+              width: '640'
+            }}
+            videoId={videoCode}
+            onReady={this.onVideoReady}
+          />
+        }
       </div>
     )
   }

@@ -8,6 +8,7 @@ import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
+import {Color} from 'constants/css';
 import LikeButton from 'components/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
 import {scrollElementToCenter} from 'helpers/domHelpers';
@@ -120,7 +121,7 @@ export default class PanelReply extends Component {
                       style={{
                         fontWeight: 'bold',
                         marginLeft: '0.8em',
-                        color: '#f0ad4e',
+                        color: Color.green,
                         marginTop: '1em'
                       }}
                       userId={userId}

@@ -5,6 +5,7 @@ import {timeSince} from 'helpers/timeStampHelpers';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import Likers from 'components/Likers';
+import {Color} from 'constants/css';
 import UserListModal from 'components/Modals/UserListModal';
 import PanelReplies from './PanelReplies';
 import ReplyInputArea from './PanelReplies/ReplyInputArea';
@@ -131,7 +132,7 @@ export default class PanelComment extends Component {
                     style={{
                       fontWeight: 'bold',
                       marginLeft: '0.8em',
-                      color: '#f0ad4e',
+                      color: Color.green,
                       marginTop: '1em'
                     }}
                     userId={userId}

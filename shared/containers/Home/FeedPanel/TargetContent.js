@@ -57,7 +57,7 @@ export default class TargetContent extends Component {
                   fontSize: '11px',
                   marginTop: '1em',
                   fontWeight: 'bold',
-                  color: '#f0ad4e'
+                  color: Color.green
                 }}
                 userId={myId}
                 likes={likes}

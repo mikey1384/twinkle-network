@@ -133,7 +133,7 @@ export default class MainContent extends Component {
             marginTop: '1em',
             marginBottom: !!contentDescription ? '0.5em' : '1em'
           }}>
-            <p><b style={{color: '#28b62c'}}>Discuss:</b></p>
+            <p><b style={{color: Color.green}}>Discuss:</b></p>
             <p>{contentTitle}</p>
           </div>
         }
@@ -201,7 +201,7 @@ export default class MainContent extends Component {
             fontSize: '11px',
             marginTop: '1em',
             fontWeight: 'bold',
-            color: '#f0ad4e'
+            color: Color.green
           }}
           userId={myId}
           likes={contentLikers}

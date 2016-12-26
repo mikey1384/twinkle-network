@@ -4,6 +4,7 @@ import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from '../EditTextArea';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import Likers from 'components/Likers';
+import {Color} from 'constants/css';
 import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/UsernameText';
 import ProfilePic from 'components/ProfilePic';
@@ -82,7 +83,7 @@ export default class Reply extends Component {
             /> <small>&nbsp;{timeSince(timeStamp)}</small></h4>
           <div>
             {targetUserId &&
-              <span style={{color: '#158cba'}}>
+              <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: targetUserName, id: targetUserId}} />
               </span>
             }
@@ -124,7 +125,7 @@ export default class Reply extends Component {
                       style={{
                         fontWeight: 'bold',
                         marginLeft: '0.8em',
-                        color: '#f0ad4e',
+                        color: Color.green,
                         marginTop: '1em'
                       }}
                       userId={myId}

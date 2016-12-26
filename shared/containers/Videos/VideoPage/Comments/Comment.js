@@ -134,7 +134,7 @@ export default class Comment extends Component {
                     style={{
                       fontWeight: 'bold',
                       marginLeft: '0.8em',
-                      color: Color.orange,
+                      color: Color.green,
                       marginTop: '1em'
                     }}
                     userId={userId}
