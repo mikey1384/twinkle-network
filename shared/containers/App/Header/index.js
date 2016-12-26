@@ -11,15 +11,15 @@ import {fetchFeedsAsync} from 'redux/actions/FeedActions';
 import {getInitialVideos} from 'redux/actions/VideoActions';
 import {getPinnedPlaylistsAsync, getPlaylistsAsync} from 'redux/actions/PlaylistActions';
 import SigninModal from 'containers/Signin';
-import {bindActionCreators} from 'redux';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
 import NotificationsButton from './NotificationsButton';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
-import {browserHistory} from 'react-router';
+import ExecutionEnvironment from 'exenv';
 import SearchBox from './SearchBox';
 import HeaderNav from './HeaderNav';
+import {Color} from 'constants/css';
 
 @connect(
   state => ({
@@ -52,13 +52,13 @@ export default class Header extends Component {
     this.state = {
       notificationsMenuShown: false,
       selectedTab: props.location ? props.location : 'home',
-      logoColor: '#555555'
+      logoColor: Color.backgroundGray
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
 
     const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
-    if (!!browserHistory) {
+    if (ExecutionEnvironment.canUseDOM) {
       socket.on('connect', () => {
         if (this.props.userId) {
           socket.emit('bind_uid_to_socket', this.props.userId, this.props.username);
@@ -83,7 +83,7 @@ export default class Header extends Component {
   }
 
   componentDidMount() {
-    if (!!browserHistory) {
+    if (ExecutionEnvironment.canUseDOM) {
       this.setState({
         logoColor: '#' + Math.floor(Math.random()*16777215).toString(16)
       })

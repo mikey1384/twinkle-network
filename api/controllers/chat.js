@@ -86,49 +86,6 @@ router.get('/more', requireAuth, (req, res) => {
   })
 })
 
-router.get('/numUnreads', requireAuth, (req, res) => {
-  const user = req.user;
-  async.waterfall([
-    callback => {
-      let query = 'SELECT channelId, lastRead FROM msg_channel_info WHERE userId = ?';
-      pool.query(query, user.id, (err, lastReads) => callback(err, lastReads))
-    },
-    (lastReads, callback) => {
-      let query = [
-        'SELECT channelId, timeStamp FROM msg_chats WHERE channelId IN ',
-        '(SELECT channelId FROM msg_channel_members WHERE userId = ?) ',
-        'AND channelId IN (SELECT id FROM msg_channels)'
-      ].join('')
-      pool.query(query, user.id, (err, messages) => {
-        let counter = 0;
-        for (let i = 0; i < lastReads.length; i++) {
-          const {channelId} = lastReads[i];
-          const timeStamp = Number(lastReads[i].lastRead);
-          for (let j = 0; j < messages.length; j++) {
-            if (messages[j].channelId === channelId && Number(messages[j].timeStamp) > timeStamp) {
-              counter ++
-            }
-          }
-        }
-        let readChannels = lastReads.map(lastRead => {
-          return lastRead.channelId;
-        })
-        let messagesInUnreadChannel = messages.filter(message => {
-          return (readChannels.indexOf(message.channelId) === -1)
-        })
-        counter += messagesInUnreadChannel.length;
-        callback(err, counter)
-      })
-    }
-  ], (err, numUnreads) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send({error: err})
-    }
-    res.send({numUnreads})
-  })
-})
-
 router.get('/channels', requireAuth, (req, res) => {
   const user = req.user;
   fetchChat({user}, (err, results) => {
@@ -510,6 +467,25 @@ router.post('/invite', requireAuth, (req, res) => {
     res.send({message})
   })
 })
+
+
+router.get('/numUnreads', requireAuth, (req, res) => {
+  const user = req.user;
+  const query = `
+    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats WHERE channelId = a.channelId AND timeStamp > a.lastRead) AS numUnreads FROM msg_channel_info a WHERE a.userId = ? AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
+  `
+  pool.query(query, [user.id, user.id], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({error: err})
+    }
+    let totalNumUnreads = rows.reduce((sum, row) => (
+      sum + Number(row.numUnreads)
+    ), 0);
+    res.send({numUnreads: totalNumUnreads})
+  })
+})
+
 
 router.get('/search/chat', requireAuth, (req, res) => {
   const {user} = req;
