@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import YouTube from 'react-youtube';
+import Loading from 'components/Loading';
+import {Color} from 'constants/css';
 import {connect} from 'react-redux';
 import {addVideoViewAsync} from 'redux/actions/VideoActions';
 
@@ -32,7 +34,22 @@ export default class VideoPlayer extends Component {
               className="embed-responsive-item"
               src={`https://img.youtube.com/vi/${videoCode}/0.jpg`}
             />
-            <a></a>
+            {!!playing ?
+              <Loading
+                style={{
+                  color: Color.blue,
+                  fontSize: '3em',
+                  position: 'absolute',
+                	display: 'block',
+                	height: '40px',
+                	width: '40px',
+                	top: '50%',
+                	left: '50%',
+                	margin: '-20px 0 0 -20px'
+                }}
+              /> :
+              <a></a>
+            }
           </div>
         }
         {(!!playing || !!autoplay) && <YouTube
