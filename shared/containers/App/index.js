@@ -85,8 +85,7 @@ export default class App extends Component {
     const {chatMode, turnChatOff, location, params} = this.props;
     const {scrollPosition} = this.state;
     const style = chatMode && this.props.loggedIn ? {
-      position: 'fixed',
-      opacity: 0
+      display: 'none'
     } : {paddingTop: '65px'}
 
     return (
