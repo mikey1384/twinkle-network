@@ -41,6 +41,10 @@ export default class App extends Component {
     this.onScroll = this.onScroll.bind(this)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.chatMode && !!nextProps.chatMode) window.scrollTo(0, 0)
+  }
+
   componentDidMount() {
     const {initSession} = this.props;
     if (ExecutionEnvironment.canUseDOM) {
