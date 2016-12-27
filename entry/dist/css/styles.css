@@ -3,6 +3,10 @@ html, body {
 	background-color: #f1f3f6;
 }
 
+.gr-top-zero {
+	display: none;
+}
+
 .embed-responsive {
 	background-color: #f1f3f6;
 }

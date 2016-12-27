@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.14)
 # Database: twinkle
-# Generation Time: 2016-12-07 11:39:53 +0000
+# Generation Time: 2016-12-27 00:30:06 +0000
 # ************************************************************
 
 
@@ -87,7 +87,9 @@ VALUES
 	(16,205,'lets see',NULL,'video',30,1479656928),
 	(17,205,'let\'s test this!!','Hello world','video',42,1480251298),
 	(19,205,'new discussion','random topic','video',45,1480731431),
-	(23,205,'this is a new discussion. hellloooo?',NULL,'video',53,1480993102);
+	(23,205,'this is a new discussion. hellloooo?',NULL,'video',53,1480993102),
+	(24,5,'A new debate on teenager brains',NULL,'video',50,1482149033),
+	(25,5,'newer discussion','<a href=\"http://www.facebook.com\" target=\"_blank\">www.facebook.com</a> is the best site?','video',53,1482647676);
 
 /*!40000 ALTER TABLE `content_discussions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -142,8 +144,10 @@ VALUES
 	(31,'JS StackOF',NULL,7,'http://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs',5,1476863130),
 	(32,'ALF link',NULL,5,'https://www.youtube.com/watch?v=awNjw4x8rMo',5,1476863171),
 	(33,'Youtube','No description',7,'https://www.youtube.com/',5,1480038445),
-	(34,'Andrew\'s old student','No description',7,'https://vimeo.com/193898447',205,1480989861),
-	(35,'Andrew\'s old student','No description',7,'https://vimeo.com/193898447',205,1480992487);
+	(37,'Git Tutorial','No description',3,'https://www.atlassian.com/git/tutorials/what-is-version-control',5,1481113860),
+	(38,'Cool react package','No description',4,'https://github.com/brigade/react-waypoint',5,1481210225),
+	(39,'Web Fundamentals','No description',3,'https://developers.google.com/web/fundamentals/',5,1481972192),
+	(40,'World University Rankings ','No description',7,'https://www.timeshighereducation.com/world-university-rankings/2016/world-ranking#!/page/0/length/25/sort_by/rank/sort_order/asc/cols/stats',5,1482412025);
 
 /*!40000 ALTER TABLE `content_urls` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -186,17 +190,17 @@ LOCK TABLES `msg_channel_info` WRITE;
 
 INSERT INTO `msg_channel_info` (`id`, `userId`, `channelId`, `lastRead`, `channelName`, `isHidden`)
 VALUES
-	(203,218,2,1473864700,NULL,0),
+	(203,218,2,1482758160,NULL,0),
 	(204,218,186,1468849612,NULL,0),
-	(205,5,2,1481071240,NULL,0),
+	(205,5,2,1482771186,NULL,0),
 	(206,5,186,1468679661,NULL,0),
 	(207,5,187,1468849599,NULL,0),
 	(208,218,187,1468846565,NULL,0),
 	(209,5,188,1468678596,NULL,0),
 	(210,218,188,1468849612,NULL,0),
-	(211,209,2,1470493460,NULL,0),
+	(211,209,2,1482760732,NULL,0),
 	(212,209,188,1468675526,NULL,0),
-	(213,215,2,1470493231,NULL,0),
+	(213,215,2,1482761776,NULL,0),
 	(214,215,187,1468727576,NULL,0),
 	(215,218,189,1468849589,NULL,0),
 	(216,5,189,1468849601,NULL,0),
@@ -218,41 +222,41 @@ VALUES
 	(232,220,197,1469009959,NULL,0),
 	(233,5,198,1469111922,NULL,0),
 	(234,220,198,1469108619,NULL,0),
-	(235,5,199,1474629151,'Mikey Channel!!',0),
+	(235,5,199,1482290798,'Mikey Channel!!',0),
 	(236,220,199,1469019488,NULL,0),
 	(237,220,200,1469108618,NULL,0),
 	(238,5,200,1469408786,NULL,1),
 	(239,218,199,1470493306,NULL,0),
-	(240,5,201,1475136681,NULL,0),
-	(241,218,201,1469798515,NULL,0),
+	(240,5,201,1482760719,NULL,0),
+	(241,218,201,1482758150,NULL,0),
 	(242,5,202,1474606104,'It worked :)',0),
-	(243,5,203,1475136672,NULL,0),
-	(244,218,203,1473864713,NULL,0),
+	(243,5,203,1482759912,NULL,0),
+	(244,218,203,1482758157,NULL,0),
 	(245,210,2,1469798539,NULL,0),
 	(246,210,203,1469798537,NULL,0),
 	(247,210,202,1469415719,NULL,0),
 	(248,221,2,1469521533,NULL,0),
 	(249,221,204,1469521607,NULL,0),
-	(250,5,204,1475137207,NULL,0),
+	(250,5,204,1482135141,NULL,0),
 	(251,5,205,1475136679,NULL,0),
 	(252,222,2,1469591598,NULL,0),
 	(253,218,206,1469604287,NULL,0),
-	(254,5,207,1479699460,NULL,0),
-	(255,218,207,1469794644,NULL,0),
+	(254,5,207,1482759913,NULL,0),
+	(255,218,207,1482758154,NULL,0),
 	(256,5,208,1473585426,NULL,0),
 	(257,210,207,1470147795,NULL,0),
 	(258,210,208,1470147804,NULL,0),
-	(259,5,209,1481091273,NULL,0),
+	(259,5,209,1482137094,NULL,0),
 	(260,5,210,1471259741,NULL,1),
 	(261,5,211,1475136677,NULL,0),
-	(262,205,2,1480998383,NULL,0),
-	(263,205,209,1481071218,NULL,0),
+	(262,205,2,1482745330,NULL,0),
+	(263,205,209,1482280085,NULL,0),
 	(264,205,212,1479474564,NULL,0),
 	(265,209,212,1470482869,NULL,0),
-	(266,5,213,1473585562,NULL,0),
-	(267,209,213,1470493454,NULL,0),
-	(268,215,214,1470493298,NULL,0),
-	(269,218,215,1473864693,NULL,0),
+	(266,5,213,1482760720,NULL,0),
+	(267,209,213,1482760700,NULL,0),
+	(268,215,214,1482761769,NULL,0),
+	(269,218,215,1482758158,NULL,0),
 	(270,208,2,1470493508,NULL,0),
 	(271,208,211,1473585121,NULL,0),
 	(272,209,215,1470493483,NULL,0),
@@ -264,12 +268,63 @@ VALUES
 	(278,5,220,1476617057,NULL,0),
 	(279,225,2,1475388829,NULL,0),
 	(280,225,221,1475391391,NULL,0),
-	(281,5,221,1476617057,NULL,0),
+	(281,5,221,1482137091,NULL,0),
 	(282,205,217,1479702851,NULL,0),
 	(283,205,222,1479702849,NULL,0),
-	(284,205,223,1479991523,NULL,0),
-	(285,5,223,1479701120,NULL,0),
-	(286,205,224,1480174721,NULL,0);
+	(284,205,223,1482745349,NULL,0),
+	(285,5,223,1482759915,NULL,0),
+	(286,205,224,1480174721,NULL,0),
+	(287,227,2,1482139727,NULL,0),
+	(288,227,225,1482139880,NULL,0),
+	(289,5,225,1482139864,NULL,0),
+	(290,5,227,1482140205,NULL,0),
+	(291,227,227,1482139883,NULL,0),
+	(292,5,228,1482140239,NULL,0),
+	(293,5,229,1482745341,NULL,0),
+	(294,5,230,1482392594,NULL,0),
+	(295,5,231,1482390841,NULL,0),
+	(296,205,229,1482745331,NULL,0),
+	(297,205,227,1482280102,NULL,0),
+	(298,218,229,1482392173,NULL,0),
+	(299,209,216,1482760025,NULL,0),
+	(300,215,232,1482770628,NULL,0),
+	(301,5,232,1482767656,NULL,0),
+	(302,215,233,1482769263,NULL,0),
+	(303,NULL,233,1482768776,NULL,0),
+	(304,NULL,233,1482768776,NULL,0),
+	(305,5,233,1482769448,NULL,0),
+	(306,208,233,1482769219,NULL,0),
+	(307,215,234,1482769394,NULL,0),
+	(308,5,234,1482769429,NULL,0),
+	(309,215,235,1482769871,NULL,0),
+	(310,5,235,1482769908,NULL,0),
+	(311,218,236,1482769885,NULL,0),
+	(312,215,236,1482770016,NULL,0),
+	(313,5,236,1482770037,NULL,0),
+	(314,218,237,1482770029,NULL,0),
+	(315,215,237,1482770065,NULL,0),
+	(316,5,237,1482770662,NULL,0),
+	(317,215,238,1482770379,NULL,0),
+	(318,5,238,1482772978,NULL,0),
+	(319,218,238,1482770057,NULL,0),
+	(320,215,239,1482770380,NULL,0),
+	(321,205,239,1482770376,NULL,0),
+	(322,226,239,1482770376,NULL,0),
+	(323,211,240,1482772883,NULL,0),
+	(324,215,240,1482770625,NULL,0),
+	(325,208,240,1482770392,NULL,0),
+	(326,228,2,1482771166,NULL,0),
+	(329,5,243,1482772974,NULL,0),
+	(330,228,243,1482771182,NULL,0),
+	(331,211,2,1482772881,NULL,0),
+	(332,208,244,1482772868,NULL,0),
+	(333,211,244,1482772938,NULL,0),
+	(334,5,244,1482772933,NULL,0),
+	(335,211,230,1482772936,NULL,0),
+	(336,205,245,1482772920,NULL,0),
+	(337,5,245,1482772946,NULL,0),
+	(338,211,245,1482772966,NULL,0),
+	(339,211,238,1482772969,NULL,0);
 
 /*!40000 ALTER TABLE `msg_channel_info` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -358,7 +413,65 @@ VALUES
 	(631,223,206,NULL),
 	(632,224,205,NULL),
 	(633,224,219,NULL),
-	(634,224,226,NULL);
+	(634,224,226,NULL),
+	(635,225,5,NULL),
+	(636,225,227,NULL),
+	(637,226,5,NULL),
+	(638,226,205,NULL),
+	(639,226,227,NULL),
+	(640,227,5,NULL),
+	(641,227,227,NULL),
+	(642,227,205,NULL),
+	(643,228,5,NULL),
+	(644,228,227,NULL),
+	(645,228,226,NULL),
+	(646,229,5,NULL),
+	(647,229,226,NULL),
+	(648,229,205,NULL),
+	(649,230,5,NULL),
+	(650,230,211,NULL),
+	(651,231,5,NULL),
+	(652,231,224,NULL),
+	(653,229,214,NULL),
+	(654,232,215,NULL),
+	(655,232,5,NULL),
+	(656,233,215,NULL),
+	(657,233,218,NULL),
+	(658,233,224,NULL),
+	(663,233,5,NULL),
+	(664,233,208,NULL),
+	(665,234,215,NULL),
+	(666,234,218,NULL),
+	(667,234,224,NULL),
+	(668,234,5,NULL),
+	(669,235,215,NULL),
+	(670,235,218,NULL),
+	(671,235,216,NULL),
+	(672,235,5,NULL),
+	(673,236,215,NULL),
+	(674,236,5,NULL),
+	(675,236,218,NULL),
+	(676,237,215,NULL),
+	(677,237,5,NULL),
+	(678,237,218,NULL),
+	(679,238,218,NULL),
+	(680,238,215,NULL),
+	(681,238,5,NULL),
+	(682,239,215,NULL),
+	(683,239,205,NULL),
+	(684,239,226,NULL),
+	(685,240,208,NULL),
+	(686,240,215,NULL),
+	(687,240,211,NULL),
+	(692,243,228,NULL),
+	(693,243,5,NULL),
+	(694,244,211,NULL),
+	(695,244,5,NULL),
+	(696,244,208,NULL),
+	(697,245,5,NULL),
+	(698,245,211,NULL),
+	(699,245,205,NULL),
+	(700,238,211,NULL);
 
 /*!40000 ALTER TABLE `msg_channel_members` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -409,7 +522,26 @@ VALUES
 	(221,1,NULL,225,5,NULL),
 	(222,1,NULL,205,226,NULL),
 	(223,0,'long long long chat room name that overflows like mother.',NULL,NULL,205),
-	(224,0,'channel name with &amp;',NULL,NULL,205);
+	(224,0,'channel name with &amp;',NULL,NULL,205),
+	(225,1,NULL,5,227,NULL),
+	(226,0,'Profile pic test',NULL,NULL,5),
+	(227,0,'Profile Pic Test',NULL,NULL,5),
+	(228,0,'another test',NULL,NULL,5),
+	(229,0,'hard work pays off',NULL,NULL,5),
+	(230,1,NULL,5,211,NULL),
+	(231,1,NULL,5,224,NULL),
+	(232,1,NULL,215,5,NULL),
+	(233,0,'new testing arena',NULL,NULL,215),
+	(234,0,'another random house',NULL,NULL,215),
+	(235,0,'testotime',NULL,NULL,215),
+	(236,0,'start off with mikey',NULL,NULL,215),
+	(237,0,'another channel that deserve attention',NULL,NULL,215),
+	(238,0,'hello there',NULL,NULL,215),
+	(239,0,'hi',NULL,NULL,215),
+	(240,0,'hoho',NULL,NULL,215),
+	(243,1,NULL,228,5,NULL),
+	(244,0,'hihi',NULL,NULL,211),
+	(245,0,'hello',NULL,NULL,5);
 
 /*!40000 ALTER TABLE `msg_channels` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -859,7 +991,93 @@ VALUES
 	(1466,224,205,'vc',1479991521,0),
 	(1467,224,205,'cx',1479991521,0),
 	(1468,224,205,'vc',1479991521,0),
-	(1469,209,5,'INSERT INTO noti_feeds (type, contentId, parentContentType, parentContentId, uploaderId, timeStamp) <br>SELECT type, contentId, parentContentType, parentContentId, uploaderId, timeStamp FROM (<br>	SELECT \'comment\' AS type, id AS contentId, \'video\' AS parentContentType, videoId AS parentContentId, userId AS uploaderId, timeStamp <br>	FROM vq_comments <br>	UNION <br>	SELECT \'video\', id, \'video\', id, uploader, timeStamp FROM vq_videos <br>	UNION<br>	SELECT \'url\', id, \'url\', id, uploader, timeStamp FROM content_urls <br>	UNION<br>	SELECT \'discussion\', id, refContentType, refContentId, userId, timeStamp FROM content_discussions <br>	ORDER BY timeStamp<br>) AS data',1481090399,0);
+	(1469,209,5,'INSERT INTO noti_feeds (type, contentId, parentContentType, parentContentId, uploaderId, timeStamp) <br>SELECT type, contentId, parentContentType, parentContentId, uploaderId, timeStamp FROM (<br>	SELECT \'comment\' AS type, id AS contentId, \'video\' AS parentContentType, videoId AS parentContentId, userId AS uploaderId, timeStamp <br>	FROM vq_comments <br>	UNION <br>	SELECT \'video\', id, \'video\', id, uploader, timeStamp FROM vq_videos <br>	UNION<br>	SELECT \'url\', id, \'url\', id, uploader, timeStamp FROM content_urls <br>	UNION<br>	SELECT \'discussion\', id, refContentType, refContentId, userId, timeStamp FROM content_discussions <br>	ORDER BY timeStamp<br>) AS data',1481090399,0),
+	(1470,223,5,'new message',1482138347,0),
+	(1471,223,5,'hello world',1482138349,0),
+	(1472,223,205,'hi',1482138372,0),
+	(1473,223,5,'hello',1482138383,0),
+	(1474,223,205,'hi',1482139248,0),
+	(1475,223,5,'oh',1482139255,0),
+	(1476,223,5,'hey',1482139259,0),
+	(1477,225,5,'hey',1482139737,0),
+	(1478,227,5,'Created channel \"Profile Pic Test\"',1482139874,1),
+	(1479,228,5,'Created channel \"another test\"',1482140217,1),
+	(1480,229,5,'Created channel \"hard work pays off\"',1482140256,1),
+	(1481,230,5,'yo',1482140271,0),
+	(1482,231,5,'hey',1482140294,0),
+	(1483,231,5,'man',1482140295,0),
+	(1484,231,5,'hello',1482220929,0),
+	(1485,201,5,'hello',1482321881,0),
+	(1486,201,5,'hi',1482321883,0),
+	(1487,201,5,'hi',1482321895,0),
+	(1488,201,5,'hii',1482321906,0),
+	(1489,201,5,'hi',1482321928,0),
+	(1490,201,5,'hi',1482322015,0),
+	(1491,201,5,'hello',1482322017,0),
+	(1492,2,5,'yo',1482322024,0),
+	(1493,229,5,'Invited lowercase to the channel',1482390850,1),
+	(1494,229,5,'Invited andrew to the channel',1482391597,1),
+	(1495,229,218,'Left the channel',1482392180,1),
+	(1496,223,205,'hello',1482745336,0),
+	(1497,201,218,'hey',1482758150,0),
+	(1498,207,218,'wasup',1482758154,0),
+	(1499,203,218,'hihi',1482758157,0),
+	(1500,2,209,'hihi',1482760029,0),
+	(1501,2,209,'hihi',1482760030,0),
+	(1502,2,209,'hoho',1482760193,0),
+	(1503,2,209,'hoho',1482760194,0),
+	(1504,2,209,'this',1482760457,0),
+	(1505,2,209,'is',1482760458,0),
+	(1506,2,209,'good',1482760461,0),
+	(1507,2,209,'haha',1482760479,0),
+	(1508,213,209,'yo',1482760487,0),
+	(1509,213,209,'hello',1482760492,0),
+	(1510,213,209,'yah',1482760691,0),
+	(1511,213,209,'haha',1482760692,0),
+	(1512,213,209,'yoyo',1482760700,0),
+	(1513,2,209,'wsup',1482760705,0),
+	(1514,232,215,'hello',1482761793,0),
+	(1515,232,215,'hola',1482761873,0),
+	(1516,232,215,'yi',1482761942,0),
+	(1517,232,215,'gugu',1482762214,0),
+	(1518,233,215,'Created channel \"new testing arena\"',1482768473,1),
+	(1519,233,215,'hihi',1482768475,0),
+	(1520,233,215,'hihi',1482768476,0),
+	(1521,233,215,'Invited mikey to the channel',1482768494,1),
+	(1522,233,215,'Invited mikey to the channel',1482768716,1),
+	(1523,233,215,'Invited mikey to the channel',1482768776,1),
+	(1524,233,215,'Invited mikey to the channel',1482768950,1),
+	(1525,233,215,'Invited mikey to the channel',1482769020,1),
+	(1526,233,215,'hi',1482769033,0),
+	(1527,233,215,'Invited testingsignup to the channel',1482769219,1),
+	(1528,234,215,'Created channel \"another random house\"',1482769280,1),
+	(1529,234,215,'fdsa',1482769281,0),
+	(1530,234,215,'fdsa',1482769281,0),
+	(1531,234,215,'fdsa',1482769282,0),
+	(1532,234,215,'Invited mikey to the channel',1482769286,1),
+	(1533,234,215,'hi',1482769312,0),
+	(1534,235,215,'Created channel \"testotime\"',1482769422,1),
+	(1535,235,215,'fdsa',1482769423,0),
+	(1536,235,215,'fdsa',1482769423,0),
+	(1537,235,215,'dfsa',1482769424,0),
+	(1538,235,215,'Invited mikey to the channel',1482769437,1),
+	(1539,236,215,'Created channel \"start off with mikey\"',1482769885,1),
+	(1540,236,215,'hi',1482769894,0),
+	(1541,237,215,'Created channel \"another channel that deserve attention\"',1482770030,1),
+	(1542,238,215,'Created channel \"hello there\"',1482770058,1),
+	(1543,238,215,'hi',1482770059,0),
+	(1544,238,215,'hi',1482770060,0),
+	(1545,239,215,'Created channel \"hi\"',1482770377,1),
+	(1546,240,215,'Created channel \"hoho\"',1482770393,1),
+	(1547,241,228,'hello',1482770656,0),
+	(1548,242,5,'hey',1482771025,0),
+	(1549,242,5,'hi',1482771037,0),
+	(1550,243,228,'hey',1482771172,0),
+	(1551,243,228,'hi',1482771182,0),
+	(1552,244,211,'Created channel \"hihi\"',1482772869,1),
+	(1553,245,5,'Created channel \"hello\"',1482772921,1),
+	(1554,238,5,'Invited trulynewaccount to the channel',1482772952,1),
+	(1555,238,211,'what do',1482772969,0);
 
 /*!40000 ALTER TABLE `msg_chats` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -980,14 +1198,29 @@ VALUES
 	(131,'video',50,'video',50,205,1480923085),
 	(132,'video',51,'video',51,205,1480989488),
 	(134,'video',53,'video',53,205,1480989798),
-	(136,'url',35,'url',35,205,1480992487),
 	(139,'discussion',23,'video',53,205,1480993102),
 	(163,'comment',650,'video',53,205,1481032132),
 	(164,'comment',651,'video',53,205,1481032144),
-	(166,'comment',653,'video',50,205,1481039583),
-	(169,'comment',656,'video',53,205,1481040333),
-	(170,'comment',657,'video',53,205,1481040343),
-	(171,'video',54,'video',54,5,1481094754);
+	(171,'video',54,'video',54,5,1481094754),
+	(173,'url',37,'url',37,5,1481113860),
+	(174,'url',38,'url',38,5,1481210225),
+	(175,'video',55,'video',55,5,1481225097),
+	(188,'video',59,'video',59,5,1481275376),
+	(189,'video',60,'video',60,5,1481289222),
+	(190,'video',61,'video',61,5,1481623275),
+	(191,'url',39,'url',39,5,1481972192),
+	(192,'video',62,'video',62,5,1481975952),
+	(202,'discussion',24,'video',50,5,1482149033),
+	(230,'comment',694,'video',53,5,1482152339),
+	(231,'url',40,'url',40,5,1482412025),
+	(234,'video',65,'video',65,5,1482629072),
+	(235,'discussion',25,'video',53,5,1482647676),
+	(236,'comment',695,'video',53,5,1482647691),
+	(237,'comment',696,'video',53,5,1482647735),
+	(238,'comment',697,'video',60,5,1482718702),
+	(239,'comment',698,'video',60,5,1482718844),
+	(240,'comment',699,'video',53,5,1482719066),
+	(241,'comment',700,'video',53,5,1482719123);
 
 /*!40000 ALTER TABLE `noti_feeds` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1045,36 +1278,77 @@ CREATE TABLE `users` (
   `joinDate` bigint(11) unsigned DEFAULT NULL,
   `password` varchar(100) DEFAULT NULL,
   `lastChannelId` int(11) unsigned DEFAULT NULL,
+  `profileFirstRow` varchar(200) DEFAULT NULL,
+  `profileSecondRow` varchar(200) DEFAULT NULL,
+  `profileThirdRow` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `username`, `realName`, `class`, `email`, `userType`, `joinDate`, `password`, `lastChannelId`)
+INSERT INTO `users` (`id`, `username`, `realName`, `class`, `email`, `userType`, `joinDate`, `password`, `lastChannelId`, `profileFirstRow`, `profileSecondRow`, `profileThirdRow`)
 VALUES
-	(5,'mikey','',NULL,'twinkle.mikey@gmail.com','master',NULL,'sha1$a1b4e5d8$1$9d276b32dfd2bd1aeabbde0c7d9f4b40820f16a8',209),
-	(205,'charlie','Charlie Shin',NULL,'twinkle.teacher@gmail.com','teacher',1459947370,'sha1$bb97bb36$1$bf37ba395a3a281fe6f60dac9df35700926cc0c2',209),
-	(206,'user','mike Ser',NULL,NULL,'user',1459947427,'sha1$7d1504e0$1$853f1b45bbe54f120bdef7a7c187edd992ae8dd3',NULL),
-	(208,'testingsignup','Testing Signup',NULL,'twinkle.contact@gmail.com','teacher',1461661347,'sha1$bd66bf25$1$e7eab82f167ef1ab1fac89b357484d234d600627',211),
-	(209,'student','Studious Lee',NULL,'','user',1463215894,'sha1$eaa3076d$1$f20549e534f34cf04fe4a3c7110ab4e959f76825',216),
-	(210,'micky','Micky Kim',NULL,'twinkle.teacher@gmail.com','teacher',1463216295,'sha1$f0bf8d2f$1$1b7c86637ad83c47467ed6a532c9f3bff9c9bc2c',208),
-	(211,'trulynewaccount','New Teacher',NULL,NULL,'teacher',1463216636,'sha1$d990a2ab$1$37311f327f2bae2a1e97a5f05cd3cd8c6d0bcc5a',NULL),
-	(212,'mikey1384','Test Mikey',NULL,NULL,'teacher',1463375011,'sha1$fccb3959$1$5c769a8b5161fb4f74bfa77bdff0166991b62111',220),
-	(214,'lowercase','Case Lower',NULL,'twinkle.andrew@gmail.com','teacher',1463467858,'sha1$739999fa$1$c7f9de1822a227665dcbce493dd45b19ce196701',NULL),
-	(215,'tommy','Tommy Lee',NULL,NULL,'master',1463720113,'sha1$45181260$1$79c47e8a461e327eabf5724710beb3cfb51bf12c',214),
-	(216,'testoalgobony','Testo Algoboni',NULL,NULL,'master',1465222454,'sha1$0af2b53e$1$bd9920873fb06b463f76d32c44a942a19e5d4fe5',NULL),
-	(217,'newtoken','Token New',NULL,NULL,'user',1465399275,'sha1$a14b53a5$1$1f602cb292419192af2c5a1acb107ed233ff32e2',NULL),
-	(218,'andrew','Andrew Park',NULL,'twinkle.andrew@gmail.com','teacher',1466181267,'sha1$a0a00e01$1$7813f8108d1bfed1cf13a6a65c45bd11c5b6135d',203),
-	(219,'jimmy','Jimmy Kim',NULL,NULL,'user',1466957452,'sha1$23ccc837$1$60e45a47faef694cbd27456d8d1d21b75015280c',109),
-	(221,'jinny','Jinny Lee',NULL,NULL,'user',1469521492,'sha1$ba8569ae$1$0255f65abc764e871be9d8e432a04752bd9a7689',204),
-	(222,'helloworld','Hello World',NULL,NULL,'user',1469591201,'sha1$9738233b$1$1fe2c8b44224f41bd9377d1bf6029f7372dcef59',NULL),
-	(223,'kate','Kate Brown',NULL,'twinkle.kate@gmail.com','teacher',1469592069,'sha1$6680a2be$1$9e49f1d6c39cee4793f4bf99a92a4d0a313549fd',NULL),
-	(224,'random','Ran Dom',NULL,NULL,'user',1474323175,'sha1$e4294f00$1$e5eb5a445be946a909b349975fd2fb5d274680f1',NULL),
-	(225,'comment','Com Ment',NULL,NULL,'user',1474323219,'sha1$9477a254$1$e023f009caa41a3c2d666cd72d015d08822cbea7',221),
-	(226,'sonic','Sonic Shin',NULL,NULL,'user',1475968564,'sha1$9ea15458$1$acd6490023ff2d0e6ccefefdd7bd5639b9799fe5',NULL);
+	(5,'mikey','Mikey Langelo',NULL,'twinkle.mikey@gmail.com','master',NULL,'sha1$a1b4e5d8$1$9d276b32dfd2bd1aeabbde0c7d9f4b40820f16a8',238,'im a teacher!DFFfdfdas','<a href=\"http://www.facebook.com\" target=\"_blank\">www.facebook.com</a>??','enuf saidfdasfsfdafdasfadsf'),
+	(205,'charlie','Charlie Shin',NULL,'twinkle.teacher@gmail.com','teacher',1459947370,'sha1$bb97bb36$1$bf37ba395a3a281fe6f60dac9df35700926cc0c2',223,NULL,NULL,NULL),
+	(206,'user','mike Ser',NULL,NULL,'user',1459947427,'sha1$7d1504e0$1$853f1b45bbe54f120bdef7a7c187edd992ae8dd3',NULL,NULL,NULL,NULL),
+	(208,'testingsignup','Testing Signup',NULL,'twinkle.contact@gmail.com','teacher',1461661347,'sha1$bd66bf25$1$e7eab82f167ef1ab1fac89b357484d234d600627',211,NULL,NULL,NULL),
+	(209,'student','Studious Lee',NULL,'','user',1463215894,'sha1$eaa3076d$1$f20549e534f34cf04fe4a3c7110ab4e959f76825',2,NULL,NULL,NULL),
+	(210,'micky','Micky Kim',NULL,'twinkle.teacher@gmail.com','teacher',1463216295,'sha1$f0bf8d2f$1$1b7c86637ad83c47467ed6a532c9f3bff9c9bc2c',208,NULL,NULL,NULL),
+	(211,'trulynewaccount','New Teacher',NULL,NULL,'teacher',1463216636,'sha1$d990a2ab$1$37311f327f2bae2a1e97a5f05cd3cd8c6d0bcc5a',238,NULL,NULL,NULL),
+	(212,'mikey1384','Test Mikey',NULL,NULL,'teacher',1463375011,'sha1$fccb3959$1$5c769a8b5161fb4f74bfa77bdff0166991b62111',220,NULL,NULL,NULL),
+	(214,'lowercase','Case Lower',NULL,'twinkle.andrew@gmail.com','teacher',1463467858,'sha1$739999fa$1$c7f9de1822a227665dcbce493dd45b19ce196701',NULL,NULL,NULL,NULL),
+	(215,'tommy','Tommy Lee',NULL,NULL,'master',1463720113,'sha1$45181260$1$79c47e8a461e327eabf5724710beb3cfb51bf12c',232,NULL,NULL,NULL),
+	(216,'testoalgobony','Testo Algoboni',NULL,NULL,'master',1465222454,'sha1$0af2b53e$1$bd9920873fb06b463f76d32c44a942a19e5d4fe5',NULL,NULL,NULL,NULL),
+	(217,'newtoken','Token New',NULL,NULL,'user',1465399275,'sha1$a14b53a5$1$1f602cb292419192af2c5a1acb107ed233ff32e2',NULL,NULL,NULL,NULL),
+	(218,'andrew','Andrew Park',NULL,'twinkle.andrew@gmail.com','teacher',1466181267,'sha1$a0a00e01$1$7813f8108d1bfed1cf13a6a65c45bd11c5b6135d',2,NULL,NULL,NULL),
+	(219,'jimmy','Jimmy Kim',NULL,NULL,'user',1466957452,'sha1$23ccc837$1$60e45a47faef694cbd27456d8d1d21b75015280c',109,NULL,NULL,NULL),
+	(221,'jinny','Jinny Lee',NULL,NULL,'user',1469521492,'sha1$ba8569ae$1$0255f65abc764e871be9d8e432a04752bd9a7689',204,NULL,NULL,NULL),
+	(222,'helloworld','Hello World',NULL,NULL,'user',1469591201,'sha1$9738233b$1$1fe2c8b44224f41bd9377d1bf6029f7372dcef59',NULL,NULL,NULL,NULL),
+	(223,'kate','Kate Brown',NULL,'twinkle.kate@gmail.com','teacher',1469592069,'sha1$6680a2be$1$9e49f1d6c39cee4793f4bf99a92a4d0a313549fd',NULL,NULL,NULL,NULL),
+	(224,'random','Ran Dom',NULL,NULL,'user',1474323175,'sha1$e4294f00$1$e5eb5a445be946a909b349975fd2fb5d274680f1',NULL,NULL,NULL,NULL),
+	(225,'sillymonkeyshyejunek','Com Ment',NULL,NULL,'user',1474323219,'sha1$9477a254$1$e023f009caa41a3c2d666cd72d015d08822cbea7',221,NULL,NULL,NULL),
+	(226,'sonic','Sonic Shin',NULL,NULL,'user',1475968564,'sha1$9ea15458$1$acd6490023ff2d0e6ccefefdd7bd5639b9799fe5',NULL,NULL,NULL,NULL),
+	(227,'profilepictest','ProfilePic Test',NULL,NULL,'user',1482139724,'sha1$85fd692b$1$00a5c18bf502431a841c84c0cec0f5feb6b046c3',227,NULL,NULL,NULL),
+	(228,'perry','Perry Penguin',NULL,NULL,'user',1482770650,'sha1$796d2186$1$0615a514a2089c4237fc508a31d1e2e14e27de1b',243,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table users_photos
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `users_photos`;
+
+CREATE TABLE `users_photos` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(11) DEFAULT NULL,
+  `isProfilePic` tinyint(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOCK TABLES `users_photos` WRITE;
+/*!40000 ALTER TABLE `users_photos` DISABLE KEYS */;
+
+INSERT INTO `users_photos` (`id`, `userId`, `isProfilePic`)
+VALUES
+	(1,5,0),
+	(2,5,0),
+	(3,5,0),
+	(4,5,0),
+	(5,5,0),
+	(6,5,0),
+	(7,205,0),
+	(8,205,0),
+	(9,205,1),
+	(10,5,0),
+	(11,5,0),
+	(12,5,0),
+	(13,218,1),
+	(14,5,1);
+
+/*!40000 ALTER TABLE `users_photos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -1126,9 +1400,13 @@ VALUES
 	(622,5,'reply',1480038883,33,621,NULL,NULL),
 	(650,205,'hi!!',1481032132,53,NULL,NULL,23),
 	(651,205,'hey...',1481032144,53,650,NULL,23),
-	(653,205,'Testing comment',1481039583,50,NULL,NULL,NULL),
-	(656,205,'please work',1481040333,53,NULL,NULL,23),
-	(657,205,'yaa!',1481040343,53,NULL,NULL,NULL);
+	(694,5,'hello!',1482152339,53,NULL,NULL,23),
+	(695,5,'maybe',1482647691,53,NULL,NULL,25),
+	(696,5,'what?',1482647735,53,NULL,NULL,23),
+	(697,5,'test',1482718702,60,NULL,NULL,NULL),
+	(698,5,'test1',1482718844,60,697,NULL,NULL),
+	(699,5,'test',1482719066,53,650,651,23),
+	(700,5,'test',1482719123,53,696,NULL,23);
 
 /*!40000 ALTER TABLE `vq_comments` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1194,7 +1472,12 @@ VALUES
 	(218,610,5),
 	(221,622,5),
 	(222,621,5),
-	(223,625,205);
+	(223,625,205),
+	(224,607,5),
+	(225,697,5),
+	(226,698,5),
+	(228,696,5),
+	(229,700,5);
 
 /*!40000 ALTER TABLE `vq_commentupvotes` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1388,7 +1671,10 @@ VALUES
 	(235,26,205),
 	(236,31,5),
 	(240,33,205),
-	(243,42,205);
+	(243,42,205),
+	(244,53,5),
+	(245,60,5),
+	(246,60,205);
 
 /*!40000 ALTER TABLE `vq_video_likes` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1483,7 +1769,53 @@ VALUES
 	(88,47,205,1480833972),
 	(89,48,205,1480867329),
 	(90,50,205,1480952089),
-	(91,54,5,1481094823);
+	(91,54,5,1481094823),
+	(92,55,5,1481225129),
+	(93,61,5,1481646502),
+	(94,53,5,1481708944),
+	(95,50,5,1481708952),
+	(96,62,5,1481987429),
+	(97,47,5,1482512903),
+	(99,53,5,1482675029),
+	(100,53,5,1482675050),
+	(101,53,5,1482675326),
+	(102,53,5,1482675764),
+	(103,53,5,1482675766),
+	(104,33,5,1482675837),
+	(105,33,5,1482675840),
+	(106,31,5,1482675867),
+	(107,31,5,1482675868),
+	(108,53,5,1482675950),
+	(109,65,5,1482676204),
+	(110,53,5,1482676214),
+	(111,65,5,1482680183),
+	(112,53,5,1482680378),
+	(113,53,5,1482680445),
+	(114,53,5,1482680457),
+	(115,65,5,1482680465),
+	(116,50,5,1482680481),
+	(117,50,5,1482680577),
+	(118,50,5,1482680989),
+	(119,50,5,1482681035),
+	(120,53,5,1482681066),
+	(121,42,5,1482681084),
+	(122,65,5,1482681370),
+	(123,53,5,1482683776),
+	(124,53,5,1482683782),
+	(125,53,5,1482683789),
+	(126,33,5,1482710260),
+	(127,35,5,1482710299),
+	(128,36,5,1482710307),
+	(129,38,5,1482710325),
+	(130,40,5,1482710592),
+	(131,41,5,1482710599),
+	(132,53,5,1482710729),
+	(133,65,5,1482710841),
+	(134,50,5,1482710892),
+	(135,50,5,1482710990),
+	(136,65,5,1482710996),
+	(137,53,5,1482732240),
+	(138,65,5,1482732281);
 
 /*!40000 ALTER TABLE `vq_video_views` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1551,7 +1883,13 @@ VALUES
 	(50,'Teenager brains','This is a brainy description',1,'hiduiTq1ei8',205,1480923085),
 	(51,'BloodBorne','No description',7,'xksTdvvtN2w',205,1480989488),
 	(53,'Breath of the wild lets play video','No description',7,'Na1cIOmfBlU',205,1480989798),
-	(54,'Breath of the wild towns and villages','No description',5,'8zWan118_CM',5,1481094754);
+	(54,'Breath of the wild towns and villages','No description',5,'8zWan118_CM',5,1481094754),
+	(55,'Socrates','video about the philosopher',2,'fLJBzhcSWTk',5,1481225097),
+	(59,'Awesome ai','No description',3,'dcZvhP-IqY4',5,1481275376),
+	(60,'This guys a racist?','No description',6,'QGX2mJ6IbS0',5,1481289222),
+	(61,'Louis CK','No description',7,'jNtTW1juVtY',5,1481623275),
+	(62,'Dominant vs. Recessive Alleles: Bite Sci-zed','No description',1,'Zf2hnFhyJFI',5,1481975952),
+	(65,'test','No description',2,'Ym6whrAw8wU',5,1482629072);
 
 /*!40000 ALTER TABLE `vq_videos` ENABLE KEYS */;
 UNLOCK TABLES;
