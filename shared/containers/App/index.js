@@ -65,7 +65,7 @@ export default class App extends Component {
         display = 'none';
       } else {
         title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
-        display = 'block';
+        display = 'inline';
       }
       document.title = title;
       for (let i = 0; i < elements.length; i++)
@@ -80,7 +80,7 @@ export default class App extends Component {
         display = 'none';
       } else {
         title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
-        display = 'block';
+        display = 'inline';
       }
       document.title = title;
       for (let i = 0; i < elements.length; i++)
