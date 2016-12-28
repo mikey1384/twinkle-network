@@ -55,27 +55,36 @@ export default class App extends Component {
 
   componentDidUpdate(prevProps) {
     const {turnChatOff} = this.props;
+    let elements = document.documentElement.childNodes;
     if (this.props.children !== prevProps.children) turnChatOff()
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
       const {chatMode, chatNumUnreads} = this.props;
-      let title = '';
+      let title = '', display = '';
       if (!!chatMode) {
-        title = "Twinkle Chat"
+        title = "Twinkle Chat";
+        display = 'none';
       } else {
         title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
+        display = 'block';
       }
       document.title = title;
+      for (let i = 0; i < elements.length; i++)
+        if (elements[i].tagName === "GRAMMARLY-CARD") elements[i].style.display = display;
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
       const {chatMode, chatNumUnreads} = this.props;
-      let title = '';
+      let title = '', display = '';
       if (!!chatMode) {
-        title = "Twinkle Chat"
+        title = "Twinkle Chat";
+        display = 'none';
       } else {
         title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
+        display = 'block';
       }
       document.title = title;
+      for (let i = 0; i < elements.length; i++)
+        if (elements[i].tagName === "GRAMMARLY-CARD") elements[i].style.display = display;
     }
   }
 
