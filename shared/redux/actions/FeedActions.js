@@ -317,3 +317,18 @@ dispatch => {
     }
   )
 }
+
+export const uploadTargetContentComment = (params, panelId) =>
+dispatch => request.post(`${API_URL}/targetContentComment`, params, auth())
+.then(
+  response => dispatch({
+    type: 'UPLOAD_TC_COMMENT',
+    data: response.data,
+    panelId
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)

@@ -23,10 +23,10 @@ export default class InputArea extends Component {
 
   render() {
     const {text} = this.state;
-    const {placeholder, rows, autoFocus} = this.props;
+    const {placeholder, rows, autoFocus, formGroupStyle} = this.props;
     return (
       <div className="container-fluid">
-        <div className="row form-group">
+        <div className="row form-group" style={!!formGroupStyle ? formGroupStyle : null}>
           <Textarea
             autoFocus={autoFocus}
             ref={ref => this.InputArea = ref}

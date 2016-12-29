@@ -83,9 +83,11 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.reduce((resultingArray, feed) => {
+          let comments = feed.targetContentComments || [];
           if (feed.contentId === action.commentId || feed.commentId === action.commentId || feed.replyId === action.commentId) return resultingArray;
           return resultingArray.concat([{
             ...feed,
+            targetContentComments: feed.targetContentComments.filter(comment => comment.id !== action.commentId),
             childComments: feed.childComments.reduce((resultingArray, childComment) => {
               if (childComment.id === action.commentId) return resultingArray;
               return resultingArray.concat([{
@@ -117,6 +119,10 @@ export default function FeedReducer(state = defaultState, action) {
           }
           return {
             ...feed,
+            targetContentComments: feed.targetContentComments.map(comment => ({
+              ...comment,
+              content: comment.id === action.data.commentId ? editedComment : comment.content
+            })),
             childComments: feed.childComments.map(childComment => {
               if (childComment.id === action.data.commentId) {
                 childComment.content = editedComment
@@ -267,6 +273,21 @@ export default function FeedReducer(state = defaultState, action) {
           };
         }),
         newFeeds: state.newFeeds.concat([reply])
+      }
+    case 'UPLOAD_TC_COMMENT':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          let comments = [];
+          if (feed.id === action.panelId) {
+            let prevComments = feed.targetContentComments || [];
+            comments = prevComments.concat([action.data])
+          }
+          return {
+            ...feed,
+            targetContentComments: comments
+          }
+        })
       }
     default:
       return state;

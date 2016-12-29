@@ -42,6 +42,7 @@ router.get('/', (req, res) => {
       comment3.userId AS targetReplyUploaderId,
       comment3.content AS targetReply,
       user3.username AS targetReplyUploaderName,
+      comment1.discussionId AS discussionId,
       discussion.title AS discussionTitle,
       discussion.description AS discussionDescription,
       NULL AS videoViews,
@@ -92,6 +93,7 @@ router.get('/', (req, res) => {
       NULL AS targetReplyUploaderId,
       NULL AS targetReply,
       NULL AS targetReplyUploaderName,
+      NULL AS discussionId,
       NULL AS discussionTitle,
       NULL AS discussionDescription,
       (SELECT COUNT(*) FROM vq_video_views WHERE videoId = feed.contentId) AS videoViews,
@@ -130,6 +132,7 @@ router.get('/', (req, res) => {
       NULL AS targetReplyUploaderId,
       NULL AS targetReply,
       NULL AS targetReplyUploaderName,
+      NULL AS discussionId,
       NULL AS discussionTitle,
       NULL AS discussionDescription,
       NULL AS videoViews,
@@ -168,6 +171,7 @@ router.get('/', (req, res) => {
       NULL AS targetReplyUploaderId,
       NULL AS targetReply,
       NULL AS targetReplyUploaderName,
+      NULL AS discussionId,
       NULL AS discussionTitle,
       NULL AS discussionDescription,
       NULL AS videoViews,
@@ -389,6 +393,26 @@ router.post('/content', requireAuth, (req, res) => {
       contentLikers: [],
       targetContentLikers: []
     })
+  })
+})
+
+router.post('/targetContentComment', requireAuth, (req, res) => {
+  const {user, body} = req;
+  const query = `INSERT INTO vq_comments SET ?`;
+  const post = Object.assign({}, body, {
+    userId: user.id,
+    timeStamp: Math.floor(Date.now()/1000)
+  })
+  pool.query(query, post, (err, result) => {
+    if (err) {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+    res.send(Object.assign({}, post, {
+      id: result.insertId,
+      username: user.username,
+      profilePicId: user.profilePicId
+    }))
   })
 })
 

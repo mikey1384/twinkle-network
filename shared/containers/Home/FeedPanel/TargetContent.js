@@ -1,33 +1,51 @@
 import React, {Component} from 'react';
 import UserLink from '../UserLink';
+import Button from 'components/Button';
 import LikeButton from 'components/LikeButton';
 import Likers from 'components/Likers';
 import {connect} from 'react-redux';
-import {likeTargetVideoCommentAsync} from 'redux/actions/FeedActions';
+import {
+  feedVideoCommentDeleteAsync,
+  feedVideoCommentEditAsync,
+  likeTargetVideoCommentAsync,
+  uploadTargetContentComment
+} from 'redux/actions/FeedActions';
 import UserListModal from 'components/Modals/UserListModal';
+import InputArea from 'components/InputArea';
+import TargetContentComment from './TargetContentComment';
 import {Color} from 'constants/css'
 
 
 @connect(
-  null,
+  state => ({
+    username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId
+  }),
   {
-    onLikeClick: likeTargetVideoCommentAsync
+    onDeleteComment: feedVideoCommentDeleteAsync,
+    onEditComment: feedVideoCommentEditAsync,
+    onLikeClick: likeTargetVideoCommentAsync,
+    uploadComment: uploadTargetContentComment
   }
 )
 export default class TargetContent extends Component {
   constructor() {
     super()
     this.state = {
-      userListModalShown: false
+      userListModalShown: false,
+      clickListenerState: false,
+      replyInputShown: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
+    this.onReplyClick = this.onReplyClick.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   render() {
-    const {uploader, title, content, contentAvailable,
-      myId, likes = [], isReplyContent, isDiscussionTitle
+    const {uploader, isDiscussion, title, content, contentAvailable, username, comments,
+      myId, profilePicId, likes = [], replyId, discussionId, onDeleteComment, onEditComment
     } = this.props;
-    const {userListModalShown} = this.state;
+    const {userListModalShown, replyInputShown, clickListenerState} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId == myId) userLikedThis = true;
@@ -42,9 +60,9 @@ export default class TargetContent extends Component {
         }}
       >
         {!!contentAvailable ?
-          (!isDiscussionTitle ?
+          (!isDiscussion ?
             <div>
-              <UserLink user={uploader} /> {isReplyContent ? 'wrote' : 'commented'}:
+              <UserLink user={uploader} /> {!!replyId ? 'wrote' : 'commented'}:
               <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
               <LikeButton
                 style={{marginTop: '1em'}}
@@ -52,6 +70,14 @@ export default class TargetContent extends Component {
                 liked={userLikedThis}
                 small
               />
+              <Button
+                style={{marginTop: '1em', marginLeft: '0.5em'}}
+                className="btn btn-warning btn-sm"
+                onClick={this.onReplyClick}
+              >
+                <span className="glyphicon glyphicon-comment"></span>&nbsp;
+                Reply
+              </Button>
               <Likers
                 style={{
                   fontSize: '11px',
@@ -63,6 +89,35 @@ export default class TargetContent extends Component {
                 likes={likes}
                 onLinkClick={() => this.setState({userListModalShown: true})}
               />
+              {replyInputShown &&
+                <div className="media" style={{marginTop: '0px', lineHeight: '0px'}}>
+                  <div className="media-body">
+                    <InputArea
+                      formGroupStyle={{marginBottom: '0px'}}
+                      clickListenerState={clickListenerState}
+                      autoFocus
+                      onSubmit={this.onSubmit}
+                      rows={4}
+                      placeholder={`Write a reply...`}
+                    />
+                  </div>
+                </div>
+              }
+              {(comments.length > 0) &&
+                <ul className="media-list" style={{marginTop: '0.3em', marginBottom: '0px', lineHeight: '0px'}}>
+                  {comments.map(comment =>
+                    <TargetContentComment
+                      key={comment.id}
+                      comment={comment}
+                      username={username}
+                      userId={myId}
+                      profilePicId={profilePicId}
+                      onDelete={onDeleteComment}
+                      onEditDone={onEditComment}
+                    />
+                  )}
+                </ul>
+              }
               {userListModalShown &&
                 <UserListModal
                   onHide={() => this.setState({userListModalShown: false})}
@@ -99,5 +154,16 @@ export default class TargetContent extends Component {
   onLikeClick() {
     const {contentId} = this.props;
     this.props.onLikeClick(contentId);
+  }
+
+  onReplyClick() {
+    const {replyInputShown, clickListenerState} = this.state;
+    if (!replyInputShown) return this.setState({replyInputShown: true});
+    this.setState({clickListenerState: !clickListenerState})
+  }
+
+  onSubmit(content) {
+    const {replyId = null, commentId, parentContentId, discussionId = null, uploadComment, panelId} = this.props;
+    uploadComment({videoId: parentContentId, replyId, commentId, discussionId, content}, panelId)
   }
 }
