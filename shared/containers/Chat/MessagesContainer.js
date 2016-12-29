@@ -184,13 +184,16 @@ export default class MessagesContainer extends Component {
               wordWrap: 'break-word'
             }}
           >
-            <h5 className="media-heading">
+            <h5 className="media-heading" style={{position: 'absolute'}}>
               <UsernameText
                 user={{
                   id: message.userId,
                   name: message.username || '(Deleted)'
-                }} /> <small>{moment.unix(message.timeStamp).format("LLL")}</small></h5>
-            <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>
+                }} /> <small>{moment.unix(message.timeStamp).format("LLL")}</small>
+            </h5>
+            <div style={{paddingTop: '1.5em'}}>
+              <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>
+            </div>
           </div>
         </div>
       )
