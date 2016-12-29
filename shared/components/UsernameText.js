@@ -22,7 +22,7 @@ export default class UsernameText extends Component {
 
   render() {
     const {menuShown} = this.state;
-    const {user, color} = this.props;
+    const {user, userId, color} = this.props;
     return (
       <span
         className="dropdown"
@@ -48,9 +48,11 @@ export default class UsernameText extends Component {
               <a href={`/${user.name}`} target="_blank">
                 Profile
               </a>
-              <a onClick={this.onLinkClick}>
-                Message
-              </a>
+              {user.id !== userId &&
+                <a onClick={this.onLinkClick}>
+                  Message
+                </a>
+              }
             </li>
           </ul>
         }
@@ -59,8 +61,8 @@ export default class UsernameText extends Component {
   }
 
   onMouseEnter() {
-    const {userId, user} = this.props;
-    if (user.name !== '(Deleted)' && user.name !== null && user.id !== userId) {
+    const {user} = this.props;
+    if (user.name !== '(Deleted)' && user.name !== null) {
       this.setState({menuShown: true})
     }
   }
