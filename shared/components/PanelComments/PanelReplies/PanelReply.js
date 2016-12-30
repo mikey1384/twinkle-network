@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
-import EditTextArea from '../EditTextArea';
+import EditTextArea from 'components/EditTextArea';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
@@ -86,6 +86,7 @@ export default class PanelReply extends Component {
             }
             {onEdit ?
               <EditTextArea
+                autoFocus
                 text={cleanStringWithURL(reply.content)}
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}

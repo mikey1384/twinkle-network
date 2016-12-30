@@ -15,7 +15,7 @@ export default class EditTextArea extends Component {
 
   render() {
     const {editedText} = this.state;
-    const {autoFocus, placeholder} = this.props;
+    const {autoFocus = false, placeholder = "Enter text"} = this.props;
     return (
       <div>
         <Textarea

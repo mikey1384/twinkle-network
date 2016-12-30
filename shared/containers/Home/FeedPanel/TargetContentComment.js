@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/UsernameText';
-import EditTextArea from './EditTextArea';
+import EditTextArea from 'components/EditTextArea';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import {timeSince} from 'helpers/timeStampHelpers';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
@@ -60,6 +60,7 @@ export default class TargetContentComment extends Component {
           </h5>
           {onEdit ?
             <EditTextArea
+              autoFocus
               text={cleanStringWithURL(comment.content)}
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}

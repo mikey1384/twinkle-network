@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
-import EditTextArea from '../EditTextArea';
+import EditTextArea from 'components/EditTextArea';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import Likers from 'components/Likers';
 import {Color} from 'constants/css';

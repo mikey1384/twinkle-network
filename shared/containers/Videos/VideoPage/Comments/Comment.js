@@ -7,7 +7,7 @@ import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
 import ReplyInputArea from './Replies/ReplyInputArea';
 import Replies from './Replies';
-import EditTextArea from './EditTextArea';
+import EditTextArea from 'components/EditTextArea';
 import UsernameText from 'components/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';

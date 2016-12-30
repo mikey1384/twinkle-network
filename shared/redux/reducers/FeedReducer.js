@@ -106,6 +106,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
+          let targetContentComments = feed.targetContentComments || [];
           if (feed.type === 'comment') {
             if (feed.contentId === action.data.commentId) {
               feed.content = editedComment
@@ -119,7 +120,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
           return {
             ...feed,
-            targetContentComments: feed.targetContentComments.map(comment => ({
+            targetContentComments: targetContentComments.map(comment => ({
               ...comment,
               content: comment.id === action.data.commentId ? editedComment : comment.content
             })),

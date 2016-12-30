@@ -9,7 +9,7 @@ import {Color} from 'constants/css';
 import UserListModal from 'components/Modals/UserListModal';
 import PanelReplies from './PanelReplies';
 import ReplyInputArea from './PanelReplies/ReplyInputArea';
-import EditTextArea from './EditTextArea';
+import EditTextArea from 'components/EditTextArea';
 import UsernameText from 'components/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -99,6 +99,7 @@ export default class PanelComment extends Component {
           }
           {onEdit ?
             <EditTextArea
+              autoFocus
               text={cleanStringWithURL(comment.content)}
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}
