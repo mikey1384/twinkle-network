@@ -152,8 +152,8 @@ export default class TargetContent extends Component {
   }
 
   onLikeClick() {
-    const {contentId} = this.props;
-    this.props.onLikeClick(contentId);
+    const {replyId, commentId} = this.props;
+    this.props.onLikeClick(replyId || commentId);
   }
 
   onReplyClick() {
