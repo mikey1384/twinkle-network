@@ -51,8 +51,7 @@ export default class Header extends Component {
     super()
     this.state = {
       notificationsMenuShown: false,
-      selectedTab: props.location ? props.location : 'home',
-      logoColor: Color.backgroundGray
+      selectedTab: props.location ? props.location : 'home'
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
@@ -78,14 +77,6 @@ export default class Header extends Component {
       })
       socket.on('disconnect', () => {
         turnChatOff()
-      })
-    }
-  }
-
-  componentDidMount() {
-    if (ExecutionEnvironment.canUseDOM) {
-      this.setState({
-        logoColor: '#' + Math.floor(Math.random()*16777215).toString(16)
       })
     }
   }
@@ -143,7 +134,7 @@ export default class Header extends Component {
       fetchFeedsAsync
     } = this.props;
 
-    const {notificationsMenuShown, selectedTab, logoColor} = this.state;
+    const {notificationsMenuShown, selectedTab} = this.state;
     let staticTopOn;
     let fixedTopOn;
     if (staticTop) {
@@ -161,7 +152,7 @@ export default class Header extends Component {
             style={{
               cursor: 'pointer',
               fontWeight: 'bold',
-              color: logoColor
+              color: Color.logoColor
             }}
             to="/"
             onClick={this.onLogoClick}

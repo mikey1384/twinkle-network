@@ -5,6 +5,7 @@ export const Color = {
   backgroundGray: '#f1f3f6',
   darkGray: '#7c7c7c',
   lightGray: '#fbfbfb',
+  logoColor: 'rgb(16, 117, 203)',
   green: '#28b62c',
   orange: '#f0ad4e',
   pink: '#fcb296',
