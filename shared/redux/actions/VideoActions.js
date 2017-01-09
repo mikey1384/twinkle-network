@@ -289,8 +289,8 @@ request.get(`${API_URL}/debates/comments?discussionId=${discussionId}&lastCommen
   }
 )
 
-export const loadMoreDebates = (videoId, lastdiscussionId) => dispatch =>
-request.get(`${API_URL}/debates?videoId=${videoId}&lastdiscussionId=${lastdiscussionId}`)
+export const loadMoreDebates = (videoId, lastDiscussionId) => dispatch =>
+request.get(`${API_URL}/debates?videoId=${videoId}&lastDiscussionId=${lastDiscussionId}`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_VIDEO_DEBATES',
