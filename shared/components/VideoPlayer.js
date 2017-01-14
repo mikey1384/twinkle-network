@@ -29,28 +29,27 @@ export default class VideoPlayer extends Component {
         style={{...style, cursor: !playing && 'pointer'}}
         onClick={() => {if (!playing) this.setState({playing: true})}}
       >
-        {!autoplay && !small && <div>
+        {!autoplay && !small && !playing && <div>
             <img
               className="embed-responsive-item"
               src={`https://img.youtube.com/vi/${videoCode}/0.jpg`}
             />
-            {!!playing ?
-              <Loading
-                style={{
-                  color: Color.blue,
-                  fontSize: '3em',
-                  position: 'absolute',
-                	display: 'block',
-                	height: '40px',
-                	width: '40px',
-                	top: '50%',
-                	left: '50%',
-                	margin: '-20px 0 0 -20px'
-                }}
-              /> :
-              <a></a>
-            }
           </div>
+        }
+        {!!playing ?
+          <Loading
+            style={{
+              color: Color.blue,
+              fontSize: '3em',
+              position: 'absolute',
+              display: 'block',
+              height: '40px',
+              width: '40px',
+              top: '50%',
+              left: '50%',
+              margin: '-20px 0 0 -20px'
+            }}
+          /> : null
         }
         {(!!playing || !!autoplay) &&
           <YouTube
