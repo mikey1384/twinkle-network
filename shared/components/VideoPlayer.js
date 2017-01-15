@@ -49,7 +49,7 @@ export default class VideoPlayer extends Component {
               left: '50%',
               margin: '-20px 0 0 -20px'
             }}
-          /> : null
+          /> : <a></a>
         }
         {(!!playing || !!autoplay) &&
           <YouTube
