@@ -14,7 +14,7 @@ export default class TitleDescriptionForm extends Component {
   }
 
   render() {
-    const {autoFocus, onSubmit, rows, titlePlaceholder, descriptionPlaceholder} = this.props;
+    const {autoFocus, rows, titlePlaceholder, descriptionPlaceholder} = this.props;
     const {title, description} = this.state;
     return (
       <form onSubmit={this.onSubmit}>

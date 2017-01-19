@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'components/Button';
 import Likers from 'components/Likers';
 import LikeButton from 'components/LikeButton';
 

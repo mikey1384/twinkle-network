@@ -59,9 +59,8 @@ export default class DebatePanel extends Component {
 
   render() {
     const {
-      id, title, description, username, userId, videoId, timeStamp, numComments, myId,
-      comments, loadMoreDebateCommentsButton, onSubmit, onLikeClick, onDelete, onEditDone,
-      onReplySubmit, onLoadMoreReplies
+      id, title, description, username, userId, timeStamp, numComments, myId,
+      comments, loadMoreDebateCommentsButton, onLikeClick, onDelete, onEditDone, onLoadMoreReplies
     } = this.props;
     const {expanded, onEdit, confirmModalShown, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
     const userIsOwner = myId === userId;

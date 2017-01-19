@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import CommentInputArea from './CommentInputArea';
 import PanelComment from './PanelComment';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import Button from 'components/Button';
 import {scrollElementToCenter} from 'helpers/domHelpers';
 
@@ -59,7 +57,7 @@ export default class PanelComments extends Component {
   }
 
   renderComments() {
-    const {comments, userId, parent, contentId, commentActions, type} = this.props;
+    const {comments, userId, parent, commentActions, type} = this.props;
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
     return comments.map((comment, index) => {
       return (

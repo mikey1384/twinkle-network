@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import MessagesContainer from './MessagesContainer';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import * as ChatActions from 'redux/actions/ChatActions';
 import ChatInput from './ChatInput';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
@@ -28,7 +27,6 @@ const channelName = (channels, currentChannel) => {
   state => ({
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
     currentChannel: state.ChatReducer.currentChannel,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
@@ -196,14 +194,13 @@ export default class Chat extends Component {
   }
 
   render() {
-    const {channels, currentChannel, userId, profilePicId, searchResult} = this.props;
+    const {channels, currentChannel, userId} = this.props;
     const {
       createNewChannelModalShown,
       inviteUsersModalShown,
       userListModalShown,
       editTitleModalShown,
       myChannels,
-      searchText,
       onTitleHover
     } = this.state;
 
@@ -422,7 +419,7 @@ export default class Chat extends Component {
               >
                 <span>
                 {lastMessageSender && lastMessage ?
-                  `${lastMessageSender.id == userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : '\u00a0'
+                  `${lastMessageSender.id === userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : '\u00a0'
                 }
                 </span>
               </span>

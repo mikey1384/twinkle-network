@@ -24,6 +24,7 @@ export default function VideoThumb({video, selected, onSelect, onDeselect}) {
           }}
         >
           <img
+            alt="Thumbnail"
             src={`http://img.youtube.com/vi/${video.videoCode}/0.jpg`}
             style={{
               width: '100%',

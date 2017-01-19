@@ -81,12 +81,9 @@ export function formatChildren(children) {
 }
 
 export function setInitialDimensions() {
-  var self = this, slideWidth, frameHeight, slideHeight;
+  var self = this, slideWidth;
 
   slideWidth = this.props.initialSlideWidth || 0;
-  slideHeight = this.props.initialSlideHeight ? this.props.initialSlideHeight * this.props.slidesToShow : 0;
-
-  frameHeight = slideHeight + ((this.props.cellSpacing / 2) * (this.props.slidesToShow - 1));
 
   this.setState({
     frameWidth: '100%',
@@ -104,29 +101,23 @@ export function setDimensions() {
     slidesToScroll,
     firstSlide,
     frame,
-    frameWidth,
-    frameHeight,
-    slideHeight;
+    frameWidth;
 
   slidesToScroll = this.props.slidesToScroll;
   frame = this.refs.frame;
   firstSlide = frame.childNodes[0].childNodes[0];
   if (firstSlide) {
     firstSlide.style.height = 'auto';
-    slideHeight = firstSlide.offsetHeight * this.props.slidesToShow;
-  } else {
-    slideHeight = 100;
   }
 
   if (typeof this.props.slideWidth !== 'number') {
-    slideWidth = parseInt(this.props.slideWidth);
+    slideWidth = parseInt(this.props.slideWidth, 10);
   } else {
     slideWidth = (frame.offsetWidth / this.props.slidesToShow) * this.props.slideWidth;
   }
 
   slideWidth -= this.props.cellSpacing * ((100 - (100 / this.props.slidesToShow)) / 100);
 
-  frameHeight = slideHeight + ((this.props.cellSpacing / 2) * (this.props.slidesToShow - 1));
   frameWidth = frame.offsetWidth;
 
   if (this.props.slidesToScroll === 'auto') {

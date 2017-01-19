@@ -2,17 +2,19 @@ import React from 'react';
 import QuestionsListItem from './QuestionsListItem';
 
 export default function QuestionsListGroup({questions, questionIds, style, onMove}) {
-  const listItems = questionIds.map(questionId => {
+  const listItems = questionIds.reduce((result, questionId) => {
     for (let i = 0; i < questions.length; i ++) {
       if (questions[i].id === questionId) {
-        return {
+        result.push({
           label: questions[i].title,
           id: questionId,
           deleted: questions[i].deleted
-        }
+        })
       }
     }
-  })
+    return result;
+  }, [])
+  
   return (
     <ul
       className="list-group unselectable"

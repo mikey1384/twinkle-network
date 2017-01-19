@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import {timeSince} from 'helpers/timeStampHelpers';
 import {cleanStringWithURL} from 'helpers/stringHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
@@ -45,7 +44,7 @@ export default class Comment extends Component {
   render() {
     const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state;
     const {comment, userId, commentId, videoId,
-      onEditDone, onLoadMoreReplies, onDelete, deleteCallback, index
+      onEditDone, onLoadMoreReplies
     } = this.props;
     const userIsOwner = comment.userId === userId;
     let userLikedThis = false;

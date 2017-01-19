@@ -6,41 +6,27 @@ import prodCfg from './webpack.prod.config.js';
 
 Object.assign = assign;
 
-const BABEL_QUERY = {
-  presets: ['react', 'es2015'],
-  plugins: [
-    ['transform-object-rest-spread'],
-    ['transform-class-properties'],
-    ['transform-decorators-legacy'],
-    [
-      'react-transform',
-      {
-        transforms: [
-          {
-            transform: 'react-transform-hmr',
-            imports:    ['react'],
-            locals:     ['module']
-          }
-        ]
-      }
-    ]
-  ]
-}
-
 export default function(app) {
   const config = Object.assign(prodCfg, {
-    devtool: 'inline-source-map',
+    devtool: 'cheap-module-source-map',
     entry:   [
       'webpack-hot-middleware/client',
       './entry/client'
     ],
     module: {
+      preLoaders: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loader: 'eslint'
+        }
+      ],
       loaders: [
         {
           test: /\.js$/,
           exclude: /node_modules/,
           loader: 'babel',
-          query: BABEL_QUERY
+          query: {cacheDirectory: true}
         }
       ]
     },
@@ -48,7 +34,7 @@ export default function(app) {
       new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoErrorsPlugin()
-    ],
+    ]
   });
 
   const compiler = webpack(config);

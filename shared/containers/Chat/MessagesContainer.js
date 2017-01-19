@@ -41,9 +41,6 @@ export default class MessagesContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const content = ReactDOM.findDOMNode(this.refs.content);
-    const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
-
     const switchedChannel = prevProps.currentChannelId !== this.props.currentChannelId;
     const newMessageArrived = this.props.messages.length !== 0 && prevProps.messages !== this.props.messages;
     const loadedPrevMessage =

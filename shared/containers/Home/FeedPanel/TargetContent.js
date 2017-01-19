@@ -43,12 +43,12 @@ export default class TargetContent extends Component {
 
   render() {
     const {uploader, isDiscussion, title, content, contentAvailable, username, comments,
-      myId, profilePicId, likes = [], replyId, discussionId, onDeleteComment, onEditComment
+      myId, profilePicId, likes = [], replyId, onDeleteComment, onEditComment
     } = this.props;
     const {userListModalShown, replyInputShown, clickListenerState} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId == myId) userLikedThis = true;
+      if (likes[i].userId === myId) userLikedThis = true;
     }
     return (
       <div

@@ -4,7 +4,6 @@ import {
   editVideoPageAsync,
   deleteVideoAsync,
   uploadQuestionsAsync,
-  uploadVideoReplyAsync,
   likeVideoAsync,
   resetVideoPage,
   loadVideoPageAsync
@@ -23,7 +22,6 @@ import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import UserListModal from 'components/Modals/UserListModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import {bindActionCreators} from 'redux';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 import ExecutionEnvironment from 'exenv';
 
@@ -76,8 +74,7 @@ export default class VideoPage extends Component {
   render() {
     let {
       uploaderId, uploaderName, description, userId, videoUnavailable, videoLoading,
-      videoId, videoCode, title, timeStamp, questions = [], likes = [], comments,
-      videoViews, noComments
+      videoId, videoCode, title, timeStamp, questions = [], likes = [], videoViews
     } = this.props;
     const {
       watchTabActive,

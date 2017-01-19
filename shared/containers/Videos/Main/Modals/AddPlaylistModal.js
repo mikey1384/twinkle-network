@@ -194,7 +194,7 @@ export default class AddPlaylistModal extends Component {
   }
 
   handleFinish() {
-    const {uploadPlaylist, subscribe} = this.props;
+    const {uploadPlaylist} = this.props;
     const {title, description, selectedVideos} = this.state;
     uploadPlaylist({title, description, selectedVideos});
   }

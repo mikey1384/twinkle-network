@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Textarea from 'react-textarea-autosize';
-import {reduxForm, Field} from 'redux-form';
 import {Modal} from 'react-bootstrap';
 import Button from 'components/Button';
 import SearchInput from 'components/SearchInput';
@@ -45,7 +44,7 @@ export default class AddVideoForm extends Component {
   }
 
   render () {
-    const {handleSubmit, categorySearchResult} = this.props;
+    const {categorySearchResult} = this.props;
     const {urlError, form, selectedCategoryLabel, categorySearchText} = this.state;
     const {url, title} = form;
     return (
@@ -131,7 +130,7 @@ export default class AddVideoForm extends Component {
             className="btn btn-primary"
             type="submit"
             onClick={this.onSubmit}
-            disabled={!selectedCategoryLabel || !url || !title}
+            disabled={!selectedCategoryLabel || !url || !title || stringIsEmpty(title)}
           >
             Add
           </Button>
@@ -141,9 +140,9 @@ export default class AddVideoForm extends Component {
   }
 
   onSubmit(event) {
-    const {uploadContent, uploadVideo} = this.props;
+    const {uploadVideo} = this.props;
     const {form} = this.state;
-    const {url, checkedVideo} = form;
+    const {url} = form;
     let urlError;
     event.preventDefault()
 

@@ -3,7 +3,6 @@ import {animateSlide} from './animations';
 import {setExternalData} from './styles';
 
 export function goToSlide(index) {
-  var self = this;
   if (index >= React.Children.count(this.props.children) || index < 0) {
     return;
   }

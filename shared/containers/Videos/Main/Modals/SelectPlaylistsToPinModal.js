@@ -102,27 +102,28 @@ export default class SelectPlaylistsToPinModal extends Component {
                 inputType="checkbox"
                 onSelect={this.onDeselect}
                 listItems={
-                  selectedPlaylists.map(playlistId => {
+                  selectedPlaylists.reduce((result, playlistId) => {
                     let label = '';
                     for (let i = 0; i < pinnedPlaylists.length; i++) {
-                      if(pinnedPlaylists[i].id == playlistId) {
+                      if(pinnedPlaylists[i].id === playlistId) {
                         label = pinnedPlaylists[i].title;
-                        return {
+                        return result.concat([{
                           label,
                           checked: true
-                        }
+                        }])
                       }
                     }
                     for (let i = 0; i < playlistsToPin.length; i++) {
-                      if(playlistsToPin[i].id == playlistId) {
+                      if(playlistsToPin[i].id === playlistId) {
                         label = playlistsToPin[i].title;
-                        return {
+                        return result.concat([{
                           label,
                           checked: true
-                        }
+                        }])
                       }
                     }
-                  })
+                    return result;
+                  }, [])
                 }
               />
               {selectedPlaylists.length === 0 &&
@@ -159,12 +160,12 @@ export default class SelectPlaylistsToPinModal extends Component {
   onSelect(index) {
     let playlistId = this.props.playlistsToPin[index].id;
     let newSelectedPlaylists;
-    if (this.state.selectedPlaylists.indexOf(playlistId) == -1) {
+    if (this.state.selectedPlaylists.indexOf(playlistId) === -1) {
       newSelectedPlaylists = [playlistId].concat(this.state.selectedPlaylists);
     }
     else {
       newSelectedPlaylists = this.state.selectedPlaylists.filter(id => {
-        return id != playlistId;
+        return id !== playlistId;
       })
     }
     this.setState({selectedPlaylists: newSelectedPlaylists});

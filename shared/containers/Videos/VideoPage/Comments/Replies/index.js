@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import Reply from './Reply';
 import {scrollElementToCenter} from 'helpers/domHelpers';
 import Button from 'components/Button';

@@ -3,7 +3,6 @@ import {Modal} from 'react-bootstrap';
 import Button from 'components/Button';
 import {connect} from 'react-redux';
 import {
-  closeEditPlaylistModal,
   changePlaylistVideosAsync,
   getMoreVideosForModalAsync
 } from 'redux/actions/PlaylistActions';
@@ -36,12 +35,11 @@ export default class EditPlaylistModal extends Component {
     this.state = {
       selectedVideos: props.selectedVideos
     }
-    this.handleHide = this.handleHide.bind(this)
     this.handleSave = this.handleSave.bind(this)
   }
 
   render() {
-    const {modalType, videos, loadMoreVideosButton,  getMoreVideosForModal} = this.props;
+    const {modalType, videos, loadMoreVideosButton,  getMoreVideosForModal, onHide} = this.props;
     const {selectedVideos} = this.state;
     const last = (array) => {
       return array[array.length - 1];
@@ -50,11 +48,10 @@ export default class EditPlaylistModal extends Component {
     return (
       <Modal
         show
-        onHide={this.props.onHide}
+        onHide={onHide}
         animation={false}
         backdrop="static"
         dialogClassName="modal-extra-lg"
-        onHide={this.handleHide}
       >
         <Modal.Header closeButton>
           {modalType === 'change' ?
@@ -105,7 +102,7 @@ export default class EditPlaylistModal extends Component {
           }
         </Modal.Body>
         <Modal.Footer>
-          <Button className="btn btn-default" onClick={this.handleHide}>Cancel</Button>
+          <Button className="btn btn-default" onClick={onHide}>Cancel</Button>
           <Button
             className="btn btn-primary"
             onClick={this.handleSave}
@@ -115,10 +112,6 @@ export default class EditPlaylistModal extends Component {
         </Modal.Footer>
       </Modal>
     )
-  }
-
-  handleHide() {
-    this.props.onHide();
   }
 
   handleSave() {

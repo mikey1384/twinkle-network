@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import InputArea from 'components/InputArea';
 import TitleDescriptionForm from 'components/TitleDescriptionForm';
 import Button from 'components/Button';
-import {stringIsEmpty} from 'helpers/stringHelpers';
 import {connect} from 'react-redux';
 import {
   uploadVideoCommentAsync,
@@ -94,7 +93,7 @@ export default class CommentInputArea extends Component {
                       </Button>
                     </div>
                   }
-                  {!debates || debates.length === 0 &&
+                  {(!debates || debates.length === 0) &&
                     <div>
                       <h3 style={{marginTop: '1em'}}>Comment on this video</h3>
                       <InputArea

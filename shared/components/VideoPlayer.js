@@ -31,6 +31,7 @@ export default class VideoPlayer extends Component {
       >
         {!autoplay && !small && !playing && <div>
             <img
+              alt=""
               className="embed-responsive-item"
               src={`https://img.youtube.com/vi/${videoCode}/0.jpg`}
             />

@@ -7,6 +7,22 @@ import {URL} from 'constants/URL';
 const API_URL = `${URL}/video`;
 
 
+export const getVideos = (videos, initialRun) => ({
+  type: 'GET_VIDEOS',
+  initialRun,
+  videos: videos
+})
+
+export const getInitialVideos = () => dispatch => request.get(API_URL)
+.then(
+  response => dispatch(getVideos(response.data, true))
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const addVideoViewAsync = params => dispatch =>
 request.post(`${API_URL}/view`, params)
 .catch(
@@ -179,16 +195,6 @@ request.post(`${API_URL}/edit/title`, params, auth())
   }
 )
 
-export const getInitialVideos = () => dispatch => request.get(API_URL)
-.then(
-  response => dispatch(getVideos(response.data, true))
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
-
 export const getMoreVideos = videoId => dispatch =>
 request.get(`${API_URL}?videoId=${videoId}`)
 .then(
@@ -199,12 +205,6 @@ request.get(`${API_URL}?videoId=${videoId}`)
     handleError(error, dispatch)
   }
 )
-
-export const getVideos = (videos, initialRun) => ({
-  type: 'GET_VIDEOS',
-  initialRun,
-  videos: videos
-})
 
 export const likeVideo = (data, videoId) => ({
   type: 'VIDEO_LIKE',

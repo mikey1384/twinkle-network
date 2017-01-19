@@ -16,10 +16,8 @@ export default class PanelReplies extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {contentId} = this.props;
     const {deleteListenerToggle} = this.state;
     const length = this.props.replies.length;
-    const lastReply = this.props.replies[length - 1] || [];
 
     if (length < prevProps.replies.length) {
       if (length === 0) return scrollElementToCenter(this.PanelReplies)
@@ -29,7 +27,7 @@ export default class PanelReplies extends Component {
 
   render() {
     const {
-      type, replies, userId, onEditDone, onLikeClick, onDelete, comment, contentId, parent
+      type, replies, userId, onEditDone, onLikeClick, onDelete, comment, parent
     } = this.props;
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
     return (

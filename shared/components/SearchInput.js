@@ -24,7 +24,7 @@ class SearchInput extends Component {
   }
 
   render() {
-    const {placeholder, onFocus, onBlur} = this.props;
+    const {placeholder, onFocus} = this.props;
     return (
       <div className="input-group dropdown">
         <span className="input-group-addon">

@@ -1,3 +1,5 @@
+/*eslint-disable no-useless-escape */
+
 export function cleanString(string) {
 	return string ?
   string
@@ -71,3 +73,5 @@ export function isValidYoutubeUrl(url) {
 	let trimTwo = url.split("youtu.be/")[1];
   return typeof trimOne !== "undefined" || typeof trimTwo !== "undefined";
 }
+
+/*eslint-enable no-useless-escape */

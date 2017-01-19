@@ -23,6 +23,7 @@ export function getTargetLeft(touchOffset) {
     offset = this.state.frameWidth - this.state.slideWidth;
     offset -= this.props.cellSpacing * (this.state.currentSlide);
     break;
+  default: break;
   }
 
   offset -= touchOffset || 0;

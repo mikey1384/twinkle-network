@@ -2,10 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: {
-    vendor: ['react', 'redux', 'react-dom'],
-    app: './entry/client'
-  },
+  entry: './entry/client',
   resolve: {
     modulesDirectories: ['node_modules', 'shared'],
     extensions: ['', '.js', '.jsx']
@@ -37,11 +34,6 @@ module.exports = {
       compress: {
         warnings: false
       }
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "vendor",
-      filename: "vendor.js",
-      minChunks: Infinity
     })
   ]
 };

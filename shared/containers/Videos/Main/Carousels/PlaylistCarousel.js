@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import ExecutionEnvironment from 'exenv';
-import ReactDOM from 'react-dom';
 import Carousel from 'components/Carousel';
 import VideoThumb from 'components/VideoThumb';
 import SmallDropdownButton from 'components/SmallDropdownButton';

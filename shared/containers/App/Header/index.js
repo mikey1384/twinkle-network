@@ -6,14 +6,13 @@ import {
   getNumberOfUnreadMessagesAsync,
   increaseNumberOfUnreadMessages,
   turnChatOff } from 'redux/actions/ChatActions';
-import {fetchNotificationsAsync} from 'redux/actions/NotiActions';
 import {fetchFeedsAsync} from 'redux/actions/FeedActions';
 import {getInitialVideos} from 'redux/actions/VideoActions';
 import {getPinnedPlaylistsAsync, getPlaylistsAsync} from 'redux/actions/PlaylistActions';
 import SigninModal from 'containers/Signin';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
-import NotificationsButton from './NotificationsButton';
+//import NotificationsButton from './NotificationsButton';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
 import ExecutionEnvironment from 'exenv';
@@ -39,7 +38,7 @@ import {Color} from 'constants/css';
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
     increaseNumberOfUnreadMessages,
-    fetchNotifications: fetchNotificationsAsync,
+    //fetchNotifications: fetchNotificationsAsync,
     getInitialVideos,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
@@ -82,7 +81,7 @@ export default class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {getNumberOfUnreadMessages, socket, fetchNotifications} = this.props;
+    const {getNumberOfUnreadMessages, socket} = this.props;
     if (nextProps.userId && !this.props.userId) {
       socket.connect();
       socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username);
@@ -118,32 +117,18 @@ export default class Header extends Component {
       loggedIn,
       logout,
       username,
-      userType,
-      isAdmin,
-      userId,
       chatMode,
       openSigninModal,
       closeSigninModal,
       onChatButtonClick,
-      staticTop,
       numChatUnreads,
-      notifications,
       getInitialVideos,
       getPinnedPlaylists,
       getPlaylists,
       fetchFeedsAsync
     } = this.props;
 
-    const {notificationsMenuShown, selectedTab} = this.state;
-    let staticTopOn;
-    let fixedTopOn;
-    if (staticTop) {
-      staticTopOn = true;
-      fixedTopOn = false;
-    } else {
-      staticTopOn = false;
-      fixedTopOn = true;
-    }
+    const {selectedTab} = this.state;
     return (
       <Navbar fluid fixedTop={!chatMode}>
         <Navbar.Header>

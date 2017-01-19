@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
 import {stringIsEmpty} from 'helpers/stringHelpers';
 import Input from './Input';
 
@@ -37,7 +36,6 @@ export default class TagPeopleForm extends Component {
     const {
       searchResult,
       onClear,
-      channelName,
       selectedUsers,
       filter,
       onSubmit,

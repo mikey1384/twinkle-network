@@ -3,7 +3,7 @@ import Button from 'components/Button';
 
 export default class ChatButton extends Component {
   render() {
-    const {onClick, chatMode, numUnreads = 0, style = null} = this.props;
+    const {onClick, chatMode, numUnreads = 0} = this.props;
     return (
       <li>
         <a style={{

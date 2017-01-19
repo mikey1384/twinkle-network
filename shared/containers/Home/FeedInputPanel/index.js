@@ -59,7 +59,7 @@ export default class FeedInputPanel extends Component {
       form, urlError, categorySearchText, descriptionFieldsShown,
       selectedCategoryLabel
     } = this.state;
-    const {url, title, description, selectedCategory} = form;
+    const {url, title, selectedCategory} = form;
     return (
       <div className="panel panel-default"
         style={{
@@ -182,7 +182,7 @@ export default class FeedInputPanel extends Component {
 
   onCategorySelect(item) {
     const {clearSearchResults} = this.props;
-    const {form, descriptionFieldsShown} = this.state;
+    const {form} = this.state;
     this.setState({
       categorySearchText: '',
       selectedCategoryLabel: item.label,

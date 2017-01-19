@@ -2,19 +2,17 @@ import React, {Component} from 'react';
 import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import Button from 'components/Button';
 import {
   editVideoCommentAsync,
   deleteVideoCommentAsync,
   editVideoReplyAsync,
-  likeVideoReplyAsync,
   likeVideoComment,
   uploadVideoReplyAsync,
   loadMoreCommentsAsync,
   loadMoreReplies
 } from 'redux/actions/VideoActions';
-import {scrollElementToCenter} from 'helpers/domHelpers';
+
 
 @connect(
   state => ({

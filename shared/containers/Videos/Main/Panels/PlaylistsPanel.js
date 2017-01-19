@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import PlaylistCarousel from '../Carousels/PlaylistCarousel';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import Button from 'components/Button';
 import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions';
 

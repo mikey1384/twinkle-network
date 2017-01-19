@@ -6,6 +6,16 @@ import {URL} from 'constants/URL';
 
 const API_URL = `${URL}/chat`;
 
+
+export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
+  const {fetchChannelWithId, enterChannel} = actions;
+  dispatch(fetchChannelWithId(channelId, {then: followUp}));
+
+  function followUp(data) {
+    dispatch(enterChannel(data, showOnTop))
+  }
+}
+
 export const checkChatExistsThenOpenNewChatTabOrEnterExistingChat = (user, partner, callback) => dispatch => {
   const {checkChatExists, openNewChatTab} = actions;
   dispatch(checkChatExists(user, partner, {then: followUp}));
@@ -73,15 +83,6 @@ request.post(`${API_URL}/title`, params, auth())
     handleError(error, dispatch)
   }
 )
-
-export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
-  const {fetchChannelWithId, enterChannel, enterChannelShowOnTop} = actions;
-  dispatch(fetchChannelWithId(channelId, {then: followUp}));
-
-  function followUp(data) {
-    dispatch(enterChannel(data, showOnTop))
-  }
-}
 
 export const enterEmptyChat = () => ({
   type: 'ENTER_EMPTY_CHAT'

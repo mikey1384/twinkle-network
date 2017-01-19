@@ -18,7 +18,6 @@ export default class Heading extends Component {
   render() {
     const {
       type,
-      videoTitle,
       action,
       content,
       uploader,
@@ -45,7 +44,7 @@ export default class Heading extends Component {
     }
     let userLikedVideo = false;
     for (let i = 0; i < parentContentLikers.length; i++) {
-      if (parentContentLikers[i].userId == myId) userLikedVideo = true;
+      if (parentContentLikers[i].userId === myId) userLikedVideo = true;
     }
 
     const pStyle = {fontSize: '1.4rem'};

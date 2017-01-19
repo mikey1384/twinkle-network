@@ -14,7 +14,7 @@ const ListItemSource = {
   },
   endDrag(props, monitor) {
     const item = monitor.getItem();
-    if (props.id !== monitor.getItem().id && props.questionIndex === monitor.getItem().questionIndex) {
+    if (props.id !== item.id && props.questionIndex === item.questionIndex) {
       props.onDrop();
     }
   }

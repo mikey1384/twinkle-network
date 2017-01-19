@@ -6,7 +6,6 @@ import AddVideoModal from './Modals/AddVideoModal';
 import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from './Modals/AddPlaylistModal';
-import {bindActionCreators} from 'redux';
 import {openAddVideoModal, closeAddVideoModal, resetVideoPage} from 'redux/actions/VideoActions';
 import {
   openReorderPinnedPlaylistsModal,

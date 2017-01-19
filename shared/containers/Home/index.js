@@ -1,4 +1,4 @@
-import React, {Component , PropTypes} from 'react';
+import React, {Component} from 'react';
 import {Color} from 'constants/css';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';

@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
 import Header from './Header';
 import Chat from '../Chat';
 import io from 'socket.io-client';

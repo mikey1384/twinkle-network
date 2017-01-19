@@ -12,7 +12,7 @@ export default function Likers({likes, target, userId, onLinkClick, style = null
     let totalLikes = 0;
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if(likes[i].userId == userId) userLiked = true;
+        if(likes[i].userId === userId) userLiked = true;
         totalLikes ++;
       }
     }
@@ -20,7 +20,7 @@ export default function Likers({likes, target, userId, onLinkClick, style = null
       totalLikes --;
       if (totalLikes > 0) {
         if (totalLikes === 1) {
-          let otherLikes = likes.filter(like => like.userId != userId);
+          let otherLikes = likes.filter(like => like.userId !== userId);
           let otherLikerName = otherLikes[0].username;
           return (
             <div>

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from 'components/EditTextArea';
@@ -40,12 +40,12 @@ export default class Reply extends Component {
   render() {
     const {
       id, username, timeStamp, content, userIsOwner, onEditDone,
-      likes, userId, profilePicId, myId, targetUserName, targetUserId, autoFocus
+      likes, userId, profilePicId, myId, targetUserName, targetUserId
     } = this.props;
     const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId == myId) userLikedThis = true;
+      if (likes[i].userId === myId) userLikedThis = true;
     }
     return (
       <div

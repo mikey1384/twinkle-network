@@ -1,10 +1,4 @@
-import React, {Component, PropTypes} from 'react';
-import Button from 'components/Button';
-import ContentLink from '../ContentLink';
-import UserLink from '../UserLink';
-import LikeButton from 'components/LikeButton';
-import Textarea from 'react-textarea-autosize';
-import InputArea from 'components/InputArea';
+import React, {Component} from 'react';
 import Heading from './Heading';
 import MainContent from './MainContent';
 

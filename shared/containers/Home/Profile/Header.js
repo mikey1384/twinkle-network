@@ -142,7 +142,7 @@ export default class Header extends Component {
     const reader = new FileReader();
     const maxSize = 5000;
     const file = event.target.files[0];
-    if (file.size/1000 > 5000) return this.setState({alertModalShown: true})
+    if (file.size/1000 > maxSize) return this.setState({alertModalShown: true})
     reader.onload = (upload) => {
       this.setState({
         imageEditModalShown: true,

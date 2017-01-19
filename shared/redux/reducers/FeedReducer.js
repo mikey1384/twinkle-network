@@ -1,4 +1,4 @@
-import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
+import {processedStringWithURL} from 'helpers/stringHelpers';
 const defaultState = {
   feeds: null,
   selectedFilter: 'all',
@@ -83,7 +83,6 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.reduce((resultingArray, feed) => {
-          let comments = feed.targetContentComments || [];
           if (feed.contentId === action.commentId || feed.commentId === action.commentId || feed.replyId === action.commentId) return resultingArray;
           return resultingArray.concat([{
             ...feed,
@@ -196,7 +195,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === action.data.type && feed.contentId == action.data.contentId) {
+          if (feed.type === action.data.type && feed.contentId === action.data.contentId) {
             if (action.data.childComments.length > 3) {
               action.data.childComments.pop();
               feed.commentsLoadMoreButton = true;
@@ -212,7 +211,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === action.data.type && feed.contentId == action.data.contentId) {
+          if (feed.type === action.data.type && feed.contentId === action.data.contentId) {
             feed.commentsShown = true;
             if (action.data.childComments.length > 3) {
               action.data.childComments.pop();
@@ -236,7 +235,7 @@ export default function FeedReducer(state = defaultState, action) {
         feeds: state.feeds.map(feed => {
           return {
             ...feed,
-            childComments: feed.type === action.data.type && feed.contentId == action.data.contentId ?
+            childComments: feed.type === action.data.type && feed.contentId === action.data.contentId ?
               (
                 action.data.type === 'video' ?
                 action.data.comments : [action.data].concat(feed.childComments)
@@ -247,11 +246,11 @@ export default function FeedReducer(state = defaultState, action) {
         newFeeds: action.data.type === 'video' ? state.newFeeds.concat([action.data.comments[0]]) : state.newFeeds.concat([action.data])
       }
     case 'UPLOAD_FEED_VIDEO_REPLY':
-      let {reply, type} = action.data;
+      let {reply} = action.data;
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === action.data.type && feed.contentId == action.data.contentId) {
+          if (feed.type === action.data.type && feed.contentId === action.data.contentId) {
             let {reply} = action.data;
             if (feed.type === 'comment') {
               feed.childComments = [reply].concat(feed.childComments)

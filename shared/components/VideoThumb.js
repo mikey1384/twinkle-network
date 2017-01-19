@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import SmallDropdownButton from './SmallDropdownButton';
 import EditTitleForm from './EditTitleForm';
 import ConfirmModal from './Modals/ConfirmModal';
-import {Link} from 'react-router';
 import {
   loadVideoPageFromClientSideAsync,
   editVideoTitleAsync,
@@ -97,6 +96,7 @@ export default class VideoThumb extends Component {
               }}
             >
               <img
+                alt="Thumbnail"
                 src={`https://img.youtube.com/vi/${video.videoCode}/0.jpg`}
                 style={{
                   width: '100%',

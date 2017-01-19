@@ -4,6 +4,11 @@ import {URL} from 'constants/URL';
 
 const API_URL = `${URL}/playlist`;
 
+
+export const closeAddPlaylistModal = () => ({
+  type: 'ADD_PL_MODAL_CLOSE'
+})
+
 export const getPlaylists = (data, initialRun) => ({
   type: 'GET_PLAYLISTS',
   initialRun,
@@ -251,10 +256,6 @@ export const openChangePlaylistVideosModalAsync = sender => dispatch => request.
     handleError(error, dispatch)
   }
 )
-
-export const closeAddPlaylistModal = () => ({
-  type: 'ADD_PL_MODAL_CLOSE'
-})
 
 export const openReorderPlaylistVideosModal = playlistVideos => ({
   type: 'REORDER_PL_VIDS_MODAL_OPEN',

@@ -7,7 +7,6 @@ import Button from 'components/Button';
 import HTML5Backend from 'react-dnd-html5-backend'
 import {DragDropContext} from 'react-dnd';
 import QuestionsListGroup from './QuestionsListGroup';
-import {connect} from 'react-redux';
 
 
 const defaultChoices = () => [
@@ -342,13 +341,14 @@ export default class QuestionsBuilder extends Component {
   }
 
   onReorderDone() {
-    const newQuestions = this.state.editedQuestionOrder.map(questionId => {
+    const newQuestions = this.state.editedQuestionOrder.reduce((result, questionId )=> {
       for (let i = 0; i < this.state.questions.length; i++) {
         if (this.state.questions[i].id === questionId) {
-          return this.state.questions[i]
+          result.push(this.state.questions[i])
         }
       }
-    })
+      return result;
+    }, [])
     this.setState({
       questions: newQuestions,
       reorderModeOn: false
@@ -359,9 +359,9 @@ export default class QuestionsBuilder extends Component {
     this.setState({
       questions: this.state.questions.map((question, index) => {
         if (index === questionIndex) {
-          question.choices.map((choice, index) => {
-            index === choiceIndex ? choice.checked = true : choice.checked = false
-          })
+          for (let i = 0; i < question.choices.length; i++) {
+            question.choices[i].checked = i === choiceIndex;
+          }
           question.errorMessage = null;
         }
         return question;
@@ -372,13 +372,14 @@ export default class QuestionsBuilder extends Component {
   onChoicesRearrange({questionIndex, choiceIndices}) {
     const newQuestions = this.state.questions.map((question, index) => {
       if (index === questionIndex) {
-        const newChoices = choiceIndices.map(choiceId => {
+        const newChoices = choiceIndices.reduce((result, choiceId) => {
           for (let i = 0; i < question.choices.length; i ++) {
             if (question.choices[i].id === choiceId) {
-              return question.choices[i]
+              result.push(question.choices[i])
             }
           }
-        })
+          return result;
+        }, [])
         question.choices = newChoices;
       }
       return question;

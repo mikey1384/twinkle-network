@@ -28,16 +28,18 @@ export default class ReorderPinnedPlaylistsModal extends Component {
 
   render() {
     const {playlists, playlistIds} = this.state;
-    const listItems = playlistIds.map(playlistId => {
+    const listItems = playlistIds.reduce((result, playlistId) => {
       for (let i = 0; i < playlists.length; i ++) {
         if (playlists[i].id === playlistId) {
-          return {
+          result.push({
             label: playlists[i].title,
             id: playlistId
-          }
+          })
         }
       }
-    })
+      return result;
+    }, [])
+    
     return (
       <Modal
         show

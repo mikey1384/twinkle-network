@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import assign from 'object-assign';
 import ExecutionEnvironment from 'exenv';
 import ButtonGroup from 'components/ButtonGroup';
@@ -10,7 +9,6 @@ import {
   getListStyles,
   getFrameStyles,
   getSliderStyles,
-  getSlideStyles,
   getStyleTagStyles,
   formatChildren,
   setInitialDimensions,

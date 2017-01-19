@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {timeSince} from 'helpers/timeStampHelpers';
 import SmallDropdownButton from 'components/SmallDropdownButton';
 import EditTextArea from 'components/EditTextArea';
@@ -40,11 +40,11 @@ export default class PanelReply extends Component {
   }
 
   render() {
-    const {parent, comment, reply, userId, userIsOwner, type} = this.props;
+    const {comment, reply, userId, userIsOwner, type} = this.props;
     const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < reply.likes.length; i++) {
-      if (reply.likes[i].userId == userId) userLikedThis = true;
+      if (reply.likes[i].userId === userId) userLikedThis = true;
     }
     return (
       <div className="media" ref={ref => {this.PanelReply = ref}}>

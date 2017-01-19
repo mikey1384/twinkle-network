@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import VideoThumb from 'components/VideoThumb';
 import Button from 'components/Button';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getMoreVideos} from 'redux/actions/VideoActions';
 

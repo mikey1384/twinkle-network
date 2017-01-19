@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import UserLink from '../UserLink';
 import LikeButton from 'components/LikeButton';
 import Button from 'components/Button';
 import Likers from 'components/Likers';
@@ -55,15 +53,17 @@ export default class MainContent extends Component {
   render() {
     const {
       id, myId, content, contentLikers = [], targetContentComments = [],
-      contentId, type, title, discussionId, discussionTitle, discussionDescription, videoViews,
-      numChildComments, numChildReplies, replyId, commentId, targetReply, targetContentLikers, videoId, childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle, contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
+      contentId, type, discussionId, discussionTitle, discussionDescription, videoViews,
+      numChildComments, numChildReplies, replyId, commentId, targetReply, targetContentLikers,
+      childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle,
+      contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props;
     const {userListModalShown, clickListenerState} = this.state;
     let userLikedThis = false;
     for (let i = 0; i < contentLikers.length; i++) {
-      if (contentLikers[i].userId == myId) userLikedThis = true;
+      if (contentLikers[i].userId === myId) userLikedThis = true;
     }
     return (
       <div>
