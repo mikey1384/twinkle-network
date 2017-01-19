@@ -27,6 +27,7 @@ const channelName = (channels, currentChannel) => {
   state => ({
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId,
     currentChannel: state.ChatReducer.currentChannel,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
