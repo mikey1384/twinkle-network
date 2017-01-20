@@ -1,6 +1,6 @@
 import {processedStringWithURL} from 'helpers/stringHelpers';
 const defaultState = {
-  feeds: null,
+  feeds: [],
   selectedFilter: 'all',
   newFeeds: [], // may need later but delete it if revealed otherwise
   loadMoreButton: false,
@@ -86,7 +86,7 @@ export default function FeedReducer(state = defaultState, action) {
           if (feed.contentId === action.commentId || feed.commentId === action.commentId || feed.replyId === action.commentId) return resultingArray;
           return resultingArray.concat([{
             ...feed,
-            targetContentComments: feed.targetContentComments.filter(comment => comment.id !== action.commentId),
+            targetContentComments: !!feed.targetContentComments ? feed.targetContentComments.filter(comment => comment.id !== action.commentId) : [],
             childComments: feed.childComments.reduce((resultingArray, childComment) => {
               if (childComment.id === action.commentId) return resultingArray;
               return resultingArray.concat([{

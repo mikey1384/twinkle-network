@@ -24,9 +24,29 @@ export default function(app) {
       loaders: [
         {
           test: /\.js$/,
-          exclude: /node_modules/,
+          include: [/shared/, /entry/],
           loader: 'babel',
-          query: {cacheDirectory: true}
+          query: {
+            cacheDirectory: true,
+            presets: ['react', 'es2015'],
+            plugins: [
+              ['transform-object-rest-spread'],
+              ['transform-class-properties'],
+              ['transform-decorators-legacy'],
+              [
+                'react-transform',
+                {
+                  transforms: [
+                    {
+                      transform: 'react-transform-hmr',
+                      imports: ['react'],
+                      locals: ['module']
+                    }
+                  ]
+                }
+              ]
+            ]
+          }
         }
       ]
     },

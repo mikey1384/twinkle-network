@@ -308,7 +308,7 @@ dispatch => {
       const {data} = response;
       const action = uploadFeedVideoReply({type: parent.type, contentId: parent.type === 'comment' ? comment.id : parent.id, reply: {...data.result, replies: []}, commentId: comment.id})
       dispatch(action);
-      callback();
+      if (!!callback) callback();
     }
   ).catch(
     error => {
