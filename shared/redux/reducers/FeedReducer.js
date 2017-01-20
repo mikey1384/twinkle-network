@@ -1,6 +1,6 @@
 import {processedStringWithURL} from 'helpers/stringHelpers';
 const defaultState = {
-  feeds: [],
+  feeds: null,
   selectedFilter: 'all',
   newFeeds: [], // may need later but delete it if revealed otherwise
   loadMoreButton: false,
