@@ -50,7 +50,8 @@ export default class Header extends Component {
     super()
     this.state = {
       notificationsMenuShown: false,
-      selectedTab: props.location ? props.location : 'home'
+      selectedTab: props.location ? props.location : 'home',
+      logoColor: Color.logoColor
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
@@ -99,14 +100,23 @@ export default class Header extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {socket, userId, location} = this.props;
+    const {socket, userId, location, onProfilePage, chatMode} = this.props;
+
     if (userId !== prevProps.userId) {
       if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId);
       socket.emit('enter_my_notification_channel', userId);
     }
+
     if (prevProps.location !== location) {
       this.setState({
         selectedTab: location ? location : 'home',
+        logoColor: `#${this.getLogoColor()}`
+      })
+    }
+
+    if (prevProps.onProfilePage !== onProfilePage || prevProps.chatMode !== chatMode) {
+      this.setState({
+        logoColor: `#${this.getLogoColor()}`
       })
     }
   }
@@ -128,7 +138,7 @@ export default class Header extends Component {
       fetchFeedsAsync
     } = this.props;
 
-    const {selectedTab} = this.state;
+    const {selectedTab, logoColor} = this.state;
     return (
       <Navbar fluid fixedTop={!chatMode}>
         <Navbar.Header>
@@ -137,7 +147,7 @@ export default class Header extends Component {
             style={{
               cursor: 'pointer',
               fontWeight: 'bold',
-              color: Color.logoColor
+              color: logoColor
             }}
             to="/"
             onClick={this.onLogoClick}
@@ -209,6 +219,14 @@ export default class Header extends Component {
         }
       </Navbar>
     )
+  }
+
+  getLogoColor() {
+    return (
+      function factory(string, c) {
+        return string[Math.floor(Math.random() * string.length)] + (c && factory(string, c - 1));
+      }
+    )('789ABCDEF', 4);
   }
 
   onLogoClick() {

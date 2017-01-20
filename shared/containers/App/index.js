@@ -107,6 +107,7 @@ export default class App extends Component {
         ref="app"
       >
         <Header
+          onProfilePage={!!params.username}
           location={params.username || !location.pathname.split('/')[1] ? null : location.pathname.split('/')[1]}
           staticTop={chatMode}
           socket={socket}
