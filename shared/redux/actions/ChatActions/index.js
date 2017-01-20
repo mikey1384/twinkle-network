@@ -35,7 +35,7 @@ export const checkChatExistsThenOpenNewChatTabOrEnterExistingChat = (user, partn
   dispatch(checkChatExists(user, partner, {then: followUp}));
   function followUp(data) {
     if (data.channelExists) {
-      dispatch(enterChannelWithId(data.channelId))
+      dispatch(enterChannelWithId(data.channelId, true))
     }
     else {
       dispatch(openNewChatTab(user, partner))
@@ -121,7 +121,7 @@ request.post(`${API_URL}/hideChat`, {channelId}, auth())
 .then(
   response => {
     dispatch(actions.hideChat(channelId))
-    dispatch(enterChannelWithId(GENERAL_CHAT_ID))
+    dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
   }
 ).catch(
   error => {
@@ -187,7 +187,7 @@ export const leaveChannelAsync = channelId => dispatch => {
   .then(
     response => {
       dispatch(actions.leaveChannel(channelId))
-      dispatch(enterChannelWithId(GENERAL_CHAT_ID))
+      dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
     }
   ).catch(
     error => {

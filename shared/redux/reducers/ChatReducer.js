@@ -49,6 +49,7 @@ export default function ChatReducer(state = defaultState, action) {
             username: action.data.message.username
           }
         }].concat(state.channels),
+        selectedChannelId: action.data.message.channelId,
         currentChannel: {
           id: action.data.message.channelId,
           twoPeople: false,
@@ -76,6 +77,7 @@ export default function ChatReducer(state = defaultState, action) {
           }
           return channel;
         }),
+        selectedChannelId: action.data.channelId,
         currentChannel: {
           id: action.data.channelId,
           twoPeople: true,
@@ -99,6 +101,7 @@ export default function ChatReducer(state = defaultState, action) {
       action.data.messages.reverse();
       return {
         ...state,
+        selectedChannelId: action.data.channel.id,
         currentChannel: action.data.channel,
         channels: state.channels.reduce(
           (resultingArray, channel) => {
@@ -117,6 +120,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'ENTER_EMPTY_CHAT':
       return {
         ...state,
+        selectedChannelId: 0,
         currentChannel: {
           id: 0,
           twoPeople: true,
@@ -258,6 +262,7 @@ export default function ChatReducer(state = defaultState, action) {
             }
           ]
         }].concat(filteredChannel),
+        selectedChannelId: 0,
         currentChannel: {
           id: 0,
           twoPeople: true,
@@ -294,6 +299,7 @@ export default function ChatReducer(state = defaultState, action) {
           }
           return channel;
         }),
+        selectedChannelId: action.data.channelId,
         currentChannel: {
           id: action.data.channelId,
           twoPeople: true
