@@ -36,16 +36,8 @@ export const enterChannel = (data, showOnTop = false) => ({
   showOnTop
 })
 
-export const fetchChannelWithId = (channelId, {then}) => dispatch =>
+export const fetchChannelWithId = channelId =>
 request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
-.then(
-  response => then(response.data)
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
 
 export const fetchChannelsAsync = ({then}) => dispatch => {
   request.get(`${API_URL}/channels`, auth())

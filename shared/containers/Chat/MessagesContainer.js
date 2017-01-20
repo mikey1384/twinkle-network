@@ -5,6 +5,7 @@ import UsernameText from 'components/UsernameText';
 import Button from 'components/Button';
 import {Color} from 'constants/css';
 import ProfilePic from 'components/ProfilePic';
+import Loading from 'components/Loading';
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop;
@@ -73,10 +74,13 @@ export default class MessagesContainer extends Component {
   }
 
   render() {
-    const {loadMoreButton} = this.props;
+    const {loadMoreButton, loading} = this.props;
     const {fillerHeight, newUnseenMessage} = this.state;
     return (
       <div>
+        {!!loading &&
+          <Loading />
+        }
         <div
           ref="messagesContainer"
           style={{

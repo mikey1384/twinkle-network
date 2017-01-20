@@ -15,7 +15,7 @@ import ChatSearchBox from './ChatSearchBox';
 import {GENERAL_CHAT_ID} from 'constants/database';
 
 const channelName = (channels, currentChannel) => {
-  for (let i = 0; i < channels.length; i ++) {
+  for (let i = 0; i < channels.length; i++) {
     if (channels[i].id === currentChannel.id) {
       return channels[i].channelName
     }
@@ -29,6 +29,7 @@ const channelName = (channels, currentChannel) => {
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId,
     currentChannel: state.ChatReducer.currentChannel,
+    selectedChannelId: state.ChatReducer.selectedChannelId,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
     loadMoreButton: state.ChatReducer.loadMoreButton,
@@ -60,6 +61,7 @@ export default class Chat extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      loading: false,
       currentChannelOnline: 1,
       createNewChannelModalShown: false,
       inviteUsersModalShown: false,
@@ -121,7 +123,7 @@ export default class Chat extends Component {
 
   componentWillMount() {
     const {socket, channels} = this.props;
-    for (let i = 0; i < channels.length; i ++) {
+    for (let i = 0; i < channels.length; i++) {
       let channelId = channels[i].id;
       socket.emit('check_online_members', channelId, (err, data) => {
         let {myChannels} = this.state;
@@ -176,13 +178,21 @@ export default class Chat extends Component {
     const {currentChannel} = this.props;
     const {myChannels} = this.state;
     let currentChannelOnline = 1;
+
+    if (prevProps.selectedChannelId !== this.props.selectedChannelId) {
+      this.setState({loading: true})
+    }
+
     if (prevProps.currentChannel.id !== this.props.currentChannel.id) {
       for (let i = 0; i < myChannels.length; i++) {
         if (myChannels[i].channelId === currentChannel.id) {
           currentChannelOnline = myChannels[i].membersOnline.length;
         }
       }
-      this.setState({currentChannelOnline})
+      this.setState({
+        currentChannelOnline,
+        loading: false
+      })
     }
   }
 
@@ -197,6 +207,7 @@ export default class Chat extends Component {
   render() {
     const {channels, currentChannel, userId} = this.props;
     const {
+      loading,
       createNewChannelModalShown,
       inviteUsersModalShown,
       userListModalShown,
@@ -208,19 +219,19 @@ export default class Chat extends Component {
     let menuProps = (currentChannel.twoPeople) ?
     [{label: 'Hide Chat', onClick: this.onHideChat}] :
     [{
-     label: 'Invite People',
-     onClick: () => this.setState({inviteUsersModalShown: true})
+      label: 'Invite People',
+      onClick: () => this.setState({inviteUsersModalShown: true})
     },
     {
-     label: 'Edit Channel Name',
-     onClick: () => this.setState({editTitleModalShown: true})
+      label: 'Edit Channel Name',
+      onClick: () => this.setState({editTitleModalShown: true})
     },
     {
-     separator: true
+      separator: true
     },
     {
-     label: 'Leave Channel',
-     onClick: this.onLeaveChannel
+      label: 'Leave Channel',
+      onClick: this.onLeaveChannel
     }]
 
     return (
@@ -351,6 +362,7 @@ export default class Chat extends Component {
           }
           <MessagesContainer
             ref="messagesContainer"
+            loading={loading}
             currentChannelId={this.props.currentChannel.id}
             loadMoreButton={this.props.loadMoreButton}
             messages={this.props.messages}
@@ -376,7 +388,7 @@ export default class Chat extends Component {
   }
 
   renderChannels() {
-    const {userId, currentChannel, channels} = this.props;
+    const {userId, currentChannel, channels, selectedChannelId} = this.props;
     return channels.filter(channel => !channel.isHidden).map(channel => {
       const {lastMessageSender, lastMessage, id, channelName, numUnreads} = channel;
       return (
@@ -384,7 +396,7 @@ export default class Chat extends Component {
           className="media chat-channel-item container-fluid"
           style={{
             width: '100%',
-            backgroundColor: id === currentChannel.id && '#f7f7f7',
+            backgroundColor: id === selectedChannelId && '#f7f7f7',
             cursor: 'pointer',
             padding: '1em',
             marginTop: '0px'

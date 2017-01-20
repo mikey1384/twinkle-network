@@ -6,14 +6,28 @@ import {URL} from 'constants/URL';
 
 const API_URL = `${URL}/chat`;
 
+export const selectChannel = channelId => dispatch => {
+  return new Promise(resolve => {
+    dispatch({
+      type: 'SELECT_CHANNEL',
+      channelId
+    })
+    resolve()
+  })
+}
 
 export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
   const {fetchChannelWithId, enterChannel} = actions;
-  dispatch(fetchChannelWithId(channelId, {then: followUp}));
-
-  function followUp(data) {
-    dispatch(enterChannel(data, showOnTop))
-  }
+  dispatch(selectChannel(channelId)).then(
+    () => fetchChannelWithId(channelId)
+  ).then(
+    response => dispatch(enterChannel(response.data, showOnTop))
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 }
 
 export const checkChatExistsThenOpenNewChatTabOrEnterExistingChat = (user, partner, callback) => dispatch => {

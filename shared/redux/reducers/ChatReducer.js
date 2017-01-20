@@ -2,6 +2,7 @@ import {processedStringWithURL} from 'helpers/stringHelpers';
 
 const defaultState = {
   chatMode: false,
+  selectedChannelId: null,
   currentChannel: {},
   channels: [],
   messages: [],
@@ -83,6 +84,12 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [action.data]
       }
+    case 'SELECT_CHANNEL': {
+      return {
+        ...state,
+        selectedChannelId: action.channelId
+      }
+    }
     case 'ENTER_CHANNEL':
       loadMoreButton = false;
       if (action.data.messages.length === 21) {
@@ -148,6 +155,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         currentChannel: action.data.currentChannel,
+        selectedChannelId: action.data.currentChannel.id,
         channels: action.data.channels.reduce(
           (resultingArray, channel) => {
             if (channel.id === action.data.currentChannel.id) {
