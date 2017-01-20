@@ -88,7 +88,8 @@ export default class MessagesContainer extends Component {
             position: 'absolute',
             width: '100%',
             height: '92%',
-            bottom: '50px'
+            bottom: '50px',
+            opacity: !!loading && '0.3'
           }}
           onScroll={
             () => {
