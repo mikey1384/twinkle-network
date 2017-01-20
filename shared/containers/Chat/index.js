@@ -558,7 +558,7 @@ export default class Chat extends Component {
       receiveMessage(data)
     }
     if (!messageIsForCurrentChannel) {
-      receiveMessageOnDifferentChannel(data)
+      receiveMessageOnDifferentChannel(data, senderIsNotTheUser)
     }
   }
 

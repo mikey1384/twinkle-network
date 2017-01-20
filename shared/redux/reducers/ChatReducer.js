@@ -345,12 +345,13 @@ export default function ChatReducer(state = defaultState, action) {
       let channel = {};
       let channels = state.channels;
       for (let i = 0; i < channels.length; i++) {
+        let numUnreads = action.senderIsNotTheUser ? channels[i].numUnreads + 1 : channels[i].numUnreads
         if (channels[i].id === action.data.channelId) {
           channel = {
             ...channels[i],
             lastMessage: action.data.content,
             lastUpdate: action.data.timeStamp,
-            numUnreads: channels[i].numUnreads + 1,
+            numUnreads,
             lastMessageSender: {
               id: action.data.userId,
               username: action.data.username
