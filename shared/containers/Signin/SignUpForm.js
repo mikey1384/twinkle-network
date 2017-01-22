@@ -42,7 +42,9 @@ export default class SignUpForm extends Component {
       hideErrorAlert
     } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()}>
+      <form
+        onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()}
+      >
         { errorMessage &&
           <Alert bsStyle="danger">
             {errorMessage}

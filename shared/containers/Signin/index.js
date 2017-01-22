@@ -16,7 +16,7 @@ export default class SigninModal extends Component {
   constructor() {
     super()
     this.state = {
-      loginTabActive: true
+      loginTabActive: false
     }
   }
 
@@ -32,32 +32,32 @@ export default class SigninModal extends Component {
         <Modal.Header closeButton>
           <ul className="nav nav-pills nav-justified">
             <li
-              className={loginTabActive ? "active" : ""}
-              onClick={()=>this.setState({loginTabActive: true})}
-              style={{cursor:"pointer"}}
-            >
-              <a>Log In</a>
-            </li>
-            <li
               className={loginTabActive ? "" : "active"}
               onClick={()=>this.setState({loginTabActive: false})}
               style={{cursor:"pointer"}}
             >
               <a>Sign Up</a>
             </li>
+            <li
+              className={loginTabActive ? "active" : ""}
+              onClick={()=>this.setState({loginTabActive: true})}
+              style={{cursor:"pointer"}}
+            >
+              <a>Log In (If you already have an account)</a>
+            </li>
           </ul>
         </Modal.Header>
         <Modal.Body>
           <div className="tab-content container-fluid">
-            <div className={`tab-pane ${loginTabActive ? "active" : ""}`}>
-              <LoginForm
-                errorMessage={loginError}
-                {...bindActionCreators(UserActions, dispatch)}
-              />
-            </div>
             <div className={`tab-pane ${loginTabActive ? "" : "active"}`}>
               <SignUpForm
                 errorMessage={signupError}
+                {...bindActionCreators(UserActions, dispatch)}
+              />
+            </div>
+            <div className={`tab-pane ${loginTabActive ? "active" : ""}`}>
+              <LoginForm
+                errorMessage={loginError}
                 {...bindActionCreators(UserActions, dispatch)}
               />
             </div>
