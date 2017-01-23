@@ -37,18 +37,12 @@ export default class Header extends Component {
     return (
       <div
         className="panel panel-default"
-        style={{
-          borderTop: '#e7e7e7 1px solid',
-          width: '100%'
-        }}
+        style={{borderTop: '#e7e7e7 1px solid'}}
       >
-        <div className="panel-body" style={{width: '100%'}}>
+        <div className="panel-body">
           <div
             className="media"
-            style={{
-              height: 'auto',
-              width: '100%'
-            }}
+            style={{height: 'auto'}}
           >
             <ProfilePic
               userId={profilePage.id}
@@ -56,35 +50,34 @@ export default class Header extends Component {
               size='13'
             />
             <div className="media-body" style={{paddingLeft: '1em', paddingRight: '5em'}}>
-              <div className="row col-md-8 col-sm-10 container-fluid">
-                <h2 className="media-heading">
-                  {profilePage.username} <small>{`(${profilePage.realName})`}</small>
-                </h2>
-                {(!!profileFirstRow || !!profileSecondRow || !! profileThirdRow) &&
-                  <ul
-                    style={{
-                      paddingLeft: '1em',
-                      paddingRight: '1em',
-                      wordWrap: 'break-word'
-                    }}>
-                    {!!profileFirstRow &&
-                      <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileFirstRow}} />
-                    }
-                    {!!profileSecondRow &&
-                      <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileSecondRow}} />
-                    }
-                    {!!profileThirdRow &&
-                      <li style={{marginBottom: '0px', paddingRight: '0.5em'}} dangerouslySetInnerHTML={{__html: profileThirdRow}} />
-                    }
-                  </ul>
-                }
-              </div>
-              <div className="row col-md-8 col-sm-10 container-fluid">
+              <h2 className="media-heading">
+                {profilePage.username} <small>{`(${profilePage.realName})`}</small>
+              </h2>
+              {(!!profileFirstRow || !!profileSecondRow || !! profileThirdRow) &&
+                <ul
+                  className="col-md-8"
+                  style={{
+                    paddingLeft: '1em',
+                    wordWrap: 'break-word',
+                    minWidth: '30vw'
+                  }}>
+                  {!!profileFirstRow &&
+                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileFirstRow}} />
+                  }
+                  {!!profileSecondRow &&
+                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileSecondRow}} />
+                  }
+                  {!!profileThirdRow &&
+                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileThirdRow}} />
+                  }
+                </ul>
+              }
+              <div>
                 {!profileFirstRow && !profileSecondRow && !profileThirdRow && userId === profilePage.id &&
                   <p>**Add your bio so that your Twinkle friends can know you better</p>
                 }
                 {userId === profilePage.id &&
-                  <div>
+                  <div className="col-xs-12">
                     <Button
                       className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
                       onClick={() => this.setState({bioEditModalShown: true})}

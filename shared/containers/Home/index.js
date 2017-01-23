@@ -86,7 +86,7 @@ export default class Home extends Component {
             </li>
           </ul>
         </div>
-        <div className="col-md-6 col-md-offset-4 col-xs-10 col-xs-offset-2" style={{maxWidth: '100%'}}>
+        <div className="col-md-6 col-md-offset-4 col-xs-10 col-xs-offset-2">
           {this.props.children}
         </div>
       </div>
