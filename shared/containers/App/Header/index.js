@@ -51,7 +51,8 @@ export default class Header extends Component {
     this.state = {
       notificationsMenuShown: false,
       selectedTab: props.location ? props.location : 'home',
-      logoColor: Color.logoColor
+      logoBlue: Color.logoBlue,
+      logoGreen: Color.logoGreen
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
@@ -110,13 +111,15 @@ export default class Header extends Component {
     if (prevProps.location !== location) {
       this.setState({
         selectedTab: location ? location : 'home',
-        logoColor: `#${this.getLogoColor()}`
+        logoBlue: `#${this.getLogoColor()}`,
+        logoGreen: `#${this.getLogoColor()}`
       })
     }
 
     if (prevProps.onProfilePage !== onProfilePage || prevProps.chatMode !== chatMode) {
       this.setState({
-        logoColor: `#${this.getLogoColor()}`
+        logoBlue: `#${this.getLogoColor()}`,
+        logoGreen: `#${this.getLogoColor()}`
       })
     }
   }
@@ -138,7 +141,7 @@ export default class Header extends Component {
       fetchFeedsAsync
     } = this.props;
 
-    const {selectedTab, logoColor} = this.state;
+    const {selectedTab, logoBlue, logoGreen} = this.state;
     return (
       <Navbar fluid fixedTop={!chatMode}>
         <Navbar.Header>
@@ -146,13 +149,12 @@ export default class Header extends Component {
             className="navbar-brand"
             style={{
               cursor: 'pointer',
-              fontWeight: 'bold',
-              color: logoColor
+              fontWeight: 'bold'
             }}
             to="/"
             onClick={this.onLogoClick}
           >
-            Twinkle
+            <span style={{color: logoBlue}}>Twin</span><span style={{color: logoGreen}}>kle</span>
           </Link>
           <Navbar.Toggle />
         </Navbar.Header>
