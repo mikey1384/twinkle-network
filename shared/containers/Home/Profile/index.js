@@ -47,10 +47,10 @@ export default class Profile extends Component {
     const {profilePage, userId} = this.props;
     const {unavailable} = profilePage;
     return !unavailable ? (
-      <div>
+      <div style={{width: '100%'}}>
         {!profilePage.id && <Loading text="Loading Profile..." />}
         {!!profilePage.id &&
-          <div>
+          <div style={{width: '100%'}}>
             <Header {...this.props} />
             {false && <Body {...this.props} />}
           </div>

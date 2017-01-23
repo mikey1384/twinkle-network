@@ -37,9 +37,12 @@ export default class Header extends Component {
     return (
       <div
         className="panel panel-default"
-        style={{borderTop: '#e7e7e7 1px solid'}}
+        style={{
+          borderTop: '#e7e7e7 1px solid',
+          width: '100%'
+        }}
       >
-        <div className="panel-body">
+        <div className="panel-body" style={{width: '100%'}}>
           <div
             className="media"
             style={{
@@ -52,40 +55,51 @@ export default class Header extends Component {
               profilePicId={profilePage.profilePicId}
               size='13'
             />
-            <div className="media-body" style={{paddingLeft: '1em'}}>
-              <h2 className="media-heading">{profilePage.username} <small>{`(${profilePage.realName})`}</small></h2>
-              {(!!profileFirstRow || !!profileSecondRow || !! profileThirdRow) &&
-                <ul style={{paddingLeft: '1em'}}>
-                  {!!profileFirstRow &&
-                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileFirstRow}} />
-                  }
-                  {!!profileSecondRow &&
-                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileSecondRow}} />
-                  }
-                  {!!profileThirdRow &&
-                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileThirdRow}} />
-                  }
-                </ul>
-              }
-              {!profileFirstRow && !profileSecondRow && !profileThirdRow && userId === profilePage.id &&
-                <p>**Add your bio so that your Twinkle friends can know you better</p>
-              }
-              {userId === profilePage.id &&
-                <div>
-                  <Button
-                    className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
-                    onClick={() => this.setState({bioEditModalShown: true})}
-                  >
-                    Edit Bio
-                  </Button><br/>
-                  <Button
-                    className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
-                    onClick={this.onChangeProfilePictureClick}
-                  >
-                    Change Profile Picture
-                  </Button>
-                </div>
-              }
+            <div className="media-body" style={{paddingLeft: '1em', paddingRight: '5em'}}>
+              <div className="row col-md-8 col-sm-10 container-fluid">
+                <h2 className="media-heading">
+                  {profilePage.username} <small>{`(${profilePage.realName})`}</small>
+                </h2>
+                {(!!profileFirstRow || !!profileSecondRow || !! profileThirdRow) &&
+                  <ul
+                    style={{
+                      paddingLeft: '1em',
+                      paddingRight: '1em',
+                      wordWrap: 'break-word'
+                    }}>
+                    {!!profileFirstRow &&
+                      <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileFirstRow}} />
+                    }
+                    {!!profileSecondRow &&
+                      <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileSecondRow}} />
+                    }
+                    {!!profileThirdRow &&
+                      <li style={{marginBottom: '0px', paddingRight: '0.5em'}} dangerouslySetInnerHTML={{__html: profileThirdRow}} />
+                    }
+                  </ul>
+                }
+              </div>
+              <div className="row col-md-8 col-sm-10 container-fluid">
+                {!profileFirstRow && !profileSecondRow && !profileThirdRow && userId === profilePage.id &&
+                  <p>**Add your bio so that your Twinkle friends can know you better</p>
+                }
+                {userId === profilePage.id &&
+                  <div>
+                    <Button
+                      className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
+                      onClick={() => this.setState({bioEditModalShown: true})}
+                    >
+                      Edit Bio
+                    </Button><br/>
+                    <Button
+                      className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
+                      onClick={this.onChangeProfilePictureClick}
+                    >
+                      Change Profile Picture
+                    </Button>
+                  </div>
+                }
+              </div>
             </div>
             <input
               ref={ref => this.fileInput = ref}
