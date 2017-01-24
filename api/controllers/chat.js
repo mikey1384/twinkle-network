@@ -88,7 +88,7 @@ router.get('/more', requireAuth, (req, res) => {
 
 router.get('/channels', requireAuth, (req, res) => {
   const user = req.user;
-  fetchChat({user}, (err, results) => {
+  fetchChannels(user, (err, results) => {
     if (err) return res.status(500).send({error: err});
     res.send(results);
   })

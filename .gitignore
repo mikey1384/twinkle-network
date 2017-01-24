@@ -6,8 +6,8 @@ siteConfig.js
 .DS_Store
 URL.js
 keys.js
-entry/dist/bundle.js
-entry/dist/vendor.js
+public/bundle.js
+public/vendor.js
 memstats
 api_err.log
 api_out.log

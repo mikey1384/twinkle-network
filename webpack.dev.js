@@ -24,7 +24,7 @@ export default function(app) {
       loaders: [
         {
           test: /\.js$/,
-          include: [/shared/, /entry/],
+          include: [/source/, /entry/],
           loader: 'babel',
           query: {
             cacheDirectory: true,

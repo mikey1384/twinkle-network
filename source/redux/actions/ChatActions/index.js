@@ -203,11 +203,20 @@ export const notifyThatMemberLeftChannel = data => ({
 })
 
 export const openDirectMessage = (user, partner) => dispatch => {
-  dispatch(actions.fetchChannelsAsync({then: followUp}))
-  function followUp(data) {
-    dispatch(actions.updateChannelList(data))
-    dispatch(checkChatExistsThenOpenNewChatTabOrEnterExistingChat(user, partner))
-  }
+  request.get(`${API_URL}/channels`, auth()).then(
+    response => {
+      dispatch({
+        type: 'UPDATE_CHANNEL_LIST',
+        data: response.data
+      })
+      dispatch(checkChatExistsThenOpenNewChatTabOrEnterExistingChat(user, partner))
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 }
 
 export const receiveMessage = data => dispatch => {
@@ -272,7 +281,10 @@ export const submitMessageAsync = (params, callback) => dispatch => {
   .then(
     response => {
       const {channels} = response.data;
-      dispatch(actions.updateChannelList({channels}))
+      dispatch({
+        type: 'UPDATE_CHANNEL_LIST',
+        data: channels
+      })
       callback(params);
     }
   ).catch(

@@ -4,7 +4,7 @@
 0. Ensure that Node 7+ installed
 1. Import db.sql to your mysql
 2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
-3. Do the same to /shared/constants/"change this filename to ..." files
+3. Do the same to /source/constants/"change this filename to ..." files
 4. Run `npm install`
 5. Install nodemon `npm install -g nodemon`
 6. Install forever `npm install -g forever`

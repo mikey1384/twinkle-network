@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('../webpack.dev').default(app);
 }
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(__dirname + '/../public'));
 app.use((req, res) => {
   const location = createLocation(req.url);
   match({routes, location}, (err, redirectLocation, props) => {

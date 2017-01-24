@@ -39,18 +39,6 @@ export const enterChannel = (data, showOnTop = false) => ({
 export const fetchChannelWithId = channelId =>
 request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
 
-export const fetchChannelsAsync = ({then}) => dispatch => {
-  request.get(`${API_URL}/channels`, auth())
-  .then(
-    response => then(response.data)
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
-}
-
 export const getNumberOfUnreadMessages = numUnreads => ({
   type: 'GET_NUM_UNREAD_MSGS',
   numUnreads
@@ -105,9 +93,4 @@ export const searchUserToInvite = data => ({
 export const submitMessage = message => ({
   type: 'SUBMIT_MESSAGE',
   message
-})
-
-export const updateChannelList = (data) => ({
-  type: 'UPDATE_CHANNEL_LIST',
-  data
 })

@@ -407,7 +407,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'UPDATE_CHANNEL_LIST':
       return {
         ...state,
-        channels: action.data.channels
+        channels: action.data
       }
     case 'RESET_CHAT':
       return defaultState;

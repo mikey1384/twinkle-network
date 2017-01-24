@@ -4,11 +4,11 @@ var webpack = require('webpack');
 module.exports = {
   entry: './entry/client',
   resolve: {
-    modulesDirectories: ['node_modules', 'shared'],
+    modulesDirectories: ['node_modules', 'source'],
     extensions: ['', '.js', '.jsx']
   },
   output: {
-    path: path.join(__dirname + '/entry/', 'dist'),
+    path: __dirname + '/public',
     filename: 'bundle.js',
     chunkFilename: '[id].chunk.js',
     publicPath: '/'
