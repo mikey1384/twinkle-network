@@ -109,6 +109,7 @@ router.get('/channel', requireAuth, (req, res) => {
     messages: []
   }
 
+  updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
   fetchMessages(channelId).then(
     messages => {
       resultObject.messages = messages;
