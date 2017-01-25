@@ -95,6 +95,7 @@
     "eslint-plugin-react": "^6.4.1",
     "jest": "^18.1.0",
     "react-transform-hmr": "^1.0.1",
+    "supertest": "^2.0.1",
     "webpack": "^1.14.0",
     "webpack-dev-middleware": "^1.9.0",
     "webpack-hot-middleware": "^2.13.2"
@@ -107,6 +108,9 @@
     ],
     "modulePaths": [
       "<rootDir>/source/"
+    ],
+    "setupFiles": [
+      "<rootDir>/test/polyfills.js"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>[/\\\\](certs|node_modules|scripts)[/\\\\]"

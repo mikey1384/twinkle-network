@@ -5,9 +5,11 @@ const router = express.Router();
 
 const {requireAuth} = require('../auth');
 const {processedString, processedTitleString, stringIsEmpty} = require('../helpers/stringHelpers');
+const {queryPromise} = require('../helpers/');
 const {generalChatId} = require('../siteConfig');
 const {
   fetchChat,
+  fetchMessages,
   fetchChannels,
   handleCaseWhereBidirectionalChatAlreadyExists,
   updateLastRead
@@ -17,14 +19,14 @@ const {
 router.get('/', requireAuth, (req, res) => {
   const user = req.user;
   const lastChannelId = user.lastChannelId || generalChatId;
-  fetchChat({user, channelId: lastChannelId}, (err, results) => {
-    if (err) {
-      console.error(err);
+  fetchChat({user, channelId: lastChannelId}).then(
+    results => res.send(results)
+  ).catch(
+    err => {
       if (err.status) return res.status(err.status).send({error: err})
       return res.status(500).send({error: err})
     }
-    res.send(results)
-  })
+  )
 })
 
 router.post('/', requireAuth, (req, res) => {
@@ -63,7 +65,11 @@ router.post('/', requireAuth, (req, res) => {
   }
 
   function fetchUpdatedChannels(messageId, callback) {
-    fetchChannels(user, (err, channels) => callback(err, {messageId, timeStamp, channels}))
+    fetchChannels(user).then(
+      channels => callback(null, {messageId, timeStamp, channels})
+    ).catch(
+      err => callback(err)
+    )
   }
 })
 
@@ -88,35 +94,28 @@ router.get('/more', requireAuth, (req, res) => {
 
 router.get('/channels', requireAuth, (req, res) => {
   const user = req.user;
-  fetchChannels(user, (err, results) => {
-    if (err) return res.status(500).send({error: err});
-    res.send(results);
-  })
+  fetchChannels(user).then(
+    channels => res.send(channels)
+  ).catch(
+    err => res.status(500).send({error: err})
+  )
 })
 
 router.get('/channel', requireAuth, (req, res) => {
   const user = req.user;
   const channelId = Number(req.query.channelId) || generalChatId;
-  async.waterfall([
-    callback => {
-      fetchChat({user, channelId}, (err, results) => {
-        if (err) return callback(err);
-        callback(err, results.messages)
-      })
-    },
-    (messages, callback) => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id], (err) => {
-        callback(err, messages)
-      })
-    }
-  ], (err, messages) => {
-    if (err) {
-      console.error(err);
-      if (err.status) return res.status(err.status).send({error: err})
-      return res.status(500).send({error: err})
-    }
+  let resultObject = {
+    channel: {},
+    messages: []
+  }
 
-    async.parallel([
+  fetchMessages(channelId).then(
+    messages => {
+      resultObject.messages = messages;
+      return queryPromise('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id])
+    }
+  ).then(
+    () => async.parallel([
       callback => {
         pool.query('SELECT twoPeople, creator FROM msg_channels WHERE id = ?', channelId, (err, rows) => {
           callback(err, rows[0])
@@ -133,17 +132,21 @@ router.get('/channel', requireAuth, (req, res) => {
         })
       }
     ], (err, results) => {
-      res.send({
-        channel: {
-          id: channelId,
-          twoPeople: results[0] ? Boolean(results[0].twoPeople) : false,
-          creatorId: results[0].creator,
-          members: results[1]
-        },
-        messages
-      })
+      if (err) {
+        console.error(err)
+        return res.status(500).send({error: err})
+      }
+      resultObject.channel = {
+        id: channelId,
+        twoPeople: results[0] ? Boolean(results[0].twoPeople) : false,
+        creatorId: results[0] ? results[0].creator : null,
+        members: results[1]
+      }
+      res.send(resultObject)
     })
-  })
+  ).catch(
+    err => res.status(500).send({error: err})
+  )
 })
 
 router.get('/channel/check', requireAuth, (req, res) => {

@@ -135,8 +135,7 @@ export const increaseNumberOfUnreadMessages = () => ({
 })
 
 export const initChatAsync = callback => dispatch =>
-request.get(API_URL, auth())
-.then(
+request.get(API_URL, auth()).then(
   response => {
     dispatch(actions.initChat(response.data));
     callback(dispatch);
