@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import {initChatAsync, resetChat, toggleChat, turnChatOff} from 'redux/actions/ChatActions';
 import {initSessionAsync} from 'redux/actions/UserActions';
 import {URL} from 'constants/URL';
-import ExecutionEnvironment from 'exenv';
 import {addEvent, removeEvent} from 'helpers/listenerHelpers';
 
 
@@ -46,10 +45,8 @@ export default class App extends Component {
 
   componentDidMount() {
     const {initSession} = this.props;
-    if (ExecutionEnvironment.canUseDOM) {
-      initSession();
-      addEvent(window, 'scroll', this.onScroll);
-    }
+    initSession();
+    addEvent(window, 'scroll', this.onScroll);
   }
 
   componentDidUpdate(prevProps) {
@@ -88,13 +85,11 @@ export default class App extends Component {
   }
 
   componentWillUnmount() {
-    if (ExecutionEnvironment.canUseDOM) {
-      removeEvent(window, 'scroll', this.onScroll);
-    }
+    removeEvent(window, 'scroll', this.onScroll);
   }
 
   render() {
-    const {chatMode, turnChatOff, location, params} = this.props;
+    const {chatMode, turnChatOff, resetChat, location, params} = this.props;
     const {scrollPosition} = this.state;
     const style = chatMode && this.props.loggedIn ? {
       display: 'none'
@@ -126,7 +121,7 @@ export default class App extends Component {
             onUnmount={
               () => {
                 window.scrollTo(0, scrollPosition)
-                this.props.resetChat();
+                resetChat();
                 turnChatOff();
               }
             }
@@ -137,7 +132,8 @@ export default class App extends Component {
   }
 
   onChatButtonClick() {
-    const {toggleChat, initChat} = this.props;
+    const {toggleChat, initChat, chatMode, turnChatOff} = this.props;
+    if (!!chatMode) return turnChatOff()
     initChat(() => {
       toggleChat();
     })

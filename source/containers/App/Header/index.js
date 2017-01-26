@@ -19,7 +19,6 @@ import ChatButton from './ChatButton';
 //import NotificationsButton from './NotificationsButton';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import {GENERAL_CHAT_ID} from 'constants/database';
-import ExecutionEnvironment from 'exenv';
 import SearchBox from './SearchBox';
 import HeaderNav from './HeaderNav';
 import {Color} from 'constants/css';
@@ -60,30 +59,30 @@ export default class Header extends Component {
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
+  }
 
-    const {socket, turnChatOff, increaseNumberOfUnreadMessages} = props;
-    if (ExecutionEnvironment.canUseDOM) {
-      socket.on('connect', () => {
-        if (this.props.userId) {
-          socket.emit('bind_uid_to_socket', this.props.userId, this.props.username);
-        }
-      })
-      socket.on('receive_notification', data => {
-        console.log(data);
-      })
-      socket.on('receive_message', data => {
-        if (data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
-          increaseNumberOfUnreadMessages()
-        }
-      })
-      socket.on('chat_invitation', data => {
-        socket.emit('join_chat_channel', data.channelId);
-        increaseNumberOfUnreadMessages();
-      })
-      socket.on('disconnect', () => {
-        turnChatOff()
-      })
-    }
+  componentDidMount() {
+    const {socket, turnChatOff, increaseNumberOfUnreadMessages} = this.props;
+    socket.on('connect', () => {
+      if (this.props.userId) {
+        socket.emit('bind_uid_to_socket', this.props.userId, this.props.username);
+      }
+    })
+    socket.on('receive_notification', data => {
+      console.log(data);
+    })
+    socket.on('receive_message', data => {
+      if (data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
+        increaseNumberOfUnreadMessages()
+      }
+    })
+    socket.on('chat_invitation', data => {
+      socket.emit('join_chat_channel', data.channelId);
+      increaseNumberOfUnreadMessages();
+    })
+    socket.on('disconnect', () => {
+      turnChatOff()
+    })
   }
 
   componentWillReceiveProps(nextProps) {
