@@ -6,7 +6,6 @@ import createLocation from 'history/lib/createLocation';
 import {Provider} from 'react-redux';
 import path from 'path';
 import {routes, store} from 'Root';
-import {initActions} from 'redux/actions';
 
 const app = express();
 
@@ -24,9 +23,7 @@ app.use((req, res) => {
     }
 
     if(!props) return res.status(404).end('Not found');
-    store.dispatch(initActions(location))
-      .then(() => res.end(renderView()))
-      .catch(err => res.status(500).end(err.message))
+    res.end(renderView())
 
     function renderView() {
       const view = (

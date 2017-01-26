@@ -6,18 +6,23 @@ import AddVideoModal from './Modals/AddVideoModal';
 import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from './Modals/AddPlaylistModal';
-import {openAddVideoModal, closeAddVideoModal, resetVideoPage} from 'redux/actions/VideoActions';
+import {openAddVideoModal, closeAddVideoModal, getInitialVideos} from 'redux/actions/VideoActions';
 import {
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModalAsync,
   getVideosForModalAsync,
   closeReorderPinnedPlaylistsModal,
-  closeSelectPlaylistsToPinModal
+  closeSelectPlaylistsToPinModal,
+  getPinnedPlaylistsAsync,
+  getPlaylistsAsync
 } from 'redux/actions/PlaylistActions';
+import ExecutionEnvironment from 'exenv';
 import {connect} from 'react-redux';
+
 
 @connect(
   state => ({
+    videosLoaded: state.VideoReducer.loaded,
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
@@ -25,9 +30,11 @@ import {connect} from 'react-redux';
     videos: state.VideoReducer.allVideoThumbs,
     loadMoreVideosButton: state.VideoReducer.loadMoreButton,
 
+    playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,
     playlists: state.PlaylistReducer.allPlaylists,
     loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
 
+    pinnedPlaylistsLoaded: state.PlaylistReducer.pinnedPlaylistsLoaded,
     pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
     loadMorePinnedPlaylists: state.PlaylistReducer.loadMorePinned,
 
@@ -46,9 +53,11 @@ import {connect} from 'react-redux';
     closeReorderPinnedPlaylistsModal,
     closeSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,
-    resetVideoPage,
     closeAddVideoModal,
-    openAddVideoModal
+    openAddVideoModal,
+    getInitialVideos,
+    getPinnedPlaylists: getPinnedPlaylistsAsync,
+    getPlaylists: getPlaylistsAsync
   }
 )
 
@@ -58,8 +67,13 @@ export default class Main extends Component {
     this.showAddPlaylistModal = this.showAddPlaylistModal.bind(this)
   }
 
-  componentWillMount() {
-    this.props.resetVideoPage()
+  componentDidMount() {
+    const {getInitialVideos, getPlaylists, getPinnedPlaylists, location, videosLoaded} = this.props;
+    if (ExecutionEnvironment.canUseDOM && (location.action === 'PUSH' || !videosLoaded)) {
+      getInitialVideos()
+      getPinnedPlaylists()
+      getPlaylists()
+    }
   }
 
   render() {
@@ -69,12 +83,15 @@ export default class Main extends Component {
       userId,
 
       videos,
+      videosLoaded,
       loadMoreVideosButton,
 
       playlists,
+      playlistsLoaded,
       loadMorePlaylistsButton,
 
       pinnedPlaylists,
+      pinnedPlaylistsLoaded,
       loadMorePinnedPlaylists,
 
       addVideoModalShown,
@@ -124,6 +141,7 @@ export default class Main extends Component {
             loadMoreButton={loadMorePinnedPlaylists}
             userId={userId}
             playlists={pinnedPlaylists}
+            loaded={pinnedPlaylistsLoaded}
           />
         }
         <PlaylistsPanel
@@ -134,6 +152,7 @@ export default class Main extends Component {
           loadMoreButton={loadMorePlaylistsButton}
           userId={userId}
           playlists={playlists}
+          loaded={playlistsLoaded}
         />
         <AllVideosPanel
           key={"allvideos"}
@@ -143,6 +162,7 @@ export default class Main extends Component {
           userId={userId}
           videos={videos}
           onAddVideoClick={() => openAddVideoModal()}
+          loaded={videosLoaded}
         />
         {addVideoModalShown &&
           <AddVideoModal

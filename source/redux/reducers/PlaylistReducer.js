@@ -1,6 +1,8 @@
 const defaultState = {
   allPlaylists: [],
   pinnedPlaylists: [],
+  allPlaylistsLoaded: false,
+  pinnedPlaylistsLoaded: false,
   loadMoreButton: false,
 
   videoThumbsForModal: [],
@@ -34,24 +36,18 @@ export default function PlaylistReducer(state = defaultState, action) {
         action.data.playlists.pop();
         loadMoreButton = true;
       }
-      if (action.initialRun) {
-        defaultPlaylists = action.data.playlists;
-        return {
-          ...state,
-          allPlaylists: defaultPlaylists,
-          loadMoreButton
-        }
-      } else {
-        return {
-          ...state,
-          allPlaylists: state.allPlaylists.concat(action.data.playlists),
-          loadMoreButton
-        };
+      if (action.initialRun) defaultPlaylists = action.data.playlists;
+      return {
+        ...state,
+        allPlaylistsLoaded: true,
+        allPlaylists: action.initialRun ? defaultPlaylists : state.allPlaylists.concat(action.data.playlists),
+        loadMoreButton
       }
     case 'GET_PINNED_PLAYLISTS':
       defaultPinnedPlaylists = action.data.playlists;
       return {
         ...state,
+        pinnedPlaylistsLoaded: true,
         pinnedPlaylists: defaultPinnedPlaylists
       }
     case 'GET_VIDEOS_FOR_MODAL':

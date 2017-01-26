@@ -3,6 +3,7 @@ import VideoThumb from 'components/VideoThumb';
 import Button from 'components/Button';
 import {connect} from 'react-redux';
 import {getMoreVideos} from 'redux/actions/VideoActions';
+import Loading from 'components/Loading';
 
 const last = (array) => {
   return array[array.length - 1];
@@ -26,7 +27,7 @@ export default class AllVideosPanel extends Component {
   }
 
   render() {
-    const {loadMoreButton, videos, title = 'All Videos', onAddVideoClick} = this.props;
+    const {loadMoreButton, videos, title = 'All Videos', loaded, onAddVideoClick} = this.props;
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -39,6 +40,9 @@ export default class AllVideosPanel extends Component {
           <div className="clearfix"></div>
         </div>
         <div className="panel-body">
+          {videos.length === 0 && (!!loaded ?
+            <div className="text-center">No Videos</div> : <Loading />
+          )}
           {videos.map((video, index) => {
             const editable = this.props.userId === video.uploaderId;
             return (

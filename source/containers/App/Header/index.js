@@ -5,10 +5,14 @@ import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActio
 import {
   getNumberOfUnreadMessagesAsync,
   increaseNumberOfUnreadMessages,
-  turnChatOff } from 'redux/actions/ChatActions';
+  turnChatOff
+} from 'redux/actions/ChatActions';
 import {fetchFeedsAsync} from 'redux/actions/FeedActions';
 import {getInitialVideos} from 'redux/actions/VideoActions';
-import {getPinnedPlaylistsAsync, getPlaylistsAsync} from 'redux/actions/PlaylistActions';
+import {
+  getPlaylistsAsync,
+  getPinnedPlaylistsAsync
+} from 'redux/actions/PlaylistActions';
 import SigninModal from 'containers/Signin';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
@@ -38,11 +42,11 @@ import {Color} from 'constants/css';
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
     increaseNumberOfUnreadMessages,
-    //fetchNotifications: fetchNotificationsAsync,
-    getInitialVideos,
+    fetchFeeds: fetchFeedsAsync,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
-    fetchFeedsAsync
+    getInitialVideos,
+    //fetchNotifications: fetchNotificationsAsync
   }
 )
 export default class Header extends Component {
@@ -135,10 +139,10 @@ export default class Header extends Component {
       closeSigninModal,
       onChatButtonClick,
       numChatUnreads,
+      fetchFeeds,
       getInitialVideos,
       getPinnedPlaylists,
-      getPlaylists,
-      fetchFeedsAsync
+      getPlaylists
     } = this.props;
 
     const {selectedTab, logoBlue, logoGreen} = this.state;
@@ -164,18 +168,18 @@ export default class Header extends Component {
                 <HeaderNav
                   to="/"
                   selected={selectedTab === 'home'}
-                  onClick={() => fetchFeedsAsync()}
+                  onClick={() => fetchFeeds()}
                 >
                   Home
                 </HeaderNav>
                 <HeaderNav
                   to="/videos"
+                  selected={selectedTab === 'videos'}
                   onClick={() => {
                     getInitialVideos()
                     getPinnedPlaylists()
                     getPlaylists()
                   }}
-                  selected={selectedTab === 'videos'}
                 >
                   Videos
                 </HeaderNav>

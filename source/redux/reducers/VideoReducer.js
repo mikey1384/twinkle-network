@@ -1,6 +1,7 @@
 import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
 
 const defaultState = {
+  loaded: false,
   allVideoThumbs: [],
   loadMoreButton: false,
   allVideosLoaded: false,
@@ -113,20 +114,12 @@ export default function VideoReducer(state = defaultState, action) {
         allVideosLoaded = true;
         loadMoreButton = false;
       }
-      if (action.initialRun) {
-        return {
-          ...state,
-          allVideoThumbs: action.videos,
-          loadMoreButton,
-          allVideosLoaded
-        }
-      } else {
-        return {
-          ...state,
-          allVideoThumbs: state.allVideoThumbs.concat(action.videos),
-          loadMoreButton,
-          allVideosLoaded
-        }
+      return {
+        ...state,
+        loaded: true,
+        allVideoThumbs: action.initialRun ? action.videos : state.allVideoThumbs.concat(action.videos),
+        loadMoreButton,
+        allVideosLoaded
       }
     case 'UPLOAD_VIDEO':
       const newState = action.data.concat(state.allVideoThumbs);

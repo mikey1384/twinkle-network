@@ -3,6 +3,7 @@ import PlaylistCarousel from '../Carousels/PlaylistCarousel';
 import {connect} from 'react-redux';
 import Button from 'components/Button';
 import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions';
+import Loading from 'components/Loading';
 
 const last = array => {
   return array[array.length - 1];
@@ -28,7 +29,7 @@ export default class PlaylistsPanel extends Component {
   }
 
   render() {
-    const {loadMoreButton, playlists, buttonGroupShown, buttonGroup, title = "All Playlists"} = this.props;
+    const {loadMoreButton, playlists, buttonGroupShown, buttonGroup, loaded, title = "All Playlists"} = this.props;
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -39,9 +40,9 @@ export default class PlaylistsPanel extends Component {
         </div>
         <div className="panel-body">
           {this.renderPlaylists()}
-          {playlists.length === 0 &&
-            <div className="text-center">No Playlists</div>
-          }
+          {playlists.length === 0 && (
+            !!loaded ? <div className="text-center">No Playlists</div> : <Loading />
+          )}
           {loadMoreButton &&
             <div className="text-center">
               <Button className="btn btn-success" onClick={this.loadMorePlaylists}>Load More</Button>

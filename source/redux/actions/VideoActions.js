@@ -13,8 +13,7 @@ export const getVideos = (videos, initialRun) => ({
   videos: videos
 })
 
-export const getInitialVideos = () => dispatch => request.get(API_URL)
-.then(
+export const getInitialVideos = () => dispatch => request.get(API_URL).then(
   response => dispatch(getVideos(response.data, true))
 ).catch(
   error => {
