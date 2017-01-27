@@ -7,13 +7,11 @@ import {URL} from 'constants/URL';
 const API_URL = `${URL}/chat`;
 
 export const selectChannel = channelId => dispatch => {
-  return new Promise(resolve => {
-    dispatch({
-      type: 'SELECT_CHANNEL',
-      channelId
-    })
-    resolve()
+  dispatch({
+    type: 'SELECT_CHANNEL',
+    channelId
   })
+  return Promise.resolve()
 }
 
 export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
@@ -201,11 +199,11 @@ export const notifyThatMemberLeftChannel = data => ({
   data
 })
 
-export const openDirectMessage = (user, partner) => dispatch => {
+export const openChatForDirectMessage = (user, partner) => dispatch => {
   request.get(`${API_URL}/channels`, auth()).then(
     response => {
       dispatch({
-        type: 'UPDATE_CHANNEL_LIST',
+        type: 'LOAD_CHANNEL_LIST',
         data: response.data
       })
       dispatch(checkChatExistsThenOpenNewChatTabOrEnterExistingChat(user, partner))
@@ -277,16 +275,8 @@ export const submitMessageAsync = (params, callback) => dispatch => {
     timeStamp: Math.floor(Date.now()/1000)
   }
   dispatch(actions.submitMessage(message))
-  request.post(API_URL, {message}, auth())
-  .then(
-    response => {
-      const {channels} = response.data;
-      dispatch({
-        type: 'UPDATE_CHANNEL_LIST',
-        data: channels
-      })
-      callback(params);
-    }
+  request.post(API_URL, {message}, auth()).then(
+    response => callback(params)
   ).catch(
     error => {
       console.error(error.response || error)

@@ -193,6 +193,11 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         channels: state.channels.filter(channel => channel.id !== action.channelId)
       }
+    case 'LOAD_CHANNEL_LIST':
+      return {
+        ...state,
+        channels: action.data
+      }
     case 'LOAD_MORE_MSG':
       loadMoreButton = false;
       if (action.data.length === 21) {
@@ -371,6 +376,19 @@ export default function ChatReducer(state = defaultState, action) {
     case 'SUBMIT_MESSAGE':
       return {
         ...state,
+        channels: state.channels.reduce((result, channel) => {
+          return channel.id === action.message.channelId ?
+            [{
+              ...channel,
+              lastMessage: action.message.content,
+              lastUpdate: Math.floor(Date.now()/1000),
+              numUnreads: 0,
+              lastMessageSender: {
+                id: action.message.userId,
+                username: action.message.username
+              }
+            }].concat(result) : result.concat([channel])
+        }, []),
         messages: state.messages.concat([{
           id: action.message.messageId,
           channelId: action.message.channelId,
@@ -385,11 +403,6 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         chatMode: false
-      }
-    case 'UPDATE_CHANNEL_LIST':
-      return {
-        ...state,
-        channels: action.data
       }
     case 'RESET_CHAT':
       return defaultState;

@@ -54,11 +54,7 @@ router.post('/', requireAuth, (req, res) => {
       )
     }
   ).then(
-    messageId => fetchChannels(user).then(
-      channels => Promise.resolve({messageId, timeStamp, channels})
-    )
-  ).then(
-    results => res.send(results)
+    () => res.send({success: true})
   ).catch(
     err => res.status(500).send(err)
   )
