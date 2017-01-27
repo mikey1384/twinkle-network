@@ -30,7 +30,7 @@ const fetchChat = (params) => {
   function checkIfLastChannelExists() {
     if (channelId === generalChatId) return Promise.resolve();
     let query = 'SELECT * FROM msg_channels WHERE id = ?';
-    poolQuery(query, channelId).then(
+    return poolQuery(query, channelId).then(
       rows => {
         if (!rows || rows.length === 0) {
           return poolQuery("UPDATE users SET ? WHERE id = ?", [{lastChannelId: generalChatId}, user.id]).then(
