@@ -49,11 +49,6 @@ export const hideChat = channelId => ({
   channelId
 })
 
-export const initChat = (data) => ({
-  type: 'INIT_CHAT',
-  data
-})
-
 export const inviteUsersToChannel = data => ({
   type: 'INVITE_USERS_TO_CHANNEL',
   data
@@ -73,11 +68,6 @@ export const openNewChatTab = (user, partner) => ({
   type: 'OPEN_NEW_CHAT_TAB',
   user,
   partner
-})
-
-export const receiveExistingChatData = data => ({
-  type: 'RECEIVE_EXISTING_CHAT_DATA',
-  data
 })
 
 export const searchChat = data => ({

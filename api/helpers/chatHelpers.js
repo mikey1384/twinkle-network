@@ -2,7 +2,7 @@ const pool = require('../pool');
 const async = require('async');
 const access = require('../auth/access');
 const {generalChatId} = require('../siteConfig');
-const {queryPromise} = require('../helpers');
+const {poolQuery} = require('../helpers');
 
 
 const fetchChat = (params) => {
@@ -35,16 +35,21 @@ const fetchChat = (params) => {
     return new Promise((resolve, reject) => {
       if (channelId === generalChatId) return resolve();
       let query = 'SELECT * FROM msg_channels WHERE id = ?';
-      pool.query(query, channelId, (err, rows) => {
-        if (!rows || rows.length === 0) {
-          return pool.query("UPDATE users SET ? WHERE id = ?", [{lastChannelId: generalChatId}, user.id], err => {
-            channelId = generalChatId;
-            resolve();
-          })
+      poolQuery(query, channelId).then(
+        rows => {
+          if (!rows || rows.length === 0) {
+            return poolQuery("UPDATE users SET ? WHERE id = ?", [{lastChannelId: generalChatId}, user.id]).then(
+              () => {
+                channelId = generalChatId;
+                resolve();
+              }
+            )
+          }
+          resolve()
         }
-        if (err) return reject(err)
-        resolve()
-      })
+      ).catch(
+        err => reject(err)
+      )
     })
   }
 
@@ -67,59 +72,39 @@ const fetchChat = (params) => {
 
   function fetchChannelsAndMessages() {
     return new Promise((resolve, reject) => {
-      async.parallel([
-        callback => {
-          fetchChannels(user).then(
-            channels => callback(null, channels)
-          ).catch(
-            err => callback(err)
-          )
-        },
-        callback => {
-          fetchMessages(channelId).then(
-            messages => callback(null, messages)
-          ).catch(
-            err => callback(err)
-          )
+      Promise.all([fetchChannels(user), fetchMessages(channelId)]).then(
+        channelsAndMessages => {
+          results.channels = channelsAndMessages[0];
+          results.messages = channelsAndMessages[1];
+          resolve()
         }
-      ], (err, channelsAndMessages) => {
-        results.channels = channelsAndMessages[0];
-        results.messages = channelsAndMessages[1];
-        if (err) return reject(err)
-        resolve()
-      })
+      ).catch(
+        err => reject(err)
+      )
     })
   }
 
   function fetchCurrentChannel() {
     return new Promise((resolve, reject) => {
-      async.parallel([
-        callback => {
-          pool.query('SELECT twoPeople, creator FROM msg_channels WHERE id = ?', channelId, (err, rows) => {
-            callback(err, rows[0])
-          })
-        },
-        callback => {
-          let query = [
-            'SELECT a.userId, b.username FROM ',
-            'msg_channel_members a JOIN users b ON ',
-            'a.userId = b.id WHERE a.channelId = ?'
-          ].join('')
-          pool.query(query, channelId, (err, rows) => {
-            callback(err, rows)
-          })
+      let query1 = 'SELECT twoPeople, creator FROM msg_channels WHERE id = ?';
+      let query2 = `
+        SELECT a.userId, b.username FROM msg_channel_members a JOIN users b
+        ON a.userId = b.id WHERE a.channelId = ?
+      `;
+
+      Promise.all([poolQuery(query1, channelId), poolQuery(query2, channelId)]).then(
+        res => {
+          results.currentChannel = {
+            id: channelId,
+            twoPeople: Boolean(res[0][0].twoPeople),
+            creatorId: res[0][0].creator,
+            members: res[1]
+          };
+          resolve()
         }
-      ], (err, res) => {
-        const channel = {
-          id: channelId,
-          twoPeople: Boolean(res[0].twoPeople),
-          creatorId: res[0].creator,
-          members: res[1]
-        }
-        results.currentChannel = channel;
-        if (err) return reject(err)
-        resolve()
-      })
+      ).catch(
+        err => reject(err)
+      )
     })
   }
 }
@@ -131,7 +116,7 @@ const fetchMessages = channelId => {
       a.userId = c.userId AND c.isProfilePic = '1'
       WHERE channelId = ? ORDER BY id DESC LIMIT 21
     `;
-    queryPromise(query, channelId).then(
+    poolQuery(query, channelId).then(
       messages => resolve(messages)
     ).catch(
       err => reject(err)
@@ -154,7 +139,7 @@ const fetchChannels = (user) => {
   })
 
   function fetchChannelInfos() {
-    return queryPromise('SELECT channelId, lastRead, isHidden FROM msg_channel_info WHERE userId = ?', user.id)
+    return poolQuery('SELECT channelId, lastRead, isHidden FROM msg_channel_info WHERE userId = ?', user.id)
   }
 
   function fetchBasicChannelData(channelInfos) {
@@ -164,7 +149,7 @@ const fetchChannels = (user) => {
       'OR b.userId = ?)'
     ].join('')
     return new Promise((resolve, reject) => {
-      queryPromise(query, [generalChatId, user.id]).then(
+      poolQuery(query, [generalChatId, user.id]).then(
         channels => {
           let taskArray = [];
           for (let i = 0; i < channels.length; i++) {
@@ -223,7 +208,7 @@ const fetchUserSpecificChannelData = (channel, channelInfos, userId) => {
   }
   let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ?';
   return new Promise((resolve, reject) => {
-    queryPromise(query, [channelId, lastReadTime, userId]).then(
+    poolQuery(query, [channelId, lastReadTime, userId]).then(
       rows => resolve({numUnreads: rows[0].numUnreads, isHidden})
     ).catch(
       err => reject(err)
@@ -248,7 +233,7 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => {
       'WHERE channelId = ? ORDER BY a.timeStamp DESC LIMIT 1'
     ].join('')
     return new Promise((resolve, reject) => {
-      queryPromise(query, channel.id).then(
+      poolQuery(query, channel.id).then(
         rows => resolve(rows[0] || {})
       ).catch(
         err => reject(err)
@@ -280,7 +265,7 @@ const generateTitleForBidirectionalChannel = (channelId, userId) => {
     'WHERE a.id = ? AND a.twoPeople = 1'
   ].join('')
   return new Promise((resolve, reject) => {
-    queryPromise(query, channelId).then(
+    poolQuery(query, channelId).then(
       rows => {
         const title = rows.length > 0 ? generateTitle(rows) : null;
         resolve(title)
@@ -304,7 +289,7 @@ const generateTitleForBidirectionalChannel = (channelId, userId) => {
 const generateTitleForGroupChannel = (channelId, userId, callback) => {
   const query = 'SELECT channelName FROM msg_channel_info WHERE userId = ? AND channelId = ?';
   return new Promise((resolve, reject) => {
-    queryPromise(query, [userId, channelId]).then(
+    poolQuery(query, [userId, channelId]).then(
       rows => {
         if (!rows || rows.length === 0) return resolve(null)
         return resolve(rows[0].channelName)
@@ -315,62 +300,34 @@ const generateTitleForGroupChannel = (channelId, userId, callback) => {
   })
 }
 
-const handleCaseWhereBidirectionalChatAlreadyExists = (channelId, userId, content, callback) => {
-  const timeStamp = Math.floor(Date.now()/1000);
-  const message = {channelId, userId, content, timeStamp};
-
-  async.parallel([
-    callback => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, userId], (err) => {
-        callback(err)
-      })
-    },
-    callback => {
-      pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
-        callback(err, {message, messageId: result.insertId});
-      })
-    }
-  ], (err, results) => {
-    callback(err, results[1])
-  })
+const saveChannelMembers = (channelId, members) => {
+  let tasks = members.map(userId => poolQuery('INSERT INTO msg_channel_members SET ?', {channelId, userId}))
+  return Promise.all(tasks)
 }
 
 const updateLastRead = ({users, channelId, timeStamp}, callback) => {
-  let taskArray = users.map(user => {
+  let tasks = users.map(user => {
     let userId = user.id;
     let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?';
-    return function(callback) {
-      async.waterfall([
-        cb => {
-          pool.query(query, [userId, channelId], (err, rows) => cb(err, rows))
-        },
-        (rows, cb) => {
-          if(Number(rows[0].num) > 0) {
-            let query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?';
-            pool.query(query, [{lastRead: timeStamp}, userId, channelId], err => cb(err));
-          } else {
-            pool.query('INSERT INTO msg_channel_info SET ?', {userId, channelId, lastRead: timeStamp}, err => cb(err));
-          }
+    return poolQuery(query, [userId, channelId]).then(
+      rows => {
+        if(Number(rows[0].num) > 0) {
+          let query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?';
+          return poolQuery(query, [{lastRead: timeStamp}, userId, channelId])
+        } else {
+          return poolQuery('INSERT INTO msg_channel_info SET ?', {userId, channelId, lastRead: timeStamp})
         }
-      ], err => callback(err))
-    }
+      }
+    )
   });
-  taskArray.push(
-    function(callback) {
-      pool.query('UPDATE msg_channel_info SET ? WHERE channelId = ?', [{isHidden: false}, channelId], err => callback(err))
-    }
-  )
-  async.parallel(taskArray, err => {
-    if (err) console.error(err)
-    if (callback) callback(err)
-    return;
-  })
+  tasks.push(poolQuery('UPDATE msg_channel_info SET ? WHERE channelId = ?', [{isHidden: false}, channelId]))
+  return Promise.all(tasks)
 }
 
 module.exports = {
   fetchChat,
   fetchMessages,
   fetchChannels,
-  handleCaseWhereBidirectionalChatAlreadyExists,
+  saveChannelMembers,
   updateLastRead
 }

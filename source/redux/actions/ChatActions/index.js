@@ -52,23 +52,23 @@ export const clearUserSearchResults = () => ({
   type: 'CLEAR_USER_SEARCH_RESULTS'
 })
 
-export const checkChatExistsThenCreateNewChatOrReceiveExistingChatData = (params, callback) => dispatch =>
-request.post(`${API_URL}/channel/twoPeople`, {...params, timeStamp: Math.floor(Date.now()/1000)}, auth())
-.then(
-  response => {
-    if (!!response.data.alreadyExists) {
-      dispatch(actions.receiveExistingChatData(response.data.alreadyExists.message));
-      return callback(response.data);
+export const sendFirstDirectMessage = (params, callback) => dispatch => {
+  let body = {
+    ...params,
+    timeStamp: Math.floor(Date.now()/1000)
+  }
+  request.post(`${API_URL}/channel/twoPeople`, body, auth()).then(
+    response => {
+      dispatch(actions.createNewChat(response.data));
+      callback(response.data);
     }
-    dispatch(actions.createNewChat(response.data));
-    callback(response.data);
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+}
 
 export const createNewChannelAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/channel`, {params}, auth())
@@ -136,10 +136,10 @@ export const increaseNumberOfUnreadMessages = () => ({
 
 export const initChatAsync = callback => dispatch =>
 request.get(API_URL, auth()).then(
-  response => {
-    dispatch(actions.initChat(response.data));
-    callback(dispatch);
-  }
+  response => dispatch({
+    type: 'INIT_CHAT',
+    data: response.data
+  })
 ).catch(
   error => {
     console.error(error.response || error)
@@ -239,9 +239,10 @@ export const receiveMessageOnDifferentChannel = (data, senderIsNotTheUser) => ({
   senderIsNotTheUser
 })
 
-export const receiveFirstMsg = data => ({
+export const receiveFirstMsg = (data, duplicate) => ({
   type: 'RECEIVE_FIRST_MSG',
-  data
+  data,
+  duplicate
 })
 
 export const resetChat = () => ({
@@ -293,10 +294,6 @@ export const submitMessageAsync = (params, callback) => dispatch => {
     }
   )
 }
-
-export const toggleChat = () => ({
-  type: 'TOGGLE_CHAT'
-})
 
 export const turnChatOff = () => ({
   type: 'TURN_CHAT_OFF'

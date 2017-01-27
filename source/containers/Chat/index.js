@@ -44,7 +44,7 @@ const channelName = (channels, currentChannel) => {
     submitMessage: ChatActions.submitMessageAsync,
     loadMoreMessages: ChatActions.loadMoreMessagesAsync,
     createNewChannel: ChatActions.createNewChannelAsync,
-    createNewChatOrReceiveExistingChatData: ChatActions.checkChatExistsThenCreateNewChatOrReceiveExistingChatData,
+    sendFirstDirectMessage: ChatActions.sendFirstDirectMessage,
     openNewChatTabOrEnterExistingChat: ChatActions.checkChatExistsThenOpenNewChatTabOrEnterExistingChat,
     hideChat: ChatActions.hideChatAsync,
     leaveChannel: ChatActions.leaveChannelAsync,
@@ -481,12 +481,12 @@ export default class Chat extends Component {
       username,
       profilePicId,
       currentChannel,
-      createNewChatOrReceiveExistingChatData,
+      sendFirstDirectMessage,
       partnerId
     } = this.props;
-
-    if (currentChannel.id === 0) {
-      return createNewChatOrReceiveExistingChatData({message, userId, partnerId}, chat => {
+    let isFirstDirectMessage = currentChannel.id === 0;
+    if (isFirstDirectMessage) {
+      return sendFirstDirectMessage({message, userId, partnerId}, chat => {
         if (chat.alreadyExists) {
           let {message, messageId} = chat.alreadyExists;
           socket.emit('join_chat_channel', message.channelId);
@@ -563,8 +563,15 @@ export default class Chat extends Component {
   }
 
   onChatInvitation(data) {
-    const {receiveFirstMsg, socket} = this.props;
-    receiveFirstMsg(data);
+    const {receiveFirstMsg, socket, currentChannel, userId} = this.props;
+    let duplicate = false;
+    if (currentChannel.id === 0) {
+      if (
+        data.members.filter(member => member.userId !== userId)[0].userId ===
+        currentChannel.members.filter(member => member.userId !== userId)[0].userId
+      ) duplicate = true;
+    }
+    receiveFirstMsg(data, duplicate);
     socket.emit('join_chat_channel', data.channelId);
   }
 

@@ -3,7 +3,7 @@ import Header from './Header';
 import Chat from '../Chat';
 import io from 'socket.io-client';
 import {connect} from 'react-redux';
-import {initChatAsync, resetChat, toggleChat, turnChatOff} from 'redux/actions/ChatActions';
+import {initChatAsync, resetChat, turnChatOff} from 'redux/actions/ChatActions';
 import {initSessionAsync} from 'redux/actions/UserActions';
 import {URL} from 'constants/URL';
 import {addEvent, removeEvent} from 'helpers/listenerHelpers';
@@ -19,7 +19,6 @@ const socket = io.connect(URL);
   }),
   {
     initSession: initSessionAsync,
-    toggleChat,
     turnChatOff,
     initChat: initChatAsync,
     resetChat
@@ -132,11 +131,9 @@ export default class App extends Component {
   }
 
   onChatButtonClick() {
-    const {toggleChat, initChat, chatMode, turnChatOff} = this.props;
+    const {initChat, chatMode, turnChatOff} = this.props;
     if (!!chatMode) return turnChatOff()
-    initChat(() => {
-      toggleChat();
-    })
+    initChat()
   }
 
   onScroll() {

@@ -5,13 +5,14 @@ const router = express.Router();
 
 const {requireAuth} = require('../auth');
 const {processedString, processedTitleString, stringIsEmpty} = require('../helpers/stringHelpers');
-const {queryPromise} = require('../helpers/');
+const {poolQuery} = require('../helpers/');
 const {generalChatId} = require('../siteConfig');
 const {
   fetchChat,
   fetchMessages,
   fetchChannels,
   handleCaseWhereBidirectionalChatAlreadyExists,
+  saveChannelMembers,
   updateLastRead
 } = require('../helpers/chatHelpers');
 
@@ -38,39 +39,29 @@ router.post('/', requireAuth, (req, res) => {
     return res.status(401).send("Unauthorized")
   }
 
-  async.waterfall([
-    markMyMessageAsRead,
-    saveMessageToDatabase,
-    fetchUpdatedChannels
-  ], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send(err)
+  poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
+    () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
+  ).then(
+    () => {
+      const post = {
+        channelId,
+        userId: user.id,
+        content: processedString(content),
+        timeStamp
+      }
+      poolQuery('INSERT INTO msg_chats SET ?', post).then(
+        res => Promise.resolve(res.insertId)
+      )
     }
-    res.send(results)
-  })
-
-  function markMyMessageAsRead(callback) {
-    updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)}, err => callback(err))
-  }
-
-  function saveMessageToDatabase(callback) {
-    const post = {
-      channelId,
-      userId: user.id,
-      content: processedString(content),
-      timeStamp
-    }
-    pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => callback(err, result.insertId))
-  }
-
-  function fetchUpdatedChannels(messageId, callback) {
-    fetchChannels(user).then(
-      channels => callback(null, {messageId, timeStamp, channels})
-    ).catch(
-      err => callback(err)
+  ).then(
+    messageId => fetchChannels(user).then(
+      channels => Promise.resolve({messageId, timeStamp, channels})
     )
-  }
+  ).then(
+    results => res.send(results)
+  ).catch(
+    err => res.status(500).send(err)
+  )
 })
 
 router.get('/more', requireAuth, (req, res) => {
@@ -113,7 +104,7 @@ router.get('/channel', requireAuth, (req, res) => {
   fetchMessages(channelId).then(
     messages => {
       resultObject.messages = messages;
-      return queryPromise('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id])
+      return poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id])
     }
   ).then(
     () => async.parallel([
@@ -153,31 +144,45 @@ router.get('/channel', requireAuth, (req, res) => {
 router.get('/channel/check', requireAuth, (req, res) => {
   let partnerId = Number(req.query.partnerId);
   let myUserId = req.user.id;
-  const query = [
-    'SELECT * FROM msg_channels WHERE ',
-    '(memberOne = '+partnerId+' AND memberTwo = '+myUserId+') OR ',
-    '(memberOne = '+myUserId+' AND memberTwo = '+partnerId+')'
-  ].join('');
-  pool.query(query, (err, rows) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({
+  const query = `
+    SELECT * FROM
+
+    (SELECT b.channelId AS id FROM users a JOIN msg_channel_members b ON a.id = b.userId
+    JOIN msg_channels c ON b.channelId = c.id AND c.twoPeople = '1'
+    WHERE a.id = '${myUserId}') A
+
+    JOIN
+
+    (SELECT b.channelId AS id FROM users a JOIN msg_channel_members b ON a.id = b.userId
+    JOIN msg_channels c ON b.channelId = c.id AND c.twoPeople = '1'
+    WHERE a.id = '${partnerId}') B
+
+    ON
+
+    A.id = B.id
+  `
+  poolQuery(query).then(
+    rows => res.send({
       channelExists: rows.length > 0,
       channelId: rows.length > 0 ? rows[0].id : null
     })
-  })
+  ).catch(
+    err => {
+      console.error(err)
+      return res.status(500).send({error: err})
+    }
+  )
 })
 
 router.post('/lastRead', requireAuth, (req, res) => {
   const user = req.user;
   const channelId = req.body.channelId;
   const timeStamp = req.body.timeStamp;
-  updateLastRead({users: [{id: user.id}], channelId, timeStamp}, err => {
-    if (err) return res.status(500).send({error: err})
-    res.send({success: true})
-  })
+  updateLastRead({users: [{id: user.id}], channelId, timeStamp}).then(
+    () => res.send({success: true})
+  ).catch(
+    err => res.status(500).send({error: err})
+  )
 })
 
 router.post('/channel', requireAuth, (req, res) => {
@@ -186,168 +191,108 @@ router.post('/channel', requireAuth, (req, res) => {
   const channelName = processedTitleString(params.channelName);
   const timeStamp = Math.floor(Date.now()/1000);
 
-  async.waterfall([
-    callback => {
-      pool.query('INSERT INTO msg_channels SET ?', {channelName, creator: user.id}, (err, result) => {
-        callback(err, result.insertId)
-      })
-    },
-    (channelId, callback) => {
+  poolQuery('INSERT INTO msg_channels SET ?', {channelName, creator: user.id}).then(
+    result => Promise.resolve(result.insertId)
+  ).then(
+    channelId => {
       const members = [user.id].concat(params.selectedUsers.map(user => {
         return user.userId
       }));
-      updateLastRead({users: members.map(member => ({id: member})), channelId, timeStamp: timeStamp - 1})
-      let taskArray = [];
-      for (let i = 0; i < members.length; i++) {
-        let task = callback => {
-          let post = {
-            channelId,
-            userId: members[i]
-          }
-          pool.query('INSERT INTO msg_channel_members SET ?', post, (err, result) => {
-            callback(err, result)
-          })
-        }
-        taskArray.push(task);
+      const message = {
+        channelId,
+        userId: user.id,
+        content: `Created channel "${channelName}"`,
+        timeStamp,
+        isNotification: true
       }
-      taskArray.push(
-        callback => {
-          let message = {
-            channelId,
-            userId: user.id,
-            content: `Created channel "${channelName}"`,
-            timeStamp,
-            isNotification: true
-          }
-          pool.query('INSERT INTO msg_chats SET ?', message, (err, result) => {
-            message = Object.assign({}, message, {
-              username: user.username,
-              profilePicId: user.profilePicId,
-              messageId: result.insertId,
-              channelName
-            });
-            callback(err, message)
-          })
-        }
+      updateLastRead({users: members.map(member => ({id: member})), channelId, timeStamp: timeStamp - 1})
+      return Promise.all([
+        saveChannelMembers(channelId, members),
+        poolQuery('INSERT INTO msg_chats SET ?', message)
+      ]).then(
+        results => Promise.resolve(Object.assign({}, message, {
+          username: user.username,
+          profilePicId: user.profilePicId,
+          messageId: results[1].insertId,
+          channelName
+        }))
       )
-      async.parallel(taskArray, (err, results) => {
-        callback(err, results[results.length - 1])
-      })
-    },
-    (message, callback) => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: message.channelId}, user.id], err => {
-        callback(err, message)
-      })
     }
-  ], (err, message) => {
-    if (err) {
-      console.error(err);
+  ).then(
+    message => poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: message.channelId}, user.id]).then(
+      () => Promise.resolve(message)
+    )
+  ).then(
+    message => {
+      let query = `
+        SELECT a.userId, b.username FROM
+        msg_channel_members a LEFT JOIN users b ON
+        a.userId = b.id WHERE a.channelId = ?
+      `
+      return poolQuery(query, message.channelId).then(
+        members => Promise.resolve(members, message)
+      )
+    }
+  ).then(
+    (members, message) => res.send({message, members})
+  ).catch(
+    err => {
+      console.error(err)
       return res.status(500).send({error: err})
     }
-    let query = [
-      'SELECT a.userId, b.username FROM ',
-      'msg_channel_members a LEFT JOIN users b ON ',
-      'a.userId = b.id WHERE a.channelId = ?'
-    ].join('')
-    pool.query(query, message.channelId, (err, rows) => {
-      res.send({message, members: rows})
-    })
-  })
+  )
 })
 
 router.post('/channel/twoPeople', requireAuth, (req, res) => {
   const user = req.user;
   const {partnerId, timeStamp} = req.body;
-  const firstMessage = processedString(req.body.message);
+  const content = processedString(req.body.message);
   if (user.id !== req.body.userId) {
     return res.status(401).send({error: "Session mismatch"})
   }
-  async.waterfall([
-    callback => {
-      let query = [
-        'SELECT * FROM msg_channels WHERE ',
-        '(memberOne = '+user.id+' AND memberTwo = '+partnerId+') OR ',
-        '(memberOne = '+partnerId+' AND memberTwo = '+user.id+')'
-      ].join('')
-      pool.query(query, (err, rows) => {
-        if (rows.length > 0) {
-          let params = [rows[0].id, user.id, firstMessage];
-          return handleCaseWhereBidirectionalChatAlreadyExists(...params, (err, result) => {
-            if (err) res.status(500).send({error: err});
-            res.send({alreadyExists: result});
-          });
-        }
-        callback(null)
-      })
-    },
-    callback => {
-      let post = {
-        twoPeople: true,
-        memberOne: user.id,
-        memberTwo: partnerId
-      }
-      pool.query('INSERT INTO msg_channels SET ?', post, (err, result) => {
-        updateLastRead({users: [{id: partnerId}], channelId: result.insertId, timeStamp: timeStamp - 1})
-        callback(err, result.insertId)
-      })
-    },
-    (insertId, callback) => {
-      const members = [user.id, partnerId];
-      let taskArray = [];
-      for (let i = 0; i < members.length; i++) {
-        let task = callback => {
-          let post = {
-            channelId: insertId,
-            userId: members[i]
-          }
-          pool.query('INSERT INTO msg_channel_members SET ?', post, (err, result) => {
-            callback(err, result)
-          })
-        }
-        taskArray.push(task);
-      }
-      let post = {
-        channelId: insertId,
-        userId: user.id,
-        content: firstMessage,
-        timeStamp,
-      }
-      let finalTask = callback => pool.query('INSERT INTO msg_chats SET ?', post, (err, result) => {
-        callback(err, result.insertId)
-      })
-      taskArray.push(finalTask);
-      async.series(taskArray, (err, results) => {
-        callback(err, insertId, results[results.length-1])
-      })
-    },
-    (channelId, messageId, callback) => {
-      pool.query('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id], err => {
-        callback(err, channelId, messageId)
-      })
+
+  poolQuery('INSERT INTO msg_channels SET ?', {twoPeople: true}).then(
+    result => {
+      updateLastRead({users: [{id: partnerId}], channelId: result.insertId, timeStamp: timeStamp - 1})
+      return Promise.resolve(result.insertId)
     }
-  ], (err, channelId, messageId) => {
-    if (err) {
-      console.error(err);
+  ).then(
+    channelId => Promise.all([
+      saveChannelMembers(channelId, [user.id, partnerId]),
+      poolQuery('INSERT INTO msg_chats SET ?', {channelId, userId: user.id, content, timeStamp})
+    ]).then(
+      results => Promise.resolve(channelId, results[1].insertId)
+    )
+  ).then(
+    (channelId, messageId) => poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
+      () => Promise.resolve(channelId, messageId)
+    )
+  ).then(
+    (channelId, messageId) => {
+      let query = `
+        SELECT a.userId, b.username FROM
+        msg_channel_members a LEFT JOIN users b ON
+        a.userId = b.id WHERE a.channelId = ?
+      `
+      poolQuery(query, channelId).then(
+        members => res.send({
+          messageId,
+          channelId,
+          userId: user.id,
+          username: user.username,
+          profilePicId: user.profilePicId,
+          members,
+          content,
+          timeStamp
+        })
+      )
+    }
+  ).catch(
+    err => {
+      console.log(err)
       return res.status(500).send({error: err})
     }
-    let query = [
-      'SELECT a.userId, b.username FROM ',
-      'msg_channel_members a LEFT JOIN users b ON ',
-      'a.userId = b.id WHERE a.channelId = ?'
-    ].join('')
-    pool.query(query, channelId, (err, rows) => {
-      res.send({
-        messageId,
-        channelId,
-        userId: user.id,
-        username: user.username,
-        profilePicId: user.profilePicId,
-        content: firstMessage,
-        members: rows,
-        timeStamp
-      })
-    })
-  })
+  )
 })
 
 router.delete('/channel', requireAuth, (req, res) => {
@@ -517,13 +462,11 @@ router.get('/search/chat', requireAuth, (req, res) => {
     (primaryRes, callback) => {
       const remainder = 10 - primaryRes.length;
       if (remainder > 0) {
-        let query = [
-          'SELECT a.username AS label, a.realName AS subLabel, a.id AS userId, b.id AS channelId FROM ',
-          'users a LEFT JOIN msg_channels b ON ',
-          '(a.id = b.memberOne AND b.memberTwo = ?) OR (a.id = b.memberTwo AND b.memberOne = ?) ',
-          'WHERE ((a.username LIKE ?) OR (a.realName LIKE ?)) AND a.id != ? LIMIT ' + remainder
-        ].join('');
-        pool.query(query, [user.id, user.id, '%' + text + '%', '%' + text + '%', user.id], (err, rows) => {
+        let query = `
+          SELECT username AS label, realName AS subLabel, id AS userId FROM
+          users WHERE ((username LIKE ?) OR (realName LIKE ?)) AND id != ? LIMIT ${remainder}
+        `;
+        pool.query(query, ['%' + text + '%', '%' + text + '%', user.id], (err, rows) => {
           if (err) {
             console.error(err)
           }

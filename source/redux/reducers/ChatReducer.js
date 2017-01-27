@@ -158,6 +158,7 @@ export default function ChatReducer(state = defaultState, action) {
       action.data.messages && action.data.messages.reverse()
       return {
         ...state,
+        chatMode: true,
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
         channels: action.data.channels.reduce(
@@ -281,33 +282,24 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreButton: false,
         partnerId: action.partner.userId
       }
-    case 'RECEIVE_EXISTING_CHAT_DATA':
-      return {
-        ...state,
-        channels: state.channels.map(channel => {
-          if (channel.id === 0) {
-            channel = {
-              ...channel,
-              id: action.data.channelId,
-              lastMessage: action.data.content,
-              lastMessageSender: {
-                id: action.data.userId,
-                username: action.data.username
-              },
-              lastUpdate: action.data.timeStamp
-            }
-          }
-          return channel;
-        }),
-        selectedChannelId: action.data.channelId,
-        currentChannel: {
-          id: action.data.channelId,
-          twoPeople: true
-        }
-      }
     case 'RECEIVE_FIRST_MSG':
       return {
         ...state,
+        selectedChannelId: action.duplicate ? action.data.channelId : state.selectedChannelId,
+        currentChannel: action.duplicate ? {
+          id: action.data.channelId,
+          members: action.data.members,
+          twoPeople: true
+        } : state.currentChannel,
+        messages: action.duplicate ? [{
+          id: null,
+          channelId: action.data.channelId,
+          content: action.data.content,
+          timeStamp: action.datatimeStamp,
+          username: action.data.username,
+          userId: action.data.userId,
+          profilePicId: action.data.profilePicId
+        }] : state.messages,
         channels: [{
           id: action.data.channelId,
           channelName: action.data.channelName || action.data.username,
@@ -315,10 +307,10 @@ export default function ChatReducer(state = defaultState, action) {
           lastUpdate: action.data.timeStamp,
           numUnreads: 1,
           lastMessageSender: {
-            id: action.data.userID,
+            id: action.data.userId,
             username: action.data.username
           }
-        }].concat(state.channels)
+        }].concat(state.channels.filter((channel, index) => action.duplicate ? index !== 0 : true))
       }
     case 'RECEIVE_MSG':
       return {
@@ -388,16 +380,6 @@ export default function ChatReducer(state = defaultState, action) {
           userId: action.message.userId,
           profilePicId: action.message.profilePicId
         }])
-      }
-    case 'TOGGLE_CHAT':
-      return {
-        ...state,
-        chatMode: !state.chatMode
-      }
-    case 'TURN_CHAT_ON':
-      return {
-        ...state,
-        chatMode: true
       }
     case 'TURN_CHAT_OFF':
       return {

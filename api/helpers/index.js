@@ -1,6 +1,6 @@
 const pool = require('../pool');
 
-const queryPromise = (query, params) => new Promise((resolve, reject) => {
+const poolQuery = (query, params) => new Promise((resolve, reject) => {
   pool.query(query, params, (err, results) => {
     if (err) return reject(err)
     resolve(results)
@@ -8,5 +8,5 @@ const queryPromise = (query, params) => new Promise((resolve, reject) => {
 })
 
 module.exports = {
-  queryPromise
+  poolQuery
 }
