@@ -226,11 +226,13 @@ router.post('/channel', requireAuth, (req, res) => {
         a.userId = b.id WHERE a.channelId = ?
       `
       return poolQuery(query, message.channelId).then(
-        members => Promise.resolve(members, message)
+        members => Promise.resolve({members, message})
       )
     }
   ).then(
-    (members, message) => res.send({message, members})
+    ({members, message}) => {
+      res.send({message, members})
+    }
   ).catch(
     err => {
       console.error(err)
@@ -257,14 +259,14 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
       saveChannelMembers(channelId, [user.id, partnerId]),
       poolQuery('INSERT INTO msg_chats SET ?', {channelId, userId: user.id, content, timeStamp})
     ]).then(
-      results => Promise.resolve(channelId, results[1].insertId)
+      results => Promise.resolve({channelId, messageId: results[1].insertId})
     )
   ).then(
-    (channelId, messageId) => poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
-      () => Promise.resolve(channelId, messageId)
+    ({channelId, messageId}) => poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
+      () => Promise.resolve({channelId, messageId})
     )
   ).then(
-    (channelId, messageId) => {
+    ({channelId, messageId}) => {
       let query = `
         SELECT a.userId, b.username FROM
         msg_channel_members a LEFT JOIN users b ON

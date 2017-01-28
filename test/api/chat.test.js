@@ -89,6 +89,7 @@ describe('Chat POST', () => {
     }).then(
       result => {
         expect(result.status).toBe(200);
+        expect(!!result.body.message).toBe(true)
         done();
       }
     )

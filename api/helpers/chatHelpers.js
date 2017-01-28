@@ -178,23 +178,13 @@ const fetchUserSpecificChannelData = (channel, channelInfos, userId) => {
     }
   }
   let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ?';
-  return new Promise((resolve, reject) => {
-    poolQuery(query, [channelId, lastReadTime, userId]).then(
-      rows => resolve({numUnreads: rows[0].numUnreads, isHidden})
-    ).catch(
-      err => reject(err)
-    )
-  })
+  return poolQuery(query, [channelId, lastReadTime, userId]).then(
+    rows => Promise.resolve({numUnreads: rows[0].numUnreads, isHidden})
+  )
 }
 
 const fetchChannelTitleAndLastMessage = (channel, userId) => {
-  return new Promise((resolve, reject) => {
-    Promise.all([fetchLastMessage(), fetchChannelTitle()]).then(
-      results => resolve(results)
-    ).catch(
-      err => reject(err)
-    )
-  })
+  return Promise.all([fetchLastMessage(), fetchChannelTitle()])
 
   function fetchLastMessage() {
     const query = [
