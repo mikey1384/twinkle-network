@@ -179,11 +179,15 @@ export default class Chat extends Component {
     const {myChannels} = this.state;
     let currentChannelOnline = 1;
 
+    if (prevProps.channels !== this.props.channels && currentChannel.id === this.props.channels[0].id) {
+      this.channelList.scrollTop = 0;
+    }
+
     if (prevProps.selectedChannelId !== this.props.selectedChannelId) {
       this.setState({loading: true})
     }
 
-    if (prevProps.currentChannel.id !== this.props.currentChannel.id) {
+    if (prevProps.currentChannel.id !== currentChannel.id) {
       for (let i = 0; i < myChannels.length; i++) {
         if (myChannels[i].channelId === currentChannel.id) {
           currentChannelOnline = myChannels[i].membersOnline.length;
@@ -336,6 +340,7 @@ export default class Chat extends Component {
               height: '75%',
               width: '100%'
             }}
+            ref={ref => this.channelList = ref}
           >
             {this.renderChannels()}
           </div>
