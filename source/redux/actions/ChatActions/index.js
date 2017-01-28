@@ -28,20 +28,6 @@ export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
   )
 }
 
-export const checkChatExistsThenOpenNewChatTabOrEnterExistingChat = (user, partner, callback) => dispatch => {
-  const {checkChatExists, openNewChatTab} = actions;
-  dispatch(checkChatExists(user, partner, {then: followUp}));
-  function followUp(data) {
-    if (data.channelExists) {
-      dispatch(enterChannelWithId(data.channelId, true))
-    }
-    else {
-      dispatch(openNewChatTab(user, partner))
-    }
-    if (callback) callback()
-  }
-}
-
 export const clearChatSearchResults = () => ({
   type: 'CLEAR_CHAT_SEARCH_RESULTS'
 })
@@ -199,15 +185,19 @@ export const notifyThatMemberLeftChannel = data => ({
   data
 })
 
-export const openChatForDirectMessage = (user, partner) => dispatch => {
+export const openDirectMessageChannel = (user, partner, fromOutsideChat) => dispatch => {
   request.get(`${API_URL}/channels`, auth()).then(
-    response => {
-      dispatch({
-        type: 'LOAD_CHANNEL_LIST',
-        data: response.data
-      })
-      dispatch(checkChatExistsThenOpenNewChatTabOrEnterExistingChat(user, partner))
-    }
+    response => request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth()).then(
+      currentChannel => Promise.resolve({channels: response.data, currentChannel})
+    )
+  ).then(
+    ({channels, currentChannel}) => dispatch({
+      type: 'OPEN_CHAT_FOR_DM',
+      user,
+      partner,
+      channels,
+      ...currentChannel.data
+    })
   ).catch(
     error => {
       console.error(error.response || error)

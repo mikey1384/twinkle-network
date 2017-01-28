@@ -71,6 +71,9 @@ describe('Chat POST', () => {
     request(app).post('/chat/channel/twoPeople').set(header).send({userId: testUserId, partnerId: 208, timeStamp: Math.floor(Date.now()/1000), message: "testing"}).then(
       result => {
         expect(result.status).toBe(200);
+        for (let key in result.body) {
+          expect(!!result.body[key]).toBe(true)
+        }
         done()
       }
     )
@@ -89,7 +92,9 @@ describe('Chat POST', () => {
     }).then(
       result => {
         expect(result.status).toBe(200);
-        expect(!!result.body.message).toBe(true)
+        for (let key in result.body) {
+          expect(!!result.body[key]).toBe(true)
+        }
         done();
       }
     )

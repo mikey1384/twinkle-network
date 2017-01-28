@@ -158,10 +158,31 @@ router.get('/channel/check', requireAuth, (req, res) => {
     A.id = B.id
   `
   poolQuery(query).then(
-    rows => res.send({
-      channelExists: rows.length > 0,
-      channelId: rows.length > 0 ? rows[0].id : null
-    })
+    rows => {
+      let query = `
+        SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, b.username,
+        c.id AS profilePicId FROM msg_chats a
+        JOIN users b ON a.userId = b.id
+        LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+        WHERE a.channelId = ? ORDER BY id DESC LIMIT 21
+      `;
+      let channelId = rows.length > 0 ? rows[0].id : 0;
+      if (rows.length > 0) return poolQuery(query, channelId).then(
+        rows => Promise.resolve({
+          channelId,
+          lastMessage: rows[0].content,
+          lastUpdate: rows[0].timeStamp,
+          lastMessageSender: {
+            id: rows[0].userId,
+            username: rows[0].username
+          },
+          messages: rows
+        })
+      )
+      return Promise.resolve({channelId, messages: []})
+    }
+  ).then(
+    result => res.send(result)
   ).catch(
     err => {
       console.error(err)

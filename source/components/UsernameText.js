@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {openChatForDirectMessage} from 'redux/actions/ChatActions';
+import {openDirectMessageChannel} from 'redux/actions/ChatActions';
 import {Color} from 'constants/css';
 
 @connect(
@@ -8,7 +8,7 @@ import {Color} from 'constants/css';
     username: state.UserReducer.username,
     userId: state.UserReducer.userId
   }),
-  {openChatForDirectMessage}
+  {openDirectMessageChannel}
 )
 export default class UsernameText extends Component {
   constructor() {
@@ -68,9 +68,10 @@ export default class UsernameText extends Component {
   }
 
   onLinkClick() {
-    const {openChatForDirectMessage, user, userId, username} = this.props;
+    const {openDirectMessageChannel, user, userId, username} = this.props;
+    this.setState({menuShown: false})
     if (user.id !== userId) {
-      openChatForDirectMessage({userId, username}, {userId: user.id, username: user.name})
+      openDirectMessageChannel({userId, username}, {userId: user.id, username: user.name}, true)
     }
   }
 }

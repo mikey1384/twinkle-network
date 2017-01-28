@@ -244,6 +244,50 @@ export default function ChatReducer(state = defaultState, action) {
           profilePicId: action.data.profilePicId
         }])
       }
+    case 'OPEN_CHAT_FOR_DM':
+      if (action.messages.length > 20) {
+        action.messages.pop()
+        loadMoreButton = true;
+      }
+      return {
+        ...state,
+        chatMode: true,
+        channels: [{
+          id: action.channelId,
+          channelName: action.partner.username,
+          lastMessage: action.lastMessage,
+          lastUpdate: action.lastUpdate,
+          lastMessageSender: action.lastMessageSender,
+          members: [
+            {
+              username: action.user.username,
+              userId: action.user.userId
+            },
+            {
+              username: action.partner.username,
+              userId: action.partner.userId
+            }
+          ]
+        }].concat(action.channels.filter(channel => channel.id !== action.channelId)),
+        selectedChannelId: action.channelId,
+        currentChannel: {
+          id: action.channelId,
+          twoPeople: true,
+          members: [
+            {
+              username: action.user.username,
+              userId: action.user.userId
+            },
+            {
+              username: action.partner.username,
+              userId: action.partner.userId
+            }
+          ]
+        },
+        messages: action.messages.reverse(),
+        loadMoreButton,
+        partnerId: action.partner.userId
+      }
     case 'OPEN_NEW_CHAT_TAB':
       let filteredChannel = state.channels.filter(channel => {
         return channel.id !== 0
