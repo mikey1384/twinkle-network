@@ -250,7 +250,6 @@ export default function ChatReducer(state = defaultState, action) {
         action.messages.pop()
         loadMoreButton = true;
       }
-      console.log(action.channels)
       channels = action.channels.length > 0 ? action.channels : state.channels
       return {
         ...state,
