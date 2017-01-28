@@ -272,7 +272,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
 
   poolQuery('INSERT INTO msg_channels SET ?', {twoPeople: true}).then(
     result => {
-      updateLastRead({users: [{id: partnerId}], channelId: result.insertId, timeStamp: timeStamp - 1})
+      updateLastRead({users: [{id: partnerId}, {id: user.id}], channelId: result.insertId, timeStamp: timeStamp - 1})
       return Promise.resolve(result.insertId)
     }
   ).then(
@@ -460,63 +460,84 @@ router.get('/numUnreads', requireAuth, (req, res) => {
 router.get('/search/chat', requireAuth, (req, res) => {
   const {user} = req;
   const text = req.query.text;
-  async.waterfall([
-    callback => {
-      let query = [
-        'SELECT a.channelId, COALESCE(c.channelName, b.channelName, d.username) AS label, ',
-        'b.twoPeople, d.id AS userId, d.realName AS subLabel FROM ',
-        'msg_channel_members a JOIN msg_channels b ',
-        'ON a.channelId = b.id JOIN msg_channel_info c ',
-        'ON b.id = c.channelId AND c.userId = ? LEFT JOIN users d ',
-        'ON a.userId = d.id ',
-        'WHERE ((a.userId = ? AND b.twoPeople = 0) ',
-        'AND (IFNULL(c.channelName, b.channelName) LIKE ?)) OR ',
-        '((a.userId != ? AND b.twoPeople = 1) AND (d.username LIKE ?)) OR ',
-        '((b.id = 2) AND (b.channelName LIKE ?)) LIMIT 10'
-      ].join('');
-      pool.query(query, [user.id, user.id, '%' + text + '%', user.id, '%' + text + '%', '%' + text + '%'], (err, primaryRes) => {
-        callback(err, primaryRes);
-      })
-    },
-    (primaryRes, callback) => {
-      const remainder = 10 - primaryRes.length;
-      if (remainder > 0) {
-        let query = `
-          SELECT username AS label, realName AS subLabel, id AS userId FROM
-          users WHERE ((username LIKE ?) OR (realName LIKE ?)) AND id != ? LIMIT ${remainder}
-        `;
-        pool.query(query, ['%' + text + '%', '%' + text + '%', user.id], (err, rows) => {
-          if (err) {
-            console.error(err)
-          }
-          let secondaryRes = rows.filter(row => {
-            let allowed = true;
-            for (let i = 0; i < primaryRes.length; i++) {
-              if (row.label === primaryRes[i].label) {
-                allowed = false;
-                break;
-              }
-            }
-            return allowed;
-          })
+  let query = `
+    SELECT
+      members.channelId,
+      COALESCE(info.channelName, channels.channelName, users.username) AS label,
+      channels.twoPeople,
+      users.id AS userId,
+      users.realName AS subLabel
+    FROM
+      msg_channel_members members
+    JOIN
+      msg_channels channels
+    ON
+      members.channelId = channels.id
+    JOIN
+      msg_channel_info info
+    ON
+      channels.id = info.channelId
+    AND
+      info.userId = ${user.id}
+    LEFT JOIN
+      users users
+    ON
+      members.userId = users.id
+    WHERE
+      (
+        (
+          members.userId = ${user.id}
+          AND
+          channels.twoPeople = 0
+        )
+        AND
+        (
+          IFNULL(info.channelName, channels.channelName) LIKE '%${text}%'
+        )
+      )
+    OR
+      (
+        (members.userId != ${user.id} AND channels.twoPeople = 1)
+        AND
+        (users.username LIKE '%${text}%' OR users.realName LIKE '%${text}%')
+      )
+    OR
+      (
+        (channels.id = 2) AND (channels.channelName LIKE '%${text}%')
+      )
+    LIMIT 10
+  `
+  poolQuery(query).then(
+    primaryRes => {
+      let remainder = 10 - primaryRes.length;
+      let query = `
+        SELECT id AS userId, username AS label, realName AS subLabel FROM users WHERE username LIKE '%${text}%'
+        OR realName LIKE '%${text}%' AND id != ${user.id} LIMIT ${remainder}
+      `;
 
-          let finalRes = primaryRes.map(res => Object.assign({}, res, {primary: true})).concat(
-            secondaryRes.map(res => Object.assign({}, res, {primary: false}))
-          )
-          callback(err, finalRes);
-        })
-      }
-      else {
-        let finalRes = primaryRes.map(res => Object.assign({}, res, {primary: true}))
-        callback(null, finalRes)
-      }
+      if (remainder > 0) return poolQuery(query).then(secondaryRes => Promise.resolve({primaryRes, secondaryRes}))
+      return Promise.resolve({primaryRes, secondaryRes: []})
     }
-  ], (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send({error: err})
+  ).then(
+    ({primaryRes, secondaryRes}) => {
+      let finalRes = primaryRes.map(
+        res => Object.assign({}, res, {primary: true})
+      ).concat(
+        secondaryRes.filter(row => {
+          let remains = true;
+          for (let i = 0; i < primaryRes.length; i++) {
+            if (row.label === primaryRes[i].label) remains = false;
+          }
+          return remains;
+        }).map(
+          res => Object.assign({}, res, {primary: false})
+        )
+      )
+      res.send(finalRes)
     }
-    res.send(result)
+  ).catch(err => {
+    console.error(err)
+    return res.status(500).send({error: err})
   })
 })
 
