@@ -185,8 +185,12 @@ export const notifyThatMemberLeftChannel = data => ({
   data
 })
 
-export const openDirectMessageChannel = (user, partner, fromOutsideChat) => dispatch => {
-  request.get(`${API_URL}/channels`, auth()).then(
+export const openDirectMessageChannel = (user, partner, chatCurrentlyOn) => dispatch => {
+  function firstTask() {
+    if (!chatCurrentlyOn) return request.get(`${API_URL}/channels`, auth())
+    return Promise.resolve({data: []})
+  }
+  firstTask().then(
     response => request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth()).then(
       currentChannel => Promise.resolve({channels: response.data, currentChannel})
     )

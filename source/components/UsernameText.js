@@ -6,7 +6,8 @@ import {Color} from 'constants/css';
 @connect(
   state => ({
     username: state.UserReducer.username,
-    userId: state.UserReducer.userId
+    userId: state.UserReducer.userId,
+    chatMode: state.ChatReducer.chatMode
   }),
   {openDirectMessageChannel}
 )
@@ -68,10 +69,10 @@ export default class UsernameText extends Component {
   }
 
   onLinkClick() {
-    const {openDirectMessageChannel, user, userId, username} = this.props;
+    const {openDirectMessageChannel, user, userId, username, chatMode} = this.props;
     this.setState({menuShown: false})
     if (user.id !== userId) {
-      openDirectMessageChannel({userId, username}, {userId: user.id, username: user.name}, true)
+      openDirectMessageChannel({userId, username}, {userId: user.id, username: user.name}, chatMode)
     }
   }
 }

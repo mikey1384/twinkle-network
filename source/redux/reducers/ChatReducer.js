@@ -15,6 +15,7 @@ const defaultState = {
 
 export default function ChatReducer(state = defaultState, action) {
   let loadMoreButton;
+  let channels;
   switch(action.type) {
     case 'APPLY_CHANGED_CHANNEL_TITLE':
       return {
@@ -249,6 +250,8 @@ export default function ChatReducer(state = defaultState, action) {
         action.messages.pop()
         loadMoreButton = true;
       }
+      console.log(action.channels)
+      channels = action.channels.length > 0 ? action.channels : state.channels
       return {
         ...state,
         chatMode: true,
@@ -268,7 +271,7 @@ export default function ChatReducer(state = defaultState, action) {
               userId: action.partner.userId
             }
           ]
-        }].concat(action.channels.filter(channel => channel.id !== action.channelId)),
+        }].concat(channels.filter(channel => channel.id !== action.channelId)),
         selectedChannelId: action.channelId,
         currentChannel: {
           id: action.channelId,
@@ -384,7 +387,7 @@ export default function ChatReducer(state = defaultState, action) {
       }
     case 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL':
       let channel = {};
-      let channels = state.channels;
+      channels = state.channels;
       for (let i = 0; i < channels.length; i++) {
         let numUnreads = action.senderIsNotTheUser ? channels[i].numUnreads + 1 : channels[i].numUnreads
         if (channels[i].id === action.data.channelId) {
