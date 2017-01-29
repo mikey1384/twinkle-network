@@ -1,10 +1,9 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import SearchInput from 'components/SearchInput';
-import {stringIsEmpty} from 'helpers/stringHelpers';
-import {searchChatAsync, clearChatSearchResults, enterChannelWithId} from 'redux/actions/ChatActions';
-import {openNewChatTab} from 'redux/actions/ChatActions/actions';
-
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import SearchInput from 'components/SearchInput'
+import {stringIsEmpty} from 'helpers/stringHelpers'
+import {searchChatAsync, clearChatSearchResults, enterChannelWithId} from 'redux/actions/ChatActions'
+import {openNewChatTab} from 'redux/actions/ChatActions/actions'
 
 @connect(
   state => ({
@@ -20,6 +19,15 @@ import {openNewChatTab} from 'redux/actions/ChatActions/actions';
   }
 )
 export default class ChatSearchBox extends Component {
+  static propTypes = {
+    searchResult: PropTypes.array,
+    searchChat: PropTypes.func,
+    clearSearchResults: PropTypes.func,
+    enterChannelWithId: PropTypes.func,
+    userId: PropTypes.number,
+    username: PropTypes.string,
+    openNewChatTab: PropTypes.func
+  }
   constructor() {
     super()
     this.state = {
@@ -30,8 +38,8 @@ export default class ChatSearchBox extends Component {
   }
 
   render() {
-    const {searchResult, clearSearchResults} = this.props;
-    const {searchText} = this.state;
+    const {searchResult, clearSearchResults} = this.props
+    const {searchText} = this.state
     return (
       <div className="row container-fluid">
         <SearchInput
@@ -55,17 +63,17 @@ export default class ChatSearchBox extends Component {
   }
 
   onChatSearch(event) {
-    const {searchChat, clearSearchResults} = this.props;
-    const text = event.target.value;
-    this.setState({searchText: text});
+    const {searchChat, clearSearchResults} = this.props
+    const text = event.target.value
+    this.setState({searchText: text})
     if (stringIsEmpty(text) || text.length < 2) {
       return clearSearchResults()
     }
-    searchChat(text);
+    searchChat(text)
   }
 
   onSelect(item) {
-    const {enterChannelWithId, clearSearchResults, userId, username, openNewChatTab} = this.props;
+    const {enterChannelWithId, clearSearchResults, userId, username, openNewChatTab} = this.props
     if (item.primary || !!item.channelId) {
       enterChannelWithId(item.channelId, true)
     } else {

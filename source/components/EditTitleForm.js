@@ -1,6 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import onClickOutside from 'react-onclickoutside';
-import {cleanString} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import onClickOutside from 'react-onclickoutside'
+import {cleanString} from 'helpers/stringHelpers'
 
 class EditTitleForm extends Component {
   static propTypes = {
@@ -10,7 +10,7 @@ class EditTitleForm extends Component {
   }
 
   handleClickOutside = (event) => {
-    this.props.onClickOutSide();
+    this.props.onClickOutSide()
   }
 
   constructor(props) {
@@ -20,8 +20,8 @@ class EditTitleForm extends Component {
     }
   }
 
-  render () {
-    const {title} = this.state;
+  render() {
+    const {title} = this.state
     return (
       <form onSubmit={event => this.onEditSubmit(event, title)}>
         <input
@@ -38,8 +38,8 @@ class EditTitleForm extends Component {
   }
 
   onEditSubmit(event, title) {
-    event.preventDefault();
-    this.props.onEditSubmit(title);
+    event.preventDefault()
+    this.props.onEditSubmit(title)
   }
 }
 

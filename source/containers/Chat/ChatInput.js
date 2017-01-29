@@ -1,6 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import Textarea from 'react-textarea-autosize';
-import {stringIsEmpty} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import Textarea from 'react-textarea-autosize'
+import {stringIsEmpty} from 'helpers/stringHelpers'
 
 export default class ChatInput extends Component {
   static propTypes = {
@@ -13,18 +13,20 @@ export default class ChatInput extends Component {
     this.state = {
       message: ''
     }
-    this.onMessageSubmit = this.onMessageSubmit.bind(this);
+    this.onMessageSubmit = this.onMessageSubmit.bind(this)
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.currentChannelId !== this.props.currentChannelId) {
       this.setState({message: ''})
+      this.Textarea.focus()
     }
   }
 
   render() {
     return (
       <Textarea
+        ref={ref => { this.Textarea = ref }}
         rows={1}
         className="form-control"
         placeholder="Type a message..."
@@ -37,13 +39,13 @@ export default class ChatInput extends Component {
   }
 
   onMessageSubmit(event) {
-    const shiftKeyPressed = event.shiftKey;
-    const enterKeyPressed = event.keyCode === 13;
-    const {message} = this.state;
+    const shiftKeyPressed = event.shiftKey
+    const enterKeyPressed = event.keyCode === 13
+    const {message} = this.state
     if (enterKeyPressed && !shiftKeyPressed) {
-      event.preventDefault();
-      if (stringIsEmpty(message)) return;
-      this.props.onMessageSubmit(message);
+      event.preventDefault()
+      if (stringIsEmpty(message)) return
+      this.props.onMessageSubmit(message)
       this.setState({message: ''})
     }
   }

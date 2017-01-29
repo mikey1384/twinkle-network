@@ -1,11 +1,26 @@
-import React, {Component} from 'react';
-import ChoiceListItem from './ChoiceListItem';
-import EditChoiceListItem from './EditChoiceListItem';
-import Textarea from 'react-textarea-autosize';
-import Button from 'components/Button';
-import {processedString} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import ChoiceListItem from './ChoiceListItem'
+import EditChoiceListItem from './EditChoiceListItem'
+import Textarea from 'react-textarea-autosize'
+import Button from 'components/Button'
+import {processedString} from 'helpers/stringHelpers'
 
 export default class QuestionBlock extends Component {
+  static propTypes = {
+    choices: PropTypes.array,
+    title: PropTypes.string,
+    inputType: PropTypes.string,
+    onSelectChoice: PropTypes.func,
+    questionIndex: PropTypes.number,
+    onEdit: PropTypes.bool,
+    deleted: PropTypes.bool,
+    onRemove: PropTypes.func,
+    onUndoRemove: PropTypes.func,
+    onEditStart: PropTypes.func,
+    onEditCancel: PropTypes.func,
+    onEditDone: PropTypes.func,
+    onRearrange: PropTypes.func
+  }
   constructor(props) {
     super()
     this.state = {
@@ -37,14 +52,14 @@ export default class QuestionBlock extends Component {
   }
 
   render() {
-    const {editedChoiceTitles, editedQuestionTitle, choiceIndices} = this.state;
-    const {inputType, onSelectChoice, questionIndex, onEdit, deleted, title, choices} = this.props;
+    const {editedChoiceTitles, editedQuestionTitle, choiceIndices} = this.state
+    const {inputType, onSelectChoice, questionIndex, onEdit, deleted, title, choices} = this.props
     const choicePlaceHolder = [
-      "Choice A",
-      "Choice B",
-      "Choice C (Optional)",
-      "Choice D (Optional)",
-      "Choice E (Optional)"
+      'Choice A',
+      'Choice B',
+      'Choice C (Optional)',
+      'Choice D (Optional)',
+      'Choice E (Optional)'
     ]
     return (
       <div>
@@ -58,7 +73,7 @@ export default class QuestionBlock extends Component {
                 color: !title && '#999'
               }}
             >
-              <span dangerouslySetInnerHTML={{__html: title || "Question Title"}} />
+              <span dangerouslySetInnerHTML={{__html: title || 'Question Title'}} />
             </h4>
             :
             <form
@@ -153,8 +168,8 @@ export default class QuestionBlock extends Component {
   }
 
   onEditChoice(index, value) {
-    const newTitles = this.state.editedChoiceTitles;
-    newTitles[index] = value;
+    const newTitles = this.state.editedChoiceTitles
+    newTitles[index] = value
     this.setState({
       editedChoiceTitles: newTitles
     })
@@ -174,45 +189,45 @@ export default class QuestionBlock extends Component {
     this.props.onEditDone({
       questionIndex,
       newChoicesArray: this.props.choices.map((choice, index) => {
-        choice.label = processedString(this.state.editedChoiceTitles[index]);
-        return choice;
+        choice.label = processedString(this.state.editedChoiceTitles[index])
+        return choice
       }),
       newTitle: processedString(this.state.editedQuestionTitle)
-    });
+    })
   }
 
   onMove({sourceId, targetId}) {
-    const newIndices = this.state.choiceIndices;
-    const sourceIndex = newIndices.indexOf(sourceId);
-    const targetIndex = newIndices.indexOf(targetId);
-    newIndices.splice(sourceIndex, 1);
-    newIndices.splice(targetIndex, 0, sourceId);
+    const newIndices = this.state.choiceIndices
+    const sourceIndex = newIndices.indexOf(sourceId)
+    const targetIndex = newIndices.indexOf(targetId)
+    newIndices.splice(sourceIndex, 1)
+    newIndices.splice(targetIndex, 0, sourceId)
     this.setState({choiceIndices: newIndices})
   }
 
   onDrop() {
-    const {questionIndex} = this.props;
-    const {choiceIndices} = this.state;
-    this.props.onRearrange({questionIndex, choiceIndices});
+    const {questionIndex} = this.props
+    const {choiceIndices} = this.state
+    this.props.onRearrange({questionIndex, choiceIndices})
   }
 }
 
-function determineLabel (choices, index) {
-  let label = '';
+function determineLabel(choices, index) {
+  let label = ''
   for (let i = 0; i < choices.length; i++) {
     if (choices[i].id === index) {
-      label = choices[i].label;
+      label = choices[i].label
     }
   }
-  return label;
+  return label
 }
 
-function determineChecked (choices, index) {
-  let checked;
+function determineChecked(choices, index) {
+  let checked
   for (let i = 0; i < choices.length; i++) {
     if (choices[i].id === index) {
-      checked = choices[i].checked;
+      checked = choices[i].checked
     }
   }
-  return checked;
+  return checked
 }

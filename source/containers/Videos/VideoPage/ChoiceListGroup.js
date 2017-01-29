@@ -1,5 +1,9 @@
-import React from 'react';
+import React, {PropTypes} from 'react'
 
+ChoiceListGroup.propTypes = {
+  listItems: PropTypes.array,
+  onSelect: PropTypes.func
+}
 export default function ChoiceListGroup({listItems, onSelect}) {
   return (
     <ul

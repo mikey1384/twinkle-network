@@ -1,5 +1,7 @@
-import request from 'supertest';
-import app from '../../api/app';
+/* global describe it expect */
+
+import request from 'supertest'
+import app from '../../api/app'
 
 describe('Users', () => {
   it('logs in', done => {

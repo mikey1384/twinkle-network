@@ -1,7 +1,15 @@
-import React from 'react';
-import Textarea from 'react-textarea-autosize';
-import {cleanString} from 'helpers/stringHelpers';
+import React, {PropTypes} from 'react'
+import Textarea from 'react-textarea-autosize'
+import {cleanString} from 'helpers/stringHelpers'
 
+EditChoiceListItem.propTypes = {
+  index: PropTypes.number,
+  onEdit: PropTypes.func,
+  text: PropTypes.string,
+  placeholder: PropTypes.string,
+  onSelect: PropTypes.func,
+  checked: PropTypes.bool
+}
 export default function EditChoiceListItem(props) {
   return (
     <div className="list-group-item container-fluid">

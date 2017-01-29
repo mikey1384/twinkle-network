@@ -1,27 +1,27 @@
-const pool = require('../pool');
-const async = require('async');
+const pool = require('../pool')
+const async = require('async')
 
 function returnComments(commentRows, cb) {
-  let commentsArray = [];
-  let taskArray = [];
+  let commentsArray = []
+  let taskArray = []
   if (commentRows.length === 0) {
-    return cb(null, []);
+    return cb(null, [])
   }
   for (let index = 0; index < commentRows.length; index++) {
-    let commentRow = commentRows[index];
-    taskArray.push(fetchCommentElements({commentRow, commentsArray, index}));
+    let commentRow = commentRows[index]
+    taskArray.push(fetchCommentElements({commentRow, commentsArray, index}))
   }
   async.parallel(taskArray, err => {
     cb(err, commentsArray)
-  });
+  })
 }
 
 const fetchCommentElements = (params) => cb => {
-  let commentRow = params.commentRow;
-  let commentsArray = params.commentsArray;
-  let index = params.index;
-  let commentId = commentRow.id;
-  let loadMoreReplies = false;
+  let commentRow = params.commentRow
+  let commentsArray = params.commentsArray
+  let index = params.index
+  let commentId = commentRow.id
+  let loadMoreReplies = false
   async.parallel([
     callback => {
       let query = [
@@ -31,7 +31,7 @@ const fetchCommentElements = (params) => cb => {
         'a.commentId = ?'
       ].join('')
       pool.query(query, commentId, (err, rows) => {
-        callback(err, rows);
+        callback(err, rows)
       })
     },
     callback => {
@@ -39,22 +39,22 @@ const fetchCommentElements = (params) => cb => {
         SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
         c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName
         FROM vq_comments a JOIN users b ON a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId
-        AND c.isProfilePic = '1' LEFT JOIN vq_comments d ON a.replyId = d.id 
+        AND c.isProfilePic = '1' LEFT JOIN vq_comments d ON a.replyId = d.id
         LEFT JOIN users e ON d.userId = e.id WHERE a.commentId = ?
         ORDER BY a.id DESC LIMIT 2
-      `;
+      `
       pool.query(query, commentId, (err, rows) => {
         if (err) {
           console.error(err)
           return callback(err)
         }
         if (rows.length > 1) {
-          rows.pop();
-          loadMoreReplies = true;
+          rows.pop()
+          loadMoreReplies = true
         }
-        rows.sort(function(a, b) {return a.id - b.id})
+        rows.sort(function(a, b) { return a.id - b.id })
         returnReplies(rows, (err, repliesArray) => {
-          callback(err, repliesArray);
+          callback(err, repliesArray)
         })
       })
     }
@@ -68,33 +68,33 @@ const fetchCommentElements = (params) => cb => {
         userId: like.userId,
         username: like.username
       }
-    });
-    const replies = results[1];
-    commentsArray[index] = Object.assign({}, commentRow, {replies}, {likes}, {loadMoreReplies});
-    cb(err);
+    })
+    const replies = results[1]
+    commentsArray[index] = Object.assign({}, commentRow, {replies}, {likes}, {loadMoreReplies})
+    cb(err)
   })
 }
 
 function returnReplies(replyRows, cb) {
-  let repliesArray = [];
-  let taskArray = [];
+  let repliesArray = []
+  let taskArray = []
   if (replyRows.length === 0) {
-    return cb(null, []);
+    return cb(null, [])
   }
   for (let index = 0; index < replyRows.length; index++) {
-    let replyRow = replyRows[index];
-    taskArray.push(fetchReplyElements({replyRow, repliesArray, index}));
+    let replyRow = replyRows[index]
+    taskArray.push(fetchReplyElements({replyRow, repliesArray, index}))
   }
   async.parallel(taskArray, err => {
     cb(err, repliesArray)
-  });
+  })
 }
 
 const fetchReplyElements = (params) => cb => {
-  let replyRow = params.replyRow;
-  let repliesArray = params.repliesArray;
-  let index = params.index;
-  let replyId = replyRow.id;
+  let replyRow = params.replyRow
+  let repliesArray = params.repliesArray
+  let index = params.index
+  let replyId = replyRow.id
   let query = [
     'SELECT a.userId, b.username ',
     'FROM vq_commentupvotes a JOIN users b ON ',
@@ -107,7 +107,7 @@ const fetchReplyElements = (params) => cb => {
         userId: like.userId,
         username: like.username
       }))})
-    cb(err);
+    cb(err)
   })
 }
 

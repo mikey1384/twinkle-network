@@ -1,17 +1,21 @@
-import request from 'axios';
-import {token, auth, handleError} from './constants';
-import {URL} from 'constants/URL';
+/* global localStorage */
 
-const API_URL = `${URL}/user`;
+import request from 'axios'
+import {token, auth, handleError} from './constants'
+import {URL} from 'constants/URL'
+
+const API_URL = `${URL}/user`
 
 export const checkValidUsername = username => dispatch =>
 request.get(`${API_URL}/username/check?username=${username}`)
 .then(
   response => {
-    const {data} = response;
-    if (data.pageNotExists) return dispatch({
-      type: 'SHOW_USER_NOT_EXISTS'
-    })
+    const {data} = response
+    if (data.pageNotExists) {
+      return dispatch({
+        type: 'SHOW_USER_NOT_EXISTS'
+      })
+    }
     dispatch({
       type: 'SHOW_USER_PROFILE',
       data: data.user
@@ -33,12 +37,12 @@ export const initSession = data => ({
 })
 
 export const initSessionAsync = () => dispatch => {
-  if (token() === null) return;
+  if (token() === null) return
   return request.get(`${API_URL}/session`, auth())
   .then(
     response => dispatch(initSession({...response.data, loggedIn: true})),
   ).catch(
-    error => dispatch(initSession({loggedIn: false}))
+    () => dispatch(initSession({loggedIn: false}))
   )
 }
 
@@ -51,20 +55,20 @@ export const loginAsync = params => dispatch =>
 request.post(`${API_URL}/login`, params)
 .then(
   response => {
-    localStorage.setItem('token', response.data.token);
-    dispatch(login(response.data));
+    localStorage.setItem('token', response.data.token)
+    dispatch(login(response.data))
   }
 ).catch(
   error => {
     if (error.response.status === 401) {
-      return dispatch(login({result: "Incorrect username/password combination"}))
+      return dispatch(login({result: 'Incorrect username/password combination'}))
     }
     dispatch(login({result: error.data}))
   }
 )
 
 export const logout = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem('token')
   return {
     type: 'SIGNIN_LOGOUT'
   }
@@ -79,7 +83,7 @@ export const signupAsync = params => dispatch =>
 request.post(`${API_URL}/signup`, params)
 .then(
   response => {
-    if (response.data.token) localStorage.setItem('token', response.data.token);
+    if (response.data.token) localStorage.setItem('token', response.data.token)
     dispatch(signup(response.data))
   }
 )

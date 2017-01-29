@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component, PropTypes} from 'react'
 
 export default class Dropdown extends Component {
   static propTypes = {
@@ -11,29 +11,28 @@ export default class Dropdown extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let searchResultsChanged = false;
+    let searchResultsChanged = false
     if (this.props.searchResults.length !== nextProps.searchResults.length) {
       searchResultsChanged = true
-    }
-    else {
+    } else {
       for (let i = 0; i < nextProps.searchResults.length; i++) {
         if (nextProps.searchResults[i] !== this.props.searchResults[i]) {
-          searchResultsChanged = true;
+          searchResultsChanged = true
         }
       }
     }
 
     if (searchResultsChanged && (nextProps.dropdownItemToHighlight !== 0)) {
-      this.props.onUpdate();
+      this.props.onUpdate()
     }
   }
 
   componentWillUnmount() {
-    this.props.onUnmount();
+    this.props.onUnmount()
   }
 
   render() {
-    const {searchResults, dropdownItemToHighlight} = this.props;
+    const {searchResults, dropdownItemToHighlight} = this.props
     return (
       <ul
         className="dropdown-menu"
@@ -44,7 +43,7 @@ export default class Dropdown extends Component {
         }}
       >
         {searchResults.map((item, index) => {
-          let style = index === dropdownItemToHighlight ? {background: '#f5f5f5', color: '#333333'} : null;
+          let style = index === dropdownItemToHighlight ? {background: '#f5f5f5', color: '#333333'} : null
           return (
             <li
               key={index}
@@ -53,8 +52,8 @@ export default class Dropdown extends Component {
               <a style={{
                 ...style,
                 whiteSpace: 'nowrap',
-                textOverflow:'ellipsis',
-                overflow:'hidden',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
                 lineHeight: 'normal'
               }}>
                 {this.props.renderItemLabel(item)}

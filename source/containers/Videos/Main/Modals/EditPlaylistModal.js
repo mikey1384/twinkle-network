@@ -1,15 +1,15 @@
-import React, {Component, PropTypes} from 'react';
-import {Modal} from 'react-bootstrap';
-import Button from 'components/Button';
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import Button from 'components/Button'
+import {connect} from 'react-redux'
 import {
   changePlaylistVideosAsync,
   getMoreVideosForModalAsync
-} from 'redux/actions/PlaylistActions';
-import SelectVideosForm from './SelectVideosForm';
-import SortableThumb from './SortableThumb';
-import {DragDropContext} from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+} from 'redux/actions/PlaylistActions'
+import SelectVideosForm from './SelectVideosForm'
+import SortableThumb from './SortableThumb'
+import {DragDropContext} from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
 @DragDropContext(HTML5Backend)
 @connect(
@@ -27,7 +27,12 @@ export default class EditPlaylistModal extends Component {
   static propTypes = {
     selectedVideos: PropTypes.array.isRequired,
     playlistId: PropTypes.number.isRequired,
-    onHide: PropTypes.func.isRequired
+    onHide: PropTypes.func.isRequired,
+    modalType: PropTypes.string,
+    videos: PropTypes.array,
+    loadMoreVideosButton: PropTypes.bool,
+    getMoreVideosForModal: PropTypes.func,
+    changePlaylistVideos: PropTypes.func
   }
 
   constructor(props) {
@@ -39,12 +44,12 @@ export default class EditPlaylistModal extends Component {
   }
 
   render() {
-    const {modalType, videos, loadMoreVideosButton,  getMoreVideosForModal, onHide} = this.props;
-    const {selectedVideos} = this.state;
+    const {modalType, videos, loadMoreVideosButton, getMoreVideosForModal, onHide} = this.props
+    const {selectedVideos} = this.state
     const last = (array) => {
-      return array[array.length - 1];
-    };
-    const lastId = last(videos) ? last(videos).id : 0;
+      return array[array.length - 1]
+    }
+    const lastId = last(videos) ? last(videos).id : 0
     return (
       <Modal
         show
@@ -68,17 +73,17 @@ export default class EditPlaylistModal extends Component {
               loadMoreVideosButton={loadMoreVideosButton}
               onSelect={(selected, videoId) => this.setState({selectedVideos: selected.concat([videoId])})}
               onDeselect={selected => this.setState({selectedVideos: selected})}
-              loadMoreVideos={() => {getMoreVideosForModal(lastId)}}
+              loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
             />
           }
           {modalType === 'reorder' &&
             <div className="row">
               {selectedVideos.map(videoId => {
-                let index = -1;
-                for(let i = 0; i < videos.length; i++) {
+                let index = -1
+                for (let i = 0; i < videos.length; i++) {
                   if (videos[i].id === videoId) {
-                    index = i;
-                    break;
+                    index = i
+                    break
                   }
                 }
                 return (
@@ -86,14 +91,14 @@ export default class EditPlaylistModal extends Component {
                     key={videos[index].id}
                     video={videos[index]}
                     onMove={({sourceId, targetId}) => {
-                      const selectedVideoArray = selectedVideos;
-                      const sourceIndex = selectedVideoArray.indexOf(sourceId);
-                      const targetIndex = selectedVideoArray.indexOf(targetId);
-                      selectedVideoArray.splice(sourceIndex, 1);
-                      selectedVideoArray.splice(targetIndex, 0, sourceId);
+                      const selectedVideoArray = selectedVideos
+                      const sourceIndex = selectedVideoArray.indexOf(sourceId)
+                      const targetIndex = selectedVideoArray.indexOf(targetId)
+                      selectedVideoArray.splice(sourceIndex, 1)
+                      selectedVideoArray.splice(targetIndex, 0, sourceId)
                       this.setState({
                         selectedVideos: selectedVideoArray
-                      });
+                      })
                     }}
                   />
                 )
@@ -115,8 +120,8 @@ export default class EditPlaylistModal extends Component {
   }
 
   handleSave() {
-    const {selectedVideos} = this.state;
-    const {playlistId, changePlaylistVideos} = this.props;
-    changePlaylistVideos(playlistId, selectedVideos, this);
+    const {selectedVideos} = this.state
+    const {playlistId, changePlaylistVideos} = this.props
+    changePlaylistVideos(playlistId, selectedVideos, this)
   }
 }

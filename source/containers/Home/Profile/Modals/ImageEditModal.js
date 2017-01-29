@@ -1,10 +1,17 @@
-import React, {Component} from 'react';
-import {Modal} from 'react-bootstrap';
-import Button from 'components/Button';
-import Slider from 'rc-slider';
-import AvatarEditor from 'react-avatar-editor';
+import React, {Component, PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import Button from 'components/Button'
+import Slider from 'rc-slider'
+import AvatarEditor from 'react-avatar-editor'
 
 export default class ImageEditModal extends Component {
+  static propTypes = {
+    onHide: PropTypes.func,
+    imageUri: PropTypes.string,
+    onConfirm: PropTypes.func,
+    processing: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.state = {
@@ -12,8 +19,8 @@ export default class ImageEditModal extends Component {
     }
   }
   render() {
-    const {onHide, imageUri, onConfirm, processing} = this.props;
-    const {imageScale} = this.state;
+    const {onHide, imageUri, onConfirm, processing} = this.props
+    const {imageScale} = this.state
     return (
       <Modal
         show
@@ -52,7 +59,7 @@ export default class ImageEditModal extends Component {
           <Button className="btn btn-default" onClick={onHide}>Cancel</Button>
           <Button
             className="btn btn-primary"
-            onClick={() => onConfirm(this.refs.editor.getImage().toDataURL("image/jpeg", 0.7))}
+            onClick={() => onConfirm(this.refs.editor.getImage().toDataURL('image/jpeg', 0.7))}
             disabled={processing}
           >
             Submit

@@ -1,20 +1,19 @@
-import React, {Component} from 'react';
-import UserLink from '../UserLink';
-import Button from 'components/Button';
-import LikeButton from 'components/LikeButton';
-import Likers from 'components/Likers';
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from 'react'
+import UserLink from '../UserLink'
+import Button from 'components/Button'
+import LikeButton from 'components/LikeButton'
+import Likers from 'components/Likers'
+import {connect} from 'react-redux'
 import {
   feedVideoCommentDeleteAsync,
   feedVideoCommentEditAsync,
   likeTargetVideoCommentAsync,
   uploadTargetContentComment
-} from 'redux/actions/FeedActions';
-import UserListModal from 'components/Modals/UserListModal';
-import InputArea from 'components/InputArea';
-import TargetContentComment from './TargetContentComment';
+} from 'redux/actions/FeedActions'
+import UserListModal from 'components/Modals/UserListModal'
+import InputArea from 'components/InputArea'
+import TargetContentComment from './TargetContentComment'
 import {Color} from 'constants/css'
-
 
 @connect(
   state => ({
@@ -29,6 +28,28 @@ import {Color} from 'constants/css'
   }
 )
 export default class TargetContent extends Component {
+  static propTypes = {
+    uploader: PropTypes.object,
+    isDiscussion: PropTypes.bool,
+    title: PropTypes.string,
+    content: PropTypes.string,
+    contentAvailable: PropTypes.bool,
+    username: PropTypes.string,
+    comments: PropTypes.array,
+    myId: PropTypes.number,
+    profilePicId: PropTypes.number,
+    likes: PropTypes.array,
+    replyId: PropTypes.number,
+    onDeleteComment: PropTypes.func,
+    onEditComment: PropTypes.func,
+    commentId: PropTypes.number,
+    onLikeClick: PropTypes.func,
+    parentContentId: PropTypes.number,
+    discussionId: PropTypes.number,
+    panelId: PropTypes.number,
+    uploadComment: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -44,11 +65,11 @@ export default class TargetContent extends Component {
   render() {
     const {uploader, isDiscussion, title, content, contentAvailable, username, comments,
       myId, profilePicId, likes = [], replyId, onDeleteComment, onEditComment
-    } = this.props;
-    const {userListModalShown, replyInputShown, clickListenerState} = this.state;
-    let userLikedThis = false;
+    } = this.props
+    const {userListModalShown, replyInputShown, clickListenerState} = this.state
+    let userLikedThis = false
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === myId) userLikedThis = true;
+      if (likes[i].userId === myId) userLikedThis = true
     }
     return (
       <div
@@ -59,10 +80,10 @@ export default class TargetContent extends Component {
           wordWrap: 'break-word'
         }}
       >
-        {!!contentAvailable ?
+        {contentAvailable ?
           (!isDiscussion ?
             <div>
-              <UserLink user={uploader} /> {!!replyId ? 'wrote' : 'commented'}:
+              <UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:
               <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
               <LikeButton
                 style={{marginTop: '1em'}}
@@ -152,18 +173,18 @@ export default class TargetContent extends Component {
   }
 
   onLikeClick() {
-    const {replyId, commentId} = this.props;
-    this.props.onLikeClick(replyId || commentId);
+    const {replyId, commentId} = this.props
+    this.props.onLikeClick(replyId || commentId)
   }
 
   onReplyClick() {
-    const {replyInputShown, clickListenerState} = this.state;
-    if (!replyInputShown) return this.setState({replyInputShown: true});
+    const {replyInputShown, clickListenerState} = this.state
+    if (!replyInputShown) return this.setState({replyInputShown: true})
     this.setState({clickListenerState: !clickListenerState})
   }
 
   onSubmit(content) {
-    const {replyId = null, commentId, parentContentId, discussionId = null, uploadComment, panelId} = this.props;
+    const {replyId = null, commentId, parentContentId, discussionId = null, uploadComment, panelId} = this.props
     uploadComment({videoId: parentContentId, replyId, commentId, discussionId, content}, panelId)
   }
 }

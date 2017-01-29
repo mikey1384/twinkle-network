@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
-import {fetchMoreFeedsAsync, fetchFeedsAsync} from 'redux/actions/FeedActions';
-import FeedInputPanel from './FeedInputPanel';
-import FeedPanel from './FeedPanel';
+import React, {Component, PropTypes} from 'react'
+import {fetchMoreFeedsAsync, fetchFeedsAsync} from 'redux/actions/FeedActions'
+import FeedInputPanel from './FeedInputPanel'
+import FeedPanel from './FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
-import Loading from 'components/Loading';
-import ExecutionEnvironment from 'exenv';
-import {connect} from 'react-redux';
-
+import Loading from 'components/Loading'
+import ExecutionEnvironment from 'exenv'
+import {connect} from 'react-redux'
 
 @connect(
   state => ({
@@ -21,6 +20,16 @@ import {connect} from 'react-redux';
   }
 )
 export default class Feeds extends Component {
+  static propTypes = {
+    fetchFeeds: PropTypes.func,
+    location: PropTypes.object,
+    feeds: PropTypes.array,
+    loadMoreButton: PropTypes.bool,
+    userId: PropTypes.number,
+    selectedFilter: PropTypes.string,
+    fetchMoreFeeds: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -32,13 +41,13 @@ export default class Feeds extends Component {
   }
 
   componentDidMount() {
-    const {fetchFeeds, location, feeds} = this.props;
-    if (ExecutionEnvironment.canUseDOM && (location.action === 'PUSH' || !feeds)) fetchFeeds();
+    const {fetchFeeds, location, feeds} = this.props
+    if (ExecutionEnvironment.canUseDOM && (location.action === 'PUSH' || !feeds)) fetchFeeds()
   }
 
   render() {
-    const {feeds, loadMoreButton, userId} = this.props;
-    const {loadingMore} = this.state;
+    const {feeds, loadMoreButton, userId} = this.props
+    const {loadingMore} = this.state
     return (
       <div>
         {!feeds &&
@@ -49,7 +58,7 @@ export default class Feeds extends Component {
             <FeedInputPanel />
             {this.renderFilterBar()}
             {feeds.map(feed => {
-              return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />;
+              return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />
             })}
             {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loadingMore} />}
           </div>
@@ -69,28 +78,28 @@ export default class Feeds extends Component {
   }
 
   applyFilter(filter) {
-    const {fetchFeeds, selectedFilter} = this.props;
-    if (filter === selectedFilter) return;
+    const {fetchFeeds, selectedFilter} = this.props
+    if (filter === selectedFilter) return
     fetchFeeds(filter)
   }
 
   loadMoreFeeds() {
-    const {feeds, fetchMoreFeeds, selectedFilter} = this.props;
+    const {feeds, fetchMoreFeeds, selectedFilter} = this.props
     this.setState({loadingMore: true})
     fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter, () => {
       this.setState({loadingMore: false})
-    });
+    })
   }
 
   renderFilterBar() {
-    const {selectedFilter} = this.props;
+    const {selectedFilter} = this.props
     return (
       <nav className="navbar navbar-inverse">
         <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
           <li className={selectedFilter === 'all' && 'active'}>
             <a
               style={{
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
               onClick={() => this.applyFilter('all')}
             >
@@ -100,7 +109,7 @@ export default class Feeds extends Component {
           <li className={selectedFilter === 'discussion' && 'active'}>
             <a
               style={{
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
               onClick={() => this.applyFilter('discussion')}
             >
@@ -110,7 +119,7 @@ export default class Feeds extends Component {
           <li className={selectedFilter === 'video' && 'active'}>
             <a
               style={{
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
               onClick={() => this.applyFilter('video')}
             >
@@ -120,7 +129,7 @@ export default class Feeds extends Component {
           <li className={selectedFilter === 'url' && 'active'}>
             <a
               style={{
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
               onClick={() => this.applyFilter('url')}
             >
@@ -130,7 +139,7 @@ export default class Feeds extends Component {
           <li className={selectedFilter === 'comment' && 'active'}>
             <a
               style={{
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
               onClick={() => this.applyFilter('comment')}
             >

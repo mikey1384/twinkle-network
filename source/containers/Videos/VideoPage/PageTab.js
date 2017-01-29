@@ -1,5 +1,11 @@
-import React from 'react';
+import React, {PropTypes} from 'react'
 
+PageTab.propTypes = {
+  watchTabActive: PropTypes.bool,
+  onWatchTabClick: PropTypes.func,
+  onQuestionTabClick: PropTypes.func,
+  questions: PropTypes.array
+}
 export default function PageTab(props) {
   return (
     <div className="row container-fluid">

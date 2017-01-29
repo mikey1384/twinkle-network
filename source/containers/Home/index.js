@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
-import {Color} from 'constants/css';
-import {connect} from 'react-redux';
-import {browserHistory} from 'react-router';
-
+import React, {Component, PropTypes} from 'react'
+import {Color} from 'constants/css'
+import {connect} from 'react-redux'
+import {browserHistory} from 'react-router'
 
 @connect(
   state => ({
@@ -10,6 +9,12 @@ import {browserHistory} from 'react-router';
   })
 )
 export default class Home extends Component {
+  static propTypes = {
+    params: PropTypes.object,
+    username: PropTypes.string,
+    children: PropTypes.object
+  }
+
   constructor() {
     super()
     this.state = {
@@ -18,20 +23,20 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    this.setState({selectedTab: !!this.props.params.username ? 'profile' : 'feed'})
+    this.setState({selectedTab: this.props.params.username ? 'profile' : 'feed'})
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.params.username !== this.props.params.username) {
       this.setState({
-        selectedTab: !!this.props.params.username ? 'profile' : 'feed'
+        selectedTab: this.props.params.username ? 'profile' : 'feed'
       })
     }
   }
 
   render() {
-    const {username} = this.props;
-    const {selectedTab} = this.state;
+    const {username} = this.props
+    const {selectedTab} = this.state
     const listStyle = {
       profile: {
         cursor: 'pointer',
@@ -45,7 +50,7 @@ export default class Home extends Component {
         border: 'none',
         fontWeight: selectedTab === 'feed' && 'bold'
       }
-    };
+    }
     return (
       <div className="container-fluid">
         <div

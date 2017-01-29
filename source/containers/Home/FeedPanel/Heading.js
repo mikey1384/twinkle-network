@@ -1,20 +1,43 @@
-import React, {Component} from 'react';
-import UserLink from '../UserLink';
-import ContentLink from '../ContentLink';
-import {timeSince} from 'helpers/timeStampHelpers';
-import LikeButton from 'components/LikeButton';
-import {connect} from 'react-redux';
-import {likeVideoAsync} from 'redux/actions/FeedActions';
-import {cleanString} from 'helpers/stringHelpers';
-import {Color} from 'constants/css';
-import ProfilePic from 'components/ProfilePic';
-
+import React, {Component, PropTypes} from 'react'
+import UserLink from '../UserLink'
+import ContentLink from '../ContentLink'
+import {timeSince} from 'helpers/timeStampHelpers'
+import LikeButton from 'components/LikeButton'
+import {connect} from 'react-redux'
+import {likeVideoAsync} from 'redux/actions/FeedActions'
+import {cleanString} from 'helpers/stringHelpers'
+import {Color} from 'constants/css'
+import ProfilePic from 'components/ProfilePic'
 
 @connect(
   null,
   {onLikeVideoClick: likeVideoAsync}
 )
 export default class Heading extends Component {
+  static propTypes = {
+    type: PropTypes.string,
+    action: PropTypes.string,
+    content: PropTypes.string,
+    uploader: PropTypes.object,
+    uploaderPicId: PropTypes.number,
+    targetReplyUploader: PropTypes.any,
+    targetCommentUploader: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.bool
+    ]),
+    parentContent: PropTypes.object,
+    parentContentId: PropTypes.number,
+    timeStamp: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    onPlayVideoClick: PropTypes.func,
+    attachedVideoShown: PropTypes.bool,
+    parentContentLikers: PropTypes.array,
+    myId: PropTypes.number,
+    onLikeVideoClick: PropTypes.func
+  }
+
   render() {
     const {
       type,
@@ -32,22 +55,21 @@ export default class Heading extends Component {
       parentContentLikers = [],
       myId,
       onLikeVideoClick
-    } = this.props;
+    } = this.props
 
-    let targetAction;
+    let targetAction
 
-    if (!!targetReplyUploader) {
+    if (targetReplyUploader) {
       targetAction = <span><UserLink user={targetReplyUploader} />'s reply on</span>
-    }
-    else if (!!targetCommentUploader) {
+    } else if (targetCommentUploader) {
       targetAction = <span><UserLink user={targetCommentUploader} />'s comment on</span>
     }
-    let userLikedVideo = false;
+    let userLikedVideo = false
     for (let i = 0; i < parentContentLikers.length; i++) {
-      if (parentContentLikers[i].userId === myId) userLikedVideo = true;
+      if (parentContentLikers[i].userId === myId) userLikedVideo = true
     }
 
-    const pStyle = {fontSize: '1.4rem'};
+    const pStyle = {fontSize: '1.4rem'}
 
     switch (type) {
       case 'video':
@@ -55,7 +77,7 @@ export default class Heading extends Component {
           <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
-              <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{!!timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
+              <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
         )
@@ -101,7 +123,7 @@ export default class Heading extends Component {
               <a href={content} target="_blank" style={{color: Color.blue}}>
                 <strong>{cleanString(parentContent.title)}</strong>
               </a>
-              <small>{!!timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
+              <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
         )

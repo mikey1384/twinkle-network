@@ -1,9 +1,16 @@
-import React from 'react';
-import Likers from 'components/Likers';
-import LikeButton from 'components/LikeButton';
+import React, {PropTypes} from 'react'
+import Likers from 'components/Likers'
+import LikeButton from 'components/LikeButton'
 
+VideoLikeInterface.propTypes = {
+  userId: PropTypes.number,
+  likes: PropTypes.array,
+  onLikeClick: PropTypes.func,
+  showLikerList: PropTypes.func,
+  views: PropTypes.string
+}
 export default function VideoLikeInterface(props) {
-  const {userId, likes, onLikeClick, showLikerList, views} = props;
+  const {userId, likes, onLikeClick, showLikerList, views} = props
   return (
     <div>
       <div
@@ -39,12 +46,12 @@ export default function VideoLikeInterface(props) {
   )
 
   function isLiked(likes) {
-    let liked = false;
+    let liked = false
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if(likes[i].userId === userId) liked = true;
+        if (likes[i].userId === userId) liked = true
       }
     }
-    return liked;
+    return liked
   }
 }

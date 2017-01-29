@@ -1,18 +1,18 @@
-import React, {Component} from 'react';
-import Textarea from 'react-textarea-autosize';
-import {Modal} from 'react-bootstrap';
-import Button from 'components/Button';
+import React, {Component, PropTypes} from 'react'
+import Textarea from 'react-textarea-autosize'
+import {Modal} from 'react-bootstrap'
+import Button from 'components/Button'
 import {
   closeAddPlaylistModal,
   uploadPlaylistAsync,
   getMoreVideosForModalAsync
-} from 'redux/actions/PlaylistActions';
-import {stringIsEmpty} from 'helpers/stringHelpers';
-import {connect} from 'react-redux';
-import SortableThumb from './SortableThumb';
-import {DragDropContext} from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import SelectVideosForm from './SelectVideosForm';
+} from 'redux/actions/PlaylistActions'
+import {stringIsEmpty} from 'helpers/stringHelpers'
+import {connect} from 'react-redux'
+import SortableThumb from './SortableThumb'
+import {DragDropContext} from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+import SelectVideosForm from './SelectVideosForm'
 
 const defaultState = {
   section: 0,
@@ -35,9 +35,17 @@ const defaultState = {
   }
 )
 export default class AddPlaylistModal extends Component {
+  static propTypes = {
+    videos: PropTypes.array,
+    loadMoreVideosButton: PropTypes.bool,
+    getMoreVideosForModal: PropTypes.func,
+    uploadPlaylist: PropTypes.func,
+    closeAddPlaylistModal: PropTypes.func
+  }
+
   constructor() {
     super()
-    this.state = defaultState;
+    this.state = defaultState
     this.handleHide = this.handleHide.bind(this)
     this.handlePrev = this.handlePrev.bind(this)
     this.handleNext = this.handleNext.bind(this)
@@ -45,14 +53,14 @@ export default class AddPlaylistModal extends Component {
   }
 
   render() {
-    const {videos, loadMoreVideosButton, getMoreVideosForModal} = this.props;
-    const {section, titleError, title, description} = this.state;
+    const {videos, loadMoreVideosButton, getMoreVideosForModal} = this.props
+    const {section, titleError, title, description} = this.state
     const last = array => {
-      return array[array.length - 1];
-    };
-    const lastId = last(videos) ? last(videos).id : 0;
+      return array[array.length - 1]
+    }
+    const lastId = last(videos) ? last(videos).id : 0
     const loadMoreVideos = () => {
-      getMoreVideosForModal(lastId);
+      getMoreVideosForModal(lastId)
     }
     return (
       <Modal
@@ -60,7 +68,7 @@ export default class AddPlaylistModal extends Component {
         animation={false}
         backdrop="static"
         onHide={this.handleHide}
-        dialogClassName={section >= 1 ? "modal-extra-lg" : ""}
+        dialogClassName={section >= 1 ? 'modal-extra-lg' : ''}
       >
         <Modal.Header closeButton>
           {this.renderTitle()}
@@ -86,7 +94,7 @@ export default class AddPlaylistModal extends Component {
                 <span
                   className="help-block"
                   style={{color: 'red'}}
-                >{titleError && "Enter title"}</span>
+                >{titleError && 'Enter title'}</span>
               </fieldset>
               <fieldset className="form-group">
                 <label>Description</label>
@@ -116,11 +124,11 @@ export default class AddPlaylistModal extends Component {
           {section === 2 &&
             <div className="row">
               {this.state.selectedVideos.map(videoId => {
-                let index = -1;
-                for(let i = 0; i < videos.length; i++) {
+                let index = -1
+                for (let i = 0; i < videos.length; i++) {
                   if (videos[i].id === videoId) {
-                    index = i;
-                    break;
+                    index = i
+                    break
                   }
                 }
                 return (
@@ -128,14 +136,14 @@ export default class AddPlaylistModal extends Component {
                     key={videos[index].id}
                     video={videos[index]}
                     onMove={({sourceId, targetId}) => {
-                      const selectedVideoArray = this.state.selectedVideos;
-                      const sourceIndex = selectedVideoArray.indexOf(sourceId);
-                      const targetIndex = selectedVideoArray.indexOf(targetId);
-                      selectedVideoArray.splice(sourceIndex, 1);
-                      selectedVideoArray.splice(targetIndex, 0, sourceId);
+                      const selectedVideoArray = this.state.selectedVideos
+                      const sourceIndex = selectedVideoArray.indexOf(sourceId)
+                      const targetIndex = selectedVideoArray.indexOf(targetId)
+                      selectedVideoArray.splice(sourceIndex, 1)
+                      selectedVideoArray.splice(targetIndex, 0, sourceId)
                       this.setState({
                         selectedVideos: selectedVideoArray
-                      });
+                      })
                     }}
                   />
                 )
@@ -166,42 +174,42 @@ export default class AddPlaylistModal extends Component {
   }
 
   renderTitle() {
-    const currentSection = this.state.section;
-    switch(currentSection) {
+    const currentSection = this.state.section
+    switch (currentSection) {
       case 0:
-      return <h4>Add Playlist</h4>
+        return <h4>Add Playlist</h4>
       case 1:
-      return <h4>Add videos to your playlist</h4>
+        return <h4>Add videos to your playlist</h4>
       case 2:
-      return <h4>Click and drag videos into the order that you would like them to appear</h4>
+        return <h4>Click and drag videos into the order that you would like them to appear</h4>
       default:
-      return <h4>TBD</h4>
+        return <h4>TBD</h4>
     }
   }
 
   handlePrev() {
-    const currentSection = this.state.section;
-    const prevSection = Math.max(currentSection - 1, 0);
-    this.setState({section: prevSection});
+    const currentSection = this.state.section
+    const prevSection = Math.max(currentSection - 1, 0)
+    this.setState({section: prevSection})
   }
 
   handleNext() {
-    const currentSection = this.state.section;
-    const {title} = this.state;
-    if (currentSection === 0 && stringIsEmpty(title)) return this.setState({titleError: true});
-    const nextSection = Math.min(currentSection + 1, 2);
-    this.setState({section: nextSection});
+    const currentSection = this.state.section
+    const {title} = this.state
+    if (currentSection === 0 && stringIsEmpty(title)) return this.setState({titleError: true})
+    const nextSection = Math.min(currentSection + 1, 2)
+    this.setState({section: nextSection})
   }
 
   handleFinish() {
-    const {uploadPlaylist} = this.props;
-    const {title, description, selectedVideos} = this.state;
-    uploadPlaylist({title, description, selectedVideos});
+    const {uploadPlaylist} = this.props
+    const {title, description, selectedVideos} = this.state
+    uploadPlaylist({title, description, selectedVideos})
   }
 
   handleHide() {
-    const {closeAddPlaylistModal} = this.props;
-    this.setState(defaultState);
-    closeAddPlaylistModal();
+    const {closeAddPlaylistModal} = this.props
+    this.setState(defaultState)
+    closeAddPlaylistModal()
   }
 }

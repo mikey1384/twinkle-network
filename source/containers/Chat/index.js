@@ -1,18 +1,17 @@
-import React, {Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
-import MessagesContainer from './MessagesContainer';
-import {connect} from 'react-redux';
-import * as ChatActions from 'redux/actions/ChatActions';
-import ChatInput from './ChatInput';
-import CreateNewChannelModal from './Modals/CreateNewChannel';
-import InviteUsersModal from './Modals/InviteUsers';
-import EditTitleModal from './Modals/EditTitle';
-import UserListModal from 'components/Modals/UserListModal';
-import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import Button from 'components/Button';
-import ChatSearchBox from './ChatSearchBox';
-import {GENERAL_CHAT_ID} from 'constants/database';
+import React, {Component, PropTypes} from 'react'
+import MessagesContainer from './MessagesContainer'
+import {connect} from 'react-redux'
+import * as ChatActions from 'redux/actions/ChatActions'
+import ChatInput from './ChatInput'
+import CreateNewChannelModal from './Modals/CreateNewChannel'
+import InviteUsersModal from './Modals/InviteUsers'
+import EditTitleModal from './Modals/EditTitle'
+import UserListModal from 'components/Modals/UserListModal'
+import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import Button from 'components/Button'
+import ChatSearchBox from './ChatSearchBox'
+import {GENERAL_CHAT_ID} from 'constants/database'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -20,7 +19,7 @@ const channelName = (channels, currentChannel) => {
       return channels[i].channelName
     }
   }
-  return null;
+  return null
 }
 
 @connect(
@@ -55,7 +54,30 @@ const channelName = (channels, currentChannel) => {
 export default class Chat extends Component {
   static propTypes = {
     socket: PropTypes.object.isRequired,
-    onUnmount: PropTypes.func.isRequired
+    onUnmount: PropTypes.func.isRequired,
+    notifyThatMemberLeftChannel: PropTypes.func,
+    currentChannel: PropTypes.object,
+    channels: PropTypes.array,
+    selectedChannelId: PropTypes.number,
+    userId: PropTypes.number,
+    loadMoreButton: PropTypes.func,
+    messages: PropTypes.array,
+    loadMoreMessages: PropTypes.func,
+    submitMessage: PropTypes.func,
+    username: PropTypes.string,
+    profilePicId: PropTypes.number,
+    sendFirstDirectMessage: PropTypes.func,
+    partnerId: PropTypes.number,
+    enterChannelWithId: PropTypes.func,
+    enterEmptyChat: PropTypes.func,
+    openNewChatTabOrEnterExistingChat: PropTypes.func,
+    createNewChannel: PropTypes.func,
+    receiveMessage: PropTypes.func,
+    receiveMessageOnDifferentChannel: PropTypes.func,
+    receiveFirstMsg: PropTypes.func,
+    editChannelTitle: PropTypes.func,
+    hideChat: PropTypes.func,
+    leaveChannel: PropTypes.func
   }
 
   constructor(props) {
@@ -83,25 +105,25 @@ export default class Chat extends Component {
     this.onLeaveChannel = this.onLeaveChannel.bind(this)
     this.onMouseOverTitle = this.onMouseOverTitle.bind(this)
 
-    const {socket, notifyThatMemberLeftChannel} = props;
+    const {socket, notifyThatMemberLeftChannel} = props
     socket.on('receive_message', this.onReceiveMessage)
     socket.on('chat_invitation', this.onChatInvitation)
     socket.on('change_in_members_online', data => {
-      let {myChannels} = this.state;
-      let forCurrentChannel = data.channelId === this.props.currentChannel.id;
+      let {myChannels} = this.state
+      let forCurrentChannel = data.channelId === this.props.currentChannel.id
       if (forCurrentChannel) {
         if (data.leftChannel) {
-          const {userId, username, profilePicId} = data.leftChannel;
+          const {userId, username, profilePicId} = data.leftChannel
           notifyThatMemberLeftChannel({channelId: data.channelId, userId, username, profilePicId})
         }
         this.setState({currentChannelOnline: data.membersOnline.length})
       }
 
-      let channelObjectExists = false;
+      let channelObjectExists = false
       for (let i = 0; i < myChannels.length; i++) {
         if (myChannels[i].channelId === data.channelId) {
-          channelObjectExists = true;
-          break;
+          channelObjectExists = true
+          break
         }
       }
       if (channelObjectExists) {
@@ -110,7 +132,7 @@ export default class Chat extends Component {
             if (channel.channelId === data.channelId) {
               channel.membersOnline = data.membersOnline
             }
-            return channel;
+            return channel
           })
         })
       } else {
@@ -122,20 +144,21 @@ export default class Chat extends Component {
   }
 
   componentWillMount() {
-    const {socket, channels} = this.props;
+    const {socket, channels} = this.props
     for (let i = 0; i < channels.length; i++) {
-      let channelId = channels[i].id;
+      let channelId = channels[i].id
       socket.emit('check_online_members', channelId, (err, data) => {
-        let {myChannels} = this.state;
-        let forCurrentChannel = data.channelId === this.props.currentChannel.id;
+        if (err) console.err(err)
+        let {myChannels} = this.state
+        let forCurrentChannel = data.channelId === this.props.currentChannel.id
         if (forCurrentChannel) {
           this.setState({currentChannelOnline: data.membersOnline.length})
         }
-        let channelObjectExists = false;
+        let channelObjectExists = false
         for (let i = 0; i < myChannels.length; i++) {
           if (myChannels[i].channelId === data.channelId) {
-            channelObjectExists = true;
-            break;
+            channelObjectExists = true
+            break
           }
         }
         if (channelObjectExists) {
@@ -144,7 +167,7 @@ export default class Chat extends Component {
               if (channel.channelId === data.channelId) {
                 channel.membersOnline = data.membersOnline
               }
-              return channel;
+              return channel
             })
           })
         } else {
@@ -152,35 +175,29 @@ export default class Chat extends Component {
             myChannels: myChannels.concat([data])
           })
         }
-      });
+      })
     }
   }
 
   componentDidMount() {
-    const {currentChannel} = this.props;
-    const {myChannels} = this.state;
-    let currentChannelOnline = 1;
+    const {currentChannel} = this.props
+    const {myChannels} = this.state
+    let currentChannelOnline = 1
     for (let i = 0; i < myChannels.length; i++) {
       if (myChannels[i].channelId === currentChannel.id) {
-        currentChannelOnline = myChannels[i].membersOnline.length;
+        currentChannelOnline = myChannels[i].membersOnline.length
       }
     }
     this.setState({currentChannelOnline})
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.currentChannel.id !== this.props.currentChannel.id) {
-      ReactDOM.findDOMNode(this.refs.chatInput).focus()
-    }
-  }
-
   componentDidUpdate(prevProps) {
-    const {currentChannel} = this.props;
-    const {myChannels} = this.state;
-    let currentChannelOnline = 1;
+    const {currentChannel} = this.props
+    const {myChannels} = this.state
+    let currentChannelOnline = 1
 
     if (prevProps.channels !== this.props.channels && currentChannel.id === this.props.channels[0].id) {
-      this.channelList.scrollTop = 0;
+      this.channelList.scrollTop = 0
     }
 
     if (prevProps.selectedChannelId !== this.props.selectedChannelId) {
@@ -190,7 +207,7 @@ export default class Chat extends Component {
     if (prevProps.currentChannel.id !== currentChannel.id) {
       for (let i = 0; i < myChannels.length; i++) {
         if (myChannels[i].channelId === currentChannel.id) {
-          currentChannelOnline = myChannels[i].membersOnline.length;
+          currentChannelOnline = myChannels[i].membersOnline.length
         }
       }
       this.setState({
@@ -201,15 +218,15 @@ export default class Chat extends Component {
   }
 
   componentWillUnmount() {
-    const {socket, onUnmount} = this.props;
-    socket.removeListener('receive_message', this.onReceiveMessage);
-    socket.removeListener('chat_invitation', this.onChatInvitation);
-    socket.removeListener('change_in_members_online');
-    onUnmount();
+    const {socket, onUnmount} = this.props
+    socket.removeListener('receive_message', this.onReceiveMessage)
+    socket.removeListener('chat_invitation', this.onChatInvitation)
+    socket.removeListener('change_in_members_online')
+    onUnmount()
   }
 
   render() {
-    const {channels, currentChannel, userId} = this.props;
+    const {channels, currentChannel, userId} = this.props
     const {
       loading,
       createNewChannelModalShown,
@@ -218,7 +235,7 @@ export default class Chat extends Component {
       editTitleModalShown,
       myChannels,
       onTitleHover
-    } = this.state;
+    } = this.state
 
     let menuProps = (currentChannel.twoPeople) ?
     [{label: 'Hide Chat', onClick: this.onHideChat}] :
@@ -289,11 +306,11 @@ export default class Chat extends Component {
           >
             <div className="text-center col-xs-8 col-xs-offset-2">
               <h4
-                ref={ref => {this.channelTitle = ref}}
+                ref={ref => { this.channelTitle = ref }}
                 style={{
                   whiteSpace: 'nowrap',
-                  textOverflow:'ellipsis',
-                  overflow:'hidden',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
                   lineHeight: 'normal',
                   marginBottom: '0px',
                   cursor: 'default',
@@ -301,7 +318,12 @@ export default class Chat extends Component {
                 }}
                 onMouseOver={this.onMouseOverTitle}
                 onMouseLeave={() => this.setState({onTitleHover: false})}
-              >{!!channelName(channels, currentChannel) ? cleanString(channelName(channels, currentChannel)) : '(Deleted)'}</h4>
+              >
+                {
+                  channelName(channels, currentChannel) ?
+                    cleanString(channelName(channels, currentChannel)) : '(Deleted)'
+                }
+              </h4>
               <div
                 className="alert alert-info"
                 style={{
@@ -340,7 +362,7 @@ export default class Chat extends Component {
               height: '75%',
               width: '100%'
             }}
-            ref={ref => this.channelList = ref}
+            ref={ref => { this.channelList = ref }}
           >
             {this.renderChannels()}
           </div>
@@ -356,10 +378,10 @@ export default class Chat extends Component {
           {currentChannel.id !== GENERAL_CHAT_ID &&
             <SmallDropdownButton
               style={{
-                position: "absolute",
+                position: 'absolute',
                 zIndex: 100,
-                top: "0px",
-                right: "0px"
+                top: '0px',
+                right: '0px'
               }}
               shape="button"
               menuProps={menuProps}
@@ -382,7 +404,6 @@ export default class Chat extends Component {
             }}
           >
             <ChatInput
-              ref="chatInput"
               currentChannelId={this.props.currentChannel.id}
               onMessageSubmit={this.onMessageSubmit}
             />
@@ -393,9 +414,9 @@ export default class Chat extends Component {
   }
 
   renderChannels() {
-    const {userId, currentChannel, channels, selectedChannelId} = this.props;
+    const {userId, currentChannel, channels, selectedChannelId} = this.props
     return channels.filter(channel => !channel.isHidden).map(channel => {
-      const {lastMessageSender, lastMessage, id, channelName, numUnreads} = channel;
+      const {lastMessageSender, lastMessage, id, channelName, numUnreads} = channel
       return (
         <div
           className="media chat-channel-item container-fluid"
@@ -416,8 +437,8 @@ export default class Chat extends Component {
                 marginTop: '0px',
                 marginBottom: '0.2em',
                 whiteSpace: 'nowrap',
-                textOverflow:'ellipsis',
-                overflow:'hidden',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
                 lineHeight: 'normal'
               }}
             >
@@ -428,8 +449,8 @@ export default class Chat extends Component {
                 className="pull-left"
                 style={{
                   whiteSpace: 'nowrap',
-                  textOverflow:'ellipsis',
-                  overflow:'hidden',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
                   width: '85%',
                   maxWidth: '20em',
                   display: 'block'
@@ -452,29 +473,29 @@ export default class Chat extends Component {
   }
 
   renderNumberOfMembers() {
-    const {currentChannel} = this.props;
-    const {currentChannelOnline} = this.state;
-    const numberOfMembers = currentChannel.members.length;
+    const {currentChannel} = this.props
+    const {currentChannelOnline} = this.state
+    const numberOfMembers = currentChannel.members.length
     return `${currentChannelOnline}${numberOfMembers <= 1 ? '' : '/' + numberOfMembers}`
   }
 
   renderUserListDescription(user) {
-    const {userId, currentChannel} = this.props;
-    const {myChannels} = this.state;
+    const {userId, currentChannel} = this.props
+    const {myChannels} = this.state
 
-    if (user.userId === userId) return '(online)';
+    if (user.userId === userId) return '(online)'
 
     const result = myChannels
       .filter(channel => channel.channelId === currentChannel.id)[0].membersOnline
-      .map(member => member.userId).indexOf(user.userId) !== -1 && '(online)';
-    return result;
+      .map(member => member.userId).indexOf(user.userId) !== -1 && '(online)'
+    return result
   }
 
   returnUsers(currentChannel, myChannels) {
     let members = currentChannel.id === GENERAL_CHAT_ID ?
     myChannels.filter(channel => channel.channelId === currentChannel.id)[0]
       .membersOnline.map(member => ({username: member.username, userId: member.userId}))
-    : currentChannel.members;
+    : currentChannel.members
     return members.map(member => ({username: member.username, userId: member.userId}))
   }
 
@@ -488,13 +509,13 @@ export default class Chat extends Component {
       currentChannel,
       sendFirstDirectMessage,
       partnerId
-    } = this.props;
-    let isFirstDirectMessage = currentChannel.id === 0;
+    } = this.props
+    let isFirstDirectMessage = currentChannel.id === 0
     if (isFirstDirectMessage) {
       return sendFirstDirectMessage({message, userId, partnerId}, chat => {
         if (chat.alreadyExists) {
-          let {message, messageId} = chat.alreadyExists;
-          socket.emit('join_chat_channel', message.channelId);
+          let {message, messageId} = chat.alreadyExists
+          socket.emit('join_chat_channel', message.channelId)
           socket.emit('new_chat_message', {
             userId,
             username,
@@ -503,10 +524,10 @@ export default class Chat extends Component {
             channelId: message.channelId,
             id: messageId
           })
-          return;
+          return
         }
-        socket.emit('join_chat_channel', chat.channelId);
-        socket.emit('send_bi_chat_invitation', partnerId, chat);
+        socket.emit('join_chat_channel', chat.channelId)
+        socket.emit('send_bi_chat_invitation', partnerId, chat)
       })
     }
 
@@ -518,7 +539,7 @@ export default class Chat extends Component {
       channelId: currentChannel.id
     }
     submitMessage(params, message => {
-      socket.emit('new_chat_message', message);
+      socket.emit('new_chat_message', message)
     })
   }
 
@@ -527,7 +548,7 @@ export default class Chat extends Component {
   }
 
   onChannelEnter(id) {
-    const {enterChannelWithId, enterEmptyChat} = this.props;
+    const {enterChannelWithId, enterEmptyChat} = this.props
     if (id === 0) {
       this.setState({currentChannelOnline: 1})
       return enterEmptyChat()
@@ -536,9 +557,9 @@ export default class Chat extends Component {
   }
 
   onCreateNewChannel(params) {
-    const {openNewChatTabOrEnterExistingChat, createNewChannel, socket, username, userId} = this.props;
+    const {openNewChatTabOrEnterExistingChat, createNewChannel, socket, username, userId} = this.props
     if (params.selectedUsers.length === 1) {
-      const partner = params.selectedUsers[0];
+      const partner = params.selectedUsers[0]
       return openNewChatTabOrEnterExistingChat({username, userId}, partner, () => {
         this.setState({createNewChannelModalShown: false})
       })
@@ -546,19 +567,18 @@ export default class Chat extends Component {
 
     createNewChannel(params, data => {
       const users = params.selectedUsers.map(user => {
-        return user.userId;
+        return user.userId
       })
-      socket.emit('join_chat_channel', data.message.channelId);
-      socket.emit('send_group_chat_invitation', users, data);
+      socket.emit('join_chat_channel', data.message.channelId)
+      socket.emit('send_group_chat_invitation', users, data)
       this.setState({createNewChannelModalShown: false})
-      ReactDOM.findDOMNode(this.refs.chatInput).focus()
     })
   }
 
   onReceiveMessage(data) {
-    const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props;
-    let messageIsForCurrentChannel = data.channelId === currentChannel.id;
-    let senderIsNotTheUser = data.userId !== userId;
+    const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
+    let messageIsForCurrentChannel = data.channelId === currentChannel.id
+    let senderIsNotTheUser = data.userId !== userId
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
       receiveMessage(data)
     }
@@ -568,53 +588,53 @@ export default class Chat extends Component {
   }
 
   onChatInvitation(data) {
-    const {receiveFirstMsg, socket, currentChannel, userId} = this.props;
-    let duplicate = false;
+    const {receiveFirstMsg, socket, currentChannel, userId} = this.props
+    let duplicate = false
     if (currentChannel.id === 0) {
       if (
         data.members.filter(member => member.userId !== userId)[0].userId ===
         currentChannel.members.filter(member => member.userId !== userId)[0].userId
-      ) duplicate = true;
+      ) duplicate = true
     }
-    receiveFirstMsg(data, duplicate);
-    socket.emit('join_chat_channel', data.channelId);
+    receiveFirstMsg(data, duplicate)
+    socket.emit('join_chat_channel', data.channelId)
   }
 
   onInviteUsersDone(users, message) {
-    const {socket} = this.props;
+    const {socket} = this.props
     socket.emit('new_chat_message', {
       ...message,
       channelId: message.channelId
-    });
-    socket.emit('send_group_chat_invitation', users, {message: {...message, messageId: message.id}});
-    this.setState({inviteUsersModalShown: false});
+    })
+    socket.emit('send_group_chat_invitation', users, {message: {...message, messageId: message.id}})
+    this.setState({inviteUsersModalShown: false})
   }
 
   onEditTitleDone(title) {
-    const {editChannelTitle, currentChannel} = this.props;
+    const {editChannelTitle, currentChannel} = this.props
     editChannelTitle({title, channelId: currentChannel.id}, () => {
       this.setState({editTitleModalShown: false})
-    });
+    })
   }
 
   onHideChat() {
-    const {hideChat, currentChannel} = this.props;
-    hideChat(currentChannel.id);
+    const {hideChat, currentChannel} = this.props
+    hideChat(currentChannel.id)
   }
 
   onLeaveChannel() {
-    const {leaveChannel, currentChannel, userId, username, profilePicId, socket} = this.props;
-    leaveChannel(currentChannel.id);
-    socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username, profilePicId});
+    const {leaveChannel, currentChannel, userId, username, profilePicId, socket} = this.props
+    leaveChannel(currentChannel.id)
+    socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username, profilePicId})
   }
 
   onMouseOverTitle() {
-    if (textIsOverflown(ReactDOM.findDOMNode(this.channelTitle))) {
+    if (textIsOverflown(this.channelTitle)) {
       this.setState({onTitleHover: true})
     }
 
     function textIsOverflown(element) {
-      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
     }
   }
 }

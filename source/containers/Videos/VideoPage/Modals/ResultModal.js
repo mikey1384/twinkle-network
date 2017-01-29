@@ -1,17 +1,21 @@
-import React from 'react';
-import {Modal, Button} from 'react-bootstrap';
+import React, {PropTypes} from 'react'
+import {Modal, Button} from 'react-bootstrap'
 
-export default function ResultModal(props) {
-  const numberCorrect = props.numberCorrect();
-  const {totalQuestions, onHide} = props;
-  const perfect = numberCorrect === totalQuestions;
+ResultModal.propTypes = {
+  onHide: PropTypes.func,
+  totalQuestions: PropTypes.number,
+  numberCorrect: PropTypes.number
+}
+export default function ResultModal({numberCorrect, totalQuestions, onHide}) {
+  const number = numberCorrect()
+  const perfect = numberCorrect === totalQuestions
   return (
-    <Modal show onHide={props.onHide} animation={false}>
+    <Modal show onHide={onHide} animation={false}>
       <Modal.Header closeButton>
         <h4>Your Results</h4>
       </Modal.Header>
       <Modal.Body>
-        <p>You've correctly answered {numberCorrect} out of {totalQuestions} question(s).</p>
+        <p>You've correctly answered {number} out of {totalQuestions} question(s).</p>
         { perfect &&
           <p>Perfect :)</p>
         }

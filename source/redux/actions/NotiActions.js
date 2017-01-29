@@ -1,15 +1,15 @@
-import request from 'axios';
-import {auth, handleError} from './constants';
-import {URL} from 'constants/URL';
+import request from 'axios'
+import {auth, handleError} from './constants'
+import {URL} from 'constants/URL'
 
-const API_URL = `${URL}/notification`;
+const API_URL = `${URL}/notification`
 
 export const fetchNotifications = data => ({
   type: 'FETCH_NOTIFICATIONS'
 })
 
 export const fetchNotificationsAsync = () => dispatch => {
-  if (auth() === null) return;
+  if (auth() === null) return
   request.get(API_URL, auth()).then(
     response => {
       dispatch(fetchNotifications(response.data))

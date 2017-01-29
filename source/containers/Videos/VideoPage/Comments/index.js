@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import CommentInputArea from './CommentInputArea';
-import Comment from './Comment';
-import {connect} from 'react-redux';
-import Button from 'components/Button';
+import React, {Component, PropTypes} from 'react'
+import CommentInputArea from './CommentInputArea'
+import Comment from './Comment'
+import {connect} from 'react-redux'
+import Button from 'components/Button'
 import {
   editVideoCommentAsync,
   deleteVideoCommentAsync,
@@ -11,8 +11,7 @@ import {
   uploadVideoReplyAsync,
   loadMoreCommentsAsync,
   loadMoreReplies
-} from 'redux/actions/VideoActions';
-
+} from 'redux/actions/VideoActions'
 
 @connect(
   state => ({
@@ -29,6 +28,22 @@ import {
   }
 )
 export default class Comments extends Component {
+  static propTypes = {
+    comments: PropTypes.array,
+    loadMoreCommentsButton: PropTypes.bool,
+    loadMoreDebatesButton: PropTypes.bool,
+    loadMoreComments: PropTypes.func,
+    videoId: PropTypes.number,
+    debates: PropTypes.array,
+    noComments: PropTypes.bool,
+    onEditDone: PropTypes.func,
+    loadMoreReplies: PropTypes.func,
+    onDelete: PropTypes.func,
+    onReplyEditDone: PropTypes.func,
+    onLikeClick: PropTypes.func,
+    onReplySubmit: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -39,9 +54,9 @@ export default class Comments extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {deleteListenerToggle} = this.state;
+    const {deleteListenerToggle} = this.state
     if (prevProps.comments.length > this.props.comments.length) {
-      if (this.props.comments.length === 0) return;
+      if (this.props.comments.length === 0) return
       this.setState({deleteListenerToggle: !deleteListenerToggle})
     }
   }
@@ -49,13 +64,13 @@ export default class Comments extends Component {
   render() {
     const {
       loadMoreCommentsButton, loadMoreDebatesButton, loadMoreComments, videoId, comments, debates
-    } = this.props;
+    } = this.props
     return (
       <div className="row container-fluid" style={{paddingBottom: '1em'}}>
         <div className="container-fluid">
           <CommentInputArea videoId={videoId} debates={debates} loadMoreDebatesButton={loadMoreDebatesButton} />
           <div className="container-fluid">
-            <ul className="media-list" ref={ref => {this.Comments = ref}}>
+            <ul className="media-list" ref={ref => { this.Comments = ref }}>
               {this.renderComments()}
               {loadMoreCommentsButton &&
                 <div className="text-center" style={{paddingTop: '2em'}}>
@@ -75,12 +90,11 @@ export default class Comments extends Component {
   }
 
   renderComments() {
-    const {comments, noComments} = this.props;
-    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
+    const {comments, noComments} = this.props
+    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
     if (noComments) {
       return <li className="text-center">There are no comments, yet.</li>
-    }
-    else if (comments.length === 0) {
+    } else if (comments.length === 0) {
       return <li className="text-center">Loading...</li>
     }
     return comments.map((comment, index) => {
@@ -107,6 +121,6 @@ export default class Comments extends Component {
   }
 
   deleteCallback(index) {
-    this.setState({lastDeletedCommentIndex: index});
+    this.setState({lastDeletedCommentIndex: index})
   }
 }

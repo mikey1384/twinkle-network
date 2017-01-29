@@ -1,6 +1,11 @@
-import React from 'react';
-import InputArea from 'components/InputArea';
+import React, {PropTypes} from 'react'
+import InputArea from 'components/InputArea'
 
+ReplyInputArea.propTypes = {
+  onSubmit: PropTypes.func,
+  numReplies: PropTypes.number,
+  clickListenerState: PropTypes.bool
+}
 export default function ReplyInputArea({onSubmit, numReplies, clickListenerState}) {
   return (
     <div className="media" style={{marginTop: numReplies === 0 && '0px'}}>

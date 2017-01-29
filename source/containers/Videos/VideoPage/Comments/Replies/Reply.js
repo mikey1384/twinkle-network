@@ -1,21 +1,49 @@
-import React, {Component} from 'react';
-import {timeSince} from 'helpers/timeStampHelpers';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import EditTextArea from 'components/EditTextArea';
-import {cleanStringWithURL} from 'helpers/stringHelpers';
-import Likers from 'components/Likers';
-import {Color} from 'constants/css';
-import UserListModal from 'components/Modals/UserListModal';
-import UsernameText from 'components/UsernameText';
-import ProfilePic from 'components/ProfilePic';
-import Button from 'components/Button';
-import LikeButton from 'components/LikeButton';
-import ReplyInputArea from './ReplyInputArea';
-import {scrollElementToCenter} from 'helpers/domHelpers';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-
+import React, {Component, PropTypes} from 'react'
+import {timeSince} from 'helpers/timeStampHelpers'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import EditTextArea from 'components/EditTextArea'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
+import Likers from 'components/Likers'
+import {Color} from 'constants/css'
+import UserListModal from 'components/Modals/UserListModal'
+import UsernameText from 'components/UsernameText'
+import ProfilePic from 'components/ProfilePic'
+import Button from 'components/Button'
+import LikeButton from 'components/LikeButton'
+import ReplyInputArea from './ReplyInputArea'
+import {scrollElementToCenter} from 'helpers/domHelpers'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 
 export default class Reply extends Component {
+  static propTypes = {
+    deleteListenerToggle: PropTypes.bool,
+    lastDeletedCommentIndex: PropTypes.number,
+    index: PropTypes.number,
+    id: PropTypes.number,
+    username: PropTypes.string,
+    timeStamp: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    content: PropTypes.string,
+    userIsOwner: PropTypes.bool,
+    onEditDone: PropTypes.func,
+    likes: PropTypes.array,
+    userId: PropTypes.number,
+    profilePicId: PropTypes.number,
+    myId: PropTypes.number,
+    targetUserName: PropTypes.string,
+    targetUserId: PropTypes.number,
+    onLikeClick: PropTypes.func,
+    isFirstReply: PropTypes.bool,
+    deleteCallback: PropTypes.func,
+    onDelete: PropTypes.func,
+    onReplySubmit: PropTypes.func,
+    commentId: PropTypes.number,
+    videoId: PropTypes.number,
+    newlyAdded: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.state={
@@ -29,10 +57,15 @@ export default class Reply extends Component {
     this.onReplySubmit = this.onReplySubmit.bind(this)
   }
 
+  componentDidMount() {
+    const {newlyAdded} = this.props
+    if (newlyAdded) scrollElementToCenter(this.Reply)
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
       if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
-        scrollElementToCenter(this.Reply);
+        scrollElementToCenter(this.Reply)
       }
     }
   }
@@ -41,17 +74,17 @@ export default class Reply extends Component {
     const {
       id, username, timeStamp, content, userIsOwner, onEditDone,
       likes, userId, profilePicId, myId, targetUserName, targetUserId
-    } = this.props;
-    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state;
-    let userLikedThis = false;
+    } = this.props
+    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state
+    let userLikedThis = false
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === myId) userLikedThis = true;
+      if (likes[i].userId === myId) userLikedThis = true
     }
     return (
       <div
         className="media"
         key={id}
-        ref={ref => {this.Reply = ref}}
+        ref={ref => { this.Reply = ref }}
       >
         {userIsOwner && !onEdit &&
           <SmallDropdownButton
@@ -63,11 +96,11 @@ export default class Reply extends Component {
             }}
             menuProps={[
               {
-                label: "Edit",
+                label: 'Edit',
                 onClick: () => this.setState({onEdit: true})
               },
               {
-                label: "Remove",
+                label: 'Remove',
                 onClick: () => this.setState({confirmModalShown: true})
               }
             ]}
@@ -163,18 +196,18 @@ export default class Reply extends Component {
   }
 
   onLikeClick() {
-    const replyId = this.props.id;
-    this.props.onLikeClick(replyId);
+    const replyId = this.props.id
+    this.props.onLikeClick(replyId)
   }
 
   onDelete() {
-    const {id, deleteCallback, index, isFirstReply} = this.props;
-    deleteCallback(index, isFirstReply);
-    this.props.onDelete(id);
+    const {id, deleteCallback, index, isFirstReply} = this.props
+    deleteCallback(index, isFirstReply)
+    this.props.onDelete(id)
   }
 
   onReplySubmit(reply) {
-    const {onReplySubmit, commentId, videoId, id} = this.props;
+    const {onReplySubmit, commentId, videoId, id} = this.props
     this.setState({replyInputShown: false})
     onReplySubmit(reply, commentId, videoId, id)
   }

@@ -1,7 +1,13 @@
-import React from 'react';
-import Button from 'components/Button';
+import React, {PropTypes} from 'react'
+import Button from 'components/Button'
 
-export default function NavButton({disabled, nextSlide, left, endIndex}) {
+NavButton.propTypes = {
+  disabled: PropTypes.bool,
+  nextSlide: PropTypes.func,
+  left: PropTypes.bool
+}
+
+export default function NavButton({disabled, nextSlide, left}) {
   const style = left ?
   {
     position: 'absolute',
@@ -19,20 +25,20 @@ export default function NavButton({disabled, nextSlide, left, endIndex}) {
     msTransform: 'translateY(-50%)'
   }
 
-  return(
+  return (
     <div style={style}>
       <Button
         className="btn btn-default btn-small"
         onClick={handleClick}
         disabled={disabled}
       >
-        <span className={`glyphicon ${left ? 'glyphicon-chevron-left' :'glyphicon-chevron-right'}`} />
+        <span className={`glyphicon ${left ? 'glyphicon-chevron-left' : 'glyphicon-chevron-right'}`} />
       </Button>
     </div>
   )
 
   function handleClick(event) {
-    event.preventDefault();
-    nextSlide();
+    event.preventDefault()
+    nextSlide()
   }
 }

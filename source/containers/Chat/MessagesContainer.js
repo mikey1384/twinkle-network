@@ -1,14 +1,13 @@
-import React, {Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
-import moment from 'moment';
-import UsernameText from 'components/UsernameText';
-import Button from 'components/Button';
-import {Color} from 'constants/css';
-import ProfilePic from 'components/ProfilePic';
-import Loading from 'components/Loading';
+import React, {Component, PropTypes} from 'react'
+import moment from 'moment'
+import UsernameText from 'components/UsernameText'
+import Button from 'components/Button'
+import {Color} from 'constants/css'
+import ProfilePic from 'components/ProfilePic'
+import Loading from 'components/Loading'
 
 const scrollIsAtTheBottom = (content, container) => {
-  return content.offsetHeight <= container.offsetHeight + container.scrollTop;
+  return content.offsetHeight <= container.offsetHeight + container.scrollTop
 }
 
 export default class MessagesContainer extends Component {
@@ -17,7 +16,8 @@ export default class MessagesContainer extends Component {
     currentChannelId: PropTypes.number.isRequired,
     loadMoreButton: PropTypes.bool,
     messages: PropTypes.array,
-    loadMoreMessages: PropTypes.func
+    loadMoreMessages: PropTypes.func,
+    loading: PropTypes.bool
   }
 
   constructor() {
@@ -32,57 +32,56 @@ export default class MessagesContainer extends Component {
   }
 
   componentDidMount() {
-    this.setFillerHeight();
+    this.setFillerHeight()
   }
 
   componentWillReceiveProps() {
-    const content = ReactDOM.findDOMNode(this.refs.content);
-    const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
+    const content = this.content
+    const container = this.messagesContainer
     this.setState({scrollAtBottom: scrollIsAtTheBottom(content, container)})
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const switchedChannel = prevProps.currentChannelId !== this.props.currentChannelId;
-    const newMessageArrived = this.props.messages.length !== 0 && prevProps.messages !== this.props.messages;
+    const switchedChannel = prevProps.currentChannelId !== this.props.currentChannelId
+    const newMessageArrived = this.props.messages.length !== 0 && prevProps.messages !== this.props.messages
     const loadedPrevMessage =
-      !switchedChannel && prevProps.messages.length !== 0 && prevProps.messages[0] !== this.props.messages[0];
+      !switchedChannel && prevProps.messages.length !== 0 && prevProps.messages[0] !== this.props.messages[0]
 
-    if (loadedPrevMessage) return;
-    if (switchedChannel) return this.setFillerHeight();
+    if (loadedPrevMessage) return
+    if (switchedChannel) return this.setFillerHeight()
     if (newMessageArrived) {
-      let {messages, userId} = this.props;
-      let messageSenderId = messages[messages.length - 1].userId;
+      let {messages, userId} = this.props
+      let messageSenderId = messages[messages.length - 1].userId
       if (messageSenderId === userId || this.state.scrollAtBottom) {
-        this.setFillerHeight();
-      }
-      else {
+        this.setFillerHeight()
+      } else {
         this.setState({newUnseenMessage: true})
       }
     }
   }
 
   setFillerHeight() {
-    const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
-    const messages = ReactDOM.findDOMNode(this.refs.messages);
-    const containerHeight = container.offsetHeight;
-    const messagesHeight = messages.offsetHeight;
+    const container = this.messagesContainer
+    const messages = this.messages
+    const containerHeight = container.offsetHeight
+    const messagesHeight = messages.offsetHeight
     let state = messagesHeight < containerHeight ?
-    {fillerHeight: containerHeight - messagesHeight} : {fillerHeight: 20};
+    {fillerHeight: containerHeight - messagesHeight} : {fillerHeight: 20}
     this.setState(state, () => {
       container.scrollTop = Math.max(container.offsetHeight, messages.offsetHeight)
     })
   }
 
   render() {
-    const {loadMoreButton, loading} = this.props;
-    const {fillerHeight, newUnseenMessage} = this.state;
+    const {loadMoreButton, loading} = this.props
+    const {fillerHeight, newUnseenMessage} = this.state
     return (
       <div>
         {!!loading &&
           <Loading />
         }
         <div
-          ref="messagesContainer"
+          ref={ref => { this.messagesContainer = ref }}
           style={{
             overflow: 'scroll',
             position: 'absolute',
@@ -93,13 +92,13 @@ export default class MessagesContainer extends Component {
           }}
           onScroll={
             () => {
-              const content = ReactDOM.findDOMNode(this.refs.content);
-              const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
+              const content = this.content
+              const container = this.messagesContainer
               if (scrollIsAtTheBottom(content, container)) this.setState({newUnseenMessage: false})
             }
           }
         >
-          <div ref="content">
+          <div ref={ref => { this.content = ref }}>
             {loadMoreButton ?
               <div
                 style={{
@@ -118,7 +117,7 @@ export default class MessagesContainer extends Component {
                 height: fillerHeight + 'px'
               }} />
             }
-            <div ref="messages">
+            <div ref={ref => { this.messages = ref }}>
               {this.renderMessages()}
             </div>
           </div>
@@ -137,9 +136,9 @@ export default class MessagesContainer extends Component {
               onClick={
                 () => {
                   this.setState({newUnseenMessage: false})
-                  const content = ReactDOM.findDOMNode(this.refs.content);
-                  const container = ReactDOM.findDOMNode(this.refs.messagesContainer);
-                  container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight);
+                  const content = this.content
+                  const container = this.messagesContainer
+                  container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight)
                 }
               }
             >New Message</Button>
@@ -150,23 +149,23 @@ export default class MessagesContainer extends Component {
   }
 
   onLoadMoreButtonClick() {
-    const messageId = this.props.messages[0].id;
-    const channelId = this.props.messages[0].channelId;
-    const {userId, loadMoreMessages} = this.props;
-    const {loadMoreButtonLock} = this.state;
+    const messageId = this.props.messages[0].id
+    const channelId = this.props.messages[0].channelId
+    const {userId, loadMoreMessages} = this.props
+    const {loadMoreButtonLock} = this.state
     if (!loadMoreButtonLock) {
       this.setState({loadMoreButtonLock: true})
       loadMoreMessages(userId, messageId, channelId, () => {
         this.setState({loadMoreButtonLock: false})
-      });
+      })
     }
   }
 
   renderMessages() {
-    const {messages} = this.props;
+    const {messages} = this.props
     return messages.map((message, index) => {
-      let {isNotification} = message;
-      let messageStyle = isNotification ? {color: Color.darkGray} : null;
+      let {isNotification} = message
+      let messageStyle = isNotification ? {color: Color.darkGray} : null
       return (
         <div
           key={index}
@@ -191,7 +190,7 @@ export default class MessagesContainer extends Component {
                 user={{
                   id: message.userId,
                   name: message.username || '(Deleted)'
-                }} /> <small>{moment.unix(message.timeStamp).format("LLL")}</small>
+                }} /> <small>{moment.unix(message.timeStamp).format('LLL')}</small>
             </h5>
             <div style={{paddingTop: '1.5em'}}>
               <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>

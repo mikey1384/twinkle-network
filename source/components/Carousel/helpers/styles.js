@@ -1,9 +1,9 @@
-import React from 'react';
-import {getTargetLeft} from './animations';
+import React from 'react'
+import {getTargetLeft} from './animations'
 
 export function getListStyles() {
-  var listWidth = this.state.slideWidth * React.Children.count(this.props.children);
-  var spacingOffset = this.props.cellSpacing * React.Children.count(this.props.children);
+  var listWidth = this.state.slideWidth * React.Children.count(this.props.children)
+  var spacingOffset = this.props.cellSpacing * React.Children.count(this.props.children)
   var transform = 'translate3d(' +
     this.getTweeningValue('left') + 'px, ' +
     this.getTweeningValue('top') + 'px, 0)'
@@ -74,54 +74,55 @@ export function getStyleTagStyles() {
 }
 
 export function formatChildren(children) {
-  var self = this;
+  var self = this
   return React.Children.map(children, function(child, index) {
     return <li className="slider-slide" style={getSlideStyles.call(self)} key={index}>{child}</li>
-  });
+  })
 }
 
 export function setInitialDimensions() {
-  var self = this, slideWidth;
+  var self = this
+  var slideWidth
 
-  slideWidth = this.props.initialSlideWidth || 0;
+  slideWidth = this.props.initialSlideWidth || 0
 
   this.setState({
     frameWidth: '100%',
     slideCount: React.Children.count(this.props.children),
     slideWidth: slideWidth
   }, function() {
-    setLeft.call(self);
-    setExternalData.call(self);
-  });
+    setLeft.call(self)
+    setExternalData.call(self)
+  })
 }
 
 export function setDimensions() {
-  var self = this,
-    slideWidth,
-    slidesToScroll,
-    firstSlide,
-    frame,
-    frameWidth;
+  var self = this
+  var slideWidth
+  var slidesToScroll
+  var firstSlide
+  var frame
+  var frameWidth
 
-  slidesToScroll = this.props.slidesToScroll;
-  frame = this.refs.frame;
-  firstSlide = frame.childNodes[0].childNodes[0];
+  slidesToScroll = this.props.slidesToScroll
+  frame = this.refs.frame
+  firstSlide = frame.childNodes[0].childNodes[0]
   if (firstSlide) {
-    firstSlide.style.height = 'auto';
+    firstSlide.style.height = 'auto'
   }
 
   if (typeof this.props.slideWidth !== 'number') {
-    slideWidth = parseInt(this.props.slideWidth, 10);
+    slideWidth = parseInt(this.props.slideWidth, 10)
   } else {
-    slideWidth = (frame.offsetWidth / this.props.slidesToShow) * this.props.slideWidth;
+    slideWidth = (frame.offsetWidth / this.props.slidesToShow) * this.props.slideWidth
   }
 
-  slideWidth -= this.props.cellSpacing * ((100 - (100 / this.props.slidesToShow)) / 100);
+  slideWidth -= this.props.cellSpacing * ((100 - (100 / this.props.slidesToShow)) / 100)
 
-  frameWidth = frame.offsetWidth;
+  frameWidth = frame.offsetWidth
 
   if (this.props.slidesToScroll === 'auto') {
-    slidesToScroll = Math.floor(frameWidth / (slideWidth + this.props.cellSpacing));
+    slidesToScroll = Math.floor(frameWidth / (slideWidth + this.props.cellSpacing))
   }
 
   this.setState({
@@ -132,7 +133,7 @@ export function setDimensions() {
     top: 0
   }, function() {
     setLeft.call(self)
-  });
+  })
 }
 
 function setLeft() {
@@ -144,6 +145,6 @@ function setLeft() {
 
 export function setExternalData() {
   if (this.props.data) {
-    this.props.data();
+    this.props.data()
   }
 }

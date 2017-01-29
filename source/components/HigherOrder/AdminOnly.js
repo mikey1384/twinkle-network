@@ -1,26 +1,30 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 
 export default function(InnerComponent) {
   class AdminOnly extends Component {
+    static propTypes = {
+      isAdmin: PropTypes.bool
+    }
+
     static contextTypes = {
       router: React.PropTypes.object
     }
 
-    componentWillMount () {
+    componentWillMount() {
       if (!this.props.isAdmin) {
-        this.context.router.push('/');
+        this.context.router.push('/')
       }
     }
 
-    componentWillUpdate (nextProps) {
+    componentWillUpdate(nextProps) {
       if (!nextProps.isAdmin) {
-        this.context.router.push('/');
+        this.context.router.push('/')
       }
     }
 
-    render () {
-      const {isAdmin} = this.props;
+    render() {
+      const {isAdmin} = this.props
       return isAdmin ?
       <InnerComponent {...this.props} /> : null
     }
@@ -30,5 +34,5 @@ export default function(InnerComponent) {
     state => ({
       isAdmin: state.UserReducer.isAdmin
     })
-  )(AdminOnly);
+  )(AdminOnly)
 }

@@ -1,4 +1,4 @@
-import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
+import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
 
 const defaultState = {
   loaded: false,
@@ -14,30 +14,30 @@ const defaultState = {
     loadMoreDebatesButton: false
   },
   searchResult: []
-};
+}
 
-let loadMoreButton = false;
-let loadMoreCommentsButton = false;
-let loadMoreDebatesButton = false;
-let loadMoreDebateCommentsButton = false;
-let allVideosLoaded = false;
+let loadMoreButton = false
+let loadMoreCommentsButton = false
+let loadMoreDebatesButton = false
+let loadMoreDebateCommentsButton = false
+let allVideosLoaded = false
 export default function VideoReducer(state = defaultState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'CLEAR_CONTENT_SEARCH_RESULTS':
       return {
         ...state,
         searchResult: []
       }
     case 'DELETE_VIDEO':
-      const newVideoThumbs = state.allVideoThumbs;
-      newVideoThumbs.splice(action.arrayIndex, 1);
+      const newVideoThumbs = state.allVideoThumbs
+      newVideoThumbs.splice(action.arrayIndex, 1)
       return {
         ...state,
         allVideoThumbs: newVideoThumbs.concat(action.data)
       }
     case 'DELETE_VIDEO_COMMENT':
-      let newComments = state.videoPage.comments.filter(comment => comment.id !== action.data.commentId);
-      let noComments = newComments.length === 0;
+      let newComments = state.videoPage.comments.filter(comment => comment.id !== action.data.commentId)
+      let noComments = newComments.length === 0
       return {
         ...state,
         videoPage: {
@@ -108,11 +108,11 @@ export default function VideoReducer(state = defaultState, action) {
       }
     case 'GET_VIDEOS':
       if (action.videos.length > 12) {
-        action.videos.pop();
-        loadMoreButton = true;
+        action.videos.pop()
+        loadMoreButton = true
       } else {
-        allVideosLoaded = true;
-        loadMoreButton = false;
+        allVideosLoaded = true
+        loadMoreButton = false
       }
       return {
         ...state,
@@ -122,9 +122,9 @@ export default function VideoReducer(state = defaultState, action) {
         allVideosLoaded
       }
     case 'UPLOAD_VIDEO':
-      const newState = action.data.concat(state.allVideoThumbs);
+      const newState = action.data.concat(state.allVideoThumbs)
       if (action.data.length > 0 && !state.allVideosLoaded) {
-        newState.pop();
+        newState.pop()
       }
       return {
         ...state,
@@ -136,26 +136,26 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         allVideoThumbs: state.allVideoThumbs.map(thumb => {
           if (thumb.id === action.videoId) {
-            thumb.title = action.data;
+            thumb.title = action.data
           }
-          return thumb;
+          return thumb
         })
       }
     case 'VID_MODAL_OPEN':
       return {
         ...state,
         addVideoModalShown: true
-      };
+      }
     case 'VID_MODAL_CLOSE':
       return {
         ...state,
         addVideoModalShown: false
       }
     case 'LOAD_MORE_COMMENTS':
-      loadMoreCommentsButton = false;
+      loadMoreCommentsButton = false
       if (action.data.comments.length > 20) {
-        action.data.comments.pop();
-        loadMoreCommentsButton = true;
+        action.data.comments.pop()
+        loadMoreCommentsButton = true
       }
       return {
         ...state,
@@ -195,10 +195,10 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'LOAD_MORE_VIDEO_DEBATES':
-      loadMoreDebatesButton = false;
+      loadMoreDebatesButton = false
       if (action.data.length > 3) {
-        action.data.pop();
-        loadMoreDebatesButton = true;
+        action.data.pop()
+        loadMoreDebatesButton = true
       }
       return {
         ...state,
@@ -209,10 +209,10 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'LOAD_MORE_VIDEO_DEBATE_COMMENTS':
-      loadMoreDebateCommentsButton = false;
+      loadMoreDebateCommentsButton = false
       if (action.data.length > 3) {
-        action.data.pop();
-        loadMoreDebateCommentsButton = true;
+        action.data.pop()
+        loadMoreDebateCommentsButton = true
       }
       return {
         ...state,
@@ -226,15 +226,15 @@ export default function VideoReducer(state = defaultState, action) {
                 loadMoreDebateCommentsButton
               }
             }
-            return debate;
+            return debate
           })
         }
       }
     case 'LOAD_VIDEO_DEBATE_COMMENTS':
-      loadMoreDebateCommentsButton = false;
+      loadMoreDebateCommentsButton = false
       if (action.data.length > 3) {
-        action.data.pop();
-        loadMoreDebateCommentsButton = true;
+        action.data.pop()
+        loadMoreDebateCommentsButton = true
       }
       return {
         ...state,
@@ -248,7 +248,7 @@ export default function VideoReducer(state = defaultState, action) {
                 loadMoreDebateCommentsButton
               }
             }
-            return debate;
+            return debate
           })
         }
       }
@@ -261,10 +261,10 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'LOAD_VIDEO_COMMENTS':
-      loadMoreCommentsButton = false;
+      loadMoreCommentsButton = false
       if (action.data.comments.length > 20) {
         action.data.comments.pop()
-        loadMoreCommentsButton = true;
+        loadMoreCommentsButton = true
       }
       return {
         ...state,
@@ -276,10 +276,10 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'LOAD_VIDEO_DEBATES':
-      loadMoreDebatesButton = false;
+      loadMoreDebatesButton = false
       if (action.data.length > 3) {
         action.data.pop()
-        loadMoreDebatesButton = true;
+        loadMoreDebatesButton = true
       }
       return {
         ...state,
@@ -288,7 +288,7 @@ export default function VideoReducer(state = defaultState, action) {
           debates: action.data,
           loadMoreDebatesButton
         }
-      };
+      }
     case 'UPLOAD_VIDEO_COMMENT':
       return {
         ...state,
@@ -318,7 +318,7 @@ export default function VideoReducer(state = defaultState, action) {
                 comments: [action.data].concat(debate.comments)
               }
             }
-            return debate;
+            return debate
           }),
           comments: [action.data].concat(state.videoPage.comments),
           noComments: false
@@ -337,7 +337,7 @@ export default function VideoReducer(state = defaultState, action) {
                   ...comment,
                   replies: comment.id === action.data.commentId ?
                     comment.replies.concat(action.data.reply) : comment.replies
-                };
+                }
               })
             }
           }),
@@ -346,7 +346,7 @@ export default function VideoReducer(state = defaultState, action) {
               ...comment,
               replies: comment.id === action.data.commentId ?
                 comment.replies.concat(action.data.reply) : comment.replies
-            };
+            }
           })
         }
       }
@@ -397,7 +397,7 @@ export default function VideoReducer(state = defaultState, action) {
           if (thumb.id === action.videoId) {
             thumb.numLikes = action.data.length
           }
-          return thumb;
+          return thumb
         })
       }
     case 'UPLOAD_QUESTIONS':
@@ -410,14 +410,14 @@ export default function VideoReducer(state = defaultState, action) {
       }
     case 'EDIT_VIDEO_PAGE':
       const description = (stringIsEmpty(action.params.description)) ?
-      'No description' : processedStringWithURL(action.params.description);
+      'No description' : processedStringWithURL(action.params.description)
       return {
         ...state,
         allVideoThumbs: state.allVideoThumbs.map(thumb => {
           if (thumb.id === action.params.videoId) {
             thumb.title = action.params.title
           }
-          return thumb;
+          return thumb
         }),
         videoPage: {
           ...state.videoPage,
@@ -461,6 +461,6 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     default:
-      return state;
+      return state
   }
 }

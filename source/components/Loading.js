@@ -1,5 +1,9 @@
-import React from 'react';
+import React, {PropTypes} from 'react'
 
+Loading.propTypes = {
+  text: PropTypes.string,
+  style: PropTypes.object
+}
 export default function Loading({text = '', style = {
   textAlign: 'center',
   paddingTop: '1em',

@@ -1,7 +1,13 @@
-import React from 'react';
+import React, {PropTypes} from 'react'
 
+CheckListGroup.propTypes = {
+  listItems: PropTypes.array,
+  inputType: PropTypes.string,
+  onSelect: PropTypes.func,
+  style: PropTypes.object
+}
 export default function CheckListGroup(props) {
-  const {listItems, inputType, onSelect} = props;
+  const {listItems, inputType, onSelect} = props
   return (
     <div
       className="row container-fluid unselectable"
@@ -25,36 +31,36 @@ export default function CheckListGroup(props) {
           leftStyle = {
             borderBottomLeftRadius: '0px',
             borderBottom: 'none'
-          };
+          }
           rightStyle = {
             borderTopRightRadius: '5px',
             borderBottomRightRadius: '0px',
             borderBottomLeftRadius: '0px',
             borderBottom: 'none'
-          };
+          }
         }
         if (index === listItems.length - 1) {
           leftStyle = {
             borderTopLeftRadius: '0px',
             borderBottomLeftRadius: '5px'
-          };
+          }
           rightStyle = {
             borderTopRightRadius: '0px',
             borderBottomRightRadius: '5px',
             borderTopLeftRadius: '0px',
             borderBottomLeftRadius: '0px'
-          };
+          }
         }
         if (index === 0 && listItems.length === 1) {
           leftStyle = {
             borderTopLeftRadius: '5px',
             borderBottomLeftRadius: '5px'
-          };
+          }
           rightStyle = {
             borderTopRightRadius: '5px',
             borderBottomRightRadius: '5px',
-            borderBottomLeftRadius: '0px',
-          };
+            borderBottomLeftRadius: '0px'
+          }
         }
         return (
           <div

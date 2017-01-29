@@ -1,29 +1,29 @@
-import React, {Component} from 'react';
-import {DragSource, DropTarget} from 'react-dnd';
-import ItemTypes from 'constants/itemTypes';
+import React, {Component, PropTypes} from 'react'
+import {DragSource, DropTarget} from 'react-dnd'
+import ItemTypes from 'constants/itemTypes'
 
 const listItemSource = {
   beginDrag(props) {
     return {
       id: props.item.id
-    };
+    }
   },
   isDragging(props, monitor) {
-    return props.item.id === monitor.getItem().id;
+    return props.item.id === monitor.getItem().id
   }
-};
+}
 
 const listItemTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.item.id;
-    const sourceProps = monitor.getItem();
-    const sourceId = sourceProps.id;
+    const targetId = targetProps.item.id
+    const sourceProps = monitor.getItem()
+    const sourceId = sourceProps.id
 
-    if(sourceId !== targetId) {
-      targetProps.onMove({sourceId, targetId});
+    if (sourceId !== targetId) {
+      targetProps.onMove({sourceId, targetId})
     }
   }
-};
+}
 
 @DragSource(ItemTypes.LIST_ITEM, listItemSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
@@ -33,8 +33,14 @@ const listItemTarget = {
   connectDropTarget: connect.dropTarget()
 }))
 export default class QuestionsListItem extends Component {
+  static propTypes = {
+    connectDragSource: PropTypes.func,
+    connectDropTarget: PropTypes.func,
+    isDragging: PropTypes.bool,
+    item: PropTypes.object
+  }
   render() {
-    const {connectDragSource, connectDropTarget, isDragging} = this.props;
+    const {connectDragSource, connectDropTarget, isDragging} = this.props
     return connectDragSource(connectDropTarget(
       <li
         className="list-group-item"

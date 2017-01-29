@@ -1,11 +1,10 @@
-import request from 'axios';
-import {push} from 'react-router-redux';
-import {likePlaylistVideo} from './PlaylistActions';
-import {auth, handleError} from './constants';
-import {URL} from 'constants/URL';
+import request from 'axios'
+import {push} from 'react-router-redux'
+import {likePlaylistVideo} from './PlaylistActions'
+import {auth, handleError} from './constants'
+import {URL} from 'constants/URL'
 
-const API_URL = `${URL}/video`;
-
+const API_URL = `${URL}/video`
 
 export const getVideos = (videos, initialRun) => ({
   type: 'GET_VIDEOS',
@@ -49,16 +48,16 @@ export const deleteVideoAsync = ({videoId, arrayIndex, lastVideoId}) => dispatch
 request.delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.result) {
       if (!lastVideoId) {
         dispatch(getInitialVideos())
         dispatch(push('/videos'))
       } else {
-        dispatch(deleteVideo(arrayIndex, data.result));
+        dispatch(deleteVideo(arrayIndex, data.result))
       }
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -76,11 +75,11 @@ export const deleteVideoCommentAsync = commentId => dispatch =>
 request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.success) {
-      dispatch(deleteVideoComment({commentId}));
+      dispatch(deleteVideoComment({commentId}))
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -112,12 +111,12 @@ export const editVideoCommentAsync = ({editedComment, commentId}, cb) => dispatc
 request.post(`${API_URL}/comments/edit`, {editedComment, commentId}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.success) {
-      dispatch(editVideoComment({editedComment, commentId}));
-      cb();
+      dispatch(editVideoComment({editedComment, commentId}))
+      cb()
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -153,15 +152,15 @@ export const editVideoPageAsync = (params, sender) => dispatch =>
 request.post(`${API_URL}/edit/page`, params, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.success) {
-      dispatch(editVideoPage(params));
+      dispatch(editVideoPage(params))
       sender.setState({
         onEdit: false,
         editDoneButtonDisabled: true
       })
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -180,12 +179,12 @@ export const editVideoTitleAsync = (params, sender) => dispatch =>
 request.post(`${API_URL}/edit/title`, params, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.result) {
       dispatch(editVideoTitle(params.videoId, data.result))
-      sender.setState({onEdit: false});
+      sender.setState({onEdit: false})
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -215,12 +214,12 @@ export const likeVideoAsync = videoId => dispatch =>
 request.post(`${API_URL}/like`, {videoId}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.likes) {
-      dispatch(likeVideo(data.likes, videoId));
-      dispatch(likePlaylistVideo(data.likes, videoId));
+      dispatch(likeVideo(data.likes, videoId))
+      dispatch(likePlaylistVideo(data.likes, videoId))
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -358,10 +357,10 @@ export const loadVideoPageAsync = (videoId, fromClientSide, callback) => dispatc
   request.get(`${API_URL}/loadPage?videoId=${videoId}`)
   .then(
     response => {
-      dispatch(loadVideoPage(response.data));
-      dispatch(loadVideoDebates(videoId));
-      dispatch(loadVideoCommentsAsync(videoId));
-      if (callback) callback();
+      dispatch(loadVideoPage(response.data))
+      dispatch(loadVideoDebates(videoId))
+      dispatch(loadVideoCommentsAsync(videoId))
+      if (callback) callback()
     }
   ).catch(
     error => {
@@ -371,7 +370,6 @@ export const loadVideoPageAsync = (videoId, fromClientSide, callback) => dispatc
     }
   )
 }
-
 
 export const loadVideoPageFromClientSideAsync = (videoId, to) =>
 dispatch => dispatch(loadVideoPageAsync(videoId, true, dispatch(push(`/${to}`))))
@@ -411,7 +409,7 @@ export const uploadQuestionsAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/questions`, params, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.success) {
       const questions = params.questions.map(question => {
         return {
@@ -426,10 +424,10 @@ request.post(`${API_URL}/questions`, params, auth())
           correctChoice: question.correctChoice
         }
       })
-      dispatch(uploadQuestions(questions));
-      callback();
+      dispatch(uploadQuestions(questions))
+      callback()
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -447,11 +445,11 @@ export const uploadVideoAsync = params => dispatch =>
 request.post(API_URL, params, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.result) {
-      dispatch(uploadVideo([data.result]));
+      dispatch(uploadVideo([data.result]))
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -469,8 +467,8 @@ export const uploadVideoCommentAsync = (comment, videoId) => dispatch =>
 request.post(`${API_URL}/comments`, {comment, videoId}, auth())
 .then(
   response => {
-    const {data} = response;
-    dispatch(uploadVideoComment(data));
+    const {data} = response
+    dispatch(uploadVideoComment(data))
   }
 ).catch(
   error => {
@@ -532,11 +530,11 @@ export const uploadVideoReplyAsync = (reply, commentId, videoId, replyId) => dis
 request.post(`${API_URL}/replies`, {reply, commentId, videoId, replyId}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.result) {
       dispatch(uploadVideoReply({commentId, reply: data.result}))
     }
-    return;
+    return
   }
 ).catch(
   error => {

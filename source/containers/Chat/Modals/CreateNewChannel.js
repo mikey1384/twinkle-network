@@ -1,9 +1,8 @@
-import React, {Component, PropTypes} from 'react';
-import {Modal, Button} from 'react-bootstrap';
-import {searchUserToInviteAsync, clearUserSearchResults} from 'redux/actions/ChatActions';
-import {connect} from 'react-redux';
-import TagPeopleForm from 'components/TagPeopleForm';
-
+import React, {Component, PropTypes} from 'react'
+import {Modal, Button} from 'react-bootstrap'
+import {searchUserToInviteAsync, clearUserSearchResults} from 'redux/actions/ChatActions'
+import {connect} from 'react-redux'
+import TagPeopleForm from 'components/TagPeopleForm'
 
 @connect(
   state => ({
@@ -18,7 +17,10 @@ export default class CreateNewChannelModal extends Component {
   static propTypes = {
     userId: PropTypes.number.isRequired,
     onHide: PropTypes.func.isRequired,
-    onDone: PropTypes.func.isRequired
+    onDone: PropTypes.func.isRequired,
+    clearSearchResults: PropTypes.func,
+    searchUserToInvite: PropTypes.func,
+    searchResult: PropTypes.func
   }
 
   constructor() {
@@ -34,8 +36,8 @@ export default class CreateNewChannelModal extends Component {
   }
 
   render() {
-    const {userId, onHide, clearSearchResults, searchUserToInvite, searchResult} = this.props;
-    const {channelName, selectedUsers} = this.state;
+    const {userId, onHide, clearSearchResults, searchUserToInvite, searchResult} = this.props
+    const {channelName, selectedUsers} = this.state
     return (
       <Modal
         show
@@ -82,7 +84,7 @@ export default class CreateNewChannelModal extends Component {
   }
 
   onAddUser(user) {
-    const {selectedUsers} = this.state;
+    const {selectedUsers} = this.state
     this.setState({
       selectedUsers: selectedUsers.concat([{
         userId: user.id,
@@ -92,7 +94,7 @@ export default class CreateNewChannelModal extends Component {
   }
 
   onRemoveUser(user) {
-    const {selectedUsers} = this.state;
+    const {selectedUsers} = this.state
     this.setState({
       selectedUsers: selectedUsers.filter(selectedUser => selectedUser.userId !== user.userId)
     })
@@ -103,8 +105,8 @@ export default class CreateNewChannelModal extends Component {
   }
 
   onDone() {
-    const {userId} = this.props;
-    const {channelName, selectedUsers} = this.state;
+    const {userId} = this.props
+    const {channelName, selectedUsers} = this.state
     this.props.onDone({userId, channelName, selectedUsers})
   }
 }

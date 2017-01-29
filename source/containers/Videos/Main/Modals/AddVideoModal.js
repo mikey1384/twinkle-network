@@ -1,10 +1,13 @@
-import React from 'react';
-import {Modal} from 'react-bootstrap';
-import AddVideoForm from './AddVideoForm';
+import React, {PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import AddVideoForm from './AddVideoForm'
 
-export default function AddVideoModal(props) {
+AddVideoModal.propTypes = {
+  onHide: PropTypes.func
+}
+export default function AddVideoModal({onHide}) {
   return (
-    <Modal show onHide={props.onHide} animation={false}>
+    <Modal show onHide={onHide} animation={false}>
       <Modal.Header closeButton>
         <h4>Add Videos</h4>
       </Modal.Header>

@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {reduxForm, Field} from 'redux-form';
-import {Modal, Button, Alert} from 'react-bootstrap';
-import {stringIsEmpty} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import {reduxForm, Field} from 'redux-form'
+import {Modal, Button, Alert} from 'react-bootstrap'
+import {stringIsEmpty} from 'helpers/stringHelpers'
 
-
+/* eslint-disable react/prop-types */
 const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
   <div>
     <input
@@ -18,19 +18,27 @@ const renderInput = ({input, type, className, placeholder, meta: {touched, error
     >{touched && error && error}</span>
   </div>
 )
+/* eslint-enable react/prop-types */
 
 @reduxForm({
   form: 'LoginForm',
   validate
 })
 export default class LoginForm extends Component {
+  static propTypes = {
+    handleSubmit: PropTypes.func,
+    errorMessage: PropTypes.string,
+    hideErrorAlert: PropTypes.func,
+    loginAsync: PropTypes.func
+  }
+
   constructor() {
     super()
     this.onSubmit = this.onSubmit.bind(this)
   }
 
-  render () {
-    const {handleSubmit, errorMessage, hideErrorAlert} = this.props;
+  render() {
+    const {handleSubmit, errorMessage, hideErrorAlert} = this.props
     return (
       <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()} >
         {errorMessage &&
@@ -74,13 +82,13 @@ export default class LoginForm extends Component {
 }
 
 function validate(values) {
-  const {username, password} = values;
-  const errors = {};
+  const {username, password} = values
+  const errors = {}
   if (stringIsEmpty(username)) {
-    errors.username = 'Enter username';
+    errors.username = 'Enter username'
   }
   if (stringIsEmpty(password)) {
-    errors.password = 'Enter password';
+    errors.password = 'Enter password'
   }
-  return errors;
+  return errors
 }

@@ -1,39 +1,39 @@
-import React, {Component} from 'react';
-import {DragSource, DropTarget} from 'react-dnd';
-import ItemTypes from 'constants/itemTypes';
+import React, {Component, PropTypes} from 'react'
+import {DragSource, DropTarget} from 'react-dnd'
+import ItemTypes from 'constants/itemTypes'
 
 const ListItemSource = {
   beginDrag(props) {
     return {
       id: props.id,
       questionIndex: props.questionIndex
-    };
+    }
   },
   isDragging(props, monitor) {
-    return props.id === monitor.getItem().id && props.questionIndex === monitor.getItem().questionIndex;
+    return props.id === monitor.getItem().id && props.questionIndex === monitor.getItem().questionIndex
   },
   endDrag(props, monitor) {
-    const item = monitor.getItem();
+    const item = monitor.getItem()
     if (props.id !== item.id && props.questionIndex === item.questionIndex) {
-      props.onDrop();
+      props.onDrop()
     }
   }
-};
+}
 
 const ListItemTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.id;
-    const sourceProps = monitor.getItem();
-    const sourceId = sourceProps.id;
+    const targetId = targetProps.id
+    const sourceProps = monitor.getItem()
+    const sourceId = sourceProps.id
 
-    const targetQuestionIndex = targetProps.questionIndex;
-    const sourceQuestionIndex = sourceProps.questionIndex;
+    const targetQuestionIndex = targetProps.questionIndex
+    const sourceQuestionIndex = sourceProps.questionIndex
 
-    if(targetQuestionIndex === sourceQuestionIndex && sourceId !== targetId) {
-      targetProps.onMove({sourceId, targetId});
+    if (targetQuestionIndex === sourceQuestionIndex && sourceId !== targetId) {
+      targetProps.onMove({sourceId, targetId})
     }
   }
-};
+}
 
 @DragSource(ItemTypes.LIST_ITEM, ListItemSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
@@ -43,6 +43,18 @@ const ListItemTarget = {
   connectDropTarget: connect.dropTarget()
 }))
 export default class ChoiceListItem extends Component {
+  static propTypes = {
+    connectDragSource: PropTypes.func,
+    connectDropTarget: PropTypes.func,
+    isDragging: PropTypes.bool,
+    inputType: PropTypes.string,
+    onSelect: PropTypes.func,
+    checked: PropTypes.bool,
+    checkDisabled: PropTypes.bool,
+    label: PropTypes.string,
+    placeholder: PropTypes.string
+  }
+
   render() {
     const {
       connectDragSource,
@@ -52,7 +64,7 @@ export default class ChoiceListItem extends Component {
       onSelect,
       checked,
       checkDisabled
-    } = this.props;
+    } = this.props
     return connectDragSource(connectDropTarget(
       <div
         className="list-group-item container-fluid"

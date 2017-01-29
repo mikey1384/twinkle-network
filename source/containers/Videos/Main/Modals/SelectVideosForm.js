@@ -1,7 +1,15 @@
-import React from 'react';
-import VideoThumb from './ModalVideoThumb';
-import Button from 'components/Button';
+import React, {PropTypes} from 'react'
+import VideoThumb from './ModalVideoThumb'
+import Button from 'components/Button'
 
+SelectVideosForm.propTypes = {
+  videos: PropTypes.array,
+  selectedVideos: PropTypes.array,
+  loadMoreVideosButton: PropTypes.bool,
+  onSelect: PropTypes.func,
+  onDeselect: PropTypes.func,
+  loadMoreVideos: PropTypes.func
+}
 export default function SelectVideosForm(props) {
   const {
     videos,
@@ -10,7 +18,7 @@ export default function SelectVideosForm(props) {
     onSelect,
     onDeselect,
     loadMoreVideos
-  } = props;
+  } = props
   return (
     <div className="row">
       {videos.map((video, index) => {
@@ -20,14 +28,14 @@ export default function SelectVideosForm(props) {
             video={video}
             selected={selectedVideos.indexOf(video.id) !== -1}
             onSelect={videoId => {
-              let selected = selectedVideos;
-              onSelect(selected, videoId);
+              let selected = selectedVideos
+              onSelect(selected, videoId)
             }}
             onDeselect={videoId => {
-              let selected = selectedVideos;
-              const index = selected.indexOf(videoId);
-              selected.splice(index, 1);
-              onDeselect(selected);
+              let selected = selectedVideos
+              const index = selected.indexOf(videoId)
+              selected.splice(index, 1)
+              onDeselect(selected)
             }}
           />
         )

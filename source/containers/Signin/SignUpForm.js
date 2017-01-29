@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {reduxForm, Field} from 'redux-form';
-import {Modal, Button, Alert} from 'react-bootstrap';
+import React, {Component, PropTypes} from 'react'
+import {reduxForm, Field} from 'redux-form'
+import {Modal, Button, Alert} from 'react-bootstrap'
 
-
+/* eslint-disable react/prop-types */
 const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
   <div style={{display: 'inline'}}>
     <input
@@ -17,12 +17,20 @@ const renderInput = ({input, type, className, placeholder, meta: {touched, error
     >{touched && error && error}</span>
   </div>
 )
+/* eslint-enable react/prop-types */
 
 @reduxForm({
   form: 'SignupForm',
   validate
 })
 export default class SignUpForm extends Component {
+  static propTypes = {
+    handleSubmit: PropTypes.func,
+    errorMessage: PropTypes.string,
+    hideErrorAlert: PropTypes.func,
+    signupAsync: PropTypes.func
+  }
+
   constructor() {
     super()
     this.onSubmit = this.onSubmit.bind(this)
@@ -34,13 +42,13 @@ export default class SignUpForm extends Component {
     })
   }
 
-  render () {
-    const {checkedTeacher} = this.state;
+  render() {
+    const {checkedTeacher} = this.state
     const {
       handleSubmit,
       errorMessage,
       hideErrorAlert
-    } = this.props;
+    } = this.props
     return (
       <form
         onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()}
@@ -96,7 +104,7 @@ export default class SignUpForm extends Component {
             <Field
               name="isTeacher"
               checked={checkedTeacher}
-              onClick={()=>this.setState({checkedTeacher:!checkedTeacher})}
+              onClick={() => this.setState({checkedTeacher: !checkedTeacher})}
               component={renderInput}
               type="checkbox"
             />
@@ -125,59 +133,59 @@ export default class SignUpForm extends Component {
   }
 }
 
-function validate (values) {
-  const {username, firstname, lastname, password, email, isTeacher} = values;
-  const errors = {};
+function validate(values) {
+  const {username, firstname, lastname, password, email, isTeacher} = values
+  const errors = {}
 
   if (!isValidUsername(username)) {
-    errors.username = 'Invalid username';
+    errors.username = 'Invalid username'
   }
   if (!isValidRealname(firstname)) {
-    errors.firstname = 'Invalid first name';
+    errors.firstname = 'Invalid first name'
   }
   if (!isValidRealname(lastname)) {
-    errors.lastname = 'Invalid last name';
+    errors.lastname = 'Invalid last name'
   }
   if (email && !isValidEmailAddress(email)) {
-    errors.email = 'Invalid email format';
+    errors.email = 'Invalid email format'
   }
   if (username && username.length < 4) {
-    errors.username = 'Usernames must be at least 4 characters long';
+    errors.username = 'Usernames must be at least 4 characters long'
   }
   if (password && password.length < 6) {
-    errors.password = 'Passwords must be at least 6 characters long';
+    errors.password = 'Passwords must be at least 6 characters long'
   }
   if (!username) {
-    errors.username = 'Enter a username';
+    errors.username = 'Enter a username'
   }
   if (!firstname) {
-    errors.firstname = 'Enter your first name';
+    errors.firstname = 'Enter your first name'
   }
   if (!lastname) {
-    errors.lastname = 'Enter your last name';
+    errors.lastname = 'Enter your last name'
   }
   if (!password) {
-    errors.password = 'Enter a password';
+    errors.password = 'Enter a password'
   }
   if (isTeacher && !email) {
-    errors.email = 'Teachers must provide an email address';
+    errors.email = 'Teachers must provide an email address'
   }
 
-  return errors;
+  return errors
 }
 
-function isValidEmailAddress (email) {
-  let regex = '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$';
-  let pattern = new RegExp(regex);
-  return pattern.test(email);
+function isValidEmailAddress(email) {
+  let regex = '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$'
+  let pattern = new RegExp(regex)
+  return pattern.test(email)
 };
 
 function isValidRealname(realName) {
-  var pattern = new RegExp(/^[a-zA-Z]+$/);
-  return pattern.test(realName);
+  var pattern = new RegExp(/^[a-zA-Z]+$/)
+  return pattern.test(realName)
 }
 
-function isValidUsername (username) {
-  var pattern = new RegExp(/^[a-zA-Z0-9]+$/);
-  return !!username && username.length < 20 && pattern.test(username);
+function isValidUsername(username) {
+  var pattern = new RegExp(/^[a-zA-Z0-9]+$/)
+  return !!username && username.length < 20 && pattern.test(username)
 }

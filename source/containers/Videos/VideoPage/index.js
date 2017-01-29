@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 import {
   editVideoPageAsync,
   deleteVideoAsync,
@@ -7,24 +7,23 @@ import {
   likeVideoAsync,
   resetVideoPage,
   loadVideoPageAsync
-} from 'redux/actions/VideoActions';
-import Carousel from 'components/Carousel';
-import Button from 'components/Button';
-import Loading from 'components/Loading';
-import VideoPlayer from 'components/VideoPlayer';
-import NotFound from 'components/NotFound';
-import ChoiceListGroup from './ChoiceListGroup';
-import PageTab from './PageTab';
-import VideoLikeInterface from './VideoLikeInterface';
-import Comments from './Comments';
-import Description from './Description';
-import ResultModal from './Modals/ResultModal';
-import QuestionsBuilder from './QuestionsBuilder';
-import UserListModal from 'components/Modals/UserListModal';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-import {stringIsEmpty} from 'helpers/stringHelpers';
-import ExecutionEnvironment from 'exenv';
-
+} from 'redux/actions/VideoActions'
+import Carousel from 'components/Carousel'
+import Button from 'components/Button'
+import Loading from 'components/Loading'
+import VideoPlayer from 'components/VideoPlayer'
+import NotFound from 'components/NotFound'
+import ChoiceListGroup from './ChoiceListGroup'
+import PageTab from './PageTab'
+import VideoLikeInterface from './VideoLikeInterface'
+import Comments from './Comments'
+import Description from './Description'
+import ResultModal from './Modals/ResultModal'
+import QuestionsBuilder from './QuestionsBuilder'
+import UserListModal from 'components/Modals/UserListModal'
+import ConfirmModal from 'components/Modals/ConfirmModal'
+import {stringIsEmpty} from 'helpers/stringHelpers'
+import ExecutionEnvironment from 'exenv'
 
 @connect(
   state => ({
@@ -43,9 +42,36 @@ import ExecutionEnvironment from 'exenv';
   }
 )
 export default class VideoPage extends Component {
+  static propTypes = {
+    location: PropTypes.object,
+    params: PropTypes.object,
+    loadVideoPage: PropTypes.func,
+    resetVideoPage: PropTypes.func,
+    videoId: PropTypes.number,
+    videoCode: PropTypes.string,
+    title: PropTypes.string,
+    timeStamp: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    questions: PropTypes.array,
+    likes: PropTypes.array,
+    videoViews: PropTypes.string,
+    uploaderId: PropTypes.number,
+    uploaderName: PropTypes.string,
+    description: PropTypes.string,
+    userId: PropTypes.number,
+    videoUnavailable: PropTypes.bool,
+    videoLoading: PropTypes.bool,
+    editVideoPage: PropTypes.func,
+    deleteVideo: PropTypes.func,
+    uploadQuestions: PropTypes.func,
+    likeVideo: PropTypes.func
+  }
+
   constructor(props) {
     super()
-    const {location, params, loadVideoPage} = props;
+    const {location, params, loadVideoPage} = props
     if (ExecutionEnvironment.canUseDOM && location.action === 'POP') loadVideoPage(params.videoId)
     this.state = {
       watchTabActive: true,
@@ -75,27 +101,27 @@ export default class VideoPage extends Component {
     let {
       uploaderId, uploaderName, description, userId, videoUnavailable, videoLoading,
       videoId, videoCode, title, timeStamp, questions = [], likes = [], videoViews
-    } = this.props;
+    } = this.props
     const {
       watchTabActive,
       questionsBuilderShown,
       resultModalShown,
       confirmModalShown,
       userListModalShown,
-      currentSlide } = this.state;
+      currentSlide } = this.state
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
-    'video-container-fixed-left';
+    'video-container-fixed-left'
     const youtubeIframeClassName = watchTabActive ?
     'embed-responsive-item' :
-    'video-fixed-left';
+    'video-fixed-left'
     const tabPaneClassName = watchTabActive ?
     'container col-sm-8 col-sm-offset-2' :
-    'container';
+    'container'
 
     return (
       <div>
-        {videoLoading && <Loading text="Loading Video..."  />}
+        {videoLoading && <Loading text="Loading Video..." />}
         {videoUnavailable && <NotFound text="Video does not exist" />}
         <div
           className="container-fluid"
@@ -227,15 +253,15 @@ export default class VideoPage extends Component {
   }
 
   renderSlides() {
-    const {questions} = this.props;
-    const {currentSlide, userAnswers} = this.state;
+    const {questions} = this.props
+    const {currentSlide, userAnswers} = this.state
     return questions.map((question, index) => {
       const filteredChoices = question.choices.filter(choice => {
-        return choice !== null;
+        return choice !== null
       })
-      let isCurrentSlide = index === currentSlide;
+      let isCurrentSlide = index === currentSlide
       const listItems = filteredChoices.map((choice, index) => {
-        let isSelectedChoice = index === userAnswers[currentSlide];
+        let isSelectedChoice = index === userAnswers[currentSlide]
         return {
           label: choice,
           checked: isCurrentSlide && isSelectedChoice
@@ -256,15 +282,15 @@ export default class VideoPage extends Component {
   }
 
   numberCorrect() {
-    const {userAnswers} = this.state;
+    const {userAnswers} = this.state
     const correctAnswers = this.props.questions.map(question => {
-      return question.correctChoice;
+      return question.correctChoice
     })
-    let numberCorrect = 0;
+    let numberCorrect = 0
     for (let i = 0; i < userAnswers.length; i++) {
-      if (userAnswers[i] + 1 === correctAnswers[i]) numberCorrect++;
+      if (userAnswers[i] + 1 === correctAnswers[i]) numberCorrect++
     }
-    return numberCorrect;
+    return numberCorrect
   }
 
   onSlide(index) {
@@ -276,18 +302,18 @@ export default class VideoPage extends Component {
   }
 
   onSelectChoice(index) {
-    let {userAnswers, currentSlide} = this.state;
-    userAnswers[currentSlide] = index;
+    let {userAnswers, currentSlide} = this.state
+    userAnswers[currentSlide] = index
     this.setState({userAnswers})
   }
 
   onDescriptionEditFinish(params, sender) {
-    this.props.editVideoPage(params, sender);
+    this.props.editVideoPage(params, sender)
   }
 
   onVideoDelete() {
-    const {videoId} = this.props;
-    this.props.deleteVideo({videoId});
+    const {videoId} = this.props
+    this.props.deleteVideo({videoId})
   }
 
   onQuestionsSubmit(questions) {
@@ -295,17 +321,17 @@ export default class VideoPage extends Component {
       videoId: this.props.videoId,
       questions: questions.map(question => {
         const choices = question.choices.filter(choice => {
-          return choice.label && !stringIsEmpty(choice.label);
+          return choice.label && !stringIsEmpty(choice.label)
         })
         return {
           videoId: this.props.videoId,
           title: question.title,
           correctChoice: (() => {
-            let correctChoice = 0;
-            for (let i = 0; i < choices.length; i ++) {
-              if (choices[i].checked) correctChoice = i+1;
+            let correctChoice = 0
+            for (let i = 0; i < choices.length; i++) {
+              if (choices[i].checked) correctChoice = i+1
             }
-            return correctChoice;
+            return correctChoice
           })(),
           choice1: choices[0].label,
           choice2: choices[1].label,
@@ -322,11 +348,11 @@ export default class VideoPage extends Component {
         currentSlide: 0,
         userAnswers: []
       })
-    });
+    })
   }
 
   onVideoLikeClick() {
-    const {videoId} = this.props;
-    this.props.likeVideo(videoId);
+    const {videoId} = this.props
+    this.props.likeVideo(videoId)
   }
 }

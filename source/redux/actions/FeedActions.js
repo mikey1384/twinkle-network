@@ -1,8 +1,8 @@
-import request from 'axios';
-import {auth, handleError} from './constants';
-import {URL} from 'constants/URL';
+import request from 'axios'
+import {auth, handleError} from './constants'
+import {URL} from 'constants/URL'
 
-const API_URL = `${URL}/feed`;
+const API_URL = `${URL}/feed`
 
 export const clearCategoriesSearchResults = () => ({
   type: 'CLEAR_CATEGORIES_SEARCH'
@@ -26,13 +26,13 @@ export const feedVideoCommentEditAsync = (params, cb) => dispatch =>
 request.post(`${URL}/video/comments/edit`, params, auth())
 .then(
   response => {
-    const {success} = response.data;
-    if (!success) return;
+    const {success} = response.data
+    if (!success) return
     dispatch({
       type: 'FEED_VIDEO_COMMENT_EDIT',
       data: params
     })
-    cb();
+    cb()
   }
 ).catch(
   error => {
@@ -50,11 +50,11 @@ export const feedVideoCommentLikeAsync = commentId => dispatch =>
 request.post(`${URL}/video/comments/like`, {commentId}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.likes) {
       dispatch(feedVideoCommentLike({contentId: commentId, likes: data.likes}))
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -97,7 +97,7 @@ export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all', callback) => dis
         data: response.data,
         filter
       })
-      if (callback) callback();
+      if (callback) callback()
     }
   ).catch(
     error => {
@@ -116,11 +116,11 @@ export const likeVideoAsync = contentId => dispatch =>
 request.post(`${URL}/video/like`, {videoId: contentId}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.likes) {
-      dispatch(likeVideo({contentId, likes: data.likes}));
+      dispatch(likeVideo({contentId, likes: data.likes}))
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -138,11 +138,11 @@ export const likeVideoCommentAsync = contentId => dispatch =>
 request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.likes) {
       dispatch(likeVideoComment({contentId, likes: data.likes}))
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -160,11 +160,11 @@ export const likeTargetVideoCommentAsync = contentId => dispatch =>
 request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.likes) {
       dispatch(likeTargetVideoComment({contentId, likes: data.likes}))
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -229,7 +229,7 @@ export const uploadContentAsync = form => dispatch =>
 request.post(`${API_URL}/content`, form, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     dispatch(uploadContent(data))
   }
 ).catch(
@@ -250,10 +250,10 @@ export const uploadFeedVideoReply = data => ({
 })
 
 export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
-  const parentType = parent.type;
-  let commentType;
-  let params;
-  switch(parentType) {
+  const parentType = parent.type
+  let commentType
+  let params
+  switch (parentType) {
     case 'comment':
       params = {
         reply: comment,
@@ -261,35 +261,35 @@ export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
         commentId: parent.commentId || parent.id,
         replyId: parent.commentId ? parent.id : null
       }
-      commentType = 'replies';
-    break;
+      commentType = 'replies'
+      break
     case 'video':
       params = {comment, videoId: parent.id}
-      commentType = 'comments';
-    break;
+      commentType = 'comments'
+      break
     case 'discussion':
       params = {comment, videoId: parent.parentContentId, discussionId: parent.id}
-      commentType = 'debates/comments';
-    break;
-    default: return console.error("Invalid content type")
+      commentType = 'debates/comments'
+      break
+    default: return console.error('Invalid content type')
   }
 
   request.post(`${URL}/video/${commentType}`, params, auth())
   .then(
     response => {
-      const {data} = response;
+      const {data} = response
       const action = (parentType === 'comment') ?
       uploadFeedVideoReply({
-          type: parent.type,
-          contentId: parent.id,
-          reply: {...data.result, replies: []}
+        type: parent.type,
+        contentId: parent.id,
+        reply: {...data.result, replies: []}
       }) :
       uploadFeedVideoComment({
         ...data,
         type: parent.type,
         contentId: parent.id
       })
-      dispatch(action);
+      dispatch(action)
     }
   ).catch(
     error => {
@@ -305,10 +305,10 @@ dispatch => {
   request.post(`${URL}/video/replies`, params, auth())
   .then(
     response => {
-      const {data} = response;
+      const {data} = response
       const action = uploadFeedVideoReply({type: parent.type, contentId: parent.type === 'comment' ? comment.id : parent.id, reply: {...data.result, replies: []}, commentId: comment.id})
-      dispatch(action);
-      if (!!callback) callback();
+      dispatch(action)
+      if (callback) callback()
     }
   ).catch(
     error => {

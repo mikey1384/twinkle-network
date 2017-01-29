@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import YouTube from 'react-youtube';
-import Loading from 'components/Loading';
-import {Color} from 'constants/css';
-import {connect} from 'react-redux';
-import {addVideoViewAsync} from 'redux/actions/VideoActions';
+import React, {Component, PropTypes} from 'react'
+import YouTube from 'react-youtube'
+import Loading from 'components/Loading'
+import {Color} from 'constants/css'
+import {connect} from 'react-redux'
+import {addVideoViewAsync} from 'redux/actions/VideoActions'
 
 @connect(
   state => ({
@@ -12,6 +12,19 @@ import {addVideoViewAsync} from 'redux/actions/VideoActions';
   {addVideoView: addVideoViewAsync}
 )
 export default class VideoPlayer extends Component {
+  static propTypes = {
+    videoCode: PropTypes.string,
+    title: PropTypes.string,
+    containerClassName: PropTypes.string,
+    className: PropTypes.string,
+    style: PropTypes.object,
+    autoplay: PropTypes.bool,
+    small: PropTypes.bool,
+    videoId: PropTypes.number,
+    userId: PropTypes.number,
+    addVideoView: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -21,13 +34,17 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
-    const {videoCode, title, containerClassName, className, style, autoplay, small} = this.props;
-    const {playing} = this.state;
+    const {videoCode, title, containerClassName, className, style, autoplay, small} = this.props
+    const {playing} = this.state
     return (
       <div
         className={small ? containerClassName : `video-player ${containerClassName}`}
         style={{...style, cursor: !playing && 'pointer'}}
-        onClick={() => {if (!playing) this.setState({playing: true})}}
+        onClick={() => {
+          if (!playing) {
+            this.setState({playing: true})
+          }
+        }}
       >
         {!autoplay && !small && !playing && <div>
             <img
@@ -37,7 +54,7 @@ export default class VideoPlayer extends Component {
             />
           </div>
         }
-        {!!playing ?
+        {playing ?
           <Loading
             style={{
               color: Color.blue,
@@ -69,7 +86,7 @@ export default class VideoPlayer extends Component {
   }
 
   onVideoReady(event) {
-    const {videoId, userId, addVideoView} = this.props;
+    const {videoId, userId, addVideoView} = this.props
     event.target.playVideo()
     const time = event.target.getCurrentTime()
     if (Math.floor(time) === 0) {

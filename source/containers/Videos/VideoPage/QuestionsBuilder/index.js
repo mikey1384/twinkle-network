@@ -1,13 +1,11 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {Modal} from 'react-bootstrap';
-import QuestionBlock from './QuestionBlock';
-import ButtonGroup from 'components/ButtonGroup';
-import Button from 'components/Button';
+import React, {Component, PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import QuestionBlock from './QuestionBlock'
+import ButtonGroup from 'components/ButtonGroup'
+import Button from 'components/Button'
 import HTML5Backend from 'react-dnd-html5-backend'
-import {DragDropContext} from 'react-dnd';
-import QuestionsListGroup from './QuestionsListGroup';
-
+import {DragDropContext} from 'react-dnd'
+import QuestionsListGroup from './QuestionsListGroup'
 
 const defaultChoices = () => [
   {
@@ -70,9 +68,16 @@ const defaultState = props => ({
 
 @DragDropContext(HTML5Backend)
 export default class QuestionsBuilder extends Component {
+  static propTypes = {
+    title: PropTypes.string,
+    onHide: PropTypes.func,
+    videoCode: PropTypes.string,
+    onSubmit: PropTypes.func
+  }
+
   constructor(props) {
     super()
-    this.state = defaultState(props);
+    this.state = defaultState(props)
     this.onAddQuestion = this.onAddQuestion.bind(this)
     this.onRemoveQuestion = this.onRemoveQuestion.bind(this)
     this.onUndoRemove = this.onUndoRemove.bind(this)
@@ -90,26 +95,26 @@ export default class QuestionsBuilder extends Component {
   }
 
   render() {
-    const {reorderModeOn, questions, editedQuestionOrder} = this.state;
-    const {title} = this.props;
+    const {reorderModeOn, questions, editedQuestionOrder} = this.state
+    const {title} = this.props
     const topButtons = [
       {
-        label: "+ Add",
+        label: '+ Add',
         onClick: this.onAddQuestion,
-        buttonClass: "btn-primary"
+        buttonClass: 'btn-primary'
       },
       {
-        label: "Reorder",
+        label: 'Reorder',
         onClick: () => this.setState({
           reorderModeOn: true,
           interfaceMarginTop: 0
         }),
-        buttonClass: "btn-info"
+        buttonClass: 'btn-info'
       },
       {
-        label: "Reset",
+        label: 'Reset',
         onClick: this.onReset,
-        buttonClass: "btn-warning"
+        buttonClass: 'btn-warning'
       }
     ]
     return (
@@ -171,9 +176,9 @@ export default class QuestionsBuilder extends Component {
                           questionIndex => {
                             const newQuestions = this.state.questions.map((question, index) => {
                               if (index === questionIndex) {
-                                question.onEdit = true;
+                                question.onEdit = true
                               }
-                              return question;
+                              return question
                             })
                             this.setState({questions: newQuestions})
                           }
@@ -182,9 +187,9 @@ export default class QuestionsBuilder extends Component {
                           questionIndex => {
                             const newQuestions = this.state.questions.map((question, index) => {
                               if (index === questionIndex) {
-                                question.onEdit = false;
+                                question.onEdit = false
                               }
-                              return question;
+                              return question
                             })
                             this.setState({questions: newQuestions})
                           }
@@ -262,7 +267,7 @@ export default class QuestionsBuilder extends Component {
   }
 
   onAddQuestion() {
-    const questions = this.state.questions;
+    const questions = this.state.questions
     const newQuestions = questions.concat([{
       title: undefined,
       id: questions.length,
@@ -270,14 +275,14 @@ export default class QuestionsBuilder extends Component {
       choices: defaultChoices(),
       errorMessage: null,
       deleted: false
-    }]);
+    }])
     this.setState({
       questions: newQuestions,
       editedQuestionOrder: newQuestions.map(question => {
         return question.id
       })
     }, () => {
-      ReactDOM.findDOMNode(this.refs[questions[questions.length-1].id]).scrollIntoView();
+      this.refs[questions[questions.length-1].id].scrollIntoView()
     })
   }
 
@@ -285,10 +290,10 @@ export default class QuestionsBuilder extends Component {
     this.setState({
       questions: this.state.questions.map((question, index) => {
         if (index === questionIndex) {
-          question.deleted = true;
-          question.errorMessage = null;
+          question.deleted = true
+          question.errorMessage = null
         }
-        return question;
+        return question
       })
     })
   }
@@ -296,24 +301,24 @@ export default class QuestionsBuilder extends Component {
   onUndoRemove(questionIndex) {
     this.setState({questions: this.state.questions.map((question, index) => {
       if (index === questionIndex) {
-        question.deleted = false;
+        question.deleted = false
       }
-      return question;
+      return question
     })})
   }
 
   onChoiceEditDone({questionIndex, newChoicesArray, newTitle}) {
-    const newQuestion = this.state.questions[questionIndex];
-    newQuestion.choices = newChoicesArray;
-    newQuestion.title = newTitle;
-    newQuestion.onEdit = false;
-    newQuestion.errorMessage = null;
+    const newQuestion = this.state.questions[questionIndex]
+    newQuestion.choices = newChoicesArray
+    newQuestion.title = newTitle
+    newQuestion.onEdit = false
+    newQuestion.errorMessage = null
 
     const newQuestions = this.state.questions.map((question, index) => {
       if (index === questionIndex) {
-        question = newQuestion;
+        question = newQuestion
       }
-      return question;
+      return question
     })
     this.setState({
       questions: newQuestions
@@ -330,24 +335,24 @@ export default class QuestionsBuilder extends Component {
   }
 
   onQuestionsRearrange({sourceId, targetId}) {
-    const newQuestionOrder = this.state.editedQuestionOrder;
-    const sourceIndex = newQuestionOrder.indexOf(sourceId);
-    const targetIndex = newQuestionOrder.indexOf(targetId);
-    newQuestionOrder.splice(sourceIndex, 1);
-    newQuestionOrder.splice(targetIndex, 0, sourceId);
+    const newQuestionOrder = this.state.editedQuestionOrder
+    const sourceIndex = newQuestionOrder.indexOf(sourceId)
+    const targetIndex = newQuestionOrder.indexOf(targetId)
+    newQuestionOrder.splice(sourceIndex, 1)
+    newQuestionOrder.splice(targetIndex, 0, sourceId)
     this.setState({
       editedQuestionOrder: newQuestionOrder
     })
   }
 
   onReorderDone() {
-    const newQuestions = this.state.editedQuestionOrder.reduce((result, questionId )=> {
+    const newQuestions = this.state.editedQuestionOrder.reduce((result, questionId) => {
       for (let i = 0; i < this.state.questions.length; i++) {
         if (this.state.questions[i].id === questionId) {
           result.push(this.state.questions[i])
         }
       }
-      return result;
+      return result
     }, [])
     this.setState({
       questions: newQuestions,
@@ -360,11 +365,11 @@ export default class QuestionsBuilder extends Component {
       questions: this.state.questions.map((question, index) => {
         if (index === questionIndex) {
           for (let i = 0; i < question.choices.length; i++) {
-            question.choices[i].checked = i === choiceIndex;
+            question.choices[i].checked = i === choiceIndex
           }
-          question.errorMessage = null;
+          question.errorMessage = null
         }
-        return question;
+        return question
       })
     })
   }
@@ -373,22 +378,22 @@ export default class QuestionsBuilder extends Component {
     const newQuestions = this.state.questions.map((question, index) => {
       if (index === questionIndex) {
         const newChoices = choiceIndices.reduce((result, choiceId) => {
-          for (let i = 0; i < question.choices.length; i ++) {
+          for (let i = 0; i < question.choices.length; i++) {
             if (question.choices[i].id === choiceId) {
               result.push(question.choices[i])
             }
           }
-          return result;
+          return result
         }, [])
-        question.choices = newChoices;
+        question.choices = newChoices
       }
-      return question;
+      return question
     })
     this.setState({questions: newQuestions})
   }
 
   handleScroll(event) {
-    const scrollTop = event.target.scrollTop;
+    const scrollTop = event.target.scrollTop
     this.setState({interfaceMarginTop: scrollTop})
   }
 
@@ -400,47 +405,45 @@ export default class QuestionsBuilder extends Component {
   }
 
   onSubmit() {
-    let firstError = null;
-    const questions = [...this.state.questions];
+    let firstError = null
+    const questions = [...this.state.questions]
     for (let i = 0; i < questions.length; i++) {
       if (!questions[i].deleted) {
         if (!questions[i].title || questions[i].title === '') {
-          if (firstError === null) firstError = questions[i].id;
-          questions[i].errorMessage = "Please enter title";
-        }
-        else if (errorInQuestionChoices(questions[i])) {
-          if (firstError === null) firstError = questions[i].id;
-          questions[i].errorMessage = errorInQuestionChoices(questions[i]);
+          if (firstError === null) firstError = questions[i].id
+          questions[i].errorMessage = 'Please enter title'
+        } else if (errorInQuestionChoices(questions[i])) {
+          if (firstError === null) firstError = questions[i].id
+          questions[i].errorMessage = errorInQuestionChoices(questions[i])
         }
       }
     }
 
     if (firstError !== null) {
-      ReactDOM.findDOMNode(this.refs[firstError]).scrollIntoView();
+      this.refs[firstError].scrollIntoView()
       this.setState({questions})
-    }
-    else {
+    } else {
       const finishedQuestions = questions.filter(question => {
-        return !question.deleted;
+        return !question.deleted
       })
-      this.props.onSubmit(finishedQuestions);
+      this.props.onSubmit(finishedQuestions)
     }
 
     function errorInQuestionChoices(question) {
-      let validCheckExists = false;
+      let validCheckExists = false
       const validChoices = question.choices.filter(choice => choice.label && choice.label !== '')
       if (validChoices.length < 2) {
-        return "There must be at least 2 choices.";
+        return 'There must be at least 2 choices.'
       }
-      for (let i = 0; i < validChoices.length; i ++) {
+      for (let i = 0; i < validChoices.length; i++) {
         if (validChoices[i].checked) {
-          validCheckExists = true;
+          validCheckExists = true
         }
       }
       if (!validCheckExists) {
-        return "Please mark the correct choice.";
+        return 'Please mark the correct choice.'
       }
-      return false;
+      return false
     }
   }
 }

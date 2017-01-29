@@ -1,9 +1,9 @@
-import React, {Component, PropTypes} from 'react';
-import {Modal} from 'react-bootstrap';
-import Button from 'components/Button';
-import SortableListGroup from 'components/SortableListGroup';
-import {connect} from 'react-redux';
-import {changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions';
+import React, {Component, PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import Button from 'components/Button'
+import SortableListGroup from 'components/SortableListGroup'
+import {connect} from 'react-redux'
+import {changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions'
 
 @connect(
   null,
@@ -13,7 +13,8 @@ export default class ReorderPinnedPlaylistsModal extends Component {
   static propTypes = {
     pinnedPlaylists: PropTypes.array.isRequired,
     playlistIds: PropTypes.array.isRequired,
-    onHide: PropTypes.func.isRequired
+    onHide: PropTypes.func.isRequired,
+    changePinnedPlaylists: PropTypes.func
   }
 
   constructor(props) {
@@ -27,9 +28,9 @@ export default class ReorderPinnedPlaylistsModal extends Component {
   }
 
   render() {
-    const {playlists, playlistIds} = this.state;
+    const {playlists, playlistIds} = this.state
     const listItems = playlistIds.reduce((result, playlistId) => {
-      for (let i = 0; i < playlists.length; i ++) {
+      for (let i = 0; i < playlists.length; i++) {
         if (playlists[i].id === playlistId) {
           result.push({
             label: playlists[i].title,
@@ -37,9 +38,9 @@ export default class ReorderPinnedPlaylistsModal extends Component {
           })
         }
       }
-      return result;
+      return result
     }, [])
-    
+
     return (
       <Modal
         show
@@ -67,17 +68,17 @@ export default class ReorderPinnedPlaylistsModal extends Component {
   }
 
   onMove({sourceId, targetId}) {
-    const {playlistIds} = this.state;
-    const sourceIndex = playlistIds.indexOf(sourceId);
-    const targetIndex = playlistIds.indexOf(targetId);
-    playlistIds.splice(sourceIndex, 1);
-    playlistIds.splice(targetIndex, 0, sourceId);
+    const {playlistIds} = this.state
+    const sourceIndex = playlistIds.indexOf(sourceId)
+    const targetIndex = playlistIds.indexOf(targetId)
+    playlistIds.splice(sourceIndex, 1)
+    playlistIds.splice(targetIndex, 0, sourceId)
     this.setState({
       playlistIds
-    });
+    })
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylists(this.state.playlistIds, () => this.props.onHide());
+    this.props.changePinnedPlaylists(this.state.playlistIds, () => this.props.onHide())
   }
 }

@@ -1,9 +1,9 @@
 const defaultState = {
   profilePage: {}
-};
+}
 
-function isAdmin (userType) {
-  return userType === 'teacher' || userType === 'master';
+function isAdmin(userType) {
+  return userType === 'teacher' || userType === 'master'
 }
 
 export default function UserReducer(state = defaultState, action) {
@@ -14,7 +14,7 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         ...action.data,
         isAdmin: isAdmin(action.data.userType)
-      } : state;
+      } : state
     case 'SHOW_USER_NOT_EXISTS':
       return {
         ...state,
@@ -46,7 +46,7 @@ export default function UserReducer(state = defaultState, action) {
         profilePage: {
           ...state.profilePage
         }
-      };
+      }
     case 'SIGNIN_SIGNUP':
       return (action.data.result === 'success') ?
       {
@@ -63,14 +63,14 @@ export default function UserReducer(state = defaultState, action) {
       return {
         ...state,
         signinModalShown: true
-      };
+      }
     case 'SIGNIN_CLOSE':
       return {
         ...state,
         signupError: null,
         loginError: null,
         signinModalShown: false
-      };
+      }
     case 'SIGNIN_HIDEALERT':
       return {
         ...state,
@@ -100,6 +100,6 @@ export default function UserReducer(state = defaultState, action) {
         profilePage: {}
       }
     default:
-      return state;
+      return state
   }
 }

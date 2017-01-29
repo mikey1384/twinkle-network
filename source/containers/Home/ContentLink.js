@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions';
-import {cleanString} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
+import {cleanString} from 'helpers/stringHelpers'
 
 @connect(
   null,
@@ -10,8 +10,12 @@ import {cleanString} from 'helpers/stringHelpers';
   }
 )
 export default class ContentLink extends Component {
+  static propTypes = {
+    content: PropTypes.object,
+    loadVideoPage: PropTypes.func
+  }
   render() {
-    const {content, loadVideoPage} = this.props;
+    const {content, loadVideoPage} = this.props
     return (
       <a
         style={{
@@ -20,8 +24,8 @@ export default class ContentLink extends Component {
           color: '#158cba'
         }}
         onClick={event => {
-          event.preventDefault();
-          loadVideoPage(content.id, `videos/${content.id}`);
+          event.preventDefault()
+          loadVideoPage(content.id, `videos/${content.id}`)
         }}
         href={`videos/${content.id}`}
       >

@@ -1,9 +1,22 @@
-import React, {Component} from 'react';
-import PanelReply from './PanelReply';
-import {scrollElementToCenter} from 'helpers/domHelpers';
-import Button from 'components/Button';
+import React, {Component, PropTypes} from 'react'
+import PanelReply from './PanelReply'
+import {scrollElementToCenter} from 'helpers/domHelpers'
+import Button from 'components/Button'
 
 export default class PanelReplies extends Component {
+  static propTypes = {
+    replies: PropTypes.array,
+    type: PropTypes.string,
+    userId: PropTypes.number,
+    onEditDone: PropTypes.func,
+    onLikeClick: PropTypes.func,
+    onDelete: PropTypes.func,
+    comment: PropTypes.object,
+    parent: PropTypes.object,
+    onLoadMoreReplies: PropTypes.func,
+    onReplySubmit: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -16,8 +29,8 @@ export default class PanelReplies extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {deleteListenerToggle} = this.state;
-    const length = this.props.replies.length;
+    const {deleteListenerToggle} = this.state
+    const length = this.props.replies.length
 
     if (length < prevProps.replies.length) {
       if (length === 0) return scrollElementToCenter(this.PanelReplies)
@@ -28,13 +41,13 @@ export default class PanelReplies extends Component {
   render() {
     const {
       type, replies, userId, onEditDone, onLikeClick, onDelete, comment, parent
-    } = this.props;
-    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
+    } = this.props
+    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
     return (
       <div
         className="media container-fluid"
         style={{paddingLeft: '0px', paddingRight: '0px'}}
-        ref={ref => {this.PanelReplies = ref}}
+        ref={ref => { this.PanelReplies = ref }}
       >
         {comment.loadMoreReplies &&
           <Button
@@ -51,7 +64,6 @@ export default class PanelReplies extends Component {
         {replies.map((reply, index) => {
           return (
             <PanelReply
-              ref={reply.id}
               index={index}
               key={reply.id}
               type={type}
@@ -75,21 +87,17 @@ export default class PanelReplies extends Component {
   }
 
   deleteCallback(index) {
-    this.setState({lastDeletedCommentIndex: index});
+    this.setState({lastDeletedCommentIndex: index})
   }
 
   loadMoreReplies() {
-    const {comment, replies, onLoadMoreReplies, parent} = this.props;
-    const lastReplyId = !!replies[0] ? replies[0].id : '0';
+    const {comment, replies, onLoadMoreReplies, parent} = this.props
+    const lastReplyId = replies[0] ? replies[0].id : '0'
     onLoadMoreReplies(lastReplyId, comment.id, parent)
   }
 
   onReplyOfReplySubmit(replyContent, reply, parent) {
-    const {onReplySubmit} = this.props;
-    const length = this.props.replies.length;
-    const lastReply = this.props.replies[length - 1] || [];
-    onReplySubmit(replyContent, reply, parent, () => {
-      scrollElementToCenter(this.refs[lastReply.id])
-    })
+    const {onReplySubmit} = this.props
+    onReplySubmit(replyContent, reply, parent)
   }
 }

@@ -1,22 +1,39 @@
-import React, {Component} from 'react';
-import {timeSince} from 'helpers/timeStampHelpers';
-import {cleanStringWithURL} from 'helpers/stringHelpers';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import Likers from 'components/Likers';
-import {Color} from 'constants/css';
-import UserListModal from 'components/Modals/UserListModal';
-import PanelReplies from './PanelReplies';
-import ReplyInputArea from './PanelReplies/ReplyInputArea';
-import EditTextArea from 'components/EditTextArea';
-import UsernameText from 'components/UsernameText';
-import ProfilePic from 'components/ProfilePic';
-import Button from 'components/Button';
-import LikeButton from 'components/LikeButton';
-import {scrollElementToCenter} from 'helpers/domHelpers';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-
+import React, {Component, PropTypes} from 'react'
+import {timeSince} from 'helpers/timeStampHelpers'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import Likers from 'components/Likers'
+import {Color} from 'constants/css'
+import UserListModal from 'components/Modals/UserListModal'
+import PanelReplies from './PanelReplies'
+import ReplyInputArea from './PanelReplies/ReplyInputArea'
+import EditTextArea from 'components/EditTextArea'
+import UsernameText from 'components/UsernameText'
+import ProfilePic from 'components/ProfilePic'
+import Button from 'components/Button'
+import LikeButton from 'components/LikeButton'
+import {scrollElementToCenter} from 'helpers/domHelpers'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 
 export default class PanelComment extends Component {
+  static propTypes = {
+    deleteListenerToggle: PropTypes.bool,
+    lastDeletedCommentIndex: PropTypes.number,
+    index: PropTypes.number,
+    comment: PropTypes.object,
+    userId: PropTypes.number,
+    parent: PropTypes.object,
+    onEditDone: PropTypes.func,
+    onLikeClick: PropTypes.func,
+    onDelete: PropTypes.func,
+    type: PropTypes.string,
+    onReplySubmit: PropTypes.func,
+    onLoadMoreReplies: PropTypes.func,
+    marginTop: PropTypes.bool,
+    deleteCallback: PropTypes.func,
+    isFirstComment: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.state = {
@@ -36,28 +53,28 @@ export default class PanelComment extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
       if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
-        scrollElementToCenter(this.PanelComment);
+        scrollElementToCenter(this.PanelComment)
       }
     }
   }
 
   render() {
-    const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state;
+    const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state
     const {
       comment, userId, parent, type, onEditDone,
       onLikeClick, onDelete, onReplySubmit, onLoadMoreReplies
-    } = this.props;
+    } = this.props
 
-    const userIsOwner = comment.userId === userId;
-    let userLikedThis = false;
+    const userIsOwner = comment.userId === userId
+    let userLikedThis = false
     for (let i = 0; i < comment.likes.length; i++) {
-      if (comment.likes[i].userId === userId) userLikedThis = true;
+      if (comment.likes[i].userId === userId) userLikedThis = true
     }
     return (
       <li
         className="media"
         style={{marginTop: this.props.marginTop && '1em'}}
-        ref={ref => {this.PanelComment = ref}}
+        ref={ref => { this.PanelComment = ref }}
       >
         {userIsOwner && !onEdit &&
           <div className="row">
@@ -71,11 +88,11 @@ export default class PanelComment extends Component {
               }}
               menuProps={[
                 {
-                  label: "Edit",
+                  label: 'Edit',
                   onClick: () => this.setState({onEdit: true})
                 },
                 {
-                  label: "Remove",
+                  label: 'Remove',
                   onClick: () => this.setState({confirmModalShown: true})
                 }
               ]}
@@ -182,31 +199,31 @@ export default class PanelComment extends Component {
   }
 
   onEditDone(editedComment) {
-    const {onEditDone, comment} = this.props;
+    const {onEditDone, comment} = this.props
     onEditDone({editedComment, commentId: comment.id}, () => {
       this.setState({onEdit: false})
     })
   }
 
   onLikeClick() {
-    const {comment} = this.props;
-    this.props.onLikeClick(comment.id);
+    const {comment} = this.props
+    this.props.onLikeClick(comment.id)
   }
 
   onReplyButtonClick() {
-    const {clickListenerState, replyInputShown} = this.state;
-    if (!replyInputShown) return this.setState({replyInputShown: true});
+    const {clickListenerState, replyInputShown} = this.state
+    if (!replyInputShown) return this.setState({replyInputShown: true})
     this.setState({clickListenerState: !clickListenerState})
   }
 
   onReplySubmit(replyContent) {
-    const {parent, comment, onReplySubmit} = this.props;
-    onReplySubmit(replyContent, comment, parent);
+    const {parent, comment, onReplySubmit} = this.props
+    onReplySubmit(replyContent, comment, parent)
   }
 
   onDelete() {
-    const {comment, onDelete, index, deleteCallback, isFirstComment} = this.props;
-    deleteCallback(index, isFirstComment);
-    onDelete(comment.id);
+    const {comment, onDelete, index, deleteCallback, isFirstComment} = this.props
+    deleteCallback(index, isFirstComment)
+    onDelete(comment.id)
   }
 }

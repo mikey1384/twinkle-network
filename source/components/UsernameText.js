@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {openDirectMessageChannel} from 'redux/actions/ChatActions';
-import {Color} from 'constants/css';
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {openDirectMessageChannel} from 'redux/actions/ChatActions'
+import {Color} from 'constants/css'
 
 @connect(
   state => ({
@@ -12,6 +12,15 @@ import {Color} from 'constants/css';
   {openDirectMessageChannel}
 )
 export default class UsernameText extends Component {
+  static propTypes = {
+    user: PropTypes.object,
+    userId: PropTypes.number,
+    color: PropTypes.string,
+    openDirectMessageChannel: PropTypes.func,
+    username: PropTypes.string,
+    chatMode: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.state = {
@@ -22,8 +31,8 @@ export default class UsernameText extends Component {
   }
 
   render() {
-    const {menuShown} = this.state;
-    const {user, userId, color} = this.props;
+    const {menuShown} = this.state
+    const {user, userId, color} = this.props
     return (
       <span
         className="dropdown"
@@ -62,14 +71,14 @@ export default class UsernameText extends Component {
   }
 
   onMouseEnter() {
-    const {user} = this.props;
+    const {user} = this.props
     if (user.name !== '(Deleted)' && user.name !== null) {
       this.setState({menuShown: true})
     }
   }
 
   onLinkClick() {
-    const {openDirectMessageChannel, user, userId, username, chatMode} = this.props;
+    const {openDirectMessageChannel, user, userId, username, chatMode} = this.props
     this.setState({menuShown: false})
     if (user.id !== userId) {
       openDirectMessageChannel({userId, username}, {userId: user.id, username: user.name}, chatMode)

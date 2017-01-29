@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {PropTypes} from 'react'
 
-export default function Videos(props) {
+Videos.propTypes = {
+  children: PropTypes.object
+}
+export default function Videos({children}) {
   return (
     <div id="contents" className="container-fluid">
-      {props.children}
+      {children}
     </div>
   )
 }

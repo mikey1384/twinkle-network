@@ -1,9 +1,22 @@
-import React, {Component} from 'react';
-import Reply from './Reply';
-import {scrollElementToCenter} from 'helpers/domHelpers';
-import Button from 'components/Button';
+import React, {Component, PropTypes} from 'react'
+import Reply from './Reply'
+import {scrollElementToCenter} from 'helpers/domHelpers'
+import Button from 'components/Button'
 
 export default class Replies extends Component {
+  static propTypes = {
+    replies: PropTypes.array,
+    comment: PropTypes.object,
+    userId: PropTypes.number,
+    onEditDone: PropTypes.func,
+    onLikeClick: PropTypes.func,
+    onDelete: PropTypes.func,
+    onReplySubmit: PropTypes.func,
+    commentId: PropTypes.number,
+    videoId: PropTypes.number,
+    onLoadMoreReplies: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -16,19 +29,12 @@ export default class Replies extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const length = this.props.replies.length;
-    const lastReply = this.props.replies[length - 1] || [];
-    const newlyAdded = lastReply ? lastReply.newlyAdded : false;
-    const addedFromPanel = lastReply.addedFromPanel;
-    const replyToReply = lastReply ? !!lastReply.targetUserId : false;
-    const {deleteListenerToggle, deletedFirstReply} = this.state;
-    if (length > prevProps.replies.length && newlyAdded && replyToReply && !addedFromPanel) {
-      scrollElementToCenter(this.refs[lastReply.id])
-    }
+    const length = this.props.replies.length
+    const {deleteListenerToggle, deletedFirstReply} = this.state
     if (length < prevProps.replies.length) {
       if (length === 0) {
-        if (deletedFirstReply) return scrollElementToCenter(this.Replies);
-        return;
+        if (deletedFirstReply) return scrollElementToCenter(this.Replies)
+        return
       }
       this.setState({deleteListenerToggle: !deleteListenerToggle})
     }
@@ -37,13 +43,13 @@ export default class Replies extends Component {
   render() {
     const {
       comment, replies, userId, onEditDone, onLikeClick, onDelete, onReplySubmit, commentId, videoId
-    } = this.props;
-    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state;
+    } = this.props
+    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
     return (
       <div
         className="media container-fluid"
         style={{paddingLeft: '0px', paddingRight: '0px'}}
-        ref={ref => {this.Replies = ref}}
+        ref={ref => { this.Replies = ref }}
       >
         {comment.loadMoreReplies &&
           <Button
@@ -87,12 +93,12 @@ export default class Replies extends Component {
     this.setState({
       lastDeletedCommentIndex: index,
       deletedFirstReply: isFirstReply
-    });
+    })
   }
 
   loadMoreReplies() {
-    const {comment, replies, onLoadMoreReplies} = this.props;
-    const lastReplyId = !!replies[0] ? replies[0].id : '0';
+    const {comment, replies, onLoadMoreReplies} = this.props
+    const lastReplyId = replies[0] ? replies[0].id : '0'
     onLoadMoreReplies(lastReplyId, comment.id, 'default')
   }
 }

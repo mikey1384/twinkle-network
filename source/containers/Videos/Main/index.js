@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal';
-import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal';
-import ButtonGroup from 'components/ButtonGroup';
-import AddVideoModal from './Modals/AddVideoModal';
-import AllVideosPanel from './Panels/AllVideosPanel';
-import PlaylistsPanel from './Panels/PlaylistsPanel';
-import AddPlaylistModal from './Modals/AddPlaylistModal';
-import {openAddVideoModal, closeAddVideoModal, getInitialVideos} from 'redux/actions/VideoActions';
+import React, {Component, PropTypes} from 'react'
+import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal'
+import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal'
+import ButtonGroup from 'components/ButtonGroup'
+import AddVideoModal from './Modals/AddVideoModal'
+import AllVideosPanel from './Panels/AllVideosPanel'
+import PlaylistsPanel from './Panels/PlaylistsPanel'
+import AddPlaylistModal from './Modals/AddPlaylistModal'
+import {openAddVideoModal, closeAddVideoModal, getInitialVideos} from 'redux/actions/VideoActions'
 import {
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModalAsync,
@@ -15,10 +15,9 @@ import {
   closeSelectPlaylistsToPinModal,
   getPinnedPlaylistsAsync,
   getPlaylistsAsync
-} from 'redux/actions/PlaylistActions';
-import ExecutionEnvironment from 'exenv';
-import {connect} from 'react-redux';
-
+} from 'redux/actions/PlaylistActions'
+import ExecutionEnvironment from 'exenv'
+import {connect} from 'react-redux'
 
 @connect(
   state => ({
@@ -62,13 +61,45 @@ import {connect} from 'react-redux';
 )
 
 export default class Main extends Component {
+  static propTypes = {
+    getInitialVideos: PropTypes.func,
+    getPlaylists: PropTypes.func,
+    getPinnedPlaylists: PropTypes.func,
+    location: PropTypes.object,
+    videosLoaded: PropTypes.bool,
+    userType: PropTypes.string,
+    isAdmin: PropTypes.bool,
+    userId: PropTypes.number,
+    videos: PropTypes.array,
+    loadMoreVideosButton: PropTypes.bool,
+    playlists: PropTypes.array,
+    playlistsLoaded: PropTypes.bool,
+    loadMorePlaylistsButton: PropTypes.bool,
+    pinnedPlaylists: PropTypes.array,
+    pinnedPlaylistsLoaded: PropTypes.bool,
+    loadMorePinnedPlaylists: PropTypes.bool,
+    addVideoModalShown: PropTypes.bool,
+    addPlaylistModalShown: PropTypes.bool,
+    selectPlaylistsToPinModalShown: PropTypes.bool,
+    playlistsToPin: PropTypes.array,
+    loadMorePlaylistsToPinButton: PropTypes.bool,
+    reorderPinnedPlaylistsModalShown: PropTypes.func,
+    openSelectPlaylistsToPinModal: PropTypes.func,
+    openReorderPinnedPlaylistsModal: PropTypes.func,
+    openAddVideoModal: PropTypes.func,
+    closeAddVideoModal: PropTypes.func,
+    closeSelectPlaylistsToPinModal: PropTypes.func,
+    closeReorderPinnedPlaylistsModal: PropTypes.func,
+    getVideosForModal: PropTypes.func
+  }
+
   constructor() {
     super()
     this.showAddPlaylistModal = this.showAddPlaylistModal.bind(this)
   }
 
   componentDidMount() {
-    const {getInitialVideos, getPlaylists, getPinnedPlaylists, location, videosLoaded} = this.props;
+    const {getInitialVideos, getPlaylists, getPinnedPlaylists, location, videosLoaded} = this.props
     if (ExecutionEnvironment.canUseDOM && (location.action === 'PUSH' || !videosLoaded)) {
       getInitialVideos()
       getPinnedPlaylists()
@@ -109,7 +140,7 @@ export default class Main extends Component {
       closeAddVideoModal,
       closeSelectPlaylistsToPinModal,
       closeReorderPinnedPlaylistsModal
-    } = this.props;
+    } = this.props
 
     const allPlaylistButtons = [
       {
@@ -134,7 +165,7 @@ export default class Main extends Component {
       <div>
         {(pinnedPlaylists.length > 0 || userType === 'master') &&
           <PlaylistsPanel
-            key={"pinnedPlaylists"}
+            key={'pinnedPlaylists'}
             buttonGroupShown={userType === 'master'}
             buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
             title="Featured Playlists"
@@ -145,7 +176,7 @@ export default class Main extends Component {
           />
         }
         <PlaylistsPanel
-          key={"allplaylists"}
+          key={'allplaylists'}
           buttonGroupShown={isAdmin}
           buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
           title="All Playlists"
@@ -155,7 +186,7 @@ export default class Main extends Component {
           loaded={playlistsLoaded}
         />
         <AllVideosPanel
-          key={"allvideos"}
+          key={'allvideos'}
           isAdmin={isAdmin}
           title="All Videos"
           loadMoreButton={loadMoreVideosButton}
@@ -208,7 +239,7 @@ export default class Main extends Component {
   }
 
   showAddPlaylistModal() {
-    const {getVideosForModal} = this.props;
-    getVideosForModal();
+    const {getVideosForModal} = this.props
+    getVideosForModal()
   }
 }

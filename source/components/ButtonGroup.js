@@ -1,6 +1,10 @@
-import React from 'react';
-import Button from 'components/Button';
+import React, {PropTypes} from 'react'
+import Button from 'components/Button'
 
+ButtonGroup.propTypes = {
+  buttons: PropTypes.array,
+  style: PropTypes.object
+}
 export default function ButtonGroup({buttons, style}) {
   return (
     <div

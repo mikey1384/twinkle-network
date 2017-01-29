@@ -1,17 +1,15 @@
-import React, {Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
-import SmallDropdownButton from './SmallDropdownButton';
-import EditTitleForm from './EditTitleForm';
-import ConfirmModal from './Modals/ConfirmModal';
+import React, {Component, PropTypes} from 'react'
+import SmallDropdownButton from './SmallDropdownButton'
+import EditTitleForm from './EditTitleForm'
+import ConfirmModal from './Modals/ConfirmModal'
 import {
   loadVideoPageFromClientSideAsync,
   editVideoTitleAsync,
   deleteVideoAsync
-} from 'redux/actions/VideoActions';
-import {connect} from 'react-redux';
-import UsernameText from './UsernameText';
-import {cleanString} from 'helpers/stringHelpers';
-
+} from 'redux/actions/VideoActions'
+import {connect} from 'react-redux'
+import UsernameText from './UsernameText'
+import {cleanString} from 'helpers/stringHelpers'
 
 @connect(
   null,
@@ -30,7 +28,10 @@ export default class VideoThumb extends Component {
     editable: PropTypes.bool,
     arrayIndex: PropTypes.number,
     clickSafe: PropTypes.bool,
-    lastVideoId: PropTypes.number
+    lastVideoId: PropTypes.number,
+    loadVideoPage: PropTypes.func,
+    editVideoTitle: PropTypes.func,
+    deleteVideo: PropTypes.func
   }
 
   constructor() {
@@ -51,8 +52,8 @@ export default class VideoThumb extends Component {
   }
 
   render() {
-    const {onEdit, confirmModalShown, onTitleHover} = this.state;
-    const {size, editable, video, to, user} = this.props;
+    const {onEdit, confirmModalShown, onTitleHover} = this.state
+    const {size, editable, video, to, user} = this.props
     const menuProps = [
       {
         label: 'Edit',
@@ -131,11 +132,11 @@ export default class VideoThumb extends Component {
               :
               <div>
                 <h5
-                  ref="thumbLabel"
+                  ref={ref => { this.thumbLabel = ref }}
                   style={{
                     whiteSpace: 'nowrap',
-                    textOverflow:'ellipsis',
-                    overflow:'hidden',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
                     lineHeight: 'normal'
                   }}
                 >
@@ -163,8 +164,8 @@ export default class VideoThumb extends Component {
             }
             <small style={{
               whiteSpace: 'nowrap',
-              textOverflow:'ellipsis',
-              overflow:'hidden'
+              textOverflow: 'ellipsis',
+              overflow: 'hidden'
             }}>Added by <UsernameText user={user} /></small>
             {video.numLikes > 0 &&
               <small className="pull-right">
@@ -185,10 +186,10 @@ export default class VideoThumb extends Component {
   }
 
   onLinkClick(e) {
-    e.preventDefault();
-    const {video, to, clickSafe} = this.props;
+    e.preventDefault()
+    const {video, to, clickSafe} = this.props
     if (!clickSafe) {
-      this.props.loadVideoPage(video.id, to);
+      this.props.loadVideoPage(video.id, to)
     }
   }
 
@@ -197,40 +198,40 @@ export default class VideoThumb extends Component {
   }
 
   onEditedTitleSubmit(title) {
-    const {video, editVideoTitle} = this.props;
-    const videoId = video.id;
+    const {video, editVideoTitle} = this.props
+    const videoId = video.id
     if (title && title !== video.title) {
-      editVideoTitle({title, videoId}, this);
+      editVideoTitle({title, videoId}, this)
     } else {
       this.setState({onEdit: false})
     }
   }
 
   onEditTitleCancel() {
-    this.setState({onEdit: false});
+    this.setState({onEdit: false})
   }
 
   onDeleteClick() {
-    this.setState({confirmModalShown: true});
+    this.setState({confirmModalShown: true})
   }
 
   onDeleteConfirm() {
-    const {deleteVideo, video, arrayIndex, lastVideoId} = this.props;
-    const videoId = video.id;
-    deleteVideo({videoId, arrayIndex, lastVideoId});
+    const {deleteVideo, video, arrayIndex, lastVideoId} = this.props
+    const videoId = video.id
+    deleteVideo({videoId, arrayIndex, lastVideoId})
   }
 
   onHideModal() {
-    this.setState({confirmModalShown: false});
+    this.setState({confirmModalShown: false})
   }
 
   onMouseOver() {
-    if (textIsOverflown(ReactDOM.findDOMNode(this.refs.thumbLabel))) {
+    if (textIsOverflown(this.thumbLabel)) {
       this.setState({onTitleHover: true})
     }
 
     function textIsOverflown(element) {
-      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
     }
   }
 }

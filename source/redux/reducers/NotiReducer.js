@@ -16,13 +16,13 @@ const defaultState = {
       id: 3
     }
   ]
-};
+}
 
 export default function NotiReducer(state = defaultState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'FETCH_NOTIFICATIONS':
-      return state;
+      return state
     default:
-      return state;
+      return state
   }
 }

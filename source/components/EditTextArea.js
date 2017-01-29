@@ -1,9 +1,17 @@
-import React, {Component} from 'react';
-import Button from 'components/Button';
-import Textarea from 'react-textarea-autosize';
-import {stringIsEmpty} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import Button from 'components/Button'
+import Textarea from 'react-textarea-autosize'
+import {stringIsEmpty} from 'helpers/stringHelpers'
 
 export default class EditTextArea extends Component {
+  static propTypes = {
+    text: PropTypes.string,
+    autoFocus: PropTypes.bool,
+    placeholder: PropTypes.string,
+    onCancel: PropTypes.func,
+    onEditDone: PropTypes.func
+  }
+
   constructor(props) {
     super()
     this.state = {
@@ -14,8 +22,8 @@ export default class EditTextArea extends Component {
   }
 
   render() {
-    const {editedText} = this.state;
-    const {autoFocus = false, placeholder = "Enter text"} = this.props;
+    const {editedText} = this.state
+    const {autoFocus = false, placeholder = 'Enter text'} = this.props
     return (
       <div>
         <Textarea
@@ -60,7 +68,7 @@ export default class EditTextArea extends Component {
   }
 
   onSubmit() {
-    const {editedText} = this.state;
-    this.props.onEditDone(editedText);
+    const {editedText} = this.state
+    this.props.onEditDone(editedText)
   }
 }

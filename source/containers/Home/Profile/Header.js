@@ -1,20 +1,27 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import ProfilePic from 'components/ProfilePic';
-import Button from 'components/Button';
-import ImageEditModal from './Modals/ImageEditModal';
-import BioEditModal from './Modals/BioEditModal';
-import {uploadProfilePic, uploadBio} from 'redux/actions/UserActions';
-import AlertModal from 'components/Modals/AlertModal';
-import {connect} from 'react-redux';
-import {cleanStringWithURL} from 'helpers/stringHelpers';
+/* global FileReader */
 
+import React, {Component, PropTypes} from 'react'
+import ProfilePic from 'components/ProfilePic'
+import Button from 'components/Button'
+import ImageEditModal from './Modals/ImageEditModal'
+import BioEditModal from './Modals/BioEditModal'
+import {uploadProfilePic, uploadBio} from 'redux/actions/UserActions'
+import AlertModal from 'components/Modals/AlertModal'
+import {connect} from 'react-redux'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
 
 @connect(
   null,
   {uploadProfilePic, uploadBio}
 )
 export default class Header extends Component {
+  static propTypes = {
+    profilePage: PropTypes.object,
+    userId: PropTypes.number,
+    uploadBio: PropTypes.func,
+    uploadProfilePic: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -31,9 +38,9 @@ export default class Header extends Component {
   }
 
   render() {
-    const {imageUri, imageEditModalShown, bioEditModalShown, alertModalShown, processing} = this.state;
-    const {profilePage, userId} = this.props;
-    const {profileFirstRow, profileSecondRow, profileThirdRow} = profilePage;
+    const {imageUri, imageEditModalShown, bioEditModalShown, alertModalShown, processing} = this.state
+    const {profilePage, userId} = this.props
+    const {profileFirstRow, profileSecondRow, profileThirdRow} = profilePage
     return (
       <div
         className="panel panel-default"
@@ -53,7 +60,7 @@ export default class Header extends Component {
               <h2 className="media-heading">
                 {profilePage.username} <small>{`(${profilePage.realName})`}</small>
               </h2>
-              {(!!profileFirstRow || !!profileSecondRow || !! profileThirdRow) &&
+              {(!!profileFirstRow || !!profileSecondRow || !!profileThirdRow) &&
                 <ul
                   className="col-md-8"
                   style={{
@@ -95,7 +102,7 @@ export default class Header extends Component {
               </div>
             </div>
             <input
-              ref={ref => this.fileInput = ref}
+              ref={ref => { this.fileInput = ref }}
               style={{display: 'none'}}
               type="file"
               onChange={this.handlePicture}
@@ -142,27 +149,27 @@ export default class Header extends Component {
   }
 
   onChangeProfilePictureClick() {
-    ReactDOM.findDOMNode(this.fileInput).click()
+    this.fileInput.click()
   }
 
   handlePicture(event) {
-    const reader = new FileReader();
-    const maxSize = 5000;
-    const file = event.target.files[0];
+    const reader = new FileReader()
+    const maxSize = 5000
+    const file = event.target.files[0]
     if (file.size/1000 > maxSize) return this.setState({alertModalShown: true})
     reader.onload = (upload) => {
       this.setState({
         imageEditModalShown: true,
         imageUri: upload.target.result
-      });
-    };
+      })
+    }
 
-    reader.readAsDataURL(file);
-    event.target.value = null;
+    reader.readAsDataURL(file)
+    event.target.value = null
   }
 
   uploadBio(params) {
-    const {uploadBio} = this.props;
+    const {uploadBio} = this.props
     uploadBio(params, () => {
       this.setState({
         bioEditModalShown: false
@@ -171,18 +178,18 @@ export default class Header extends Component {
   }
 
   uploadImage(image) {
-    const {uploadProfilePic} = this.props;
+    const {uploadProfilePic} = this.props
 
     this.setState({
       processing: true
-    });
+    })
 
     uploadProfilePic(image, () => {
       this.setState({
         imageUri: null,
         processing: false,
         imageEditModalShown: false
-      });
+      })
     })
   }
 }

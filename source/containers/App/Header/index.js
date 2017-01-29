@@ -1,27 +1,27 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {Link} from 'react-router';
-import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions';
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {Link} from 'react-router'
+import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions'
 import {
   getNumberOfUnreadMessagesAsync,
   increaseNumberOfUnreadMessages,
   turnChatOff
-} from 'redux/actions/ChatActions';
-import {fetchFeedsAsync} from 'redux/actions/FeedActions';
-import {getInitialVideos} from 'redux/actions/VideoActions';
+} from 'redux/actions/ChatActions'
+import {fetchFeedsAsync} from 'redux/actions/FeedActions'
+import {getInitialVideos} from 'redux/actions/VideoActions'
 import {
   getPlaylistsAsync,
   getPinnedPlaylistsAsync
-} from 'redux/actions/PlaylistActions';
-import SigninModal from 'containers/Signin';
-import AccountMenu from './AccountMenu';
-import ChatButton from './ChatButton';
-//import NotificationsButton from './NotificationsButton';
-import {Navbar, Nav, NavItem} from 'react-bootstrap';
-import {GENERAL_CHAT_ID} from 'constants/database';
-import SearchBox from './SearchBox';
-import HeaderNav from './HeaderNav';
-import {Color} from 'constants/css';
+} from 'redux/actions/PlaylistActions'
+import SigninModal from 'containers/Signin'
+import AccountMenu from './AccountMenu'
+import ChatButton from './ChatButton'
+// import NotificationsButton from './NotificationsButton'
+import {Navbar, Nav, NavItem} from 'react-bootstrap'
+import {GENERAL_CHAT_ID} from 'constants/database'
+import SearchBox from './SearchBox'
+import HeaderNav from './HeaderNav'
+import {Color} from 'constants/css'
 
 @connect(
   state => ({
@@ -44,16 +44,39 @@ import {Color} from 'constants/css';
     fetchFeeds: fetchFeedsAsync,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
-    getInitialVideos,
-    //fetchNotifications: fetchNotificationsAsync
+    getInitialVideos
+    // fetchNotifications: fetchNotificationsAsync
   }
 )
 export default class Header extends Component {
+  static propTypes = {
+    location: PropTypes.string,
+    socket: PropTypes.object,
+    turnChatOff: PropTypes.func,
+    increaseNumberOfUnreadMessages: PropTypes.func,
+    userId: PropTypes.number,
+    username: PropTypes.string,
+    getNumberOfUnreadMessages: PropTypes.func,
+    chatMode: PropTypes.bool,
+    onProfilePage: PropTypes.bool,
+    signinModalShown: PropTypes.bool,
+    loggedIn: PropTypes.bool,
+    logout: PropTypes.func,
+    openSigninModal: PropTypes.func,
+    closeSigninModal: PropTypes.func,
+    onChatButtonClick: PropTypes.func,
+    numChatUnreads: PropTypes.number,
+    fetchFeeds: PropTypes.func,
+    getInitialVideos: PropTypes.func,
+    getPinnedPlaylists: PropTypes.func,
+    getPlaylists: PropTypes.func
+  }
+
   constructor(props) {
     super()
     this.state = {
       notificationsMenuShown: false,
-      selectedTab: props.location ? props.location : 'home',
+      selectedTab: props.location || 'home',
       logoBlue: Color.logoBlue,
       logoGreen: Color.logoGreen
     }
@@ -62,14 +85,14 @@ export default class Header extends Component {
   }
 
   componentDidMount() {
-    const {socket, turnChatOff, increaseNumberOfUnreadMessages} = this.props;
+    const {socket, turnChatOff, increaseNumberOfUnreadMessages} = this.props
     socket.on('connect', () => {
       if (this.props.userId) {
-        socket.emit('bind_uid_to_socket', this.props.userId, this.props.username);
+        socket.emit('bind_uid_to_socket', this.props.userId, this.props.username)
       }
     })
     socket.on('receive_notification', data => {
-      console.log(data);
+      console.log(data)
     })
     socket.on('receive_message', data => {
       if (data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
@@ -77,8 +100,8 @@ export default class Header extends Component {
       }
     })
     socket.on('chat_invitation', data => {
-      socket.emit('join_chat_channel', data.channelId);
-      increaseNumberOfUnreadMessages();
+      socket.emit('join_chat_channel', data.channelId)
+      increaseNumberOfUnreadMessages()
     })
     socket.on('disconnect', () => {
       turnChatOff()
@@ -86,17 +109,17 @@ export default class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {getNumberOfUnreadMessages, socket} = this.props;
+    const {getNumberOfUnreadMessages, socket} = this.props
     if (nextProps.userId && !this.props.userId) {
-      socket.connect();
-      socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username);
+      socket.connect()
+      socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username)
     }
     if (!nextProps.userId && this.props.userId) {
-      socket.disconnect();
+      socket.disconnect()
     }
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
-      getNumberOfUnreadMessages();
-      //fetchNotifications();
+      getNumberOfUnreadMessages()
+      // fetchNotifications()
     }
     if (nextProps.userId && nextProps.chatMode !== this.props.chatMode && nextProps.chatMode === false) {
       getNumberOfUnreadMessages()
@@ -104,16 +127,16 @@ export default class Header extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {socket, userId, location, onProfilePage, chatMode} = this.props;
+    const {socket, userId, location, onProfilePage, chatMode} = this.props
 
     if (userId !== prevProps.userId) {
-      if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId);
-      socket.emit('enter_my_notification_channel', userId);
+      if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId)
+      socket.emit('enter_my_notification_channel', userId)
     }
 
     if (prevProps.location !== location) {
       this.setState({
-        selectedTab: location ? location : 'home',
+        selectedTab: location || 'home',
         logoBlue: `#${this.getLogoColor()}`,
         logoGreen: `#${this.getLogoColor()}`
       })
@@ -142,9 +165,9 @@ export default class Header extends Component {
       getInitialVideos,
       getPinnedPlaylists,
       getPlaylists
-    } = this.props;
+    } = this.props
 
-    const {selectedTab, logoBlue, logoGreen} = this.state;
+    const {selectedTab, logoBlue, logoGreen} = this.state
     return (
       <Navbar fluid fixedTop={!chatMode}>
         <Navbar.Header>
@@ -162,8 +185,8 @@ export default class Header extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          {!chatMode && [
-              <Nav key="navItems">
+          {!chatMode &&
+            [<Nav key="navItems">
                 <HeaderNav
                   to="/"
                   selected={selectedTab === 'home'}
@@ -182,12 +205,14 @@ export default class Header extends Component {
                 >
                   Videos
                 </HeaderNav>
-                {false && <HeaderNav
-                  to="/links"
-                  selected={selectedTab === 'links'}
-                >
-                  Links
-                </HeaderNav>}
+                {false &&
+                   <HeaderNav
+                    to="/links"
+                    selected={selectedTab === 'links'}
+                  >
+                    Links
+                  </HeaderNav>
+                }
               </Nav>,
               <SearchBox className="col-xs-6" style={{marginTop: '6px'}} key="searchBox" />
             ]
@@ -200,14 +225,6 @@ export default class Header extends Component {
                 chatMode={chatMode}
                 numUnreads={numChatUnreads}
               />
-              /*,
-              <NotificationsButton
-                onHideMenu={() => this.setState({notificationsMenuShown: false})}
-                onClick={() => this.setState({notificationsMenuShown: !notificationsMenuShown})}
-                menuShown={notificationsMenuShown}
-                notifications={notifications}
-                key={2}
-              />*/
             ]}
             {loggedIn ?
               <AccountMenu
@@ -229,15 +246,15 @@ export default class Header extends Component {
   getLogoColor() {
     return (
       function factory(string, c) {
-        return string[Math.floor(Math.random() * string.length)] + (c && factory(string, c - 1));
+        return string[Math.floor(Math.random() * string.length)] + (c && factory(string, c - 1))
       }
-    )('789ABCDEF', 4);
+    )('789ABCDEF', 4)
   }
 
   onLogoClick() {
     this.setState({selectedTab: 'home'})
     if (this.props.chatMode) {
-      this.props.turnChatOff();
+      this.props.turnChatOff()
     }
   }
 }

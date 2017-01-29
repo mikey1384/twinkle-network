@@ -1,21 +1,29 @@
-import React, {Component} from 'react';
-import Textarea from 'react-textarea-autosize';
-import Button from 'components/Button';
-import {stringIsEmpty} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import Textarea from 'react-textarea-autosize'
+import Button from 'components/Button'
+import {stringIsEmpty} from 'helpers/stringHelpers'
 
 export default class TitleDescriptionForm extends Component {
+  static propTypes = {
+    autoFocus: PropTypes.bool,
+    rows: PropTypes.number,
+    titlePlaceholder: PropTypes.string,
+    descriptionPlaceholder: PropTypes.string,
+    onSubmit: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
       title: '',
       description: ''
     }
-    this.onSubmit = this.onSubmit.bind(this);
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   render() {
-    const {autoFocus, rows, titlePlaceholder, descriptionPlaceholder} = this.props;
-    const {title, description} = this.state;
+    const {autoFocus, rows, titlePlaceholder, descriptionPlaceholder} = this.props
+    const {title, description} = this.state
     return (
       <form onSubmit={this.onSubmit}>
         <fieldset className="form-group">
@@ -49,9 +57,9 @@ export default class TitleDescriptionForm extends Component {
   }
 
   onSubmit(event) {
-    const {onSubmit} = this.props;
-    const {title, description} = this.state;
-    event.preventDefault();
+    const {onSubmit} = this.props
+    const {title, description} = this.state
+    event.preventDefault()
     onSubmit(title, description)
     this.setState({
       title: '',

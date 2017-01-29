@@ -1,9 +1,9 @@
-import React, {Component, PropTypes} from 'react';
-import {Modal} from 'react-bootstrap';
-import Button from 'components/Button';
-import CheckListGroup from 'components/CheckListGroup';
-import {loadMorePlaylistListAsync, changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions';
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import Button from 'components/Button'
+import CheckListGroup from 'components/CheckListGroup'
+import {loadMorePlaylistListAsync, changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions'
+import {connect} from 'react-redux'
 
 @connect(
   null,
@@ -18,7 +18,9 @@ export default class SelectPlaylistsToPinModal extends Component {
     pinnedPlaylists: PropTypes.array,
     selectedPlaylists: PropTypes.array,
     loadMoreButton: PropTypes.bool,
-    onHide: PropTypes.func
+    onHide: PropTypes.func,
+    loadMorePlaylist: PropTypes.func,
+    changePinnedPlaylists: PropTypes.func
   }
 
   constructor(props) {
@@ -33,9 +35,9 @@ export default class SelectPlaylistsToPinModal extends Component {
   }
 
   render() {
-    const {selectedPlaylists, selectTabActive} = this.state;
-    const {loadMoreButton, playlistsToPin, pinnedPlaylists} = this.props;
-    const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
+    const {selectedPlaylists, selectTabActive} = this.state
+    const {loadMoreButton, playlistsToPin, pinnedPlaylists} = this.props
+    const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id
     return (
       <Modal
         show
@@ -48,16 +50,16 @@ export default class SelectPlaylistsToPinModal extends Component {
         <Modal.Body>
           <ul className="nav nav-tabs nav-justified">
             <li
-              className={selectTabActive ? "active" : ""}
+              className={selectTabActive ? 'active' : ''}
               onClick={() => this.setState({selectTabActive: true})}
-              style={{cursor:"pointer"}}
+              style={{cursor: 'pointer'}}
             >
               <a>Select</a>
             </li>
             <li
-              className={selectTabActive ? "" : "active"}
+              className={selectTabActive ? '' : 'active'}
               onClick={() => this.setState({selectTabActive: false})}
-              style={{cursor:"pointer"}}
+              style={{cursor: 'pointer'}}
             >
               <a>Selected</a>
             </li>
@@ -103,10 +105,10 @@ export default class SelectPlaylistsToPinModal extends Component {
                 onSelect={this.onDeselect}
                 listItems={
                   selectedPlaylists.reduce((result, playlistId) => {
-                    let label = '';
+                    let label = ''
                     for (let i = 0; i < pinnedPlaylists.length; i++) {
-                      if(pinnedPlaylists[i].id === playlistId) {
-                        label = pinnedPlaylists[i].title;
+                      if (pinnedPlaylists[i].id === playlistId) {
+                        label = pinnedPlaylists[i].title
                         return result.concat([{
                           label,
                           checked: true
@@ -114,15 +116,15 @@ export default class SelectPlaylistsToPinModal extends Component {
                       }
                     }
                     for (let i = 0; i < playlistsToPin.length; i++) {
-                      if(playlistsToPin[i].id === playlistId) {
-                        label = playlistsToPin[i].title;
+                      if (playlistsToPin[i].id === playlistId) {
+                        label = playlistsToPin[i].title
                         return result.concat([{
                           label,
                           checked: true
                         }])
                       }
                     }
-                    return result;
+                    return result
                   }, [])
                 }
               />
@@ -154,33 +156,32 @@ export default class SelectPlaylistsToPinModal extends Component {
   }
 
   loadMorePlaylists(lastPlaylistId) {
-    this.props.loadMorePlaylist(lastPlaylistId);
+    this.props.loadMorePlaylist(lastPlaylistId)
   }
 
   onSelect(index) {
-    let playlistId = this.props.playlistsToPin[index].id;
-    let newSelectedPlaylists;
+    let playlistId = this.props.playlistsToPin[index].id
+    let newSelectedPlaylists
     if (this.state.selectedPlaylists.indexOf(playlistId) === -1) {
-      newSelectedPlaylists = [playlistId].concat(this.state.selectedPlaylists);
-    }
-    else {
+      newSelectedPlaylists = [playlistId].concat(this.state.selectedPlaylists)
+    } else {
       newSelectedPlaylists = this.state.selectedPlaylists.filter(id => {
-        return id !== playlistId;
+        return id !== playlistId
       })
     }
-    this.setState({selectedPlaylists: newSelectedPlaylists});
+    this.setState({selectedPlaylists: newSelectedPlaylists})
   }
 
   onDeselect(index) {
-    const {selectedPlaylists} = this.state;
-    let playlistIndex = 0;
+    const {selectedPlaylists} = this.state
+    let playlistIndex = 0
     const newSelectedPlaylists = selectedPlaylists.filter(playlist => {
-      return playlistIndex++ !== index;
+      return playlistIndex++ !== index
     })
-    this.setState({selectedPlaylists: newSelectedPlaylists});
+    this.setState({selectedPlaylists: newSelectedPlaylists})
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylists(this.state.selectedPlaylists, () => this.props.onHide());
+    this.props.changePinnedPlaylists(this.state.selectedPlaylists, () => this.props.onHide())
   }
 }

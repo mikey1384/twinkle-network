@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
-import InputArea from 'components/InputArea';
-import TitleDescriptionForm from 'components/TitleDescriptionForm';
-import Button from 'components/Button';
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from 'react'
+import InputArea from 'components/InputArea'
+import TitleDescriptionForm from 'components/TitleDescriptionForm'
+import Button from 'components/Button'
+import {connect} from 'react-redux'
 import {
   uploadVideoCommentAsync,
   uploadVideoDebate,
   loadMoreDebates
-} from 'redux/actions/VideoActions';
-import DebatePanel from './DebatePanel';
+} from 'redux/actions/VideoActions'
+import DebatePanel from './DebatePanel'
 
 @connect(
   null,
@@ -19,6 +19,15 @@ import DebatePanel from './DebatePanel';
   }
 )
 export default class CommentInputArea extends Component {
+  static propTypes = {
+    videoId: PropTypes.number,
+    uploadComment: PropTypes.func,
+    uploadDebate: PropTypes.func,
+    loadMoreDebatesButton: PropTypes.bool,
+    debates: PropTypes.array,
+    loadMoreDebates: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.state = {
@@ -29,8 +38,8 @@ export default class CommentInputArea extends Component {
   render() {
     const {
       videoId, uploadComment, uploadDebate, loadMoreDebatesButton, debates, loadMoreDebates
-    } = this.props;
-    const {debateTabActive, debateFormShown} = this.state;
+    } = this.props
+    const {debateTabActive, debateFormShown} = this.state
     return (
       <div className="page-header">
         <div className="row container-fluid">

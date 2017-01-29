@@ -1,15 +1,14 @@
-import React, {Component, PropTypes} from 'react';
-import Header from './Header';
-import Chat from '../Chat';
-import io from 'socket.io-client';
-import {connect} from 'react-redux';
-import {initChatAsync, resetChat, turnChatOff} from 'redux/actions/ChatActions';
-import {initSessionAsync} from 'redux/actions/UserActions';
-import {URL} from 'constants/URL';
-import {addEvent, removeEvent} from 'helpers/listenerHelpers';
+import React, {Component, PropTypes} from 'react'
+import Header from './Header'
+import Chat from '../Chat'
+import io from 'socket.io-client'
+import {connect} from 'react-redux'
+import {initChatAsync, resetChat, turnChatOff} from 'redux/actions/ChatActions'
+import {initSessionAsync} from 'redux/actions/UserActions'
+import {URL} from 'constants/URL'
+import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 
-
-const socket = io.connect(URL);
+const socket = io.connect(URL)
 
 @connect(
   state => ({
@@ -26,7 +25,16 @@ const socket = io.connect(URL);
 )
 export default class App extends Component {
   static propTypes = {
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
+    chatMode: PropTypes.bool,
+    initSession: PropTypes.func,
+    turnChatOff: PropTypes.func,
+    chatNumUnreads: PropTypes.number,
+    resetChat: PropTypes.func,
+    location: PropTypes.object,
+    params: PropTypes.object,
+    loggedIn: PropTypes.bool,
+    initChat: PropTypes.func
   }
 
   constructor() {
@@ -43,53 +51,57 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    const {initSession} = this.props;
-    initSession();
-    addEvent(window, 'scroll', this.onScroll);
+    const {initSession} = this.props
+    initSession()
+    addEvent(window, 'scroll', this.onScroll)
   }
 
   componentDidUpdate(prevProps) {
-    const {turnChatOff} = this.props;
-    let elements = document.documentElement.childNodes;
+    const {turnChatOff} = this.props
+    let elements = document.documentElement.childNodes
     if (this.props.children !== prevProps.children) turnChatOff()
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
-      const {chatMode, chatNumUnreads} = this.props;
-      let title = '', display = '';
-      if (!!chatMode) {
-        title = "Twinkle Chat";
-        display = 'none';
+      const {chatMode, chatNumUnreads} = this.props
+      let title = ''
+      let display = ''
+      if (chatMode) {
+        title = 'Twinkle Chat'
+        display = 'none'
       } else {
-        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
-        display = 'inline';
+        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
+        display = 'inline'
       }
-      document.title = title;
-      for (let i = 0; i < elements.length; i++)
-        if (elements[i].tagName === "GRAMMARLY-CARD") elements[i].style.display = display;
+      document.title = title
+      for (let i = 0; i < elements.length; i++) {
+        if (elements[i].tagName === 'GRAMMARLY-CARD') elements[i].style.display = display
+      }
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
-      const {chatMode, chatNumUnreads} = this.props;
-      let title = '', display = '';
-      if (!!chatMode) {
-        title = "Twinkle Chat";
-        display = 'none';
+      const {chatMode, chatNumUnreads} = this.props
+      let title = ''
+      let display = ''
+      if (chatMode) {
+        title = 'Twinkle Chat'
+        display = 'none'
       } else {
-        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`;
-        display = 'inline';
+        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
+        display = 'inline'
       }
-      document.title = title;
-      for (let i = 0; i < elements.length; i++)
-        if (elements[i].tagName === "GRAMMARLY-CARD") elements[i].style.display = display;
+      document.title = title
+      for (let i = 0; i < elements.length; i++) {
+        if (elements[i].tagName === 'GRAMMARLY-CARD') elements[i].style.display = display
+      }
     }
   }
 
   componentWillUnmount() {
-    removeEvent(window, 'scroll', this.onScroll);
+    removeEvent(window, 'scroll', this.onScroll)
   }
 
   render() {
-    const {chatMode, turnChatOff, resetChat, location, params} = this.props;
-    const {scrollPosition} = this.state;
+    const {chatMode, turnChatOff, resetChat, location, params} = this.props
+    const {scrollPosition} = this.state
     const style = chatMode && this.props.loggedIn ? {
       display: 'none'
     } : {paddingTop: '65px'}
@@ -120,8 +132,8 @@ export default class App extends Component {
             onUnmount={
               () => {
                 window.scrollTo(0, scrollPosition)
-                resetChat();
-                turnChatOff();
+                resetChat()
+                turnChatOff()
               }
             }
           />
@@ -131,13 +143,13 @@ export default class App extends Component {
   }
 
   onChatButtonClick() {
-    const {initChat, chatMode, turnChatOff} = this.props;
-    if (!!chatMode) return turnChatOff()
+    const {initChat, chatMode, turnChatOff} = this.props
+    if (chatMode) return turnChatOff()
     initChat()
   }
 
   onScroll() {
-    const {chatMode} = this.props;
+    const {chatMode} = this.props
     if (!chatMode) {
       this.setState({scrollPosition: window.scrollY})
     }

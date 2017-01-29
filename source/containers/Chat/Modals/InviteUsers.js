@@ -1,9 +1,8 @@
-import React, {Component, PropTypes} from 'react';
-import {Modal, Button} from 'react-bootstrap';
-import TagPeopleForm from 'components/TagPeopleForm';
-import {connect} from 'react-redux';
-import {clearUserSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} from 'redux/actions/ChatActions';
-
+import React, {Component, PropTypes} from 'react'
+import {Modal, Button} from 'react-bootstrap'
+import TagPeopleForm from 'components/TagPeopleForm'
+import {connect} from 'react-redux'
+import {clearUserSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} from 'redux/actions/ChatActions'
 
 @connect(
   state => ({
@@ -19,7 +18,12 @@ export default class InviteUsersModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
     currentChannel: PropTypes.object.isRequired,
-    onDone: PropTypes.func.isRequired
+    onDone: PropTypes.func.isRequired,
+    clearSearchResults: PropTypes.func,
+    searchUserToInvite: PropTypes.func,
+    searchResult: PropTypes.array,
+    style: PropTypes.object,
+    inviteUsersToChannel: PropTypes.func
   }
 
   constructor() {
@@ -33,9 +37,9 @@ export default class InviteUsersModal extends Component {
   }
 
   render() {
-    const {clearSearchResults, searchUserToInvite, searchResult, onHide, style, currentChannel} = this.props;
-    const {selectedUsers} = this.state;
-    const currentMembersUID = currentChannel.members.map(member => member.userId);
+    const {clearSearchResults, searchUserToInvite, searchResult, onHide, style, currentChannel} = this.props
+    const {selectedUsers} = this.state
+    const currentMembersUID = currentChannel.members.map(member => member.userId)
     return (
       <Modal
         show
@@ -71,7 +75,7 @@ export default class InviteUsersModal extends Component {
   }
 
   onAddUser(user) {
-    const {selectedUsers} = this.state;
+    const {selectedUsers} = this.state
     this.setState({
       selectedUsers: selectedUsers.concat([{
         userId: user.id,
@@ -81,15 +85,15 @@ export default class InviteUsersModal extends Component {
   }
 
   onRemoveUser(user) {
-    const {selectedUsers} = this.state;
+    const {selectedUsers} = this.state
     this.setState({
       selectedUsers: selectedUsers.filter(selectedUser => selectedUser.userId !== user.userId)
     })
   }
 
   onDone() {
-    const {inviteUsersToChannel, currentChannel, onDone} = this.props;
-    const {selectedUsers} = this.state;
+    const {inviteUsersToChannel, currentChannel, onDone} = this.props
+    const {selectedUsers} = this.state
     inviteUsersToChannel({selectedUsers, channelId: currentChannel.id}, message => {
       onDone(selectedUsers.map(user => user.userId), message)
     })

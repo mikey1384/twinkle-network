@@ -1,5 +1,5 @@
-var path = require('path');
-var webpack = require('webpack');
+var path = require('path')
+var webpack = require('webpack')
 
 module.exports = {
   entry: './entry/client',
@@ -8,7 +8,7 @@ module.exports = {
     extensions: ['', '.js', '.jsx']
   },
   output: {
-    path: __dirname + '/public',
+    path: path.join(__dirname, 'public'),
     filename: 'bundle.js',
     chunkFilename: '[id].chunk.js',
     publicPath: '/'
@@ -36,4 +36,4 @@ module.exports = {
       }
     })
   ]
-};
+}

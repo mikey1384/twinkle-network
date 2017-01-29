@@ -1,8 +1,8 @@
-import request from 'axios';
-import {auth} from '../constants';
-import {URL} from 'constants/URL';
+import request from 'axios'
+import {auth} from '../constants'
+import {URL} from 'constants/URL'
 
-const API_URL = `${URL}/chat`;
+const API_URL = `${URL}/chat`
 
 export const applyChangedChannelTitle = data => ({
   type: 'APPLY_CHANGED_CHANNEL_TITLE',

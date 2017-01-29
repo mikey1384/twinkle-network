@@ -1,10 +1,11 @@
-import React, {Component, PropTypes} from 'react';
-import {Button, Modal} from 'react-bootstrap';
+import React, {Component, PropTypes} from 'react'
+import {Button, Modal} from 'react-bootstrap'
 
 export default class editTitleModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
-    onDone: PropTypes.func.isRequired
+    onDone: PropTypes.func.isRequired,
+    title: PropTypes.string
   }
 
   constructor(props) {
@@ -15,8 +16,8 @@ export default class editTitleModal extends Component {
   }
 
   render() {
-    const {onHide, onDone} = this.props;
-    const {title} = this.state;
+    const {onHide, onDone} = this.props
+    const {title} = this.state
     return (
       <Modal
         show
@@ -50,7 +51,7 @@ export default class editTitleModal extends Component {
   }
 
   onSubmit(event, title) {
-    event.preventDefault();
-    this.props.onDone(title);
+    event.preventDefault()
+    this.props.onDone(title)
   }
 }

@@ -1,22 +1,22 @@
-const pool = require('../pool');
+const pool = require('../pool')
 
-const {requireAuth} = require('../auth');
+const {requireAuth} = require('../auth')
 const {
   processedString,
   processedTitleString,
   fetchedVideoCodeFromURL,
   stringIsEmpty
-} = require('../helpers/stringHelpers');
-const {returnComments, returnReplies} = require('../helpers/videoHelpers');
+} = require('../helpers/stringHelpers')
+const {returnComments, returnReplies} = require('../helpers/videoHelpers')
 
-const async = require('async');
-const express = require('express');
-const router = express.Router();
+const async = require('async')
+const express = require('express')
+const router = express.Router()
 
 router.get('/', (req, res) => {
-  const videoId = Number(req.query.videoId) || 0;
-  const numberToLoad = Number(req.query.numberToLoad) + 1 || 13;
-  const where = videoId === 0 ? '' : 'WHERE a.id < ? ';
+  const videoId = Number(req.query.videoId) || 0
+  const numberToLoad = Number(req.query.numberToLoad) + 1 || 13
+  const where = videoId === 0 ? '' : 'WHERE a.id < ? '
   const query = [
     'SELECT a.id, a.title, a.description, a.videoCode, a.uploader AS uploaderId, b.username AS uploaderName, ',
     'COUNT(c.id) AS numLikes ',
@@ -25,21 +25,20 @@ router.get('/', (req, res) => {
     where,
     'GROUP BY a.id ',
     'ORDER BY a.id DESC LIMIT ' + numberToLoad
-  ].join('');
+  ].join('')
   pool.query(query, videoId, (err, rows) => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})
     }
-    res.json(rows);
-  });
-});
+    res.json(rows)
+  })
+})
 
 router.post('/', requireAuth, (req, res) => {
-  const user = req.user;
-  const {title, description, url, selectedCategory} = req.body;
-  const rawDescription = !description ? "No description" : req.body.description;
-  const uploaderName = user.username;
+  const user = req.user
+  const {title, description, url, selectedCategory} = req.body
+  const rawDescription = !description ? 'No description' : req.body.description
   const post = {
     title: processedTitleString(title),
     description: processedString(rawDescription),
@@ -51,28 +50,28 @@ router.post('/', requireAuth, (req, res) => {
 
   pool.query('INSERT INTO vq_videos SET ?', post, (err, row) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     let result = Object.assign({}, post, {
       id: row.insertId,
       uploaderId: user.id,
       uploaderName: user.username,
       numLikes: 0
-    });
-    res.json({result});
+    })
+    res.json({result})
   })
-});
+})
 
 router.delete('/', requireAuth, (req, res) => {
-  const user = req.user;
-  const videoId = req.query.videoId != 'undefined' ? Number(req.query.videoId) : 0;
-  const lastVideoId = req.query.lastVideoId != 'undefined' ? Number(req.query.lastVideoId) : 0;
+  const user = req.user
+  const videoId = req.query.videoId !== 'undefined' ? Number(req.query.videoId) : 0
+  const lastVideoId = req.query.lastVideoId !== 'undefined' ? Number(req.query.lastVideoId) : 0
 
   async.parallel([
     (callback) => {
       pool.query('DELETE FROM vq_videos WHERE id = ? AND uploader = ?', [videoId, user.id], (err) => {
-        callback(err);
+        callback(err)
       })
     },
     (callback) => {
@@ -81,56 +80,55 @@ router.delete('/', requireAuth, (req, res) => {
         'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
         'WHERE a.id < ? ',
         'ORDER BY a.id DESC LIMIT 1'
-      ].join('');
+      ].join('')
       pool.query(query, lastVideoId, (err, rows) => {
-        callback(err, rows);
+        callback(err, rows)
       })
     }
   ], (err, results) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
-    res.json({result: results[1]});
-  });
+    res.json({result: results[1]})
+  })
 })
 
 router.post('/edit/title', requireAuth, (req, res) => {
-  const user = req.user;
-  const title = req.body.title;
-  const videoId = req.body.videoId;
-  const newTitle = processedTitleString(title);
-  const post = { title: newTitle };
+  const user = req.user
+  const title = req.body.title
+  const videoId = req.body.videoId
+  const newTitle = processedTitleString(title)
+  const post = { title: newTitle }
 
-  const userId = user.id;
+  const userId = user.id
   pool.query('UPDATE vq_videos SET? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
-    res.send({result: newTitle});
+    res.send({result: newTitle})
   })
 })
 
 router.post('/like', requireAuth, (req, res) => {
-  const user = req.user;
-  const videoId = req.body.videoId;
+  const user = req.user
+  const videoId = req.body.videoId
   async.waterfall([
     (callback) => {
-      const userId = user.id;
+      const userId = user.id
       pool.query('SELECT * FROM vq_video_likes WHERE videoId = ? AND userId = ?', [videoId, userId], (err, rows) => {
-        callback(err, rows, userId);
+        callback(err, rows, userId)
       })
     },
     (rows, userId, callback) => {
       if (rows.length > 0) {
         pool.query('DELETE FROM vq_video_likes WHERE videoId = ? AND userId = ?', [videoId, userId], err => {
-          callback(err);
+          callback(err)
         })
-      }
-      else {
+      } else {
         pool.query('INSERT INTO vq_video_likes SET ?', {videoId, userId}, err => {
-          callback(err);
+          callback(err)
         })
       }
     },
@@ -139,15 +137,15 @@ router.post('/like', requireAuth, (req, res) => {
         'SELECT a.userId, b.username ',
         'FROM vq_video_likes a LEFT JOIN users b ON a.userId = b.id ',
         'WHERE a.videoId = ?'
-      ].join('');
+      ].join('')
       pool.query(query, videoId, (err, rows) => {
         callback(err, rows)
       })
     }
   ], (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.json({error: err});
+      console.error(err)
+      return res.json({error: err})
     }
     let likes = rows.map(row => {
       return {
@@ -156,55 +154,55 @@ router.post('/like', requireAuth, (req, res) => {
       }
     })
     res.json({likes})
-  });
+  })
 })
 
 router.post('/edit/page', requireAuth, (req, res) => {
-  const user = req.user;
-  let videoId = req.body.videoId;
-  let title = req.body.title;
-  let description = req.body.description;
+  const user = req.user
+  let videoId = req.body.videoId
+  let title = req.body.title
+  let description = req.body.description
   if (stringIsEmpty(title)) {
-    return res.status(500).send({error: "Title is empty"});
+    return res.status(500).send({error: 'Title is empty'})
   }
-  if (description === '') description = 'No description';
-  const post = {title, description: processedString(description)};
-  const userId = user.id;
+  if (description === '') description = 'No description'
+  const post = {title, description: processedString(description)}
+  const userId = user.id
   pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({error: err});
+      console.error(err)
+      return res.status(500).json({error: err})
     }
-    res.json({success: true});
+    res.json({success: true})
   })
 })
 
 router.get('/loadPage', (req, res) => {
-  const videoId = Number(req.query.videoId);
+  const videoId = Number(req.query.videoId)
   let query = [
     'SELECT a.id AS videoId, a.title, a.description, a.videoCode, a.timeStamp, a.uploader AS uploaderId, b.username AS uploaderName, ',
     '(SELECT COUNT(*) FROM vq_video_views WHERE videoId = ?) AS videoViews ',
     'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
     'WHERE a.id = ?'
-  ].join('');
+  ].join('')
   pool.query(query, [videoId, videoId], (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     if (rows[0]) {
-      const videoId = rows[0].videoId;
-      const title = rows[0].title;
-      const description = rows[0].description;
-      const videoCode = rows[0].videoCode;
-      const uploaderId = rows[0].uploaderId;
-      const uploaderName = rows[0].uploaderName;
-      const timeStamp = rows[0].timeStamp;
-      const videoViews = rows[0].videoViews;
+      const videoId = rows[0].videoId
+      const title = rows[0].title
+      const description = rows[0].description
+      const videoCode = rows[0].videoCode
+      const uploaderId = rows[0].uploaderId
+      const uploaderName = rows[0].uploaderName
+      const timeStamp = rows[0].timeStamp
+      const videoViews = rows[0].videoViews
       async.parallel([
         (callback) => {
           pool.query('SELECT * FROM vq_questions WHERE videoId = ? AND isDraft = 0', videoId, (err, rows) => {
-            let questions = [];
+            let questions = []
             if (rows) {
               questions = rows.map(row => {
                 return {
@@ -220,16 +218,16 @@ router.get('/loadPage', (req, res) => {
                 }
               })
             }
-            callback(err, questions);
+            callback(err, questions)
           })
         },
         (callback) => {
-          let likes = [];
+          let likes = []
           let query = [
             'SELECT a.userId, b.username ',
             'FROM vq_video_likes a LEFT JOIN users b ON a.userId = b.id ',
             'WHERE a.videoId = ?'
-          ].join('');
+          ].join('')
           pool.query(query, videoId, (err, rows) => {
             likes = rows.map(row => {
               return {
@@ -237,11 +235,11 @@ router.get('/loadPage', (req, res) => {
                 username: row.username
               }
             })
-            callback(err, likes);
+            callback(err, likes)
           })
         }
       ], (err, results) => {
-        if (err) return res.status(500).send({error: err});
+        if (err) return res.status(500).send({error: err})
         res.send({
           videoId,
           title,
@@ -254,7 +252,7 @@ router.get('/loadPage', (req, res) => {
           questions: results[0],
           likes: results[1]
         })
-      });
+      })
     } else {
       res.status(500).send({error: 'Video doesn\'t exist'})
     }
@@ -262,8 +260,8 @@ router.get('/loadPage', (req, res) => {
 })
 
 router.get('/comments', (req, res) => {
-  const {videoId, lastCommentId} = req.query;
-  const limit = 21;
+  const {videoId, lastCommentId} = req.query
+  const limit = 21
   const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : ''
   const query = `
     SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
@@ -273,11 +271,11 @@ router.get('/comments', (req, res) => {
     LEFT JOIN content_discussions d ON a.discussionId = d.id
     WHERE videoId = ? AND commentId IS NULL ${where}
     ORDER BY a.id DESC LIMIT ${limit}
-  `;
+  `
   pool.query(query, videoId, (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     if (rows.length === 0) {
       return res.send({
@@ -287,7 +285,7 @@ router.get('/comments', (req, res) => {
     }
     returnComments(rows, (err, commentsArray) => {
       if (err) {
-        console.error(err);
+        console.error(err)
         return res.status(500).send({error: err})
       }
       res.send({
@@ -299,12 +297,12 @@ router.get('/comments', (req, res) => {
 })
 
 router.post('/comments', requireAuth, (req, res) => {
-  const user = req.user;
-  const videoId = req.body.videoId;
-  const comment = req.body.comment;
+  const user = req.user
+  const videoId = req.body.videoId
+  const comment = req.body.comment
   async.waterfall([
     (callback) => {
-      const userId = user.id;
+      const userId = user.id
       const post = {
         userId,
         content: processedString(comment),
@@ -332,7 +330,7 @@ router.post('/comments', requireAuth, (req, res) => {
           noComments: true
         })
       }
-      callback(null, rows);
+      callback(null, rows)
     },
     (rows, callback) => {
       returnComments(rows, (err, commentsArray) => {
@@ -341,7 +339,7 @@ router.post('/comments', requireAuth, (req, res) => {
     }
   ], (err, comments) => {
     if (err) {
-      console.error(err);
+      console.error(err)
       return res.status(500).send({error: err})
     }
     res.send({
@@ -352,51 +350,51 @@ router.post('/comments', requireAuth, (req, res) => {
 })
 
 router.post('/comments/edit', requireAuth, (req, res) => {
-  const user = req.user;
-  const content = processedString(req.body.editedComment);
-  const commentId = req.body.commentId;
-  const userId = user.id;
+  const user = req.user
+  const content = processedString(req.body.editedComment)
+  const commentId = req.body.commentId
+  const userId = user.id
   pool.query('UPDATE vq_comments SET ? WHERE id = ? AND userId = ?', [{content}, commentId, userId], err => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({success: true})
   })
 })
 
 router.delete('/comments', requireAuth, (req, res) => {
-  const user = req.user;
-  const commentId = Number(req.query.commentId);
+  const user = req.user
+  const commentId = Number(req.query.commentId)
   pool.query('DELETE FROM vq_comments WHERE id = ? AND userId = ?', [commentId, user.id], err => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({success: true})
   })
 })
 
 router.post('/comments/like', requireAuth, (req, res) => {
-  const user = req.user;
-  const commentId = req.body.commentId;
+  const user = req.user
+  const commentId = req.body.commentId
   async.waterfall([
     (callback) => {
-      const query = 'SELECT * FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
+      const query = 'SELECT * FROM vq_commentupvotes WHERE commentId = ? AND userId = ?'
       pool.query(query, [commentId, user.id], (err, rows) => {
-        callback(err, user.id, rows);
+        callback(err, user.id, rows)
       })
     },
     (userId, rows, callback) => {
       if (rows.length > 0) {
-        let query = 'DELETE FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
+        let query = 'DELETE FROM vq_commentupvotes WHERE commentId = ? AND userId = ?'
         pool.query(query, [commentId, userId], err => {
-          callback(err);
+          callback(err)
         })
       } else {
-        let query = 'INSERT INTO vq_commentupvotes SET ?';
+        let query = 'INSERT INTO vq_commentupvotes SET ?'
         pool.query(query, {commentId: commentId, userId: userId}, err => {
-          callback(err);
+          callback(err)
         })
       }
     },
@@ -408,13 +406,13 @@ router.post('/comments/like', requireAuth, (req, res) => {
         'a.commentId = ?'
       ].join('')
       pool.query(query, commentId, (err, rows) => {
-        callback(err, rows);
+        callback(err, rows)
       })
     }
   ], (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({
       likes: rows.map(row => {
@@ -423,17 +421,17 @@ router.post('/comments/like', requireAuth, (req, res) => {
           username: row.username
         }
       })
-    });
+    })
   })
 })
 
 router.delete('/debates', requireAuth, (req, res) => {
-  const {user} = req;
-  const {discussionId} = req.query;
-  const query  = 'DELETE FROM content_discussions WHERE id = ? AND userId = ?';
+  const {user} = req
+  const {discussionId} = req.query
+  const query = 'DELETE FROM content_discussions WHERE id = ? AND userId = ?'
   pool.query(query, [discussionId, user.id], err => {
     if (err) {
-      console.error(err);
+      console.error(err)
       return res.status(500).send(err)
     }
     res.send({success: true})
@@ -441,50 +439,50 @@ router.delete('/debates', requireAuth, (req, res) => {
 })
 
 router.get('/debates', (req, res) => {
-  const {videoId, lastDiscussionId} = req.query;
-  const limit = 4;
-  const where = !!lastDiscussionId ? 'AND a.id < ' + lastDiscussionId + ' ' : '';
+  const {videoId, lastDiscussionId} = req.query
+  const limit = 4
+  const where = lastDiscussionId ? 'AND a.id < ' + lastDiscussionId + ' ' : ''
   const query = [
     'SELECT a.id, a.userId, a.title, a.description, a.timeStamp, b.username, ',
     '(SELECT COUNT(*) FROM vq_comments WHERE discussionId = a.id) AS numComments ',
     'FROM content_discussions a LEFT JOIN users b ON a.userId = b.id ',
     'WHERE a.refContentType = \'video\' AND a.refContentId = ? ', where,
     'ORDER BY a.id DESC LIMIT ' + limit
-  ].join('');
+  ].join('')
   pool.query(query, videoId, (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send(rows.map(row => Object.assign({}, row, {
       comments: [],
       loadMoreDebateCommentsButton: false
-    })));
+    })))
   })
 })
 
 router.get('/debates/comments', (req, res) => {
-  const {discussionId, lastCommentId} = req.query;
-  const limit = 4;
-  const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : '';
+  const {discussionId, lastCommentId} = req.query
+  const limit = 4
+  const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : ''
   const query = `
     SELECT a.id, a.userId, a.content, a.timeStamp, b.username, c.id AS profilePicId
     FROM vq_comments a LEFT JOIN users b ON a.userId = b.id LEFT JOIN users_photos c ON
     a.userId = c.userId AND c.isProfilePic = '1'
     WHERE a.discussionId = ? AND a.commentId IS NULL ${where}
     ORDER BY a.id DESC LIMIT ${limit}
-  `;
+  `
   pool.query(query, discussionId, (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     if (rows.length === 0) {
       return res.send([])
     }
     returnComments(rows, (err, commentsArray) => {
       if (err) {
-        console.error(err);
+        console.error(err)
         return res.status(500).send({error: err})
       }
       res.send(commentsArray)
@@ -493,9 +491,9 @@ router.get('/debates/comments', (req, res) => {
 })
 
 router.post('/debates', requireAuth, (req, res) => {
-  const {title, description, videoId} = req.body;
-  const {user} = req;
-  const query = 'INSERT INTO content_discussions SET ?';
+  const {title, description, videoId} = req.body
+  const {user} = req
+  const query = 'INSERT INTO content_discussions SET ?'
   const post = {
     title: processedTitleString(title),
     description: !!description && description !== '' ? processedString(description) : null,
@@ -506,7 +504,7 @@ router.post('/debates', requireAuth, (req, res) => {
   }
   pool.query(query, post, (err, result) => {
     if (err) {
-      console.error(err);
+      console.error(err)
       return res.status(500).send({error: err})
     }
     res.send(Object.assign({}, post, {
@@ -519,10 +517,10 @@ router.post('/debates', requireAuth, (req, res) => {
 })
 
 router.post('/debates/edit', requireAuth, (req, res) => {
-  const {user} = req;
-  const {discussionId, editedTitle, editedDescription} = req.body;
-  const post = {title: editedTitle, description: processedString(editedDescription)};
-  const query = 'UPDATE content_discussions SET ? WHERE id = ? AND userId = ?';
+  const {user} = req
+  const {discussionId, editedTitle, editedDescription} = req.body
+  const post = {title: editedTitle, description: processedString(editedDescription)}
+  const query = 'UPDATE content_discussions SET ? WHERE id = ? AND userId = ?'
   pool.query(query, [post, discussionId, user.id], (err) => {
     if (err) {
       console.error(err)
@@ -533,9 +531,9 @@ router.post('/debates/edit', requireAuth, (req, res) => {
 })
 
 router.post('/debates/comments', requireAuth, (req, res) => {
-  const {videoId, discussionId, comment} = req.body;
-  const {user} = req;
-  const query = "INSERT INTO vq_comments SET ?";
+  const {videoId, discussionId, comment} = req.body
+  const {user} = req
+  const query = 'INSERT INTO vq_comments SET ?'
   const post = {
     userId: user.id,
     content: processedString(comment),
@@ -545,7 +543,7 @@ router.post('/debates/comments', requireAuth, (req, res) => {
   }
   pool.query(query, post, (err, result) => {
     if (err) {
-      console.error(err);
+      console.error(err)
       return res.status(500).send({error: err})
     }
     res.send(Object.assign({}, post, {
@@ -559,9 +557,9 @@ router.post('/debates/comments', requireAuth, (req, res) => {
 })
 
 router.get('/replies', (req, res) => {
-  const {lastReplyId, commentId} = req.query;
-  const where = !!lastReplyId && lastReplyId !== '0' ? 'AND a.id < ' + lastReplyId + ' ' : '';
-  let loadMoreReplies = false;
+  const {lastReplyId, commentId} = req.query
+  const where = !!lastReplyId && lastReplyId !== '0' ? 'AND a.id < ' + lastReplyId + ' ' : ''
+  let loadMoreReplies = false
   const query = `
     SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
     c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName
@@ -570,17 +568,17 @@ router.get('/replies', (req, res) => {
     LEFT JOIN vq_comments d ON a.replyId = d.id
     LEFT JOIN users e ON d.userId = e.id WHERE a.commentId = ? ${where}
     ORDER BY a.id DESC LIMIT 11
-  `;
+  `
   pool.query(query, [commentId, lastReplyId], (err, rows) => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})
     }
     if (rows.length > 10) {
-      rows.pop();
-      loadMoreReplies = true;
+      rows.pop()
+      loadMoreReplies = true
     }
-    rows.sort(function(a, b) {return a.id - b.id})
+    rows.sort(function(a, b) { return a.id - b.id })
     returnReplies(rows, (err, replies) => {
       if (err) {
         console.error(err)
@@ -592,10 +590,10 @@ router.get('/replies', (req, res) => {
 })
 
 router.post('/replies', requireAuth, (req, res) => {
-  const user = req.user;
-  const replyId = req.body.replyId ? req.body.replyId : null;
-  const {addedFromPanel, reply, videoId, commentId} = req.body;
-  const processedReply = processedString(reply);
+  const user = req.user
+  const replyId = req.body.replyId ? req.body.replyId : null
+  const {addedFromPanel, reply, videoId, commentId} = req.body
+  const processedReply = processedString(reply)
   async.waterfall([
     callback => {
       pool.query('SELECT discussionId FROM vq_comments WHERE id = ?', commentId, (err, rows) => {
@@ -623,15 +621,15 @@ router.post('/replies', requireAuth, (req, res) => {
         a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
         LEFT JOIN vq_comments d ON a.replyId = d.id
         LEFT JOIN users e ON d.userId = e.id WHERE a.id = ?
-      `;
+      `
       pool.query(query, replyId, (err, rows) => {
         callback(err, rows)
       })
     }
   ], (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({
       result: Object.assign({}, rows[0], {
@@ -644,53 +642,52 @@ router.post('/replies', requireAuth, (req, res) => {
 })
 
 router.post('/replies/edit', requireAuth, (req, res) => {
-  const user = req.user;
-  const content = processedString(req.body.editedReply);
-  const replyId = req.body.replyId;
+  const user = req.user
+  const content = processedString(req.body.editedReply)
+  const replyId = req.body.replyId
 
   pool.query('UPDATE vq_comments SET ? WHERE id = ? AND userId = ?', [{content}, replyId, user.id], err => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({success: true})
   })
 })
 
 router.delete('/replies', requireAuth, (req, res) => {
-  const user = req.user;
-  const replyId = Number(req.query.replyId) || 0;
+  const user = req.user
+  const replyId = Number(req.query.replyId) || 0
   pool.query('DELETE FROM vq_comments WHERE id = ? AND userId = ?', [replyId, user.id], err => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({success: true})
   })
 })
 
 router.post('/replies/like', requireAuth, (req, res) => {
-  const user = req.user;
-  const replyId = req.body.replyId;
-  const commentId = req.body.commentId;
+  const user = req.user
+  const replyId = req.body.replyId
 
   async.waterfall([
     (callback) => {
-      const query = 'SELECT * FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
+      const query = 'SELECT * FROM vq_commentupvotes WHERE commentId = ? AND userId = ?'
       pool.query(query, [replyId, user.id], (err, rows) => {
-        callback(err, rows);
+        callback(err, rows)
       })
     },
     (rows, callback) => {
       if (rows.length > 0) {
-        let query = 'DELETE FROM vq_commentupvotes WHERE commentId = ? AND userId = ?';
+        let query = 'DELETE FROM vq_commentupvotes WHERE commentId = ? AND userId = ?'
         pool.query(query, [replyId, user.id], err => {
-          callback(err);
+          callback(err)
         })
       } else {
-        let query = 'INSERT INTO vq_commentupvotes SET ?';
+        let query = 'INSERT INTO vq_commentupvotes SET ?'
         pool.query(query, {commentId: replyId, userId: user.id}, err => {
-          callback(err);
+          callback(err)
         })
       }
     },
@@ -707,8 +704,8 @@ router.post('/replies/like', requireAuth, (req, res) => {
     }
   ], (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({
       likes: rows.map(row => {
@@ -717,23 +714,23 @@ router.post('/replies/like', requireAuth, (req, res) => {
           username: row.username
         }
       })
-    });
+    })
   })
 })
 
 router.post('/questions', requireAuth, (req, res) => {
-  const user = req.user;
-  const videoId = req.body.videoId;
-  const questions = req.body.questions;
+  const user = req.user
+  const videoId = req.body.videoId
+  const questions = req.body.questions
   async.waterfall([
     (callback) => {
-      const userId = user.id;
+      const userId = user.id
       pool.query('DELETE FROM vq_questions WHERE videoId = ? AND creator = ?', [videoId, userId], err => {
         callback(err, userId)
       })
     },
     (userId, callback) => {
-      let taskArray = [];
+      let taskArray = []
       for (let i = 0; i < questions.length; i++) {
         taskArray.push(callback => {
           pool.query('INSERT INTO vq_questions SET ?', questions[i], err => {
@@ -747,42 +744,42 @@ router.post('/questions', requireAuth, (req, res) => {
     }
   ], (err, success) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({error: err});
+      console.error(err)
+      return res.status(500).json({error: err})
     }
-    res.json({success});
-  });
+    res.json({success})
+  })
 })
 
 router.get('/search', (req, res) => {
-  const searchQuery = req.query.query;
+  const searchQuery = req.query.query
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send({result: []})
   async.waterfall([
     callback => {
-      let query = 'SELECT id, title AS label FROM vq_videos WHERE title LIKE ? ORDER BY id DESC LIMIT 20';
+      let query = 'SELECT id, title AS label FROM vq_videos WHERE title LIKE ? ORDER BY id DESC LIMIT 20'
       pool.query(query, '%' + searchQuery + '%', (err, result) => {
         callback(err, result)
       })
     }
   ], (err, result) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({result})
   })
 })
 
 router.post('/view', (req, res) => {
-  const {videoId, userId} = req.body;
-  const post = {videoId, userId, timeStamp: Math.floor(Date.now()/1000)};
+  const {videoId, userId} = req.body
+  const post = {videoId, userId, timeStamp: Math.floor(Date.now()/1000)}
   pool.query('INSERT INTO vq_video_views SET ?', post, err => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({error: err});
+      console.error(err)
+      return res.status(500).send({error: err})
     }
     res.send({success: true})
   })
 })
 
-module.exports = router;
+module.exports = router

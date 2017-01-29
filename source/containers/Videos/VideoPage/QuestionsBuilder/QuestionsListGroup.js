@@ -1,9 +1,15 @@
-import React from 'react';
-import QuestionsListItem from './QuestionsListItem';
+import React, {PropTypes} from 'react'
+import QuestionsListItem from './QuestionsListItem'
 
+QuestionsListGroup.propTypes = {
+  questions: PropTypes.array,
+  questionIds: PropTypes.array,
+  style: PropTypes.object,
+  onMove: PropTypes.func
+}
 export default function QuestionsListGroup({questions, questionIds, style, onMove}) {
   const listItems = questionIds.reduce((result, questionId) => {
-    for (let i = 0; i < questions.length; i ++) {
+    for (let i = 0; i < questions.length; i++) {
       if (questions[i].id === questionId) {
         result.push({
           label: questions[i].title,
@@ -12,9 +18,9 @@ export default function QuestionsListGroup({questions, questionIds, style, onMov
         })
       }
     }
-    return result;
+    return result
   }, [])
-  
+
   return (
     <ul
       className="list-group unselectable"

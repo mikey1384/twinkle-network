@@ -1,5 +1,4 @@
-import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
+import React, {Component} from 'react'
 
 export default class Notifications extends Component {
   render() {

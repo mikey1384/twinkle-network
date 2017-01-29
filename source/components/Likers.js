@@ -1,5 +1,12 @@
-import React from 'react';
+import React, {PropTypes} from 'react'
 
+Likers.propTypes = {
+  likes: PropTypes.array,
+  target: PropTypes.string,
+  userId: PropTypes.number,
+  onLinkClick: PropTypes.func,
+  style: PropTypes.object
+}
 export default function Likers({likes, target, userId, onLinkClick, style = null}) {
   return (
     <div style={style}>
@@ -8,20 +15,20 @@ export default function Likers({likes, target, userId, onLinkClick, style = null
   )
 
   function renderLikers() {
-    let userLiked = false;
-    let totalLikes = 0;
+    let userLiked = false
+    let totalLikes = 0
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if(likes[i].userId === userId) userLiked = true;
-        totalLikes ++;
+        if (likes[i].userId === userId) userLiked = true
+        totalLikes++
       }
     }
     if (userLiked) {
-      totalLikes --;
+      totalLikes--
       if (totalLikes > 0) {
         if (totalLikes === 1) {
-          let otherLikes = likes.filter(like => like.userId !== userId);
-          let otherLikerName = otherLikes[0].username;
+          let otherLikes = likes.filter(like => like.userId !== userId)
+          let otherLikerName = otherLikes[0].username
           return (
             <div>
               You and <strong>{otherLikerName}</strong> like {`this${target ? (' ' + target) : ''}.`}
@@ -42,17 +49,15 @@ export default function Likers({likes, target, userId, onLinkClick, style = null
           You like {`this${target ? (' ' + target) : ''}.`}
         </div>
       )
-    }
-    else if (totalLikes > 0) {
+    } else if (totalLikes > 0) {
       if (totalLikes === 1) {
-        const likerName = likes[0].username;
+        const likerName = likes[0].username
         return (
           <div>
             <strong>{likerName}</strong> likes {`this${target ? (' ' + target) : ''}.`}
           </div>
         )
-      }
-      else {
+      } else {
         return (
           <div>
             <strong><a style={{cursor: 'pointer'}}
@@ -61,9 +66,8 @@ export default function Likers({likes, target, userId, onLinkClick, style = null
           </div>
         )
       }
-    }
-    else {
-      return null;
+    } else {
+      return null
     }
   }
 }

@@ -1,4 +1,4 @@
-import {processedStringWithURL} from 'helpers/stringHelpers';
+import {processedStringWithURL} from 'helpers/stringHelpers'
 
 const defaultState = {
   chatMode: false,
@@ -11,20 +11,20 @@ const defaultState = {
   loadMoreButton: false,
   partnerId: null,
   numUnreads: 0
-};
+}
 
 export default function ChatReducer(state = defaultState, action) {
-  let loadMoreButton;
-  let channels;
-  switch(action.type) {
+  let loadMoreButton
+  let channels
+  switch (action.type) {
     case 'APPLY_CHANGED_CHANNEL_TITLE':
       return {
         ...state,
         channels: state.channels.map(channel => {
           if (channel.id === action.data.channelId) {
-            channel.channelName = action.data.title;
+            channel.channelName = action.data.title
           }
-          return channel;
+          return channel
         })
       }
     case 'CLEAR_CHAT_SEARCH_RESULTS':
@@ -76,7 +76,7 @@ export default function ChatReducer(state = defaultState, action) {
               lastUpdate: action.data.timeStamp
             }
           }
-          return channel;
+          return channel
         }),
         selectedChannelId: action.data.channelId,
         currentChannel: {
@@ -94,12 +94,12 @@ export default function ChatReducer(state = defaultState, action) {
       }
     }
     case 'ENTER_CHANNEL':
-      loadMoreButton = false;
+      loadMoreButton = false
       if (action.data.messages.length === 21) {
-        action.data.messages.pop();
-        loadMoreButton = true;
+        action.data.messages.pop()
+        loadMoreButton = true
       }
-      action.data.messages.reverse();
+      action.data.messages.reverse()
       return {
         ...state,
         selectedChannelId: action.data.channel.id,
@@ -107,8 +107,8 @@ export default function ChatReducer(state = defaultState, action) {
         channels: state.channels.reduce(
           (resultingArray, channel) => {
             if (channel.id === action.data.channel.id) {
-              channel.numUnreads = 0;
-              channel.isHidden = false;
+              channel.numUnreads = 0
+              channel.isHidden = false
               if (action.showOnTop) return [channel].concat(resultingArray)
             }
             return resultingArray.concat([channel])
@@ -142,7 +142,7 @@ export default function ChatReducer(state = defaultState, action) {
           if (channel.id === action.channelId) {
             channel.isHidden = true
           }
-          return channel;
+          return channel
         })
       }
     case 'INCREASE_NUM_UNREAD_MSGS':
@@ -151,10 +151,10 @@ export default function ChatReducer(state = defaultState, action) {
         numUnreads: state.numUnreads + 1
       }
     case 'INIT_CHAT':
-      loadMoreButton = false;
+      loadMoreButton = false
       if (action.data.messages && action.data.messages.length === 21) {
-        action.data.messages.pop();
-        loadMoreButton = true;
+        action.data.messages.pop()
+        loadMoreButton = true
       }
       action.data.messages && action.data.messages.reverse()
       return {
@@ -165,7 +165,7 @@ export default function ChatReducer(state = defaultState, action) {
         channels: action.data.channels.reduce(
           (resultingArray, channel) => {
             if (channel.id === action.data.currentChannel.id) {
-              channel.numUnreads = 0;
+              channel.numUnreads = 0
               return [channel].concat(resultingArray)
             }
             return resultingArray.concat([channel])
@@ -200,10 +200,10 @@ export default function ChatReducer(state = defaultState, action) {
         channels: action.data
       }
     case 'LOAD_MORE_MSG':
-      loadMoreButton = false;
+      loadMoreButton = false
       if (action.data.length === 21) {
-        action.data.pop();
-        loadMoreButton = true;
+        action.data.pop()
+        loadMoreButton = true
       }
       action.data.reverse()
       return {
@@ -212,7 +212,7 @@ export default function ChatReducer(state = defaultState, action) {
         messages: action.data.concat(state.messages)
       }
     case 'NOTIFY_MEMBER_LEFT':
-      let timeStamp = Math.floor(Date.now()/1000);
+      let timeStamp = Math.floor(Date.now()/1000)
       return {
         ...state,
         channels: state.channels.map(channel => {
@@ -225,10 +225,10 @@ export default function ChatReducer(state = defaultState, action) {
                 username: action.data.username
               },
               numUnreads: 0,
-              lastMessage: "Left the channel"
+              lastMessage: 'Left the channel'
             }
           }
-          return channel;
+          return channel
         }),
         currentChannel: {
           ...state.currentChannel,
@@ -237,7 +237,7 @@ export default function ChatReducer(state = defaultState, action) {
         messages: state.messages.concat([{
           id: null,
           channelId: action.data.channelId,
-          content: "Left the channel",
+          content: 'Left the channel',
           timeStamp: timeStamp,
           isNotification: true,
           username: action.data.username,
@@ -248,7 +248,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'OPEN_CHAT_FOR_DM':
       if (action.messages.length > 20) {
         action.messages.pop()
-        loadMoreButton = true;
+        loadMoreButton = true
       }
       channels = action.channels.length > 0 ? action.channels : state.channels
       return {
@@ -381,12 +381,12 @@ export default function ChatReducer(state = defaultState, action) {
               isHidden: false
             }
           }
-          return channel;
+          return channel
         })
       }
     case 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL':
-      let channel = {};
-      channels = state.channels;
+      let channel = {}
+      channels = state.channels
       for (let i = 0; i < channels.length; i++) {
         let numUnreads = action.senderIsNotTheUser ? channels[i].numUnreads + 1 : channels[i].numUnreads
         if (channels[i].id === action.data.channelId) {
@@ -451,8 +451,8 @@ export default function ChatReducer(state = defaultState, action) {
         chatMode: false
       }
     case 'RESET_CHAT':
-      return defaultState;
+      return defaultState
     default:
-      return state;
+      return state
   }
 }

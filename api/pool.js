@@ -1,5 +1,5 @@
-const config = require('./siteConfig');
-const mysql = require('mysql');
+const config = require('./siteConfig')
+const mysql = require('mysql')
 const pool = mysql.createPool({
   connectionLimit: 10,
   host: 'localhost',
@@ -11,4 +11,4 @@ const pool = mysql.createPool({
   debug: false
 })
 
-module.exports = pool;
+module.exports = pool

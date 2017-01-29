@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import Button from 'components/Button';
-import {timeSince} from 'helpers/timeStampHelpers';
-import UsernameText from 'components/UsernameText';
-import PanelComments from 'components/PanelComments';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import {connect} from 'react-redux';
-import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
-import Textarea from 'react-textarea-autosize';
-import ConfirmModal from 'components/Modals/ConfirmModal';
+import React, {Component, PropTypes} from 'react'
+import Button from 'components/Button'
+import {timeSince} from 'helpers/timeStampHelpers'
+import UsernameText from 'components/UsernameText'
+import PanelComments from 'components/PanelComments'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import {connect} from 'react-redux'
+import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
+import Textarea from 'react-textarea-autosize'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 import {
   deleteVideoCommentAsync,
   editVideoCommentAsync,
@@ -19,7 +19,7 @@ import {
   loadMoreReplies,
   editVideoDebate,
   deleteVideoDebate
-} from 'redux/actions/VideoActions';
+} from 'redux/actions/VideoActions'
 
 @connect(
   state => ({
@@ -39,6 +39,33 @@ import {
   }
 )
 export default class DebatePanel extends Component {
+  static propTypes = {
+    title: PropTypes.string,
+    description: PropTypes.string,
+    id: PropTypes.number,
+    username: PropTypes.string,
+    userId: PropTypes.number,
+    timeStamp: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    numComments: PropTypes.string,
+    myId: PropTypes.number,
+    comments: PropTypes.array,
+    loadMoreDebateCommentsButton: PropTypes.bool,
+    onLikeClick: PropTypes.func,
+    onDelete: PropTypes.func,
+    onEditDone: PropTypes.func,
+    onLoadMoreReplies: PropTypes.func,
+    loadMoreComments: PropTypes.func,
+    videoId: PropTypes.number,
+    onSubmit: PropTypes.func,
+    onDebateDelete: PropTypes.func,
+    loadComments: PropTypes.func,
+    onReplySubmit: PropTypes.func,
+    onDebateEditDone: PropTypes.func
+  }
+
   constructor(props) {
     super()
     this.state = {
@@ -61,9 +88,9 @@ export default class DebatePanel extends Component {
     const {
       id, title, description, username, userId, timeStamp, numComments, myId,
       comments, loadMoreDebateCommentsButton, onLikeClick, onDelete, onEditDone, onLoadMoreReplies
-    } = this.props;
-    const {expanded, onEdit, confirmModalShown, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
-    const userIsOwner = myId === userId;
+    } = this.props
+    const {expanded, onEdit, confirmModalShown, editedTitle, editedDescription, editDoneButtonDisabled} = this.state
+    const userIsOwner = myId === userId
     return (
       <div
         className="panel panel-default"
@@ -80,11 +107,11 @@ export default class DebatePanel extends Component {
               }}
               menuProps={[
                 {
-                  label: "Edit",
+                  label: 'Edit',
                   onClick: () => this.setState({onEdit: true})
                 },
                 {
-                  label: "Remove",
+                  label: 'Remove',
                   onClick: () => this.setState({confirmModalShown: true})
                 }
               ]}
@@ -105,8 +132,8 @@ export default class DebatePanel extends Component {
                 value={editedTitle}
                 onChange={event => {
                   this.setState({editedTitle: event.target.value}, () => {
-                    this.determineEditButtonDoneStatus();
-                  });
+                    this.determineEditButtonDoneStatus()
+                  })
                 }}
               />
             </form>
@@ -120,7 +147,7 @@ export default class DebatePanel extends Component {
                 rows={4}
                 value={editedDescription}
                 onChange={event => this.setState({editedDescription: event.target.value}, () => {
-                  this.determineEditButtonDoneStatus();
+                  this.determineEditButtonDoneStatus()
                 })}
               />
               <div style={{marginTop: '1em'}}>
@@ -196,41 +223,41 @@ export default class DebatePanel extends Component {
   }
 
   determineEditButtonDoneStatus() {
-    const {editedTitle, editedDescription} = this.state;
-    const {title, description} = this.props;
-    const titleIsEmpty = stringIsEmpty(editedTitle);
-    const titleChanged = editedTitle !== title;
-    const descriptionChanged = editedDescription !== cleanStringWithURL(description);
-    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged);
-    this.setState({editDoneButtonDisabled});
+    const {editedTitle, editedDescription} = this.state
+    const {title, description} = this.props
+    const titleIsEmpty = stringIsEmpty(editedTitle)
+    const titleChanged = editedTitle !== title
+    const descriptionChanged = editedDescription !== cleanStringWithURL(description)
+    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged)
+    this.setState({editDoneButtonDisabled})
   }
 
   loadMoreComments(commentLength) {
-    const {id, loadMoreComments} = this.props;
-    loadMoreComments(commentLength, id);
+    const {id, loadMoreComments} = this.props
+    loadMoreComments(commentLength, id)
   }
 
   onCommentSubmit(comment) {
-    const {onSubmit, videoId, id, title} = this.props;
+    const {onSubmit, videoId, id, title} = this.props
     onSubmit({comment, videoId, discussionId: id, discussionTitle: title})
   }
 
   onDelete() {
-    const {id, onDebateDelete} = this.props;
+    const {id, onDebateDelete} = this.props
     onDebateDelete(id, () => {
       this.setState({confirmModalShown: false})
     })
   }
 
   onExpand() {
-    const {loadComments, id} = this.props;
+    const {loadComments, id} = this.props
     this.setState({expanded: true})
-    loadComments(id);
+    loadComments(id)
   }
 
   onEditDone() {
-    const {editedTitle, editedDescription} = this.state;
-    const {id, onDebateEditDone} = this.props;
+    const {editedTitle, editedDescription} = this.state
+    const {id, onDebateEditDone} = this.props
     onDebateEditDone(id, editedTitle, editedDescription, () => {
       this.setState({
         onEdit: false,
@@ -240,7 +267,7 @@ export default class DebatePanel extends Component {
   }
 
   onReplySubmit(replyContent, comment) {
-    const {onReplySubmit, videoId} = this.props;
+    const {onReplySubmit, videoId} = this.props
     onReplySubmit(replyContent, comment, videoId)
   }
 }

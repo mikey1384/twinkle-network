@@ -1,14 +1,22 @@
-import React, {Component} from 'react';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import ProfilePic from 'components/ProfilePic';
-import UsernameText from 'components/UsernameText';
-import EditTextArea from 'components/EditTextArea';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-import {timeSince} from 'helpers/timeStampHelpers';
-import {cleanStringWithURL} from 'helpers/stringHelpers';
-
+import React, {Component, PropTypes} from 'react'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import ProfilePic from 'components/ProfilePic'
+import UsernameText from 'components/UsernameText'
+import EditTextArea from 'components/EditTextArea'
+import ConfirmModal from 'components/Modals/ConfirmModal'
+import {timeSince} from 'helpers/timeStampHelpers'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
 
 export default class TargetContentComment extends Component {
+  static propTypes = {
+    comment: PropTypes.object,
+    username: PropTypes.string,
+    userId: PropTypes.number,
+    profilePicId: PropTypes.number,
+    onDelete: PropTypes.func,
+    onEditDone: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -20,8 +28,8 @@ export default class TargetContentComment extends Component {
   }
 
   render() {
-    const {comment, username, userId, profilePicId} = this.props;
-    const {onEdit, confirmModalShown} = this.state;
+    const {comment, username, userId, profilePicId} = this.props
+    const {onEdit, confirmModalShown} = this.state
     return (
       <li
         className="media"
@@ -39,11 +47,11 @@ export default class TargetContentComment extends Component {
               }}
               menuProps={[
                 {
-                  label: "Edit",
+                  label: 'Edit',
                   onClick: () => this.setState({onEdit: true})
                 },
                 {
-                  label: "Remove",
+                  label: 'Remove',
                   onClick: () => this.setState({confirmModalShown: true})
                 }
               ]}
@@ -86,14 +94,14 @@ export default class TargetContentComment extends Component {
   }
 
   onDelete() {
-    const {comment, onDelete} = this.props;
+    const {comment, onDelete} = this.props
     onDelete(comment.id)
   }
 
   onEditDone(editedComment) {
-    const {comment, onEditDone} = this.props;
+    const {comment, onEditDone} = this.props
     onEditDone({editedComment, commentId: comment.id}, () => {
       this.setState({onEdit: false})
-    });
+    })
   }
 }

@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import LikeButton from 'components/LikeButton';
-import Button from 'components/Button';
-import Likers from 'components/Likers';
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from 'react'
+import LikeButton from 'components/LikeButton'
+import Button from 'components/Button'
+import Likers from 'components/Likers'
+import {connect} from 'react-redux'
 import {
   likeVideoCommentAsync,
   showFeedCommentsAsync,
@@ -14,15 +14,14 @@ import {
   uploadFeedVideoReplyAsync,
   loadMoreFeedReplies,
   likeVideoAsync
-} from 'redux/actions/FeedActions';
-import UserListModal from 'components/Modals/UserListModal';
-import VideoPlayer from 'components/VideoPlayer';
-import {embedlyKey} from 'constants/keys';
-import Embedly from 'components/Embedly';
-import PanelComments from 'components/PanelComments';
-import TargetContent from './TargetContent';
-import {Color} from 'constants/css';
-
+} from 'redux/actions/FeedActions'
+import UserListModal from 'components/Modals/UserListModal'
+import VideoPlayer from 'components/VideoPlayer'
+import {embedlyKey} from 'constants/keys'
+import Embedly from 'components/Embedly'
+import PanelComments from 'components/PanelComments'
+import TargetContent from './TargetContent'
+import {Color} from 'constants/css'
 
 @connect(
   null,
@@ -40,6 +39,49 @@ import {Color} from 'constants/css';
   }
 )
 export default class MainContent extends Component {
+  static propTypes = {
+    id: PropTypes.number,
+    myId: PropTypes.number,
+    content: PropTypes.string,
+    contentLikers: PropTypes.array,
+    targetContentComments: PropTypes.array,
+    contentId: PropTypes.number,
+    type: PropTypes.string,
+    discussionId: PropTypes.number,
+    discussionTitle: PropTypes.string,
+    discussionDescription: PropTypes.string,
+    videoViews: PropTypes.string,
+    numChildComments: PropTypes.string,
+    numChildReplies: PropTypes.string,
+    replyId: PropTypes.number,
+    commentId: PropTypes.number,
+    targetReply: PropTypes.string,
+    targetContentLikers: PropTypes.array,
+    childComments: PropTypes.array,
+    commentsShown: PropTypes.bool,
+    commentsLoadMoreButton: PropTypes.bool,
+    parentContentId: PropTypes.number,
+    contentTitle: PropTypes.string,
+    contentDescription: PropTypes.string,
+    videoCode: PropTypes.string,
+    loadMoreComments: PropTypes.func,
+    onSubmit: PropTypes.func,
+    onDelete: PropTypes.func,
+    onLikeClick: PropTypes.func,
+    onEditDone: PropTypes.func,
+    onReplySubmit: PropTypes.func,
+    onLoadMoreReplies: PropTypes.func,
+    targetReplyUploaderId: PropTypes.number,
+    targetReplyUploaderName: PropTypes.string,
+    attachedVideoShown: PropTypes.bool,
+    targetCommentUploaderName: PropTypes.string,
+    targetCommentUploaderId: PropTypes.number,
+    targetComment: PropTypes.string,
+    showFeedComments: PropTypes.func,
+    onLikeCommentClick: PropTypes.func,
+    onLikeVideoClick: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -59,11 +101,11 @@ export default class MainContent extends Component {
       contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
-    } = this.props;
-    const {userListModalShown, clickListenerState} = this.state;
-    let userLikedThis = false;
+    } = this.props
+    const {userListModalShown, clickListenerState} = this.state
+    let userLikedThis = false
     for (let i = 0; i < contentLikers.length; i++) {
-      if (contentLikers[i].userId === myId) userLikedThis = true;
+      if (contentLikers[i].userId === myId) userLikedThis = true
     }
     return (
       <div>
@@ -144,7 +186,7 @@ export default class MainContent extends Component {
           <div style={{
             fontSize: '2rem',
             marginTop: '1em',
-            marginBottom: !!contentDescription ? '0.5em' : '1em'
+            marginBottom: contentDescription ? '0.5em' : '1em'
           }}>
             <p><b style={{color: Color.green}}>Discuss:</b></p>
             <p>{contentTitle}</p>
@@ -261,22 +303,22 @@ export default class MainContent extends Component {
   }
 
   onCommentButtonClick() {
-    const {type, contentId, commentId, commentsShown, showFeedComments, childComments} = this.props;
-    const {clickListenerState} = this.state;
-    const isReply = !!commentId;
+    const {type, contentId, commentId, commentsShown, showFeedComments, childComments} = this.props
+    const {clickListenerState} = this.state
+    const isReply = !!commentId
     if (!commentsShown) {
-      const commentLength = childComments.length;
-      return showFeedComments(type, contentId, commentLength, isReply);
+      const commentLength = childComments.length
+      return showFeedComments(type, contentId, commentLength, isReply)
     }
     this.setState({clickListenerState: !clickListenerState})
   }
 
   onLikeClick() {
-    const {contentId, type} = this.props;
+    const {contentId, type} = this.props
     if (type === 'comment') {
-      this.props.onLikeCommentClick(contentId);
+      this.props.onLikeCommentClick(contentId)
     } else {
-      this.props.onLikeVideoClick(contentId);
+      this.props.onLikeVideoClick(contentId)
     }
   }
 }

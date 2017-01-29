@@ -1,6 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import onClickOutside from 'react-onclickoutside';
-import SearchDropdown from '../SearchDropdown';
+import React, {Component, PropTypes} from 'react'
+import onClickOutside from 'react-onclickoutside'
+import SearchDropdown from '../SearchDropdown'
 
 class Input extends Component {
   static propTypes = {
@@ -14,7 +14,7 @@ class Input extends Component {
   }
 
   handleClickOutside = (event) => {
-    this.props.onClickOutSide();
+    this.props.onClickOutSide()
   }
 
   constructor() {
@@ -45,16 +45,16 @@ class Input extends Component {
   }
 
   renderDropdownList() {
-    let {searchResults, selectedUsers} = this.props;
+    let {searchResults, selectedUsers} = this.props
     searchResults = searchResults.filter(user => {
-      let result = true;
+      let result = true
       for (let i = 0; i < selectedUsers.length; i++) {
         if (selectedUsers[i].userId === user.id) {
-          result = false;
-          break;
+          result = false
+          break
         }
       }
-      return result;
+      return result
     })
     return searchResults.length > 0 ?
     <SearchDropdown
@@ -70,36 +70,36 @@ class Input extends Component {
   }
 
   onKeyDown(event) {
-    let {searchResults, selectedUsers} = this.props;
+    let {searchResults, selectedUsers} = this.props
     searchResults = searchResults.filter(user => {
-      let result = true;
+      let result = true
       for (let i = 0; i < selectedUsers.length; i++) {
         if (selectedUsers[i].userId === user.id) {
-          result = false;
-          break;
+          result = false
+          break
         }
       }
-      return result;
+      return result
     })
-    const {dropdownItemToHighlight} = this.state;
-    let index = dropdownItemToHighlight;
+    const {dropdownItemToHighlight} = this.state
+    let index = dropdownItemToHighlight
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
-        event.preventDefault();
+        event.preventDefault()
         let highlightIndex = Math.min(++index, searchResults.length - 1)
         this.setState({dropdownItemToHighlight: highlightIndex})
       }
 
       if (event.keyCode === 38) {
-        event.preventDefault();
+        event.preventDefault()
         let highlightIndex = Math.max(--index, 0)
         this.setState({dropdownItemToHighlight: highlightIndex})
       }
 
       if (event.keyCode === 13) {
-        event.preventDefault();
-        let user = searchResults[index];
-        this.props.onAddUser(user);
+        event.preventDefault()
+        let user = searchResults[index]
+        this.props.onAddUser(user)
       }
     }
   }

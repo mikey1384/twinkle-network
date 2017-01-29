@@ -1,6 +1,13 @@
-import React from 'react';
-import Button from 'components/Button';
+import React, {PropTypes} from 'react'
+import Button from 'components/Button'
 
+LikeButton.propTypes = {
+  style: PropTypes.object,
+  liked: PropTypes.bool,
+  onClick: PropTypes.func,
+  small: PropTypes.bool,
+  targetLabel: PropTypes.string
+}
 export default function LikeButton({style, liked, onClick, small, targetLabel}) {
   return (
     <Button

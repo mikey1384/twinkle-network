@@ -4,8 +4,8 @@ import {renderToString} from 'react-dom/server';
 import {RouterContext, match} from 'react-router';
 import createLocation from 'history/lib/createLocation';
 import {Provider} from 'react-redux';
-import path from 'path';
 import {routes, store} from 'Root';
+import path from 'path';
 
 const app = express();
 
@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('../webpack.dev').default(app);
 }
 
-app.use(express.static(__dirname + '/../public'));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use((req, res) => {
   const location = createLocation(req.url);
   match({routes, location}, (err, redirectLocation, props) => {

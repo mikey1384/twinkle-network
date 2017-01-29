@@ -1,22 +1,38 @@
-import React, {Component} from 'react';
-import {timeSince} from 'helpers/timeStampHelpers';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import EditTextArea from 'components/EditTextArea';
-import {cleanStringWithURL} from 'helpers/stringHelpers';
-import Likers from 'components/Likers';
-import UserListModal from 'components/Modals/UserListModal';
-import UsernameText from 'components/UsernameText';
-import ProfilePic from 'components/ProfilePic';
-import Button from 'components/Button';
-import {Color} from 'constants/css';
-import LikeButton from 'components/LikeButton';
-import ReplyInputArea from './ReplyInputArea';
-import {scrollElementToCenter} from 'helpers/domHelpers';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-
-
+import React, {Component, PropTypes} from 'react'
+import {timeSince} from 'helpers/timeStampHelpers'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import EditTextArea from 'components/EditTextArea'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
+import Likers from 'components/Likers'
+import UserListModal from 'components/Modals/UserListModal'
+import UsernameText from 'components/UsernameText'
+import ProfilePic from 'components/ProfilePic'
+import Button from 'components/Button'
+import {Color} from 'constants/css'
+import LikeButton from 'components/LikeButton'
+import ReplyInputArea from './ReplyInputArea'
+import {scrollElementToCenter} from 'helpers/domHelpers'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 
 export default class PanelReply extends Component {
+  static propTypes = {
+    deleteListenerToggle: PropTypes.bool,
+    lastDeletedCommentIndex: PropTypes.number,
+    index: PropTypes.number,
+    comment: PropTypes.object,
+    reply: PropTypes.object,
+    userId: PropTypes.number,
+    userIsOwner: PropTypes.bool,
+    type: PropTypes.string,
+    onEditDone: PropTypes.func,
+    onLikeClick: PropTypes.func,
+    deleteCallback: PropTypes.func,
+    onDelete: PropTypes.func,
+    parent: PropTypes.object,
+    onReplySubmit: PropTypes.func,
+    newlyAdded: PropTypes.bool
+  }
+
   constructor() {
     super()
     this.state={
@@ -32,22 +48,24 @@ export default class PanelReply extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const {newlyAdded} = this.props
+    if (newlyAdded) scrollElementToCenter(this.PanelReply)
     if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
       if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
-        scrollElementToCenter(this.PanelReply);
+        scrollElementToCenter(this.PanelReply)
       }
     }
   }
 
   render() {
-    const {comment, reply, userId, userIsOwner, type} = this.props;
-    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state;
-    let userLikedThis = false;
+    const {comment, reply, userId, userIsOwner, type} = this.props
+    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state
+    let userLikedThis = false
     for (let i = 0; i < reply.likes.length; i++) {
-      if (reply.likes[i].userId === userId) userLikedThis = true;
+      if (reply.likes[i].userId === userId) userLikedThis = true
     }
     return (
-      <div className="media" ref={ref => {this.PanelReply = ref}}>
+      <div className="media" ref={ref => { this.PanelReply = ref }}>
         {userIsOwner && !onEdit &&
           <SmallDropdownButton
             shape="button"
@@ -59,11 +77,11 @@ export default class PanelReply extends Component {
             }}
             menuProps={[
               {
-                label: "Edit",
+                label: 'Edit',
                 onClick: () => this.setState({onEdit: true})
               },
               {
-                label: "Remove",
+                label: 'Remove',
                 onClick: () => this.setState({confirmModalShown: true})
               }
             ]}
@@ -160,26 +178,26 @@ export default class PanelReply extends Component {
   }
 
   onEditDone(editedReply) {
-    const {onEditDone, reply} = this.props;
+    const {onEditDone, reply} = this.props
     onEditDone({editedComment: editedReply, commentId: reply.id}, () => {
       this.setState({onEdit: false})
     })
   }
 
   onLikeClick() {
-    const replyId = this.props.reply.id;
-    this.props.onLikeClick(replyId);
+    const replyId = this.props.reply.id
+    this.props.onLikeClick(replyId)
   }
 
   onDelete() {
-    const replyId = this.props.reply.id;
-    const {deleteCallback, onDelete, index} = this.props;
-    deleteCallback(index);
-    onDelete(replyId);
+    const replyId = this.props.reply.id
+    const {deleteCallback, onDelete, index} = this.props
+    deleteCallback(index)
+    onDelete(replyId)
   }
 
   onReplySubmit(replyContent) {
-    const {parent, reply, onReplySubmit} = this.props;
-    onReplySubmit(replyContent, reply, parent);
+    const {parent, reply, onReplySubmit} = this.props
+    onReplySubmit(replyContent, reply, parent)
   }
 }

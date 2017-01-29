@@ -1,19 +1,19 @@
-import React, {Component, PropTypes} from 'react';
-import ExecutionEnvironment from 'exenv';
-import Carousel from 'components/Carousel';
-import VideoThumb from 'components/VideoThumb';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import EditTitleForm from 'components/EditTitleForm';
-import EditPlaylistModal from '../Modals/EditPlaylistModal';
-import ConfirmModal from 'components/Modals/ConfirmModal';
+import React, {Component, PropTypes} from 'react'
+import ExecutionEnvironment from 'exenv'
+import Carousel from 'components/Carousel'
+import VideoThumb from 'components/VideoThumb'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import EditTitleForm from 'components/EditTitleForm'
+import EditPlaylistModal from '../Modals/EditPlaylistModal'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 import {
   editPlaylistTitleAsync,
   openChangePlaylistVideosModalAsync,
   openReorderPlaylistVideosModal,
   deletePlaylistAsync,
   resetPlaylistModalState
-} from 'redux/actions/PlaylistActions';
-import {connect} from 'react-redux';
+} from 'redux/actions/PlaylistActions'
+import {connect} from 'react-redux'
 
 @connect(
   state => ({
@@ -34,13 +34,19 @@ export default class PlaylistCarousel extends Component {
     uploader: PropTypes.string.isRequired,
     playlist: PropTypes.array.isRequired,
     arrayIndex: PropTypes.number.isRequired,
-    editable: PropTypes.bool
+    editable: PropTypes.bool,
+    clickSafe: PropTypes.bool,
+    openChangePlaylistVideosModalAsync: PropTypes.func,
+    openReorderPlaylistVideosModal: PropTypes.func,
+    editPlaylistTitleAsync: PropTypes.func,
+    deletePlaylistAsync: PropTypes.func,
+    resetPlaylistModalState: PropTypes.func
   }
 
   constructor() {
     super()
-    let numSlides = 7;
-    if(ExecutionEnvironment.canUseDOM) {
+    let numSlides = 7
+    if (ExecutionEnvironment.canUseDOM) {
       numSlides = document.documentElement.clientWidth < 768 ? 3 : 7
     }
     this.state = {
@@ -61,54 +67,54 @@ export default class PlaylistCarousel extends Component {
   }
 
   componentDidMount() {
-    bindListeners.call(this);
+    bindListeners.call(this)
     function bindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
-        addEvent(window, 'resize', this.onResize);
+        addEvent(window, 'resize', this.onResize)
       }
 
       function addEvent(elem, type, eventHandle) {
         if (elem === null || typeof elem === 'undefined') {
-          return;
+          return
         }
         if (elem.addEventListener) {
-          elem.addEventListener(type, eventHandle, false);
+          elem.addEventListener(type, eventHandle, false)
         } else if (elem.attachEvent) {
-          elem.attachEvent('on' + type, eventHandle);
+          elem.attachEvent('on' + type, eventHandle)
         } else {
-          elem['on' + type] = eventHandle;
+          elem['on' + type] = eventHandle
         }
       }
     }
   }
 
   componentWillUnmount() {
-    unbindListeners.call(this);
+    unbindListeners.call(this)
     function unbindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
-        removeEvent(window, 'resize', this.onResize);
+        removeEvent(window, 'resize', this.onResize)
       }
 
       function removeEvent(elem, type, eventHandle) {
         if (elem === null || typeof elem === 'undefined') {
-          return;
+          return
         }
         if (elem.removeEventListener) {
-          elem.removeEventListener(type, eventHandle, false);
+          elem.removeEventListener(type, eventHandle, false)
         } else if (elem.detachEvent) {
-          elem.detachEvent('on' + type, eventHandle);
+          elem.detachEvent('on' + type, eventHandle)
         } else {
-          elem['on' + type] = null;
+          elem['on' + type] = null
         }
       };
     }
   }
 
-  render () {
-    const {onEdit, editPlaylistModalShown, deleteConfirmModalShown, numSlides} = this.state;
-    const {title, uploader, editable, id} = this.props;
+  render() {
+    const {onEdit, editPlaylistModalShown, deleteConfirmModalShown, numSlides} = this.state
+    const {title, uploader, editable, id} = this.props
     const selectedVideos = this.props.playlist.map(thumb => {
-      return thumb.videoId;
+      return thumb.videoId
     })
     const menuProps = [
       {
@@ -196,8 +202,8 @@ export default class PlaylistCarousel extends Component {
     )
   }
 
-  renderThumbs () {
-    const {playlist, clickSafe} = this.props;
+  renderThumbs() {
+    const {playlist, clickSafe} = this.props
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
@@ -223,20 +229,20 @@ export default class PlaylistCarousel extends Component {
   }
 
   onChangeVideos() {
-    this.props.openChangePlaylistVideosModalAsync(this);
+    this.props.openChangePlaylistVideosModalAsync(this)
   }
 
   onReorderVideos() {
-    const playlistVideos = this.props.playlist;
-    this.props.openReorderPlaylistVideosModal(playlistVideos);
-    this.setState({editPlaylistModalShown: true});
+    const playlistVideos = this.props.playlist
+    this.props.openReorderPlaylistVideosModal(playlistVideos)
+    this.setState({editPlaylistModalShown: true})
   }
 
   onEditedTitleSubmit(title) {
-    const {editPlaylistTitleAsync, id, arrayIndex} = this.props;
-    const playlistId = id;
+    const {editPlaylistTitleAsync, id, arrayIndex} = this.props
+    const playlistId = id
     if (title && title !== this.props.title) {
-      editPlaylistTitleAsync({title, playlistId}, arrayIndex, this);
+      editPlaylistTitleAsync({title, playlistId}, arrayIndex, this)
     } else {
       this.setState({onEdit: false})
     }
@@ -247,21 +253,21 @@ export default class PlaylistCarousel extends Component {
   }
 
   onDeleteClick() {
-    this.setState({deleteConfirmModalShown: true});
+    this.setState({deleteConfirmModalShown: true})
   }
 
   onDeleteConfirm() {
-    const {deletePlaylistAsync, id} = this.props;
-    deletePlaylistAsync(id, this);
+    const {deletePlaylistAsync, id} = this.props
+    deletePlaylistAsync(id, this)
   }
 
   onEditPlaylistHide() {
-    this.props.resetPlaylistModalState();
-    this.setState({editPlaylistModalShown: false});
+    this.props.resetPlaylistModalState()
+    this.setState({editPlaylistModalShown: false})
   }
 
   onResize() {
-    if(ExecutionEnvironment.canUseDOM) {
+    if (ExecutionEnvironment.canUseDOM) {
       this.setState({numSlides: document.documentElement.clientWidth < 768 ? 3 : 7})
     }
   }

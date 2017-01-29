@@ -1,29 +1,29 @@
-import React, {Component, PropTypes} from 'react';
-import {DragSource, DropTarget} from 'react-dnd';
-import ItemTypes from 'constants/itemTypes';
+import React, {Component, PropTypes} from 'react'
+import {DragSource, DropTarget} from 'react-dnd'
+import ItemTypes from 'constants/itemTypes'
 
 const thumbSource = {
   beginDrag(props) {
     return {
       id: props.video.id
-    };
+    }
   },
   isDragging(props, monitor) {
-    return props.video.id && (props.video.id === monitor.getItem().id);
+    return props.video.id && (props.video.id === monitor.getItem().id)
   }
-};
+}
 
 const thumbTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.video.id;
-    const sourceProps = monitor.getItem();
-    const sourceId = sourceProps.id;
+    const targetId = targetProps.video.id
+    const sourceProps = monitor.getItem()
+    const sourceId = sourceProps.id
 
-    if(sourceId !== targetId) {
-      targetProps.onMove({sourceId, targetId});
+    if (sourceId !== targetId) {
+      targetProps.onMove({sourceId, targetId})
     }
   }
-};
+}
 
 @DragSource(ItemTypes.THUMB, thumbSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
@@ -34,11 +34,14 @@ const thumbTarget = {
 }))
 export default class SortableThumb extends Component {
   static propTypes = {
-    video: PropTypes.object.isRequired
+    video: PropTypes.object.isRequired,
+    connectDragSource: PropTypes.func,
+    connectDropTarget: PropTypes.func,
+    isDragging: PropTypes.bool
   }
 
-  render () {
-    const {connectDragSource, connectDropTarget, isDragging, video} = this.props;
+  render() {
+    const {connectDragSource, connectDropTarget, isDragging, video} = this.props
     return connectDragSource(connectDropTarget(
       <div
         className="col-sm-2"
@@ -61,15 +64,15 @@ export default class SortableThumb extends Component {
             <div>
               <h5 style={{
                 whiteSpace: 'nowrap',
-                textOverflow:'ellipsis',
-                overflow:'hidden',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
                 lineHeight: 'normal'
               }}>{video.title}</h5>
             </div>
             <small style={{
               whiteSpace: 'nowrap',
-              textOverflow:'ellipsis',
-              overflow:'hidden'
+              textOverflow: 'ellipsis',
+              overflow: 'hidden'
             }}>{video.uploaderName}</small>
           </div>
         </div>

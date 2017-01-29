@@ -1,6 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import onClickOutside from 'react-onclickoutside';
-import Button from './Button';
+import React, {Component, PropTypes} from 'react'
+import onClickOutside from 'react-onclickoutside'
+import Button from './Button'
 
 class SmallDropdownButton extends Component {
   static propTypes = {
@@ -11,7 +11,7 @@ class SmallDropdownButton extends Component {
   }
 
   handleClickOutside = event => {
-    this.setState({menuDisplayed: false});
+    this.setState({menuDisplayed: false})
   }
 
   constructor() {
@@ -21,12 +21,12 @@ class SmallDropdownButton extends Component {
     }
   }
 
-  render () {
-    const {menuDisplayed} = this.state;
-    const {style, icon, shape} = this.props;
-    const buttonIcon = icon === 'pencil' ? 'glyphicon glyphicon-pencil' : 'glyphicon glyphicon-align-justify';
+  render() {
+    const {menuDisplayed} = this.state
+    const {style, icon, shape} = this.props
+    const buttonIcon = icon === 'pencil' ? 'glyphicon glyphicon-pencil' : 'glyphicon glyphicon-align-justify'
     const buttonShape = shape === 'button' ? 'btn btn-sm btn-default' : 'dropdown-toggle'
-    const menuDisplay = menuDisplayed ? 'block' : 'none';
+    const menuDisplay = menuDisplayed ? 'block' : 'none'
 
     return (
       <span
@@ -51,7 +51,7 @@ class SmallDropdownButton extends Component {
   }
 
   renderMenu() {
-    const {menuProps} = this.props;
+    const {menuProps} = this.props
     return menuProps.map((prop, index) => {
       if (prop.separator) {
         return (
@@ -74,8 +74,8 @@ class SmallDropdownButton extends Component {
   }
 
   handleMenuClick(action) {
-    action();
-    this.setState({menuDisplayed: false});
+    action()
+    this.setState({menuDisplayed: false})
   }
 }
 

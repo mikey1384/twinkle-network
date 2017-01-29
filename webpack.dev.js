@@ -1,15 +1,15 @@
-import webpack from 'webpack';
-import assign from 'object-assign';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import prodCfg from './webpack.prod.config.js';
+import webpack from 'webpack'
+import assign from 'object-assign'
+import webpackDevMiddleware from 'webpack-dev-middleware'
+import webpackHotMiddleware from 'webpack-hot-middleware'
+import prodCfg from './webpack.prod.config.js'
 
-Object.assign = assign;
+Object.assign = assign
 
 export default function(app) {
   const config = Object.assign(prodCfg, {
     devtool: 'cheap-module-source-map',
-    entry:   [
+    entry: [
       'webpack-hot-middleware/client',
       './entry/client'
     ],
@@ -55,10 +55,10 @@ export default function(app) {
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoErrorsPlugin()
     ]
-  });
+  })
 
-  const compiler = webpack(config);
+  const compiler = webpack(config)
 
-  app.use(webpackDevMiddleware(compiler, { noInfo: true }));
-  app.use(webpackHotMiddleware(compiler));
+  app.use(webpackDevMiddleware(compiler, { noInfo: true }))
+  app.use(webpackHotMiddleware(compiler))
 }

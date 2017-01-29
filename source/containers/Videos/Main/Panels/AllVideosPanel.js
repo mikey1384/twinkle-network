@@ -1,12 +1,12 @@
-import React, {Component, PropTypes} from 'react';
-import VideoThumb from 'components/VideoThumb';
-import Button from 'components/Button';
-import {connect} from 'react-redux';
-import {getMoreVideos} from 'redux/actions/VideoActions';
-import Loading from 'components/Loading';
+import React, {Component, PropTypes} from 'react'
+import VideoThumb from 'components/VideoThumb'
+import Button from 'components/Button'
+import {connect} from 'react-redux'
+import {getMoreVideos} from 'redux/actions/VideoActions'
+import Loading from 'components/Loading'
 
 const last = (array) => {
-  return array[array.length - 1];
+  return array[array.length - 1]
 }
 
 @connect(
@@ -18,7 +18,10 @@ export default class AllVideosPanel extends Component {
     videos: PropTypes.array.isRequired,
     onAddVideoClick: PropTypes.func.isRequired,
     title: PropTypes.string,
-    loadMoreButton: PropTypes.bool
+    loadMoreButton: PropTypes.bool,
+    loaded: PropTypes.bool,
+    userId: PropTypes.number,
+    getMoreVideos: PropTypes.func
   }
 
   constructor() {
@@ -27,7 +30,7 @@ export default class AllVideosPanel extends Component {
   }
 
   render() {
-    const {loadMoreButton, videos, title = 'All Videos', loaded, onAddVideoClick} = this.props;
+    const {loadMoreButton, videos, title = 'All Videos', loaded, onAddVideoClick} = this.props
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -40,11 +43,11 @@ export default class AllVideosPanel extends Component {
           <div className="clearfix"></div>
         </div>
         <div className="panel-body">
-          {videos.length === 0 && (!!loaded ?
+          {videos.length === 0 && (loaded ?
             <div className="text-center">No Videos</div> : <Loading />
           )}
           {videos.map((video, index) => {
-            const editable = this.props.userId === video.uploaderId;
+            const editable = this.props.userId === video.uploaderId
             return (
               <VideoThumb
                 to={`videos/${video.id}`}
@@ -65,12 +68,12 @@ export default class AllVideosPanel extends Component {
           }
         </div>
       </div>
-    );
+    )
   }
 
   loadMoreVideos() {
-    const {videos, getMoreVideos} = this.props;
-    const lastId = last(videos) ? last(videos).id : 0;
-    getMoreVideos(lastId);
+    const {videos, getMoreVideos} = this.props
+    const lastId = last(videos) ? last(videos).id : 0
+    getMoreVideos(lastId)
   }
 }

@@ -1,7 +1,11 @@
-import React from 'react';
-import Button from 'components/Button';
+import React, {PropTypes} from 'react'
+import Button from 'components/Button'
 
-export default function loadMoreButton({onClick, loading}) {
+LoadMoreButton.propTypes = {
+  onClick: PropTypes.func,
+  loading: PropTypes.bool
+}
+export default function LoadMoreButton({onClick, loading}) {
   return (
     <div className="text-center" style={{paddingBottom: '1em'}}>
       <Button

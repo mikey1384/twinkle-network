@@ -1,7 +1,12 @@
-import React from 'react';
-import {Modal} from 'react-bootstrap';
-import Button from 'components/Button';
+import React, {PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import Button from 'components/Button'
 
+AlertModal.propTypes = {
+  onHide: PropTypes.func,
+  title: PropTypes.string,
+  content: PropTypes.string
+}
 export default function AlertModal({onHide, title, content}) {
   return (
     <Modal

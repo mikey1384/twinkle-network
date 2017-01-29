@@ -1,12 +1,27 @@
-import React, {Component} from 'react';
-import SmallDropdownButton from 'components/SmallDropdownButton';
-import UsernameText from 'components/UsernameText';
-import Textarea from 'react-textarea-autosize';
-import Button from 'components/Button';
-import {timeSince} from 'helpers/timeStampHelpers';
-import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import UsernameText from 'components/UsernameText'
+import Textarea from 'react-textarea-autosize'
+import Button from 'components/Button'
+import {timeSince} from 'helpers/timeStampHelpers'
+import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
 
 export default class Description extends Component {
+  static propTypes = {
+    title: PropTypes.string,
+    description: PropTypes.string,
+    onDelete: PropTypes.func,
+    uploaderId: PropTypes.number,
+    userId: PropTypes.number,
+    uploaderName: PropTypes.string,
+    timeStamp: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    videoId: PropTypes.number,
+    onEditFinish: PropTypes.func
+  }
+
   constructor(props) {
     super()
     this.state = {
@@ -44,9 +59,9 @@ export default class Description extends Component {
       }
     ]
 
-    const {uploaderId, userId, uploaderName, title, description, timeStamp} = this.props;
-    let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state;
-    editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription;
+    const {uploaderId, userId, uploaderName, title, description, timeStamp} = this.props
+    let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state
+    editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription
     return (
       <div>
         <div
@@ -73,8 +88,8 @@ export default class Description extends Component {
                   value={editedTitle}
                   onChange={event => {
                     this.setState({editedTitle: event.target.value}, () => {
-                      this.determineEditButtonDoneStatus();
-                    });
+                      this.determineEditButtonDoneStatus()
+                    })
                   }}
                 />
               </form> :
@@ -92,10 +107,10 @@ export default class Description extends Component {
             <small
               style={{
                 whiteSpace: 'nowrap',
-                textOverflow:'ellipsis',
-                overflow:'hidden',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
                 lineHeight: 'normal'
-              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${!!timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
+              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
             </small>
           </div>
         </div>
@@ -110,10 +125,10 @@ export default class Description extends Component {
                   placeholder="Enter Description"
                   value={editedDescription}
                   onChange={event => {
-                    this.determineEditButtonDoneStatus();
+                    this.determineEditButtonDoneStatus()
                     this.setState({editedDescription: event.target.value}, () => {
-                      this.determineEditButtonDoneStatus();
-                    });
+                      this.determineEditButtonDoneStatus()
+                    })
                   }}
                  />
               </form>
@@ -143,11 +158,11 @@ export default class Description extends Component {
   }
 
   determineEditButtonDoneStatus() {
-    const titleIsEmpty = stringIsEmpty(this.state.editedTitle);
-    const titleChanged = this.state.editedTitle !== this.props.title;
-    const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description);
-    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged);
-    this.setState({editDoneButtonDisabled});
+    const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
+    const titleChanged = this.state.editedTitle !== this.props.title
+    const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description)
+    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged)
+    this.setState({editDoneButtonDisabled})
   }
 
   onEditFinish() {
@@ -156,17 +171,17 @@ export default class Description extends Component {
       title: this.state.editedTitle,
       description: this.state.editedDescription
     }
-    this.props.onEditFinish(params, this);
+    this.props.onEditFinish(params, this)
   }
 
   onEditCancel() {
-    const {description} = this.props;
-    const editedDescription = description === 'No description' ? '' : cleanStringWithURL(description);
+    const {description} = this.props
+    const editedDescription = description === 'No description' ? '' : cleanStringWithURL(description)
     this.setState({
       editedTitle: cleanString(this.props.title),
       editedDescription,
       onEdit: false,
       editDoneButtonDisabled: true
-    });
+    })
   }
 }

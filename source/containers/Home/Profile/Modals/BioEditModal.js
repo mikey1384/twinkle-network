@@ -1,11 +1,18 @@
-import React, {Component} from 'react';
-import {Modal} from 'react-bootstrap';
-import Button from 'components/Button';
-import {Color} from 'constants/css';
+import React, {Component, PropTypes} from 'react'
+import {Modal} from 'react-bootstrap'
+import Button from 'components/Button'
+import {Color} from 'constants/css'
 
-
-const maxChar = 150;
+const maxChar = 150
 export default class BioEditModal extends Component {
+  static propTypes = {
+    onHide: PropTypes.func,
+    onSubmit: PropTypes.func,
+    firstLine: PropTypes.string,
+    secondLine: PropTypes.string,
+    thirdLine: PropTypes.string
+  }
+
   constructor(props) {
     super()
     this.state = {
@@ -15,8 +22,8 @@ export default class BioEditModal extends Component {
     }
   }
   render() {
-    const {onHide, onSubmit} = this.props;
-    const {firstLine, secondLine, thirdLine} = this.state;
+    const {onHide, onSubmit} = this.props
+    const {firstLine, secondLine, thirdLine} = this.state
     return (
       <Modal
         show

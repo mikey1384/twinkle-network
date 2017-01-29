@@ -1,12 +1,18 @@
-import React, {Component, PropTypes} from 'react';
-import {NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
-import {Link} from 'react-router';
-import onClickOutside from 'react-onclickoutside';
+import React, {Component, PropTypes} from 'react'
+import {Link} from 'react-router'
+import onClickOutside from 'react-onclickoutside'
 
 class NotificationsButton extends Component {
+  static propTypes = {
+    onHideMenu: PropTypes.func,
+    menuShown: PropTypes.bool,
+    onClick: PropTypes.func,
+    notifications: PropTypes.array
+  }
+
   handleClickOutside = (event) => {
     this.setState({highlighted: false})
-    this.props.onHideMenu();
+    this.props.onHideMenu()
   }
 
   constructor() {
@@ -17,8 +23,8 @@ class NotificationsButton extends Component {
   }
 
   render() {
-    const {menuShown, onClick, notifications} = this.props;
-    const {highlighted} = this.state;
+    const {menuShown, onClick, notifications} = this.props
+    const {highlighted} = this.state
     return (
       <li className="dropdown">
         <a

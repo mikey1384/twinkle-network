@@ -1,12 +1,13 @@
-import React, {Component, PropTypes} from 'react';
-import {DragDropContext} from 'react-dnd';
+import React, {Component, PropTypes} from 'react'
+import {DragDropContext} from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
-import SortableListItem from './SortableListItem';
+import SortableListItem from './SortableListItem'
 
 @DragDropContext(HTML5Backend)
 export default class SortableListGroup extends Component {
   static propTypes = {
-    listItems: PropTypes.array.isRequired
+    listItems: PropTypes.array.isRequired,
+    onMove: PropTypes.func
   }
 
   render() {

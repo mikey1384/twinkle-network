@@ -1,9 +1,8 @@
-import request from 'axios';
-import {auth, handleError} from './constants';
-import {URL} from 'constants/URL';
+import request from 'axios'
+import {auth, handleError} from './constants'
+import {URL} from 'constants/URL'
 
-const API_URL = `${URL}/playlist`;
-
+const API_URL = `${URL}/playlist`
 
 export const closeAddPlaylistModal = () => ({
   type: 'ADD_PL_MODAL_CLOSE'
@@ -44,12 +43,12 @@ export const uploadPlaylistAsync = params => dispatch =>
 request.post(API_URL, params, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.result) {
       dispatch(uploadPlaylist(data.result))
       dispatch(closeAddPlaylistModal())
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -69,12 +68,12 @@ export const editPlaylistTitleAsync = (params, arrayNumber, sender) => dispatch 
 request.post(`${API_URL}/edit/title`, params, auth())
 .then(
   response => {
-    const { data } = response;
+    const { data } = response
     if (data.result) {
       dispatch(editPlaylistTitle(arrayNumber, params.playlistId, data.result))
       sender.setState({onEdit: false})
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -93,12 +92,12 @@ export const changePlaylistVideosAsync = (playlistId, selectedVideos, sender) =>
 request.post(`${API_URL}/edit/videos`, {playlistId, selectedVideos}, auth())
 .then(
   response => {
-    const { data } = response;
+    const { data } = response
     if (data.result) {
       dispatch(changePlaylistVideos(playlistId, data.result))
       sender.props.onHide()
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -116,12 +115,12 @@ export const deletePlaylistAsync = (playlistId, sender) => dispatch =>
 request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.success) {
       dispatch(deletePlaylist(playlistId))
       sender.setState({deleteConfirmModalShown: false})
     }
-    return;
+    return
   }
 ).catch(
   error => {
@@ -154,12 +153,12 @@ export const changePinnedPlaylistsAsync = (selectedPlaylists, callback) => dispa
 request.post(`${API_URL}/pinned`, {selectedPlaylists}, auth())
 .then(
   response => {
-    const {data} = response;
+    const {data} = response
     if (data.playlists) {
       dispatch(changePinnedPlaylists(data.playlists))
       callback()
     }
-    return;
+    return
   }
 ).catch(
   error => {

@@ -1,10 +1,10 @@
-import request from 'axios';
-import {auth, handleError} from '../constants';
-import * as actions from './actions';
-import {GENERAL_CHAT_ID} from 'constants/database';
-import {URL} from 'constants/URL';
+import request from 'axios'
+import {auth, handleError} from '../constants'
+import * as actions from './actions'
+import {GENERAL_CHAT_ID} from 'constants/database'
+import {URL} from 'constants/URL'
 
-const API_URL = `${URL}/chat`;
+const API_URL = `${URL}/chat`
 
 export const selectChannel = channelId => dispatch => {
   dispatch({
@@ -15,7 +15,7 @@ export const selectChannel = channelId => dispatch => {
 }
 
 export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
-  const {fetchChannelWithId, enterChannel} = actions;
+  const {fetchChannelWithId, enterChannel} = actions
   dispatch(selectChannel(channelId)).then(
     () => fetchChannelWithId(channelId)
   ).then(
@@ -43,8 +43,8 @@ export const sendFirstDirectMessage = (params, callback) => dispatch => {
   }
   request.post(`${API_URL}/channel/twoPeople`, body, auth()).then(
     response => {
-      dispatch(actions.createNewChat(response.data));
-      callback(response.data);
+      dispatch(actions.createNewChat(response.data))
+      callback(response.data)
     }
   ).catch(
     error => {
@@ -72,8 +72,8 @@ export const editChannelTitle = (params, callback) => dispatch =>
 request.post(`${API_URL}/title`, params, auth())
 .then(
   response => {
-    dispatch(actions.applyChangedChannelTitle(params));
-    if (callback) callback();
+    dispatch(actions.applyChangedChannelTitle(params))
+    if (callback) callback()
   }
 ).catch(
   error => {
@@ -87,7 +87,7 @@ export const enterEmptyChat = () => ({
 })
 
 export const getNumberOfUnreadMessagesAsync = () => dispatch => {
-  if (auth() === null) return;
+  if (auth() === null) return
   request.get(`${API_URL}/numUnreads`, auth()).then(
     response => {
       dispatch(actions.getNumberOfUnreadMessages(response.data.numUnreads))
@@ -135,13 +135,13 @@ export const inviteUsersToChannelAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/invite`, params, auth())
 .then(
   response => {
-    const {message} = response.data;
+    const {message} = response.data
     let data = {
       ...params,
       message
     }
-    dispatch(actions.inviteUsersToChannel(data));
-    callback(message);
+    dispatch(actions.inviteUsersToChannel(data))
+    callback(message)
   }
 ).catch(
   error => {
@@ -165,7 +165,7 @@ request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&channelId=$
 )
 
 export const leaveChannelAsync = channelId => dispatch => {
-  const timeStamp = Math.floor(Date.now()/1000);
+  const timeStamp = Math.floor(Date.now()/1000)
   request.delete(`${API_URL}/channel?channelId=${channelId}&timeStamp=${timeStamp}`, auth())
   .then(
     response => {
@@ -211,7 +211,7 @@ export const openDirectMessageChannel = (user, partner, chatCurrentlyOn) => disp
 }
 
 export const receiveMessage = data => dispatch => {
-  const {channelId, timeStamp} = data;
+  const {channelId, timeStamp} = data
   request.post(`${API_URL}/lastRead`, {channelId, timeStamp}, auth()).then(
     response => dispatch({
       type: 'RECEIVE_MSG',

@@ -1,5 +1,11 @@
-import React from 'react';
+import React, {PropTypes} from 'react'
 
+VideoThumb.propTypes = {
+  video: PropTypes.object,
+  selected: PropTypes.bool,
+  onSelect: PropTypes.func,
+  onDeselect: PropTypes.func
+}
 export default function VideoThumb({video, selected, onSelect, onDeselect}) {
   return (
     <div
@@ -10,9 +16,9 @@ export default function VideoThumb({video, selected, onSelect, onDeselect}) {
         style={{cursor: 'pointer'}}
         onClick={() => {
           if (selected) {
-            onDeselect(video.id);
+            onDeselect(video.id)
           } else {
-            onSelect(video.id);
+            onSelect(video.id)
           }
         }}
       >
@@ -41,15 +47,15 @@ export default function VideoThumb({video, selected, onSelect, onDeselect}) {
           <div>
             <h5 style={{
               whiteSpace: 'nowrap',
-              textOverflow:'ellipsis',
-              overflow:'hidden',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
               lineHeight: 'normal'
             }}>{video.title}</h5>
           </div>
           <small style={{
             whiteSpace: 'nowrap',
-            textOverflow:'ellipsis',
-            overflow:'hidden'
+            textOverflow: 'ellipsis',
+            overflow: 'hidden'
           }}>{video.uploaderName}</small>
         </div>
       </div>

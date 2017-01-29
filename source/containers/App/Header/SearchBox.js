@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import SearchInput from 'components/SearchInput';
-import {stringIsEmpty} from 'helpers/stringHelpers';
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import SearchInput from 'components/SearchInput'
+import {stringIsEmpty} from 'helpers/stringHelpers'
 import {
   searchVideoAsync,
   clearSearchResults,
   loadVideoPageFromClientSideAsync
-} from 'redux/actions/VideoActions';
-
+} from 'redux/actions/VideoActions'
 
 @connect(
   state => ({
@@ -20,6 +19,15 @@ import {
   }
 )
 export default class SearchBox extends Component {
+  static propTypes = {
+    searchResult: PropTypes.array,
+    clearSearchResults: PropTypes.func,
+    className: PropTypes.string,
+    style: PropTypes.object,
+    searchVideo: PropTypes.func,
+    loadVideoPage: PropTypes.func
+  }
+
   constructor() {
     super()
     this.state = {
@@ -30,8 +38,8 @@ export default class SearchBox extends Component {
   }
 
   render() {
-    const {searchResult, clearSearchResults, className, style} = this.props;
-    const {searchText} = this.state;
+    const {searchResult, clearSearchResults, className, style} = this.props
+    const {searchText} = this.state
     return (
       <form className={className} style={style}>
         <SearchInput
@@ -53,19 +61,19 @@ export default class SearchBox extends Component {
   }
 
   onContentSearch(event) {
-    const {searchVideo, clearSearchResults} = this.props;
-    const text = event.target.value;
-    this.setState({searchText: text});
+    const {searchVideo, clearSearchResults} = this.props
+    const text = event.target.value
+    this.setState({searchText: text})
     if (stringIsEmpty(text)) {
       return clearSearchResults()
     }
-    searchVideo(text);
+    searchVideo(text)
   }
 
   onSelect(item) {
-    const {clearSearchResults, loadVideoPage} = this.props;
+    const {clearSearchResults, loadVideoPage} = this.props
     this.setState({searchText: ''})
-    clearSearchResults();
-    loadVideoPage(item.id, `videos/${item.id}`);
+    clearSearchResults()
+    loadVideoPage(item.id, `videos/${item.id}`)
   }
 }

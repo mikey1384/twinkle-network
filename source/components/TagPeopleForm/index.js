@@ -1,7 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import {stringIsEmpty} from 'helpers/stringHelpers';
-import Input from './Input';
-
+import React, {Component, PropTypes} from 'react'
+import {stringIsEmpty} from 'helpers/stringHelpers'
+import Input from './Input'
 
 export default class TagPeopleForm extends Component {
   static propTypes = {
@@ -12,6 +11,10 @@ export default class TagPeopleForm extends Component {
     onClear: PropTypes.func.isRequired,
     onAddUser: PropTypes.func.isRequired,
     onRemoveUser: PropTypes.func.isRequired,
+    children: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.array
+    ]),
     onSubmit: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.func
@@ -28,7 +31,7 @@ export default class TagPeopleForm extends Component {
   }
 
   componentWillUnmount() {
-    const {onClear} = this.props;
+    const {onClear} = this.props
     onClear()
   }
 
@@ -39,13 +42,14 @@ export default class TagPeopleForm extends Component {
       selectedUsers,
       filter,
       onSubmit,
-      children } = this.props;
-    const {searchText} = this.state;
-    const filteredResults = searchResult.filter(filter);
+      children
+    } = this.props
+    const {searchText} = this.state
+    const filteredResults = searchResult.filter(filter)
     return (
       <form onSubmit={event => {
-        event.preventDefault();
-        onSubmit && onSubmit();
+        event.preventDefault()
+        onSubmit && onSubmit()
       }}>
         <div className="form-group">
           <label>People</label>
@@ -69,7 +73,7 @@ export default class TagPeopleForm extends Component {
   }
 
   renderTags() {
-    const {selectedUsers, onRemoveUser} = this.props;
+    const {selectedUsers, onRemoveUser} = this.props
     return selectedUsers.length > 0 ?
     <div
       style={{
@@ -97,8 +101,8 @@ export default class TagPeopleForm extends Component {
   }
 
   onUserSearch(event) {
-    const {onSearch, onClear} = this.props;
-    const text = event.target.value;
+    const {onSearch, onClear} = this.props
+    const text = event.target.value
     this.setState({searchText: text})
     if (stringIsEmpty(text) || text.length < 2) {
       return onClear()
