@@ -22,6 +22,7 @@ import Embedly from 'components/Embedly'
 import PanelComments from 'components/PanelComments'
 import TargetContent from './TargetContent'
 import {Color} from 'constants/css'
+import {cleanString} from 'helpers/stringHelpers'
 
 @connect(
   null,
@@ -153,7 +154,7 @@ export default class MainContent extends Component {
           <TargetContent
             isDiscussion
             contentAvailable={!!discussionTitle}
-            title={discussionTitle}
+            title={cleanString(discussionTitle)}
             content={discussionDescription}
             comments={targetContentComments}
             discussionId={discussionId}
@@ -189,7 +190,7 @@ export default class MainContent extends Component {
             marginBottom: contentDescription ? '0.5em' : '1em'
           }}>
             <p><b style={{color: Color.green}}>Discuss:</b></p>
-            <p>{contentTitle}</p>
+            <p>{cleanString(contentTitle)}</p>
           </div>
         }
         {type === 'video' &&
