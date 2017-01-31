@@ -109,7 +109,7 @@ export default class Comment extends Component {
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}
             /> :
-            <div className="container-fluid">
+            <div style={{maxWidth: '85vw', paddingLeft: '1em'}}>
               {!!comment.discussionTitle &&
                 <div
                   className="row"
@@ -124,7 +124,7 @@ export default class Comment extends Component {
               }
               <LongText
                 className="row"
-                style={{paddingBottom: '1em'}}
+                style={{paddingBottom: '1em', wordWrap: 'break-word'}}
               >
                 {comment.content}
               </LongText>

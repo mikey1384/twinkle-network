@@ -120,63 +120,65 @@ export default class Reply extends Component {
               user={{
                 name: username, id: userId
               }}
-            /> <small>&nbsp;{timeSince(timeStamp)}</small></h4>
-          <div>
+            /> <small>&nbsp;{timeSince(timeStamp)}</small>
+          </h4>
+          <div className="media-body">
             {targetUserId &&
               <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: targetUserName, id: targetUserId}} />
               </span>
             }
-            {onEdit ?
-              <EditTextArea
-                autoFocus
-                text={cleanStringWithURL(content)}
-                onCancel={() => this.setState({onEdit: false})}
-                onEditDone={editedComment => onEditDone({editedComment, commentId: id}, () => {
-                  this.setState({onEdit: false})
-                })}
-              /> :
-              <div className="container-fluid">
-                <LongText
-                  className="row"
-                  style={{paddingBottom: '1em'}}
-                >
-                  {content}
-                </LongText>
-                <div
-                  className="row flexbox-container"
-                >
-                  <div className="pull-left">
-                    <LikeButton
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                      small
-                    />
-                    <Button
-                      style={{marginLeft: '0.5em'}}
-                      className="btn btn-warning btn-sm"
-                      onClick={this.onReplyButtonClick}
-                    >
-                      <span className="glyphicon glyphicon-comment"></span> Reply
-                    </Button>
+            <div style={{maxWidth: '77vw'}}>
+              {onEdit ?
+                <EditTextArea
+                  autoFocus
+                  text={cleanStringWithURL(content)}
+                  onCancel={() => this.setState({onEdit: false})}
+                  onEditDone={editedComment => onEditDone({editedComment, commentId: id}, () => {
+                    this.setState({onEdit: false})
+                  })}
+                /> :
+                <div>
+                  <LongText
+                    style={{paddingBottom: '1em', wordWrap: 'break-word'}}
+                  >
+                    {content}
+                  </LongText>
+                  <div
+                    className="row flexbox-container"
+                  >
+                    <div className="pull-left" style={{paddingLeft: '1em'}}>
+                      <LikeButton
+                        onClick={this.onLikeClick}
+                        liked={userLikedThis}
+                        small
+                      />
+                      <Button
+                        style={{marginLeft: '0.5em'}}
+                        className="btn btn-warning btn-sm"
+                        onClick={this.onReplyButtonClick}
+                      >
+                        <span className="glyphicon glyphicon-comment"></span> Reply
+                      </Button>
+                    </div>
+                    <small>
+                      <Likers
+                        className="pull-left"
+                        style={{
+                          fontWeight: 'bold',
+                          marginLeft: '0.8em',
+                          color: Color.green,
+                          marginTop: '1em'
+                        }}
+                        userId={myId}
+                        likes={likes}
+                        onLinkClick={() => this.setState({userListModalShown: true})}
+                      />
+                    </small>
                   </div>
-                  <small>
-                    <Likers
-                      className="pull-left"
-                      style={{
-                        fontWeight: 'bold',
-                        marginLeft: '0.8em',
-                        color: Color.green,
-                        marginTop: '1em'
-                      }}
-                      userId={myId}
-                      likes={likes}
-                      onLinkClick={() => this.setState({userListModalShown: true})}
-                    />
-                  </small>
                 </div>
-              </div>
-            }
+              }
+            </div>
           </div>
           {replyInputShown && <ReplyInputArea
               onSubmit={this.onReplySubmit}
