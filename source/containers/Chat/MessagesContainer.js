@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
-import UsernameText from 'components/UsernameText'
+import UsernameText from 'components/Texts/UsernameText'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
 import ProfilePic from 'components/ProfilePic'

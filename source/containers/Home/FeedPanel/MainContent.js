@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react'
+import LongText from 'components/Texts/LongText'
 import LikeButton from 'components/LikeButton'
 import Button from 'components/Button'
 import Likers from 'components/Likers'
@@ -168,7 +169,7 @@ export default class MainContent extends Component {
             whiteSpace: 'pre-wrap',
             wordWrap: 'break-word'
           }}>
-            <p dangerouslySetInnerHTML={{__html: content}} />
+            <LongText>{content}</LongText>
           </span>
         }
         {(type === 'video' || type === 'discussion') &&
@@ -201,7 +202,7 @@ export default class MainContent extends Component {
             whiteSpace: 'pre-wrap',
             wordWrap: 'break-word'
           }}>
-            <p dangerouslySetInnerHTML={{__html: contentDescription}} />
+            <LongText>{contentDescription}</LongText>
           </div>
         }
         {type === 'discussion' &&
@@ -212,7 +213,7 @@ export default class MainContent extends Component {
             whiteSpace: 'pre-wrap',
             wordWrap: 'break-word'
           }}>
-            <p dangerouslySetInnerHTML={{__html: contentDescription}} />
+            <LongText>{contentDescription}</LongText>
           </div>
         }
         {type === 'video' && videoViews > 10 &&

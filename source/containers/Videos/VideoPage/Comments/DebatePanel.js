@@ -1,12 +1,13 @@
 import React, {Component, PropTypes} from 'react'
 import Button from 'components/Button'
 import {timeSince} from 'helpers/timeStampHelpers'
-import UsernameText from 'components/UsernameText'
+import UsernameText from 'components/Texts/UsernameText'
 import PanelComments from 'components/PanelComments'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import {connect} from 'react-redux'
 import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
 import Textarea from 'react-textarea-autosize'
+import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {
   deleteVideoCommentAsync,
@@ -120,7 +121,9 @@ export default class DebatePanel extends Component {
           {!onEdit &&
             <p style={{fontSize: '2rem'}}>{cleanString(title)}</p>
           }
-          {!onEdit && expanded && !!description && <p dangerouslySetInnerHTML={{__html: description}} />}
+          {!onEdit && expanded && !!description && (
+            <LongText>{description}</LongText>
+          )}
           {onEdit &&
             <form onSubmit={event => event.preventDefault()}>
               <input

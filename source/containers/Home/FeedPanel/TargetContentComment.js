@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import ProfilePic from 'components/ProfilePic'
-import UsernameText from 'components/UsernameText'
-import EditTextArea from 'components/EditTextArea'
+import UsernameText from 'components/Texts/UsernameText'
+import EditTextArea from 'components/Texts/EditTextArea'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {timeSince} from 'helpers/timeStampHelpers'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
+import LongText from 'components/Texts/LongText'
 
 export default class TargetContentComment extends Component {
   static propTypes = {
@@ -72,13 +73,15 @@ export default class TargetContentComment extends Component {
               text={cleanStringWithURL(comment.content)}
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}
+              rows={2}
             /> :
             <div className="container-fluid">
-              <div
+              <LongText
                 className="row"
-                style={{paddingBottom: '1.3em'}}
-                dangerouslySetInnerHTML={{__html: comment.content}}
-              ></div>
+                style={{paddingBottom: '0.8em'}}
+              >
+                {comment.content}
+              </LongText>
             </div>
           }
         </div>

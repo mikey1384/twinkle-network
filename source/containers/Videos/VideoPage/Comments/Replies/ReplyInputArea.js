@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react'
-import InputArea from 'components/InputArea'
+import InputArea from 'components/Texts/InputArea'
 
 ReplyInputArea.propTypes = {
   onSubmit: PropTypes.func,

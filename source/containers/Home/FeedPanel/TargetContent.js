@@ -11,9 +11,10 @@ import {
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
-import InputArea from 'components/InputArea'
+import InputArea from 'components/Texts/InputArea'
 import TargetContentComment from './TargetContentComment'
 import {Color} from 'constants/css'
+import LongText from 'components/Texts/LongText'
 
 @connect(
   state => ({
@@ -164,7 +165,9 @@ export default class TargetContent extends Component {
                 Discuss:
               </p>
               <p style={{fontWeight: 'bold'}}>{title}</p>
-              {!!content && <p dangerouslySetInnerHTML={{__html: content}}/>}
+              {!!content && (
+                <LongText>{content}</LongText>
+              )}
             </div>
           ) : <div style={{textAlign: 'center'}}><span>Content removed / no longer available</span></div>
         }

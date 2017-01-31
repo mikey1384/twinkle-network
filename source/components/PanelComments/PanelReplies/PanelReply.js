@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
 import SmallDropdownButton from 'components/SmallDropdownButton'
-import EditTextArea from 'components/EditTextArea'
+import EditTextArea from 'components/Texts/EditTextArea'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
-import UsernameText from 'components/UsernameText'
+import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
@@ -13,6 +13,7 @@ import LikeButton from 'components/LikeButton'
 import ReplyInputArea from './ReplyInputArea'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
+import LongText from 'components/Texts/LongText'
 
 export default class PanelReply extends Component {
   static propTypes = {
@@ -110,11 +111,12 @@ export default class PanelReply extends Component {
                 onEditDone={this.onEditDone}
               /> :
               <div className="container-fluid">
-                <div
+                <LongText
                   className="row"
-                  dangerouslySetInnerHTML={{__html: reply.content}}
-                  style={{paddingBottom: '1.7em'}}
-                ></div>
+                  style={{paddingBottom: '0.8em'}}
+                >
+                  {reply.content}
+                </LongText>
                 <div
                   className="row flexbox-container"
                 >

@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import SmallDropdownButton from './SmallDropdownButton'
-import EditTitleForm from './EditTitleForm'
+import EditTitleForm from './Texts/EditTitleForm'
 import ConfirmModal from './Modals/ConfirmModal'
 import {
   loadVideoPageFromClientSideAsync,
@@ -8,7 +8,7 @@ import {
   deleteVideoAsync
 } from 'redux/actions/VideoActions'
 import {connect} from 'react-redux'
-import UsernameText from './UsernameText'
+import UsernameText from './Texts/UsernameText'
 import {cleanString} from 'helpers/stringHelpers'
 
 @connect(

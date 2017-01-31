@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react'
-import UsernameText from 'components/UsernameText'
+import UsernameText from 'components/Texts/UsernameText'
 import {Color} from 'constants/css'
 
 UserLink.propTypes = {

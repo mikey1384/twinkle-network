@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 import SmallDropdownButton from 'components/SmallDropdownButton'
-import UsernameText from 'components/UsernameText'
+import UsernameText from 'components/Texts/UsernameText'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
+import LongText from 'components/Texts/LongText'
 import {timeSince} from 'helpers/timeStampHelpers'
 import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
 
@@ -150,7 +151,7 @@ export default class Description extends Component {
                 >Cancel</Button>
               </div>
             </div> :
-            <p style={{wordWrap: 'break-word'}} dangerouslySetInnerHTML={{__html: description}}/>
+            <LongText style={{wordWrap: 'break-word'}}>{description}</LongText>
           }
         </div>
       </div>

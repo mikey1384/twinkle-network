@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
-import InputArea from 'components/InputArea'
-import TitleDescriptionForm from 'components/TitleDescriptionForm'
+import InputArea from 'components/Texts/InputArea'
+import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm'
 import Button from 'components/Button'
 import {connect} from 'react-redux'
 import {

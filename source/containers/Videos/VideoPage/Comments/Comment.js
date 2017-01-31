@@ -6,14 +6,15 @@ import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
 import ReplyInputArea from './Replies/ReplyInputArea'
 import Replies from './Replies'
-import EditTextArea from 'components/EditTextArea'
-import UsernameText from 'components/UsernameText'
+import EditTextArea from 'components/Texts/EditTextArea'
+import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {Color} from 'constants/css'
+import LongText from 'components/Texts/LongText'
 
 export default class Comment extends Component {
   static propTypes = {
@@ -121,11 +122,12 @@ export default class Comment extends Component {
                   Discussion Topic: {comment.discussionTitle}
                 </div>
               }
-              <div
+              <LongText
                 className="row"
-                style={{paddingBottom: '1.7em'}}
-                dangerouslySetInnerHTML={{__html: comment.content}}
-              ></div>
+                style={{paddingBottom: '1em'}}
+              >
+                {comment.content}
+              </LongText>
               <div
                 className="row flexbox-container"
               >

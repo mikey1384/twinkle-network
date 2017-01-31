@@ -7,13 +7,14 @@ import {Color} from 'constants/css'
 import UserListModal from 'components/Modals/UserListModal'
 import PanelReplies from './PanelReplies'
 import ReplyInputArea from './PanelReplies/ReplyInputArea'
-import EditTextArea from 'components/EditTextArea'
-import UsernameText from 'components/UsernameText'
+import EditTextArea from 'components/Texts/EditTextArea'
+import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
+import LongText from 'components/Texts/LongText'
 
 export default class PanelComment extends Component {
   static propTypes = {
@@ -120,11 +121,12 @@ export default class PanelComment extends Component {
               onEditDone={this.onEditDone}
             /> :
             <div className="container-fluid">
-              <div
+              <LongText
                 className="row"
-                style={{paddingBottom: '1.3em'}}
-                dangerouslySetInnerHTML={{__html: comment.content}}
-              ></div>
+                style={{paddingBottom: '0.8em'}}
+              >
+                {comment.content}
+              </LongText>
               <div
                 className="row flexbox-container"
               >

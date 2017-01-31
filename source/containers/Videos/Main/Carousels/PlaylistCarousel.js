@@ -3,7 +3,7 @@ import ExecutionEnvironment from 'exenv'
 import Carousel from 'components/Carousel'
 import VideoThumb from 'components/VideoThumb'
 import SmallDropdownButton from 'components/SmallDropdownButton'
-import EditTitleForm from 'components/EditTitleForm'
+import EditTitleForm from 'components/Texts/EditTitleForm'
 import EditPlaylistModal from '../Modals/EditPlaylistModal'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {
