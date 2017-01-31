@@ -21,6 +21,7 @@ let loadMoreCommentsButton = false
 let loadMoreDebatesButton = false
 let loadMoreDebateCommentsButton = false
 let allVideosLoaded = false
+let reply
 export default function VideoReducer(state = defaultState, action) {
   switch (action.type) {
     case 'CLEAR_CONTENT_SEARCH_RESULTS':
@@ -120,16 +121,6 @@ export default function VideoReducer(state = defaultState, action) {
         allVideoThumbs: action.initialRun ? action.videos : state.allVideoThumbs.concat(action.videos),
         loadMoreButton,
         allVideosLoaded
-      }
-    case 'UPLOAD_VIDEO':
-      const newState = action.data.concat(state.allVideoThumbs)
-      if (action.data.length > 0 && !state.allVideosLoaded) {
-        newState.pop()
-      }
-      return {
-        ...state,
-        allVideoThumbs: newState,
-        addVideoModalShown: false
       }
     case 'EDIT_VIDEO_TITLE':
       return {
@@ -289,6 +280,16 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreDebatesButton
         }
       }
+    case 'UPLOAD_VIDEO':
+      const newState = action.data.concat(state.allVideoThumbs)
+      if (action.data.length > 0 && !state.allVideosLoaded) {
+        newState.pop()
+      }
+      return {
+        ...state,
+        allVideoThumbs: newState,
+        addVideoModalShown: false
+      }
     case 'UPLOAD_VIDEO_COMMENT':
       return {
         ...state,
@@ -325,6 +326,10 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'UPLOAD_VIDEO_REPLY':
+      reply = {
+        ...action.data,
+        ...action.replyType
+      }
       return {
         ...state,
         videoPage: {
@@ -336,7 +341,7 @@ export default function VideoReducer(state = defaultState, action) {
                 return {
                   ...comment,
                   replies: comment.id === action.data.commentId ?
-                    comment.replies.concat(action.data.reply) : comment.replies
+                    comment.replies.concat(reply) : comment.replies
                 }
               })
             }
@@ -345,7 +350,7 @@ export default function VideoReducer(state = defaultState, action) {
             return {
               ...comment,
               replies: comment.id === action.data.commentId ?
-                comment.replies.concat(action.data.reply) : comment.replies
+                comment.replies.concat(reply) : comment.replies
             }
           })
         }

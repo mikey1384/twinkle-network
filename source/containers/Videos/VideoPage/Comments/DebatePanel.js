@@ -182,6 +182,7 @@ export default class DebatePanel extends Component {
               {expanded ?
                 <PanelComments
                   inputTypeLabel={'comment'}
+                  type="videoDiscussionPanel"
                   comments={comments}
                   loadMoreButton={loadMoreDebateCommentsButton}
                   userId={myId}
@@ -269,8 +270,8 @@ export default class DebatePanel extends Component {
     })
   }
 
-  onReplySubmit(replyContent, comment) {
+  onReplySubmit({replyContent, comment, replyOfReply, originType}) {
     const {onReplySubmit, videoId} = this.props
-    onReplySubmit(replyContent, comment, videoId)
+    onReplySubmit({replyContent, comment, videoId, replyOfReply, originType})
   }
 }

@@ -633,7 +633,6 @@ router.post('/replies', requireAuth, (req, res) => {
     }
     res.send({
       result: Object.assign({}, rows[0], {
-        newlyAdded: true,
         likes: [],
         addedFromPanel
       })

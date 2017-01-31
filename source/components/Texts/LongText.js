@@ -21,7 +21,8 @@ export default class LongText extends Component {
       <div {...this.props}>
         <Truncate
           lines={lines}
-          ellipsis={<span>... <a style={{cursor: 'pointer'}} onClick={this.toggleLines}>Read more</a></span>}>
+          ellipsis={<span>... <a style={{cursor: 'pointer'}} onClick={this.toggleLines}>Read more</a></span>}
+        >
           <p dangerouslySetInnerHTML={{__html: children}} />
         </Truncate>
       </div>

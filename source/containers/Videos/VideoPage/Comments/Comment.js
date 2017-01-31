@@ -228,6 +228,6 @@ export default class Comment extends Component {
 
   onReplySubmit(reply) {
     const {commentId, videoId} = this.props
-    this.props.onReplySubmit(reply, commentId, videoId)
+    this.props.onReplySubmit({reply, commentId, videoId})
   }
 }

@@ -96,8 +96,14 @@ export default class PanelReplies extends Component {
     onLoadMoreReplies(lastReplyId, comment.id, parent)
   }
 
-  onReplyOfReplySubmit(replyContent, reply, parent) {
-    const {onReplySubmit} = this.props
-    onReplySubmit(replyContent, reply, parent)
+  onReplyOfReplySubmit({replyContent, reply, parent}) {
+    const {onReplySubmit, type} = this.props
+    onReplySubmit({
+      replyContent,
+      parent,
+      comment: reply,
+      replyOfReply: true,
+      originType: type
+    })
   }
 }

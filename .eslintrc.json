@@ -134,6 +134,7 @@
     "operator-linebreak": [2, "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
     "padded-blocks": [2, "never"],
     "quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+    "react/no-unused-prop-types": [2],
     "rest-spread-spacing": [2, "never"],
     "semi": [2, "never"],
     "semi-spacing": [2, { "before": false, "after": true }],

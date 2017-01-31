@@ -505,13 +505,21 @@ request.post(`${API_URL}/debates/comments`, {comment, videoId, discussionId}, au
   }
 )
 
-export const uploadVideoDebateReply = (replyContent, comment, videoId) => dispatch => {
+export const uploadVideoDebateReply = ({
+  replyContent, comment, videoId,
+  replyOfReply, originType
+}) => dispatch => {
   const params = {reply: replyContent, videoId, commentId: comment.commentId || comment.id, replyId: comment.commentId ? comment.id : null, addedFromPanel: true}
   request.post(`${API_URL}/replies`, params, auth())
   .then(
     response => dispatch({
       type: 'UPLOAD_VIDEO_REPLY',
-      data: {commentId: params.commentId, reply: response.data.result}
+      replyType: {
+        forDiscussionPanel: true,
+        replyOfReply,
+        originType
+      },
+      data: response.data.result
     })
   ).catch(
     error => {
@@ -521,18 +529,17 @@ export const uploadVideoDebateReply = (replyContent, comment, videoId) => dispat
   )
 }
 
-export const uploadVideoReply = data => ({
-  type: 'UPLOAD_VIDEO_REPLY',
-  data
-})
-
-export const uploadVideoReplyAsync = (reply, commentId, videoId, replyId) => dispatch =>
+export const uploadVideoReplyAsync = ({reply, commentId, videoId, replyId, replyOfReply}) => dispatch =>
 request.post(`${API_URL}/replies`, {reply, commentId, videoId, replyId}, auth())
 .then(
   response => {
     const {data} = response
     if (data.result) {
-      dispatch(uploadVideoReply({commentId, reply: data.result}))
+      dispatch({
+        type: 'UPLOAD_VIDEO_REPLY',
+        replyType: {replyOfReply},
+        data: data.result
+      })
     }
     return
   }

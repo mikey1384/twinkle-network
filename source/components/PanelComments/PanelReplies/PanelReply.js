@@ -30,8 +30,7 @@ export default class PanelReply extends Component {
     deleteCallback: PropTypes.func,
     onDelete: PropTypes.func,
     parent: PropTypes.object,
-    onReplySubmit: PropTypes.func,
-    newlyAdded: PropTypes.bool
+    onReplySubmit: PropTypes.func
   }
 
   constructor() {
@@ -40,17 +39,22 @@ export default class PanelReply extends Component {
       onEdit: false,
       replyInputShown: false,
       userListModalShown: false,
-      confirmModalShown: false
+      confirmModalShown: false,
+      clickListenerState: false
     }
     this.onEditDone = this.onEditDone.bind(this)
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
+    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
+  }
+
+  componentDidMount() {
+    const {reply: {replyOfReply, originType}, type} = this.props
+    if (replyOfReply && (type === originType)) scrollElementToCenter(this.PanelReply)
   }
 
   componentDidUpdate(prevProps) {
-    const {newlyAdded} = this.props
-    if (newlyAdded) scrollElementToCenter(this.PanelReply)
     if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
       if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
         scrollElementToCenter(this.PanelReply)
@@ -60,7 +64,10 @@ export default class PanelReply extends Component {
 
   render() {
     const {comment, reply, userId, userIsOwner, type} = this.props
-    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state
+    const {
+      onEdit, userListModalShown, replyInputShown,
+      confirmModalShown, clickListenerState
+    } = this.state
     let userLikedThis = false
     for (let i = 0; i < reply.likes.length; i++) {
       if (reply.likes[i].userId === userId) userLikedThis = true
@@ -99,7 +106,7 @@ export default class PanelReply extends Component {
           </h5>
           <div>
             {reply.targetUserId && !!reply.replyId && reply.replyId !== comment.id &&
-              <span style={{color: '#158cba'}}>
+              <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: reply.targetUserName, id: reply.targetUserId}} />
               </span>
             }
@@ -130,7 +137,7 @@ export default class PanelReply extends Component {
                       <Button
                         style={{marginLeft: '0.5em'}}
                         className="btn btn-warning btn-sm"
-                        onClick={() => this.setState({replyInputShown: true})}
+                        onClick={this.onReplyButtonClick}
                       >
                         <span className="glyphicon glyphicon-comment"></span> Reply
                       </Button>
@@ -156,6 +163,7 @@ export default class PanelReply extends Component {
           </div>
           {replyInputShown && <ReplyInputArea
               onSubmit={this.onReplySubmit}
+              clickListenerState={clickListenerState}
             />
           }
         </div>
@@ -198,8 +206,16 @@ export default class PanelReply extends Component {
     onDelete(replyId)
   }
 
+  onReplyButtonClick() {
+    const {replyInputShown, clickListenerState} = this.state
+    if (!replyInputShown) {
+      return this.setState({replyInputShown: true})
+    }
+    this.setState({clickListenerState: !clickListenerState})
+  }
+
   onReplySubmit(replyContent) {
     const {parent, reply, onReplySubmit} = this.props
-    onReplySubmit(replyContent, reply, parent)
+    onReplySubmit({replyContent, reply, parent})
   }
 }

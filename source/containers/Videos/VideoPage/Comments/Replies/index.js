@@ -68,7 +68,6 @@ export default class Replies extends Component {
             <Reply
               {...reply}
               index={index}
-              ref={reply.id}
               commentId={commentId}
               videoId={videoId}
               onReplySubmit={onReplySubmit}

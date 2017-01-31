@@ -220,7 +220,7 @@ export default class PanelComment extends Component {
 
   onReplySubmit(replyContent) {
     const {parent, comment, onReplySubmit} = this.props
-    onReplySubmit(replyContent, comment, parent)
+    onReplySubmit({replyContent, comment, parent})
   }
 
   onDelete() {

@@ -23,8 +23,13 @@ export default class InputArea extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.clickListenerState !== this.props.clickListenerState) {
-      this.InputArea.focus()
-      scrollElementToCenter(this.InputArea)
+      let nodes = this.InputArea.childNodes
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].tagName === 'TEXTAREA') {
+          nodes[i].focus()
+          scrollElementToCenter(nodes[i])
+        }
+      }
     }
   }
 
@@ -33,10 +38,13 @@ export default class InputArea extends Component {
     const {placeholder, rows, autoFocus, formGroupStyle} = this.props
     return (
       <div className="container-fluid">
-        <div className="row form-group" style={formGroupStyle && formGroupStyle}>
+        <div
+          className="row form-group"
+          style={formGroupStyle && formGroupStyle}
+          ref={ref => { this.InputArea = ref }}
+        >
           <Textarea
             autoFocus={autoFocus}
-            ref={ref => { this.InputArea = ref }}
             className="form-control"
             rows={rows}
             value={text}

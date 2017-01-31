@@ -42,7 +42,8 @@ export default class Reply extends Component {
     onReplySubmit: PropTypes.func,
     commentId: PropTypes.number,
     videoId: PropTypes.number,
-    newlyAdded: PropTypes.bool
+    replyOfReply: PropTypes.bool,
+    forDiscussionPanel: PropTypes.bool
   }
 
   constructor() {
@@ -51,16 +52,18 @@ export default class Reply extends Component {
       onEdit: false,
       replyInputShown: false,
       userListModalShown: false,
-      confirmModalShown: false
+      confirmModalShown: false,
+      clickListenerState: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
+    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
   }
 
   componentDidMount() {
-    const {newlyAdded} = this.props
-    if (newlyAdded) scrollElementToCenter(this.Reply)
+    const {replyOfReply, forDiscussionPanel} = this.props
+    if (replyOfReply && !forDiscussionPanel) scrollElementToCenter(this.Reply)
   }
 
   componentDidUpdate(prevProps) {
@@ -76,7 +79,10 @@ export default class Reply extends Component {
       id, username, timeStamp, content, userIsOwner, onEditDone,
       likes, userId, profilePicId, myId, targetUserName, targetUserId
     } = this.props
-    const {onEdit, userListModalShown, replyInputShown, confirmModalShown} = this.state
+    const {
+      onEdit, userListModalShown, replyInputShown,
+      confirmModalShown, clickListenerState
+    } = this.state
     let userLikedThis = false
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId === myId) userLikedThis = true
@@ -149,7 +155,7 @@ export default class Reply extends Component {
                     <Button
                       style={{marginLeft: '0.5em'}}
                       className="btn btn-warning btn-sm"
-                      onClick={() => this.setState({replyInputShown: true})}
+                      onClick={this.onReplyButtonClick}
                     >
                       <span className="glyphicon glyphicon-comment"></span> Reply
                     </Button>
@@ -174,6 +180,7 @@ export default class Reply extends Component {
           </div>
           {replyInputShown && <ReplyInputArea
               onSubmit={this.onReplySubmit}
+              clickListenerState={clickListenerState}
             />
           }
         </div>
@@ -208,9 +215,17 @@ export default class Reply extends Component {
     this.props.onDelete(id)
   }
 
+  onReplyButtonClick() {
+    const {replyInputShown, clickListenerState} = this.state
+    if (!replyInputShown) {
+      return this.setState({replyInputShown: true})
+    }
+    this.setState({clickListenerState: !clickListenerState})
+  }
+
   onReplySubmit(reply) {
     const {onReplySubmit, commentId, videoId, id} = this.props
     this.setState({replyInputShown: false})
-    onReplySubmit(reply, commentId, videoId, id)
+    onReplySubmit({reply, commentId, videoId, replyId: id, replyOfReply: true})
   }
 }
