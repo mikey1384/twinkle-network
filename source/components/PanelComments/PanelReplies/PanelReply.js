@@ -104,7 +104,7 @@ export default class PanelReply extends Component {
               }}
             /> <small>&nbsp;{timeSince(reply.timeStamp)}</small>
           </h5>
-          <div>
+          <div style={{maxWidth: type === 'videoDiscussionPanel' ? '78vw' : '36vw'}}>
             {reply.targetUserId && !!reply.replyId && reply.replyId !== comment.id &&
               <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: reply.targetUserName, id: reply.targetUserId}} />
@@ -117,17 +117,16 @@ export default class PanelReply extends Component {
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}
               /> :
-              <div className="container-fluid">
+              <div>
                 <LongText
-                  className="row"
-                  style={{paddingBottom: '0.8em'}}
+                  style={{paddingBottom: '0.8em', wordWrap: 'break-word'}}
                 >
                   {reply.content}
                 </LongText>
                 <div
                   className="row flexbox-container"
                 >
-                  <div className="pull-left">
+                  <div className="pull-left" style={{paddingLeft: '1em'}}>
                     <LikeButton
                       onClick={this.onLikeClick}
                       liked={userLikedThis}

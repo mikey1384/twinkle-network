@@ -190,18 +190,21 @@ export const openDirectMessageChannel = (user, partner, chatCurrentlyOn) => disp
     if (!chatCurrentlyOn) return request.get(`${API_URL}/channels`, auth())
     return Promise.resolve({data: []})
   }
-  firstTask().then(
+  return firstTask().then(
     response => request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth()).then(
       currentChannel => Promise.resolve({channels: response.data, currentChannel})
     )
   ).then(
-    ({channels, currentChannel}) => dispatch({
-      type: 'OPEN_CHAT_FOR_DM',
-      user,
-      partner,
-      channels,
-      ...currentChannel.data
-    })
+    ({channels, currentChannel}) => {
+      dispatch({
+        type: 'OPEN_CHAT_FOR_DM',
+        user,
+        partner,
+        channels,
+        ...currentChannel.data
+      })
+      return Promise.resolve()
+    }
   ).catch(
     error => {
       console.error(error.response || error)

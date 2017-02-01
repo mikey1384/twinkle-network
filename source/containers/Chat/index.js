@@ -44,11 +44,11 @@ const channelName = (channels, currentChannel) => {
     loadMoreMessages: ChatActions.loadMoreMessagesAsync,
     createNewChannel: ChatActions.createNewChannelAsync,
     sendFirstDirectMessage: ChatActions.sendFirstDirectMessage,
-    openNewChatTabOrEnterExistingChat: ChatActions.checkChatExistsThenOpenNewChatTabOrEnterExistingChat,
     hideChat: ChatActions.hideChatAsync,
     leaveChannel: ChatActions.leaveChannelAsync,
     editChannelTitle: ChatActions.editChannelTitle,
-    notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel
+    notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel,
+    openDirectMessageChannel: ChatActions.openDirectMessageChannel
   }
 )
 export default class Chat extends Component {
@@ -70,14 +70,14 @@ export default class Chat extends Component {
     partnerId: PropTypes.number,
     enterChannelWithId: PropTypes.func,
     enterEmptyChat: PropTypes.func,
-    openNewChatTabOrEnterExistingChat: PropTypes.func,
     createNewChannel: PropTypes.func,
     receiveMessage: PropTypes.func,
     receiveMessageOnDifferentChannel: PropTypes.func,
     receiveFirstMsg: PropTypes.func,
     editChannelTitle: PropTypes.func,
     hideChat: PropTypes.func,
-    leaveChannel: PropTypes.func
+    leaveChannel: PropTypes.func,
+    openDirectMessageChannel: PropTypes.func
   }
 
   constructor(props) {
@@ -557,12 +557,12 @@ export default class Chat extends Component {
   }
 
   onCreateNewChannel(params) {
-    const {openNewChatTabOrEnterExistingChat, createNewChannel, socket, username, userId} = this.props
+    const {createNewChannel, socket, username, userId, openDirectMessageChannel} = this.props
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0]
-      return openNewChatTabOrEnterExistingChat({username, userId}, partner, () => {
-        this.setState({createNewChannelModalShown: false})
-      })
+      return openDirectMessageChannel({username, userId}, partner, true).then(
+        () => this.setState({createNewChannelModalShown: false})
+      )
     }
 
     createNewChannel(params, data => {

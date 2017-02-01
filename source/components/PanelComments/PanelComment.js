@@ -108,59 +108,63 @@ export default class PanelComment extends Component {
               id: comment.userId
             }} /> <small>&nbsp;{timeSince(comment.timeStamp)}</small>
           </h5>
-          {comment.targetUserId && !!comment.replyId && comment.replyId !== parent.id &&
-            <span style={{color: '#158cba'}}>
-              to: <UsernameText user={{name: comment.targetUserName, id: comment.targetUserId}} />
-            </span>
-          }
-          {onEdit ?
-            <EditTextArea
-              autoFocus
-              text={cleanStringWithURL(comment.content)}
-              onCancel={() => this.setState({onEdit: false})}
-              onEditDone={this.onEditDone}
-            /> :
-            <div className="container-fluid">
-              <LongText
-                className="row"
-                style={{paddingBottom: '0.8em'}}
-              >
-                {comment.content}
-              </LongText>
-              <div
-                className="row flexbox-container"
-              >
-                <div className="pull-left">
-                  <LikeButton
-                    onClick={this.onLikeClick}
-                    liked={userLikedThis}
-                    small
-                  />
-                  <Button
-                    style={{marginLeft: '0.5em'}}
-                    className="btn btn-warning btn-sm"
-                    onClick={this.onReplyButtonClick}
-                  >
-                    <span className="glyphicon glyphicon-comment"></span> Reply
-                  </Button>
+          <div style={{maxWidth: type === 'videoDiscussionPanel' ? '84vw' : '40vw'}}>
+            {comment.targetUserId && !!comment.replyId && comment.replyId !== parent.id &&
+              <span style={{color: Color.blue}}>
+                to: <UsernameText user={{name: comment.targetUserName, id: comment.targetUserId}} />
+              </span>
+            }
+            {onEdit ?
+              <EditTextArea
+                autoFocus
+                text={cleanStringWithURL(comment.content)}
+                onCancel={() => this.setState({onEdit: false})}
+                onEditDone={this.onEditDone}
+              /> :
+              <div>
+                <LongText
+                  style={{
+                    paddingBottom: '0.8em',
+                    wordWrap: 'break-word'
+                  }}
+                >
+                  {comment.content}
+                </LongText>
+                <div
+                  className="row flexbox-container"
+                >
+                  <div className="pull-left" style={{paddingLeft: '1em'}}>
+                    <LikeButton
+                      onClick={this.onLikeClick}
+                      liked={userLikedThis}
+                      small
+                    />
+                    <Button
+                      style={{marginLeft: '0.5em'}}
+                      className="btn btn-warning btn-sm"
+                      onClick={this.onReplyButtonClick}
+                    >
+                      <span className="glyphicon glyphicon-comment"></span> Reply
+                    </Button>
+                  </div>
+                  <small>
+                    <Likers
+                      className="pull-left"
+                      style={{
+                        fontWeight: 'bold',
+                        marginLeft: '0.8em',
+                        color: Color.green,
+                        marginTop: '1em'
+                      }}
+                      userId={userId}
+                      likes={comment.likes}
+                      onLinkClick={() => this.setState({userListModalShown: true})}
+                    />
+                  </small>
                 </div>
-                <small>
-                  <Likers
-                    className="pull-left"
-                    style={{
-                      fontWeight: 'bold',
-                      marginLeft: '0.8em',
-                      color: Color.green,
-                      marginTop: '1em'
-                    }}
-                    userId={userId}
-                    likes={comment.likes}
-                    onLinkClick={() => this.setState({userListModalShown: true})}
-                  />
-                </small>
               </div>
-            </div>
-          }
+            }
+          </div>
           <PanelReplies
             userId={userId}
             replies={comment.replies}
