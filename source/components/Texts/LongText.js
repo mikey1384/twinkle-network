@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Truncate from 'react-truncate'
+import {limitBrs} from 'helpers/stringHelpers'
 
 export default class LongText extends Component {
   static propTypes = {
@@ -23,7 +24,7 @@ export default class LongText extends Component {
           lines={lines}
           ellipsis={<span>... <a style={{cursor: 'pointer'}} onClick={this.toggleLines}>Read more</a></span>}
         >
-          <p dangerouslySetInnerHTML={{__html: children}} />
+          <p dangerouslySetInnerHTML={{__html: limitBrs(children)}} />
         </Truncate>
       </div>
     )

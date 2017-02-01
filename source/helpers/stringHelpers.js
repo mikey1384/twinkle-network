@@ -9,6 +9,10 @@ export function cleanString(string) {
   .replace(/&gt;/gi, '>') : ''
 }
 
+export function limitBrs(string) {
+  return string.replace(/(<br ?\/?>){4,}/gi, '<br><br><br>')
+}
+
 export function cleanStringWithURL(string) {
   return string ?
   string
