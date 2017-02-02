@@ -484,30 +484,34 @@ router.get('/search/chat', requireAuth, (req, res) => {
         )
         AND
         (
-          IFNULL(info.channelName, channels.channelName) LIKE '%${text}%'
+          IFNULL(info.channelName, channels.channelName) LIKE ?
         )
       )
     OR
       (
         (members.userId != ${user.id} AND channels.twoPeople = 1)
         AND
-        (users.username LIKE '%${text}%' OR users.realName LIKE '%${text}%')
+        (users.username LIKE ? OR users.realName LIKE ?)
       )
     OR
       (
-        (channels.id = 2) AND (channels.channelName LIKE '%${text}%')
+        (channels.id = 2) AND (channels.channelName LIKE ?)
       )
     LIMIT 10
   `
-  poolQuery(query).then(
+  poolQuery(query, [`%${text}%`, `%${text}%`, `%${text}%`, `%${text}%`]).then(
     primaryRes => {
       let remainder = 10 - primaryRes.length
       let query = `
-        SELECT id AS userId, username AS label, realName AS subLabel FROM users WHERE username LIKE '%${text}%'
-        OR realName LIKE '%${text}%' AND id != ${user.id} LIMIT ${remainder}
+        SELECT id AS userId, username AS label, realName AS subLabel FROM users WHERE username LIKE ?
+        OR realName LIKE ? AND id != ${user.id} LIMIT ${remainder}
       `
 
-      if (remainder > 0) return poolQuery(query).then(secondaryRes => Promise.resolve({primaryRes, secondaryRes}))
+      if (remainder > 0) {
+        return poolQuery(query, [`%${text}%`, `%${text}%`]).then(
+          secondaryRes => Promise.resolve({primaryRes, secondaryRes})
+        )
+      }
       return Promise.resolve({primaryRes, secondaryRes: []})
     }
   ).then(
