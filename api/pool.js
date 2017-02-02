@@ -8,6 +8,7 @@ const pool = mysql.createPool({
   database: config.mysqlDatabase,
   supportBigNumbers: true,
   bigNumberStrings: true,
+  charset: 'utf8mb4',
   debug: false
 })
 

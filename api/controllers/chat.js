@@ -41,15 +41,11 @@ router.post('/', requireAuth, (req, res) => {
     () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
   ).then(
     () => {
-      const post = {
-        channelId,
-        userId: user.id,
-        content: processedString(content),
-        timeStamp
-      }
-      poolQuery('INSERT INTO msg_chats SET ?', post).then(
-        res => Promise.resolve(res.insertId)
-      )
+      const query = `
+        INSERT INTO msg_chats SET channelId = '${channelId}', userId = '${user.id}',
+        content = '${processedString(content)}', timeStamp = ${timeStamp}
+      `
+      return poolQuery(query)
     }
   ).then(
     () => res.send({success: true})
