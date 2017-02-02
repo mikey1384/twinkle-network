@@ -102,6 +102,6 @@ export default class PanelComments extends Component {
   loadMoreComments() {
     const {comments, parent, loadMoreComments} = this.props
     const lastCommentId = comments[comments.length - 1] ? comments[comments.length - 1].id : 0
-    loadMoreComments(lastCommentId, parent.type, parent.id)
+    loadMoreComments(lastCommentId, parent.type, parent.id, !!parent.commentId)
   }
 }

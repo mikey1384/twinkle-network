@@ -173,9 +173,9 @@ request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
   }
 )
 
-export const loadMoreFeedCommentsAsync = (lastCommentId, type, contentId) => dispatch =>
+export const loadMoreFeedCommentsAsync = (lastCommentId, type, contentId, isReply) => dispatch =>
 request.get(
-  `${API_URL}/comments?type=${type}&contentId=${contentId}&lastCommentId=${lastCommentId}`
+  `${API_URL}/comments?type=${type}&contentId=${contentId}&lastCommentId=${lastCommentId}&isReply=${isReply}`
 ).then(
   response => dispatch({
     type: 'LOAD_MORE_FEED_COMMENTS',

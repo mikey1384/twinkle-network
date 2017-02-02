@@ -85,7 +85,7 @@ export default class TargetContent extends Component {
           (!isDiscussion ?
             <div>
               <UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:
-              <p style={{marginTop: '0.5em'}} dangerouslySetInnerHTML={{__html: content}} />
+              <LongText style={{marginTop: '0.5em'}}>{content}</LongText>
               <LikeButton
                 style={{marginTop: '1em'}}
                 onClick={this.onLikeClick}
