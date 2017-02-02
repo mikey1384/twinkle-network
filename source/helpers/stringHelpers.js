@@ -15,18 +15,22 @@ export function limitBrs(string) {
 
 export function addEmoji(string) {
   return string
-          .replace(/(:[-]?\) )/gi, '😊 ')
-          .replace(/(x[-]?D )/gi, '😆 ')
-          .replace(/(:[-]?D )/gi, '😄 ')
-          .replace(/(<3 )/gi, '❤️ ')
+  .replace(/(:[-]?\) )/g, '😊 ')
+  .replace(/(;[-]?\) )/g, '😉 ')
+  .replace(/(x[-]?D )/g, '😆 ')
+  .replace(/(:[-]?D )/g, '😄 ')
+  .replace(/(:[-]?P )/g, '😛 ')
+  .replace(/(<3 )/g, '❤️ ')
 }
 
 export function addEmojiAfterSubmit(string) {
   return string
-          .replace(/(:[-]?\))/gi, '😊 ')
-          .replace(/(x[-]?D)/gi, '😆 ')
-          .replace(/(:[-]?D)/gi, '😄 ')
-          .replace(/(<3)/gi, '❤️ ')
+  .replace(/(:[-]?\))/g, '😊 ')
+  .replace(/(;[-]?\))/g, '😉 ')
+  .replace(/(x[-]?D)/g, '😆 ')
+  .replace(/(:[-]?D)/g, '😄 ')
+  .replace(/(:[-]?P)/g, '😛 ')
+  .replace(/(<3)/g, '❤️ ')
 }
 
 export function cleanStringWithURL(string) {
