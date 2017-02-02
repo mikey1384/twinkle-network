@@ -92,6 +92,7 @@ export default class MainContent extends Component {
     }
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onCommentButtonClick = this.onCommentButtonClick.bind(this)
+    this.loadMoreComments = this.loadMoreComments.bind(this)
   }
 
   render() {
@@ -100,7 +101,7 @@ export default class MainContent extends Component {
       contentId, type, discussionId, discussionTitle, discussionDescription, videoViews,
       numChildComments, numChildReplies, replyId, commentId, targetReply, targetContentLikers,
       childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle,
-      contentDescription, videoCode, loadMoreComments, onSubmit, onDelete, onLikeClick,
+      contentDescription, videoCode, onSubmit, onDelete, onLikeClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props
@@ -271,7 +272,7 @@ export default class MainContent extends Component {
             comments={childComments}
             loadMoreButton={commentsLoadMoreButton}
             userId={myId}
-            loadMoreComments={loadMoreComments}
+            loadMoreComments={this.loadMoreComments}
             onSubmit={onSubmit}
             contentId={contentId}
             type={type}
@@ -302,6 +303,11 @@ export default class MainContent extends Component {
         }
       </div>
     )
+  }
+
+  loadMoreComments(lastCommentId, type, contentId) {
+    const {loadMoreComments, commentId} = this.props
+    loadMoreComments(lastCommentId, type, contentId, !!commentId)
   }
 
   onCommentButtonClick() {

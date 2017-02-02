@@ -325,7 +325,6 @@ router.get('/comments', (req, res) => {
     ON a.replyId = d.id LEFT JOIN users e ON d.userId = e.id
     WHERE a.${where} ORDER BY a.id DESC LIMIT ${limit}
   `
-  console.log(query)
   pool.query(query, contentId, (err, rows) => {
     if (err) {
       console.error(err)
