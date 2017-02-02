@@ -42,10 +42,10 @@ router.post('/', requireAuth, (req, res) => {
   ).then(
     () => {
       const query = `
-        INSERT INTO msg_chats SET channelId = '${channelId}', userId = '${user.id}',
-        content = '${processedString(content)}', timeStamp = ${timeStamp}
+        INSERT INTO msg_chats SET channelId = ?, userId = ?,
+        content = ?, timeStamp = ?
       `
-      return poolQuery(query)
+      return poolQuery(query, [channelId, user.id, processedString(content), timeStamp])
     }
   ).then(
     () => res.send({success: true})
