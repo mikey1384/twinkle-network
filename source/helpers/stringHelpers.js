@@ -16,16 +16,16 @@ export function limitBrs(string) {
 export function addEmoji(string) {
   return string
           .replace(/(:[-]?\) )/gi, '😊 ')
-          .replace(/(x[-]?\D )/gi, '😆 ')
-          .replace(/(:[-]?\D )/gi, '😄 ')
+          .replace(/(x[-]?D )/gi, '😆 ')
+          .replace(/(:[-]?D )/gi, '😄 ')
           .replace(/(<3 )/gi, '❤️ ')
 }
 
 export function addEmojiAfterSubmit(string) {
   return string
           .replace(/(:[-]?\))/gi, '😊 ')
-          .replace(/(x[-]?\D)/gi, '😆 ')
-          .replace(/(:[-]?\D)/gi, '😄 ')
+          .replace(/(x[-]?D)/gi, '😆 ')
+          .replace(/(:[-]?D)/gi, '😄 ')
           .replace(/(<3)/gi, '❤️ ')
 }
 
