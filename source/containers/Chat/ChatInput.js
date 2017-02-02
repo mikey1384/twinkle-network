@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji, addEmojiAfterSubmit} from 'helpers/stringHelpers'
 
 export default class ChatInput extends Component {
   static propTypes = {
@@ -45,7 +45,7 @@ export default class ChatInput extends Component {
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault()
       if (stringIsEmpty(message)) return
-      this.props.onMessageSubmit(message)
+      this.props.onMessageSubmit(addEmojiAfterSubmit(message))
       this.setState({message: ''})
     }
   }

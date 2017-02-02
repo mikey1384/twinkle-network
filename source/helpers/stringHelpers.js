@@ -21,6 +21,14 @@ export function addEmoji(string) {
           .replace(/(<3 )/gi, '❤️ ')
 }
 
+export function addEmojiAfterSubmit(string) {
+  return string
+          .replace(/(:[-]?\))/gi, '😊 ')
+          .replace(/(x[-]?\D)/gi, '😆 ')
+          .replace(/(:[-]?\D)/gi, '😄 ')
+          .replace(/(<3)/gi, '❤️ ')
+}
+
 export function cleanStringWithURL(string) {
   return string ?
   string

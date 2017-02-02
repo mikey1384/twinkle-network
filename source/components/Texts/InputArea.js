@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji, addEmojiAfterSubmit} from 'helpers/stringHelpers'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 
 export default class InputArea extends Component {
@@ -67,7 +67,7 @@ export default class InputArea extends Component {
 
   onSubmit() {
     if (!stringIsEmpty(this.state.text)) {
-      this.props.onSubmit(this.state.text)
+      this.props.onSubmit(addEmojiAfterSubmit(this.state.text))
       this.setState({text: ''})
     }
   }
