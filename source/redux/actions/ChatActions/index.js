@@ -36,24 +36,6 @@ export const clearUserSearchResults = () => ({
   type: 'CLEAR_USER_SEARCH_RESULTS'
 })
 
-export const sendFirstDirectMessage = (params, callback) => dispatch => {
-  let body = {
-    ...params,
-    timeStamp: Math.floor(Date.now()/1000)
-  }
-  request.post(`${API_URL}/channel/twoPeople`, body, auth()).then(
-    response => {
-      dispatch(actions.createNewChat(response.data))
-      callback(response.data)
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
-}
-
 export const createNewChannelAsync = (params, callback) => dispatch =>
 request.post(`${API_URL}/channel`, {params}, auth())
 .then(
@@ -214,11 +196,15 @@ export const openDirectMessageChannel = (user, partner, chatCurrentlyOn) => disp
 }
 
 export const receiveMessage = data => dispatch => {
-  const {channelId, timeStamp} = data
+  const {channelId} = data
+  const timeStamp = Math.floor(Date.now()/1000)
   request.post(`${API_URL}/lastRead`, {channelId, timeStamp}, auth()).then(
     response => dispatch({
       type: 'RECEIVE_MSG',
-      data
+      data: {
+        ...data,
+        timeStamp: Math.floor(Date.now()/1000)
+      }
     })
   ).catch(
     error => {
@@ -266,12 +252,36 @@ request.get(`${API_URL}/search/users?text=${text}`)
   }
 )
 
+export const sendFirstDirectMessage = (params, callback) => dispatch => {
+  let body = {
+    ...params,
+    timeStamp: Math.floor(Date.now()/1000)
+  }
+  return request.post(`${API_URL}/channel/twoPeople`, body, auth()).then(
+    response => {
+      dispatch({
+        type: 'CREATE_NEW_CHAT',
+        data: response.data
+      })
+      return Promise.resolve(response.data)
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+}
+
 export const submitMessageAsync = (params, callback) => dispatch => {
   let message = {
     ...params,
     timeStamp: Math.floor(Date.now()/1000)
   }
-  dispatch(actions.submitMessage(message))
+  dispatch({
+    type: 'SUBMIT_MESSAGE',
+    message
+  })
   request.post(API_URL, {message}, auth()).then(
     response => callback(params)
   ).catch(

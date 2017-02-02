@@ -14,11 +14,6 @@ export const createNewChannel = data => ({
   data
 })
 
-export const createNewChat = data => ({
-  type: 'CREATE_NEW_CHAT',
-  data
-})
-
 export const enterChannel = (data, showOnTop = false) => ({
   type: 'ENTER_CHANNEL',
   data,
@@ -67,9 +62,4 @@ export const searchChat = data => ({
 export const searchUserToInvite = data => ({
   type: 'SEARCH_USERS_FOR_CHANNEL',
   data
-})
-
-export const submitMessage = message => ({
-  type: 'SUBMIT_MESSAGE',
-  message
 })

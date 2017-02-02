@@ -512,23 +512,12 @@ export default class Chat extends Component {
     } = this.props
     let isFirstDirectMessage = currentChannel.id === 0
     if (isFirstDirectMessage) {
-      return sendFirstDirectMessage({message, userId, partnerId}, chat => {
-        if (chat.alreadyExists) {
-          let {message, messageId} = chat.alreadyExists
-          socket.emit('join_chat_channel', message.channelId)
-          socket.emit('new_chat_message', {
-            userId,
-            username,
-            profilePicId,
-            content: message.content,
-            channelId: message.channelId,
-            id: messageId
-          })
-          return
+      return sendFirstDirectMessage({message, userId, partnerId}).then(
+        chat => {
+          socket.emit('join_chat_channel', chat.channelId)
+          socket.emit('send_bi_chat_invitation', partnerId, chat)
         }
-        socket.emit('join_chat_channel', chat.channelId)
-        socket.emit('send_bi_chat_invitation', partnerId, chat)
-      })
+      )
     }
 
     let params = {

@@ -83,7 +83,6 @@ module.exports = function(io) {
     socket.on('new_chat_message', (data) => {
       const channelId = data.channelId
       data.content = processedString(data.content)
-      data.timeStamp = Math.floor(Date.now()/1000)
       io.to('chatChannel' + channelId).emit('receive_message', data)
     })
 
