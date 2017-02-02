@@ -13,6 +13,14 @@ export function limitBrs(string) {
   return string.replace(/(<br ?\/?>){4,}/gi, '<br><br><br>')
 }
 
+export function addEmoji(string) {
+  return string
+          .replace(/(:[-]?\) )/gi, '😊 ')
+          .replace(/(x[-]?\D )/gi, '😆 ')
+          .replace(/(:[-]?\D )/gi, '😄 ')
+          .replace(/(<3 )/gi, '❤️ ')
+}
+
 export function cleanStringWithURL(string) {
   return string ?
   string

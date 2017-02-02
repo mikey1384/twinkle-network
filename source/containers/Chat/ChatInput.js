@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
 
 export default class ChatInput extends Component {
   static propTypes = {
@@ -32,7 +32,7 @@ export default class ChatInput extends Component {
         placeholder="Type a message..."
         onKeyDown={this.onMessageSubmit}
         value={this.state.message}
-        onChange={event => this.setState({message: event.target.value})}
+        onChange={event => this.setState({message: addEmoji(event.target.value)})}
         autoFocus
       />
     )

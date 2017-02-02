@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 
 export default class InputArea extends Component {
@@ -49,7 +49,7 @@ export default class InputArea extends Component {
             rows={rows}
             value={text}
             placeholder={placeholder}
-            onChange={event => this.setState({text: event.target.value})}
+            onChange={event => this.setState({text: addEmoji(event.target.value)})}
           />
         </div>
         <div className="row">
