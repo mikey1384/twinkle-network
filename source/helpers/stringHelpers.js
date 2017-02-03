@@ -15,18 +15,6 @@ export function limitBrs(string) {
 
 export function addEmoji(string) {
   return string
-  .replace(/(:[-]?\) )/g, '😊 ')
-  .replace(/(;[-]?\) )/g, '😉 ')
-  .replace(/(X[-]?D )/g, '😆 ')
-  .replace(/(:[-]?D )/g, '😄 ')
-  .replace(/(:[-]?P )/g, '😛 ')
-  .replace(/(:[-]?\( )/g, '🙁 ')
-  .replace(/(:[-]?O )/g, '😲 ')
-  .replace(/(<3 )/g, '❤️ ')
-}
-
-export function addEmojiAfterSubmit(string) {
-  return string
   .replace(/(:[-]?\))/g, '😊 ')
   .replace(/(;[-]?\))/g, '😉 ')
   .replace(/(X[-]?D)/g, '😆 ')
