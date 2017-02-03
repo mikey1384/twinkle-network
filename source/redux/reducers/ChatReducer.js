@@ -44,7 +44,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         pageVisible: action.visible,
-        numUnreads: state.numUnreads - state.msgsWhileInvisible,
+        numUnreads: Math.max(state.numUnreads - state.msgsWhileInvisible, 0),
         msgsWhileInvisible: 0
       }
     case 'CREATE_NEW_CHANNEL':
@@ -117,7 +117,7 @@ export default function ChatReducer(state = defaultState, action) {
         channels: state.channels.reduce(
           (resultingArray, channel) => {
             if (channel.id === action.data.channel.id) {
-              if (channel.id !== 2) originalNumUnreads = channel.numUnreads
+              originalNumUnreads = channel.numUnreads
               channel.numUnreads = 0
               channel.isHidden = false
               if (action.showOnTop) return [channel].concat(resultingArray)
