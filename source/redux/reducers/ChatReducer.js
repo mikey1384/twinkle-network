@@ -118,7 +118,7 @@ export default function ChatReducer(state = defaultState, action) {
         ),
         chatMode: true,
         messages: action.data.messages,
-        numUnreads: state.numUnreads - originalNumUnreads,
+        numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         loadMoreButton
       }
     case 'ENTER_EMPTY_CHAT':
@@ -175,7 +175,7 @@ export default function ChatReducer(state = defaultState, action) {
             return resultingArray.concat([channel])
           }, []
         ),
-        numUnreads: state.numUnreads - originalNumUnreads,
+        numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: action.data.messages,
         loadMoreButton,
         userSearchResult: []

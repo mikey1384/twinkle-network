@@ -17,7 +17,7 @@ export function addEmoji(string) {
   return string
   .replace(/(:[-]?\) )/g, '😊 ')
   .replace(/(;[-]?\) )/g, '😉 ')
-  .replace(/(x[-]?D )/g, '😆 ')
+  .replace(/(X[-]?D )/g, '😆 ')
   .replace(/(:[-]?D )/g, '😄 ')
   .replace(/(:[-]?P )/g, '😛 ')
   .replace(/(<3 )/g, '❤️ ')
@@ -27,7 +27,7 @@ export function addEmojiAfterSubmit(string) {
   return string
   .replace(/(:[-]?\))/g, '😊 ')
   .replace(/(;[-]?\))/g, '😉 ')
-  .replace(/(x[-]?D)/g, '😆 ')
+  .replace(/(X[-]?D)/g, '😆 ')
   .replace(/(:[-]?D)/g, '😄 ')
   .replace(/(:[-]?P)/g, '😛 ')
   .replace(/(<3)/g, '❤️ ')
