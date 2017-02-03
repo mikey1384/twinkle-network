@@ -3,12 +3,14 @@ import Header from './Header'
 import Chat from '../Chat'
 import io from 'socket.io-client'
 import {connect} from 'react-redux'
-import {initChatAsync, resetChat, turnChatOff} from 'redux/actions/ChatActions'
+import {initChatAsync, resetChat, turnChatOff, changePageVisibility} from 'redux/actions/ChatActions'
 import {initSessionAsync} from 'redux/actions/UserActions'
 import {URL} from 'constants/URL'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 
 const socket = io.connect(URL)
+let visibilityChange
+let hidden
 
 @connect(
   state => ({
@@ -20,7 +22,8 @@ const socket = io.connect(URL)
     initSession: initSessionAsync,
     turnChatOff,
     initChat: initChatAsync,
-    resetChat
+    resetChat,
+    changePageVisibility
   }
 )
 export default class App extends Component {
@@ -34,7 +37,8 @@ export default class App extends Component {
     location: PropTypes.object,
     params: PropTypes.object,
     loggedIn: PropTypes.bool,
-    initChat: PropTypes.func
+    initChat: PropTypes.func,
+    changePageVisibility: PropTypes.func
   }
 
   constructor() {
@@ -44,6 +48,7 @@ export default class App extends Component {
     }
     this.onChatButtonClick = this.onChatButtonClick.bind(this)
     this.onScroll = this.onScroll.bind(this)
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,8 +57,19 @@ export default class App extends Component {
 
   componentDidMount() {
     const {initSession} = this.props
+    if (typeof document.hidden !== 'undefined') {
+      hidden = 'hidden'
+      visibilityChange = 'visibilitychange'
+    } else if (typeof document.msHidden !== 'undefined') {
+      hidden = 'msHidden'
+      visibilityChange = 'msvisibilitychange'
+    } else if (typeof document.webkitHidden !== 'undefined') {
+      hidden = 'webkitHidden'
+      visibilityChange = 'webkitvisibilitychange'
+    }
     initSession()
     addEvent(window, 'scroll', this.onScroll)
+    addEvent(document, visibilityChange, this.handleVisibilityChange)
   }
 
   componentDidUpdate(prevProps) {
@@ -126,6 +142,15 @@ export default class App extends Component {
         }
       </div>
     )
+  }
+
+  handleVisibilityChange() {
+    const {changePageVisibility} = this.props
+    if (document[hidden]) {
+      changePageVisibility(false)
+    } else {
+      changePageVisibility(true)
+    }
   }
 
   onChatButtonClick() {

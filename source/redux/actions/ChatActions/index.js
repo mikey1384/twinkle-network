@@ -28,6 +28,11 @@ export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
   )
 }
 
+export const changePageVisibility = (visible) => ({
+  type: 'CHANGE_PAGE_VISIBILITY',
+  visible
+})
+
 export const clearChatSearchResults = () => ({
   type: 'CLEAR_CHAT_SEARCH_RESULTS'
 })
