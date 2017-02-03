@@ -20,6 +20,8 @@ export function addEmoji(string) {
   .replace(/(X[-]?D )/g, '😆 ')
   .replace(/(:[-]?D )/g, '😄 ')
   .replace(/(:[-]?P )/g, '😛 ')
+  .replace(/(:[-]?\( )/g, '🙁 ')
+  .replace(/(:[-]?O )/g, '😲 ')
   .replace(/(<3 )/g, '❤️ ')
 }
 
@@ -30,6 +32,8 @@ export function addEmojiAfterSubmit(string) {
   .replace(/(X[-]?D)/g, '😆 ')
   .replace(/(:[-]?D)/g, '😄 ')
   .replace(/(:[-]?P)/g, '😛 ')
+  .replace(/(:[-]?\()/g, '🙁 ')
+  .replace(/(:[-]?O)/g, '😲 ')
   .replace(/(<3)/g, '❤️ ')
 }
 
