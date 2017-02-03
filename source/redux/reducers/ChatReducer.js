@@ -16,6 +16,7 @@ const defaultState = {
 export default function ChatReducer(state = defaultState, action) {
   let loadMoreButton
   let channels
+  let originalNumUnreads = 0
   switch (action.type) {
     case 'APPLY_CHANGED_CHANNEL_TITLE':
       return {
@@ -107,6 +108,7 @@ export default function ChatReducer(state = defaultState, action) {
         channels: state.channels.reduce(
           (resultingArray, channel) => {
             if (channel.id === action.data.channel.id) {
+              if (channel.id !== 2) originalNumUnreads = channel.numUnreads
               channel.numUnreads = 0
               channel.isHidden = false
               if (action.showOnTop) return [channel].concat(resultingArray)
@@ -116,6 +118,7 @@ export default function ChatReducer(state = defaultState, action) {
         ),
         chatMode: true,
         messages: action.data.messages,
+        numUnreads: state.numUnreads - originalNumUnreads,
         loadMoreButton
       }
     case 'ENTER_EMPTY_CHAT':
@@ -165,12 +168,14 @@ export default function ChatReducer(state = defaultState, action) {
         channels: action.data.channels.reduce(
           (resultingArray, channel) => {
             if (channel.id === action.data.currentChannel.id) {
+              if (channel.id !== 2) originalNumUnreads = channel.numUnreads
               channel.numUnreads = 0
               return [channel].concat(resultingArray)
             }
             return resultingArray.concat([channel])
           }, []
         ),
+        numUnreads: state.numUnreads - originalNumUnreads,
         messages: action.data.messages,
         loadMoreButton,
         userSearchResult: []
@@ -336,6 +341,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'RECEIVE_FIRST_MSG':
       return {
         ...state,
+        numUnreads: action.duplicate ? state.numUnreads : state.numUnreads + 1,
         selectedChannelId: action.duplicate ? action.data.channelId : state.selectedChannelId,
         currentChannel: action.duplicate ? {
           id: action.data.channelId,
@@ -405,6 +411,7 @@ export default function ChatReducer(state = defaultState, action) {
       }
       return {
         ...state,
+        numUnreads: state.numUnreads + 1,
         channels: [channel].concat(
           state.channels.filter(channel => channel.id !== action.data.channelId)
         )

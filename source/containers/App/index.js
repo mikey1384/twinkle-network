@@ -62,15 +62,8 @@ export default class App extends Component {
     if (this.props.children !== prevProps.children) turnChatOff()
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
       const {chatMode, chatNumUnreads} = this.props
-      let title = ''
-      let display = ''
-      if (chatMode) {
-        title = 'Twinkle Chat'
-        display = 'none'
-      } else {
-        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
-        display = 'inline'
-      }
+      let title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
+      let display = chatMode ? 'none' : 'inline'
       document.title = title
       for (let i = 0; i < elements.length; i++) {
         if (elements[i].tagName === 'GRAMMARLY-CARD') elements[i].style.display = display
@@ -79,15 +72,8 @@ export default class App extends Component {
 
     if (this.props.chatMode !== prevProps.chatMode) {
       const {chatMode, chatNumUnreads} = this.props
-      let title = ''
-      let display = ''
-      if (chatMode) {
-        title = 'Twinkle Chat'
-        display = 'none'
-      } else {
-        title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
-        display = 'inline'
-      }
+      let title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
+      let display = chatMode ? 'none' : 'inline'
       document.title = title
       for (let i = 0; i < elements.length; i++) {
         if (elements[i].tagName === 'GRAMMARLY-CARD') elements[i].style.display = display

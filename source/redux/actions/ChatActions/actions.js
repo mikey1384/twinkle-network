@@ -23,11 +23,6 @@ export const enterChannel = (data, showOnTop = false) => ({
 export const fetchChannelWithId = channelId =>
 request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
 
-export const getNumberOfUnreadMessages = numUnreads => ({
-  type: 'GET_NUM_UNREAD_MSGS',
-  numUnreads
-})
-
 export const hideChat = channelId => ({
   type: 'HIDE_CHAT',
   channelId

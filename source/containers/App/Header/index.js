@@ -32,6 +32,7 @@ import {Color} from 'constants/css'
     userId: state.UserReducer.userId,
     signinModalShown: state.UserReducer.signinModalShown,
     numChatUnreads: state.ChatReducer.numUnreads,
+    chatMode: state.ChatReducer.chatMode,
     notifications: state.NotiReducer.notifications
   }),
   {
@@ -95,13 +96,13 @@ export default class Header extends Component {
       console.log(data)
     })
     socket.on('receive_message', data => {
-      if (data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
+      if (!this.props.chatMode && data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
         increaseNumberOfUnreadMessages()
       }
     })
     socket.on('chat_invitation', data => {
       socket.emit('join_chat_channel', data.channelId)
-      increaseNumberOfUnreadMessages()
+      if (!this.props.chatMode) increaseNumberOfUnreadMessages()
     })
     socket.on('disconnect', () => {
       turnChatOff()

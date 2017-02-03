@@ -72,7 +72,10 @@ export const getNumberOfUnreadMessagesAsync = () => dispatch => {
   if (auth() === null) return
   request.get(`${API_URL}/numUnreads`, auth()).then(
     response => {
-      dispatch(actions.getNumberOfUnreadMessages(response.data.numUnreads))
+      dispatch({
+        type: 'GET_NUM_UNREAD_MSGS',
+        numUnreads: response.data.numUnreads
+      })
     }
   ).catch(
     error => {
