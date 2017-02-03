@@ -183,7 +183,7 @@ export default class MainContent extends Component {
           />
         }
         {type === 'url' &&
-          <Embedly url={content} apiKey={embedlyKey} />
+          <Embedly title={cleanString(contentTitle)} url={content} apiKey={embedlyKey} />
         }
         {type === 'discussion' &&
           <div style={{

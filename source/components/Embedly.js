@@ -157,7 +157,7 @@ var Embedly = (function(_React$Component) {
           _react2.default.createElement(
             'p',
             { className: 'embedly__title', style: titleStyle },
-            this.state.title
+            this.state.title || this.props.title
           ),
           _react2.default.createElement(
             'p',
