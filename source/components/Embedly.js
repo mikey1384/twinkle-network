@@ -145,7 +145,7 @@ var Embedly = (function(_React$Component) {
 
       return _react2.default.createElement(
         'a',
-        { className: 'embedly', href: this.state.url, style: aStyle, target: '_blank' },
+        { className: 'embedly', href: this.props.url, style: aStyle, target: '_blank' },
         _react2.default.createElement(
           'div',
           { className: 'embedly__image', style: imageStyle },
