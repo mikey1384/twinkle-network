@@ -21,7 +21,8 @@ export default class ChatButton extends Component {
             className={`btn ${chatMode ? 'btn-warning' : 'btn-default'}`}
             onClick={() => onClick()}
           >
-            {`${chatMode ? 'Close Chat' : (numUnreads > 0 ? 'Messages' : 'Open Chat')} `}
+            {!chatMode && <span><span className="glyphicon glyphicon-comment"></span>&nbsp;</span>}
+            {`${chatMode ? 'Close' : (numUnreads > 0 ? 'Messages' : 'Chat')} `}
             {!chatMode && numUnreads > 0 &&
               <span
                 className="badge"

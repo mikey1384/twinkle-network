@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-escape */
+
 module.exports = {
   isValidUsername(username) {
     var pattern = new RegExp(/^[a-zA-Z0-9]+$/)
@@ -65,4 +66,5 @@ module.exports = {
     return checkedString === ''
   }
 }
+
 /* eslint-enable no-useless-escape */
