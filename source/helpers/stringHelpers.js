@@ -19,7 +19,7 @@ export function addEmoji(string) {
   .replace(/(;[-]?\))/g, '😉 ')
   .replace(/(X[-]?D)/g, '😆 ')
   .replace(/(:[-]?D)/g, '😄 ')
-  .replace(/(:[-]?P)/g, '😛 ')
+  .replace(/(:[-]?P)/gi, '😛 ')
   .replace(/(:[-]?\()/g, '🙁 ')
   .replace(/(:[-]?O)/g, '😲 ')
   .replace(/(<3)/g, '❤️ ')
