@@ -133,7 +133,7 @@ const fetchChannels = (user, currentChannelId, lastChannelId) => {
         OR b.userId = ?) AND b.isHidden = '0' AND a.id != ? AND a.id != ? AND b.lastRead <=
         (SELECT lastRead FROM msg_channel_info WHERE userId = ? AND channelId = ?)
         ORDER BY b.lastRead DESC
-        LIMIT 4
+        LIMIT 11
       `
       tasks = [poolQuery(query, [user.id, generalChatId, user.id, currentChannelId, lastChannelId, user.id, lastChannelId])]
     } else {

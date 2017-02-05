@@ -145,7 +145,10 @@ request.post(`${API_URL}/invite`, params, auth())
 
 export const loadMoreChannels = (currentChannelId, lastChannelId) => dispatch =>
 request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&lastChannelId=${lastChannelId}`, auth()).then(
-  response => console.log(response)
+  response => dispatch({
+    type: 'LOAD_MORE_CHANNELS',
+    data: response.data
+  })
 ).catch(
   error => {
     console.error(error.response || error)

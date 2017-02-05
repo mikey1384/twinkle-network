@@ -32,6 +32,7 @@ const channelName = (channels, currentChannel) => {
     selectedChannelId: state.ChatReducer.selectedChannelId,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
+    channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
     loadMoreButton: state.ChatReducer.loadMoreMessages,
     partnerId: state.ChatReducer.partnerId
   }),
@@ -63,6 +64,7 @@ export default class Chat extends Component {
     selectedChannelId: PropTypes.number,
     userId: PropTypes.number,
     loadMoreButton: PropTypes.func,
+    channelLoadMoreButtonShown: PropTypes.bool,
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
     loadMoreChannels: PropTypes.func,
@@ -200,7 +202,7 @@ export default class Chat extends Component {
     const {myChannels} = this.state
     let currentChannelOnline = 1
 
-    if (prevProps.channels !== this.props.channels && currentChannel.id === this.props.channels[0].id) {
+    if (prevProps.channels[0] !== this.props.channels[0] && currentChannel.id === this.props.channels[0].id) {
       this.channelList.scrollTop = 0
     }
 
@@ -230,7 +232,7 @@ export default class Chat extends Component {
   }
 
   render() {
-    const {channels, currentChannel, userId} = this.props
+    const {channels, currentChannel, userId, channelLoadMoreButtonShown} = this.props
     const {
       loading,
       createNewChannelModalShown,
@@ -369,22 +371,24 @@ export default class Chat extends Component {
             ref={ref => { this.channelList = ref }}
           >
             {this.renderChannels()}
-            <div
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0',
-                margin: '0',
-                height: '3rem',
-                cursor: 'pointer',
-                backgroundColor: Color.green,
-                color: '#fff'
-              }}
-              className="flexbox-container"
-              onClick={this.loadMoreChannels}
-            >
-              Load More
-            </div>
+            {channelLoadMoreButtonShown &&
+              <div
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0',
+                  margin: '0',
+                  height: '3rem',
+                  cursor: 'pointer',
+                  backgroundColor: Color.green,
+                  color: '#fff'
+                }}
+                className="flexbox-container"
+                onClick={this.loadMoreChannels}
+              >
+                Load More
+              </div>
+            }
           </div>
         </div>
         <div

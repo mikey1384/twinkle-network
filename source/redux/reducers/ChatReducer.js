@@ -10,6 +10,7 @@ const defaultState = {
   chatSearchResult: [],
   loadMoreMessages: false,
   loadMoreChannel: false,
+  channelLoadMoreButton: false,
   partnerId: null,
   numUnreads: 0,
   pageVisible: true,
@@ -17,6 +18,7 @@ const defaultState = {
 }
 
 export default function ChatReducer(state = defaultState, action) {
+  let channelLoadMoreButton = false
   let loadMoreMessages
   let channels
   let originalNumUnreads = 0
@@ -173,8 +175,13 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreMessages = true
       }
       action.data.messages && action.data.messages.reverse()
+      if (action.data.channels.length > 10) {
+        action.data.channels.pop()
+        channelLoadMoreButton = true
+      }
       return {
         ...state,
+        channelLoadMoreButton,
         chatMode: true,
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
@@ -216,6 +223,16 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: action.data
+      }
+    case 'LOAD_MORE_CHANNELS':
+      if (action.data.length > 10) {
+        action.data.pop()
+        channelLoadMoreButton = true
+      }
+      return {
+        ...state,
+        channelLoadMoreButton,
+        channels: state.channels.concat(action.data)
       }
     case 'LOAD_MORE_MSG':
       loadMoreMessages = false
