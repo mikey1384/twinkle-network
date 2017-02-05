@@ -223,8 +223,7 @@ export const openDirectMessageChannel = (user, partner, chatCurrentlyOn) => disp
 
 export const receiveMessage = data => dispatch => {
   const {channelId} = data
-  const timeStamp = Math.floor(Date.now()/1000)
-  request.post(`${API_URL}/lastRead`, {channelId, timeStamp}, auth()).then(
+  request.post(`${API_URL}/lastRead`, {channelId}, auth()).then(
     response => dispatch({
       type: 'RECEIVE_MSG',
       data: {
