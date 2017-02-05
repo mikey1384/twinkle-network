@@ -125,17 +125,19 @@ const fetchChannels = (user, currentChannelId, lastChannelId) => {
     let tasks = []
     if (lastChannelId) {
       let query = `
-        SELECT a.id, a.twoPeople, a.channelName, b.lastRead
+        SELECT a.id, a.twoPeople, a.channelName, b.lastRead,
+        (SELECT timeStamp FROM msg_chats WHERE channelId = a.id ORDER BY timeStamp DESC LIMIT 1) AS lastUpdate
         FROM msg_channels a LEFT JOIN
         msg_channel_info b ON a.id = b.channelId AND b.userId = ?
         WHERE a.id IN
         (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
-        OR b.userId = ?) AND b.isHidden = '0' AND a.id != ? AND a.id != ? AND b.lastRead <=
-        (SELECT lastRead FROM msg_channel_info WHERE userId = ? AND channelId = ?)
-        ORDER BY b.lastRead DESC
+        OR b.userId = ?) AND b.isHidden = '0' AND a.id != ? AND a.id != ? AND
+        (SELECT timeStamp FROM msg_chats WHERE channelId = a.id ORDER BY timeStamp DESC LIMIT 1) <=
+        (SELECT timeStamp FROM msg_chats WHERE channelId = ? ORDER BY timeStamp DESC LIMIT 1)
+        ORDER BY lastUpdate DESC
         LIMIT 11
       `
-      tasks = [poolQuery(query, [user.id, generalChatId, user.id, currentChannelId, lastChannelId, user.id, lastChannelId])]
+      tasks = [poolQuery(query, [user.id, generalChatId, user.id, currentChannelId, lastChannelId, lastChannelId])]
     } else {
       const query1 = `
         SELECT a.id, a.twoPeople, a.channelName, b.lastRead
@@ -144,14 +146,15 @@ const fetchChannels = (user, currentChannelId, lastChannelId) => {
         WHERE a.id = ?
       `
       const query2 = `
-        SELECT a.id, a.twoPeople, a.channelName, b.lastRead
+        SELECT a.id, a.twoPeople, a.channelName, b.lastRead,
+        (SELECT timeStamp FROM msg_chats WHERE channelId = a.id ORDER BY timeStamp DESC LIMIT 1) AS lastUpdate
         FROM msg_channels a LEFT JOIN
         msg_channel_info b ON a.id = b.channelId AND b.userId = ?
         WHERE a.id IN
         (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
         OR b.userId = ?) AND b.isHidden = '0' AND a.id != ?
-        ORDER BY b.lastRead DESC
-        LIMIT 10
+        ORDER BY lastUpdate DESC
+        LIMIT 11
       `
       const params = [user.id, generalChatId, user.id, currentChannelId]
       tasks = [poolQuery(query1, [user.id, currentChannelId]), poolQuery(query2, params)]

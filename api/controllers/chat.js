@@ -61,7 +61,10 @@ router.get('/more/channels', requireAuth, (req, res) => {
   fetchChannels(user, currentChannelId, lastChannelId).then(
     channels => res.send(channels)
   ).catch(
-    err => res.status(500).send({error: err})
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
   )
 })
 
