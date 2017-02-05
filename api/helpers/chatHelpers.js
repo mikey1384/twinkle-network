@@ -95,6 +95,7 @@ const fetchSingleChannel = (channelId, userId) => {
     channel => fetchChannelTitleAndLastMessage(channel, userId).then(
       result => Promise.resolve({
         id: channel.id,
+        twoPeople: channel.twoPeople,
         channelName: result[1] || channel.channelName,
         lastMessage: result[0].content || '',
         lastUpdate: result[0].timeStamp || '',
@@ -149,7 +150,7 @@ const fetchChannels = (user, currentChannelId, lastChannelId) => {
         WHERE a.id IN
         (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
         OR b.userId = ?) AND b.isHidden = '0' AND a.id != ?
-        ORDER BY lastUpdated DESC
+        ORDER BY a.lastUpdated DESC
         LIMIT 10
       `
       const params = [user.id, generalChatId, user.id, currentChannelId]
