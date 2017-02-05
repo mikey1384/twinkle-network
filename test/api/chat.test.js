@@ -33,6 +33,9 @@ describe('Chat GET', () => {
     request(app).get('/chat/channel').set(header).query('channelId=199').then(
       result => {
         expect(result.status).toBe(200)
+        for (let key in result.body) {
+          expect(!!result.body[key]).toBe(true)
+        }
         done()
       }
     )
@@ -52,7 +55,7 @@ describe('Chat POST', () => {
   beforeEach(done => {
     poolQuery('SELECT * FROM msg_channel_members WHERE userId = ?', testUserId).then(
       rows => {
-        let channelIds = rows.map(row => row.channelId)
+        let channelIds = rows.map(row => row.channelId).filter(channelId => channelId !== 199)
         return Promise.resolve(channelIds)
       }
     ).then(

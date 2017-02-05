@@ -15,11 +15,14 @@ export const selectChannel = channelId => dispatch => {
 }
 
 export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
-  const {fetchChannelWithId, enterChannel} = actions
   dispatch(selectChannel(channelId)).then(
-    () => fetchChannelWithId(channelId)
+    () => request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
   ).then(
-    response => dispatch(enterChannel(response.data, showOnTop))
+    response => dispatch({
+      type: 'ENTER_CHANNEL',
+      data: response.data,
+      showOnTop
+    })
   ).catch(
     error => {
       console.error(error.response || error)
@@ -140,8 +143,18 @@ request.post(`${API_URL}/invite`, params, auth())
   }
 )
 
+export const loadMoreChannels = (currentChannelId, lastChannelId) => dispatch =>
+request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&lastChannelId=${lastChannelId}`, auth()).then(
+  response => console.log(response)
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const loadMoreMessagesAsync = (userId, messageId, channelId, callback) => dispatch =>
-request.get(`${API_URL}/more?userId=${userId}&messageId=${messageId}&channelId=${channelId}`, auth())
+request.get(`${API_URL}/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`, auth())
 .then(
   response => {
     dispatch(actions.loadMoreMessages(response.data))
@@ -176,22 +189,24 @@ export const notifyThatMemberLeftChannel = data => ({
 })
 
 export const openDirectMessageChannel = (user, partner, chatCurrentlyOn) => dispatch => {
-  function firstTask() {
-    if (!chatCurrentlyOn) return request.get(`${API_URL}/channels`, auth())
-    return Promise.resolve({data: []})
+  function fetchChannels(currentChannel) {
+    if (!chatCurrentlyOn) {
+      return request.get(`${API_URL}/channels?currentChannelId=${currentChannel.channelId}`, auth()).then(
+        response => Promise.resolve({currentChannel, channels: response.data})
+      )
+    }
+    return Promise.resolve({currentChannel, channels: []})
   }
-  return firstTask().then(
-    response => request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth()).then(
-      currentChannel => Promise.resolve({channels: response.data, currentChannel})
-    )
+  return request.get(`${API_URL}/channel/check?partnerId=${partner.userId}`, auth()).then(
+    response => fetchChannels(response.data)
   ).then(
-    ({channels, currentChannel}) => {
+    ({currentChannel, channels}) => {
       dispatch({
         type: 'OPEN_CHAT_FOR_DM',
         user,
         partner,
         channels,
-        ...currentChannel.data
+        ...currentChannel
       })
       return Promise.resolve()
     }

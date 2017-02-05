@@ -1,9 +1,3 @@
-import request from 'axios'
-import {auth} from '../constants'
-import {URL} from 'constants/URL'
-
-const API_URL = `${URL}/chat`
-
 export const applyChangedChannelTitle = data => ({
   type: 'APPLY_CHANGED_CHANNEL_TITLE',
   data
@@ -13,15 +7,6 @@ export const createNewChannel = data => ({
   type: 'CREATE_NEW_CHANNEL',
   data
 })
-
-export const enterChannel = (data, showOnTop = false) => ({
-  type: 'ENTER_CHANNEL',
-  data,
-  showOnTop
-})
-
-export const fetchChannelWithId = channelId =>
-request.get(`${API_URL}/channel?channelId=${channelId}`, auth())
 
 export const hideChat = channelId => ({
   type: 'HIDE_CHAT',

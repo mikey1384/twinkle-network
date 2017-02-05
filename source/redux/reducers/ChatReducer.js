@@ -8,7 +8,8 @@ const defaultState = {
   messages: [],
   userSearchResult: [],
   chatSearchResult: [],
-  loadMoreButton: false,
+  loadMoreMessages: false,
+  loadMoreChannel: false,
   partnerId: null,
   numUnreads: 0,
   pageVisible: true,
@@ -16,7 +17,7 @@ const defaultState = {
 }
 
 export default function ChatReducer(state = defaultState, action) {
-  let loadMoreButton
+  let loadMoreMessages
   let channels
   let originalNumUnreads = 0
   switch (action.type) {
@@ -68,7 +69,7 @@ export default function ChatReducer(state = defaultState, action) {
           members: action.data.members
         },
         messages: [action.data.message],
-        loadMoreButton: false
+        loadMoreMessages: false
       }
     case 'CREATE_NEW_CHAT':
       return {
@@ -104,10 +105,10 @@ export default function ChatReducer(state = defaultState, action) {
       }
     }
     case 'ENTER_CHANNEL':
-      loadMoreButton = false
+      loadMoreMessages = false
       if (action.data.messages.length === 21) {
         action.data.messages.pop()
-        loadMoreButton = true
+        loadMoreMessages = true
       }
       action.data.messages.reverse()
       return {
@@ -115,12 +116,15 @@ export default function ChatReducer(state = defaultState, action) {
         selectedChannelId: action.data.channel.id,
         currentChannel: action.data.channel,
         channels: state.channels.reduce(
-          (resultingArray, channel) => {
+          (resultingArray, channel, index) => {
             if (channel.id === action.data.channel.id) {
               originalNumUnreads = channel.numUnreads
               channel.numUnreads = 0
-              channel.isHidden = false
-              if (action.showOnTop) return [channel].concat(resultingArray)
+            }
+            if (action.showOnTop && index === (state.channels.length - 1)) {
+              return [action.data.channel].concat(
+                resultingArray.filter(channel => channel.id !== action.data.channel.id)
+              )
             }
             return resultingArray.concat([channel])
           }, []
@@ -128,7 +132,7 @@ export default function ChatReducer(state = defaultState, action) {
         chatMode: true,
         messages: action.data.messages,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
-        loadMoreButton
+        loadMoreMessages
       }
     case 'ENTER_EMPTY_CHAT':
       return {
@@ -140,7 +144,7 @@ export default function ChatReducer(state = defaultState, action) {
           members: state.channels[0].members
         },
         messages: [],
-        loadMoreButton: false
+        loadMoreMessages: false
       }
     case 'GET_NUM_UNREAD_MSGS':
       return {
@@ -163,10 +167,10 @@ export default function ChatReducer(state = defaultState, action) {
         numUnreads: state.numUnreads + 1
       }
     case 'INIT_CHAT':
-      loadMoreButton = false
+      loadMoreMessages = false
       if (action.data.messages && action.data.messages.length === 21) {
         action.data.messages.pop()
-        loadMoreButton = true
+        loadMoreMessages = true
       }
       action.data.messages && action.data.messages.reverse()
       return {
@@ -186,7 +190,7 @@ export default function ChatReducer(state = defaultState, action) {
         ),
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: action.data.messages,
-        loadMoreButton,
+        loadMoreMessages,
         userSearchResult: []
       }
     case 'INVITE_USERS_TO_CHANNEL':
@@ -214,15 +218,15 @@ export default function ChatReducer(state = defaultState, action) {
         channels: action.data
       }
     case 'LOAD_MORE_MSG':
-      loadMoreButton = false
+      loadMoreMessages = false
       if (action.data.length === 21) {
         action.data.pop()
-        loadMoreButton = true
+        loadMoreMessages = true
       }
       action.data.reverse()
       return {
         ...state,
-        loadMoreButton,
+        loadMoreMessages,
         messages: action.data.concat(state.messages)
       }
     case 'NOTIFY_MEMBER_LEFT':
@@ -262,7 +266,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'OPEN_CHAT_FOR_DM':
       if (action.messages.length > 20) {
         action.messages.pop()
-        loadMoreButton = true
+        loadMoreMessages = true
       }
       channels = action.channels.length > 0 ? action.channels : state.channels
       return {
@@ -301,7 +305,7 @@ export default function ChatReducer(state = defaultState, action) {
           ]
         },
         messages: action.messages.reverse(),
-        loadMoreButton,
+        loadMoreMessages,
         partnerId: action.partner.userId
       }
     case 'OPEN_NEW_CHAT_TAB':
@@ -344,7 +348,7 @@ export default function ChatReducer(state = defaultState, action) {
           ]
         },
         messages: [],
-        loadMoreButton: false,
+        loadMoreMessages: false,
         partnerId: action.partner.userId
       }
     case 'RECEIVE_FIRST_MSG':

@@ -10,6 +10,7 @@ const {generalChatId} = require('../siteConfig')
 const {
   fetchChat,
   fetchMessages,
+  fetchSingleChannel,
   fetchChannels,
   saveChannelMembers,
   updateLastRead
@@ -54,7 +55,17 @@ router.post('/', requireAuth, (req, res) => {
   )
 })
 
-router.get('/more', requireAuth, (req, res) => {
+router.get('/more/channels', requireAuth, (req, res) => {
+  const {currentChannelId, lastChannelId} = req.query
+  const {user} = req
+  fetchChannels(user, currentChannelId, lastChannelId).then(
+    channels => res.send(channels)
+  ).catch(
+    err => res.status(500).send({error: err})
+  )
+})
+
+router.get('/more/messages', requireAuth, (req, res) => {
   const user = req.user
   if (Number(req.query.userId) !== user.id) {
     return res.status(401).send('Unauthorized')
@@ -75,7 +86,8 @@ router.get('/more', requireAuth, (req, res) => {
 
 router.get('/channels', requireAuth, (req, res) => {
   const user = req.user
-  fetchChannels(user).then(
+  const {currentChannelId} = req.query
+  fetchChannels(user, currentChannelId).then(
     channels => res.send(channels)
   ).catch(
     err => res.status(500).send({error: err})
@@ -85,49 +97,23 @@ router.get('/channels', requireAuth, (req, res) => {
 router.get('/channel', requireAuth, (req, res) => {
   const user = req.user
   const channelId = Number(req.query.channelId) || generalChatId
-  let resultObject = {
-    channel: {},
-    messages: []
-  }
 
   updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
-  fetchMessages(channelId).then(
-    messages => {
-      resultObject.messages = messages
-      return poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id])
-    }
+  return fetchMessages(channelId).then(
+    messages => poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
+      () => Promise.resolve(messages)
+    )
   ).then(
-    () => async.parallel([
-      callback => {
-        pool.query('SELECT twoPeople, creator FROM msg_channels WHERE id = ?', channelId, (err, rows) => {
-          callback(err, rows[0])
-        })
-      },
-      callback => {
-        let query = [
-          'SELECT a.userId, b.username FROM ',
-          'msg_channel_members a JOIN users b ON ',
-          'a.userId = b.id WHERE a.channelId = ?'
-        ].join('')
-        pool.query(query, channelId, (err, rows) => {
-          callback(err, rows)
-        })
-      }
-    ], (err, results) => {
-      if (err) {
-        console.error(err)
-        return res.status(500).send({error: err})
-      }
-      resultObject.channel = {
-        id: channelId,
-        twoPeople: results[0] ? Boolean(results[0].twoPeople) : false,
-        creatorId: results[0] ? results[0].creator : null,
-        members: results[1]
-      }
-      res.send(resultObject)
-    })
+    messages => {
+      return fetchSingleChannel(channelId, user.id).then(
+        channel => res.send({messages, channel})
+      )
+    }
   ).catch(
-    err => res.status(500).send({error: err})
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
   )
 })
 

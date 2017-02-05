@@ -11,6 +11,7 @@ import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import Button from 'components/Button'
 import ChatSearchBox from './ChatSearchBox'
+import {Color} from 'constants/css'
 import {GENERAL_CHAT_ID} from 'constants/database'
 
 const channelName = (channels, currentChannel) => {
@@ -31,7 +32,7 @@ const channelName = (channels, currentChannel) => {
     selectedChannelId: state.ChatReducer.selectedChannelId,
     channels: state.ChatReducer.channels,
     messages: state.ChatReducer.messages,
-    loadMoreButton: state.ChatReducer.loadMoreButton,
+    loadMoreButton: state.ChatReducer.loadMoreMessages,
     partnerId: state.ChatReducer.partnerId
   }),
   {
@@ -41,6 +42,7 @@ const channelName = (channels, currentChannel) => {
     enterChannelWithId: ChatActions.enterChannelWithId,
     enterEmptyChat: ChatActions.enterEmptyChat,
     submitMessage: ChatActions.submitMessageAsync,
+    loadMoreChannels: ChatActions.loadMoreChannels,
     loadMoreMessages: ChatActions.loadMoreMessagesAsync,
     createNewChannel: ChatActions.createNewChannelAsync,
     sendFirstDirectMessage: ChatActions.sendFirstDirectMessage,
@@ -63,6 +65,7 @@ export default class Chat extends Component {
     loadMoreButton: PropTypes.func,
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
+    loadMoreChannels: PropTypes.func,
     submitMessage: PropTypes.func,
     username: PropTypes.string,
     profilePicId: PropTypes.number,
@@ -104,6 +107,7 @@ export default class Chat extends Component {
     this.onHideChat = this.onHideChat.bind(this)
     this.onLeaveChannel = this.onLeaveChannel.bind(this)
     this.onMouseOverTitle = this.onMouseOverTitle.bind(this)
+    this.loadMoreChannels = this.loadMoreChannels.bind(this)
 
     const {socket, notifyThatMemberLeftChannel} = props
     socket.on('receive_message', this.onReceiveMessage)
@@ -365,6 +369,22 @@ export default class Chat extends Component {
             ref={ref => { this.channelList = ref }}
           >
             {this.renderChannels()}
+            <div
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0',
+                margin: '0',
+                height: '3rem',
+                cursor: 'pointer',
+                backgroundColor: Color.green,
+                color: '#fff'
+              }}
+              className="flexbox-container"
+              onClick={this.loadMoreChannels}
+            >
+              Load More
+            </div>
           </div>
         </div>
         <div
@@ -470,6 +490,11 @@ export default class Chat extends Component {
         </div>
       )
     })
+  }
+
+  loadMoreChannels() {
+    const {currentChannel, channels, loadMoreChannels} = this.props
+    loadMoreChannels(currentChannel.id, channels[channels.length - 1].id)
   }
 
   renderNumberOfMembers() {
