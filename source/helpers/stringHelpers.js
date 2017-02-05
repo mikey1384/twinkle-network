@@ -21,7 +21,7 @@ export function addEmoji(string) {
   .replace(/(:[-]?D)/g, '😄 ')
   .replace(/(:[-]?P)/gi, '😛 ')
   .replace(/(:[-]?\()/g, '🙁 ')
-  .replace(/(:[-]?O)/g, '😲 ')
+  .replace(/(:[-]?O)/gi, '😲 ')
   .replace(/(<3)/g, '❤️ ')
 }
 
@@ -50,7 +50,7 @@ export function processedString(string) {
 }
 
 export function processedStringWithURL(string) {
-  if (!string) return null
+  if (typeof string !== 'string') return string || null
   var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   var tempString = string
   .replace(/&/g, '&amp;')

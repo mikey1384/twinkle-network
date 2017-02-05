@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import Truncate from 'react-truncate'
+import Truncate from 'components/Truncate'
 import {limitBrs} from 'helpers/stringHelpers'
 
 export default class LongText extends Component {
