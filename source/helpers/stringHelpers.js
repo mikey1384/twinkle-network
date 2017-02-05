@@ -23,6 +23,10 @@ export function addEmoji(string) {
   .replace(/(:[-]?\()/g, '🙁 ')
   .replace(/(:[-]?O)/gi, '😲 ')
   .replace(/(<3)/g, '❤️ ')
+  .replace(/(\(zzz\))/gi, '💤 ')
+  .replace(/(\(thumbs\))/gi, '👍 ')
+  .replace(/(\(sunglasses\))/gi, '😎 ')
+  .replace(/(\(ok\))/gi, '👌 ')
 }
 
 export function cleanStringWithURL(string) {
