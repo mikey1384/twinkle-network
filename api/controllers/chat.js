@@ -487,14 +487,13 @@ router.get('/search/chat', requireAuth, (req, res) => {
       )
     LIMIT 10
   `
-  poolQuery(query, [`%${text}%`, `%${text}%`, `%${text}%`, `%${text}%`]).then(
+  return poolQuery(query, [`%${text}%`, `%${text}%`, `%${text}%`, `%${text}%`]).then(
     primaryRes => {
       let remainder = 10 - primaryRes.length
       let query = `
-        SELECT id AS userId, username AS label, realName AS subLabel FROM users WHERE username LIKE ?
-        OR realName LIKE ? AND id != ${user.id} LIMIT ${remainder}
+        SELECT id AS userId, username AS label, realName AS subLabel FROM users WHERE (username LIKE ?
+        OR realName LIKE ?) AND id != ${user.id} LIMIT ${remainder}
       `
-
       if (remainder > 0) {
         return poolQuery(query, [`%${text}%`, `%${text}%`]).then(
           secondaryRes => Promise.resolve({primaryRes, secondaryRes})
