@@ -295,7 +295,9 @@ const updateLastRead = ({users, channelId, timeStamp}, callback) => {
       }
     )
   })
-  tasks.push(poolQuery('UPDATE msg_channel_info SET ? WHERE channelId = ?', [{isHidden: false}, channelId]))
+  tasks.push(
+    poolQuery('UPDATE msg_channel_info SET ? WHERE channelId = ? AND userId = ?', [{isHidden: false}, channelId, users[0]])
+  )
   return Promise.all(tasks)
 }
 
