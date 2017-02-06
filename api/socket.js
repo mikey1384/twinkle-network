@@ -80,10 +80,10 @@ module.exports = function(io) {
       })
     })
 
-    socket.on('new_chat_message', (data) => {
-      const channelId = data.channelId
-      data.content = processedString(data.content)
-      io.to('chatChannel' + channelId).emit('receive_message', data)
+    socket.on('new_chat_message', (message, channel) => {
+      const channelId = message.channelId
+      message.content = processedString(message.content)
+      io.to('chatChannel' + channelId).emit('receive_message', message, channel)
     })
 
     socket.on('send_bi_chat_invitation', (userId, data) => {

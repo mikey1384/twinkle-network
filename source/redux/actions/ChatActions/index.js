@@ -239,9 +239,10 @@ export const receiveMessage = data => dispatch => {
   )
 }
 
-export const receiveMessageOnDifferentChannel = (data, senderIsNotTheUser) => ({
+export const receiveMessageOnDifferentChannel = ({message, channel, senderIsNotTheUser}) => ({
   type: 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL',
-  data,
+  data: message,
+  channel,
   senderIsNotTheUser
 })
 

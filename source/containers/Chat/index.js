@@ -536,6 +536,7 @@ export default class Chat extends Component {
       username,
       profilePicId,
       currentChannel,
+      channels,
       sendFirstDirectMessage,
       partnerId
     } = this.props
@@ -556,8 +557,20 @@ export default class Chat extends Component {
       content: message,
       channelId: currentChannel.id
     }
+    let channel = channels.filter(channel => channel.id === currentChannel.id).map(
+      channel => ({
+        ...channel,
+        channelName: currentChannel.twoPeople ? username : channel.channelName,
+        lastMessage: message,
+        lastMessageSender: {
+          id: userId,
+          username
+        },
+        numUnreads: 1
+      })
+    )
     submitMessage(params, message => {
-      socket.emit('new_chat_message', message)
+      socket.emit('new_chat_message', message, channel)
     })
   }
 
@@ -593,15 +606,15 @@ export default class Chat extends Component {
     })
   }
 
-  onReceiveMessage(data) {
+  onReceiveMessage(message, channel) {
     const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
-    let messageIsForCurrentChannel = data.channelId === currentChannel.id
-    let senderIsNotTheUser = data.userId !== userId
+    let messageIsForCurrentChannel = message.channelId === currentChannel.id
+    let senderIsNotTheUser = message.userId !== userId
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
-      receiveMessage(data)
+      receiveMessage(message)
     }
     if (!messageIsForCurrentChannel) {
-      receiveMessageOnDifferentChannel(data, senderIsNotTheUser)
+      receiveMessageOnDifferentChannel({message, channel, senderIsNotTheUser})
     }
   }
 

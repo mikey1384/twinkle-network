@@ -424,28 +424,10 @@ export default function ChatReducer(state = defaultState, action) {
         })
       }
     case 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL':
-      let channel = {}
-      channels = state.channels
-      for (let i = 0; i < channels.length; i++) {
-        let numUnreads = action.senderIsNotTheUser ? channels[i].numUnreads + 1 : channels[i].numUnreads
-        if (channels[i].id === action.data.channelId) {
-          channel = {
-            ...channels[i],
-            lastMessage: action.data.content,
-            lastUpdate: action.data.timeStamp,
-            numUnreads,
-            lastMessageSender: {
-              id: action.data.userId,
-              username: action.data.username
-            },
-            isHidden: false
-          }
-        }
-      }
       return {
         ...state,
         numUnreads: state.numUnreads + 1,
-        channels: [channel].concat(
+        channels: action.channel.concat(
           state.channels.filter(channel => channel.id !== action.data.channelId)
         )
       }
