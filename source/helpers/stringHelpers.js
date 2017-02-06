@@ -27,6 +27,7 @@ export function addEmoji(string) {
   .replace(/(\(thumbs\))/gi, '👍 ')
   .replace(/(\(sunglasses\))/gi, '😎 ')
   .replace(/(\(ok\))/gi, '👌 ')
+  .replace(/(\(mad\))/gi, '😡 ')
 }
 
 export function cleanStringWithURL(string) {
