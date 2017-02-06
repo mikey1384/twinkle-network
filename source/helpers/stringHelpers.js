@@ -23,6 +23,7 @@ export function addEmoji(string) {
   .replace(/(:[-]?\()/g, '🙁 ')
   .replace(/(:[-]?O)/gi, '😲 ')
   .replace(/(<3)/g, '❤️ ')
+  .replace(/(\(heart\))/gi, '❤️ ')
   .replace(/(\(zzz\))/gi, '💤 ')
   .replace(/(\(thumbs\))/gi, '👍 ')
   .replace(/(\(sunglasses\))/gi, '😎 ')

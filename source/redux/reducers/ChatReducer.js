@@ -22,6 +22,7 @@ export default function ChatReducer(state = defaultState, action) {
   let loadMoreMessages
   let channels
   let originalNumUnreads = 0
+  let channel = []
   switch (action.type) {
     case 'APPLY_CHANGED_CHANNEL_TITLE':
       return {
@@ -424,10 +425,17 @@ export default function ChatReducer(state = defaultState, action) {
         })
       }
     case 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL':
+      channel = action.channel
+      for (let i = 0; i < state.channels.length; i++) {
+        if (state.channels[i].id === action.data.channelId) {
+          channel[0].numUnreads = state.channels[i].numUnreads + 1
+        }
+      }
+      console.log(channel)
       return {
         ...state,
         numUnreads: state.numUnreads + 1,
-        channels: action.channel.concat(
+        channels: channel.concat(
           state.channels.filter(channel => channel.id !== action.data.channelId)
         )
       }
