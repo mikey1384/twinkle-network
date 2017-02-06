@@ -431,7 +431,6 @@ export default function ChatReducer(state = defaultState, action) {
           channel[0].numUnreads = state.channels[i].numUnreads + 1
         }
       }
-      console.log(channel)
       return {
         ...state,
         numUnreads: state.numUnreads + 1,
