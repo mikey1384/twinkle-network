@@ -28,6 +28,7 @@ export function addEmoji(string) {
   .replace(/(\(sunglasses\))/gi, '😎 ')
   .replace(/(\(ok\))/gi, '👌 ')
   .replace(/(\(mad\))/gi, '😡 ')
+  .replace(/(\(perfect\))/gi, '💯 ')
 }
 
 export function cleanStringWithURL(string) {
