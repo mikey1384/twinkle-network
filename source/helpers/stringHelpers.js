@@ -31,6 +31,7 @@ export function addEmoji(string) {
   .replace(/(\(mad\))/gi, '😡 ')
   .replace(/(\(perfect\))/gi, '💯 ')
   .replace(/(\(bye\))/gi, '👋 ')
+  .replace(/(\(fear\))/gi, '😱 ')
 }
 
 export function cleanStringWithURL(string) {
