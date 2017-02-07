@@ -2,14 +2,17 @@ import React, {Component, PropTypes} from 'react'
 import {Color} from 'constants/css'
 import {connect} from 'react-redux'
 import {browserHistory} from 'react-router'
+import {clearFeeds} from 'redux/actions/FeedActions'
 
 @connect(
   state => ({
     username: state.UserReducer.username
-  })
+  }),
+  {clearFeeds}
 )
 export default class Home extends Component {
   static propTypes = {
+    clearFeeds: PropTypes.func,
     params: PropTypes.object,
     username: PropTypes.string,
     children: PropTypes.object
@@ -35,7 +38,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {username} = this.props
+    const {username, clearFeeds} = this.props
     const {selectedTab} = this.state
     const listStyle = {
       profile: {
@@ -64,7 +67,10 @@ export default class Home extends Component {
             <li
               className="list-group-item left-menu-item"
               style={listStyle.profile}
-              onClick={() => browserHistory.push(`/${username}`)}
+              onClick={() => {
+                clearFeeds()
+                browserHistory.push(`/${username}`)
+              }}
             >
               <a
                 style={{
