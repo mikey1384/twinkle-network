@@ -82,18 +82,14 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === 'comment') {
-            if (feed.contentId === action.data.contentId) {
-              feed.contentLikers = action.data.likes
-            }
-            if (!feed.replyId && feed.commentId === action.data.contentId) {
-              feed.targetContentLikers = action.data.likes
-            }
-            if (feed.replyId === action.data.contentId) {
-              feed.targetContentLikers = action.data.likes
-            }
+          let contentMatches = feed.contentId === action.data.contentId
+          let targetContentMatches = (!feed.replyId && feed.commentId === action.data.contentId) ||
+              (feed.replyId === action.data.contentId)
+          return {
+            ...feed,
+            contentLikers: contentMatches ? action.data.likes : feed.contentLikers,
+            targetContentLikers: targetContentMatches ? action.data.likes : feed.targetContentLikers
           }
-          return feed
         })
       }
     case 'FEED_VIDEO_COMMENT_DELETE':
@@ -161,35 +157,24 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === 'comment') {
-            if (feed.contentId === action.data.contentId) {
-              feed.contentLikers = action.data.likes
-            }
-            if (!feed.replyId && feed.commentId === action.data.contentId) {
-              feed.targetContentLikers = action.data.likes
-            }
-            if (feed.replyId === action.data.contentId) {
-              feed.targetContentLikers = action.data.likes
-            }
-          }
+          let feedTypeIsComment = feed.type === 'comment'
+          let feedContentMatches = feed.contentId === action.data.contentId
+          let targetContentMatches =
+            (!feed.replyId && (feed.commentId === action.data.contentId)) || (feed.replyId === action.data.contentId)
           return {
             ...feed,
+            contentLikers: feedTypeIsComment && feedContentMatches ? action.data.likes : feed.contentLikers,
+            targetContentLikers: feedTypeIsComment && targetContentMatches ? action.data.likes : feed.targetContentLikers,
             childComments: feed.childComments.map(childComment => {
-              let likes = childComment.likes
-              if (childComment.id === action.data.contentId) {
-                likes = action.data.likes
-              }
+              let matches = childComment.id === action.data.contentId
               return {
                 ...childComment,
-                likes,
+                likes: matches ? action.data.likes : childComment.likes,
                 replies: childComment.replies.map(reply => {
-                  let likes = reply.likes
-                  if (reply.id === action.data.contentId) {
-                    likes = action.data.likes
-                  }
+                  let matches = reply.id === action.data.contentId
                   return {
                     ...reply,
-                    likes
+                    likes: matches ? action.data.likes : reply.likes
                   }
                 })
               }
