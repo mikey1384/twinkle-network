@@ -7,7 +7,7 @@ import {
   increaseNumberOfUnreadMessages,
   turnChatOff
 } from 'redux/actions/ChatActions'
-import {fetchFeedsAsync} from 'redux/actions/FeedActions'
+import {fetchFeedsAsync, clearFeeds} from 'redux/actions/FeedActions'
 import {getInitialVideos} from 'redux/actions/VideoActions'
 import {
   getPlaylistsAsync,
@@ -43,6 +43,7 @@ import {Color} from 'constants/css'
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
     increaseNumberOfUnreadMessages,
     fetchFeeds: fetchFeedsAsync,
+    clearFeeds,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
     getInitialVideos
@@ -67,6 +68,7 @@ export default class Header extends Component {
     closeSigninModal: PropTypes.func,
     onChatButtonClick: PropTypes.func,
     numChatUnreads: PropTypes.number,
+    clearFeeds: PropTypes.func,
     fetchFeeds: PropTypes.func,
     getInitialVideos: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
@@ -162,6 +164,7 @@ export default class Header extends Component {
       closeSigninModal,
       onChatButtonClick,
       numChatUnreads,
+      clearFeeds,
       fetchFeeds,
       getInitialVideos,
       getPinnedPlaylists,
@@ -191,7 +194,10 @@ export default class Header extends Component {
                 <HeaderNav
                   to="/"
                   selected={selectedTab === 'home'}
-                  onClick={() => fetchFeeds()}
+                  onClick={() => {
+                    clearFeeds()
+                    fetchFeeds()
+                  }}
                 >
                   Home
                 </HeaderNav>
