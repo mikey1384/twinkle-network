@@ -10,10 +10,10 @@ const {
   processedURL
 } = require('../helpers/stringHelpers')
 const {returnComments} = require('../helpers/videoHelpers')
-const {fetchFeedsMin} = require('../helpers/feedHelpers')
+const {fetchFeeds} = require('../helpers/feedHelpers')
 const {poolQuery} = require('../helpers')
 
-router.get('/', fetchFeedsMin)
+router.get('/', fetchFeeds)
 
 router.get('/category', (req, res) => {
   const {searchText} = req.query

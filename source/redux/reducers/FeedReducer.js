@@ -209,19 +209,19 @@ export default function FeedReducer(state = defaultState, action) {
         }))
       }
     case 'LOAD_MORE_FEED_COMMENTS':
+      if (action.data.childComments.length > 3) {
+        action.data.childComments.pop()
+        commentsLoadMoreButton = true
+      }
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === action.data.type && feed.contentId === action.data.contentId) {
-            if (action.data.childComments.length > 3) {
-              action.data.childComments.pop()
-              feed.commentsLoadMoreButton = true
-            } else {
-              feed.commentsLoadMoreButton = false
-            }
-            feed.childComments = feed.childComments.concat(action.data.childComments)
+          let match = feed.type === action.data.type && feed.contentId === action.data.contentId
+          return {
+            ...feed,
+            commentsLoadMoreButton,
+            childComments: match ? feed.childComments.concat(action.data.childComments) : feed.childComments
           }
-          return feed
         })
       }
     case 'SHOW_FEED_COMMENTS':
