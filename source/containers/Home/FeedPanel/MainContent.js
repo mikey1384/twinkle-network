@@ -311,12 +311,11 @@ export default class MainContent extends Component {
   }
 
   onCommentButtonClick() {
-    const {type, contentId, commentId, commentsShown, showFeedComments, childComments} = this.props
+    const {type, contentId, commentId, commentsShown, showFeedComments} = this.props
     const {clickListenerState} = this.state
     const isReply = !!commentId
     if (!commentsShown) {
-      const commentLength = childComments.length
-      return showFeedComments(type, contentId, commentLength, isReply)
+      return showFeedComments(type, contentId, 0, isReply)
     }
     this.setState({clickListenerState: !clickListenerState})
   }

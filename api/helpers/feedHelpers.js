@@ -4,7 +4,6 @@ module.exports = {
   fetchFeedsMin(req, res) {
     const feedId = Number(req.query.lastFeedId) || 0
     const filter = req.query.filter
-    console.log(filter)
     let where = 'WHERE timeStamp IS NOT NULL '
     if (feedId !== 0) where += 'AND id < ' + feedId + ' '
     if (filter !== 'undefined' && filter !== 'all') where += 'AND type = "' + filter + '" '

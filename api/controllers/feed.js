@@ -235,13 +235,10 @@ router.get('/feed', (req, res) => {
   return poolQuery(query, contentId).then(
     rows => {
       feed = rows[0]
-      feed['commentsShown'] = false
-      feed['childComments'] = []
-      feed['commentsLoadMoreButton'] = false
-      feed['isReply'] = false
-
       return finalizeFeed(feed).then(
-        () => res.send(Object.assign({}, result, feed))
+        () => {
+          res.send(Object.assign({}, result, feed))
+        }
       )
 
       function finalizeFeed(feed) {

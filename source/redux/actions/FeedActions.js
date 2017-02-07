@@ -89,7 +89,13 @@ export const fetchFeed = feed => dispatch => {
   `).then(
     response => dispatch({
       type: 'FETCH_FEED',
-      data: response.data
+      data: {
+        ...response.data,
+        childComments: [],
+        commentsShown: false,
+        commentsLoadMoreButton: false,
+        isReply: false
+      }
     })
   ).catch(
     error => {

@@ -10,6 +10,7 @@ const defaultState = {
 
 export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false
+  let commentsLoadMoreButton = false
   let noFeeds = false
   switch (action.type) {
     case 'CLEAR_CATEGORIES_SEARCH':
@@ -224,20 +225,19 @@ export default function FeedReducer(state = defaultState, action) {
         })
       }
     case 'SHOW_FEED_COMMENTS':
+      if (action.data.childComments.length > 3) {
+        action.data.childComments.pop()
+        commentsLoadMoreButton = true
+      }
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
-          if (feed.type === action.data.type && feed.contentId === action.data.contentId) {
-            feed.commentsShown = true
-            if (action.data.childComments.length > 3) {
-              action.data.childComments.pop()
-              feed.commentsLoadMoreButton = true
-            }
-            feed.childComments = action.data.childComments
-            feed.isReply = action.data.isReply
-          }
-          return feed
-        })
+        feeds: state.feeds.map(feed => ({
+          ...feed,
+          commentsShown: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? true : feed.commentsShown,
+          commentsLoadMoreButton: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? commentsLoadMoreButton : feed.commentsLoadMoreButton,
+          childComments: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? action.data.childComments : feed.childComments,
+          isReply: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? action.data.isReply : feed.isReply
+        }))
       }
     case 'UPLOAD_CONTENT':
       return {
