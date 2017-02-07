@@ -148,6 +148,19 @@ router.get('/feed', (req, res) => {
     timeStamp: Number(req.query.timeStamp)
   })
   let query
+  let videoQuery = `
+    SELECT a.userId, b.username
+    FROM vq_video_likes a LEFT JOIN users b ON
+    a.userId = b.id WHERE
+    a.videoId = ?
+  `
+  let commentQuery = `
+    SELECT a.userId, b.username
+    FROM vq_commentupvotes a LEFT JOIN users b ON
+    a.userId = b.id WHERE
+    a.commentId = ?
+  `
+
   switch (type) {
     case 'comment':
       query = `
@@ -231,31 +244,12 @@ router.get('/feed', (req, res) => {
     default: break
   }
 
-  let feed
   return poolQuery(query, contentId).then(
     rows => {
-      feed = rows[0]
-      return finalizeFeed(feed).then(
-        () => {
-          res.send(Object.assign({}, result, feed))
-        }
-      )
-
-      function finalizeFeed(feed) {
-        let commentQuery = [
-          'SELECT a.userId, b.username ',
-          'FROM vq_commentupvotes a LEFT JOIN users b ON ',
-          'a.userId = b.id WHERE ',
-          'a.commentId = ?'
-        ].join('')
-        let videoQuery = [
-          'SELECT a.userId, b.username ',
-          'FROM vq_video_likes a LEFT JOIN users b ON ',
-          'a.userId = b.id WHERE ',
-          'a.videoId = ?'
-        ].join('')
-        let targetId = feed.replyId || feed.commentId
-        if (type === 'comment') {
+      let feed = rows[0]
+      let targetId = feed.replyId || feed.commentId
+      switch (type) {
+        case 'comment':
           return Promise.all([
             poolQuery(commentQuery, contentId),
             poolQuery(commentQuery, targetId || '0'),
@@ -265,24 +259,25 @@ router.get('/feed', (req, res) => {
               feed['contentLikers'] = results[0]
               feed['targetContentLikers'] = results[1]
               feed['parentContentLikers'] = results[2]
-              return Promise.resolve()
+              return Promise.resolve(feed)
             }
           )
-        } else {
-          if (type === 'url' || type === 'discussion') {
-            feed['contentLikers'] = []
-            feed['parentContentLikers'] = []
-            return Promise.resolve()
-          }
+        case 'url':
+        case 'discussion':
+          feed['contentLikers'] = []
+          feed['parentContentLikers'] = []
+          return Promise.resolve(feed)
+        default:
           return poolQuery(videoQuery, contentId).then(
             rows => {
               feed['contentLikers'] = rows
-              return Promise.resolve()
+              return Promise.resolve(feed)
             }
           )
-        }
       }
     }
+  ).then(
+    feed => res.send(Object.assign({}, result, feed))
   ).catch(
     err => {
       console.error(err)

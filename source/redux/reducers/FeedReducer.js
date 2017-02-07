@@ -231,13 +231,16 @@ export default function FeedReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        feeds: state.feeds.map(feed => ({
-          ...feed,
-          commentsShown: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? true : feed.commentsShown,
-          commentsLoadMoreButton: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? commentsLoadMoreButton : feed.commentsLoadMoreButton,
-          childComments: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? action.data.childComments : feed.childComments,
-          isReply: (feed.type === action.data.type && feed.contentId === action.data.contentId) ? action.data.isReply : feed.isReply
-        }))
+        feeds: state.feeds.map(feed => {
+          let match = feed.type === action.data.type && feed.contentId === action.data.contentId
+          return {
+            ...feed,
+            commentsShown: match ? true : feed.commentsShown,
+            commentsLoadMoreButton: match ? commentsLoadMoreButton : feed.commentsLoadMoreButton,
+            childComments: match ? action.data.childComments : feed.childComments,
+            isReply: match ? action.data.isReply : feed.isReply
+          }
+        })
       }
     case 'UPLOAD_CONTENT':
       return {
