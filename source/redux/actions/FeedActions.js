@@ -4,6 +4,10 @@ import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/feed`
 
+export const clearFeeds = () => ({
+  type: 'CLEAR_FEEDS'
+})
+
 export const clearCategoriesSearchResults = () => ({
   type: 'CLEAR_CATEGORIES_SEARCH'
 })
@@ -71,6 +75,27 @@ export const fetchCategories = data => ({
 export const fetchCategoriesAsync = (searchText) => dispatch => {
   request.get(`${API_URL}/category?searchText=${searchText}`).then(
     response => dispatch(fetchCategories(response.data))
+  )
+}
+
+export const fetchFeed = feed => dispatch => {
+  let query = []
+  for (let key in feed) {
+    query.push(`${key}=${feed[key]}&`)
+  }
+  query = query.join('').slice(0, -1)
+  request.get(`
+    ${API_URL}/feed?${query}
+  `).then(
+    response => dispatch({
+      type: 'FETCH_FEED',
+      data: response.data
+    })
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
   )
 }
 

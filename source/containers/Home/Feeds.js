@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import {fetchMoreFeedsAsync, fetchFeedsAsync} from 'redux/actions/FeedActions'
+import {fetchMoreFeedsAsync, fetchFeedsAsync, fetchFeed, clearFeeds} from 'redux/actions/FeedActions'
 import FeedInputPanel from './FeedInputPanel'
 import FeedPanel from './FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
@@ -12,16 +12,21 @@ import {connect} from 'react-redux'
     loadMoreButton: state.FeedReducer.loadMoreButton,
     feeds: state.FeedReducer.feeds,
     userId: state.UserReducer.userId,
-    selectedFilter: state.FeedReducer.selectedFilter
+    selectedFilter: state.FeedReducer.selectedFilter,
+    noFeeds: state.FeedReducer.noFeeds
   }),
   {
     fetchMoreFeeds: fetchMoreFeedsAsync,
-    fetchFeeds: fetchFeedsAsync
+    fetchFeeds: fetchFeedsAsync,
+    clearFeeds,
+    fetchFeed
   }
 )
 export default class Feeds extends Component {
   static propTypes = {
+    noFeeds: PropTypes.bool,
     fetchFeeds: PropTypes.func,
+    clearFeeds: PropTypes.func,
     location: PropTypes.object,
     feeds: PropTypes.array,
     loadMoreButton: PropTypes.bool,
@@ -46,24 +51,17 @@ export default class Feeds extends Component {
   }
 
   render() {
-    const {feeds, loadMoreButton, userId} = this.props
+    const {feeds, noFeeds, loadMoreButton, userId} = this.props
     const {loadingMore} = this.state
+
     return (
       <div>
+        <FeedInputPanel />
+        {this.renderFilterBar()}
         {!feeds &&
           <Loading text="Loading Feeds..." />
         }
-        {!!feeds && feeds.length > 0 &&
-          <div>
-            <FeedInputPanel />
-            {this.renderFilterBar()}
-            {feeds.map(feed => {
-              return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />
-            })}
-            {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loadingMore} />}
-          </div>
-        }
-        {!!feeds && feeds.length === 0 &&
+        {noFeeds &&
           <p style={{
             textAlign: 'center',
             paddingTop: '1em',
@@ -73,13 +71,22 @@ export default class Feeds extends Component {
             <span>Hello!</span>
           </p>
         }
+        {!!feeds && feeds.length > 0 &&
+          <div>
+            {feeds.map(feed => {
+              return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />
+            })}
+            {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loadingMore} />}
+          </div>
+        }
       </div>
     )
   }
 
   applyFilter(filter) {
-    const {fetchFeeds, selectedFilter} = this.props
+    const {fetchFeeds, selectedFilter, clearFeeds} = this.props
     if (filter === selectedFilter) return
+    clearFeeds()
     fetchFeeds(filter)
   }
 

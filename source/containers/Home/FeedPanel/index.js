@@ -1,18 +1,38 @@
 import React, {Component, PropTypes} from 'react'
 import Heading from './Heading'
 import MainContent from './MainContent'
+import Loading from 'components/Loading'
+import {fetchFeed} from 'redux/actions/FeedActions'
+import {connect} from 'react-redux'
 
+@connect(
+  null,
+  {
+    fetchFeed
+  }
+)
 export default class FeedPanel extends Component {
   static propTypes = {
     feed: PropTypes.object,
     userId: PropTypes.number,
-    onLikeVideoClick: PropTypes.func
+    onLikeVideoClick: PropTypes.func,
+    fetchFeed: PropTypes.func
   }
 
   constructor() {
     super()
     this.state = {
-      attachedVideoShown: false
+      attachedVideoShown: false,
+      feedLoaded: false
+    }
+  }
+
+  componentDidMount() {
+    const {fetchFeed, feed} = this.props
+    const {feedLoaded} = this.state
+    if (!feedLoaded) {
+      this.setState({feedLoaded: true})
+      fetchFeed(feed)
     }
   }
 
@@ -24,25 +44,32 @@ export default class FeedPanel extends Component {
         className="panel panel-default"
         style={{borderTop: '#e7e7e7 1px solid'}}
       >
-        <Heading
-          {...feed}
-          myId={userId}
-          targetCommentUploader={!!feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
-          targetReplyUploader={!!feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
-          parentContent={{id: feed.parentContentId, title: feed.parentContentTitle}}
-          action={feed.commentId ? 'replied to' : 'commented on'}
-          uploader={{name: feed.uploaderName, id: feed.uploaderId}}
-          onPlayVideoClick={() => this.setState({attachedVideoShown: true})}
-          attachedVideoShown={attachedVideoShown}
-          onLikeVideoClick={onLikeVideoClick}
-        />
-        <div className="panel-body">
-          <MainContent
+        {!!feed.uploaderName &&
+          <Heading
             {...feed}
-            onLikeVideoClick={onLikeVideoClick}
-            attachedVideoShown={attachedVideoShown}
             myId={userId}
+            targetCommentUploader={!!feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
+            targetReplyUploader={!!feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
+            parentContent={{id: feed.parentContentId, title: feed.parentContentTitle}}
+            action={feed.commentId ? 'replied to' : 'commented on'}
+            uploader={{name: feed.uploaderName, id: feed.uploaderId}}
+            onPlayVideoClick={() => this.setState({attachedVideoShown: true})}
+            attachedVideoShown={attachedVideoShown}
+            onLikeVideoClick={onLikeVideoClick}
           />
+        }
+        <div className="panel-body">
+          {!!feed.uploaderName &&
+            <MainContent
+              {...feed}
+              onLikeVideoClick={onLikeVideoClick}
+              attachedVideoShown={attachedVideoShown}
+              myId={userId}
+            />
+          }
+          {!feed.uploaderName &&
+            <Loading />
+          }
         </div>
       </div>
     )

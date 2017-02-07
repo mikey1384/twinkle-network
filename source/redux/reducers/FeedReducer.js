@@ -1,37 +1,54 @@
 import {processedStringWithURL} from 'helpers/stringHelpers'
 const defaultState = {
   feeds: null,
+  noFeeds: false,
   selectedFilter: 'all',
   newFeeds: [], // may need later but delete it if revealed otherwise
   loadMoreButton: false,
   categorySearchResult: []
 }
 
-let loadMoreButton = false
 export default function FeedReducer(state = defaultState, action) {
+  let loadMoreButton = false
+  let noFeeds = false
   switch (action.type) {
     case 'CLEAR_CATEGORIES_SEARCH':
       return {
         ...state,
         categorySearchResult: []
       }
+    case 'CLEAR_FEEDS':
+      return {
+        ...state,
+        feeds: []
+      }
     case 'FETCH_CATEGORIES':
       return {
         ...state,
         categorySearchResult: action.data
       }
+    case 'FETCH_FEED':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          if (feed.id === action.data.id) {
+            feed = action.data
+          }
+          return feed
+        })
+      }
     case 'FETCH_FEEDS':
       if (action.data.length > 20) {
         action.data.pop()
         loadMoreButton = true
-      } else {
-        loadMoreButton = false
       }
+      if (action.data.length === 0) noFeeds = true
       return {
         ...state,
         feeds: action.data,
         selectedFilter: action.filter,
-        loadMoreButton
+        loadMoreButton,
+        noFeeds
       }
     case 'FETCH_MORE_FEED_REPLIES':
       return {
@@ -50,7 +67,6 @@ export default function FeedReducer(state = defaultState, action) {
         })
       }
     case 'FETCH_MORE_FEEDS':
-      loadMoreButton = false
       if (action.data.length > 20) {
         action.data.pop()
         loadMoreButton = true

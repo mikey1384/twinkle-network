@@ -10,266 +10,10 @@ const {
   processedURL
 } = require('../helpers/stringHelpers')
 const {returnComments} = require('../helpers/videoHelpers')
+const {fetchFeedsMin} = require('../helpers/feedHelpers')
+const {poolQuery} = require('../helpers')
 
-router.get('/', (req, res) => {
-  const feedId = Number(req.query.lastFeedId) || 0
-  const filter = req.query.filter
-  let where = 'WHERE feed.timeStamp IS NOT NULL '
-  if (feedId !== 0) where += 'AND feed.id < ' + feedId + ' '
-  if (filter !== 'undefined' && filter !== 'all') where += 'AND feed.type = "' + filter + '" '
-  const query = `
-    SELECT
-      feed.id AS id,
-      feed.type AS type,
-      feed.contentId AS contentId,
-      feed.parentContentId AS parentContentId,
-      video.title AS parentContentTitle,
-      video.description AS parentContentDescription,
-      feed.uploaderId AS uploaderId,
-      user1.username AS uploaderName,
-      userPhoto.id AS uploaderPicId,
-      feed.timeStamp AS timeStamp,
-      comment1.content AS content,
-      video.title AS contentTitle,
-      NULL AS contentDescription,
-      video.videoCode AS videoCode,
-      comment1.commentId AS commentId,
-      comment1.replyId AS replyId,
-      comment2.userId AS targetCommentUploaderId,
-      comment2.content AS targetComment,
-      user2.username AS targetCommentUploaderName,
-      comment3.userId AS targetReplyUploaderId,
-      comment3.content AS targetReply,
-      user3.username AS targetReplyUploaderName,
-      comment1.discussionId AS discussionId,
-      discussion.title AS discussionTitle,
-      discussion.description AS discussionDescription,
-      NULL AS videoViews,
-      (SELECT COUNT(*) FROM vq_comments WHERE commentId = feed.contentId) AS numChildComments,
-      (SELECT COUNT(*) FROM vq_comments WHERE replyId = feed.contentId) AS numChildReplies
-
-    FROM noti_feeds feed
-    JOIN vq_comments comment1
-      ON feed.type = 'comment' AND feed.contentId = comment1.id
-    LEFT JOIN vq_videos video
-      ON feed.parentContentId = video.id
-    LEFT JOIN users user1
-      ON feed.uploaderId = user1.id
-    LEFT JOIN users_photos userPhoto
-      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
-    LEFT JOIN vq_comments comment2
-      ON comment1.commentId = comment2.id
-    LEFT JOIN users user2
-      ON comment2.userId = user2.id
-    LEFT JOIN vq_comments comment3
-      ON comment1.replyId = comment3.id
-    LEFT JOIN users user3
-      ON comment3.userId = user3.id
-    LEFT JOIN content_discussions discussion
-      ON comment1.discussionId = discussion.id
-    ${where}
-
-    UNION SELECT
-      feed.id AS id,
-      feed.type AS type,
-      feed.contentId AS contentId,
-      feed.parentContentId AS parentContentId,
-      video.title AS parentContentTitle,
-      video.description AS parentContentDescription,
-      feed.uploaderId AS uploaderId,
-      user.username AS uploaderName,
-      userPhoto.id AS uploaderPicId,
-      feed.timeStamp AS timeStamp,
-      video.videoCode AS content,
-      video.title AS contentTitle,
-      video.description AS contentDescription,
-      video.videoCode AS videoCode,
-      NULL AS commentId,
-      NULL AS replyId,
-      NULL AS targetCommentUploaderId,
-      NULL AS targetComment,
-      NULL AS targetCommentUploaderName,
-      NULL AS targetReplyUploaderId,
-      NULL AS targetReply,
-      NULL AS targetReplyUploaderName,
-      NULL AS discussionId,
-      NULL AS discussionTitle,
-      NULL AS discussionDescription,
-      (SELECT COUNT(*) FROM vq_video_views WHERE videoId = feed.contentId) AS videoViews,
-      (SELECT COUNT(*) FROM vq_comments WHERE videoId = feed.contentId) AS numChildComments,
-      NULL AS numChildReplies
-
-    FROM noti_feeds feed
-    JOIN vq_videos video
-      ON feed.type = 'video' AND feed.contentId = video.id
-    LEFT JOIN users user
-      ON video.uploader = user.id
-    LEFT JOIN users_photos userPhoto
-      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
-    ${where}
-
-    UNION SELECT
-      feed.id AS id,
-      feed.type AS type,
-      feed.contentId AS contentId,
-      feed.parentContentId AS parentContentId,
-      url.title AS parentContentTitle,
-      url.description AS parentContentDescription,
-      feed.uploaderId AS uploaderId,
-      user.username AS uploaderName,
-      userPhoto.id AS uploaderPicId,
-      feed.timeStamp AS timeStamp,
-      url.url AS content,
-      url.title AS contentTitle,
-      NULL AS contentDescription,
-      NULL AS videoCode,
-      NULL AS commentId,
-      NULL AS replyId,
-      NULL AS targetCommentUploaderId,
-      NULL AS targetComment,
-      NULL AS targetCommentUploaderName,
-      NULL AS targetReplyUploaderId,
-      NULL AS targetReply,
-      NULL AS targetReplyUploaderName,
-      NULL AS discussionId,
-      NULL AS discussionTitle,
-      NULL AS discussionDescription,
-      NULL AS videoViews,
-      NULL AS numChildComments,
-      NULL AS numChildReplies
-
-    FROM noti_feeds feed
-    JOIN content_urls url
-      ON feed.type = 'url' AND feed.contentId = url.id
-    LEFT JOIN users user
-      ON url.uploader = user.id
-    LEFT JOIN users_photos userPhoto
-      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
-    ${where}
-
-    UNION SELECT
-      feed.id AS id,
-      feed.type AS type,
-      feed.contentId AS contentId,
-      feed.parentContentId AS parentContentId,
-      video.title AS parentContentTitle,
-      video.description AS parentContentDescription,
-      feed.uploaderId AS uploaderId,
-      user.username AS uploaderName,
-      userPhoto.id AS uploaderPicId,
-      feed.timeStamp AS timeStamp,
-      NULL AS content,
-      discussion.title AS contentTitle,
-      discussion.description AS contentDescription,
-      video.videoCode AS videoCode,
-      NULL AS commentId,
-      NULL AS replyId,
-      NULL AS targetCommentUploaderId,
-      NULL AS targetComment,
-      NULL AS targetCommentUploaderName,
-      NULL AS targetReplyUploaderId,
-      NULL AS targetReply,
-      NULL AS targetReplyUploaderName,
-      NULL AS discussionId,
-      NULL AS discussionTitle,
-      NULL AS discussionDescription,
-      NULL AS videoViews,
-      (SELECT COUNT(*) FROM vq_comments WHERE discussionId = discussion.id) AS numChildComments,
-      NULL AS numChildReplies
-
-    FROM noti_feeds feed
-    JOIN content_discussions discussion
-      ON feed.type = 'discussion' AND feed.contentId =
-    discussion.id
-    LEFT JOIN vq_videos video
-      ON discussion.refContentType = 'video' AND refContentId = video.id
-    LEFT JOIN users user
-      ON discussion.userId = user.id
-    LEFT JOIN users_photos userPhoto
-      ON feed.uploaderId = userPhoto.userId AND userPhoto.isProfilePic = '1'
-    ${where}
-
-    ORDER BY id DESC LIMIT 21
-  `
-
-  pool.query(query, (err, feeds) => {
-    if (err) {
-      console.error(err)
-      res.status(500).send({error: err})
-      return
-    }
-    let taskArray = feeds.reduce(
-      (resultingArray, feed) => {
-        feed['commentsShown'] = false
-        feed['childComments'] = []
-        feed['commentsLoadMoreButton'] = false
-        feed['isReply'] = false
-        return resultingArray.concat([finalizeFeed(feed)])
-        function finalizeFeed(feed) {
-          let commentQuery = [
-            'SELECT a.userId, b.username ',
-            'FROM vq_commentupvotes a LEFT JOIN users b ON ',
-            'a.userId = b.id WHERE ',
-            'a.commentId = ?'
-          ].join('')
-          let videoQuery = [
-            'SELECT a.userId, b.username ',
-            'FROM vq_video_likes a LEFT JOIN users b ON ',
-            'a.userId = b.id WHERE ',
-            'a.videoId = ?'
-          ].join('')
-          let targetId = feed.replyId ? feed.replyId : feed.commentId
-          if (feed.type === 'comment') {
-            return callback => {
-              async.parallel([
-                cb => {
-                  pool.query(commentQuery, feed.contentId, (err, rows) => {
-                    cb(err, rows)
-                  })
-                },
-                cb => {
-                  pool.query(commentQuery, targetId || '0', (err, rows) => {
-                    cb(err, rows)
-                  })
-                },
-                cb => {
-                  pool.query(videoQuery, feed.parentContentId, (err, rows) => {
-                    cb(err, rows)
-                  })
-                }
-              ], (err, results) => {
-                feed['contentLikers'] = results[0]
-                feed['targetContentLikers'] = results[1]
-                feed['parentContentLikers'] = results[2]
-                callback(err)
-              })
-            }
-          } else {
-            return callback => {
-              if (feed.type === 'url' || feed.type === 'discussion') {
-                feed['contentLikers'] = []
-                feed['parentContentLikers'] = []
-                return callback()
-              }
-              pool.query(videoQuery, feed.contentId, (err, rows) => {
-                feed['contentLikers'] = rows
-                callback(err)
-              })
-            }
-          }
-        }
-      }, []
-    )
-    async.parallel(taskArray, err => {
-      if (err) {
-        console.error(err)
-        res.status(500).send({error: err})
-        return
-      }
-      res.send(feeds)
-    })
-  })
-})
+router.get('/', fetchFeedsMin)
 
 router.get('/category', (req, res) => {
   const {searchText} = req.query
@@ -392,6 +136,162 @@ router.post('/content', requireAuth, (req, res) => {
       targetContentLikers: []
     })
   })
+})
+
+router.get('/feed', (req, res) => {
+  const {type, contentId, parentContentId} = req.query
+  const result = Object.assign({}, req.query, {
+    id: Number(req.query.id),
+    contentId: Number(req.query.contentId),
+    parentContentId: Number(req.query.parentContentId),
+    uploaderId: Number(req.query.uploaderId),
+    timeStamp: Number(req.query.timeStamp)
+  })
+  let query
+  switch (type) {
+    case 'comment':
+      query = `
+        SELECT comment1.content, comment1.commentId, comment1.replyId, comment1.discussionId,
+        user1.username AS uploaderName, userPhoto.id AS uploaderPicId,
+        comment2.userId AS targetCommentUploaderId, comment2.content AS targetComment,
+        user2.username AS targetCommentUploaderName,
+        comment3.userId AS targetReplyUploaderId, comment3.content AS targetReply,
+        user3.username AS targetReplyUploaderName,
+        discussion.title AS discussionTitle,
+        discussion.description AS discussionDescription,
+
+        video.title AS parentContentTitle, video.description AS parentContentDescription, video.title AS contentTitle,
+        video.videoCode,
+
+        (SELECT COUNT(*) FROM vq_comments WHERE commentId = ${contentId}) AS numChildComments,
+        (SELECT COUNT(*) FROM vq_comments WHERE replyId = ${contentId}) AS numChildReplies
+
+        FROM vq_comments comment1
+          LEFT JOIN vq_videos video
+            ON comment1.videoId = video.id
+          LEFT JOIN users user1
+            ON comment1.userId = user1.id
+          LEFT JOIN users_photos userPhoto
+            ON comment1.userId = userPhoto.userId AND userPhoto.isProfilePic = '1'
+          LEFT JOIN vq_comments comment2
+            ON comment1.commentId = comment2.id
+          LEFT JOIN users user2
+            ON comment2.userId = user2.id
+          LEFT JOIN vq_comments comment3
+            ON comment1.replyId = comment3.id
+          LEFT JOIN users user3
+            ON comment3.userId = user3.id
+          LEFT JOIN content_discussions discussion
+            ON comment1.discussionId = discussion.id
+
+        WHERE comment1.id = ?
+      `
+      break
+    case 'discussion':
+      query = `
+        SELECT discussion.title AS contentTitle, discussion.description AS contentDescription,
+        video.videoCode, video.title AS parentContentTitle, video.description AS parentContentDescription,
+        user.username AS uploaderName, userPhoto.id AS uploaderPicId,
+        (SELECT COUNT(*) FROM vq_comments WHERE discussionId = discussion.id) AS numChildComments
+        FROM content_discussions discussion
+          LEFT JOIN vq_videos video
+            ON discussion.refContentType = 'video' AND refContentId = video.id
+          LEFT JOIN users user
+            ON discussion.userId = user.id
+          LEFT JOIN users_photos userPhoto
+            ON discussion.userId = userPhoto.userId AND userPhoto.isProfilePic = '1'
+
+        WHERE discussion.id = ?
+      `
+      break
+    case 'url':
+      query = `
+        SELECT url.title AS parentContentTitle, url.description AS parentContentDescription,
+        url.url AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId
+        FROM content_urls url JOIN users user ON url.uploader = user.id JOIN users_photos userPhoto ON
+        url.uploader = userPhoto.userId
+        WHERE url.id = ?
+      `
+      break
+    case 'video':
+      query = `
+        SELECT video.title AS parentContentTitle, video.description AS parentContentDescription,
+        video.videoCode AS content, video.title AS contentTitle, video.description AS contentDescription,
+        video.videoCode, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
+        (SELECT COUNT(*) FROM vq_video_views WHERE videoId = video.id) AS videoViews,
+        (SELECT COUNT(*) FROM vq_comments WHERE videoId = video.id) AS numChildComments
+        FROM vq_videos video
+          LEFT JOIN users user
+            ON video.uploader = user.id
+          LEFT JOIN users_photos userPhoto
+            ON video.uploader = userPhoto.userId AND userPhoto.isProfilePic = '1'
+        WHERE video.id = ?
+      `
+      break
+    default: break
+  }
+
+  let feed
+  return poolQuery(query, contentId).then(
+    rows => {
+      feed = rows[0]
+      feed['commentsShown'] = false
+      feed['childComments'] = []
+      feed['commentsLoadMoreButton'] = false
+      feed['isReply'] = false
+
+      return finalizeFeed(feed).then(
+        () => res.send(Object.assign({}, result, feed))
+      )
+
+      function finalizeFeed(feed) {
+        let commentQuery = [
+          'SELECT a.userId, b.username ',
+          'FROM vq_commentupvotes a LEFT JOIN users b ON ',
+          'a.userId = b.id WHERE ',
+          'a.commentId = ?'
+        ].join('')
+        let videoQuery = [
+          'SELECT a.userId, b.username ',
+          'FROM vq_video_likes a LEFT JOIN users b ON ',
+          'a.userId = b.id WHERE ',
+          'a.videoId = ?'
+        ].join('')
+        let targetId = feed.replyId || feed.commentId
+        if (type === 'comment') {
+          return Promise.all([
+            poolQuery(commentQuery, contentId),
+            poolQuery(commentQuery, targetId || '0'),
+            poolQuery(videoQuery, parentContentId)
+          ]).then(
+            results => {
+              feed['contentLikers'] = results[0]
+              feed['targetContentLikers'] = results[1]
+              feed['parentContentLikers'] = results[2]
+              return Promise.resolve()
+            }
+          )
+        } else {
+          if (type === 'url' || type === 'discussion') {
+            feed['contentLikers'] = []
+            feed['parentContentLikers'] = []
+            return Promise.resolve()
+          }
+          return poolQuery(videoQuery, contentId).then(
+            rows => {
+              feed['contentLikers'] = rows
+              return Promise.resolve()
+            }
+          )
+        }
+      }
+    }
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
 })
 
 router.post('/targetContentComment', requireAuth, (req, res) => {
