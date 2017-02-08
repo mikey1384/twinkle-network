@@ -54,7 +54,7 @@ export default class VideoPlayer extends Component {
             />
           </div>
         }
-        {playing ?
+        {playing && !small ?
           <Loading
             style={{
               color: Color.blue,
