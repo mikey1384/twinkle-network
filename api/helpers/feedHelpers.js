@@ -9,7 +9,7 @@ module.exports = {
     if (filter !== 'undefined' && filter !== 'all') where += 'AND type = "' + filter + '" '
     const query = `
       SELECT id, type, contentId, parentContentId, uploaderId, timeStamp FROM noti_feeds
-      ${where} ORDER BY id DESC LIMIT 21
+      ${where} ORDER BY id DESC LIMIT 6
     `
     return poolQuery(query).then(
       feeds => res.send(feeds)
