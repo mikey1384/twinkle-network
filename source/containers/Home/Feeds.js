@@ -115,7 +115,7 @@ export default class Feeds extends Component {
     const {chatMode} = this.props
     if (!chatMode) {
       this.setState({scrollPosition: document.body.scrollTop})
-      if (this.state.scrollPosition === document.body.scrollHeight - window.innerHeight) {
+      if (this.state.scrollPosition === (document.body.scrollHeight - window.innerHeight) * 0.8) {
         this.loadMoreFeeds()
       }
     }
