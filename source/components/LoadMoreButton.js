@@ -13,7 +13,8 @@ export default function LoadMoreButton({onClick, loading}) {
         className="btn btn-success"
         onClick={onClick}
       >
-        {loading ? 'Loading...' : 'Load More'}
+        {loading ? 'Loading' : 'Load More'}
+        {loading && <span>&nbsp;&nbsp;<span className="glyphicon glyphicon-refresh spinning"></span></span>}
       </Button>
     </div>
   )

@@ -13,6 +13,7 @@ import Button from 'components/Button'
 import ChatSearchBox from './ChatSearchBox'
 import {Color} from 'constants/css'
 import {GENERAL_CHAT_ID} from 'constants/database'
+import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -95,7 +96,9 @@ export default class Chat extends Component {
       userListModalShown: false,
       editTitleModalShown: false,
       myChannels: [],
-      onTitleHover: false
+      onTitleHover: false,
+      listScrollPosition: 0,
+      channelsLoading: false
     }
 
     this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
@@ -110,6 +113,7 @@ export default class Chat extends Component {
     this.onLeaveChannel = this.onLeaveChannel.bind(this)
     this.onMouseOverTitle = this.onMouseOverTitle.bind(this)
     this.loadMoreChannels = this.loadMoreChannels.bind(this)
+    this.onListScroll = this.onListScroll.bind(this)
 
     const {socket, notifyThatMemberLeftChannel} = props
     socket.on('receive_message', this.onReceiveMessage)
@@ -195,6 +199,7 @@ export default class Chat extends Component {
       }
     }
     this.setState({currentChannelOnline})
+    addEvent(this.channelList, 'scroll', this.onListScroll)
   }
 
   componentDidUpdate(prevProps) {
@@ -228,6 +233,7 @@ export default class Chat extends Component {
     socket.removeListener('receive_message', this.onReceiveMessage)
     socket.removeListener('chat_invitation', this.onChatInvitation)
     socket.removeListener('change_in_members_online')
+    removeEvent(this.channelList, 'scroll', this.onScroll)
     onUnmount()
   }
 
@@ -240,7 +246,8 @@ export default class Chat extends Component {
       userListModalShown,
       editTitleModalShown,
       myChannels,
-      onTitleHover
+      onTitleHover,
+      channelsLoading
     } = this.state
 
     let menuProps = (currentChannel.twoPeople) ?
@@ -379,14 +386,16 @@ export default class Chat extends Component {
                   padding: '0',
                   margin: '0',
                   height: '3rem',
-                  cursor: 'pointer',
+                  cursor: channelsLoading ? 'default' : 'pointer',
                   backgroundColor: Color.green,
-                  color: '#fff'
+                  color: '#fff',
+                  opacity: channelsLoading && '0.5'
                 }}
                 className="flexbox-container"
                 onClick={this.loadMoreChannels}
               >
-                Load More
+                {channelsLoading ? 'Loading' : 'Load More'}
+                {channelsLoading && <span>&nbsp;&nbsp;<span className="glyphicon glyphicon-refresh spinning"></span></span>}
               </div>
             }
           </div>
@@ -498,7 +507,13 @@ export default class Chat extends Component {
 
   loadMoreChannels() {
     const {currentChannel, channels, loadMoreChannels} = this.props
-    loadMoreChannels(currentChannel.id, channels[channels.length - 1].id)
+    const {channelsLoading} = this.state
+    if (!channelsLoading) {
+      this.setState({channelsLoading: true})
+      loadMoreChannels(currentChannel.id, channels[channels.length - 1].id).then(
+        () => this.setState({channelsLoading: false})
+      )
+    }
   }
 
   renderNumberOfMembers() {
@@ -526,6 +541,12 @@ export default class Chat extends Component {
       .membersOnline.map(member => ({username: member.username, userId: member.userId}))
     : currentChannel.members
     return members.map(member => ({username: member.username, userId: member.userId}))
+  }
+
+  onListScroll() {
+    if (this.channelList.scrollTop === this.channelList.scrollHeight - this.channelList.offsetHeight) {
+      this.loadMoreChannels()
+    }
   }
 
   onMessageSubmit(message) {

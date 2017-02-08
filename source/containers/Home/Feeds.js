@@ -6,6 +6,7 @@ import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import ExecutionEnvironment from 'exenv'
 import {connect} from 'react-redux'
+import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 
 @connect(
   state => ({
@@ -13,6 +14,7 @@ import {connect} from 'react-redux'
     feeds: state.FeedReducer.feeds,
     userId: state.UserReducer.userId,
     selectedFilter: state.FeedReducer.selectedFilter,
+    chatMode: state.ChatReducer.chatMode,
     noFeeds: state.FeedReducer.noFeeds
   }),
   {
@@ -24,6 +26,7 @@ import {connect} from 'react-redux'
 )
 export default class Feeds extends Component {
   static propTypes = {
+    chatMode: PropTypes.bool,
     noFeeds: PropTypes.bool,
     fetchFeeds: PropTypes.func,
     clearFeeds: PropTypes.func,
@@ -38,16 +41,23 @@ export default class Feeds extends Component {
   constructor() {
     super()
     this.state = {
-      loadingMore: false
+      loadingMore: false,
+      scrollPosition: 0
     }
     this.applyFilter = this.applyFilter.bind(this)
     this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
     this.renderFilterBar = this.renderFilterBar.bind(this)
+    this.onScroll = this.onScroll.bind(this)
   }
 
   componentDidMount() {
     const {fetchFeeds, location, feeds} = this.props
     if (ExecutionEnvironment.canUseDOM && (location.action === 'PUSH' || !feeds)) fetchFeeds()
+    addEvent(window, 'scroll', this.onScroll)
+  }
+
+  componentWillUnmount() {
+    removeEvent(window, 'scroll', this.onScroll)
   }
 
   render() {
@@ -92,10 +102,23 @@ export default class Feeds extends Component {
 
   loadMoreFeeds() {
     const {feeds, fetchMoreFeeds, selectedFilter} = this.props
-    this.setState({loadingMore: true})
-    fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter, () => {
-      this.setState({loadingMore: false})
-    })
+    const {loadingMore} = this.state
+    if (!loadingMore) {
+      this.setState({loadingMore: true})
+      fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter, () => {
+        this.setState({loadingMore: false})
+      })
+    }
+  }
+
+  onScroll() {
+    const {chatMode} = this.props
+    if (!chatMode) {
+      this.setState({scrollPosition: document.body.scrollTop})
+      if (this.state.scrollPosition === document.body.scrollHeight - window.innerHeight) {
+        this.loadMoreFeeds()
+      }
+    }
   }
 
   renderFilterBar() {
