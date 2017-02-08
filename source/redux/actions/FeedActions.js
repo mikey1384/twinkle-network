@@ -121,7 +121,7 @@ export const fetchFeedsAsync = (filter = 'all') => dispatch => {
 }
 
 export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all', callback) => dispatch => {
-  request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}`).then(
+  request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then(
     response => {
       dispatch({
         type: 'FETCH_MORE_FEEDS',
