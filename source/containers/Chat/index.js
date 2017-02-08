@@ -544,7 +544,7 @@ export default class Chat extends Component {
   }
 
   onListScroll() {
-    if (this.channelList.scrollTop === (this.channelList.scrollHeight - this.channelList.offsetHeight) * 0.8) {
+    if (this.channelList.scrollTop >= (this.channelList.scrollHeight - this.channelList.offsetHeight) * 0.7) {
       this.loadMoreChannels()
     }
   }
