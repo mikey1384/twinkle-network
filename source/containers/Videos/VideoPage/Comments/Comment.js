@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
+import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
@@ -119,7 +119,7 @@ export default class Comment extends Component {
                     marginBottom: '0.5em'
                   }}
                 >
-                  Discussion Topic: {comment.discussionTitle}
+                  Discussion Topic: {cleanString(comment.discussionTitle)}
                 </div>
               }
               <LongText
