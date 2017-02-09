@@ -1,6 +1,6 @@
 const processedString = require('./helpers/stringHelpers').processedString
 const generalChatId = require('./siteConfig').generalChatId
-const pool = require('./pool')
+const {poolQuery} = require('./helpers')
 
 module.exports = function(io) {
   let connections = []
@@ -53,31 +53,32 @@ module.exports = function(io) {
       notifyChannelMembersChanged(channelId, {userId, username, profilePicId})
     })
 
-    socket.on('bind_uid_to_socket', (userId, username) => {
+    socket.on('bind_uid_to_socket_and_signin_to_chat_channels', (userId, username) => {
       const query = [
         'SELECT a.id AS channel FROM msg_channels a WHERE a.id IN ',
         '(SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ? ',
         'OR b.userId = ?)'
       ].join('')
-      pool.query(query, [generalChatId, userId], (err, rows) => {
-        if (err) {
-          return console.error(err)
-        }
-        let channels = rows.map(row => row.channel)
-        for (let i = 0; i < connections.length; i++) {
-          if (connections[i].socketId === socket.id) {
-            connections[i].userId = userId
-            connections[i].username = username
-            connections[i].channels = channels
-            break
+      poolQuery(query, [generalChatId, userId]).then(
+        rows => {
+          let channels = rows.map(row => row.channel)
+          for (let i = 0; i < connections.length; i++) {
+            if (connections[i].socketId === socket.id) {
+              connections[i] = Object.assign({}, connections[i], {
+                userId, username, channels
+              })
+              break
+            }
+          }
+          for (let i = 0; i < channels.length; i++) {
+            let channelId = channels[i]
+            socket.join('chatChannel' + channelId)
+            notifyChannelMembersChanged(channelId)
           }
         }
-        for (let i = 0; i < channels.length; i++) {
-          let channelId = channels[i]
-          socket.join('chatChannel' + channelId)
-          notifyChannelMembersChanged(channelId)
-        }
-      })
+      ).catch(
+        err => console.error(err)
+      )
     })
 
     socket.on('new_chat_message', (message, channel) => {
