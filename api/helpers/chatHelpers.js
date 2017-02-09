@@ -93,13 +93,13 @@ const fetchSingleChannel = (channelId, userId) => {
     )
   ).then(
     channel => fetchChannelTitleAndLastMessage(channel, userId).then(
-      result => Promise.resolve({
+      ([message, channelName]) => Promise.resolve({
         id: channel.id,
         twoPeople: channel.twoPeople,
-        channelName: result[1] || channel.channelName,
-        lastMessage: result[0].content || '',
-        lastUpdate: result[0].timeStamp || '',
-        lastMessageSender: {username: result[0].username, id: result[0].userId},
+        channelName: channelName || channel.channelName,
+        lastMessage: message.content || '',
+        lastUpdate: message.timeStamp || '',
+        lastMessageSender: {username: message.username, id: message.userId},
         numUnreads: Number(channel.numUnreads)
       })
     )
@@ -223,7 +223,7 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => {
       'SELECT a.content, a.userId, a.timeStamp, b.username ',
       'FROM msg_chats a JOIN users b ',
       'ON a.userId = b.id ',
-      'WHERE channelId = ? ORDER BY a.timeStamp DESC LIMIT 1'
+      'WHERE channelId = ? ORDER BY a.id DESC LIMIT 1'
     ].join('')
     return poolQuery(query, channel.id).then(
       rows => Promise.resolve(rows[0] || {})
