@@ -259,6 +259,8 @@ export default class Header extends Component {
   }
 
   onLogoClick() {
+    const {clearFeeds} = this.props
+    clearFeeds()
     this.setState({selectedTab: 'home'})
     if (this.props.chatMode) {
       this.props.turnChatOff()
