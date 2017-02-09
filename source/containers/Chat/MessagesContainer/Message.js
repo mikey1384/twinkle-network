@@ -7,7 +7,7 @@ import SmallDropdownButton from 'components/SmallDropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
-import {editMessage, deleteMessage} from 'redux/actions/ChatActions'
+import {editMessage, deleteMessage, saveMessage} from 'redux/actions/ChatActions'
 
 @connect(
   state => ({
@@ -15,7 +15,8 @@ import {editMessage, deleteMessage} from 'redux/actions/ChatActions'
   }),
   {
     onEditDone: editMessage,
-    onDelete: deleteMessage
+    onDelete: deleteMessage,
+    saveMessage
   }
 )
 export default class Message extends Component {
@@ -24,7 +25,9 @@ export default class Message extends Component {
     style: PropTypes.object,
     myId: PropTypes.number,
     onEditDone: PropTypes.func,
-    onDelete: PropTypes.func
+    onDelete: PropTypes.func,
+    saveMessage: PropTypes.func,
+    index: PropTypes.number
   }
   constructor() {
     super()
@@ -36,9 +39,15 @@ export default class Message extends Component {
     this.onEditDone = this.onEditDone.bind(this)
   }
 
+  componentWillMount() {
+    const {message, myId, saveMessage, index} = this.props
+    if (!message.id && message.userId === myId) saveMessage(message, index)
+  }
+
   render() {
     const {
       message: {
+        id: messageId,
         userId,
         profilePicId,
         username,
@@ -67,7 +76,7 @@ export default class Message extends Component {
             wordWrap: 'break-word'
           }}
         >
-          {myId === userId && !onEdit &&
+          {!!messageId && myId === userId && !onEdit &&
             <SmallDropdownButton
               shape="button"
               icon="pencil"

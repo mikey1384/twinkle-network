@@ -24,6 +24,14 @@ export default function ChatReducer(state = defaultState, action) {
   let originalNumUnreads = 0
   let channel = []
   switch (action.type) {
+    case 'ADD_ID_TO_NEW_MESSAGE':
+      return {
+        ...state,
+        messages: state.messages.map((message, index) => ({
+          ...message,
+          id: index === action.messageIndex ? action.messageId : message.id
+        }))
+      }
     case 'APPLY_CHANGED_CHANNEL_TITLE':
       return {
         ...state,
@@ -480,13 +488,8 @@ export default function ChatReducer(state = defaultState, action) {
             }].concat(result) : result.concat([channel])
         }, []),
         messages: state.messages.concat([{
-          id: action.message.messageId,
-          channelId: action.message.channelId,
-          content: processedStringWithURL(action.message.content),
-          timeStamp: action.message.timeStamp,
-          username: action.message.username,
-          userId: action.message.userId,
-          profilePicId: action.message.profilePicId
+          ...action.message,
+          content: processedStringWithURL(action.message.content)
         }])
       }
     case 'TURN_CHAT_OFF':

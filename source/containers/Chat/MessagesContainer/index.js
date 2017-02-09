@@ -170,7 +170,7 @@ export default class MessagesContainer extends Component {
     return messages.map((message, index) => {
       let {isNotification} = message
       let messageStyle = isNotification ? {color: Color.darkGray} : null
-      return <Message key={index} style={messageStyle} message={message} />
+      return <Message key={index} index={index} style={messageStyle} message={message} />
     })
   }
 }

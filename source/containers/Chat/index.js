@@ -590,9 +590,9 @@ export default class Chat extends Component {
         numUnreads: 1
       })
     )
-    submitMessage(params, message => {
-      socket.emit('new_chat_message', message, channel)
-    })
+    submitMessage(params).then(
+      message => socket.emit('new_chat_message', message, channel)
+    )
   }
 
   onNewButtonClick() {

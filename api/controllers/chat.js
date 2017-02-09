@@ -31,7 +31,7 @@ router.get('/', requireAuth, (req, res) => {
 
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
-  const message = req.body.message
+  const {message} = req.body
   const {channelId, content} = message
   const timeStamp = Math.floor(Date.now()/1000)
   if (message.userId !== user.id) {
@@ -49,7 +49,7 @@ router.post('/', requireAuth, (req, res) => {
       return poolQuery(query, [channelId, user.id, processedString(content), timeStamp])
     }
   ).then(
-    () => res.send({success: true})
+    result => res.send({messageId: Number(result.insertId)})
   ).catch(
     err => res.status(500).send(err)
   )

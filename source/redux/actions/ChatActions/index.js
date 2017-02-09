@@ -328,7 +328,7 @@ export const sendFirstDirectMessage = (params, callback) => dispatch => {
   )
 }
 
-export const submitMessageAsync = (params, callback) => dispatch => {
+export const submitMessageAsync = (params) => dispatch => {
   let message = {
     ...params,
     timeStamp: Math.floor(Date.now()/1000)
@@ -337,8 +337,18 @@ export const submitMessageAsync = (params, callback) => dispatch => {
     type: 'SUBMIT_MESSAGE',
     message
   })
+  return Promise.resolve(params)
+}
+
+export const saveMessage = (message, index) => dispatch => {
   request.post(API_URL, {message}, auth()).then(
-    response => callback(params)
+    response => {
+      dispatch({
+        type: 'ADD_ID_TO_NEW_MESSAGE',
+        messageIndex: index,
+        messageId: response.data.messageId
+      })
+    }
   ).catch(
     error => {
       console.error(error.response || error)
