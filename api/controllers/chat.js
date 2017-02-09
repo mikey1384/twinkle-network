@@ -17,12 +17,12 @@ const {
 } = require('../helpers/chatHelpers')
 
 router.get('/', requireAuth, (req, res) => {
-  const user = req.user
-  const lastChannelId = user.lastChannelId || generalChatId
-  fetchChat({user, channelId: lastChannelId}).then(
+  const {user, user: {lastChannelId}} = req
+  fetchChat({user, channelId: lastChannelId || generalChatId}).then(
     results => res.send(results)
   ).catch(
     err => {
+      console.error(err)
       if (err.status) return res.status(err.status).send({error: err})
       return res.status(500).send({error: err})
     }
@@ -52,6 +52,32 @@ router.post('/', requireAuth, (req, res) => {
     () => res.send({success: true})
   ).catch(
     err => res.status(500).send(err)
+  )
+})
+
+router.delete('/message', requireAuth, (req, res) => {
+  const {user} = req
+  const {messageId} = req.query
+  poolQuery('DELETE FROM msg_chats WHERE id = ? AND userId = ?', [messageId, user.id]).then(
+    () => res.send({success: true})
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
+router.put('/message', requireAuth, (req, res) => {
+  const {user} = req
+  const {editedMessage, messageId} = req.body
+  poolQuery('UPDATE msg_chats SET ? WHERE id = ? AND userId = ?', [{content: editedMessage}, messageId, user.id]).then(
+    () => res.send({success: true})
+  ).catch(
+    err => {
+      console.err(err)
+      res.status(500).send({error: err})
+    }
   )
 })
 
@@ -211,10 +237,10 @@ router.post('/channel', requireAuth, (req, res) => {
         saveChannelMembers(channelId, members),
         poolQuery('INSERT INTO msg_chats SET ?', message)
       ]).then(
-        results => Promise.resolve(Object.assign({}, message, {
+        ([, result]) => Promise.resolve(Object.assign({}, message, {
           username: user.username,
           profilePicId: user.profilePicId,
-          messageId: results[1].insertId,
+          messageId: result.insertId,
           channelName
         }))
       )
@@ -264,7 +290,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
       saveChannelMembers(channelId, [user.id, partnerId]),
       poolQuery('INSERT INTO msg_chats SET ?', {channelId, userId: user.id, content, timeStamp})
     ]).then(
-      results => Promise.resolve({channelId, messageId: results[1].insertId})
+      ([, result]) => Promise.resolve({channelId, messageId: result.insertId})
     )
   ).then(
     ({channelId, messageId}) => poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
@@ -292,7 +318,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
     }
   ).catch(
     err => {
-      console.log(err)
+      console.error(err)
       return res.status(500).send({error: err})
     }
   )
@@ -300,8 +326,9 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
 
 router.delete('/channel', requireAuth, (req, res) => {
   const {user} = req
-  const channelId = Number(req.query.channelId)
-  const timeStamp = Number(req.query.timeStamp)
+  const {channelId: channelIdString, timeStamp: timeStampString} = req.query
+  const channelId = Number(channelIdString)
+  const timeStamp = Number(timeStampString)
 
   async.parallel([postLeaveNotification, leaveChannel], (err, results) => {
     if (err) {
@@ -316,7 +343,7 @@ router.delete('/channel', requireAuth, (req, res) => {
       channelId,
       userId: user.id,
       content: 'Left the channel',
-      timeStamp: timeStamp,
+      timeStamp,
       isNotification: true
     }
     let query = 'INSERT INTO msg_chats SET ?'

@@ -7,7 +7,8 @@ class SmallDropdownButton extends Component {
     menuProps: PropTypes.array.isRequired,
     icon: PropTypes.string,
     shape: PropTypes.string,
-    style: PropTypes.object
+    style: PropTypes.object,
+    size: PropTypes.string
   }
 
   handleClickOutside = event => {
@@ -23,9 +24,9 @@ class SmallDropdownButton extends Component {
 
   render() {
     const {menuDisplayed} = this.state
-    const {style, icon, shape} = this.props
+    const {style, icon, shape, size = 'xs'} = this.props
     const buttonIcon = icon === 'pencil' ? 'glyphicon glyphicon-pencil' : 'glyphicon glyphicon-align-justify'
-    const buttonShape = shape === 'button' ? 'btn btn-sm btn-default' : 'dropdown-toggle'
+    const buttonShape = shape === 'button' ? `btn btn-${size} btn-default` : 'dropdown-toggle'
     const menuDisplay = menuDisplayed ? 'block' : 'none'
 
     return (
@@ -36,7 +37,7 @@ class SmallDropdownButton extends Component {
           opacity: menuDisplayed ? 1 : style.opacity
         }}>
         <Button className={buttonShape} onClick={() => this.setState({menuDisplayed: !menuDisplayed})}>
-          <span className={buttonIcon}></span>
+          {icon !== 'pencil' && <span><span>menu</span>&nbsp;&nbsp;</span>}<span className={buttonIcon}></span>
         </Button>
         <ul className="dropdown-menu"
           style={{

@@ -10,7 +10,8 @@ export default class EditTextArea extends Component {
     placeholder: PropTypes.string,
     onCancel: PropTypes.func,
     onEditDone: PropTypes.func,
-    rows: PropTypes.number
+    rows: PropTypes.number,
+    marginTop: PropTypes.string
   }
 
   constructor(props) {
@@ -25,16 +26,14 @@ export default class EditTextArea extends Component {
 
   render() {
     const {editedText} = this.state
-    const {autoFocus = false, placeholder = 'Enter text', rows = 4} = this.props
+    const {autoFocus = false, placeholder = 'Enter text', rows = 4, marginTop = '1em'} = this.props
     return (
       <div>
         <Textarea
           placeholder={placeholder}
           autoFocus={autoFocus}
           className="form-control"
-          style={{
-            marginTop: '1em'
-          }}
+          style={{marginTop}}
           rows={rows}
           value={editedText}
           onChange={this.onChange}

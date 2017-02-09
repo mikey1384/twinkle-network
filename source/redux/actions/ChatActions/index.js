@@ -58,12 +58,38 @@ request.post(`${API_URL}/channel`, {params}, auth())
   }
 )
 
+export const deleteMessage = messageId => dispatch =>
+request.delete(`${API_URL}/message?messageId=${messageId}`, auth()).then(
+  response => {
+    dispatch({
+      type: 'DELETE_CHAT_MESSAGE',
+      messageId
+    })
+    return Promise.resolve()
+  }
+)
+
 export const editChannelTitle = (params, callback) => dispatch =>
-request.post(`${API_URL}/title`, params, auth())
-.then(
+request.post(`${API_URL}/title`, params, auth()).then(
   response => {
     dispatch(actions.applyChangedChannelTitle(params))
     if (callback) callback()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const editMessage = ({editedMessage, messageId}) => dispatch =>
+request.put(`${API_URL}/message`, {editedMessage, messageId}, auth()).then(
+  response => {
+    dispatch({
+      type: 'EDIT_CHAT_MESSAGE',
+      data: {editedMessage, messageId}
+    })
+    return Promise.resolve()
   }
 ).catch(
   error => {

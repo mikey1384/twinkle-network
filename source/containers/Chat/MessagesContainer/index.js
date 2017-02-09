@@ -1,10 +1,8 @@
 import React, {Component, PropTypes} from 'react'
-import moment from 'moment'
-import UsernameText from 'components/Texts/UsernameText'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
-import ProfilePic from 'components/ProfilePic'
 import Loading from 'components/Loading'
+import Message from './Message'
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop
@@ -55,7 +53,11 @@ export default class MessagesContainer extends Component {
       if (messageSenderId === userId || this.state.scrollAtBottom) {
         this.setFillerHeight()
       } else {
-        this.setState({newUnseenMessage: true})
+        let newUnseenMessage = false
+        if (prevProps.messages && prevProps.messages.length > 0) {
+          if (this.props.messages.length >= prevProps.messages.length) newUnseenMessage = true
+        }
+        this.setState({newUnseenMessage})
       }
     }
   }
@@ -141,7 +143,9 @@ export default class MessagesContainer extends Component {
                   container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight)
                 }
               }
-            >New Message</Button>
+            >
+            New Message
+          </Button>
           }
         </div>
       </div>
@@ -166,38 +170,7 @@ export default class MessagesContainer extends Component {
     return messages.map((message, index) => {
       let {isNotification} = message
       let messageStyle = isNotification ? {color: Color.darkGray} : null
-      return (
-        <div
-          key={index}
-          className="media"
-          style={{
-            minHeight: '64px',
-            height: 'auto',
-            width: '100%'
-          }}
-        >
-          <ProfilePic size='4' userId={message.userId} profilePicId={message.profilePicId} />
-          <div
-            className="media-body"
-            style={{
-              width: '100%',
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word'
-            }}
-          >
-            <h5 className="media-heading" style={{position: 'absolute'}}>
-              <UsernameText
-                user={{
-                  id: message.userId,
-                  name: message.username || '(Deleted)'
-                }} /> <small>{moment.unix(message.timeStamp).format('LLL')}</small>
-            </h5>
-            <div style={{paddingTop: '1.5em'}}>
-              <span style={messageStyle} dangerouslySetInnerHTML={{__html: message.content}}></span>
-            </div>
-          </div>
-        </div>
-      )
+      return <Message key={index} style={messageStyle} message={message} />
     })
   }
 }

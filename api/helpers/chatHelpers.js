@@ -1,28 +1,17 @@
 const {generalChatId} = require('../siteConfig')
 const {poolQuery} = require('../helpers')
 
-const fetchChat = (params) => {
-  const user = params.user
-  let channelId = params.channelId ? params.channelId : generalChatId
-  let results = {
-    channels: [],
-    messages: [],
-    currentChannel: {}
-  }
-
+const fetchChat = ({user, channelId}) => {
   return checkIfLastChannelExists().then(
     () => checkIfUserIsAMember()
   ).then(
     () => fetchCurrentChannel()
   ).then(
-    currentChannel => {
-      results.currentChannel = currentChannel
-      return Promise.all([fetchChannels(user, currentChannel.id), fetchMessages(channelId)])
-    }
+    currentChannel => Promise.all([fetchChannels(user, currentChannel.id), fetchMessages(channelId)]).then(
+      ([channels, messages]) => Promise.resolve({currentChannel, channels, messages})
+    )
   ).then(
-    channelsAndMessages => {
-      results.channels = channelsAndMessages[0]
-      results.messages = channelsAndMessages[1]
+    results => {
       updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
       return Promise.resolve(results)
     }
@@ -178,7 +167,7 @@ function fetchUserSpecificChannelData(channel, userId) {
   const channelId = channel.id
   let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ?'
   return poolQuery(query, [channelId, channel.lastRead, userId]).then(
-    rows => Promise.resolve({numUnreads: rows[0].numUnreads})
+    ([result]) => Promise.resolve({numUnreads: result.numUnreads})
   )
 }
 
@@ -190,12 +179,13 @@ function fetchChannelTitlesAndLastMessages(channels, userId) {
   return Promise.all(taskArray).then(
     results => {
       let finalResults = channels.map((row, index) => {
+        const [message, channelName] = results[index]
         return {
           id: row.id,
-          channelName: results[index][1] ? results[index][1] : row.channelName,
-          lastMessage: results[index][0].content || '',
-          lastUpdate: results[index][0].timeStamp || '',
-          lastMessageSender: {username: results[index][0].username, id: results[index][0].userId},
+          channelName: channelName || row.channelName,
+          lastMessage: message.content || '',
+          lastUpdate: message.timeStamp || '',
+          lastMessageSender: {username: message.username, id: message.userId},
           numUnreads: Number(row.numUnreads)
         }
       })
@@ -219,14 +209,14 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => {
   return Promise.all([fetchLastMessage(), fetchChannelTitle()])
 
   function fetchLastMessage() {
-    const query = [
-      'SELECT a.content, a.userId, a.timeStamp, b.username ',
-      'FROM msg_chats a JOIN users b ',
-      'ON a.userId = b.id ',
-      'WHERE channelId = ? ORDER BY a.id DESC LIMIT 1'
-    ].join('')
+    const query = `
+      SELECT a.content, a.userId, a.timeStamp, b.username
+      FROM msg_chats a JOIN users b
+      ON a.userId = b.id
+      WHERE channelId = ? ORDER BY a.id DESC LIMIT 1
+    `
     return poolQuery(query, channel.id).then(
-      rows => Promise.resolve(rows[0] || {})
+      ([lastMessage]) => Promise.resolve(lastMessage || {})
     )
   }
 
@@ -238,15 +228,15 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => {
 }
 
 const generateTitleForBidirectionalChannel = (channelId, userId) => {
-  const query = [
-    'SELECT b.userId, c.username ',
-    'FROM msg_channels a ',
-    'JOIN msg_channel_members b ON ',
-    'a.id = b.channelId ',
-    'JOIN users c ON ',
-    'b.userId = c.id ',
-    'WHERE a.id = ? AND a.twoPeople = 1'
-  ].join('')
+  const query = `
+    SELECT b.userId, c.username
+    FROM msg_channels a
+    JOIN msg_channel_members b ON
+    a.id = b.channelId
+    JOIN users c ON
+    b.userId = c.id
+    WHERE a.id = ? AND a.twoPeople = 1
+  `
   return poolQuery(query, channelId).then(
     rows => {
       const title = rows.length > 0 ? generateTitle(rows) : null
@@ -265,13 +255,10 @@ const generateTitleForBidirectionalChannel = (channelId, userId) => {
   }
 }
 
-const generateTitleForGroupChannel = (channelId, userId, callback) => {
+const generateTitleForGroupChannel = (channelId, userId) => {
   const query = 'SELECT channelName FROM msg_channel_info WHERE userId = ? AND channelId = ?'
   return poolQuery(query, [userId, channelId]).then(
-    rows => {
-      if (!rows || rows.length === 0) return Promise.resolve(null)
-      return Promise.resolve(rows[0].channelName)
-    }
+    ([result]) => Promise.resolve(result.channelName)
   )
 }
 
@@ -280,13 +267,13 @@ const saveChannelMembers = (channelId, members) => {
   return Promise.all(tasks)
 }
 
-const updateLastRead = ({users, channelId, timeStamp}, callback) => {
+const updateLastRead = ({users, channelId, timeStamp}) => {
   let tasks = users.map(user => {
     let userId = user.id
     let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?'
     return poolQuery(query, [userId, channelId]).then(
-      rows => {
-        if (Number(rows[0].num) > 0) {
+      ([result]) => {
+        if (Number(result.num) > 0) {
           let query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?'
           return poolQuery(query, [{lastRead: timeStamp}, userId, channelId])
         } else {

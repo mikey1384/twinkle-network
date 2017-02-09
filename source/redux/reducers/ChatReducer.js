@@ -107,6 +107,21 @@ export default function ChatReducer(state = defaultState, action) {
         selectedChannelId: action.channelId
       }
     }
+    case 'DELETE_CHAT_MESSAGE':
+      return {
+        ...state,
+        messages: state.messages.filter(message => message.id !== action.messageId)
+      }
+    case 'EDIT_CHAT_MESSAGE':
+      return {
+        ...state,
+        messages: state.messages.map(message => {
+          return {
+            ...message,
+            content: message.id === action.data.messageId ? action.data.editedMessage : message.content
+          }
+        })
+      }
     case 'ENTER_CHANNEL':
       loadMoreMessages = false
       if (action.data.messages.length === 21) {
