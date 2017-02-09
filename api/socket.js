@@ -53,7 +53,7 @@ module.exports = function(io) {
       notifyChannelMembersChanged(channelId, {userId, username, profilePicId})
     })
 
-    socket.on('bind_uid_to_socket_and_signin_to_chat_channels', (userId, username) => {
+    socket.on('bind_uid_to_socket', (userId, username) => {
       const query = [
         'SELECT a.id AS channel FROM msg_channels a WHERE a.id IN ',
         '(SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ? ',
