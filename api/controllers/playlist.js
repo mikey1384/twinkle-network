@@ -108,7 +108,7 @@ router.post('/edit/videos', requireAuth, (req, res) => {
       for (let i = 0; i < selectedVideos.length; i++) {
         tasks.push(() => poolQuery('INSERT INTO vq_playlistvideos SET ?', {playlistId, videoId: selectedVideos[i]}))
       }
-      return tasks.reduce((resolve, task) => resolve.then(task), Promise.resolve())
+      return tasks.reduce((promise, task) => promise.then(task), Promise.resolve())
     }
   ).then(
     () => {

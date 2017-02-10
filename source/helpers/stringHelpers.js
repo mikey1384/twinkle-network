@@ -29,10 +29,13 @@ export function addEmoji(string) {
   .replace(/(\(sunglasses\))/gi, '😎 ')
   .replace(/(\(ok\))/gi, '👌 ')
   .replace(/(\(mad\))/gi, '😡 ')
+  .replace(/(\(angry\))/gi, '😡 ')
   .replace(/(\(perfect\))/gi, '💯 ')
   .replace(/(\(bye\))/gi, '👋 ')
   .replace(/(\(fear\))/gi, '😱 ')
+  .replace(/(\(horror\))/gi, '😱 ')
   .replace(/(\(cry\))/gi, '😭 ')
+  .replace(/(\(sad\))/gi, '😭 ')
 }
 
 export function cleanStringWithURL(string) {
