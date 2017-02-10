@@ -71,7 +71,8 @@ router.delete('/message', requireAuth, (req, res) => {
 router.put('/message', requireAuth, (req, res) => {
   const {user} = req
   const {editedMessage, messageId} = req.body
-  poolQuery('UPDATE msg_chats SET ? WHERE id = ? AND userId = ?', [{content: editedMessage}, messageId, user.id]).then(
+  const query = 'UPDATE msg_chats SET ? WHERE id = ? AND userId = ?'
+  poolQuery(query, [{content: processedString(editedMessage)}, messageId, user.id]).then(
     () => res.send({success: true})
   ).catch(
     err => {

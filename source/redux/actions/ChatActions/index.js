@@ -3,6 +3,7 @@ import {auth, handleError} from '../constants'
 import * as actions from './actions'
 import {GENERAL_CHAT_ID} from 'constants/database'
 import {URL} from 'constants/URL'
+import {processedStringWithURL} from 'helpers/stringHelpers'
 
 const API_URL = `${URL}/chat`
 
@@ -87,7 +88,7 @@ request.put(`${API_URL}/message`, {editedMessage, messageId}, auth()).then(
   response => {
     dispatch({
       type: 'EDIT_CHAT_MESSAGE',
-      data: {editedMessage, messageId}
+      data: {editedMessage: processedStringWithURL(editedMessage), messageId}
     })
     return Promise.resolve()
   }
