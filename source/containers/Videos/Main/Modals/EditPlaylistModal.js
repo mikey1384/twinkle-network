@@ -32,20 +32,23 @@ export default class EditPlaylistModal extends Component {
     videos: PropTypes.array,
     loadMoreVideosButton: PropTypes.bool,
     getMoreVideosForModal: PropTypes.func,
-    changePlaylistVideos: PropTypes.func
+    changePlaylistVideos: PropTypes.func,
+    playlist: PropTypes.array
   }
 
   constructor(props) {
     super()
     this.state = {
-      selectedVideos: props.selectedVideos
+      selectedVideos: props.selectedVideos,
+      originallySelectedVids: props.selectedVideos,
+      mainTabActive: true
     }
     this.handleSave = this.handleSave.bind(this)
   }
 
   render() {
-    const {modalType, videos, loadMoreVideosButton, getMoreVideosForModal, onHide} = this.props
-    const {selectedVideos} = this.state
+    const {modalType, videos, loadMoreVideosButton, getMoreVideosForModal, onHide, playlist} = this.props
+    const {selectedVideos, mainTabActive} = this.state
     const last = (array) => {
       return array[array.length - 1]
     }
@@ -60,13 +63,29 @@ export default class EditPlaylistModal extends Component {
       >
         <Modal.Header closeButton>
           {modalType === 'change' ?
-            <h4>Add or Remove Videos</h4>
+            <h4>Change Playlist Videos</h4>
             :
             <h4>Reorder Videos</h4>
           }
         </Modal.Header>
         <Modal.Body>
-          {modalType === 'change' &&
+          <ul className="nav nav-tabs nav-justified" style={{marginBottom: '2em'}}>
+            <li
+              className={mainTabActive ? 'active' : ''}
+              onClick={() => this.setState({mainTabActive: true})}
+              style={{cursor: 'pointer'}}
+            >
+              <a style={{fontWeight: 'bold'}}>{modalType === 'change' ? 'Add Videos' : 'Reorder Videos'}</a>
+            </li>
+            <li
+              className={mainTabActive ? '' : 'active'}
+              onClick={() => this.setState({mainTabActive: false})}
+              style={{cursor: 'pointer'}}
+            >
+              <a style={{fontWeight: 'bold'}}>Remove Videos</a>
+            </li>
+          </ul>
+          {mainTabActive && modalType === 'change' &&
             <SelectVideosForm
               videos={videos}
               selectedVideos={selectedVideos}
@@ -76,7 +95,7 @@ export default class EditPlaylistModal extends Component {
               loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
             />
           }
-          {modalType === 'reorder' &&
+          {mainTabActive && modalType === 'reorder' &&
             <div className="row">
               {selectedVideos.map(videoId => {
                 let index = -1
@@ -104,6 +123,15 @@ export default class EditPlaylistModal extends Component {
                 )
               })}
             </div>
+          }
+          {!mainTabActive &&
+            <SelectVideosForm
+              videos={playlist}
+              selectedVideos={selectedVideos}
+              onSelect={(selected, videoId) => this.setState({selectedVideos: selected.concat([videoId])})}
+              onDeselect={selected => this.setState({selectedVideos: selected})}
+              loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
+            />
           }
         </Modal.Body>
         <Modal.Footer>

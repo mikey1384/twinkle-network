@@ -237,17 +237,15 @@ request.get(`${URL}/video?numberToLoad=18&videoId=${videoId}`)
   }
 )
 
-export const openChangePlaylistVideosModal = data => ({
-  type: 'CHANGE_PL_VIDS_MODAL_OPEN',
-  modalType: 'change',
-  data
-})
-
-export const openChangePlaylistVideosModalAsync = sender => dispatch => request.get(`${URL}/video?numberToLoad=18`)
-.then(
+export const openChangePlaylistVideosModalAsync = () => dispatch =>
+request.get(`${URL}/video?numberToLoad=18`).then(
   response => {
-    dispatch(openChangePlaylistVideosModal(response.data))
-    sender.setState({editPlaylistModalShown: true})
+    dispatch({
+      type: 'CHANGE_PL_VIDS_MODAL_OPEN',
+      modalType: 'change',
+      data: response.data
+    })
+    return Promise.resolve()
   }
 ).catch(
   error => {

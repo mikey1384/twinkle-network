@@ -222,12 +222,12 @@ const fetchChannelTitleAndLastMessage = (channel, userId) => {
 
   function fetchChannelTitle() {
     let generateTitle = channel.twoPeople ?
-      generateTitleForBidirectionalChannel : generateTitleForGroupChannel
+      generateTitleForDirectChannel : generateTitleForGroupChannel
     return generateTitle(channel.id, userId)
   }
 }
 
-const generateTitleForBidirectionalChannel = (channelId, userId) => {
+const generateTitleForDirectChannel = (channelId, userId) => {
   const query = `
     SELECT b.userId, c.username
     FROM msg_channels a
