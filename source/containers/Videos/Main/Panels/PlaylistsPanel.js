@@ -31,7 +31,7 @@ export default class PlaylistsPanel extends Component {
   }
 
   render() {
-    const {loadMoreButton, playlists, buttonGroupShown, buttonGroup, loaded, title = 'All Playlists'} = this.props
+    const {loadMoreButton, playlists, buttonGroupShown = true, buttonGroup, loaded, title = 'All Playlists'} = this.props
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">

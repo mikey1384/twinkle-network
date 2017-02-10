@@ -177,7 +177,6 @@ export default class Main extends Component {
         }
         <PlaylistsPanel
           key={'allplaylists'}
-          buttonGroupShown={isAdmin}
           buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
           title="All Playlists"
           loadMoreButton={loadMorePlaylistsButton}

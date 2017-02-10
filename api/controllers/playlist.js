@@ -83,15 +83,13 @@ router.post('/', requireAuth, (req, res) => {
 })
 
 router.post('/edit/title', requireAuth, (req, res) => {
-  const user = req.user
   const title = req.body.title
   const playlistId = req.body.playlistId
   const newTitle = processedTitleString(title)
   const post = {
     title: newTitle
   }
-  const userId = user.id
-  pool.query('UPDATE vq_playlists SET ? WHERE id = ? AND creator = ?', [post, playlistId, userId], err => {
+  pool.query('UPDATE vq_playlists SET ? WHERE id = ?', [post, playlistId], err => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})
@@ -136,20 +134,18 @@ router.post('/edit/videos', requireAuth, (req, res) => {
 })
 
 router.delete('/', requireAuth, (req, res) => {
-  const user = req.user
   const playlistId = typeof req.query.playlistId !== 'undefined' ? Number(req.query.playlistId) : 0
   async.waterfall([
     (callback) => {
-      const userId = user.id
-      pool.query('SELECT * FROM vq_playlists WHERE creator = ? AND id = ?', [userId, playlistId], (err, rows) => {
+      pool.query('SELECT * FROM vq_playlists WHERE id = ?', playlistId, (err, rows) => {
         if (!rows || rows.length === 0) return callback('User is not the owner of the playlist')
-        callback(err, userId)
+        callback(err)
       })
     },
-    (userId, callback) => {
+    (callback) => {
       async.parallel([
         (callback) => {
-          pool.query('DELETE FROM vq_playlists WHERE creator = ? AND id = ?', [userId, playlistId], (err, result) => {
+          pool.query('DELETE FROM vq_playlists WHERE id = ?', playlistId, (err, result) => {
             callback(err, result)
           })
         },
