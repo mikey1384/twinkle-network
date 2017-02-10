@@ -17,7 +17,8 @@ import {connect} from 'react-redux'
 
 @connect(
   state => ({
-    clickSafe: state.PlaylistReducer.clickSafe
+    clickSafe: state.PlaylistReducer.clickSafe,
+    isAdmin: state.UserReducer.isAdmin
   }),
   {
     editPlaylistTitleAsync,
@@ -40,7 +41,8 @@ export default class PlaylistCarousel extends Component {
     openReorderPlaylistVideosModal: PropTypes.func,
     editPlaylistTitleAsync: PropTypes.func,
     deletePlaylistAsync: PropTypes.func,
-    resetPlaylistModalState: PropTypes.func
+    resetPlaylistModalState: PropTypes.func,
+    isAdmin: PropTypes.bool
   }
 
   constructor() {
@@ -116,6 +118,7 @@ export default class PlaylistCarousel extends Component {
       title,
       uploader,
       editable,
+      isAdmin,
       id
     } = this.props
     let playlist = this.props.playlist.map(video => ({
@@ -169,7 +172,7 @@ export default class PlaylistCarousel extends Component {
               {title} <small>by {uploader}</small>
             </h4>
           }
-          {editable &&
+          {(editable || isAdmin) &&
             <SmallDropdownButton
               style={{
                 position: 'absolute',

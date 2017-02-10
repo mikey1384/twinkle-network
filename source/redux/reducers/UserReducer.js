@@ -3,7 +3,7 @@ const defaultState = {
 }
 
 function isAdmin(userType) {
-  return userType === 'teacher' || userType === 'master'
+  return userType === 'master'
 }
 
 export default function UserReducer(state = defaultState, action) {

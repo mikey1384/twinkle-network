@@ -40,7 +40,6 @@ export default class EditPlaylistModal extends Component {
     super()
     this.state = {
       selectedVideos: props.selectedVideos,
-      originallySelectedVids: props.selectedVideos,
       mainTabActive: true
     }
     this.handleSave = this.handleSave.bind(this)
