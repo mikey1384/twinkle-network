@@ -41,7 +41,10 @@ export default class Message extends Component {
 
   componentWillMount() {
     const {message, myId, saveMessage, index} = this.props
-    if (!message.id && message.userId === myId) saveMessage(message, index)
+
+    if (!message.id && message.userId === myId) {
+      saveMessage({...message, content: cleanStringWithURL(message.content)}, index)
+    }
   }
 
   render() {
