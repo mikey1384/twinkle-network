@@ -60,7 +60,7 @@ router.post('/', requireAuth, (req, res) => {
           'COUNT(d.id) AS numLikes ',
           'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON b.uploader = c.id ',
           'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
-          'WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id'
+          'WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id'
         ].join('')
         pool.query(query, playlistId, (err, rows) => {
           callback(err, {
@@ -119,7 +119,7 @@ router.post('/edit/videos', requireAuth, (req, res) => {
           JOIN vq_videos b ON a.videoId = b.id
           LEFT JOIN users c ON b.uploader = c.id
           LEFT JOIN vq_video_likes d ON b.id = d.videoId
-        WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id
+        WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id
       `
       return poolQuery(query, playlistId)
     }

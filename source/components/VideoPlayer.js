@@ -50,7 +50,7 @@ export default class VideoPlayer extends Component {
             <img
               alt=""
               className="embed-responsive-item"
-              src={`https://img.youtube.com/vi/${videoCode}/0.jpg`}
+              src={`https://img.youtube.com/vi/${videoCode}/maxresdefault.jpg`}
             />
           </div>
         }
@@ -72,11 +72,7 @@ export default class VideoPlayer extends Component {
         {(!!playing || !!autoplay) &&
           <YouTube
             className={className}
-            opts={{
-              title: title,
-              height: '360',
-              width: '640'
-            }}
+            opts={{title}}
             videoId={videoCode}
             onReady={this.onVideoReady}
           />

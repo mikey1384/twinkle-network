@@ -210,15 +210,15 @@ export default class Header extends Component {
                     getPlaylists()
                   }}
                 >
-                  Videos
+                  Watch
                 </HeaderNav>
                 {false &&
-                   <HeaderNav
-                    to="/links"
-                    selected={selectedTab === 'links'}
-                  >
-                    Links
-                  </HeaderNav>
+                  <HeaderNav
+                   to="/links"
+                   selected={selectedTab === 'links'}
+                 >
+                   Read
+                 </HeaderNav>
                 }
               </Nav>,
               <SearchBox className="col-xs-6" style={{marginTop: '6px'}} key="searchBox" />

@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
 import {connect} from 'react-redux'
-import Button from 'components/Button'
 import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions'
-import Loading from 'components/Loading'
+import SectionPanel from 'components/SectionPanel'
 
 const last = array => {
   return array[array.length - 1]
@@ -31,43 +30,31 @@ export default class PlaylistsPanel extends Component {
   }
 
   render() {
-    const {loadMoreButton, playlists, buttonGroupShown = true, buttonGroup, loaded, title = 'All Playlists'} = this.props
+    const {loadMoreButton, playlists, userId, buttonGroupShown = true, buttonGroup, loaded, title = 'All Playlists'} = this.props
+    let buttonGroupElement = buttonGroupShown ? buttonGroup() : null
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading flexbox-container">
-          <h3 className="panel-title pull-left">{title}</h3>
-          {buttonGroupShown &&
-            buttonGroup()
-          }
-        </div>
-        <div className="panel-body">
-          {this.renderPlaylists()}
-          {playlists.length === 0 && (
-            loaded ? <div className="text-center">No Playlists</div> : <Loading />
-          )}
-          {loadMoreButton &&
-            <div className="text-center">
-              <Button className="btn btn-success" onClick={this.loadMorePlaylists}>Load More</Button>
-            </div>
-          }
-        </div>
-      </div>
+      <SectionPanel
+        title={title}
+        button={buttonGroupElement}
+        emptyMessage="No Videos"
+        isEmpty={playlists.length === 0}
+        loaded={loaded}
+        loadMoreButtonShown={loadMoreButton}
+        loadMore={this.loadMorePlaylists}
+      >
+        {playlists.map((playlist, index) => {
+          const editable = userId === playlist.uploaderId
+          return (
+            <PlaylistCarousel
+              key={index}
+              arrayIndex={index}
+              {...playlist}
+              editable={editable}
+            />
+          )
+        })}
+      </SectionPanel>
     )
-  }
-
-  renderPlaylists() {
-    const {playlists, userId} = this.props
-    return playlists.map((playlist, index) => {
-      const editable = userId === playlist.uploaderId
-      return (
-        <PlaylistCarousel
-          key={index}
-          arrayIndex={index}
-          {...playlist}
-          editable={editable}
-        />
-      )
-    })
   }
 
   loadMorePlaylists() {

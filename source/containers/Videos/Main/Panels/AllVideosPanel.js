@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 import VideoThumb from 'components/VideoThumb'
-import Button from 'components/Button'
 import {connect} from 'react-redux'
 import {getMoreVideos} from 'redux/actions/VideoActions'
-import Loading from 'components/Loading'
+import SectionPanel from 'components/SectionPanel'
+import Button from 'components/Button'
 
 const last = (array) => {
   return array[array.length - 1]
@@ -32,42 +32,35 @@ export default class AllVideosPanel extends Component {
   render() {
     const {loadMoreButton, videos, title = 'All Videos', loaded, onAddVideoClick} = this.props
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading flexbox-container">
-          <h3 className="panel-title pull-left">{title}</h3>
-          <Button
-            className="btn btn-default pull-right"
-            style={{marginLeft: 'auto'}}
-            onClick={() => onAddVideoClick()}
-          >+ Add Video</Button>
-          <div className="clearfix"></div>
-        </div>
-        <div className="panel-body">
-          {videos.length === 0 && (loaded ?
-            <div className="text-center">No Videos</div> : <Loading />
-          )}
-          {videos.map((video, index) => {
-            const editable = this.props.userId === video.uploaderId
-            return (
-              <VideoThumb
-                to={`videos/${video.id}`}
-                size="col-sm-3"
-                key={video.id}
-                arrayIndex={index}
-                editable={editable}
-                video={video}
-                user={{name: video.uploaderName, id: video.uploaderId}}
-                lastVideoId={last(videos) ? last(videos).id : 0}
-              />
-            )
-          })}
-          {loadMoreButton &&
-            <div className="text-center col-sm-12">
-              <Button className="btn btn-success" onClick={this.loadMoreVideos}>Load More</Button>
-            </div>
-          }
-        </div>
-      </div>
+      <SectionPanel
+        title={title}
+        button={<Button
+          className="btn btn-default pull-right"
+          style={{marginLeft: 'auto'}}
+          onClick={() => onAddVideoClick()}
+        >+ Add Video</Button>}
+        emptyMessage="No Videos"
+        isEmpty={videos.length === 0}
+        loaded={loaded}
+        loadMoreButtonShown={loadMoreButton}
+        loadMore={this.loadMoreVideos}
+      >
+        {videos.map((video, index) => {
+          const editable = this.props.userId === video.uploaderId
+          return (
+            <VideoThumb
+              to={`videos/${video.id}`}
+              size="col-sm-3"
+              key={video.id}
+              arrayIndex={index}
+              editable={editable}
+              video={video}
+              user={{name: video.uploaderName, id: video.uploaderId}}
+              lastVideoId={last(videos) ? last(videos).id : 0}
+            />
+          )
+        })}
+      </SectionPanel>
     )
   }
 
