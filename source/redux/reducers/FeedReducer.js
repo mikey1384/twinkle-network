@@ -32,10 +32,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.id === action.data.id) {
-            feed = action.data
-          }
-          return feed
+          return (feed.id === action.data.id) ? action.data : feed
         })
       }
     case 'FETCH_FEEDS':
