@@ -10,7 +10,7 @@ const fetchPlaylistVideos = params => callback => {
     'b.videoCode, c.id AS video_uploader_id, c.username AS video_uploader, COUNT(d.id) AS numLikes ',
     'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id ',
     'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
-    'WHERE a.playlistId = ? GROUP BY a.videoId ORDER BY a.id'
+    'WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id'
   ].join('')
   pool.query(query, playlists[index].id, (err, rows) => {
     playlistArrayGroup[index] = {

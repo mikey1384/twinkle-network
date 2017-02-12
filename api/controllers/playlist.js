@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
   const where = playlistId !== null ? 'WHERE a.id < ' + playlistId + ' ' : ''
   const query = [
     'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
-    'FROM vq_playlists a LEFT JOIN users b ON a.creator = b.id GROUP BY a.id ',
+    'FROM vq_playlists a LEFT JOIN users b ON a.creator = b.id ',
     where,
     'ORDER BY a.id DESC LIMIT 4'
   ].join('')
