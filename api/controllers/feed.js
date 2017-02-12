@@ -221,7 +221,7 @@ router.get('/feed', (req, res) => {
       query = `
         SELECT url.title AS parentContentTitle, url.description AS parentContentDescription,
         url.url AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId
-        FROM content_urls url JOIN users user ON url.uploader = user.id JOIN users_photos userPhoto ON
+        FROM content_urls url LEFT JOIN users user ON url.uploader = user.id LEFT JOIN users_photos userPhoto ON
         url.uploader = userPhoto.userId AND userPhoto.isProfilePic = '1'
         WHERE url.id = ?
       `
