@@ -105,7 +105,6 @@ export default class Feeds extends Component {
     const {loadingMore} = this.state
     if (!loadingMore) {
       this.setState({loadingMore: true})
-      console.log(feeds[feeds.length - 1].id)
       fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter, () => {
         this.setState({loadingMore: false})
       })
