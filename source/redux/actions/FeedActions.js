@@ -105,20 +105,22 @@ export const fetchFeed = feed => dispatch => {
   )
 }
 
-export const fetchFeedsAsync = (filter = 'all') => dispatch => {
-  request.get(`${API_URL}?filter=${filter}`).then(
-    response => dispatch({
+export const fetchFeedsAsync = (filter = 'all') => dispatch =>
+request.get(`${API_URL}?filter=${filter}`).then(
+  response => {
+    dispatch({
       type: 'FETCH_FEEDS',
       data: response.data,
       filter
     })
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
-}
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all', callback) => dispatch => {
   request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then(
@@ -234,6 +236,13 @@ request.get(`${URL}/video/replies?lastReplyId=${lastReplyId}&commentId=${comment
     handleError(error, dispatch)
   }
 )
+
+export const reloadFeeds = () => dispatch => {
+  dispatch(clearFeeds())
+  return dispatch(fetchFeedsAsync()).then(
+    () => Promise.resolve()
+  )
+}
 
 export const showFeedCommentsAsync = (type, contentId, commentLength, isReply) => dispatch =>
 request.get(

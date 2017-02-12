@@ -7,7 +7,7 @@ import {
   increaseNumberOfUnreadMessages,
   turnChatOff
 } from 'redux/actions/ChatActions'
-import {fetchFeedsAsync, clearFeeds} from 'redux/actions/FeedActions'
+import {reloadFeeds, clearFeeds} from 'redux/actions/FeedActions'
 import {getInitialVideos} from 'redux/actions/VideoActions'
 import {
   getPlaylistsAsync,
@@ -42,11 +42,11 @@ import {Color} from 'constants/css'
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
     increaseNumberOfUnreadMessages,
-    fetchFeeds: fetchFeedsAsync,
-    clearFeeds,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
-    getInitialVideos
+    getInitialVideos,
+    reloadFeeds,
+    clearFeeds
     // fetchNotifications: fetchNotificationsAsync
   }
 )
@@ -68,8 +68,8 @@ export default class Header extends Component {
     closeSigninModal: PropTypes.func,
     onChatButtonClick: PropTypes.func,
     numChatUnreads: PropTypes.number,
+    reloadFeeds: PropTypes.func,
     clearFeeds: PropTypes.func,
-    fetchFeeds: PropTypes.func,
     getInitialVideos: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
     getPlaylists: PropTypes.func
@@ -81,7 +81,8 @@ export default class Header extends Component {
       notificationsMenuShown: false,
       selectedTab: props.location || 'home',
       logoBlue: Color.logoBlue,
-      logoGreen: Color.logoGreen
+      logoGreen: Color.logoGreen,
+      feedLoading: false
     }
 
     this.onLogoClick = this.onLogoClick.bind(this)
@@ -164,14 +165,13 @@ export default class Header extends Component {
       closeSigninModal,
       onChatButtonClick,
       numChatUnreads,
-      clearFeeds,
-      fetchFeeds,
+      reloadFeeds,
       getInitialVideos,
       getPinnedPlaylists,
       getPlaylists
     } = this.props
 
-    const {selectedTab, logoBlue, logoGreen} = this.state
+    const {selectedTab, logoBlue, logoGreen, feedLoading} = this.state
     return (
       <Navbar fluid fixedTop={!chatMode}>
         <Navbar.Header>
@@ -195,8 +195,12 @@ export default class Header extends Component {
                   to="/"
                   selected={selectedTab === 'home'}
                   onClick={() => {
-                    clearFeeds()
-                    fetchFeeds()
+                    if (!feedLoading) {
+                      this.setState({feedLoading: true})
+                      return reloadFeeds().then(
+                        () => this.setState({feedLoading: false})
+                      )
+                    }
                   }}
                 >
                   Home
