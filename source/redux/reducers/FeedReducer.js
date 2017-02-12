@@ -251,24 +251,18 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          if (feed.type === action.data.type && feed.contentId === action.data.contentId) {
-            let {reply} = action.data
-            if (feed.type === 'comment') {
-              feed.childComments = [reply].concat(feed.childComments)
-            }
-          }
+          let match = feed.type === action.data.type && feed.type === 'comment' && feed.contentId === action.data.contentId
+          let comments = match ? [reply].concat(feed.childComments) : feed.childComments
           return {
             ...feed,
-            childComments: feed.childComments.map(childComment => {
-              let {replies} = childComment
-              replies = (
-                (feed.type === 'comment' && childComment.id === action.data.contentId) ||
-                (feed.type !== 'comment' && childComment.id === action.data.commentId) ||
-                (feed.type !== 'comment' && childComment.id === action.data.reply.commentId)
-              ) ? replies.concat([reply]) : replies
+            childComments: comments.map(childComment => {
               return {
                 ...childComment,
-                replies
+                replies: (
+                  (feed.type === 'comment' && childComment.id === action.data.contentId) ||
+                  (feed.type !== 'comment' && childComment.id === action.data.commentId) ||
+                  (feed.type !== 'comment' && childComment.id === action.data.reply.commentId)
+                ) ? childComment.replies.concat([reply]) : childComment.replies
               }
             })
           }
