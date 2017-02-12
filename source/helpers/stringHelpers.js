@@ -37,6 +37,15 @@ export function addEmoji(string) {
   .replace(/(\(horror\))/gi, '😱 ')
   .replace(/(\(cry\))/gi, '😭 ')
   .replace(/(\(sad\))/gi, '😭 ')
+  .replace(/(\(chicken\))/gi, '🐔 ')
+  .replace(/(\(dog\))/gi, '🐶 ')
+  .replace(/(\(ant\))/gi, '🐜 ')
+  .replace(/(\(cat\))/gi, '🐱 ')
+  .replace(/(\(bee\))/gi, '🐝 ')
+  .replace(/(\(turtle\))/gi, '🐢 ')
+  .replace(/(\(monkey\))/gi, '🐵 ')
+  .replace(/(\(pig\))/gi, '🐷 ')
+  .replace(/(\(elephant\))/gi, '🐘 ')
 }
 
 export function cleanStringWithURL(string) {
