@@ -50,7 +50,7 @@ export default class VideoPlayer extends Component {
             <img
               alt=""
               className="embed-responsive-item"
-              src={`https://img.youtube.com/vi/${videoCode}/maxresdefault.jpg`}
+              src={`https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`}
             />
           </div>
         }
