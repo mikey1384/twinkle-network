@@ -32,6 +32,7 @@ export function addEmoji(string) {
   .replace(/(\(angry\))/gi, '😡 ')
   .replace(/(\(perfect\))/gi, '💯 ')
   .replace(/(\(bye\))/gi, '👋 ')
+  .replace(/(\(wave\))/gi, '👋 ')
   .replace(/(\(fear\))/gi, '😱 ')
   .replace(/(\(horror\))/gi, '😱 ')
   .replace(/(\(cry\))/gi, '😭 ')

@@ -1,71 +1,15 @@
-Object.defineProperty(exports, '__esModule', {
-  value: true
-})
+import React, {Component, PropTypes} from 'react'
+import request from 'superagent'
 
-var _createClass = (function() {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i]
-      descriptor.enumerable = descriptor.enumerable || false
-      descriptor.configurable = true
-      if ('value' in descriptor) descriptor.writable = true
-      Object.defineProperty(target, descriptor.key, descriptor)
-    }
+export default class Embedly extends Component {
+  static propTypes = {
+    url: PropTypes.string,
+    apiKey: PropTypes.string,
+    title: PropTypes.string
   }
-  return function(Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps)
-    if (staticProps) defineProperties(Constructor, staticProps)
-    return Constructor
-  }
-})()
-
-var _react = require('react')
-
-var _react2 = _interopRequireDefault(_react)
-
-var _superagent = require('superagent')
-
-var _superagent2 = _interopRequireDefault(_superagent)
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj } }
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function')
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
-  }
-  return call && (typeof call === 'object' || typeof call === 'function') ? call : self
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass)
-  }
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  })
-  if (superClass) Object.setPrototypeOf(subClass, superClass)
-}
-
-var Embedly = (function(_React$Component) {
-  _inherits(Embedly, _React$Component)
-
-  function Embedly(props) {
-    _classCallCheck(this, Embedly)
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Embedly).call(this, props))
-
-    _this.state = {
+  constructor() {
+    super()
+    this.state = {
       provider_url: '',
       description: '',
       title: '',
@@ -77,104 +21,78 @@ var Embedly = (function(_React$Component) {
       type: '',
       thumbnail_height: 1
     }
-    _this.apiUrl = 'https://api.embedly.com/1/oembed'
-    return _this
+    this.apiUrl = 'https://api.embedly.com/1/oembed'
+  }
+  componentWillMount() {
+    let params = {
+      url: this.props.url,
+      key: this.props.apiKey
+    }
+
+    request.get(this.apiUrl)
+      .query(params)
+      .end((err, res) => {
+        if (err) console.error(err)
+        this.setState(res.body)
+      })
   }
 
-  _createClass(Embedly, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      var _this2 = this
-
-      var params = {
-        url: this.props.url,
-        key: this.props.apiKey
-      }
-
-      _superagent2.default.get(this.apiUrl).query(params).end(function(err, res) {
-        if (err) return console.error(err)
-        _this2.setState(Object.assign({}, params, res.body))
-      })
+  render() {
+    let aStyle = {
+      color: '#222',
+      textDecoration: 'none',
+      position: 'relative',
+      border: 'solid 1px #E1E8ED',
+      display: 'block',
+      borderRadius: '5px',
+      overflow: 'hidden'
     }
-  }, {
-    key: 'render',
-    value: function render() {
-      var aStyle = {
-        color: '#222',
-        textDecoration: 'none',
-        position: 'relative',
-        border: 'solid 1px #E1E8ED',
-        display: 'block',
-        borderRadius: '5px',
-        overflow: 'hidden'
-      }
-      var imageStyle = {
-        width: '80px',
-        height: '80px',
-        overflow: 'hidden',
-        position: 'absolute',
-        left: 0,
-        top: 0
-      }
-      var imgStyle = {
-        height: '100%',
-        width: 'auto',
-        transform: 'translateX(-50%)',
-        position: 'relative',
-        left: '50%'
-      }
-      var textStyle = {
-        marginLeft: '85px',
-        minHeight: '80px',
-        padding: '5px',
-        boxSizing: 'border-box'
-      }
-      var titleStyle = {
-        margin: 0,
-        fontSize: '15px',
-        fontWeight: 'bold'
-      }
-      var descStyle = {
-        margin: '5px 0 0',
-        fontSize: '11px'
-      }
-      var providerStyle = {
-        margin: '5px 0 0',
-        fontSize: '11px'
-      }
-
-      return _react2.default.createElement(
-        'a',
-        { className: 'embedly', href: this.props.url, style: aStyle, target: '_blank' },
-        _react2.default.createElement(
-          'div',
-          { className: 'embedly__image', style: imageStyle },
-          _react2.default.createElement('img', { src: this.state.thumbnail_url, alt: this.state.title, style: imgStyle })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'embedly__text', style: textStyle },
-          _react2.default.createElement(
-            'p',
-            { className: 'embedly__title', style: titleStyle },
-            this.state.title || this.props.title
-          ),
-          _react2.default.createElement(
-            'p',
-            { className: 'embedly__desc', style: descStyle },
-            this.state.description
-          ),
-          _react2.default.createElement(
-            'p',
-            { className: 'embedly__provider', style: providerStyle },
-            this.state.provider_url
-          )
-        )
-      )
+    let imageStyle = {
+      width: '80px',
+      height: '80px',
+      overflow: 'hidden',
+      position: 'absolute',
+      left: 0,
+      top: 0
     }
-  }])
+    let imgStyle = {
+      height: '100%',
+      width: 'auto',
+      transform: 'translateX(-50%)',
+      position: 'relative',
+      left: '50%'
+    }
+    let textStyle = {
+      marginLeft: '85px',
+      minHeight: '80px',
+      padding: '5px',
+      boxSizing: 'border-box'
+    }
+    let titleStyle = {
+      margin: 0,
+      fontSize: '15px',
+      fontWeight: 'bold'
+    }
+    let descStyle = {
+      margin: '5px 0 0',
+      fontSize: '11px'
+    }
+    let providerStyle = {
+      margin: '5px 0 0',
+      fontSize: '11px'
+    }
 
-  return Embedly
-})(_react2.default.Component)
-
-exports.default = Embedly
+    return (
+      <a className="embedly" href={this.state.url || this.props.url} style={aStyle}>
+        <div className="embedly__image" style={imageStyle}>
+          <img src={this.state.thumbnail_url} alt={this.state.title} style={imgStyle}/>
+        </div>
+        <div className="embedly__text" style={textStyle}>
+          <p className="embedly__title" style={titleStyle}>{this.state.title || this.props.title}</p>
+          <p className="embedly__desc" style={descStyle}>{this.state.description}</p>
+          <p className="embedly__provider" style={providerStyle}>{this.state.provider_url}</p>
+        </div>
+      </a>
+    )
+  }
+}
