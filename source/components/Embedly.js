@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react'
 import request from 'superagent'
+import {embedlyKey} from 'constants/keys'
 
 export default class Embedly extends Component {
   static propTypes = {
     url: PropTypes.string,
-    apiKey: PropTypes.string,
     title: PropTypes.string
   }
   constructor() {
@@ -26,7 +26,7 @@ export default class Embedly extends Component {
   componentWillMount() {
     let params = {
       url: this.props.url,
-      key: this.props.apiKey
+      key: embedlyKey
     }
 
     request.get(this.apiUrl)

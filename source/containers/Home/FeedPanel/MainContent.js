@@ -18,7 +18,6 @@ import {
 } from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
 import VideoPlayer from 'components/VideoPlayer'
-import {embedlyKey} from 'constants/keys'
 import Embedly from 'components/Embedly'
 import PanelComments from 'components/PanelComments'
 import TargetContent from './TargetContent'
@@ -42,7 +41,10 @@ import {cleanString} from 'helpers/stringHelpers'
 )
 export default class MainContent extends Component {
   static propTypes = {
-    id: PropTypes.number,
+    id: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
     myId: PropTypes.number,
     content: PropTypes.string,
     contentLikers: PropTypes.array,
@@ -183,7 +185,7 @@ export default class MainContent extends Component {
           />
         }
         {type === 'url' &&
-          <Embedly title={cleanString(contentTitle)} url={content} apiKey={embedlyKey} />
+          <Embedly title={cleanString(contentTitle)} url={content} />
         }
         {type === 'discussion' &&
           <div style={{

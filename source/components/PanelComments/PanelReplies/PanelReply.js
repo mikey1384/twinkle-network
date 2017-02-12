@@ -104,7 +104,7 @@ export default class PanelReply extends Component {
               }}
             /> <small>&nbsp;{timeSince(reply.timeStamp)}</small>
           </h5>
-          <div style={{maxWidth: type === 'videoDiscussionPanel' ? '78vw' : '36vw'}}>
+          <div style={{maxWidth: onEdit ? '100vw' : (type === 'videoDiscussionPanel' ? '78vw' : '36vw')}}>
             {reply.targetUserId && !!reply.replyId && reply.replyId !== comment.id &&
               <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: reply.targetUserName, id: reply.targetUserId}} />

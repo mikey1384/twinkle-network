@@ -108,7 +108,7 @@ export default class PanelComment extends Component {
               id: comment.userId
             }} /> <small>&nbsp;{timeSince(comment.timeStamp)}</small>
           </h5>
-          <div style={{maxWidth: type === 'videoDiscussionPanel' ? '84vw' : '40vw'}}>
+          <div style={{maxWidth: onEdit ? '100vw' : (type === 'videoDiscussionPanel' ? '84vw' : '40vw')}}>
             {comment.targetUserId && !!comment.replyId && comment.replyId !== parent.id &&
               <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: comment.targetUserName, id: comment.targetUserId}} />

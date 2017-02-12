@@ -116,19 +116,15 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: state.feeds.map(feed => {
           let targetContentComments = feed.targetContentComments || []
-          if (feed.type === 'comment') {
-            if (feed.contentId === action.data.commentId) {
-              feed.content = editedComment
-            }
-            if (feed.commentId === action.data.commentId) {
-              feed.targetComment = editedComment
-            }
-            if (feed.replyId === action.data.commentId) {
-              feed.targetReply = editedComment
-            }
-          }
+          let isComment = feed.type === 'comment'
+          let contentMatches = feed.contentId === action.data.commentId
+          let commentMatches = feed.commentId === action.data.commentId
+          let replyMatches = feed.replyId === action.data.commentId
           return {
             ...feed,
+            content: isComment && contentMatches ? editedComment : feed.content,
+            targetComment: isComment && commentMatches ? editedComment : feed.targetComment,
+            targetReply: isComment && replyMatches ? editedComment : feed.targetReply,
             targetContentComments: targetContentComments.map(comment => ({
               ...comment,
               content: comment.id === action.data.commentId ? editedComment : comment.content
