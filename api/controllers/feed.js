@@ -243,6 +243,7 @@ router.get('/feed', (req, res) => {
       break
     default: break
   }
+  console.log(contentId)
 
   return poolQuery(query, contentId).then(
     rows => {
