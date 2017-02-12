@@ -46,6 +46,9 @@ export function addEmoji(string) {
   .replace(/(\(monkey\))/gi, '🐵 ')
   .replace(/(\(pig\))/gi, '🐷 ')
   .replace(/(\(elephant\))/gi, '🐘 ')
+  .replace(/(\(moo\))/gi, '🐮 ')
+  .replace(/(\(cow\))/gi, '🐮 ')
+  .replace(/(\(horse\))/gi, '🐴 ')
 }
 
 export function cleanStringWithURL(string) {
