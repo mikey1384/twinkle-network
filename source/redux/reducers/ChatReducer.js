@@ -36,10 +36,10 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: state.channels.map(channel => {
-          if (channel.id === action.data.channelId) {
-            channel.channelName = action.data.title
+          return {
+            ...channel,
+            channelName: channel.id === action.data.channelId ? action.data.title : channel.channelName
           }
-          return channel
         })
       }
     case 'CLEAR_CHAT_SEARCH_RESULTS':
@@ -145,14 +145,16 @@ export default function ChatReducer(state = defaultState, action) {
           (resultingArray, channel, index) => {
             if (channel.id === action.data.channel.id) {
               originalNumUnreads = channel.numUnreads
-              channel.numUnreads = 0
             }
             if (action.showOnTop && index === (state.channels.length - 1)) {
               return [action.data.channel].concat(
                 resultingArray.filter(channel => channel.id !== action.data.channel.id)
               )
             }
-            return resultingArray.concat([channel])
+            return resultingArray.concat([{
+              ...channel,
+              numUnreads: channel.id === action.data.channel.id ? 0 : channel.numUnreads
+            }])
           }, []
         ),
         chatMode: true,
@@ -181,10 +183,10 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: state.channels.map(channel => {
-          if (channel.id === action.channelId) {
-            channel.isHidden = true
+          return {
+            ...channel,
+            isHidden: channel.id === action.channelId
           }
-          return channel
         })
       }
     case 'INCREASE_NUM_UNREAD_MSGS':
@@ -213,8 +215,10 @@ export default function ChatReducer(state = defaultState, action) {
           (resultingArray, channel) => {
             if (channel.id === action.data.currentChannel.id) {
               if (channel.id !== 2) originalNumUnreads = channel.numUnreads
-              channel.numUnreads = 0
-              return [channel].concat(resultingArray)
+              return [{
+                ...channel,
+                numUnreads: 0
+              }].concat(resultingArray)
             }
             return resultingArray.concat([channel])
           }, []
