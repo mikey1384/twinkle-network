@@ -42,14 +42,18 @@ router.post('/', requireAuth, (req, res) => {
     () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
   ).then(
     () => {
-      const query = `
+      const query1 = `UPDATE msg_channel_info SET isHidden = '0' WHERE channelId = ?`
+      const query2 = `
         INSERT INTO msg_chats SET channelId = ?, userId = ?,
         content = ?, timeStamp = ?
       `
-      return poolQuery(query, [channelId, user.id, processedString(content), timeStamp])
+      return Promise.all([
+        poolQuery(query1, channelId),
+        poolQuery(query2, [channelId, user.id, processedString(content), timeStamp])
+      ])
     }
   ).then(
-    result => res.send({messageId: Number(result.insertId)})
+    results => res.send({messageId: Number(results[1].insertId)})
   ).catch(
     err => res.status(500).send(err)
   )
@@ -452,7 +456,7 @@ router.post('/invite', requireAuth, (req, res) => {
 router.get('/numUnreads', requireAuth, (req, res) => {
   const user = req.user
   const query = `
-    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats b WHERE b.isSilent = '0' AND b.channelId = a.channelId AND b.timeStamp > a.lastRead AND b.userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ?  AND a.isHidden = 0 AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
+    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats b WHERE b.isSilent = '0' AND b.channelId = a.channelId AND b.timeStamp > a.lastRead AND b.userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ?  AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
   `
   pool.query(query, [user.id, user.id, user.id], (err, rows) => {
     if (err) {
