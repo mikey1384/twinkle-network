@@ -165,7 +165,7 @@ const fetchChannels = (user, currentChannelId, lastChannelId) => {
 
 function fetchUserSpecificChannelData(channel, userId) {
   const channelId = channel.id
-  let query = 'SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ?'
+  let query = `SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ? AND isSilent = '0'`
   return poolQuery(query, [channelId, channel.lastRead, userId]).then(
     ([result]) => Promise.resolve({numUnreads: result.numUnreads})
   )

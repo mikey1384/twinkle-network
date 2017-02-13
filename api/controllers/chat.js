@@ -345,7 +345,8 @@ router.delete('/channel', requireAuth, (req, res) => {
       userId: user.id,
       content: 'Left the channel',
       timeStamp,
-      isNotification: true
+      isNotification: true,
+      isSilent: true
     }
     let query = 'INSERT INTO msg_chats SET ?'
     pool.query(query, post, err => {
@@ -451,7 +452,7 @@ router.post('/invite', requireAuth, (req, res) => {
 router.get('/numUnreads', requireAuth, (req, res) => {
   const user = req.user
   const query = `
-    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats WHERE channelId = a.channelId AND timeStamp > a.lastRead AND userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ? AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
+    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats b WHERE b.isSilent = '0' AND b.channelId = a.channelId AND b.timeStamp > a.lastRead AND b.userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ?  AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
   `
   pool.query(query, [user.id, user.id, user.id], (err, rows) => {
     if (err) {

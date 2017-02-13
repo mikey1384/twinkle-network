@@ -278,21 +278,18 @@ export default function ChatReducer(state = defaultState, action) {
       let timeStamp = Math.floor(Date.now()/1000)
       return {
         ...state,
-        channels: state.channels.map(channel => {
-          if (channel.id === action.data.channelId) {
-            channel = {
-              ...channel,
-              lastUpdate: timeStamp,
-              lastMessageSender: {
-                id: action.data.userId,
-                username: action.data.username
-              },
-              numUnreads: 0,
-              lastMessage: 'Left the channel'
-            }
-          }
-          return channel
-        }),
+        channels: state.channels.map(channel => (
+          (channel.id === action.data.channelId) ? {
+            ...channel,
+            lastUpdate: timeStamp,
+            lastMessageSender: {
+              id: action.data.userId,
+              username: action.data.username
+            },
+            numUnreads: 0,
+            lastMessage: 'Left the channel'
+          } : channel)
+        ),
         currentChannel: {
           ...state.currentChannel,
           members: state.currentChannel.members.filter(member => member.userId !== action.data.userId)
