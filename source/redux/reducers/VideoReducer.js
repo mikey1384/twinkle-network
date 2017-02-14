@@ -16,13 +16,13 @@ const defaultState = {
   searchResult: []
 }
 
-let loadMoreButton = false
-let loadMoreCommentsButton = false
-let loadMoreDebatesButton = false
-let loadMoreDebateCommentsButton = false
-let allVideosLoaded = false
-let reply
 export default function VideoReducer(state = defaultState, action) {
+  let loadMoreButton = false
+  let loadMoreCommentsButton = false
+  let loadMoreDebatesButton = false
+  let loadMoreDebateCommentsButton = false
+  let allVideosLoaded = false
+  let reply
   switch (action.type) {
     case 'CLEAR_CONTENT_SEARCH_RESULTS':
       return {

@@ -30,11 +30,11 @@ export default class Embedly extends Component {
     }
 
     request.get(this.apiUrl)
-      .query(params)
-      .end((err, res) => {
-        if (err) console.error(err)
-        this.setState(res.body)
-      })
+    .query(params)
+    .end((err, res) => {
+      if (err) console.error(err)
+      this.setState(res.body)
+    })
   }
 
   render() {

@@ -196,7 +196,10 @@ request.post(`${API_URL}/edit/title`, params, auth())
 export const getMoreVideos = videoId => dispatch =>
 request.get(`${API_URL}?videoId=${videoId}`)
 .then(
-  response => dispatch(getVideos(response.data, false))
+  response => {
+    dispatch(getVideos(response.data, false))
+    return Promise.resolve()
+  }
 ).catch(
   error => {
     console.error(error.response || error)

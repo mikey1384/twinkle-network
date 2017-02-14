@@ -1,28 +1,28 @@
-import express from 'express';
-import React from 'react';
-import {renderToString} from 'react-dom/server';
-import {RouterContext, match} from 'react-router';
-import createLocation from 'history/lib/createLocation';
-import {Provider} from 'react-redux';
-import {routes, store} from 'Root';
-import path from 'path';
+import express from 'express'
+import React from 'react'
+import {renderToString} from 'react-dom/server'
+import {RouterContext, match} from 'react-router'
+import createLocation from 'history/lib/createLocation'
+import {Provider} from 'react-redux'
+import {routes, store} from 'Root'
+import path from 'path'
 
-const app = express();
+const app = express()
 
 if (process.env.NODE_ENV !== 'production') {
-  require('../webpack.dev').default(app);
+  require('../webpack.dev').default(app)
 }
 
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../public')))
 app.use((req, res) => {
-  const location = createLocation(req.url);
+  const location = createLocation(req.url)
   match({routes, location}, (err, redirectLocation, props) => {
-    if(err) {
-      console.error(err);
-      return res.status(500).end('Internal server error');
+    if (err) {
+      console.error(err)
+      return res.status(500).end('Internal server error')
     }
 
-    if(!props) return res.status(404).end('Not found');
+    if (!props) return res.status(404).end('Not found')
     res.end(renderView())
 
     function renderView() {
@@ -31,7 +31,7 @@ app.use((req, res) => {
           <RouterContext {...props} />
         </Provider>
       )
-      const ReactView = renderToString(view);
+      const ReactView = renderToString(view)
       return (
         `<!DOCTYPE html>
         <html>
@@ -47,7 +47,7 @@ app.use((req, res) => {
           <body>
             <div id="react-view">${ReactView}</div>
             <script>
-              window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())};
+              window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())}
             </script>
             <script type="application/javascript" src="/bundle.js"></script>
           </body>
@@ -57,4 +57,4 @@ app.use((req, res) => {
   })
 })
 
-export default app;
+export default app

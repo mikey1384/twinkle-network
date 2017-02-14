@@ -13,16 +13,31 @@ export function limitBrs(string) {
   return string.replace(/(<br ?\/?>){4,}/gi, '<br><br><br>')
 }
 
-export function addEmoji(string) {
+export function addTwoLetterEmoji(string) {
   return string
-  .replace(/(:[-]?\))/g, '😊 ')
-  .replace(/(;[-]?\))/g, '😉 ')
-  .replace(/(X[-]?D)/g, '😆 ')
-  .replace(/(:[-]?D)/g, '😄 ')
-  .replace(/(:[-]?P)/gi, '😛 ')
-  .replace(/(:[-]?\()/g, '🙁 ')
-  .replace(/(:[-]?O)/gi, '😲 ')
+  .replace(/(:\))/g, '😊 ')
+  .replace(/(;\))/g, '😉 ')
+  .replace(/(XD)/g, '😆 ')
+  .replace(/(:D)/g, '😄 ')
+  .replace(/(:P)/gi, '😛 ')
+  .replace(/(:\()/g, '🙁 ')
+  .replace(/(:O)/gi, '😲 ')
   .replace(/(<3)/g, '❤️ ')
+}
+
+export function addThreeLetterEmoji(string) {
+  return string
+  .replace(/(:-\))/g, '😊 ')
+  .replace(/(;-\))/g, '😉 ')
+  .replace(/(X-D)/g, '😆 ')
+  .replace(/(:-D)/g, '😄 ')
+  .replace(/(:-P)/gi, '😛 ')
+  .replace(/(:-\()/g, '🙁 ')
+  .replace(/(:-O)/gi, '😲 ')
+}
+
+export function addAdvancedEmoji(string) {
+  return string
   .replace(/(\(heart\))/gi, '❤️ ')
   .replace(/(\(zzz\))/gi, '💤 ')
   .replace(/(\(thumbs\))/gi, '👍 ')
@@ -49,6 +64,21 @@ export function addEmoji(string) {
   .replace(/(\(moo\))/gi, '🐮 ')
   .replace(/(\(cow\))/gi, '🐮 ')
   .replace(/(\(horse\))/gi, '🐴 ')
+}
+
+export function addEmoji(string) {
+  let firstPart = string.substring(0, string.length - 3)
+  let lastPart = addTwoLetterEmoji(string.slice(-3))
+  let firstResult = `${firstPart}${lastPart}`
+
+  firstPart = firstResult.substring(0, firstResult.length - 4)
+  lastPart = addThreeLetterEmoji(firstResult.slice(-4))
+  return `${firstPart}${lastPart}`
+}
+
+export function finalizeEmoji(string) {
+  let emojifiedString = addAdvancedEmoji(string)
+  return addEmoji(emojifiedString)
 }
 
 export function cleanStringWithURL(string) {

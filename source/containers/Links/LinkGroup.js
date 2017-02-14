@@ -1,23 +1,13 @@
-import React, {Component} from 'react'
+import React, {PropTypes} from 'react'
+import Link from './Link'
 
-export default class LinkGroup extends Component {
-  render() {
-    return (
-      <ul className="media-list">
-        <li className="media">
-          <div className="media-left">
-            <a href="#">
-              <img className="media-object" src="..." alt="..." />
-            </a>
-          </div>
-          <div className="media-body">
-            <h4 className="media-heading">Media heading</h4>
-            ...
-          </div>
-        </li>
-      </ul>
-    )
-  }
+LinkGroup.propTypes = {
+  links: PropTypes.array
 }
-
-// <Embedly title="a sample url" url="https://www.youtube.com/" />
+export default function LinkGroup({links}) {
+  return (
+    <ul className="media-list" style={{marginBottom: '1.5em'}}>
+      {links.map(link => <Link key={link.id} link={link} />)}
+    </ul>
+  )
+}

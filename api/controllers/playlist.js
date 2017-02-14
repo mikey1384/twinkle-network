@@ -8,8 +8,8 @@ const express = require('express')
 const router = express.Router()
 
 router.get('/', (req, res) => {
-  const playlistId = typeof req.query.playlistId !== 'undefined' ? Number(req.query.playlistId) : null
-  const where = playlistId !== null ? 'WHERE a.id < ' + playlistId + ' ' : ''
+  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null
+  const where = playlistId !== null ? `WHERE a.id < ${playlistId} ` : ''
   const query = [
     'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
     'FROM vq_playlists a LEFT JOIN users b ON a.creator = b.id ',

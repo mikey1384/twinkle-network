@@ -36,7 +36,7 @@ export default class PlaylistsPanel extends Component {
       <SectionPanel
         title={title}
         button={buttonGroupElement}
-        emptyMessage="No Videos"
+        emptyMessage="No Playlists"
         isEmpty={playlists.length === 0}
         loaded={loaded}
         loadMoreButtonShown={loadMoreButton}
@@ -60,6 +60,6 @@ export default class PlaylistsPanel extends Component {
   loadMorePlaylists() {
     const {playlists, getMorePlaylistsAsync} = this.props
     const lastId = last(playlists).id
-    getMorePlaylistsAsync(lastId)
+    return getMorePlaylistsAsync(lastId)
   }
 }

@@ -67,6 +67,6 @@ export default class AllVideosPanel extends Component {
   loadMoreVideos() {
     const {videos, getMoreVideos} = this.props
     const lastId = last(videos) ? last(videos).id : 0
-    getMoreVideos(lastId)
+    return getMoreVideos(lastId)
   }
 }

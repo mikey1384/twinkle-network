@@ -24,9 +24,12 @@ export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
   }
 )
 
-export const getMorePlaylistsAsync = playlistId => dispatch => request.get(`${API_URL}?playlistId=${playlistId}`)
-.then(
-  response => dispatch(getPlaylists(response.data, false))
+export const getMorePlaylistsAsync = playlistId => dispatch =>
+request.get(`${API_URL}?playlistId=${playlistId}`).then(
+  response => {
+    dispatch(getPlaylists(response.data, false))
+    return Promise.resolve()
+  }
 ).catch(
   error => {
     console.error(error.response || error)

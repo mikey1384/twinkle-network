@@ -62,7 +62,6 @@ export default class MainContent extends Component {
     targetReply: PropTypes.string,
     targetContentLikers: PropTypes.array,
     childComments: PropTypes.array,
-    commentsShown: PropTypes.bool,
     commentsLoadMoreButton: PropTypes.bool,
     parentContentId: PropTypes.number,
     contentTitle: PropTypes.string,
@@ -90,7 +89,8 @@ export default class MainContent extends Component {
     super()
     this.state = {
       userListModalShown: false,
-      clickListenerState: false
+      clickListenerState: false,
+      commentsShown: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onCommentButtonClick = this.onCommentButtonClick.bind(this)
@@ -101,13 +101,13 @@ export default class MainContent extends Component {
     const {
       id, myId, content, contentLikers = [], targetContentComments = [],
       contentId, type, discussionId, discussionTitle, discussionDescription, videoViews,
-      numChildComments, numChildReplies, replyId, commentId, targetReply, targetContentLikers,
-      childComments, commentsShown, commentsLoadMoreButton, parentContentId, contentTitle,
+      numChildComments = 0, numChildReplies = 0, replyId, commentId, targetReply, targetContentLikers,
+      childComments, commentsLoadMoreButton, parentContentId, contentTitle,
       contentDescription, videoCode, onSubmit, onDelete, onLikeClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props
-    const {userListModalShown, clickListenerState} = this.state
+    const {userListModalShown, clickListenerState, commentsShown} = this.state
     let userLikedThis = false
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId === myId) userLikedThis = true
@@ -298,9 +298,8 @@ export default class MainContent extends Component {
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this comment"
-            userId={myId}
             users={contentLikers}
-            description={user => user.userId === myId && '(You)'}
+            description="(You)"
           />
         }
       </div>
@@ -313,10 +312,11 @@ export default class MainContent extends Component {
   }
 
   onCommentButtonClick() {
-    const {type, contentId, commentId, commentsShown, showFeedComments} = this.props
-    const {clickListenerState} = this.state
+    const {type, contentId, commentId, showFeedComments} = this.props
+    const {clickListenerState, commentsShown} = this.state
     const isReply = !!commentId
     if (!commentsShown) {
+      this.setState({commentsShown: true})
       return showFeedComments(type, contentId, 0, isReply)
     }
     this.setState({clickListenerState: !clickListenerState})

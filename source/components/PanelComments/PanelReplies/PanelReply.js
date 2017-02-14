@@ -170,9 +170,8 @@ export default class PanelReply extends Component {
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this reply"
-            userId={userId}
             users={reply.likes}
-            description={user => user.userId === userId && '(You)'}
+            description="(You)"
           />
         }
         {confirmModalShown &&

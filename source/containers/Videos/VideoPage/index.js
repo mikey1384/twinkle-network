@@ -235,14 +235,13 @@ export default class VideoPage extends Component {
                 <UserListModal
                   onHide={() => this.setState({userListModalShown: false})}
                   title="People who liked this video"
-                  userId={userId}
                   users={likes.map(like => {
                     return {
                       username: like.username,
                       userId: like.userId
                     }
                   })}
-                  description={user => user.userId === userId && '(You)'}
+                  description="(You)"
                 />
               }
             </div>

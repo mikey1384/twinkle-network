@@ -4,4 +4,5 @@ module.exports = function(app, pool) {
   app.use('/playlist', require('./controllers/playlist'))
   app.use('/user', require('./controllers/user'))
   app.use('/video', require('./controllers/video'))
+  app.use('/link', require('./controllers/link'))
 }

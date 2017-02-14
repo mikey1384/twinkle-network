@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 export default class ChatInput extends Component {
   static propTypes = {
@@ -33,7 +33,7 @@ export default class ChatInput extends Component {
         onKeyDown={this.onMessageSubmit}
         value={this.state.message}
         onChange={event => this.setState({message: event.target.value})}
-        onKeyPress={event => {
+        onKeyUp={event => {
           if (event.key === ' ') {
             this.setState({message: addEmoji(event.target.value)})
           }
@@ -50,7 +50,7 @@ export default class ChatInput extends Component {
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault()
       if (stringIsEmpty(message)) return
-      this.props.onMessageSubmit(addEmoji(message))
+      this.props.onMessageSubmit(finalizeEmoji(message))
       this.setState({message: ''})
     }
   }

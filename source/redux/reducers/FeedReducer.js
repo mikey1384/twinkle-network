@@ -213,7 +213,6 @@ export default function FeedReducer(state = defaultState, action) {
           let match = feed.type === action.data.type && feed.contentId === action.data.contentId
           return {
             ...feed,
-            commentsShown: match ? true : feed.commentsShown,
             commentsLoadMoreButton: match ? commentsLoadMoreButton : feed.commentsLoadMoreButton,
             childComments: match ? action.data.childComments : feed.childComments,
             isReply: match ? action.data.isReply : feed.isReply

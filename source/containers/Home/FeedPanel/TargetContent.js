@@ -144,9 +144,8 @@ export default class TargetContent extends Component {
                 <UserListModal
                   onHide={() => this.setState({userListModalShown: false})}
                   title="People who liked this comment"
-                  userId={myId}
                   users={likes}
-                  description={user => user.userId === myId && '(You)'}
+                  description="(You)"
                 />
               }
             </div> :

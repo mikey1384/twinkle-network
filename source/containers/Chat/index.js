@@ -105,7 +105,7 @@ export default class Chat extends Component {
     this.onMessageSubmit = this.onMessageSubmit.bind(this)
     this.onReceiveMessage = this.onReceiveMessage.bind(this)
     this.onChatInvitation = this.onChatInvitation.bind(this)
-    this.renderUserListDescription = this.renderUserListDescription.bind(this)
+    this.userListDescriptionShown = this.userListDescriptionShown.bind(this)
     this.onInviteUsersDone = this.onInviteUsersDone.bind(this)
     this.onEditTitleDone = this.onEditTitleDone.bind(this)
     this.onHideChat = this.onHideChat.bind(this)
@@ -229,9 +229,8 @@ export default class Chat extends Component {
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
             users={this.returnUsers(currentChannel, currentChannelOnlineMembers)}
-            userId={userId}
-            description={this.renderUserListDescription}
-            descriptionColor='green'
+            descriptionShown={this.userListDescriptionShown}
+            description="(online)"
           />
         }
         <div
@@ -457,11 +456,11 @@ export default class Chat extends Component {
     return `${currentChannelOnlineMembers.length || 1}${numberOfMembers <= 1 ? '' : '/' + numberOfMembers}`
   }
 
-  renderUserListDescription(user) {
+  userListDescriptionShown(user) {
     const {currentChannelOnlineMembers} = this.state
-    let result = ''
+    let result = false
     for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
-      if (user.userId === currentChannelOnlineMembers[i].userId) result = '(online)'
+      if (user.userId === currentChannelOnlineMembers[i].userId) result = true
     }
     return result
   }

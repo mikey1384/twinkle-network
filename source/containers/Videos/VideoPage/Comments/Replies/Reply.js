@@ -190,9 +190,8 @@ export default class Reply extends Component {
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this reply"
-            userId={myId}
             users={likes}
-            description={user => user.userId === myId && '(You)'}
+            description="(You)"
           />
         }
         {confirmModalShown &&

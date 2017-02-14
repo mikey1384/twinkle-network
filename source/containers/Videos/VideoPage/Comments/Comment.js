@@ -184,9 +184,8 @@ export default class Comment extends Component {
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
             title="People who liked this comment"
-            userId={userId}
             users={comment.likes}
-            description={user => user.userId === userId && '(You)'}
+            description="You"
           />
         }
         {confirmModalShown &&
