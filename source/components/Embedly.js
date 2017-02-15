@@ -7,6 +7,7 @@ export default class Embedly extends Component {
     url: PropTypes.string,
     title: PropTypes.string
   }
+
   constructor() {
     super()
     this.state = {
@@ -23,6 +24,7 @@ export default class Embedly extends Component {
     }
     this.apiUrl = 'https://api.embedly.com/1/oembed'
   }
+
   componentWillMount() {
     let params = {
       url: this.props.url,
@@ -33,8 +35,19 @@ export default class Embedly extends Component {
     .query(params)
     .end((err, res) => {
       if (err) console.error(err)
-      this.setState(res.body)
+      if (!res.body) return
+      if (this.mounted) {
+        this.setState(res.body)
+      }
     })
+  }
+
+  componentDidMount() {
+    this.mounted = true
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
   }
 
   render() {
@@ -83,7 +96,7 @@ export default class Embedly extends Component {
     }
 
     return (
-      <a className="embedly" href={this.state.url || this.props.url} style={aStyle}>
+      <a className="embedly" target="_blank" href={this.state.url || this.props.url} style={aStyle}>
         <div className="embedly__image" style={imageStyle}>
           <img src={this.state.thumbnail_url} alt={this.state.title} style={imgStyle}/>
         </div>

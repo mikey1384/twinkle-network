@@ -8,15 +8,12 @@ export const closeAddPlaylistModal = () => ({
   type: 'ADD_PL_MODAL_CLOSE'
 })
 
-export const getPlaylists = (data, initialRun) => ({
-  type: 'GET_PLAYLISTS',
-  initialRun,
-  data
-})
-
 export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
 .then(
-  response => dispatch(getPlaylists(response.data, true))
+  response => dispatch({
+    type: 'GET_PLAYLISTS',
+    data: response.data
+  })
 ).catch(
   error => {
     console.error(error.response || error)
@@ -27,7 +24,10 @@ export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
 export const getMorePlaylistsAsync = playlistId => dispatch =>
 request.get(`${API_URL}?playlistId=${playlistId}`).then(
   response => {
-    dispatch(getPlaylists(response.data, false))
+    dispatch({
+      type: 'GET_MORE_PLAYLISTS',
+      data: response.data
+    })
     return Promise.resolve()
   }
 ).catch(
@@ -95,7 +95,7 @@ export const changePlaylistVideosAsync = (playlistId, selectedVideos, sender) =>
 request.post(`${API_URL}/edit/videos`, {playlistId, selectedVideos}, auth())
 .then(
   response => {
-    const { data } = response
+    const {data} = response
     if (data.result) {
       dispatch(changePlaylistVideos(playlistId, data.result))
       sender.props.onHide()
@@ -132,14 +132,12 @@ request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
   }
 )
 
-export const getPinnedPlaylists = data => ({
-  type: 'GET_PINNED_PLAYLISTS',
-  data
-})
-
-export const getPinnedPlaylistsAsync = () => dispatch => request.get(`${API_URL}/pinned`)
-.then(
-  response => dispatch(getPinnedPlaylists(response.data))
+export const getPinnedPlaylistsAsync = () => dispatch =>
+request.get(`${API_URL}/pinned`).then(
+  response => dispatch({
+    type: 'GET_PINNED_PLAYLISTS',
+    data: response.data
+  })
 ).catch(
   error => {
     console.error(error.response || error)

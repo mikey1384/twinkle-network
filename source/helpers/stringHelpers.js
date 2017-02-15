@@ -64,6 +64,7 @@ export function addAdvancedEmoji(string) {
   .replace(/(\(moo\))/gi, '🐮 ')
   .replace(/(\(cow\))/gi, '🐮 ')
   .replace(/(\(horse\))/gi, '🐴 ')
+  .replace(/(\(penguin\))/gi, '🐧 ')
 }
 
 export function addEmoji(string) {

@@ -22,33 +22,38 @@ const defaultState = {
   clickSafe: true
 }
 
-let defaultPlaylists = []
-let defaultPinnedPlaylists = []
-
 export default function PlaylistReducer(state = defaultState, action) {
   let loadMoreButtonForModal = false
   let allVideosLoadedForModal = false
   let loadMorePlaylistsToPinButton = false
+  let loadMoreButton = false
   switch (action.type) {
     case 'GET_PLAYLISTS':
-      let loadMoreButton = false
       if (action.data.playlists.length > 3) {
         action.data.playlists.pop()
         loadMoreButton = true
       }
-      if (action.initialRun) defaultPlaylists = action.data.playlists
       return {
         ...state,
         allPlaylistsLoaded: true,
-        allPlaylists: action.initialRun ? defaultPlaylists : state.allPlaylists.concat(action.data.playlists),
+        allPlaylists: action.data.playlists,
+        loadMoreButton
+      }
+    case 'GET_MORE_PLAYLISTS':
+      if (action.data.playlists.length > 3) {
+        action.data.playlists.pop()
+        loadMoreButton = true
+      }
+      return {
+        ...state,
+        allPlaylists: state.allPlaylists.concat(action.data.playlists),
         loadMoreButton
       }
     case 'GET_PINNED_PLAYLISTS':
-      defaultPinnedPlaylists = action.data.playlists
       return {
         ...state,
-        pinnedPlaylistsLoaded: true,
-        pinnedPlaylists: defaultPinnedPlaylists
+        pinnedPlaylists: action.data.playlists,
+        pinnedPlaylistsLoaded: true
       }
     case 'GET_VIDEOS_FOR_MODAL':
       if (action.data.length > 18) {
@@ -122,10 +127,9 @@ export default function PlaylistReducer(state = defaultState, action) {
         loadMorePlaylistsToPinButton
       }
     case 'CHANGE_PINNED_PLAYLISTS':
-      defaultPinnedPlaylists = action.data
       return {
         ...state,
-        pinnedPlaylists: defaultPinnedPlaylists
+        pinnedPlaylists: action.data
       }
     case 'REORDER_PINNED_PL_OPEN':
       return {
@@ -157,7 +161,7 @@ export default function PlaylistReducer(state = defaultState, action) {
           id: video.videoId,
           title: video.video_title,
           uploaderName: video.video_uploader,
-          videoCode: video.videoCode
+          content: video.content
         }
       })
       return {
@@ -167,13 +171,6 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'UPLOAD_PLAYLIST':
       let loadMoreButtonDisplayed = state.loadMoreButton
-      if (defaultPlaylists.length > 2) {
-        defaultPlaylists.pop()
-        defaultPlaylists = [action.data].concat(defaultPlaylists)
-        if (!state.loadMoreButton) loadMoreButtonDisplayed = true
-      } else {
-        defaultPlaylists = [action.data].concat(state.allPlaylists)
-      }
       return {
         ...state,
         allPlaylists: [action.data].concat(state.allPlaylists),
@@ -181,84 +178,62 @@ export default function PlaylistReducer(state = defaultState, action) {
         addPlaylistModalShown: false
       }
     case 'EDIT_PLAYLIST_TITLE':
-      defaultPlaylists = state.allPlaylists.map(playlist => {
-        if (playlist.id === action.playlistId) {
-          playlist.title = action.data
-        }
-        return playlist
-      })
-      defaultPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
-        if (playlist.id === action.playlistId) {
-          playlist.title = action.data
-        }
-        return playlist
-      })
       return {
         ...state,
-        pinnedPlaylists: defaultPinnedPlaylists,
-        allPlaylists: defaultPlaylists
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
+          ...playlist,
+          title: playlist.id === action.playlistId ? action.data : playlist.title
+        })),
+        allPlaylists: state.allPlaylists.map(playlist => ({
+          ...playlist,
+          title: playlist.id === action.playlistId ? action.data : playlist.title
+        }))
       }
     case 'CHANGE_PLAYLIST_VIDEOS':
-      defaultPlaylists = state.allPlaylists.map(playlist => {
-        if (playlist.id === action.playlistId) {
-          playlist.playlist = action.data
-        }
-        return playlist
-      })
-      defaultPinnedPlaylists = state.pinnedPlaylists.map(playlist => {
-        if (playlist.id === action.playlistId) {
-          playlist.playlist = action.data
-        }
-        return playlist
-      })
       return {
         ...state,
-        pinnedPlaylists: defaultPinnedPlaylists,
-        allPlaylists: defaultPlaylists
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.id === action.playlistId ? action.data : playlist.playlist
+        })),
+        allPlaylists: state.allPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.id === action.playlistId ? action.data : playlist.playlist
+        }))
       }
     case 'DELETE_PLAYLIST':
-      defaultPlaylists = state.allPlaylists.filter(playlist => {
-        return playlist.id !== action.data
-      })
-      defaultPinnedPlaylists = state.pinnedPlaylists.filter(playlist => {
-        return playlist.id !== action.data
-      })
       return {
         ...state,
-        pinnedPlaylists: defaultPinnedPlaylists,
-        allPlaylists: defaultPlaylists
+        pinnedPlaylists: state.pinnedPlaylists.filter(
+          playlist => playlist.id !== action.data
+        ),
+        allPlaylists: state.allPlaylists.filter(
+          playlist => playlist.id !== action.data
+        )
       }
     case 'PLAYLIST_VIDEO_LIKE':
       return {
         ...state,
-        pinnedPlaylists: state.pinnedPlaylists.map(playlist => {
-          return {
-            ...playlist,
-            playlist: playlist.playlist.map(video => {
-              if (video.videoId === action.videoId) {
-                video.numLikes = action.data.length
-              }
-              return video
-            })
-          }
-        }),
-        allPlaylists: state.allPlaylists.map(playlist => {
-          return {
-            ...playlist,
-            playlist: playlist.playlist.map(video => {
-              if (video.videoId === action.videoId) {
-                video.numLikes = action.data.length
-              }
-              return video
-            })
-          }
-        })
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video => ({
+            ...video,
+            numLikes: video.videoId === action.videoId ? action.data.length : video.numLikes
+          }))
+        })),
+        allPlaylists: state.allPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video => ({
+            ...video,
+            numLikes: video.videoId === action.videoId ? action.data.length : video.numLikes
+          }))
+        }))
       }
     case 'RESET_PL_STATE':
       return {
         ...defaultState,
-        allPlaylists: defaultPlaylists,
-        pinnedPlaylists: defaultPinnedPlaylists
+        allPlaylists: [],
+        pinnedPlaylists: []
       }
     case 'RESET_PL_MODAL_STATE':
       return {

@@ -10,6 +10,7 @@ export default class Link extends Component {
   static propTypes = {
     link: PropTypes.object
   }
+
   constructor() {
     super()
     this.state = {
@@ -18,11 +19,12 @@ export default class Link extends Component {
     }
     this.apiUrl = 'https://api.embedly.com/1/oembed'
   }
+
   componentWillMount() {
-    const {link: {url}} = this.props
-    if (ExecutionEnvironment.canUseDOM && url) {
+    const {link: {content}} = this.props
+    if (ExecutionEnvironment.canUseDOM && content) {
       let params = {
-        url,
+        url: content,
         key: embedlyKey
       }
 
@@ -30,10 +32,21 @@ export default class Link extends Component {
       .query(params)
       .end((err, res) => {
         if (err) console.error(err)
-        this.setState({imageUrl: res.body ? res.body.thumbnail_url : ''})
+        if (this.mounted) {
+          this.setState({imageUrl: res.body ? res.body.thumbnail_url : ''})
+        }
       })
     }
   }
+
+  componentDidMount() {
+    this.mounted = true
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
+  }
+
   render() {
     const {link: {title, timeStamp, uploaderName, uploader, likers, numComments}} = this.props
     const {imageUrl, userListModalShown} = this.state
@@ -86,7 +99,7 @@ export default class Link extends Component {
                   </a>&nbsp;&nbsp;
                 </b>
               }
-              {numComments > 0 && <b>{numComments} comments</b>}
+              {numComments > 0 && <b>{numComments} comment{numComments > 1 ? 's' : ''}</b>}
             </small>
           </p>
         </div>

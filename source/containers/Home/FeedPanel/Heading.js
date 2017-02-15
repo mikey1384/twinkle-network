@@ -4,18 +4,19 @@ import ContentLink from '../ContentLink'
 import {timeSince} from 'helpers/timeStampHelpers'
 import LikeButton from 'components/LikeButton'
 import {connect} from 'react-redux'
-import {likeVideoAsync} from 'redux/actions/FeedActions'
+import {contentFeedLike} from 'redux/actions/FeedActions'
 import {cleanString} from 'helpers/stringHelpers'
 import {Color} from 'constants/css'
 import ProfilePic from 'components/ProfilePic'
 
 @connect(
   null,
-  {onLikeVideoClick: likeVideoAsync}
+  {onLikeClick: contentFeedLike}
 )
 export default class Heading extends Component {
   static propTypes = {
     type: PropTypes.string,
+    rootType: PropTypes.string,
     action: PropTypes.string,
     content: PropTypes.string,
     uploader: PropTypes.object,
@@ -25,36 +26,37 @@ export default class Heading extends Component {
       PropTypes.object,
       PropTypes.bool
     ]),
-    parentContent: PropTypes.object,
-    parentContentId: PropTypes.number,
+    rootContent: PropTypes.object,
+    rootId: PropTypes.number,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]),
     onPlayVideoClick: PropTypes.func,
     attachedVideoShown: PropTypes.bool,
-    parentContentLikers: PropTypes.array,
+    rootContentLikers: PropTypes.array,
     myId: PropTypes.number,
-    onLikeVideoClick: PropTypes.func
+    onLikeClick: PropTypes.func
   }
 
   render() {
     const {
       type,
+      rootType,
       action,
       content,
       uploader,
       uploaderPicId,
       targetReplyUploader,
       targetCommentUploader,
-      parentContent,
-      parentContentId,
+      rootContent,
+      rootId,
       timeStamp,
       onPlayVideoClick,
       attachedVideoShown,
-      parentContentLikers = [],
+      rootContentLikers = [],
       myId,
-      onLikeVideoClick
+      onLikeClick
     } = this.props
 
     let targetAction
@@ -65,11 +67,22 @@ export default class Heading extends Component {
       targetAction = <span><UserLink user={targetCommentUploader} />'s comment on</span>
     }
     let userLikedVideo = false
-    for (let i = 0; i < parentContentLikers.length; i++) {
-      if (parentContentLikers[i].userId === myId) userLikedVideo = true
+    for (let i = 0; i < rootContentLikers.length; i++) {
+      if (rootContentLikers[i].userId === myId) userLikedVideo = true
     }
 
     const pStyle = {fontSize: '1.4rem'}
+
+    let contentLabel
+    switch (rootType) {
+      case 'video':
+        contentLabel = 'video'
+        break
+      case 'url':
+        contentLabel = 'link'
+        break
+      default: break
+    }
 
     switch (type) {
       case 'video':
@@ -77,7 +90,8 @@ export default class Heading extends Component {
           <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
-              <UserLink user={uploader} /> uploaded a video: <ContentLink content={parentContent}/> <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
+              <UserLink user={uploader} /> uploaded a
+              : <ContentLink content={rootContent} type={rootType} /> <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
         )
@@ -86,7 +100,7 @@ export default class Heading extends Component {
           <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left col-xs-9" style={{...pStyle, padding: '0px'}}>
-              <UserLink user={uploader} /> {action} {targetAction} video: <ContentLink content={parentContent}/> <small>({timeSince(timeStamp)})</small>
+              <UserLink user={uploader} /> {action} {targetAction} {contentLabel}: <ContentLink content={rootContent} type={rootType}/> <small>({timeSince(timeStamp)})</small>
             </span>
             {attachedVideoShown ?
               <LikeButton
@@ -97,20 +111,22 @@ export default class Heading extends Component {
                 }}
                 targetLabel="Video"
                 liked={userLikedVideo}
-                onClick={() => onLikeVideoClick(parentContentId)}
+                onClick={() => onLikeClick(rootId, rootType)}
               /> :
-              <a
-                style={{
-                  marginLeft: 'auto',
-                  float: 'right',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  color: Color.green
-                }}
-                onClick={() => onPlayVideoClick()}
-              >
-                <span className="glyphicon glyphicon-play"></span> Watch
-              </a>
+              (
+                rootType === 'video' && <a
+                  style={{
+                    marginLeft: 'auto',
+                    float: 'right',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: Color.green
+                  }}
+                  onClick={() => onPlayVideoClick()}
+                >
+                  <span className="glyphicon glyphicon-play"></span> Watch
+                </a>
+              )
             }
           </div>
         )
@@ -121,7 +137,7 @@ export default class Heading extends Component {
             <span className="panel-title pull-left" style={pStyle}>
               <UserLink user={uploader} /> shared a link:&nbsp;
               <a href={content} target="_blank" style={{color: Color.blue}}>
-                <strong>{cleanString(parentContent.title)}</strong>
+                <strong>{cleanString(rootContent.title)}</strong>
               </a>
               <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
             </span>
@@ -132,7 +148,7 @@ export default class Heading extends Component {
           <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
-              <UserLink user={uploader} /> started a <b style={{color: Color.green}}>discussion</b> on video: <ContentLink content={parentContent}/>
+              <UserLink user={uploader} /> started a <b style={{color: Color.green}}>discussion</b> on {contentLabel}: <ContentLink content={rootContent} type={rootType}/>
               <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>

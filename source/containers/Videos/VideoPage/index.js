@@ -48,7 +48,7 @@ export default class VideoPage extends Component {
     loadVideoPage: PropTypes.func,
     resetVideoPage: PropTypes.func,
     videoId: PropTypes.number,
-    videoCode: PropTypes.string,
+    content: PropTypes.string,
     title: PropTypes.string,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
@@ -100,7 +100,7 @@ export default class VideoPage extends Component {
   render() {
     let {
       uploaderId, uploaderName, description, userId, videoUnavailable, videoLoading,
-      videoId, videoCode, title, timeStamp, questions = [], likes = [], videoViews
+      videoId, content, title, timeStamp, questions = [], likes = [], videoViews
     } = this.props
     const {
       watchTabActive,
@@ -130,7 +130,7 @@ export default class VideoPage extends Component {
             marginBottom: '2em'
           }}
         >
-          {!videoUnavailable && !!videoCode &&
+          {!videoUnavailable && !!content &&
             <div>
               <Description
                 videoId={videoId}
@@ -162,7 +162,7 @@ export default class VideoPage extends Component {
                         key={videoId}
                         small={!watchTabActive}
                         videoId={videoId}
-                        videoCode={videoCode}
+                        videoCode={content}
                         title={title}
                         containerClassName={`${youtubeIframeContainerClassName}`}
                         className={`${youtubeIframeClassName}`}
@@ -226,7 +226,7 @@ export default class VideoPage extends Component {
                 <QuestionsBuilder
                   questions={questions}
                   title={title}
-                  videoCode={videoCode}
+                  videoCode={content}
                   onSubmit={this.onQuestionsSubmit}
                   onHide={() => this.setState({questionsBuilderShown: false})}
                 />

@@ -5,16 +5,15 @@ import Button from 'components/Button'
 import Likers from 'components/Likers'
 import {connect} from 'react-redux'
 import {
-  likeVideoCommentAsync,
   showFeedCommentsAsync,
   loadMoreFeedCommentsAsync,
-  uploadFeedVideoCommentAsync,
-  feedVideoCommentDeleteAsync,
-  feedVideoCommentLikeAsync,
-  feedVideoCommentEditAsync,
-  uploadFeedVideoReplyAsync,
+  uploadFeedComment,
+  feedCommentDelete,
+  commentFeedLike,
+  feedCommentEdit,
+  uploadFeedReply,
   loadMoreFeedReplies,
-  likeVideoAsync
+  contentFeedLike
 } from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
 import VideoPlayer from 'components/VideoPlayer'
@@ -27,16 +26,15 @@ import {cleanString} from 'helpers/stringHelpers'
 @connect(
   null,
   {
-    onLikeCommentClick: likeVideoCommentAsync,
     showFeedComments: showFeedCommentsAsync,
     loadMoreComments: loadMoreFeedCommentsAsync,
-    onSubmit: uploadFeedVideoCommentAsync,
-    onDelete: feedVideoCommentDeleteAsync,
-    onLikeClick: feedVideoCommentLikeAsync,
-    onEditDone: feedVideoCommentEditAsync,
-    onReplySubmit: uploadFeedVideoReplyAsync,
+    onSubmit: uploadFeedComment,
+    onDelete: feedCommentDelete,
+    onEditDone: feedCommentEdit,
+    onReplySubmit: uploadFeedReply,
     onLoadMoreReplies: loadMoreFeedReplies,
-    onLikeVideoClick: likeVideoAsync
+    onLikeCommentClick: commentFeedLike,
+    onLikeContentClick: contentFeedLike
   }
 )
 export default class MainContent extends Component {
@@ -63,14 +61,14 @@ export default class MainContent extends Component {
     targetContentLikers: PropTypes.array,
     childComments: PropTypes.array,
     commentsLoadMoreButton: PropTypes.bool,
-    parentContentId: PropTypes.number,
+    rootId: PropTypes.number,
+    rootType: PropTypes.string,
     contentTitle: PropTypes.string,
     contentDescription: PropTypes.string,
-    videoCode: PropTypes.string,
+    rootContent: PropTypes.string,
     loadMoreComments: PropTypes.func,
     onSubmit: PropTypes.func,
     onDelete: PropTypes.func,
-    onLikeClick: PropTypes.func,
     onEditDone: PropTypes.func,
     onReplySubmit: PropTypes.func,
     onLoadMoreReplies: PropTypes.func,
@@ -82,7 +80,7 @@ export default class MainContent extends Component {
     targetComment: PropTypes.string,
     showFeedComments: PropTypes.func,
     onLikeCommentClick: PropTypes.func,
-    onLikeVideoClick: PropTypes.func
+    onLikeContentClick: PropTypes.func
   }
 
   constructor() {
@@ -102,8 +100,8 @@ export default class MainContent extends Component {
       id, myId, content, contentLikers = [], targetContentComments = [],
       contentId, type, discussionId, discussionTitle, discussionDescription, videoViews,
       numChildComments = 0, numChildReplies = 0, replyId, commentId, targetReply, targetContentLikers,
-      childComments, commentsLoadMoreButton, parentContentId, contentTitle,
-      contentDescription, videoCode, onSubmit, onDelete, onLikeClick,
+      childComments, commentsLoadMoreButton, rootId, rootType, contentTitle,
+      contentDescription, rootContent, onSubmit, onDelete, onLikeCommentClick,
       onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
       attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
     } = this.props
@@ -121,8 +119,8 @@ export default class MainContent extends Component {
             style={{marginBottom: '1em'}}
             containerClassName="embed-responsive embed-responsive-16by9"
             className="embed-responsive-item"
-            videoId={parentContentId}
-            videoCode={videoCode}
+            videoId={rootId}
+            videoCode={rootContent}
           />
         }
         {type === 'comment' && !!replyId &&
@@ -136,7 +134,8 @@ export default class MainContent extends Component {
             replyId={replyId}
             commentId={commentId}
             discussionId={discussionId}
-            parentContentId={parentContentId}
+            rootId={rootId}
+            rootType={rootType}
             panelId={id}
           />
         }
@@ -150,7 +149,7 @@ export default class MainContent extends Component {
             myId={myId}
             commentId={commentId}
             discussionId={discussionId}
-            parentContentId={parentContentId}
+            rootId={rootId}
             panelId={id}
           />
         }
@@ -162,7 +161,7 @@ export default class MainContent extends Component {
             content={discussionDescription}
             comments={targetContentComments}
             discussionId={discussionId}
-            parentContentId={parentContentId}
+            rootId={rootId}
             panelId={id}
           />
         }
@@ -180,8 +179,8 @@ export default class MainContent extends Component {
             title={contentTitle}
             containerClassName="embed-responsive embed-responsive-16by9"
             className="embed-responsive-item"
-            videoId={parentContentId}
-            videoCode={videoCode}
+            videoId={rootId}
+            videoCode={rootContent}
           />
         }
         {type === 'url' &&
@@ -228,7 +227,7 @@ export default class MainContent extends Component {
             }}
           >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}</span>
         }
-        {type !== 'url' && type !== 'discussion' &&
+        {type !== 'discussion' &&
           <div style={{marginTop: '2em'}}>
             <LikeButton
               onClick={this.onLikeClick}
@@ -267,7 +266,7 @@ export default class MainContent extends Component {
           likes={contentLikers}
           onLinkClick={() => this.setState({userListModalShown: true})}
         />
-        {type !== 'url' && commentsShown &&
+        {commentsShown &&
           <PanelComments
             clickListenerState={clickListenerState}
             inputTypeLabel={type === 'comment' ? 'reply' : 'comment'}
@@ -281,13 +280,14 @@ export default class MainContent extends Component {
             parent={{
               id: contentId,
               type,
-              parentContentId,
+              rootId,
+              rootType,
               commentId,
               replyId
             }}
             commentActions={{
               onDelete,
-              onLikeClick,
+              onLikeClick: onLikeCommentClick,
               onEditDone,
               onReplySubmit,
               onLoadMoreReplies
@@ -312,22 +312,22 @@ export default class MainContent extends Component {
   }
 
   onCommentButtonClick() {
-    const {type, contentId, commentId, showFeedComments} = this.props
+    const {type, rootType, contentId, commentId, showFeedComments} = this.props
     const {clickListenerState, commentsShown} = this.state
     const isReply = !!commentId
     if (!commentsShown) {
       this.setState({commentsShown: true})
-      return showFeedComments(type, contentId, 0, isReply)
+      return showFeedComments({rootType, type, contentId, commentLength: 0, isReply})
     }
     this.setState({clickListenerState: !clickListenerState})
   }
 
   onLikeClick() {
-    const {contentId, type} = this.props
+    const {contentId, type, rootType} = this.props
     if (type === 'comment') {
       this.props.onLikeCommentClick(contentId)
     } else {
-      this.props.onLikeVideoClick(contentId)
+      this.props.onLikeContentClick(contentId, rootType)
     }
   }
 }

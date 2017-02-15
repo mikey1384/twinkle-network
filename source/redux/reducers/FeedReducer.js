@@ -75,7 +75,7 @@ export default function FeedReducer(state = defaultState, action) {
         selectedFilter: action.filter,
         loadMoreButton
       }
-    case 'FEED_TARGET_VIDEO_COMMENT_LIKE':
+    case 'FEED_TARGET_COMMENT_LIKE':
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -89,7 +89,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_VIDEO_COMMENT_DELETE':
+    case 'FEED_COMMENT_DELETE':
       return {
         ...state,
         feeds: state.feeds.reduce((resultingArray, feed) => {
@@ -110,7 +110,7 @@ export default function FeedReducer(state = defaultState, action) {
           }])
         }, [])
       }
-    case 'FEED_VIDEO_COMMENT_EDIT':
+    case 'FEED_COMMENT_EDIT':
       let editedComment = processedStringWithURL(action.data.editedComment)
       return {
         ...state,
@@ -146,7 +146,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_VIDEO_COMMENT_LIKE':
+    case 'COMMENT_FEED_LIKE':
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -175,15 +175,15 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_VIDEO_LIKE':
+    case 'CONTENT_FEED_LIKE':
       return {
         ...state,
         feeds: state.feeds.map(feed => ({
           ...feed,
           contentLikers: feed.contentId === action.data.contentId ?
             action.data.likes : feed.contentLikers,
-          parentContentLikers: feed.type === 'comment' && feed.parentContentId === action.data.contentId ?
-            action.data.likes : feed.parentContentLikers
+          rootContentLikers: feed.type === 'comment' && feed.rootId === action.data.contentId ?
+            action.data.likes : feed.rootContentLikers
         }))
       }
     case 'LOAD_MORE_FEED_COMMENTS':
@@ -225,7 +225,7 @@ export default function FeedReducer(state = defaultState, action) {
         categorySearchResult: [],
         feeds: [action.data].concat(state.feeds)
       }
-    case 'UPLOAD_FEED_VIDEO_COMMENT':
+    case 'UPLOAD_FEED_COMMENT':
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -241,7 +241,7 @@ export default function FeedReducer(state = defaultState, action) {
         }),
         newFeeds: action.data.type === 'video' ? state.newFeeds.concat([action.data.comments[0]]) : state.newFeeds.concat([action.data])
       }
-    case 'UPLOAD_FEED_VIDEO_REPLY':
+    case 'UPLOAD_FEED_REPLY':
       let {reply} = action.data
       return {
         ...state,

@@ -207,19 +207,17 @@ request.get(`${API_URL}?videoId=${videoId}`)
   }
 )
 
-export const likeVideo = (data, videoId) => ({
-  type: 'VIDEO_LIKE',
-  data,
-  videoId
-})
-
 export const likeVideoAsync = videoId => dispatch =>
-request.post(`${API_URL}/like`, {videoId}, auth())
+request.post(`${API_URL}/like`, {contentId: videoId}, auth())
 .then(
   response => {
     const {data} = response
     if (data.likes) {
-      dispatch(likeVideo(data.likes, videoId))
+      dispatch({
+        type: 'VIDEO_LIKE',
+        data: data.likes,
+        videoId
+      })
       dispatch(likePlaylistVideo(data.likes, videoId))
     }
     return
@@ -246,7 +244,7 @@ request.post(`${API_URL}/comments/like`, {commentId}, auth())
 )
 
 export const loadMoreCommentsAsync = (videoId, lastCommentId) => dispatch =>
-request.get(`${API_URL}/comments?videoId=${videoId}&lastCommentId=${lastCommentId}`)
+request.get(`${API_URL}/comments?rootId=${videoId}&lastCommentId=${lastCommentId}&rootType='video'`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_COMMENTS',
@@ -304,15 +302,16 @@ request.get(`${API_URL}/debates?videoId=${videoId}&lastDiscussionId=${lastDiscus
   }
 )
 
-export const loadVideoComments = data => ({
-  type: 'LOAD_VIDEO_COMMENTS',
-  data
-})
-
 export const loadVideoCommentsAsync = videoId => dispatch =>
-request.get(`${API_URL}/comments?videoId=${videoId}`)
+request.get(`${API_URL}/comments?rootId=${videoId}&rootType=video`)
 .then(
-  response => dispatch(loadVideoComments(response.data))
+  response => {
+    dispatch({
+      type: 'LOAD_VIDEO_COMMENTS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
 ).catch(
   error => {
     console.error(error.response || error)
@@ -362,7 +361,6 @@ export const loadVideoPageAsync = (videoId, fromClientSide, callback) => dispatc
     response => {
       dispatch(loadVideoPage(response.data))
       dispatch(loadVideoDebates(videoId))
-      dispatch(loadVideoCommentsAsync(videoId))
       if (callback) callback()
     }
   ).catch(
@@ -467,7 +465,7 @@ export const uploadVideoComment = data => ({
 })
 
 export const uploadVideoCommentAsync = (comment, videoId) => dispatch =>
-request.post(`${API_URL}/comments`, {comment, videoId}, auth())
+request.post(`${API_URL}/comments`, {content: comment, rootId: videoId, rootType: 'video'}, auth())
 .then(
   response => {
     const {data} = response
@@ -494,8 +492,10 @@ request.post(`${API_URL}/debates`, {title, description, videoId}, auth())
   }
 )
 
-export const uploadVideoDebateComment = ({comment, videoId, discussionId, discussionTitle}) => dispatch =>
-request.post(`${API_URL}/debates/comments`, {comment, videoId, discussionId}, auth())
+export const uploadVideoDebateComment = ({
+  comment, videoId: rootId, discussionId, discussionTitle
+}) => dispatch =>
+request.post(`${API_URL}/debates/comments`, {comment, rootId, rootType: 'video', discussionId}, auth())
 .then(
   response => dispatch({
     type: 'UPLOAD_VIDEO_DEBATE_COMMENT',
@@ -512,7 +512,14 @@ export const uploadVideoDebateReply = ({
   replyContent, comment, videoId,
   replyOfReply, originType
 }) => dispatch => {
-  const params = {reply: replyContent, videoId, commentId: comment.commentId || comment.id, replyId: comment.commentId ? comment.id : null, addedFromPanel: true}
+  const params = {
+    content: replyContent,
+    videoId,
+    commentId: comment.commentId || comment.id,
+    replyId: comment.commentId ? comment.id : null,
+    addedFromPanel: true
+  }
+
   request.post(`${API_URL}/replies`, params, auth())
   .then(
     response => dispatch({
@@ -532,8 +539,9 @@ export const uploadVideoDebateReply = ({
   )
 }
 
-export const uploadVideoReplyAsync = ({reply, commentId, videoId, replyId, replyOfReply}) => dispatch =>
-request.post(`${API_URL}/replies`, {reply, commentId, videoId, replyId}, auth())
+export const uploadVideoReplyAsync = ({
+  reply, commentId, videoId: rootId, replyId, replyOfReply
+}) => dispatch => request.post(`${API_URL}/replies`, {content: reply, rootId, replyId, commentId}, auth())
 .then(
   response => {
     const {data} = response

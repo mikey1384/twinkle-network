@@ -12,11 +12,51 @@ export const clearCategoriesSearchResults = () => ({
   type: 'CLEAR_CATEGORIES_SEARCH'
 })
 
-export const feedVideoCommentDeleteAsync = commentId => dispatch =>
+export const commentFeedLike = commentId => dispatch =>
+request.post(`${URL}/video/comments/like`, {commentId}, auth())
+.then(
+  response => {
+    const {data} = response
+    if (data.likes) {
+      dispatch({
+        type: 'COMMENT_FEED_LIKE',
+        data: {contentId: commentId, likes: data.likes}
+      })
+    }
+    return
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const contentFeedLike = (contentId, rootType) => dispatch =>
+request.post(`${URL}/${rootType}/like`, {contentId}, auth())
+.then(
+  response => {
+    const {data} = response
+    if (data.likes) {
+      dispatch({
+        type: 'CONTENT_FEED_LIKE',
+        data: {contentId, likes: data.likes}
+      })
+    }
+    return
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const feedCommentDelete = commentId => dispatch =>
 request.delete(`${URL}/video/comments?commentId=${commentId}`, auth())
 .then(
   response => dispatch({
-    type: 'FEED_VIDEO_COMMENT_DELETE',
+    type: 'FEED_COMMENT_DELETE',
     commentId
   })
 ).catch(
@@ -26,39 +66,17 @@ request.delete(`${URL}/video/comments?commentId=${commentId}`, auth())
   }
 )
 
-export const feedVideoCommentEditAsync = (params, cb) => dispatch =>
+export const feedCommentEdit = (params, cb) => dispatch =>
 request.post(`${URL}/video/comments/edit`, params, auth())
 .then(
   response => {
     const {success} = response.data
     if (!success) return
     dispatch({
-      type: 'FEED_VIDEO_COMMENT_EDIT',
+      type: 'FEED_COMMENT_EDIT',
       data: params
     })
     cb()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
-
-export const feedVideoCommentLike = data => ({
-  type: 'FEED_VIDEO_COMMENT_LIKE',
-  data
-})
-
-export const feedVideoCommentLikeAsync = commentId => dispatch =>
-request.post(`${URL}/video/comments/like`, {commentId}, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.likes) {
-      dispatch(feedVideoCommentLike({contentId: commentId, likes: data.likes}))
-    }
-    return
   }
 ).catch(
   error => {
@@ -122,80 +140,33 @@ request.get(`${API_URL}?filter=${filter}`).then(
   }
 )
 
-export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all', callback) => dispatch => {
-  request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then(
-    response => {
+export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all') => dispatch =>
+request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_MORE_FEEDS',
+      data: response.data,
+      filter
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const likeTargetComment = contentId => dispatch =>
+request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
+.then(
+  response => {
+    const {data} = response
+    if (data.likes) {
       dispatch({
-        type: 'FETCH_MORE_FEEDS',
-        data: response.data,
-        filter
+        type: 'FEED_TARGET_COMMENT_LIKE',
+        data: {contentId, likes: data.likes}
       })
-      if (callback) callback()
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
-}
-
-export const likeVideo = data => ({
-  type: 'FEED_VIDEO_LIKE',
-  data
-})
-
-export const likeVideoAsync = contentId => dispatch =>
-request.post(`${URL}/video/like`, {videoId: contentId}, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.likes) {
-      dispatch(likeVideo({contentId, likes: data.likes}))
-    }
-    return
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
-
-export const likeVideoComment = data => ({
-  type: 'FEED_VIDEO_COMMENT_LIKE',
-  data
-})
-
-export const likeVideoCommentAsync = contentId => dispatch =>
-request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.likes) {
-      dispatch(likeVideoComment({contentId, likes: data.likes}))
-    }
-    return
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
-
-export const likeTargetVideoComment = data => ({
-  type: 'FEED_TARGET_VIDEO_COMMENT_LIKE',
-  data
-})
-
-export const likeTargetVideoCommentAsync = contentId => dispatch =>
-request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.likes) {
-      dispatch(likeTargetVideoComment({contentId, likes: data.likes}))
     }
     return
   }
@@ -244,9 +215,9 @@ export const reloadFeeds = () => dispatch => {
   )
 }
 
-export const showFeedCommentsAsync = (type, contentId, commentLength, isReply) => dispatch =>
+export const showFeedCommentsAsync = ({rootType, type, contentId, commentLength, isReply}) => dispatch =>
 request.get(
-  `${API_URL}/comments?type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`
+  `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`
 )
 .then(
   response => dispatch({
@@ -279,56 +250,54 @@ request.post(`${API_URL}/content`, form, auth())
   }
 )
 
-export const uploadFeedVideoComment = data => ({
-  type: 'UPLOAD_FEED_VIDEO_COMMENT',
-  data
-})
-
-export const uploadFeedVideoReply = data => ({
-  type: 'UPLOAD_FEED_VIDEO_REPLY',
-  data
-})
-
-export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
-  const parentType = parent.type
+export const uploadFeedComment = (comment, parent) => dispatch => {
+  const contentType = parent.type
   let commentType
   let params
-  switch (parentType) {
+  switch (contentType) {
     case 'comment':
       params = {
-        reply: comment,
-        videoId: parent.parentContentId,
+        content: comment,
+        rootId: parent.rootId,
+        rootType: parent.rootType,
         commentId: parent.commentId || parent.id,
         replyId: parent.commentId ? parent.id : null
       }
       commentType = 'replies'
       break
+    case 'url':
     case 'video':
-      params = {comment, videoId: parent.id}
+      params = {content: comment, rootId: parent.id, rootType: 'video'}
       commentType = 'comments'
       break
     case 'discussion':
-      params = {comment, videoId: parent.parentContentId, discussionId: parent.id}
+      params = {content: comment, rootId: parent.rootId, rootType: parent.rootType, discussionId: parent.id}
       commentType = 'debates/comments'
       break
     default: return console.error('Invalid content type')
   }
 
-  request.post(`${URL}/video/${commentType}`, params, auth())
+  request.post(`${URL}/${parent.rootType}/${commentType}`, params, auth())
   .then(
     response => {
       const {data} = response
-      const action = (parentType === 'comment') ?
-      uploadFeedVideoReply({
-        type: parent.type,
-        contentId: parent.id,
-        reply: {...data.result, replies: []}
-      }) :
-      uploadFeedVideoComment({
-        ...data,
-        type: parent.type,
-        contentId: parent.id
-      })
+      const action = (contentType === 'comment') ?
+      {
+        type: 'UPLOAD_FEED_REPLY',
+        data: {
+          reply: {...data.result, replies: []},
+          type: parent.type,
+          contentId: parent.id
+        }
+      } :
+      {
+        type: 'UPLOAD_FEED_COMMENT',
+        data: {
+          ...data,
+          type: parent.type,
+          contentId: parent.id
+        }
+      }
       dispatch(action)
     }
   ).catch(
@@ -339,25 +308,32 @@ export const uploadFeedVideoCommentAsync = (comment, parent) => dispatch => {
   )
 }
 
-export const uploadFeedVideoReplyAsync = ({replyContent, comment, parent, replyOfReply, originType}) =>
+export const uploadFeedReply = ({replyContent, comment, parent, replyOfReply, originType}) =>
 dispatch => {
-  const params = {reply: replyContent, videoId: parent.parentContentId, commentId: comment.commentId || comment.id, replyId: comment.commentId ? comment.id : null}
-  request.post(`${URL}/video/replies`, params, auth())
+  const params = {
+    content: replyContent,
+    rootId: parent.rootId,
+    commentId: comment.commentId || comment.id,
+    replyId: comment.commentId ? comment.id : null
+  }
+  request.post(`${URL}/${parent.rootType}/replies`, params, auth())
   .then(
     response => {
       const {data} = response
-      const action = uploadFeedVideoReply({
-        type: parent.type,
-        contentId: parent.type === 'comment' ? comment.id : parent.id,
-        reply: {
-          ...data.result,
-          replyOfReply,
-          originType,
-          replies: []
-        },
-        commentId: comment.id
+      dispatch({
+        type: 'UPLOAD_FEED_REPLY',
+        data: {
+          type: parent.type,
+          contentId: parent.type === 'comment' ? comment.id : parent.id,
+          reply: {
+            ...data.result,
+            replyOfReply,
+            originType,
+            replies: []
+          },
+          commentId: comment.id
+        }
       })
-      dispatch(action)
     }
   ).catch(
     error => {

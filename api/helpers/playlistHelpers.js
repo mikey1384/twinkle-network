@@ -7,7 +7,7 @@ const fetchPlaylistVideos = params => callback => {
   let index = params.index
   let query = [
     'SELECT a.id, a.videoId, b.title AS video_title, b.description AS video_description, ',
-    'b.videoCode, c.id AS video_uploader_id, c.username AS video_uploader, COUNT(d.id) AS numLikes ',
+    'b.content, c.id AS video_uploader_id, c.username AS video_uploader, COUNT(d.id) AS numLikes ',
     'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id ',
     'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
     'WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id'

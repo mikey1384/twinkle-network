@@ -9,7 +9,6 @@ const defaultState = {
   videoPage: {
     comments: [],
     debates: [],
-    noComments: false,
     loadMoreCommentsButton: false,
     loadMoreDebatesButton: false
   },
@@ -261,8 +260,7 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          comments: action.data.comments,
-          noComments: action.data.noComments,
+          ...action.data,
           loadMoreCommentsButton
         }
       }

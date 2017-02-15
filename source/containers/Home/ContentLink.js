@@ -12,10 +12,17 @@ import {cleanString} from 'helpers/stringHelpers'
 export default class ContentLink extends Component {
   static propTypes = {
     content: PropTypes.object,
-    loadVideoPage: PropTypes.func
+    loadVideoPage: PropTypes.func,
+    type: PropTypes.string
   }
+
+  constructor() {
+    super()
+    this.onLinkClick = this.onLinkClick.bind(this)
+  }
+
   render() {
-    const {content, loadVideoPage} = this.props
+    const {content} = this.props
     return (
       <a
         style={{
@@ -23,14 +30,18 @@ export default class ContentLink extends Component {
           cursor: 'pointer',
           color: '#158cba'
         }}
-        onClick={event => {
-          event.preventDefault()
-          loadVideoPage(content.id, `videos/${content.id}`)
-        }}
+        onClick={this.onLinkClick}
         href={`videos/${content.id}`}
       >
         {cleanString(content.title)}
       </a>
     )
+  }
+
+  onLinkClick(event) {
+    const {loadVideoPage, content: {content, id}, type} = this.props
+    event.preventDefault()
+    if (type === 'url') return window.open(content, '_blank')
+    loadVideoPage(id, `videos/${id}`)
   }
 }

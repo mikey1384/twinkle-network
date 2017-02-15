@@ -1,7 +1,7 @@
 import request from 'axios'
 import {handleError} from './constants'
 import {URL} from 'constants/URL'
-const API_URL = `${URL}/link`
+const API_URL = `${URL}/url`
 
 export const fetchLinks = () => dispatch =>
 request.get(API_URL).then(

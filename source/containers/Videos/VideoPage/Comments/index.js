@@ -3,6 +3,7 @@ import CommentInputArea from './CommentInputArea'
 import Comment from './Comment'
 import {connect} from 'react-redux'
 import Button from 'components/Button'
+import Loading from 'components/Loading'
 import {
   editVideoCommentAsync,
   deleteVideoCommentAsync,
@@ -10,6 +11,7 @@ import {
   likeVideoComment,
   uploadVideoReplyAsync,
   loadMoreCommentsAsync,
+  loadVideoCommentsAsync,
   loadMoreReplies
 } from 'redux/actions/VideoActions'
 
@@ -24,6 +26,7 @@ import {
     onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoReplyAsync,
     loadMoreComments: loadMoreCommentsAsync,
+    loadVideoComments: loadVideoCommentsAsync,
     loadMoreReplies
   }
 )
@@ -32,10 +35,10 @@ export default class Comments extends Component {
     comments: PropTypes.array,
     loadMoreCommentsButton: PropTypes.bool,
     loadMoreDebatesButton: PropTypes.bool,
+    loadVideoComments: PropTypes.func,
     loadMoreComments: PropTypes.func,
     videoId: PropTypes.number,
     debates: PropTypes.array,
-    noComments: PropTypes.bool,
     onEditDone: PropTypes.func,
     loadMoreReplies: PropTypes.func,
     onDelete: PropTypes.func,
@@ -48,9 +51,18 @@ export default class Comments extends Component {
     super()
     this.state = {
       lastDeletedCommentIndex: null,
-      deleteListenerToggle: false
+      deleteListenerToggle: false,
+      loading: false
     }
     this.deleteCallback = this.deleteCallback.bind(this)
+  }
+
+  componentDidMount() {
+    const {loadVideoComments, videoId} = this.props
+    this.setState({loading: true})
+    loadVideoComments(videoId).then(
+      () => this.setState({loading: false})
+    )
   }
 
   componentDidUpdate(prevProps) {
@@ -90,12 +102,12 @@ export default class Comments extends Component {
   }
 
   renderComments() {
-    const {comments, noComments} = this.props
+    const {comments} = this.props
+    const {loading} = this.state
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
-    if (noComments) {
+    if (comments.length === 0) {
+      if (loading) return <Loading />
       return <li className="text-center">There are no comments, yet.</li>
-    } else if (comments.length === 0) {
-      return <li className="text-center">Loading...</li>
     }
     return comments.map((comment, index) => {
       return (

@@ -9,7 +9,7 @@ const {
   fetchedVideoCodeFromURL,
   processedURL
 } = require('../helpers/stringHelpers')
-const {returnComments} = require('../helpers/videoHelpers')
+const {returnComments} = require('../helpers/commentHelpers')
 const {fetchFeeds} = require('../helpers/feedHelpers')
 const {poolQuery} = require('../helpers')
 
@@ -44,12 +44,12 @@ router.get('/category', (req, res) => {
 })
 
 router.get('/comments', (req, res) => {
-  const {type, contentId, lastCommentId, isReply} = req.query
+  const {type, contentId, lastCommentId, isReply, rootType} = req.query
   const limit = 4
   let where
   switch (type) {
     case 'video':
-      where = 'videoId = ? AND a.commentId IS NULL'
+      where = `rootType = 'video' AND a.rootId = ? AND a.commentId IS NULL`
       break
     case 'comment':
       where = isReply === 'true' ? 'replyId = ?' : 'commentId = ?'
@@ -57,16 +57,21 @@ router.get('/comments', (req, res) => {
     case 'discussion':
       where = 'discussionId = ? AND a.commentId IS NULL'
       break
+    case 'url':
+      where = `rootType = 'url' AND a.rootId = ? AND a.commentId IS NULL`
+      break
     default:
       console.error('Invalid Content Type')
       return res.status(500).send({error: 'Invalid Content Type'})
   }
   if (!!lastCommentId && lastCommentId !== '0') where += ' AND a.id < ' + lastCommentId
   const query = `
-    SELECT a.id, a.userId, a.content, a.timeStamp, a.videoId, a.commentId, a.replyId, b.username,
-    c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName FROM vq_comments a JOIN users b ON
-    a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1' LEFT JOIN vq_comments d
-    ON a.replyId = d.id LEFT JOIN users e ON d.userId = e.id
+    SELECT a.*, b.username, c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName
+    FROM content_comments a
+    JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+    LEFT JOIN content_comments d ON a.replyId = d.id
+    LEFT JOIN users e ON d.userId = e.id
     WHERE a.${where} ORDER BY a.id DESC LIMIT ${limit}
   `
   pool.query(query, contentId, (err, rows) => {
@@ -77,13 +82,14 @@ router.get('/comments', (req, res) => {
     if (rows.length === 0) {
       return res.send([])
     }
-    returnComments(rows, (err, commentsArray) => {
-      if (err) {
+    return returnComments(rows, rootType).then(
+      commentsArray => res.send(commentsArray)
+    ).catch(
+      err => {
         console.error(err)
         return res.status(500).send({error: err})
       }
-      res.send(commentsArray)
-    })
+    )
   })
 })
 
@@ -98,9 +104,9 @@ router.post('/content', requireAuth, (req, res) => {
     description: (!description || description === '') ? 'No description' : processedString(description),
     uploader: user.id,
     timeStamp: Math.floor(Date.now()/1000),
-    categoryId: selectedCategory},
-    (checkedVideo ? {videocode: content} : {url: content})
-  )
+    categoryId: selectedCategory,
+    content
+  })
   pool.query(query, post, (err, result) => {
     if (err) {
       console.error(err)
@@ -113,11 +119,11 @@ router.post('/content', requireAuth, (req, res) => {
       contentId: result.insertId,
       uploaderId: user.id,
       content,
-      videoCode: content,
+      rootContent: content,
       timeStamp: post.timeStamp,
-      parentContentId: result.insertId,
-      parentContentTitle: post.title,
-      parentContentDescription: post.description,
+      rootId: result.insertId,
+      rootContentTitle: post.title,
+      rootContentDescription: post.description,
       commentId: null,
       replyId: null,
       contentTitle: post.title,
@@ -139,11 +145,11 @@ router.post('/content', requireAuth, (req, res) => {
 })
 
 router.get('/feed', (req, res) => {
-  const {type, contentId, parentContentId} = req.query
+  const {type, contentId, rootType, rootId} = req.query
   const result = Object.assign({}, req.query, {
     id: Number(req.query.id),
     contentId: Number(req.query.contentId),
-    parentContentId: Number(req.query.parentContentId),
+    rootId: Number(req.query.rootId),
     uploaderId: Number(req.query.uploaderId),
     timeStamp: Number(req.query.timeStamp)
   })
@@ -156,13 +162,22 @@ router.get('/feed', (req, res) => {
   `
   let commentQuery = `
     SELECT a.userId, b.username
-    FROM vq_commentupvotes a LEFT JOIN users b ON
+    FROM content_comment_likes a LEFT JOIN users b ON
     a.userId = b.id WHERE
     a.commentId = ?
+  `
+  let urlQuery = `
+    SELECT a.userId, b.username
+    FROM content_url_likes a LEFT JOIN users b ON
+    a.userId = b.id WHERE
+    a.linkId = ?
   `
 
   switch (type) {
     case 'comment':
+      let rootTableName
+      if (rootType === 'url') rootTableName = 'content_urls'
+      if (rootType === 'video') rootTableName = 'vq_videos'
       query = `
         SELECT comment1.content, comment1.commentId, comment1.replyId, comment1.discussionId,
         user1.username AS uploaderName, userPhoto.id AS uploaderPicId,
@@ -173,24 +188,24 @@ router.get('/feed', (req, res) => {
         discussion.title AS discussionTitle,
         discussion.description AS discussionDescription,
 
-        video.title AS parentContentTitle, video.description AS parentContentDescription, video.title AS contentTitle,
-        video.videoCode,
+        ${rootType}.title AS rootContentTitle, ${rootType}.description AS rootContentDescription, ${rootType}.title AS contentTitle,
+        ${rootType}.content AS rootContent,
 
-        (SELECT COUNT(*) FROM vq_comments WHERE commentId = ${contentId}) AS numChildComments,
-        (SELECT COUNT(*) FROM vq_comments WHERE replyId = ${contentId}) AS numChildReplies
+        (SELECT COUNT(*) FROM content_comments WHERE commentId = ${contentId}) AS numChildComments,
+        (SELECT COUNT(*) FROM content_comments WHERE replyId = ${contentId}) AS numChildReplies
 
-        FROM vq_comments comment1
-          LEFT JOIN vq_videos video
-            ON comment1.videoId = video.id
+        FROM content_comments comment1
+          LEFT JOIN ${rootTableName} ${rootType}
+            ON comment1.rootId = ${rootType}.id
           LEFT JOIN users user1
             ON comment1.userId = user1.id
           LEFT JOIN users_photos userPhoto
             ON comment1.userId = userPhoto.userId AND userPhoto.isProfilePic = '1'
-          LEFT JOIN vq_comments comment2
+          LEFT JOIN content_comments comment2
             ON comment1.commentId = comment2.id
           LEFT JOIN users user2
             ON comment2.userId = user2.id
-          LEFT JOIN vq_comments comment3
+          LEFT JOIN content_comments comment3
             ON comment1.replyId = comment3.id
           LEFT JOIN users user3
             ON comment3.userId = user3.id
@@ -203,12 +218,12 @@ router.get('/feed', (req, res) => {
     case 'discussion':
       query = `
         SELECT discussion.title AS contentTitle, discussion.description AS contentDescription,
-        video.videoCode, video.title AS parentContentTitle, video.description AS parentContentDescription,
+        video.content AS rootContent, video.title AS rootContentTitle, video.description AS rootContentDescription,
         user.username AS uploaderName, userPhoto.id AS uploaderPicId,
-        (SELECT COUNT(*) FROM vq_comments WHERE discussionId = discussion.id) AS numChildComments
+        (SELECT COUNT(*) FROM content_comments WHERE discussionId = discussion.id) AS numChildComments
         FROM content_discussions discussion
           LEFT JOIN vq_videos video
-            ON discussion.refContentType = 'video' AND refContentId = video.id
+            ON discussion.rootType = 'video' AND rootId = video.id
           LEFT JOIN users user
             ON discussion.userId = user.id
           LEFT JOIN users_photos userPhoto
@@ -219,20 +234,25 @@ router.get('/feed', (req, res) => {
       break
     case 'url':
       query = `
-        SELECT url.title AS parentContentTitle, url.description AS parentContentDescription,
-        url.url AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId
-        FROM content_urls url LEFT JOIN users user ON url.uploader = user.id LEFT JOIN users_photos userPhoto ON
+        SELECT url.title AS rootContentTitle, url.description AS rootContentDescription, 'url' AS rootType,
+        url.content AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
+        (SELECT COUNT(*) FROM content_comments WHERE rootType = 'url' AND rootId = url.id)
+        AS numChildComments
+        FROM content_urls url
+        LEFT JOIN users user ON url.uploader = user.id
+        LEFT JOIN users_photos userPhoto ON
         url.uploader = userPhoto.userId AND userPhoto.isProfilePic = '1'
         WHERE url.id = ?
       `
       break
     case 'video':
       query = `
-        SELECT video.title AS parentContentTitle, video.description AS parentContentDescription,
-        video.videoCode AS content, video.title AS contentTitle, video.description AS contentDescription,
-        video.videoCode, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
+        SELECT video.title AS rootContentTitle, video.description AS rootContentDescription, 'video' AS rootType, video.content AS rootContent, video.title AS contentTitle,
+        video.description AS contentDescription,
+        video.content, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
         (SELECT COUNT(*) FROM vq_video_views WHERE videoId = video.id) AS videoViews,
-        (SELECT COUNT(*) FROM vq_comments WHERE videoId = video.id) AS numChildComments
+        (SELECT COUNT(*) FROM content_comments WHERE rootType = 'video' AND rootId = video.id)
+        AS numChildComments
         FROM vq_videos video
           LEFT JOIN users user
             ON video.uploader = user.id
@@ -253,27 +273,35 @@ router.get('/feed', (req, res) => {
           return Promise.all([
             poolQuery(commentQuery, contentId),
             poolQuery(commentQuery, targetId || '0'),
-            poolQuery(videoQuery, parentContentId)
+            poolQuery(videoQuery, rootId)
           ]).then(
             results => {
               feed['contentLikers'] = results[0]
               feed['targetContentLikers'] = results[1]
-              feed['parentContentLikers'] = results[2]
+              feed['rootContentLikers'] = results[2]
               return Promise.resolve(feed)
             }
           )
         case 'url':
+          return poolQuery(urlQuery, contentId).then(
+            rows => {
+              feed['contentLikers'] = rows
+              return Promise.resolve(feed)
+            }
+          )
         case 'discussion':
           feed['contentLikers'] = []
-          feed['parentContentLikers'] = []
+          feed['rootContentLikers'] = []
           return Promise.resolve(feed)
-        default:
+        case 'video':
           return poolQuery(videoQuery, contentId).then(
             rows => {
               feed['contentLikers'] = rows
               return Promise.resolve(feed)
             }
           )
+        default:
+          return Promise.resolve({})
       }
     }
   ).then(
@@ -288,7 +316,7 @@ router.get('/feed', (req, res) => {
 
 router.post('/targetContentComment', requireAuth, (req, res) => {
   const {user, body} = req
-  const query = `INSERT INTO vq_comments SET ?`
+  const query = `INSERT INTO content_comments SET ?`
   const post = Object.assign({}, body, {
     userId: user.id,
     timeStamp: Math.floor(Date.now()/1000)

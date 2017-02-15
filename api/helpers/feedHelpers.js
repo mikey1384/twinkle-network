@@ -8,7 +8,7 @@ module.exports = {
     if (feedId !== 0) where += 'AND id < ' + feedId + ' '
     if (filter !== 'undefined' && filter !== 'all') where += 'AND type = "' + filter + '" '
     const query = `
-      SELECT id, type, contentId, parentContentId, uploaderId, timeStamp FROM noti_feeds
+      SELECT id, type, rootType, contentId, rootId, uploaderId, timeStamp FROM noti_feeds
       ${where} ORDER BY id DESC LIMIT ${limit || 21}
     `
     return poolQuery(query).then(

@@ -56,7 +56,7 @@ router.post('/', requireAuth, (req, res) => {
       async.series(taskArray, function(err) {
         if (err) return callback(err)
         const query = [
-          'SELECT a.id, a.videoId, b.title AS video_title, b.videoCode, c.username AS video_uploader, ',
+          'SELECT a.id, a.videoId, b.title AS video_title, b.content, c.username AS video_uploader, ',
           'COUNT(d.id) AS numLikes ',
           'FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON b.uploader = c.id ',
           'LEFT JOIN vq_video_likes d ON b.id = d.videoId ',
@@ -113,7 +113,7 @@ router.post('/edit/videos', requireAuth, (req, res) => {
   ).then(
     () => {
       let query = `
-        SELECT a.id, a.videoId, b.title AS video_title, b.videoCode, c.username AS video_uploader,
+        SELECT a.id, a.videoId, b.title AS video_title, b.content, c.username AS video_uploader,
         COUNT(d.id) AS numLikes
         FROM vq_playlistvideos a
           JOIN vq_videos b ON a.videoId = b.id

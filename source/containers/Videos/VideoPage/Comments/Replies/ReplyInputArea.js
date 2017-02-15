@@ -3,11 +3,12 @@ import InputArea from 'components/Texts/InputArea'
 
 ReplyInputArea.propTypes = {
   onSubmit: PropTypes.func,
-  clickListenerState: PropTypes.bool
+  clickListenerState: PropTypes.bool,
+  style: PropTypes.object
 }
-export default function ReplyInputArea({onSubmit, clickListenerState}) {
+export default function ReplyInputArea({onSubmit, clickListenerState, style}) {
   return (
-    <div className="media">
+    <div className="media" style={style}>
       <div className="media-body">
         <InputArea
           autoFocus

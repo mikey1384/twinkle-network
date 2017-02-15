@@ -5,9 +5,9 @@ import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
 import {connect} from 'react-redux'
 import {
-  feedVideoCommentDeleteAsync,
-  feedVideoCommentEditAsync,
-  likeTargetVideoCommentAsync,
+  feedCommentDelete,
+  feedCommentEdit,
+  likeTargetComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
@@ -22,9 +22,9 @@ import LongText from 'components/Texts/LongText'
     profilePicId: state.UserReducer.profilePicId
   }),
   {
-    onDeleteComment: feedVideoCommentDeleteAsync,
-    onEditComment: feedVideoCommentEditAsync,
-    onLikeClick: likeTargetVideoCommentAsync,
+    onDeleteComment: feedCommentDelete,
+    onEditComment: feedCommentEdit,
+    onLikeClick: likeTargetComment,
     uploadComment: uploadTargetContentComment
   }
 )
@@ -45,10 +45,11 @@ export default class TargetContent extends Component {
     onEditComment: PropTypes.func,
     commentId: PropTypes.number,
     onLikeClick: PropTypes.func,
-    parentContentId: PropTypes.number,
+    rootId: PropTypes.number,
     discussionId: PropTypes.number,
     panelId: PropTypes.number,
-    uploadComment: PropTypes.func
+    uploadComment: PropTypes.func,
+    rootType: PropTypes.string
   }
 
   constructor() {
@@ -186,7 +187,7 @@ export default class TargetContent extends Component {
   }
 
   onSubmit(content) {
-    const {replyId = null, commentId, parentContentId, discussionId = null, uploadComment, panelId} = this.props
-    uploadComment({videoId: parentContentId, replyId, commentId, discussionId, content}, panelId)
+    const {replyId = null, commentId, rootType, rootId, discussionId = null, uploadComment, panelId} = this.props
+    uploadComment({rootId, rootType, replyId, commentId, discussionId, content}, panelId)
   }
 }

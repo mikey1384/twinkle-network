@@ -98,7 +98,7 @@ export default class VideoThumb extends Component {
             >
               <img
                 alt="Thumbnail"
-                src={`https://img.youtube.com/vi/${video.videoCode}/0.jpg`}
+                src={`https://img.youtube.com/vi/${video.content}/0.jpg`}
                 style={{
                   width: '100%',
                   position: 'absolute',

@@ -58,8 +58,8 @@ CREATE TABLE `content_discussions` (
   `userId` int(11) DEFAULT NULL,
   `title` varchar(300) DEFAULT NULL,
   `description` varchar(5000) DEFAULT NULL,
-  `refContentType` varchar(100) DEFAULT NULL,
-  `refContentId` int(11) DEFAULT NULL,
+  `rootType` varchar(100) DEFAULT NULL,
+  `rootId` int(11) DEFAULT NULL,
   `timeStamp` bigint(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -67,7 +67,7 @@ CREATE TABLE `content_discussions` (
 LOCK TABLES `content_discussions` WRITE;
 /*!40000 ALTER TABLE `content_discussions` DISABLE KEYS */;
 
-INSERT INTO `content_discussions` (`id`, `userId`, `title`, `description`, `refContentType`, `refContentId`, `timeStamp`)
+INSERT INTO `content_discussions` (`id`, `userId`, `title`, `description`, `rootType`, `rootId`, `timeStamp`)
 VALUES
 	(1,5,'Trump became a president. What now?','What should we do, now that our worst nightmare has come true?','video',26,1478527794),
 	(2,5,'Who is the best hero in Overwatch?',NULL,'video',26,1478527795),
@@ -98,8 +98,8 @@ DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
 /*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `content_discussions_after_insert` AFTER INSERT ON `content_discussions` FOR EACH ROW BEGIN
 
-INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
-VALUES ('discussion', NEW.refContentType, NEW.id, NEW.refContentId, NEW.userId, NEW.timeStamp);
+INSERT INTO noti_feeds (type, rootType, contentId, rootId, uploaderId, timeStamp)
+VALUES ('discussion', NEW.rootType, NEW.id, NEW.rootId, NEW.userId, NEW.timeStamp);
 
 END */;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
@@ -156,7 +156,7 @@ DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
 /*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `content_urls_after_insert` AFTER INSERT ON `content_urls` FOR EACH ROW BEGIN
 
-INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
+INSERT INTO noti_feeds (type, rootType, contentId, rootId, uploaderId, timeStamp)
 VALUES ('url', 'url', NEW.id, NEW.id, NEW.uploader, NEW.timeStamp);
 
 END */;;
@@ -991,7 +991,7 @@ VALUES
 	(1466,224,205,'vc',1479991521,0),
 	(1467,224,205,'cx',1479991521,0),
 	(1468,224,205,'vc',1479991521,0),
-	(1469,209,5,'INSERT INTO noti_feeds (type, contentId, parentContentType, parentContentId, uploaderId, timeStamp) <br>SELECT type, contentId, parentContentType, parentContentId, uploaderId, timeStamp FROM (<br>	SELECT \'comment\' AS type, id AS contentId, \'video\' AS parentContentType, videoId AS parentContentId, userId AS uploaderId, timeStamp <br>	FROM vq_comments <br>	UNION <br>	SELECT \'video\', id, \'video\', id, uploader, timeStamp FROM vq_videos <br>	UNION<br>	SELECT \'url\', id, \'url\', id, uploader, timeStamp FROM content_urls <br>	UNION<br>	SELECT \'discussion\', id, refContentType, refContentId, userId, timeStamp FROM content_discussions <br>	ORDER BY timeStamp<br>) AS data',1481090399,0),
+	(1469,209,5,'INSERT INTO noti_feeds (type, contentId, rootType, rootId, uploaderId, timeStamp) <br>SELECT type, contentId, rootType, rootId, uploaderId, timeStamp FROM (<br>	SELECT \'comment\' AS type, id AS contentId, \'video\' AS rootType, videoId AS rootId, userId AS uploaderId, timeStamp <br>	FROM content_comments <br>	UNION <br>	SELECT \'video\', id, \'video\', id, uploader, timeStamp FROM vq_videos <br>	UNION<br>	SELECT \'url\', id, \'url\', id, uploader, timeStamp FROM content_urls <br>	UNION<br>	SELECT \'discussion\', id, rootType, rootId, userId, timeStamp FROM content_discussions <br>	ORDER BY timeStamp<br>) AS data',1481090399,0),
 	(1470,223,5,'new message',1482138347,0),
 	(1471,223,5,'hello world',1482138349,0),
 	(1472,223,205,'hi',1482138372,0),
@@ -1092,8 +1092,8 @@ CREATE TABLE `noti_feeds` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(100) DEFAULT NULL,
   `contentId` int(11) DEFAULT NULL,
-  `parentContentType` varchar(100) DEFAULT NULL,
-  `parentContentId` int(11) DEFAULT NULL,
+  `rootType` varchar(100) DEFAULT NULL,
+  `rootId` int(11) DEFAULT NULL,
   `uploaderId` int(11) DEFAULT NULL,
   `timeStamp` bigint(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -1102,7 +1102,7 @@ CREATE TABLE `noti_feeds` (
 LOCK TABLES `noti_feeds` WRITE;
 /*!40000 ALTER TABLE `noti_feeds` DISABLE KEYS */;
 
-INSERT INTO `noti_feeds` (`id`, `type`, `contentId`, `parentContentType`, `parentContentId`, `uploaderId`, `timeStamp`)
+INSERT INTO `noti_feeds` (`id`, `type`, `contentId`, `rootType`, `rootId`, `uploaderId`, `timeStamp`)
 VALUES
 	(1,'video',3,'video',3,5,NULL),
 	(2,'video',1,'video',1,5,1475581972),
@@ -1352,12 +1352,12 @@ VALUES
 UNLOCK TABLES;
 
 
-# Dump of table vq_comments
+# Dump of table content_comments
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `vq_comments`;
+DROP TABLE IF EXISTS `content_comments`;
 
-CREATE TABLE `vq_comments` (
+CREATE TABLE `content_comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
   `content` varchar(20000) DEFAULT NULL,
@@ -1369,10 +1369,10 @@ CREATE TABLE `vq_comments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `vq_comments` WRITE;
-/*!40000 ALTER TABLE `vq_comments` DISABLE KEYS */;
+LOCK TABLES `content_comments` WRITE;
+/*!40000 ALTER TABLE `content_comments` DISABLE KEYS */;
 
-INSERT INTO `vq_comments` (`id`, `userId`, `content`, `timeStamp`, `videoId`, `commentId`, `replyId`, `discussionId`)
+INSERT INTO `content_comments` (`id`, `userId`, `content`, `timeStamp`, `videoId`, `commentId`, `replyId`, `discussionId`)
 VALUES
 	(2,5,'This is the first comment!',1475587469,1,NULL,NULL,NULL),
 	(586,205,'comment number 586',1479792644,30,NULL,NULL,NULL),
@@ -1408,19 +1408,19 @@ VALUES
 	(699,5,'test',1482719066,53,650,651,23),
 	(700,5,'test',1482719123,53,696,NULL,23);
 
-/*!40000 ALTER TABLE `vq_comments` ENABLE KEYS */;
+/*!40000 ALTER TABLE `content_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
 DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
-/*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `vq_comments_after_insert` AFTER INSERT ON `vq_comments` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `content_comments_after_insert` AFTER INSERT ON `content_comments` FOR EACH ROW BEGIN
 
-INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
+INSERT INTO noti_feeds (type, rootType, contentId, rootId, uploaderId, timeStamp)
 VALUES ('comment', 'video', NEW.id, NEW.videoId, NEW.userId, NEW.timeStamp);
 
 END */;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
-/*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `vq_comments_after_delete` AFTER DELETE ON `vq_comments` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `content_comments_after_delete` AFTER DELETE ON `content_comments` FOR EACH ROW BEGIN
 
 DELETE FROM noti_feeds WHERE type = 'comment' AND contentId = OLD.id;
 
@@ -1429,22 +1429,22 @@ DELIMITER ;
 /*!50003 SET SESSION SQL_MODE=@OLD_SQL_MODE */;
 
 
-# Dump of table vq_commentupvotes
+# Dump of table content_comment_likes
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `vq_commentupvotes`;
+DROP TABLE IF EXISTS `content_comment_likes`;
 
-CREATE TABLE `vq_commentupvotes` (
+CREATE TABLE `content_comment_likes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `commentId` int(11) DEFAULT NULL,
   `userId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `vq_commentupvotes` WRITE;
-/*!40000 ALTER TABLE `vq_commentupvotes` DISABLE KEYS */;
+LOCK TABLES `content_comment_likes` WRITE;
+/*!40000 ALTER TABLE `content_comment_likes` DISABLE KEYS */;
 
-INSERT INTO `vq_commentupvotes` (`id`, `commentId`, `userId`)
+INSERT INTO `content_comment_likes` (`id`, `commentId`, `userId`)
 VALUES
 	(7,2,5),
 	(9,28,5),
@@ -1479,7 +1479,7 @@ VALUES
 	(228,696,5),
 	(229,700,5);
 
-/*!40000 ALTER TABLE `vq_commentupvotes` ENABLE KEYS */;
+/*!40000 ALTER TABLE `content_comment_likes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -1831,7 +1831,7 @@ CREATE TABLE `vq_videos` (
   `title` varchar(500) DEFAULT NULL,
   `description` varchar(5000) DEFAULT NULL,
   `categoryId` int(11) DEFAULT NULL,
-  `videoCode` varchar(300) DEFAULT NULL,
+  `content` varchar(300) DEFAULT NULL,
   `uploader` int(11) DEFAULT NULL,
   `timeStamp` bigint(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -1840,7 +1840,7 @@ CREATE TABLE `vq_videos` (
 LOCK TABLES `vq_videos` WRITE;
 /*!40000 ALTER TABLE `vq_videos` DISABLE KEYS */;
 
-INSERT INTO `vq_videos` (`id`, `title`, `description`, `categoryId`, `videoCode`, `uploader`, `timeStamp`)
+INSERT INTO `vq_videos` (`id`, `title`, `description`, `categoryId`, `content`, `uploader`, `timeStamp`)
 VALUES
 	(1,'Best Plays','No description',NULL,'K8g_OnF-Vuc',5,1475581972),
 	(2,'Environmental Kills are Fun','No description',NULL,'2Hm6OL5WaUc',5,1475583781),
@@ -1898,7 +1898,7 @@ DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
 /*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `vq_videos_after_insert` AFTER INSERT ON `vq_videos` FOR EACH ROW BEGIN
 
-INSERT INTO noti_feeds (type, parentContentType, contentId, parentContentId, uploaderId, timeStamp)
+INSERT INTO noti_feeds (type, rootType, contentId, rootId, uploaderId, timeStamp)
 VALUES ('video', 'video', NEW.id, NEW.id, NEW.uploader, NEW.timeStamp);
 
 END */;;

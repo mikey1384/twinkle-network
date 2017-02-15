@@ -58,7 +58,7 @@ export default class SortableThumb extends Component {
         >
           <img
             alt="Thumbnail"
-            src={`http://img.youtube.com/vi/${video.videoCode}/0.jpg`}
+            src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
           />
           <div className="caption">
             <div>

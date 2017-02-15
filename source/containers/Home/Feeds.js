@@ -105,15 +105,15 @@ export default class Feeds extends Component {
     const {loadingMore} = this.state
     if (!loadingMore) {
       this.setState({loadingMore: true})
-      fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter, () => {
-        this.setState({loadingMore: false})
-      })
+      fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter).then(
+        () => this.setState({loadingMore: false})
+      )
     }
   }
 
   onScroll() {
-    const {chatMode} = this.props
-    if (!chatMode) {
+    const {chatMode, feeds} = this.props
+    if (!chatMode && feeds.length > 0) {
       this.setState({scrollPosition: document.body.scrollTop})
       if (this.state.scrollPosition >= (document.body.scrollHeight - window.innerHeight) * 0.7) {
         this.loadMoreFeeds()

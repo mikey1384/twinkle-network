@@ -122,7 +122,7 @@ export default class PlaylistCarousel extends Component {
       id
     } = this.props
     let playlist = this.props.playlist.map(video => ({
-      videoCode: video.videoCode,
+      content: video.content,
       id: video.videoId,
       title: video.video_title,
       uploaderName: video.video_uploader
@@ -225,7 +225,7 @@ export default class PlaylistCarousel extends Component {
           key={index}
           video={{
             id: thumb.videoId,
-            videoCode: thumb.videoCode,
+            content: thumb.content,
             title: thumb.video_title,
             description: thumb.video_description,
             uploaderName: thumb.video_uploader,
