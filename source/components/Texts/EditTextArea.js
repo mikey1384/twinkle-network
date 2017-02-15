@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 export default class EditTextArea extends Component {
   static propTypes = {
@@ -21,7 +21,7 @@ export default class EditTextArea extends Component {
     }
     this.onSubmit = this.onSubmit.bind(this)
     this.onChange = this.onChange.bind(this)
-    this.handleKeyPress = this.handleKeyPress.bind(this)
+    this.handleKeyUp = this.handleKeyUp.bind(this)
   }
 
   render() {
@@ -37,7 +37,7 @@ export default class EditTextArea extends Component {
           rows={rows}
           value={editedText}
           onChange={this.onChange}
-          onKeyPress={this.handleKeyPress}
+          onKeyUp={this.handleKeyUp}
         />
         <div
           style={{
@@ -69,12 +69,12 @@ export default class EditTextArea extends Component {
     this.setState({editedText: event.target.value})
   }
 
-  handleKeyPress(event) {
+  handleKeyUp(event) {
     if (event.key === ' ') this.setState({editedText: addEmoji(event.target.value)})
   }
 
   onSubmit() {
     const {editedText} = this.state
-    this.props.onEditDone(addEmoji(editedText))
+    this.props.onEditDone(finalizeEmoji(editedText))
   }
 }
