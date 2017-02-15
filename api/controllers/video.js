@@ -385,7 +385,7 @@ router.get('/debates/comments', (req, res) => {
     if (rows.length === 0) {
       return res.send([])
     }
-    returnComments(rows).then(
+    returnComments(rows, 'video').then(
       commentsArray => res.send(commentsArray)
     ).catch(
       err => {

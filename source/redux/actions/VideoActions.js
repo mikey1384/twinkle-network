@@ -509,12 +509,12 @@ request.post(`${API_URL}/debates/comments`, {comment, rootId, rootType: 'video',
 )
 
 export const uploadVideoDebateReply = ({
-  replyContent, comment, videoId,
+  replyContent, comment, videoId: rootId,
   replyOfReply, originType
 }) => dispatch => {
   const params = {
     content: replyContent,
-    videoId,
+    rootId,
     commentId: comment.commentId || comment.id,
     replyId: comment.commentId ? comment.id : null,
     addedFromPanel: true
