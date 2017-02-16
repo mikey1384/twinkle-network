@@ -244,7 +244,7 @@ request.post(`${API_URL}/comments/like`, {commentId}, auth())
 )
 
 export const loadMoreCommentsAsync = (videoId, lastCommentId) => dispatch =>
-request.get(`${API_URL}/comments?rootId=${videoId}&lastCommentId=${lastCommentId}&rootType='video'`)
+request.get(`${API_URL}/comments?rootId=${videoId}&lastCommentId=${lastCommentId}&rootType=video`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_COMMENTS',
