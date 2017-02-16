@@ -495,7 +495,7 @@ request.post(`${API_URL}/debates`, {title, description, videoId}, auth())
 export const uploadVideoDebateComment = ({
   comment, videoId: rootId, discussionId, discussionTitle
 }) => dispatch =>
-request.post(`${API_URL}/debates/comments`, {comment, rootId, rootType: 'video', discussionId}, auth())
+request.post(`${API_URL}/debates/comments`, {content: comment, rootId, rootType: 'video', discussionId}, auth())
 .then(
   response => dispatch({
     type: 'UPLOAD_VIDEO_DEBATE_COMMENT',
