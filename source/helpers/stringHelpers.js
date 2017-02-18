@@ -34,6 +34,7 @@ export function addThreeLetterEmoji(string) {
   .replace(/(:-P)/gi, '😛 ')
   .replace(/(:-\()/g, '🙁 ')
   .replace(/(:-O)/gi, '😲 ')
+  .replace(/(O_O)/gi, '😳 ')
 }
 
 export function addAdvancedEmoji(string) {
@@ -65,6 +66,9 @@ export function addAdvancedEmoji(string) {
   .replace(/(\(cow\))/gi, '🐮 ')
   .replace(/(\(horse\))/gi, '🐴 ')
   .replace(/(\(penguin\))/gi, '🐧 ')
+  .replace(/(\(bunny\))/gi, '🐰 ')
+  .replace(/(\(rabbit\))/gi, '🐰 ')
+  .replace(/(\(devil\))/gi, '😈 ')
 }
 
 export function addEmoji(string) {
