@@ -258,7 +258,7 @@ request.get(`${API_URL}/comments?rootId=${videoId}&lastCommentId=${lastCommentId
 )
 
 export const loadMoreReplies = (lastReplyId, commentId, type) => dispatch =>
-request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}`)
+request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=video`)
 .then(
   response => dispatch({
     type: 'LOAD_MORE_REPLIES',
@@ -353,15 +353,15 @@ export const loadVideoPage = data => ({
   data
 })
 
-export const loadVideoPageAsync = (videoId, fromClientSide, callback) => dispatch => {
+export const loadVideoPageAsync = (videoId, fromClientSide) => dispatch => {
   if (isNaN(videoId)) return dispatch({type: 'VIDEO_PAGE_UNAVAILABLE'})
   if (!fromClientSide) dispatch({type: 'VIDEO_PAGE_LOADING_SHOW'})
-  request.get(`${API_URL}/loadPage?videoId=${videoId}`)
+  return request.get(`${API_URL}/page?videoId=${videoId}`)
   .then(
     response => {
       dispatch(loadVideoPage(response.data))
       dispatch(loadVideoDebates(videoId))
-      if (callback) callback()
+      return Promise.resolve()
     }
   ).catch(
     error => {
@@ -373,7 +373,9 @@ export const loadVideoPageAsync = (videoId, fromClientSide, callback) => dispatc
 }
 
 export const loadVideoPageFromClientSideAsync = (videoId, to) =>
-dispatch => dispatch(loadVideoPageAsync(videoId, true, dispatch(push(`/${to}`))))
+dispatch => dispatch(loadVideoPageAsync(videoId, true)).then(
+  () => Promise.resolve()
+)
 
 export const openAddVideoModal = () => ({
   type: 'VID_MODAL_OPEN'

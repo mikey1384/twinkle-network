@@ -1,18 +1,23 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
+import {loadLinkPage} from 'redux/actions/LinkActions'
 import {cleanString} from 'helpers/stringHelpers'
+import Link from 'components/Link'
+import {Color} from 'constants/css'
 
 @connect(
   null,
   {
-    loadVideoPage: loadVideoPageFromClientSideAsync
+    loadVideoPage: loadVideoPageFromClientSideAsync,
+    loadLinkPage
   }
 )
 export default class ContentLink extends Component {
   static propTypes = {
     content: PropTypes.object,
     loadVideoPage: PropTypes.func,
+    loadLinkPage: PropTypes.func,
     type: PropTypes.string
   }
 
@@ -22,26 +27,40 @@ export default class ContentLink extends Component {
   }
 
   render() {
-    const {content} = this.props
+    const {content, type} = this.props
+    let destination = ''
+    switch (type) {
+      case 'url':
+        destination = 'links'
+        break
+      case 'video':
+        destination = 'videos'
+        break
+      default: break
+    }
+
     return (
-      <a
+      <Link
         style={{
           fontWeight: 'bold',
-          cursor: 'pointer',
-          color: '#158cba'
+          color: Color.blue
         }}
-        onClick={this.onLinkClick}
-        href={`videos/${content.id}`}
+        to={`/${destination}/${content.id}`}
+        onClickAsync={this.onLinkClick}
       >
         {cleanString(content.title)}
-      </a>
+      </Link>
     )
   }
 
   onLinkClick(event) {
-    const {loadVideoPage, content: {content, id}, type} = this.props
-    event.preventDefault()
-    if (type === 'url') return window.open(content, '_blank')
-    loadVideoPage(id, `videos/${id}`)
+    const {loadVideoPage, loadLinkPage, type, content: {id}} = this.props
+    switch (type) {
+      case 'url':
+        return loadLinkPage(id)
+      case 'video':
+        return loadVideoPage(id)
+      default: return
+    }
   }
 }

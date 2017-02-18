@@ -6,6 +6,8 @@ import Home from 'containers/Home'
 import Feeds from 'containers/Home/Feeds'
 import Profile from 'containers/Home/Profile'
 import Links from 'containers/Links'
+import LinksMain from 'containers/Links/Main'
+import LinkPage from 'containers/Links/LinkPage'
 import Videos from 'containers/Videos'
 import VideosMain from 'containers/Videos/Main'
 import VideoPage from 'containers/Videos/VideoPage'
@@ -48,7 +50,10 @@ export const routes = (
       <IndexRoute component={VideosMain} />
       <Route path=":videoId" component={VideoPage} />
     </Route>
-    <Route path="/links" component={Links} />
+    <Route path="/links" component={Links}>
+      <IndexRoute component={LinksMain} />
+      <Route path=":linkId" component={LinkPage} />
+    </Route>
     <Route path="/" component={Home}>
       <IndexRoute component={Feeds} />
       <Route path=":username" component={Profile} />

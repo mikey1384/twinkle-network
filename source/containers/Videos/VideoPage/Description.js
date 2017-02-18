@@ -151,7 +151,9 @@ export default class Description extends Component {
                 >Cancel</Button>
               </div>
             </div> :
-            <LongText style={{wordWrap: 'break-word'}}>{description}</LongText>
+            <LongText style={{wordWrap: 'break-word'}}>
+              {stringIsEmpty(description) ? 'No Description' : description}
+            </LongText>
           }
         </div>
       </div>

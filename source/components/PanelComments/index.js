@@ -6,6 +6,7 @@ import {scrollElementToCenter} from 'helpers/domHelpers'
 
 export default class PanelComments extends Component {
   static propTypes = {
+    autoFocus: PropTypes.bool,
     comments: PropTypes.array,
     onSubmit: PropTypes.func,
     loadMoreButton: PropTypes.bool,
@@ -15,7 +16,8 @@ export default class PanelComments extends Component {
     userId: PropTypes.number,
     commentActions: PropTypes.object,
     type: PropTypes.string,
-    loadMoreComments: PropTypes.func
+    loadMoreComments: PropTypes.func,
+    style: PropTypes.object
   }
 
   constructor() {
@@ -38,11 +40,12 @@ export default class PanelComments extends Component {
   }
 
   render() {
-    const {onSubmit, loadMoreButton, comments, inputTypeLabel, parent, clickListenerState} = this.props
+    const {onSubmit, autoFocus, loadMoreButton, comments, inputTypeLabel, parent, clickListenerState, style} = this.props
     return (
-      <div className="row" style={{paddingBottom: '0.5em'}} ref={ref => { this.PanelComments = ref }}>
+      <div className="row" style={{...style, paddingBottom: '0.5em'}} ref={ref => { this.PanelComments = ref }}>
         <div className="container-fluid">
           <CommentInputArea
+            autoFocus={autoFocus}
             clickListenerState={clickListenerState}
             inputTypeLabel={inputTypeLabel}
             onSubmit={comment => onSubmit(comment, parent)}

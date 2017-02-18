@@ -184,6 +184,16 @@ export default class MainContent extends Component {
           />
         }
         {type === 'url' &&
+        !!contentDescription && contentDescription !== 'No description' &&
+          <div style={{
+            fontSize: '1.2em',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
+          }}>
+            <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText>
+          </div>
+        }
+        {type === 'url' &&
           <Embedly title={cleanString(contentTitle)} url={content} />
         }
         {type === 'discussion' &&
@@ -227,8 +237,11 @@ export default class MainContent extends Component {
             }}
           >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}</span>
         }
+        {type === 'comment' && rootType === 'url' &&
+          <Embedly style={{marginTop: '2em'}} title={cleanString(contentTitle)} url={rootContent} />
+        }
         {type !== 'discussion' &&
-          <div style={{marginTop: '2em'}}>
+          <div style={{paddingTop: (type !== 'comment' || rootType !== 'url') ? '2em' : '1.5em'}}>
             <LikeButton
               onClick={this.onLikeClick}
               liked={userLikedThis}
@@ -268,6 +281,7 @@ export default class MainContent extends Component {
         />
         {commentsShown &&
           <PanelComments
+            autoFocus
             clickListenerState={clickListenerState}
             inputTypeLabel={type === 'comment' ? 'reply' : 'comment'}
             comments={childComments}

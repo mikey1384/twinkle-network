@@ -5,7 +5,8 @@ import {embedlyKey} from 'constants/keys'
 export default class Embedly extends Component {
   static propTypes = {
     url: PropTypes.string,
-    title: PropTypes.string
+    title: PropTypes.string,
+    style: PropTypes.object
   }
 
   constructor() {
@@ -96,16 +97,18 @@ export default class Embedly extends Component {
     }
 
     return (
-      <a className="embedly" target="_blank" href={this.state.url || this.props.url} style={aStyle}>
-        <div className="embedly__image" style={imageStyle}>
-          <img src={this.state.thumbnail_url} alt={this.state.title} style={imgStyle}/>
-        </div>
-        <div className="embedly__text" style={textStyle}>
-          <p className="embedly__title" style={titleStyle}>{this.state.title || this.props.title}</p>
-          <p className="embedly__desc" style={descStyle}>{this.state.description}</p>
-          <p className="embedly__provider" style={providerStyle}>{this.state.provider_url}</p>
-        </div>
-      </a>
+      <div style={this.props.style}>
+        <a className="embedly" target="_blank" href={this.state.url || this.props.url} style={aStyle}>
+          <div className="embedly__image" style={imageStyle}>
+            <img src={this.state.thumbnail_url} alt={this.state.title} style={imgStyle}/>
+          </div>
+          <div className="embedly__text" style={textStyle}>
+            <p className="embedly__title" style={titleStyle}>{this.state.title || this.props.title}</p>
+            <p className="embedly__desc" style={descStyle}>{this.state.description}</p>
+            <p className="embedly__provider" style={providerStyle}>{this.state.provider_url}</p>
+          </div>
+        </a>
+      </div>
     )
   }
 }

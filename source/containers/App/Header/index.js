@@ -16,7 +16,6 @@ import {
 import SigninModal from 'containers/Signin'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
-// import NotificationsButton from './NotificationsButton'
 import {Navbar, Nav, NavItem} from 'react-bootstrap'
 import {GENERAL_CHAT_ID} from 'constants/database'
 import SearchBox from './SearchBox'
@@ -47,7 +46,6 @@ import {Color} from 'constants/css'
     getInitialVideos,
     reloadFeeds,
     clearFeeds
-    // fetchNotifications: fetchNotificationsAsync
   }
 )
 export default class Header extends Component {
@@ -123,7 +121,6 @@ export default class Header extends Component {
     }
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
       getNumberOfUnreadMessages()
-      // fetchNotifications()
     }
     if (nextProps.userId && nextProps.chatMode !== this.props.chatMode && nextProps.chatMode === false) {
       getNumberOfUnreadMessages()
@@ -216,14 +213,12 @@ export default class Header extends Component {
                 >
                   Watch
                 </HeaderNav>
-                {false &&
-                  <HeaderNav
-                   to="/links"
-                   selected={selectedTab === 'links'}
-                  >
-                    Read
-                  </HeaderNav>
-                }
+                <HeaderNav
+                 to="/links"
+                 selected={selectedTab === 'links'}
+                >
+                  Read
+                </HeaderNav>
               </Nav>,
               <SearchBox className="col-xs-6" style={{marginTop: '6px'}} key="searchBox" />
             ]

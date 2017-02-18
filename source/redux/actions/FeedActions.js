@@ -193,7 +193,7 @@ request.get(
 )
 
 export const loadMoreFeedReplies = (lastReplyId, commentId, parent) => dispatch =>
-request.get(`${URL}/video/replies?lastReplyId=${lastReplyId}&commentId=${commentId}`)
+request.get(`${URL}/video/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${parent.type}`)
 .then(
   response => dispatch({
     type: 'FETCH_MORE_FEED_REPLIES',

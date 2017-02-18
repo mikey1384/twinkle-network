@@ -5,6 +5,7 @@ import {limitBrs} from 'helpers/stringHelpers'
 export default class LongText extends Component {
   static propTypes = {
     children: PropTypes.string.isRequired,
+    style: PropTypes.object,
     lines: PropTypes.number
   }
   constructor(props) {
@@ -16,10 +17,10 @@ export default class LongText extends Component {
   }
 
   render() {
-    const {children} = this.props
+    const {children, style} = this.props
     const {lines} = this.state
     return (
-      <div {...this.props}>
+      <div style={style}>
         <Truncate
           lines={lines}
           ellipsis={<span>... <a style={{cursor: 'pointer'}} onClick={this.toggleLines}>Read more</a></span>}

@@ -130,17 +130,13 @@ export default function FeedReducer(state = defaultState, action) {
               content: comment.id === action.data.commentId ? editedComment : comment.content
             })),
             childComments: feed.childComments.map(childComment => {
-              if (childComment.id === action.data.commentId) {
-                childComment.content = editedComment
-              }
               return {
                 ...childComment,
-                replies: childComment.replies.map(reply => {
-                  if (reply.id === action.data.commentId) {
-                    reply.content = editedComment
-                  }
-                  return reply
-                })
+                content: childComment.id === action.data.commentId ? editedComment : childComment.content,
+                replies: childComment.replies.map(reply => ({
+                  ...reply,
+                  content: reply.id === action.data.commentId ? editedComment : reply.content
+                }))
               }
             })
           }

@@ -181,6 +181,7 @@ export default class DebatePanel extends Component {
             <div>
               {expanded ?
                 <PanelComments
+                  autoFocus
                   inputTypeLabel={'comment'}
                   type="videoDiscussionPanel"
                   comments={comments}
@@ -236,9 +237,9 @@ export default class DebatePanel extends Component {
     this.setState({editDoneButtonDisabled})
   }
 
-  loadMoreComments(commentLength) {
+  loadMoreComments(lastCommentId) {
     const {id, loadMoreComments} = this.props
-    loadMoreComments(commentLength, id)
+    loadMoreComments(lastCommentId, id)
   }
 
   onCommentSubmit(comment) {

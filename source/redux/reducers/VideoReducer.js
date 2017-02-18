@@ -1,4 +1,4 @@
-import {processedStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
+import {processedStringWithURL} from 'helpers/stringHelpers'
 
 const defaultState = {
   loaded: false,
@@ -412,8 +412,7 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_VIDEO_PAGE':
-      const description = (stringIsEmpty(action.params.description)) ?
-      'No description' : processedStringWithURL(action.params.description)
+      const description = processedStringWithURL(action.params.description)
       return {
         ...state,
         allVideoThumbs: state.allVideoThumbs.map(thumb => {

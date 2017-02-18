@@ -5,7 +5,6 @@ import {timeSince} from 'helpers/timeStampHelpers'
 import LikeButton from 'components/LikeButton'
 import {connect} from 'react-redux'
 import {contentFeedLike} from 'redux/actions/FeedActions'
-import {cleanString} from 'helpers/stringHelpers'
 import {Color} from 'constants/css'
 import ProfilePic from 'components/ProfilePic'
 
@@ -18,7 +17,6 @@ export default class Heading extends Component {
     type: PropTypes.string,
     rootType: PropTypes.string,
     action: PropTypes.string,
-    content: PropTypes.string,
     uploader: PropTypes.object,
     uploaderPicId: PropTypes.number,
     targetReplyUploader: PropTypes.any,
@@ -44,7 +42,6 @@ export default class Heading extends Component {
       type,
       rootType,
       action,
-      content,
       uploader,
       uploaderPicId,
       targetReplyUploader,
@@ -90,8 +87,7 @@ export default class Heading extends Component {
           <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
-              <UserLink user={uploader} /> uploaded a
-              : <ContentLink content={rootContent} type={rootType} /> <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
+              <UserLink user={uploader} /> uploaded a video: <ContentLink content={rootContent} type={rootType} /> <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
         )
@@ -136,9 +132,7 @@ export default class Heading extends Component {
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left" style={pStyle}>
               <UserLink user={uploader} /> shared a link:&nbsp;
-              <a href={content} target="_blank" style={{color: Color.blue}}>
-                <strong>{cleanString(rootContent.title)}</strong>
-              </a>
+              <ContentLink content={rootContent} type={rootType}/>
               <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>

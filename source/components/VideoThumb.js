@@ -10,6 +10,7 @@ import {
 import {connect} from 'react-redux'
 import UsernameText from './Texts/UsernameText'
 import {cleanString} from 'helpers/stringHelpers'
+import Link from 'components/Link'
 
 @connect(
   null,
@@ -85,9 +86,9 @@ export default class VideoThumb extends Component {
               menuProps={menuProps}
             />
           }
-          <a
-            href={`/${to}`}
-            onClick={this.onLinkClick}
+          <Link
+            to={`/${to}`}
+            onClickAsync={this.onLinkClick}
           >
             <div
               style={{
@@ -110,13 +111,13 @@ export default class VideoThumb extends Component {
                 }}
               />
             </div>
-          </a>
+          </Link>
           <div className="caption"
             style={{
               height: '8rem'
             }}
           >
-            { onEdit ?
+            {onEdit ?
               <div
                 className="input-group col-xs-12"
                 style={{
@@ -186,11 +187,11 @@ export default class VideoThumb extends Component {
   }
 
   onLinkClick(e) {
-    e.preventDefault()
-    const {video, to, clickSafe} = this.props
+    const {video, clickSafe} = this.props
     if (!clickSafe) {
-      this.props.loadVideoPage(video.id, to)
+      return this.props.loadVideoPage(video.id)
     }
+    return Promise.resolve()
   }
 
   onEditTitle() {

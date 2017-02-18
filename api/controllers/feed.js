@@ -101,7 +101,7 @@ router.post('/content', requireAuth, (req, res) => {
   const content = checkedVideo ? fetchedVideoCodeFromURL(url) : processedURL(url)
   const post = Object.assign({}, {
     title: processedTitleString(title),
-    description: (!description || description === '') ? 'No description' : processedString(description),
+    description: processedString(description),
     uploader: user.id,
     timeStamp: Math.floor(Date.now()/1000),
     categoryId: selectedCategory,
@@ -120,6 +120,7 @@ router.post('/content', requireAuth, (req, res) => {
       uploaderId: user.id,
       content,
       rootContent: content,
+      rootType: type,
       timeStamp: post.timeStamp,
       rootId: result.insertId,
       rootContentTitle: post.title,
@@ -235,7 +236,7 @@ router.get('/feed', (req, res) => {
     case 'url':
       query = `
         SELECT url.title AS rootContentTitle, url.description AS rootContentDescription, 'url' AS rootType,
-        url.content AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
+        url.content AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS contentDescription, 
         (SELECT COUNT(*) FROM content_comments WHERE rootType = 'url' AND rootId = url.id)
         AS numChildComments
         FROM content_urls url

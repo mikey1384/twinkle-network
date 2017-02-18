@@ -39,10 +39,9 @@ router.get('/', (req, res) => {
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
   const {title, description, url, selectedCategory} = req.body
-  const rawDescription = !description ? 'No description' : req.body.description
   const post = {
     title: processedTitleString(title),
-    description: processedString(rawDescription),
+    description: processedString(description),
     content: fetchedVideoCodeFromURL(url),
     categoryId: selectedCategory,
     uploader: user.id,
@@ -149,7 +148,6 @@ router.post('/edit/page', requireAuth, (req, res) => {
   if (stringIsEmpty(title)) {
     return res.status(500).send({error: 'Title is empty'})
   }
-  if (description === '') description = 'No description'
   const post = {title, description: processedString(description)}
   const userId = user.id
   pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
@@ -161,7 +159,7 @@ router.post('/edit/page', requireAuth, (req, res) => {
   })
 })
 
-router.get('/loadPage', (req, res) => {
+router.get('/page', (req, res) => {
   const {videoId} = req.query
   let query = `
     SELECT a.id AS videoId, a.title, a.description, a.content, a.timeStamp,
@@ -464,7 +462,7 @@ router.post('/debates/comments', requireAuth, (req, res) => {
 })
 
 router.get('/replies', (req, res) => {
-  const {lastReplyId, commentId} = req.query
+  const {lastReplyId, commentId, rootType} = req.query
   const where = !!lastReplyId && lastReplyId !== '0' ? 'AND a.id < ' + lastReplyId + ' ' : ''
   let loadMoreReplies = false
   const query = `
@@ -473,7 +471,7 @@ router.get('/replies', (req, res) => {
     FROM content_comments a JOIN users b ON a.userId = b.id
     LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
     LEFT JOIN content_comments d ON a.replyId = d.id
-    LEFT JOIN users e ON d.userId = e.id WHERE a.commentId = ? ${where} AND a.rootType = 'video'
+    LEFT JOIN users e ON d.userId = e.id WHERE a.commentId = ? ${where} AND a.rootType = '${rootType}'
     ORDER BY a.id DESC LIMIT 11
   `
   return poolQuery(query, [commentId, lastReplyId]).then(

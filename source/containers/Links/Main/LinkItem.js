@@ -5,19 +5,29 @@ import ExecutionEnvironment from 'exenv'
 import {timeSince} from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import UserListModal from 'components/Modals/UserListModal'
+import Link from 'components/Link'
+import {loadLinkPage} from 'redux/actions/LinkActions'
+import {connect} from 'react-redux'
 
-export default class Link extends Component {
+@connect(
+  null,
+  {loadLinkPage}
+)
+export default class ContentLink extends Component {
   static propTypes = {
-    link: PropTypes.object
+    link: PropTypes.object,
+    loadLinkPage: PropTypes.func
   }
 
-  constructor() {
+  constructor(props) {
     super()
     this.state = {
       imageUrl: '',
       userListModalShown: false
     }
     this.apiUrl = 'https://api.embedly.com/1/oembed'
+    this.to = `/links/${props.link.id}`
+    this.onLinkClick = this.onLinkClick.bind(this)
   }
 
   componentWillMount() {
@@ -54,7 +64,7 @@ export default class Link extends Component {
       <li className="media">
         <div className="media-left">
           {imageUrl ?
-            <a>
+            <Link to={this.to} onClickAsync={this.onLinkClick}>
               <div style={{
                 width: '10rem',
                 minHeight: '10rem',
@@ -69,19 +79,21 @@ export default class Link extends Component {
                   alt=""
                 />
               </div>
-            </a> :
-            <a>
+            </Link> :
+            <Link to={this.to} onClickAsync={this.onLinkClick}>
               <img
                 className="media-object"
                 src="/img/link.png"
                 style={{width: '10rem'}}
                 alt=""
               />
-            </a>
+            </Link>
           }
         </div>
         <div className="media-body">
-          <h4 className="media-heading">{title}</h4>
+          <h4 className="media-heading">
+            <Link to={this.to} onClickAsync={this.onLinkClick}>{title}</Link>
+          </h4>
           <div>
             <small style={{position: 'absolute'}}>
               Uploaded {`${timeSince(timeStamp)} `}by <UsernameText user={{name: uploaderName, id: uploader}} />
@@ -113,5 +125,10 @@ export default class Link extends Component {
         }
       </li>
     )
+  }
+
+  onLinkClick() {
+    const {loadLinkPage, link: {id}} = this.props
+    return loadLinkPage(id)
   }
 }

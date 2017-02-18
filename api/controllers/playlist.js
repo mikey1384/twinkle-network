@@ -28,10 +28,8 @@ router.get('/', (req, res) => {
 
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
-  const rawDescription = (!req.body.description || req.body.description === '') ?
-    'No description' : req.body.description
   const title = processedTitleString(req.body.title)
-  const description = processedString(rawDescription)
+  const description = processedString(req.body.description)
   const videos = req.body.selectedVideos
   const taskArray = []
   async.waterfall([
