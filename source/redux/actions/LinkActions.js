@@ -135,7 +135,7 @@ request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId
 )
 
 export const likeLink = linkId => dispatch =>
-request.post(`${API_URL}/like`, {linkId}, auth()).then(
+request.post(`${API_URL}/like`, {contentId: linkId}, auth()).then(
   response => dispatch({
     type: 'LIKE_LINK',
     likes: response.data.likes

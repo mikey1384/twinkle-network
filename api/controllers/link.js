@@ -180,7 +180,7 @@ router.post('/comments', requireAuth, (req, res) => {
 })
 
 router.post('/like', requireAuth, (req, res) => {
-  const {user, body: {linkId}} = req
+  const {user, body: {contentId: linkId}} = req
   return poolQuery('SELECT * FROM content_url_likes WHERE linkId = ? AND userId = ?', [linkId, user.id]).then(
     rows => {
       if (rows.length > 0) {
