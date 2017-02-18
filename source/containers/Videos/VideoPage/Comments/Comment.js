@@ -109,7 +109,7 @@ export default class Comment extends Component {
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}
             /> :
-            <div style={{maxWidth: '85vw', paddingLeft: '1em'}}>
+            <div style={{maxWidth: '85vw'}}>
               {!!comment.discussionTitle &&
                 <div
                   className="row"
@@ -131,7 +131,7 @@ export default class Comment extends Component {
               <div
                 className="row flexbox-container"
               >
-                <div className="pull-left">
+                <div className="pull-left" style={{paddingLeft: '1em'}}>
                   <LikeButton
                     onClick={this.onLikeClick}
                     liked={userLikedThis}
