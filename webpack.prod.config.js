@@ -2,14 +2,16 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
+  devtool: 'source-map',
   entry: './entry/client.js',
   resolve: {
     modules: ['node_modules', 'source'],
     extensions: ['.js', '.jsx']
   },
   output: {
-    filename: 'bundle.js',
-    path: path.join(__dirname, '/../public')
+    filename: '[name].js',
+    publicPath: '/',
+    path: path.join(__dirname, 'public')
   },
   module: {
     rules: [{

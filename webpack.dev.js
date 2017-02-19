@@ -3,9 +3,9 @@ import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import prodCfg from './webpack.prod.config.js'
 
-export default function(app) {
+export default function options(app) {
   const config = Object.assign({}, prodCfg, {
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     entry: [
       'webpack-hot-middleware/client.js',
       './entry/client.js'
@@ -23,7 +23,6 @@ export default function(app) {
           include: [/source/, /entry/],
           loader: 'babel-loader',
           options: {
-            cacheDirectory: true,
             presets: [['es2015', {'modules': false}], 'react'],
             plugins: [
               ['transform-object-rest-spread'],
@@ -47,7 +46,10 @@ export default function(app) {
       ]
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin()
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.optimize.UglifyJsPlugin({
+        sourceMap: options.devtool && (options.devtool.indexOf('sourcemap') >= 0 || options.devtool.indexOf('source-map') >= 0)
+      })
     ],
     performance: {
       hints: 'warning'

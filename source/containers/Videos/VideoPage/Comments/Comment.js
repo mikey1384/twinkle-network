@@ -115,8 +115,7 @@ export default class Comment extends Component {
                   style={{
                     color: Color.blue,
                     fontWeight: 'bold',
-                    marginBottom: '0.5em',
-                    marginLeft: '0px'
+                    marginBottom: '0.5em'
                   }}
                 >
                   Discussion Topic: {cleanString(comment.discussionTitle)}

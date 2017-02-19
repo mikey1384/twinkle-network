@@ -9,7 +9,7 @@ import path from 'path'
 
 const app = express()
 if (process.env.NODE_ENV !== 'production') {
-  require('../webpack/webpack.dev').default(app)
+  require('../webpack.dev').default(app)
 }
 
 app.use(express.static(path.join(__dirname, '../public')))
@@ -48,7 +48,7 @@ app.use((req, res) => {
             <script>
               window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())}
             </script>
-            <script type="application/javascript" src="/bundle.js"></script>
+            <script type="application/javascript" src="/main.js"></script>
           </body>
         </html>`
       )

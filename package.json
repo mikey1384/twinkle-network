@@ -17,7 +17,7 @@
     "devapi": "nodemon api"
   },
   "dependencies": {
-    "async": "^2.1.4",
+    "async": "^2.1.5",
     "aws-sdk": "^2.8.0",
     "axios": "^0.15.3",
     "bcrypt-nodejs": "0.0.3",
