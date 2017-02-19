@@ -112,11 +112,11 @@ export default class Comment extends Component {
             <div style={{maxWidth: '85vw'}}>
               {!!comment.discussionTitle &&
                 <div
-                  className="row"
                   style={{
                     color: Color.blue,
                     fontWeight: 'bold',
-                    marginBottom: '0.5em'
+                    marginBottom: '0.5em',
+                    marginLeft: '0px'
                   }}
                 >
                   Discussion Topic: {cleanString(comment.discussionTitle)}
