@@ -150,6 +150,7 @@ export default class MainContent extends Component {
             commentId={commentId}
             discussionId={discussionId}
             rootId={rootId}
+            rootType={rootType}
             panelId={id}
           />
         }
@@ -162,6 +163,7 @@ export default class MainContent extends Component {
             comments={targetContentComments}
             discussionId={discussionId}
             rootId={rootId}
+            rootType={rootType}
             panelId={id}
           />
         }

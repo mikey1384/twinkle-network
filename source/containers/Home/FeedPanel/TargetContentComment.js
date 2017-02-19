@@ -61,7 +61,7 @@ export default class TargetContentComment extends Component {
         }
         <ProfilePic size="3.5" userId={userId} profilePicId={profilePicId} />
         <div className="media-body">
-          <h5 className="media-heading">
+          <h5 className="media-heading" style={{marginBottom: '0px'}}>
             <UsernameText user={{
               name: username,
               id: userId
@@ -75,11 +75,11 @@ export default class TargetContentComment extends Component {
               onEditDone={this.onEditDone}
               rows={2}
             /> :
-            <div className="container-fluid">
-              <LongText
-                className="row"
-                style={{paddingBottom: '0.8em'}}
-              >
+            <div
+              className="container-fluid"
+              style={{paddingLeft: '0px'}}
+            >
+              <LongText style={{lineHeight: '2rem'}}>
                 {comment.content}
               </LongText>
             </div>
