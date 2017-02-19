@@ -1,6 +1,6 @@
 'use strict'
 
-require('babel-core/register')({})
+require('babel-register')({})
 require('babel-polyfill')
 var http = require('http')
 var server = require('./entry/server').default
