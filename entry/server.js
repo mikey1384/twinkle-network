@@ -9,7 +9,7 @@ import path from 'path'
 
 const app = express()
 if (process.env.NODE_ENV !== 'production') {
-  require('../webpack.dev').default(app)
+  require('../webpack/webpack.dev').default(app)
 }
 
 app.use(express.static(path.join(__dirname, '../public')))
