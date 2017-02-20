@@ -2,10 +2,20 @@
 
 require('babel-register')({})
 require('babel-polyfill')
-var http = require('http')
-var server = require('./entry/server').default
-const DEV_PORT = process.env.PORT || 80
+const server = require('./entry/server').default
+if (!process.env.PORT) {
+  require('greenlock-express').create({
+    server: 'staging',
+    email: 'mikey1384@gmail.com',
+    agreeTos: true,
+    approveDomains: [ 'twin-kle.com' ],
+    app: server
+  }).listen(80, 443)
+} else {
+  const http = require('http')
+  const DEV_PORT = process.env.PORT || 80
 
-http.createServer(server).listen(DEV_PORT, function() {
-  console.log('Server listening on port:', DEV_PORT)
-})
+  http.createServer(server).listen(DEV_PORT, function() {
+    console.log('Server listening on port:', DEV_PORT)
+  })
+}

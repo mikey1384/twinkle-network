@@ -50,10 +50,7 @@ export default function options(app) {
       new webpack.optimize.UglifyJsPlugin({
         sourceMap: options.devtool && (options.devtool.indexOf('sourcemap') >= 0 || options.devtool.indexOf('source-map') >= 0)
       })
-    ],
-    performance: {
-      hints: 'warning'
-    }
+    ]
   })
 
   const compiler = webpack(config)

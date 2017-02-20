@@ -1,9 +1,9 @@
 import express from 'express'
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {RouterContext, match} from 'react-router'
-import createLocation from 'history/lib/createLocation'
+import {createMemoryHistory, RouterContext, match} from 'react-router'
 import {Provider} from 'react-redux'
+import {syncHistoryWithStore} from 'react-router-redux'
 import {routes, store} from 'Root'
 import path from 'path'
 
@@ -14,8 +14,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(express.static(path.join(__dirname, '../public')))
 app.use((req, res) => {
-  const location = createLocation(req.url)
-  match({routes, location}, (err, redirectLocation, props) => {
+  const memoryHistory = createMemoryHistory(req.url)
+  const history = syncHistoryWithStore(memoryHistory, store)
+  match({history, routes, location: req.url}, (err, redirectLocation, props) => {
     if (err) {
       console.error(err)
       return res.status(500).end('Internal server error')
