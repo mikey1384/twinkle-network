@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import SearchInput from 'components/SearchInput'
 import {stringIsEmpty} from 'helpers/stringHelpers'
+import {browserHistory} from 'react-router'
 import {
   searchVideoAsync,
   clearSearchResults,
@@ -74,6 +75,8 @@ export default class SearchBox extends Component {
     const {clearSearchResults, loadVideoPage} = this.props
     this.setState({searchText: ''})
     clearSearchResults()
-    loadVideoPage(item.id, `videos/${item.id}`)
+    return loadVideoPage(item.id).then(
+      () => browserHistory.push(`videos/${item.id}`)
+    )
   }
 }

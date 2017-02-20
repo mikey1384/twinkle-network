@@ -372,7 +372,7 @@ export const loadVideoPageAsync = (videoId, fromClientSide) => dispatch => {
   )
 }
 
-export const loadVideoPageFromClientSideAsync = (videoId, to) =>
+export const loadVideoPageFromClientSideAsync = (videoId) =>
 dispatch => dispatch(loadVideoPageAsync(videoId, true)).then(
   () => Promise.resolve()
 )
