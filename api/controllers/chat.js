@@ -18,6 +18,7 @@ const {
 
 router.get('/', requireAuth, (req, res) => {
   const {user, user: {lastChannelId}} = req
+  console.log(lastChannelId, generalChatId)
   fetchChat({user, channelId: lastChannelId || generalChatId}).then(
     results => res.send(results)
   ).catch(
