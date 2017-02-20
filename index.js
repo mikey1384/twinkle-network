@@ -8,7 +8,7 @@ if (!process.env.PORT) {
     server: 'staging',
     email: 'mikey1384@gmail.com',
     agreeTos: true,
-    approveDomains: [ 'twin-kle.com' ],
+    approveDomains: ['www.twin-kle.com', 'twin-kle.com'],
     app: server
   }).listen(80, 443)
 } else {
