@@ -1,22 +1,13 @@
 const app = require('./app')
 const socket = require('./socket')
+const PORT = 3500
 
-if (!process.env.PORT) {
-  const io = require('socket.io')(app)
-  require('greenlock-express').create({
-    server: 'staging',
-    email: 'mikey1384@gmail.com',
-    agreeTos: true,
-    approveDomains: ['www.twin-kle.com', 'twin-kle.com'],
-    app: socket(io)
-  }).listen(3500)
-} else {
-  const http = require('http').Server(app)
+// const https = require('https').Server(options, app);
+const http = require('http').Server(app)
 
-  const io = require('socket.io')(http)
-  socket(io)
+const io = require('socket.io')(http)
+socket(io)
 
-  http.listen(process.env.PORT, function() {
-    console.log('Server listening on api port:', process.env.PORT)
-  })
-}
+http.listen(PORT, function() {
+  console.log('Server listening on api port:', PORT)
+})
