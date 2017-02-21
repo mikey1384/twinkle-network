@@ -1,7 +1,7 @@
 const app = require('./app')
 const socket = require('./socket')
 const lex = require('greenlock-express').create({
-  server: 'staging', // https://acme-v01.api.letsencrypt.org/directory
+  server: 'https://acme-v01.api.letsencrypt.org/directory',
   email: 'mikey1384@gmail.com',
   agreeTos: true,
   approveDomains: ['www.twin-kle.com', 'twin-kle.com']
