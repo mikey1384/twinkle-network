@@ -5,7 +5,7 @@ require('babel-polyfill')
 const server = require('./entry/server').default
 if (!process.env.PORT) {
   require('greenlock-express').create({
-    server: 'staging',
+    server: 'https://acme-v01.api.letsencrypt.org/directory',
     email: 'mikey1384@gmail.com',
     agreeTos: true,
     approveDomains: ['www.stage5society.com'],
