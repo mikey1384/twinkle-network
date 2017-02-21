@@ -1,17 +1,20 @@
 ## Twinkle Website
 
 ###To run:
-0. Ensure that Node 7+ installed
-1. Import db.sql to your mysql
-2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and modify the content for your own use
-3. Do the same to /source/constants/"change this filename to ..." files
-4. Run `npm install`
-5. Install nodemon `npm install -g nodemon`
-6. Install forever `npm install -g forever`
-7. Development / Production builds
-8. Have fun!
-
----
+0. Ensure that Node 7+ is installed
+1. git clone https://github.com/mikey1384/twin-kle.git [your directory name]
+2. Run `npm install` at the directory where you cloned the git repository.
+3. Install mysql `sudo apt-get install mysql-server` (if you haven't installed mysql already)
+4. Install mysql `sudo mysql_secure_installation` (if you haven't installed mysql already)
+5. Import db.sql to your mysql
+6. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)" and fill in the required information
+7. Do the same to /source/constants/"change this filename to ..." files
+8. Install pip `sudo apt-get install python-pip` (For profile picture uploading feature / optional)
+9. Install aws-cli `pip install --upgrade --user awscli` (For profile picture uploading feature / optional)
+10. run `aws configure` (For profile picture uploading feature / optional)
+11. Install nodemon `npm install -g nodemon`
+12. Install forever `npm install -g forever`
+13.
 
 If you want to run development version, run:
 ```shell
