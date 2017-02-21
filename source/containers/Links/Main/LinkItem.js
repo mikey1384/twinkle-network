@@ -25,7 +25,7 @@ export default class ContentLink extends Component {
       imageUrl: '',
       userListModalShown: false
     }
-    this.apiUrl = 'https://api.embedly.com/1/oembed'
+    this.apiUrl = 'https://api.embedly.com/1/oembed?secure=true&scheme=https&meta_images=true'
     this.to = `/links/${props.link.id}`
     this.onLinkClick = this.onLinkClick.bind(this)
   }

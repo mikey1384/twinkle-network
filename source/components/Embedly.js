@@ -23,7 +23,7 @@ export default class Embedly extends Component {
       type: '',
       thumbnail_height: 1
     }
-    this.apiUrl = 'https://api.embedly.com/1/oembed'
+    this.apiUrl = 'https://api.embedly.com/1/oembed?secure=true&scheme=https&meta_images=true'
   }
 
   componentWillMount() {
