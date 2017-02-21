@@ -14,7 +14,6 @@
 10. run `aws configure` (For profile picture uploading feature / optional)
 11. Install nodemon `npm install -g nodemon`
 12. Install forever `npm install -g forever`
-13.
 
 If you want to run development version, run:
 ```shell
