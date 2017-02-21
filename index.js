@@ -8,7 +8,7 @@ if (!process.env.PORT) {
     server: 'staging', // https://acme-v01.api.letsencrypt.org/directory
     email: 'mikey1384@gmail.com',
     agreeTos: true,
-    approveDomains: ['www.stage5society.com', 'stage5society.com'],
+    approveDomains: ['www.twin-kle.com', 'twin-kle.com'],
     app: server
   }).listen(80, 443)
 } else {

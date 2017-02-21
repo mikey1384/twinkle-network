@@ -4,7 +4,7 @@ const lex = require('greenlock-express').create({
   server: 'staging', // https://acme-v01.api.letsencrypt.org/directory
   email: 'mikey1384@gmail.com',
   agreeTos: true,
-  approveDomains: ['www.stage5society.com', 'stage5society.com']
+  approveDomains: ['www.twin-kle.com', 'twin-kle.com']
 })
 
 if (!process.env.PORT) {
