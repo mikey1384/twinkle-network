@@ -9,7 +9,15 @@ const {
   fetchedVideoCodeFromURL,
   processedURL
 } = require('../helpers/stringHelpers')
-const {returnComments} = require('../helpers/commentHelpers')
+const {
+  returnComments,
+  likeComments,
+  postComments,
+  postReplies,
+  editComments,
+  deleteComments,
+  fetchReplies
+} = require('../helpers/commentHelpers')
 const {fetchFeeds} = require('../helpers/feedHelpers')
 const {poolQuery} = require('../helpers')
 
@@ -92,6 +100,11 @@ router.get('/comments', (req, res) => {
     )
   })
 })
+
+router.delete('/comments', requireAuth, deleteComments)
+router.post('/comments', requireAuth, postComments)
+router.post('/comments/like', requireAuth, likeComments)
+router.put('/comments', requireAuth, editComments)
 
 router.post('/content', requireAuth, (req, res) => {
   const {user} = req
@@ -236,7 +249,7 @@ router.get('/feed', (req, res) => {
     case 'url':
       query = `
         SELECT url.title AS rootContentTitle, url.description AS rootContentDescription, 'url' AS rootType,
-        url.content AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS contentDescription, 
+        url.content AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS contentDescription,
         (SELECT COUNT(*) FROM content_comments WHERE rootType = 'url' AND rootId = url.id)
         AS numChildComments
         FROM content_urls url
@@ -314,6 +327,9 @@ router.get('/feed', (req, res) => {
     }
   )
 })
+
+router.get('/replies', fetchReplies)
+router.post('/replies', requireAuth, postReplies)
 
 router.post('/targetContentComment', requireAuth, (req, res) => {
   const {user, body} = req

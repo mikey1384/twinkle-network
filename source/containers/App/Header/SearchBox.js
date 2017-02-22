@@ -76,7 +76,7 @@ export default class SearchBox extends Component {
     this.setState({searchText: ''})
     clearSearchResults()
     return loadVideoPage(item.id).then(
-      () => browserHistory.push(`videos/${item.id}`)
+      () => browserHistory.push(`/videos/${item.id}`)
     )
   }
 }

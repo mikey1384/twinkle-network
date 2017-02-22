@@ -8,7 +8,16 @@ const {
   fetchedVideoCodeFromURL,
   stringIsEmpty
 } = require('../helpers/stringHelpers')
-const {returnComments, returnReplies} = require('../helpers/commentHelpers')
+const {
+  deleteComments,
+  editComments,
+  likeComments,
+  postComments,
+  fetchComments,
+  returnComments,
+  fetchReplies,
+  postReplies
+} = require('../helpers/commentHelpers')
 
 const async = require('async')
 const express = require('express')
@@ -215,118 +224,19 @@ router.get('/page', (req, res) => {
   )
 })
 
-router.get('/comments', (req, res) => {
-  const {rootId, lastCommentId, rootType} = req.query
-  const limit = 21
-  const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : ''
-  const query = `
-    SELECT a.id, a.userId, a.content, a.timeStamp, a.rootId, a.commentId, a.replyId, b.username,
-    c.id AS profilePicId, d.title AS discussionTitle
-    FROM content_comments a LEFT JOIN users b ON a.userId = b.id
-    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
-    LEFT JOIN content_discussions d ON a.discussionId = d.id
-    WHERE a.rootType = '${rootType}' AND a.rootId = ? AND commentId IS NULL ${where}
-    ORDER BY a.id DESC LIMIT ${limit}
-  `
-  poolQuery(query, rootId).then(
-    rows => returnComments(rows, rootType)
-  ).then(
-    comments => res.send({comments})
-  ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-  )
-})
+router.get('/comments', fetchComments)
 
-router.post('/comments', requireAuth, (req, res) => {
-  const user = req.user
-  const {rootId, rootType, content} = req.body
-  const userId = user.id
-  const post = {
-    userId,
-    content: processedString(content),
-    timeStamp: Math.floor(Date.now()/1000),
-    rootId,
-    rootType
-  }
-  poolQuery('INSERT INTO content_comments SET ?', post).then(
-    () => {
-      const query = `
-        SELECT a.id, a.userId, a.content, a.timeStamp, b.username, c.id AS profilePicId
-        FROM content_comments a LEFT JOIN users b ON a.userId = b.id
-        LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
-        WHERE rootId = ? AND commentId IS NULL ORDER BY a.id DESC
-      `
-      return poolQuery(query, rootId)
-    }
-  ).then(
-    rows => returnComments(rows, rootType)
-  ).then(
-    comments => res.send({comments})
-  ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-  )
-})
+router.post('/comments', requireAuth, postComments)
 
-router.post('/comments/edit', requireAuth, (req, res) => {
-  const user = req.user
-  const content = processedString(req.body.editedComment)
-  const commentId = req.body.commentId
-  const userId = user.id
-  pool.query('UPDATE content_comments SET ? WHERE id = ? AND userId = ?', [{content}, commentId, userId], err => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({success: true})
-  })
-})
+router.put('/comments', requireAuth, editComments)
 
-router.delete('/comments', requireAuth, (req, res) => {
-  const user = req.user
-  const commentId = Number(req.query.commentId)
-  pool.query('DELETE FROM content_comments WHERE id = ? AND userId = ?', [commentId, user.id], err => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({success: true})
-  })
-})
+router.delete('/comments', requireAuth, deleteComments)
 
-router.post('/comments/like', requireAuth, (req, res) => {
-  const user = req.user
-  const commentId = req.body.commentId
-  const query1 = 'SELECT * FROM content_comment_likes WHERE commentId = ? AND userId = ?'
-  const query2 = 'DELETE FROM content_comment_likes WHERE commentId = ? AND userId = ?'
-  const query3 = 'INSERT INTO content_comment_likes SET ?'
-  const query4 = `
-    SELECT a.id, a.userId, b.username FROM
-    content_comment_likes a LEFT JOIN users b ON
-    a.userId = b.id WHERE
-    a.commentId = ?
-  `
-  return poolQuery(query1, [commentId, user.id]).then(
-    rows => {
-      if (rows.length > 0) {
-        return poolQuery(query2, [commentId, user.id])
-      } else {
-        return poolQuery(query3, {commentId, userId: user.id})
-      }
-    }
-  ).then(
-    () => poolQuery(query4, commentId)
-  ).then(
-    rows => res.send({
-      likes: rows
-    })
-  )
-})
+router.post('/comments/like', requireAuth, likeComments)
+
+router.get('/replies', fetchReplies)
+
+router.post('/replies', requireAuth, postReplies)
 
 router.delete('/debates', requireAuth, (req, res) => {
   const {user} = req
@@ -461,90 +371,6 @@ router.post('/debates/comments', requireAuth, (req, res) => {
   })
 })
 
-router.get('/replies', (req, res) => {
-  const {lastReplyId, commentId, rootType} = req.query
-  const where = !!lastReplyId && lastReplyId !== '0' ? 'AND a.id < ' + lastReplyId + ' ' : ''
-  let loadMoreReplies = false
-  const query = `
-    SELECT a.id, a.userId, a.content, a.timeStamp, a.rootId, a.commentId, a.replyId, b.username,
-    c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName
-    FROM content_comments a JOIN users b ON a.userId = b.id
-    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
-    LEFT JOIN content_comments d ON a.replyId = d.id
-    LEFT JOIN users e ON d.userId = e.id WHERE a.commentId = ? ${where} AND a.rootType = '${rootType}'
-    ORDER BY a.id DESC LIMIT 11
-  `
-  return poolQuery(query, [commentId, lastReplyId]).then(
-    rows => {
-      if (rows.length > 10) {
-        rows.pop()
-        loadMoreReplies = true
-      }
-      rows.sort(function(a, b) { return a.id - b.id })
-      return returnReplies(rows).then(
-        replies => res.send({replies, loadMoreReplies})
-      )
-    }
-  ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-  )
-})
-
-router.post('/replies', requireAuth, (req, res) => {
-  const user = req.user
-  const replyId = req.body.replyId ? req.body.replyId : null
-  const {addedFromPanel, content, rootId, commentId} = req.body
-  const processedReply = processedString(content)
-  async.waterfall([
-    callback => {
-      pool.query('SELECT discussionId FROM content_comments WHERE id = ?', commentId, (err, rows) => {
-        callback(err, rows[0].discussionId)
-      })
-    },
-    (discussionId, callback) => {
-      const post = {
-        userId: user.id,
-        content: processedReply,
-        timeStamp: Math.floor(Date.now()/1000),
-        replyId,
-        commentId,
-        rootId,
-        rootType: 'video',
-        discussionId
-      }
-      pool.query('INSERT INTO content_comments SET ?', post, (err, result) => {
-        callback(err, result.insertId)
-      })
-    },
-    (replyId, callback) => {
-      let query = `
-        SELECT a.id, a.userId, a.content, a.timeStamp, a.commentId, a.replyId, b.username, c.id AS profilePicId,
-        d.userId AS targetUserId, e.username AS targetUserName FROM content_comments a LEFT JOIN users b ON
-        a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
-        LEFT JOIN content_comments d ON a.replyId = d.id
-        LEFT JOIN users e ON d.userId = e.id WHERE a.id = ?
-      `
-      pool.query(query, replyId, (err, rows) => {
-        callback(err, rows)
-      })
-    }
-  ], (err, rows) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({
-      result: Object.assign({}, rows[0], {
-        likes: [],
-        addedFromPanel
-      })
-    })
-  })
-})
-
 router.post('/replies/edit', requireAuth, (req, res) => {
   const user = req.user
   const content = processedString(req.body.editedReply)
@@ -556,69 +382,6 @@ router.post('/replies/edit', requireAuth, (req, res) => {
       return res.status(500).send({error: err})
     }
     res.send({success: true})
-  })
-})
-
-router.delete('/replies', requireAuth, (req, res) => {
-  const user = req.user
-  const replyId = Number(req.query.replyId) || 0
-  pool.query('DELETE FROM content_comments WHERE id = ? AND userId = ?', [replyId, user.id], err => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({success: true})
-  })
-})
-
-router.post('/replies/like', requireAuth, (req, res) => {
-  const user = req.user
-  const replyId = req.body.replyId
-
-  async.waterfall([
-    (callback) => {
-      const query = 'SELECT * FROM content_comment_likes WHERE commentId = ? AND userId = ?'
-      pool.query(query, [replyId, user.id], (err, rows) => {
-        callback(err, rows)
-      })
-    },
-    (rows, callback) => {
-      if (rows.length > 0) {
-        let query = 'DELETE FROM content_comment_likes WHERE commentId = ? AND userId = ?'
-        pool.query(query, [replyId, user.id], err => {
-          callback(err)
-        })
-      } else {
-        let query = 'INSERT INTO content_comment_likes SET ?'
-        pool.query(query, {commentId: replyId, userId: user.id}, err => {
-          callback(err)
-        })
-      }
-    },
-    (callback) => {
-      let query = [
-        'SELECT a.id, a.userId, b.username FROM ',
-        'content_comment_likes a LEFT JOIN users b ON ',
-        'a.userId = b.id WHERE ',
-        'a.commentId = ?'
-      ].join('')
-      pool.query(query, replyId, (err, rows) => {
-        callback(err, rows)
-      })
-    }
-  ], (err, rows) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({
-      likes: rows.map(row => {
-        return {
-          userId: row.userId,
-          username: row.username
-        }
-      })
-    })
   })
 })
 

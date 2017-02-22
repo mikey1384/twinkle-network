@@ -13,7 +13,7 @@ export const clearCategoriesSearchResults = () => ({
 })
 
 export const commentFeedLike = commentId => dispatch =>
-request.post(`${URL}/video/comments/like`, {commentId}, auth())
+request.post(`${API_URL}/comments/like`, {commentId}, auth())
 .then(
   response => {
     const {data} = response
@@ -53,7 +53,7 @@ request.post(`${URL}/${rootType}/like`, {contentId}, auth())
 )
 
 export const feedCommentDelete = commentId => dispatch =>
-request.delete(`${URL}/video/comments?commentId=${commentId}`, auth())
+request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
 .then(
   response => dispatch({
     type: 'FEED_COMMENT_DELETE',
@@ -67,7 +67,7 @@ request.delete(`${URL}/video/comments?commentId=${commentId}`, auth())
 )
 
 export const feedCommentEdit = (params, cb) => dispatch =>
-request.post(`${URL}/video/comments/edit`, params, auth())
+request.put(`${API_URL}/comments`, params, auth())
 .then(
   response => {
     const {success} = response.data
@@ -158,7 +158,7 @@ request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then
 )
 
 export const likeTargetComment = contentId => dispatch =>
-request.post(`${URL}/video/comments/like`, {commentId: contentId}, auth())
+request.post(`${API_URL}/comments/like`, {commentId: contentId}, auth())
 .then(
   response => {
     const {data} = response
@@ -193,7 +193,7 @@ request.get(
 )
 
 export const loadMoreFeedReplies = (lastReplyId, commentId, parent) => dispatch =>
-request.get(`${URL}/video/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${parent.rootType}`)
+request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${parent.rootType}`)
 .then(
   response => dispatch({
     type: 'FETCH_MORE_FEED_REPLIES',
@@ -277,7 +277,7 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
     default: return console.error('Invalid content type')
   }
 
-  request.post(`${URL}/${parent.rootType}/${commentType}`, params, auth())
+  request.post(`${API_URL}/${commentType}`, params, auth())
   .then(
     response => {
       const {data} = response
@@ -313,10 +313,11 @@ dispatch => {
   const params = {
     content: replyContent,
     rootId: parent.rootId,
+    rootType: parent.rootType,
     commentId: comment.commentId || comment.id,
     replyId: comment.commentId ? comment.id : null
   }
-  request.post(`${URL}/${parent.rootType}/replies`, params, auth())
+  request.post(`${API_URL}/replies`, params, auth())
   .then(
     response => {
       const {data} = response

@@ -102,18 +102,16 @@ request.delete(`${API_URL}/debates?discussionId=${discussionId}`, auth())
   }
 )
 
-export const editVideoComment = data => ({
-  type: 'EDIT_VIDEO_COMMENT',
-  data
-})
-
 export const editVideoCommentAsync = ({editedComment, commentId}, cb) => dispatch =>
-request.post(`${API_URL}/comments/edit`, {editedComment, commentId}, auth())
+request.put(`${API_URL}/comments`, {editedComment, commentId}, auth())
 .then(
   response => {
     const {data} = response
     if (data.success) {
-      dispatch(editVideoComment({editedComment, commentId}))
+      dispatch({
+        type: 'EDIT_VIDEO_COMMENT',
+        data: {editedComment, commentId}
+      })
       cb()
     }
     return
@@ -461,18 +459,13 @@ request.post(API_URL, params, auth())
   }
 )
 
-export const uploadVideoComment = data => ({
-  type: 'UPLOAD_VIDEO_COMMENT',
-  data
-})
-
 export const uploadVideoCommentAsync = (comment, videoId) => dispatch =>
 request.post(`${API_URL}/comments`, {content: comment, rootId: videoId, rootType: 'video'}, auth())
 .then(
-  response => {
-    const {data} = response
-    dispatch(uploadVideoComment(data))
-  }
+  response => dispatch({
+    type: 'UPLOAD_VIDEO_COMMENT',
+    comment: response.data
+  })
 ).catch(
   error => {
     console.error(error.response || error)
@@ -541,10 +534,9 @@ export const uploadVideoDebateReply = ({
   )
 }
 
-export const uploadVideoReplyAsync = ({
-  reply, commentId, videoId: rootId, replyId, replyOfReply
-}) => dispatch => request.post(`${API_URL}/replies`, {content: reply, rootId, replyId, commentId}, auth())
-.then(
+export const uploadVideoReplyAsync = ({reply, commentId, videoId: rootId, replyId, replyOfReply}) => dispatch => request.post(`${API_URL}/replies`, {
+  content: reply, rootId, replyId, commentId, rootType: 'video'
+}, auth()).then(
   response => {
     const {data} = response
     if (data.result) {

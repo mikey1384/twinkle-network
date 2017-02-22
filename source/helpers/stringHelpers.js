@@ -69,6 +69,7 @@ export function addAdvancedEmoji(string) {
   .replace(/(\(bunny\))/gi, '🐰 ')
   .replace(/(\(rabbit\))/gi, '🐰 ')
   .replace(/(\(devil\))/gi, '😈 ')
+  .replace(/(\(angel\))/gi, '😇 ')
   .replace(/(\(lol\))/gi, '😂 ')
 }
 

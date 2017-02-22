@@ -293,8 +293,7 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          comments: action.data.comments,
-          noComments: action.data.noComments
+          comments: [action.comment].concat(state.videoPage.comments)
         }
       }
     case 'UPLOAD_VIDEO_DEBATE':

@@ -38,8 +38,7 @@ request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
 )
 
 export const editComment = (params, cb) => dispatch =>
-request.post(`${API_URL}/comments/edit`, params, auth())
-.then(
+request.put(`${API_URL}/comments`, params, auth()).then(
   response => {
     const {success} = response.data
     if (!success) return
@@ -168,6 +167,7 @@ dispatch => {
   const params = {
     content: replyContent,
     rootId: parent.id,
+    rootType: 'url',
     commentId: comment.commentId || comment.id,
     replyId: comment.commentId ? comment.id : null
   }
@@ -196,7 +196,7 @@ dispatch => {
 }
 
 export const submitComment = ({content, linkId: rootId}) => dispatch =>
-request.post(`${API_URL}/comments`, {content, rootId}, auth()).then(
+request.post(`${API_URL}/comments`, {content, rootId, rootType: 'url'}, auth()).then(
   response => dispatch({
     type: 'SUBMIT_LINK_COMMENT',
     comment: response.data
