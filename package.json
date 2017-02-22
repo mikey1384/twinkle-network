@@ -12,7 +12,7 @@
     "dev": "NODE_PATH=$NODE_PATH:./source PORT=3000 node --harmony .",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.config.js",
     "test": "node scripts/test.js --env=jsdom",
-    "startapi": "sudo forever -o api_out.log -e api_err.log start api",
+    "startapi": "sudo NODE_ENV=production forever -o api_out.log -e api_err.log start api",
     "stopapi": "sudo forever stop api",
     "devapi": "NODE_PATH=$NODE_PATH:./source PORT=3500 nodemon api"
   },
