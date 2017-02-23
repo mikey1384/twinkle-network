@@ -102,9 +102,16 @@ router.get('/comments', (req, res) => {
 })
 
 router.delete('/comments', requireAuth, deleteComments)
+
 router.post('/comments', requireAuth, postComments)
+
 router.post('/comments/like', requireAuth, likeComments)
+
 router.put('/comments', requireAuth, editComments)
+
+router.get('/replies', fetchReplies)
+
+router.post('/replies', requireAuth, postReplies)
 
 router.post('/content', requireAuth, (req, res) => {
   const {user} = req
@@ -327,9 +334,6 @@ router.get('/feed', (req, res) => {
     }
   )
 })
-
-router.get('/replies', fetchReplies)
-router.post('/replies', requireAuth, postReplies)
 
 router.post('/targetContentComment', requireAuth, (req, res) => {
   const {user, body} = req

@@ -272,7 +272,7 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
       break
     case 'discussion':
       params = {content: comment, rootId: parent.rootId, rootType: parent.rootType, discussionId: parent.id}
-      commentType = 'debates/comments'
+      commentType = 'comments'
       break
     default: return console.error('Invalid content type')
   }
