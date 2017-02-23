@@ -272,7 +272,7 @@ export default class DebatePanel extends Component {
   }
 
   onReplySubmit({replyContent, comment, replyOfReply, originType}) {
-    const {onReplySubmit, videoId} = this.props
-    onReplySubmit({replyContent, comment, videoId, replyOfReply, originType})
+    const {onReplySubmit, videoId, id} = this.props
+    onReplySubmit({discussionId: id, replyContent, comment, videoId, replyOfReply, originType})
   }
 }

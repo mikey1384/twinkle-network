@@ -298,6 +298,7 @@ export default class MainContent extends Component {
               type,
               rootId,
               rootType,
+              discussionId,
               commentId,
               replyId
             }}

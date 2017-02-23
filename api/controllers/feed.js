@@ -238,8 +238,7 @@ router.get('/feed', (req, res) => {
       break
     case 'discussion':
       query = `
-        SELECT discussion.title AS contentTitle, discussion.description AS contentDescription,
-        video.content AS rootContent, video.title AS rootContentTitle, video.description AS rootContentDescription,
+        SELECT discussion.id AS discussionId, discussion.title AS contentTitle, discussion.description AS contentDescription, video.content AS rootContent, video.title AS rootContentTitle, video.description AS rootContentDescription,
         user.username AS uploaderName, userPhoto.id AS uploaderPicId,
         (SELECT COUNT(*) FROM content_comments WHERE discussionId = discussion.id) AS numChildComments
         FROM content_discussions discussion

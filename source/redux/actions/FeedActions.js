@@ -260,6 +260,7 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
         content: comment,
         rootId: parent.rootId,
         rootType: parent.rootType,
+        discussionId: parent.discussionId,
         commentId: parent.commentId || parent.id,
         replyId: parent.commentId ? parent.id : null
       }
@@ -314,6 +315,7 @@ dispatch => {
     content: replyContent,
     rootId: parent.rootId,
     rootType: parent.rootType,
+    discussionId: parent.discussionId,
     commentId: comment.commentId || comment.id,
     replyId: comment.commentId ? comment.id : null
   }

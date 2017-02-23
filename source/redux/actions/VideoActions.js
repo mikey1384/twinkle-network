@@ -504,15 +504,16 @@ request.post(`${API_URL}/debates/comments`, {content: comment, rootId, rootType:
 )
 
 export const uploadVideoDebateReply = ({
-  replyContent, comment, videoId: rootId,
+  replyContent, comment, videoId: rootId, discussionId,
   replyOfReply, originType
 }) => dispatch => {
   const params = {
     content: replyContent,
     rootId,
+    rootType: 'video',
     commentId: comment.commentId || comment.id,
     replyId: comment.commentId ? comment.id : null,
-    addedFromPanel: true
+    discussionId
   }
 
   request.post(`${API_URL}/replies`, params, auth())
