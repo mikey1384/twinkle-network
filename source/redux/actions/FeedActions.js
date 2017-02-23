@@ -267,6 +267,9 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
       commentType = 'replies'
       break
     case 'url':
+      params = {content: comment, rootId: parent.id, rootType: 'url'}
+      commentType = 'comments'
+      break
     case 'video':
       params = {content: comment, rootId: parent.id, rootType: 'video'}
       commentType = 'comments'
