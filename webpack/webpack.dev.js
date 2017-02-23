@@ -5,7 +5,7 @@ import prodCfg from './webpack.prod.config.js'
 
 export default function options(app) {
   const config = Object.assign({}, prodCfg, {
-    devtool: 'eval-source-map',
+    devtool: 'cheap-module-eval-source-map',
     entry: [
       'webpack-hot-middleware/client.js',
       './entry/client.js'

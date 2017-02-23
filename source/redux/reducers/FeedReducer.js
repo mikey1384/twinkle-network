@@ -3,7 +3,6 @@ const defaultState = {
   feeds: null,
   noFeeds: false,
   selectedFilter: 'all',
-  newFeeds: [], // may need later but delete it if revealed otherwise
   loadMoreButton: false,
   categorySearchResult: []
 }
@@ -228,14 +227,9 @@ export default function FeedReducer(state = defaultState, action) {
           return {
             ...feed,
             childComments: feed.type === action.data.type && feed.contentId === action.data.contentId ?
-              (
-                action.data.type === 'video' ?
-                action.data.comments : [action.data].concat(feed.childComments)
-              ) :
-              feed.childComments
+              [action.data].concat(feed.childComments) : feed.childComments
           }
-        }),
-        newFeeds: action.data.type === 'video' ? state.newFeeds.concat([action.data.comments[0]]) : state.newFeeds.concat([action.data])
+        })
       }
     case 'UPLOAD_FEED_REPLY':
       let {reply} = action.data
@@ -257,8 +251,7 @@ export default function FeedReducer(state = defaultState, action) {
               }
             })
           }
-        }),
-        newFeeds: state.newFeeds.concat([reply])
+        })
       }
     case 'UPLOAD_TC_COMMENT':
       return {

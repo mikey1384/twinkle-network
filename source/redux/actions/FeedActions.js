@@ -281,7 +281,7 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
     default: return console.error('Invalid content type')
   }
 
-  request.post(`${API_URL}/${commentType}`, params, auth())
+  return request.post(`${API_URL}/${commentType}`, params, auth())
   .then(
     response => {
       const {data} = response
@@ -303,11 +303,6 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
         }
       }
       dispatch(action)
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
     }
   )
 }
