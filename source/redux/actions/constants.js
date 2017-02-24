@@ -8,8 +8,14 @@ export const auth = () => ({
   }
 })
 export function handleError(error, dispatch) {
-  if (error.response && error.response.status === 401) {
-    dispatch(logout())
-    dispatch(openSigninModal())
+  if (error.response) {
+    const {status} = error.response
+    if (status === 401) {
+      dispatch(logout())
+      dispatch(openSigninModal())
+    }
+    if (status === 301) {
+      window.location.reload()
+    }
   }
 }

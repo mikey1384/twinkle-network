@@ -39,6 +39,22 @@ export function addThreeLetterEmoji(string) {
 
 export function addAdvancedEmoji(string) {
   return string
+  .replace(/(:\) )/g, '😊  ')
+  .replace(/(;\) )/g, '😉  ')
+  .replace(/(XD )/g, '😆  ')
+  .replace(/(:D )/g, '😄  ')
+  .replace(/(:P )/gi, '😛  ')
+  .replace(/(:\( )/g, '🙁  ')
+  .replace(/(:O )/gi, '😲  ')
+  .replace(/(<3 )/g, '❤️  ')
+  .replace(/(:-\) )/g, '😊  ')
+  .replace(/(;-\) )/g, '😉  ')
+  .replace(/(X-D )/g, '😆  ')
+  .replace(/(:-D )/g, '😄  ')
+  .replace(/(:-P )/gi, '😛  ')
+  .replace(/(:-\( )/g, '🙁  ')
+  .replace(/(:-O )/gi, '😲  ')
+  .replace(/(O_O )/gi, '😳  ')
   .replace(/(\(heart\))/gi, '❤️ ')
   .replace(/(\(zzz\))/gi, '💤 ')
   .replace(/(\(thumbs\))/gi, '👍 ')

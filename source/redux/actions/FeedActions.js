@@ -304,6 +304,11 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
       }
       dispatch(action)
     }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
   )
 }
 

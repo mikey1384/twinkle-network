@@ -113,6 +113,10 @@ module.exports = {
   },
   postComments(req, res) {
     const {user} = req
+    if (!req.body.rootType) {
+      console.error('rootType parameter is missing!')
+      return res.status(301).send({error: 'wrong version'})
+    }
     const post = Object.assign({}, req.body, {
       content: processedString(req.body.content),
       userId: user.id,
@@ -135,6 +139,10 @@ module.exports = {
   },
   postReplies(req, res) {
     const {user} = req
+    if (!req.body.rootType) {
+      console.error('rootType parameter is missing!')
+      return res.status(301).send({error: 'wrong version'})
+    }
     const post = Object.assign({}, req.body, {
       content: processedString(req.body.content),
       userId: user.id,
