@@ -342,7 +342,7 @@ export const submitMessageAsync = (params) => dispatch => {
 }
 
 export const saveMessage = (message, index) => dispatch => {
-  request.post(API_URL, {message}, auth()).then(
+  return request.post(API_URL, {message}, auth()).then(
     response => {
       dispatch({
         type: 'ADD_ID_TO_NEW_MESSAGE',

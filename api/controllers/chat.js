@@ -18,7 +18,6 @@ const {
 
 router.get('/', requireAuth, (req, res) => {
   const {user, user: {lastChannelId}} = req
-  console.log(lastChannelId, generalChatId)
   fetchChat({user, channelId: lastChannelId || generalChatId}).then(
     results => res.send(results)
   ).catch(
@@ -311,6 +310,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
       `
       poolQuery(query, channelId).then(
         members => res.send({
+          id: messageId,
           messageId,
           channelId,
           userId: user.id,
