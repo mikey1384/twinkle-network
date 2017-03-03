@@ -9,7 +9,6 @@ const defaultState = {
   userSearchResult: [],
   chatSearchResult: [],
   loadMoreMessages: false,
-  loadMoreChannel: false,
   channelLoadMoreButton: false,
   partnerId: null,
   numUnreads: 0,
@@ -146,7 +145,7 @@ export default function ChatReducer(state = defaultState, action) {
             if (channel.id === action.data.channel.id) {
               originalNumUnreads = channel.numUnreads
             }
-            if (loadMoreMessages === true && action.showOnTop && index === (state.channels.length - 1)) {
+            if (state.channelLoadMoreButton && action.showOnTop && index === (state.channels.length - 1)) {
               return [action.data.channel].concat(
                 resultingArray.filter(channel => channel.id !== action.data.channel.id)
               )
