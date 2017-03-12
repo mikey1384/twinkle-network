@@ -60,6 +60,8 @@ export function addAdvancedEmoji(string) {
   .replace(/(\(thumbs\))/gi, '👍 ')
   .replace(/(\(sunglasses\))/gi, '😎 ')
   .replace(/(\(ok\))/gi, '👌 ')
+  .replace(/(\(hi\))/gi, '👋 ')
+  .replace(/(\(hello\))/gi, '👋 ')
   .replace(/(\(mad\))/gi, '😡 ')
   .replace(/(\(angry\))/gi, '😡 ')
   .replace(/(\(perfect\))/gi, '💯 ')
