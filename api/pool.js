@@ -2,7 +2,7 @@ const config = require('./siteConfig')
 const mysql = require('mysql')
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: 'localhost',
+  host: config.mysqlHost,
   user: config.mysqlUser,
   password: config.mysqlPassword,
   database: config.mysqlDatabase,

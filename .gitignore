@@ -15,3 +15,6 @@ api_out.log
 content_err.log
 content_out.log
 certs
+.docker/mysql-data
+.config
+.bash_history

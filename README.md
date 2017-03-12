@@ -1,6 +1,8 @@
 ## Twinkle Website
 
 ###To run:
+
+##Without Docker:
 0. Ensure that Node 7+ is installed
 1. git clone https://github.com/mikey1384/twin-kle.git [your directory name]
 2. Run `npm install` at the directory where you cloned the git repository.
@@ -36,6 +38,25 @@ npm run startapi
 npm run start
 ```
 
+
+##With Docker:
+
+1. clone the repository
+```
+git clone https://github.com/mikey1384/twin-kle.git
+cd twin-kle
+```
+2. In /api folder there is a file with filename "rename this to - siteConfig.js" change the filename to "siteConfig.js(just remove the rename this... part)"
+3. Do the same to /source/constants/"change this filename to ..." files
+4. build the docker image and launch the api, client and the MySQL database with docker-compose
+```
+docker-compose build
+docker-compose up
+```
+5. open a new terminal and create and migrate the database
+```
+chmod +rx .docker/init_mysql.sh && .docker/init_mysql.sh
+```
 ###About this project:
 
 Currently this is a small social media website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web urls, create discussion topics, and chat within channels or send private messages to other users.
