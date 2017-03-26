@@ -260,8 +260,10 @@ const generateTitleForGroupChannel = (channelId, userId) => {
   const query = 'SELECT channelName FROM msg_channel_info WHERE userId = ? AND channelId = ?'
   return poolQuery(query, [userId, channelId]).then(
     ([result]) => {
-      if (result) Promise.resolve(result.channelName)
+      if (result) {
+        return Promise.resolve(result.channelName)
       }
+    }
   )
 }
 

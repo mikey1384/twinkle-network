@@ -18,3 +18,4 @@ certs
 .docker/mysql-data
 .config
 .bash_history
+.babel.json

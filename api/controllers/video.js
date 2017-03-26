@@ -183,7 +183,7 @@ router.get('/page', (req, res) => {
     rows => {
       finalResults = rows[0]
       const {videoId} = finalResults
-      const query1 = 'SELECT * FROM vq_questions WHERE videoId = ? AND isDraft = 0'
+      const query1 = 'SELECT * FROM vq_questions WHERE videoId = ?'
       const query2 = `
         SELECT a.userId, b.username
         FROM vq_video_likes a LEFT JOIN users b ON a.userId = b.id
