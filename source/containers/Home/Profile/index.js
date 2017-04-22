@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import Header from './Header'
 import Body from './Body'
 import ExecutionEnvironment from 'exenv'
@@ -20,7 +21,7 @@ import {browserHistory} from 'react-router'
 export default class Profile extends Component {
   static propTypes = {
     checkValidUsername: PropTypes.func,
-    params: PropTypes.object,
+    match: PropTypes.object,
     userId: PropTypes.number,
     profilePage: PropTypes.object,
     username: PropTypes.string,
@@ -29,20 +30,20 @@ export default class Profile extends Component {
 
   constructor(props) {
     super()
-    const {checkValidUsername} = props
-    const {username} = props.params
+    const {checkValidUsername, match} = props
+    const {username} = match.params
     if (ExecutionEnvironment.canUseDOM) checkValidUsername(username)
   }
 
   componentDidUpdate(prevProps) {
-    const {checkValidUsername, userId, profilePage} = this.props
+    const {checkValidUsername, userId, profilePage, match} = this.props
     const {unavailable} = profilePage
     if (ExecutionEnvironment.canUseDOM) {
-      if (prevProps.params.username !== this.props.params.username) {
-        return checkValidUsername(this.props.params.username)
+      if (prevProps.match.params.username !== match.params.username) {
+        return checkValidUsername(match.params.username)
       }
 
-      if (this.props.params.username === 'undefined' && !prevProps.userId && !!userId && !!unavailable) {
+      if (match.params.username === 'undefined' && !prevProps.userId && !!userId && !!unavailable) {
         browserHistory.push(`/${this.props.username}`)
       }
     }

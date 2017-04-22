@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import ExecutionEnvironment from 'exenv'
 import Carousel from 'components/Carousel'
 import VideoThumb from 'components/VideoThumb'

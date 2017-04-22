@@ -1,12 +1,17 @@
-import React, {Component, PropTypes} from 'react'
-import Header from './Header'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
+import {Switch, Route} from 'react-router-dom'
 import Chat from '../Chat'
+import Header from './Header'
 import io from 'socket.io-client'
 import {connect} from 'react-redux'
 import {initChatAsync, resetChat, turnChatOff, changePageVisibility} from 'redux/actions/ChatActions'
 import {initSessionAsync} from 'redux/actions/UserActions'
 import {URL} from 'constants/URL'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import Home from 'containers/Home'
+import Videos from 'containers/Videos'
+import Links from 'containers/Links'
 
 const socket = io.connect(URL)
 let visibilityChange
@@ -28,14 +33,11 @@ let hidden
 )
 export default class App extends Component {
   static propTypes = {
-    children: PropTypes.object.isRequired,
     chatMode: PropTypes.bool,
     initSession: PropTypes.func,
     turnChatOff: PropTypes.func,
     chatNumUnreads: PropTypes.number,
     resetChat: PropTypes.func,
-    location: PropTypes.object,
-    params: PropTypes.object,
     loggedIn: PropTypes.bool,
     initChat: PropTypes.func,
     changePageVisibility: PropTypes.func
@@ -73,11 +75,10 @@ export default class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {turnChatOff} = this.props
     let elements = document.documentElement.childNodes
-    if (this.props.children !== prevProps.children) turnChatOff()
+    const {chatMode, chatNumUnreads} = this.props
+
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
-      const {chatMode, chatNumUnreads} = this.props
       let title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
       let display = chatMode ? 'none' : 'inline'
       document.title = title
@@ -87,7 +88,6 @@ export default class App extends Component {
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
-      const {chatMode, chatNumUnreads} = this.props
       let title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
       let display = chatMode ? 'none' : 'inline'
       document.title = title
@@ -102,7 +102,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {chatMode, turnChatOff, resetChat, location, params} = this.props
+    const {chatMode, turnChatOff, resetChat} = this.props
     const {scrollPosition} = this.state
     const style = chatMode && this.props.loggedIn ? {
       display: 'none'
@@ -115,8 +115,6 @@ export default class App extends Component {
         ref="app"
       >
         <Header
-          onProfilePage={!!params.username}
-          location={params.username || !location.pathname.split('/')[1] ? null : location.pathname.split('/')[1]}
           staticTop={chatMode}
           socket={socket}
           chatMode={chatMode}
@@ -126,7 +124,12 @@ export default class App extends Component {
         <div
           style={{...style, paddingBottom: '1em'}}
         >
-          {this.props.children}
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/videos" component={Videos} />
+            <Route path="/links" component={Links} />
+            <Route path="/:username" component={Home} />
+          </Switch>
         </div>
         {chatMode && this.props.loggedIn &&
           <Chat

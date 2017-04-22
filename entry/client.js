@@ -1,17 +1,23 @@
 import React from 'react'
-import {render} from 'react-dom'
+import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
-import {routes, store, history} from 'Root'
-import {Router, applyRouterMiddleware} from 'react-router'
-import {useScroll} from 'react-router-scroll'
+import {Route} from 'react-router-dom'
+import {ConnectedRouter} from 'react-router-redux'
+import createHistory from 'history/createBrowserHistory'
+import createStoreWithHistory from './store'
+import App from 'containers/App'
+import {ScrollContext} from 'components/HigherOrder/ReactRouterScroll'
 
-render(
+const history = createHistory()
+const store = createStoreWithHistory(history)
+
+ReactDOM.render(
   <Provider store={store}>
-    <Router
-      children={routes}
-      history={history}
-      render={applyRouterMiddleware(useScroll(prevRouterProps => prevRouterProps ? true : [0, 0]))}
-    />
+    <ConnectedRouter history={history}>
+      <ScrollContext>
+        <Route component={App} />
+      </ScrollContext>
+    </ConnectedRouter>
   </Provider>,
   document.getElementById('react-view')
 )

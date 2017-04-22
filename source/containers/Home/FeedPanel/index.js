@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import Heading from './Heading'
 import MainContent from './MainContent'
 import Loading from 'components/Loading'

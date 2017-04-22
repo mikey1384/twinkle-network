@@ -1,8 +1,11 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {Color} from 'constants/css'
 import {connect} from 'react-redux'
-import {browserHistory} from 'react-router'
+import {Route} from 'react-router-dom'
 import {clearFeeds} from 'redux/actions/FeedActions'
+import Profile from './Profile'
+import Feeds from './Feeds'
 
 @connect(
   state => ({
@@ -12,10 +15,11 @@ import {clearFeeds} from 'redux/actions/FeedActions'
 )
 export default class Home extends Component {
   static propTypes = {
+    history: PropTypes.object,
+    match: PropTypes.object,
     clearFeeds: PropTypes.func,
     params: PropTypes.object,
-    username: PropTypes.string,
-    children: PropTypes.object
+    username: PropTypes.string
   }
 
   constructor() {
@@ -26,19 +30,20 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    this.setState({selectedTab: this.props.params.username ? 'profile' : 'feed'})
+    const {match} = this.props
+    this.setState({selectedTab: match.params.username ? 'profile' : 'feed'})
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.params.username !== this.props.params.username) {
+    if (prevProps.match.params.username !== this.props.match.params.username) {
       this.setState({
-        selectedTab: this.props.params.username ? 'profile' : 'feed'
+        selectedTab: this.props.match.params.username ? 'profile' : 'feed'
       })
     }
   }
 
   render() {
-    const {username, clearFeeds} = this.props
+    const {username, clearFeeds, history} = this.props
     const {selectedTab} = this.state
     const listStyle = {
       profile: {
@@ -69,7 +74,7 @@ export default class Home extends Component {
               style={listStyle.profile}
               onClick={() => {
                 clearFeeds()
-                browserHistory.push(`/${username}`)
+                history.push(`/${username}`)
               }}
             >
               <a
@@ -84,7 +89,7 @@ export default class Home extends Component {
             <li
               className="list-group-item left-menu-item"
               style={listStyle.feed}
-              onClick={() => browserHistory.push('/')}
+              onClick={() => history.push('/')}
             >
               <a
                 style={{
@@ -98,7 +103,8 @@ export default class Home extends Component {
           </ul>
         </div>
         <div className="col-md-6 col-md-offset-4 col-xs-10 col-xs-offset-2">
-          {this.props.children}
+          <Route exact path="/" component={Feeds}/>
+          <Route path="/:username" component={Profile}/>
         </div>
       </div>
     )

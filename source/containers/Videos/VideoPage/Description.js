@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import UsernameText from 'components/Texts/UsernameText'
 import Textarea from 'react-textarea-autosize'

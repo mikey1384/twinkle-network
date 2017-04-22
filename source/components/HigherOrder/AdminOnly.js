@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 export default function(InnerComponent) {
@@ -8,7 +9,7 @@ export default function(InnerComponent) {
     }
 
     static contextTypes = {
-      router: React.PropTypes.object
+      router: PropTypes.object
     }
 
     componentWillMount() {

@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import Textarea from 'react-textarea-autosize'
 import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'

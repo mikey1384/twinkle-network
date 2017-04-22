@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types'
 /* global requestAnimationFrame, cancelAnimationFrame */
 
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
 import {processedStringWithURL} from 'helpers/stringHelpers'
 
 export default class Truncate extends Component {

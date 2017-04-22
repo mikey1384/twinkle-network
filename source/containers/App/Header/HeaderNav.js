@@ -1,19 +1,23 @@
-import React, {PropTypes} from 'react'
-import {Link} from 'react-router'
+import PropTypes from 'prop-types'
+import React from 'react'
+import {Link, Route} from 'react-router-dom'
 
 HeaderNav.propTypes = {
   to: PropTypes.string,
   children: PropTypes.string,
-  selected: PropTypes.bool,
+  isUsername: PropTypes.bool,
+  isHome: PropTypes.bool,
   onClick: PropTypes.func
 }
-export default function HeaderNav({to, children, selected, onClick}) {
+export default function HeaderNav({to, children, isHome, isUsername, onClick}) {
   return (
-    <li
-      className={selected && 'active'}
-      onClick={() => { if (onClick) onClick() }}
-    >
-      <Link to={to}>{children}</Link>
-    </li>
+    <Route path={to} exact={isHome && !isUsername} children={({match}) => (
+      <li
+        className={match && 'active'}
+        onClick={() => { if (onClick) onClick() }}
+      >
+        <Link to={to}>{children}</Link>
+      </li>
+    )}/>
   )
 }

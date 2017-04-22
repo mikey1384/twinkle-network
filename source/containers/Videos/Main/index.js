@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal'
 import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal'
 import ButtonGroup from 'components/ButtonGroup'

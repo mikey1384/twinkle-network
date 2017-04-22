@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
 import {connect} from 'react-redux'
 import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions'

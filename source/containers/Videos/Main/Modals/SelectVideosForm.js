@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React from 'react'
 import VideoThumb from './ModalVideoThumb'
 import Button from 'components/Button'
 

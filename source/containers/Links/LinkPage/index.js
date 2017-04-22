@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Loading from 'components/Loading'
 import Embedly from 'components/Embedly'
@@ -42,7 +43,7 @@ import UserListModal from 'components/Modals/UserListModal'
 )
 export default class LinkPage extends Component {
   static propTypes = {
-    params: PropTypes.object,
+    match: PropTypes.object,
     pageProps: PropTypes.object,
     loadLinkPage: PropTypes.func,
     likeComment: PropTypes.func,
@@ -72,7 +73,7 @@ export default class LinkPage extends Component {
   }
 
   componentDidMount() {
-    const {params: {linkId}, loadLinkPage, fetchComments} = this.props
+    const {match: {params: {linkId}}, loadLinkPage, fetchComments} = this.props
     fetchComments(linkId)
     return loadLinkPage(linkId)
   }
@@ -194,7 +195,7 @@ export default class LinkPage extends Component {
   }
 
   onCommentSubmit(content) {
-    const {submitComment, params: {linkId}} = this.props
+    const {submitComment, match: {params: {linkId}}} = this.props
     submitComment({content, linkId})
   }
 

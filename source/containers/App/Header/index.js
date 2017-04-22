@@ -1,6 +1,8 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Link} from 'react-router'
+import {withRouter} from 'react-router'
+import {Link} from 'react-router-dom'
 import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions'
 import {
   getNumberOfUnreadMessagesAsync,
@@ -48,9 +50,10 @@ import {Color} from 'constants/css'
     clearFeeds
   }
 )
+@withRouter
 export default class Header extends Component {
   static propTypes = {
-    location: PropTypes.string,
+    location: PropTypes.object,
     socket: PropTypes.object,
     turnChatOff: PropTypes.func,
     increaseNumberOfUnreadMessages: PropTypes.func,
@@ -66,8 +69,8 @@ export default class Header extends Component {
     closeSigninModal: PropTypes.func,
     onChatButtonClick: PropTypes.func,
     numChatUnreads: PropTypes.number,
-    reloadFeeds: PropTypes.func,
     clearFeeds: PropTypes.func,
+    reloadFeeds: PropTypes.func,
     getInitialVideos: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
     getPlaylists: PropTypes.func
@@ -77,12 +80,10 @@ export default class Header extends Component {
     super()
     this.state = {
       notificationsMenuShown: false,
-      selectedTab: props.location || 'home',
       logoBlue: Color.logoBlue,
       logoGreen: Color.logoGreen,
       feedLoading: false
     }
-
     this.onLogoClick = this.onLogoClick.bind(this)
   }
 
@@ -137,7 +138,6 @@ export default class Header extends Component {
 
     if (prevProps.location !== location) {
       this.setState({
-        selectedTab: location || 'home',
         logoBlue: `#${this.getLogoColor()}`,
         logoGreen: `#${this.getLogoColor()}`
       })
@@ -153,6 +153,7 @@ export default class Header extends Component {
 
   render() {
     const {
+      location: {pathname},
       signinModalShown,
       loggedIn,
       logout,
@@ -168,7 +169,7 @@ export default class Header extends Component {
       getPlaylists
     } = this.props
 
-    const {selectedTab, logoBlue, logoGreen, feedLoading} = this.state
+    const {logoBlue, logoGreen, feedLoading} = this.state
     return (
       <Navbar fluid fixedTop={!chatMode}>
         <Navbar.Header>
@@ -190,7 +191,10 @@ export default class Header extends Component {
             [<Nav key="navItems">
                 <HeaderNav
                   to="/"
-                  selected={selectedTab === 'home'}
+                  isHome
+                  isUsername={
+                    pathname.split('/')[1] !== 'videos' && pathname.split('/')[1] !== 'links' && pathname.length > 1
+                  }
                   onClick={() => {
                     if (!feedLoading) {
                       this.setState({feedLoading: true})
@@ -204,7 +208,6 @@ export default class Header extends Component {
                 </HeaderNav>
                 <HeaderNav
                   to="/videos"
-                  selected={selectedTab === 'videos'}
                   onClick={() => {
                     getInitialVideos()
                     getPinnedPlaylists()
@@ -215,7 +218,6 @@ export default class Header extends Component {
                 </HeaderNav>
                 <HeaderNav
                  to="/links"
-                 selected={selectedTab === 'links'}
                 >
                   Read
                 </HeaderNav>
@@ -258,10 +260,8 @@ export default class Header extends Component {
   }
 
   onLogoClick() {
-    const {clearFeeds} = this.props
-    const {selectedTab} = this.state
-    if (selectedTab !== 'home') clearFeeds()
-    this.setState({selectedTab: 'home'})
+    const {clearFeeds, location: {pathname}} = this.props
+    if (pathname.split('/')[1] === 'videos' || pathname.split('/')[1] === 'links') clearFeeds()
     if (this.props.chatMode) {
       this.props.turnChatOff()
     }

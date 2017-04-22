@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
 import assign from 'object-assign'
 import ExecutionEnvironment from 'exenv'
 import ButtonGroup from 'components/ButtonGroup'
@@ -24,6 +24,7 @@ import {
   handleClick } from './helpers/interfaceEvents'
 
 import {easeInOutQuad} from 'tween-functions'
+import PropTypes from 'prop-types'
 import requestAnimationFrame from 'raf'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 

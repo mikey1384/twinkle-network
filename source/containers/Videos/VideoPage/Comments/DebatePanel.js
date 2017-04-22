@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import Button from 'components/Button'
 import {timeSince} from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'

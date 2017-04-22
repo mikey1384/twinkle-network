@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {reduxForm, Field} from 'redux-form'
 import {Modal, Button, Alert} from 'react-bootstrap'
 
@@ -178,7 +179,7 @@ function isValidEmailAddress(email) {
   let regex = '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$'
   let pattern = new RegExp(regex)
   return pattern.test(email)
-};
+}
 
 function isValidRealname(realName) {
   var pattern = new RegExp(/^[a-zA-Z]+$/)

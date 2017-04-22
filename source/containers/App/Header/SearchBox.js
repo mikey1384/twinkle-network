@@ -1,8 +1,9 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 import SearchInput from 'components/SearchInput'
 import {stringIsEmpty} from 'helpers/stringHelpers'
-import {browserHistory} from 'react-router'
 import {
   searchVideoAsync,
   clearSearchResults,
@@ -19,8 +20,10 @@ import {
     clearSearchResults
   }
 )
+@withRouter
 export default class SearchBox extends Component {
   static propTypes = {
+    history: PropTypes.object,
     searchResult: PropTypes.array,
     clearSearchResults: PropTypes.func,
     className: PropTypes.string,
@@ -72,11 +75,11 @@ export default class SearchBox extends Component {
   }
 
   onSelect(item) {
-    const {clearSearchResults, loadVideoPage} = this.props
+    const {clearSearchResults, loadVideoPage, history} = this.props
     this.setState({searchText: ''})
     clearSearchResults()
     return loadVideoPage(item.id).then(
-      () => browserHistory.push(`/videos/${item.id}`)
+      () => history.push(`/videos/${item.id}`)
     )
   }
 }

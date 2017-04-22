@@ -1,6 +1,7 @@
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
 import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
+import PropTypes from 'prop-types'
 import Slider from 'rc-slider'
 import AvatarEditor from 'react-avatar-editor'
 

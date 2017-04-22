@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import ChoiceListItem from './ChoiceListItem'
 import EditChoiceListItem from './EditChoiceListItem'
 import Textarea from 'react-textarea-autosize'

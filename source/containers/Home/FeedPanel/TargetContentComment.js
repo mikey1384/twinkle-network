@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'

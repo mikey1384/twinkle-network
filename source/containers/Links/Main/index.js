@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import SectionPanel from 'components/SectionPanel'
 import LinkGroup from './LinkGroup'
 import {connect} from 'react-redux'
@@ -20,7 +21,7 @@ export default class Main extends Component {
     fetchLinks: PropTypes.func,
     fetchMoreLinks: PropTypes.func,
     loadMoreLinksButtonShown: PropTypes.bool,
-    location: PropTypes.object
+    history: PropTypes.object
   }
 
   constructor(props) {
@@ -32,9 +33,9 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    const {fetchLinks, location} = this.props
+    const {fetchLinks, history} = this.props
     const {loaded} = this.state
-    if (!loaded || location.action === 'PUSH') {
+    if (!loaded || history.action === 'PUSH') {
       fetchLinks().then(
         () => this.setState({loaded: true})
       )

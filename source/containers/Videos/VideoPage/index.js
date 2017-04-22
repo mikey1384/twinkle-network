@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {
   editVideoPageAsync,
@@ -43,8 +44,8 @@ import ExecutionEnvironment from 'exenv'
 )
 export default class VideoPage extends Component {
   static propTypes = {
-    location: PropTypes.object,
-    params: PropTypes.object,
+    history: PropTypes.object,
+    match: PropTypes.object,
     loadVideoPage: PropTypes.func,
     resetVideoPage: PropTypes.func,
     videoId: PropTypes.number,
@@ -71,8 +72,8 @@ export default class VideoPage extends Component {
 
   constructor(props) {
     super()
-    const {location, params, loadVideoPage} = props
-    if (ExecutionEnvironment.canUseDOM && location.action === 'POP') loadVideoPage(params.videoId)
+    const {history, match, loadVideoPage} = props
+    if (ExecutionEnvironment.canUseDOM && history.action === 'POP') loadVideoPage(match.params.videoId)
     this.state = {
       watchTabActive: true,
       currentSlide: 0,

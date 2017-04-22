@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import LongText from 'components/Texts/LongText'
 import LikeButton from 'components/LikeButton'
 import Button from 'components/Button'

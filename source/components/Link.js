@@ -1,14 +1,16 @@
-import React, {PropTypes} from 'react'
-import {browserHistory} from 'react-router'
+import PropTypes from 'prop-types'
+import React from 'react'
+import {withRouter} from 'react-router'
 
 Link.propTypes = {
+  history: PropTypes.object,
   style: PropTypes.object,
   to: PropTypes.string,
   onClickAsync: PropTypes.func,
   children: PropTypes.node,
   target: PropTypes.string
 }
-export default function Link({to, onClickAsync, children, style, target}) {
+function Link({to, onClickAsync, children, style, target, history}) {
   return (
     <a
       style={style}
@@ -24,9 +26,11 @@ export default function Link({to, onClickAsync, children, style, target}) {
     if (target) return window.open(to, target)
     if (typeof onClickAsync === 'function') {
       return onClickAsync().then(
-        () => browserHistory.push(to)
+        () => history.push(to)
       )
     }
-    browserHistory.push(to)
+    history.push(to)
   }
 }
+
+export default withRouter(Link)

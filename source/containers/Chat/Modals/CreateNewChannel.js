@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {Modal, Button} from 'react-bootstrap'
 import {searchUserToInviteAsync, clearUserSearchResults} from 'redux/actions/ChatActions'
 import {connect} from 'react-redux'

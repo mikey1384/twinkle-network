@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
 import {Color} from 'constants/css'

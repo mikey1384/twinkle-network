@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {fetchMoreFeedsAsync, fetchFeedsAsync, fetchFeed, clearFeeds} from 'redux/actions/FeedActions'
 import FeedInputPanel from './FeedInputPanel'
 import FeedPanel from './FeedPanel'
@@ -30,7 +31,7 @@ export default class Feeds extends Component {
     noFeeds: PropTypes.bool,
     fetchFeeds: PropTypes.func,
     clearFeeds: PropTypes.func,
-    location: PropTypes.object,
+    history: PropTypes.object,
     feeds: PropTypes.array,
     loadMoreButton: PropTypes.bool,
     userId: PropTypes.number,
@@ -51,8 +52,8 @@ export default class Feeds extends Component {
   }
 
   componentDidMount() {
-    const {fetchFeeds, location, feeds} = this.props
-    if (ExecutionEnvironment.canUseDOM && (location.action === 'PUSH' || !feeds)) fetchFeeds()
+    const {fetchFeeds, history, feeds} = this.props
+    if (ExecutionEnvironment.canUseDOM && (history.action === 'PUSH' || !feeds)) fetchFeeds()
     addEvent(window, 'scroll', this.onScroll)
   }
 

@@ -1,12 +1,21 @@
-import React, {PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
+import {Route} from 'react-router-dom'
+import Main from './Main'
+import VideoPage from './VideoPage'
 
-Videos.propTypes = {
-  children: PropTypes.object
-}
-export default function Videos({children}) {
-  return (
-    <div id="contents" className="container-fluid">
-      {children}
-    </div>
-  )
+export default class Videos extends Component {
+  static propTypes = {
+    match: PropTypes.object
+  }
+
+  render() {
+    const {match} = this.props
+    return (
+      <div id="contents" className="container-fluid">
+        <Route exact path={`${match.url}`} component={Main}/>
+        <Route path={`${match.url}/:videoId`} component={VideoPage}/>
+      </div>
+    )
+  }
 }

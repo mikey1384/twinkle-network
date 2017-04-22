@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import PanelReply from './PanelReply'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 import Button from 'components/Button'

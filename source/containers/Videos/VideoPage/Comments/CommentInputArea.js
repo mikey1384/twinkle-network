@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import InputArea from 'components/Texts/InputArea'
 import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm'
 import Button from 'components/Button'

@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import {reduxForm, Field} from 'redux-form'
 import {Modal, Button, Alert} from 'react-bootstrap'
 import {stringIsEmpty} from 'helpers/stringHelpers'
