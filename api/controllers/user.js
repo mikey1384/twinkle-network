@@ -85,7 +85,7 @@ router.post('/signup', function(req, res) {
     if (!err) {
       if (userExists(rows)) {
         res.json({
-          result: 'That username already exists'
+          result: 'That account already exists'
         })
       } else {
         if (isFalseClaim(email, isTeacher)) {

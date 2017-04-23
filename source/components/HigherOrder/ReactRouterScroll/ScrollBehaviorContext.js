@@ -12,7 +12,7 @@ const propTypes = {
 }
 
 const childContextTypes = {
-  scrollBehavior: React.PropTypes.object.isRequired
+  scrollBehavior: PropTypes.object.isRequired
 }
 
 class ScrollContext extends React.Component {

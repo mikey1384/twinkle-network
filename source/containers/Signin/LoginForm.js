@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {reduxForm, Field} from 'redux-form'
-import {Modal, Button, Alert} from 'react-bootstrap'
+import {Modal, Alert} from 'react-bootstrap'
+import Button from 'components/Button'
 import {stringIsEmpty} from 'helpers/stringHelpers'
 
 /* eslint-disable react/prop-types */
@@ -30,7 +31,8 @@ export default class LoginForm extends Component {
     handleSubmit: PropTypes.func,
     errorMessage: PropTypes.string,
     hideErrorAlert: PropTypes.func,
-    loginAsync: PropTypes.func
+    loginAsync: PropTypes.func,
+    showSignUpForm: PropTypes.func
   }
 
   constructor() {
@@ -39,7 +41,7 @@ export default class LoginForm extends Component {
   }
 
   render() {
-    const {handleSubmit, errorMessage, hideErrorAlert} = this.props
+    const {handleSubmit, errorMessage, hideErrorAlert, showSignUpForm} = this.props
     return (
       <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()} >
         {errorMessage &&
@@ -71,7 +73,23 @@ export default class LoginForm extends Component {
         </div>
         <br />
         <Modal.Footer>
-          <Button type="submit">Log In</Button>
+          <Button
+            className="btn btn-warning"
+            style={{
+              fontSize: '1em',
+              marginRight: '1em'
+            }}
+            onClick={showSignUpForm}
+          >
+            Wait, I don't think I have an account, yet
+          </Button>
+          <Button
+            className="btn btn-lg btn-primary"
+            type="submit"
+            style={{fontSize: '1.5em'}}
+          >
+            Log me in!
+          </Button>
         </Modal.Footer>
       </form>
     )

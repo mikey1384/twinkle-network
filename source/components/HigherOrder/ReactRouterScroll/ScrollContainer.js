@@ -13,7 +13,7 @@ const contextTypes = {
   // This is necessary when rendering on the client. However, when rendering on
   // the server, this container will do nothing, and thus does not require the
   // scroll behavior context.
-  scrollBehavior: React.PropTypes.object
+  scrollBehavior: PropTypes.object
 }
 
 class ScrollContainer extends React.Component {

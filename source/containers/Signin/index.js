@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import {Modal} from 'react-bootstrap'
 import LoginForm from './LoginForm'
 import SignUpForm from './SignUpForm'
+import Main from './Main'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import * as UserActions from 'redux/actions/UserActions'
@@ -24,12 +25,12 @@ export default class SigninModal extends Component {
   constructor() {
     super()
     this.state = {
-      loginTabActive: false
+      currentPage: 'main'
     }
   }
 
   render() {
-    const {loginTabActive} = this.state
+    const {currentPage} = this.state
     const {signupError, loginError, dispatch} = this.props
     return (
       <Modal
@@ -38,38 +39,37 @@ export default class SigninModal extends Component {
         animation={false}
       >
         <Modal.Header closeButton>
-          <ul className="nav nav-pills nav-justified">
-            <li
-              className={loginTabActive ? '' : 'active'}
-              onClick={() => this.setState({loginTabActive: false})}
-              style={{cursor: 'pointer'}}
-            >
-              <a>Sign Up</a>
-            </li>
-            <li
-              className={loginTabActive ? 'active' : ''}
-              onClick={() => this.setState({loginTabActive: true})}
-              style={{cursor: 'pointer'}}
-            >
-              <a>Log In (If you already have an account)</a>
-            </li>
-          </ul>
+          {currentPage === 'main' &&
+            <h3>Welcome to Twinkle. Do you have a Twinkle account?</h3>
+          }
+          {currentPage === 'login' &&
+            <h3>Great! What's your account username and password?</h3>
+          }
+          {currentPage === 'signUp' &&
+            <h3>Sure, let's set up your account...</h3>
+          }
         </Modal.Header>
         <Modal.Body>
-          <div className="tab-content container-fluid">
-            <div className={`tab-pane ${loginTabActive ? '' : 'active'}`}>
-              <SignUpForm
-                errorMessage={signupError}
-                {...bindActionCreators(UserActions, dispatch)}
-              />
-            </div>
-            <div className={`tab-pane ${loginTabActive ? 'active' : ''}`}>
-              <LoginForm
-                errorMessage={loginError}
-                {...bindActionCreators(UserActions, dispatch)}
-              />
-            </div>
-          </div>
+          {currentPage === 'main' &&
+            <Main
+              showLoginForm={() => this.setState({currentPage: 'login'})}
+              showSignUpForm={() => this.setState({currentPage: 'signUp'})}
+            />
+          }
+          {currentPage === 'login' &&
+            <LoginForm
+              errorMessage={loginError}
+              showSignUpForm={() => this.setState({currentPage: 'signUp'})}
+              {...bindActionCreators(UserActions, dispatch)}
+            />
+          }
+          {currentPage === 'signUp' &&
+            <SignUpForm
+              errorMessage={signupError}
+              showLoginForm={() => this.setState({currentPage: 'login'})}
+              {...bindActionCreators(UserActions, dispatch)}
+            />
+          }
         </Modal.Body>
       </Modal>
     )

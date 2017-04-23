@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {reduxForm, Field} from 'redux-form'
-import {Modal, Button, Alert} from 'react-bootstrap'
+import {Modal, Alert} from 'react-bootstrap'
+import Button from 'components/Button'
 
 /* eslint-disable react/prop-types */
 const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
@@ -29,7 +30,8 @@ export default class SignUpForm extends Component {
     handleSubmit: PropTypes.func,
     errorMessage: PropTypes.string,
     hideErrorAlert: PropTypes.func,
-    signupAsync: PropTypes.func
+    signupAsync: PropTypes.func,
+    showLoginForm: PropTypes.func
   }
 
   constructor() {
@@ -45,6 +47,7 @@ export default class SignUpForm extends Component {
 
   render() {
     const {checkedTeacher} = this.state
+    const {showLoginForm} = this.props
     const {
       handleSubmit,
       errorMessage,
@@ -74,7 +77,7 @@ export default class SignUpForm extends Component {
             <label>Password</label>
             <Field
               name="password"
-              placeholder="Password"
+              placeholder="Password (You MUST remember your password. Write it down somewhere!)"
               className="form-control"
               component={renderInput}
               type="password"
@@ -123,7 +126,17 @@ export default class SignUpForm extends Component {
         </div>
         <br />
         <Modal.Footer>
-          <Button type="submit">Sign Up</Button>
+          <Button
+            className="btn btn-warning"
+            style={{
+              fontSize: '1em',
+              marginRight: '1em'
+            }}
+            onClick={showLoginForm}
+          >
+            Wait, I already have an account!
+          </Button>
+          <Button className="btn btn-lg btn-primary" type="submit" style={{fontSize: '1.5em'}}>Create my account!</Button>
         </Modal.Footer>
       </form>
     )
