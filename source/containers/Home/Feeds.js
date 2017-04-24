@@ -58,6 +58,7 @@ export default class Feeds extends Component {
   }
 
   componentWillUnmount() {
+    this.props.clearFeeds()
     removeEvent(window, 'scroll', this.onScroll)
   }
 

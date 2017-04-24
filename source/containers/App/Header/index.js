@@ -9,7 +9,7 @@ import {
   increaseNumberOfUnreadMessages,
   turnChatOff
 } from 'redux/actions/ChatActions'
-import {reloadFeeds, clearFeeds} from 'redux/actions/FeedActions'
+import {reloadFeeds} from 'redux/actions/FeedActions'
 import {getInitialVideos} from 'redux/actions/VideoActions'
 import {
   getPlaylistsAsync,
@@ -46,8 +46,7 @@ import {Color} from 'constants/css'
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
     getInitialVideos,
-    reloadFeeds,
-    clearFeeds
+    reloadFeeds
   }
 )
 @withRouter
@@ -69,7 +68,6 @@ export default class Header extends Component {
     closeSigninModal: PropTypes.func,
     onChatButtonClick: PropTypes.func,
     numChatUnreads: PropTypes.number,
-    clearFeeds: PropTypes.func,
     reloadFeeds: PropTypes.func,
     getInitialVideos: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
@@ -260,8 +258,6 @@ export default class Header extends Component {
   }
 
   onLogoClick() {
-    const {clearFeeds, location: {pathname}} = this.props
-    if (pathname.split('/')[1] === 'videos' || pathname.split('/')[1] === 'links') clearFeeds()
     if (this.props.chatMode) {
       this.props.turnChatOff()
     }
