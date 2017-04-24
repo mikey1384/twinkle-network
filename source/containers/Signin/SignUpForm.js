@@ -1,35 +1,11 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import {reduxForm, Field} from 'redux-form'
 import {Modal, Alert} from 'react-bootstrap'
 import Button from 'components/Button'
+import {stringIsEmpty} from 'helpers/stringHelpers'
 
-/* eslint-disable react/prop-types */
-const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
-  <div style={{display: 'inline'}}>
-    <input
-      {...input}
-      className={className}
-      placeholder={placeholder}
-      type={type}
-    />
-    <span
-      className="help-block"
-      style={{color: 'red'}}
-    >{touched && error && error}</span>
-  </div>
-)
-/* eslint-enable react/prop-types */
-
-@reduxForm({
-  form: 'SignupForm',
-  validate
-})
 export default class SignUpForm extends Component {
   static propTypes = {
-    handleSubmit: PropTypes.func,
-    errorMessage: PropTypes.string,
-    hideErrorAlert: PropTypes.func,
     signupAsync: PropTypes.func,
     showLoginForm: PropTypes.func
   }
@@ -41,85 +17,124 @@ export default class SignUpForm extends Component {
 
   componentWillMount() {
     this.setState({
-      checkedTeacher: false
+      username: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+      email: '',
+      errorMessage: ''
     })
   }
 
   render() {
-    const {checkedTeacher} = this.state
     const {showLoginForm} = this.props
-    const {
-      handleSubmit,
-      errorMessage,
-      hideErrorAlert
-    } = this.props
+    const {username, password, firstname, lastname, email, errorMessage} = this.state
+    const submitDisabled = stringIsEmpty(username) || stringIsEmpty(password) || stringIsEmpty(firstname) || stringIsEmpty(lastname) || errorMessage
     return (
-      <form
-        onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()}
-      >
-        { errorMessage &&
-          <Alert bsStyle="danger">
+      <div>
+        {errorMessage &&
+          <Alert bsStyle="warning">
             {errorMessage}
           </Alert>
         }
         <div className="container-fluid">
           <fieldset className="form-group">
             <label>Username</label>
-            <Field
-              name="username"
-              placeholder="Username"
+            <input
               className="form-control"
-              component={renderInput}
+              value={username}
+              placeholder="Enter the username you wish to use on this website"
+              onChange={event => {
+                this.setState({
+                  errorMessage: '',
+                  username: event.target.value
+                })
+              }}
+              onKeyPress={event => {
+                if (event.key === 'Enter' && !submitDisabled) {
+                  this.onSubmit()
+                }
+              }}
               type="text"
             />
           </fieldset>
           <fieldset className="form-group">
             <label>Password</label>
-            <Field
-              name="password"
-              placeholder="Password (You MUST remember your password. Write it down somewhere!)"
+            <input
               className="form-control"
-              component={renderInput}
+              value={password}
+              placeholder="Password (You MUST remember your password. Write it down somewhere!)"
+              onChange={event => {
+                this.setState({
+                  errorMessage: '',
+                  password: event.target.value
+                })
+              }}
+              onKeyPress={event => {
+                if (event.key === 'Enter' && !submitDisabled) {
+                  this.onSubmit()
+                }
+              }}
               type="password"
             />
           </fieldset>
           <fieldset className="form-group">
             <label>First Name</label>
-            <Field
-              name="firstname"
-              placeholder="Your first name"
+            <input
               className="form-control"
-              component={renderInput}
+              value={firstname}
+              placeholder="What is your first name? Mine is Mikey"
+              onChange={event => {
+                this.setState({
+                  errorMessage: '',
+                  firstname: event.target.value
+                })
+              }}
+              onKeyPress={event => {
+                if (event.key === 'Enter' && !submitDisabled) {
+                  this.onSubmit()
+                }
+              }}
               type="text"
             />
           </fieldset>
           <fieldset className="form-group">
             <label>Last Name</label>
-            <Field
-              name="lastname"
-              placeholder="Your last name"
+            <input
               className="form-control"
-              component={renderInput}
+              value={lastname}
+              placeholder="What is your last name? Mine is Lee"
+              onChange={event => {
+                this.setState({
+                  errorMessage: '',
+                  lastname: event.target.value
+                })
+              }}
+              onKeyPress={event => {
+                if (event.key === 'Enter' && !submitDisabled) {
+                  this.onSubmit()
+                }
+              }}
               type="text"
             />
           </fieldset>
           <fieldset className="form-group">
-            <label>I'm a Teacher:&nbsp;&nbsp;&nbsp;</label>
-            <Field
-              name="isTeacher"
-              checked={checkedTeacher}
-              onClick={() => this.setState({checkedTeacher: !checkedTeacher})}
-              component={renderInput}
-              type="checkbox"
-            />
-          </fieldset>
-          <fieldset className="form-group">
-            <label>Email</label>
-            <Field
-              name="email"
-              placeholder="Email is not required except for teachers"
+            <label>Email (optional, you don't need to enter this)</label>
+            <input
               className="form-control"
-              component={renderInput}
+              value={email}
+              placeholder="Email is not required, but if you have one, enter it here"
+              onChange={event => {
+                this.setState({
+                  errorMessage: '',
+                  email: event.target.value
+                })
+              }}
+              onKeyPress={event => {
+                if (event.key === 'Enter' && !submitDisabled) {
+                  this.onSubmit()
+                }
+              }}
               type="email"
             />
           </fieldset>
@@ -136,56 +151,29 @@ export default class SignUpForm extends Component {
           >
             Wait, I already have an account!
           </Button>
-          <Button className="btn btn-lg btn-primary" type="submit" style={{fontSize: '1.5em'}}>Create my account!</Button>
+          <Button
+            className="btn btn-lg btn-primary"
+            disabled={submitDisabled}
+            onClick={this.onSubmit}
+            style={{fontSize: '1.5em'}}
+          >Create my account!</Button>
         </Modal.Footer>
-      </form>
+      </div>
     )
   }
 
-  onSubmit(props) {
-    this.props.signupAsync(props)
+  onSubmit() {
+    const {signupAsync} = this.props
+    const {username, password, firstname, lastname, email} = this.state
+    if (!isValidUsername(username)) return this.setState({errorMessage: 'That is not a valid username'})
+    if (!isValidPassword(password)) return this.setState({errorMessage: 'Passwords need to be at least 5 characters long'})
+    if (!isValidRealname(firstname)) return this.setState({errorMessage: 'That\'s not a valid name'})
+    if (!isValidRealname(lastname)) return this.setState({errorMessage: 'That\'s not a valid last name'})
+    if (email && !isValidEmailAddress(email)) return this.setState({errorMessage: 'That email address is invalid'})
+    return signupAsync({username, password, firstname, lastname, email}).catch(
+      error => this.setState({errorMessage: error})
+    )
   }
-}
-
-function validate(values) {
-  const {username, firstname, lastname, password, email, isTeacher} = values
-  const errors = {}
-
-  if (!isValidUsername(username)) {
-    errors.username = 'Invalid username'
-  }
-  if (!isValidRealname(firstname)) {
-    errors.firstname = 'Invalid first name'
-  }
-  if (!isValidRealname(lastname)) {
-    errors.lastname = 'Invalid last name'
-  }
-  if (email && !isValidEmailAddress(email)) {
-    errors.email = 'Invalid email format'
-  }
-  if (username && username.length < 4) {
-    errors.username = 'Usernames must be at least 4 characters long'
-  }
-  if (password && password.length < 6) {
-    errors.password = 'Passwords must be at least 6 characters long'
-  }
-  if (!username) {
-    errors.username = 'Enter a username'
-  }
-  if (!firstname) {
-    errors.firstname = 'Enter your first name'
-  }
-  if (!lastname) {
-    errors.lastname = 'Enter your last name'
-  }
-  if (!password) {
-    errors.password = 'Enter a password'
-  }
-  if (isTeacher && !email) {
-    errors.email = 'Teachers must provide an email address'
-  }
-
-  return errors
 }
 
 function isValidEmailAddress(email) {
@@ -202,4 +190,8 @@ function isValidRealname(realName) {
 function isValidUsername(username) {
   var pattern = new RegExp(/^[a-zA-Z0-9]+$/)
   return !!username && username.length < 20 && pattern.test(username)
+}
+
+function isValidPassword(password) {
+  return password.length > 4 && !stringIsEmpty(password)
 }

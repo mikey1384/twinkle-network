@@ -1,6 +1,6 @@
 const passwordHash = require('password-hash')
 const {capitalize, isValidUsername} = require('../helpers/stringHelpers')
-const {userExists, isFalseClaim} = require('../helpers/userHelpers')
+const {userExists} = require('../helpers/userHelpers')
 const {tokenForUser, requireAuth, requireSignin} = require('../auth')
 const express = require('express')
 const router = express.Router()
@@ -74,7 +74,6 @@ router.post('/picture', requireAuth, (req, res) => {
 })
 
 router.post('/signup', function(req, res) {
-  const isTeacher = req.body.isTeacher
   const username = req.body.username
   const firstname = req.body.firstname
   const lastname = req.body.lastname
@@ -84,17 +83,9 @@ router.post('/signup', function(req, res) {
   pool.query('SELECT * FROM users WHERE username = ?', username, (err, rows) => {
     if (!err) {
       if (userExists(rows)) {
-        res.json({
-          result: 'That account already exists'
-        })
+        res.status(500).send('That account already exists')
       } else {
-        if (isFalseClaim(email, isTeacher)) {
-          res.json({
-            result: "That email is not registered as a teacher's email in our database"
-          })
-        } else {
-          saveUserData()
-        }
+        saveUserData()
       }
     } else {
       console.error(err)
@@ -106,14 +97,12 @@ router.post('/signup', function(req, res) {
 
   function saveUserData() {
     const hashedPass = passwordHash.generate(password)
-    const userType = isTeacher ? 'teacher' : 'user'
     const usernameLowered = username.toLowerCase()
     const post = {
       username: usernameLowered,
       realName,
       email,
       password: hashedPass,
-      userType,
       joinDate: Math.floor(Date.now()/1000)
     }
     pool.query('INSERT INTO users SET?', post, function(err, result) {
@@ -121,7 +110,6 @@ router.post('/signup', function(req, res) {
         res.json({
           result: 'success',
           username: usernameLowered,
-          userType,
           userId: result.insertId,
           token: tokenForUser(result.insertId)
         })

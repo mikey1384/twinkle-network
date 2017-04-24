@@ -8,16 +8,9 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import * as UserActions from 'redux/actions/UserActions'
 
-@connect(
-  state => ({
-    loginError: state.UserReducer.loginError,
-    signupError: state.UserReducer.signupError
-  })
-)
+@connect()
 export default class SigninModal extends Component {
   static propTypes = {
-    signupError: PropTypes.string,
-    loginError: PropTypes.string,
     dispatch: PropTypes.func,
     onHide: PropTypes.func
   }
@@ -31,7 +24,7 @@ export default class SigninModal extends Component {
 
   render() {
     const {currentPage} = this.state
-    const {signupError, loginError, dispatch} = this.props
+    const {dispatch} = this.props
     return (
       <Modal
         show
@@ -58,14 +51,12 @@ export default class SigninModal extends Component {
           }
           {currentPage === 'login' &&
             <LoginForm
-              errorMessage={loginError}
               showSignUpForm={() => this.setState({currentPage: 'signUp'})}
               {...bindActionCreators(UserActions, dispatch)}
             />
           }
           {currentPage === 'signUp' &&
             <SignUpForm
-              errorMessage={signupError}
               showLoginForm={() => this.setState({currentPage: 'login'})}
               {...bindActionCreators(UserActions, dispatch)}
             />

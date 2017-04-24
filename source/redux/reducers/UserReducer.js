@@ -30,16 +30,12 @@ export default function UserReducer(state = defaultState, action) {
         }
       }
     case 'SIGNIN_LOGIN':
-      return (action.data.result === 'success') ?
-      {
+      return {
         ...state,
         ...action.data,
         loggedIn: true,
         signinModalShown: false,
         isAdmin: isAdmin(action.data.userType)
-      } : {
-        ...state,
-        loginError: action.data.result
       }
     case 'SIGNIN_LOGOUT':
       return {
@@ -48,16 +44,12 @@ export default function UserReducer(state = defaultState, action) {
         }
       }
     case 'SIGNIN_SIGNUP':
-      return (action.data.result === 'success') ?
-      {
+      return {
         ...state,
         ...action.data,
         isAdmin: isAdmin(action.data.userType),
         loggedIn: true,
         signinModalShown: false
-      } : {
-        ...state,
-        signupError: action.data.result
       }
     case 'SIGNIN_OPEN':
       return {
@@ -67,15 +59,7 @@ export default function UserReducer(state = defaultState, action) {
     case 'SIGNIN_CLOSE':
       return {
         ...state,
-        signupError: null,
-        loginError: null,
         signinModalShown: false
-      }
-    case 'SIGNIN_HIDEALERT':
-      return {
-        ...state,
-        loginError: null,
-        signupError: null
       }
     case 'UPDATE_BIO':
       return {

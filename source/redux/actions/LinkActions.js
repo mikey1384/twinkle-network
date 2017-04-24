@@ -1,6 +1,7 @@
 import request from 'axios'
 import {auth, handleError} from './constants'
 import {URL} from 'constants/URL'
+import {push} from 'react-router-redux'
 const API_URL = `${URL}/url`
 
 export const likeComment = commentId => dispatch =>
@@ -37,6 +38,18 @@ request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
   }
 )
 
+export const deleteLinkFromPage = linkId => dispatch =>
+request.delete(`${API_URL}/page?linkId=${linkId}`, auth()).then(
+  response => {
+    dispatch(push('/links'))
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const editComment = (params, cb) => dispatch =>
 request.put(`${API_URL}/comments`, params, auth()).then(
   response => {
@@ -60,7 +73,7 @@ request.put(`${API_URL}/page`, params, auth()).then(
   response => {
     dispatch({
       type: 'EDIT_LINK_PAGE',
-      data: response.data
+      data: params
     })
     return Promise.resolve()
   }

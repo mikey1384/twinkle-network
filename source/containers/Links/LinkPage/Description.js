@@ -20,6 +20,7 @@ export default class Description extends Component {
       PropTypes.number
     ]),
     uploaderName: PropTypes.string,
+    onDelete: PropTypes.func,
     onEditDone: PropTypes.func
   }
 
@@ -36,7 +37,7 @@ export default class Description extends Component {
     this.onEditFinish = this.onEditFinish.bind(this)
   }
   render() {
-    const {uploaderId, myId, title, description, uploaderName, timeStamp} = this.props
+    const {uploaderId, myId, title, description, uploaderName, timeStamp, onDelete} = this.props
     const {
       onEdit,
       editedTitle,
@@ -60,7 +61,7 @@ export default class Description extends Component {
               },
               {
                 label: 'Delete',
-                onClick: () => console.log('delete')
+                onClick: () => onDelete()
               }
             ]}
           />

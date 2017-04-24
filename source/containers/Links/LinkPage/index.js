@@ -6,6 +6,7 @@ import Embedly from 'components/Embedly'
 import {
   loadLinkPage,
   deleteComment,
+  deleteLinkFromPage,
   editComment,
   editLinkPage,
   fetchComments,
@@ -30,6 +31,7 @@ import Description from './Description'
   {
     loadLinkPage,
     deleteComment,
+    deleteLinkFromPage,
     editComment,
     editLinkPage,
     fetchComments,
@@ -49,6 +51,7 @@ export default class LinkPage extends Component {
     likeComment: PropTypes.func,
     likeLink: PropTypes.func,
     deleteComment: PropTypes.func,
+    deleteLinkFromPage: PropTypes.func,
     editComment: PropTypes.func,
     editLinkPage: PropTypes.func,
     fetchComments: PropTypes.func,
@@ -90,6 +93,7 @@ export default class LinkPage extends Component {
       },
       editLinkPage,
       likeLink,
+      deleteLinkFromPage,
       myId
     } = this.props
     const {likersModalShown} = this.state
@@ -116,6 +120,7 @@ export default class LinkPage extends Component {
             title={title}
             description={description}
             linkId={id}
+            onDelete={() => deleteLinkFromPage(id)}
             onEditDone={params => editLinkPage(params)}
           />
           <Embedly style={{marginTop: '1.5rem'}} url={content} />

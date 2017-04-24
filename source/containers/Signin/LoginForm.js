@@ -1,73 +1,76 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import {reduxForm, Field} from 'redux-form'
 import {Modal, Alert} from 'react-bootstrap'
 import Button from 'components/Button'
 import {stringIsEmpty} from 'helpers/stringHelpers'
 
-/* eslint-disable react/prop-types */
-const renderInput = ({input, type, className, placeholder, meta: {touched, error}}) => (
-  <div>
-    <input
-      {...input}
-      className={className}
-      placeholder={placeholder}
-      type={type}
-    />
-    <span
-      className="help-block"
-      style={{color: 'red'}}
-    >{touched && error && error}</span>
-  </div>
-)
-/* eslint-enable react/prop-types */
-
-@reduxForm({
-  form: 'LoginForm',
-  validate
-})
 export default class LoginForm extends Component {
   static propTypes = {
-    handleSubmit: PropTypes.func,
-    errorMessage: PropTypes.string,
-    hideErrorAlert: PropTypes.func,
     loginAsync: PropTypes.func,
     showSignUpForm: PropTypes.func
   }
 
   constructor() {
     super()
+    this.state = {
+      username: '',
+      password: '',
+      errorMessage: ''
+    }
     this.onSubmit = this.onSubmit.bind(this)
   }
 
   render() {
-    const {handleSubmit, errorMessage, hideErrorAlert, showSignUpForm} = this.props
+    const {showSignUpForm} = this.props
+    const {username, password, errorMessage} = this.state
     return (
-      <form onSubmit={handleSubmit(this.onSubmit)} onInput={() => hideErrorAlert()} >
+      <div>
         {errorMessage &&
-          <Alert bsStyle="danger">
+          <Alert bsStyle="warning">
             {errorMessage}
           </Alert>
         }
         <div className="container-fluid">
           <fieldset className="form-group">
             <label>Username</label>
-            <Field
+            <input
               name="username"
-              placeholder="Username"
               className="form-control"
+              value={username}
+              onChange={event => {
+                this.setState({
+                  errorMessage: '',
+                  username: event.target.value
+                })
+              }}
+              placeholder="Enter your username"
               type="text"
-              component={renderInput}
+              onKeyPress={event => {
+                if (!stringIsEmpty(username) && !stringIsEmpty(password) && event.key === 'Enter') {
+                  this.onSubmit()
+                }
+              }}
             />
           </fieldset>
           <fieldset className="form-group">
             <label>Password</label>
-            <Field
+            <input
               name="password"
-              placeholder="Password"
               className="form-control"
+              value={password}
+              onChange={event => {
+                this.setState({
+                  errorMessage: '',
+                  password: event.target.value
+                })
+              }}
+              placeholder="Enter your password"
               type="password"
-              component={renderInput}
+              onKeyPress={event => {
+                if (!stringIsEmpty(username) && !stringIsEmpty(password) && event.key === 'Enter') {
+                  this.onSubmit()
+                }
+              }}
             />
           </fieldset>
         </div>
@@ -85,29 +88,21 @@ export default class LoginForm extends Component {
           </Button>
           <Button
             className="btn btn-lg btn-primary"
-            type="submit"
             style={{fontSize: '1.5em'}}
+            disabled={stringIsEmpty(username) || stringIsEmpty(password)}
+            onClick={this.onSubmit}
           >
             Log me in!
           </Button>
         </Modal.Footer>
-      </form>
+      </div>
     )
   }
 
-  onSubmit(props) {
-    this.props.loginAsync(props)
+  onSubmit() {
+    const {username, password} = this.state
+    return this.props.loginAsync({username, password}).catch(
+      error => this.setState({errorMessage: error})
+    )
   }
-}
-
-function validate(values) {
-  const {username, password} = values
-  const errors = {}
-  if (stringIsEmpty(username)) {
-    errors.username = 'Enter username'
-  }
-  if (stringIsEmpty(password)) {
-    errors.password = 'Enter password'
-  }
-  return errors
 }

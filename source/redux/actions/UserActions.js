@@ -61,9 +61,9 @@ request.post(`${API_URL}/login`, params)
 ).catch(
   error => {
     if (error.response.status === 401) {
-      return dispatch(login({result: 'Incorrect username/password combination'}))
+      return Promise.reject('Incorrect username/password combination')
     }
-    dispatch(login({result: error.data}))
+    return Promise.reject('There was an error')
   }
 )
 
@@ -74,18 +74,18 @@ export const logout = () => {
   }
 }
 
-export const signup = data => ({
-  type: 'SIGNIN_SIGNUP',
-  data
-})
-
 export const signupAsync = params => dispatch =>
 request.post(`${API_URL}/signup`, params)
 .then(
   response => {
     if (response.data.token) localStorage.setItem('token', response.data.token)
-    dispatch(signup(response.data))
+    dispatch({
+      type: 'SIGNIN_SIGNUP',
+      data: response.data
+    })
   }
+).catch(
+  error => Promise.reject(error.response.data)
 )
 
 export const uploadBio = (params, callback) => dispatch =>
@@ -128,10 +128,6 @@ export const openSigninModal = () => ({
 
 export const closeSigninModal = () => ({
   type: 'SIGNIN_CLOSE'
-})
-
-export const hideErrorAlert = () => ({
-  type: 'SIGNIN_HIDEALERT'
 })
 
 export const unmountProfile = () => ({

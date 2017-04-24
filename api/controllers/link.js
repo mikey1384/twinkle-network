@@ -92,6 +92,18 @@ router.post('/like', requireAuth, (req, res) => {
   )
 })
 
+router.delete('/page', requireAuth, (req, res) => {
+  const {query: {linkId}, user} = req
+  return poolQuery('DELETE FROM content_urls WHERE id = ? AND uploader = ?', [linkId, user.id]).then(
+    () => res.send({success: true})
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
 router.get('/page', (req, res) => {
   const {linkId} = req.query
   let query = `
@@ -128,7 +140,7 @@ router.put('/page', requireAuth, (req, res) => {
   }
   const post = {title: editedTitle, description: processedString(editedDescription)}
   return poolQuery('UPDATE content_urls SET ? WHERE id = ? AND uploader = ?', [post, linkId, user.id]).then(
-    () => res.send({title: editedTitle, description: editedDescription})
+    () => res.send({success: true})
   ).catch(
     error => {
       console.error(error)
