@@ -208,13 +208,6 @@ request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId
   }
 )
 
-export const reloadFeeds = () => dispatch => {
-  dispatch(clearFeeds())
-  return dispatch(fetchFeedsAsync()).then(
-    () => Promise.resolve()
-  )
-}
-
 export const showFeedCommentsAsync = ({rootType, type, contentId, commentLength, isReply}) => dispatch =>
 request.get(
   `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`

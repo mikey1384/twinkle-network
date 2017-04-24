@@ -9,7 +9,6 @@ import {
   increaseNumberOfUnreadMessages,
   turnChatOff
 } from 'redux/actions/ChatActions'
-import {reloadFeeds} from 'redux/actions/FeedActions'
 import {getInitialVideos} from 'redux/actions/VideoActions'
 import {
   getPlaylistsAsync,
@@ -45,8 +44,7 @@ import {Color} from 'constants/css'
     increaseNumberOfUnreadMessages,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
-    getInitialVideos,
-    reloadFeeds
+    getInitialVideos
   }
 )
 @withRouter
@@ -68,7 +66,6 @@ export default class Header extends Component {
     closeSigninModal: PropTypes.func,
     onChatButtonClick: PropTypes.func,
     numChatUnreads: PropTypes.number,
-    reloadFeeds: PropTypes.func,
     getInitialVideos: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
     getPlaylists: PropTypes.func
@@ -161,13 +158,12 @@ export default class Header extends Component {
       closeSigninModal,
       onChatButtonClick,
       numChatUnreads,
-      reloadFeeds,
       getInitialVideos,
       getPinnedPlaylists,
       getPlaylists
     } = this.props
 
-    const {logoBlue, logoGreen, feedLoading} = this.state
+    const {logoBlue, logoGreen} = this.state
     return (
       <Navbar fluid fixedTop={!chatMode}>
         <Navbar.Header>
@@ -193,14 +189,6 @@ export default class Header extends Component {
                   isUsername={
                     pathname.split('/')[1] !== 'videos' && pathname.split('/')[1] !== 'links' && pathname.length > 1
                   }
-                  onClick={() => {
-                    if (!feedLoading) {
-                      this.setState({feedLoading: true})
-                      return reloadFeeds().then(
-                        () => this.setState({feedLoading: false})
-                      )
-                    }
-                  }}
                 >
                   Home
                 </HeaderNav>
