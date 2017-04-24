@@ -69,6 +69,16 @@ export default function linkReducer(state = defaultState, action) {
           })
         }
       }
+    case 'EDIT_LINK_PAGE':
+      const {title, description} = action.data
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          title,
+          description
+        }
+      }
     case 'FETCH_LINKS':
       if (action.links.length > 20) {
         loadMoreLinksButtonShown = true

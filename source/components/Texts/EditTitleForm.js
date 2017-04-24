@@ -26,7 +26,7 @@ class EditTitleForm extends Component {
     return (
       <form onSubmit={event => this.onEditSubmit(event, title)}>
         <input
-          autoFocus
+          {...this.props}
           ref="editTitleInput"
           type="text"
           className="form-control"

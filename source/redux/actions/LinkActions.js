@@ -55,6 +55,17 @@ request.put(`${API_URL}/comments`, params, auth()).then(
   }
 )
 
+export const editLinkPage = (params) => dispatch =>
+request.put(`${API_URL}/page`, params, auth()).then(
+  response => {
+    dispatch({
+      type: 'EDIT_LINK_PAGE',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+)
+
 export const fetchLinks = () => dispatch =>
 request.get(API_URL).then(
   response => {

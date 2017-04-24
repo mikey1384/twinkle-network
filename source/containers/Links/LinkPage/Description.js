@@ -1,85 +1,71 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import SmallDropdownButton from 'components/SmallDropdownButton'
 import UsernameText from 'components/Texts/UsernameText'
-import Textarea from 'react-textarea-autosize'
-import Button from 'components/Button'
-import LongText from 'components/Texts/LongText'
+import SmallDropdownButton from 'components/SmallDropdownButton'
 import {timeSince} from 'helpers/timeStampHelpers'
+import LongText from 'components/Texts/LongText'
+import Button from 'components/Button'
+import Textarea from 'react-textarea-autosize'
 import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
 
 export default class Description extends Component {
   static propTypes = {
+    linkId: PropTypes.number,
+    uploaderId: PropTypes.number,
+    myId: PropTypes.number,
     title: PropTypes.string,
     description: PropTypes.string,
-    onDelete: PropTypes.func,
-    uploaderId: PropTypes.number,
-    userId: PropTypes.number,
-    uploaderName: PropTypes.string,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]),
-    videoId: PropTypes.number,
-    onEditFinish: PropTypes.func
+    uploaderName: PropTypes.string,
+    onEditDone: PropTypes.func
   }
 
   constructor(props) {
     super()
     this.state = {
-      onEdit: false,
       editedTitle: cleanString(props.title),
       editedDescription: cleanStringWithURL(props.description),
+      onEdit: false,
       editDoneButtonDisabled: true
     }
-    this.onEditFinish = this.onEditFinish.bind(this)
+    this.determineEditButtonDoneStatus = this.determineEditButtonDoneStatus.bind(this)
     this.onEditCancel = this.onEditCancel.bind(this)
+    this.onEditFinish = this.onEditFinish.bind(this)
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.title !== this.props.title) {
-      this.setState({
-        editedTitle: cleanString(nextProps.title)
-      })
-    }
-    if (nextProps.description !== this.props.description) {
-      this.setState({
-        editedDescription: cleanStringWithURL(nextProps.description)
-      })
-    }
-  }
-
   render() {
-    const menuProps = [
-      {
-        label: 'Edit',
-        onClick: () => this.setState({onEdit: true})
-      },
-      {
-        label: 'Delete',
-        onClick: () => this.props.onDelete()
-      }
-    ]
-
-    const {uploaderId, userId, uploaderName, title, description, timeStamp} = this.props
-    let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state
-    editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription
+    const {uploaderId, myId, title, description, uploaderName, timeStamp} = this.props
+    const {
+      onEdit,
+      editedTitle,
+      editedDescription,
+      editDoneButtonDisabled
+    } = this.state
     return (
       <div>
-        <div
-          className="row page-header text-center"
-          style={{paddingBottom: '1em'}}
-        >
-          {uploaderId === userId && !onEdit &&
-            <SmallDropdownButton
-              style={{
-                right: '2em',
-                position: 'absolute'
-              }}
-              shape="button" icon="pencil"
-              menuProps={menuProps}
-            />
-          }
+        {uploaderId === myId && !onEdit &&
+          <SmallDropdownButton
+            style={{
+              top: '1em',
+              right: '1em',
+              position: 'absolute'
+            }}
+            shape="button" icon="pencil"
+            menuProps={[
+              {
+                label: 'Edit',
+                onClick: () => this.setState({onEdit: true})
+              },
+              {
+                label: 'Delete',
+                onClick: () => console.log('delete')
+              }
+            ]}
+          />
+        }
+        <div className="row page-header text-center" style={{marginTop: '2.5rem'}}>
           <div>
             {onEdit ?
               <form className="col-sm-6 col-sm-offset-3" onSubmit={event => event.preventDefault()}>
@@ -96,29 +82,21 @@ export default class Description extends Component {
                   }}
                 />
               </form> :
-              <h1>
-                <span style={{wordWrap: 'break-word'}}>{cleanString(title)}</span>
-              </h1>
+              <h2>{title}</h2>
             }
           </div>
-          <div
-            className="col-sm-12"
-            style={{
-              paddingTop: onEdit && '1em'
-            }}
-          >
-            <small
-              style={{
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                lineHeight: 'normal'
-              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
+          <div>
+            <small className="col-xs-12" style={{paddingTop: onEdit && '1em'}}>
+              Added by <UsernameText user={{id: uploaderId, name: uploaderName}} /> ({timeSince(timeStamp)})
             </small>
           </div>
         </div>
-        <div className="row container-fluid">
-          <h2>Description</h2>
+        <div
+          style={{
+            fontSize: '1.7rem',
+            lineHeight: '3rem'
+          }}
+        >
           {onEdit ?
             <div>
               <form>
@@ -153,9 +131,7 @@ export default class Description extends Component {
                 >Cancel</Button>
               </div>
             </div> :
-            <LongText style={{wordWrap: 'break-word'}}>
-              {stringIsEmpty(description) ? 'No Description' : description}
-            </LongText>
+            <LongText lines={20}>{description || ''}</LongText>
           }
         </div>
       </div>
@@ -171,22 +147,20 @@ export default class Description extends Component {
   }
 
   onEditCancel() {
-    const {description} = this.props
-    const editedDescription = description === 'No description' ? '' : cleanStringWithURL(description)
+    const {description, title} = this.props
     this.setState({
-      editedTitle: cleanString(this.props.title),
-      editedDescription,
+      editedTitle: cleanString(title),
+      editedDescription: cleanStringWithURL(description),
       onEdit: false,
       editDoneButtonDisabled: true
     })
   }
 
   onEditFinish() {
-    const params = {
-      videoId: this.props.videoId,
-      title: this.state.editedTitle,
-      description: this.state.editedDescription
-    }
-    this.props.onEditFinish(params, this)
+    const {onEditDone, linkId} = this.props
+    const {editedTitle, editedDescription} = this.state
+    return onEditDone({editedTitle, editedDescription, linkId}).then(
+      () => this.setState({onEdit: false})
+    )
   }
 }

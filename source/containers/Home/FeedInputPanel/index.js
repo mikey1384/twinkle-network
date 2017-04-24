@@ -247,6 +247,7 @@ export default class FeedInputPanel extends Component {
       },
       urlError: null
     })
+    window.scrollTo(0, 0)
     uploadContent(form)
   }
 

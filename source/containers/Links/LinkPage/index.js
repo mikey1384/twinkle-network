@@ -7,6 +7,7 @@ import {
   loadLinkPage,
   deleteComment,
   editComment,
+  editLinkPage,
   fetchComments,
   fetchMoreComments,
   fetchMoreReplies,
@@ -15,13 +16,11 @@ import {
   submitComment,
   submitReply
 } from 'redux/actions/LinkActions'
-import UsernameText from 'components/Texts/UsernameText'
-import {timeSince} from 'helpers/timeStampHelpers'
-import LongText from 'components/Texts/LongText'
 import PanelComments from 'components/PanelComments'
 import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
+import Description from './Description'
 
 @connect(
   state => ({
@@ -32,6 +31,7 @@ import UserListModal from 'components/Modals/UserListModal'
     loadLinkPage,
     deleteComment,
     editComment,
+    editLinkPage,
     fetchComments,
     fetchMoreComments,
     fetchMoreReplies,
@@ -50,6 +50,7 @@ export default class LinkPage extends Component {
     likeLink: PropTypes.func,
     deleteComment: PropTypes.func,
     editComment: PropTypes.func,
+    editLinkPage: PropTypes.func,
     fetchComments: PropTypes.func,
     fetchMoreReplies: PropTypes.func,
     fetchMoreComments: PropTypes.func,
@@ -58,7 +59,7 @@ export default class LinkPage extends Component {
     myId: PropTypes.number
   }
 
-  constructor() {
+  constructor(props) {
     super()
     this.state = {
       likersModalShown: false
@@ -83,11 +84,11 @@ export default class LinkPage extends Component {
       pageProps: {
         id, title, content,
         description, timeStamp,
-        uploader: userId,
-        uploaderName: username,
+        uploader, uploaderName,
         comments, likers,
         loadMoreCommentsButton
       },
+      editLinkPage,
       likeLink,
       myId
     } = this.props
@@ -107,23 +108,16 @@ export default class LinkPage extends Component {
         }}
       >
         <div className="container-fluid">
-          <div
-            className="page-header text-center"
-            style={{marginTop: '2.5rem'}}
-          >
-            <h2>{title}</h2>
-            <small>
-              Added by <UsernameText user={{id: userId, name: username}} /> ({timeSince(timeStamp)})
-            </small>
-          </div>
-          <div
-            style={{
-              fontSize: '1.7rem',
-              lineHeight: '3rem'
-            }}
-          >
-            <LongText lines={20}>{description || ''}</LongText>
-          </div>
+          <Description
+            uploaderId={uploader}
+            uploaderName={uploaderName}
+            timeStamp={timeStamp}
+            myId={myId}
+            title={title}
+            description={description}
+            linkId={id}
+            onEditDone={params => editLinkPage(params)}
+          />
           <Embedly style={{marginTop: '1.5rem'}} url={content} />
           <div style={{paddingTop: '1.5em', textAlign: 'center'}}>
             <LikeButton

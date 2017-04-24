@@ -11,6 +11,7 @@ const {
   fetchComments,
   fetchReplies
 } = require('../helpers/commentHelpers')
+const {stringIsEmpty, processedString} = require('../helpers/stringHelpers')
 
 router.get('/', (req, res) => {
   const linkId = typeof req.query.linkId !== 'undefined' ? req.query.linkId : null
@@ -112,6 +113,22 @@ router.get('/page', (req, res) => {
     ({result, likers}) => {
       res.send(Object.assign({}, result, {likers}))
     }
+  ).catch(
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
+    }
+  )
+})
+
+router.put('/page', requireAuth, (req, res) => {
+  const {user, body: {editedTitle, editedDescription, linkId}} = req
+  if (stringIsEmpty(editedTitle)) {
+    return res.status(500).send({error: 'Title is empty'})
+  }
+  const post = {title: editedTitle, description: processedString(editedDescription)}
+  return poolQuery('UPDATE content_urls SET ? WHERE id = ? AND uploader = ?', [post, linkId, user.id]).then(
+    () => res.send({title: editedTitle, description: editedDescription})
   ).catch(
     error => {
       console.error(error)

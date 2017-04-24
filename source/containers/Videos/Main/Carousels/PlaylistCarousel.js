@@ -161,6 +161,7 @@ export default class PlaylistCarousel extends Component {
               }}
             >
               <EditTitleForm
+                autoFocus
                 title={title}
                 onEditSubmit={this.onEditedTitleSubmit}
                 onClickOutSide={this.onEditTitleCancel}

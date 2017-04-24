@@ -126,6 +126,7 @@ export default class VideoThumb extends Component {
                 }}
               >
                 <EditTitleForm
+                  autoFocus
                   title={video.title}
                   onEditSubmit={this.onEditedTitleSubmit}
                   onClickOutSide={this.onEditTitleCancel}
