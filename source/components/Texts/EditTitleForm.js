@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import onClickOutside from 'react-onclickoutside'
-import {cleanString} from 'helpers/stringHelpers'
+import {cleanString, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 class EditTitleForm extends Component {
   static propTypes = {
@@ -33,6 +33,7 @@ class EditTitleForm extends Component {
           placeholder="Enter Title..."
           value={title}
           onChange={event => this.setState({title: event.target.value})}
+          onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
         />
       </form>
     )
@@ -40,7 +41,7 @@ class EditTitleForm extends Component {
 
   onEditSubmit(event, title) {
     event.preventDefault()
-    this.props.onEditSubmit(title)
+    this.props.onEditSubmit(finalizeEmoji(title))
   }
 }
 
