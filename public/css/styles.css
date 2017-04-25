@@ -120,6 +120,10 @@ html, body {
   -webkit-animation: spin2 1s infinite linear;
 }
 
+.navbar-default .navbar-nav > li > a:focus {
+	color: #999999;
+}
+
 .video-player { position: relative; }
 .video-player a {
 	position: absolute;
