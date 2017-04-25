@@ -6,7 +6,13 @@ import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
 import LongText from 'components/Texts/LongText'
 import {timeSince} from 'helpers/timeStampHelpers'
-import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
+import {
+  cleanString,
+  cleanStringWithURL,
+  stringIsEmpty,
+  addEmoji,
+  finalizeEmoji
+} from 'helpers/stringHelpers'
 
 export default class Description extends Component {
   static propTypes = {
@@ -94,6 +100,11 @@ export default class Description extends Component {
                       this.determineEditButtonDoneStatus()
                     })
                   }}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({editedTitle: addEmoji(event.target.value)})
+                    }
+                  }}
                 />
               </form> :
               <h1>
@@ -132,6 +143,11 @@ export default class Description extends Component {
                     this.setState({editedDescription: event.target.value}, () => {
                       this.determineEditButtonDoneStatus()
                     })
+                  }}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({editedDescription: addEmoji(event.target.value)})
+                    }
                   }}
                  />
               </form>
@@ -184,8 +200,8 @@ export default class Description extends Component {
   onEditFinish() {
     const params = {
       videoId: this.props.videoId,
-      title: this.state.editedTitle,
-      description: this.state.editedDescription
+      title: finalizeEmoji(this.state.editedTitle),
+      description: finalizeEmoji(this.state.editedDescription)
     }
     this.props.onEditFinish(params, this)
   }

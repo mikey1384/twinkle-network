@@ -61,7 +61,10 @@ export default class SortableThumb extends Component {
             alt="Thumbnail"
             src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
           />
-          <div className="caption">
+          <div
+            className="caption"
+            style={{height: '8rem'}}
+          >
             <div>
               <h5 style={{
                 whiteSpace: 'nowrap',

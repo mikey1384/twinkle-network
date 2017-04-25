@@ -6,7 +6,7 @@ import {timeSince} from 'helpers/timeStampHelpers'
 import LongText from 'components/Texts/LongText'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
+import {cleanString, cleanStringWithURL, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 export default class Description extends Component {
   static propTypes = {
@@ -81,6 +81,11 @@ export default class Description extends Component {
                       this.determineEditButtonDoneStatus()
                     })
                   }}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({editedTitle: addEmoji(event.target.value)})
+                    }
+                  }}
                 />
               </form> :
               <h2>{title}</h2>
@@ -111,6 +116,11 @@ export default class Description extends Component {
                     this.setState({editedDescription: event.target.value}, () => {
                       this.determineEditButtonDoneStatus()
                     })
+                  }}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({editedDescription: addEmoji(event.target.value)})
+                    }
                   }}
                  />
               </form>
@@ -160,7 +170,11 @@ export default class Description extends Component {
   onEditFinish() {
     const {onEditDone, linkId} = this.props
     const {editedTitle, editedDescription} = this.state
-    return onEditDone({editedTitle, editedDescription, linkId}).then(
+    return onEditDone({
+      editedTitle: finalizeEmoji(editedTitle),
+      editedDescription: finalizeEmoji(editedDescription),
+      linkId
+    }).then(
       () => this.setState({onEdit: false})
     )
   }

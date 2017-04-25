@@ -8,7 +8,7 @@ import {
   uploadPlaylistAsync,
   getMoreVideosForModalAsync
 } from 'redux/actions/PlaylistActions'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import {connect} from 'react-redux'
 import SortableThumb from './SortableThumb'
 import {DragDropContext} from 'react-dnd'
@@ -90,7 +90,12 @@ export default class AddPlaylistModal extends Component {
                   className="form-control"
                   type="text"
                   value={title}
-                  onChange={e => this.setState({title: e.target.value})}
+                  onChange={event => this.setState({title: event.target.value})}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({title: addEmoji(event.target.value)})
+                    }
+                  }}
                 />
                 <span
                   className="help-block"
@@ -105,7 +110,12 @@ export default class AddPlaylistModal extends Component {
                   className="form-control"
                   minRows={4}
                   value={description}
-                  onChange={e => this.setState({description: e.target.value})}
+                  onChange={event => this.setState({description: event.target.value})}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({description: addEmoji(event.target.value)})
+                    }
+                  }}
                 />
               </fieldset>
             </form>
@@ -205,7 +215,7 @@ export default class AddPlaylistModal extends Component {
   handleFinish() {
     const {uploadPlaylist} = this.props
     const {title, description, selectedVideos} = this.state
-    uploadPlaylist({title, description, selectedVideos})
+    uploadPlaylist({title: finalizeEmoji(title), description: finalizeEmoji(description), selectedVideos})
   }
 
   handleHide() {

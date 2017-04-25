@@ -7,7 +7,7 @@ import SearchInput from 'components/SearchInput'
 import {uploadVideoAsync} from 'redux/actions/VideoActions'
 import {fetchCategoriesAsync, clearCategoriesSearchResults} from 'redux/actions/FeedActions'
 import {connect} from 'react-redux'
-import {isValidYoutubeUrl, stringIsEmpty} from 'helpers/stringHelpers'
+import {isValidYoutubeUrl, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import {Color} from 'constants/css'
 
 @connect(
@@ -118,6 +118,16 @@ export default class AddVideoForm extends Component {
               className="form-control"
               placeholder="Enter Title"
               type="text"
+              onKeyUp={event => {
+                if (event.key === ' ') {
+                  this.setState({
+                    form: {
+                      ...form,
+                      title: addEmoji(event.target.value)
+                    }
+                  })
+                }
+              }}
             />
           </div>
         </fieldset>
@@ -129,6 +139,16 @@ export default class AddVideoForm extends Component {
             minRows={4}
             placeholder="Enter Description (Optional, you don't need to write this)"
             onChange={event => this.setState({form: {...form, description: event.target.value}})}
+            onKeyUp={event => {
+              if (event.key === ' ') {
+                this.setState({
+                  form: {
+                    ...form,
+                    description: addEmoji(event.target.value)
+                  }
+                })
+              }
+            }}
           />
         </fieldset>
         <Modal.Footer>
@@ -158,7 +178,11 @@ export default class AddVideoForm extends Component {
       return this.UrlField.focus()
     }
 
-    uploadVideo(form)
+    uploadVideo({
+      ...form,
+      title: finalizeEmoji(form.title),
+      description: finalizeEmoji(form.description)
+    })
   }
 
   onCategorySelect(item) {

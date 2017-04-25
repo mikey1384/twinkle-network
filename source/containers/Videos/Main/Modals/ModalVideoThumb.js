@@ -44,7 +44,10 @@ export default function VideoThumb({video, selected, onSelect, onDeselect}) {
             }}
           />
         </div>
-        <div className="caption">
+        <div
+          className="caption"
+          style={{height: '8rem'}}
+        >
           <div>
             <h5 style={{
               whiteSpace: 'nowrap',

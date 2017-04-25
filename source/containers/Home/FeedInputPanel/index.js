@@ -13,7 +13,9 @@ import {
 import {
   isValidUrl,
   isValidYoutubeUrl,
-  stringIsEmpty
+  stringIsEmpty,
+  addEmoji,
+  finalizeEmoji
 } from 'helpers/stringHelpers'
 
 @connect(
@@ -158,6 +160,16 @@ export default class FeedInputPanel extends Component {
                       onChange={event => this.setState({form: {...form, title: event.target.value}})}
                       className="form-control"
                       placeholder="Enter Title"
+                      onKeyUp={event => {
+                        if (event.key === ' ') {
+                          this.setState({
+                            form: {
+                              ...this.state.form,
+                              title: addEmoji(event.target.value)
+                            }
+                          })
+                        }
+                      }}
                       type="text"
                     />
                   </div>
@@ -169,6 +181,16 @@ export default class FeedInputPanel extends Component {
                     minRows={4}
                     placeholder="Enter Description (Optional, you don't need to write this)"
                     onChange={event => this.setState({form: {...form, description: event.target.value}})}
+                    onKeyUp={event => {
+                      if (event.key === ' ') {
+                        this.setState({
+                          form: {
+                            ...this.state.form,
+                            description: addEmoji(event.target.value)
+                          }
+                        })
+                      }
+                    }}
                   />
                 </fieldset>
               </div>
@@ -248,7 +270,11 @@ export default class FeedInputPanel extends Component {
       urlError: null
     })
     window.scrollTo(0, 0)
-    uploadContent(form)
+    uploadContent({
+      ...form,
+      title: finalizeEmoji(form.title),
+      description: finalizeEmoji(form.description)
+    })
   }
 
   onUrlFieldChange(event) {

@@ -224,8 +224,7 @@ export default class Header extends Component {
               <AccountMenu
                 title={username}
                 logout={logout}
-              />
-              :
+              /> :
               <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
             }
           </Nav>
