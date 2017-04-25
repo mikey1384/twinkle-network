@@ -52,12 +52,12 @@ export default class Feeds extends Component {
 
   componentDidMount() {
     let {history, feeds, clearFeeds, fetchFeeds} = this.props
+    addEvent(window, 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !feeds) {
       return clearFeeds().then(
         () => fetchFeeds()
       )
     }
-    addEvent(window, 'scroll', this.onScroll)
   }
 
   componentWillUnmount() {
@@ -118,7 +118,6 @@ export default class Feeds extends Component {
 
   onScroll() {
     let {chatMode, feeds} = this.props
-    if (!feeds) feeds = []
     if (!chatMode && feeds.length > 0) {
       this.setState({scrollPosition: document.body.scrollTop})
       if (this.state.scrollPosition >= (document.body.scrollHeight - window.innerHeight) * 0.7) {
