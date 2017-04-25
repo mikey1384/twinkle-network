@@ -15,6 +15,7 @@ import {
   resetPlaylistModalState
 } from 'redux/actions/PlaylistActions'
 import {connect} from 'react-redux'
+import {cleanString} from 'helpers/stringHelpers'
 
 @connect(
   state => ({
@@ -171,7 +172,7 @@ export default class PlaylistCarousel extends Component {
             <h4
               className="pull-left"
             >
-              {title} <small>by {uploader}</small>
+              {cleanString(title)} <small>by {uploader}</small>
             </h4>
           }
           {(editable || isAdmin) &&
