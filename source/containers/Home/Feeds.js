@@ -30,7 +30,6 @@ export default class Feeds extends Component {
     noFeeds: PropTypes.bool,
     fetchFeeds: PropTypes.func,
     clearFeeds: PropTypes.func,
-    history: PropTypes.object,
     feeds: PropTypes.array,
     loadMoreButton: PropTypes.bool,
     userId: PropTypes.number,
@@ -54,11 +53,6 @@ export default class Feeds extends Component {
     const {fetchFeeds} = this.props
     fetchFeeds()
     addEvent(window, 'scroll', this.onScroll)
-  }
-
-  componentDidUpdate() {
-    const {fetchFeeds, history, feeds} = this.props
-    if (history.action === 'POP' && feeds.length === 0) fetchFeeds()
   }
 
   componentWillUnmount() {
