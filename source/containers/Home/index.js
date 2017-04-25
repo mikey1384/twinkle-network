@@ -17,7 +17,6 @@ export default class Home extends Component {
   static propTypes = {
     history: PropTypes.object,
     match: PropTypes.object,
-    clearFeeds: PropTypes.func,
     params: PropTypes.object,
     username: PropTypes.string
   }
@@ -43,7 +42,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {username, clearFeeds, history} = this.props
+    const {username, history} = this.props
     const {selectedTab} = this.state
     const listStyle = {
       profile: {
@@ -73,7 +72,6 @@ export default class Home extends Component {
               className="list-group-item left-menu-item"
               style={listStyle.profile}
               onClick={() => {
-                clearFeeds()
                 history.push(`/${username}`)
               }}
             >

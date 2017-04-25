@@ -4,9 +4,12 @@ import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/feed`
 
-export const clearFeeds = () => ({
-  type: 'CLEAR_FEEDS'
-})
+export const clearFeeds = () => dispatch => {
+  dispatch({
+    type: 'CLEAR_FEEDS'
+  })
+  return Promise.resolve()
+}
 
 export const clearCategoriesSearchResults = () => ({
   type: 'CLEAR_CATEGORIES_SEARCH'

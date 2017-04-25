@@ -30,6 +30,7 @@ export default class Feeds extends Component {
     noFeeds: PropTypes.bool,
     fetchFeeds: PropTypes.func,
     clearFeeds: PropTypes.func,
+    history: PropTypes.object,
     feeds: PropTypes.array,
     loadMoreButton: PropTypes.bool,
     userId: PropTypes.number,
@@ -50,13 +51,16 @@ export default class Feeds extends Component {
   }
 
   componentDidMount() {
-    const {fetchFeeds} = this.props
-    fetchFeeds()
+    let {history, feeds, clearFeeds, fetchFeeds} = this.props
+    if (history.action === 'PUSH' || !feeds) {
+      return clearFeeds().then(
+        () => fetchFeeds()
+      )
+    }
     addEvent(window, 'scroll', this.onScroll)
   }
 
   componentWillUnmount() {
-    this.props.clearFeeds()
     removeEvent(window, 'scroll', this.onScroll)
   }
 
@@ -96,8 +100,9 @@ export default class Feeds extends Component {
   applyFilter(filter) {
     const {fetchFeeds, selectedFilter, clearFeeds} = this.props
     if (filter === selectedFilter) return
-    clearFeeds()
-    fetchFeeds(filter)
+    return clearFeeds().then(
+      () => fetchFeeds(filter)
+    )
   }
 
   loadMoreFeeds() {
@@ -112,7 +117,8 @@ export default class Feeds extends Component {
   }
 
   onScroll() {
-    const {chatMode, feeds} = this.props
+    let {chatMode, feeds} = this.props
+    if (!feeds) feeds = []
     if (!chatMode && feeds.length > 0) {
       this.setState({scrollPosition: document.body.scrollTop})
       if (this.state.scrollPosition >= (document.body.scrollHeight - window.innerHeight) * 0.7) {
