@@ -5,7 +5,6 @@ import FeedInputPanel from './FeedInputPanel'
 import FeedPanel from './FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
-import ExecutionEnvironment from 'exenv'
 import {connect} from 'react-redux'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 
@@ -52,9 +51,14 @@ export default class Feeds extends Component {
   }
 
   componentDidMount() {
-    const {fetchFeeds, history, feeds} = this.props
-    if (ExecutionEnvironment.canUseDOM && (history.action === 'PUSH' || !feeds)) fetchFeeds()
+    const {fetchFeeds} = this.props
+    fetchFeeds()
     addEvent(window, 'scroll', this.onScroll)
+  }
+
+  componentDidUpdate() {
+    const {fetchFeeds, history, feeds} = this.props
+    if (history.action === 'POP' && feeds.length === 0) fetchFeeds()
   }
 
   componentWillUnmount() {
