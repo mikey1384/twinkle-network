@@ -124,6 +124,10 @@ html, body {
 	color: #999999;
 }
 
+.navbar-default .navbar-nav > li > a:focus:hover {
+	color: #333333;
+}
+
 .video-player { position: relative; }
 .video-player a {
 	position: absolute;
