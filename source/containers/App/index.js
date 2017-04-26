@@ -12,6 +12,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
 import Videos from 'containers/Videos'
 import Links from 'containers/Links'
+import Button from 'components/Button'
 
 const socket = io.connect(URL)
 let visibilityChange
@@ -46,7 +47,8 @@ export default class App extends Component {
   constructor() {
     super()
     this.state = {
-      scrollPosition: 0
+      scrollPosition: 0,
+      updateNoticeShown: false
     }
     this.onChatButtonClick = this.onChatButtonClick.bind(this)
     this.onScroll = this.onScroll.bind(this)
@@ -103,7 +105,7 @@ export default class App extends Component {
 
   render() {
     const {chatMode, turnChatOff, resetChat} = this.props
-    const {scrollPosition} = this.state
+    const {scrollPosition, updateNoticeShown} = this.state
     const style = chatMode && this.props.loggedIn ? {
       display: 'none'
     } : {paddingTop: '65px'}
@@ -120,10 +122,36 @@ export default class App extends Component {
           chatMode={chatMode}
           onChatButtonClick={this.onChatButtonClick}
           turnChatOff={() => turnChatOff()}
+          showUpdateNotice={match => this.setState({updateNoticeShown: !match})}
         />
         <div
           style={{...style, paddingBottom: '1em'}}
         >
+          {updateNoticeShown &&
+            <div
+              className="alert alert-info"
+              style={{
+                position: 'fixed',
+                textAlign: 'center',
+                width: '80%',
+                zIndex: '2000',
+                left: '10%'
+              }}
+            >
+              <p style={{fontSize: '1.4em'}}>The website has been updated. Click the button below to apply the update.</p>
+              <p style={{fontSize: '1.2em'}}>Warning: Update is mandatory. Some features will not work properly if you don't!</p>
+              <Button
+                className="btn btn-lg btn-success"
+                style={{
+                  marginTop: '1em',
+                  fontSize: '1.5em'
+                }}
+                onClick={() => window.location.reload()}
+              >
+                Update!
+              </Button>
+            </div>
+          }
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/videos" component={Videos} />

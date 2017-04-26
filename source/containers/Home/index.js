@@ -3,15 +3,13 @@ import React, {Component} from 'react'
 import {Color} from 'constants/css'
 import {connect} from 'react-redux'
 import {Route} from 'react-router-dom'
-import {clearFeeds} from 'redux/actions/FeedActions'
 import Profile from './Profile'
 import Feeds from './Feeds'
 
 @connect(
   state => ({
     username: state.UserReducer.username
-  }),
-  {clearFeeds}
+  })
 )
 export default class Home extends Component {
   static propTypes = {

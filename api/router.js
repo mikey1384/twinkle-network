@@ -5,4 +5,5 @@ module.exports = function(app, pool) {
   app.use('/user', require('./controllers/user'))
   app.use('/video', require('./controllers/video'))
   app.use('/url', require('./controllers/link'))
+  app.use('/notification', require('./controllers/notification'))
 }

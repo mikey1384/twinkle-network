@@ -18,8 +18,7 @@ const store = createStoreWithHistory(history)
 
 app.use(express.static(path.join(__dirname, '../public')))
 app.use((req, res) => {
-  res.end(renderView())
-  function renderView() {
+  res.end((function() {
     const ReactView = renderToString(
       <Provider store={store}>
         <StaticRouter context={{}} location={req.url}>
@@ -48,7 +47,7 @@ app.use((req, res) => {
         </body>
       </html>`
     )
-  }
+  })())
 })
 
 export default app

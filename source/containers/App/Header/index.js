@@ -10,6 +10,7 @@ import {
   turnChatOff
 } from 'redux/actions/ChatActions'
 import {getInitialVideos} from 'redux/actions/VideoActions'
+import {checkVersion} from 'redux/actions/NotiActions'
 import {
   getPlaylistsAsync,
   getPinnedPlaylistsAsync
@@ -33,7 +34,7 @@ import {Color} from 'constants/css'
     signinModalShown: state.UserReducer.signinModalShown,
     numChatUnreads: state.ChatReducer.numUnreads,
     chatMode: state.ChatReducer.chatMode,
-    notifications: state.NotiReducer.notifications
+    versionMatch: state.NotiReducer.versionMatch
   }),
   {
     openSigninModal,
@@ -44,12 +45,14 @@ import {Color} from 'constants/css'
     increaseNumberOfUnreadMessages,
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
-    getInitialVideos
+    getInitialVideos,
+    checkVersion
   }
 )
 @withRouter
 export default class Header extends Component {
   static propTypes = {
+    checkVersion: PropTypes.func,
     location: PropTypes.object,
     socket: PropTypes.object,
     turnChatOff: PropTypes.func,
@@ -68,7 +71,9 @@ export default class Header extends Component {
     numChatUnreads: PropTypes.number,
     getInitialVideos: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
-    getPlaylists: PropTypes.func
+    getPlaylists: PropTypes.func,
+    showUpdateNotice: PropTypes.func,
+    versionMatch: PropTypes.bool
   }
 
   constructor(props) {
@@ -83,8 +88,9 @@ export default class Header extends Component {
   }
 
   componentDidMount() {
-    const {socket, turnChatOff, increaseNumberOfUnreadMessages} = this.props
+    const {socket, turnChatOff, increaseNumberOfUnreadMessages, checkVersion} = this.props
     socket.on('connect', () => {
+      checkVersion()
       if (this.props.userId) {
         socket.emit('bind_uid_to_socket', this.props.userId, this.props.username)
       }
@@ -107,7 +113,7 @@ export default class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {getNumberOfUnreadMessages, socket} = this.props
+    const {getNumberOfUnreadMessages, socket, showUpdateNotice} = this.props
     if (nextProps.userId && !this.props.userId) {
       socket.connect()
       socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username)
@@ -120,6 +126,9 @@ export default class Header extends Component {
     }
     if (nextProps.userId && nextProps.chatMode !== this.props.chatMode && nextProps.chatMode === false) {
       getNumberOfUnreadMessages()
+    }
+    if (nextProps.versionMatch !== this.props.versionMatch) {
+      showUpdateNotice(nextProps.versionMatch)
     }
   }
 
