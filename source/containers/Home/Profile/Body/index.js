@@ -78,6 +78,34 @@ export default class Body extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      history,
+      match,
+      feeds,
+      location,
+      clearFeeds
+    } = this.props
+
+    if (prevProps.location !== this.props.location && (history.action === 'PUSH' || !feeds)) {
+      return clearFeeds().then(
+        () => {
+          switch (location.pathname) {
+            case match.url:
+              return this.changeTab('comment')
+            case `${match.url}/videos`:
+              return this.changeTab('video')
+            case `${match.url}/links`:
+              return this.changeTab('url')
+            case `${match.url}/discussions`:
+              return this.changeTab('discussion')
+            default: break
+          }
+        }
+      )
+    }
+  }
+
   componentWillUnmount() {
     removeEvent(window, 'scroll', this.onScroll)
   }
