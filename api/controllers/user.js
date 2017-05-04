@@ -131,7 +131,7 @@ router.get('/users', (req, res) => {
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
     a.profileSecondRow, a.profileThirdRow, b.id AS profilePicId
     FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' ${where}
-    LIMIT 21
+    ORDER BY id LIMIT 21
   `
   return poolQuery(query).then(
     rows => res.send(rows)
