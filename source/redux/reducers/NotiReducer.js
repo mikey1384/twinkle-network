@@ -1,5 +1,6 @@
 const defaultState = {
-  versionMatch: true
+  versionMatch: true,
+  notifications: []
 }
 
 export default function NotiReducer(state = defaultState, action) {

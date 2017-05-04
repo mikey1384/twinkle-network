@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import Header from './Header'
+import ProfileCard from '../ProfileCard'
 import Body from './Body'
 import ExecutionEnvironment from 'exenv'
 import {connect} from 'react-redux'
@@ -14,7 +14,7 @@ import {browserHistory} from 'react-router'
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId,
-    profilePage: state.UserReducer.profilePage
+    profile: state.UserReducer.profile
   }),
   {checkValidUsername, unmountProfile}
 )
@@ -23,9 +23,8 @@ export default class Profile extends Component {
     checkValidUsername: PropTypes.func,
     match: PropTypes.object,
     userId: PropTypes.number,
-    profilePage: PropTypes.object,
-    username: PropTypes.string,
-    unmountProfile: PropTypes.func
+    profile: PropTypes.object,
+    username: PropTypes.string
   }
 
   constructor(props) {
@@ -36,8 +35,8 @@ export default class Profile extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {checkValidUsername, userId, profilePage, match} = this.props
-    const {unavailable} = profilePage
+    const {checkValidUsername, userId, profile, match} = this.props
+    const {unavailable} = profile
     if (ExecutionEnvironment.canUseDOM) {
       if (prevProps.match.params.username !== match.params.username) {
         return checkValidUsername(match.params.username)
@@ -49,21 +48,16 @@ export default class Profile extends Component {
     }
   }
 
-  componentWillUnmount() {
-    const {unmountProfile} = this.props
-    unmountProfile()
-  }
-
   render() {
-    const {profilePage, userId} = this.props
-    const {unavailable} = profilePage
+    const {profile, userId} = this.props
+    const {unavailable} = profile
     return !unavailable ? (
       <div style={{width: '100%'}}>
-        {!profilePage.id && <Loading text="Loading Profile..." />}
-        {!!profilePage.id &&
+        {!profile.id && <Loading text="Loading Profile..." />}
+        {!!profile.id &&
           <div style={{width: '100%'}}>
-            <Header {...this.props} />
-            {false && <Body {...this.props} />}
+            <ProfileCard {...this.props} />
+            <Body {...this.props} />
           </div>
         }
       </div>

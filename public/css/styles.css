@@ -1,5 +1,6 @@
 html, body {
 	height: 100%;
+	margin: 0px;
 	background-color: #f1f3f6;
 }
 
@@ -118,6 +119,30 @@ html, body {
 .glyphicon.spinning {
   animation: spin 1s infinite linear;
   -webkit-animation: spin2 1s infinite linear;
+}
+
+.home-left-menu {
+	cursor: pointer;
+	background-color: #f1f3f6;
+	border: none;
+}
+
+.home-left-menu > a {
+	text-decoration: none;
+	color: #7c7c7c;
+}
+
+.home-left-menu.active {
+	background-color: #fbfbfb;
+	font-weight: bold;
+}
+
+.home-left-menu.active:hover {
+	background-color: #fbfbfb;
+}
+
+.home-left-menu.active > a {
+	color: #333333;
 }
 
 .navbar-default .navbar-nav > li > a:focus {

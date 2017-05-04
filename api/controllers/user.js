@@ -5,6 +5,7 @@ const {tokenForUser, requireAuth, requireSignin} = require('../auth')
 const express = require('express')
 const router = express.Router()
 const pool = require('../pool')
+const {poolQuery} = require('../helpers')
 const async = require('async')
 const {processedString} = require('../helpers/stringHelpers')
 const AWS = require('aws-sdk')
@@ -121,6 +122,25 @@ router.post('/signup', function(req, res) {
       }
     })
   }
+})
+
+router.get('/users', (req, res) => {
+  const {lastId} = req.query
+  const where = lastId ? `WHERE a.id > ${lastId}` : ''
+  const query = `
+    SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
+    a.profileSecondRow, a.profileThirdRow, b.id AS profilePicId
+    FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' ${where}
+    LIMIT 21
+  `
+  return poolQuery(query).then(
+    rows => res.send(rows)
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
 })
 
 router.get('/username/check', (req, res) => {

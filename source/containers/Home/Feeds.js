@@ -12,6 +12,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
   state => ({
     loadMoreButton: state.FeedReducer.loadMoreButton,
     feeds: state.FeedReducer.feeds,
+    loaded: state.FeedReducer.loaded,
     userId: state.UserReducer.userId,
     selectedFilter: state.FeedReducer.selectedFilter,
     chatMode: state.ChatReducer.chatMode,
@@ -27,7 +28,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 export default class Feeds extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    noFeeds: PropTypes.bool,
+    loaded: PropTypes.bool,
     fetchFeeds: PropTypes.func,
     clearFeeds: PropTypes.func,
     history: PropTypes.object,
@@ -65,7 +66,7 @@ export default class Feeds extends Component {
   }
 
   render() {
-    const {feeds, noFeeds, loadMoreButton, userId} = this.props
+    const {feeds, loadMoreButton, userId, loaded} = this.props
     const {loadingMore} = this.state
 
     return (
@@ -75,14 +76,14 @@ export default class Feeds extends Component {
         {!feeds &&
           <Loading text="Loading Feeds..." />
         }
-        {noFeeds &&
+        {loaded && feeds.length === 0 &&
           <p style={{
             textAlign: 'center',
             paddingTop: '1em',
             paddingBottom: '1em',
             fontSize: '2em'
           }}>
-            <span>Hello!</span>
+            <span>Hello there!</span>
           </p>
         }
         {!!feeds && feeds.length > 0 &&

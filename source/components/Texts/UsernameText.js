@@ -56,7 +56,7 @@ export default class UsernameText extends Component {
             }}
           >
             <li>
-              <a href={`/${user.name}`} target="_blank">
+              <a href={`/users/${user.name}`} target="_blank">
                 Profile
               </a>
               {user.id !== userId &&

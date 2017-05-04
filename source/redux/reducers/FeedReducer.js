@@ -1,8 +1,7 @@
 import {processedStringWithURL} from 'helpers/stringHelpers'
 const defaultState = {
-  feeds: null,
-  noFeeds: false,
   selectedFilter: 'all',
+  feeds: null,
   loadMoreButton: false,
   categorySearchResult: []
 }
@@ -10,7 +9,6 @@ const defaultState = {
 export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false
   let commentsLoadMoreButton = false
-  let noFeeds = false
   switch (action.type) {
     case 'CLEAR_CATEGORIES_SEARCH':
       return {
@@ -20,7 +18,9 @@ export default function FeedReducer(state = defaultState, action) {
     case 'CLEAR_FEEDS':
       return {
         ...state,
-        feeds: []
+        feeds: [],
+        loadMoreButton: false,
+        loaded: false
       }
     case 'FETCH_CATEGORIES':
       return {
@@ -39,13 +39,12 @@ export default function FeedReducer(state = defaultState, action) {
         action.data.pop()
         loadMoreButton = true
       }
-      if (action.data.length === 0) noFeeds = true
       return {
         ...state,
         feeds: action.data,
         selectedFilter: action.filter,
         loadMoreButton,
-        noFeeds
+        loaded: true
       }
     case 'FETCH_MORE_FEED_REPLIES':
       return {

@@ -1,5 +1,6 @@
 const defaultState = {
-  profilePage: {}
+  profile: {},
+  loadMoreButton: false
 }
 
 function isAdmin(userType) {
@@ -7,6 +8,7 @@ function isAdmin(userType) {
 }
 
 export default function UserReducer(state = defaultState, action) {
+  let loadMoreButton = false
   switch (action.type) {
     case 'FETCH_SESSION':
       return (action.data !== undefined && action.data.loggedIn) ?
@@ -15,17 +17,37 @@ export default function UserReducer(state = defaultState, action) {
         ...action.data,
         isAdmin: isAdmin(action.data.userType)
       } : state
+    case 'FETCH_USERS':
+      if (action.data.length > 20) {
+        action.data.pop()
+        loadMoreButton = true
+      }
+      return {
+        ...state,
+        profiles: action.data,
+        loadMoreButton
+      }
+    case 'FETCH_MORE_USERS':
+      if (action.data.length > 5) {
+        action.data.pop()
+        loadMoreButton = true
+      }
+      return {
+        ...state,
+        profiles: state.profiles.concat(action.data),
+        loadMoreButton
+      }
     case 'SHOW_USER_NOT_EXISTS':
       return {
         ...state,
-        profilePage: {
+        profile: {
           unavailable: true
         }
       }
     case 'SHOW_USER_PROFILE':
       return {
         ...state,
-        profilePage: {
+        profile: {
           ...action.data
         }
       }
@@ -39,8 +61,8 @@ export default function UserReducer(state = defaultState, action) {
       }
     case 'SIGNIN_LOGOUT':
       return {
-        profilePage: {
-          ...state.profilePage
+        profile: {
+          ...state.profile
         }
       }
     case 'SIGNIN_SIGNUP':
@@ -64,8 +86,8 @@ export default function UserReducer(state = defaultState, action) {
     case 'UPDATE_BIO':
       return {
         ...state,
-        profilePage: {
-          ...state.profilePage,
+        profile: {
+          ...state.profile,
           ...action.data
         }
       }
@@ -73,15 +95,15 @@ export default function UserReducer(state = defaultState, action) {
       return {
         ...state,
         profilePicId: action.data,
-        profilePage: {
-          ...state.profilePage,
+        profile: {
+          ...state.profile,
           profilePicId: action.data
         }
       }
     case 'UNMOUNT_PROFILE':
       return {
         ...state,
-        profilePage: {}
+        profile: {}
       }
     default:
       return state

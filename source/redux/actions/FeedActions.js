@@ -160,6 +160,38 @@ request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then
   }
 )
 
+export const fetchUserFeeds = (username, type) => dispatch =>
+request.get(`${API_URL}/user/?username=${username}&type=${type}`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_FEEDS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const fetchMoreUserFeeds = (username, type, lastId) => dispatch =>
+request.get(`${API_URL}/user/?username=${username}&type=${type}&lastId=${lastId}`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_MORE_FEEDS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const likeTargetComment = contentId => dispatch =>
 request.post(`${API_URL}/comments/like`, {commentId: contentId}, auth())
 .then(

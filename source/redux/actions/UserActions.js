@@ -31,6 +31,35 @@ request.get(`${API_URL}/username/check?username=${username}`)
   }
 )
 
+export const fetchUsers = () => dispatch =>
+request.get(`${API_URL}/users`).then(
+  response => dispatch({
+    type: 'FETCH_USERS',
+    data: response.data
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const fetchMoreUsers = (lastId) => dispatch =>
+request.get(`${API_URL}/users?lastId=${lastId}`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_MORE_USERS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const initSession = data => ({
   type: 'FETCH_SESSION',
   data

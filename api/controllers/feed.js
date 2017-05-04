@@ -23,6 +23,20 @@ const {poolQuery} = require('../helpers')
 
 router.get('/', fetchFeeds)
 
+router.get('/user', (req, res) => {
+  const {username, type, lastId} = req.query
+  const where = lastId ? `AND a.id < ${lastId}` : ''
+  const limit = lastId ? '6' : '21'
+  const query = `
+    SELECT a.id, a.type, a.contentId, a.rootType, a.rootId, a.uploaderId, a.timeStamp FROM
+    noti_feeds a JOIN users b ON a.uploaderId = b.id WHERE b.username = ? AND a.type = ? ${where}
+    ORDER BY id DESC LIMIT ${limit}
+  `
+  return poolQuery(query, [username, type]).then(
+    rows => res.send(rows)
+  )
+})
+
 router.get('/category', (req, res) => {
   const {searchText} = req.query
   async.waterfall([
@@ -287,6 +301,7 @@ router.get('/feed', (req, res) => {
   return poolQuery(query, contentId).then(
     rows => {
       let feed = rows[0]
+      if (!feed) return Promise.resolve({})
       let targetId = feed.replyId || feed.commentId
       switch (type) {
         case 'comment':

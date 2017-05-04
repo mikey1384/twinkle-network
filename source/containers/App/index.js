@@ -156,7 +156,8 @@ export default class App extends Component {
             <Route exact path="/" component={Home} />
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
-            <Route path="/:username" component={Home} />
+            <Route path="/users" component={Home} />
+            <Route path="/users/:username" component={Home} />
           </Switch>
         </div>
         {chatMode && this.props.loggedIn &&

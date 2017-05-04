@@ -10,14 +10,18 @@ import {uploadProfilePic, uploadBio} from 'redux/actions/UserActions'
 import AlertModal from 'components/Modals/AlertModal'
 import {connect} from 'react-redux'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
+import {withRouter} from 'react-router'
 
 @connect(
   null,
   {uploadProfilePic, uploadBio}
 )
+@withRouter
 export default class Header extends Component {
   static propTypes = {
-    profilePage: PropTypes.object,
+    expandable: PropTypes.bool,
+    history: PropTypes.object,
+    profile: PropTypes.object,
     userId: PropTypes.number,
     uploadBio: PropTypes.func,
     uploadProfilePic: PropTypes.func
@@ -40,8 +44,8 @@ export default class Header extends Component {
 
   render() {
     const {imageUri, imageEditModalShown, bioEditModalShown, alertModalShown, processing} = this.state
-    const {profilePage, userId} = this.props
-    const {profileFirstRow, profileSecondRow, profileThirdRow} = profilePage
+    const {profile, userId, expandable, history} = this.props
+    const {profileFirstRow, profileSecondRow, profileThirdRow} = profile
     return (
       <div
         className="panel panel-default"
@@ -53,13 +57,13 @@ export default class Header extends Component {
             style={{height: 'auto'}}
           >
             <ProfilePic
-              userId={profilePage.id}
-              profilePicId={profilePage.profilePicId}
+              userId={profile.id}
+              profilePicId={profile.profilePicId}
               size='13'
             />
             <div className="media-body" style={{paddingLeft: '1em', paddingRight: '5em'}}>
               <h2 className="media-heading">
-                {profilePage.username} <small>{`(${profilePage.realName})`}</small>
+                {profile.username} <small>{`(${profile.realName})`}</small>
               </h2>
               {(!!profileFirstRow || !!profileSecondRow || !!profileThirdRow) &&
                 <ul
@@ -81,10 +85,10 @@ export default class Header extends Component {
                 </ul>
               }
               <div>
-                {!profileFirstRow && !profileSecondRow && !profileThirdRow && userId === profilePage.id &&
+                {!profileFirstRow && !profileSecondRow && !profileThirdRow && userId === profile.id &&
                   <p>**Add your bio so that your Twinkle friends can know you better</p>
                 }
-                {userId === profilePage.id &&
+                {userId === profile.id &&
                   <div className="col-xs-12">
                     <Button
                       className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
@@ -99,6 +103,14 @@ export default class Header extends Component {
                       Change Profile Picture
                     </Button>
                   </div>
+                }
+                {expandable && userId !== profile.id &&
+                  <Button
+                    className="btn btn-lg btn-info" style={{marginTop: '0.5em'}}
+                    onClick={() => history.push(`/users/${profile.username}`)}
+                  >
+                    View Profile
+                  </Button>
                 }
               </div>
             </div>

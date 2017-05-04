@@ -3,7 +3,7 @@ import {auth, handleError} from './constants'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/notification`
-const appVersion = 0.01
+const appVersion = 0.02
 
 export const checkVersion = () => dispatch =>
 request.get(`${API_URL}/version?version=${appVersion}`).then(
@@ -18,15 +18,14 @@ request.get(`${API_URL}/version?version=${appVersion}`).then(
   }
 )
 
-export const fetchNotifications = data => ({
-  type: 'FETCH_NOTIFICATIONS'
-})
-
-export const fetchNotificationsAsync = () => dispatch => {
-  if (auth() === null) return
+export const fetchNotifications = () => dispatch => {
+  if (auth().headers.authorization === null) return
   request.get(API_URL, auth()).then(
     response => {
-      dispatch(fetchNotifications(response.data))
+      dispatch({
+        type: 'FETCH_NOTIFICATIONS',
+        data: response.data
+      })
     }
   ).catch(
     error => {
