@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Route} from 'react-router'
-import {fetchUserFeeds, fetchMoreUserFeeds, clearFeeds} from 'redux/actions/FeedActions'
+import {fetchUserFeeds, fetchMoreUserFeeds, clearFeeds, connectHomeComponent} from 'redux/actions/FeedActions'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
@@ -14,17 +14,21 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
     feeds: state.FeedReducer.feeds,
     loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,
-    loadMoreButton: state.FeedReducer.loadMoreButton
+    loadMoreButton: state.FeedReducer.loadMoreButton,
+    homeComponentConnected: state.FeedReducer.homeComponentConnected
   }),
   {
     fetchUserFeeds,
     fetchMoreUserFeeds,
-    clearFeeds
+    clearFeeds,
+    connectHomeComponent
   }
 )
 export default class Body extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
+    connectHomeComponent: PropTypes.func,
+    homeComponentConnected: PropTypes.bool,
     match: PropTypes.object,
     location: PropTypes.object,
     history: PropTypes.object,
@@ -51,15 +55,16 @@ export default class Body extends Component {
 
   componentDidMount() {
     const {
-      history,
       match,
-      feeds,
+      history,
       location,
-      clearFeeds
+      clearFeeds,
+      homeComponentConnected,
+      connectHomeComponent
     } = this.props
 
     addEvent(window, 'scroll', this.onScroll)
-    if (history.action === 'PUSH' || !feeds) {
+    if (homeComponentConnected || history.action === 'PUSH') {
       return clearFeeds().then(
         () => {
           switch (location.pathname) {
@@ -76,18 +81,18 @@ export default class Body extends Component {
         }
       )
     }
+    connectHomeComponent()
   }
 
   componentDidUpdate(prevProps) {
     const {
-      history,
       match,
       feeds,
       location,
       clearFeeds
     } = this.props
 
-    if (prevProps.location !== this.props.location && (history.action === 'PUSH' || !feeds)) {
+    if (prevProps.location !== this.props.location || !feeds) {
       return clearFeeds().then(
         () => {
           switch (location.pathname) {
@@ -128,8 +133,6 @@ export default class Body extends Component {
                 className={match && 'active'}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
-                  () => this.changeTab('comment')
-                ).then(
                   () => history.push(`${route.url}`)
                 )}
               >
@@ -141,8 +144,6 @@ export default class Body extends Component {
                 className={match && 'active'}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
-                  () => this.changeTab('video')
-                ).then(
                   () => history.push(`${route.url}/videos`)
                 )}
               >
@@ -154,8 +155,6 @@ export default class Body extends Component {
                 className={match && 'active'}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
-                  () => this.changeTab('url')
-                ).then(
                   () => history.push(`${route.url}/links`)
                 )}
               >
@@ -167,8 +166,6 @@ export default class Body extends Component {
                 className={match && 'active'}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
-                  () => this.changeTab('discussion')
-                ).then(
                   () => history.push(`${route.url}/discussions`)
                 )}
               >

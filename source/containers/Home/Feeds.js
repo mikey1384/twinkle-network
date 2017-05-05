@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import {fetchMoreFeedsAsync, fetchFeedsAsync, fetchFeed, clearFeeds} from 'redux/actions/FeedActions'
+import {
+  connectHomeComponent,
+  fetchMoreFeedsAsync,
+  fetchFeedsAsync,
+  fetchFeed,
+  clearFeeds
+} from 'redux/actions/FeedActions'
 import FeedInputPanel from './FeedInputPanel'
 import FeedPanel from './FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
@@ -12,6 +18,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
   state => ({
     loadMoreButton: state.FeedReducer.loadMoreButton,
     feeds: state.FeedReducer.feeds,
+    homeComponentConnected: state.FeedReducer.homeComponentConnected,
     loaded: state.FeedReducer.loaded,
     userId: state.UserReducer.userId,
     selectedFilter: state.FeedReducer.selectedFilter,
@@ -19,6 +26,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
     noFeeds: state.FeedReducer.noFeeds
   }),
   {
+    connectHomeComponent,
     fetchMoreFeeds: fetchMoreFeedsAsync,
     fetchFeeds: fetchFeedsAsync,
     clearFeeds,
@@ -28,8 +36,10 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 export default class Feeds extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
+    connectHomeComponent: PropTypes.func,
     loaded: PropTypes.bool,
     fetchFeeds: PropTypes.func,
+    homeComponentConnected: PropTypes.bool,
     clearFeeds: PropTypes.func,
     history: PropTypes.object,
     feeds: PropTypes.array,
@@ -52,13 +62,14 @@ export default class Feeds extends Component {
   }
 
   componentDidMount() {
-    let {history, feeds, clearFeeds, fetchFeeds} = this.props
+    let {history, clearFeeds, fetchFeeds, connectHomeComponent, feeds, homeComponentConnected} = this.props
     addEvent(window, 'scroll', this.onScroll)
-    if (history.action === 'PUSH' || !feeds) {
+    if (homeComponentConnected || history.action === 'PUSH' || !feeds) {
       return clearFeeds().then(
         () => fetchFeeds()
       )
     }
+    connectHomeComponent()
   }
 
   componentWillUnmount() {

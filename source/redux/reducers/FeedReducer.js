@@ -3,7 +3,8 @@ const defaultState = {
   selectedFilter: 'all',
   feeds: null,
   loadMoreButton: false,
-  categorySearchResult: []
+  categorySearchResult: [],
+  homeComponentConnected: false
 }
 
 export default function FeedReducer(state = defaultState, action) {
@@ -21,6 +22,16 @@ export default function FeedReducer(state = defaultState, action) {
         feeds: [],
         loadMoreButton: false,
         loaded: false
+      }
+    case 'CONNECT_HOME_COMPONENT':
+      return {
+        ...state,
+        homeComponentConnected: true
+      }
+    case 'DISCONNECT_HOME_COMPONENT':
+      return {
+        ...state,
+        homeComponentConnected: false
       }
     case 'FETCH_CATEGORIES':
       return {

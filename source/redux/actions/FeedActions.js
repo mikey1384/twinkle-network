@@ -35,6 +35,14 @@ request.post(`${API_URL}/comments/like`, {commentId}, auth())
   }
 )
 
+export const connectHomeComponent = () => ({
+  type: 'CONNECT_HOME_COMPONENT'
+})
+
+export const disconnectHomeComponent = () => ({
+  type: 'DISCONNECT_HOME_COMPONENT'
+})
+
 export const contentFeedLike = (contentId, rootType) => dispatch =>
 request.post(`${URL}/${rootType}/like`, {contentId}, auth())
 .then(

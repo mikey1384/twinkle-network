@@ -5,17 +5,20 @@ import {Route} from 'react-router-dom'
 import Profile from './Profile'
 import People from './People'
 import Feeds from './Feeds'
+import {disconnectHomeComponent} from 'redux/actions/FeedActions'
 
 @connect(
   state => ({
     username: state.UserReducer.username
-  })
+  }),
+  {disconnectHomeComponent}
 )
 export default class Home extends Component {
   static propTypes = {
     history: PropTypes.object,
     location: PropTypes.object,
-    username: PropTypes.string
+    username: PropTypes.string,
+    disconnectHomeComponent: PropTypes.func
   }
 
   constructor() {
@@ -23,6 +26,11 @@ export default class Home extends Component {
     this.state = {
       selectedTab: null
     }
+  }
+
+  componentWillUnmount() {
+    const {disconnectHomeComponent} = this.props
+    disconnectHomeComponent()
   }
 
   render() {
