@@ -65,11 +65,13 @@ export default class Feeds extends Component {
     let {history, clearFeeds, fetchFeeds, connectHomeComponent, feeds, homeComponentConnected} = this.props
     addEvent(window, 'scroll', this.onScroll)
     if (homeComponentConnected || history.action === 'PUSH' || !feeds) {
+      connectHomeComponent()
       return clearFeeds().then(
         () => fetchFeeds()
       )
+    } else {
+      connectHomeComponent()
     }
-    connectHomeComponent()
   }
 
   componentWillUnmount() {

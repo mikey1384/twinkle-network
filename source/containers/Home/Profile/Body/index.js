@@ -65,6 +65,7 @@ export default class Body extends Component {
 
     addEvent(window, 'scroll', this.onScroll)
     if (homeComponentConnected || history.action === 'PUSH') {
+      connectHomeComponent()
       return clearFeeds().then(
         () => {
           switch (location.pathname) {
@@ -80,8 +81,9 @@ export default class Body extends Component {
           }
         }
       )
+    } else {
+      connectHomeComponent()
     }
-    connectHomeComponent()
   }
 
   componentDidUpdate(prevProps) {
