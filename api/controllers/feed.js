@@ -189,23 +189,11 @@ router.get('/feed', (req, res) => {
     timeStamp: Number(req.query.timeStamp)
   })
   let query
-  let videoQuery = `
+  let likeQuery = type => `
     SELECT a.userId, b.username
-    FROM vq_video_likes a LEFT JOIN users b ON
+    FROM content_likes a LEFT JOIN users b ON
     a.userId = b.id WHERE
-    a.videoId = ?
-  `
-  let commentQuery = `
-    SELECT a.userId, b.username
-    FROM content_comment_likes a LEFT JOIN users b ON
-    a.userId = b.id WHERE
-    a.commentId = ?
-  `
-  let urlQuery = `
-    SELECT a.userId, b.username
-    FROM content_url_likes a LEFT JOIN users b ON
-    a.userId = b.id WHERE
-    a.linkId = ?
+    a.rootType = '${type}' AND a.rootId = ?
   `
 
   switch (type) {
@@ -306,9 +294,9 @@ router.get('/feed', (req, res) => {
       switch (type) {
         case 'comment':
           return Promise.all([
-            poolQuery(commentQuery, contentId),
-            poolQuery(commentQuery, targetId || '0'),
-            poolQuery(videoQuery, rootId)
+            poolQuery(likeQuery('comment'), contentId),
+            poolQuery(likeQuery('comment'), targetId || '0'),
+            poolQuery(likeQuery('video'), rootId)
           ]).then(
             results => {
               feed['contentLikers'] = results[0]
@@ -318,7 +306,7 @@ router.get('/feed', (req, res) => {
             }
           )
         case 'url':
-          return poolQuery(urlQuery, contentId).then(
+          return poolQuery(likeQuery('url'), contentId).then(
             rows => {
               feed['contentLikers'] = rows
               return Promise.resolve(feed)
@@ -329,7 +317,7 @@ router.get('/feed', (req, res) => {
           feed['rootContentLikers'] = []
           return Promise.resolve(feed)
         case 'video':
-          return poolQuery(videoQuery, contentId).then(
+          return poolQuery(likeQuery('video'), contentId).then(
             rows => {
               feed['contentLikers'] = rows
               return Promise.resolve(feed)

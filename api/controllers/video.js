@@ -27,15 +27,15 @@ router.get('/', (req, res) => {
   const videoId = Number(req.query.videoId) || 0
   const numberToLoad = Number(req.query.numberToLoad) + 1 || 13
   const where = videoId === 0 ? '' : 'WHERE a.id < ? '
-  const query = [
-    'SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName, ',
-    'COUNT(c.id) AS numLikes ',
-    'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
-    'LEFT JOIN vq_video_likes c ON a.id = c.videoId ',
-    where,
-    'GROUP BY a.id ',
-    'ORDER BY a.id DESC LIMIT ' + numberToLoad
-  ].join('')
+  const query = `
+    SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName,
+    COUNT(c.id) AS numLikes
+    FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
+    LEFT JOIN content_likes c ON a.id = c.rootId
+    ${where} AND c.rootType = 'video'
+    GROUP BY a.id
+    ORDER BY a.id DESC LIMIT ${numberToLoad}
+  `
   pool.query(query, videoId, (err, rows) => {
     if (err) {
       console.error(err)
@@ -122,20 +122,29 @@ router.post('/edit/title', requireAuth, (req, res) => {
 
 router.post('/like', requireAuth, (req, res) => {
   const {user, body: {contentId: videoId}} = req
-  return poolQuery('SELECT * FROM vq_video_likes WHERE videoId = ? AND userId = ?', [videoId, user.id]).then(
+  let query = `
+    SELECT * FROM content_likes WHERE rootType = 'video' AND rootId = ? AND userId = ?
+  `
+  return poolQuery(query, [videoId, user.id]).then(
     rows => {
       if (rows.length > 0) {
-        return poolQuery('DELETE FROM vq_video_likes WHERE videoId = ? AND userId = ?', [videoId, user.id])
+        let query = `DELETE FROM content_likes WHERE rootType = 'video' AND rootId = ? AND userId = ?`
+        return poolQuery(query, [videoId, user.id])
       } else {
-        return poolQuery('INSERT INTO vq_video_likes SET ?', {videoId, userId: user.id})
+        return poolQuery('INSERT INTO content_likes SET ?', {
+          rootType: 'video',
+          rootId: videoId,
+          userId: user.id,
+          timeStamp: Math.floor(Date.now()/1000)
+        })
       }
     }
   ).then(
     () => {
       const query = `
         SELECT a.userId, b.username
-        FROM vq_video_likes a LEFT JOIN users b ON a.userId = b.id
-        WHERE a.videoId = ?
+        FROM content_likes a LEFT JOIN users b ON a.userId = b.id
+        WHERE a.rootType = 'video' AND a.rootId = ?
       `
       return poolQuery(query, videoId)
     }
@@ -186,8 +195,8 @@ router.get('/page', (req, res) => {
       const query1 = 'SELECT * FROM vq_questions WHERE videoId = ?'
       const query2 = `
         SELECT a.userId, b.username
-        FROM vq_video_likes a LEFT JOIN users b ON a.userId = b.id
-        WHERE a.videoId = ?
+        FROM content_likes a LEFT JOIN users b ON a.userId = b.id
+        WHERE a.rootType = 'video' AND a.rootId = ?
       `
       return Promise.all([
         poolQuery(query1, videoId).then(

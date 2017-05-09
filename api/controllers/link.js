@@ -26,8 +26,8 @@ router.get('/', (req, res) => {
     results => {
       let tasks = results.map(result => {
         let query = `
-          SELECT a.userId, b.username FROM content_url_likes a JOIN users b ON a.userId = b.id
-          WHERE a.linkId = ?
+          SELECT a.userId, b.username FROM content_likes a JOIN users b ON a.userId = b.id
+          WHERE a.rootType = 'url' AND a.rootId = ?
         `
         return poolQuery(query, result.id)
       })
@@ -65,20 +65,27 @@ router.post('/comments', requireAuth, postComments)
 
 router.post('/like', requireAuth, (req, res) => {
   const {user, body: {contentId: linkId}} = req
-  return poolQuery('SELECT * FROM content_url_likes WHERE linkId = ? AND userId = ?', [linkId, user.id]).then(
+  const query = `SELECT * FROM content_likes WHERE rootType = 'url' AND rootId = ? AND userId = ?`
+  return poolQuery(query, [linkId, user.id]).then(
     rows => {
       if (rows.length > 0) {
-        return poolQuery('DELETE FROM content_url_likes WHERE linkId = ? AND userId = ?', [linkId, user.id])
+        let query = `DELETE FROM content_likes WHERE rootType = 'url' AND rootId = ? AND userId = ?`
+        return poolQuery(query, [linkId, user.id])
       } else {
-        return poolQuery('INSERT INTO content_url_likes SET ?', {linkId, userId: user.id})
+        return poolQuery('INSERT INTO content_likes SET ?', {
+          rootType: 'url',
+          rootId: linkId,
+          userId: user.id,
+          timeStamp: Math.floor(Date.now()/1000)
+        })
       }
     }
   ).then(
     () => {
       const query = `
         SELECT a.userId, b.username
-        FROM content_url_likes a LEFT JOIN users b ON a.userId = b.id
-        WHERE a.linkId = ?
+        FROM content_likes a LEFT JOIN users b ON a.userId = b.id
+        WHERE a.rootType = 'url' AND a.rootId = ?
       `
       return poolQuery(query, linkId)
     }
@@ -114,8 +121,8 @@ router.get('/page', (req, res) => {
   poolQuery(query, linkId).then(
     ([result]) => {
       let query = `
-        SELECT a.userId, b.username FROM content_url_likes a JOIN users b ON a.userId = b.id
-        WHERE a.linkId = ?
+        SELECT a.userId, b.username FROM content_likes a JOIN users b ON a.userId = b.id
+        WHERE a.rootType = 'url' AND a.rootId = ?
       `
       return poolQuery(query, result.id).then(
         likers => Promise.resolve({result, likers})

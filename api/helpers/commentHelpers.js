@@ -86,21 +86,26 @@ module.exports = {
   likeComments(req, res) {
     const user = req.user
     const commentId = req.body.commentId
-    const query1 = 'SELECT * FROM content_comment_likes WHERE commentId = ? AND userId = ?'
-    const query2 = 'DELETE FROM content_comment_likes WHERE commentId = ? AND userId = ?'
-    const query3 = 'INSERT INTO content_comment_likes SET ?'
+    const query1 = `SELECT * FROM content_likes WHERE rootType = 'comment' AND rootId = ? AND userId = ?`
+    const query2 = `DELETE FROM content_likes WHERE rootType = 'comment' AND rootId = ? AND userId = ?`
+    const query3 = 'INSERT INTO content_likes SET ?'
     const query4 = `
       SELECT a.id, a.userId, b.username FROM
-      content_comment_likes a LEFT JOIN users b ON
+      content_likes a LEFT JOIN users b ON
       a.userId = b.id WHERE
-      a.commentId = ?
+      a.rootType = 'comment' AND a.rootId = ?
     `
     return poolQuery(query1, [commentId, user.id]).then(
       rows => {
         if (rows.length > 0) {
           return poolQuery(query2, [commentId, user.id])
         } else {
-          return poolQuery(query3, {commentId, userId: user.id})
+          return poolQuery(query3, {
+            rootType: 'comment',
+            rootId: commentId,
+            userId: user.id,
+            timeStamp: Math.floor(Date.now()/1000)
+          })
         }
       }
     ).then(
@@ -197,9 +202,9 @@ const fetchCommentElements = ({commentRow, commentsArray, index, rootType}) => {
   let loadMoreReplies = false
   let query1 = `
     SELECT a.id, a.userId, b.username FROM
-    content_comment_likes a JOIN users b ON
+    content_likes a JOIN users b ON
     a.userId = b.id WHERE
-    a.commentId = ?
+    a.rootType = 'comment' AND a.rootId = ?
   `
   let query2 = `
     SELECT a.id, a.userId, a.content, a.timeStamp, a.rootId, a.commentId, a.replyId, b.username,
@@ -257,9 +262,9 @@ const fetchReplyElements = ({replyRow, repliesArray, index}) => {
   let replyId = replyRow.id
   let query = `
     SELECT a.userId, b.username
-    FROM content_comment_likes a JOIN users b ON
+    FROM content_likes a JOIN users b ON
     a.userId = b.id WHERE
-    a.commentId = ?
+    a.rootType = 'comment' AND a.rootId = ?
   `
   return poolQuery(query, replyId).then(
     rows => Promise.resolve(Object.assign({}, replyRow, {
