@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
+import {unlockScroll} from 'redux/actions/feedActions'
 import {loadLinkPage} from 'redux/actions/LinkActions'
 import {cleanString} from 'helpers/stringHelpers'
 import Link from 'components/Link'
@@ -11,7 +12,8 @@ import {Color} from 'constants/css'
   null,
   {
     loadVideoPage: loadVideoPageFromClientSideAsync,
-    loadLinkPage
+    loadLinkPage,
+    unlockScroll
   }
 )
 export default class ContentLink extends Component {
@@ -19,7 +21,8 @@ export default class ContentLink extends Component {
     content: PropTypes.object,
     loadVideoPage: PropTypes.func,
     loadLinkPage: PropTypes.func,
-    type: PropTypes.string
+    type: PropTypes.string,
+    unlockScroll: PropTypes.func
   }
 
   constructor() {
@@ -55,7 +58,8 @@ export default class ContentLink extends Component {
   }
 
   onLinkClick(event) {
-    const {loadVideoPage, loadLinkPage, type, content: {id}} = this.props
+    const {loadVideoPage, loadLinkPage, type, content: {id}, unlockScroll} = this.props
+    unlockScroll()
     switch (type) {
       case 'url':
         return loadLinkPage(id)
