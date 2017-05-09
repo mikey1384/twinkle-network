@@ -10,6 +10,11 @@ export default function NotiReducer(state = defaultState, action) {
         ...state,
         versionMatch: action.data.match
       }
+    case 'FETCH_NOTIFICATIONS':
+      return {
+        ...state,
+        notifications: action.data
+      }
     default:
       return state
   }

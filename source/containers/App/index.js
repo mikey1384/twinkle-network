@@ -22,7 +22,8 @@ let hidden
   state => ({
     loggedIn: state.UserReducer.loggedIn,
     chatMode: state.ChatReducer.chatMode,
-    chatNumUnreads: state.ChatReducer.numUnreads
+    chatNumUnreads: state.ChatReducer.numUnreads,
+    scrollLocked: state.FeedReducer.scrollLocked
   }),
   {
     initSession: initSessionAsync,
@@ -41,7 +42,8 @@ export default class App extends Component {
     resetChat: PropTypes.func,
     loggedIn: PropTypes.bool,
     initChat: PropTypes.func,
-    changePageVisibility: PropTypes.func
+    changePageVisibility: PropTypes.func,
+    scrollLocked: PropTypes.bool
   }
 
   constructor() {
@@ -191,8 +193,9 @@ export default class App extends Component {
     initChat()
   }
 
-  onScroll() {
+  onScroll(event) {
     const {chatMode} = this.props
+    if (this.props.scrollLocked) window.scrollTo(0, this.state.scrollPosition)
     if (!chatMode) {
       this.setState({scrollPosition: window.scrollY})
     }

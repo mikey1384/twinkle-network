@@ -5,18 +5,29 @@ import {Route} from 'react-router-dom'
 import Profile from './Profile'
 import People from './People'
 import Feeds from './Feeds'
-import {disconnectHomeComponent} from 'redux/actions/FeedActions'
+import Notification from './Notification'
+import {
+  disconnectHomeComponent,
+  lockScroll,
+  unlockScroll
+} from 'redux/actions/FeedActions'
 
 @connect(
   state => ({
     username: state.UserReducer.username
   }),
-  {disconnectHomeComponent}
+  {
+    disconnectHomeComponent,
+    lockScroll,
+    unlockScroll
+  }
 )
 export default class Home extends Component {
   static propTypes = {
     history: PropTypes.object,
     location: PropTypes.object,
+    lockScroll: PropTypes.func,
+    unlockScroll: PropTypes.func,
     username: PropTypes.string,
     disconnectHomeComponent: PropTypes.func
   }
@@ -34,7 +45,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {history, location, username: myUsername} = this.props
+    const {history, location, username: myUsername, lockScroll, unlockScroll} = this.props
     let username = ''
     if (location.pathname.includes('/users/')) {
       username = location.pathname.split('/')[2]
@@ -79,12 +90,15 @@ export default class Home extends Component {
           <Route path="/users/:username" component={Profile}/>
           <Route exact path="/users" component={People}/>
         </div>
-        {/* <div
+        <div
           className="col-xs-3 col-xs-offset-9"
           style={{position: 'fixed'}}
         >
-          {myUsername && <Notification />}
-        </div> */}
+          {myUsername && <Notification
+            lockPageScroll={() => lockScroll()}
+            unlockPageScroll={() => unlockScroll()}
+          />}
+        </div>
       </div>
     )
   }
