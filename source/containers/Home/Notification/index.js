@@ -76,8 +76,9 @@ export default class Notification extends Component {
       default: break
     }
     action += ` your ${notification.rootType}: `
+    let title = notification.rootTitle.length > 50 ? notification.rootTitle.substr(0, 50) + '...' : notification.rootTitle
     const content = {
-      title: notification.rootTitle,
+      title,
       id: notification.rootType === 'comment' ?
         notification.rootRootId : notification.rootId
     }
