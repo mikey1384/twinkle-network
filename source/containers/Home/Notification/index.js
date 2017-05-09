@@ -65,7 +65,7 @@ export default class Notification extends Component {
     let action = ''
     switch (notification.type) {
       case 'like':
-        action = 'liked'
+        action = 'likes'
         break
       case 'comment':
         action = 'commented on'
@@ -76,10 +76,16 @@ export default class Notification extends Component {
       default: break
     }
     action += ` your ${notification.rootType}: `
+    const content = {
+      title: notification.rootTitle,
+      id: notification.rootType === 'comment' ?
+        notification.rootRootId : notification.rootId
+    }
+    const type = notification.rootType === 'comment' ? notification.rootRootType : notification.rootType
     return <div>
       <UsernameText user={{id: notification.userId, name: notification.username}} color={Color.blue} />
       &nbsp;{action}
-      <ContentLink content={{id: notification.rootId, title: notification.rootTitle}} type={notification.rootType} />
+      <ContentLink content={content} type={type} />
     </div>
   }
 }
