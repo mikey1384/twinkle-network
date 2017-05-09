@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const currentVersion = 0.02
+const currentVersion = 0.03
 
 router.get('/version', (req, res) => {
   const {version} = req.query
