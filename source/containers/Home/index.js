@@ -8,8 +8,7 @@ import Feeds from './Feeds'
 import Notification from './Notification'
 import {
   disconnectHomeComponent,
-  lockScroll,
-  unlockScroll
+  lockScroll
 } from 'redux/actions/FeedActions'
 
 @connect(
@@ -18,8 +17,7 @@ import {
   }),
   {
     disconnectHomeComponent,
-    lockScroll,
-    unlockScroll
+    lockScroll
   }
 )
 export default class Home extends Component {
@@ -27,7 +25,6 @@ export default class Home extends Component {
     history: PropTypes.object,
     location: PropTypes.object,
     lockScroll: PropTypes.func,
-    unlockScroll: PropTypes.func,
     username: PropTypes.string,
     disconnectHomeComponent: PropTypes.func
   }
@@ -45,7 +42,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {history, location, username: myUsername, lockScroll, unlockScroll} = this.props
+    const {history, location, username: myUsername, lockScroll} = this.props
     let username = ''
     if (location.pathname.includes('/users/')) {
       username = location.pathname.split('/')[2]
@@ -96,7 +93,6 @@ export default class Home extends Component {
         >
           {myUsername && <Notification
             lockPageScroll={() => lockScroll()}
-            unlockPageScroll={() => unlockScroll()}
           />}
         </div>
       </div>

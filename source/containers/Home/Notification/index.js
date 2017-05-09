@@ -16,8 +16,7 @@ export default class Notification extends Component {
   static propTypes = {
     notifications: PropTypes.array,
     fetchNotifications: PropTypes.func,
-    lockPageScroll: PropTypes.func,
-    unlockPageScroll: PropTypes.func
+    lockPageScroll: PropTypes.func
   }
 
   componentDidMount() {
@@ -26,12 +25,11 @@ export default class Notification extends Component {
   }
 
   render() {
-    const {notifications, lockPageScroll, unlockPageScroll} = this.props
+    const {notifications, lockPageScroll} = this.props
     return (
       <div
         className="well"
         onScroll={() => lockPageScroll()}
-        onMouseLeave={() => unlockPageScroll()}
         style={{
           maxHeight: '300px',
           overflowY: 'scroll'
