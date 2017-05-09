@@ -85,13 +85,13 @@ export default class Home extends Component {
             )}/>
           </ul>
         </div>
-        <div className="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
+        <div className="col-lg-6 col-lg-offset-3 col-xs-10 col-xs-offset-2">
           <Route exact path="/" component={Feeds}/>
           <Route path="/users/:username" component={Profile}/>
           <Route exact path="/users" component={People}/>
         </div>
         <div
-          className="col-xs-3 col-xs-offset-9"
+          className="col-xs-3 col-xs-offset-9 visible-lg"
           style={{position: 'fixed'}}
         >
           {myUsername && <Notification
