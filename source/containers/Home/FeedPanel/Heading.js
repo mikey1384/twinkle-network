@@ -60,9 +60,9 @@ export default class Heading extends Component {
     let targetAction
 
     if (targetReplyUploader) {
-      targetAction = <span><UserLink user={targetReplyUploader} />'s reply on</span>
+      targetAction = <span><UserLink user={targetReplyUploader} />{"'s reply on"}</span>
     } else if (targetCommentUploader) {
-      targetAction = <span><UserLink user={targetCommentUploader} />'s comment on</span>
+      targetAction = <span><UserLink user={targetCommentUploader} />{"'s comment on"}</span>
     }
     let userLikedVideo = false
     for (let i = 0; i < rootContentLikers.length; i++) {

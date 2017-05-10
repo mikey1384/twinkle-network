@@ -129,7 +129,6 @@ export default class DebatePanel extends Component {
             <form onSubmit={event => event.preventDefault()}>
               <input
                 autoFocus
-                ref="editTitleInput"
                 type="text"
                 className="form-control"
                 placeholder="Enter Title..."

@@ -36,10 +36,10 @@ export default class SigninModal extends Component {
             <h3>Welcome to Twinkle. Do you have a Twinkle account?</h3>
           }
           {currentPage === 'login' &&
-            <h3>Great! What's your account username and password?</h3>
+            <h3>{"Great! What's your account username and password?"}</h3>
           }
           {currentPage === 'signUp' &&
-            <h3>Sure, let's set up your account...</h3>
+            <h3>{"Sure, let's set up your account..."}</h3>
           }
         </Modal.Header>
         <Modal.Body>

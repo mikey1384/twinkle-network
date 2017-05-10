@@ -31,9 +31,8 @@ router.get('/', (req, res) => {
     SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName,
     COUNT(c.id) AS numLikes
     FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
-    LEFT JOIN content_likes c ON a.id = c.rootId
-    ${where} AND c.rootType = 'video'
-    GROUP BY a.id
+    LEFT JOIN content_likes c ON a.id = c.rootId AND c.rootType = 'video'
+    ${where} GROUP BY a.id
     ORDER BY a.id DESC LIMIT ${numberToLoad}
   `
   pool.query(query, videoId, (err, rows) => {

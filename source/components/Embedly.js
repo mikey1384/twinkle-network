@@ -99,7 +99,13 @@ export default class Embedly extends Component {
 
     return (
       <div style={this.props.style}>
-        <a className="embedly" target="_blank" href={this.state.url || this.props.url} style={aStyle}>
+        <a
+          className="embedly"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={this.state.url || this.props.url}
+          style={aStyle}
+        >
           <div className="embedly__image" style={imageStyle}>
             <img src={this.state.thumbnail_url} alt={this.state.title} style={imgStyle}/>
           </div>

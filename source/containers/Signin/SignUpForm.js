@@ -119,7 +119,7 @@ export default class SignUpForm extends Component {
             />
           </fieldset>
           <fieldset className="form-group">
-            <label>Email (optional, you don't need to enter this)</label>
+            <label>{"Email (optional, you don't need to enter this)"}</label>
             <input
               className="form-control"
               value={email}

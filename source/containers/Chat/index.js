@@ -355,7 +355,6 @@ export default class Chat extends Component {
             />
           }
           <MessagesContainer
-            ref="messagesContainer"
             loading={loading}
             currentChannelId={this.props.currentChannel.id}
             loadMoreButton={this.props.loadMoreButton}

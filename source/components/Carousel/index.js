@@ -151,7 +151,7 @@ export default class Carousel extends Component {
     var children = React.Children.count(this.props.children) > 1 ? formatChildren.call(this, this.props.children) : this.props.children
     const slideFraction = (this.state.currentSlide + 1)/this.state.slideCount
     return (
-      <div className={['slider', this.props.className || ''].join(' ')} ref="slider" style={assign(getSliderStyles.call(this), this.props.style || {})}>
+      <div className={['slider', this.props.className || ''].join(' ')} ref={ref => { this.Slider = ref }} style={assign(getSliderStyles.call(this), this.props.style || {})}>
         { this.props.userIsUploader &&
           <a
             style={{
@@ -198,12 +198,12 @@ export default class Carousel extends Component {
           </div>
         }
         <div className="slider-frame"
-          ref="frame"
+          ref={ref => { this.Frame = ref }}
           style={getFrameStyles.call(this)}
           {...getTouchEvents.call(this)}
           {...getMouseEvents.call(this)}
           onClick={handleClick.bind(this)}>
-          <ul className="slider-list" ref="list" style={getListStyles.call(this)}>
+          <ul className="slider-list" ref={ref => { this.List = ref }} style={getListStyles.call(this)}>
             {children}
           </ul>
         </div>

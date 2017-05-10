@@ -5,7 +5,10 @@ import {Modal, Button} from 'react-bootstrap'
 ResultModal.propTypes = {
   onHide: PropTypes.func,
   totalQuestions: PropTypes.number,
-  numberCorrect: PropTypes.number
+  numberCorrect: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.func
+  ])
 }
 export default function ResultModal({numberCorrect, totalQuestions, onHide}) {
   const number = numberCorrect()
@@ -16,7 +19,7 @@ export default function ResultModal({numberCorrect, totalQuestions, onHide}) {
         <h4>Your Results</h4>
       </Modal.Header>
       <Modal.Body>
-        <p>You've correctly answered {number} out of {totalQuestions} question(s).</p>
+        <p>{`You've correctly answered ${number} out of ${totalQuestions} question(s).`}</p>
         { perfect &&
           <p>Perfect :)</p>
         }

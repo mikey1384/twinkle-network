@@ -71,7 +71,6 @@ export default class Description extends Component {
             {onEdit ?
               <form className="col-sm-6 col-sm-offset-3" onSubmit={event => event.preventDefault()}>
                 <input
-                  ref="editTitleInput"
                   type="text"
                   className="form-control"
                   placeholder="Enter Title..."

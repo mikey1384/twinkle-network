@@ -70,10 +70,7 @@ export default class VideoThumb extends Component {
       <div
         className={size}
       >
-        <div
-          className="thumbnail"
-          ref="thumbnail"
-        >
+        <div className="thumbnail">
           {
             editable &&
             <SmallDropdownButton

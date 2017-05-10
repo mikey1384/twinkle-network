@@ -87,6 +87,7 @@ export default class QuestionsBuilder extends Component {
     this.onChoicesRearrange = this.onChoicesRearrange.bind(this)
     this.onReset = this.onReset.bind(this)
     this.handleScroll = this.handleScroll.bind(this)
+    this.Questions = {}
   }
 
   componentWillMount() {
@@ -155,7 +156,7 @@ export default class QuestionsBuilder extends Component {
                   return (
                     <div
                       key={index}
-                      ref={question.id}
+                      ref={ref => { this.Questions[question.id] = ref }}
                       style={{
                         paddingTop: index === 0 ? '1em' : '3em'
                       }}
@@ -283,7 +284,7 @@ export default class QuestionsBuilder extends Component {
         return question.id
       })
     }, () => {
-      this.refs[questions[questions.length-1].id].scrollIntoView()
+      this.Questions[questions[questions.length-1].id].scrollIntoView()
     })
   }
 
@@ -421,7 +422,7 @@ export default class QuestionsBuilder extends Component {
     }
 
     if (firstError !== null) {
-      this.refs[firstError].scrollIntoView()
+      this.Questions[firstError].scrollIntoView()
       this.setState({questions})
     } else {
       const finishedQuestions = questions.filter(question => {

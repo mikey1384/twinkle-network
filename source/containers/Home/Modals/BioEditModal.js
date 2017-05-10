@@ -48,7 +48,7 @@ export default class BioEditModal extends Component {
                   type="text"
                 />
               </div>
-              <small>If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student which english academy do you go to? (For example, LexKim) What is the name of your teacher? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want </small><br/>
+              <small>{"If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student which english academy do you go to? (For example, LexKim) What is the name of your teacher? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want "}</small><br/>
               <b style={{color: firstLine.length > maxChar && 'red'}}>{`(${firstLine.length}/${maxChar} characters)`}</b>
             </fieldset>
             <fieldset className="form-group">
@@ -62,7 +62,7 @@ export default class BioEditModal extends Component {
                   type="text"
                 />
               </div>
-              <small>What is your favorite activity? What do you love doing? If you like books, what are some of your favorite books? If you like video games, what's your favorite video game title? What do you normally do when you play with your friends? Or, feel free to write anything you want (ideally about something you love doing)</small><br/>
+              <small>{"What is your favorite activity? What do you love doing? If you like books, what are some of your favorite books? If you like video games, what's your favorite video game title? What do you normally do when you play with your friends? Or, feel free to write anything you want (ideally about something you love doing)"}</small><br/>
               <b style={{color: secondLine.length > maxChar && 'red'}}>{`(${secondLine.length}/${maxChar} characters)`}</b>
             </fieldset>
             <fieldset className="form-group">
@@ -76,7 +76,7 @@ export default class BioEditModal extends Component {
                   type="text"
                 />
               </div>
-              <small>What's the name of your school? (Example: Daechi elementary school) What grade are you in? If you've finished school, which was the last school you attended? What is your favorite school subject? Or, write anything you wish your friends knew about yourself</small><br/>
+              <small>{"What's the name of your school? (Example: Daechi elementary school) What grade are you in? If you've finished school, which was the last school you attended? What is your favorite school subject? Or, write anything you wish your friends knew about yourself"}</small><br/>
               <b style={{color: thirdLine.length > maxChar && 'red'}}>{`(${thirdLine.length}/${maxChar} characters)`}</b>
             </fieldset>
           </form>

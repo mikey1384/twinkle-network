@@ -23,7 +23,7 @@ export default function Main({showLoginForm, showSignUpForm}) {
           className="btn btn-lg btn-primary"
           style={{fontSize: '1.5em', padding: '1em'}}
           onClick={showSignUpForm}
-        >No, I'm a new user. Make me a new account, please!</Button>
+        >{"No, I'm a new user. Make me a new account, please!"}</Button>
       </div>
     </div>
   )

@@ -105,7 +105,7 @@ export function setDimensions() {
   var frameWidth
 
   slidesToScroll = this.props.slidesToScroll
-  frame = this.refs.frame
+  frame = self.Frame
   firstSlide = frame.childNodes[0].childNodes[0]
   if (firstSlide) {
     firstSlide.style.height = 'auto'

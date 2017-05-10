@@ -125,7 +125,6 @@ export default class App extends Component {
       <div
         id="main-view"
         style={{backgroundColor: chatMode && '#fff'}}
-        ref="app"
       >
         <Header
           staticTop={chatMode}
@@ -150,7 +149,7 @@ export default class App extends Component {
               }}
             >
               <p style={{fontSize: '1.4em'}}>The website has been updated. Click the button below to apply the update.</p>
-              <p style={{fontSize: '1.2em'}}>Warning: Update is mandatory. Some features will not work properly if you don't!</p>
+              <p style={{fontSize: '1.2em'}}>{"Warning: Update is mandatory. Some features will not work properly if you don't!"}</p>
               <Button
                 className="btn btn-lg btn-success"
                 style={{

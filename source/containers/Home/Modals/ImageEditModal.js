@@ -37,7 +37,7 @@ export default class ImageEditModal extends Component {
             {imageUri &&
               <div>
                 <AvatarEditor
-                  ref="editor"
+                  ref={ref => { this.Editor = ref }}
                   image={imageUri}
                   width={350}
                   height={350}
@@ -60,7 +60,7 @@ export default class ImageEditModal extends Component {
           <Button className="btn btn-default" onClick={onHide}>Cancel</Button>
           <Button
             className="btn btn-primary"
-            onClick={() => onConfirm(this.refs.editor.getImage().toDataURL('image/jpeg', 0.7))}
+            onClick={() => onConfirm(this.Editor.getImage().toDataURL('image/jpeg', 0.7))}
             disabled={processing}
           >
             Submit

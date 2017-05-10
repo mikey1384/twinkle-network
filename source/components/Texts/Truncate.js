@@ -36,10 +36,6 @@ export default class Truncate extends Component {
 
   componentDidMount() {
     const {
-        refs: {
-            text,
-            ellipsis
-        },
         calcTargetWidth,
         onResize
     } = this
@@ -47,11 +43,11 @@ export default class Truncate extends Component {
     const canvas = document.createElement('canvas')
     this.canvas = canvas.getContext('2d')
 
-    document.body.appendChild(ellipsis)
+    document.body.appendChild(this.Ellipsis)
 
     calcTargetWidth(() => {
-      if (text) {
-        text.parentNode.removeChild(text)
+      if (this.Text) {
+        this.Text.parentNode.removeChild(this.Text)
       }
     })
 
@@ -66,14 +62,11 @@ export default class Truncate extends Component {
 
   componentWillUnmount() {
     const {
-        refs: {
-            ellipsis
-        },
         onResize,
         timeout
     } = this
 
-    ellipsis.parentNode.removeChild(ellipsis)
+    this.Ellipsis.parentNode.removeChild(this.Ellipsis)
 
     window.removeEventListener('resize', onResize)
     cancelAnimationFrame(timeout)
@@ -116,24 +109,21 @@ export default class Truncate extends Component {
 
   calcTargetWidth(callback) {
     const {
-      refs: {
-          target
-      },
       calcTargetWidth,
       canvas
     } = this
 
-    if (!target) {
+    if (!this.Target) {
       return
     }
 
-    const targetWidth = target.parentNode.getBoundingClientRect().width
+    const targetWidth = this.Target.parentNode.getBoundingClientRect().width
 
     if (!targetWidth) {
       return requestAnimationFrame(() => calcTargetWidth(callback))
     }
 
-    const style = window.getComputedStyle(target)
+    const style = window.getComputedStyle(this.Target)
 
     const font = [
       style['font-weight'],
@@ -159,7 +149,6 @@ export default class Truncate extends Component {
 
   getLines() {
     const {
-      refs,
       props: {
         lines: numLines,
         ellipsis
@@ -173,10 +162,10 @@ export default class Truncate extends Component {
     } = this
 
     const lines = []
-    const text = innerText(refs.text)
+    const text = innerText(this.Text)
     const textLines = text.split('\n').map(line => line.split(' '))
     let didTruncate = true
-    const ellipsisWidth = this.ellipsisWidth(this.refs.ellipsis)
+    const ellipsisWidth = this.ellipsisWidth(this.Ellipsis)
 
     for (let line = 1; line <= numLines; line++) {
       const textWords = textLines[0]
@@ -268,9 +257,6 @@ export default class Truncate extends Component {
 
   render() {
     const {
-      refs: {
-        target
-      },
       props: {
         children,
         ellipsis,
@@ -287,7 +273,7 @@ export default class Truncate extends Component {
 
     let text
 
-    const mounted = !!(target && targetWidth)
+    const mounted = !!(this.Target && targetWidth)
 
     if (typeof window !== 'undefined' && mounted) {
       if (lines > 0) {
@@ -301,10 +287,10 @@ export default class Truncate extends Component {
     delete spanProps.onTruncate
 
     return (
-      <span {...spanProps} ref='target'>
+      <span {...spanProps} ref={ref => { this.Target = ref }}>
         {text}
-        <span ref='text'>{children}</span>
-        <span ref='ellipsis' style={this.styles.ellipsis}>
+        <span ref={ref => { this.Text = ref }}>{children}</span>
+        <span ref={ref => { this.Ellipsis = ref }} style={this.styles.ellipsis}>
           {ellipsis}
         </span>
       </span>

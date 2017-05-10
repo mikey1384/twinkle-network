@@ -27,7 +27,6 @@ class EditTitleForm extends Component {
       <form onSubmit={event => this.onEditSubmit(event, title)}>
         <input
           {...this.props}
-          ref="editTitleInput"
           type="text"
           className="form-control"
           placeholder="Enter Title..."

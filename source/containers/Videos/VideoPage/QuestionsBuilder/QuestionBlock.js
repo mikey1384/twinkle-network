@@ -84,7 +84,6 @@ export default class QuestionBlock extends Component {
               }}
             >
               <Textarea
-                ref="editTitleInput"
                 type="text"
                 className="form-control"
                 placeholder="Enter Question..."

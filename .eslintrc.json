@@ -135,6 +135,7 @@
     "padded-blocks": [2, "never"],
     "quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
     "react/no-unused-prop-types": [2],
+    "react/no-children-prop": [0],
     "rest-spread-spacing": [2, "never"],
     "semi": [2, "never"],
     "semi-spacing": [2, { "before": false, "after": true }],

@@ -84,7 +84,7 @@ export default class LoginForm extends Component {
             }}
             onClick={showSignUpForm}
           >
-            Wait, I don't think I have an account, yet
+            {"Wait, I don't think I have an account, yet"}
           </Button>
           <Button
             className="btn btn-lg btn-primary"

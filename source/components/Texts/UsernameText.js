@@ -56,7 +56,11 @@ export default class UsernameText extends Component {
             }}
           >
             <li>
-              <a href={`/users/${user.name}`} target="_blank">
+              <a
+                href={`/users/${user.name}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Profile
               </a>
               {user.id !== userId &&
