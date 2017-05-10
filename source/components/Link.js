@@ -26,7 +26,9 @@ function Link({to, onClickAsync, children, style, target, history}) {
     if (target) return window.open(to, target)
     if (typeof onClickAsync === 'function') {
       return onClickAsync().then(
-        () => history.push(to)
+        clickSafe => {
+          if (!clickSafe) history.push(to)
+        }
       )
     }
     history.push(to)

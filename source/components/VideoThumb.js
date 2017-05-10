@@ -189,8 +189,9 @@ export default class VideoThumb extends Component {
     const {video, clickSafe} = this.props
     if (!clickSafe) {
       return this.props.loadVideoPage(video.id)
+    } else {
+      return Promise.resolve(true)
     }
-    return Promise.resolve()
   }
 
   onEditTitle() {
