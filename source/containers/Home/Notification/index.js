@@ -6,6 +6,7 @@ import UsernameText from 'components/Texts/UsernameText'
 import {Color} from 'constants/css'
 import ContentLink from '../ContentLink'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import {timeSince} from 'helpers/timeStampHelpers'
 
 @connect(
   state => ({
@@ -75,6 +76,7 @@ export default class Notification extends Component {
               className="list-group-item"
               key={notification.id}>
               {this.renderNotificationMessage(notification)}
+              <small style={{color: Color.gray}}>{timeSince(notification.timeStamp)}</small>
             </li>
           })}
         </ul>
@@ -107,9 +109,9 @@ export default class Notification extends Component {
     }
   }
 
-  renderNotificationMessage(notification) {
+  renderNotificationMessage({type, rootType, rootRootType, rootTitle, rootId, rootRootId, userId, username}) {
     let action = ''
-    switch (notification.type) {
+    switch (type) {
       case 'like':
         action = 'likes'
         break
@@ -121,18 +123,17 @@ export default class Notification extends Component {
         break
       default: break
     }
-    action += ` your ${notification.rootType}: `
-    let title = notification.rootTitle.length > 50 ? notification.rootTitle.substr(0, 50) + '...' : notification.rootTitle
+    action += ` your ${rootType}: `
+    let title = rootTitle.length > 50 ? rootTitle.substr(0, 50) + '...' : rootTitle
     const content = {
       title,
-      id: notification.rootType === 'comment' ?
-        notification.rootRootId : notification.rootId
+      id: rootType === 'comment' ? rootRootId : rootId
     }
-    const type = notification.rootType === 'comment' ? notification.rootRootType : notification.rootType
+    const contentType = rootType === 'comment' ? rootRootType : rootType
     return <div>
-      <UsernameText user={{id: notification.userId, name: notification.username}} color={Color.blue} />
+      <UsernameText user={{id: userId, name: username}} color={Color.blue} />
       &nbsp;{action}
-      <ContentLink content={content} type={type} />
+      <ContentLink content={content} type={contentType} />
     </div>
   }
 }
