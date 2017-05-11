@@ -86,7 +86,7 @@ export default class Feeds extends Component {
       <div>
         <FeedInputPanel />
         {this.renderFilterBar()}
-        {!feeds &&
+        {!loaded &&
           <Loading text="Loading Feeds..." />
         }
         {loaded && feeds.length === 0 &&
@@ -99,7 +99,7 @@ export default class Feeds extends Component {
             <span>Hello there!</span>
           </p>
         }
-        {!!feeds && feeds.length > 0 &&
+        {loaded && feeds.length > 0 &&
           <div>
             {feeds.map(feed => {
               return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />

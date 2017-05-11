@@ -177,15 +177,15 @@ export default class Body extends Component {
           </ul>
         </nav>
         <div>
-          {!feeds && <Loading />}
-          {feeds && feeds.length > 0 && (
+          {!loaded && <Loading />}
+          {loaded && feeds.length > 0 && (
             <div>
               {feeds.map(feed => {
                 return <FeedPanel key={`${feed.id}`} feed={feed} userId={myId} />
               })}
             </div>
           )}
-          {feeds && feeds.length === 0 && loaded && <div style={{textAlign: 'center'}}>{this.onNoFeed(username)}</div>}
+          {loaded && feeds.length === 0 && <div style={{textAlign: 'center'}}>{this.onNoFeed(username)}</div>}
         </div>
         {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loading} />}
       </div>
