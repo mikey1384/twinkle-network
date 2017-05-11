@@ -6,7 +6,6 @@ import Header from './Header'
 import io from 'socket.io-client'
 import {connect} from 'react-redux'
 import {initChatAsync, resetChat, turnChatOff, changePageVisibility} from 'redux/actions/ChatActions'
-import {unlockScroll} from 'redux/actions/FeedActions'
 import {initSessionAsync} from 'redux/actions/UserActions'
 import {URL} from 'constants/URL'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
@@ -23,16 +22,14 @@ let hidden
   state => ({
     loggedIn: state.UserReducer.loggedIn,
     chatMode: state.ChatReducer.chatMode,
-    chatNumUnreads: state.ChatReducer.numUnreads,
-    scrollLocked: state.FeedReducer.scrollLocked
+    chatNumUnreads: state.ChatReducer.numUnreads
   }),
   {
     initSession: initSessionAsync,
     turnChatOff,
     initChat: initChatAsync,
     resetChat,
-    changePageVisibility,
-    unlockPageScroll: unlockScroll
+    changePageVisibility
   }
 )
 export default class App extends Component {
@@ -44,9 +41,7 @@ export default class App extends Component {
     resetChat: PropTypes.func,
     loggedIn: PropTypes.bool,
     initChat: PropTypes.func,
-    changePageVisibility: PropTypes.func,
-    scrollLocked: PropTypes.bool,
-    unlockPageScroll: PropTypes.func
+    changePageVisibility: PropTypes.func
   }
 
   constructor() {
@@ -56,9 +51,7 @@ export default class App extends Component {
       updateNoticeShown: false
     }
     this.onChatButtonClick = this.onChatButtonClick.bind(this)
-    this.onMouseMove = this.onMouseMove.bind(this)
     this.onScroll = this.onScroll.bind(this)
-    this.onResize = this.onResize.bind(this)
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this)
   }
 
@@ -79,9 +72,7 @@ export default class App extends Component {
       visibilityChange = 'webkitvisibilitychange'
     }
     initSession()
-    addEvent(window, 'mousemove', this.onMouseMove)
     addEvent(window, 'scroll', this.onScroll)
-    addEvent(window, 'resize', this.onResize)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
   }
 
@@ -109,9 +100,7 @@ export default class App extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(window, 'mousemove', this.onMouseMove)
     removeEvent(window, 'scroll', this.onScroll)
-    removeEvent(window, 'resize', this.onResize)
   }
 
   render() {
@@ -201,19 +190,8 @@ export default class App extends Component {
     initChat()
   }
 
-  onMouseMove() {
-    const {unlockPageScroll, scrollLocked} = this.props
-    if (scrollLocked) unlockPageScroll()
-  }
-
-  onResize() {
-    const {unlockPageScroll, scrollLocked} = this.props
-    if (scrollLocked) unlockPageScroll()
-  }
-
   onScroll(event) {
     const {chatMode} = this.props
-    if (this.props.scrollLocked) window.scrollTo(0, this.state.scrollPosition)
     if (!chatMode) {
       this.setState({scrollPosition: window.scrollY})
     }

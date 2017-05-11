@@ -152,16 +152,6 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'LOCK_SCROLL':
-      return {
-        ...state,
-        scrollLocked: true
-      }
-    case 'UNLOCK_SCROLL':
-      return {
-        ...state,
-        scrollLocked: false
-      }
     case 'COMMENT_FEED_LIKE':
       return {
         ...state,

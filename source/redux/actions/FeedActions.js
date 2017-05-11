@@ -251,14 +251,6 @@ request.get(`${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId
   }
 )
 
-export const lockScroll = () => ({
-  type: 'LOCK_SCROLL'
-})
-
-export const unlockScroll = () => ({
-  type: 'UNLOCK_SCROLL'
-})
-
 export const showFeedCommentsAsync = ({rootType, type, contentId, commentLength, isReply}) => dispatch =>
 request.get(
   `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`
