@@ -6,25 +6,19 @@ import Profile from './Profile'
 import People from './People'
 import Feeds from './Feeds'
 import Notification from './Notification'
-import {
-  disconnectHomeComponent,
-  lockScroll
-} from 'redux/actions/FeedActions'
+import Responsive from 'components/HigherOrder/Responsive'
+import {disconnectHomeComponent} from 'redux/actions/FeedActions'
 
 @connect(
   state => ({
     username: state.UserReducer.username
   }),
-  {
-    disconnectHomeComponent,
-    lockScroll
-  }
+  {disconnectHomeComponent}
 )
 export default class Home extends Component {
   static propTypes = {
     history: PropTypes.object,
     location: PropTypes.object,
-    lockScroll: PropTypes.func,
     username: PropTypes.string,
     disconnectHomeComponent: PropTypes.func
   }
@@ -42,7 +36,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {history, location, username: myUsername, lockScroll} = this.props
+    const {history, location, username: myUsername} = this.props
     let username = ''
     if (location.pathname.includes('/users/')) {
       username = location.pathname.split('/')[2]
@@ -82,18 +76,20 @@ export default class Home extends Component {
             )}/>
           </ul>
         </div>
-        <div className="col-lg-6 col-lg-offset-3 col-xs-10 col-xs-offset-2">
+        <div className="col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-2">
           <Route exact path="/" component={Feeds}/>
           <Route path="/users/:username" component={Profile}/>
           <Route exact path="/users" component={People}/>
         </div>
         <div
-          className="col-xs-3 col-xs-offset-9 visible-lg"
+          className="col-xs-3 col-xs-offset-9"
           style={{position: 'fixed'}}
         >
-          {myUsername && <Notification
-            lockPageScroll={() => lockScroll()}
-          />}
+          {myUsername &&
+            <Responsive size="desktop">
+              <Notification />
+            </Responsive>
+          }
         </div>
       </div>
     )

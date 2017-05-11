@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {fetchNotifications} from 'redux/actions/NotiActions'
+import {lockScroll, unlockScroll} from 'redux/actions/FeedActions'
 import UsernameText from 'components/Texts/UsernameText'
 import {Color} from 'constants/css'
 import ContentLink from '../ContentLink'
@@ -10,26 +11,32 @@ import ContentLink from '../ContentLink'
   state => ({
     notifications: state.NotiReducer.notifications
   }),
-  {fetchNotifications}
+  {
+    fetchNotifications,
+    lockScroll,
+    unlockScroll
+  }
 )
 export default class Notification extends Component {
   static propTypes = {
     notifications: PropTypes.array,
     fetchNotifications: PropTypes.func,
-    lockPageScroll: PropTypes.func
+    lockScroll: PropTypes.func,
+    unlockScroll: PropTypes.func
   }
 
   componentDidMount() {
-    const {fetchNotifications} = this.props
+    const {fetchNotifications, unlockScroll} = this.props
     fetchNotifications()
+    unlockScroll()
   }
 
   render() {
-    const {notifications, lockPageScroll} = this.props
+    const {notifications, lockScroll} = this.props
     return (
       <div
         className="well"
-        onScroll={() => lockPageScroll()}
+        onScroll={() => lockScroll()}
         style={{
           maxHeight: '300px',
           overflowY: 'scroll'
