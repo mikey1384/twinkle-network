@@ -9,11 +9,11 @@ const breakpoints = {
 }
 
 Responsive.propTypes = {
-  size: PropTypes.string,
+  device: PropTypes.string,
   children: PropTypes.element
 }
-export default function Responsive({size, children, ...props}) {
-  const breakpoint = breakpoints[size] || breakpoints.desktop
+export default function Responsive({device, children, ...props}) {
+  const breakpoint = breakpoints[device] || breakpoints.desktop
   return (
     <MediaQuery {...props} query={breakpoint}>
       {children}

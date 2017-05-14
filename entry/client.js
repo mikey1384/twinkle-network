@@ -6,7 +6,7 @@ import {ConnectedRouter} from 'react-router-redux'
 import createHistory from 'history/createBrowserHistory'
 import createStoreWithHistory from './store'
 import App from 'containers/App'
-import {ScrollContext} from 'components/HigherOrder/ReactRouterScroll'
+import {ScrollContext} from 'components/Wrappers/ReactRouterScroll'
 
 const history = createHistory()
 const store = createStoreWithHistory(history)

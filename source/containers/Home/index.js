@@ -6,7 +6,7 @@ import Profile from './Profile'
 import People from './People'
 import Feeds from './Feeds'
 import Notification from './Notification'
-import Responsive from 'components/HigherOrder/Responsive'
+import Responsive from 'components/Wrappers/Responsive'
 import {disconnectHomeComponent} from 'redux/actions/FeedActions'
 
 @connect(
@@ -86,7 +86,7 @@ export default class Home extends Component {
           style={{position: 'fixed'}}
         >
           {myUsername &&
-            <Responsive size="desktop">
+            <Responsive device="desktop">
               <Notification />
             </Responsive>
           }

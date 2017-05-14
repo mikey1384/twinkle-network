@@ -12,6 +12,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
 import Videos from 'containers/Videos'
 import Links from 'containers/Links'
+import Redirect from 'containers/Redirect'
 import Button from 'components/Button'
 
 const socket = io.connect(URL)
@@ -157,6 +158,7 @@ export default class App extends Component {
             <Route path="/links" component={Links} />
             <Route path="/users" component={Home} />
             <Route path="/users/:username" component={Home} />
+            <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
         {chatMode && this.props.loggedIn &&

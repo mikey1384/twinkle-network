@@ -30,6 +30,23 @@ router.post('/bio', requireAuth, (req, res) => {
   })
 })
 
+router.get('/check', (req, res) => {
+  const {username} = req.query
+  const query = `
+    SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
+    a.profileSecondRow, a.profileThirdRow, b.id AS profilePicId
+    FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE a.username = ?
+  `
+  return poolQuery(query, username).then(
+    rows => res.send(rows.length > 0)
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
 router.get('/session', requireAuth, function(req, res) {
   res.send(Object.assign({}, req.user, {userId: req.user.id}))
 })
