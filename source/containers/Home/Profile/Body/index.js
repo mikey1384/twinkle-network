@@ -128,7 +128,14 @@ export default class Body extends Component {
     return (
       <div>
         <nav className="navbar navbar-inverse">
-          <ul className="nav nav-pills" style={{margin: '0.5em'}}>
+          <ul
+            className="nav nav-pills"
+            style={{
+              margin: '0.5em',
+              fontSize: '1.2em',
+              fontWeight: 'bold'
+            }}
+          >
             {/* <li className="active"><a>Guest Book</a></li> */}
             <Route exact path={`${route.url}/`} children={({match}) => (
               <li

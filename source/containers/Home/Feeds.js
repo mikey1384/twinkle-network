@@ -144,7 +144,14 @@ export default class Feeds extends Component {
     const {selectedFilter} = this.props
     return (
       <nav className="navbar navbar-inverse">
-        <ul className="nav nav-pills col-md-8" style={{margin: '0.5em'}}>
+        <ul
+          className="nav nav-pills"
+          style={{
+            margin: '0.5em',
+            fontSize: '1.2em',
+            fontWeight: 'bold'
+          }}
+        >
           <li className={selectedFilter === 'all' && 'active'}>
             <a
               style={{
