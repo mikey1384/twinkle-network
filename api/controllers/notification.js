@@ -38,7 +38,12 @@ router.get('/', requireAuth, (req, res) => {
         a.rootCommentId IS NOT NULL,
         (SELECT content FROM content_comments WHERE id = a.contentId),
         NULL
-      ) AS commentContent
+      ) AS commentContent,
+      IF(
+        a.rootCommentId IS NOT NULL,
+        (SELECT userId FROM content_comments WHERE id = a.contentId),
+        NULL
+      ) AS rootCommentUploader
     FROM noti_feeds a
       JOIN users b ON a.uploaderId = b.id
     WHERE

@@ -11,6 +11,7 @@ import {timeSince} from 'helpers/timeStampHelpers'
 @connect(
   state => ({
     chatMode: state.ChatReducer.chatMode,
+    myId: state.UserReducer.userId,
     notifications: state.NotiReducer.notifications
   }),
   {
@@ -19,6 +20,7 @@ import {timeSince} from 'helpers/timeStampHelpers'
 )
 export default class Notification extends Component {
   static propTypes = {
+    myId: PropTypes.number,
     chatMode: PropTypes.bool,
     notifications: PropTypes.array,
     fetchNotifications: PropTypes.func
@@ -33,6 +35,7 @@ export default class Notification extends Component {
     this.handleScroll = this.handleScroll.bind(this)
     this.onMouseMove = this.onMouseMove.bind(this)
     this.onPageScroll = this.onPageScroll.bind(this)
+    this.renderNotificationMessage = this.renderNotificationMessage.bind(this)
   }
 
   componentDidMount() {
@@ -112,10 +115,13 @@ export default class Notification extends Component {
   renderNotificationMessage({
     type, rootType, rootRootType,
     rootTitle, rootId, rootRootId,
-    userId, username, commentContent
+    userId, username, commentContent,
+    rootCommentUploader
   }) {
+    const {myId} = this.props
     let action = ''
-    if (commentContent) {
+    let isReplyNotification = commentContent && rootCommentUploader === myId
+    if (isReplyNotification) {
       action = 'replied to'
     } else {
       switch (type) {
@@ -131,10 +137,10 @@ export default class Notification extends Component {
         default: break
       }
     }
-    action += ` your ${commentContent ? 'comment' : rootType}: `
-    let contentTitle = commentContent || rootTitle
+    action += ` your ${isReplyNotification ? 'comment' : rootType}: `
+    let contentTitle = isReplyNotification ? commentContent : rootTitle
     let title = contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
-    if (commentContent) title = `"${title}"`
+    if (isReplyNotification) title = `"${title}"`
     const content = {
       title,
       id: rootType === 'comment' ? rootRootId : rootId
