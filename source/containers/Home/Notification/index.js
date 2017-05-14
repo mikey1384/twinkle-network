@@ -109,22 +109,32 @@ export default class Notification extends Component {
     }
   }
 
-  renderNotificationMessage({type, rootType, rootRootType, rootTitle, rootId, rootRootId, userId, username}) {
+  renderNotificationMessage({
+    type, rootType, rootRootType,
+    rootTitle, rootId, rootRootId,
+    userId, username, commentContent
+  }) {
     let action = ''
-    switch (type) {
-      case 'like':
-        action = 'likes'
-        break
-      case 'comment':
-        action = 'commented on'
-        break
-      case 'discussion':
-        action = 'added a discussion to'
-        break
-      default: break
+    if (commentContent) {
+      action = 'replied to'
+    } else {
+      switch (type) {
+        case 'like':
+          action = 'likes'
+          break
+        case 'comment':
+          action = 'commented on'
+          break
+        case 'discussion':
+          action = 'added a discussion to'
+          break
+        default: break
+      }
     }
-    action += ` your ${rootType}: `
-    let title = rootTitle.length > 50 ? rootTitle.substr(0, 50) + '...' : rootTitle
+    action += ` your ${commentContent ? 'comment' : rootType}: `
+    let contentTitle = commentContent || rootTitle
+    let title = contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
+    if (commentContent) title = `"${title}"`
     const content = {
       title,
       id: rootType === 'comment' ? rootRootId : rootId

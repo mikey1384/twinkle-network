@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
 const {poolQuery} = require('../helpers')
-const currentVersion = 0.08
+const currentVersion = 0.09
 
 router.get('/', requireAuth, (req, res) => {
   const {id: userId} = req.user
@@ -18,12 +18,12 @@ router.get('/', requireAuth, (req, res) => {
       IF(
         a.rootType = 'comment',
         (SELECT rootType FROM content_comments WHERE id = a.rootId),
-        'NULL'
+        NULL
       ) AS rootRootType,
       IF(
         a.rootType = 'comment',
         (SELECT rootId FROM content_comments WHERE id = a.rootId),
-        'NULL'
+        NULL
       ) AS rootRootId,
       IF(
         a.rootType = 'video',
@@ -33,22 +33,31 @@ router.get('/', requireAuth, (req, res) => {
           (SELECT content FROM content_comments WHERE id = a.rootId),
           (SELECT title FROM content_urls WHERE id = a.rootId))
         )
-      ) AS rootTitle
-      FROM noti_feeds a
-      JOIN users b ON a.uploaderId = b.id
-      WHERE
+      ) AS rootTitle,
       IF(
-        a.rootType = 'video',
-        (SELECT uploader FROM vq_videos WHERE id = a.rootId),
-        (IF(
-          a.rootType = 'comment',
-          (SELECT userId FROM content_comments WHERE id = a.rootId),
-          (SELECT uploader FROM content_urls WHERE id = a.rootId))
-        )
-      ) = ?
+        a.rootCommentId IS NOT NULL,
+        (SELECT content FROM content_comments WHERE id = a.contentId),
+        NULL
+      ) AS commentContent
+    FROM noti_feeds a
+      JOIN users b ON a.uploaderId = b.id
+    WHERE
+      (
+        IF(
+          a.rootType = 'video',
+          (SELECT uploader FROM vq_videos WHERE id = a.rootId),
+          (IF(
+            a.rootType = 'comment',
+            (SELECT userId FROM content_comments WHERE id = a.rootId),
+            (SELECT uploader FROM content_urls WHERE id = a.rootId))
+          )
+        ) = ?
+        OR
+          (SELECT userId FROM content_comments WHERE id = a.rootCommentId) = ?
+      )
       AND uploaderId != ? ORDER BY id DESC LIMIT 20
   `
-  return poolQuery(query, [userId, userId]).then(
+  return poolQuery(query, [userId, userId, userId]).then(
     rows => res.send(rows)
   ).catch(
     error => {
