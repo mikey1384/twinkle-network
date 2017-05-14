@@ -41,7 +41,7 @@ router.get('/', requireAuth, (req, res) => {
       ) AS commentContent,
       IF(
         a.rootCommentId IS NOT NULL,
-        (SELECT userId FROM content_comments WHERE id = a.contentId),
+        (SELECT userId FROM content_comments WHERE id = a.rootCommentId),
         NULL
       ) AS rootCommentUploader
     FROM noti_feeds a
