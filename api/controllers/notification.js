@@ -44,18 +44,11 @@ router.get('/', requireAuth, (req, res) => {
         (SELECT userId FROM content_comments WHERE id = a.rootCommentId),
         NULL
       ) AS rootCommentUploader,
-      IF(
-        a.discussionId IS NOT NULL,
-        (SELECT title FROM content_discussions WHERE id = a.discussionId),
-        NULL
-      ) AS discussionTitle,
-      IF(
-        a.discussionId IS NOT NULL,
-        (SELECT userId FROM content_discussions WHERE id = a.discussionId),
-        NULL
-      ) AS discussionUploader
+      c.title AS discussionTitle,
+      c.userId AS discussionUploader
     FROM noti_feeds a
       JOIN users b ON a.uploaderId = b.id
+      LEFT JOIN content_discussions c ON c.id = a.discussionId
     WHERE
       (
         IF(
