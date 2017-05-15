@@ -117,11 +117,18 @@ export default class Heading extends Component {
                     float: 'right',
                     cursor: 'pointer',
                     fontWeight: 'bold',
-                    color: Color.green
+                    color: Color.blue
                   }}
                   onClick={() => onPlayVideoClick()}
                 >
-                  <span className="glyphicon glyphicon-play"></span> Watch
+                  <div className="video-preview-thumb" style={{width: '7em'}}>
+                    <img
+                      alt=""
+                      style={{width: '7em'}}
+                      src={`https://img.youtube.com/vi/${rootContent.content}/mqdefault.jpg`}
+                    />
+                    <a></a>
+                  </div>
                 </a>
               )
             }
