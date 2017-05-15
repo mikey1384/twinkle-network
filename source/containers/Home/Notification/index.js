@@ -116,13 +116,17 @@ export default class Notification extends Component {
     type, rootType, rootRootType,
     rootTitle, rootId, rootRootId,
     userId, username, commentContent,
-    rootCommentUploader
+    rootCommentUploader, discussionTitle,
+    discussionUploader
   }) {
     const {myId} = this.props
     let action = ''
     let isReplyNotification = commentContent && rootCommentUploader === myId
+    let isDiscussionAnswerNotification = discussionTitle && discussionUploader === myId
     if (isReplyNotification) {
       action = 'replied to'
+    } else if (isDiscussionAnswerNotification) {
+      action = 'commented on'
     } else {
       switch (type) {
         case 'like':
@@ -137,8 +141,10 @@ export default class Notification extends Component {
         default: break
       }
     }
-    action += ` your ${isReplyNotification ? 'comment' : rootType}: `
-    let contentTitle = isReplyNotification ? commentContent : rootTitle
+    action += ` your ${isReplyNotification ? 'comment' :
+      (isDiscussionAnswerNotification ? 'discussion topic' : rootType)}: `
+    let contentTitle = isReplyNotification ? commentContent :
+      (isDiscussionAnswerNotification ? discussionTitle : rootTitle)
     let title = contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
     if (isReplyNotification) title = `"${title}"`
     const content = {

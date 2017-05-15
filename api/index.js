@@ -17,10 +17,8 @@ if (process.env.NODE_ENV === 'production') {
   })
 } else {
   const http = require('http').Server(app)
-
   const io = require('socket.io')(http)
   socket(io)
-
   http.listen(process.env.PORT, function() {
     console.log('Server listening on api port:', process.env.PORT)
   })

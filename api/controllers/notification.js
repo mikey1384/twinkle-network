@@ -43,7 +43,17 @@ router.get('/', requireAuth, (req, res) => {
         a.rootCommentId IS NOT NULL,
         (SELECT userId FROM content_comments WHERE id = a.rootCommentId),
         NULL
-      ) AS rootCommentUploader
+      ) AS rootCommentUploader,
+      IF(
+        a.discussionId IS NOT NULL,
+        (SELECT title FROM content_discussions WHERE id = a.discussionId),
+        NULL
+      ) AS discussionTitle,
+      IF(
+        a.discussionId IS NOT NULL,
+        (SELECT userId FROM content_discussions WHERE id = a.discussionId),
+        NULL
+      ) AS discussionUploader
     FROM noti_feeds a
       JOIN users b ON a.uploaderId = b.id
     WHERE
@@ -59,10 +69,12 @@ router.get('/', requireAuth, (req, res) => {
         ) = ?
         OR
           (SELECT userId FROM content_comments WHERE id = a.rootCommentId) = ?
+        OR
+          (SELECT userId FROM content_discussions WHERE id = a.discussionId) = ?
       )
       AND uploaderId != ? ORDER BY id DESC LIMIT 20
   `
-  return poolQuery(query, [userId, userId, userId]).then(
+  return poolQuery(query, [userId, userId, userId, userId]).then(
     rows => res.send(rows)
   ).catch(
     error => {
