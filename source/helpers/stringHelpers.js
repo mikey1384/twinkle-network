@@ -89,6 +89,7 @@ export function addAdvancedEmoji(string) {
   .replace(/(\(devil\))/gi, '😈 ')
   .replace(/(\(angel\))/gi, '😇 ')
   .replace(/(\(lol\))/gi, '😂 ')
+  .replace(/(\(diamond\))/gi, '💎 ')
 }
 
 export function addEmoji(string) {

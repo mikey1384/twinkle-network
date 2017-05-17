@@ -6,6 +6,8 @@ import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
 import LongText from 'components/Texts/LongText'
 import {timeSince} from 'helpers/timeStampHelpers'
+import UserListModal from 'components/Modals/UserListModal'
+import VideoLikeInterface from './VideoLikeInterface'
 import {
   cleanString,
   cleanStringWithURL,
@@ -18,6 +20,8 @@ export default class Description extends Component {
   static propTypes = {
     title: PropTypes.string,
     description: PropTypes.string,
+    likes: PropTypes.array,
+    likeVideo: PropTypes.func,
     onDelete: PropTypes.func,
     uploaderId: PropTypes.number,
     userId: PropTypes.number,
@@ -27,6 +31,7 @@ export default class Description extends Component {
       PropTypes.number
     ]),
     videoId: PropTypes.number,
+    videoViews: PropTypes.string,
     onEditFinish: PropTypes.func
   }
 
@@ -36,10 +41,12 @@ export default class Description extends Component {
       onEdit: false,
       editedTitle: cleanString(props.title),
       editedDescription: cleanStringWithURL(props.description),
-      editDoneButtonDisabled: true
+      editDoneButtonDisabled: true,
+      userListModalShown: false
     }
     this.onEditFinish = this.onEditFinish.bind(this)
     this.onEditCancel = this.onEditCancel.bind(this)
+    this.onVideoLikeClick = this.onVideoLikeClick.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,71 +74,87 @@ export default class Description extends Component {
       }
     ]
 
-    const {uploaderId, userId, uploaderName, title, description, timeStamp} = this.props
-    let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled} = this.state
+    const {uploaderId, userId, uploaderName, title, description, likes, timeStamp, videoViews} = this.props
+    let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled, userListModalShown} = this.state
     editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription
     return (
       <div>
         <div
-          className="row page-header text-center"
-          style={{paddingBottom: '1em'}}
+          className="row page-header"
+          style={{marginTop: '1.4em', minHeight: '7em'}}
         >
-          {uploaderId === userId && !onEdit &&
-            <SmallDropdownButton
-              style={{
-                right: '2em',
-                position: 'absolute'
-              }}
-              shape="button" icon="pencil"
-              menuProps={menuProps}
-            />
-          }
           <div>
-            {onEdit ?
-              <form className="col-sm-6 col-sm-offset-3" onSubmit={event => event.preventDefault()}>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter Title..."
-                  value={editedTitle}
-                  onChange={event => {
-                    this.setState({editedTitle: event.target.value}, () => {
-                      this.determineEditButtonDoneStatus()
-                    })
-                  }}
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({editedTitle: addEmoji(event.target.value)})
+            <div className="container">
+              <div className="col-xs-9">
+                <div className="col-xs-12" style={{paddingLeft: '0px'}}>
+                  {onEdit ?
+                    <form
+                      style={{paddingLeft: '0px', paddingBottom: '0.5em'}}
+                      className="col-xs-6"
+                      onSubmit={event => event.preventDefault()}
+                    >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter Title..."
+                        value={editedTitle}
+                        onChange={event => {
+                          this.setState({editedTitle: event.target.value}, () => {
+                            this.determineEditButtonDoneStatus()
+                          })
+                        }}
+                        onKeyUp={event => {
+                          if (event.key === ' ') {
+                            this.setState({editedTitle: addEmoji(event.target.value)})
+                          }
+                        }}
+                      />
+                    </form> :
+                    <div
+                      className="col-xs-9"
+                      style={{paddingLeft: '0px'}}
+                    >
+                      <h3 style={{
+                        marginTop: '0px',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        lineHeight: 'normal'
+                      }}>
+                        <span style={{wordWrap: 'break-word'}}>{cleanString(title)}</span>
+                      </h3>
+                    </div>
+                  }
+                </div>
+                <div
+                  className="col-xs-12"
+                  style={{paddingLeft: '0px'}}>
+                    <div>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</div>
+                    {uploaderId === userId && !onEdit &&
+                      <SmallDropdownButton
+                        style={{marginTop: '0.5em'}}
+                        shape="button"
+                        icon="pencil"
+                        align="left"
+                        text="Edit or Delete This Video"
+                        menuProps={menuProps}
+                      />
                     }
-                  }}
-                />
-              </form> :
-              <h1>
-                <span style={{wordWrap: 'break-word'}}>{cleanString(title)}</span>
-              </h1>
-            }
-          </div>
-          <div
-            className="col-sm-12"
-            style={{
-              paddingTop: onEdit && '1em'
-            }}
-          >
-            <small
-              style={{
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                lineHeight: 'normal'
-              }}>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
-            </small>
+                </div>
+              </div>
+              <VideoLikeInterface
+                userId={userId}
+                likes={likes}
+                onLikeClick={this.onVideoLikeClick}
+                showLikerList={() => this.setState({userListModalShown: true})}
+              />
+            </div>
           </div>
         </div>
-        <div className="row container-fluid">
-          <h2>Description</h2>
+        <div className="container">
           {onEdit ?
             <div>
-              <form>
+              <form className="col-xs-9" style={{paddingLeft: '0px'}}>
                 <Textarea
                   minRows={4}
                   className="form-control"
@@ -151,10 +174,8 @@ export default class Description extends Component {
                  />
               </form>
               <div
-                className="row container-fluid text-center"
-                style={{
-                  marginTop: '1em'
-                }}
+                className="col-xs-9"
+                style={{marginTop: '1em', paddingLeft: '0px', textAlign: 'left'}}
               >
                 <Button
                   className="btn btn-default btn-sm"
@@ -168,11 +189,35 @@ export default class Description extends Component {
                 >Cancel</Button>
               </div>
             </div> :
-            <LongText style={{wordWrap: 'break-word'}}>
-              {stringIsEmpty(description) ? 'No Description' : description}
-            </LongText>
+            <div>
+              {videoViews > 10 &&
+                <p
+                  style={{
+                    fontSize: '1.6em',
+                    fontWeight: 'bold'
+                  }}
+                >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+                </p>
+              }
+              <LongText style={{wordWrap: 'break-word', paddingLeft: '0px'}} className="col-xs-9">
+                {stringIsEmpty(description) ? 'No Description' : description}
+              </LongText>
+            </div>
           }
         </div>
+        {userListModalShown &&
+          <UserListModal
+            onHide={() => this.setState({userListModalShown: false})}
+            title="People who liked this video"
+            users={likes.map(like => {
+              return {
+                username: like.username,
+                userId: like.userId
+              }
+            })}
+            description="(You)"
+          />
+        }
       </div>
     )
   }
@@ -203,5 +248,10 @@ export default class Description extends Component {
       description: finalizeEmoji(this.state.editedDescription)
     }
     this.props.onEditFinish(params, this)
+  }
+
+  onVideoLikeClick() {
+    const {videoId} = this.props
+    this.props.likeVideo(videoId)
   }
 }

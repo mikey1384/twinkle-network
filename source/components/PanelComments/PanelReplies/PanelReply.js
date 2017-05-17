@@ -81,9 +81,9 @@ export default class PanelReply extends Component {
             icon="pencil"
             style={{
               position: 'absolute',
-              right: '5.5%',
-              opacity: 0.7
+              right: '5.5%'
             }}
+            opacity={0.8}
             menuProps={[
               {
                 label: 'Edit',

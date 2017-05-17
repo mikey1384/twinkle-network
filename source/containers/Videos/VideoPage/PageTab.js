@@ -10,13 +10,13 @@ PageTab.propTypes = {
 export default function PageTab(props) {
   return (
     <div className="row container-fluid">
-      <ul className="nav nav-tabs nav-justified" style={{width: '100%'}}>
+      <ul className="nav nav-tabs nav-justified" style={{width: '100%', fontSize: '1.3em', fontWeight: 'bold'}}>
         <li
           className={props.watchTabActive && 'active'}
           style={{cursor: 'pointer'}}
           onClick={props.onWatchTabClick}
         >
-          <a>Watch</a>
+          <a>Video</a>
         </li>
         <li
           className={!props.watchTabActive && 'active'}

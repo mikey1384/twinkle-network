@@ -300,6 +300,19 @@ request.get(`${API_URL}/debates?videoId=${videoId}&lastDiscussionId=${lastDiscus
   }
 )
 
+export const loadRightMenuVideos = videoId => dispatch =>
+request.get(`${API_URL}/rightMenu?videoId=${videoId}`).then(
+  response => dispatch({
+    type: 'LOAD_RIGHT_MENU_VIDEOS',
+    data: response.data
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const loadVideoCommentsAsync = videoId => dispatch =>
 request.get(`${API_URL}/comments?rootId=${videoId}&rootType=video`)
 .then(

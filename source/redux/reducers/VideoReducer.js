@@ -220,6 +220,14 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       }
+    case 'LOAD_RIGHT_MENU_VIDEOS':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          ...action.data
+        }
+      }
     case 'LOAD_VIDEO_DEBATE_COMMENTS':
       loadMoreDebateCommentsButton = false
       if (action.data.length > 3) {

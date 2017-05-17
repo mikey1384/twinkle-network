@@ -86,9 +86,9 @@ export default class Message extends Component {
               icon="pencil"
               style={{
                 position: 'absolute',
-                opacity: 0.7,
                 right: '2%'
               }}
+              opacity={0.8}
               menuProps={[
                 {
                   label: 'Edit',

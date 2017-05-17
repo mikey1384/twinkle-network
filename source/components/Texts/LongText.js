@@ -7,7 +7,8 @@ export default class LongText extends Component {
   static propTypes = {
     children: PropTypes.string.isRequired,
     style: PropTypes.object,
-    lines: PropTypes.number
+    lines: PropTypes.number,
+    className: PropTypes.string
   }
   constructor(props) {
     super()
@@ -18,10 +19,10 @@ export default class LongText extends Component {
   }
 
   render() {
-    const {children, style} = this.props
+    const {children, style, className} = this.props
     const {lines} = this.state
     return (
-      <div style={style}>
+      <div style={style} className={className}>
         <Truncate
           lines={lines}
           ellipsis={<span>... <a style={{cursor: 'pointer'}} onClick={this.toggleLines}>Read more</a></span>}

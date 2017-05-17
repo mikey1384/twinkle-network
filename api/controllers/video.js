@@ -191,14 +191,14 @@ router.get('/page', (req, res) => {
     rows => {
       finalResults = rows[0]
       const {videoId} = finalResults
-      const query1 = 'SELECT * FROM vq_questions WHERE videoId = ?'
-      const query2 = `
+      const questionQuery = 'SELECT * FROM vq_questions WHERE videoId = ?'
+      const likeQuery = `
         SELECT a.userId, b.username
         FROM content_likes a LEFT JOIN users b ON a.userId = b.id
         WHERE a.rootType = 'video' AND a.rootId = ?
       `
       return Promise.all([
-        poolQuery(query1, videoId).then(
+        poolQuery(questionQuery, videoId).then(
           rows => {
             let questions = rows.map(row => ({
               title: row.title,
@@ -214,7 +214,7 @@ router.get('/page', (req, res) => {
             return Promise.resolve(questions)
           }
         ),
-        poolQuery(query2, videoId).then(
+        poolQuery(likeQuery, videoId).then(
           rows => Promise.resolve(rows)
         )
       ])
@@ -228,6 +228,98 @@ router.get('/page', (req, res) => {
     err => {
       console.error(err)
       return res.status(500).send({error: err})
+    }
+  )
+})
+
+router.get('/rightMenu', (req, res) => {
+  const {videoId} = req.query
+  const playlistQuery = limit => `
+    SELECT id, playlistId FROM vq_playlistvideos WHERE videoId = ? ORDER BY id DESC LIMIT ${limit}
+  `
+  const nextVideoQuery = `
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
+    WHERE a.playlistId = ? AND a.id > ? AND a.videoId != ? LIMIT 1
+  `
+  const relatedVideosQuery = limit => `
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
+    WHERE a.playlistId = ? AND a.videoId != ? LIMIT ${limit}
+  `
+  const popularVideosQuery = `
+    SELECT a.id AS videoId,
+    (SELECT COUNT(*) FROM content_likes WHERE rootType = 'video' AND rootId = a.id) AS likes,
+    a.title, a.content, a.uploader, b.username
+    FROM vq_videos a JOIN users b ON a.uploader = b.id
+    ORDER BY likes DESC LIMIT 21
+  `
+  const removeDuplicates = (array, defaults) => {
+    let seen = defaults || {}
+    let result = []
+    for (let i = 0; i < array.length; i++) {
+      let videoId = array[i].videoId
+      if (seen[videoId] !== 1) {
+        seen[videoId] = 1
+        result.push(array[i])
+      }
+    }
+    return result
+  }
+
+  return Promise.all([
+    poolQuery(playlistQuery(11), videoId).then(
+      rows => {
+        return Promise.all(rows.map(({playlistId, id}) => {
+          return poolQuery(nextVideoQuery, [playlistId, id, videoId])
+        })).then(
+          results => {
+            let videos = []
+            for (let i = 0; i < results.length; i++) {
+              for (let j = 0; j < results[i].length; j++) {
+                videos.push(results[i][j])
+              }
+            }
+            return Promise.resolve(removeDuplicates(videos))
+          }
+        )
+      }
+    ),
+    poolQuery(playlistQuery(6), videoId).then(
+      rows => {
+        return Promise.all(rows.map(({playlistId, id}) => {
+          return poolQuery(relatedVideosQuery(6), [playlistId, videoId])
+        })).then(
+          results => {
+            let videos = []
+            for (let i = 0; i < results.length; i++) {
+              for (let j = 0; j < results[i].length; j++) {
+                videos.push(results[i][j])
+              }
+            }
+            return Promise.resolve(removeDuplicates(videos))
+          }
+        )
+      }
+    ),
+    poolQuery(popularVideosQuery).then(
+      rows => Promise.resolve(rows)
+    )
+  ]).then(
+    results => {
+      let nextVideos = results[0]
+      let defaults = {}
+      for (let i = 0; i < nextVideos.length; i++) {
+        defaults[nextVideos[i].videoId] = 1
+      }
+      let relatedVideos = removeDuplicates(results[1], defaults)
+      let popularVideos = results[2]
+      res.send({nextVideos, relatedVideos, popularVideos})
+    }
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
     }
   )
 })

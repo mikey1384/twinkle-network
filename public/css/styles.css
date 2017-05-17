@@ -180,36 +180,36 @@ html, body {
 }
 
 @keyframes spin {
-    from { transform: scale(1) rotate(0deg); }
-    to { transform: scale(1) rotate(360deg); }
+  from { transform: scale(1) rotate(0deg); }
+  to { transform: scale(1) rotate(360deg); }
 }
 
 @-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg); }
-    to { -webkit-transform: rotate(360deg); }
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
 }
 
 @media (min-width: 1192px) {
 	.modal-extra-lg{
-	    min-width: 1180px !important;
-	    width: 90% !important;
+    min-width: 1180px !important;
+    width: 90% !important;
 	}
 }
 
 @media (min-width: 1092px) {
 	.modal-extra-lg{
-	    width: 1080px;
+	  width: 1080px;
 	}
 }
 
 @media (min-width: 992px) {
 	.modal-extra-lg{
-	    width: 980px;
+	  width: 980px;
 	}
 }
 
 @media (min-width: 768px) {
 	.modal-extra-lg{
-	    min-width: 766px !important;
+	  min-width: 766px !important;
 	}
 }

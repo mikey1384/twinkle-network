@@ -351,6 +351,8 @@ export default class Chat extends Component {
                 right: '0px'
               }}
               shape="button"
+              icon="menu-hamburger"
+              text="Menu"
               menuProps={menuProps}
             />
           }

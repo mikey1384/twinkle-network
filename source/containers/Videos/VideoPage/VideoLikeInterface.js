@@ -8,40 +8,26 @@ VideoLikeInterface.propTypes = {
   likes: PropTypes.array,
   onLikeClick: PropTypes.func,
   showLikerList: PropTypes.func,
-  views: PropTypes.string
+  className: PropTypes.string
 }
-export default function VideoLikeInterface(props) {
-  const {userId, likes, onLikeClick, showLikerList, views} = props
+export default function VideoLikeInterface({userId, likes, onLikeClick, showLikerList, className}) {
   return (
-    <div>
-      <div
-        className="text-center"
-        style={{marginTop: '4em'}}
-      >
-        {views > 10 &&
-          <span
-            style={{
-              right: '13px',
-              fontSize: '1.5em',
-              position: 'absolute'
-            }}
-          >{views} view{`${views > 1 ? 's' : ''}`}</span>
-        }
+    <div style={{position: 'absolute', right: '2.2em'}}>
+      <div style={{textAlign: 'center'}}>
         <LikeButton
-          style={{marginLeft: '0.5em', fontSize: '3rem'}}
+          style={{fontSize: '3rem'}}
           onClick={() => onLikeClick()}
           liked={isLiked(likes)}
         />
-      </div>
-      <div
-        className="text-center"
-        style={{marginTop: '1em'}}
-      >
-        <Likers
-          {...props}
-          onLinkClick={showLikerList}
-          target="video"
-        />
+        <div style={{marginTop: '0.5em'}}>
+          <Likers
+            userId={userId}
+            likes={likes}
+            onLinkClick={showLikerList}
+            target="video"
+            defaultText="Be the first to like this video"
+          />
+        </div>
       </div>
     </div>
   )

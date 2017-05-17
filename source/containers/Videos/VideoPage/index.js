@@ -16,12 +16,11 @@ import VideoPlayer from 'components/VideoPlayer'
 import NotFound from 'components/NotFound'
 import ChoiceListGroup from './ChoiceListGroup'
 import PageTab from './PageTab'
-import VideoLikeInterface from './VideoLikeInterface'
 import Comments from './Comments'
 import Description from './Description'
+import RightMenu from './RightMenu'
 import ResultModal from './Modals/ResultModal'
 import QuestionsBuilder from './QuestionsBuilder'
-import UserListModal from 'components/Modals/UserListModal'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {stringIsEmpty} from 'helpers/stringHelpers'
 import ExecutionEnvironment from 'exenv'
@@ -48,7 +47,6 @@ export default class VideoPage extends Component {
     match: PropTypes.object,
     loadVideoPage: PropTypes.func,
     resetVideoPage: PropTypes.func,
-    videoId: PropTypes.number,
     content: PropTypes.string,
     title: PropTypes.string,
     timeStamp: PropTypes.oneOfType([
@@ -72,8 +70,6 @@ export default class VideoPage extends Component {
 
   constructor(props) {
     super()
-    const {history, match, loadVideoPage} = props
-    if (ExecutionEnvironment.canUseDOM && history.action === 'POP') loadVideoPage(match.params.videoId)
     this.state = {
       watchTabActive: true,
       currentSlide: 0,
@@ -81,11 +77,9 @@ export default class VideoPage extends Component {
       resultModalShown: false,
       editModalShown: false,
       confirmModalShown: false,
-      questionsBuilderShown: false,
-      userListModalShown: false
+      questionsBuilderShown: false
     }
     this.onDescriptionEditFinish = this.onDescriptionEditFinish.bind(this)
-    this.onVideoLikeClick = this.onVideoLikeClick.bind(this)
     this.onSlide = this.onSlide.bind(this)
     this.onQuestionsFinish = this.onQuestionsFinish.bind(this)
     this.onQuestionsSubmit = this.onQuestionsSubmit.bind(this)
@@ -94,21 +88,33 @@ export default class VideoPage extends Component {
     this.onSelectChoice = this.onSelectChoice.bind(this)
   }
 
+  componentDidMount() {
+    const {history, match, loadVideoPage} = this.props
+    if (history.action === 'POP') loadVideoPage(match.params.videoId)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {loadVideoPage, match} = this.props
+    if (ExecutionEnvironment.canUseDOM && nextProps.match.params.videoId !== match.params.videoId) {
+      loadVideoPage(nextProps.match.params.videoId)
+    }
+  }
+
   componentWillUnmount() {
     this.props.resetVideoPage()
   }
 
   render() {
     let {
-      uploaderId, uploaderName, description, userId, videoUnavailable, videoLoading,
-      videoId, content, title, timeStamp, questions = [], likes = [], videoViews
+      uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
+       content, title, timeStamp, questions = [], likes = [], videoViews, match: {params: {videoId}}
     } = this.props
+    videoId = Number(videoId)
     const {
       watchTabActive,
       questionsBuilderShown,
       resultModalShown,
       confirmModalShown,
-      userListModalShown,
       currentSlide } = this.state
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
@@ -116,34 +122,19 @@ export default class VideoPage extends Component {
     const youtubeIframeClassName = watchTabActive ?
     'embed-responsive-item' :
     'video-fixed-left'
-    const tabPaneClassName = watchTabActive ?
-    'container col-sm-8 col-sm-offset-2' :
-    'container'
 
     return (
-      <div>
-        {videoLoading && <Loading text="Loading Video..." />}
-        {videoUnavailable && <NotFound text="Video does not exist" />}
-        <div
-          className="container-fluid"
-          style={{
-            backgroundColor: '#fff',
-            marginBottom: '2em'
-          }}
-        >
+      <div className="row container-fluid">
+        <div className="col-xs-8">
+          {videoLoading && <Loading text="Loading Video..." />}
+          {videoUnavailable && <NotFound text="Video does not exist" />}
           {!videoUnavailable && !!content &&
-            <div>
-              <Description
-                videoId={videoId}
-                title={title}
-                timeStamp={timeStamp}
-                uploaderName={uploaderName}
-                description={description}
-                uploaderId={uploaderId}
-                userId={userId}
-                onEditFinish={this.onDescriptionEditFinish}
-                onDelete={() => this.setState({confirmModalShown: true})}
-              />
+            <div
+              style={{
+                backgroundColor: '#fff',
+                marginBottom: '2em'
+              }}
+            >
               <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
                 <PageTab
                   questions={questions}
@@ -152,14 +143,13 @@ export default class VideoPage extends Component {
                   onQuestionTabClick={() => this.setState({watchTabActive: false})}
                 />
                 <div
-                  className={`tab-pane ${tabPaneClassName}`}
-                  style={{
-                    paddingTop: '3em'
-                  }}
+                  className="tab-pane container col-xs-12"
+                  style={{paddingTop: '2em'}}
                 >
                   {!questionsBuilderShown &&
                     <div>
                       <VideoPlayer
+                        autoplay
                         key={videoId}
                         small={!watchTabActive}
                         videoId={videoId}
@@ -168,15 +158,6 @@ export default class VideoPage extends Component {
                         containerClassName={`${youtubeIframeContainerClassName}`}
                         className={`${youtubeIframeClassName}`}
                       />
-                      {watchTabActive &&
-                        <VideoLikeInterface
-                          userId={userId}
-                          likes={likes}
-                          onLikeClick={this.onVideoLikeClick}
-                          showLikerList={() => this.setState({userListModalShown: true})}
-                          views={videoViews}
-                        />
-                      }
                     </div>
                   }
                   {!watchTabActive && questions.length > 0 &&
@@ -195,19 +176,35 @@ export default class VideoPage extends Component {
                     </Carousel>
                   }
                   {!watchTabActive && questions.length === 0 &&
-                    <div className="text-center">
-                      <p>There are no questions yet.</p>
-                      {userId === uploaderId &&
-                        <Button
-                          className="btn btn-default"
-                          style={{marginTop: '1em'}}
-                          onClick={() => this.setState({questionsBuilderShown: true})}
-                        >Add Questions</Button>
-                      }
+                    <div>
+                      <div style={{textAlign: 'center'}}>
+                        <p>There are no questions yet.</p>
+                        {userId === uploaderId &&
+                          <Button
+                            className="btn btn-default"
+                            style={{marginTop: '1em'}}
+                            onClick={() => this.setState({questionsBuilderShown: true})}
+                          >Add Questions</Button>
+                        }
+                      </div>
                     </div>
                   }
                 </div>
               </div>
+              <Description
+                likes={likes}
+                likeVideo={likeVideo}
+                videoId={videoId}
+                title={title}
+                timeStamp={timeStamp}
+                uploaderName={uploaderName}
+                description={description}
+                uploaderId={uploaderId}
+                userId={userId}
+                onEditFinish={this.onDescriptionEditFinish}
+                onDelete={() => this.setState({confirmModalShown: true})}
+                videoViews={videoViews}
+              />
               <Comments {...this.props} />
               {resultModalShown &&
                 <ResultModal
@@ -232,22 +229,12 @@ export default class VideoPage extends Component {
                   onHide={() => this.setState({questionsBuilderShown: false})}
                 />
               }
-              {userListModalShown &&
-                <UserListModal
-                  onHide={() => this.setState({userListModalShown: false})}
-                  title="People who liked this video"
-                  users={likes.map(like => {
-                    return {
-                      username: like.username,
-                      userId: like.userId
-                    }
-                  })}
-                  description="(You)"
-                />
-              }
             </div>
           }
         </div>
+        <RightMenu
+          videoId={videoId}
+        />
       </div>
     )
   }
@@ -256,9 +243,7 @@ export default class VideoPage extends Component {
     const {questions} = this.props
     const {currentSlide, userAnswers} = this.state
     return questions.map((question, index) => {
-      const filteredChoices = question.choices.filter(choice => {
-        return choice !== null
-      })
+      const filteredChoices = question.choices.filter(choice => !!choice)
       let isCurrentSlide = index === currentSlide
       const listItems = filteredChoices.map((choice, index) => {
         let isSelectedChoice = index === userAnswers[currentSlide]
@@ -312,24 +297,25 @@ export default class VideoPage extends Component {
   }
 
   onVideoDelete() {
-    const {videoId} = this.props
+    const {match: {params: {videoId}}} = this.props
     this.props.deleteVideo({videoId})
   }
 
   onQuestionsSubmit(questions) {
+    const {match: {params: {videoId}}} = this.props
     const data = {
-      videoId: this.props.videoId,
+      videoId,
       questions: questions.map(question => {
         const choices = question.choices.filter(choice => {
           return choice.label && !stringIsEmpty(choice.label)
         })
         return {
-          videoId: this.props.videoId,
+          videoId,
           title: question.title,
           correctChoice: (() => {
             let correctChoice = 0
             for (let i = 0; i < choices.length; i++) {
-              if (choices[i].checked) correctChoice = i+1
+              if (choices[i].checked) correctChoice = i + 1
             }
             return correctChoice
           })(),
@@ -349,10 +335,5 @@ export default class VideoPage extends Component {
         userAnswers: []
       })
     })
-  }
-
-  onVideoLikeClick() {
-    const {videoId} = this.props
-    this.props.likeVideo(videoId)
   }
 }

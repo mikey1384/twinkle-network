@@ -6,10 +6,13 @@ import Button from './Button'
 class SmallDropdownButton extends Component {
   static propTypes = {
     menuProps: PropTypes.array.isRequired,
-    icon: PropTypes.string,
-    shape: PropTypes.string,
+    opacity: PropTypes.number,
     style: PropTypes.object,
-    size: PropTypes.string
+    shape: PropTypes.string,
+    size: PropTypes.string,
+    icon: PropTypes.string,
+    text: PropTypes.string,
+    align: PropTypes.string
   }
 
   handleClickOutside = event => {
@@ -25,25 +28,22 @@ class SmallDropdownButton extends Component {
 
   render() {
     const {menuDisplayed} = this.state
-    const {style, icon, shape, size = 'xs'} = this.props
-    const buttonIcon = icon === 'pencil' ? 'glyphicon glyphicon-pencil' : 'glyphicon glyphicon-align-justify'
+    const {opacity = 1, style, shape, size = 'sm', icon, text = '', align = 'right'} = this.props
     const buttonShape = shape === 'button' ? `btn btn-${size} btn-default` : 'dropdown-toggle'
-    const menuDisplay = menuDisplayed ? 'block' : 'none'
-
     return (
       <span
-        className="dropdown pull-right"
+        className={`dropdown pull-${align}`}
         style={{
           ...style,
-          opacity: menuDisplayed ? 1 : style.opacity
+          opacity: menuDisplayed ? 1 : opacity
         }}>
         <Button className={buttonShape} onClick={() => this.setState({menuDisplayed: !menuDisplayed})}>
-          {icon !== 'pencil' && <span><span>menu</span>&nbsp;&nbsp;</span>}<span className={buttonIcon}></span>
+          <span className={`glyphicon glyphicon-${icon}`}></span>{text && <span>&nbsp;&nbsp;</span>}<span>{text}</span>
         </Button>
         <ul className="dropdown-menu"
           style={{
             cursor: 'pointer',
-            display: menuDisplay
+            display: menuDisplayed ? 'block' : 'none'
           }}
         >
           {this.renderMenu()}

@@ -124,7 +124,7 @@ export default class Comment extends Component {
               }
               <LongText
                 className="row"
-                style={{paddingBottom: '1em', wordWrap: 'break-word'}}
+                style={{marginLeft: '0px', paddingBottom: '1em', wordWrap: 'break-word'}}
               >
                 {comment.content}
               </LongText>

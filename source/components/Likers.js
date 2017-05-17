@@ -2,15 +2,17 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 Likers.propTypes = {
+  className: PropTypes.string,
   likes: PropTypes.array,
   target: PropTypes.string,
   userId: PropTypes.number,
   onLinkClick: PropTypes.func,
-  style: PropTypes.object
+  style: PropTypes.object,
+  defaultText: PropTypes.string
 }
-export default function Likers({likes, target, userId, onLinkClick, style = null}) {
+export default function Likers({likes, target, userId, onLinkClick, style = null, className, defaultText}) {
   return (
-    <div style={style}>
+    <div style={style} className={className}>
       {renderLikers()}
     </div>
   )
@@ -68,7 +70,7 @@ export default function Likers({likes, target, userId, onLinkClick, style = null
         )
       }
     } else {
-      return null
+      return defaultText ? <div>{defaultText}</div> : null
     }
   }
 }

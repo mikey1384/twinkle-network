@@ -43,8 +43,8 @@ export default class CommentInputArea extends Component {
     const {debateTabActive, debateFormShown} = this.state
     return (
       <div className="page-header">
-        <div className="row container-fluid">
-          <ul className="nav nav-tabs">
+        <div className="row">
+          <ul className="nav nav-tabs" style={{fontSize: '1.3em', fontWeight: 'bold'}}>
             <li
               className={debateTabActive && 'active'}
               style={{cursor: 'pointer'}}

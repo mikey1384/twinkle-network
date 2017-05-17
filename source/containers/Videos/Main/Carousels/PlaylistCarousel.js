@@ -185,7 +185,6 @@ export default class PlaylistCarousel extends Component {
               }}
               shape="button"
               icon="pencil"
-              size="sm"
               menuProps={menuProps}
             />
           }
