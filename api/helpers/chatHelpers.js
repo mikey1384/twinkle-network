@@ -196,11 +196,21 @@ function fetchChannelTitlesAndLastMessages(channels, userId) {
 
 const fetchMessages = channelId => {
   const query = `
-    SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username, c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id LEFT JOIN users_photos c ON
-    a.userId = c.userId AND c.isProfilePic = '1'
-    WHERE channelId = ? ORDER BY id DESC LIMIT 21
+    SELECT id FROM msg_chats WHERE channelId = ? ORDER BY id DESC LIMIT 21
   `
   return poolQuery(query, channelId).then(
+    messages => Promise.all(
+      messages.map(({id}) => {
+        let query = `
+          SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username,
+          c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id
+          LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+          WHERE a.id = ?
+        `
+        return poolQuery(query, id).then(([message]) => Promise.resolve(message))
+      })
+    )
+  ).then(
     messages => Promise.resolve(messages)
   )
 }
