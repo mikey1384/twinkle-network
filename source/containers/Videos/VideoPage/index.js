@@ -132,7 +132,9 @@ export default class VideoPage extends Component {
             <div
               style={{
                 backgroundColor: '#fff',
-                marginBottom: '2em'
+                marginBottom: '2em',
+                paddingRight: '1em',
+                paddingLeft: '1em'
               }}
             >
               <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
