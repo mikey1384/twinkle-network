@@ -286,7 +286,7 @@ router.get('/rightMenu', (req, res) => {
     poolQuery(playlistQuery(6), videoId).then(
       rows => {
         return Promise.all(rows.map(({playlistId, id}) => {
-          return poolQuery(relatedVideosQuery(6), [playlistId, videoId])
+          return poolQuery(relatedVideosQuery(11), [playlistId, videoId])
         })).then(
           results => {
             let videos = []
