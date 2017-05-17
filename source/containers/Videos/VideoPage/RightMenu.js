@@ -100,7 +100,7 @@ export default class RightMenu extends Component {
                   </div>
                 </div>
               ))}
-              {otherVideos.length > 0 && <h3>Popular Videos</h3>}
+              {otherVideos.length > 0 && <h3>Recent Videos</h3>}
               {otherVideos.map(video => (
                 <div
                   key={video.videoId}
