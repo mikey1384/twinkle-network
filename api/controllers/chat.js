@@ -106,16 +106,28 @@ router.get('/more/messages', requireAuth, (req, res) => {
   }
   const {messageId, channelId} = req.query
   const query = `
-    SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username, c.id AS profilePicId
-    FROM msg_chats a LEFT JOIN users b ON a.userId = b.id LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1' WHERE a.id < ? AND a.channelId = ? ORDER BY id DESC LIMIT 21
+    SELECT id FROM msg_chats WHERE id < ? AND channelId = ? ORDER BY id DESC LIMIT 21
   `
-  pool.query(query, [messageId, channelId], (err, rows) => {
-    if (err) {
+  return poolQuery(query, [messageId, channelId]).then(
+    messages => Promise.all(
+      messages.map(({id}) => {
+        let query = `
+          SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, b.username,
+          c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id
+          LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+          WHERE a.id = ?
+        `
+        return poolQuery(query, id).then(([message]) => Promise.resolve(message))
+      })
+    )
+  ).then(
+    messages => res.send(messages)
+  ).catch(
+    err => {
       console.error(err)
-      return res.status(500).send({error: err})
+      res.status(500).send({error: err})
     }
-    res.send(rows)
-  })
+  )
 })
 
 router.get('/channels', requireAuth, (req, res) => {
