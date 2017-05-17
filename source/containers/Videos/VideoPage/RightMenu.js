@@ -9,7 +9,7 @@ import {Color} from 'constants/css'
   state => ({
     nextVideos: state.VideoReducer.videoPage.nextVideos,
     relatedVideos: state.VideoReducer.videoPage.relatedVideos,
-    popularVideos: state.VideoReducer.videoPage.popularVideos
+    otherVideos: state.VideoReducer.videoPage.otherVideos
   }),
   {
     loadRightMenuVideos
@@ -21,7 +21,7 @@ export default class RightMenu extends Component {
     videoId: PropTypes.number,
     nextVideos: PropTypes.array,
     relatedVideos: PropTypes.array,
-    popularVideos: PropTypes.array
+    otherVideos: PropTypes.array
   }
 
   componentDidMount() {
@@ -37,8 +37,8 @@ export default class RightMenu extends Component {
   }
 
   render() {
-    const {nextVideos = [], relatedVideos = [], popularVideos = []} = this.props
-    const noVideos = nextVideos.length + relatedVideos.length + popularVideos.length === 0
+    const {nextVideos = [], relatedVideos = [], otherVideos = []} = this.props
+    const noVideos = nextVideos.length + relatedVideos.length + otherVideos.length === 0
     return (
       <div>
         {!noVideos &&
@@ -100,8 +100,8 @@ export default class RightMenu extends Component {
                   </div>
                 </div>
               ))}
-              {popularVideos.length > 0 && <h3>Popular Videos</h3>}
-              {popularVideos.map(video => (
+              {otherVideos.length > 0 && <h3>Popular Videos</h3>}
+              {otherVideos.map(video => (
                 <div
                   key={video.videoId}
                   className="media"

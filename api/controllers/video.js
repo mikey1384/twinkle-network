@@ -247,12 +247,10 @@ router.get('/rightMenu', (req, res) => {
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? AND a.videoId != ? LIMIT ${limit}
   `
-  const popularVideosQuery = `
-    SELECT a.id AS videoId,
-    (SELECT COUNT(*) FROM content_likes WHERE rootType = 'video' AND rootId = a.id) AS likes,
-    a.title, a.content, a.uploader, b.username
+  const otherVideosQuery = `
+    SELECT a.id AS videoId, a.title, a.content, a.uploader, b.username
     FROM vq_videos a JOIN users b ON a.uploader = b.id
-    ORDER BY likes DESC LIMIT 21
+    ORDER BY a.id DESC LIMIT 21
   `
   const removeDuplicates = (array, defaults) => {
     let seen = defaults || {}
@@ -302,7 +300,7 @@ router.get('/rightMenu', (req, res) => {
         )
       }
     ),
-    poolQuery(popularVideosQuery).then(
+    poolQuery(otherVideosQuery).then(
       rows => Promise.resolve(rows)
     )
   ]).then(
@@ -313,8 +311,8 @@ router.get('/rightMenu', (req, res) => {
         defaults[nextVideos[i].videoId] = 1
       }
       let relatedVideos = removeDuplicates(results[1], defaults)
-      let popularVideos = results[2]
-      res.send({nextVideos, relatedVideos, popularVideos})
+      let otherVideos = results[2]
+      res.send({nextVideos, relatedVideos, otherVideos})
     }
   ).catch(
     err => {
