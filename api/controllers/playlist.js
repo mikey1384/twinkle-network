@@ -9,7 +9,7 @@ const router = express.Router()
 
 router.get('/', (req, res) => {
   const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null
-  const where = playlistId !== null ? `WHERE a.id < ${playlistId} ` : ''
+  const where = playlistId !== null ? `WHERE id < ${playlistId} ` : ''
   const query = `
     SELECT id AS playlistId FROM vq_playlists ${where}
     ORDER BY id DESC LIMIT 4
