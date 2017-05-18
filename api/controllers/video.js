@@ -26,22 +26,32 @@ const router = express.Router()
 router.get('/', (req, res) => {
   const videoId = Number(req.query.videoId) || 0
   const numberToLoad = Number(req.query.numberToLoad) + 1 || 13
-  const where = videoId === 0 ? '' : 'WHERE a.id < ? '
-  const query = `
+  const where = videoId === 0 ? '' : 'WHERE id < ? '
+  const idQuery = `
+    SELECT id FROM vq_videos ${where} ORDER BY id DESC LIMIT ${numberToLoad}
+  `
+  const videoQuery = `
     SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName,
     COUNT(c.id) AS numLikes
     FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
     LEFT JOIN content_likes c ON a.id = c.rootId AND c.rootType = 'video'
-    ${where} GROUP BY a.id
-    ORDER BY a.id DESC LIMIT ${numberToLoad}
+    WHERE a.id = ?
   `
-  pool.query(query, videoId, (err, rows) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
+  return poolQuery(idQuery, videoId).then(
+    videoIds => Promise.all(videoIds.map(({id}) => {
+      return poolQuery(videoQuery, id)
+    }))
+  ).then(
+    rows => {
+      let videos = rows.map(([video]) => video)
+      res.send(videos)
     }
-    res.json(rows)
-  })
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
 })
 
 router.post('/', requireAuth, (req, res) => {
