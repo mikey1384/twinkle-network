@@ -90,7 +90,7 @@ export default class EditPlaylistModal extends Component {
               videos={videos}
               selectedVideos={selectedVideos}
               loadMoreVideosButton={loadMoreVideosButton}
-              onSelect={(selected, videoId) => this.setState({selectedVideos: selected.concat([videoId])})}
+              onSelect={(selected, videoId) => this.setState({selectedVideos: [videoId].concat(selected)})}
               onDeselect={selected => this.setState({selectedVideos: selected})}
               loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
             />

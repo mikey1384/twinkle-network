@@ -28,10 +28,7 @@ export default function SelectVideosForm(props) {
             key={index}
             video={video}
             selected={selectedVideos.indexOf(video.id) !== -1}
-            onSelect={videoId => {
-              let selected = selectedVideos
-              onSelect(selected, videoId)
-            }}
+            onSelect={videoId => onSelect(selectedVideos, videoId)}
             onDeselect={videoId => {
               let selected = selectedVideos
               const index = selected.indexOf(videoId)
