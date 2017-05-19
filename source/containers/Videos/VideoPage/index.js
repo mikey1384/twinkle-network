@@ -124,7 +124,7 @@ export default class VideoPage extends Component {
     'video-fixed-left'
 
     return (
-      <div className="row container-fluid">
+      <div className="container-fluid">
         <div className="col-xs-8">
           {videoLoading && <Loading text="Loading Video..." />}
           {videoUnavailable && <NotFound text="Video does not exist" />}
@@ -137,17 +137,14 @@ export default class VideoPage extends Component {
                 paddingLeft: '1em'
               }}
             >
-              <div className="row container-fluid" style={{paddingTop: '1.5em'}}>
+              <div style={{paddingTop: '1.5em'}}>
                 <PageTab
                   questions={questions}
                   watchTabActive={watchTabActive}
                   onWatchTabClick={() => this.setState({watchTabActive: true})}
                   onQuestionTabClick={() => this.setState({watchTabActive: false})}
                 />
-                <div
-                  className="tab-pane container col-xs-12"
-                  style={{paddingTop: '2em'}}
-                >
+                <div style={{paddingTop: '2em'}}>
                   {!questionsBuilderShown &&
                     <div>
                       <VideoPlayer

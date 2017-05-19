@@ -12,7 +12,7 @@ VideoLikeInterface.propTypes = {
 }
 export default function VideoLikeInterface({userId, likes, onLikeClick, showLikerList, className}) {
   return (
-    <div style={{position: 'absolute', right: '2.2em'}}>
+    <div className="pull-right">
       <div style={{textAlign: 'center'}}>
         <LikeButton
           style={{fontSize: '3rem'}}

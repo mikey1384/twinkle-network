@@ -79,7 +79,7 @@ export default class Comments extends Component {
       loadMoreCommentsButton, loadMoreDebatesButton, loadMoreComments, videoId, comments, debates
     } = this.props
     return (
-      <div className="row container-fluid" style={{paddingBottom: '1em'}}>
+      <div style={{paddingBottom: '1em'}}>
         <div className="container-fluid">
           <CommentInputArea videoId={videoId} debates={debates} loadMoreDebatesButton={loadMoreDebatesButton} />
           <div className="container-fluid">

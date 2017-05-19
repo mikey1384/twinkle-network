@@ -80,23 +80,23 @@ export default class Description extends Component {
     return (
       <div>
         <div
-          className="row page-header"
+          className="page-header"
           style={{marginTop: '1.4em', minHeight: '7em'}}
         >
           <div>
-            <div className="container">
-              <div className="col-xs-9">
-                <div className="col-xs-12" style={{paddingLeft: '0px'}}>
+            <div>
+              <div className="pull-left col-xs-9" style={{paddingLeft: '0px'}}>
+                <div>
                   {onEdit ?
                     <form
                       style={{paddingLeft: '0px', paddingBottom: '0.5em'}}
-                      className="col-xs-6"
                       onSubmit={event => event.preventDefault()}
                     >
                       <input
                         type="text"
                         className="form-control"
                         placeholder="Enter Title..."
+                        style={{width: '30em'}}
                         value={editedTitle}
                         onChange={event => {
                           this.setState({editedTitle: event.target.value}, () => {
@@ -110,10 +110,7 @@ export default class Description extends Component {
                         }}
                       />
                     </form> :
-                    <div
-                      className="col-xs-9"
-                      style={{paddingLeft: '0px'}}
-                    >
+                    <div style={{paddingLeft: '0px'}}>
                       <h3 style={{
                         marginTop: '0px',
                         whiteSpace: 'nowrap',
@@ -127,7 +124,6 @@ export default class Description extends Component {
                   }
                 </div>
                 <div
-                  className="col-xs-12"
                   style={{paddingLeft: '0px'}}>
                     <div>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</div>
                     {uploaderId === userId && !onEdit &&
@@ -151,10 +147,10 @@ export default class Description extends Component {
             </div>
           </div>
         </div>
-        <div className="container">
+        <div>
           {onEdit ?
             <div>
-              <form className="col-xs-9" style={{paddingLeft: '0px'}}>
+              <form style={{paddingLeft: '0px'}}>
                 <Textarea
                   minRows={4}
                   className="form-control"
@@ -173,10 +169,7 @@ export default class Description extends Component {
                   }}
                  />
               </form>
-              <div
-                className="col-xs-9"
-                style={{marginTop: '1em', paddingLeft: '0px', textAlign: 'left'}}
-              >
+              <div style={{marginTop: '1em', paddingLeft: '0px', textAlign: 'left'}}>
                 <Button
                   className="btn btn-default btn-sm"
                   disabled={editDoneButtonDisabled}
@@ -199,7 +192,7 @@ export default class Description extends Component {
                 >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}
                 </p>
               }
-              <LongText style={{wordWrap: 'break-word', paddingLeft: '0px'}} className="col-xs-9">
+              <LongText style={{wordWrap: 'break-word', paddingLeft: '0px'}}>
                 {stringIsEmpty(description) ? 'No Description' : description}
               </LongText>
             </div>
