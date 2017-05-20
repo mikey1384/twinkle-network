@@ -123,15 +123,14 @@ export default class Comment extends Component {
                 </div>
               }
               <LongText
-                className="row"
                 style={{marginLeft: '0px', paddingBottom: '1em', wordWrap: 'break-word'}}
               >
                 {comment.content}
               </LongText>
               <div
-                className="row flexbox-container"
+                className="flexbox-container"
               >
-                <div className="pull-left" style={{paddingLeft: '1em'}}>
+                <div className="pull-left">
                   <LikeButton
                     onClick={this.onLikeClick}
                     liked={userLikedThis}
