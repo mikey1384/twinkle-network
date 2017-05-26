@@ -35,7 +35,7 @@ export default class EditTextArea extends Component {
           autoFocus={autoFocus}
           className="form-control"
           style={{marginTop}}
-          rows={rows}
+          minRows={rows}
           value={editedText}
           onChange={this.onChange}
           onKeyUp={this.handleKeyUp}

@@ -147,7 +147,7 @@ export default class DebatePanel extends Component {
                 placeholder="Enter Description (Optional)"
                 className="form-control"
                 style={{marginTop: '1em'}}
-                rows={4}
+                minRows={4}
                 value={editedDescription}
                 onChange={event => this.setState({editedDescription: event.target.value}, () => {
                   this.determineEditButtonDoneStatus()

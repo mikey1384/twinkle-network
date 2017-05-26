@@ -48,7 +48,7 @@ export default class InputArea extends Component {
           <Textarea
             autoFocus={autoFocus}
             className="form-control"
-            rows={rows}
+            minRows={rows}
             value={text}
             placeholder={placeholder}
             onChange={event => this.setState({text: event.target.value})}

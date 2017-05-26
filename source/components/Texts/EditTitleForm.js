@@ -7,7 +7,9 @@ class EditTitleForm extends Component {
   static propTypes = {
     onClickOutSide: PropTypes.func.isRequired,
     onEditSubmit: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    style: PropTypes.object,
+    autoFocus: PropTypes.bool
   }
 
   handleClickOutside = (event) => {
@@ -23,10 +25,12 @@ class EditTitleForm extends Component {
 
   render() {
     const {title} = this.state
+    const {style, autoFocus} = this.props
     return (
       <form onSubmit={event => this.onEditSubmit(event, title)}>
         <input
-          {...this.props}
+          style={style}
+          autoFocus={autoFocus}
           type="text"
           className="form-control"
           placeholder="Enter Title..."

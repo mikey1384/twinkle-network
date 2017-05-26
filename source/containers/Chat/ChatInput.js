@@ -28,7 +28,7 @@ export default class ChatInput extends Component {
     return (
       <Textarea
         ref={ref => { this.Textarea = ref }}
-        rows={1}
+        minRows={1}
         className="form-control"
         placeholder="Type a message..."
         onKeyDown={this.onMessageSubmit}

@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('../webpack/webpack.dev').default(app)
 }
 
-let history = createHistory()
+const history = createHistory()
 const store = createStoreWithHistory(history)
 
 app.use(express.static(path.join(__dirname, '../public')))
