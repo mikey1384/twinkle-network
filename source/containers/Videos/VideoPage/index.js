@@ -77,6 +77,7 @@ export default class VideoPage extends Component {
       resultModalShown: false,
       editModalShown: false,
       confirmModalShown: false,
+      onEdit: false,
       questionsBuilderShown: false
     }
     this.onDescriptionEditFinish = this.onDescriptionEditFinish.bind(this)
@@ -115,7 +116,9 @@ export default class VideoPage extends Component {
       questionsBuilderShown,
       resultModalShown,
       confirmModalShown,
-      currentSlide } = this.state
+      currentSlide,
+      onEdit
+    } = this.state
     const youtubeIframeContainerClassName = watchTabActive ?
     'embed-responsive embed-responsive-16by9' :
     'video-container-fixed-left'
@@ -150,6 +153,7 @@ export default class VideoPage extends Component {
                       <VideoPlayer
                         autoplay
                         key={videoId}
+                        onEdit={onEdit}
                         small={!watchTabActive}
                         videoId={videoId}
                         videoCode={content}
@@ -194,12 +198,15 @@ export default class VideoPage extends Component {
                 likes={likes}
                 likeVideo={likeVideo}
                 videoId={videoId}
+                content={content}
                 title={title}
                 timeStamp={timeStamp}
                 uploaderName={uploaderName}
                 description={description}
                 uploaderId={uploaderId}
                 userId={userId}
+                onEditStart={() => this.setState({onEdit: true})}
+                onEditCancel={() => this.setState({onEdit: false})}
                 onEditFinish={this.onDescriptionEditFinish}
                 onDelete={() => this.setState({confirmModalShown: true})}
                 videoViews={videoViews}
@@ -292,7 +299,8 @@ export default class VideoPage extends Component {
   }
 
   onDescriptionEditFinish(params, sender) {
-    this.props.editVideoPage(params, sender)
+    this.setState({onEdit: false})
+    return this.props.editVideoPage(params)
   }
 
   onVideoDelete() {

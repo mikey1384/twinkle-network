@@ -1,4 +1,4 @@
-import {processedStringWithURL} from 'helpers/stringHelpers'
+import {processedStringWithURL, fetchedVideoCodeFromURL} from 'helpers/stringHelpers'
 
 const defaultState = {
   loaded: false,
@@ -420,18 +420,21 @@ export default function VideoReducer(state = defaultState, action) {
       }
     case 'EDIT_VIDEO_PAGE':
       const description = processedStringWithURL(action.params.description)
+      const url = fetchedVideoCodeFromURL(action.params.url)
       return {
         ...state,
         allVideoThumbs: state.allVideoThumbs.map(thumb => {
-          if (thumb.id === action.params.videoId) {
-            thumb.title = action.params.title
+          return {
+            ...thumb,
+            title: (thumb.id === action.params.videoId) ? action.params.title : thumb.title,
+            content: (thumb.id === action.params.videoId) ? url : thumb.url
           }
-          return thumb
         }),
         videoPage: {
           ...state.videoPage,
           title: action.params.title,
-          description
+          description,
+          content: url
         }
       }
     case 'RESET_VIDEO_PAGE':

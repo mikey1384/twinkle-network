@@ -172,4 +172,16 @@ export function isValidYoutubeUrl(url) {
   return typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined'
 }
 
+export function fetchedVideoCodeFromURL(url) {
+  let videoCode = ''
+  if (typeof url.split('v=')[1] !== 'undefined') {
+    let trimmedUrl = url.split('v=')[1].split('#')[0]
+    videoCode = trimmedUrl.split('&')[0]
+  } else {
+    let trimmedUrl = url.split('youtu.be/')[1].split('#')[0]
+    videoCode = trimmedUrl.split('&')[0].split('?')[0]
+  }
+  return videoCode
+}
+
 /* eslint-enable no-useless-escape */

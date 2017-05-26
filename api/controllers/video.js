@@ -169,13 +169,16 @@ router.post('/like', requireAuth, (req, res) => {
 
 router.post('/edit/page', requireAuth, (req, res) => {
   const user = req.user
-  let videoId = req.body.videoId
-  let title = req.body.title
-  let description = req.body.description
+  const {videoId, title, description, url} = req.body
+
   if (stringIsEmpty(title)) {
     return res.status(500).send({error: 'Title is empty'})
   }
-  const post = {title, description: processedString(description)}
+  const post = {
+    title,
+    description: processedString(description),
+    content: fetchedVideoCodeFromURL(url)
+  }
   const userId = user.id
   pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
     if (err) {

@@ -13,12 +13,14 @@ import {
   cleanStringWithURL,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji
+  finalizeEmoji,
+  isValidYoutubeUrl
 } from 'helpers/stringHelpers'
 
 export default class Description extends Component {
   static propTypes = {
     title: PropTypes.string,
+    content: PropTypes.string,
     description: PropTypes.string,
     likes: PropTypes.array,
     likeVideo: PropTypes.func,
@@ -32,6 +34,8 @@ export default class Description extends Component {
     ]),
     videoId: PropTypes.number,
     videoViews: PropTypes.string,
+    onEditStart: PropTypes.func,
+    onEditCancel: PropTypes.func,
     onEditFinish: PropTypes.func
   }
 
@@ -40,10 +44,12 @@ export default class Description extends Component {
     this.state = {
       onEdit: false,
       editedTitle: cleanString(props.title),
+      editedUrl: `https://www.youtube.com/watch?v=${props.content}`,
       editedDescription: cleanStringWithURL(props.description),
       editDoneButtonDisabled: true,
       userListModalShown: false
     }
+    this.onEditStart = this.onEditStart.bind(this)
     this.onEditFinish = this.onEditFinish.bind(this)
     this.onEditCancel = this.onEditCancel.bind(this)
     this.onVideoLikeClick = this.onVideoLikeClick.bind(this)
@@ -66,7 +72,7 @@ export default class Description extends Component {
     const menuProps = [
       {
         label: 'Edit',
-        onClick: () => this.setState({onEdit: true})
+        onClick: this.onEditStart
       },
       {
         label: 'Delete',
@@ -75,7 +81,10 @@ export default class Description extends Component {
     ]
 
     const {uploaderId, userId, uploaderName, title, description, likes, timeStamp, videoViews} = this.props
-    let {onEdit, editedTitle, editedDescription, editDoneButtonDisabled, userListModalShown} = this.state
+    let {
+      onEdit, editedTitle, editedUrl, editedDescription,
+      editDoneButtonDisabled, userListModalShown
+    } = this.state
     editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription
     return (
       <div>
@@ -95,8 +104,20 @@ export default class Description extends Component {
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Enter Title..."
+                        placeholder="Enter YouTube Url..."
                         style={{width: '30em'}}
+                        value={editedUrl}
+                        onChange={event => {
+                          this.setState({editedUrl: event.target.value}, () => {
+                            this.determineEditButtonDoneStatus()
+                          })
+                        }}
+                      />
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter Title..."
+                        style={{width: '30em', marginTop: '1em'}}
                         value={editedTitle}
                         onChange={event => {
                           this.setState({editedTitle: event.target.value}, () => {
@@ -216,17 +237,23 @@ export default class Description extends Component {
   }
 
   determineEditButtonDoneStatus() {
+    const urlIsInvalid = !isValidYoutubeUrl(this.state.editedUrl)
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
+    const urlChanged = this.state.editedUrl !== `https://www.youtube.com/watch?v=${this.props.content}`
     const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description)
-    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged)
+    const editDoneButtonDisabled = urlIsInvalid || titleIsEmpty || (
+      !titleChanged && !descriptionChanged && !urlChanged
+    )
     this.setState({editDoneButtonDisabled})
   }
 
   onEditCancel() {
     const {description} = this.props
     const editedDescription = description === 'No description' ? '' : cleanStringWithURL(description)
+    this.props.onEditCancel()
     this.setState({
+      editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
       editedTitle: cleanString(this.props.title),
       editedDescription,
       onEdit: false,
@@ -236,11 +263,22 @@ export default class Description extends Component {
 
   onEditFinish() {
     const params = {
+      url: this.state.editedUrl,
       videoId: this.props.videoId,
       title: finalizeEmoji(this.state.editedTitle),
       description: finalizeEmoji(this.state.editedDescription)
     }
-    this.props.onEditFinish(params, this)
+    this.props.onEditFinish(params).then(
+      () => this.setState({
+        onEdit: false,
+        editDoneButtonDisabled: true
+      })
+    )
+  }
+
+  onEditStart() {
+    this.props.onEditStart()
+    this.setState({onEdit: true})
   }
 
   onVideoLikeClick() {

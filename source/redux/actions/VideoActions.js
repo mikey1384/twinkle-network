@@ -146,19 +146,15 @@ export const editVideoPage = params => ({
   params
 })
 
-export const editVideoPageAsync = (params, sender) => dispatch =>
+export const editVideoPageAsync = (params) => dispatch =>
 request.post(`${API_URL}/edit/page`, params, auth())
 .then(
   response => {
     const {data} = response
     if (data.success) {
       dispatch(editVideoPage(params))
-      sender.setState({
-        onEdit: false,
-        editDoneButtonDisabled: true
-      })
     }
-    return
+    return Promise.resolve()
   }
 ).catch(
   error => {

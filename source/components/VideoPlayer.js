@@ -23,19 +23,27 @@ export default class VideoPlayer extends Component {
     small: PropTypes.bool,
     videoId: PropTypes.number,
     userId: PropTypes.number,
-    addVideoView: PropTypes.func
+    addVideoView: PropTypes.func,
+    onEdit: PropTypes.bool
   }
 
-  constructor() {
+  constructor(props) {
     super()
     this.state = {
-      playing: false
+      playing: props.autoplay
     }
     this.onVideoReady = this.onVideoReady.bind(this)
   }
 
+  componentDidUpdate(prevProps) {
+    const {onEdit} = this.props
+    if (prevProps.onEdit !== onEdit) {
+      this.setState({playing: !onEdit})
+    }
+  }
+
   render() {
-    const {videoCode, title, containerClassName, className, style, autoplay, small} = this.props
+    const {videoCode, title, containerClassName, className, style, small} = this.props
     const {playing} = this.state
     return (
       <div
@@ -47,7 +55,7 @@ export default class VideoPlayer extends Component {
           }
         }}
       >
-        {!autoplay && !small && !playing && <div>
+        {!small && !playing && <div>
             <img
               alt=""
               className="embed-responsive-item"
@@ -70,7 +78,7 @@ export default class VideoPlayer extends Component {
             }}
           /> : <a></a>
         }
-        {(!!playing || !!autoplay) &&
+        {playing &&
           <YouTube
             className={className}
             opts={{title}}
