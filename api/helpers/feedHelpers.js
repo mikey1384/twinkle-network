@@ -9,7 +9,11 @@ module.exports = {
     if (filter !== 'undefined' && filter !== 'all') where += 'AND type = "' + filter + '" '
     const query = `
       SELECT id, type, rootType, contentId, rootId, uploaderId, timeStamp FROM noti_feeds
-      ${where} AND type != 'like' ORDER BY id DESC LIMIT ${limit || 21}
+      ${where} AND type != 'like' AND IF(
+        rootType = 'video',
+        (SELECT id FROM vq_videos WHERE id = rootId),
+        (SELECT id FROM content_urls WHERE id = rootId)
+      ) IS NOT NULL ORDER BY id DESC LIMIT ${limit || 21}
     `
     return poolQuery(query).then(
       feeds => res.send(feeds)
