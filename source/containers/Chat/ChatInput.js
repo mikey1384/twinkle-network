@@ -20,7 +20,7 @@ export default class ChatInput extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.currentChannelId !== this.props.currentChannelId) {
       this.setState({message: ''})
-      this.Textarea.focus()
+      this.Textarea._rootDOMNode.focus()
     }
   }
 
