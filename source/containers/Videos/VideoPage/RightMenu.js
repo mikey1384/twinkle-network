@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import {loadRightMenuVideos} from 'redux/actions/VideoActions'
 import {Link} from 'react-router-dom'
 import {Color} from 'constants/css'
+import {cleanString} from 'helpers/stringHelpers'
 
 @connect(
   state => ({
@@ -70,7 +71,7 @@ export default class RightMenu extends Component {
                   </div>
                   <div className="media-body">
                     <Link to={`/videos/${video.videoId}`}>
-                      <p style={{fontSize: '1.2em'}} className="media-heading">{video.title}</p>
+                      <p style={{fontSize: '1.2em'}} className="media-heading">{cleanString(video.title)}</p>
                     </Link>
                     <small style={{color: Color.gray}}>Uploaded by {video.username}</small>
                   </div>
@@ -94,7 +95,7 @@ export default class RightMenu extends Component {
                   </div>
                   <div className="media-body">
                     <Link to={`/videos/${video.videoId}`}>
-                      <p style={{fontSize: '1.2em'}} className="media-heading">{video.title}</p>
+                      <p style={{fontSize: '1.2em'}} className="media-heading">{cleanString(video.title)}</p>
                     </Link>
                     <small style={{color: Color.gray}}>Uploaded by {video.username}</small>
                   </div>
@@ -118,7 +119,7 @@ export default class RightMenu extends Component {
                   </div>
                   <div className="media-body">
                     <Link to={`/videos/${video.videoId}`}>
-                      <p style={{fontSize: '1.2em'}} className="media-heading">{video.title}</p>
+                      <p style={{fontSize: '1.2em'}} className="media-heading">{cleanString(video.title)}</p>
                     </Link>
                     <small style={{color: Color.gray}}>Uploaded by {video.username}</small>
                   </div>
