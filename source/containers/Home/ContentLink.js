@@ -41,7 +41,7 @@ export default class ContentLink extends Component {
     }
 
     return (
-      <Link
+      content.title ? <Link
         style={{
           fontWeight: 'bold',
           color: Color.blue
@@ -50,7 +50,7 @@ export default class ContentLink extends Component {
         onClickAsync={this.onLinkClick}
       >
         {cleanString(content.title)}
-      </Link>
+      </Link> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
     )
   }
 

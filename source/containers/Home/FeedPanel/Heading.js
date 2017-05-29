@@ -97,7 +97,7 @@ export default class Heading extends Component {
           <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left col-xs-9" style={{...pStyle, padding: '0px'}}>
-              <UserLink user={uploader} /> {action} {targetAction} {contentLabel}: <ContentLink content={rootContent} type={rootType}/> <small>({timeSince(timeStamp)})</small>
+              <UserLink user={uploader} /> {action} {targetAction} {contentLabel}: <ContentLink content={rootContent} type={rootType} /> <small>({timeSince(timeStamp)})</small>
             </span>
             {attachedVideoShown ?
               <LikeButton
@@ -111,7 +111,7 @@ export default class Heading extends Component {
                 onClick={() => onLikeClick(rootId, rootType)}
               /> :
               (
-                rootType === 'video' && <a
+                rootType === 'video' && rootContent.content && <a
                   style={{
                     marginLeft: 'auto',
                     float: 'right',
