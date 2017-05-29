@@ -7,6 +7,7 @@ import {Color} from 'constants/css'
 import ContentLink from '../ContentLink'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import {timeSince} from 'helpers/timeStampHelpers'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
 
 @connect(
   state => ({
@@ -143,7 +144,7 @@ export default class Notification extends Component {
     }
     action += ` your ${isReplyNotification ? 'comment' :
       (isDiscussionAnswerNotification ? 'discussion topic' : rootType)}: `
-    let contentTitle = isReplyNotification ? commentContent :
+    let contentTitle = isReplyNotification ? cleanStringWithURL(commentContent) :
       (isDiscussionAnswerNotification ? discussionTitle : rootTitle)
     let title = contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
     if (isReplyNotification) title = `"${title}"`

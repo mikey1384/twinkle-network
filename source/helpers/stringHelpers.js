@@ -9,6 +9,16 @@ export function cleanString(string) {
   .replace(/&gt;/gi, '>') : ''
 }
 
+export function cleanStringWithURL(string) {
+  return string ?
+  string
+  .replace(/&amp;/gi, '&')
+  .replace(/&lt;/gi, '<')
+  .replace(/&gt;/gi, '>')
+  .replace(/<br\s*[\/]?>/gi, '\n')
+  .replace(/<a[^>]*>|<\/a>/g, '') : ''
+}
+
 export function limitBrs(string) {
   return string.replace(/(<br ?\/?>){4,}/gi, '<br><br><br>')
 }
@@ -105,16 +115,6 @@ export function addEmoji(string) {
 export function finalizeEmoji(string) {
   let emojifiedString = addAdvancedEmoji(string)
   return addEmoji(emojifiedString)
-}
-
-export function cleanStringWithURL(string) {
-  return string ?
-  string
-  .replace(/&amp;/gi, '&')
-  .replace(/&lt;/gi, '<')
-  .replace(/&gt;/gi, '>')
-  .replace(/<br\s*[\/]?>/gi, '\n')
-  .replace(/<a[^>]*>|<\/a>/g, '') : ''
 }
 
 export function processedString(string) {
