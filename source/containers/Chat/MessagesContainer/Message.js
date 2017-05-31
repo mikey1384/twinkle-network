@@ -9,6 +9,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
 import {editMessage, deleteMessage, saveMessage} from 'redux/actions/ChatActions'
+import {Color} from 'constants/css'
 
 @connect(
   state => ({
@@ -43,7 +44,7 @@ export default class Message extends Component {
   componentWillMount() {
     const {message, myId, saveMessage, index} = this.props
 
-    if (!message.id && message.userId === myId) {
+    if (!message.id && message.userId === myId && !message.isSubject) {
       saveMessage({...message, content: cleanStringWithURL(message.content)}, index)
     }
   }
@@ -56,7 +57,8 @@ export default class Message extends Component {
         profilePicId,
         username,
         timeStamp,
-        content
+        content,
+        isSubject
       },
       style,
       myId
@@ -118,7 +120,10 @@ export default class Message extends Component {
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}
               /> :
-              <span style={style} dangerouslySetInnerHTML={{__html: content}}></span>
+              <span>
+                {isSubject ? <span style={{fontWeight: 'bold', color: Color.green}}>Subject: </span> : ''}
+                <span style={style} dangerouslySetInnerHTML={{__html: content}}></span>
+              </span>
             }
           </div>
         </div>

@@ -4,6 +4,7 @@ import Button from 'components/Button'
 import {Color} from 'constants/css'
 import Loading from 'components/Loading'
 import Message from './Message'
+import SubjectHeader from './SubjectHeader'
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop
@@ -76,12 +77,15 @@ export default class MessagesContainer extends Component {
   }
 
   render() {
-    const {loadMoreButton, loading} = this.props
+    const {loadMoreButton, loading, currentChannelId} = this.props
     const {fillerHeight, newUnseenMessage} = this.state
     return (
       <div>
         {!!loading &&
           <Loading />
+        }
+        {!loading && currentChannelId === 2 &&
+          <SubjectHeader />
         }
         <div
           ref={ref => { this.messagesContainer = ref }}
@@ -89,7 +93,7 @@ export default class MessagesContainer extends Component {
             overflow: 'scroll',
             position: 'absolute',
             width: '100%',
-            height: '92%',
+            height: currentChannelId === 2 ? '82%' : '92%',
             bottom: '50px',
             opacity: !!loading && '0.3'
           }}

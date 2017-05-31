@@ -12,6 +12,8 @@ import {connect} from 'react-redux'
 import UsernameText from './Texts/UsernameText'
 import {cleanString} from 'helpers/stringHelpers'
 import Link from 'components/Link'
+import FullTextReveal from 'components/FullTextReveal'
+import {textIsOverflown} from 'helpers/domHelpers'
 
 @connect(
   null,
@@ -149,17 +151,7 @@ export default class VideoThumb extends Component {
                     {cleanString(video.title)}
                   </a>
                 </h5>
-                <div
-                  className="alert alert-info"
-                  style={{
-                    position: 'absolute',
-                    zIndex: '10',
-                    padding: '5px',
-                    display: onTitleHover ? 'block' : 'none',
-                    width: 'auto',
-                    maxWidth: '500px'
-                  }}
-                >{cleanString(video.title)}</div>
+                <FullTextReveal show={onTitleHover} text={cleanString(video.title)} />
               </div>
             }
             <small style={{
@@ -201,11 +193,7 @@ export default class VideoThumb extends Component {
   onEditedTitleSubmit(title) {
     const {video, editVideoTitle} = this.props
     const videoId = video.id
-    if (title && title !== video.title) {
-      editVideoTitle({title, videoId}, this)
-    } else {
-      this.setState({onEdit: false})
-    }
+    editVideoTitle({title, videoId}, this)
   }
 
   onEditTitleCancel() {
@@ -229,10 +217,6 @@ export default class VideoThumb extends Component {
   onMouseOver() {
     if (textIsOverflown(this.thumbLabel)) {
       this.setState({onTitleHover: true})
-    }
-
-    function textIsOverflown(element) {
-      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
     }
   }
 }

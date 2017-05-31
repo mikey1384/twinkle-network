@@ -258,11 +258,7 @@ export default class PlaylistCarousel extends Component {
   onEditedTitleSubmit(title) {
     const {editPlaylistTitleAsync, id, arrayIndex} = this.props
     const playlistId = id
-    if (title && title !== this.props.title) {
-      editPlaylistTitleAsync({title, playlistId}, arrayIndex, this)
-    } else {
-      this.setState({onEdit: false})
-    }
+    editPlaylistTitleAsync({title, playlistId}, arrayIndex, this)
   }
 
   onEditTitleCancel() {

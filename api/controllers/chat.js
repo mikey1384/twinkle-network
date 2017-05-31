@@ -59,6 +59,69 @@ router.post('/', requireAuth, (req, res) => {
   )
 })
 
+router.get('/chatSubject', (req, res) => {
+  const query = `
+    SELECT a.userId, b.username, a.content, a.timeStamp
+    FROM content_chat_subjects a JOIN users b ON a.userId = b.id
+    WHERE a.channelId = 2 ORDER BY a.id DESC LIMIT 1
+  `
+  return poolQuery(query).then(
+    ([result]) => res.send({
+      content: result.content,
+      timeStamp: result.timeStamp,
+      uploader: {
+        name: result.username,
+        id: result.userId
+      }
+    })
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
+router.post('/chatSubject', requireAuth, (req, res) => {
+  const {user, body: {content}} = req
+  const postSubjectQuery = `INSERT INTO content_chat_subjects SET ?`
+  const postMessageQuery = `INSERT INTO msg_chats SET ?`
+  const timeStamp = Math.floor(Date.now()/1000)
+  return Promise.all([
+    poolQuery(postSubjectQuery, {
+      channelId: 2,
+      userId: user.id,
+      content,
+      timeStamp
+    }),
+    poolQuery(postMessageQuery, {
+      channelId: 2,
+      userId: user.id,
+      content,
+      timeStamp,
+      isSubject: true
+    })
+  ]).then(
+    ({insertId}) => res.send({
+      subject: {
+        id: insertId,
+        content,
+        timeStamp,
+        uploader: {
+          name: user.username,
+          id: user.id,
+          profilePicId: user.profilePicId
+        }
+      }
+    })
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
 router.delete('/message', requireAuth, (req, res) => {
   const {user} = req
   const {messageId} = req.query

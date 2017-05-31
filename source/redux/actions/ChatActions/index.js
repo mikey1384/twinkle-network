@@ -170,6 +170,27 @@ request.post(`${API_URL}/invite`, params, auth())
   }
 )
 
+export const loadChatSubject = () => dispatch =>
+request.get(`${API_URL}/chatSubject`).then(
+  response => {
+    dispatch({
+      type: 'LOAD_CHAT_SUBJECT',
+      subject: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const changeChatSubject = subject => ({
+  type: 'CHANGE_CHAT_SUBJECT',
+  subject
+})
+
 export const loadMoreChannels = (currentChannelId, lastChannelId) => dispatch =>
 request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&lastChannelId=${lastChannelId}`, auth()).then(
   response => {
@@ -361,3 +382,19 @@ export const saveMessage = (message, index) => dispatch => {
 export const turnChatOff = () => ({
   type: 'TURN_CHAT_OFF'
 })
+
+export const uploadChatSubject = content => dispatch =>
+request.post(`${API_URL}/chatSubject`, {content}, auth()).then(
+  response => {
+    dispatch({
+      type: 'UPLOAD_CHAT_SUBJECT',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)

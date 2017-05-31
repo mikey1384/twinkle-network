@@ -21,6 +21,7 @@ class EditTitleForm extends Component {
     this.state = {
       title: cleanString(props.title)
     }
+    this.onEditSubmit = this.onEditSubmit.bind(this)
   }
 
   render() {
@@ -44,7 +45,11 @@ class EditTitleForm extends Component {
 
   onEditSubmit(event, title) {
     event.preventDefault()
-    this.props.onEditSubmit(finalizeEmoji(title))
+    if (title && title !== this.props.title) {
+      this.props.onEditSubmit(finalizeEmoji(title))
+    } else {
+      this.props.onClickOutSide()
+    }
   }
 }
 

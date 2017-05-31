@@ -127,7 +127,7 @@ export default class Heading extends Component {
                       style={{width: '7em'}}
                       src={`https://img.youtube.com/vi/${rootContent.content}/mqdefault.jpg`}
                     />
-                    <a></a>
+                    <span></span>
                   </div>
                 </a>
               )

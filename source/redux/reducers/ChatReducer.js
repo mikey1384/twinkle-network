@@ -13,7 +13,8 @@ const defaultState = {
   partnerId: null,
   numUnreads: 0,
   pageVisible: true,
-  msgsWhileInvisible: 0
+  msgsWhileInvisible: 0,
+  subject: {}
 }
 
 export default function ChatReducer(state = defaultState, action) {
@@ -40,6 +41,11 @@ export default function ChatReducer(state = defaultState, action) {
             channelName: channel.id === action.data.channelId ? action.data.title : channel.channelName
           }
         })
+      }
+    case 'CHANGE_CHAT_SUBJECT':
+      return {
+        ...state,
+        subject: action.subject
       }
     case 'CLEAR_CHAT_SEARCH_RESULTS':
       return {
@@ -250,6 +256,11 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: action.data
+      }
+    case 'LOAD_CHAT_SUBJECT':
+      return {
+        ...state,
+        subject: action.subject
       }
     case 'LOAD_MORE_CHANNELS':
       if (action.data.length > 10) {
@@ -496,6 +507,28 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         chatMode: false
+      }
+    case 'UPLOAD_CHAT_SUBJECT':
+      return {
+        ...state,
+        subject: action.data.subject,
+        channels: state.channels.map(channel => ({
+          ...channel,
+          lastMessage: channel.id === 2 ? action.data.subject.content : channel.lastMessage,
+          lastMessageSender: {
+            id: action.data.subject.uploader.id,
+            username: action.data.subject.uploader.name
+          }
+        })),
+        messages: state.messages.concat([{
+          id: action.data.subject.insertId,
+          channelId: 2,
+          content: action.data.subject.content,
+          username: action.data.subject.uploader.name,
+          userId: action.data.subject.uploader.id,
+          profilePicId: action.data.subject.uploader.profilePicId,
+          isSubject: true
+        }])
       }
     case 'RESET_CHAT':
       return defaultState

@@ -179,6 +179,18 @@ html, body {
 	margin: -10px 0 0 -10px;
 }
 
+.video-preview-thumb span {
+	position: absolute;
+	display: block;
+	background: url('/img/play-button-image.png');
+	background-size: contain;
+	height: 20px;
+	width: 20px;
+	top: 50%;
+	left: 50%;
+	margin: -10px 0 0 -10px;
+}
+
 @keyframes spin {
   from { transform: scale(1) rotate(0deg); }
   to { transform: scale(1) rotate(360deg); }

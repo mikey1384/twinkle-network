@@ -15,6 +15,9 @@ import ChatSearchBox from './ChatSearchBox'
 import {Color} from 'constants/css'
 import {GENERAL_CHAT_ID} from 'constants/database'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import {textIsOverflown} from 'helpers/domHelpers'
+import FullTextReveal from 'components/FullTextReveal'
+import {socket} from 'constants/io'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -58,7 +61,6 @@ const channelName = (channels, currentChannel) => {
 )
 export default class Chat extends Component {
   static propTypes = {
-    socket: PropTypes.object.isRequired,
     onUnmount: PropTypes.func.isRequired,
     notifyThatMemberLeftChannel: PropTypes.func,
     currentChannel: PropTypes.object,
@@ -87,8 +89,8 @@ export default class Chat extends Component {
     openDirectMessageChannel: PropTypes.func
   }
 
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       loading: false,
       currentChannelOnlineMembers: [],
@@ -114,9 +116,13 @@ export default class Chat extends Component {
     this.onMouseOverTitle = this.onMouseOverTitle.bind(this)
     this.loadMoreChannels = this.loadMoreChannels.bind(this)
     this.onListScroll = this.onListScroll.bind(this)
+    this.onSubjectChange = this.onSubjectChange.bind(this)
+  }
 
-    const {socket, notifyThatMemberLeftChannel} = props
+  componentDidMount() {
+    const {notifyThatMemberLeftChannel, currentChannel} = this.props
     socket.on('receive_message', this.onReceiveMessage)
+    socket.on('subject_change', this.onSubjectChange)
     socket.on('chat_invitation', this.onChatInvitation)
     socket.on('change_in_members_online', data => {
       let forCurrentChannel = data.channelId === this.props.currentChannel.id
@@ -130,10 +136,6 @@ export default class Chat extends Component {
         })
       }
     })
-  }
-
-  componentDidMount() {
-    const {socket, currentChannel} = this.props
     socket.emit('check_online_members', currentChannel.id, (err, data) => {
       if (err) console.error(err)
       this.setState({currentChannelOnlineMembers: data.membersOnline})
@@ -142,7 +144,7 @@ export default class Chat extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {currentChannel, socket} = this.props
+    const {currentChannel} = this.props
 
     if (prevProps.channels[0] !== this.props.channels[0] && currentChannel.id === this.props.channels[0].id) {
       this.channelList.scrollTop = 0
@@ -164,9 +166,10 @@ export default class Chat extends Component {
   }
 
   componentWillUnmount() {
-    const {socket, onUnmount} = this.props
+    const {onUnmount} = this.props
     socket.removeListener('receive_message', this.onReceiveMessage)
     socket.removeListener('chat_invitation', this.onChatInvitation)
+    socket.removeListener('subject_change', this.onSubjectChange)
     socket.removeListener('change_in_members_online')
     removeEvent(this.channelList, 'scroll', this.onScroll)
     onUnmount()
@@ -271,18 +274,11 @@ export default class Chat extends Component {
                     cleanString(channelName(channels, currentChannel)) : '(Deleted)'
                 }
               </h4>
-              <div
-                className="alert alert-info"
-                style={{
-                  position: 'absolute',
-                  marginTop: '0.3em',
-                  zIndex: '10',
-                  padding: '5px',
-                  display: onTitleHover ? 'block' : 'none',
-                  width: 'auto',
-                  maxWidth: '600px'
-                }}
-              >{`${cleanString(channelName(channels, currentChannel))}`}</div>
+              <FullTextReveal
+                text={cleanString(channelName(channels, currentChannel))}
+                show={onTitleHover}
+                width='600px'
+              />
               {currentChannel.id !== 0 ?
                 <small>
                   <a
@@ -479,7 +475,6 @@ export default class Chat extends Component {
 
   onMessageSubmit(message) {
     const {
-      socket,
       submitMessage,
       userId,
       username,
@@ -537,7 +532,7 @@ export default class Chat extends Component {
   }
 
   onCreateNewChannel(params) {
-    const {createNewChannel, socket, username, userId, openDirectMessageChannel} = this.props
+    const {createNewChannel, username, userId, openDirectMessageChannel} = this.props
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0]
       return openDirectMessageChannel({username, userId}, partner, true).then(
@@ -567,8 +562,44 @@ export default class Chat extends Component {
     }
   }
 
+  onSubjectChange(subject) {
+    const message = {
+      channelId: 2,
+      profilePicId: subject.profilePicId,
+      userId: subject.uploader.id,
+      username: subject.uploader.name,
+      content: subject.content,
+      timeStamp: subject.timeStamp,
+      isSubject: true
+    }
+    const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
+    let messageIsForCurrentChannel = message.channelId === currentChannel.id
+    let senderIsNotTheUser = message.userId !== userId
+    if (messageIsForCurrentChannel && senderIsNotTheUser) {
+      receiveMessage(message)
+    }
+    if (!messageIsForCurrentChannel) {
+      receiveMessageOnDifferentChannel({
+        message,
+        senderIsNotTheUser,
+        channel: [{
+          id: 2,
+          lastUpdate: subject.timeStamp,
+          isHidden: false,
+          channelName: 'General',
+          lastMessage: subject.content,
+          lastMessageSender: {
+            id: subject.uploader.id,
+            username: subject.uploader.name
+          },
+          numUnreads: 1
+        }]
+      })
+    }
+  }
+
   onChatInvitation(data) {
-    const {receiveFirstMsg, socket, currentChannel, userId} = this.props
+    const {receiveFirstMsg, currentChannel, userId} = this.props
     let duplicate = false
     if (currentChannel.id === 0) {
       if (
@@ -581,7 +612,6 @@ export default class Chat extends Component {
   }
 
   onInviteUsersDone(users, message) {
-    const {socket} = this.props
     socket.emit('new_chat_message', {
       ...message,
       channelId: message.channelId
@@ -603,7 +633,7 @@ export default class Chat extends Component {
   }
 
   onLeaveChannel() {
-    const {leaveChannel, currentChannel, userId, username, profilePicId, socket} = this.props
+    const {leaveChannel, currentChannel, userId, username, profilePicId} = this.props
     leaveChannel(currentChannel.id)
     socket.emit('leave_chat_channel', {channelId: currentChannel.id, userId, username, profilePicId})
   }
@@ -611,10 +641,6 @@ export default class Chat extends Component {
   onMouseOverTitle() {
     if (textIsOverflown(this.channelTitle)) {
       this.setState({onTitleHover: true})
-    }
-
-    function textIsOverflown(element) {
-      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
     }
   }
 }

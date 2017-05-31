@@ -3,11 +3,9 @@ import React, {Component} from 'react'
 import {Switch, Route} from 'react-router-dom'
 import Chat from '../Chat'
 import Header from './Header'
-import io from 'socket.io-client'
 import {connect} from 'react-redux'
 import {initChatAsync, resetChat, turnChatOff, changePageVisibility} from 'redux/actions/ChatActions'
 import {initSessionAsync} from 'redux/actions/UserActions'
-import {URL} from 'constants/URL'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
 import Videos from 'containers/Videos'
@@ -15,7 +13,6 @@ import Links from 'containers/Links'
 import Redirect from 'containers/Redirect'
 import Button from 'components/Button'
 
-const socket = io.connect(URL)
 let visibilityChange
 let hidden
 
@@ -118,7 +115,6 @@ export default class App extends Component {
       >
         <Header
           staticTop={chatMode}
-          socket={socket}
           chatMode={chatMode}
           onChatButtonClick={this.onChatButtonClick}
           turnChatOff={() => turnChatOff()}
@@ -163,7 +159,6 @@ export default class App extends Component {
         </div>
         {chatMode && this.props.loggedIn &&
           <Chat
-            socket={socket}
             onUnmount={
               () => {
                 window.scrollTo(0, scrollPosition)

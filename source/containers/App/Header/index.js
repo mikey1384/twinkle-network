@@ -23,6 +23,7 @@ import {GENERAL_CHAT_ID} from 'constants/database'
 import SearchBox from './SearchBox'
 import HeaderNav from './HeaderNav'
 import {Color} from 'constants/css'
+import {socket} from 'constants/io'
 
 @connect(
   state => ({
@@ -54,7 +55,6 @@ export default class Header extends Component {
   static propTypes = {
     checkVersion: PropTypes.func,
     location: PropTypes.object,
-    socket: PropTypes.object,
     turnChatOff: PropTypes.func,
     increaseNumberOfUnreadMessages: PropTypes.func,
     userId: PropTypes.number,
@@ -88,7 +88,7 @@ export default class Header extends Component {
   }
 
   componentDidMount() {
-    const {socket, turnChatOff, increaseNumberOfUnreadMessages, checkVersion} = this.props
+    const {turnChatOff, increaseNumberOfUnreadMessages, checkVersion} = this.props
     socket.on('connect', () => {
       checkVersion()
       if (this.props.userId) {
@@ -113,7 +113,7 @@ export default class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {getNumberOfUnreadMessages, socket, showUpdateNotice} = this.props
+    const {getNumberOfUnreadMessages, showUpdateNotice} = this.props
     if (nextProps.userId && !this.props.userId) {
       socket.connect()
       socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username)
@@ -133,7 +133,7 @@ export default class Header extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {socket, userId, location, onProfilePage, chatMode} = this.props
+    const {userId, location, onProfilePage, chatMode} = this.props
 
     if (userId !== prevProps.userId) {
       if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId)

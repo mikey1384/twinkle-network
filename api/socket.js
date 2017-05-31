@@ -81,6 +81,10 @@ module.exports = function(io) {
       )
     })
 
+    socket.on('new_subject', (params) => {
+      io.to('chatChannel' + 2).emit('subject_change', params)
+    })
+
     socket.on('new_chat_message', (message, channel) => {
       const channelId = message.channelId
       message.content = processedString(message.content)
@@ -88,12 +92,12 @@ module.exports = function(io) {
     })
 
     socket.on('send_bi_chat_invitation', (userId, data) => {
-      io.to('notificationChannel'+userId).emit('chat_invitation', data)
+      io.to('notificationChannel' + userId).emit('chat_invitation', data)
     })
 
     socket.on('send_group_chat_invitation', (users, data) => {
       for (let i = 0; i < users.length; i++) {
-        io.to('notificationChannel'+users[i]).emit('chat_invitation', data.message)
+        io.to('notificationChannel' + users[i]).emit('chat_invitation', data.message)
       }
     })
 
