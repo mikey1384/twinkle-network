@@ -103,7 +103,7 @@ export default class MessagesContainer extends Component {
           }
         >
           <div ref={ref => { this.content = ref }} style={{
-            paddingTop: currentChannelId === 2 ? '5em' : '0px'
+            paddingTop: currentChannelId === 2 ? '4.5em' : '0px'
           }}>
             {loadMoreButton ?
               <div

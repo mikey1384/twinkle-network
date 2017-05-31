@@ -66,7 +66,7 @@ export default class SubjectHeader extends Component {
     const {subject: {content = 'Introduce yourself!', uploader, timeStamp}} = this.props
     const {loaded, onHover, onEdit} = this.state
     return (
-      <div style={{width: '100%', height: '5em', position: 'absolute', backgroundColor: '#fff'}}>
+      <div style={{width: '100%', height: '4.5em', position: 'absolute', backgroundColor: '#fff'}}>
         {loaded ?
           <div>
             <div className="col-xs-10" style={{float: 'left', paddingLeft: '0px'}}>
