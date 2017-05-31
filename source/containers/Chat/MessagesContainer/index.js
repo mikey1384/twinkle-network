@@ -84,16 +84,13 @@ export default class MessagesContainer extends Component {
         {!!loading &&
           <Loading />
         }
-        {!loading && currentChannelId === 2 &&
-          <SubjectHeader />
-        }
         <div
           ref={ref => { this.messagesContainer = ref }}
           style={{
             overflow: 'scroll',
             position: 'absolute',
             width: '100%',
-            height: currentChannelId === 2 ? '82%' : '92%',
+            height: '91%',
             bottom: '50px',
             opacity: !!loading && '0.3'
           }}
@@ -105,7 +102,9 @@ export default class MessagesContainer extends Component {
             }
           }
         >
-          <div ref={ref => { this.content = ref }}>
+          <div ref={ref => { this.content = ref }} style={{
+            paddingTop: currentChannelId === 2 ? '5em' : '0px'
+          }}>
             {loadMoreButton ?
               <div
                 style={{
@@ -129,6 +128,9 @@ export default class MessagesContainer extends Component {
             </div>
           </div>
         </div>
+        {!loading && currentChannelId === 2 &&
+          <SubjectHeader />
+        }
         <div
           style={{
             position: 'absolute',

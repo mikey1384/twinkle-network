@@ -66,7 +66,7 @@ export default class SubjectHeader extends Component {
     const {subject: {content = 'Introduce yourself!', uploader, timeStamp}} = this.props
     const {loaded, onHover, onEdit} = this.state
     return (
-      <div style={{height: '10%'}}>
+      <div style={{width: '100%', height: '5em', position: 'absolute', backgroundColor: '#fff'}}>
         {loaded ?
           <div>
             <div className="col-xs-10" style={{float: 'left', paddingLeft: '0px'}}>
@@ -104,10 +104,12 @@ export default class SubjectHeader extends Component {
                   onClickOutSide={() => this.setState({onEdit: false})}
                 />
               }
-              {uploader ?
-                <small>Posted by <UsernameText user={uploader} /> ({timeSince(timeStamp)})</small> :
-                <small>{'You can change the subject by clicking the "Change the Subject" button on the right'}</small>
-              }
+              <div>
+                {uploader ?
+                  <small>Posted by <UsernameText user={uploader} /> ({timeSince(timeStamp)})</small> :
+                  <small>{'You can change the subject by clicking the "Change the Subject" button on the right'}</small>
+                }
+              </div>
             </div>
             <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
               {!onEdit &&
