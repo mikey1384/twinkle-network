@@ -116,7 +116,7 @@ export default class SubjectHeader extends Component {
               {!onEdit &&
                 <Button
                   className="btn btn-info"
-                  style={{float: 'right'}}
+                  style={{float: 'right', marginRight: '1em'}}
                   onClick={() => this.setState({onEdit: true})}
                 >
                   Change the Subject
