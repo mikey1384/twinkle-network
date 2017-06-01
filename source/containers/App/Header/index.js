@@ -7,7 +7,8 @@ import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActio
 import {
   getNumberOfUnreadMessagesAsync,
   increaseNumberOfUnreadMessages,
-  turnChatOff
+  turnChatOff,
+  resetChat
 } from 'redux/actions/ChatActions'
 import {getInitialVideos} from 'redux/actions/VideoActions'
 import {checkVersion} from 'redux/actions/NotiActions'
@@ -47,7 +48,8 @@ import {socket} from 'constants/io'
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
     getInitialVideos,
-    checkVersion
+    checkVersion,
+    resetChat
   }
 )
 @withRouter
@@ -72,6 +74,7 @@ export default class Header extends Component {
     getInitialVideos: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
     getPlaylists: PropTypes.func,
+    resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
     versionMatch: PropTypes.bool
   }
@@ -169,7 +172,8 @@ export default class Header extends Component {
       numChatUnreads,
       getInitialVideos,
       getPinnedPlaylists,
-      getPlaylists
+      getPlaylists,
+      resetChat
     } = this.props
 
     const {logoBlue, logoGreen} = this.state
@@ -232,7 +236,10 @@ export default class Header extends Component {
             {loggedIn ?
               <AccountMenu
                 title={username}
-                logout={logout}
+                logout={() => {
+                  logout()
+                  resetChat()
+                }}
               /> :
               <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
             }
