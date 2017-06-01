@@ -17,8 +17,8 @@ const {
 } = require('../helpers/chatHelpers')
 
 router.get('/', requireAuth, (req, res) => {
-  const {user, user: {lastChannelId}} = req
-  fetchChat({user, channelId: lastChannelId || generalChatId}).then(
+  const {user, user: {lastChannelId}, query: {channelId}} = req
+  fetchChat({user, channelId: Number(channelId) || lastChannelId || generalChatId}).then(
     results => res.send(results)
   ).catch(
     err => {

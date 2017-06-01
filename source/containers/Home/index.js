@@ -8,19 +8,30 @@ import Feeds from './Feeds'
 import Notification from './Notification'
 import Responsive from 'components/Wrappers/Responsive'
 import {disconnectHomeComponent} from 'redux/actions/FeedActions'
+import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
 
 @connect(
   state => ({
-    username: state.UserReducer.username
+    username: state.UserReducer.username,
+    userId: state.UserReducer.userId,
+    notificationLoaded: state.NotiReducer.loaded
   }),
-  {disconnectHomeComponent}
+  {
+    disconnectHomeComponent,
+    fetchNotifications,
+    clearNotifications
+  }
 )
 export default class Home extends Component {
   static propTypes = {
+    userId: PropTypes.number,
     history: PropTypes.object,
     location: PropTypes.object,
+    notificationLoaded: PropTypes.bool,
     username: PropTypes.string,
-    disconnectHomeComponent: PropTypes.func
+    disconnectHomeComponent: PropTypes.func,
+    clearNotifications: PropTypes.func,
+    fetchNotifications: PropTypes.func
   }
 
   constructor() {
@@ -30,13 +41,29 @@ export default class Home extends Component {
     }
   }
 
+  componentDidMount() {
+    const {fetchNotifications} = this.props
+    fetchNotifications()
+  }
+
+  componentDidUpdate(prevProps) {
+    const {fetchNotifications, clearNotifications, userId} = this.props
+    if (prevProps.userId !== userId) {
+      if (userId) {
+        fetchNotifications()
+      } else {
+        clearNotifications()
+      }
+    }
+  }
+
   componentWillUnmount() {
     const {disconnectHomeComponent} = this.props
     disconnectHomeComponent()
   }
 
   render() {
-    const {history, location, username: myUsername} = this.props
+    const {history, location, username: myUsername, notificationLoaded} = this.props
     let username = ''
     if (location.pathname.includes('/users/')) {
       username = location.pathname.split('/')[2]
@@ -85,7 +112,7 @@ export default class Home extends Component {
           className="col-xs-3 col-xs-offset-9"
           style={{position: 'fixed'}}
         >
-          {myUsername &&
+          {notificationLoaded &&
             <Responsive device="desktop">
               <Notification />
             </Responsive>

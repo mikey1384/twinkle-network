@@ -2,11 +2,11 @@ const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
 const {poolQuery} = require('../helpers')
-const currentVersion = 0.16
+const currentVersion = 0.016
 
 router.get('/', requireAuth, (req, res) => {
   const {id: userId} = req.user
-  const query = `
+  const notiQuery = `
     SELECT
       a.id,
       a.type,
@@ -67,8 +67,33 @@ router.get('/', requireAuth, (req, res) => {
       )
       AND uploaderId != ? ORDER BY id DESC LIMIT 20
   `
-  return poolQuery(query, [userId, userId, userId, userId]).then(
-    rows => res.send(rows)
+  const chatSubjectQuery = `
+    SELECT a.userId, b.username, a.content, a.timeStamp FROM content_chat_subjects a
+    JOIN users b ON a.userId = b.id ORDER BY a.id DESC LIMIT 1
+  `
+  return Promise.all([
+    poolQuery(notiQuery, [userId, userId, userId, userId]),
+    poolQuery(chatSubjectQuery)
+  ]).then(
+    results => res.send({
+      notifications: results[0],
+      currentChatSubject: Object.assign({}, results[1][0], {loaded: true})
+    })
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
+router.get('/chatSubject', (req, res) => {
+  const query = `
+    SELECT a.userId, b.username, a.content, a.timeStamp FROM content_chat_subjects a
+    JOIN users b ON a.userId = b.id ORDER BY a.id DESC LIMIT 1
+  `
+  return poolQuery(query).then(
+    ([result]) => res.send(Object.assign({}, result, {loaded: true}))
   ).catch(
     error => {
       console.error(error)

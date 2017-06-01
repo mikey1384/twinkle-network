@@ -138,8 +138,8 @@ export const increaseNumberOfUnreadMessages = () => ({
   type: 'INCREASE_NUM_UNREAD_MSGS'
 })
 
-export const initChatAsync = callback => dispatch =>
-request.get(API_URL, auth()).then(
+export const initChatAsync = (channelId) => dispatch =>
+request.get(`${API_URL}?channelId=${channelId}`, auth()).then(
   response => dispatch({
     type: 'INIT_CHAT',
     data: response.data

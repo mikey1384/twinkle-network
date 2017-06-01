@@ -12,6 +12,7 @@ import UsernameText from 'components/Texts/UsernameText'
 import {timeSince} from 'helpers/timeStampHelpers'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import {socket} from 'constants/io'
+import {defaultChatSubject} from 'constants/defaultValues'
 
 @connect(
   state => ({
@@ -63,7 +64,7 @@ export default class SubjectHeader extends Component {
   }
 
   render() {
-    const {subject: {content = 'Introduce yourself!', uploader, timeStamp}} = this.props
+    const {subject: {content = defaultChatSubject, uploader, timeStamp}} = this.props
     const {loaded, onHover, onEdit} = this.state
     return (
       <div style={{width: '100%', height: '4.5em', position: 'absolute', backgroundColor: '#fff'}}>

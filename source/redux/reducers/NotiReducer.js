@@ -1,6 +1,8 @@
 const defaultState = {
   versionMatch: true,
-  notifications: []
+  notifications: [],
+  currentChatSubject: {},
+  loaded: false
 }
 
 export default function NotiReducer(state = defaultState, action) {
@@ -10,10 +12,27 @@ export default function NotiReducer(state = defaultState, action) {
         ...state,
         versionMatch: action.data.match
       }
+    case 'CLEAR_NOTIFICATIONS':
+      return {
+        ...state,
+        notifications: []
+      }
     case 'FETCH_NOTIFICATIONS':
       return {
         ...state,
-        notifications: action.data
+        ...action.data,
+        loaded: true
+      }
+    case 'NOTIFY_CHAT_SUBJECT_CHANGE':
+      return {
+        ...state,
+        currentChatSubject: {
+          ...state.currentChatSubject,
+          content: action.subject.content,
+          userId: action.subject.uploader.id,
+          username: action.subject.uploader.name,
+          timeStamp: action.subject.timeStamp
+        }
       }
     default:
       return state
