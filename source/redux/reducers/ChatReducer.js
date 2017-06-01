@@ -521,7 +521,7 @@ export default function ChatReducer(state = defaultState, action) {
           }
         })),
         messages: state.messages.concat([{
-          id: action.data.subject.insertId,
+          id: action.data.subject.id,
           channelId: 2,
           timeStamp: action.data.subject.timeStamp,
           content: action.data.subject.content,

@@ -102,18 +102,20 @@ router.post('/chatSubject', requireAuth, (req, res) => {
       isSubject: true
     })
   ]).then(
-    ({insertId}) => res.send({
-      subject: {
-        id: insertId,
-        content,
-        timeStamp,
-        uploader: {
-          name: user.username,
-          id: user.id,
-          profilePicId: user.profilePicId
+    ([one, {insertId}]) => {
+      res.send({
+        subject: {
+          id: insertId,
+          content,
+          timeStamp,
+          uploader: {
+            name: user.username,
+            id: user.id,
+            profilePicId: user.profilePicId
+          }
         }
-      }
-    })
+      })
+    }
   ).catch(
     err => {
       console.error(err)
