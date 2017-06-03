@@ -315,7 +315,7 @@ export default class MainContent extends Component {
         {userListModalShown &&
           <UserListModal
             onHide={() => this.setState({userListModalShown: false})}
-            title="People who liked this comment"
+            title={`People who liked this ${type}`}
             users={contentLikers}
             description="(You)"
           />
