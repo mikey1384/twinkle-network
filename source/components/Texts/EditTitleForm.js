@@ -9,7 +9,8 @@ class EditTitleForm extends Component {
     onEditSubmit: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     style: PropTypes.object,
-    autoFocus: PropTypes.bool
+    autoFocus: PropTypes.bool,
+    maxLength: PropTypes.number
   }
 
   handleClickOutside = (event) => {
@@ -26,7 +27,7 @@ class EditTitleForm extends Component {
 
   render() {
     const {title} = this.state
-    const {style, autoFocus} = this.props
+    const {style, autoFocus, maxLength = 100} = this.props
     return (
       <form onSubmit={event => this.onEditSubmit(event, title)}>
         <input
@@ -39,16 +40,19 @@ class EditTitleForm extends Component {
           onChange={event => this.setState({title: event.target.value})}
           onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
         />
+        <small style={{color: title.length > maxLength && 'red'}}>{title.length}/{maxLength} Characters</small>
       </form>
     )
   }
 
   onEditSubmit(event, title) {
+    const {onEditSubmit, onClickOutSide, maxLength = 100} = this.props
     event.preventDefault()
+    if (title && title.length > maxLength) return
     if (title && title !== this.props.title) {
-      this.props.onEditSubmit(finalizeEmoji(title))
+      onEditSubmit(finalizeEmoji(title))
     } else {
-      this.props.onClickOutSide()
+      onClickOutSide()
     }
   }
 }

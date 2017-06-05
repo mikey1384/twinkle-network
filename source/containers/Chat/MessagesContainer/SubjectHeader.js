@@ -105,12 +105,12 @@ export default class SubjectHeader extends Component {
                   onClickOutSide={() => this.setState({onEdit: false})}
                 />
               }
-              <div>
-                {uploader ?
-                  <small>Posted by <UsernameText user={uploader} /> ({timeSince(timeStamp)})</small> :
+              {!onEdit && <div>
+                {uploader ? <small>Posted by <UsernameText user={uploader} /> ({timeSince(timeStamp)})</small> :
                   <small>{'You can change the subject by clicking the "Change the Subject" button on the right'}</small>
                 }
-              </div>
+                </div>
+              }
             </div>
             <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
               {!onEdit &&

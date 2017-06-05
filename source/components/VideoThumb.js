@@ -154,11 +154,14 @@ export default class VideoThumb extends Component {
                 <FullTextReveal show={onTitleHover} text={cleanString(video.title)} />
               </div>
             }
-            <small style={{
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden'
-            }}>Added by <UsernameText user={user} /></small>
+            {!onEdit &&
+              <small style={{
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden'
+              }}>Added by <UsernameText user={user} />
+              </small>
+            }
             {video.numLikes > 0 &&
               <small className="pull-right">
                 <span className="glyphicon glyphicon-thumbs-up" />&times;{video.numLikes}
