@@ -32,24 +32,23 @@ router.get('/', requireAuth, (req, res) => {
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
   const {message} = req.body
-  const {channelId, content} = message
+  const {channelId, content, subjectId} = message
   const timeStamp = Math.floor(Date.now()/1000)
   if (message.userId !== user.id) {
     return res.status(401).send('Unauthorized')
   }
 
-  poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
+  return poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
     () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
   ).then(
     () => {
       const query1 = `UPDATE msg_channel_info SET isHidden = '0' WHERE channelId = ?`
       const query2 = `
-        INSERT INTO msg_chats SET channelId = ?, userId = ?,
-        content = ?, timeStamp = ?
+        INSERT INTO msg_chats SET channelId = ?, userId = ?, content = ?, timeStamp = ?, subjectId = ?
       `
       return Promise.all([
         poolQuery(query1, channelId),
-        poolQuery(query2, [channelId, user.id, processedString(content), timeStamp])
+        poolQuery(query2, [channelId, user.id, processedString(content), timeStamp, subjectId])
       ])
     }
   ).then(
@@ -61,12 +60,13 @@ router.post('/', requireAuth, (req, res) => {
 
 router.get('/chatSubject', (req, res) => {
   const query = `
-    SELECT a.userId, b.username, a.content, a.timeStamp
+    SELECT a.id, a.userId, b.username, a.content, a.timeStamp
     FROM content_chat_subjects a JOIN users b ON a.userId = b.id
     WHERE a.channelId = 2 ORDER BY a.id DESC LIMIT 1
   `
   return poolQuery(query).then(
     ([result]) => res.send({
+      id: result.id,
       content: result.content,
       timeStamp: result.timeStamp,
       uploader: {
@@ -102,8 +102,9 @@ router.post('/chatSubject', requireAuth, (req, res) => {
       isSubject: true
     })
   ]).then(
-    ([one, {insertId}]) => {
+    ([{insertId: subjectId}, {insertId}]) => {
       res.send({
+        subjectId,
         subject: {
           id: insertId,
           content,

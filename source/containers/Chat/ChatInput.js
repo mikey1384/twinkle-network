@@ -48,6 +48,7 @@ export default class ChatInput extends Component {
     const shiftKeyPressed = event.shiftKey
     const enterKeyPressed = event.keyCode === 13
     const {message} = this.state
+
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault()
       if (stringIsEmpty(message)) return

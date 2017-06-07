@@ -390,7 +390,7 @@ request.post(`${API_URL}/chatSubject`, {content}, auth()).then(
       type: 'UPLOAD_CHAT_SUBJECT',
       data: response.data
     })
-    return Promise.resolve()
+    return Promise.resolve(response.data.subjectId)
   }
 ).catch(
   error => {

@@ -151,8 +151,9 @@ export default class SubjectHeader extends Component {
   onSubjectSubmit(text) {
     const {uploadChatSubject, username, userId, profilePicId} = this.props
     return uploadChatSubject(text).then(
-      () => {
+      subjectId => {
         socket.emit('new_subject', {
+          id: subjectId,
           uploader: {id: userId, name: username},
           profilePicId,
           content: text,

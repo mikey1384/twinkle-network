@@ -117,6 +117,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'SELECT_CHANNEL': {
       return {
         ...state,
+        subject: {},
         selectedChannelId: action.channelId
       }
     }

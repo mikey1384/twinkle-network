@@ -39,7 +39,8 @@ const channelName = (channels, currentChannel) => {
     messages: state.ChatReducer.messages,
     channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
     loadMoreButton: state.ChatReducer.loadMoreMessages,
-    partnerId: state.ChatReducer.partnerId
+    partnerId: state.ChatReducer.partnerId,
+    subjectId: state.ChatReducer.subject.id
   }),
   {
     receiveMessage: ChatActions.receiveMessage,
@@ -86,7 +87,8 @@ export default class Chat extends Component {
     editChannelTitle: PropTypes.func,
     hideChat: PropTypes.func,
     leaveChannel: PropTypes.func,
-    openDirectMessageChannel: PropTypes.func
+    openDirectMessageChannel: PropTypes.func,
+    subjectId: PropTypes.number
   }
 
   constructor() {
@@ -482,7 +484,8 @@ export default class Chat extends Component {
       currentChannel,
       channels,
       sendFirstDirectMessage,
-      partnerId
+      partnerId,
+      subjectId
     } = this.props
     let isFirstDirectMessage = currentChannel.id === 0
     if (isFirstDirectMessage) {
@@ -499,7 +502,8 @@ export default class Chat extends Component {
       username,
       profilePicId,
       content: message,
-      channelId: currentChannel.id
+      channelId: currentChannel.id,
+      subjectId
     }
     let channel = channels.filter(channel => channel.id === currentChannel.id).map(
       channel => ({
