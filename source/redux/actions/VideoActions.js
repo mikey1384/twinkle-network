@@ -30,10 +30,6 @@ request.post(`${API_URL}/view`, params)
   }
 )
 
-export const clearSearchResults = () => ({
-  type: 'CLEAR_CONTENT_SEARCH_RESULTS'
-})
-
 export const closeAddVideoModal = () => ({
   type: 'VID_MODAL_CLOSE'
 })
@@ -395,20 +391,6 @@ export const resetVideoPage = () => ({
 export const resetVideoState = () => ({
   type: 'RESET_VID_STATE'
 })
-
-export const searchVideoAsync = text => dispatch =>
-request.get(`${API_URL}/search?query=${text}`)
-.then(
-  response => dispatch({
-    type: 'SEARCH_CONTENT',
-    data: response.data
-  })
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
 
 export const uploadQuestions = data => ({
   type: 'UPLOAD_QUESTIONS',

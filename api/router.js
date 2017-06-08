@@ -1,5 +1,6 @@
 module.exports = function(app, pool) {
   app.use('/chat', require('./controllers/chat'))
+  app.use('/content', require('./controllers/content'))
   app.use('/feed', require('./controllers/feed'))
   app.use('/playlist', require('./controllers/playlist'))
   app.use('/user', require('./controllers/user'))

@@ -1,3 +1,4 @@
+export {default as ContentReducer} from './ContentReducer'
 export {default as VideoReducer} from './VideoReducer'
 export {default as PlaylistReducer} from './PlaylistReducer'
 export {default as UserReducer} from './UserReducer'

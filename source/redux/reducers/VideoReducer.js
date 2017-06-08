@@ -11,8 +11,7 @@ const defaultState = {
     debates: [],
     loadMoreCommentsButton: false,
     loadMoreDebatesButton: false
-  },
-  searchResult: []
+  }
 }
 
 export default function VideoReducer(state = defaultState, action) {
@@ -23,11 +22,6 @@ export default function VideoReducer(state = defaultState, action) {
   let allVideosLoaded = false
   let reply
   switch (action.type) {
-    case 'CLEAR_CONTENT_SEARCH_RESULTS':
-      return {
-        ...state,
-        searchResult: []
-      }
     case 'DELETE_VIDEO':
       const newVideoThumbs = state.allVideoThumbs
       newVideoThumbs.splice(action.arrayIndex, 1)
@@ -452,11 +446,6 @@ export default function VideoReducer(state = defaultState, action) {
         loadMoreButton: false,
         allVideosLoaded: false,
         addVideoModalShown: false
-      }
-    case 'SEARCH_CONTENT':
-      return {
-        ...state,
-        searchResult: action.data.result
       }
     case 'VIDEO_PAGE_UNAVAILABLE':
       return {

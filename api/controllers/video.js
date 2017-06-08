@@ -529,25 +529,6 @@ router.post('/questions', requireAuth, (req, res) => {
   })
 })
 
-router.get('/search', (req, res) => {
-  const searchQuery = req.query.query
-  if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send({result: []})
-  async.waterfall([
-    callback => {
-      let query = 'SELECT id, title AS label FROM vq_videos WHERE title LIKE ? ORDER BY id DESC LIMIT 20'
-      pool.query(query, '%' + searchQuery + '%', (err, result) => {
-        callback(err, result)
-      })
-    }
-  ], (err, result) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({result})
-  })
-})
-
 router.post('/view', (req, res) => {
   const {videoId, userId} = req.body
   const post = {videoId, userId, timeStamp: Math.floor(Date.now()/1000)}

@@ -4,18 +4,16 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import SearchInput from 'components/SearchInput'
 import {stringIsEmpty} from 'helpers/stringHelpers'
-import {
-  searchVideoAsync,
-  clearSearchResults,
-  loadVideoPageFromClientSideAsync
-} from 'redux/actions/VideoActions'
+import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
+import {clearSearchResults, searchContent} from 'redux/actions/ContentActions'
+import {Color} from 'constants/css'
 
 @connect(
   state => ({
-    searchResult: state.VideoReducer.searchResult
+    searchResult: state.ContentReducer.searchResult
   }),
   {
-    searchVideo: searchVideoAsync,
+    searchContent,
     loadVideoPage: loadVideoPageFromClientSideAsync,
     clearSearchResults
   }
@@ -28,7 +26,7 @@ export default class SearchBox extends Component {
     clearSearchResults: PropTypes.func,
     className: PropTypes.string,
     style: PropTypes.object,
-    searchVideo: PropTypes.func,
+    searchContent: PropTypes.func,
     loadVideoPage: PropTypes.func
   }
 
@@ -47,12 +45,21 @@ export default class SearchBox extends Component {
     return (
       <form className={className} style={style}>
         <SearchInput
-          placeholder="Search for Videos"
+          placeholder="Search for Videos and Links"
           onChange={this.onContentSearch}
           value={searchText}
           searchResults={searchResult}
           renderItemLabel={
-            item => <span>{item.label}</span>
+            item => <div>
+              <span
+                style={{
+                  color: item.type === 'video' ? Color.logoBlue : Color.pink,
+                  fontWeight: 'bold'
+                }}
+              >
+                [{item.type === 'video' ? 'Video' : 'Link'}]
+              </span>&nbsp;&nbsp;&nbsp;{item.label}
+            </div>
           }
           onClickOutSide={() => {
             this.setState({searchText: ''})
@@ -65,13 +72,13 @@ export default class SearchBox extends Component {
   }
 
   onContentSearch(event) {
-    const {searchVideo, clearSearchResults} = this.props
+    const {searchContent, clearSearchResults} = this.props
     const text = event.target.value
     this.setState({searchText: text})
     if (stringIsEmpty(text)) {
       return clearSearchResults()
     }
-    searchVideo(text)
+    searchContent(text)
   }
 
   onSelect(item) {
@@ -79,7 +86,7 @@ export default class SearchBox extends Component {
     this.setState({searchText: ''})
     clearSearchResults()
     return loadVideoPage(item.id).then(
-      () => history.push(`/videos/${item.id}`)
+      () => history.push(`/${item.type}s/${item.id}`)
     )
   }
 }
