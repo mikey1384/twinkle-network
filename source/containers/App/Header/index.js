@@ -221,7 +221,7 @@ export default class Header extends Component {
                   Read
                 </HeaderNav>
               </Nav>,
-              <SearchBox className="col-xs-5" style={{marginTop: '6px'}} key="searchBox" />
+              <SearchBox className="col-xs-6" style={{marginTop: '6px'}} key="searchBox" />
             ]
           }
           <Nav pullRight>
