@@ -58,7 +58,8 @@ router.get('/session', requireAuth, (req, res) => {
     target: 'website',
     subTarget: pathname,
     method: 'default',
-    userAgent
+    userAgent,
+    timeStamp: Math.floor(Date.now()/1000)
   })
   res.send(Object.assign({}, user, {userId: user.id}))
 })
@@ -201,7 +202,8 @@ router.post('/recordAnonTraffic', (req, res) => {
     target: 'website',
     subTarget: pathname,
     method: 'default',
-    userAgent
+    userAgent,
+    timeStamp: Math.floor(Date.now()/1000)
   }).catch(
     err => console.error(err)
   )

@@ -22,7 +22,8 @@ router.get('/', requireAuth, (req, res) => {
     userId: user.id,
     action: 'enter',
     target: 'chat',
-    method: 'default'
+    method: 'default',
+    timeStamp: Math.floor(Date.now()/1000)
   })
   fetchChat({user, channelId: Number(channelId) || lastChannelId || generalChatId}).then(
     results => res.send(results)
