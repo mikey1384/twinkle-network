@@ -12,7 +12,11 @@ import Videos from 'containers/Videos'
 import Links from 'containers/Links'
 import Redirect from 'containers/Redirect'
 import Button from 'components/Button'
+import request from 'axios'
+import {URL} from 'constants/URL'
+import {auth} from 'redux/actions/constants'
 
+const API_URL = `${URL}/user`
 let visibilityChange
 let hidden
 
@@ -40,7 +44,8 @@ export default class App extends Component {
     loggedIn: PropTypes.bool,
     location: PropTypes.object,
     initChat: PropTypes.func,
-    changePageVisibility: PropTypes.func
+    changePageVisibility: PropTypes.func,
+    history: PropTypes.object
   }
 
   constructor() {
@@ -77,7 +82,11 @@ export default class App extends Component {
 
   componentDidUpdate(prevProps) {
     let elements = document.documentElement.childNodes
-    const {chatMode, chatNumUnreads} = this.props
+    const {chatMode, chatNumUnreads, history, location, loggedIn} = this.props
+
+    if (loggedIn && history.action === 'PUSH' && location !== prevProps.location) {
+      request.post(`${API_URL}/navigation`, {target: location.pathname}, auth())
+    }
 
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
       let title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
@@ -103,9 +112,9 @@ export default class App extends Component {
   }
 
   render() {
-    const {chatMode, turnChatOff, resetChat} = this.props
+    const {chatMode, turnChatOff, resetChat, loggedIn} = this.props
     const {scrollPosition, updateNoticeShown} = this.state
-    const style = chatMode && this.props.loggedIn ? {
+    const style = chatMode && loggedIn ? {
       display: 'none'
     } : {paddingTop: '65px'}
 

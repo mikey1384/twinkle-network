@@ -48,6 +48,23 @@ router.get('/check', (req, res) => {
   )
 })
 
+router.post('/navigation', requireAuth, (req, res) => {
+  const {user, body: {target}} = req
+  return poolQuery(`INSERT INTO users_actions SET ?`, {
+    userId: user.id,
+    action: 'navigation',
+    target,
+    timeStamp: Math.floor(Date.now()/1000)
+  }).then(
+    () => res.send(true)
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
 router.get('/session', requireAuth, (req, res) => {
   const {user, query: {pathname}} = req
   const query = `INSERT INTO users_actions SET ?`
@@ -204,7 +221,9 @@ router.post('/recordAnonTraffic', (req, res) => {
     method: 'default',
     userAgent,
     timeStamp: Math.floor(Date.now()/1000)
-  }).catch(
+  }).then(
+    () => res.send(true)
+  ).catch(
     err => console.error(err)
   )
 })
