@@ -8,6 +8,7 @@ const pool = require('../pool')
 const {poolQuery} = require('../helpers')
 const async = require('async')
 const {processedString} = require('../helpers/stringHelpers')
+const useragent = require('useragent')
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3({signatureVersion: 'v4'})
 const config = require('../siteConfig')
@@ -47,8 +48,19 @@ router.get('/check', (req, res) => {
   )
 })
 
-router.get('/session', requireAuth, function(req, res) {
-  res.send(Object.assign({}, req.user, {userId: req.user.id}))
+router.get('/session', requireAuth, (req, res) => {
+  const {user, query: {pathname}} = req
+  const query = `INSERT INTO users_actions SET ?`
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  poolQuery(query, {
+    userId: user.id,
+    action: 'enter',
+    target: 'website',
+    subTarget: pathname,
+    method: 'default',
+    userAgent
+  })
+  res.send(Object.assign({}, user, {userId: user.id}))
 })
 
 router.post('/login', requireSignin, function(req, res) {
@@ -178,6 +190,21 @@ router.get('/username/check', (req, res) => {
     }
     res.send({user: rows[0]})
   })
+})
+
+router.post('/recordAnonTraffic', (req, res) => {
+  const {pathname} = req.body
+  const query = `INSERT INTO users_actions SET ?`
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  return poolQuery(query, {
+    action: 'enter',
+    target: 'website',
+    subTarget: pathname,
+    method: 'default',
+    userAgent
+  }).catch(
+    err => console.error(err)
+  )
 })
 
 module.exports = router

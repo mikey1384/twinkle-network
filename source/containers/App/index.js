@@ -38,6 +38,7 @@ export default class App extends Component {
     chatNumUnreads: PropTypes.number,
     resetChat: PropTypes.func,
     loggedIn: PropTypes.bool,
+    location: PropTypes.object,
     initChat: PropTypes.func,
     changePageVisibility: PropTypes.func
   }
@@ -58,7 +59,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    const {initSession} = this.props
+    const {initSession, location} = this.props
     if (typeof document.hidden !== 'undefined') {
       hidden = 'hidden'
       visibilityChange = 'visibilitychange'
@@ -69,7 +70,7 @@ export default class App extends Component {
       hidden = 'webkitHidden'
       visibilityChange = 'webkitvisibilitychange'
     }
-    initSession()
+    initSession(location.pathname)
     addEvent(window, 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
   }

@@ -65,9 +65,11 @@ export const initSession = data => ({
   data
 })
 
-export const initSessionAsync = () => dispatch => {
-  if (token() === null) return
-  return request.get(`${API_URL}/session`, auth())
+export const initSessionAsync = (pathname) => dispatch => {
+  if (token() === null) {
+    return request.post(`${API_URL}/recordAnonTraffic`, {pathname})
+  }
+  return request.get(`${API_URL}/session?pathname=${pathname}`, auth())
   .then(
     response => dispatch(initSession({...response.data, loggedIn: true})),
   ).catch(

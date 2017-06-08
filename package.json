@@ -64,6 +64,7 @@
     "scroll-behavior": "^0.9.3",
     "socket.io": "^2.0.1",
     "socket.io-client": "^2.0.1",
+    "useragent": "^2.1.13",
     "webpack": "^2.5.1",
     "youtube-player": "^5.2.0"
   },

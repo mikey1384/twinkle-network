@@ -18,6 +18,12 @@ const {
 
 router.get('/', requireAuth, (req, res) => {
   const {user, user: {lastChannelId}, query: {channelId}} = req
+  poolQuery('INSERT INTO users_actions SET ?', {
+    userId: user.id,
+    action: 'enter',
+    target: 'chat',
+    method: 'default'
+  })
   fetchChat({user, channelId: Number(channelId) || lastChannelId || generalChatId}).then(
     results => res.send(results)
   ).catch(
