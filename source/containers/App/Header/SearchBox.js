@@ -5,6 +5,7 @@ import {withRouter} from 'react-router-dom'
 import SearchInput from 'components/SearchInput'
 import {stringIsEmpty} from 'helpers/stringHelpers'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
+import {loadLinkPage} from 'redux/actions/LinkActions'
 import {clearSearchResults, searchContent} from 'redux/actions/ContentActions'
 import {Color} from 'constants/css'
 import {recordUserAction} from 'helpers/userDataHelpers'
@@ -17,6 +18,7 @@ import {recordUserAction} from 'helpers/userDataHelpers'
   {
     searchContent,
     loadVideoPage: loadVideoPageFromClientSideAsync,
+    loadLinkPage,
     clearSearchResults
   }
 )
@@ -30,6 +32,7 @@ export default class SearchBox extends Component {
     style: PropTypes.object,
     searchContent: PropTypes.func,
     loadVideoPage: PropTypes.func,
+    loadLinkPage: PropTypes.func,
     loggedIn: PropTypes.bool
   }
 
@@ -85,12 +88,18 @@ export default class SearchBox extends Component {
   }
 
   onSelect(item) {
-    const {clearSearchResults, loadVideoPage, history, loggedIn} = this.props
+    const {clearSearchResults, loadVideoPage, loadLinkPage, history, loggedIn} = this.props
     this.setState({searchText: ''})
     clearSearchResults()
     if (loggedIn) recordUserAction({action: 'search', target: item.type, subTarget: item.id})
-    return loadVideoPage(item.id).then(
-      () => history.push(`/${item.type}s/${item.id}`)
-    )
+    if (item.type === 'video') {
+      return loadVideoPage(item.id).then(
+        () => history.push(`/${item.type}s/${item.id}`)
+      )
+    } else {
+      return loadLinkPage(item.id).then(
+        () => history.push(`/${item.type}s/${item.id}`)
+      )
+    }
   }
 }
