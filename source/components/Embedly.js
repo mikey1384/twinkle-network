@@ -86,6 +86,9 @@ export default class Embedly extends Component {
   }
 
   render() {
+    const {thumbnail_url} = this.state
+    /* eslint-disable camelcase */
+    const thumbNail = thumbnail_url || '/img/link.png'
     let aStyle = {
       color: '#222',
       textDecoration: 'none',
@@ -140,7 +143,7 @@ export default class Embedly extends Component {
           style={aStyle}
         >
           <div className="embedly__image" style={imageStyle}>
-            <img src={this.state.thumbnail_url} alt={this.state.title} style={imgStyle}/>
+            <img src={thumbNail} alt={this.state.title} style={imgStyle}/>
           </div>
           <div className="embedly__text" style={textStyle}>
             <p className="embedly__title" style={titleStyle}>{this.state.title || this.props.title}</p>
