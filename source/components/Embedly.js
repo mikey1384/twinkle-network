@@ -55,15 +55,27 @@ export default class Embedly extends Component {
         url,
         key: embedlyKey
       }
-
-      request.get(this.apiUrl)
-      .query(params)
-      .end((err, res) => {
-        if (err) console.error(err)
-        if (!res.body) return
-        if (this.mounted) {
-          this.setState(res.body)
-        }
+      this.setState({
+        provider_url: '',
+        description: '',
+        title: '',
+        thumbnail_width: 1,
+        url: '',
+        thumbnailUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+        version: '',
+        provider_name: '',
+        type: '',
+        thumbnail_height: 1
+      }, () => {
+        request.get(this.apiUrl)
+        .query(params)
+        .end((err, res) => {
+          if (err) console.error(err)
+          if (!res.body) return
+          if (this.mounted) {
+            this.setState(res.body)
+          }
+        })
       })
     }
   }
