@@ -62,6 +62,7 @@ export default class Embedly extends Component {
         thumbnail_width: 1,
         url: '',
         thumbnailUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+        thumbnail_url: '',
         version: '',
         provider_name: '',
         type: '',
