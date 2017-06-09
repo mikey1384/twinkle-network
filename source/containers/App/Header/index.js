@@ -98,9 +98,6 @@ export default class Header extends Component {
         socket.emit('bind_uid_to_socket', this.props.userId, this.props.username)
       }
     })
-    socket.on('receive_notification', data => {
-      console.log(data)
-    })
     socket.on('receive_message', data => {
       if (!this.props.chatMode && data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
         increaseNumberOfUnreadMessages()

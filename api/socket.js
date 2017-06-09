@@ -111,6 +111,12 @@ module.exports = function(io) {
             notifyChannelMembersChanged(channelId)
           }
           connections.splice(i, 1)
+          poolQuery(`INSERT INTO users_actions SET ?`, {
+            userId: connection.userId,
+            action: 'leave',
+            target: 'website',
+            timeStamp: Math.floor(Date.now()/1000)
+          })
           break
         }
       }
