@@ -56,6 +56,7 @@ router.post('/navigation', requireAuth, (req, res) => {
     action: 'navigate',
     target,
     userAgent,
+    ip: req.ip,
     timeStamp: Math.floor(Date.now()/1000)
   }).then(
     () => res.send(true)
@@ -76,6 +77,7 @@ router.post('/search', requireAuth, (req, res) => {
     target,
     subTarget,
     userAgent,
+    ip: req.ip,
     timeStamp: Math.floor(Date.now()/1000)
   }).then(
     () => res.send(true)
@@ -98,6 +100,7 @@ router.get('/session', requireAuth, (req, res) => {
     subTarget: pathname,
     method: 'default',
     userAgent,
+    ip: req.ip,
     timeStamp: Math.floor(Date.now()/1000)
   })
   res.send(Object.assign({}, user, {userId: user.id}))
@@ -242,6 +245,7 @@ router.post('/recordAnonTraffic', (req, res) => {
     subTarget: pathname,
     method: 'default',
     userAgent,
+    ip: req.ip,
     timeStamp: Math.floor(Date.now()/1000)
   }).then(
     () => res.send(true)
