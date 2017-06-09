@@ -25,6 +25,7 @@ import SearchBox from './SearchBox'
 import HeaderNav from './HeaderNav'
 import {Color} from 'constants/css'
 import {socket} from 'constants/io'
+import {recordUserAction} from 'helpers/userDataHelpers'
 
 @connect(
   state => ({
@@ -234,6 +235,7 @@ export default class Header extends Component {
               <AccountMenu
                 title={username}
                 logout={() => {
+                  recordUserAction({action: 'logout'})
                   logout()
                   resetChat()
                 }}

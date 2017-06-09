@@ -48,6 +48,25 @@ router.get('/check', (req, res) => {
   )
 })
 
+router.post('/logout', requireAuth, (req, res) => {
+  const {user} = req
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  return poolQuery(`INSERT INTO users_actions SET ?`, {
+    userId: user.id,
+    action: 'logout',
+    userAgent,
+    ip: req.ip,
+    timeStamp: Math.floor(Date.now()/1000)
+  }).then(
+    () => res.send(true)
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
 router.post('/navigation', requireAuth, (req, res) => {
   const {user, body: {target}} = req
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
@@ -107,6 +126,15 @@ router.get('/session', requireAuth, (req, res) => {
 })
 
 router.post('/login', requireSignin, function(req, res) {
+  const query = `INSERT INTO users_actions SET ?`
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  poolQuery(query, {
+    userId: req.user.id,
+    action: 'login',
+    userAgent,
+    ip: req.ip,
+    timeStamp: Math.floor(Date.now()/1000)
+  })
   res.send(
     Object.assign({}, req.user, {
       userId: req.user.id,
