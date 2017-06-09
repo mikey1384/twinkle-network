@@ -53,7 +53,7 @@ router.post('/navigation', requireAuth, (req, res) => {
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
     userId: user.id,
-    action: 'navigation',
+    action: 'navigate',
     target,
     userAgent,
     timeStamp: Math.floor(Date.now()/1000)
