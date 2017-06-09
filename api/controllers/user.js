@@ -50,10 +50,32 @@ router.get('/check', (req, res) => {
 
 router.post('/navigation', requireAuth, (req, res) => {
   const {user, body: {target}} = req
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
     userId: user.id,
     action: 'navigation',
     target,
+    userAgent,
+    timeStamp: Math.floor(Date.now()/1000)
+  }).then(
+    () => res.send(true)
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
+router.post('/search', requireAuth, (req, res) => {
+  const {user, body: {target, subTarget}} = req
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  return poolQuery(`INSERT INTO users_actions SET ?`, {
+    userId: user.id,
+    action: 'search',
+    target,
+    subTarget,
+    userAgent,
     timeStamp: Math.floor(Date.now()/1000)
   }).then(
     () => res.send(true)

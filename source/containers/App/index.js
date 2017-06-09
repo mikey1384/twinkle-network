@@ -12,11 +12,8 @@ import Videos from 'containers/Videos'
 import Links from 'containers/Links'
 import Redirect from 'containers/Redirect'
 import Button from 'components/Button'
-import request from 'axios'
-import {URL} from 'constants/URL'
-import {auth} from 'redux/actions/constants'
+import {recordUserAction} from 'helpers/userDataHelpers'
 
-const API_URL = `${URL}/user`
 let visibilityChange
 let hidden
 
@@ -85,7 +82,7 @@ export default class App extends Component {
     const {chatMode, chatNumUnreads, history, location, loggedIn} = this.props
 
     if (loggedIn && history.action === 'PUSH' && location !== prevProps.location) {
-      request.post(`${API_URL}/navigation`, {target: location.pathname}, auth())
+      recordUserAction({action: 'navigation', target: location.pathname})
     }
 
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {

@@ -7,10 +7,12 @@ import {stringIsEmpty} from 'helpers/stringHelpers'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import {clearSearchResults, searchContent} from 'redux/actions/ContentActions'
 import {Color} from 'constants/css'
+import {recordUserAction} from 'helpers/userDataHelpers'
 
 @connect(
   state => ({
-    searchResult: state.ContentReducer.searchResult
+    searchResult: state.ContentReducer.searchResult,
+    loggedIn: state.UserReducer.loggedIn
   }),
   {
     searchContent,
@@ -27,7 +29,8 @@ export default class SearchBox extends Component {
     className: PropTypes.string,
     style: PropTypes.object,
     searchContent: PropTypes.func,
-    loadVideoPage: PropTypes.func
+    loadVideoPage: PropTypes.func,
+    loggedIn: PropTypes.bool
   }
 
   constructor() {
@@ -82,9 +85,10 @@ export default class SearchBox extends Component {
   }
 
   onSelect(item) {
-    const {clearSearchResults, loadVideoPage, history} = this.props
+    const {clearSearchResults, loadVideoPage, history, loggedIn} = this.props
     this.setState({searchText: ''})
     clearSearchResults()
+    if (loggedIn) recordUserAction({action: 'search', target: item.type, subTarget: item.id})
     return loadVideoPage(item.id).then(
       () => history.push(`/${item.type}s/${item.id}`)
     )
