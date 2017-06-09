@@ -57,6 +57,7 @@ export default class LinkPage extends Component {
     fetchComments: PropTypes.func,
     fetchMoreReplies: PropTypes.func,
     fetchMoreComments: PropTypes.func,
+    location: PropTypes.object,
     submitComment: PropTypes.func,
     submitReply: PropTypes.func,
     myId: PropTypes.number
@@ -82,14 +83,22 @@ export default class LinkPage extends Component {
     return loadLinkPage(linkId)
   }
 
+  componentDidUpdate(prevProps) {
+    const {location, loadLinkPage, fetchComments, match: {params: {linkId}}} = this.props
+    if (prevProps.location.pathname !== location.pathname) {
+      fetchComments(linkId)
+      return loadLinkPage(linkId)
+    }
+  }
+
   render() {
     const {
       pageProps: {
         id, title, content,
         description, timeStamp,
         uploader, uploaderName,
-        comments, likers,
-        loadMoreCommentsButton
+        comments = [], likers = [],
+        loadMoreCommentsButton = false
       },
       editLinkPage,
       likeLink,

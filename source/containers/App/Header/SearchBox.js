@@ -26,6 +26,7 @@ import {recordUserAction} from 'helpers/userDataHelpers'
 export default class SearchBox extends Component {
   static propTypes = {
     history: PropTypes.object,
+    location: PropTypes.object,
     searchResult: PropTypes.array,
     clearSearchResults: PropTypes.func,
     className: PropTypes.string,
@@ -88,10 +89,14 @@ export default class SearchBox extends Component {
   }
 
   onSelect(item) {
-    const {clearSearchResults, loadVideoPage, loadLinkPage, history, loggedIn} = this.props
+    const {
+      clearSearchResults, loadVideoPage, loadLinkPage,
+      history, loggedIn, location: {pathname}
+    } = this.props
     this.setState({searchText: ''})
     clearSearchResults()
     if (loggedIn) recordUserAction({action: 'search', target: item.type, subTarget: item.id})
+    if (pathname === `/${item.type}s/${item.id}`) return
     if (item.type === 'video') {
       return loadVideoPage(item.id).then(
         () => history.push(`/${item.type}s/${item.id}`)
