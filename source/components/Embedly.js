@@ -48,6 +48,26 @@ export default class Embedly extends Component {
     this.mounted = true
   }
 
+  componentDidUpdate(prevProps) {
+    const {url} = this.props
+    if (prevProps.url !== url) {
+      let params = {
+        url,
+        key: embedlyKey
+      }
+
+      request.get(this.apiUrl)
+      .query(params)
+      .end((err, res) => {
+        if (err) console.error(err)
+        if (!res.body) return
+        if (this.mounted) {
+          this.setState(res.body)
+        }
+      })
+    }
+  }
+
   componentWillUnmount() {
     this.mounted = false
   }
