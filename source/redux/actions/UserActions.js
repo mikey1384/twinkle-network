@@ -33,10 +33,13 @@ request.get(`${API_URL}/username/check?username=${username}`)
 
 export const fetchUsers = () => dispatch =>
 request.get(`${API_URL}/users`).then(
-  response => dispatch({
-    type: 'FETCH_USERS',
-    data: response.data
-  })
+  response => {
+    dispatch({
+      type: 'FETCH_USERS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
 ).catch(
   error => {
     console.error(error.response || error)
@@ -142,7 +145,7 @@ request.post(`${API_URL}/picture`, {image}, auth())
   response => {
     dispatch({
       type: 'UPDATE_PROFILE_PICTURE',
-      data: response.data.imageId
+      data: response.data
     })
     callback()
   }

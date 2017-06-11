@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {fetchUsers, fetchMoreUsers} from 'redux/actions/UserActions'
 import ProfileCard from '../ProfileCard'
 import LoadMoreButton from 'components/LoadMoreButton'
+import Loading from 'components/Loading'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 
 @connect(
@@ -30,7 +31,8 @@ export default class People extends Component {
     super()
     this.state = {
       searchText: '',
-      loading: false
+      loading: false,
+      loaded: false
     }
     this.loadMoreProfiles = this.loadMoreProfiles.bind(this)
     this.onPeopleSearch = this.onPeopleSearch.bind(this)
@@ -41,7 +43,9 @@ export default class People extends Component {
   componentDidMount() {
     const {fetchUsers} = this.props
     addEvent(window, 'scroll', this.onScroll)
-    fetchUsers()
+    return fetchUsers().then(
+      () => this.setState({loaded: true})
+    )
   }
 
   componentWillUnmount() {
@@ -50,7 +54,7 @@ export default class People extends Component {
 
   render() {
     const {userId, profiles, loadMoreButton} = this.props
-    const {loading} = this.state
+    const {loading, loaded} = this.state
     return (
       <div>
         {/* <SearchInput
@@ -67,7 +71,14 @@ export default class People extends Component {
           onSelect={this.onSelect}
         /> */}
         <div style={{marginTop: '1em'}}>
-          {profiles && profiles.map(profile => <ProfileCard expandable key={profile.id} userId={userId} profile={profile} />)}
+          {!loaded &&
+            <Loading text="Loading Users..." />
+          }
+          {loaded &&
+            profiles.map(
+              profile => <ProfileCard expandable key={profile.id} userId={userId} profile={profile} />
+            )
+          }
         </div>
         {loadMoreButton && <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />}
       </div>

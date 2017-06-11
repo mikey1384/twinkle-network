@@ -1,5 +1,6 @@
 const defaultState = {
   profile: {},
+  profiles: [],
   loadMoreButton: false
 }
 
@@ -96,8 +97,12 @@ export default function UserReducer(state = defaultState, action) {
         profilePicId: action.data,
         profile: {
           ...state.profile,
-          profilePicId: action.data
-        }
+          profilePicId: action.data.imageId
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          profilePicId: profile.id === action.data.userId ? action.data.imageId : profile.profilePicId
+        }))
       }
     case 'UNMOUNT_PROFILE':
       return {
