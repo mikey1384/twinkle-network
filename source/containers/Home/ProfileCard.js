@@ -105,12 +105,14 @@ export default class Header extends Component {
                   </div>
                 }
                 {expandable && userId !== profile.id &&
-                  <Button
-                    className="btn btn-lg btn-info" style={{marginTop: '0.5em'}}
-                    onClick={() => history.push(`/users/${profile.username}`)}
-                  >
-                    View Profile
-                  </Button>
+                  <div className="col-xs-12" style={{paddingLeft: '0px'}}>
+                    <Button
+                      className="btn btn-lg btn-info" style={{marginTop: '0.5em'}}
+                      onClick={() => history.push(`/users/${profile.username}`)}
+                    >
+                      View Profile
+                    </Button>
+                  </div>
                 }
               </div>
             </div>

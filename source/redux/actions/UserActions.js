@@ -44,8 +44,8 @@ request.get(`${API_URL}/users`).then(
   }
 )
 
-export const fetchMoreUsers = (lastId) => dispatch =>
-request.get(`${API_URL}/users?lastId=${lastId}`).then(
+export const fetchMoreUsers = (shownUsersId) => dispatch =>
+request.get(`${API_URL}/users?${shownUsersId.map(id => `shownUsers[]=${id}`).join('&')}`).then(
   response => {
     dispatch({
       type: 'FETCH_MORE_USERS',

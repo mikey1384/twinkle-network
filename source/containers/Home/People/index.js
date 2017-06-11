@@ -79,7 +79,7 @@ export default class People extends Component {
     const {loading} = this.state
     if (!loading) {
       this.setState({loading: true})
-      return fetchMoreUsers(profiles[profiles.length - 1].id).then(
+      return fetchMoreUsers(profiles.map(profile => profile.id)).then(
         () => this.setState({loading: false})
       )
     }
