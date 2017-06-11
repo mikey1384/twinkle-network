@@ -61,9 +61,8 @@ export default function UserReducer(state = defaultState, action) {
       }
     case 'SIGNIN_LOGOUT':
       return {
-        profile: {
-          ...state.profile
-        }
+        profile: state.profile,
+        profiles: state.profiles
       }
     case 'SIGNIN_SIGNUP':
       return {

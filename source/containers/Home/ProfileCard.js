@@ -7,6 +7,7 @@ import Button from 'components/Button'
 import ImageEditModal from './Modals/ImageEditModal'
 import BioEditModal from './Modals/BioEditModal'
 import {uploadProfilePic, uploadBio} from 'redux/actions/UserActions'
+import {openDirectMessageChannel} from 'redux/actions/ChatActions'
 import AlertModal from 'components/Modals/AlertModal'
 import {connect} from 'react-redux'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
@@ -14,13 +15,18 @@ import {withRouter} from 'react-router'
 
 @connect(
   null,
-  {uploadProfilePic, uploadBio}
+  {
+    uploadProfilePic,
+    uploadBio,
+    openDirectMessageChannel
+  }
 )
 @withRouter
 export default class Header extends Component {
   static propTypes = {
     expandable: PropTypes.bool,
     history: PropTypes.object,
+    openDirectMessageChannel: PropTypes.func,
     profile: PropTypes.object,
     userId: PropTypes.number,
     uploadBio: PropTypes.func,
@@ -44,7 +50,7 @@ export default class Header extends Component {
 
   render() {
     const {imageUri, imageEditModalShown, bioEditModalShown, alertModalShown, processing} = this.state
-    const {profile, userId, expandable, history} = this.props
+    const {profile, userId, expandable, history, openDirectMessageChannel} = this.props
     const {profileFirstRow, profileSecondRow, profileThirdRow} = profile
     return (
       <div
@@ -111,6 +117,14 @@ export default class Header extends Component {
                       onClick={() => history.push(`/users/${profile.username}`)}
                     >
                       View Profile
+                    </Button>
+                    <Button
+                      className="btn btn-lg btn-success" style={{marginTop: '0.5em', marginLeft: '0.5em'}}
+                      onClick={
+                        () => openDirectMessageChannel({userId}, {userId: profile.id, username: profile.username}, false)
+                      }
+                    >
+                      Message
                     </Button>
                   </div>
                 }

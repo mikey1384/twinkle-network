@@ -51,7 +51,7 @@ export default class ChatFeeds extends Component {
         <ul className="list-group" style={{marginBottom: '0px'}}>
           <li className="list-group-item">
             <p style={{fontWeight: 'bold', color: Color.green, marginBottom: '0px', fontSize: '1.2em'}}>{content}</p>
-            <p><small>{subtitle} {userId && <UsernameText user={{id: userId, name: username}} />}{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small></p>
+            <div style={{paddingBottom: '0.5em'}}><small>{subtitle} {userId && <UsernameText user={{id: userId, name: username}} />}{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small></div>
             <Button className="btn btn-success" onClick={() => openChat(2)}>Join Them!</Button>
           </li>
         </ul>
