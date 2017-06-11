@@ -12,6 +12,7 @@ import AlertModal from 'components/Modals/AlertModal'
 import {connect} from 'react-redux'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import {withRouter} from 'react-router'
+import {Color} from 'constants/css'
 
 @connect(
   null,
@@ -71,6 +72,9 @@ export default class Header extends Component {
               <h2 className="media-heading">
                 {profile.username} <small>{`(${profile.realName})`}</small>
               </h2>
+              {userId !== profile.id && !!profile.online &&
+                <p style={{color: Color.green, fontWeight: 'bold'}}>(online)</p>
+              }
               {(!!profileFirstRow || !!profileSecondRow || !!profileThirdRow) &&
                 <ul
                   className="col-md-8"

@@ -54,12 +54,13 @@ module.exports = function(io) {
     })
 
     socket.on('bind_uid_to_socket', (userId, username) => {
-      const query = [
-        'SELECT a.id AS channel FROM msg_channels a WHERE a.id IN ',
-        '(SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ? ',
-        'OR b.userId = ?)'
-      ].join('')
-      poolQuery(query, [generalChatId, userId]).then(
+      const channelQuery = `
+        SELECT a.id AS channel FROM msg_channels a WHERE a.id IN
+        (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
+        OR b.userId = ?)
+      `
+      poolQuery(`UPDATE users SET ? WHERE id = ?`, [{online: true}, userId])
+      poolQuery(channelQuery, [generalChatId, userId]).then(
         rows => {
           let channels = rows.map(row => row.channel)
           for (let i = 0; i < connections.length; i++) {
@@ -111,6 +112,8 @@ module.exports = function(io) {
             notifyChannelMembersChanged(channelId)
           }
           connections.splice(i, 1)
+          const query = `UPDATE users SET ? WHERE id = ?`
+          poolQuery(query, [{online: false}, connection.userId])
           poolQuery(`INSERT INTO users_actions SET ?`, {
             userId: connection.userId,
             action: 'leave',

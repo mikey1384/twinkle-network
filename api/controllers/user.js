@@ -229,8 +229,9 @@ router.get('/users', (req, res) => {
   const where = shownUsers ? 'WHERE ' + shownUsers.map(id => `a.id != ${id}`).join(' AND ') : ''
   const query = `
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
-    a.profileSecondRow, a.profileThirdRow, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' ${where}
-    ORDER BY (SELECT id FROM users_actions WHERE userId = a.id ORDER BY id DESC LIMIT 1) DESC LIMIT 21
+    a.profileSecondRow, a.profileThirdRow, a.online, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' ${where}
+    ORDER BY a.online DESC, (SELECT id FROM users_actions WHERE userId = a.id ORDER BY id DESC LIMIT 1) DESC  
+    LIMIT 21
   `
   return poolQuery(query).then(
     rows => res.send(rows)
