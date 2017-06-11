@@ -80,7 +80,7 @@ export default class People extends Component {
             )
           }
         </div>
-        {loadMoreButton && <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />}
+        {loaded && loadMoreButton && <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />}
       </div>
     )
   }
