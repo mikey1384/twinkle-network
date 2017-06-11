@@ -37,6 +37,7 @@ export default class NotiFeeds extends Component {
           {notifications.length > 0 && notifications.map(notification => {
             return <li
               className="list-group-item"
+              style={{wordWrap: 'break-word'}}
               key={notification.id}>
               {this.renderNotificationMessage(notification)}
               <small style={{color: Color.gray}}>{timeSince(notification.timeStamp)}</small>
