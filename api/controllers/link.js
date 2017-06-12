@@ -156,4 +156,19 @@ router.put('/page', requireAuth, (req, res) => {
   )
 })
 
+router.put('/title', requireAuth, (req, res) => {
+  const {user, body: {title, id}} = req
+  if (stringIsEmpty(title)) {
+    return res.status(500).send({error: 'Title is empty'})
+  }
+  return poolQuery('UPDATE content_urls SET ? WHERE id = ? AND uploader = ?', [{title}, id, user.id]).then(
+    () => res.send({success: true})
+  ).catch(
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
+    }
+  )
+})
+
 module.exports = router

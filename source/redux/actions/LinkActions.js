@@ -77,6 +77,27 @@ request.put(`${API_URL}/page`, params, auth()).then(
     })
     return Promise.resolve()
   }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const editTitle = (params) => dispatch =>
+request.put(`${API_URL}/title`, params, auth()).then(
+  response => {
+    dispatch({
+      type: 'EDIT_LINK_TITLE',
+      data: params
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
 )
 
 export const fetchLinks = () => dispatch =>

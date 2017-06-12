@@ -42,6 +42,14 @@ export default function linkReducer(state = defaultState, action) {
           }))
         }
       }
+    case 'EDIT_LINK_TITLE':
+      return {
+        ...state,
+        links: state.links.map(link => ({
+          ...link,
+          title: action.data.id === link.id ? action.data.title : link.title
+        }))
+      }
     case 'LIKE_LINK_COMMENT':
       return {
         ...state,

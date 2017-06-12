@@ -7,27 +7,35 @@ import {timeSince} from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import UserListModal from 'components/Modals/UserListModal'
 import Link from 'components/Link'
-import {loadLinkPage} from 'redux/actions/LinkActions'
+import {loadLinkPage, editTitle} from 'redux/actions/LinkActions'
 import {connect} from 'react-redux'
+import SmallDropdownButton from 'components/SmallDropdownButton'
+import EditTitleForm from 'components/Texts/EditTitleForm'
 
 @connect(
-  null,
-  {loadLinkPage}
+  state => ({
+    userId: state.UserReducer.userId
+  }),
+  {loadLinkPage, editTitle}
 )
 export default class ContentLink extends Component {
   static propTypes = {
+    editTitle: PropTypes.func,
     link: PropTypes.object,
-    loadLinkPage: PropTypes.func
+    loadLinkPage: PropTypes.func,
+    userId: PropTypes.number
   }
 
   constructor(props) {
     super()
     this.state = {
       imageUrl: '',
-      userListModalShown: false
+      userListModalShown: false,
+      onEdit: false
     }
     this.apiUrl = 'https://api.embedly.com/1/oembed?secure=true&scheme=https'
     this.to = `/links/${props.link.id}`
+    this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
     this.onLinkClick = this.onLinkClick.bind(this)
   }
 
@@ -59,8 +67,8 @@ export default class ContentLink extends Component {
   }
 
   render() {
-    const {link: {title, timeStamp, uploaderName, uploader, likers, numComments}} = this.props
-    const {imageUrl, userListModalShown} = this.state
+    const {link: {title, timeStamp, uploaderName, uploader, likers, numComments}, userId} = this.props
+    const {imageUrl, userListModalShown, onEdit} = this.state
     return (
       <li className="media">
         <div className="media-left">
@@ -92,8 +100,33 @@ export default class ContentLink extends Component {
           }
         </div>
         <div className="media-body">
+          {!onEdit && userId === uploader &&
+            <SmallDropdownButton
+              shape="button"
+              icon="pencil"
+              menuProps={[
+                {
+                  label: 'Edit',
+                  onClick: () => this.setState({onEdit: true})
+                },
+                {
+                  label: 'Remove',
+                  onClick: () => console.log('delete clicked')
+                }
+              ]}
+            />
+          }
           <h4 className="media-heading">
-            <Link to={this.to} onClickAsync={this.onLinkClick}>{title}</Link>
+            {!onEdit && <Link to={this.to} onClickAsync={this.onLinkClick}>{title}</Link>}
+            {onEdit &&
+              <EditTitleForm
+                autoFocus
+                maxLength={200}
+                title={title}
+                onEditSubmit={this.onEditedTitleSubmit}
+                onClickOutSide={() => this.setState({onEdit: false})}
+              />
+            }
           </h4>
           <div>
             <small style={{position: 'absolute'}}>
@@ -125,6 +158,13 @@ export default class ContentLink extends Component {
           />
         }
       </li>
+    )
+  }
+
+  onEditedTitleSubmit(text) {
+    const {editTitle, link: {id}} = this.props
+    return editTitle({title: text, id}).then(
+      () => this.setState({onEdit: false})
     )
   }
 
