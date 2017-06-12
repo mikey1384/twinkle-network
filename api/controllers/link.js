@@ -141,11 +141,11 @@ router.get('/page', (req, res) => {
 })
 
 router.put('/page', requireAuth, (req, res) => {
-  const {user, body: {editedTitle, editedDescription, linkId}} = req
+  const {user, body: {editedTitle, editedDescription, editedUrl, linkId}} = req
   if (stringIsEmpty(editedTitle)) {
     return res.status(500).send({error: 'Title is empty'})
   }
-  const post = {title: editedTitle, description: processedString(editedDescription)}
+  const post = {title: editedTitle, content: editedUrl, description: processedString(editedDescription)}
   return poolQuery('UPDATE content_urls SET ? WHERE id = ? AND uploader = ?', [post, linkId, user.id]).then(
     () => res.send({success: true})
   ).catch(

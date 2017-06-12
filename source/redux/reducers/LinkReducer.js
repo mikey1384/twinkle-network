@@ -77,11 +77,12 @@ export default function linkReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_LINK_PAGE':
-      const {editedTitle: title, editedDescription: description} = action.data
+      const {editedTitle: title, editedDescription: description, editedUrl: content} = action.data
       return {
         ...state,
         linkPage: {
           ...state.linkPage,
+          content,
           title,
           description: processedStringWithURL(description)
         }

@@ -10,6 +10,7 @@ import {cleanString, cleanStringWithURL, stringIsEmpty, addEmoji, finalizeEmoji}
 
 export default class Description extends Component {
   static propTypes = {
+    url: PropTypes.string,
     linkId: PropTypes.number,
     uploaderId: PropTypes.number,
     myId: PropTypes.number,
@@ -27,6 +28,7 @@ export default class Description extends Component {
   constructor(props) {
     super()
     this.state = {
+      editedUrl: props.url,
       editedTitle: cleanString(props.title),
       editedDescription: cleanStringWithURL(props.description),
       onEdit: false,
@@ -42,7 +44,8 @@ export default class Description extends Component {
       onEdit,
       editedTitle,
       editedDescription,
-      editDoneButtonDisabled
+      editDoneButtonDisabled,
+      editedUrl
     } = this.state
     return (
       <div>
@@ -105,6 +108,17 @@ export default class Description extends Component {
           {onEdit ?
             <div>
               <form>
+                <input
+                  className="form-control"
+                  placeholder="Enter Url"
+                  style={{marginBottom: '1em'}}
+                  value={editedUrl}
+                  onChange={event => {
+                    this.setState({editedUrl: event.target.value}, () => {
+                      this.determineEditButtonDoneStatus()
+                    })
+                  }}
+                />
                 <Textarea
                   minRows={4}
                   className="form-control"
@@ -149,16 +163,20 @@ export default class Description extends Component {
   }
 
   determineEditButtonDoneStatus() {
+    const urlIsEmpty = stringIsEmpty(this.state.editedUrl)
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
+    const urlChanged = this.state.editedUrl !== this.props.url
     const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description)
-    const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged)
+    const editDoneButtonDisabled =
+      urlIsEmpty || titleIsEmpty || (!titleChanged && !descriptionChanged && !urlChanged)
     this.setState({editDoneButtonDisabled})
   }
 
   onEditCancel() {
-    const {description, title} = this.props
+    const {description, title, url} = this.props
     this.setState({
+      editedUrl: url,
       editedTitle: cleanString(title),
       editedDescription: cleanStringWithURL(description),
       onEdit: false,
@@ -168,8 +186,9 @@ export default class Description extends Component {
 
   onEditFinish() {
     const {onEditDone, linkId} = this.props
-    const {editedTitle, editedDescription} = this.state
+    const {editedTitle, editedDescription, editedUrl} = this.state
     return onEditDone({
+      editedUrl,
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
       linkId

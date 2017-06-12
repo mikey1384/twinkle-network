@@ -127,6 +127,7 @@ export default class LinkPage extends Component {
             timeStamp={timeStamp}
             myId={myId}
             title={title}
+            url={content}
             description={description}
             linkId={id}
             onDelete={() => deleteLinkFromPage(id)}
