@@ -7,7 +7,7 @@ import {timeSince} from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import UserListModal from 'components/Modals/UserListModal'
 import Link from 'components/Link'
-import {loadLinkPage, editTitle} from 'redux/actions/LinkActions'
+import {loadLinkPage, editTitle, deleteLink} from 'redux/actions/LinkActions'
 import {connect} from 'react-redux'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
@@ -16,10 +16,11 @@ import EditTitleForm from 'components/Texts/EditTitleForm'
   state => ({
     userId: state.UserReducer.userId
   }),
-  {loadLinkPage, editTitle}
+  {loadLinkPage, deleteLink, editTitle}
 )
 export default class ContentLink extends Component {
   static propTypes = {
+    deleteLink: PropTypes.func,
     editTitle: PropTypes.func,
     link: PropTypes.object,
     loadLinkPage: PropTypes.func,
@@ -35,6 +36,7 @@ export default class ContentLink extends Component {
     }
     this.apiUrl = 'https://api.embedly.com/1/oembed?secure=true&scheme=https'
     this.to = `/links/${props.link.id}`
+    this.onDelete = this.onDelete.bind(this)
     this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
     this.onLinkClick = this.onLinkClick.bind(this)
   }
@@ -111,7 +113,7 @@ export default class ContentLink extends Component {
                 },
                 {
                   label: 'Remove',
-                  onClick: () => console.log('delete clicked')
+                  onClick: this.onDelete
                 }
               ]}
             />
@@ -159,6 +161,11 @@ export default class ContentLink extends Component {
         }
       </li>
     )
+  }
+
+  onDelete() {
+    const {link, deleteLink} = this.props
+    deleteLink(link.id)
   }
 
   onEditedTitleSubmit(text) {

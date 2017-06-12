@@ -38,6 +38,19 @@ request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
   }
 )
 
+export const deleteLink = linkId => dispatch =>
+request.delete(`${API_URL}/page?linkId=${linkId}`, auth()).then(
+  response => dispatch({
+    type: 'DELETE_LINK',
+    linkId
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
 export const deleteLinkFromPage = linkId => dispatch =>
 request.delete(`${API_URL}/page?linkId=${linkId}`, auth()).then(
   response => {

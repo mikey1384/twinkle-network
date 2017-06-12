@@ -9,6 +9,11 @@ export default function linkReducer(state = defaultState, action) {
   let loadMoreLinksButtonShown = false
   let loadMoreCommentsButton = false
   switch (action.type) {
+    case 'DELETE_LINK':
+      return {
+        ...state,
+        links: state.links.filter(link => link.id !== action.linkId)
+      }
     case 'DELETE_LINK_COMMENT':
       return {
         ...state,
