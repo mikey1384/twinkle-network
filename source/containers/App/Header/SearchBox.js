@@ -57,16 +57,23 @@ export default class SearchBox extends Component {
           value={searchText}
           searchResults={searchResult}
           renderItemLabel={
-            item => <div>
-              <span
-                style={{
-                  color: item.type === 'video' ? Color.logoBlue : Color.pink,
-                  fontWeight: 'bold'
-                }}
-              >
-                [{item.type === 'video' ? 'Video' : 'Link'}]
-              </span>&nbsp;&nbsp;&nbsp;{item.label}
-            </div>
+            item => <span>
+              <span style={{
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                lineHeight: 'normal'
+              }}>
+                <span
+                  style={{
+                    color: item.type === 'video' ? Color.logoBlue : Color.pink,
+                    fontWeight: 'bold'
+                  }}
+                >
+                  [{item.type === 'video' ? 'Video' : 'Link'}]
+                </span>&nbsp;&nbsp;&nbsp;<span>{item.label}</span>
+              </span>
+            </span>
           }
           onClickOutSide={() => {
             this.setState({searchText: ''})
