@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
+import {withRouter} from 'react-router-dom'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
 import {connect} from 'react-redux'
 import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions'
@@ -9,12 +10,14 @@ const last = array => {
   return array[array.length - 1]
 }
 
+@withRouter
 @connect(
   null,
   {getMorePlaylistsAsync}
 )
 export default class PlaylistsPanel extends Component {
   static propTypes = {
+    location: PropTypes.object,
     playlists: PropTypes.array.isRequired,
     userId: PropTypes.number,
     title: PropTypes.string,
@@ -22,12 +25,20 @@ export default class PlaylistsPanel extends Component {
     buttonGroupShown: PropTypes.bool,
     loadMoreButton: PropTypes.bool,
     loaded: PropTypes.bool,
+    loadPlaylists: PropTypes.func,
     getMorePlaylistsAsync: PropTypes.func
   }
 
   constructor() {
     super()
     this.loadMorePlaylists = this.loadMorePlaylists.bind(this)
+  }
+
+  componentDidMount() {
+    const {loadPlaylists, location, loaded} = this.props
+    if (location.action === 'PUSH' || !loaded) {
+      loadPlaylists()
+    }
   }
 
   render() {

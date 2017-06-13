@@ -20,7 +20,8 @@ export default class Notification extends Component {
     myId: PropTypes.number,
     chatMode: PropTypes.bool,
     currentChatSubject: PropTypes.object,
-    notifications: PropTypes.array
+    notifications: PropTypes.array,
+    children: PropTypes.node
   }
 
   constructor() {
@@ -51,7 +52,8 @@ export default class Notification extends Component {
         content = defaultChatSubject,
         userId, username, timeStamp,
         loaded
-      }
+      },
+      children
     } = this.props
     return (
       <div
@@ -59,17 +61,22 @@ export default class Notification extends Component {
         style={{position: 'fixed'}}
       >
         <Responsive device="desktop">
-          <div
-            className="well"
-            onScroll={this.handleScroll}
-            style={{
-              maxHeight: '30em',
-              overflowY: 'scroll'
-            }}
-            ref={ref => { this.NotificationBox = ref }}
-          >
-            {loaded && <ChatFeeds content={content} userId={userId} username={username} timeStamp={timeStamp} />}
-            {notifications.length > 0 && <NotiFeeds notifications={notifications} myId={myId} style={{marginTop: loaded && '1.5em'}} />}
+          <div>
+            <div style={{minHeight: '3em', marginBottom: '1em'}}>
+              {children}
+            </div>
+            <div
+              className="well"
+              onScroll={this.handleScroll}
+              style={{
+                maxHeight: '30em',
+                overflowY: 'scroll'
+              }}
+              ref={ref => { this.NotificationBox = ref }}
+            >
+              {loaded && <ChatFeeds content={content} userId={userId} username={username} timeStamp={timeStamp} />}
+              {notifications.length > 0 && <NotiFeeds notifications={notifications} myId={myId} style={{marginTop: loaded && '1.5em'}} />}
+            </div>
           </div>
         </Responsive>
       </div>
