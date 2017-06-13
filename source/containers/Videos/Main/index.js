@@ -7,6 +7,7 @@ import AddVideoModal from './Modals/AddVideoModal'
 import AllVideosPanel from './Panels/AllVideosPanel'
 import PlaylistsPanel from './Panels/PlaylistsPanel'
 import AddPlaylistModal from './Modals/AddPlaylistModal'
+import Notification from 'containers/Notification'
 import {openAddVideoModal, closeAddVideoModal, getInitialVideos} from 'redux/actions/VideoActions'
 import {
   openReorderPinnedPlaylistsModal,
@@ -26,6 +27,8 @@ import {connect} from 'react-redux'
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
+
+    notificationLoaded: state.NotiReducer.loaded,
 
     videos: state.VideoReducer.allVideoThumbs,
     loadMoreVideosButton: state.VideoReducer.loadMoreButton,
@@ -67,6 +70,7 @@ export default class Main extends Component {
     getPlaylists: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
     location: PropTypes.object,
+    notificationLoaded: PropTypes.bool,
     videosLoaded: PropTypes.bool,
     userType: PropTypes.string,
     isAdmin: PropTypes.bool,
@@ -118,6 +122,8 @@ export default class Main extends Component {
       videosLoaded,
       loadMoreVideosButton,
 
+      notificationLoaded,
+
       playlists,
       playlistsLoaded,
       loadMorePlaylistsButton,
@@ -164,67 +170,70 @@ export default class Main extends Component {
     ]
     return (
       <div>
-        {(pinnedPlaylists.length > 0 || userType === 'master') &&
+        <div className="col-md-9">
+          {(pinnedPlaylists.length > 0 || userType === 'master') &&
+            <PlaylistsPanel
+              key={'pinnedPlaylists'}
+              buttonGroupShown={userType === 'master'}
+              buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
+              title="Featured Playlists"
+              loadMoreButton={loadMorePinnedPlaylists}
+              userId={userId}
+              playlists={pinnedPlaylists}
+              loaded={pinnedPlaylistsLoaded}
+            />
+          }
           <PlaylistsPanel
-            key={'pinnedPlaylists'}
-            buttonGroupShown={userType === 'master'}
-            buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
-            title="Featured Playlists"
-            loadMoreButton={loadMorePinnedPlaylists}
+            key={'allplaylists'}
+            buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
+            title="All Playlists"
+            loadMoreButton={loadMorePlaylistsButton}
             userId={userId}
-            playlists={pinnedPlaylists}
-            loaded={pinnedPlaylistsLoaded}
+            playlists={playlists}
+            loaded={playlistsLoaded}
           />
-        }
-        <PlaylistsPanel
-          key={'allplaylists'}
-          buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
-          title="All Playlists"
-          loadMoreButton={loadMorePlaylistsButton}
-          userId={userId}
-          playlists={playlists}
-          loaded={playlistsLoaded}
-        />
-        <AllVideosPanel
-          key={'allvideos'}
-          isAdmin={isAdmin}
-          title="All Videos"
-          loadMoreButton={loadMoreVideosButton}
-          userId={userId}
-          videos={videos}
-          onAddVideoClick={() => openAddVideoModal()}
-          loaded={videosLoaded}
-        />
-        {addVideoModalShown &&
-          <AddVideoModal
-            onHide={() => closeAddVideoModal()}
+          <AllVideosPanel
+            key={'allvideos'}
+            isAdmin={isAdmin}
+            title="All Videos"
+            loadMoreButton={loadMoreVideosButton}
+            userId={userId}
+            videos={videos}
+            onAddVideoClick={() => openAddVideoModal()}
+            loaded={videosLoaded}
           />
-        }
-        {addPlaylistModalShown && <AddPlaylistModal />}
-        {selectPlaylistsToPinModalShown &&
-          <SelectPlaylistsToPinModal
-            playlistsToPin={playlistsToPin}
-            pinnedPlaylists={pinnedPlaylists}
-            selectedPlaylists={
-              pinnedPlaylists.map(playlist => {
-                return playlist.id
-              })
-            }
-            loadMoreButton={loadMorePlaylistsToPinButton}
-            onHide={() => closeSelectPlaylistsToPinModal()}
-          />
-        }
-        {reorderPinnedPlaylistsModalShown &&
-          <ReorderPinnedPlaylistsModal
-            pinnedPlaylists={pinnedPlaylists}
-            playlistIds={
-              pinnedPlaylists.map(playlist => {
-                return playlist.id
-              })
-            }
-            onHide={() => closeReorderPinnedPlaylistsModal()}
-          />
-        }
+          {addVideoModalShown &&
+            <AddVideoModal
+              onHide={() => closeAddVideoModal()}
+            />
+          }
+          {addPlaylistModalShown && <AddPlaylistModal />}
+          {selectPlaylistsToPinModalShown &&
+            <SelectPlaylistsToPinModal
+              playlistsToPin={playlistsToPin}
+              pinnedPlaylists={pinnedPlaylists}
+              selectedPlaylists={
+                pinnedPlaylists.map(playlist => {
+                  return playlist.id
+                })
+              }
+              loadMoreButton={loadMorePlaylistsToPinButton}
+              onHide={() => closeSelectPlaylistsToPinModal()}
+            />
+          }
+          {reorderPinnedPlaylistsModalShown &&
+            <ReorderPinnedPlaylistsModal
+              pinnedPlaylists={pinnedPlaylists}
+              playlistIds={
+                pinnedPlaylists.map(playlist => {
+                  return playlist.id
+                })
+              }
+              onHide={() => closeReorderPinnedPlaylistsModal()}
+            />
+          }
+        </div>
+        {notificationLoaded && <Notification />}
       </div>
     )
   }

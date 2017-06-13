@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import UserLink from '../UserLink'
-import ContentLink from '../ContentLink'
+import ContentLink from 'components/ContentLink'
 import {timeSince} from 'helpers/timeStampHelpers'
 import LikeButton from 'components/LikeButton'
 import {connect} from 'react-redux'

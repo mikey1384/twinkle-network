@@ -49,9 +49,9 @@ export default class PlaylistCarousel extends Component {
 
   constructor() {
     super()
-    let numSlides = 7
+    let numSlides = 5
     if (ExecutionEnvironment.canUseDOM) {
-      numSlides = document.documentElement.clientWidth < 768 ? 3 : 7
+      numSlides = document.documentElement.clientWidth < 768 ? 3 : 5
     }
     this.state = {
       onEdit: false,

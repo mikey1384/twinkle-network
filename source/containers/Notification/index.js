@@ -5,6 +5,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import NotiFeeds from './NotiFeeds'
 import ChatFeeds from './ChatFeeds'
 import {defaultChatSubject} from 'constants/defaultValues'
+import Responsive from 'components/Wrappers/Responsive'
 
 @connect(
   state => ({
@@ -54,16 +55,23 @@ export default class Notification extends Component {
     } = this.props
     return (
       <div
-        className="well"
-        onScroll={this.handleScroll}
-        style={{
-          maxHeight: '30em',
-          overflowY: 'scroll'
-        }}
-        ref={ref => { this.NotificationBox = ref }}
+        className="col-xs-3 col-xs-offset-9"
+        style={{position: 'fixed'}}
       >
-        {loaded && <ChatFeeds content={content} userId={userId} username={username} timeStamp={timeStamp} />}
-        {notifications.length > 0 && <NotiFeeds notifications={notifications} myId={myId} style={{marginTop: loaded && '1.5em'}} />}
+        <Responsive device="desktop">
+          <div
+            className="well"
+            onScroll={this.handleScroll}
+            style={{
+              maxHeight: '30em',
+              overflowY: 'scroll'
+            }}
+            ref={ref => { this.NotificationBox = ref }}
+          >
+            {loaded && <ChatFeeds content={content} userId={userId} username={username} timeStamp={timeStamp} />}
+            {notifications.length > 0 && <NotiFeeds notifications={notifications} myId={myId} style={{marginTop: loaded && '1.5em'}} />}
+          </div>
+        </Responsive>
       </div>
     )
   }

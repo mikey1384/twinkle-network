@@ -13,6 +13,7 @@ import Links from 'containers/Links'
 import Redirect from 'containers/Redirect'
 import Button from 'components/Button'
 import {recordUserAction} from 'helpers/userDataHelpers'
+import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
 
 let visibilityChange
 let hidden
@@ -26,6 +27,8 @@ let hidden
   {
     initSession: initSessionAsync,
     turnChatOff,
+    fetchNotifications,
+    clearNotifications,
     initChat: initChatAsync,
     resetChat,
     changePageVisibility
@@ -37,12 +40,15 @@ export default class App extends Component {
     initSession: PropTypes.func,
     turnChatOff: PropTypes.func,
     chatNumUnreads: PropTypes.number,
+    clearNotifications: PropTypes.func,
+    fetchNotifications: PropTypes.func,
     resetChat: PropTypes.func,
     loggedIn: PropTypes.bool,
     location: PropTypes.object,
     initChat: PropTypes.func,
     changePageVisibility: PropTypes.func,
-    history: PropTypes.object
+    history: PropTypes.object,
+    userId: PropTypes.number
   }
 
   constructor() {
@@ -61,7 +67,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    const {initSession, location} = this.props
+    const {initSession, location, fetchNotifications} = this.props
     if (typeof document.hidden !== 'undefined') {
       hidden = 'hidden'
       visibilityChange = 'visibilitychange'
@@ -75,11 +81,24 @@ export default class App extends Component {
     initSession(location.pathname)
     addEvent(window, 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
+
+    fetchNotifications()
   }
 
   componentDidUpdate(prevProps) {
     let elements = document.documentElement.childNodes
-    const {chatMode, chatNumUnreads, history, location, loggedIn} = this.props
+    const {
+      chatMode, chatNumUnreads, history, location, loggedIn,
+      fetchNotifications, clearNotifications, userId
+    } = this.props
+
+    if (prevProps.userId !== userId) {
+      if (userId) {
+        fetchNotifications()
+      } else {
+        clearNotifications()
+      }
+    }
 
     if (loggedIn && history.action === 'PUSH' && location !== prevProps.location) {
       recordUserAction({action: 'navigation', target: location.pathname})

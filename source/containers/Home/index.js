@@ -5,10 +5,8 @@ import {Route} from 'react-router-dom'
 import Profile from './Profile'
 import People from './People'
 import Feeds from './Feeds'
-import Notification from './Notification'
-import Responsive from 'components/Wrappers/Responsive'
+import Notification from 'containers/Notification'
 import {disconnectHomeComponent} from 'redux/actions/FeedActions'
-import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
 
 @connect(
   state => ({
@@ -16,44 +14,21 @@ import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
     userId: state.UserReducer.userId,
     notificationLoaded: state.NotiReducer.loaded
   }),
-  {
-    disconnectHomeComponent,
-    fetchNotifications,
-    clearNotifications
-  }
+  {disconnectHomeComponent}
 )
 export default class Home extends Component {
   static propTypes = {
-    userId: PropTypes.number,
     history: PropTypes.object,
     location: PropTypes.object,
     notificationLoaded: PropTypes.bool,
     username: PropTypes.string,
-    disconnectHomeComponent: PropTypes.func,
-    clearNotifications: PropTypes.func,
-    fetchNotifications: PropTypes.func
+    disconnectHomeComponent: PropTypes.func
   }
 
   constructor() {
     super()
     this.state = {
       selectedTab: null
-    }
-  }
-
-  componentDidMount() {
-    const {fetchNotifications} = this.props
-    fetchNotifications()
-  }
-
-  componentDidUpdate(prevProps) {
-    const {fetchNotifications, clearNotifications, userId} = this.props
-    if (prevProps.userId !== userId) {
-      if (userId) {
-        fetchNotifications()
-      } else {
-        clearNotifications()
-      }
     }
   }
 
@@ -108,16 +83,7 @@ export default class Home extends Component {
           <Route path="/users/:username" component={Profile}/>
           <Route exact path="/users" component={People}/>
         </div>
-        <div
-          className="col-xs-3 col-xs-offset-9"
-          style={{position: 'fixed'}}
-        >
-          {notificationLoaded &&
-            <Responsive device="desktop">
-              <Notification />
-            </Responsive>
-          }
-        </div>
+        {notificationLoaded && <Notification />}
       </div>
     )
   }

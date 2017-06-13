@@ -2,13 +2,15 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import SectionPanel from 'components/SectionPanel'
 import LinkGroup from './LinkGroup'
+import Notification from 'containers/Notification'
 import {connect} from 'react-redux'
 import {fetchLinks, fetchMoreLinks} from 'redux/actions/LinkActions'
 
 @connect(
   state => ({
     links: state.LinkReducer.links,
-    loadMoreLinksButtonShown: state.LinkReducer.loadMoreLinksButtonShown
+    loadMoreLinksButtonShown: state.LinkReducer.loadMoreLinksButtonShown,
+    notificationLoaded: state.NotiReducer.loaded
   }),
   {
     fetchLinks,
@@ -21,6 +23,7 @@ export default class Main extends Component {
     fetchLinks: PropTypes.func,
     fetchMoreLinks: PropTypes.func,
     loadMoreLinksButtonShown: PropTypes.bool,
+    notificationLoaded: PropTypes.bool,
     history: PropTypes.object
   }
 
@@ -43,20 +46,25 @@ export default class Main extends Component {
   }
 
   render() {
-    const {links, loadMoreLinksButtonShown} = this.props
+    const {links, loadMoreLinksButtonShown, notificationLoaded} = this.props
     const {loaded} = this.state
     return (
-      <SectionPanel
-        title="All Links"
-        emptyMessage="No Uploaded Links"
-        isEmpty={links.length === 0}
-        emptypMessage="No Links"
-        loaded={loaded}
-        loadMore={this.loadMoreLinks}
-        loadMoreButtonShown={loadMoreLinksButtonShown}
-      >
-        <LinkGroup links={links} />
-      </SectionPanel>
+      <div>
+        <div className="col-md-9">
+          <SectionPanel
+            title="All Links"
+            emptyMessage="No Uploaded Links"
+            isEmpty={links.length === 0}
+            emptypMessage="No Links"
+            loaded={loaded}
+            loadMore={this.loadMoreLinks}
+            loadMoreButtonShown={loadMoreLinksButtonShown}
+          >
+            <LinkGroup links={links} />
+          </SectionPanel>
+        </div>
+        {notificationLoaded && <Notification />}
+      </div>
     )
   }
 

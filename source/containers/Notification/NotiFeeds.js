@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {timeSince} from 'helpers/timeStampHelpers'
 import {Color} from 'constants/css'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
-import ContentLink from '../ContentLink'
+import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
 
 export default class NotiFeeds extends Component {

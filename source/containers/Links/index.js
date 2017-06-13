@@ -9,7 +9,7 @@ Links.propTypes = {
 }
 export default function Links({match}) {
   return (
-    <div id="contents" className="container-fluid">
+    <div id="contents">
       <Route exact path={`${match.url}`} component={Main}/>
       <Route path={`${match.url}/:linkId`} component={LinkPage}/>
     </div>
