@@ -49,9 +49,10 @@ export default class PlaylistCarousel extends Component {
 
   constructor() {
     super()
-    let numSlides = 5
+    this.defaultNumSlides = 5
+    let numSlides = this.defaultNumSlides
     if (ExecutionEnvironment.canUseDOM) {
-      numSlides = document.documentElement.clientWidth < 768 ? 3 : 5
+      numSlides = document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides
     }
     this.state = {
       onEdit: false,
@@ -281,7 +282,7 @@ export default class PlaylistCarousel extends Component {
 
   onResize() {
     if (ExecutionEnvironment.canUseDOM) {
-      this.setState({numSlides: document.documentElement.clientWidth < 768 ? 3 : 7})
+      this.setState({numSlides: document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides})
     }
   }
 }
