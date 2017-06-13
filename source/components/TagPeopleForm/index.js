@@ -75,8 +75,7 @@ export default class TagPeopleForm extends Component {
 
   renderTags() {
     const {selectedUsers, onRemoveUser} = this.props
-    return selectedUsers.length > 0 ?
-    <div
+    return selectedUsers.length > 0 ? <div
       style={{
         marginBottom: '0.5em'
       }}

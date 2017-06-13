@@ -112,7 +112,7 @@ export default class VideoPage extends Component {
   render() {
     let {
       uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
-       content, title, timeStamp, questions = [], likes = [], videoViews, match: {params: {videoId}}
+      content, title, timeStamp, questions = [], likes = [], videoViews, match: {params: {videoId}}
     } = this.props
     videoId = Number(videoId)
     const {
@@ -124,11 +124,9 @@ export default class VideoPage extends Component {
       onEdit
     } = this.state
     const youtubeIframeContainerClassName = watchTabActive ?
-    'embed-responsive embed-responsive-16by9' :
-    'video-container-fixed-left'
+      'embed-responsive embed-responsive-16by9' : 'video-container-fixed-left'
     const youtubeIframeClassName = watchTabActive ?
-    'embed-responsive-item' :
-    'video-fixed-left'
+      'embed-responsive-item' : 'video-fixed-left'
 
     return (
       <div className="container-fluid">

@@ -9,8 +9,7 @@ NavButton.propTypes = {
 }
 
 export default function NavButton({disabled, nextSlide, left}) {
-  const style = left ?
-  {
+  const style = left ? {
     position: 'absolute',
     top: '50%',
     left: -10,

@@ -111,8 +111,7 @@ export default class QuestionBlock extends Component {
           style={{opacity: deleted && '0.2'}}
         >
           {choiceIndices.map((choiceIndex, index) => (
-            !onEdit ?
-            <ChoiceListItem
+            !onEdit ? <ChoiceListItem
               key={index}
               placeholder={choicePlaceHolder[index]}
               questionIndex={questionIndex}
@@ -124,8 +123,7 @@ export default class QuestionBlock extends Component {
               onMove={this.onMove}
               onDrop={this.onDrop}
               checkDisabled={deleted}
-            /> :
-            <EditChoiceListItem
+            /> : <EditChoiceListItem
               key={index}
               placeholder={choicePlaceHolder[index]}
               onSelect={() => onSelectChoice(questionIndex, index)}

@@ -179,11 +179,10 @@ export default class PanelComment extends Component {
             onReplySubmit={onReplySubmit}
           />
           {replyInputShown && <ReplyInputArea
-              clickListenerState={clickListenerState}
-              onSubmit={this.onReplySubmit}
-              numReplies={comment.replies.length}
-            />
-          }
+            clickListenerState={clickListenerState}
+            onSubmit={this.onReplySubmit}
+            numReplies={comment.replies.length}
+          />}
         </div>
         {userListModalShown &&
           <UserListModal

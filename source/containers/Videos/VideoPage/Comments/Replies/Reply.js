@@ -182,10 +182,9 @@ export default class Reply extends Component {
             </div>
           </div>
           {replyInputShown && <ReplyInputArea
-              onSubmit={this.onReplySubmit}
-              clickListenerState={clickListenerState}
-            />
-          }
+            onSubmit={this.onReplySubmit}
+            clickListenerState={clickListenerState}
+          />}
         </div>
         {userListModalShown &&
           <UserListModal

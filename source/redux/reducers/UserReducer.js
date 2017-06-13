@@ -12,8 +12,7 @@ export default function UserReducer(state = defaultState, action) {
   let loadMoreButton = false
   switch (action.type) {
     case 'FETCH_SESSION':
-      return (action.data !== undefined && action.data.loggedIn) ?
-      {
+      return (action.data !== undefined && action.data.loggedIn) ? {
         ...state,
         ...action.data,
         isAdmin: isAdmin(action.data.userType)

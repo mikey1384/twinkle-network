@@ -135,7 +135,7 @@ export default class Description extends Component {
                       this.setState({editedDescription: addEmoji(event.target.value)})
                     }
                   }}
-                 />
+                />
               </form>
               <div
                 className="row container-fluid text-center"

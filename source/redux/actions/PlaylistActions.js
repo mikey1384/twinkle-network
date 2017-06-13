@@ -9,33 +9,33 @@ export const closeAddPlaylistModal = () => ({
 })
 
 export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
-.then(
-  response => dispatch({
-    type: 'GET_PLAYLISTS',
-    data: response.data
-  })
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
-
-export const getMorePlaylistsAsync = playlistId => dispatch =>
-request.get(`${API_URL}?playlistId=${playlistId}`).then(
-  response => {
-    dispatch({
-      type: 'GET_MORE_PLAYLISTS',
+  .then(
+    response => dispatch({
+      type: 'GET_PLAYLISTS',
       data: response.data
     })
-    return Promise.resolve()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+
+export const getMorePlaylistsAsync = playlistId => dispatch =>
+  request.get(`${API_URL}?playlistId=${playlistId}`).then(
+    response => {
+      dispatch({
+        type: 'GET_MORE_PLAYLISTS',
+        data: response.data
+      })
+      return Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const uploadPlaylist = data => ({
   type: 'UPLOAD_PLAYLIST',
@@ -43,22 +43,22 @@ export const uploadPlaylist = data => ({
 })
 
 export const uploadPlaylistAsync = params => dispatch =>
-request.post(API_URL, params, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.result) {
-      dispatch(uploadPlaylist(data.result))
-      dispatch(closeAddPlaylistModal())
-    }
-    return
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(API_URL, params, auth())
+    .then(
+      response => {
+        const {data} = response
+        if (data.result) {
+          dispatch(uploadPlaylist(data.result))
+          dispatch(closeAddPlaylistModal())
+        }
+        return
+      }
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const editPlaylistTitle = (arrayNumber, playlistId, data) => ({
   type: 'EDIT_PLAYLIST_TITLE',
@@ -68,22 +68,22 @@ export const editPlaylistTitle = (arrayNumber, playlistId, data) => ({
 })
 
 export const editPlaylistTitleAsync = (params, arrayNumber, sender) => dispatch =>
-request.post(`${API_URL}/edit/title`, params, auth())
-.then(
-  response => {
-    const { data } = response
-    if (data.result) {
-      dispatch(editPlaylistTitle(arrayNumber, params.playlistId, data.result))
-      sender.setState({onEdit: false})
-    }
-    return
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(`${API_URL}/edit/title`, params, auth())
+    .then(
+      response => {
+        const { data } = response
+        if (data.result) {
+          dispatch(editPlaylistTitle(arrayNumber, params.playlistId, data.result))
+          sender.setState({onEdit: false})
+        }
+        return
+      }
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const changePlaylistVideos = (playlistId, data) => ({
   type: 'CHANGE_PLAYLIST_VIDEOS',
@@ -92,22 +92,22 @@ export const changePlaylistVideos = (playlistId, data) => ({
 })
 
 export const changePlaylistVideosAsync = (playlistId, selectedVideos, sender) => dispatch =>
-request.post(`${API_URL}/edit/videos`, {playlistId, selectedVideos}, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.result) {
-      dispatch(changePlaylistVideos(playlistId, data.result))
-      sender.props.onHide()
-    }
-    return
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(`${API_URL}/edit/videos`, {playlistId, selectedVideos}, auth())
+    .then(
+      response => {
+        const {data} = response
+        if (data.result) {
+          dispatch(changePlaylistVideos(playlistId, data.result))
+          sender.props.onHide()
+        }
+        return
+      }
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const deletePlaylist = data => ({
   type: 'DELETE_PLAYLIST',
@@ -115,35 +115,35 @@ export const deletePlaylist = data => ({
 })
 
 export const deletePlaylistAsync = (playlistId, sender) => dispatch =>
-request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.success) {
-      dispatch(deletePlaylist(playlistId))
-      sender.setState({deleteConfirmModalShown: false})
-    }
-    return
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
+    .then(
+      response => {
+        const {data} = response
+        if (data.success) {
+          dispatch(deletePlaylist(playlistId))
+          sender.setState({deleteConfirmModalShown: false})
+        }
+        return
+      }
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const getPinnedPlaylistsAsync = () => dispatch =>
-request.get(`${API_URL}/pinned`).then(
-  response => dispatch({
-    type: 'GET_PINNED_PLAYLISTS',
-    data: response.data
-  })
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}/pinned`).then(
+    response => dispatch({
+      type: 'GET_PINNED_PLAYLISTS',
+      data: response.data
+    })
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const changePinnedPlaylists = data => ({
   type: 'CHANGE_PINNED_PLAYLISTS',
@@ -151,22 +151,22 @@ export const changePinnedPlaylists = data => ({
 })
 
 export const changePinnedPlaylistsAsync = (selectedPlaylists, callback) => dispatch =>
-request.post(`${API_URL}/pinned`, {selectedPlaylists}, auth())
-.then(
-  response => {
-    const {data} = response
-    if (data.playlists) {
-      dispatch(changePinnedPlaylists(data.playlists))
-      callback()
-    }
-    return
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(`${API_URL}/pinned`, {selectedPlaylists}, auth())
+    .then(
+      response => {
+        const {data} = response
+        if (data.playlists) {
+          dispatch(changePinnedPlaylists(data.playlists))
+          callback()
+        }
+        return
+      }
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const openSelectPlaylistsToPinModal = data => ({
   type: 'SELECT_PL_TO_PIN_OPEN',
@@ -174,14 +174,14 @@ export const openSelectPlaylistsToPinModal = data => ({
 })
 
 export const openSelectPlaylistsToPinModalAsync = () => dispatch => request.get(`${API_URL}/list`)
-.then(
-  response => dispatch(openSelectPlaylistsToPinModal(response.data))
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  .then(
+    response => dispatch(openSelectPlaylistsToPinModal(response.data))
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const loadMorePlaylistList = data => ({
   type: 'LOAD_MORE_PLAYLIST_LIST',
@@ -189,15 +189,15 @@ export const loadMorePlaylistList = data => ({
 })
 
 export const loadMorePlaylistListAsync = playlistId => dispatch =>
-request.get(`${API_URL}/list?playlistId=${playlistId}`)
-.then(
-  response => dispatch(loadMorePlaylistList(response.data))
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}/list?playlistId=${playlistId}`)
+    .then(
+      response => dispatch(loadMorePlaylistList(response.data))
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const openAddPlaylistModal = () => ({
   type: 'ADD_PL_MODAL_OPEN'
@@ -210,17 +210,17 @@ export const getVideosForModal = data => ({
 })
 
 export const getVideosForModalAsync = () => dispatch => request.get(`${URL}/video?numberToLoad=18`)
-.then(
-  response => {
-    dispatch(getVideosForModal(response.data))
-    dispatch(openAddPlaylistModal())
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  .then(
+    response => {
+      dispatch(getVideosForModal(response.data))
+      dispatch(openAddPlaylistModal())
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const getMoreVideosForModal = data => ({
   type: 'GET_VIDEOS_FOR_MODAL',
@@ -228,32 +228,32 @@ export const getMoreVideosForModal = data => ({
 })
 
 export const getMoreVideosForModalAsync = videoId => dispatch =>
-request.get(`${URL}/video?numberToLoad=18&videoId=${videoId}`)
-.then(
-  response => dispatch(getMoreVideosForModal(response.data))
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${URL}/video?numberToLoad=18&videoId=${videoId}`)
+    .then(
+      response => dispatch(getMoreVideosForModal(response.data))
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const openChangePlaylistVideosModalAsync = () => dispatch =>
-request.get(`${URL}/video?numberToLoad=18`).then(
-  response => {
-    dispatch({
-      type: 'CHANGE_PL_VIDS_MODAL_OPEN',
-      modalType: 'change',
-      data: response.data
-    })
-    return Promise.resolve()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${URL}/video?numberToLoad=18`).then(
+    response => {
+      dispatch({
+        type: 'CHANGE_PL_VIDS_MODAL_OPEN',
+        modalType: 'change',
+        data: response.data
+      })
+      return Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const openReorderPlaylistVideosModal = playlistVideos => ({
   type: 'REORDER_PL_VIDS_MODAL_OPEN',

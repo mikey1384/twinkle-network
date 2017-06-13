@@ -144,19 +144,18 @@ export default class Description extends Component {
                     </div>
                   }
                 </div>
-                <div
-                  style={{paddingLeft: '0px'}}>
-                    <div>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</div>
-                    {uploaderId === userId && !onEdit &&
-                      <SmallDropdownButton
-                        style={{marginTop: '0.5em'}}
-                        shape="button"
-                        icon="pencil"
-                        align="left"
-                        text="Edit or Delete This Video"
-                        menuProps={menuProps}
-                      />
-                    }
+                <div style={{paddingLeft: '0px'}}>
+                  <div>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</div>
+                  {uploaderId === userId && !onEdit &&
+                    <SmallDropdownButton
+                      style={{marginTop: '0.5em'}}
+                      shape="button"
+                      icon="pencil"
+                      align="left"
+                      text="Edit or Delete This Video"
+                      menuProps={menuProps}
+                    />
+                  }
                 </div>
               </div>
               <VideoLikeInterface
@@ -188,7 +187,7 @@ export default class Description extends Component {
                       this.setState({editedDescription: addEmoji(event.target.value)})
                     }
                   }}
-                 />
+                />
               </form>
               <div style={{marginTop: '1em', paddingLeft: '0px', textAlign: 'left'}}>
                 <Button

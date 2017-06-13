@@ -1,22 +1,20 @@
 /* eslint-disable no-useless-escape */
 
 export function cleanString(string) {
-  return string ?
-  string
-  .replace(/<br\s*[\/]?>/gi, '\n')
-  .replace(/&amp;/gi, '&')
-  .replace(/&lt;/gi, '<')
-  .replace(/&gt;/gi, '>') : ''
+  return string ? string
+    .replace(/<br\s*[\/]?>/gi, '\n')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>') : ''
 }
 
 export function cleanStringWithURL(string) {
-  return string ?
-  string
-  .replace(/&amp;/gi, '&')
-  .replace(/&lt;/gi, '<')
-  .replace(/&gt;/gi, '>')
-  .replace(/<br\s*[\/]?>/gi, '\n')
-  .replace(/<a[^>]*>|<\/a>/g, '') : ''
+  return string ? string
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/<br\s*[\/]?>/gi, '\n')
+    .replace(/<a[^>]*>|<\/a>/g, '') : ''
 }
 
 export function limitBrs(string) {
@@ -25,81 +23,81 @@ export function limitBrs(string) {
 
 export function addTwoLetterEmoji(string) {
   return string
-  .replace(/(:\))/g, '😊 ')
-  .replace(/(;\))/g, '😉 ')
-  .replace(/(XD)/g, '😆 ')
-  .replace(/(:D)/g, '😄 ')
-  .replace(/(:P)/gi, '😛 ')
-  .replace(/(:\()/g, '🙁 ')
-  .replace(/(:O)/gi, '😲 ')
-  .replace(/(<3)/g, '❤️ ')
+    .replace(/(:\))/g, '😊 ')
+    .replace(/(;\))/g, '😉 ')
+    .replace(/(XD)/g, '😆 ')
+    .replace(/(:D)/g, '😄 ')
+    .replace(/(:P)/gi, '😛 ')
+    .replace(/(:\()/g, '🙁 ')
+    .replace(/(:O)/gi, '😲 ')
+    .replace(/(<3)/g, '❤️ ')
 }
 
 export function addThreeLetterEmoji(string) {
   return string
-  .replace(/(:-\))/g, '😊 ')
-  .replace(/(;-\))/g, '😉 ')
-  .replace(/(X-D)/g, '😆 ')
-  .replace(/(:-D)/g, '😄 ')
-  .replace(/(:-P)/gi, '😛 ')
-  .replace(/(:-\()/g, '🙁 ')
-  .replace(/(:-O)/gi, '😲 ')
-  .replace(/(O_O)/gi, '😳 ')
+    .replace(/(:-\))/g, '😊 ')
+    .replace(/(;-\))/g, '😉 ')
+    .replace(/(X-D)/g, '😆 ')
+    .replace(/(:-D)/g, '😄 ')
+    .replace(/(:-P)/gi, '😛 ')
+    .replace(/(:-\()/g, '🙁 ')
+    .replace(/(:-O)/gi, '😲 ')
+    .replace(/(O_O)/gi, '😳 ')
 }
 
 export function addAdvancedEmoji(string) {
   return string
-  .replace(/(:\) )/g, '😊  ')
-  .replace(/(;\) )/g, '😉  ')
-  .replace(/(XD )/g, '😆  ')
-  .replace(/(:D )/g, '😄  ')
-  .replace(/(:P )/gi, '😛  ')
-  .replace(/(:\( )/g, '🙁  ')
-  .replace(/(:O )/gi, '😲  ')
-  .replace(/(<3 )/g, '❤️  ')
-  .replace(/(:-\) )/g, '😊  ')
-  .replace(/(;-\) )/g, '😉  ')
-  .replace(/(X-D )/g, '😆  ')
-  .replace(/(:-D )/g, '😄  ')
-  .replace(/(:-P )/gi, '😛  ')
-  .replace(/(:-\( )/g, '🙁  ')
-  .replace(/(:-O )/gi, '😲  ')
-  .replace(/(O_O )/gi, '😳  ')
-  .replace(/(\(heart\))/gi, '❤️ ')
-  .replace(/(\(zzz\))/gi, '💤 ')
-  .replace(/(\(thumbs\))/gi, '👍 ')
-  .replace(/(\(sunglasses\))/gi, '😎 ')
-  .replace(/(\(ok\))/gi, '👌 ')
-  .replace(/(\(hi\))/gi, '👋 ')
-  .replace(/(\(hello\))/gi, '👋 ')
-  .replace(/(\(mad\))/gi, '😡 ')
-  .replace(/(\(angry\))/gi, '😡 ')
-  .replace(/(\(perfect\))/gi, '💯 ')
-  .replace(/(\(bye\))/gi, '👋 ')
-  .replace(/(\(wave\))/gi, '👋 ')
-  .replace(/(\(fear\))/gi, '😱 ')
-  .replace(/(\(horror\))/gi, '😱 ')
-  .replace(/(\(cry\))/gi, '😭 ')
-  .replace(/(\(sad\))/gi, '😭 ')
-  .replace(/(\(chicken\))/gi, '🐔 ')
-  .replace(/(\(dog\))/gi, '🐶 ')
-  .replace(/(\(ant\))/gi, '🐜 ')
-  .replace(/(\(cat\))/gi, '🐱 ')
-  .replace(/(\(bee\))/gi, '🐝 ')
-  .replace(/(\(turtle\))/gi, '🐢 ')
-  .replace(/(\(monkey\))/gi, '🐵 ')
-  .replace(/(\(pig\))/gi, '🐷 ')
-  .replace(/(\(elephant\))/gi, '🐘 ')
-  .replace(/(\(moo\))/gi, '🐮 ')
-  .replace(/(\(cow\))/gi, '🐮 ')
-  .replace(/(\(horse\))/gi, '🐴 ')
-  .replace(/(\(penguin\))/gi, '🐧 ')
-  .replace(/(\(bunny\))/gi, '🐰 ')
-  .replace(/(\(rabbit\))/gi, '🐰 ')
-  .replace(/(\(devil\))/gi, '😈 ')
-  .replace(/(\(angel\))/gi, '😇 ')
-  .replace(/(\(lol\))/gi, '😂 ')
-  .replace(/(\(diamond\))/gi, '💎 ')
+    .replace(/(:\) )/g, '😊  ')
+    .replace(/(;\) )/g, '😉  ')
+    .replace(/(XD )/g, '😆  ')
+    .replace(/(:D )/g, '😄  ')
+    .replace(/(:P )/gi, '😛  ')
+    .replace(/(:\( )/g, '🙁  ')
+    .replace(/(:O )/gi, '😲  ')
+    .replace(/(<3 )/g, '❤️  ')
+    .replace(/(:-\) )/g, '😊  ')
+    .replace(/(;-\) )/g, '😉  ')
+    .replace(/(X-D )/g, '😆  ')
+    .replace(/(:-D )/g, '😄  ')
+    .replace(/(:-P )/gi, '😛  ')
+    .replace(/(:-\( )/g, '🙁  ')
+    .replace(/(:-O )/gi, '😲  ')
+    .replace(/(O_O )/gi, '😳  ')
+    .replace(/(\(heart\))/gi, '❤️ ')
+    .replace(/(\(zzz\))/gi, '💤 ')
+    .replace(/(\(thumbs\))/gi, '👍 ')
+    .replace(/(\(sunglasses\))/gi, '😎 ')
+    .replace(/(\(ok\))/gi, '👌 ')
+    .replace(/(\(hi\))/gi, '👋 ')
+    .replace(/(\(hello\))/gi, '👋 ')
+    .replace(/(\(mad\))/gi, '😡 ')
+    .replace(/(\(angry\))/gi, '😡 ')
+    .replace(/(\(perfect\))/gi, '💯 ')
+    .replace(/(\(bye\))/gi, '👋 ')
+    .replace(/(\(wave\))/gi, '👋 ')
+    .replace(/(\(fear\))/gi, '😱 ')
+    .replace(/(\(horror\))/gi, '😱 ')
+    .replace(/(\(cry\))/gi, '😭 ')
+    .replace(/(\(sad\))/gi, '😭 ')
+    .replace(/(\(chicken\))/gi, '🐔 ')
+    .replace(/(\(dog\))/gi, '🐶 ')
+    .replace(/(\(ant\))/gi, '🐜 ')
+    .replace(/(\(cat\))/gi, '🐱 ')
+    .replace(/(\(bee\))/gi, '🐝 ')
+    .replace(/(\(turtle\))/gi, '🐢 ')
+    .replace(/(\(monkey\))/gi, '🐵 ')
+    .replace(/(\(pig\))/gi, '🐷 ')
+    .replace(/(\(elephant\))/gi, '🐘 ')
+    .replace(/(\(moo\))/gi, '🐮 ')
+    .replace(/(\(cow\))/gi, '🐮 ')
+    .replace(/(\(horse\))/gi, '🐴 ')
+    .replace(/(\(penguin\))/gi, '🐧 ')
+    .replace(/(\(bunny\))/gi, '🐰 ')
+    .replace(/(\(rabbit\))/gi, '🐰 ')
+    .replace(/(\(devil\))/gi, '😈 ')
+    .replace(/(\(angel\))/gi, '😇 ')
+    .replace(/(\(lol\))/gi, '😂 ')
+    .replace(/(\(diamond\))/gi, '💎 ')
 }
 
 export function addEmoji(string) {
@@ -118,28 +116,27 @@ export function finalizeEmoji(string) {
 }
 
 export function processedString(string) {
-  return string ?
-  string
-  .replace(/<br\s*[\/]?>/gi, '\n')
-  .replace(/&amp;/gi, '&')
-  .replace(/&lt;/gi, '<')
-  .replace(/&gt;/gi, '>')
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/\r?\n/g, '<br>') :
-  null
+  return string ? string
+    .replace(/<br\s*[\/]?>/gi, '\n')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\r?\n/g, '<br>') :
+    null
 }
 
 export function processedStringWithURL(string) {
   if (typeof string !== 'string') return string || null
   var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   var tempString = string
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/\r?\n/g, '<br>')
-  .replace(regex, '<a href=\"$1\" target=\"_blank\">$1</a>')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\r?\n/g, '<br>')
+    .replace(regex, '<a href=\"$1\" target=\"_blank\">$1</a>')
   var newString = ''
   while (tempString.length > 0) {
     var position = tempString.indexOf('href=\"')

@@ -36,8 +36,8 @@ export default class Truncate extends Component {
 
   componentDidMount() {
     const {
-        calcTargetWidth,
-        onResize
+      calcTargetWidth,
+      onResize
     } = this
 
     const canvas = document.createElement('canvas')
@@ -62,8 +62,8 @@ export default class Truncate extends Component {
 
   componentWillUnmount() {
     const {
-        onResize,
-        timeout
+      onResize,
+      timeout
     } = this
 
     this.Ellipsis.parentNode.removeChild(this.Ellipsis)
@@ -93,7 +93,7 @@ export default class Truncate extends Component {
 
   onTruncate(didTruncate) {
     const {
-        onTruncate
+      onTruncate
     } = this.props
 
     if (typeof onTruncate === 'function') {

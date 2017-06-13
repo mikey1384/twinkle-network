@@ -191,22 +191,21 @@ export default class Chat extends Component {
     } = this.state
 
     let menuProps = (currentChannel.twoPeople) ?
-    [{label: 'Hide Chat', onClick: this.onHideChat}] :
-    [{
-      label: 'Invite People',
-      onClick: () => this.setState({inviteUsersModalShown: true})
-    },
-    {
-      label: 'Edit Channel Name',
-      onClick: () => this.setState({editTitleModalShown: true})
-    },
-    {
-      separator: true
-    },
-    {
-      label: 'Leave Channel',
-      onClick: this.onLeaveChannel
-    }]
+      [{label: 'Hide Chat', onClick: this.onHideChat}] : [{
+        label: 'Invite People',
+        onClick: () => this.setState({inviteUsersModalShown: true})
+      },
+      {
+        label: 'Edit Channel Name',
+        onClick: () => this.setState({editTitleModalShown: true})
+      },
+      {
+        separator: true
+      },
+      {
+        label: 'Leave Channel',
+        onClick: this.onLeaveChannel
+      }]
 
     return (
       <div style={{display: 'flex', height: '88%', backgroundColor: '#fff'}}>
@@ -423,9 +422,9 @@ export default class Chat extends Component {
                 }}
               >
                 <span>
-                {lastMessageSender && lastMessage ?
-                  `${lastMessageSender.id === userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : '\u00a0'
-                }
+                  {lastMessageSender && lastMessage ?
+                    `${lastMessageSender.id === userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : '\u00a0'
+                  }
                 </span>
               </span>
               {id !== currentChannel.id && numUnreads > 0 &&

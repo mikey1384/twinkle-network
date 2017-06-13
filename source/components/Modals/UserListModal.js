@@ -44,8 +44,7 @@ export default class UserListModal extends Component {
             className="list-group"
             style={{marginBottom: '0px'}}
           >
-          {userArray.concat(otherUsers).map(
-            user => {
+            {userArray.concat(otherUsers).map(user => {
               let userStatusDisplayed = typeof descriptionShown === 'function' ?
                 descriptionShown(user) : user.userId === userId
               return (
@@ -55,8 +54,7 @@ export default class UserListModal extends Component {
                 >{user.username} <span style={{color: descriptionColor || 'green'}}>{userStatusDisplayed && description}</span>
                 </li>
               )
-            })
-          }
+            })}
           </ul>
         </Modal.Body>
         <Modal.Footer>

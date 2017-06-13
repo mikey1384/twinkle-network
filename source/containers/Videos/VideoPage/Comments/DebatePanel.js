@@ -210,11 +210,11 @@ export default class DebatePanel extends Component {
         </div>
         <div className="panel-footer">
           By <strong>
-              <UsernameText user={{
-                name: username,
-                id: userId
-              }} />
-            </strong> &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+            <UsernameText user={{
+              name: username,
+              id: userId
+            }} />
+          </strong> &nbsp;|&nbsp; Published {timeSince(timeStamp)}
         </div>
         {confirmModalShown &&
           <ConfirmModal

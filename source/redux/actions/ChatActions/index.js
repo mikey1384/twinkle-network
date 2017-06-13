@@ -46,58 +46,57 @@ export const clearUserSearchResults = () => ({
 })
 
 export const createNewChannelAsync = (params, callback) => dispatch =>
-request.post(`${API_URL}/channel`, {params}, auth())
-.then(
-  response => {
-    dispatch(actions.createNewChannel(response.data))
-    callback(response.data)
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(`${API_URL}/channel`, {params}, auth()).then(
+    response => {
+      dispatch(actions.createNewChannel(response.data))
+      callback(response.data)
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const deleteMessage = messageId => dispatch =>
-request.delete(`${API_URL}/message?messageId=${messageId}`, auth()).then(
-  response => {
-    dispatch({
-      type: 'DELETE_CHAT_MESSAGE',
-      messageId
-    })
-    return Promise.resolve()
-  }
-)
+  request.delete(`${API_URL}/message?messageId=${messageId}`, auth()).then(
+    response => {
+      dispatch({
+        type: 'DELETE_CHAT_MESSAGE',
+        messageId
+      })
+      return Promise.resolve()
+    }
+  )
 
 export const editChannelTitle = (params, callback) => dispatch =>
-request.post(`${API_URL}/title`, params, auth()).then(
-  response => {
-    dispatch(actions.applyChangedChannelTitle(params))
-    if (callback) callback()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(`${API_URL}/title`, params, auth()).then(
+    response => {
+      dispatch(actions.applyChangedChannelTitle(params))
+      if (callback) callback()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const editMessage = ({editedMessage, messageId}) => dispatch =>
-request.put(`${API_URL}/message`, {editedMessage, messageId}, auth()).then(
-  response => {
-    dispatch({
-      type: 'EDIT_CHAT_MESSAGE',
-      data: {editedMessage: processedStringWithURL(editedMessage), messageId}
-    })
-    return Promise.resolve()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.put(`${API_URL}/message`, {editedMessage, messageId}, auth()).then(
+    response => {
+      dispatch({
+        type: 'EDIT_CHAT_MESSAGE',
+        data: {editedMessage: processedStringWithURL(editedMessage), messageId}
+      })
+      return Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const enterEmptyChat = () => ({
   type: 'ENTER_EMPTY_CHAT'
@@ -121,70 +120,68 @@ export const getNumberOfUnreadMessagesAsync = () => dispatch => {
 }
 
 export const hideChatAsync = channelId => dispatch =>
-request.post(`${API_URL}/hideChat`, {channelId}, auth())
-.then(
-  response => {
-    dispatch(actions.hideChat(channelId))
-    dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(`${API_URL}/hideChat`, {channelId}, auth()).then(
+    response => {
+      dispatch(actions.hideChat(channelId))
+      dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const increaseNumberOfUnreadMessages = () => ({
   type: 'INCREASE_NUM_UNREAD_MSGS'
 })
 
 export const initChatAsync = (channelId) => dispatch =>
-request.get(`${API_URL}?channelId=${channelId}`, auth()).then(
-  response => dispatch({
-    type: 'INIT_CHAT',
-    data: response.data
-  })
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}?channelId=${channelId}`, auth()).then(
+    response => dispatch({
+      type: 'INIT_CHAT',
+      data: response.data
+    })
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const inviteUsersToChannelAsync = (params, callback) => dispatch =>
-request.post(`${API_URL}/invite`, params, auth())
-.then(
-  response => {
-    const {message} = response.data
-    let data = {
-      ...params,
-      message
+  request.post(`${API_URL}/invite`, params, auth()).then(
+    response => {
+      const {message} = response.data
+      let data = {
+        ...params,
+        message
+      }
+      dispatch(actions.inviteUsersToChannel(data))
+      callback(message)
     }
-    dispatch(actions.inviteUsersToChannel(data))
-    callback(message)
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const loadChatSubject = () => dispatch =>
-request.get(`${API_URL}/chatSubject`).then(
-  response => {
-    dispatch({
-      type: 'LOAD_CHAT_SUBJECT',
-      subject: response.data
-    })
-    return Promise.resolve()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}/chatSubject`).then(
+    response => {
+      dispatch({
+        type: 'LOAD_CHAT_SUBJECT',
+        subject: response.data
+      })
+      return Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const changeChatSubject = subject => ({
   type: 'CHANGE_CHAT_SUBJECT',
@@ -192,39 +189,38 @@ export const changeChatSubject = subject => ({
 })
 
 export const loadMoreChannels = (currentChannelId, lastChannelId) => dispatch =>
-request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&lastChannelId=${lastChannelId}`, auth()).then(
-  response => {
-    dispatch({
-      type: 'LOAD_MORE_CHANNELS',
-      data: response.data
-    })
-    Promise.resolve()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&lastChannelId=${lastChannelId}`, auth()).then(
+    response => {
+      dispatch({
+        type: 'LOAD_MORE_CHANNELS',
+        data: response.data
+      })
+      Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const loadMoreMessagesAsync = (userId, messageId, channelId, callback) => dispatch =>
-request.get(`${API_URL}/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`, auth())
-.then(
-  response => {
-    dispatch(actions.loadMoreMessages(response.data))
-    callback()
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`, auth())
+    .then(
+      response => {
+        dispatch(actions.loadMoreMessages(response.data))
+        callback()
+      }
+    ).catch(
+      error => {
+        console.error(error.response || error)
+        handleError(error, dispatch)
+      }
+    )
 
 export const leaveChannelAsync = channelId => dispatch => {
   const timeStamp = Math.floor(Date.now()/1000)
-  request.delete(`${API_URL}/channel?channelId=${channelId}&timeStamp=${timeStamp}`, auth())
-  .then(
+  request.delete(`${API_URL}/channel?channelId=${channelId}&timeStamp=${timeStamp}`, auth()).then(
     response => {
       dispatch(actions.leaveChannel(channelId))
       dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
@@ -308,26 +304,24 @@ export const resetChat = () => ({
 })
 
 export const searchChatAsync = text => dispatch =>
-request.get(`${API_URL}/search/chat?text=${text}`, auth())
-.then(
-  response => dispatch(actions.searchChat(response.data))
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}/search/chat?text=${text}`, auth()).then(
+    response => dispatch(actions.searchChat(response.data))
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const searchUserToInviteAsync = text => dispatch =>
-request.get(`${API_URL}/search/users?text=${text}`)
-.then(
-  response => dispatch(actions.searchUserToInvite(response.data))
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.get(`${API_URL}/search/users?text=${text}`).then(
+    response => dispatch(actions.searchUserToInvite(response.data))
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const sendFirstDirectMessage = (params, callback) => dispatch => {
   let body = {
@@ -384,17 +378,17 @@ export const turnChatOff = () => ({
 })
 
 export const uploadChatSubject = content => dispatch =>
-request.post(`${API_URL}/chatSubject`, {content}, auth()).then(
-  response => {
-    dispatch({
-      type: 'UPLOAD_CHAT_SUBJECT',
-      data: response.data
-    })
-    return Promise.resolve(response.data.subjectId)
-  }
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
+  request.post(`${API_URL}/chatSubject`, {content}, auth()).then(
+    response => {
+      dispatch({
+        type: 'UPLOAD_CHAT_SUBJECT',
+        data: response.data
+      })
+      return Promise.resolve(response.data.subjectId)
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )

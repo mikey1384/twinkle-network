@@ -57,8 +57,7 @@ class Input extends Component {
       }
       return result
     })
-    return searchResults.length > 0 ?
-    <SearchDropdown
+    return searchResults.length > 0 ? <SearchDropdown
       searchResults={searchResults}
       onUpdate={() => this.setState({dropdownItemToHighlight: 0})}
       onUnmount={() => this.setState({dropdownItemToHighlight: 0})}

@@ -401,9 +401,7 @@ export default class QuestionsBuilder extends Component {
 
   onReset() {
     this.setState(defaultState(this.props), () =>
-    this.setState({editedQuestionOrder: this.state.questions.map(question => {
-      return question.id
-    })}))
+      this.setState({editedQuestionOrder: this.state.questions.map(question => question.id)}))
   }
 
   onSubmit() {

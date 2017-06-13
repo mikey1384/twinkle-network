@@ -61,7 +61,6 @@ export default class Profile extends Component {
           </div>
         }
       </div>
-    ) :
-    <NotFound title={!userId && 'For Registered Users Only'} text={!userId && 'Please Log In or Sign Up'} />
+    ) : <NotFound title={!userId && 'For Registered Users Only'} text={!userId && 'Please Log In or Sign Up'} />
   }
 }

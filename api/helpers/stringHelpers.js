@@ -18,19 +18,19 @@ module.exports = {
   },
   processedTitleString(string) {
     var processedString = string
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
     return processedString
   },
   processedString(string) {
     var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
     var tempString = string
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\r?\n/g, '<br>')
-    .replace(regex, '<a href=\"$1\" target=\"_blank\">$1</a>')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\r?\n/g, '<br>')
+      .replace(regex, '<a href=\"$1\" target=\"_blank\">$1</a>')
     var newString = ''
     while (tempString.length > 0) {
       var position = tempString.indexOf('href=\"')

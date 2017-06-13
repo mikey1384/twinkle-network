@@ -258,7 +258,7 @@ export default class MainContent extends Component {
               <span className="glyphicon glyphicon-comment"></span>&nbsp;
               {type === 'video' ? 'Comment' : 'Reply'}&nbsp;
               {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
-              (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')}
+                (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')}
             </Button>
           </div>
         }

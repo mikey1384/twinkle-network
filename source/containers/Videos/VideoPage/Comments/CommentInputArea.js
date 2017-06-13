@@ -66,66 +66,64 @@ export default class CommentInputArea extends Component {
         </div>
         <div style={{marginTop: '1.5em'}}>
           {debateTabActive && <div>
-              <div>
-                <div className="container-fluid">
-                  {debateFormShown ?
-                    <TitleDescriptionForm
-                      autoFocus
-                      onSubmit={(title, description) => uploadDebate(title, description, videoId)}
-                      rows={4}
-                      titlePlaceholder="Enter discussion topic..."
-                      descriptionPlaceholder="Enter details... (Optional)"
-                    /> :
+            <div>
+              <div className="container-fluid">
+                {debateFormShown ?
+                  <TitleDescriptionForm
+                    autoFocus
+                    onSubmit={(title, description) => uploadDebate(title, description, videoId)}
+                    rows={4}
+                    titlePlaceholder="Enter discussion topic..."
+                    descriptionPlaceholder="Enter details... (Optional)"
+                  /> :
+                  <Button
+                    className="btn btn-primary"
+                    onClick={() => this.setState({debateFormShown: true})}
+                  >
+                    Start a New Discussion
+                  </Button>
+                }
+              </div>
+              <div className="container-fluid">
+                {!!debates && debates.length > 0 && <h3 style={{marginTop: '1em'}}>Active Discussions</h3>}
+                {!!debates && debates.map(debate =>
+                  <DebatePanel
+                    key={debate.id}
+                    videoId={videoId}
+                    {...debate}
+                  />
+                )}
+                {loadMoreDebatesButton &&
+                  <div className="text-center" style={{paddingTop: '0.5em'}}>
                     <Button
-                      className="btn btn-primary"
-                      onClick={() => this.setState({debateFormShown: true})}
+                      className="btn btn-success"
+                      onClick={() => loadMoreDebates(videoId, debates[debates.length - 1].id)}
                     >
-                      Start a New Discussion
+                      Load More
                     </Button>
-                  }
-                </div>
-                <div className="container-fluid">
-                  {!!debates && debates.length > 0 && <h3 style={{marginTop: '1em'}}>Active Discussions</h3>}
-                  {!!debates && debates.map(debate =>
-                    <DebatePanel
-                      key={debate.id}
-                      videoId={videoId}
-                      {...debate}
+                  </div>
+                }
+                {(!debates || debates.length === 0) &&
+                  <div>
+                    <h3 style={{marginTop: '1em'}}>Comment on this video</h3>
+                    <InputArea
+                      onSubmit={text => uploadComment(text, videoId)}
+                      rows={4}
+                      placeholder="Write your comment here..."
                     />
-                  )}
-                  {loadMoreDebatesButton &&
-                    <div className="text-center" style={{paddingTop: '0.5em'}}>
-                      <Button
-                        className="btn btn-success"
-                        onClick={() => loadMoreDebates(videoId, debates[debates.length - 1].id)}
-                      >
-                        Load More
-                      </Button>
-                    </div>
-                  }
-                  {(!debates || debates.length === 0) &&
-                    <div>
-                      <h3 style={{marginTop: '1em'}}>Comment on this video</h3>
-                      <InputArea
-                        onSubmit={text => uploadComment(text, videoId)}
-                        rows={4}
-                        placeholder="Write your comment here..."
-                      />
-                    </div>
-                  }
-                </div>
+                  </div>
+                }
               </div>
             </div>
-          }
+          </div>}
           {!debateTabActive && <div className="container-fluid">
-              <InputArea
-                autoFocus
-                onSubmit={text => uploadComment(text, videoId)}
-                rows={4}
-                placeholder="Write your comment here..."
-              />
-            </div>
-          }
+            <InputArea
+              autoFocus
+              onSubmit={text => uploadComment(text, videoId)}
+              rows={4}
+              placeholder="Write your comment here..."
+            />
+          </div>}
         </div>
       </div>
     )

@@ -167,10 +167,10 @@ module.exports = {
         return poolQuery(query, insertId)
       }
     ).then(
-       ([reply]) => res.send({result: Object.assign({}, reply, {
-         likes: [],
-         addedFromPanel
-       })})
+      ([reply]) => res.send({result: Object.assign({}, reply, {
+        likes: [],
+        addedFromPanel
+      })})
     ).catch(
       err => {
         console.error(err)

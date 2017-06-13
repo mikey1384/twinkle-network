@@ -162,10 +162,9 @@ export default class PanelReply extends Component {
             }
           </div>
           {replyInputShown && <ReplyInputArea
-              onSubmit={this.onReplySubmit}
-              clickListenerState={clickListenerState}
-            />
-          }
+            onSubmit={this.onReplySubmit}
+            clickListenerState={clickListenerState}
+          />}
         </div>
         { userListModalShown &&
           <UserListModal

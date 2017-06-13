@@ -28,7 +28,8 @@ export default class ChatButton extends Component {
               <span
                 className="badge"
                 style={{backgroundColor: 'red'}}
-                >{numUnreads}
+              >
+                {numUnreads}
               </span>
             }
           </Button>

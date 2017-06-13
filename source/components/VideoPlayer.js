@@ -56,13 +56,12 @@ export default class VideoPlayer extends Component {
         }}
       >
         {!small && !playing && <div>
-            <img
-              alt=""
-              className="embed-responsive-item"
-              src={`https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`}
-            />
-          </div>
-        }
+          <img
+            alt=""
+            className="embed-responsive-item"
+            src={`https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`}
+          />
+        </div>}
         {playing && !small ?
           <Loading
             style={{

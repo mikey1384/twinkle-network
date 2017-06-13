@@ -71,8 +71,7 @@ export default class SelectPlaylistsToPinModal extends Component {
               paddingTop: '2em'
             }}
           >
-          {selectTabActive &&
-            <div>
+            {selectTabActive && <div>
               <CheckListGroup
                 inputType="checkbox"
                 onSelect={this.onSelect}
@@ -97,10 +96,8 @@ export default class SelectPlaylistsToPinModal extends Component {
               {playlistsToPin.length === 0 &&
                 <div className="text-center">No Playlists</div>
               }
-            </div>
-          }
-          {!selectTabActive &&
-            <div>
+            </div>}
+            {!selectTabActive && <div>
               <CheckListGroup
                 inputType="checkbox"
                 onSelect={this.onDeselect}
@@ -132,8 +129,7 @@ export default class SelectPlaylistsToPinModal extends Component {
               {selectedPlaylists.length === 0 &&
                 <div className="text-center">No Playlist Selected</div>
               }
-            </div>
-          }
+            </div>}
           </div>
         </Modal.Body>
         <Modal.Footer>

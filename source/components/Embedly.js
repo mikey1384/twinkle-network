@@ -34,14 +34,14 @@ export default class Embedly extends Component {
     }
 
     request.get(this.apiUrl)
-    .query(params)
-    .end((err, res) => {
-      if (err) console.error(err)
-      if (!res.body) return
-      if (this.mounted) {
-        this.setState(res.body)
-      }
-    })
+      .query(params)
+      .end((err, res) => {
+        if (err) console.error(err)
+        if (!res.body) return
+        if (this.mounted) {
+          this.setState(res.body)
+        }
+      })
   }
 
   componentDidMount() {
@@ -69,14 +69,14 @@ export default class Embedly extends Component {
         thumbnail_height: 1
       }, () => {
         request.get(this.apiUrl)
-        .query(params)
-        .end((err, res) => {
-          if (err) console.error(err)
-          if (!res.body) return
-          if (this.mounted) {
-            this.setState(res.body)
-          }
-        })
+          .query(params)
+          .end((err, res) => {
+            if (err) console.error(err)
+            if (!res.body) return
+            if (this.mounted) {
+              this.setState(res.body)
+            }
+          })
       })
     }
   }

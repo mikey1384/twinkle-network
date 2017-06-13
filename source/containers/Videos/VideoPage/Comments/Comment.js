@@ -174,11 +174,10 @@ export default class Comment extends Component {
             onDelete={replyId => this.props.onDelete(replyId)}
           />
           {replyInputShown && <ReplyInputArea
-              style={{marginTop: comment.replies.length === 0 && '0px'}}
-              clickListenerState={clickListenerState}
-              onSubmit={this.onReplySubmit}
-            />
-          }
+            style={{marginTop: comment.replies.length === 0 && '0px'}}
+            clickListenerState={clickListenerState}
+            onSubmit={this.onReplySubmit}
+          />}
         </div>
         {userListModalShown &&
           <UserListModal

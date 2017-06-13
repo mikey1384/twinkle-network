@@ -50,13 +50,13 @@ export default class ContentLink extends Component {
       }
 
       request.get(this.apiUrl)
-      .query(params)
-      .end((err, res) => {
-        if (err) console.error(err)
-        if (this.mounted) {
-          this.setState({imageUrl: res.body ? res.body.thumbnail_url : ''})
-        }
-      })
+        .query(params)
+        .end((err, res) => {
+          if (err) console.error(err)
+          if (this.mounted) {
+            this.setState({imageUrl: res.body ? res.body.thumbnail_url : ''})
+          }
+        })
     }
   }
 

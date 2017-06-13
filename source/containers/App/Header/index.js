@@ -192,36 +192,33 @@ export default class Header extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          {!chatMode &&
-            [<Nav key="navItems">
-                <HeaderNav
-                  to="/"
-                  isHome
-                  isUsername={
-                    pathname.split('/')[1] !== 'videos' && pathname.split('/')[1] !== 'links' && pathname.length > 1
-                  }
-                >
-                  Home
-                </HeaderNav>
-                <HeaderNav
-                  to="/videos"
-                  onClick={() => {
-                    getInitialVideos()
-                    getPinnedPlaylists()
-                    getPlaylists()
-                  }}
-                >
-                  Watch
-                </HeaderNav>
-                <HeaderNav
-                 to="/links"
-                >
-                  Read
-                </HeaderNav>
-              </Nav>,
-              <SearchBox className="col-xs-5" style={{marginTop: '6px'}} key="searchBox" />
-            ]
-          }
+          {!chatMode && [<Nav key="navItems">
+            <HeaderNav
+              to="/"
+              isHome
+              isUsername={
+                pathname.split('/')[1] !== 'videos' && pathname.split('/')[1] !== 'links' && pathname.length > 1
+              }
+            >
+              Home
+            </HeaderNav>
+            <HeaderNav
+              to="/videos"
+              onClick={() => {
+                getInitialVideos()
+                getPinnedPlaylists()
+                getPlaylists()
+              }}
+            >
+              Watch
+            </HeaderNav>
+            <HeaderNav
+              to="/links"
+            >
+              Read
+            </HeaderNav>
+          </Nav>,
+          <SearchBox className="col-xs-5" style={{marginTop: '6px'}} key="searchBox" />]}
           <Nav pullRight>
             {loggedIn && [
               <ChatButton

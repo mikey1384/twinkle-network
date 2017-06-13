@@ -70,7 +70,7 @@ export default class MessagesContainer extends Component {
     const containerHeight = container.offsetHeight
     const messagesHeight = messages.offsetHeight
     let state = messagesHeight < containerHeight ?
-    {fillerHeight: containerHeight - messagesHeight} : {fillerHeight: 20}
+      {fillerHeight: containerHeight - messagesHeight} : {fillerHeight: 20}
     this.setState(state, () => {
       container.scrollTop = Math.max(container.offsetHeight, messages.offsetHeight)
     })
@@ -139,21 +139,19 @@ export default class MessagesContainer extends Component {
             width: '100%'
           }}
         >
-          {newUnseenMessage &&
-            <Button
-              className="btn btn-warning"
-              onClick={
-                () => {
-                  this.setState({newUnseenMessage: false})
-                  const content = this.content
-                  const container = this.messagesContainer
-                  container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight)
-                }
+          {newUnseenMessage && <Button
+            className="btn btn-warning"
+            onClick={
+              () => {
+                this.setState({newUnseenMessage: false})
+                const content = this.content
+                const container = this.messagesContainer
+                container.scrollTop = Math.max(container.offsetHeight, content.offsetHeight)
               }
-            >
+            }
+          >
             New Message
-          </Button>
-          }
+          </Button>}
         </div>
       </div>
     )

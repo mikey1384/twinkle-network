@@ -47,9 +47,8 @@ export default class SectionPanel extends Component {
           }
           {children}
           {loadMoreButtonShown && <div className="text-center col-sm-12">
-              <Button disabled={loading} className="btn btn-success" onClick={this.onLoadMore}>Load More</Button>
-            </div>
-          }
+            <Button disabled={loading} className="btn btn-success" onClick={this.onLoadMore}>Load More</Button>
+          </div>}
         </div>
       </div>
     )
