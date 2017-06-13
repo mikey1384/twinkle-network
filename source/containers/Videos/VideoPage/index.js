@@ -23,6 +23,7 @@ import ResultModal from './Modals/ResultModal'
 import QuestionsBuilder from './QuestionsBuilder'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {stringIsEmpty} from 'helpers/stringHelpers'
+import queryString from 'query-string'
 import ExecutionEnvironment from 'exenv'
 
 @connect(
@@ -45,6 +46,7 @@ export default class VideoPage extends Component {
   static propTypes = {
     history: PropTypes.object,
     match: PropTypes.object,
+    location: PropTypes.object,
     loadVideoPage: PropTypes.func,
     resetVideoPage: PropTypes.func,
     content: PropTypes.string,
@@ -90,13 +92,14 @@ export default class VideoPage extends Component {
   }
 
   componentDidMount() {
-    const {history, match, loadVideoPage} = this.props
-    if (history.action === 'POP') loadVideoPage(match.params.videoId)
+    const {history, match: {params}, location: {search}, loadVideoPage} = this.props
+    const {playlistId} = queryString.parse(search)
+    if (history.action === 'POP') loadVideoPage(params.videoId)
   }
 
   componentWillReceiveProps(nextProps) {
-    const {loadVideoPage, match} = this.props
-    if (ExecutionEnvironment.canUseDOM && nextProps.match.params.videoId !== match.params.videoId) {
+    const {loadVideoPage, match: {params}} = this.props
+    if (ExecutionEnvironment.canUseDOM && nextProps.match.params.videoId !== params.videoId) {
       loadVideoPage(nextProps.match.params.videoId)
     }
   }

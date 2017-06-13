@@ -57,11 +57,11 @@ export default class InputArea extends Component {
         </div>
         <div className="row">
           <Button
-            className="btn btn-default btn-sm"
+            className="btn btn-warning btn-sm"
             disabled={stringIsEmpty(text)}
             onClick={this.onSubmit}
           >
-            Submit
+            Click This Button to Submit!
           </Button>
         </div>
       </div>

@@ -38,6 +38,7 @@
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
     "password-hash": "^1.2.2",
+    "query-string": "^4.3.4",
     "rc-slider": "^8.0.2",
     "react": "^15.5.4",
     "react-addons-update": "^15.4.1",
