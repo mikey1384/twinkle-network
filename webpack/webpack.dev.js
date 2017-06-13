@@ -20,6 +20,7 @@ export default function options(app) {
         },
         {
           test: /\.js$/,
+          exclude: /react-onclickoutside/,
           include: [/source/, /entry/],
           loader: 'babel-loader',
           options: {
