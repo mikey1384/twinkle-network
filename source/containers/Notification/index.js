@@ -62,9 +62,11 @@ export default class Notification extends Component {
       >
         <Responsive device="desktop">
           <div>
-            <div style={{minHeight: '3em', marginBottom: '1em'}}>
-              {children}
-            </div>
+            {children &&
+              <div style={{minHeight: '3em', marginBottom: '1em'}}>
+                {children}
+              </div>
+            }
             <div
               className="well"
               onScroll={this.handleScroll}
