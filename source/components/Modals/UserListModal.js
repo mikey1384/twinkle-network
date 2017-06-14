@@ -51,7 +51,12 @@ export default class UserListModal extends Component {
                 <li
                   className="list-group-item"
                   key={user.userId}
-                >{user.username} <span style={{color: descriptionColor || 'green'}}>{userStatusDisplayed && description}</span>
+                >{user.username} <span
+                    style={{
+                      color: descriptionColor || 'green',
+                      fontWeight: 'bold'
+                    }}
+                  >{userStatusDisplayed && description}</span>
                 </li>
               )
             })}
