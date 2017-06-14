@@ -35,8 +35,7 @@ export default class Profile extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {checkValidUsername, userId, profile, match} = this.props
-    const {unavailable} = profile
+    const {checkValidUsername, userId, profile: {unavailable}, match} = this.props
     if (ExecutionEnvironment.canUseDOM) {
       if (prevProps.match.params.username !== match.params.username) {
         return checkValidUsername(match.params.username)
@@ -49,12 +48,11 @@ export default class Profile extends Component {
   }
 
   render() {
-    const {profile, userId} = this.props
-    const {unavailable} = profile
+    const {profile: {unavailable, id}, userId} = this.props
     return !unavailable ? (
       <div style={{width: '100%'}}>
-        {!profile.id && <Loading text="Loading Profile..." />}
-        {!!profile.id &&
+        {!id && <Loading text="Loading Profile..." />}
+        {!!id &&
           <div style={{width: '100%'}}>
             <ProfileCard {...this.props} />
             <Body {...this.props} />

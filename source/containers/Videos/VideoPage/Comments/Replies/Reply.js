@@ -99,8 +99,8 @@ export default class Reply extends Component {
             shape="button"
             icon="pencil"
             style={{
-              position: 'relative',
-              float: 'right'
+              position: 'absolute',
+              right: '3.5em'
             }}
             menuProps={[
               {
