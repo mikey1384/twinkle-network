@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
 import {connect} from 'react-redux'
+import {Color} from 'constants/css'
 
 @connect(
   state => ({
@@ -53,7 +54,7 @@ export default class UserListModal extends Component {
                   key={user.userId}
                 >{user.username} <span
                     style={{
-                      color: descriptionColor || 'green',
+                      color: descriptionColor || Color.green,
                       fontWeight: 'bold'
                     }}
                   >{userStatusDisplayed && description}</span>
