@@ -47,8 +47,7 @@ export default class App extends Component {
     location: PropTypes.object,
     initChat: PropTypes.func,
     changePageVisibility: PropTypes.func,
-    history: PropTypes.object,
-    userId: PropTypes.number
+    history: PropTypes.object
   }
 
   constructor() {
@@ -89,11 +88,11 @@ export default class App extends Component {
     let elements = document.documentElement.childNodes
     const {
       chatMode, chatNumUnreads, history, location, loggedIn,
-      fetchNotifications, clearNotifications, userId
+      fetchNotifications, clearNotifications
     } = this.props
 
-    if (prevProps.userId !== userId) {
-      if (userId) {
+    if (prevProps.loggedIn !== loggedIn) {
+      if (loggedIn) {
         fetchNotifications()
       } else {
         clearNotifications()
