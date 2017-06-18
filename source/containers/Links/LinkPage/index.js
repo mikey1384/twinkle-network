@@ -80,14 +80,14 @@ export default class LinkPage extends Component {
   componentDidMount() {
     const {match: {params: {linkId}}, loadLinkPage, fetchComments} = this.props
     fetchComments(linkId)
-    return loadLinkPage(linkId)
+    loadLinkPage(linkId)
   }
 
   componentDidUpdate(prevProps) {
     const {location, loadLinkPage, fetchComments, match: {params: {linkId}}} = this.props
     if (prevProps.location.pathname !== location.pathname) {
       fetchComments(linkId)
-      return loadLinkPage(linkId)
+      loadLinkPage(linkId)
     }
   }
 
