@@ -8,6 +8,8 @@ import LongText from 'components/Texts/LongText'
 import {timeSince} from 'helpers/timeStampHelpers'
 import UserListModal from 'components/Modals/UserListModal'
 import VideoLikeInterface from './VideoLikeInterface'
+import FullTextReveal from 'components/FullTextReveal'
+import {textIsOverflown} from 'helpers/domHelpers'
 import {
   cleanString,
   cleanStringWithURL,
@@ -43,6 +45,7 @@ export default class Description extends Component {
     super()
     this.state = {
       onEdit: false,
+      onTitleHover: false,
       editedTitle: cleanString(props.title),
       editedUrl: `https://www.youtube.com/watch?v=${props.content}`,
       editedDescription: cleanStringWithURL(props.description),
@@ -52,6 +55,7 @@ export default class Description extends Component {
     this.onEditStart = this.onEditStart.bind(this)
     this.onEditFinish = this.onEditFinish.bind(this)
     this.onEditCancel = this.onEditCancel.bind(this)
+    this.onMouseOver = this.onMouseOver.bind(this)
     this.onVideoLikeClick = this.onVideoLikeClick.bind(this)
   }
 
@@ -83,7 +87,7 @@ export default class Description extends Component {
     const {uploaderId, userId, uploaderName, title, description, likes, timeStamp, videoViews} = this.props
     let {
       onEdit, editedTitle, editedUrl, editedDescription,
-      editDoneButtonDisabled, userListModalShown
+      editDoneButtonDisabled, userListModalShown, onTitleHover
     } = this.state
     editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription
     return (
@@ -132,15 +136,23 @@ export default class Description extends Component {
                       />
                     </form> :
                     <div style={{paddingLeft: '0px'}}>
-                      <h3 style={{
-                        marginTop: '0px',
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        lineHeight: 'normal'
-                      }}>
-                        <span style={{wordWrap: 'break-word'}}>{cleanString(title)}</span>
+                      <h3
+                        ref={ref => { this.thumbLabel = ref }}
+                        style={{
+                          marginTop: '0px',
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          lineHeight: 'normal'
+                        }}
+                      >
+                        <span
+                          style={{wordWrap: 'break-word'}}
+                          onMouseOver={this.onMouseOver}
+                          onMouseLeave={() => this.setState({onTitleHover: false})}
+                        >{cleanString(title)}</span>
                       </h3>
+                      <FullTextReveal width="100%" show={onTitleHover} text={cleanString(title)} />
                     </div>
                   }
                 </div>
@@ -278,6 +290,12 @@ export default class Description extends Component {
   onEditStart() {
     this.props.onEditStart()
     this.setState({onEdit: true})
+  }
+
+  onMouseOver() {
+    if (textIsOverflown(this.thumbLabel)) {
+      this.setState({onTitleHover: true})
+    }
   }
 
   onVideoLikeClick() {
