@@ -34,7 +34,7 @@ export default class VideoThumb extends Component {
             if (selected) {
               onDeselect(video.id)
             } else {
-              onSelect(video.id)
+              onSelect(video)
             }
           }}
         >

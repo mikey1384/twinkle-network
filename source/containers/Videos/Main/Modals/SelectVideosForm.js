@@ -27,11 +27,11 @@ export default function SelectVideosForm(props) {
           <VideoThumb
             key={index}
             video={video}
-            selected={selectedVideos.indexOf(video.id) !== -1}
-            onSelect={videoId => onSelect(selectedVideos, videoId)}
+            selected={selectedVideos.map(video => video.id).indexOf(video.id) !== -1}
+            onSelect={video => onSelect(selectedVideos, video)}
             onDeselect={videoId => {
               let selected = selectedVideos
-              const index = selected.indexOf(videoId)
+              const index = selected.map(video => video.id).indexOf(videoId)
               selected.splice(index, 1)
               onDeselect(selected)
             }}

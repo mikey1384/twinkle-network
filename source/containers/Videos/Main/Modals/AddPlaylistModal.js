@@ -144,8 +144,8 @@ export default class AddPlaylistModal extends Component {
                 videos={searchText ? searchedVideos : videos}
                 selectedVideos={this.state.selectedVideos}
                 loadMoreVideosButton={searchText ? false : loadMoreVideosButton}
-                onSelect={(selected, videoId) => this.setState({
-                  selectedVideos: selected.concat([videoId])
+                onSelect={(selected, video) => this.setState({
+                  selectedVideos: selected.concat([video])
                 })}
                 onDeselect={selected => this.setState({selectedVideos: selected})}
                 loadMoreVideos={loadMoreVideos}
@@ -154,31 +154,22 @@ export default class AddPlaylistModal extends Component {
           }
           {section === 2 &&
             <div className="row">
-              {this.state.selectedVideos.map(videoId => {
-                let index = -1
-                for (let i = 0; i < videos.length; i++) {
-                  if (videos[i].id === videoId) {
-                    index = i
-                    break
-                  }
-                }
-                return (
-                  <SortableThumb
-                    key={videos[index].id}
-                    video={videos[index]}
-                    onMove={({sourceId, targetId}) => {
-                      const selectedVideoArray = this.state.selectedVideos
-                      const sourceIndex = selectedVideoArray.indexOf(sourceId)
-                      const targetIndex = selectedVideoArray.indexOf(targetId)
-                      selectedVideoArray.splice(sourceIndex, 1)
-                      selectedVideoArray.splice(targetIndex, 0, sourceId)
-                      this.setState({
-                        selectedVideos: selectedVideoArray
-                      })
-                    }}
-                  />
-                )
-              })}
+              {this.state.selectedVideos.map(video => <SortableThumb
+                key={video.id}
+                video={video}
+                onMove={({sourceId, targetId}) => {
+                  const selectedVideos = this.state.selectedVideos
+                  const selectedVideoArray = selectedVideos.map(video => video.id)
+                  const sourceIndex = selectedVideoArray.indexOf(sourceId)
+                  const sourceVideo = selectedVideos[sourceIndex]
+                  const targetIndex = selectedVideoArray.indexOf(targetId)
+                  selectedVideos.splice(sourceIndex, 1)
+                  selectedVideos.splice(targetIndex, 0, sourceVideo)
+                  this.setState({
+                    selectedVideos
+                  })
+                }}
+              />)}
             </div>
           }
         </Modal.Body>
@@ -235,7 +226,11 @@ export default class AddPlaylistModal extends Component {
   handleFinish() {
     const {uploadPlaylist} = this.props
     const {title, description, selectedVideos} = this.state
-    uploadPlaylist({title: finalizeEmoji(title), description: finalizeEmoji(description), selectedVideos})
+    uploadPlaylist({
+      title: finalizeEmoji(title),
+      description: finalizeEmoji(description),
+      selectedVideos: selectedVideos.map(video => video.id)
+    })
   }
 
   handleHide() {

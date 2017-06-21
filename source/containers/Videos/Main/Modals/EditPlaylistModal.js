@@ -112,45 +112,36 @@ export default class EditPlaylistModal extends Component {
               videos={searchText ? searchedVideos : videos}
               selectedVideos={selectedVideos}
               loadMoreVideosButton={searchText ? false : loadMoreVideosButton}
-              onSelect={(selected, videoId) => this.setState({selectedVideos: [videoId].concat(selected)})}
+              onSelect={(selected, video) => this.setState({selectedVideos: [video].concat(selected)})}
               onDeselect={selected => this.setState({selectedVideos: selected})}
               loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
             />
           }
           {mainTabActive && modalType === 'reorder' &&
             <div className="row">
-              {selectedVideos.map(videoId => {
-                let index = -1
-                for (let i = 0; i < videos.length; i++) {
-                  if (videos[i].id === videoId) {
-                    index = i
-                    break
-                  }
-                }
-                return (
-                  <SortableThumb
-                    key={videos[index].id}
-                    video={videos[index]}
-                    onMove={({sourceId, targetId}) => {
-                      const selectedVideoArray = selectedVideos
-                      const sourceIndex = selectedVideoArray.indexOf(sourceId)
-                      const targetIndex = selectedVideoArray.indexOf(targetId)
-                      selectedVideoArray.splice(sourceIndex, 1)
-                      selectedVideoArray.splice(targetIndex, 0, sourceId)
-                      this.setState({
-                        selectedVideos: selectedVideoArray
-                      })
-                    }}
-                  />
-                )
-              })}
+              {selectedVideos.map(video => <SortableThumb
+                key={video.id}
+                video={video}
+                onMove={({sourceId, targetId}) => {
+                  const selectedVideos = this.state.selectedVideos
+                  const selectedVideoArray = selectedVideos.map(video => video.id)
+                  const sourceIndex = selectedVideoArray.indexOf(sourceId)
+                  const sourceVideo = selectedVideos[sourceIndex]
+                  const targetIndex = selectedVideoArray.indexOf(targetId)
+                  selectedVideos.splice(sourceIndex, 1)
+                  selectedVideos.splice(targetIndex, 0, sourceVideo)
+                  this.setState({
+                    selectedVideos
+                  })
+                }}
+              />)}
             </div>
           }
           {!mainTabActive &&
             <SelectVideosForm
               videos={playlist}
               selectedVideos={selectedVideos}
-              onSelect={(selected, videoId) => this.setState({selectedVideos: selected.concat([videoId])})}
+              onSelect={(selected, video) => this.setState({selectedVideos: selected.concat([video])})}
               onDeselect={selected => this.setState({selectedVideos: selected})}
               loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
             />
@@ -172,7 +163,7 @@ export default class EditPlaylistModal extends Component {
   handleSave() {
     const {selectedVideos} = this.state
     const {playlistId, changePlaylistVideos} = this.props
-    changePlaylistVideos(playlistId, selectedVideos, this)
+    changePlaylistVideos(playlistId, selectedVideos.map(video => video.id), this)
   }
 
   onVideoSearch(event) {

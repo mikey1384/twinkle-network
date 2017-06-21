@@ -202,7 +202,7 @@ export default class PlaylistCarousel extends Component {
         {editPlaylistModalShown &&
           <EditPlaylistModal
             playlist={playlist}
-            selectedVideos={playlist.map(thumb => thumb.id)}
+            selectedVideos={playlist}
             playlistId={id}
             onHide={this.onEditPlaylistHide}
           />
