@@ -6,7 +6,8 @@ import Button from 'components/Button'
 import {
   closeAddPlaylistModal,
   uploadPlaylistAsync,
-  getMoreVideosForModalAsync
+  getMoreVideosForModalAsync,
+  searchVideos
 } from 'redux/actions/PlaylistActions'
 import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import {connect} from 'react-redux'
@@ -20,19 +21,22 @@ const defaultState = {
   title: '',
   description: '',
   selectedVideos: [],
-  titleError: false
+  titleError: false,
+  searchText: ''
 }
 
 @DragDropContext(HTML5Backend)
 @connect(
   state => ({
     videos: state.PlaylistReducer.videoThumbsForModal,
+    searchedVideos: state.PlaylistReducer.searchedThumbs,
     loadMoreVideosButton: state.PlaylistReducer.loadMoreButtonForModal
   }),
   {
     closeAddPlaylistModal,
     uploadPlaylist: uploadPlaylistAsync,
-    getMoreVideosForModal: getMoreVideosForModalAsync
+    getMoreVideosForModal: getMoreVideosForModalAsync,
+    searchVideos
   }
 )
 export default class AddPlaylistModal extends Component {
@@ -41,7 +45,9 @@ export default class AddPlaylistModal extends Component {
     loadMoreVideosButton: PropTypes.bool,
     getMoreVideosForModal: PropTypes.func,
     uploadPlaylist: PropTypes.func,
-    closeAddPlaylistModal: PropTypes.func
+    closeAddPlaylistModal: PropTypes.func,
+    searchVideos: PropTypes.func,
+    searchedVideos: PropTypes.array
   }
 
   constructor() {
@@ -51,11 +57,12 @@ export default class AddPlaylistModal extends Component {
     this.handlePrev = this.handlePrev.bind(this)
     this.handleNext = this.handleNext.bind(this)
     this.handleFinish = this.handleFinish.bind(this)
+    this.onVideoSearch = this.onVideoSearch.bind(this)
   }
 
   render() {
-    const {videos, loadMoreVideosButton, getMoreVideosForModal} = this.props
-    const {section, titleError, title, description} = this.state
+    const {videos, loadMoreVideosButton, getMoreVideosForModal, searchedVideos} = this.props
+    const {section, titleError, title, description, searchText} = this.state
     const last = array => {
       return array[array.length - 1]
     }
@@ -121,16 +128,29 @@ export default class AddPlaylistModal extends Component {
             </form>
           }
           {section === 1 &&
-            <SelectVideosForm
-              videos={videos}
-              selectedVideos={this.state.selectedVideos}
-              loadMoreVideosButton={loadMoreVideosButton}
-              onSelect={(selected, videoId) => this.setState({
-                selectedVideos: selected.concat([videoId])
-              })}
-              onDeselect={selected => this.setState({selectedVideos: selected})}
-              loadMoreVideos={loadMoreVideos}
-            />
+            <div>
+              <input
+                className="form-control"
+                placeholder="Search videos..."
+                autoFocus
+                style={{
+                  marginBottom: '2em',
+                  width: '50%'
+                }}
+                value={searchText}
+                onChange={this.onVideoSearch}
+              />
+              <SelectVideosForm
+                videos={searchText ? searchedVideos : videos}
+                selectedVideos={this.state.selectedVideos}
+                loadMoreVideosButton={searchText ? false : loadMoreVideosButton}
+                onSelect={(selected, videoId) => this.setState({
+                  selectedVideos: selected.concat([videoId])
+                })}
+                onDeselect={selected => this.setState({selectedVideos: selected})}
+                loadMoreVideos={loadMoreVideos}
+              />
+            </div>
           }
           {section === 2 &&
             <div className="row">
@@ -222,5 +242,11 @@ export default class AddPlaylistModal extends Component {
     const {closeAddPlaylistModal} = this.props
     this.setState(defaultState)
     closeAddPlaylistModal()
+  }
+
+  onVideoSearch(event) {
+    const {searchVideos} = this.props
+    this.setState({searchText: event.target.value})
+    searchVideos(event.target.value)
   }
 }

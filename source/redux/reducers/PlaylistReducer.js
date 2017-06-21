@@ -5,13 +5,13 @@ const defaultState = {
   pinnedPlaylistsLoaded: false,
   loadMoreButton: false,
 
+  searchedThumbs: [],
   videoThumbsForModal: [],
   loadMoreButtonForModal: false,
   allVideosLoadedForModal: false,
 
   addPlaylistModalShown: false,
   editPlaylistModalType: null,
-  selectedModalThumbs: [],
 
   selectPlaylistsToPinModalShown: false,
   loadMorePlaylistsToPinButton: false,
@@ -86,6 +86,11 @@ export default function PlaylistReducer(state = defaultState, action) {
       return {
         ...state,
         addPlaylistModalShown: false
+      }
+    case 'SEARCH_VIDEO':
+      return {
+        ...state,
+        searchedThumbs: action.data.result
       }
     case 'SELECT_PL_TO_PIN_OPEN':
       if (action.data.result.length > 10) {
@@ -238,13 +243,13 @@ export default function PlaylistReducer(state = defaultState, action) {
     case 'RESET_PL_MODAL_STATE':
       return {
         ...state,
+        searchedThumbs: [],
         videoThumbsForModal: [],
         loadMoreButtonForModal: false,
         allVideosLoadedForModal: false,
 
         addPlaylistModalShown: false,
         editPlaylistModalType: null,
-        selectedModalThumbs: [],
 
         selectPlaylistsToPinModalShown: false,
         loadMorePlaylistsToPinButton: false,

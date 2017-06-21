@@ -255,6 +255,19 @@ export const openChangePlaylistVideosModalAsync = () => dispatch =>
     }
   )
 
+export const searchVideos = query => dispatch =>
+  request.get(`${API_URL}/search/video?query=${query}`).then(
+    response => dispatch({
+      type: 'SEARCH_VIDEO',
+      data: response.data
+    })
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+
 export const openReorderPlaylistVideosModal = playlistVideos => ({
   type: 'REORDER_PL_VIDS_MODAL_OPEN',
   modalType: 'reorder',

@@ -6,6 +6,7 @@ const {fetchPlaylists} = require('../helpers/playlistHelpers')
 const async = require('async')
 const express = require('express')
 const router = express.Router()
+const {stringIsEmpty} = require('../helpers/stringHelpers')
 
 router.get('/', (req, res) => {
   const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null
@@ -240,6 +241,24 @@ router.post('/pinned', requireAuth, (req, res) => {
     }
     res.json({playlists})
   })
+})
+
+router.get('/search/video', (req, res) => {
+  const searchQuery = req.query.query
+  if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send({result: []})
+  const query = `
+    SELECT a.id, a.title, a.content, a.uploader AS uploaderId, b.username AS uploaderName
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
+    ORDER by a.id DESC LIMIT 20
+  `
+  return poolQuery(query, '%' + searchQuery + '%').then(
+    result => res.send({result})
+  ).catch(
+    err => {
+      console.error(err)
+      return res.status(500).send({error: err})
+    }
+  )
 })
 
 router.get('/list', (req, res) => {

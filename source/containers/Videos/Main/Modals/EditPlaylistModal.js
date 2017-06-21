@@ -5,7 +5,8 @@ import Button from 'components/Button'
 import {connect} from 'react-redux'
 import {
   changePlaylistVideosAsync,
-  getMoreVideosForModalAsync
+  getMoreVideosForModalAsync,
+  searchVideos
 } from 'redux/actions/PlaylistActions'
 import SelectVideosForm from './SelectVideosForm'
 import SortableThumb from './SortableThumb'
@@ -17,10 +18,12 @@ import HTML5Backend from 'react-dnd-html5-backend'
   state => ({
     modalType: state.PlaylistReducer.editPlaylistModalType,
     videos: state.PlaylistReducer.videoThumbsForModal,
+    searchedVideos: state.PlaylistReducer.searchedThumbs,
     loadMoreVideosButton: state.PlaylistReducer.loadMoreButtonForModal
   }),
   {
     changePlaylistVideos: changePlaylistVideosAsync,
+    searchVideos,
     getMoreVideosForModal: getMoreVideosForModalAsync
   }
 )
@@ -30,6 +33,8 @@ export default class EditPlaylistModal extends Component {
     playlistId: PropTypes.number.isRequired,
     onHide: PropTypes.func.isRequired,
     modalType: PropTypes.string,
+    searchedVideos: PropTypes.array,
+    searchVideos: PropTypes.func,
     videos: PropTypes.array,
     loadMoreVideosButton: PropTypes.bool,
     getMoreVideosForModal: PropTypes.func,
@@ -41,14 +46,18 @@ export default class EditPlaylistModal extends Component {
     super()
     this.state = {
       selectedVideos: props.selectedVideos,
-      mainTabActive: true
+      mainTabActive: true,
+      searchText: ''
     }
     this.handleSave = this.handleSave.bind(this)
+    this.onVideoSearch = this.onVideoSearch.bind(this)
   }
 
   render() {
-    const {modalType, videos, loadMoreVideosButton, getMoreVideosForModal, onHide, playlist} = this.props
-    const {selectedVideos, mainTabActive} = this.state
+    const {
+      modalType, videos, searchedVideos, loadMoreVideosButton,
+      getMoreVideosForModal, onHide, playlist} = this.props
+    const {selectedVideos, mainTabActive, searchText} = this.state
     const last = (array) => {
       return array[array.length - 1]
     }
@@ -86,10 +95,23 @@ export default class EditPlaylistModal extends Component {
             </li>
           </ul>
           {mainTabActive && modalType === 'change' &&
+            <input
+              className="form-control"
+              placeholder="Search videos..."
+              autoFocus
+              style={{
+                marginBottom: '2em',
+                width: '50%'
+              }}
+              value={searchText}
+              onChange={this.onVideoSearch}
+            />
+          }
+          {mainTabActive && modalType === 'change' &&
             <SelectVideosForm
-              videos={videos}
+              videos={searchText ? searchedVideos : videos}
               selectedVideos={selectedVideos}
-              loadMoreVideosButton={loadMoreVideosButton}
+              loadMoreVideosButton={searchText ? false : loadMoreVideosButton}
               onSelect={(selected, videoId) => this.setState({selectedVideos: [videoId].concat(selected)})}
               onDeselect={selected => this.setState({selectedVideos: selected})}
               loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
@@ -151,5 +173,11 @@ export default class EditPlaylistModal extends Component {
     const {selectedVideos} = this.state
     const {playlistId, changePlaylistVideos} = this.props
     changePlaylistVideos(playlistId, selectedVideos, this)
+  }
+
+  onVideoSearch(event) {
+    const {searchVideos} = this.props
+    this.setState({searchText: event.target.value})
+    searchVideos(event.target.value)
   }
 }
