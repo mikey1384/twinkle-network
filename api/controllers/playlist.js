@@ -9,8 +9,8 @@ const router = express.Router()
 const {stringIsEmpty} = require('../helpers/stringHelpers')
 
 router.get('/', (req, res) => {
-  const playlistId = typeof req.query.playlistId !== 'undefined' ? req.query.playlistId : null
-  const where = playlistId !== null ? `WHERE id < ${playlistId} ` : ''
+  const {shownPlaylists} = req.query
+  const where = shownPlaylists ? 'WHERE ' + shownPlaylists.map(id => `id != ${id}`).join(' AND ') : ''
   const query = `
     SELECT id AS playlistId FROM vq_playlists ${where}
     ORDER BY timeStamp DESC, id DESC LIMIT 4

@@ -47,8 +47,8 @@ export const fetchUsers = () => dispatch =>
     }
   )
 
-export const fetchMoreUsers = (shownUsersId) => dispatch =>
-  request.get(`${API_URL}/users?${shownUsersId.map(id => `shownUsers[]=${id}`).join('&')}`).then(
+export const fetchMoreUsers = (shownUsersIds) => dispatch =>
+  request.get(`${API_URL}/users?${shownUsersIds.map(id => `shownUsers[]=${id}`).join('&')}`).then(
     response => {
       dispatch({
         type: 'FETCH_MORE_USERS',

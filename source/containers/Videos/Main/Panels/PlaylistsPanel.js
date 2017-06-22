@@ -6,10 +6,6 @@ import {connect} from 'react-redux'
 import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions'
 import SectionPanel from 'components/SectionPanel'
 
-const last = array => {
-  return array[array.length - 1]
-}
-
 @withRouter
 @connect(
   null,
@@ -71,7 +67,6 @@ export default class PlaylistsPanel extends Component {
 
   loadMorePlaylists() {
     const {playlists, getMorePlaylistsAsync} = this.props
-    const lastId = last(playlists).id
-    return getMorePlaylistsAsync(lastId)
+    return getMorePlaylistsAsync(playlists.map(playlist => playlist.id))
   }
 }
