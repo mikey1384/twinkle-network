@@ -7,6 +7,7 @@ import SmallDropdownButton from 'components/SmallDropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import EditPlaylistModal from '../Modals/EditPlaylistModal'
 import ConfirmModal from 'components/Modals/ConfirmModal'
+import {addEvent} from 'helpers/listenerHelpers'
 import {
   editPlaylistTitleAsync,
   openChangePlaylistVideosModalAsync,
@@ -72,25 +73,7 @@ export default class PlaylistCarousel extends Component {
   }
 
   componentDidMount() {
-    bindListeners.call(this)
-    function bindListeners() {
-      if (ExecutionEnvironment.canUseDOM) {
-        addEvent(window, 'resize', this.onResize)
-      }
-
-      function addEvent(elem, type, eventHandle) {
-        if (elem === null || typeof elem === 'undefined') {
-          return
-        }
-        if (elem.addEventListener) {
-          elem.addEventListener(type, eventHandle, false)
-        } else if (elem.attachEvent) {
-          elem.attachEvent('on' + type, eventHandle)
-        } else {
-          elem['on' + type] = eventHandle
-        }
-      }
-    }
+    addEvent(window, 'resize', this.onResize)
   }
 
   componentWillUnmount() {

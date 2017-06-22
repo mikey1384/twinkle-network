@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
   const where = playlistId !== null ? `WHERE id < ${playlistId} ` : ''
   const query = `
     SELECT id AS playlistId FROM vq_playlists ${where}
-    ORDER BY id DESC LIMIT 4
+    ORDER BY timeStamp DESC, id DESC LIMIT 4
   `
   return fetchPlaylists(query).then(
     playlists => res.send({playlists})
@@ -35,7 +35,7 @@ router.post('/', requireAuth, (req, res) => {
     (callback) => {
       const uploaderId = user.id
       const uploaderName = user.username
-      const post = {title, description, creator: uploaderId}
+      const post = {title, description, creator: uploaderId, timeStamp: Math.floor(Date.now()/1000)}
       pool.query('INSERT INTO vq_playlists SET ?', post, (err, res) => {
         const playlistId = res.insertId
         callback(err, playlistId, uploaderName, uploaderId)
@@ -105,7 +105,13 @@ router.post('/edit/videos', requireAuth, (req, res) => {
       for (let i = 0; i < selectedVideos.length; i++) {
         tasks.push(() => poolQuery('INSERT INTO vq_playlistvideos SET ?', {playlistId, videoId: selectedVideos[i]}))
       }
-      return tasks.reduce((promise, task) => promise.then(task), Promise.resolve())
+      return Promise.all([
+        tasks.reduce((promise, task) => promise.then(task), Promise.resolve()),
+        poolQuery(
+          'UPDATE vq_playlists SET ? WHERE id = ?',
+          [{timeStamp: Math.floor(Date.now()/1000)}, playlistId]
+        )
+      ])
     }
   ).then(
     () => {

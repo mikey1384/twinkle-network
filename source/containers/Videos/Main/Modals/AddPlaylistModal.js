@@ -62,7 +62,7 @@ export default class AddPlaylistModal extends Component {
 
   render() {
     const {videos, loadMoreVideosButton, getMoreVideosForModal, searchedVideos} = this.props
-    const {section, titleError, title, description, searchText} = this.state
+    const {section, titleError, title, description, searchText, selectedVideos} = this.state
     const last = array => {
       return array[array.length - 1]
     }
@@ -142,7 +142,7 @@ export default class AddPlaylistModal extends Component {
               />
               <SelectVideosForm
                 videos={searchText ? searchedVideos : videos}
-                selectedVideos={this.state.selectedVideos}
+                selectedVideos={selectedVideos}
                 loadMoreVideosButton={searchText ? false : loadMoreVideosButton}
                 onSelect={(selected, video) => this.setState({
                   selectedVideos: selected.concat([video])
@@ -154,19 +154,19 @@ export default class AddPlaylistModal extends Component {
           }
           {section === 2 &&
             <div className="row">
-              {this.state.selectedVideos.map(video => <SortableThumb
+              {selectedVideos.map(video => <SortableThumb
                 key={video.id}
                 video={video}
                 onMove={({sourceId, targetId}) => {
-                  const selectedVideos = this.state.selectedVideos
-                  const selectedVideoArray = selectedVideos.map(video => video.id)
+                  let selected = [...selectedVideos]
+                  const selectedVideoArray = selected.map(video => video.id)
                   const sourceIndex = selectedVideoArray.indexOf(sourceId)
-                  const sourceVideo = selectedVideos[sourceIndex]
+                  const sourceVideo = selected[sourceIndex]
                   const targetIndex = selectedVideoArray.indexOf(targetId)
-                  selectedVideos.splice(sourceIndex, 1)
-                  selectedVideos.splice(targetIndex, 0, sourceVideo)
+                  selected.splice(sourceIndex, 1)
+                  selected.splice(targetIndex, 0, sourceVideo)
                   this.setState({
-                    selectedVideos
+                    selectedVideos: selected
                   })
                 }}
               />)}

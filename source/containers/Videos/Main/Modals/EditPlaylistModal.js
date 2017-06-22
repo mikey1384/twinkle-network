@@ -123,15 +123,15 @@ export default class EditPlaylistModal extends Component {
                 key={video.id}
                 video={video}
                 onMove={({sourceId, targetId}) => {
-                  const selectedVideos = this.state.selectedVideos
-                  const selectedVideoArray = selectedVideos.map(video => video.id)
+                  let selected = [...selectedVideos]
+                  const selectedVideoArray = selected.map(video => video.id)
                   const sourceIndex = selectedVideoArray.indexOf(sourceId)
-                  const sourceVideo = selectedVideos[sourceIndex]
+                  const sourceVideo = selected[sourceIndex]
                   const targetIndex = selectedVideoArray.indexOf(targetId)
-                  selectedVideos.splice(sourceIndex, 1)
-                  selectedVideos.splice(targetIndex, 0, sourceVideo)
+                  selected.splice(sourceIndex, 1)
+                  selected.splice(targetIndex, 0, sourceVideo)
                   this.setState({
-                    selectedVideos
+                    selectedVideos: selected
                   })
                 }}
               />)}
