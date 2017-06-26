@@ -89,11 +89,14 @@ export default class Notification extends Component {
   }
 
   handleScroll() {
+    const {device} = this.props
     const {scrollHeight, clientHeight, scrollTop} = this.NotificationBox
-    if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
-      this.setState({scrollLocked: true})
-    } else {
-      this.setState({scrollLocked: false})
+    if (device === 'desktop') {
+      if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
+        this.setState({scrollLocked: true})
+      } else {
+        this.setState({scrollLocked: false})
+      }
     }
   }
 
