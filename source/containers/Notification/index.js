@@ -75,7 +75,9 @@ export default class Notification extends Component {
               onScroll={this.handleScroll}
               style={{
                 maxHeight: '30em',
-                overflowY: 'scroll'
+                overflowY: 'scroll',
+                overflowScrolling: 'touch',
+                WebkitOverflowScrolling: 'touch'
               }}
               ref={ref => { this.NotificationBox = ref }}
             >
