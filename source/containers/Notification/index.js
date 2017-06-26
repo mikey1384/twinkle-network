@@ -19,8 +19,11 @@ export default class Notification extends Component {
   static propTypes = {
     myId: PropTypes.number,
     chatMode: PropTypes.bool,
+    className: PropTypes.string,
     currentChatSubject: PropTypes.object,
+    device: PropTypes.string,
     notifications: PropTypes.array,
+    position: PropTypes.string,
     children: PropTypes.node
   }
 
@@ -47,7 +50,7 @@ export default class Notification extends Component {
 
   render() {
     const {
-      notifications, myId,
+      notifications, myId, className, device, position = 'fixed',
       currentChatSubject: {
         content = defaultChatSubject,
         userId, username, timeStamp,
@@ -57,10 +60,10 @@ export default class Notification extends Component {
     } = this.props
     return (
       <div
-        className="col-xs-3 col-xs-offset-9"
-        style={{position: 'fixed'}}
+        className={className}
+        style={{position}}
       >
-        <Responsive device="desktop">
+        <Responsive device={device}>
           <div>
             {children &&
               <div style={{minHeight: '3em', marginBottom: '1em'}}>

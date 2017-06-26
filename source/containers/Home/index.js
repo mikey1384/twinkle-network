@@ -46,14 +46,16 @@ export default class Home extends Component {
     return (
       <div>
         <div
-          className="col-xs-2"
+          className="col-xs-3"
           style={{
-            marginLeft: '1em',
             marginTop: '2em',
             position: 'fixed'
           }}
         >
-          <ul className="list-group unselectable" style={{fontSize: '1.3em'}}>
+          <ul className="list-group unselectable" style={{
+            fontSize: '1.3em',
+            maxWidth: '12em'
+          }}>
             <Route path='/' exact children={({match}) => (
               <li
                 className={`list-group-item left-menu-item home-left-menu ${match && ' active'}`}
@@ -77,13 +79,24 @@ export default class Home extends Component {
               </li>
             )}/>
           </ul>
+          {notificationLoaded &&
+            <Notification
+              device="tablet"
+              position="relative"
+            />
+          }
         </div>
-        <div className="col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-2">
+        <div className="col-md-6 col-xs-offset-3 col-xs-9">
           <Route exact path="/" component={Feeds}/>
           <Route path="/users/:username" component={Profile}/>
           <Route exact path="/users" component={People}/>
         </div>
-        {notificationLoaded && <Notification />}
+        {notificationLoaded &&
+          <Notification
+            device="desktop"
+            className="col-xs-3 col-xs-offset-9"
+          />
+        }
       </div>
     )
   }

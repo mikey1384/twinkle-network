@@ -63,7 +63,12 @@ export default class Main extends Component {
             <LinkGroup links={links} />
           </SectionPanel>
         </div>
-        {notificationLoaded && <Notification />}
+        {notificationLoaded &&
+          <Notification
+            device="desktop"
+            className="col-xs-3 col-xs-offset-9"
+          />
+        }
       </div>
     )
   }

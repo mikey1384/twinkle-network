@@ -210,7 +210,10 @@ export default class Main extends Component {
           }
         </div>
         {notificationLoaded &&
-          <Notification>
+          <Notification
+            device="desktop"
+            className="col-xs-3 col-xs-offset-9"
+          >
             <Button
               className="btn btn-lg btn-info"
               style={{fontSize: '1.5em', width: '100%', marginBottom: '0.5em'}}
