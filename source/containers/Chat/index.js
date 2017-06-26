@@ -298,9 +298,10 @@ export default class Chat extends Component {
           </div>
           <ChatSearchBox />
           <div
-            className="row overflow-scroll"
+            className="row"
             style={{
               marginTop: '1em',
+              overflow: 'scroll',
               position: 'absolute',
               height: '75%',
               width: '100%'
