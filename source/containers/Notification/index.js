@@ -71,7 +71,7 @@ export default class Notification extends Component {
               </div>
             }
             <div
-              className="well overflow-scroll"
+              className="well momentum-scroll-enabled"
               onScroll={this.handleScroll}
               style={{maxHeight: '30em'}}
               ref={ref => { this.NotificationBox = ref }}

@@ -119,7 +119,7 @@ export default class Comment extends Component {
                     marginBottom: '0.5em'
                   }}
                 >
-                  Discussion Topic: {cleanString(comment.discussionTitle)}
+                  {cleanString(comment.discussionTitle)}
                 </div>
               }
               <LongText

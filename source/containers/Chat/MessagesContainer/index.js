@@ -86,7 +86,7 @@ export default class MessagesContainer extends Component {
         }
         <div
           ref={ref => { this.messagesContainer = ref }}
-          className="overflow-scroll"
+          className="momentum-scroll-enabled"
           style={{
             position: 'absolute',
             width: '100%',

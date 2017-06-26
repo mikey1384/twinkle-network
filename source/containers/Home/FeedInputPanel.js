@@ -3,13 +3,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
-import SearchInput from 'components/SearchInput'
-import {Color} from 'constants/css'
-import {
-  fetchCategoriesAsync,
-  clearCategoriesSearchResults,
-  uploadContentAsync
-} from 'redux/actions/FeedActions'
+import {uploadContentAsync} from 'redux/actions/FeedActions'
 import {
   isValidUrl,
   isValidYoutubeUrl,
@@ -20,55 +14,41 @@ import {
 
 @connect(
   state => ({
-    username: state.UserReducer.username,
-    categorySearchResult: state.FeedReducer.categorySearchResult
+    username: state.UserReducer.username
   }),
   {
-    fetchCategories: fetchCategoriesAsync,
-    clearSearchResults: clearCategoriesSearchResults,
     uploadContent: uploadContentAsync
   }
 )
 export default class FeedInputPanel extends Component {
   static propTypes = {
-    categorySearchResult: PropTypes.array,
     username: PropTypes.string,
-    clearSearchResults: PropTypes.func,
-    fetchCategories: PropTypes.func,
     uploadContent: PropTypes.func
   }
 
   constructor() {
     super()
     this.state = {
-      categorySearchText: '',
-      selectedCategoryLabel: '',
       descriptionFieldsShown: false,
       form: {
         url: '',
         checkedVideo: false,
-        selectedCategory: null,
         title: '',
         description: ''
       },
       urlError: null
     }
 
-    this.onCategorySelect = this.onCategorySelect.bind(this)
     this.onUrlFieldChange = this.onUrlFieldChange.bind(this)
-    this.onSearchInputChange = this.onSearchInputChange.bind(this)
-    this.onSearchInputFocus = this.onSearchInputFocus.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
-    this.onClickOutSideSearch = this.onClickOutSideSearch.bind(this)
   }
 
   render() {
-    const {categorySearchResult = [], username} = this.props
+    const {username} = this.props
     const {
-      form, urlError, categorySearchText, descriptionFieldsShown,
-      selectedCategoryLabel
+      form, urlError, descriptionFieldsShown
     } = this.state
-    const {url, title, selectedCategory} = form
+    const {url, title} = form
     return (
       <div className="panel panel-default"
         style={{
@@ -81,7 +61,11 @@ export default class FeedInputPanel extends Component {
         <div className="panel-body">
           <form className="container-fluid">
             <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
-              <label style={{paddingBottom: '0.3em'}}><strong>Enter Url</strong></label>
+              <label style={{paddingBottom: '0.3em'}}>
+                <p style={{marginBottom: '0px'}}>
+                  <strong>Copy the URL Address of a Website or a YouTube Video and Paste It Below</strong>
+                </p>
+              </label>
               <div style={{display: 'inline'}}>
                 <input
                   ref={ref => { this.UrlField = ref }}
@@ -121,41 +105,11 @@ export default class FeedInputPanel extends Component {
                 type="checkbox"
               />
             </fieldset>
-            <fieldset className="form-group">
-              <strong>
-                <span
-                  style={{fontSize: selectedCategoryLabel ? '1.5em' : '1em'}}
-                >Category:</span>&nbsp;&nbsp;&nbsp;<span
-                  style={{
-                    fontSize: selectedCategoryLabel ? '1.5em' : '1em',
-                    color: selectedCategoryLabel ? Color.blue : Color.gray,
-                    fontStyle: selectedCategoryLabel ? 'normal' : 'italic'
-                  }}
-                >
-                  {selectedCategoryLabel || 'Not Selected'}
-                </span>
-              </strong>
-            </fieldset>
-            <fieldset className="form-group">
-              <SearchInput
-                placeholder="Select Category"
-                onChange={this.onSearchInputChange}
-                value={categorySearchText}
-                searchResults={categorySearchResult}
-                renderItemLabel={
-                  item => <span>{item.label}</span>
-                }
-                onFocus={this.onSearchInputFocus}
-                onSelect={this.onCategorySelect}
-                onClickOutSide={this.onClickOutSideSearch}
-              />
-            </fieldset>
             {descriptionFieldsShown &&
               <div>
                 <fieldset className="form-group">
                   <div style={{display: 'inline'}}>
                     <input
-                      autoFocus
                       value={form.title}
                       onChange={event => this.setState({form: {...form, title: event.target.value}})}
                       className="form-control"
@@ -198,7 +152,7 @@ export default class FeedInputPanel extends Component {
             <Button
               className="btn btn-primary"
               type="submit"
-              disabled={stringIsEmpty(url) || stringIsEmpty(title) || !selectedCategory}
+              disabled={stringIsEmpty(url) || stringIsEmpty(title)}
               onClick={this.onSubmit}
             >
               Share!
@@ -207,38 +161,6 @@ export default class FeedInputPanel extends Component {
         </div>
       </div>
     )
-  }
-
-  onCategorySelect(item) {
-    const {clearSearchResults} = this.props
-    const {form} = this.state
-    this.setState({
-      categorySearchText: '',
-      selectedCategoryLabel: item.label,
-      form: {
-        ...form,
-        selectedCategory: item.id
-      }
-    })
-    clearSearchResults()
-    this.setState({descriptionFieldsShown: true})
-  }
-
-  onClickOutSideSearch() {
-    const {clearSearchResults} = this.props
-    this.setState({categorySearchText: ''})
-    clearSearchResults()
-  }
-
-  onSearchInputChange(event) {
-    const {fetchCategories} = this.props
-    this.setState({categorySearchText: event.target.value})
-    fetchCategories(event.target.value)
-  }
-
-  onSearchInputFocus() {
-    const {fetchCategories} = this.props
-    fetchCategories()
   }
 
   onSubmit(event) {
@@ -257,13 +179,10 @@ export default class FeedInputPanel extends Component {
     }
 
     this.setState({
-      categorySearchText: '',
-      selectedCategoryLabel: '',
       descriptionFieldsShown: false,
       form: {
         url: '',
         checkedVideo: false,
-        selectedCategory: null,
         title: '',
         description: ''
       },
@@ -282,7 +201,8 @@ export default class FeedInputPanel extends Component {
     const url = event.target.value
     this.setState({
       form: {...form, url, checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo},
-      urlError: null
+      urlError: null,
+      descriptionFieldsShown: true
     })
   }
 }

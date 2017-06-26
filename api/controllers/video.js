@@ -56,12 +56,11 @@ router.get('/', (req, res) => {
 
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
-  const {title, description, url, selectedCategory} = req.body
+  const {title, description, url} = req.body
   const post = {
     title: processedTitleString(title),
     description: processedString(description),
     content: fetchedVideoCodeFromURL(url),
-    categoryId: selectedCategory,
     uploader: user.id,
     timeStamp: Math.floor(Date.now()/1000)
   }

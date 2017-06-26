@@ -4,7 +4,6 @@ const defaultState = {
   scrollLocked: false,
   feeds: null,
   loadMoreButton: false,
-  categorySearchResult: [],
   homeComponentConnected: false
 }
 
@@ -12,11 +11,6 @@ export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false
   let commentsLoadMoreButton = false
   switch (action.type) {
-    case 'CLEAR_CATEGORIES_SEARCH':
-      return {
-        ...state,
-        categorySearchResult: []
-      }
     case 'CLEAR_FEEDS':
       return {
         ...state,
@@ -33,11 +27,6 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         homeComponentConnected: false
-      }
-    case 'FETCH_CATEGORIES':
-      return {
-        ...state,
-        categorySearchResult: action.data
       }
     case 'FETCH_FEED':
       return {
@@ -228,7 +217,6 @@ export default function FeedReducer(state = defaultState, action) {
     case 'UPLOAD_CONTENT':
       return {
         ...state,
-        categorySearchResult: [],
         feeds: [action.data].concat(state.feeds)
       }
     case 'UPLOAD_FEED_COMMENT':

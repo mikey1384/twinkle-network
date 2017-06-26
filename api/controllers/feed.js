@@ -1,5 +1,4 @@
 const pool = require('../pool')
-const async = require('async')
 const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
@@ -35,34 +34,6 @@ router.get('/user', (req, res) => {
   return poolQuery(query, [username, type]).then(
     rows => res.send(rows)
   )
-})
-
-router.get('/category', (req, res) => {
-  const {searchText} = req.query
-  async.waterfall([
-    callback => {
-      pool.query('SELECT COUNT(*) AS numCategories FROM content_categories', (err, rows) => {
-        const numCategories = Number(rows[0].numCategories)
-        if (searchText === 'undefined' && numCategories > 7) {
-          return callback(err, [])
-        }
-        callback(err)
-      })
-    },
-    callback => {
-      const where = searchText !== 'undefined' ? ' WHERE label LIKE ?' : ''
-      pool.query('SELECT id, label FROM content_categories' + where, '%' + searchText + '%', (err, rows) => {
-        callback(err, rows)
-      })
-    }
-  ], (err, result) => {
-    if (err) {
-      console.error(err)
-      res.status(500).send({error: err})
-      return
-    }
-    res.send(result)
-  })
 })
 
 router.get('/comments', (req, res) => {
@@ -129,7 +100,7 @@ router.post('/replies', requireAuth, postReplies)
 
 router.post('/content', requireAuth, (req, res) => {
   const {user} = req
-  const {url, title, description, selectedCategory, checkedVideo} = req.body
+  const {url, title, description, checkedVideo} = req.body
   const type = checkedVideo ? 'video' : 'url'
   const query = checkedVideo ? 'INSERT INTO vq_videos SET ?' : 'INSERT INTO content_urls SET ?'
   const content = checkedVideo ? fetchedVideoCodeFromURL(url) : processedURL(url)
@@ -138,7 +109,6 @@ router.post('/content', requireAuth, (req, res) => {
     description: processedString(description),
     uploader: user.id,
     timeStamp: Math.floor(Date.now()/1000),
-    categoryId: selectedCategory,
     content
   })
   pool.query(query, post, (err, result) => {

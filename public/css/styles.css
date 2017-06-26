@@ -75,7 +75,7 @@ html, body {
 	background-color: #5cb85c !important;
 }
 
-.overflow-scroll {
+.momentum-scroll-enabled {
 	overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }

@@ -11,10 +11,6 @@ export const clearFeeds = () => dispatch => {
   return Promise.resolve()
 }
 
-export const clearCategoriesSearchResults = () => ({
-  type: 'CLEAR_CATEGORIES_SEARCH'
-})
-
 export const commentFeedLike = commentId => dispatch =>
   request.post(`${API_URL}/comments/like`, {commentId}, auth()).then(
     response => {
@@ -91,17 +87,6 @@ export const feedCommentEdit = (params, cb) => dispatch =>
       handleError(error, dispatch)
     }
   )
-
-export const fetchCategories = data => ({
-  type: 'FETCH_CATEGORIES',
-  data
-})
-
-export const fetchCategoriesAsync = (searchText) => dispatch => {
-  request.get(`${API_URL}/category?searchText=${searchText}`).then(
-    response => dispatch(fetchCategories(response.data))
-  )
-}
 
 export const fetchFeed = feed => dispatch => {
   let query = []
