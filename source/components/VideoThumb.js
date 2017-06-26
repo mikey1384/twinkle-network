@@ -180,7 +180,7 @@ export default class VideoThumb extends Component {
     )
   }
 
-  onLinkClick(e) {
+  onLinkClick() {
     const {video, clickSafe} = this.props
     if (!clickSafe) {
       return this.props.loadVideoPage(video.id)

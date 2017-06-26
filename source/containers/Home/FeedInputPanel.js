@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
 import {uploadContentAsync} from 'redux/actions/FeedActions'
+import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
+import Link from 'components/Link'
 import {
   isValidUrl,
   isValidYoutubeUrl,
@@ -17,11 +19,13 @@ import {
     username: state.UserReducer.username
   }),
   {
+    loadVideoPage: loadVideoPageFromClientSideAsync,
     uploadContent: uploadContentAsync
   }
 )
 export default class FeedInputPanel extends Component {
   static propTypes = {
+    loadVideoPage: PropTypes.func,
     username: PropTypes.string,
     uploadContent: PropTypes.func
   }
@@ -44,7 +48,7 @@ export default class FeedInputPanel extends Component {
   }
 
   render() {
-    const {username} = this.props
+    const {username, loadVideoPage} = this.props
     const {
       form, urlError, descriptionFieldsShown
     } = this.state
@@ -64,6 +68,14 @@ export default class FeedInputPanel extends Component {
               <label style={{paddingBottom: '0.3em'}}>
                 <p style={{marginBottom: '0px'}}>
                   <strong>Copy the URL Address of a Website or a YouTube Video and Paste It Below</strong>
+                </p>
+                <p style={{marginBottom: '0px'}}>
+                  <Link
+                    to="/videos/1857"
+                    onClickAsync={() => loadVideoPage(1857)}
+                  >
+                    Click here to learn how
+                  </Link>
                 </p>
               </label>
               <div style={{display: 'inline'}}>
