@@ -86,15 +86,13 @@ export default class MessagesContainer extends Component {
         }
         <div
           ref={ref => { this.messagesContainer = ref }}
+          className="overflow-scroll"
           style={{
             position: 'absolute',
             width: '100%',
             height: '91%',
             bottom: '50px',
-            opacity: !!loading && '0.3',
-            overflow: 'scroll',
-            overflowScrolling: 'touch',
-            WebkitOverflowScrolling: 'touch'
+            opacity: !!loading && '0.3'
           }}
           onScroll={
             () => {

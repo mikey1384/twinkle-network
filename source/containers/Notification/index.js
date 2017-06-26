@@ -71,14 +71,9 @@ export default class Notification extends Component {
               </div>
             }
             <div
-              className="well"
+              className="well overflow-scroll"
               onScroll={this.handleScroll}
-              style={{
-                maxHeight: '30em',
-                overflowY: 'scroll',
-                overflowScrolling: 'touch',
-                WebkitOverflowScrolling: 'touch'
-              }}
+              style={{maxHeight: '30em'}}
               ref={ref => { this.NotificationBox = ref }}
             >
               {loaded && <ChatFeeds content={content} userId={userId} username={username} timeStamp={timeStamp} />}

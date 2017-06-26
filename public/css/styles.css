@@ -75,6 +75,11 @@ html, body {
 	background-color: #5cb85c !important;
 }
 
+.overflow-scroll {
+	overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
 .unselectable {
   -moz-user-select: none;
   -khtml-user-select: none;
