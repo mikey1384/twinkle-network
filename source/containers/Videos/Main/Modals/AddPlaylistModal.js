@@ -13,7 +13,7 @@ import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import {connect} from 'react-redux'
 import SortableThumb from './SortableThumb'
 import {DragDropContext} from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
+import HTML5Backend from 'react-dnd-html5-touch-backend'
 import SelectVideosForm from './SelectVideosForm'
 
 const defaultState = {

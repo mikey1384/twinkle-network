@@ -9,7 +9,7 @@ import {
 import SelectVideosForm from './SelectVideosForm'
 import SortableThumb from './SortableThumb'
 import {DragDropContext} from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
+import HTML5Backend from 'react-dnd-html5-touch-backend'
 import request from 'axios'
 import {URL} from 'constants/URL'
 

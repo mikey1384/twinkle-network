@@ -4,7 +4,7 @@ import {Modal} from 'react-bootstrap'
 import QuestionBlock from './QuestionBlock'
 import ButtonGroup from 'components/ButtonGroup'
 import Button from 'components/Button'
-import HTML5Backend from 'react-dnd-html5-backend'
+import HTML5Backend from 'react-dnd-html5-touch-backend'
 import {DragDropContext} from 'react-dnd'
 import QuestionsListGroup from './QuestionsListGroup'
 
