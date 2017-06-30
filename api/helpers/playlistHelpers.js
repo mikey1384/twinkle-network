@@ -26,12 +26,16 @@ module.exports = {
             users c ON b.uploader = c.id
           LEFT JOIN
             content_likes d ON b.id = d.rootId AND d.rootType = 'video'
-          WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id
+          WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id LIMIT 10
+        `
+        const playlistVideoNumberQuery = `
+          SELECT COUNT(id) AS numVids FROM vq_playlistvideos WHERE playlistId = ?
         `
         return Promise.all(playlistIds.map(playlistId => {
           return Promise.all([
             poolQuery(playlistQuery, playlistId),
-            poolQuery(playlistVideosQuery, playlistId)
+            poolQuery(playlistVideosQuery, playlistId),
+            poolQuery(playlistVideoNumberQuery, playlistId)
           ])
         }))
       }
@@ -39,10 +43,12 @@ module.exports = {
       results => {
         let playlists = []
         for (let i = 0; i < results.length; i++) {
+          const [[playlistInfo], playlistVideos, [{numVids}]] = results[i]
           playlists[i] = Object.assign(
             {},
-            results[i][0][0],
-            {playlist: results[i][1]}
+            playlistInfo,
+            {playlist: playlistVideos},
+            {showAllButton: numVids > 10}
           )
         }
         return Promise.resolve(playlists)

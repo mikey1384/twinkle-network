@@ -25,6 +25,24 @@ router.get('/', (req, res) => {
   )
 })
 
+router.get('/playlist', (req, res) => {
+  const {playlistId, shownVideos, noLimit} = req.query
+  const where = shownVideos ? 'AND ' + shownVideos.map(id => `a.videoId != ${id}`).join(' AND ') : ''
+  const query = `
+    SELECT a.videoId AS id, b.title, b.content, b.uploader AS uploaderId, c.username AS uploaderName
+    FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
+    WHERE a.playlistId = ? ${where}${noLimit ? '' : ' LIMIT 11'}
+  `
+  return poolQuery(query, playlistId).then(
+    videos => res.send(videos)
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send(err)
+    }
+  )
+})
+
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
   const title = processedTitleString(req.body.title)
@@ -258,7 +276,7 @@ router.get('/search/video', (req, res) => {
     ORDER by a.id DESC LIMIT 20
   `
   return poolQuery(query, '%' + searchQuery + '%').then(
-    result => res.send({result})
+    result => res.send(result)
   ).catch(
     err => {
       console.error(err)

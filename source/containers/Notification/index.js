@@ -73,7 +73,7 @@ export default class Notification extends Component {
             <div
               className="well momentum-scroll-enabled"
               onScroll={this.handleScroll}
-              style={{maxHeight: '30em'}}
+              style={{maxHeight: '35em'}}
               ref={ref => { this.NotificationBox = ref }}
             >
               {loaded && <ChatFeeds content={content} userId={userId} username={username} timeStamp={timeStamp} />}

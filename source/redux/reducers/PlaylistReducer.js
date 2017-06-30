@@ -5,13 +5,7 @@ const defaultState = {
   pinnedPlaylistsLoaded: false,
   loadMoreButton: false,
 
-  searchedThumbs: [],
-  videoThumbsForModal: [],
-  loadMoreButtonForModal: false,
-  allVideosLoadedForModal: false,
-
   addPlaylistModalShown: false,
-  editPlaylistModalType: null,
 
   selectPlaylistsToPinModalShown: false,
   loadMorePlaylistsToPinButton: false,
@@ -23,8 +17,6 @@ const defaultState = {
 }
 
 export default function PlaylistReducer(state = defaultState, action) {
-  let loadMoreButtonForModal = false
-  let allVideosLoadedForModal = false
   let loadMorePlaylistsToPinButton = false
   let loadMoreButton = false
   switch (action.type) {
@@ -54,28 +46,6 @@ export default function PlaylistReducer(state = defaultState, action) {
         ...state,
         pinnedPlaylists: action.data.playlists,
         pinnedPlaylistsLoaded: true
-      }
-    case 'GET_VIDEOS_FOR_MODAL':
-      if (action.data.length > 18) {
-        action.data.pop()
-        loadMoreButtonForModal = true
-      } else {
-        allVideosLoadedForModal = true
-      }
-      if (action.initialRun) {
-        return {
-          ...state,
-          videoThumbsForModal: action.data,
-          loadMoreButtonForModal,
-          allVideosLoadedForModal
-        }
-      } else {
-        return {
-          ...state,
-          videoThumbsForModal: state.videoThumbsForModal.concat(action.data),
-          loadMoreButtonForModal,
-          allVideosLoadedForModal
-        }
       }
     case 'ADD_PL_MODAL_OPEN':
       return {
@@ -146,34 +116,6 @@ export default function PlaylistReducer(state = defaultState, action) {
         ...state,
         reorderPinnedPlaylistsModalShown: false
       }
-    case 'CHANGE_PL_VIDS_MODAL_OPEN':
-      if (action.data.length > 18) {
-        action.data.pop()
-        loadMoreButtonForModal = true
-      } else {
-        allVideosLoadedForModal = true
-      }
-      return {
-        ...state,
-        editPlaylistModalType: action.modalType,
-        videoThumbsForModal: action.data,
-        loadMoreButtonForModal,
-        allVideosLoadedForModal
-      }
-    case 'REORDER_PL_VIDS_MODAL_OPEN':
-      const videoThumbs = action.playlistVideos.map(video => {
-        return {
-          id: video.videoId,
-          title: video.video_title,
-          uploaderName: video.video_uploader,
-          content: video.content
-        }
-      })
-      return {
-        ...state,
-        editPlaylistModalType: action.modalType,
-        videoThumbsForModal: videoThumbs
-      }
     case 'UPLOAD_PLAYLIST':
       let loadMoreButtonDisplayed = state.loadMoreButton
       return {
@@ -239,21 +181,6 @@ export default function PlaylistReducer(state = defaultState, action) {
         ...defaultState,
         allPlaylists: [],
         pinnedPlaylists: []
-      }
-    case 'RESET_PL_MODAL_STATE':
-      return {
-        ...state,
-        searchedThumbs: [],
-        videoThumbsForModal: [],
-        loadMoreButtonForModal: false,
-        allVideosLoadedForModal: false,
-
-        addPlaylistModalShown: false,
-        editPlaylistModalType: null,
-
-        selectPlaylistsToPinModalShown: false,
-        loadMorePlaylistsToPinButton: false,
-        playlistsToPin: []
       }
     case 'CLICK_SAFE_ON':
       return {

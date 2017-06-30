@@ -4,64 +4,77 @@ import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
 import {connect} from 'react-redux'
 import {
-  changePlaylistVideosAsync,
-  getMoreVideosForModalAsync,
-  searchVideos
+  changePlaylistVideosAsync
 } from 'redux/actions/PlaylistActions'
 import SelectVideosForm from './SelectVideosForm'
 import SortableThumb from './SortableThumb'
 import {DragDropContext} from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
+import request from 'axios'
+import {URL} from 'constants/URL'
 
 @DragDropContext(HTML5Backend)
 @connect(
-  state => ({
-    modalType: state.PlaylistReducer.editPlaylistModalType,
-    videos: state.PlaylistReducer.videoThumbsForModal,
-    searchedVideos: state.PlaylistReducer.searchedThumbs,
-    loadMoreVideosButton: state.PlaylistReducer.loadMoreButtonForModal
-  }),
+  null,
   {
-    changePlaylistVideos: changePlaylistVideosAsync,
-    searchVideos,
-    getMoreVideosForModal: getMoreVideosForModalAsync
+    changePlaylistVideos: changePlaylistVideosAsync
   }
 )
 export default class EditPlaylistModal extends Component {
   static propTypes = {
-    selectedVideos: PropTypes.array.isRequired,
     playlistId: PropTypes.number.isRequired,
     onHide: PropTypes.func.isRequired,
     modalType: PropTypes.string,
-    searchedVideos: PropTypes.array,
-    searchVideos: PropTypes.func,
-    videos: PropTypes.array,
-    loadMoreVideosButton: PropTypes.bool,
-    getMoreVideosForModal: PropTypes.func,
-    changePlaylistVideos: PropTypes.func,
-    playlist: PropTypes.array
+    changePlaylistVideos: PropTypes.func
   }
 
   constructor(props) {
     super()
     this.state = {
-      selectedVideos: props.selectedVideos,
+      allVideos: [],
+      searchedVideos: [],
+      selectedVideos: [],
+      loadMoreButtonShown: false,
       mainTabActive: true,
       searchText: ''
     }
     this.handleSave = this.handleSave.bind(this)
+    this.loadMoreVideos = this.loadMoreVideos.bind(this)
     this.onVideoSearch = this.onVideoSearch.bind(this)
   }
 
+  componentWillMount() {
+    const {modalType, playlistId} = this.props
+    return Promise.all([
+      request.get(`${URL}/playlist/playlist?noLimit=1&playlistId=${playlistId}`),
+      (modalType === 'change' ?
+        request.get(`${URL}/video?numberToLoad=18`) :
+        Promise.resolve({data: []})
+      )
+    ]).then(
+      ([{data: selectedVideos}, {data: allVideos}]) => {
+        let loadMoreButtonShown = false
+        if (allVideos.length > 18) {
+          allVideos.pop()
+          loadMoreButtonShown = true
+        }
+        this.setState({
+          selectedVideos,
+          allVideos,
+          loadMoreButtonShown
+        })
+      }
+    ).catch(
+      error => console.error(error.response || error)
+    )
+  }
+
   render() {
+    const {modalType, onHide} = this.props
     const {
-      modalType, videos, searchedVideos, loadMoreVideosButton,
-      getMoreVideosForModal, onHide, playlist} = this.props
-    const {selectedVideos, mainTabActive, searchText} = this.state
-    const last = (array) => {
-      return array[array.length - 1]
-    }
-    const lastId = last(videos) ? last(videos).id : 0
+      selectedVideos, mainTabActive, searchText,
+      loadMoreButtonShown, searchedVideos, allVideos
+    } = this.state
     return (
       <Modal
         show
@@ -109,12 +122,12 @@ export default class EditPlaylistModal extends Component {
           }
           {mainTabActive && modalType === 'change' &&
             <SelectVideosForm
-              videos={searchText ? searchedVideos : videos}
+              videos={searchText ? searchedVideos : allVideos}
               selectedVideos={selectedVideos}
-              loadMoreVideosButton={searchText ? false : loadMoreVideosButton}
+              loadMoreVideosButton={searchText ? false : loadMoreButtonShown}
               onSelect={(selected, video) => this.setState({selectedVideos: [video].concat(selected)})}
               onDeselect={selected => this.setState({selectedVideos: selected})}
-              loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
+              loadMoreVideos={this.loadMoreVideos}
             />
           }
           {mainTabActive && modalType === 'reorder' &&
@@ -139,11 +152,10 @@ export default class EditPlaylistModal extends Component {
           }
           {!mainTabActive &&
             <SelectVideosForm
-              videos={playlist}
+              videos={selectedVideos}
               selectedVideos={selectedVideos}
               onSelect={(selected, video) => this.setState({selectedVideos: selected.concat([video])})}
               onDeselect={selected => this.setState({selectedVideos: selected})}
-              loadMoreVideos={() => { getMoreVideosForModal(lastId) }}
             />
           }
         </Modal.Body>
@@ -166,9 +178,32 @@ export default class EditPlaylistModal extends Component {
     changePlaylistVideos(playlistId, selectedVideos.map(video => video.id), this)
   }
 
+  loadMoreVideos() {
+    const {allVideos} = this.state
+    request.get(`${URL}/video?numberToLoad=18&videoId=${allVideos[allVideos.length - 1].id}`)
+      .then(
+        ({data: videos}) => {
+          let loadMoreButtonShown = false
+          if (videos.length > 18) {
+            videos.pop()
+            loadMoreButtonShown = true
+          }
+          this.setState({
+            allVideos: allVideos.concat(videos),
+            loadMoreButtonShown
+          })
+        }
+      ).catch(
+        error => console.error(error.response || error)
+      )
+  }
+
   onVideoSearch(event) {
-    const {searchVideos} = this.props
     this.setState({searchText: event.target.value})
-    searchVideos(event.target.value)
+    return request.get(`${URL}/playlist/search/video?query=${event.target.value}`).then(
+      ({data: searchedVideos}) => this.setState({searchedVideos})
+    ).catch(
+      error => console.error(error.response || error)
+    )
   }
 }

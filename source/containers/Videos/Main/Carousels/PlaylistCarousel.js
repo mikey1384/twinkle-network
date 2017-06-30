@@ -6,6 +6,7 @@ import VideoThumb from 'components/VideoThumb'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import EditPlaylistModal from '../Modals/EditPlaylistModal'
+import PlaylistModal from '../Modals/PlaylistModal'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {addEvent} from 'helpers/listenerHelpers'
 import {
@@ -40,12 +41,10 @@ export default class PlaylistCarousel extends Component {
     arrayIndex: PropTypes.number.isRequired,
     editable: PropTypes.bool,
     clickSafe: PropTypes.bool,
-    openChangePlaylistVideosModalAsync: PropTypes.func,
-    openReorderPlaylistVideosModal: PropTypes.func,
     editPlaylistTitleAsync: PropTypes.func,
     deletePlaylistAsync: PropTypes.func,
-    resetPlaylistModalState: PropTypes.func,
-    isAdmin: PropTypes.bool
+    isAdmin: PropTypes.bool,
+    showAllButton: PropTypes.bool
   }
 
   constructor() {
@@ -57,17 +56,16 @@ export default class PlaylistCarousel extends Component {
     }
     this.state = {
       onEdit: false,
-      editPlaylistModalShown: false,
+      changePLVideosModalShown: false,
+      reorderPLVideosModalShown: false,
       deleteConfirmModalShown: false,
+      playlistModalShown: false,
       numSlides
     }
     this.onEditTitle = this.onEditTitle.bind(this)
-    this.onChangeVideos = this.onChangeVideos.bind(this)
-    this.onReorderVideos = this.onReorderVideos.bind(this)
     this.onDeleteClick = this.onDeleteClick.bind(this)
     this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
     this.onEditTitleCancel = this.onEditTitleCancel.bind(this)
-    this.onEditPlaylistHide = this.onEditPlaylistHide.bind(this)
     this.onDeleteConfirm = this.onDeleteConfirm.bind(this)
     this.onResize = this.onResize.bind(this)
   }
@@ -99,20 +97,22 @@ export default class PlaylistCarousel extends Component {
   }
 
   render() {
-    const {onEdit, editPlaylistModalShown, deleteConfirmModalShown, numSlides} = this.state
+    const {
+      onEdit,
+      changePLVideosModalShown,
+      reorderPLVideosModalShown,
+      deleteConfirmModalShown,
+      playlistModalShown,
+      numSlides
+    } = this.state
     const {
       title,
       uploader,
       editable,
       isAdmin,
-      id
+      id,
+      showAllButton
     } = this.props
-    let playlist = this.props.playlist.map(video => ({
-      content: video.content,
-      id: video.videoId,
-      title: video.video_title,
-      uploaderName: video.video_uploader
-    }))
     const menuProps = [
       {
         label: 'Edit Title',
@@ -120,11 +120,11 @@ export default class PlaylistCarousel extends Component {
       },
       {
         label: 'Change Videos',
-        onClick: this.onChangeVideos
+        onClick: () => this.setState({changePLVideosModalShown: true})
       },
       {
         label: 'Reorder Videos',
-        onClick: this.onReorderVideos
+        onClick: () => this.setState({reorderPLVideosModalShown: true})
       },
       {
         separator: true
@@ -156,7 +156,13 @@ export default class PlaylistCarousel extends Component {
             <h4
               className="pull-left"
             >
-              {cleanString(title)} <small>by {uploader}</small>
+              <a
+                style={{cursor: 'pointer'}}
+                onClick={() => this.setState({playlistModalShown: true})}
+              >
+                {cleanString(title)}
+              </a>
+              <span>&nbsp;<small>by {uploader}</small></span>
             </h4>
           }
           {(editable || isAdmin) &&
@@ -179,15 +185,30 @@ export default class PlaylistCarousel extends Component {
           slidesToScroll={numSlides}
           cellSpacing={20}
           dragging={true}
+          showAllButton={showAllButton}
+          onShowAll={() => this.setState({playlistModalShown: true})}
         >
           {this.renderThumbs()}
         </Carousel>
-        {editPlaylistModalShown &&
-          <EditPlaylistModal
-            playlist={playlist}
-            selectedVideos={playlist}
+        {playlistModalShown &&
+          <PlaylistModal
+            title={cleanString(title)}
+            onHide={() => this.setState({playlistModalShown: false})}
             playlistId={id}
-            onHide={this.onEditPlaylistHide}
+          />
+        }
+        {changePLVideosModalShown &&
+          <EditPlaylistModal
+            modalType="change"
+            playlistId={id}
+            onHide={() => this.setState({changePLVideosModalShown: false})}
+          />
+        }
+        {reorderPLVideosModalShown &&
+          <EditPlaylistModal
+            modalType="reorder"
+            playlistId={id}
+            onHide={() => this.setState({reorderPLVideosModalShown: false})}
           />
         }
         {deleteConfirmModalShown &&
@@ -227,18 +248,6 @@ export default class PlaylistCarousel extends Component {
     this.setState({onEdit: true})
   }
 
-  onChangeVideos() {
-    this.props.openChangePlaylistVideosModalAsync().then(
-      () => this.setState({editPlaylistModalShown: true})
-    )
-  }
-
-  onReorderVideos() {
-    const playlistVideos = this.props.playlist
-    this.props.openReorderPlaylistVideosModal(playlistVideos)
-    this.setState({editPlaylistModalShown: true})
-  }
-
   onEditedTitleSubmit(title) {
     const {editPlaylistTitleAsync, id, arrayIndex} = this.props
     const playlistId = id
@@ -256,11 +265,6 @@ export default class PlaylistCarousel extends Component {
   onDeleteConfirm() {
     const {deletePlaylistAsync, id} = this.props
     deletePlaylistAsync(id, this)
-  }
-
-  onEditPlaylistHide() {
-    this.props.resetPlaylistModalState()
-    this.setState({editPlaylistModalShown: false})
   }
 
   onResize() {

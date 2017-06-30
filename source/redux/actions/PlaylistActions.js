@@ -222,22 +222,6 @@ export const getVideosForModalAsync = () => dispatch => request.get(`${URL}/vide
     }
   )
 
-export const getMoreVideosForModal = data => ({
-  type: 'GET_VIDEOS_FOR_MODAL',
-  data
-})
-
-export const getMoreVideosForModalAsync = videoId => dispatch =>
-  request.get(`${URL}/video?numberToLoad=18&videoId=${videoId}`)
-    .then(
-      response => dispatch(getMoreVideosForModal(response.data))
-    ).catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
-
 export const openChangePlaylistVideosModalAsync = () => dispatch =>
   request.get(`${URL}/video?numberToLoad=18`).then(
     response => {

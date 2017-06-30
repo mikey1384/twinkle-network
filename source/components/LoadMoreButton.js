@@ -3,12 +3,13 @@ import React from 'react'
 import Button from 'components/Button'
 
 LoadMoreButton.propTypes = {
+  style: PropTypes.object,
   onClick: PropTypes.func,
   loading: PropTypes.bool
 }
-export default function LoadMoreButton({onClick, loading}) {
+export default function LoadMoreButton({onClick, loading, style}) {
   return (
-    <div className="text-center" style={{paddingBottom: '1em'}}>
+    <div className="text-center" style={style}>
       <Button
         disabled={loading}
         className="btn btn-success"

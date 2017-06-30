@@ -58,6 +58,7 @@ export default class PlaylistsPanel extends Component {
               arrayIndex={index}
               {...playlist}
               editable={editable}
+              showAllButton={playlist.showAllButton}
             />
           )
         })}

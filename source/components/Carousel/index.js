@@ -3,6 +3,7 @@ import assign from 'object-assign'
 import ExecutionEnvironment from 'exenv'
 import ButtonGroup from 'components/ButtonGroup'
 import NavButton from './NavButton'
+import Button from 'components/Button'
 import {connect} from 'react-redux'
 import {clickSafeOn, clickSafeOff} from 'redux/actions/PlaylistActions'
 import {
@@ -49,6 +50,7 @@ export default class Carousel extends Component {
   static propTypes = {
     slideIndex: PropTypes.number,
     slidesToScroll: PropTypes.number,
+    showAllButton: PropTypes.bool,
     chatMode: PropTypes.bool,
     children: PropTypes.array,
     className: PropTypes.string,
@@ -57,7 +59,8 @@ export default class Carousel extends Component {
     userIsUploader: PropTypes.bool,
     showQuestionsBuilder: PropTypes.func,
     progressBar: PropTypes.bool,
-    onFinish: PropTypes.func
+    onFinish: PropTypes.func,
+    onShowAll: PropTypes.func
   }
 
   static defaultProps = {
@@ -149,7 +152,9 @@ export default class Carousel extends Component {
 
   render() {
     var children = React.Children.count(this.props.children) > 1 ? formatChildren.call(this, this.props.children) : this.props.children
-    const slideFraction = (this.state.currentSlide + 1)/this.state.slideCount
+    const {showAllButton, showQuestionsBuilder, onShowAll, onFinish} = this.props
+    const {slidesToScroll, currentSlide, slideCount} = this.state
+    const slideFraction = (currentSlide + 1)/slideCount
     return (
       <div className={['slider', this.props.className || ''].join(' ')} ref={ref => { this.Slider = ref }} style={assign(getSliderStyles.call(this), this.props.style || {})}>
         { this.props.userIsUploader &&
@@ -158,7 +163,7 @@ export default class Carousel extends Component {
               position: 'absolute',
               cursor: 'pointer'
             }}
-            onClick={() => this.props.showQuestionsBuilder()}
+            onClick={() => showQuestionsBuilder()}
           >Add/Edit Questions</a>
         }
         {this.props.progressBar &&
@@ -172,11 +177,11 @@ export default class Carousel extends Component {
                     label: 'Prev',
                     onClick: previousSlide.bind(this),
                     buttonClass: 'btn-default',
-                    disabled: this.state.currentSlide === 0
+                    disabled: currentSlide === 0
                   },
                   {
-                    label: this.state.currentSlide + 1 === this.state.slideCount ? 'Finish' : 'Next',
-                    onClick: this.state.currentSlide + 1 === this.state.slideCount ? this.props.onFinish : nextSlide.bind(this),
+                    label: currentSlide + 1 === slideCount ? 'Finish' : 'Next',
+                    onClick: currentSlide + 1 === slideCount ? onFinish : nextSlide.bind(this),
                     buttonClass: 'btn-default'
                   }
                 ]}
@@ -193,7 +198,7 @@ export default class Carousel extends Component {
                 aria-valuemin="0"
                 aria-valuemax="100"
                 style={{width: `${slideFraction*100}%`}}
-              >{`${this.state.currentSlide + 1}/${this.state.slideCount}`}</div>
+              >{(currentSlide + 1)/slideCount}</div>
             </div>
           </div>
         }
@@ -212,14 +217,31 @@ export default class Carousel extends Component {
             <NavButton
               left
               key={0}
-              disabled={this.state.currentSlide === 0}
+              disabled={currentSlide === 0}
               nextSlide={previousSlide.bind(this)}
             />,
-            <NavButton
-              key={1}
-              disabled={this.state.currentSlide + this.state.slidesToScroll >= this.state.slideCount}
-              nextSlide={nextSlide.bind(this)}
-            />
+            <div key={1}>
+              {slideCount > 5 && (currentSlide + slidesToScroll >= slideCount) && showAllButton ?
+                <Button
+                  className="btn btn-default btn-small"
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: -10,
+                    transform: 'translateY(-50%)',
+                    WebkitTransform: 'translateY(-50%)',
+                    msTransform: 'translateY(-50%)'
+                  }}
+                  onClick={onShowAll}
+                >
+                  Show All
+                </Button> :
+                <NavButton
+                  disabled={currentSlide + slidesToScroll >= slideCount}
+                  nextSlide={nextSlide.bind(this)}
+                />
+              }
+            </div>
           ]
         }
         <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.call(this)}}/>
@@ -311,7 +333,7 @@ export default class Carousel extends Component {
       // future by a delay. In this case we take 0
 
       // if duration is 0, consider that as jumping to endValue directly. This
-      // is needed because the easing functino might have undefined behavior for
+      // is needed because the easing function might have undefined behavior for
       // duration = 0
       const easeValue = config.duration === 0 ? config.endValue : config.easing(
         progressTime,
