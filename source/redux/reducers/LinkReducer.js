@@ -159,6 +159,7 @@ export default function linkReducer(state = defaultState, action) {
       return {
         ...state,
         linkPage: {
+          ...state.linkPage,
           ...action.page
         }
       }
