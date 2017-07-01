@@ -76,24 +76,22 @@ export default class PanelComments extends Component {
   renderComments() {
     const {comments, userId, parent, commentActions, type} = this.props
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
-    return comments.map((comment, index) => {
-      return (
-        <PanelComment
-          {...commentActions}
-          index={index}
-          type={type}
-          parent={parent}
-          comment={comment}
-          isFirstComment={index === 0}
-          marginTop={index !== 0}
-          key={comment.id}
-          userId={userId}
-          deleteCallback={this.deleteCallback}
-          lastDeletedCommentIndex={lastDeletedCommentIndex}
-          deleteListenerToggle={deleteListenerToggle}
-        />
-      )
-    })
+    return comments.map((comment, index) =>
+      <PanelComment
+        {...commentActions}
+        index={index}
+        type={type}
+        parent={parent}
+        comment={comment}
+        isFirstComment={index === 0}
+        marginTop={index !== 0}
+        key={comment.id}
+        userId={userId}
+        deleteCallback={this.deleteCallback}
+        lastDeletedCommentIndex={lastDeletedCommentIndex}
+        deleteListenerToggle={deleteListenerToggle}
+      />
+    )
   }
 
   deleteCallback(index, isFirstComment) {

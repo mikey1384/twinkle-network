@@ -2,7 +2,9 @@ import {processedStringWithURL} from 'helpers/stringHelpers'
 const defaultState = {
   links: [],
   loadMoreLinksButtonShown: false,
-  linkPage: {}
+  linkPage: {
+    comments: []
+  }
 }
 
 export default function linkReducer(state = defaultState, action) {
