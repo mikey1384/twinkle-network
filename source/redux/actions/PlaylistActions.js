@@ -4,10 +4,6 @@ import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/playlist`
 
-export const closeAddPlaylistModal = () => ({
-  type: 'ADD_PL_MODAL_CLOSE'
-})
-
 export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
   .then(
     response => dispatch({
@@ -49,9 +45,8 @@ export const uploadPlaylistAsync = params => dispatch =>
         const {data} = response
         if (data.result) {
           dispatch(uploadPlaylist(data.result))
-          dispatch(closeAddPlaylistModal())
         }
-        return
+        return Promise.resolve()
       }
     ).catch(
       error => {
@@ -199,29 +194,6 @@ export const loadMorePlaylistListAsync = playlistId => dispatch =>
       }
     )
 
-export const openAddPlaylistModal = () => ({
-  type: 'ADD_PL_MODAL_OPEN'
-})
-
-export const getVideosForModal = data => ({
-  type: 'GET_VIDEOS_FOR_MODAL',
-  initialRun: true,
-  data
-})
-
-export const getVideosForModalAsync = () => dispatch => request.get(`${URL}/video?numberToLoad=18`)
-  .then(
-    response => {
-      dispatch(getVideosForModal(response.data))
-      dispatch(openAddPlaylistModal())
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
-
 export const openChangePlaylistVideosModalAsync = () => dispatch =>
   request.get(`${URL}/video?numberToLoad=18`).then(
     response => {
@@ -232,19 +204,6 @@ export const openChangePlaylistVideosModalAsync = () => dispatch =>
       })
       return Promise.resolve()
     }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
-
-export const searchVideos = query => dispatch =>
-  request.get(`${API_URL}/search/video?query=${query}`).then(
-    response => dispatch({
-      type: 'SEARCH_VIDEO',
-      data: response.data
-    })
   ).catch(
     error => {
       console.error(error.response || error)

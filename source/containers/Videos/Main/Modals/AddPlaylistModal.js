@@ -3,79 +3,79 @@ import React, {Component} from 'react'
 import Textarea from 'react-textarea-autosize'
 import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
-import {
-  closeAddPlaylistModal,
-  uploadPlaylistAsync,
-  getMoreVideosForModalAsync,
-  searchVideos
-} from 'redux/actions/PlaylistActions'
+import {uploadPlaylistAsync} from 'redux/actions/PlaylistActions'
 import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import {connect} from 'react-redux'
 import SortableThumb from './SortableThumb'
 import {DragDropContext} from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-touch-backend'
 import SelectVideosForm from './SelectVideosForm'
-
-const defaultState = {
-  section: 0,
-  title: '',
-  description: '',
-  selectedVideos: [],
-  titleError: false,
-  searchText: ''
-}
+import request from 'axios'
+import {URL} from 'constants/URL'
 
 @DragDropContext(HTML5Backend)
 @connect(
-  state => ({
-    videos: state.PlaylistReducer.videoThumbsForModal,
-    searchedVideos: state.PlaylistReducer.searchedThumbs,
-    loadMoreVideosButton: state.PlaylistReducer.loadMoreButtonForModal
-  }),
+  null,
   {
-    closeAddPlaylistModal,
-    uploadPlaylist: uploadPlaylistAsync,
-    getMoreVideosForModal: getMoreVideosForModalAsync,
-    searchVideos
+    uploadPlaylist: uploadPlaylistAsync
   }
 )
 export default class AddPlaylistModal extends Component {
   static propTypes = {
-    videos: PropTypes.array,
-    loadMoreVideosButton: PropTypes.bool,
-    getMoreVideosForModal: PropTypes.func,
-    uploadPlaylist: PropTypes.func,
-    closeAddPlaylistModal: PropTypes.func,
-    searchVideos: PropTypes.func,
-    searchedVideos: PropTypes.array
+    onHide: PropTypes.func,
+    uploadPlaylist: PropTypes.func
   }
 
   constructor() {
     super()
-    this.state = defaultState
-    this.handleHide = this.handleHide.bind(this)
+    this.state = {
+      section: 0,
+      title: '',
+      description: '',
+      allVideos: [],
+      searchedVideos: [],
+      selectedVideos: [],
+      loadMoreButtonShown: false,
+      titleError: false,
+      searchText: ''
+    }
     this.handlePrev = this.handlePrev.bind(this)
     this.handleNext = this.handleNext.bind(this)
     this.handleFinish = this.handleFinish.bind(this)
+    this.loadMoreVideos = this.loadMoreVideos.bind(this)
     this.onVideoSearch = this.onVideoSearch.bind(this)
   }
 
+  componentWillMount() {
+    return request.get(`${URL}/video?numberToLoad=18`).then(
+      ({data: allVideos}) => {
+        let loadMoreButtonShown = false
+        if (allVideos.length > 18) {
+          allVideos.pop()
+          loadMoreButtonShown = true
+        }
+        this.setState({
+          allVideos,
+          loadMoreButtonShown
+        })
+      }
+    ).catch(
+      error => console.error(error.response || error)
+    )
+  }
+
   render() {
-    const {videos, loadMoreVideosButton, getMoreVideosForModal, searchedVideos} = this.props
-    const {section, titleError, title, description, searchText, selectedVideos} = this.state
-    const last = array => {
-      return array[array.length - 1]
-    }
-    const lastId = last(videos) ? last(videos).id : 0
-    const loadMoreVideos = () => {
-      getMoreVideosForModal(lastId)
-    }
+    const {onHide} = this.props
+    const {
+      section, titleError, title, description, loadMoreButtonShown,
+      allVideos, searchedVideos, selectedVideos, searchText
+    } = this.state
     return (
       <Modal
         show
         animation={false}
         backdrop="static"
-        onHide={this.handleHide}
+        onHide={onHide}
         dialogClassName={section >= 1 ? 'modal-extra-lg' : ''}
       >
         <Modal.Header closeButton>
@@ -141,14 +141,14 @@ export default class AddPlaylistModal extends Component {
                 onChange={this.onVideoSearch}
               />
               <SelectVideosForm
-                videos={searchText ? searchedVideos : videos}
+                videos={searchText ? searchedVideos : allVideos}
                 selectedVideos={selectedVideos}
-                loadMoreVideosButton={searchText ? false : loadMoreVideosButton}
+                loadMoreVideosButton={searchText ? false : loadMoreButtonShown}
                 onSelect={(selected, video) => this.setState({
                   selectedVideos: selected.concat([video])
                 })}
                 onDeselect={selected => this.setState({selectedVideos: selected})}
-                loadMoreVideos={loadMoreVideos}
+                loadMoreVideos={this.loadMoreVideos}
               />
             </div>
           }
@@ -176,7 +176,7 @@ export default class AddPlaylistModal extends Component {
 
         <Modal.Footer>
           {section === 0 ?
-            <Button className="btn btn-default" onClick={this.handleHide}>Cancel</Button>
+            <Button className="btn btn-default" onClick={onHide}>Cancel</Button>
             :
             <Button className="btn btn-default" onClick={this.handlePrev}>Prev</Button>
           }
@@ -224,24 +224,43 @@ export default class AddPlaylistModal extends Component {
   }
 
   handleFinish() {
-    const {uploadPlaylist} = this.props
+    const {uploadPlaylist, onHide} = this.props
     const {title, description, selectedVideos} = this.state
-    uploadPlaylist({
+    return uploadPlaylist({
       title: finalizeEmoji(title),
       description: finalizeEmoji(description),
       selectedVideos: selectedVideos.map(video => video.id)
-    })
+    }).then(
+      () => onHide()
+    )
   }
 
-  handleHide() {
-    const {closeAddPlaylistModal} = this.props
-    this.setState(defaultState)
-    closeAddPlaylistModal()
+  loadMoreVideos() {
+    const {allVideos} = this.state
+    request.get(`${URL}/video?numberToLoad=18&videoId=${allVideos[allVideos.length - 1].id}`)
+      .then(
+        ({data: videos}) => {
+          let loadMoreButtonShown = false
+          if (videos.length > 18) {
+            videos.pop()
+            loadMoreButtonShown = true
+          }
+          this.setState({
+            allVideos: allVideos.concat(videos),
+            loadMoreButtonShown
+          })
+        }
+      ).catch(
+        error => console.error(error.response || error)
+      )
   }
 
   onVideoSearch(event) {
-    const {searchVideos} = this.props
     this.setState({searchText: event.target.value})
-    searchVideos(event.target.value)
+    return request.get(`${URL}/playlist/search/video?query=${event.target.value}`).then(
+      ({data: searchedVideos}) => this.setState({searchedVideos})
+    ).catch(
+      error => console.error(error.response || error)
+    )
   }
 }

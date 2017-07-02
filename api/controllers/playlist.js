@@ -269,7 +269,7 @@ router.post('/pinned', requireAuth, (req, res) => {
 
 router.get('/search/video', (req, res) => {
   const searchQuery = req.query.query
-  if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send({result: []})
+  if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
   const query = `
     SELECT a.id, a.title, a.content, a.uploader AS uploaderId, b.username AS uploaderName
     FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?

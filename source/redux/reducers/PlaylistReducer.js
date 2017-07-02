@@ -5,8 +5,6 @@ const defaultState = {
   pinnedPlaylistsLoaded: false,
   loadMoreButton: false,
 
-  addPlaylistModalShown: false,
-
   selectPlaylistsToPinModalShown: false,
   loadMorePlaylistsToPinButton: false,
   playlistsToPin: [],
@@ -46,21 +44,6 @@ export default function PlaylistReducer(state = defaultState, action) {
         ...state,
         pinnedPlaylists: action.data.playlists,
         pinnedPlaylistsLoaded: true
-      }
-    case 'ADD_PL_MODAL_OPEN':
-      return {
-        ...state,
-        addPlaylistModalShown: true
-      }
-    case 'ADD_PL_MODAL_CLOSE':
-      return {
-        ...state,
-        addPlaylistModalShown: false
-      }
-    case 'SEARCH_VIDEO':
-      return {
-        ...state,
-        searchedThumbs: action.data.result
       }
     case 'SELECT_PL_TO_PIN_OPEN':
       if (action.data.result.length > 10) {

@@ -74,7 +74,6 @@ export default class Main extends Component {
     pinnedPlaylistsLoaded: PropTypes.bool,
     loadMorePinnedPlaylists: PropTypes.bool,
     addVideoModalShown: PropTypes.bool,
-    addPlaylistModalShown: PropTypes.bool,
     selectPlaylistsToPinModalShown: PropTypes.bool,
     playlistsToPin: PropTypes.array,
     loadMorePlaylistsToPinButton: PropTypes.bool,
@@ -84,13 +83,14 @@ export default class Main extends Component {
     openAddVideoModal: PropTypes.func,
     closeAddVideoModal: PropTypes.func,
     closeSelectPlaylistsToPinModal: PropTypes.func,
-    closeReorderPinnedPlaylistsModal: PropTypes.func,
-    getVideosForModal: PropTypes.func
+    closeReorderPinnedPlaylistsModal: PropTypes.func
   }
 
   constructor() {
     super()
-    this.showAddPlaylistModal = this.showAddPlaylistModal.bind(this)
+    this.state = {
+      addPlaylistModalShown: false
+    }
   }
 
   render() {
@@ -112,7 +112,6 @@ export default class Main extends Component {
       loadMorePinnedPlaylists,
 
       addVideoModalShown,
-      addPlaylistModalShown,
 
       selectPlaylistsToPinModalShown,
       playlistsToPin,
@@ -128,10 +127,12 @@ export default class Main extends Component {
       closeReorderPinnedPlaylistsModal
     } = this.props
 
+    const {addPlaylistModalShown} = this.state
+
     const allPlaylistButtons = [
       {
         label: '+ Add Playlist',
-        onClick: this.showAddPlaylistModal,
+        onClick: () => this.setState({addPlaylistModalShown: true}),
         buttonClass: 'btn-default'
       }
     ]
@@ -183,7 +184,11 @@ export default class Main extends Component {
               onHide={() => closeAddVideoModal()}
             />
           }
-          {addPlaylistModalShown && <AddPlaylistModal />}
+          {addPlaylistModalShown &&
+            <AddPlaylistModal
+              onHide={() => this.setState({addPlaylistModalShown: false})}
+            />
+          }
           {selectPlaylistsToPinModalShown &&
             <SelectPlaylistsToPinModal
               playlistsToPin={playlistsToPin}
@@ -224,7 +229,7 @@ export default class Main extends Component {
             <Button
               className="btn btn-lg btn-info"
               style={{fontSize: '1.5em', width: '100%'}}
-              onClick={this.showAddPlaylistModal}
+              onClick={() => this.setState({addPlaylistModalShown: true})}
             >
               + Add Playlist
             </Button>
@@ -241,10 +246,5 @@ export default class Main extends Component {
         buttons={buttonsArray}
       />
     )
-  }
-
-  showAddPlaylistModal() {
-    const {getVideosForModal} = this.props
-    getVideosForModal()
   }
 }
