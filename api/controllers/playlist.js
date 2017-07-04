@@ -1,5 +1,5 @@
 const pool = require('../pool')
-const {poolQuery} = require('../helpers')
+const {poolQuery, promiseSeries} = require('../helpers')
 const {requireAuth} = require('../auth')
 const {processedString, processedTitleString} = require('../helpers/stringHelpers')
 const {fetchPlaylists} = require('../helpers/playlistHelpers')
@@ -43,58 +43,103 @@ router.get('/playlist', (req, res) => {
   )
 })
 
+router.get('/rightMenu', (req, res) => {
+  const {videoId, playlistId} = req.query
+  const titleQuery = `
+    SELECT title FROM vq_playlists WHERE id = ?
+  `
+  const nextVideoQuery = `
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
+    WHERE a.playlistId = ?
+    AND a.id > (SELECT id FROM vq_playlistvideos WHERE playlistId = ? AND videoId = ? LIMIT 1)
+    LIMIT 1
+  `
+  const videosQuery = `
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
+    WHERE a.playlistId = ? LIMIT 11
+  `
+  return Promise.all([
+    poolQuery(titleQuery, playlistId),
+    poolQuery(nextVideoQuery, [playlistId, playlistId, videoId]),
+    poolQuery(videosQuery, playlistId)
+  ]).then(
+    ([[{title: playlistTitle}], nextVideos, playlistVideos]) => {
+      let playlistVideosLoadMoreShown = false
+      if (playlistVideos.length > 10) {
+        playlistVideosLoadMoreShown = true
+        playlistVideos.pop()
+      }
+      res.send({
+        playlistTitle,
+        nextVideos,
+        playlistVideos,
+        playlistVideosLoadMoreShown
+      })
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
   const title = processedTitleString(req.body.title)
   const description = processedString(req.body.description)
   const videos = req.body.selectedVideos
   const taskArray = []
-  async.waterfall([
-    (callback) => {
-      const uploaderId = user.id
-      const uploaderName = user.username
-      const post = {title, description, creator: uploaderId, timeStamp: Math.floor(Date.now()/1000)}
-      pool.query('INSERT INTO vq_playlists SET ?', post, (err, res) => {
-        const playlistId = res.insertId
-        callback(err, playlistId, uploaderName, uploaderId)
-      })
-    },
-    (playlistId, uploaderName, uploaderId, callback) => {
+  const query = 'INSERT INTO vq_playlists SET ?'
+  const post = {title, description, creator: user.id, timeStamp: Math.floor(Date.now()/1000)}
+  return poolQuery(query, post).then(
+    ({insertId: playlistId}) => {
       for (let i = 0; i < videos.length; i++) {
-        taskArray.push(callback => {
-          let playlistVideo = {playlistId: playlistId, videoId: videos[i]}
-          pool.query('INSERT INTO vq_playlistvideos SET ?', playlistVideo, function(err) {
-            callback(err)
-          })
-        })
+        let query = 'INSERT INTO vq_playlistvideos SET ?'
+        taskArray.push(poolQuery(query, {playlistId, videoId: videos[i]}))
       }
-      async.series(taskArray, function(err) {
-        if (err) return callback(err)
-        const query = `
-          SELECT a.id, a.videoId, b.title AS video_title, b.content, c.username AS video_uploader,
-          COUNT(d.id) AS numLikes
-          FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON b.uploader = c.id
-          LEFT JOIN content_likes d ON b.id = d.rootId AND d.rootType = 'video'
-          WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id
-        `
-        pool.query(query, playlistId, (err, rows) => {
-          callback(err, {
-            playlist: rows,
-            title: title,
-            id: playlistId,
-            uploader: uploaderName,
-            uploaderId: uploaderId
-          })
-        })
+      return promiseSeries(taskArray).then(() => Promise.resolve(playlistId))
+    }
+  ).then(
+    playlistId => {
+      const videosQuery = `
+        SELECT a.id, a.videoId, b.title AS video_title, b.content, c.username AS video_uploader,
+        COUNT(d.id) AS numLikes
+        FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON b.uploader = c.id
+        LEFT JOIN content_likes d ON b.id = d.rootId AND d.rootType = 'video'
+        WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id LIMIT 10
+      `
+      const numberOfVideosQuery = `
+        SELECT COUNT(id) AS numVids FROM vq_playlistvideos WHERE playlistId = ?
+      `
+      return Promise.all([
+        poolQuery(videosQuery, playlistId),
+        poolQuery(numberOfVideosQuery, playlistId)
+      ]).then(
+        ([playlist, [{numVids}]]) => Promise.resolve({playlist, numVids, playlistId})
+      )
+    }
+  ).then(
+    ({playlist, numVids, playlistId}) => {
+      res.send({
+        result: {
+          playlist,
+          showAllButton: numVids > 10,
+          title,
+          id: playlistId,
+          uploader: user.username,
+          uploaderId: user.id
+        }
       })
     }
-  ], (err, result) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
-    res.send({result})
-  })
+  )
 })
 
 router.post('/edit/title', requireAuth, (req, res) => {
@@ -124,7 +169,7 @@ router.post('/edit/videos', requireAuth, (req, res) => {
         tasks.push(() => poolQuery('INSERT INTO vq_playlistvideos SET ?', {playlistId, videoId: selectedVideos[i]}))
       }
       return Promise.all([
-        tasks.reduce((promise, task) => promise.then(task), Promise.resolve()),
+        promiseSeries(tasks),
         poolQuery(
           'UPDATE vq_playlists SET ? WHERE id = ?',
           [{timeStamp: Math.floor(Date.now()/1000)}, playlistId]

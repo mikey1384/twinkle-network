@@ -18,7 +18,7 @@ export const getPlaylistsAsync = () => dispatch => request.get(API_URL)
   )
 
 export const getMorePlaylistsAsync = shownPlaylistsIds => dispatch =>
-  request.get(`${API_URL}?${shownPlaylistsIds.map(id => `shownPlaylists[]=${id}`).join('&')}`).then(
+  request.get(`${API_URL}?${shownPlaylistsIds}`).then(
     response => {
       dispatch({
         type: 'GET_MORE_PLAYLISTS',

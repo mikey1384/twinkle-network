@@ -7,6 +7,7 @@ import ProfileCard from '../ProfileCard'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import {queryStringForArray} from 'helpers/apiHelpers'
 
 @connect(
   state => ({
@@ -90,7 +91,7 @@ export default class People extends Component {
     const {loading} = this.state
     if (!loading) {
       this.setState({loading: true})
-      return fetchMoreUsers(profiles.map(profile => profile.id)).then(
+      return fetchMoreUsers(queryStringForArray(profiles, 'id', 'shownUsers')).then(
         () => this.setState({loading: false})
       )
     }

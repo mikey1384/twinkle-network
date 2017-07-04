@@ -11,6 +11,7 @@ import request from 'axios'
 import {URL} from 'constants/URL'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import {connect} from 'react-redux'
+import {queryStringForArray} from 'helpers/apiHelpers'
 
 const API_URL = `${URL}/playlist`
 
@@ -56,7 +57,7 @@ export default class PlaylistModal extends Component {
   }
 
   render() {
-    const {loadVideoPage, onHide, title} = this.props
+    const {loadVideoPage, onHide, playlistId, title} = this.props
     const {videos, loading, loadMoreButtonShown} = this.state
     return (
       <Modal
@@ -76,7 +77,7 @@ export default class PlaylistModal extends Component {
             >
               <div className="media-left media-middle">
                 <Link
-                  to={`/videos/${video.id}`}
+                  to={`/videos/${video.id}?playlist=${playlistId}`}
                   onClickAsync={() => loadVideoPage(video.id)}
                 >
                   <img
@@ -89,7 +90,7 @@ export default class PlaylistModal extends Component {
               </div>
               <div className="media-body">
                 <Link
-                  to={`/videos/${video.id}`}
+                  to={`/videos/${video.id}?playlist=${playlistId}`}
                   onClickAsync={() => loadVideoPage(video.id)}
                 >
                   <p style={{fontSize: '1.2em'}} className="media-heading">{cleanString(video.title)}</p>
@@ -116,9 +117,8 @@ export default class PlaylistModal extends Component {
     const {videos} = this.state
     this.setState({loading: true})
     request.get(`
-      ${API_URL}/playlist?playlistId=${playlistId}
-      &${videos.map(video => `shownVideos[]=${video.id}`).join('&')}`
-    ).then(
+      ${API_URL}/playlist?playlistId=${playlistId}&${queryStringForArray(videos, 'id', 'shownVideos')}
+    `).then(
       response => {
         let loadMoreButtonShown = false
         if (response.data.length > 10) {

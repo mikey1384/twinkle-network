@@ -222,6 +222,15 @@ export default function VideoReducer(state = defaultState, action) {
           ...action.data
         }
       }
+    case 'LOAD_MORE_RIGHT_MENU_PL_VIDEOS':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          playlistVideos: state.videoPage.playlistVideos.concat(action.playlistVideos),
+          playlistVideosLoadMoreShown: action.playlistVideosLoadMoreShown
+        }
+      }
     case 'LOAD_VIDEO_DEBATE_COMMENTS':
       loadMoreDebateCommentsButton = false
       if (action.data.length > 3) {

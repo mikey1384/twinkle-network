@@ -92,9 +92,7 @@ export default class VideoPage extends Component {
   }
 
   componentDidMount() {
-    const {history, location: {search}, match: {params}, loadVideoPage} = this.props
-    const {playlistId} = queryString.parse(search)
-    if (playlistId) console.log(playlistId)
+    const {history, match: {params}, loadVideoPage} = this.props
     if (history.action === 'POP') loadVideoPage(params.videoId)
   }
 
@@ -112,7 +110,8 @@ export default class VideoPage extends Component {
   render() {
     let {
       uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
-      content, title, timeStamp, questions = [], likes = [], videoViews, match: {params: {videoId}}
+      content, title, timeStamp, questions = [], likes = [], location: {search}, videoViews,
+      match: {params: {videoId}}
     } = this.props
     videoId = Number(videoId)
     const {
@@ -127,6 +126,8 @@ export default class VideoPage extends Component {
       'embed-responsive embed-responsive-16by9' : 'video-container-fixed-left'
     const youtubeIframeClassName = watchTabActive ?
       'embed-responsive-item' : 'video-fixed-left'
+
+    const {playlist: playlistId} = queryString.parse(search)
 
     return (
       <div className="container-fluid">
@@ -242,6 +243,7 @@ export default class VideoPage extends Component {
         </div>
         <RightMenu
           videoId={videoId}
+          playlistId={playlistId}
         />
       </div>
     )

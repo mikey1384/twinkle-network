@@ -223,11 +223,11 @@ export default class PlaylistCarousel extends Component {
   }
 
   renderThumbs() {
-    const {playlist, clickSafe} = this.props
+    const {playlist, clickSafe, id: playlistId} = this.props
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
-          to={`videos/${thumb.videoId}`}
+          to={`videos/${thumb.videoId}?playlist=${playlistId}`}
           clickSafe={clickSafe}
           key={index}
           video={{
@@ -249,8 +249,7 @@ export default class PlaylistCarousel extends Component {
   }
 
   onEditedTitleSubmit(title) {
-    const {editPlaylistTitleAsync, id, arrayIndex} = this.props
-    const playlistId = id
+    const {editPlaylistTitleAsync, id: playlistId, arrayIndex} = this.props
     editPlaylistTitleAsync({title, playlistId}, arrayIndex, this)
   }
 

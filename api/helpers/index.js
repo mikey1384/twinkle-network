@@ -7,6 +7,9 @@ const poolQuery = (query, params) => new Promise((resolve, reject) => {
   })
 })
 
+const promiseSeries = array => array.reduce((promise, task) => promise.then(task), Promise.resolve())
+
 module.exports = {
-  poolQuery
+  poolQuery,
+  promiseSeries
 }

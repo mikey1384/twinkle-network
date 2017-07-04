@@ -12,12 +12,12 @@ import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import Button from 'components/Button'
 import ChatSearchBox from './ChatSearchBox'
-import {Color} from 'constants/css'
 import {GENERAL_CHAT_ID} from 'constants/database'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import {textIsOverflown} from 'helpers/domHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import {socket} from 'constants/io'
+import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -309,26 +309,10 @@ export default class Chat extends Component {
             ref={ref => { this.channelList = ref }}
           >
             {this.renderChannels()}
-            {channelLoadMoreButtonShown &&
-              <div
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '0',
-                  margin: '0',
-                  height: '3rem',
-                  cursor: channelsLoading ? 'default' : 'pointer',
-                  backgroundColor: Color.green,
-                  color: '#fff',
-                  opacity: channelsLoading && '0.5'
-                }}
-                className="flexbox-container"
-                onClick={this.loadMoreChannels}
-              >
-                {channelsLoading ? 'Loading' : 'Load More'}
-                {channelsLoading && <span>&nbsp;&nbsp;<span className="glyphicon glyphicon-refresh spinning"></span></span>}
-              </div>
-            }
+            {channelLoadMoreButtonShown && <FlatLoadMoreButton
+              isLoading={channelsLoading}
+              onClick={this.loadMoreChannels}
+            />}
           </div>
         </div>
         <div
@@ -469,7 +453,9 @@ export default class Chat extends Component {
   }
 
   onListScroll() {
-    if (this.channelList.scrollTop >= (this.channelList.scrollHeight - this.channelList.offsetHeight) * 0.7) {
+    if (
+      this.channelList.scrollTop >=
+      (this.channelList.scrollHeight - this.channelList.offsetHeight) * 0.7) {
       this.loadMoreChannels()
     }
   }

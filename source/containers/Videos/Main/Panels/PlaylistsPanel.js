@@ -5,6 +5,7 @@ import PlaylistCarousel from '../Carousels/PlaylistCarousel'
 import {connect} from 'react-redux'
 import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions'
 import SectionPanel from 'components/SectionPanel'
+import {queryStringForArray} from 'helpers/apiHelpers'
 
 @withRouter
 @connect(
@@ -68,6 +69,6 @@ export default class PlaylistsPanel extends Component {
 
   loadMorePlaylists() {
     const {playlists, getMorePlaylistsAsync} = this.props
-    return getMorePlaylistsAsync(playlists.map(playlist => playlist.id))
+    return getMorePlaylistsAsync(queryStringForArray(playlists, 'id', 'shownPlaylists'))
   }
 }

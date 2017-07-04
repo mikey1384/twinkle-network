@@ -291,9 +291,28 @@ export const loadMoreDebates = (videoId, lastDiscussionId) => dispatch =>
         handleError(error, dispatch)
       }
     )
+export const loadMorePlaylistVideos = (playlistId, shownVideos) => dispatch =>
+  request.get(`${API_URL}/more/playlistVideos?playlistId=${playlistId}&${shownVideos}`).then(
+    ({data: {playlistVideos, playlistVideosLoadMoreShown}}) => {
+      dispatch({
+        type: 'LOAD_MORE_RIGHT_MENU_PL_VIDEOS',
+        playlistVideos,
+        playlistVideosLoadMoreShown
+      })
+      Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
-export const loadRightMenuVideos = videoId => dispatch =>
-  request.get(`${API_URL}/rightMenu?videoId=${videoId}`).then(
+export const loadRightMenuVideos = (videoId, playlistId) => dispatch => {
+  const type = playlistId ? 'playlist' : 'video'
+  return request.get(
+    `${URL}/${type}/rightMenu?videoId=${videoId}${playlistId ? `&playlistId=${playlistId}` : ''}`
+  ).then(
     response => dispatch({
       type: 'LOAD_RIGHT_MENU_VIDEOS',
       data: response.data
@@ -304,6 +323,7 @@ export const loadRightMenuVideos = videoId => dispatch =>
       handleError(error, dispatch)
     }
   )
+}
 
 export const loadVideoCommentsAsync = videoId => dispatch =>
   request.get(`${API_URL}/comments?rootId=${videoId}&rootType=video`)
