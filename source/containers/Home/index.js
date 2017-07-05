@@ -6,12 +6,14 @@ import Profile from './Profile'
 import People from './People'
 import Feeds from './Feeds'
 import Notification from 'containers/Notification'
+import ProfilePic from 'components/ProfilePic'
 import {disconnectHomeComponent} from 'redux/actions/FeedActions'
 
 @connect(
   state => ({
     username: state.UserReducer.username,
     userId: state.UserReducer.userId,
+    profilePicId: state.UserReducer.profilePicId,
     notificationLoaded: state.NotiReducer.loaded
   }),
   {disconnectHomeComponent}
@@ -22,6 +24,8 @@ export default class Home extends Component {
     location: PropTypes.object,
     notificationLoaded: PropTypes.bool,
     username: PropTypes.string,
+    userId: PropTypes.number,
+    profilePicId: PropTypes.number,
     disconnectHomeComponent: PropTypes.func
   }
 
@@ -38,7 +42,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const {history, location, username: myUsername, notificationLoaded} = this.props
+    const {history, location, userId, profilePicId, username: myUsername, notificationLoaded} = this.props
     let username = ''
     if (location.pathname.includes('/users/')) {
       username = location.pathname.split('/')[2]
@@ -58,24 +62,47 @@ export default class Home extends Component {
           }}>
             <Route path='/' exact children={({match}) => (
               <li
-                className={`list-group-item left-menu-item home-left-menu ${match && ' active'}`}
+                className={`list-group-item left-menu-item home-left-menu ${match && ' active'}  flexbox-container`}
                 onClick={() => history.push('/')}
               >
-                <a>Home</a>
+                <div className="media-left">
+                  <a>
+                    <img
+                      alt="Thumbnail"
+                      className="media-object"
+                      style={{width: '3vw', height: '3vw'}}
+                      src="/img/feed.png"
+                    />
+                  </a>
+                </div>
+                <a>Stories</a>
+                <div className="clearfix"></div>
               </li>
             )}/>
             <li
-              className={`list-group-item left-menu-item home-left-menu ${username === myUsername && ' active'}`}
+              className={`list-group-item left-menu-item home-left-menu ${username === myUsername && ' active'} flexbox-container`}
               onClick={() => history.push(`/users/${myUsername}`)}
             >
-              <a>Profile</a>
+              <ProfilePic size='3' userId={userId} profilePicId={profilePicId} /><a>Profile</a>
+              <div className="clearfix"></div>
             </li>
             <Route exact path='/users' children={({match}) => (
               <li
-                className={`list-group-item left-menu-item home-left-menu ${(match || ((username && myUsername) && (username !== myUsername))) && ' active'}`}
+                className={`list-group-item left-menu-item home-left-menu ${(match || ((username && myUsername) && (username !== myUsername))) && ' active'} flexbox-container`}
                 onClick={() => history.push('/users')}
               >
+                <div className="media-left">
+                  <a>
+                    <img
+                      alt="Thumbnail"
+                      className="media-object"
+                      style={{width: '3vw', height: '3vw'}}
+                      src="/img/people.png"
+                    />
+                  </a>
+                </div>
                 <a>People</a>
+                <div className="clearfix"></div>
               </li>
             )}/>
           </ul>

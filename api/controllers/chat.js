@@ -643,6 +643,12 @@ router.get('/search/chat', requireAuth, (req, res) => {
   })
 })
 
+router.get('/search/subject', (req, res) => {
+  const {text} = req.query
+  console.log(text)
+  res.send({success: true})
+})
+
 router.get('/search/users', (req, res) => {
   const text = req.query.text
   if (stringIsEmpty(text) || text.length < 2) return res.send([])

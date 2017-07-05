@@ -5,12 +5,17 @@ import Button from 'components/Button'
 import {cleanString} from 'helpers/stringHelpers'
 import Loading from 'components/Loading'
 import {connect} from 'react-redux'
-import {loadChatSubject, uploadChatSubject, changeChatSubject} from 'redux/actions/ChatActions'
+import {
+  loadChatSubject,
+  uploadChatSubject,
+  changeChatSubject,
+  searchChatSubject
+} from 'redux/actions/ChatActions'
 import {textIsOverflown} from 'helpers/domHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import UsernameText from 'components/Texts/UsernameText'
 import {timeSince} from 'helpers/timeStampHelpers'
-import EditTitleForm from 'components/Texts/EditTitleForm'
+import EditSubjectForm from './EditSubjectForm'
 import {socket} from 'constants/io'
 import {defaultChatSubject} from 'constants/defaultValues'
 
@@ -24,7 +29,8 @@ import {defaultChatSubject} from 'constants/defaultValues'
   {
     changeChatSubject,
     loadChatSubject,
-    uploadChatSubject
+    uploadChatSubject,
+    searchChatSubject
   }
 )
 export default class SubjectHeader extends Component {
@@ -35,6 +41,7 @@ export default class SubjectHeader extends Component {
     subject: PropTypes.string,
     changeChatSubject: PropTypes.func,
     loadChatSubject: PropTypes.func,
+    searchChatSubject: PropTypes.func,
     uploadChatSubject: PropTypes.func
   }
 
@@ -64,13 +71,16 @@ export default class SubjectHeader extends Component {
   }
 
   render() {
-    const {subject: {content = defaultChatSubject, uploader, timeStamp}} = this.props
+    const {
+      subject: {content = defaultChatSubject, uploader, timeStamp},
+      searchChatSubject
+    } = this.props
     const {loaded, onHover, onEdit} = this.state
     return (
       <div style={{width: '100%', height: '4.5em', position: 'absolute', backgroundColor: '#fff'}}>
         {loaded ?
           <div>
-            <div className="col-xs-10" style={{float: 'left', paddingLeft: '0px'}}>
+            <div className="col-xs-10" style={{float: 'left', paddingLeft: '0px', paddingRight: '0px'}}>
               {!onEdit &&
                 <div>
                   <h3
@@ -97,19 +107,22 @@ export default class SubjectHeader extends Component {
                   />
                 </div>
               }
-              {onEdit &&
-                <EditTitleForm
-                  autoFocus
-                  title={cleanString(content)}
-                  onEditSubmit={this.onSubjectSubmit}
-                  onClickOutSide={() => this.setState({onEdit: false})}
-                />
-              }
               {!onEdit && <div>
                 {uploader ? <small>Posted by <UsernameText user={uploader} /> ({timeSince(timeStamp)})</small> :
                   <small>{'You can change the subject by clicking the "Change the Subject" button on the right'}</small>
                 }
               </div>}
+            </div>
+            <div>
+              {onEdit &&
+                <EditSubjectForm
+                  autoFocus
+                  title={cleanString(content)}
+                  onEditSubmit={this.onSubjectSubmit}
+                  onChange={text => searchChatSubject(text)}
+                  onClickOutSide={() => this.setState({onEdit: false})}
+                />
+              }
             </div>
             <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
               {!onEdit &&

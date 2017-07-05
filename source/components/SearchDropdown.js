@@ -3,12 +3,14 @@ import React, {Component} from 'react'
 
 export default class Dropdown extends Component {
   static propTypes = {
+    className: PropTypes.string,
     onUpdate: PropTypes.func.isRequired,
     onUnmount: PropTypes.func.isRequired,
     onItemClick: PropTypes.func.isRequired,
     renderItemLabel: PropTypes.func.isRequired,
     dropdownItemToHighlight: PropTypes.number.isRequired,
-    searchResults: PropTypes.array.isRequired
+    searchResults: PropTypes.array.isRequired,
+    style: PropTypes.object
   }
 
   componentWillReceiveProps(nextProps) {
@@ -33,25 +35,27 @@ export default class Dropdown extends Component {
   }
 
   render() {
-    const {searchResults, dropdownItemToHighlight} = this.props
+    const {searchResults, dropdownItemToHighlight, style, className = 'dropdown-menu'} = this.props
     return (
       <ul
-        className="dropdown-menu"
+        className={className}
         style={{
           width: '100%',
           cursor: 'pointer',
-          display: 'block'
+          display: 'block',
+          ...style
         }}
       >
         {searchResults.map((item, index) => {
-          let style = index === dropdownItemToHighlight ? {background: '#f5f5f5', color: '#333333'} : null
+          let itemStyle = index === dropdownItemToHighlight ?
+            {background: '#f5f5f5', color: '#333333'} : null
           return (
             <li
               key={index}
               onClick={() => this.props.onItemClick(item)}
             >
               <a style={{
-                ...style,
+                ...itemStyle,
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
