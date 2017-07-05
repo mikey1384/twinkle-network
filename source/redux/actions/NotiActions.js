@@ -3,7 +3,7 @@ import {auth, handleError} from './constants'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/notification`
-const appVersion = 0.031
+const appVersion = 0.032
 
 export const checkVersion = () => dispatch =>
   request.get(`${API_URL}/version?version=${appVersion}`).then(
