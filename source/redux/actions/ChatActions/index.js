@@ -7,6 +7,11 @@ import {processedStringWithURL} from 'helpers/stringHelpers'
 
 const API_URL = `${URL}/chat`
 
+export const changeChatSubject = subject => ({
+  type: 'CHANGE_CHAT_SUBJECT',
+  subject
+})
+
 export const selectChannel = channelId => dispatch => {
   dispatch({
     type: 'SELECT_CHANNEL',
@@ -183,11 +188,6 @@ export const loadChatSubject = () => dispatch =>
     }
   )
 
-export const changeChatSubject = subject => ({
-  type: 'CHANGE_CHAT_SUBJECT',
-  subject
-})
-
 export const loadMoreChannels = (currentChannelId, lastChannelId) => dispatch =>
   request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&lastChannelId=${lastChannelId}`, auth()).then(
     response => {
@@ -306,6 +306,16 @@ export const resetChat = () => ({
 export const searchChatAsync = text => dispatch =>
   request.get(`${API_URL}/search/chat?text=${text}`, auth()).then(
     response => dispatch(actions.searchChat(response.data))
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+
+export const searchChatSubject = text => dispatch =>
+  request.get(`${API_URL}/search/subject?text=${text}`).then(
+    ({data}) => console.log(data)
   ).catch(
     error => {
       console.error(error.response || error)
