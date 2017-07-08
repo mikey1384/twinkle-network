@@ -4,16 +4,18 @@ import React, {Component} from 'react'
 export default class Dropdown extends Component {
   static propTypes = {
     className: PropTypes.string,
+    startingIndex: PropTypes.number,
     onUpdate: PropTypes.func.isRequired,
     onUnmount: PropTypes.func.isRequired,
     onItemClick: PropTypes.func.isRequired,
     renderItemLabel: PropTypes.func.isRequired,
-    dropdownItemToHighlight: PropTypes.number.isRequired,
+    indexToHighlight: PropTypes.number.isRequired,
     searchResults: PropTypes.array.isRequired,
     style: PropTypes.object
   }
 
   componentWillReceiveProps(nextProps) {
+    const {startingIndex = 0} = this.props
     let searchResultsChanged = false
     if (this.props.searchResults.length !== nextProps.searchResults.length) {
       searchResultsChanged = true
@@ -25,7 +27,7 @@ export default class Dropdown extends Component {
       }
     }
 
-    if (searchResultsChanged && (nextProps.dropdownItemToHighlight !== 0)) {
+    if (searchResultsChanged && (nextProps.indexToHighlight > startingIndex)) {
       this.props.onUpdate()
     }
   }
@@ -35,7 +37,7 @@ export default class Dropdown extends Component {
   }
 
   render() {
-    const {searchResults, dropdownItemToHighlight, style, className = 'dropdown-menu'} = this.props
+    const {searchResults, indexToHighlight, style, className = 'dropdown-menu'} = this.props
     return (
       <ul
         className={className}
@@ -47,7 +49,7 @@ export default class Dropdown extends Component {
         }}
       >
         {searchResults.map((item, index) => {
-          let itemStyle = index === dropdownItemToHighlight ?
+          let itemStyle = index === indexToHighlight ?
             {background: '#f5f5f5', color: '#333333'} : null
           return (
             <li

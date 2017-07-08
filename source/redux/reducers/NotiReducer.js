@@ -28,10 +28,7 @@ export default function NotiReducer(state = defaultState, action) {
         ...state,
         currentChatSubject: {
           ...state.currentChatSubject,
-          content: action.subject.content,
-          userId: action.subject.uploader.id,
-          username: action.subject.uploader.name,
-          timeStamp: action.subject.timeStamp
+          ...action.subject
         }
       }
     default:

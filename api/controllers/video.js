@@ -287,7 +287,7 @@ router.get('/rightMenu', (req, res) => {
     WHERE a.playlistId = ? AND a.videoId != ? LIMIT ${limit}
   `
   const otherVideosQuery = `
-    SELECT a.id AS videoId, a.title, a.content, a.uploader, b.username
+    SELECT a.id, a.id AS videoId, a.title, a.content, a.uploader, b.username
     FROM vq_videos a JOIN users b ON a.uploader = b.id
     ORDER BY a.id DESC LIMIT 21
   `

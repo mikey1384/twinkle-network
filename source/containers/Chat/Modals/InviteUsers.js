@@ -7,7 +7,7 @@ import {clearUserSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsy
 
 @connect(
   state => ({
-    searchResult: state.ChatReducer.userSearchResult
+    searchResults: state.ChatReducer.userSearchResults
   }),
   {
     clearSearchResults: clearUserSearchResults,
@@ -22,7 +22,7 @@ export default class InviteUsersModal extends Component {
     onDone: PropTypes.func.isRequired,
     clearSearchResults: PropTypes.func,
     searchUserToInvite: PropTypes.func,
-    searchResult: PropTypes.array,
+    searchResults: PropTypes.array,
     style: PropTypes.object,
     inviteUsersToChannel: PropTypes.func
   }
@@ -38,7 +38,7 @@ export default class InviteUsersModal extends Component {
   }
 
   render() {
-    const {clearSearchResults, searchUserToInvite, searchResult, onHide, style, currentChannel} = this.props
+    const {clearSearchResults, searchUserToInvite, searchResults, onHide, style, currentChannel} = this.props
     const {selectedUsers} = this.state
     const currentMembersUID = currentChannel.members.map(member => member.userId)
     return (
@@ -53,7 +53,7 @@ export default class InviteUsersModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <TagPeopleForm
-            searchResult={searchResult}
+            searchResults={searchResults}
             filter={result => currentMembersUID.indexOf(result.id) === -1}
             onSearch={searchUserToInvite}
             onClear={clearSearchResults}

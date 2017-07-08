@@ -9,6 +9,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
 import {editMessage, deleteMessage, saveMessage} from 'redux/actions/ChatActions'
+import Button from 'components/Button'
 import {Color} from 'constants/css'
 
 @connect(
@@ -39,6 +40,7 @@ export default class Message extends Component {
     }
     this.onDelete = this.onDelete.bind(this)
     this.onEditDone = this.onEditDone.bind(this)
+    this.renderPrefix = this.renderPrefix.bind(this)
   }
 
   componentWillMount() {
@@ -58,7 +60,7 @@ export default class Message extends Component {
         username,
         timeStamp,
         content,
-        isSubject
+        isReloadedSubject
       },
       style,
       myId
@@ -82,7 +84,7 @@ export default class Message extends Component {
             wordWrap: 'break-word'
           }}
         >
-          {!!messageId && myId === userId && !onEdit &&
+          {!!messageId && !isReloadedSubject && myId === userId && !onEdit &&
             <SmallDropdownButton
               shape="button"
               icon="pencil"
@@ -120,10 +122,17 @@ export default class Message extends Component {
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}
               /> :
-              <span>
-                {isSubject ? <span style={{fontWeight: 'bold', color: Color.green}}>Subject: </span> : ''}
-                <span style={style} dangerouslySetInnerHTML={{__html: content}}></span>
-              </span>
+              <div>
+                <div>
+                  {this.renderPrefix()}
+                  <span style={style} dangerouslySetInnerHTML={{__html: content}}></span>
+                </div>
+                {/* isReloadedSubject */ false &&
+                  <div style={{marginTop: '0.5em'}}>
+                    <Button className="btn btn-sm btn-success">Show past conversations</Button>
+                  </div>
+                }
+              </div>
             }
           </div>
         </div>
@@ -150,5 +159,17 @@ export default class Message extends Component {
     onEditDone({editedMessage, messageId: message.id}).then(
       () => this.setState({onEdit: false})
     )
+  }
+
+  renderPrefix() {
+    const {message: {isSubject, isReloadedSubject}} = this.props
+    let prefix = ''
+    if (isSubject) prefix = <span style={{fontWeight: 'bold', color: Color.green}}>Subject: </span>
+    if (isReloadedSubject) {
+      prefix = <span style={{fontWeight: 'bold', color: Color.green}}>
+        {'Back to subject: '}
+      </span>
+    }
+    return prefix
   }
 }

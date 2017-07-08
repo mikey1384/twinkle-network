@@ -5,7 +5,7 @@ import Input from './Input'
 
 export default class TagPeopleForm extends Component {
   static propTypes = {
-    searchResult: PropTypes.array.isRequired,
+    searchResults: PropTypes.array.isRequired,
     selectedUsers: PropTypes.array.isRequired,
     filter: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired,
@@ -14,7 +14,8 @@ export default class TagPeopleForm extends Component {
     onRemoveUser: PropTypes.func.isRequired,
     children: PropTypes.oneOfType([
       PropTypes.bool,
-      PropTypes.array
+      PropTypes.array,
+      PropTypes.node
     ]),
     onSubmit: PropTypes.oneOfType([
       PropTypes.bool,
@@ -38,7 +39,7 @@ export default class TagPeopleForm extends Component {
 
   render() {
     const {
-      searchResult,
+      searchResults,
       onClear,
       selectedUsers,
       filter,
@@ -46,7 +47,7 @@ export default class TagPeopleForm extends Component {
       children
     } = this.props
     const {searchText} = this.state
-    const filteredResults = searchResult.filter(filter)
+    const filteredResults = searchResults.filter(filter)
     return (
       <form onSubmit={event => {
         event.preventDefault()

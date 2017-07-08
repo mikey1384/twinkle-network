@@ -6,15 +6,16 @@ const defaultState = {
   currentChannel: {},
   channels: [],
   messages: [],
-  userSearchResult: [],
-  chatSearchResult: [],
+  userSearchResults: [],
+  chatSearchResults: [],
   loadMoreMessages: false,
   channelLoadMoreButton: false,
   partnerId: null,
   numUnreads: 0,
   pageVisible: true,
   msgsWhileInvisible: 0,
-  subject: {}
+  subject: {},
+  subjectSearchResults: []
 }
 
 export default function ChatReducer(state = defaultState, action) {
@@ -50,12 +51,17 @@ export default function ChatReducer(state = defaultState, action) {
     case 'CLEAR_CHAT_SEARCH_RESULTS':
       return {
         ...state,
-        chatSearchResult: []
+        chatSearchResults: []
+      }
+    case 'CLEAR_SUBJECT_SEARCH_RESULTS':
+      return {
+        ...state,
+        subjectSearchResults: []
       }
     case 'CLEAR_USER_SEARCH_RESULTS':
       return {
         ...state,
-        userSearchResult: []
+        userSearchResults: []
       }
     case 'CHANGE_PAGE_VISIBILITY':
       return {
@@ -473,15 +479,26 @@ export default function ChatReducer(state = defaultState, action) {
           state.channels.filter(channel => channel.id !== action.data.channelId)
         )
       }
+    case 'RELOAD_CHAT_SUBJECT':
+      return {
+        ...state,
+        subject: action.subject,
+        messages: state.messages.concat([action.message])
+      }
     case 'SEARCH_CHAT':
       return {
         ...state,
-        chatSearchResult: action.data
+        chatSearchResults: action.data
+      }
+    case 'SEARCH_CHAT_SUBJECT':
+      return {
+        ...state,
+        subjectSearchResults: action.data
       }
     case 'SEARCH_USERS_FOR_CHANNEL':
       return {
         ...state,
-        userSearchResult: action.data
+        userSearchResults: action.data
       }
     case 'SUBMIT_MESSAGE':
       return {
@@ -517,19 +534,14 @@ export default function ChatReducer(state = defaultState, action) {
           ...channel,
           lastMessage: channel.id === 2 ? action.data.subject.content : channel.lastMessage,
           lastMessageSender: {
-            id: action.data.subject.uploader.id,
-            username: action.data.subject.uploader.name
+            id: action.data.subject.userId,
+            username: action.data.subject.username
           }
         })),
         messages: state.messages.concat([{
           id: action.data.subject.id,
           channelId: 2,
-          timeStamp: action.data.subject.timeStamp,
-          content: action.data.subject.content,
-          username: action.data.subject.uploader.name,
-          userId: action.data.subject.uploader.id,
-          profilePicId: action.data.subject.uploader.profilePicId,
-          isSubject: true
+          ...action.data.subject
         }])
       }
     case 'RESET_CHAT':

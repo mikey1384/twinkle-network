@@ -21,7 +21,7 @@ class Input extends Component {
   constructor() {
     super()
     this.state = {
-      dropdownItemToHighlight: 0
+      indexToHighlight: 0
     }
     this.onKeyDown = this.onKeyDown.bind(this)
   }
@@ -59,9 +59,9 @@ class Input extends Component {
     })
     return searchResults.length > 0 ? <SearchDropdown
       searchResults={searchResults}
-      onUpdate={() => this.setState({dropdownItemToHighlight: 0})}
-      onUnmount={() => this.setState({dropdownItemToHighlight: 0})}
-      dropdownItemToHighlight={this.state.dropdownItemToHighlight}
+      onUpdate={() => this.setState({indexToHighlight: 0})}
+      onUnmount={() => this.setState({indexToHighlight: 0})}
+      indexToHighlight={this.state.indexToHighlight}
       onItemClick={user => this.props.onAddUser(user)}
       renderItemLabel={
         item => <span>{item.username} {item.realName && <small>{`(${item.realName})`}</small>}</span>
@@ -81,19 +81,19 @@ class Input extends Component {
       }
       return result
     })
-    const {dropdownItemToHighlight} = this.state
-    let index = dropdownItemToHighlight
+    const {indexToHighlight} = this.state
+    let index = indexToHighlight
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
         event.preventDefault()
         let highlightIndex = Math.min(++index, searchResults.length - 1)
-        this.setState({dropdownItemToHighlight: highlightIndex})
+        this.setState({indexToHighlight: highlightIndex})
       }
 
       if (event.keyCode === 38) {
         event.preventDefault()
         let highlightIndex = Math.max(--index, 0)
-        this.setState({dropdownItemToHighlight: highlightIndex})
+        this.setState({indexToHighlight: highlightIndex})
       }
 
       if (event.keyCode === 13) {

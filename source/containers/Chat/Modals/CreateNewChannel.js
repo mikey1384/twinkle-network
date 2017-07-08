@@ -7,7 +7,7 @@ import TagPeopleForm from 'components/TagPeopleForm'
 
 @connect(
   state => ({
-    searchResult: state.ChatReducer.userSearchResult
+    searchResults: state.ChatReducer.userSearchResults
   }),
   {
     clearSearchResults: clearUserSearchResults,
@@ -21,7 +21,7 @@ export default class CreateNewChannelModal extends Component {
     onDone: PropTypes.func.isRequired,
     clearSearchResults: PropTypes.func,
     searchUserToInvite: PropTypes.func,
-    searchResult: PropTypes.func
+    searchResults: PropTypes.func
   }
 
   constructor() {
@@ -37,7 +37,7 @@ export default class CreateNewChannelModal extends Component {
   }
 
   render() {
-    const {userId, onHide, clearSearchResults, searchUserToInvite, searchResult} = this.props
+    const {userId, onHide, clearSearchResults, searchUserToInvite, searchResults} = this.props
     const {channelName, selectedUsers} = this.state
     return (
       <Modal
@@ -50,7 +50,7 @@ export default class CreateNewChannelModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <TagPeopleForm
-            searchResult={searchResult}
+            searchResults={searchResults}
             filter={result => result.id !== userId}
             onSearch={searchUserToInvite}
             onClear={clearSearchResults}

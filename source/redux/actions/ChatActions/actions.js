@@ -34,11 +34,6 @@ export const openNewChatTab = (user, partner) => ({
   partner
 })
 
-export const searchChat = data => ({
-  type: 'SEARCH_CHAT',
-  data
-})
-
 export const searchUserToInvite = data => ({
   type: 'SEARCH_USERS_FOR_CHANNEL',
   data

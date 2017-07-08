@@ -52,9 +52,7 @@ export default class Notification extends Component {
     const {
       notifications, myId, className, device, position = 'fixed',
       currentChatSubject: {
-        content = defaultChatSubject,
-        userId, username, timeStamp,
-        loaded
+        content = defaultChatSubject, loaded, ...subject
       },
       children
     } = this.props
@@ -76,7 +74,7 @@ export default class Notification extends Component {
               style={{maxHeight: '35em'}}
               ref={ref => { this.NotificationBox = ref }}
             >
-              {loaded && <ChatFeeds content={content} userId={userId} username={username} timeStamp={timeStamp} />}
+              {loaded && <ChatFeeds content={content} {...subject} />}
               {notifications.length > 0 && <NotiFeeds notifications={notifications} myId={myId} style={{marginTop: loaded && '1.5em'}} />}
             </div>
           </div>

@@ -551,16 +551,7 @@ export default class Chat extends Component {
     }
   }
 
-  onSubjectChange(subject) {
-    const message = {
-      channelId: 2,
-      profilePicId: subject.profilePicId,
-      userId: subject.uploader.id,
-      username: subject.uploader.name,
-      content: subject.content,
-      timeStamp: subject.timeStamp,
-      isSubject: true
-    }
+  onSubjectChange({message}) {
     const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
     let messageIsForCurrentChannel = message.channelId === currentChannel.id
     let senderIsNotTheUser = message.userId !== userId
@@ -573,13 +564,13 @@ export default class Chat extends Component {
         senderIsNotTheUser,
         channel: [{
           id: 2,
-          lastUpdate: subject.timeStamp,
+          lastUpdate: message.timeStamp,
           isHidden: false,
           channelName: 'General',
-          lastMessage: subject.content,
+          lastMessage: message.content,
           lastMessageSender: {
-            id: subject.uploader.id,
-            username: subject.uploader.name
+            id: message.userId,
+            username: message.username
           },
           numUnreads: 1
         }]

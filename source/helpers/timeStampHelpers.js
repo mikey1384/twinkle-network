@@ -42,6 +42,7 @@ export function timeSince(dateText) {
     }
     return interval + ' minute'+s+' ago'
   }
-  var string = (seconds <= 0) ? 'Just now' : Math.floor(seconds) + ' second'+s+' ago'
+  s = Math.floor(seconds) > 1 ? 's' : ''
+  var string = (seconds <= 0) ? 'Just now' : Math.floor(seconds) + ` second${s} ago`
   return string
 }

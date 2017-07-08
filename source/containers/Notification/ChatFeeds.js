@@ -22,6 +22,12 @@ export default class ChatFeeds extends Component {
     username: PropTypes.string,
     content: PropTypes.string,
     openChat: PropTypes.func,
+    reloadedBy: PropTypes.number,
+    reloaderName: PropTypes.string,
+    reloadTimeStamp: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
     notifyChatSubjectChange: PropTypes.func,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
@@ -32,6 +38,7 @@ export default class ChatFeeds extends Component {
   constructor() {
     super()
     this.onSubjectChange = this.onSubjectChange.bind(this)
+    this.renderDetails = this.renderDetails.bind(this)
   }
 
   componentDidMount() {
@@ -43,15 +50,14 @@ export default class ChatFeeds extends Component {
   }
 
   render() {
-    const {userId, username, content, timeStamp, openChat} = this.props
-    const subtitle = userId ? 'Started by' : 'Join the conversation!'
+    const {content, openChat} = this.props
     return (
       <div style={{textAlign: 'center'}}>
         <h4 style={{marginTop: '0px', fontWeight: 'bold'}}>People are talking about:</h4>
         <ul className="list-group" style={{marginBottom: '0px'}}>
           <li className="list-group-item">
             <p style={{fontWeight: 'bold', color: Color.green, marginBottom: '0px', fontSize: '1.2em'}}>{content}</p>
-            <div style={{paddingBottom: '0.5em'}}><small>{subtitle} {userId && <UsernameText user={{id: userId, name: username}} />}{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small></div>
+            {this.renderDetails()}
             <Button className="btn btn-success" onClick={() => openChat(2)}>Join Them!</Button>
           </li>
         </ul>
@@ -59,8 +65,28 @@ export default class ChatFeeds extends Component {
     )
   }
 
-  onSubjectChange(subject) {
+  onSubjectChange({subject}) {
     const {notifyChatSubjectChange} = this.props
     notifyChatSubjectChange(subject)
+  }
+
+  renderDetails() {
+    const {userId, username, timeStamp, reloadedBy, reloaderName, reloadTimeStamp} = this.props
+    const posterString = <span>
+      Started by <UsernameText user={{id: userId, name: username}} />
+      {timeStamp ? ` ${timeSince(timeStamp)}` : ''}
+    </span>
+    const reloaderString = <div>
+      <small>
+        Brought back by <UsernameText user={{id: reloadedBy, name: reloaderName}} />
+        {reloadTimeStamp ? ` ${timeSince(reloadTimeStamp)}` : ''}
+      </small>
+    </div>
+    return (
+      <div style={{paddingBottom: '0.5em'}}>
+        <div><small>{userId ? posterString : 'Join the conversation!'}</small></div>
+        {reloadedBy && reloaderString}
+      </div>
+    )
   }
 }

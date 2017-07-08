@@ -67,20 +67,24 @@ router.post('/', requireAuth, (req, res) => {
 
 router.get('/chatSubject', (req, res) => {
   const query = `
-    SELECT a.id, a.userId, b.username, a.content, a.timeStamp
-    FROM content_chat_subjects a JOIN users b ON a.userId = b.id
-    WHERE a.channelId = 2 ORDER BY a.id DESC LIMIT 1
+    SELECT a.id, a.userId, b.username, a.content,
+    a.timeStamp, a.reloadedBy, c.username AS reloaderName, a.reloadTimeStamp
+    FROM content_chat_subjects a
+    JOIN users b ON a.userId = b.id
+    LEFT JOIN users c ON a.reloadedBy = c.id
+    WHERE a.id = (SELECT currentSubjectId FROM msg_channels WHERE id = 2 LIMIT 1)
   `
   return poolQuery(query).then(
-    ([result]) => res.send({
-      id: result.id,
-      content: result.content,
-      timeStamp: result.timeStamp,
+    ([result]) => res.send(Object.assign({}, result, {
       uploader: {
         name: result.username,
         id: result.userId
+      },
+      reloader: {
+        name: result.reloaderName,
+        id: result.reloadedBy
       }
-    })
+    }))
   ).catch(
     err => {
       console.error(err)
@@ -94,40 +98,108 @@ router.post('/chatSubject', requireAuth, (req, res) => {
   const postSubjectQuery = `INSERT INTO content_chat_subjects SET ?`
   const postMessageQuery = `INSERT INTO msg_chats SET ?`
   const timeStamp = Math.floor(Date.now()/1000)
-  return Promise.all([
-    poolQuery(postSubjectQuery, {
-      channelId: 2,
-      userId: user.id,
-      content,
-      timeStamp
-    }),
-    poolQuery(postMessageQuery, {
+  return poolQuery(postSubjectQuery, {
+    channelId: 2,
+    userId: user.id,
+    content,
+    timeStamp
+  }).then(
+    ({insertId: subjectId}) => poolQuery(postMessageQuery, {
       channelId: 2,
       userId: user.id,
       content,
       timeStamp,
-      isSubject: true
-    })
-  ]).then(
-    ([{insertId: subjectId}, {insertId}]) => {
-      res.send({
-        subjectId,
-        subject: {
-          id: insertId,
-          content,
-          timeStamp,
-          uploader: {
-            name: user.username,
-            id: user.id,
-            profilePicId: user.profilePicId
+      isSubject: true,
+      subjectId
+    }).then(
+      ({insertId}) => Promise.resolve({subjectId, insertId})
+    )
+  ).then(
+    ({subjectId, insertId}) => {
+      return poolQuery(`UPDATE msg_channels SET currentSubjectId = ? WHERE id = 2`, subjectId).then(
+        () => res.send({
+          subjectId,
+          subject: {
+            id: insertId,
+            content,
+            timeStamp,
+            username: user.username,
+            userId: user.id,
+            profilePicId: user.profilePicId,
+            isSubject: true,
+            uploader: {
+              name: user.username,
+              id: user.id,
+              profilePicId: user.profilePicId
+            }
           }
-        }
-      })
+        })
+      )
     }
   ).catch(
     err => {
       console.error(err)
       res.status(500).send({error: err})
+    }
+  )
+})
+
+router.put('/chatSubject/reload', requireAuth, (req, res) => {
+  const {user, body: {subjectId}} = req
+  const subjectQuery = `
+    SELECT a.*, b.username FROM content_chat_subjects a
+    JOIN users b ON a.userId = b.id
+    WHERE a.id = ?
+  `
+  const timeStamp = Math.floor(Date.now()/1000)
+  const post = {reloadedBy: user.id, reloadTimeStamp: timeStamp}
+  return poolQuery(subjectQuery, subjectId).then(
+    ([subject]) => {
+      const message = {
+        channelId: 2,
+        userId: user.id,
+        content: subject.content,
+        timeStamp,
+        subjectId,
+        isReloadedSubject: true
+      }
+      return Promise.all([
+        poolQuery(`UPDATE msg_channels SET ? WHERE id = 2`, {currentSubjectId: subjectId}),
+        poolQuery(`UPDATE content_chat_subjects SET ? WHERE id = ?`, [post, subjectId]),
+        poolQuery(`INSERT INTO msg_chats SET ?`, message)
+      ]).then(
+        ([, , {insertId: messageId}]) => Promise.resolve({
+          message: Object.assign({}, message, {
+            id: messageId,
+            username: user.username,
+            profilePicId: user.profilePicId
+          }),
+          subject: Object.assign({}, subject, post)
+        })
+      )
+    }
+  ).then(
+    ({message, subject}) => {
+      res.send({
+        subjectId,
+        message,
+        subject: Object.assign({}, subject, {
+          reloaderName: user.username,
+          reloader: {
+            id: user.id,
+            name: user.username
+          },
+          uploader: {
+            id: subject.userId,
+            name: subject.username
+          }
+        })
+      })
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -645,21 +717,35 @@ router.get('/search/chat', requireAuth, (req, res) => {
 
 router.get('/search/subject', (req, res) => {
   const {text} = req.query
-  console.log(text)
-  res.send({success: true})
+  if (stringIsEmpty(text) || text.length < 2) return res.send([])
+  const query = `
+    SELECT a.id, a.channelId, a.userId, b.username, a.content, a.timeStamp,
+    (SELECT COUNT(*) FROM msg_chats WHERE subjectId = a.id AND isSubject = 0) AS numMsgs
+    FROM content_chat_subjects a JOIN users b ON a.userId = b.id
+    WHERE content LIKE ? LIMIT 10
+  `
+  return poolQuery(query, `%${text}%`).then(
+    results => res.send(results)
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
 })
 
 router.get('/search/users', (req, res) => {
   const text = req.query.text
   if (stringIsEmpty(text) || text.length < 2) return res.send([])
   const query = 'SELECT * FROM users WHERE (username LIKE ?) OR (realName LIKE ?) LIMIT 5'
-  pool.query(query, ['%' + text + '%', '%' + text + '%'], (err, rows) => {
-    if (err) {
-      console.error(err)
-      res.status(500).send({error: err})
+  return poolQuery(query, [`%${text}%`, `%${text}%`]).then(
+    results => res.send(results)
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
-    res.send(rows)
-  })
+  )
 })
 
 router.post('/title', requireAuth, (req, res) => {

@@ -8,7 +8,7 @@ import {openNewChatTab} from 'redux/actions/ChatActions/actions'
 
 @connect(
   state => ({
-    searchResult: state.ChatReducer.chatSearchResult,
+    searchResults: state.ChatReducer.chatSearchResults,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username
   }),
@@ -21,7 +21,7 @@ import {openNewChatTab} from 'redux/actions/ChatActions/actions'
 )
 export default class ChatSearchBox extends Component {
   static propTypes = {
-    searchResult: PropTypes.array,
+    searchResults: PropTypes.array,
     searchChat: PropTypes.func,
     clearSearchResults: PropTypes.func,
     enterChannelWithId: PropTypes.func,
@@ -39,7 +39,7 @@ export default class ChatSearchBox extends Component {
   }
 
   render() {
-    const {searchResult, clearSearchResults} = this.props
+    const {searchResults, clearSearchResults} = this.props
     const {searchText} = this.state
     return (
       <div className="row container-fluid">
@@ -47,7 +47,7 @@ export default class ChatSearchBox extends Component {
           placeholder="Search for channels / users"
           onChange={this.onChatSearch}
           value={searchText}
-          searchResults={searchResult}
+          searchResults={searchResults}
           renderItemLabel={
             item => !item.primary || (item.primary && item.twoPeople) ?
               <span>{item.label} {item.subLabel && <small>{`(${item.subLabel})`}</small>}</span> :

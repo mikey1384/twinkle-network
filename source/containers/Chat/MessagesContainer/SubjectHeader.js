@@ -6,7 +6,9 @@ import {cleanString} from 'helpers/stringHelpers'
 import Loading from 'components/Loading'
 import {connect} from 'react-redux'
 import {
+  clearSubjectSearchResults,
   loadChatSubject,
+  reloadChatSubject,
   uploadChatSubject,
   changeChatSubject,
   searchChatSubject
@@ -24,24 +26,30 @@ import {defaultChatSubject} from 'constants/defaultValues'
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId,
-    subject: state.ChatReducer.subject
+    subject: state.ChatReducer.subject,
+    subjectSearchResults: state.ChatReducer.subjectSearchResults
   }),
   {
+    clearSubjectSearchResults,
     changeChatSubject,
     loadChatSubject,
+    reloadChatSubject,
     uploadChatSubject,
     searchChatSubject
   }
 )
 export default class SubjectHeader extends Component {
   static propTypes = {
+    clearSubjectSearchResults: PropTypes.func,
     userId: PropTypes.number,
     username: PropTypes.string,
     profilePicId: PropTypes.number,
     subject: PropTypes.string,
     changeChatSubject: PropTypes.func,
     loadChatSubject: PropTypes.func,
+    reloadChatSubject: PropTypes.func,
     searchChatSubject: PropTypes.func,
+    subjectSearchResults: PropTypes.array,
     uploadChatSubject: PropTypes.func
   }
 
@@ -53,8 +61,10 @@ export default class SubjectHeader extends Component {
       onEdit: false
     }
     this.onMouseOver = this.onMouseOver.bind(this)
+    this.onReloadChatSubject = this.onReloadChatSubject.bind(this)
     this.onSubjectChange = this.onSubjectChange.bind(this)
     this.onSubjectSubmit = this.onSubjectSubmit.bind(this)
+    this.renderDetails = this.renderDetails.bind(this)
   }
 
   componentDidMount() {
@@ -72,10 +82,11 @@ export default class SubjectHeader extends Component {
 
   render() {
     const {
-      subject: {content = defaultChatSubject, uploader, timeStamp},
-      searchChatSubject
+      clearSubjectSearchResults, subject: {id: subjectId, content = defaultChatSubject},
+      searchChatSubject, subjectSearchResults
     } = this.props
     const {loaded, onHover, onEdit} = this.state
+    const subjectTitle = cleanString(content)
     return (
       <div style={{width: '100%', height: '4.5em', position: 'absolute', backgroundColor: '#fff'}}>
         {loaded ?
@@ -98,29 +109,31 @@ export default class SubjectHeader extends Component {
                     onMouseLeave={() => this.setState({onHover: false})}
                     ref={ref => { this.headerLabel = ref }}
                   >
-                    Subject: {cleanString(content)}
+                    Subject: {subjectTitle}
                   </h3>
                   <FullTextReveal
-                    text={cleanString(content)}
+                    text={subjectTitle}
                     show={onHover}
                     width="1200px"
                   />
                 </div>
               }
-              {!onEdit && <div>
-                {uploader ? <small>Posted by <UsernameText user={uploader} /> ({timeSince(timeStamp)})</small> :
-                  <small>{'You can change the subject by clicking the "Change the Subject" button on the right'}</small>
-                }
-              </div>}
+              {!onEdit && this.renderDetails()}
             </div>
             <div>
               {onEdit &&
                 <EditSubjectForm
                   autoFocus
-                  title={cleanString(content)}
+                  currentSubjectId={subjectId}
+                  title={subjectTitle}
                   onEditSubmit={this.onSubjectSubmit}
                   onChange={text => searchChatSubject(text)}
-                  onClickOutSide={() => this.setState({onEdit: false})}
+                  onClickOutSide={() => {
+                    this.setState({onEdit: false})
+                    clearSubjectSearchResults()
+                  }}
+                  reloadChatSubject={this.onReloadChatSubject}
+                  searchResults={subjectSearchResults}
                 />
               }
             </div>
@@ -155,24 +168,67 @@ export default class SubjectHeader extends Component {
     }
   }
 
-  onSubjectChange(subject) {
+  onSubjectChange({subject}) {
     const {changeChatSubject} = this.props
     changeChatSubject(subject)
+  }
+
+  onReloadChatSubject(subjectId) {
+    const {reloadChatSubject} = this.props
+    reloadChatSubject(subjectId).then(
+      ({subjectId, message, subject}) => {
+        socket.emit('new_subject', {subject, message})
+        this.setState({onEdit: false})
+        clearSubjectSearchResults()
+      }
+    )
   }
 
   onSubjectSubmit(text) {
     const {uploadChatSubject, username, userId, profilePicId} = this.props
     return uploadChatSubject(text).then(
       subjectId => {
-        socket.emit('new_subject', {
+        const timeStamp = Math.floor(Date.now()/1000)
+        const subject = {
           id: subjectId,
+          userId,
+          username,
+          reloadedBy: null,
+          reloaderName: null,
           uploader: {id: userId, name: username},
-          profilePicId,
           content: text,
-          timeStamp: Math.floor(Date.now()/1000)
-        })
+          timeStamp
+        }
+        const message = {
+          profilePicId,
+          userId,
+          username,
+          content: text,
+          isSubject: true,
+          channelId: 2,
+          timeStamp
+        }
+        socket.emit('new_subject', {subject, message})
         this.setState({onEdit: false})
       }
+    )
+  }
+
+  renderDetails() {
+    const {subject: {uploader, reloader, timeStamp, reloadTimeStamp}} = this.props
+    const isReloaded = reloader && reloader.id
+    let posterString = <span>Started by <UsernameText user={uploader} /> {timeSince(timeStamp)}</span>
+    if (isReloaded) {
+      posterString = <span>
+        Brought back by <UsernameText user={reloader} /> {timeSince(reloadTimeStamp)} (started by {<UsernameText user={uploader} />})
+      </span>
+    }
+    return (
+      <div>
+        {uploader ? <small>{posterString}</small> :
+          <small>{'You can change the subject by clicking the "Change the Subject" button on the right'}</small>
+        }
+      </div>
     )
   }
 }

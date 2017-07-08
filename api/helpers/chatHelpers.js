@@ -202,7 +202,8 @@ const fetchMessages = channelId => {
     messages => Promise.all(
       messages.map(({id}) => {
         let query = `
-          SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, a.isSubject, b.username,
+          SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification,
+          a.isSubject, a.isReloadedSubject, b.username,
           c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id
           LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
           WHERE a.id = ?

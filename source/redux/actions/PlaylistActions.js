@@ -33,18 +33,15 @@ export const getMorePlaylistsAsync = shownPlaylistsIds => dispatch =>
     }
   )
 
-export const uploadPlaylist = data => ({
-  type: 'UPLOAD_PLAYLIST',
-  data
-})
-
 export const uploadPlaylistAsync = params => dispatch =>
   request.post(API_URL, params, auth())
     .then(
-      response => {
-        const {data} = response
-        if (data.result) {
-          dispatch(uploadPlaylist(data.result))
+      ({data: {result}}) => {
+        if (result) {
+          dispatch({
+            type: 'UPLOAD_PLAYLIST',
+            data: result
+          })
         }
         return Promise.resolve()
       }

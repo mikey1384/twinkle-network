@@ -68,16 +68,20 @@ router.get('/', requireAuth, (req, res) => {
       AND uploaderId != ? ORDER BY id DESC LIMIT 20
   `
   const chatSubjectQuery = `
-    SELECT a.userId, b.username, a.content, a.timeStamp FROM content_chat_subjects a
-    JOIN users b ON a.userId = b.id ORDER BY a.id DESC LIMIT 1
+    SELECT a.userId, b.username, a.content, a.timeStamp, a.reloadedBy,
+    c.username AS reloaderName, a.reloadTimeStamp
+    FROM content_chat_subjects a
+    JOIN users b ON a.userId = b.id
+    LEFT JOIN users c ON a.reloadedBy = c.id
+    WHERE a.id = (SELECT currentSubjectId FROM msg_channels WHERE id = 2 LIMIT 1)
   `
   return Promise.all([
     poolQuery(notiQuery, [userId, userId, userId, userId]),
     poolQuery(chatSubjectQuery)
   ]).then(
-    results => res.send({
-      notifications: results[0],
-      currentChatSubject: Object.assign({}, results[1][0], {loaded: true})
+    ([notifications, [currentChatSubject]]) => res.send({
+      notifications,
+      currentChatSubject: Object.assign({}, currentChatSubject, {loaded: true})
     })
   ).catch(
     error => {
@@ -89,8 +93,12 @@ router.get('/', requireAuth, (req, res) => {
 
 router.get('/chatSubject', (req, res) => {
   const query = `
-    SELECT a.userId, b.username, a.content, a.timeStamp FROM content_chat_subjects a
-    JOIN users b ON a.userId = b.id ORDER BY a.id DESC LIMIT 1
+    SELECT a.userId, b.username, a.content, a.timeStamp, a.reloadedBy,
+    c.username AS reloaderName, a.reloadTimeStamp
+    FROM content_chat_subjects a
+    JOIN users b ON a.userId = b.id
+    LEFT JOIN users c ON a.reloadedBy = c.id
+    WHERE a.id = (SELECT currentSubjectId FROM msg_channels WHERE id = 2 LIMIT 1)
   `
   return poolQuery(query).then(
     ([result]) => res.send(Object.assign({}, result, {loaded: true}))

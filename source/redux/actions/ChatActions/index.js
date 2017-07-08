@@ -46,6 +46,10 @@ export const clearChatSearchResults = () => ({
   type: 'CLEAR_CHAT_SEARCH_RESULTS'
 })
 
+export const clearSubjectSearchResults = () => ({
+  type: 'CLEAR_SUBJECT_SEARCH_RESULTS'
+})
+
 export const clearUserSearchResults = () => ({
   type: 'CLEAR_USER_SEARCH_RESULTS'
 })
@@ -299,13 +303,33 @@ export const receiveFirstMsg = (data, duplicate) => ({
   duplicate
 })
 
+export const reloadChatSubject = subjectId => dispatch =>
+  request.put(`${API_URL}/chatSubject/reload`, {subjectId}, auth()).then(
+    ({data: {subject, message}}) => {
+      dispatch({
+        type: 'RELOAD_CHAT_SUBJECT',
+        subject,
+        message
+      })
+      return Promise.resolve({subject, message})
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+
 export const resetChat = () => ({
   type: 'RESET_CHAT'
 })
 
 export const searchChatAsync = text => dispatch =>
   request.get(`${API_URL}/search/chat?text=${text}`, auth()).then(
-    response => dispatch(actions.searchChat(response.data))
+    ({data}) => dispatch({
+      type: 'SEARCH_CHAT',
+      data
+    })
   ).catch(
     error => {
       console.error(error.response || error)
@@ -315,7 +339,13 @@ export const searchChatAsync = text => dispatch =>
 
 export const searchChatSubject = text => dispatch =>
   request.get(`${API_URL}/search/subject?text=${text}`).then(
-    ({data}) => console.log(data)
+    ({data}) => {
+      dispatch({
+        type: 'SEARCH_CHAT_SUBJECT',
+        data
+      })
+      return Promise.resolve()
+    }
   ).catch(
     error => {
       console.error(error.response || error)
