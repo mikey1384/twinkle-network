@@ -167,7 +167,7 @@ export default class Message extends Component {
     if (isSubject) prefix = <span style={{fontWeight: 'bold', color: Color.green}}>Subject: </span>
     if (isReloadedSubject) {
       prefix = <span style={{fontWeight: 'bold', color: Color.green}}>
-        {'Back to subject: '}
+        {'Returning Subject: '}
       </span>
     }
     return prefix
