@@ -93,7 +93,7 @@ export default function UserReducer(state = defaultState, action) {
     case 'UPDATE_PROFILE_PICTURE':
       return {
         ...state,
-        profilePicId: action.data,
+        profilePicId: action.data.imageId,
         profile: {
           ...state.profile,
           profilePicId: action.data.imageId

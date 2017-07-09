@@ -215,7 +215,7 @@ export default class SubjectHeader extends Component {
   }
 
   renderDetails() {
-    const {subject: {uploader, reloader, timeStamp, reloadTimeStamp}} = this.props
+    const {subject: {uploader = {}, reloader = {}, timeStamp, reloadTimeStamp}} = this.props
     const isReloaded = reloader && reloader.id
     let posterString = 'You can change this subject by clicking the blue "Change the subject" button'
     if (uploader.id) {

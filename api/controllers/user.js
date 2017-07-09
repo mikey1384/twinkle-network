@@ -170,6 +170,7 @@ router.post('/picture', requireAuth, (req, res) => {
       console.error(err)
       return res.status(500).send({error: err})
     }
+    console.log(imageId)
     res.send({imageId, userId: user.id})
   })
 })
