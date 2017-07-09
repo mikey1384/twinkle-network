@@ -203,7 +203,14 @@ const fetchMessages = channelId => {
       messages.map(({id}) => {
         let query = `
           SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification,
-          a.isSubject, a.isReloadedSubject, b.username,
+          a.isSubject, a.subjectId, a.isReloadedSubject, b.username,
+          IF(
+            a.isReloadedSubject = 1,
+            (SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.subjectId
+              AND isSubject != 1 AND isReloadedSubject != 1
+            ),
+            NULL
+          ) AS numMsgs,
           c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id
           LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
           WHERE a.id = ?

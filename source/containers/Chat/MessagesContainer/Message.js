@@ -11,6 +11,7 @@ import EditTextArea from 'components/Texts/EditTextArea'
 import {editMessage, deleteMessage, saveMessage} from 'redux/actions/ChatActions'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
+import PastMsgsModal from '../Modals/PastMsgsModal'
 
 @connect(
   state => ({
@@ -36,6 +37,7 @@ export default class Message extends Component {
     super()
     this.state = {
       onEdit: false,
+      pastMsgsModalShown: false,
       confirmModalShown: false
     }
     this.onDelete = this.onDelete.bind(this)
@@ -60,12 +62,14 @@ export default class Message extends Component {
         username,
         timeStamp,
         content,
-        isReloadedSubject
+        subjectId,
+        isReloadedSubject,
+        numMsgs
       },
       style,
       myId
     } = this.props
-    const {onEdit, confirmModalShown} = this.state
+    const {onEdit, confirmModalShown, pastMsgsModalShown} = this.state
     return (
       <div
         className="media"
@@ -127,9 +131,14 @@ export default class Message extends Component {
                   {this.renderPrefix()}
                   <span style={style} dangerouslySetInnerHTML={{__html: content}}></span>
                 </div>
-                {/* isReloadedSubject */ false &&
+                {!!isReloadedSubject && !!numMsgs && numMsgs > 0 &&
                   <div style={{marginTop: '0.5em'}}>
-                    <Button className="btn btn-sm btn-success">Show past conversations</Button>
+                    <Button
+                      className="btn btn-sm btn-success"
+                      onClick={() => this.setState({pastMsgsModalShown: true})}
+                    >
+                      Show past conversations
+                    </Button>
                   </div>
                 }
               </div>
@@ -141,6 +150,13 @@ export default class Message extends Component {
             onHide={() => this.setState({confirmModalShown: false})}
             title="Remove Message"
             onConfirm={this.onDelete}
+          />
+        }
+        {pastMsgsModalShown &&
+          <PastMsgsModal
+            subjectId={subjectId}
+            subjectTitle={content}
+            onHide={() => this.setState({pastMsgsModalShown: false})}
           />
         }
       </div>

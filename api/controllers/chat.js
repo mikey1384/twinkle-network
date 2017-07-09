@@ -75,16 +75,18 @@ router.get('/chatSubject', (req, res) => {
     WHERE a.id = (SELECT currentSubjectId FROM msg_channels WHERE id = 2 LIMIT 1)
   `
   return poolQuery(query).then(
-    ([result]) => res.send(Object.assign({}, result, {
-      uploader: {
-        name: result.username,
-        id: result.userId
-      },
-      reloader: {
-        name: result.reloaderName,
-        id: result.reloadedBy
-      }
-    }))
+    ([result = {}]) => {
+      res.send(Object.assign({}, result, {
+        uploader: {
+          name: result.username,
+          id: result.userId
+        },
+        reloader: {
+          name: result.reloaderName,
+          id: result.reloadedBy
+        }
+      }))
+    }
   ).catch(
     err => {
       console.error(err)
@@ -144,6 +146,61 @@ router.post('/chatSubject', requireAuth, (req, res) => {
   )
 })
 
+router.get('/chatSubject/messages', (req, res) => {
+  const {subjectId} = req.query
+  const query = `
+    SELECT a.*, b.username, c.id AS profilePicId FROM msg_chats a
+    JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
+    WHERE a.subjectId = ? 
+    AND a.isSubject != 1 AND a.isReloadedSubject != 1
+    ORDER BY id DESC LIMIT 11
+  `
+  return poolQuery(query, subjectId).then(
+    messages => {
+      let loadMoreButtonShown = false
+      if (messages.length > 10) {
+        messages.pop()
+        loadMoreButtonShown = true
+      }
+      res.send({messages: messages.sort(function(a, b) { return a.id - b.id }), loadMoreButtonShown})
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
+router.get('/chatSubject/messages/more', (req, res) => {
+  const {subjectId, messageIds} = req.query
+  const query = `
+    SELECT a.*, b.username, c.id AS profilePicId FROM msg_chats a
+    JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
+    WHERE a.subjectId = ? 
+    AND a.isSubject != 1 AND a.isReloadedSubject != 1
+    AND ${messageIds.map(id => `a.id != ${id}`).join(' AND ')}
+    ORDER BY id DESC LIMIT 11
+  `
+  return poolQuery(query, subjectId).then(
+    messages => {
+      let loadMoreButtonShown = false
+      if (messages.length > 10) {
+        messages.pop()
+        loadMoreButtonShown = true
+      }
+      res.send({messages: messages.sort(function(a, b) { return a.id - b.id }), loadMoreButtonShown})
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
 router.put('/chatSubject/reload', requireAuth, (req, res) => {
   const {user, body: {subjectId}} = req
   const subjectQuery = `
@@ -166,16 +223,23 @@ router.put('/chatSubject/reload', requireAuth, (req, res) => {
       return Promise.all([
         poolQuery(`UPDATE msg_channels SET ? WHERE id = 2`, {currentSubjectId: subjectId}),
         poolQuery(`UPDATE content_chat_subjects SET ? WHERE id = ?`, [post, subjectId]),
+        poolQuery(`
+          SELECT COUNT(id) AS numMsgs FROM msg_chats WHERE subjectId = ?
+          AND isSubject != 1 AND isReloadedSubject != 1
+        `, subjectId),
         poolQuery(`INSERT INTO msg_chats SET ?`, message)
       ]).then(
-        ([, , {insertId: messageId}]) => Promise.resolve({
-          message: Object.assign({}, message, {
-            id: messageId,
-            username: user.username,
-            profilePicId: user.profilePicId
-          }),
-          subject: Object.assign({}, subject, post)
-        })
+        ([, , [{numMsgs}], {insertId: messageId}]) => {
+          return Promise.resolve({
+            message: Object.assign({}, message, {
+              id: messageId,
+              username: user.username,
+              profilePicId: user.profilePicId,
+              numMsgs
+            }),
+            subject: Object.assign({}, subject, post)
+          })
+        }
       )
     }
   ).then(
@@ -257,7 +321,15 @@ router.get('/more/messages', requireAuth, (req, res) => {
     messages => Promise.all(
       messages.map(({id}) => {
         let query = `
-          SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification, a.isSubject, b.username,
+          SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification,
+          a.isSubject, a.subjectId, a.isReloadedSubject, b.username,
+          IF(
+            a.isReloadedSubject = 1,
+            (SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.subjectId
+              AND isSubject != 1 AND isReloadedSubject != 1
+            ),
+            NULL
+          ) AS numMsgs,
           c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id
           LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
           WHERE a.id = ?
@@ -720,7 +792,10 @@ router.get('/search/subject', (req, res) => {
   if (stringIsEmpty(text) || text.length < 2) return res.send([])
   const query = `
     SELECT a.id, a.channelId, a.userId, b.username, a.content, a.timeStamp,
-    (SELECT COUNT(*) FROM msg_chats WHERE subjectId = a.id AND isSubject = 0) AS numMsgs
+    (
+      SELECT COUNT(*) FROM msg_chats WHERE subjectId = a.id
+      AND isSubject != 1 AND isReloadedSubject != 1
+    ) AS numMsgs
     FROM content_chat_subjects a JOIN users b ON a.userId = b.id
     WHERE content LIKE ? LIMIT 10
   `

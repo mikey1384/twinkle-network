@@ -217,7 +217,10 @@ export default class SubjectHeader extends Component {
   renderDetails() {
     const {subject: {uploader, reloader, timeStamp, reloadTimeStamp}} = this.props
     const isReloaded = reloader && reloader.id
-    let posterString = <span>Started by <UsernameText user={uploader} /> {timeSince(timeStamp)}</span>
+    let posterString = 'You can change this subject by clicking the blue "Change the subject" button'
+    if (uploader.id) {
+      posterString = <span>Started by <UsernameText user={uploader} /> {timeSince(timeStamp)}</span>
+    }
     if (isReloaded) {
       posterString = <span>
         Brought back by <UsernameText user={reloader} /> {timeSince(reloadTimeStamp)} (started by {<UsernameText user={uploader} />})
