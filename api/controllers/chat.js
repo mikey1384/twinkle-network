@@ -153,7 +153,7 @@ router.get('/chatSubject/messages', (req, res) => {
     JOIN users b ON a.userId = b.id
     LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
     WHERE a.subjectId = ? 
-    AND a.isSubject != 1 AND a.isReloadedSubject != 1
+    AND a.isSubject != 1
     ORDER BY id DESC LIMIT 11
   `
   return poolQuery(query, subjectId).then(
@@ -180,7 +180,7 @@ router.get('/chatSubject/messages/more', (req, res) => {
     JOIN users b ON a.userId = b.id
     LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
     WHERE a.subjectId = ? 
-    AND a.isSubject != 1 AND a.isReloadedSubject != 1
+    AND a.isSubject != 1
     AND ${messageIds.map(id => `a.id != ${id}`).join(' AND ')}
     ORDER BY id DESC LIMIT 11
   `

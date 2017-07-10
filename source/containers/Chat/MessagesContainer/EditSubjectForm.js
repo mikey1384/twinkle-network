@@ -57,8 +57,9 @@ class EditSubjectForm extends Component {
               onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
               onKeyDown={this.onKeyDown}
             />
-            <small style={{color: title.length > maxLength && 'red'}}>{title.length}/{maxLength} Characters</small> {title.length <= maxLength &&
-              <small>(Press <b>Enter</b> to Apply)</small>
+            <small style={{color: title.length > maxLength && 'red'}}>{title.length}/{maxLength} Characters</small>
+            {title.length <= maxLength &&
+              <small> (Press <b>Enter</b> to Apply)</small>
             }
           </form>
           {searchResults.length > 0 &&
@@ -73,7 +74,7 @@ class EditSubjectForm extends Component {
             />
           }
         </div>
-        {false && <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
+        <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
           <Button
             className="btn btn-primary"
             style={{float: 'right', marginRight: '1em'}}
@@ -81,7 +82,7 @@ class EditSubjectForm extends Component {
           >
             View Past Subjects
           </Button>
-        </div>}
+        </div>
       </div>
     )
   }

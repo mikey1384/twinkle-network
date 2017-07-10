@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
+import {Color} from 'constants/css'
 import moment from 'moment'
 
 Message.propTypes = {
@@ -9,12 +10,13 @@ Message.propTypes = {
   username: PropTypes.string,
   profilePicId: PropTypes.number,
   content: PropTypes.string,
+  isReloadedSubject: PropTypes.bool,
   timeStamp: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
   ])
 }
-export default function Message({content, userId, username, profilePicId, timeStamp}) {
+export default function Message({content, userId, username, profilePicId, timeStamp, isReloadedSubject}) {
   return (
     <div
       className="media"
@@ -42,7 +44,12 @@ export default function Message({content, userId, username, profilePicId, timeSt
         </h5>
         <div style={{paddingTop: '1.5em'}}>
           <div>
-            <span dangerouslySetInnerHTML={{__html: content}}></span>
+            <span
+              style={{color: isReloadedSubject && Color.green, fontWeight: isReloadedSubject && 'bold'}}
+              dangerouslySetInnerHTML={{
+                __html: isReloadedSubject ? 'Brought back the subject' : content
+              }}
+            />
           </div>
         </div>
       </div>

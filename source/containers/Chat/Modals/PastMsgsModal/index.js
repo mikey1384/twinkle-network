@@ -6,6 +6,7 @@ import {Color} from 'constants/css'
 import request from 'axios'
 import {URL} from 'constants/URL'
 import Message from './Message'
+import Loading from 'components/Loading'
 import LoadMoreButton from 'components/LoadMoreButton'
 import {queryStringForArray} from 'helpers/apiHelpers'
 
@@ -28,7 +29,7 @@ export default class PastMsgsModal extends Component {
     this.onLoadMoreButtonClick = this.onLoadMoreButtonClick.bind(this)
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const {subjectId} = this.props
     return request.get(`${API_URL}/chatSubject/messages?subjectId=${subjectId}`).then(
       ({data: {messages, loadMoreButtonShown}}) => this.setState({messages, loadMoreButtonShown})
@@ -54,6 +55,7 @@ export default class PastMsgsModal extends Component {
             onClick={this.onLoadMoreButtonClick}
             loading={loading}
           />}
+          {messages.length === 0 && <Loading />}
           {messages.map(message => <Message key={message.id} {...message} />)}
         </Modal.Body>
         <Modal.Footer>
@@ -71,12 +73,15 @@ export default class PastMsgsModal extends Component {
   onLoadMoreButtonClick() {
     const {subjectId} = this.props
     const {messages} = this.state
+    this.setState({loading: true})
     return request.get(`
       ${API_URL}/chatSubject/messages/more?subjectId=${subjectId}
       &${queryStringForArray(messages, 'id', 'messageIds')}
     `).then(
       ({data: {messages: loadedMsgs, loadMoreButtonShown}}) => this.setState({
-        messages: loadedMsgs.concat(messages), loadMoreButtonShown
+        loading: false,
+        messages: loadedMsgs.concat(messages),
+        loadMoreButtonShown
       })
     ).catch(
       error => console.error(error.response || error)
