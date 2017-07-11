@@ -6,7 +6,7 @@ import SearchDropdown from 'components/SearchDropdown'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
 import {timeSince} from 'helpers/timeStampHelpers'
-import SubjectsModal from '../Modals/SubjectsModal'
+import SubjectsModal from '../../Modals/SubjectsModal'
 
 class EditSubjectForm extends Component {
   static propTypes = {
@@ -117,10 +117,11 @@ class EditSubjectForm extends Component {
       () => {
         const {searchResults} = this.props
         const {title} = this.state
+        let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : ''
         let exactMatchExists = false
         let matchIndex
         for (let i = 0; i < searchResults.length; i++) {
-          if (searchResults[i].content === title) {
+          if (text === searchResults[i].content) {
             exactMatchExists = true
             matchIndex = i
             break
@@ -134,10 +135,11 @@ class EditSubjectForm extends Component {
   onUpdate() {
     const {searchResults} = this.props
     const {title} = this.state
+    let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : ''
     let exactMatchExists = false
     let matchIndex
     for (let i = 0; i < searchResults.length; i++) {
-      if (searchResults[i].content === title) {
+      if (text === searchResults[i].content) {
         exactMatchExists = true
         matchIndex = i
         break
@@ -162,7 +164,7 @@ class EditSubjectForm extends Component {
     }
 
     if (title && title.length > maxLength) return
-    if (title && title !== this.props.title) {
+    if (title && `${title[0].toUpperCase()}${title.slice(1)}` !== this.props.title) {
       onEditSubmit(finalizeEmoji(title))
     } else {
       onClickOutSide()

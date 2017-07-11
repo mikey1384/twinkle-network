@@ -96,10 +96,11 @@ router.get('/chatSubject', (req, res) => {
 })
 
 router.post('/chatSubject', requireAuth, (req, res) => {
-  const {user, body: {content}} = req
+  const {user, body: {content: rawContent}} = req
   const postSubjectQuery = `INSERT INTO content_chat_subjects SET ?`
   const postMessageQuery = `INSERT INTO msg_chats SET ?`
   const timeStamp = Math.floor(Date.now()/1000)
+  const content = `${rawContent[0].toUpperCase()}${rawContent.slice(1)}`
   return poolQuery(postSubjectQuery, {
     channelId: 2,
     userId: user.id,

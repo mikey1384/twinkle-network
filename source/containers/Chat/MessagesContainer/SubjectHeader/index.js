@@ -186,6 +186,7 @@ export default class SubjectHeader extends Component {
 
   onSubjectSubmit(text) {
     const {uploadChatSubject, username, userId, profilePicId} = this.props
+    const content = `${text[0].toUpperCase()}${text.slice(1)}`
     return uploadChatSubject(text).then(
       subjectId => {
         const timeStamp = Math.floor(Date.now()/1000)
@@ -196,14 +197,14 @@ export default class SubjectHeader extends Component {
           reloadedBy: null,
           reloaderName: null,
           uploader: {id: userId, name: username},
-          content: text,
+          content,
           timeStamp
         }
         const message = {
           profilePicId,
           userId,
           username,
-          content: text,
+          content,
           isSubject: true,
           channelId: 2,
           timeStamp
