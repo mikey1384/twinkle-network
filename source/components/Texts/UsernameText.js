@@ -39,13 +39,15 @@ export default class UsernameText extends Component {
         className="dropdown"
         onMouseLeave={() => this.setState({menuShown: false})}
       >
-        <strong
+        <b
           style={{
             cursor: 'pointer',
-            color: user.name === '(Deleted)' || user.name === null ? Color.darkGray : (color && color)
+            color: user.name ? (color && color) : Color.darkGray
           }}
           onMouseEnter={this.onMouseEnter}
-        >{user.name || '(Deleted)'}</strong>
+        >
+          {user.name || '(Deleted)'}
+        </b>
         {menuShown &&
           <ul className="dropdown-menu"
             style={{
@@ -59,7 +61,6 @@ export default class UsernameText extends Component {
               <a
                 href={`/users/${user.name}`}
                 target="_blank"
-                rel="noopener noreferrer"
               >
                 Profile
               </a>
@@ -77,9 +78,7 @@ export default class UsernameText extends Component {
 
   onMouseEnter() {
     const {user} = this.props
-    if (user.name !== '(Deleted)' && user.name !== null) {
-      this.setState({menuShown: true})
-    }
+    if (user.name) this.setState({menuShown: true})
   }
 
   onLinkClick() {

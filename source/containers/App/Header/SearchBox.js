@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import SearchInput from 'components/SearchInput'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import {stringIsEmpty, cleanString} from 'helpers/stringHelpers'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import {loadLinkPage} from 'redux/actions/LinkActions'
 import {clearSearchResults, searchContent} from 'redux/actions/ContentActions'
@@ -71,7 +71,7 @@ export default class SearchBox extends Component {
                   }}
                 >
                   [{item.type === 'video' ? 'Video' : 'Link'}]
-                </span>&nbsp;&nbsp;&nbsp;<span>{item.label}</span>
+                </span>&nbsp;&nbsp;&nbsp;<span>{cleanString(item.label)}</span>
               </span>
             </span>
           }

@@ -69,9 +69,7 @@ export default class VideoThumb extends Component {
       }
     ]
     return (
-      <div
-        className={size}
-      >
+      <div className={size}>
         <div className="thumbnail">
           {
             editable &&

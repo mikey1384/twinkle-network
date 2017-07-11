@@ -10,7 +10,7 @@ Message.propTypes = {
   username: PropTypes.string,
   profilePicId: PropTypes.number,
   content: PropTypes.string,
-  isReloadedSubject: PropTypes.bool,
+  isReloadedSubject: PropTypes.number,
   timeStamp: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
@@ -39,7 +39,7 @@ export default function Message({content, userId, username, profilePicId, timeSt
           <UsernameText
             user={{
               id: userId,
-              name: username || '(Deleted)'
+              name: username
             }} /> <small>{moment.unix(timeStamp).format('LLL')}</small>
         </h5>
         <div style={{paddingTop: '1.5em'}}>

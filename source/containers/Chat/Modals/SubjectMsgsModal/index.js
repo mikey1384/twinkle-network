@@ -12,7 +12,7 @@ import {queryStringForArray} from 'helpers/apiHelpers'
 
 const API_URL = `${URL}/chat`
 
-export default class PastMsgsModal extends Component {
+export default class SubjectMsgsModal extends Component {
   static propTypes = {
     onHide: PropTypes.func,
     subjectId: PropTypes.number,

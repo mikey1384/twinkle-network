@@ -6,6 +6,7 @@ import SearchDropdown from 'components/SearchDropdown'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
 import {timeSince} from 'helpers/timeStampHelpers'
+import SubjectsModal from '../Modals/SubjectsModal'
 
 class EditSubjectForm extends Component {
   static propTypes = {
@@ -22,14 +23,16 @@ class EditSubjectForm extends Component {
   }
 
   handleClickOutside = (event) => {
-    this.props.onClickOutSide()
+    const {subjectsModalShown} = this.state
+    if (!subjectsModalShown) this.props.onClickOutSide()
   }
 
   constructor(props) {
     super()
     this.state = {
       title: cleanString(props.title),
-      highlightedIndex: -1
+      highlightedIndex: -1,
+      subjectsModalShown: false
     }
     this.onEditSubmit = this.onEditSubmit.bind(this)
     this.onInputChange = this.onInputChange.bind(this)
@@ -40,10 +43,13 @@ class EditSubjectForm extends Component {
   }
 
   render() {
-    const {title, highlightedIndex} = this.state
+    const {title, highlightedIndex, subjectsModalShown} = this.state
     const {style, autoFocus, maxLength = 100, searchResults} = this.props
     return (
       <div>
+        {subjectsModalShown &&
+          <SubjectsModal onHide={() => this.setState({subjectsModalShown: false})} />
+        }
         <div className="col-xs-10" style={{paddingLeft: '0px', paddingRight: '0px'}}>
           <form onSubmit={event => this.onEditSubmit(event)}>
             <input
@@ -77,10 +83,10 @@ class EditSubjectForm extends Component {
         <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
           <Button
             className="btn btn-primary"
-            style={{float: 'right', marginRight: '1em'}}
-            onClick={() => console.log('clicked')}
+            style={{float: 'right', marginRight: '1em', width: '90%'}}
+            onClick={() => this.setState({subjectsModalShown: true})}
           >
-            View Past Subjects
+            View Subjects
           </Button>
         </div>
       </div>
@@ -179,7 +185,7 @@ class EditSubjectForm extends Component {
             fontWeight: 'bold'
           }}
         >
-          {item.content}<span style={{color: Color.blue}}>{(Number(item.numMsgs) > 0) && ` (${item.numMsgs})`}</span>
+          {cleanString(item.content)}<span style={{color: Color.blue}}>{(Number(item.numMsgs) > 0) && ` (${item.numMsgs})`}</span>
         </div>
         <div><small>Posted by <b>{item.username}</b> ({timeSince(item.timeStamp)})</small></div>
       </div>

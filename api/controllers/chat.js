@@ -201,6 +201,63 @@ router.get('/chatSubject/messages/more', (req, res) => {
   )
 })
 
+router.get('/chatSubject/modal', (req, res) => {
+  const {userId} = req.query
+  const mySubjectsQuery = `
+    SELECT a.id, a.channelId, a.userId, b.username, c.id AS profilePicId, a.content, a.timeStamp
+    FROM content_chat_subjects a JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
+    WHERE a.userId = ? ORDER BY id DESC LIMIT 6
+  `
+  const allSubjectsQuery = `
+    SELECT a.id, a.channelId, a.userId, b.username, c.id AS profilePicId, a.content, a.timeStamp
+    FROM content_chat_subjects a JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
+    ORDER BY (
+      IF(
+        a.reloadTimeStamp IS NULL,
+        a.timeStamp,
+        a.reloadTimeStamp
+      )
+    ) DESC LIMIT 21
+  `
+  return Promise.all([
+    poolQuery(mySubjectsQuery, userId),
+    poolQuery(allSubjectsQuery)
+  ]).then(
+    ([mySubjects, allSubjects]) => {
+      let mySubjectsLoadMoreButton = false
+      let allSubjectsLoadMoreButton = false
+
+      if (mySubjects.length > 5) {
+        mySubjects.pop()
+        mySubjectsLoadMoreButton = true
+      }
+
+      if (allSubjects.length > 20) {
+        allSubjects.pop()
+        allSubjectsLoadMoreButton = true
+      }
+
+      res.send({
+        mySubjects: {
+          subjects: mySubjects,
+          loadMoreButton: mySubjectsLoadMoreButton
+        },
+        allSubjects: {
+          subjects: allSubjects,
+          loadMoreButton: allSubjectsLoadMoreButton
+        }
+      })
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
 router.put('/chatSubject/reload', requireAuth, (req, res) => {
   const {user, body: {subjectId}} = req
   const subjectQuery = `

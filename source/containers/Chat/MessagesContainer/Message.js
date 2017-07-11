@@ -11,7 +11,7 @@ import EditTextArea from 'components/Texts/EditTextArea'
 import {editMessage, deleteMessage, saveMessage} from 'redux/actions/ChatActions'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
-import PastMsgsModal from '../Modals/PastMsgsModal'
+import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
 
 @connect(
   state => ({
@@ -37,7 +37,7 @@ export default class Message extends Component {
     super()
     this.state = {
       onEdit: false,
-      pastMsgsModalShown: false,
+      subjectMsgsModalShown: false,
       confirmModalShown: false
     }
     this.onDelete = this.onDelete.bind(this)
@@ -69,7 +69,7 @@ export default class Message extends Component {
       style,
       myId
     } = this.props
-    const {onEdit, confirmModalShown, pastMsgsModalShown} = this.state
+    const {onEdit, confirmModalShown, subjectMsgsModalShown} = this.state
     return (
       <div
         className="media"
@@ -113,7 +113,7 @@ export default class Message extends Component {
             <UsernameText
               user={{
                 id: userId,
-                name: username || '(Deleted)'
+                name: username
               }} /> <small>{moment.unix(timeStamp).format('LLL')}</small>
           </h5>
           <div style={{paddingTop: '1.5em'}}>
@@ -135,9 +135,9 @@ export default class Message extends Component {
                   <div style={{marginTop: '0.5em'}}>
                     <Button
                       className="btn btn-sm btn-success"
-                      onClick={() => this.setState({pastMsgsModalShown: true})}
+                      onClick={() => this.setState({subjectMsgsModalShown: true})}
                     >
-                      Show past conversations
+                      Show related conversations
                     </Button>
                   </div>
                 }
@@ -152,11 +152,11 @@ export default class Message extends Component {
             onConfirm={this.onDelete}
           />
         }
-        {pastMsgsModalShown &&
-          <PastMsgsModal
+        {subjectMsgsModalShown &&
+          <SubjectMsgsModal
             subjectId={subjectId}
             subjectTitle={content}
-            onHide={() => this.setState({pastMsgsModalShown: false})}
+            onHide={() => this.setState({subjectMsgsModalShown: false})}
           />
         }
       </div>
