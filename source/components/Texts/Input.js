@@ -13,9 +13,6 @@ export default function Input({onChange, ...props}) {
   )
 
   function renderText(text) {
-    while (text.indexOf(' ') === 0) {
-      text = text.substring(1)
-    }
-    return text
+    return text.trim()
   }
 }
