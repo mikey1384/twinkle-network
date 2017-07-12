@@ -8,6 +8,8 @@ import {URL} from 'constants/URL'
 import LoadMoreButton from 'components/LoadMoreButton'
 import SubjectItem from './SubjectItem'
 import {Color} from 'constants/css'
+import {queryStringForArray} from 'helpers/apiHelpers'
+import Loading from 'components/Loading'
 
 const API_URL = `${URL}/chat`
 
@@ -25,13 +27,16 @@ export default class SubjectsModal extends Component {
   constructor() {
     super()
     this.state = {
+      loaded: false,
       mySubjects: {
         subjects: [],
-        loadMoreButton: false
+        loadMoreButton: false,
+        loading: false
       },
       allSubjects: {
         subjects: [],
-        loadMoreButton: false
+        loadMoreButton: false,
+        loading: false
       }
     }
     this.loadMoreSubjects = this.loadMoreSubjects.bind(this)
@@ -43,7 +48,8 @@ export default class SubjectsModal extends Component {
       ({data}) => {
         this.setState({
           ...this.state,
-          ...data
+          ...data,
+          loaded: true
         })
       }
     ).catch(
@@ -53,7 +59,7 @@ export default class SubjectsModal extends Component {
 
   render() {
     const {currentSubjectId, onHide, selectSubject} = this.props
-    const {mySubjects, allSubjects} = this.state
+    const {loaded, mySubjects, allSubjects} = this.state
     return (
       <Modal
         show
@@ -64,6 +70,7 @@ export default class SubjectsModal extends Component {
           <h4>View Subjects</h4>
         </Modal.Header>
         <Modal.Body>
+          {!loaded && <Loading />}
           {mySubjects.subjects.length > 0 &&
             <div style={{marginTop: '0.5em', marginBottom: '1.5em'}}>
               <div className="page-header" style={{marginTop: '0px'}}>
@@ -86,12 +93,12 @@ export default class SubjectsModal extends Component {
               />)}
               {mySubjects.loadMoreButton && <LoadMoreButton
                 style={{marginTop: '1em'}}
-                loading={false}
+                loading={mySubjects.loading}
                 onClick={() => this.loadMoreSubjects(true)}
               />}
             </div>
           }
-          <div className="page-header" style={{marginTop: '0.5em'}}>
+          {loaded && <div className="page-header" style={{marginTop: '0.5em'}}>
             <h3 style={{
               marginTop: '0px',
               marginBottom: '0px',
@@ -100,7 +107,7 @@ export default class SubjectsModal extends Component {
             }}>
               All Subjects
             </h3>
-          </div>
+          </div>}
           {allSubjects.subjects.map(subject => <SubjectItem
             key={subject.id}
             currentSubjectId={currentSubjectId}
@@ -109,7 +116,7 @@ export default class SubjectsModal extends Component {
           />)}
           {allSubjects.loadMoreButton && <LoadMoreButton
             style={{marginTop: '1em'}}
-            loading={false}
+            loading={allSubjects.loading}
             onClick={() => this.loadMoreSubjects()}
           />}
         </Modal.Body>
@@ -130,13 +137,15 @@ export default class SubjectsModal extends Component {
     const {mySubjects, allSubjects} = this.state
     const {subjects} = mineOnly ? mySubjects : allSubjects
     const subjectLabel = `${mineOnly ? 'mySubjects' : 'allSubjects'}`
+    this.setState({[subjectLabel]: {...this.state[subjectLabel], loading: true}})
     return request.get(`
-      ${API_URL}/chatSubject/modal/more?${mineOnly ? `mineOnly=${mineOnly}&` : ''}userId=${userId}&lastId=${subjects[subjects.length - 1].id}}
+      ${API_URL}/chatSubject/modal/more?${mineOnly ? `mineOnly=${mineOnly}&` : ''}userId=${userId}&${queryStringForArray(subjects, 'id', 'subjectIds')}
     `).then(
       ({data: {subjects, loadMoreButton}}) => this.setState({
         [subjectLabel]: {
           subjects: this.state[subjectLabel].subjects.concat(subjects),
-          loadMoreButton
+          loadMoreButton,
+          loading: false
         }
       })
     ).catch(

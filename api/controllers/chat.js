@@ -267,7 +267,7 @@ router.get('/chatSubject/modal', (req, res) => {
 })
 
 router.get('/chatSubject/modal/more', (req, res) => {
-  const {query: {userId, mineOnly, lastId}} = req
+  const {query: {userId, mineOnly, subjectIds}} = req
   const query = `
     SELECT a.id, a.channelId, a.userId, b.username, a.content, a.timeStamp,
     (
@@ -275,7 +275,7 @@ router.get('/chatSubject/modal/more', (req, res) => {
       AND isSubject != 1 AND isReloadedSubject != 1
     ) AS numMsgs
     FROM content_chat_subjects a JOIN users b ON a.userId = b.id
-    WHERE a.id < ?
+    WHERE ${subjectIds.map(id => `a.id != ${id}`).join(' AND ')}
     ${mineOnly ? `AND a.userId = ?` : ''}
     ORDER BY (
       IF(
@@ -285,7 +285,7 @@ router.get('/chatSubject/modal/more', (req, res) => {
       )
     ) DESC LIMIT ${mineOnly ? '11' : '21'}
   `
-  let params = [lastId]
+  let params = []
   if (mineOnly) params.push(userId)
   return poolQuery(query, params).then(
     subjects => {
