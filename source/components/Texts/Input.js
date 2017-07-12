@@ -13,6 +13,19 @@ export default function Input({onChange, ...props}) {
   )
 
   function renderText(text) {
-    return text.trim()
+    let newText = text
+    while (
+      newText !== '' &&
+      (newText[0] === ' ' ||
+      (newText[newText.length - 1] === ' ') && (newText[newText.length - 2] === ' '))
+    ) {
+      if (newText[0] === ' ') {
+        newText = newText.substring(1)
+      }
+      if ((newText[newText.length - 1] === ' ') && (newText[newText.length - 2] === ' ')) {
+        newText = newText.slice(0, -1)
+      }
+    }
+    return newText
   }
 }
