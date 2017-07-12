@@ -184,8 +184,8 @@ router.get('/feed', (req, res) => {
         ${rootType}.title AS rootContentTitle, ${rootType}.description AS rootContentDescription, ${rootType}.title AS contentTitle,
         ${rootType}.content AS rootContent,
 
-        (SELECT COUNT(*) FROM content_comments WHERE commentId = ${contentId}) AS numChildComments,
-        (SELECT COUNT(*) FROM content_comments WHERE replyId = ${contentId}) AS numChildReplies
+        (SELECT COUNT(id) FROM content_comments WHERE commentId = ${contentId}) AS numChildComments,
+        (SELECT COUNT(id) FROM content_comments WHERE replyId = ${contentId}) AS numChildReplies
 
         FROM content_comments comment1
           LEFT JOIN ${rootTableName} ${rootType}
@@ -212,7 +212,7 @@ router.get('/feed', (req, res) => {
       query = `
         SELECT discussion.id AS discussionId, discussion.title AS contentTitle, discussion.description AS contentDescription, video.content AS rootContent, video.title AS rootContentTitle, video.description AS rootContentDescription,
         user.username AS uploaderName, userPhoto.id AS uploaderPicId,
-        (SELECT COUNT(*) FROM content_comments WHERE discussionId = discussion.id) AS numChildComments
+        (SELECT COUNT(id) FROM content_comments WHERE discussionId = discussion.id) AS numChildComments
         FROM content_discussions discussion
           LEFT JOIN vq_videos video
             ON discussion.rootType = 'video' AND rootId = video.id
@@ -228,7 +228,7 @@ router.get('/feed', (req, res) => {
       query = `
         SELECT url.title AS rootContentTitle, url.description AS rootContentDescription, 'url' AS rootType,
         url.content AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS contentDescription,
-        (SELECT COUNT(*) FROM content_comments WHERE rootType = 'url' AND rootId = url.id)
+        (SELECT COUNT(id) FROM content_comments WHERE rootType = 'url' AND rootId = url.id)
         AS numChildComments
         FROM content_urls url
         LEFT JOIN users user ON url.uploader = user.id
@@ -242,8 +242,8 @@ router.get('/feed', (req, res) => {
         SELECT video.title AS rootContentTitle, video.description AS rootContentDescription, 'video' AS rootType, video.content AS rootContent, video.title AS contentTitle,
         video.description AS contentDescription,
         video.content, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
-        (SELECT COUNT(*) FROM vq_video_views WHERE videoId = video.id) AS videoViews,
-        (SELECT COUNT(*) FROM content_comments WHERE rootType = 'video' AND rootId = video.id)
+        (SELECT COUNT(id) FROM vq_video_views WHERE videoId = video.id) AS videoViews,
+        (SELECT COUNT(id) FROM content_comments WHERE rootType = 'video' AND rootId = video.id)
         AS numChildComments
         FROM vq_videos video
           LEFT JOIN users user

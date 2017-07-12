@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
   const where = linkId !== null ? `WHERE a.id < ${linkId} ` : ''
   let query = `
     SELECT a.*, b.username AS uploaderName,
-    (SELECT COUNT(*) FROM content_comments WHERE rootId = a.id AND rootType = 'url') AS numComments
+    (SELECT COUNT(id) FROM content_comments WHERE rootId = a.id AND rootType = 'url') AS numComments
     FROM content_urls a JOIN users b ON a.uploader = b.id ${where}
     ORDER BY id DESC LIMIT 21
   `

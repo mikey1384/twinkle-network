@@ -165,7 +165,7 @@ const fetchChannels = (user, currentChannelId, lastChannelId) => {
 
 function fetchUserSpecificChannelData(channel, userId) {
   const channelId = channel.id
-  let query = `SELECT COUNT(*) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ? AND isSilent = '0'`
+  let query = `SELECT COUNT(id) AS numUnreads FROM msg_chats WHERE channelId = ? AND timeStamp > ? AND userId != ? AND isSilent = '0'`
   return poolQuery(query, [channelId, channel.lastRead, userId]).then(
     ([result]) => Promise.resolve({numUnreads: result.numUnreads})
   )
@@ -293,7 +293,7 @@ const saveChannelMembers = (channelId, members) => {
 const updateLastRead = ({users, channelId, timeStamp}) => {
   let tasks = users.map(user => {
     let userId = user.id
-    let query = 'SELECT COUNT(*) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?'
+    let query = 'SELECT COUNT(id) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?'
     return poolQuery(query, [userId, channelId]).then(
       ([result]) => {
         if (Number(result.num) > 0) {

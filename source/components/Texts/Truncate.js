@@ -61,15 +61,9 @@ export default class Truncate extends Component {
   }
 
   componentWillUnmount() {
-    const {
-      onResize,
-      timeout
-    } = this
-
     this.Ellipsis.parentNode.removeChild(this.Ellipsis)
-
-    window.removeEventListener('resize', onResize)
-    cancelAnimationFrame(timeout)
+    window.removeEventListener('resize', this.onResize)
+    cancelAnimationFrame(this.timeout)
   }
 
   innerText(node) {

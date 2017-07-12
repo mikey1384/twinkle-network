@@ -4,15 +4,20 @@ import moment from 'moment'
 import UsernameText from 'components/Texts/UsernameText'
 import {Color} from 'constants/css'
 import ButtonGroup from 'components/ButtonGroup'
+import SubjectMsgsModal from '../SubjectMsgsModal'
 
 const marginHeight = 1.1
 const subjectTitleHeight = 24
 
 export default class SubjectItem extends Component {
   static propTypes = {
+    id: PropTypes.number,
+    currentSubjectId: PropTypes.number,
     content: PropTypes.string,
+    numMsgs: PropTypes.number,
     userId: PropTypes.number,
     username: PropTypes.string,
+    selectSubject: PropTypes.func,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
@@ -23,7 +28,8 @@ export default class SubjectItem extends Component {
     super()
     this.state = {
       marginBottom: `${marginHeight}em`,
-      menuShown: false
+      menuShown: false,
+      msgsModalShown: false
     }
   }
 
@@ -33,8 +39,28 @@ export default class SubjectItem extends Component {
   }
 
   render() {
-    const {content, userId, username, timeStamp} = this.props
-    const {marginBottom, menuShown} = this.state
+    const {
+      currentSubjectId, selectSubject, id, content, userId,
+      username, timeStamp, numMsgs
+    } = this.props
+    const {marginBottom, menuShown, msgsModalShown} = this.state
+    let buttons = []
+    if (numMsgs > 0) {
+      buttons.push({
+        buttonClass: 'btn-info',
+        hoverClass: 'btn-success',
+        onClick: () => this.setState({msgsModalShown: true}),
+        label: 'View Conversations'
+      })
+    }
+    if (currentSubjectId !== id) {
+      buttons.push({
+        buttonClass: 'btn-info',
+        hoverClass: 'btn-success',
+        onClick: selectSubject,
+        label: 'Select'
+      })
+    }
     return (
       <div
         className="media"
@@ -47,23 +73,15 @@ export default class SubjectItem extends Component {
         onMouseEnter={() => this.setState({menuShown: true})}
         onMouseLeave={() => this.setState({menuShown: false})}
       >
+        {msgsModalShown && <SubjectMsgsModal
+          subjectId={id}
+          subjectTitle={content}
+          onHide={() => this.setState({msgsModalShown: false})}
+        />}
         {menuShown &&
           <ButtonGroup
             style={{position: 'absolute', right: '1.5em'}}
-            buttons={[
-              {
-                buttonClass: 'btn-sm btn-default',
-                hoverClass: 'btn-sm btn-success',
-                onClick: () => console.log('clicked'),
-                label: 'View Conversations'
-              },
-              {
-                buttonClass: 'btn-sm btn-default',
-                hoverClass: 'btn-sm btn-success',
-                onClick: () => console.log('clicked'),
-                label: 'Select'
-              }
-            ]}
+            buttons={buttons}
           />
         }
         <div
@@ -75,6 +93,7 @@ export default class SubjectItem extends Component {
           }}
         >
           <div ref={ref => { this.subjectTitle = ref }} style={{marginBottom}}>
+            {currentSubjectId === id && <b style={{fontSize: '1.2em', color: Color.green}}>Current: </b>}
             <span
               className="media-heading"
               style={{
@@ -82,7 +101,7 @@ export default class SubjectItem extends Component {
                 fontWeight: 'bold'
               }}
               dangerouslySetInnerHTML={{__html: content}}
-            />
+            /> {numMsgs && (numMsgs > 0) && <b style={{color: Color.blue}}>({numMsgs})</b>}
             <div style={{position: 'absolute'}}>
               <UsernameText
                 color={Color.darkGray}

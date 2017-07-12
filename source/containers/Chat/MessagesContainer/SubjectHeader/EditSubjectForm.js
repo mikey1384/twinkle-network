@@ -44,11 +44,18 @@ class EditSubjectForm extends Component {
 
   render() {
     const {title, highlightedIndex, subjectsModalShown} = this.state
-    const {style, autoFocus, maxLength = 100, searchResults} = this.props
+    const {currentSubjectId, reloadChatSubject, style, autoFocus, maxLength = 100, searchResults} = this.props
     return (
       <div>
         {subjectsModalShown &&
-          <SubjectsModal onHide={() => this.setState({subjectsModalShown: false})} />
+          <SubjectsModal
+            currentSubjectId={currentSubjectId}
+            onHide={() => this.setState({subjectsModalShown: false})}
+            selectSubject={subjectId => {
+              reloadChatSubject(subjectId)
+              this.setState({subjectsModalShown: false})
+            }}
+          />
         }
         <div className="col-xs-10" style={{paddingLeft: '0px', paddingRight: '0px'}}>
           <form onSubmit={event => this.onEditSubmit(event)}>
@@ -82,7 +89,7 @@ class EditSubjectForm extends Component {
         </div>
         <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
           <Button
-            className="btn btn-primary"
+            className="btn btn-success"
             style={{float: 'right', marginRight: '1em', width: '90%'}}
             onClick={() => this.setState({subjectsModalShown: true})}
           >

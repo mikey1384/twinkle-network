@@ -175,7 +175,7 @@ export default class SubjectHeader extends Component {
 
   onReloadChatSubject(subjectId) {
     const {reloadChatSubject, clearSubjectSearchResults} = this.props
-    reloadChatSubject(subjectId).then(
+    return reloadChatSubject(subjectId).then(
       ({subjectId, message, subject}) => {
         socket.emit('new_subject', {subject, message})
         this.setState({onEdit: false})

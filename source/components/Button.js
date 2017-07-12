@@ -11,10 +11,10 @@ export default class Button extends Component {
     ])
   }
   render() {
-    const {onClick, children = null} = this.props
+    const {onClick, children = null, ...props} = this.props
     return (
       <button
-        {...this.props}
+        {...props}
         ref={ref => { this.Button = ref }}
         onClick={event => {
           if (this.Button !== null) this.Button.blur()

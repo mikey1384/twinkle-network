@@ -205,15 +205,21 @@ router.get('/chatSubject/messages/more', (req, res) => {
 router.get('/chatSubject/modal', (req, res) => {
   const {userId} = req.query
   const mySubjectsQuery = `
-    SELECT a.id, a.channelId, a.userId, b.username, c.id AS profilePicId, a.content, a.timeStamp
+    SELECT a.id, a.channelId, a.userId, b.username, a.content, a.timeStamp,
+    (
+      SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.id
+      AND isSubject != 1 AND isReloadedSubject != 1
+    ) AS numMsgs
     FROM content_chat_subjects a JOIN users b ON a.userId = b.id
-    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
     WHERE a.userId = ? ORDER BY id DESC LIMIT 6
   `
   const allSubjectsQuery = `
-    SELECT a.id, a.channelId, a.userId, b.username, c.id AS profilePicId, a.content, a.timeStamp
+    SELECT a.id, a.channelId, a.userId, b.username, a.content, a.timeStamp,
+    (
+      SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.id
+      AND isSubject != 1 AND isReloadedSubject != 1
+    ) AS numMsgs
     FROM content_chat_subjects a JOIN users b ON a.userId = b.id
-    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
     ORDER BY (
       IF(
         a.reloadTimeStamp IS NULL,
@@ -249,6 +255,53 @@ router.get('/chatSubject/modal', (req, res) => {
           subjects: allSubjects,
           loadMoreButton: allSubjectsLoadMoreButton
         }
+      })
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
+router.get('/chatSubject/modal/more', (req, res) => {
+  const {query: {userId, mineOnly, lastId}} = req
+  const query = `
+    SELECT a.id, a.channelId, a.userId, b.username, a.content, a.timeStamp,
+    (
+      SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.id
+      AND isSubject != 1 AND isReloadedSubject != 1
+    ) AS numMsgs
+    FROM content_chat_subjects a JOIN users b ON a.userId = b.id
+    WHERE a.id < ?
+    ${mineOnly ? `AND a.userId = ?` : ''}
+    ORDER BY (
+      IF(
+        a.reloadTimeStamp IS NULL,
+        a.timeStamp,
+        a.reloadTimeStamp
+      )
+    ) DESC LIMIT ${mineOnly ? '6' : '21'}
+  `
+  let params = [lastId]
+  if (mineOnly) params.push(userId)
+  return poolQuery(query, params).then(
+    subjects => {
+      let loadMoreButton = false
+      if (!!mineOnly && subjects.length > 5) {
+        subjects.pop()
+        loadMoreButton = true
+      }
+
+      if (!mineOnly && subjects.length > 20) {
+        subjects.pop()
+        loadMoreButton = true
+      }
+
+      res.send({
+        subjects,
+        loadMoreButton
       })
     }
   ).catch(
@@ -744,7 +797,7 @@ router.post('/invite', requireAuth, (req, res) => {
 router.get('/numUnreads', requireAuth, (req, res) => {
   const user = req.user
   const query = `
-    SELECT a.channelId, (SELECT COUNT(*) FROM msg_chats b WHERE b.isSilent = '0' AND b.channelId = a.channelId AND b.timeStamp > a.lastRead AND b.userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ?  AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
+    SELECT a.channelId, (SELECT COUNT(id) FROM msg_chats b WHERE b.isSilent = '0' AND b.channelId = a.channelId AND b.timeStamp > a.lastRead AND b.userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ?  AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
   `
   pool.query(query, [user.id, user.id, user.id], (err, rows) => {
     if (err) {
@@ -851,7 +904,7 @@ router.get('/search/subject', (req, res) => {
   const query = `
     SELECT a.id, a.channelId, a.userId, b.username, a.content, a.timeStamp,
     (
-      SELECT COUNT(*) FROM msg_chats WHERE subjectId = a.id
+      SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.id
       AND isSubject != 1 AND isReloadedSubject != 1
     ) AS numMsgs
     FROM content_chat_subjects a JOIN users b ON a.userId = b.id

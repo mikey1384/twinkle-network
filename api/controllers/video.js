@@ -220,7 +220,7 @@ router.get('/page', (req, res) => {
   let query = `
     SELECT a.id AS videoId, a.title, a.description, a.content, a.timeStamp,
     a.uploader AS uploaderId, b.username AS uploaderName,
-    (SELECT COUNT(*) FROM vq_video_views WHERE videoId = ?) AS videoViews
+    (SELECT COUNT(id) FROM vq_video_views WHERE videoId = ?) AS videoViews
     FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
     WHERE a.id = ?
   `
@@ -394,7 +394,7 @@ router.get('/debates', (req, res) => {
   const where = lastDiscussionId ? 'AND a.id < ' + lastDiscussionId + ' ' : ''
   const query = [
     'SELECT a.id, a.userId, a.title, a.description, a.timeStamp, b.username, ',
-    '(SELECT COUNT(*) FROM content_comments WHERE discussionId = a.id) AS numComments ',
+    '(SELECT COUNT(id) FROM content_comments WHERE discussionId = a.id) AS numComments ',
     'FROM content_discussions a LEFT JOIN users b ON a.userId = b.id ',
     'WHERE a.rootType = \'video\' AND a.rootId = ? ', where,
     'ORDER BY a.id DESC LIMIT ' + limit

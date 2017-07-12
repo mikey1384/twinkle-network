@@ -16,8 +16,10 @@ const API_URL = `${URL}/chat`
 }))
 export default class SubjectsModal extends Component {
   static propTypes = {
+    currentSubjectId: PropTypes.number,
     userId: PropTypes.number,
-    onHide: PropTypes.func
+    onHide: PropTypes.func,
+    selectSubject: PropTypes.func
   }
 
   constructor() {
@@ -32,6 +34,7 @@ export default class SubjectsModal extends Component {
         loadMoreButton: false
       }
     }
+    this.loadMoreSubjects = this.loadMoreSubjects.bind(this)
   }
 
   componentWillMount() {
@@ -49,7 +52,7 @@ export default class SubjectsModal extends Component {
   }
 
   render() {
-    const {onHide} = this.props
+    const {currentSubjectId, onHide, selectSubject} = this.props
     const {mySubjects, allSubjects} = this.state
     return (
       <Modal
@@ -61,25 +64,34 @@ export default class SubjectsModal extends Component {
           <h4>View Subjects</h4>
         </Modal.Header>
         <Modal.Body>
+          {mySubjects.subjects.length > 0 &&
+            <div style={{marginTop: '0.5em', marginBottom: '1.5em'}}>
+              <div className="page-header" style={{marginTop: '0px'}}>
+                <h3
+                  style={{
+                    marginTop: '0px',
+                    marginBottom: '0px',
+                    fontWeight: 'bold',
+                    color: Color.green
+                  }}
+                >
+                  My Subjects
+                </h3>
+              </div>
+              {mySubjects.subjects.map(subject => <SubjectItem
+                key={subject.id}
+                currentSubjectId={currentSubjectId}
+                selectSubject={() => selectSubject(subject.id)}
+                {...subject}
+              />)}
+              {mySubjects.loadMoreButton && <LoadMoreButton
+                style={{marginTop: '1em'}}
+                loading={false}
+                onClick={() => this.loadMoreSubjects(true)}
+              />}
+            </div>
+          }
           <div className="page-header" style={{marginTop: '0.5em'}}>
-            <h3
-              style={{
-                marginTop: '0px',
-                marginBottom: '0px',
-                fontWeight: 'bold',
-                color: Color.green
-              }}
-            >
-              My Subjects
-            </h3>
-          </div>
-          {mySubjects.subjects.map(subject => <SubjectItem key={subject.id} {...subject} />)}
-          {mySubjects.loadMoreButton && <LoadMoreButton
-            style={{marginTop: '1em'}}
-            loading={false}
-            onClick={() => console.log('clicked')}
-          />}
-          <div className="page-header" style={{marginTop: '1.5em'}}>
             <h3 style={{
               marginTop: '0px',
               marginBottom: '0px',
@@ -89,11 +101,16 @@ export default class SubjectsModal extends Component {
               All Subjects
             </h3>
           </div>
-          {allSubjects.subjects.map(subject => <SubjectItem key={subject.id} {...subject} />)}
+          {allSubjects.subjects.map(subject => <SubjectItem
+            key={subject.id}
+            currentSubjectId={currentSubjectId}
+            selectSubject={() => selectSubject(subject.id)}
+            {...subject}
+          />)}
           {allSubjects.loadMoreButton && <LoadMoreButton
             style={{marginTop: '1em'}}
             loading={false}
-            onClick={() => console.log('clicked')}
+            onClick={() => this.loadMoreSubjects()}
           />}
         </Modal.Body>
         <Modal.Footer>
@@ -105,6 +122,25 @@ export default class SubjectsModal extends Component {
           </Button>
         </Modal.Footer>
       </Modal>
+    )
+  }
+
+  loadMoreSubjects(mineOnly) {
+    const {userId} = this.props
+    const {mySubjects, allSubjects} = this.state
+    const {subjects} = mineOnly ? mySubjects : allSubjects
+    const subjectLabel = `${mineOnly ? 'mySubjects' : 'allSubjects'}`
+    return request.get(`
+      ${API_URL}/chatSubject/modal/more?mineOnly=${mineOnly}&userId=${userId}&lastId=${subjects[subjects.length - 1].id}}
+    `).then(
+      ({data: {subjects, loadMoreButton}}) => this.setState({
+        [subjectLabel]: {
+          subjects: this.state[subjectLabel].subjects.concat(subjects),
+          loadMoreButton
+        }
+      })
+    ).catch(
+      error => console.error(error.response || error)
     )
   }
 }
