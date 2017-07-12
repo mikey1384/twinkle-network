@@ -182,6 +182,7 @@ router.get('/chatSubject/messages/more', (req, res) => {
     LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
     WHERE a.subjectId = ? 
     AND a.isSubject != 1
+    AND a.channelId = 2
     AND ${messageIds.map(id => `a.id != ${id}`).join(' AND ')}
     ORDER BY id DESC LIMIT 11
   `
