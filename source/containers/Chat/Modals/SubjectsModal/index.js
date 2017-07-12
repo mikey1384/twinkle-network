@@ -131,7 +131,7 @@ export default class SubjectsModal extends Component {
     const {subjects} = mineOnly ? mySubjects : allSubjects
     const subjectLabel = `${mineOnly ? 'mySubjects' : 'allSubjects'}`
     return request.get(`
-      ${API_URL}/chatSubject/modal/more?mineOnly=${mineOnly}&userId=${userId}&lastId=${subjects[subjects.length - 1].id}}
+      ${API_URL}/chatSubject/modal/more?${mineOnly ? `mineOnly=${mineOnly}&` : ''}userId=${userId}&lastId=${subjects[subjects.length - 1].id}}
     `).then(
       ({data: {subjects, loadMoreButton}}) => this.setState({
         [subjectLabel]: {

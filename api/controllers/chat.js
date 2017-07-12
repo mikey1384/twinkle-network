@@ -282,14 +282,14 @@ router.get('/chatSubject/modal/more', (req, res) => {
         a.timeStamp,
         a.reloadTimeStamp
       )
-    ) DESC LIMIT ${mineOnly ? '6' : '21'}
+    ) DESC LIMIT ${mineOnly ? '11' : '21'}
   `
   let params = [lastId]
   if (mineOnly) params.push(userId)
   return poolQuery(query, params).then(
     subjects => {
       let loadMoreButton = false
-      if (!!mineOnly && subjects.length > 5) {
+      if (!!mineOnly && subjects.length > 10) {
         subjects.pop()
         loadMoreButton = true
       }
