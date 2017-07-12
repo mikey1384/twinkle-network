@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
 import {stringIsEmpty} from 'helpers/stringHelpers'
+import Input from './Input'
 
 export default class TitleDescriptionForm extends Component {
   static propTypes = {
@@ -28,13 +29,13 @@ export default class TitleDescriptionForm extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <fieldset className="form-group">
-          <input
+          <Input
             autoFocus={autoFocus}
             className="form-control"
             placeholder={titlePlaceholder}
             type="text"
             value={title}
-            onChange={event => this.setState({title: event.target.value})}
+            onChange={text => this.setState({title: text})}
           />
         </fieldset>
         <fieldset className="form-group">

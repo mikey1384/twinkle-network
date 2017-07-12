@@ -85,9 +85,8 @@ export default class SearchBox extends Component {
     )
   }
 
-  onContentSearch(event) {
+  onContentSearch(text) {
     const {searchContent, clearSearchResults} = this.props
-    const text = event.target.value
     this.setState({searchText: text})
     if (stringIsEmpty(text)) {
       return clearSearchResults()

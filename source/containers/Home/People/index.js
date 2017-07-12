@@ -97,8 +97,8 @@ export default class People extends Component {
     }
   }
 
-  onPeopleSearch(event) {
-    this.setState({searchText: event.target.value})
+  onPeopleSearch(text) {
+    this.setState({searchText: text})
   }
 
   onScroll() {

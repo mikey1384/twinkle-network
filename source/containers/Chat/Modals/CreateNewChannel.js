@@ -4,6 +4,7 @@ import {Modal, Button} from 'react-bootstrap'
 import {searchUserToInviteAsync, clearUserSearchResults} from 'redux/actions/ChatActions'
 import {connect} from 'react-redux'
 import TagPeopleForm from 'components/TagPeopleForm'
+import Input from 'components/Texts/Input'
 
 @connect(
   state => ({
@@ -62,11 +63,11 @@ export default class CreateNewChannelModal extends Component {
             {selectedUsers.length > 1 &&
               <div className="form-group">
                 <label>Channel name</label>
-                <input
+                <Input
                   className="form-control"
                   placeholder="Enter channel name"
                   value={channelName}
-                  onChange={event => this.onChannelNameInput(event.target.value)}
+                  onChange={text => this.onChannelNameInput(text)}
                 />
               </div>
             }

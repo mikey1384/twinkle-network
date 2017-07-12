@@ -12,6 +12,7 @@ import {DragDropContext} from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-touch-backend'
 import request from 'axios'
 import {URL} from 'constants/URL'
+import Input from 'components/Texts/Input'
 
 @DragDropContext(HTML5Backend)
 @connect(
@@ -108,7 +109,7 @@ export default class EditPlaylistModal extends Component {
             </li>
           </ul>
           {mainTabActive && modalType === 'change' &&
-            <input
+            <Input
               className="form-control"
               placeholder="Search videos..."
               autoFocus
@@ -198,9 +199,9 @@ export default class EditPlaylistModal extends Component {
       )
   }
 
-  onVideoSearch(event) {
-    this.setState({searchText: event.target.value})
-    return request.get(`${URL}/playlist/search/video?query=${event.target.value}`).then(
+  onVideoSearch(text) {
+    this.setState({searchText: text})
+    return request.get(`${URL}/playlist/search/video?query=${text}`).then(
       ({data: searchedVideos}) => this.setState({searchedVideos})
     ).catch(
       error => console.error(error.response || error)

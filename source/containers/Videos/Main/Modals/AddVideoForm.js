@@ -5,6 +5,7 @@ import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
 import {uploadVideoAsync} from 'redux/actions/VideoActions'
 import {connect} from 'react-redux'
+import Input from 'components/Texts/Input'
 import {isValidYoutubeUrl, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 @connect(
@@ -38,9 +39,9 @@ export default class AddVideoForm extends Component {
     return (
       <form className="container-fluid">
         <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
-          <label><strong>YouTube Url</strong></label>
+          <label><b>YouTube Url</b></label>
           <div style={{display: 'inline'}}>
-            <input
+            <Input
               ref={ref => { this.UrlField = ref }}
               style={{borderColor: !!urlError && 'red'}}
               value={form.url}
@@ -63,11 +64,11 @@ export default class AddVideoForm extends Component {
           }
         </fieldset>
         <fieldset className="form-group">
-          <label><strong>Title</strong></label>
+          <label><b>Title</b></label>
           <div style={{display: 'inline'}}>
-            <input
+            <Input
               value={form.title}
-              onChange={event => this.setState({form: {...form, title: event.target.value}})}
+              onChange={text => this.setState({form: {...form, title: text}})}
               className="form-control"
               placeholder="Enter Title"
               type="text"
@@ -138,9 +139,8 @@ export default class AddVideoForm extends Component {
     })
   }
 
-  onUrlFieldChange(event) {
+  onUrlFieldChange(url) {
     const {form} = this.state
-    const url = event.target.value
     this.setState({
       form: {...form, url, urlError: null},
       urlError: null

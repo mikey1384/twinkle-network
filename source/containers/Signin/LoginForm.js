@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import {Modal, Alert} from 'react-bootstrap'
 import Button from 'components/Button'
 import {stringIsEmpty} from 'helpers/stringHelpers'
+import Input from 'components/Texts/Input'
 
 export default class LoginForm extends Component {
   static propTypes = {
@@ -33,14 +34,14 @@ export default class LoginForm extends Component {
         <div className="container-fluid">
           <fieldset className="form-group">
             <label>Username</label>
-            <input
+            <Input
               name="username"
               className="form-control"
               value={username}
-              onChange={event => {
+              onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  username: event.target.value
+                  username: text
                 })
               }}
               placeholder="Enter your username"
@@ -54,14 +55,14 @@ export default class LoginForm extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label>Password</label>
-            <input
+            <Input
               name="password"
               className="form-control"
               value={password}
-              onChange={event => {
+              onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  password: event.target.value
+                  password: text
                 })
               }}
               placeholder="Enter your password"

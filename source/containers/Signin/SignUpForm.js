@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import {Modal, Alert} from 'react-bootstrap'
 import Button from 'components/Button'
 import {stringIsEmpty} from 'helpers/stringHelpers'
+import Input from 'components/Texts/Input'
 
 export default class SignUpForm extends Component {
   static propTypes = {
@@ -40,14 +41,14 @@ export default class SignUpForm extends Component {
         <div className="container-fluid">
           <fieldset className="form-group">
             <label>Username</label>
-            <input
+            <Input
               className="form-control"
               value={username}
               placeholder="Enter the username you wish to use on this website"
-              onChange={event => {
+              onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  username: event.target.value
+                  username: text
                 })
               }}
               onKeyPress={event => {
@@ -60,14 +61,14 @@ export default class SignUpForm extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label>Password</label>
-            <input
+            <Input
               className="form-control"
               value={password}
               placeholder="Password (You MUST remember your password. Write it down somewhere!)"
-              onChange={event => {
+              onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  password: event.target.value
+                  password: text
                 })
               }}
               onKeyPress={event => {
@@ -80,14 +81,14 @@ export default class SignUpForm extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label>First Name</label>
-            <input
+            <Input
               className="form-control"
               value={firstname}
               placeholder="What is your first name? Mine is Mikey"
-              onChange={event => {
+              onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  firstname: event.target.value
+                  firstname: text
                 })
               }}
               onKeyPress={event => {
@@ -100,14 +101,14 @@ export default class SignUpForm extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label>Last Name</label>
-            <input
+            <Input
               className="form-control"
               value={lastname}
               placeholder="What is your last name? Mine is Lee"
-              onChange={event => {
+              onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  lastname: event.target.value
+                  lastname: text
                 })
               }}
               onKeyPress={event => {
@@ -120,14 +121,14 @@ export default class SignUpForm extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label>{"Email (optional, you don't need to enter this)"}</label>
-            <input
+            <Input
               className="form-control"
               value={email}
               placeholder="Email is not required, but if you have one, enter it here"
-              onChange={event => {
+              onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  email: event.target.value
+                  email: text
                 })
               }}
               onKeyPress={event => {

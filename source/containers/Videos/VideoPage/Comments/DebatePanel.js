@@ -10,6 +10,7 @@ import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelp
 import Textarea from 'react-textarea-autosize'
 import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
+import Input from 'components/Texts/Input'
 import {
   deleteVideoCommentAsync,
   editVideoCommentAsync,
@@ -127,14 +128,14 @@ export default class DebatePanel extends Component {
           )}
           {onEdit &&
             <form onSubmit={event => event.preventDefault()}>
-              <input
+              <Input
                 autoFocus
                 type="text"
                 className="form-control"
                 placeholder="Enter Title..."
                 value={editedTitle}
-                onChange={event => {
-                  this.setState({editedTitle: event.target.value}, () => {
+                onChange={text => {
+                  this.setState({editedTitle: text}, () => {
                     this.determineEditButtonDoneStatus()
                   })
                 }}

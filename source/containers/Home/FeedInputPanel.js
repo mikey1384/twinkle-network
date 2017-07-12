@@ -6,6 +6,7 @@ import Button from 'components/Button'
 import {uploadContentAsync} from 'redux/actions/FeedActions'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import Link from 'components/Link'
+import Input from 'components/Texts/Input'
 import {
   isValidUrl,
   isValidYoutubeUrl,
@@ -79,7 +80,7 @@ export default class FeedInputPanel extends Component {
                 </p>
               </label>
               <div style={{display: 'inline'}}>
-                <input
+                <Input
                   ref={ref => { this.UrlField = ref }}
                   style={{borderColor: !!urlError && 'red'}}
                   value={form.url}
@@ -121,9 +122,9 @@ export default class FeedInputPanel extends Component {
               <div>
                 <fieldset className="form-group">
                   <div style={{display: 'inline'}}>
-                    <input
+                    <Input
                       value={form.title}
-                      onChange={event => this.setState({form: {...form, title: event.target.value}})}
+                      onChange={text => this.setState({form: {...form, title: text}})}
                       className="form-control"
                       placeholder="Enter Title"
                       onKeyUp={event => {
@@ -208,9 +209,8 @@ export default class FeedInputPanel extends Component {
     })
   }
 
-  onUrlFieldChange(event) {
+  onUrlFieldChange(url) {
     const {form} = this.state
-    const url = event.target.value
     this.setState({
       form: {...form, url, checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo},
       urlError: null,

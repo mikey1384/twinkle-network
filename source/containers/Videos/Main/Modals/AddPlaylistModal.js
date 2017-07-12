@@ -12,6 +12,7 @@ import HTML5Backend from 'react-dnd-html5-touch-backend'
 import SelectVideosForm from './SelectVideosForm'
 import request from 'axios'
 import {URL} from 'constants/URL'
+import Input from 'components/Texts/Input'
 
 @DragDropContext(HTML5Backend)
 @connect(
@@ -90,14 +91,14 @@ export default class AddPlaylistModal extends Component {
               onChange={() => this.setState({titleError: false})}
             >
               <fieldset className="form-group">
-                <label>Playlist Title</label>
-                <input
+                <label><b>Playlist Title</b></label>
+                <Input
                   name="title"
                   placeholder="Enter Playlist Title"
                   className="form-control"
                   type="text"
                   value={title}
-                  onChange={event => this.setState({title: event.target.value})}
+                  onChange={text => this.setState({title: text})}
                   onKeyUp={event => {
                     if (event.key === ' ') {
                       this.setState({title: addEmoji(event.target.value)})
@@ -110,7 +111,7 @@ export default class AddPlaylistModal extends Component {
                 >{titleError && 'Enter title'}</span>
               </fieldset>
               <fieldset className="form-group">
-                <label>Description</label>
+                <label><b>Description</b></label>
                 <Textarea
                   name="description"
                   placeholder="Enter Description (Optional)"
@@ -129,7 +130,7 @@ export default class AddPlaylistModal extends Component {
           }
           {section === 1 &&
             <div>
-              <input
+              <Input
                 className="form-control"
                 placeholder="Search videos..."
                 autoFocus
@@ -255,9 +256,9 @@ export default class AddPlaylistModal extends Component {
       )
   }
 
-  onVideoSearch(event) {
-    this.setState({searchText: event.target.value})
-    return request.get(`${URL}/playlist/search/video?query=${event.target.value}`).then(
+  onVideoSearch(text) {
+    this.setState({searchText: text})
+    return request.get(`${URL}/playlist/search/video?query=${text}`).then(
       ({data: searchedVideos}) => this.setState({searchedVideos})
     ).catch(
       error => console.error(error.response || error)

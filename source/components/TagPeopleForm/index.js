@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {stringIsEmpty} from 'helpers/stringHelpers'
-import Input from './Input'
+import TagInput from './TagInput'
 
 export default class TagPeopleForm extends Component {
   static propTypes = {
@@ -56,7 +56,7 @@ export default class TagPeopleForm extends Component {
         <div className="form-group">
           <label>People</label>
           {this.renderTags()}
-          <Input
+          <TagInput
             autoFocus
             value={searchText}
             onChange={this.onUserSearch}
@@ -101,9 +101,8 @@ export default class TagPeopleForm extends Component {
     </div> : null
   }
 
-  onUserSearch(event) {
+  onUserSearch(text) {
     const {onSearch, onClear} = this.props
-    const text = event.target.value
     this.setState({searchText: text})
     if (stringIsEmpty(text) || text.length < 2) {
       return onClear()

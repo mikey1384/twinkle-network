@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import onClickOutside from 'react-onclickoutside'
+import Input from './Input'
 import {cleanString, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 class EditTitleForm extends Component {
@@ -30,14 +31,14 @@ class EditTitleForm extends Component {
     const {style, autoFocus, maxLength = 100} = this.props
     return (
       <form onSubmit={event => this.onEditSubmit(event, title)}>
-        <input
+        <Input
           style={style}
           autoFocus={autoFocus}
           type="text"
           className="form-control"
           placeholder="Enter Title..."
           value={title}
-          onChange={event => this.setState({title: event.target.value})}
+          onChange={text => this.setState({title: text})}
           onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
         />
         <small style={{color: title.length > maxLength && 'red'}}>{title.length}/{maxLength} Characters</small>

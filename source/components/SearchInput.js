@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import SearchDropdown from './SearchDropdown'
 import onClickOutside from 'react-onclickoutside'
+import Input from 'components/Texts/Input'
 
 class SearchInput extends Component {
   static propTypes = {
@@ -35,13 +36,13 @@ class SearchInput extends Component {
         <span className="input-group-addon">
           <span className="glyphicon glyphicon-search"></span>
         </span>
-        <input
+        <Input
           ref={ref => { this.searchInput = ref }}
           onFocus={onFocus && onFocus}
           className="form-control"
           placeholder={placeholder}
           value={this.props.value}
-          onChange={event => this.props.onChange(event)}
+          onChange={text => this.props.onChange(text)}
           onKeyDown={this.onKeyDown}
         />
         {this.renderDropdownList()}

@@ -2,8 +2,9 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import onClickOutside from 'react-onclickoutside'
 import SearchDropdown from '../SearchDropdown'
+import Input from 'components/Texts/Input'
 
-class Input extends Component {
+class TagInput extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
     value: PropTypes.string.isRequired,
@@ -32,12 +33,12 @@ class Input extends Component {
         <span className="input-group-addon">
           <span className="glyphicon glyphicon-search"></span>
         </span>
-        <input
+        <Input
           autoFocus={this.props.autoFocus}
           value={this.props.value}
           className="form-control"
           placeholder="Search and select people you want to chat with"
-          onChange={event => this.props.onChange(event)}
+          onChange={text => this.props.onChange(text)}
           onKeyDown={this.onKeyDown}
         />
         {this.renderDropdownList()}
@@ -105,4 +106,4 @@ class Input extends Component {
   }
 }
 
-export default onClickOutside(Input)
+export default onClickOutside(TagInput)

@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
+import Input from 'components/Texts/Input'
 
 const maxChar = 150
 export default class BioEditModal extends Component {
@@ -39,24 +40,24 @@ export default class BioEditModal extends Component {
             <fieldset className="form-group">
               <label><strong>Answer <b style={{color: Color.blue}}>one or multiple</b> questions below, or write anything you want about yourself</strong></label>
               <div style={{display: 'inline'}}>
-                <input
+                <Input
                   autoFocus
                   value={firstLine}
-                  onChange={event => this.setState({firstLine: event.target.value})}
+                  onChange={text => this.setState({firstLine: text})}
                   className="form-control"
                   placeholder="Write something"
                   type="text"
                 />
               </div>
-              <small>{"If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student which english academy do you go to? (For example, LexKim) What is the name of your teacher? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want "}</small><br/>
+              <small>{"If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student which english academy do you go to? (For example, LexKim) What's your teacher's name? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want "}</small><br/>
               <b style={{color: firstLine.length > maxChar && 'red'}}>{`(${firstLine.length}/${maxChar} characters)`}</b>
             </fieldset>
             <fieldset className="form-group">
               <label><strong>Answer <b style={{color: Color.blue}}>one or multiple</b> questions below, or write anything you want about yourself</strong></label>
               <div style={{display: 'inline'}}>
-                <input
+                <Input
                   value={secondLine}
-                  onChange={event => this.setState({secondLine: event.target.value})}
+                  onChange={text => this.setState({secondLine: text})}
                   className="form-control"
                   placeholder="Write something"
                   type="text"
@@ -68,15 +69,15 @@ export default class BioEditModal extends Component {
             <fieldset className="form-group">
               <label><strong>Answer <b style={{color: Color.blue}}>one or multiple</b> questions below, or write anything you want about yourself</strong></label>
               <div style={{display: 'inline'}}>
-                <input
+                <Input
                   value={thirdLine}
-                  onChange={event => this.setState({thirdLine: event.target.value})}
+                  onChange={text => this.setState({thirdLine: text})}
                   className="form-control"
                   placeholder="Write something"
                   type="text"
                 />
               </div>
-              <small>{"What's the name of your school? (Example: Daechi elementary school) What grade are you in? If you've finished school, which was the last school you attended? What is your favorite school subject? Or, write anything you wish your friends knew about yourself"}</small><br/>
+              <small>{"Which school do you go to? (Example: Daechi elementary school) What grade are you in? If you've finished school, which was the last school you've attended? What is your favorite school subject? Or, write anything you wish to tell your friends about yourself"}</small><br/>
               <b style={{color: thirdLine.length > maxChar && 'red'}}>{`(${thirdLine.length}/${maxChar} characters)`}</b>
             </fieldset>
           </form>

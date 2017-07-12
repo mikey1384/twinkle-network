@@ -7,6 +7,7 @@ import Button from 'components/Button'
 import {Color} from 'constants/css'
 import {timeSince} from 'helpers/timeStampHelpers'
 import SubjectsModal from '../../Modals/SubjectsModal'
+import Input from 'components/Texts/Input'
 
 class EditSubjectForm extends Component {
   static propTypes = {
@@ -59,7 +60,7 @@ class EditSubjectForm extends Component {
         }
         <div className="col-xs-10" style={{paddingLeft: '0px', paddingRight: '0px'}}>
           <form onSubmit={event => this.onEditSubmit(event)}>
-            <input
+            <Input
               style={style}
               autoFocus={autoFocus}
               type="text"
@@ -117,10 +118,10 @@ class EditSubjectForm extends Component {
     }
   }
 
-  onInputChange(event) {
+  onInputChange(text) {
     const {onChange} = this.props
-    this.setState({title: event.target.value})
-    return onChange(event.target.value).then(
+    this.setState({title: text})
+    return onChange(text).then(
       () => {
         const {searchResults} = this.props
         const {title} = this.state

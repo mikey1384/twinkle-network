@@ -6,7 +6,11 @@ import {timeSince} from 'helpers/timeStampHelpers'
 import LongText from 'components/Texts/LongText'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {cleanString, cleanStringWithURL, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import Input from 'components/Texts/Input'
+import {
+  cleanString, cleanStringWithURL, isValidUrl,
+  stringIsEmpty, addEmoji, finalizeEmoji
+} from 'helpers/stringHelpers'
 
 export default class Description extends Component {
   static propTypes = {
@@ -73,13 +77,13 @@ export default class Description extends Component {
           <div>
             {onEdit ?
               <form className="col-sm-6 col-sm-offset-3" onSubmit={event => event.preventDefault()}>
-                <input
+                <Input
                   type="text"
                   className="form-control"
                   placeholder="Enter Title..."
                   value={editedTitle}
-                  onChange={event => {
-                    this.setState({editedTitle: event.target.value}, () => {
+                  onChange={text => {
+                    this.setState({editedTitle: text}, () => {
                       this.determineEditButtonDoneStatus()
                     })
                   }}
@@ -108,13 +112,13 @@ export default class Description extends Component {
           {onEdit ?
             <div>
               <form>
-                <input
+                <Input
                   className="form-control"
                   placeholder="Enter Url"
                   style={{marginBottom: '1em'}}
                   value={editedUrl}
-                  onChange={event => {
-                    this.setState({editedUrl: event.target.value}, () => {
+                  onChange={text => {
+                    this.setState({editedUrl: text}, () => {
                       this.determineEditButtonDoneStatus()
                     })
                   }}
@@ -164,12 +168,13 @@ export default class Description extends Component {
 
   determineEditButtonDoneStatus() {
     const urlIsEmpty = stringIsEmpty(this.state.editedUrl)
+    const urlIsValid = isValidUrl(this.state.editedUrl)
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
     const urlChanged = this.state.editedUrl !== this.props.url
     const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description)
     const editDoneButtonDisabled =
-      urlIsEmpty || titleIsEmpty || (!titleChanged && !descriptionChanged && !urlChanged)
+      !urlIsValid || urlIsEmpty || titleIsEmpty || (!titleChanged && !descriptionChanged && !urlChanged)
     this.setState({editDoneButtonDisabled})
   }
 

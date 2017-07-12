@@ -10,6 +10,7 @@ import UserListModal from 'components/Modals/UserListModal'
 import VideoLikeInterface from './VideoLikeInterface'
 import FullTextReveal from 'components/FullTextReveal'
 import {textIsOverflown} from 'helpers/domHelpers'
+import Input from 'components/Texts/Input'
 import {
   cleanString,
   cleanStringWithURL,
@@ -105,26 +106,26 @@ export default class Description extends Component {
                       style={{paddingLeft: '0px', paddingBottom: '0.5em'}}
                       onSubmit={event => event.preventDefault()}
                     >
-                      <input
+                      <Input
                         type="text"
                         className="form-control"
                         placeholder="Enter YouTube Url..."
                         style={{width: '30em'}}
                         value={editedUrl}
-                        onChange={event => {
-                          this.setState({editedUrl: event.target.value}, () => {
+                        onChange={text => {
+                          this.setState({editedUrl: text}, () => {
                             this.determineEditButtonDoneStatus()
                           })
                         }}
                       />
-                      <input
+                      <Input
                         type="text"
                         className="form-control"
                         placeholder="Enter Title..."
                         style={{width: '30em', marginTop: '1em'}}
                         value={editedTitle}
-                        onChange={event => {
-                          this.setState({editedTitle: event.target.value}, () => {
+                        onChange={text => {
+                          this.setState({editedTitle: text}, () => {
                             this.determineEditButtonDoneStatus()
                           })
                         }}
