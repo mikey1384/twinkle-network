@@ -1,4 +1,4 @@
-import {processedStringWithURL, fetchedVideoCodeFromURL} from 'helpers/stringHelpers'
+import {processedString, fetchedVideoCodeFromURL} from 'helpers/stringHelpers'
 
 const defaultState = {
   loaded: false,
@@ -71,19 +71,19 @@ export default function VideoReducer(state = defaultState, action) {
             ...debate,
             comments: debate.comments.map(comment => ({
               ...comment,
-              content: comment.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : comment.content,
+              content: comment.id === action.data.commentId ? processedString(action.data.editedComment) : comment.content,
               replies: comment.replies.map(reply => ({
                 ...reply,
-                content: reply.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : reply.content
+                content: reply.id === action.data.commentId ? processedString(action.data.editedComment) : reply.content
               }))
             }))
           })),
           comments: state.videoPage.comments.map(comment => ({
             ...comment,
-            content: comment.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : comment.content,
+            content: comment.id === action.data.commentId ? processedString(action.data.editedComment) : comment.content,
             replies: comment.replies.map(reply => ({
               ...reply,
-              content: reply.id === action.data.commentId ? processedStringWithURL(action.data.editedComment) : reply.content
+              content: reply.id === action.data.commentId ? processedString(action.data.editedComment) : reply.content
             }))
           }))
         }
@@ -422,7 +422,7 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_VIDEO_PAGE':
-      const description = processedStringWithURL(action.params.description)
+      const description = processedString(action.params.description)
       const url = fetchedVideoCodeFromURL(action.params.url)
       return {
         ...state,

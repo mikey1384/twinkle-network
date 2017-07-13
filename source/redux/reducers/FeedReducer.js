@@ -1,4 +1,5 @@
-import {processedStringWithURL} from 'helpers/stringHelpers'
+import {processedString} from 'helpers/stringHelpers'
+
 const defaultState = {
   selectedFilter: 'all',
   scrollLocked: false,
@@ -110,7 +111,7 @@ export default function FeedReducer(state = defaultState, action) {
         }, [])
       }
     case 'FEED_COMMENT_EDIT':
-      let editedComment = processedStringWithURL(action.data.editedComment)
+      let editedComment = processedString(action.data.editedComment)
       return {
         ...state,
         feeds: state.feeds.map(feed => {

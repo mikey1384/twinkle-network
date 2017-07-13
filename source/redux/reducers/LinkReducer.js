@@ -1,4 +1,4 @@
-import {processedStringWithURL} from 'helpers/stringHelpers'
+import {processedString} from 'helpers/stringHelpers'
 const defaultState = {
   links: [],
   loadMoreLinksButtonShown: false,
@@ -34,7 +34,7 @@ export default function linkReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_LINK_COMMENT':
-      let editedComment = processedStringWithURL(action.data.editedComment)
+      let editedComment = processedString(action.data.editedComment)
       return {
         ...state,
         linkPage: {
@@ -86,7 +86,7 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           content,
           title,
-          description: processedStringWithURL(description)
+          description: processedString(description)
         }
       }
     case 'FETCH_LINKS':
