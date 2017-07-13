@@ -104,7 +104,7 @@ const fetchSingleChannel = (channelId, userId) => {
   )
 }
 
-const fetchChannels = (user, currentChannelId, lastChannelId) => {
+const fetchChannels = (user, currentChannelId, channelIds) => {
   return fetchBasicChannelData().then(
     channels => fetchChannelTitlesAndLastMessages(channels, user.id)
   ).then(
@@ -113,19 +113,18 @@ const fetchChannels = (user, currentChannelId, lastChannelId) => {
 
   function fetchBasicChannelData() {
     let tasks = []
-    if (lastChannelId) {
+    if (channelIds) {
       let query = `
         SELECT a.id, a.twoPeople, a.channelName, a.lastUpdated, b.lastRead
         FROM msg_channels a LEFT JOIN
         msg_channel_info b ON a.id = b.channelId AND b.userId = ?
         WHERE a.id IN
         (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
-        OR b.userId = ?) AND b.isHidden = '0' AND a.id != ? AND a.id != ? AND
-        lastUpdated <= (SELECT lastUpdated FROM msg_channels WHERE id = ? ORDER BY lastUpdated DESC LIMIT 1)
-        ORDER BY a.lastUpdated DESC
-        LIMIT 11
+        OR b.userId = ?) AND b.isHidden = '0' AND 
+        ${channelIds.map(id => `a.id != ${id}`).join(' AND ')}
+        ORDER BY a.id DESC LIMIT 11
       `
-      tasks = [poolQuery(query, [user.id, generalChatId, user.id, currentChannelId, lastChannelId, lastChannelId])]
+      tasks = [poolQuery(query, [user.id, generalChatId, user.id])]
     } else {
       const query1 = `
         SELECT a.id, a.twoPeople, a.channelName, b.lastRead

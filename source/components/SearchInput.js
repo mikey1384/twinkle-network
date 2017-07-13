@@ -37,7 +37,6 @@ class SearchInput extends Component {
           <span className="glyphicon glyphicon-search"></span>
         </span>
         <Input
-          ref={ref => { this.searchInput = ref }}
           onFocus={onFocus && onFocus}
           className="form-control"
           placeholder={placeholder}
@@ -81,7 +80,6 @@ class SearchInput extends Component {
 
       if (event.keyCode === 13) {
         event.preventDefault()
-        this.searchInput.blur()
         let item = searchResults[index]
         onSelect(item)
       }

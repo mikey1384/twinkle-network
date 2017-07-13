@@ -408,9 +408,9 @@ router.put('/message', requireAuth, (req, res) => {
 })
 
 router.get('/more/channels', requireAuth, (req, res) => {
-  const {currentChannelId, lastChannelId} = req.query
+  const {currentChannelId, channelIds} = req.query
   const {user} = req
-  fetchChannels(user, currentChannelId, lastChannelId).then(
+  fetchChannels(user, currentChannelId, channelIds).then(
     channels => res.send(channels)
   ).catch(
     err => {

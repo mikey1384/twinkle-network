@@ -17,6 +17,7 @@ import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import {textIsOverflown} from 'helpers/domHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import {socket} from 'constants/io'
+import {queryStringForArray} from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
 
 const channelName = (channels, currentChannel) => {
@@ -426,7 +427,7 @@ export default class Chat extends Component {
     const {channelsLoading} = this.state
     if (!channelsLoading) {
       this.setState({channelsLoading: true})
-      loadMoreChannels(currentChannel.id, channels[channels.length - 1].id).then(
+      loadMoreChannels(currentChannel.id, queryStringForArray(channels, 'id', 'channelIds')).then(
         () => this.setState({channelsLoading: false})
       )
     }

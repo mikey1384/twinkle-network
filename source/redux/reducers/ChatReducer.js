@@ -161,7 +161,7 @@ export default function ChatReducer(state = defaultState, action) {
             if (channel.id === action.data.channel.id) {
               originalNumUnreads = channel.numUnreads
             }
-            if (state.channelLoadMoreButton && action.showOnTop && index === (state.channels.length - 1)) {
+            if (action.showOnTop && index === (state.channels.length - 1)) {
               return [action.data.channel].concat(
                 resultingArray.filter(channel => channel.id !== action.data.channel.id)
               )

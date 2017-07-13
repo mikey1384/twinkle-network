@@ -192,8 +192,8 @@ export const loadChatSubject = () => dispatch =>
     }
   )
 
-export const loadMoreChannels = (currentChannelId, lastChannelId) => dispatch =>
-  request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&lastChannelId=${lastChannelId}`, auth()).then(
+export const loadMoreChannels = (currentChannelId, channelIds) => dispatch =>
+  request.get(`${API_URL}/more/channels?currentChannelId=${currentChannelId}&${channelIds}`, auth()).then(
     response => {
       dispatch({
         type: 'LOAD_MORE_CHANNELS',
