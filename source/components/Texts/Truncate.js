@@ -163,12 +163,20 @@ export default class Truncate extends Component {
 
     for (let line = 1; line <= numLines; line++) {
       const textWords = textLines[0]
+
       if (textWords.length === 0) {
         lines.push()
         textLines.shift()
         line--
         continue
       }
+
+      if (textWords.length === 1) {
+        lines.push(processedStringWithURL(textWords[0]))
+        textLines.shift()
+        continue
+      }
+
       let resultLine = textWords.join(' ')
 
       if (measureWidth(resultLine) <= targetWidth) {
@@ -226,7 +234,6 @@ export default class Truncate extends Component {
     }
 
     onTruncate(didTruncate)
-
     return lines
   }
 
