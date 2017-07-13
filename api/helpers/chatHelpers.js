@@ -122,7 +122,7 @@ const fetchChannels = (user, currentChannelId, channelIds) => {
         (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
         OR b.userId = ?) AND b.isHidden = '0' AND 
         ${channelIds.map(id => `a.id != ${id}`).join(' AND ')}
-        ORDER BY a.id DESC LIMIT 11
+        ORDER BY a.lastUpdated DESC LIMIT 11
       `
       tasks = [poolQuery(query, [user.id, generalChatId, user.id])]
     } else {
