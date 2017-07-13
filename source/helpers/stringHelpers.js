@@ -130,7 +130,7 @@ export function processedString(string) {
 
 export function processedStringWithURL(string) {
   if (typeof string !== 'string') return string || null
-  let maxChar = 100
+  const maxChar = 100
   const trimmedString = string => string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
   var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   var tempString = string
@@ -138,12 +138,21 @@ export function processedStringWithURL(string) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/\r?\n/g, '<br>')
-    .replace(regex, `<a href=\"$1\" target=\"_blank\">${trimmedString('$1')}</a>`)
+    .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
   var newString = ''
   while (tempString.length > 0) {
     var position = tempString.indexOf('href=\"')
     if (position === -1) {
-      newString += tempString
+      let headPos = tempString.indexOf('target="_blank">')
+      let tailPos = tempString.indexOf('</a>')
+      if (headPos !== -1) {
+        let wrapperHead = tempString.substring(0, headPos + 16)
+        let url = tempString.substring(headPos + 16, tailPos)
+        let wrapperTail = tempString.substring(tailPos, tempString.length)
+        newString += `${wrapperHead}${trimmedString(url)}${wrapperTail}`
+      } else {
+        newString += tempString
+      }
       break
     }
     newString += tempString.substring(0, position + 6)
