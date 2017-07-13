@@ -73,6 +73,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'CREATE_NEW_CHANNEL':
       return {
         ...state,
+        subject: {},
         channels: [{
           id: action.data.message.channelId,
           channelName: action.data.message.channelName,
@@ -96,6 +97,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'CREATE_NEW_CHAT':
       return {
         ...state,
+        subject: {},
         channels: state.channels.map(channel => {
           if (channel.id === 0) {
             channel = {
@@ -123,7 +125,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'SELECT_CHANNEL': {
       return {
         ...state,
-        subject: {},
+        subject: action.channelId === 2 ? state.subject : {},
         selectedChannelId: action.channelId
       }
     }
@@ -151,6 +153,7 @@ export default function ChatReducer(state = defaultState, action) {
       action.data.messages.reverse()
       return {
         ...state,
+        subject: action.data.channel.id === 2 ? state.subject : {},
         selectedChannelId: action.data.channel.id,
         currentChannel: action.data.channel,
         channels: state.channels.reduce(
@@ -177,6 +180,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'ENTER_EMPTY_CHAT':
       return {
         ...state,
+        subject: {},
         selectedChannelId: 0,
         currentChannel: {
           id: 0,
@@ -220,6 +224,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channelLoadMoreButton,
+        subject: action.data.currentChannel.id === 2 ? state.subject : {},
         chatMode: true,
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
@@ -330,6 +335,7 @@ export default function ChatReducer(state = defaultState, action) {
       channels = action.channels.length > 0 ? action.channels : state.channels
       return {
         ...state,
+        subject: {},
         chatMode: true,
         channels: [{
           id: action.channelId,
@@ -373,6 +379,7 @@ export default function ChatReducer(state = defaultState, action) {
       })
       return {
         ...state,
+        subject: {},
         chatMode: true,
         channels: [{
           id: 0,
@@ -413,6 +420,7 @@ export default function ChatReducer(state = defaultState, action) {
     case 'RECEIVE_FIRST_MSG':
       return {
         ...state,
+        subject: action.duplicate ? {} : state.subject,
         numUnreads: action.duplicate && state.pageVisible ? state.numUnreads : state.numUnreads + 1,
         msgsWhileInvisible: state.pageVisible ? 0 : state.msgsWhileInvisible + 1,
         selectedChannelId: action.duplicate ? action.data.channelId : state.selectedChannelId,

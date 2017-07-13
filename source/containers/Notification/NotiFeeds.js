@@ -79,8 +79,10 @@ export default class NotiFeeds extends Component {
     }
     action += ` your ${isReplyNotification ? 'comment' :
       (isDiscussionAnswerNotification ? 'discussion topic' : rootType)}: `
-    let contentTitle = isReplyNotification ? commentContent :
-      (isDiscussionAnswerNotification ? discussionTitle : rootTitle) || ''
+    let contentTitle = isReplyNotification ?
+      commentContent : (
+        isDiscussionAnswerNotification ? discussionTitle : rootTitle
+      ) || ''
     contentTitle = cleanStringWithURL(contentTitle)
     let title = contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
     if (isReplyNotification) title = `"${title}"`
