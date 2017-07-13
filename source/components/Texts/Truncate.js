@@ -172,7 +172,6 @@ export default class Truncate extends Component {
       }
 
       if (textWords.length === 1) {
-        didTruncate = false
         lines.push(processedStringWithURL(textWords[0]))
         textLines.shift()
         line--
@@ -189,26 +188,7 @@ export default class Truncate extends Component {
         }
       }
 
-      if (line === numLines) {
-        const textRest = textWords.join(' ')
-
-        let lower = 0
-        let upper = textRest.length - 1
-
-        while (lower <= upper) {
-          const middle = Math.floor((lower + upper) / 2)
-
-          const testLine = textRest.slice(0, middle + 1)
-
-          if (measureWidth(testLine) + ellipsisWidth <= targetWidth) {
-            lower = middle + 1
-          } else {
-            upper = middle - 1
-          }
-        }
-
-        resultLine = <span>{textRest.slice(0, lower)}{ellipsis}</span>
-      } else {
+      if (line < numLines) {
         let lower = 0
         let upper = textWords.length - 1
 
@@ -231,8 +211,32 @@ export default class Truncate extends Component {
 
         resultLine = textWords.slice(0, lower).join(' ')
         textLines[0].splice(0, lower)
+
+        lines.push(processedStringWithURL(resultLine))
+        continue
       }
-      lines.push(processedStringWithURL(resultLine))
+
+      if (line === numLines) {
+        const textRest = textWords.join(' ')
+
+        let lower = 0
+        let upper = textRest.length - 1
+
+        while (lower <= upper) {
+          const middle = Math.floor((lower + upper) / 2)
+
+          const testLine = textRest.slice(0, middle + 1)
+
+          if (measureWidth(testLine) + ellipsisWidth <= targetWidth) {
+            lower = middle + 1
+          } else {
+            upper = middle - 1
+          }
+        }
+
+        resultLine = <span>{textRest.slice(0, lower)}{ellipsis}</span>
+        lines.push(processedStringWithURL(resultLine))
+      }
     }
 
     onTruncate(didTruncate)
