@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 /* global requestAnimationFrame, cancelAnimationFrame */
 
 import React, {Component} from 'react'
-import {processedStringWithURL} from 'helpers/stringHelpers'
+import {processedStringWithURL, isValidUrl} from 'helpers/stringHelpers'
 
 export default class Truncate extends Component {
   static propTypes = {
@@ -172,10 +172,12 @@ export default class Truncate extends Component {
       }
 
       if (textWords.length === 1) {
-        lines.push(processedStringWithURL(textWords[0]))
-        textLines.shift()
-        line--
-        continue
+        if (isValidUrl(textWords[0])) {
+          lines.push(processedStringWithURL(textWords[0]))
+          textLines.shift()
+          line--
+          continue
+        }
       }
 
       let resultLine = textWords.join(' ')
