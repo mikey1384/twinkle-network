@@ -131,14 +131,14 @@ export function processedString(string) {
 export function processedStringWithURL(string) {
   if (typeof string !== 'string') return string || null
   let maxChar = 100
-  const trimmedString = string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
+  const trimmedString = string => string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
   var regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   var tempString = string
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/\r?\n/g, '<br>')
-    .replace(regex, `<a href=\"$1\" target=\"_blank\">${trimmedString}</a>`)
+    .replace(regex, `<a href=\"$1\" target=\"_blank\">${trimmedString('$1')}</a>`)
   var newString = ''
   while (tempString.length > 0) {
     var position = tempString.indexOf('href=\"')
