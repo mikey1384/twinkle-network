@@ -2,9 +2,9 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {timeSince} from 'helpers/timeStampHelpers'
 import {Color} from 'constants/css'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
 import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
 
 export default class NotiFeeds extends Component {
   static propTypes = {
@@ -79,8 +79,9 @@ export default class NotiFeeds extends Component {
     }
     action += ` your ${isReplyNotification ? 'comment' :
       (isDiscussionAnswerNotification ? 'discussion topic' : rootType)}: `
-    let contentTitle = isReplyNotification ? cleanStringWithURL(commentContent) :
+    let contentTitle = isReplyNotification ? commentContent :
       (isDiscussionAnswerNotification ? discussionTitle : rootTitle) || ''
+    contentTitle = cleanStringWithURL(contentTitle)
     let title = contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
     if (isReplyNotification) title = `"${title}"`
     const content = {

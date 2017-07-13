@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import {loadLinkPage} from 'redux/actions/LinkActions'
-import {cleanString} from 'helpers/stringHelpers'
+import {cleanStringWithURL} from 'helpers/stringHelpers'
 import Link from 'components/Link'
 import {Color} from 'constants/css'
 
@@ -49,7 +49,7 @@ export default class ContentLink extends Component {
         to={`/${destination}/${content.id}`}
         onClickAsync={this.onLinkClick}
       >
-        {cleanString(content.title)}
+        {cleanStringWithURL(content.title)}
       </Link> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
     )
   }

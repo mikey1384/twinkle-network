@@ -155,6 +155,7 @@ export function processedStringWithURL(string) {
       }
       break
     }
+
     newString += tempString.substring(0, position + 6)
     tempString = tempString.substring(position + 6, tempString.length)
     if (tempString.indexOf('://') > 8 || tempString.indexOf('://') === -1) {
