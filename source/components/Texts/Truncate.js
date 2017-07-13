@@ -162,8 +162,8 @@ export default class Truncate extends Component {
     const ellipsisWidth = this.ellipsisWidth(this.Ellipsis)
 
     for (let line = 1; line <= numLines; line++) {
+      if (textLines.length === 0) break
       const textWords = textLines[0]
-
       if (textWords.length === 0) {
         lines.push()
         textLines.shift()
@@ -172,8 +172,10 @@ export default class Truncate extends Component {
       }
 
       if (textWords.length === 1) {
+        didTruncate = false
         lines.push(processedStringWithURL(textWords[0]))
         textLines.shift()
+        line--
         continue
       }
 
@@ -234,6 +236,7 @@ export default class Truncate extends Component {
     }
 
     onTruncate(didTruncate)
+
     return lines
   }
 
