@@ -16,7 +16,7 @@ html, body {
 	width: 50px;
 	height: 50px;
 	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -63px;
+	background: url('/img/nav-sprites.png') 0 -61px;
 	background-size: 100% 680%;
 	zoom: 0.50;
 }
@@ -25,7 +25,7 @@ html, body {
 	width: 50px;
 	height: 50px;
 	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -8px;
+	background: url('/img/nav-sprites.png') 0 -5px;
 	background-size: 100% 680%;
 	zoom: 0.50;
 }
@@ -34,7 +34,7 @@ html, body {
 	width: 50px;
 	height: 50px;
 	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -175px;
+	background: url('/img/nav-sprites.png') 0 -173px;
 	background-size: 100% 680%;
 	zoom: 0.50;
 }
@@ -43,7 +43,7 @@ html, body {
 	width: 50px;
 	height: 50px;
 	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -120px;
+	background: url('/img/nav-sprites.png') 0 -118px;
 	background-size: 100% 680%;
 	zoom: 0.50;
 }
