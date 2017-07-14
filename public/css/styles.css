@@ -16,7 +16,7 @@ html, body {
 	width: 50px;
 	height: 50px;
 	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -65px;
+	background: url('/img/nav-sprites.png') 0 -63px;
 	background-size: 100% 680%;
 	zoom: 0.50;
 }
@@ -25,7 +25,7 @@ html, body {
 	width: 50px;
 	height: 50px;
 	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -10px;
+	background: url('/img/nav-sprites.png') 0 -8px;
 	background-size: 100% 680%;
 	zoom: 0.50;
 }
