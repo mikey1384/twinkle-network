@@ -262,7 +262,7 @@ export default class MainContent extends Component {
                 (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
               }
             </Button>
-            {myId === uploaderId &&
+            {false && myId === uploaderId &&
               <Button
                 style={{marginLeft: '0.5em'}}
                 className="btn btn-default btn-sm"
