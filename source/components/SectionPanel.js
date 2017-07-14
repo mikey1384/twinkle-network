@@ -38,7 +38,7 @@ export default class SectionPanel extends Component {
         <div className="panel-heading flexbox-container">
           <h3 className="panel-title pull-left">{title}</h3>
           {button}
-          <div className="clearfix"></div>
+          <div className="clearfix" />
         </div>
         <div className="panel-body">
           {loaded ?

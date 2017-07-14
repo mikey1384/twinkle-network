@@ -12,6 +12,60 @@ html, body {
 	padding-right: 0px;
 }
 
+.nav-icon-home {
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	background: url('/img/nav-sprites.png') 0 -60px;
+	background-size: 100% 680%;
+	zoom: 0.50;
+}
+
+.nav-icon-home-hovered {
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	background: url('/img/nav-sprites.png') 0 -5px;
+	background-size: 100% 680%;
+	zoom: 0.50;
+}
+
+.nav-icon-read {
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	background: url('/img/nav-sprites.png') 0 -175px;
+	background-size: 100% 680%;
+	zoom: 0.50;
+}
+
+.nav-icon-read-hovered {
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	background: url('/img/nav-sprites.png') 0 -120px;
+	background-size: 100% 680%;
+	zoom: 0.50;
+}
+
+.nav-icon-watch {
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	background: url('/img/nav-sprites.png') 0 -285px;
+	background-size: 100% 680%;
+	zoom: 0.50;
+}
+
+.nav-icon-watch-hovered {
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	background: url('/img/nav-sprites.png') 0 -230px;
+	background-size: 100% 680%;
+	zoom: 0.50;
+}
+
 #react-view {
 	height: 100%;
 }

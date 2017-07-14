@@ -79,6 +79,7 @@ export default class MainContent extends Component {
     targetCommentUploaderName: PropTypes.string,
     targetCommentUploaderId: PropTypes.number,
     targetComment: PropTypes.string,
+    uploaderId: PropTypes.number,
     showFeedComments: PropTypes.func,
     onLikeCommentClick: PropTypes.func,
     onLikeContentClick: PropTypes.func
@@ -98,7 +99,7 @@ export default class MainContent extends Component {
 
   render() {
     const {
-      id, myId, content, contentLikers = [], targetContentComments = [],
+      id, myId, uploaderId, content, contentLikers = [], targetContentComments = [],
       contentId, type, discussionId, discussionTitle, discussionDescription, videoViews,
       numChildComments = 0, numChildReplies = 0, replyId, commentId, targetReply, targetContentLikers,
       childComments, commentsLoadMoreButton, rootId, rootType, contentTitle,
@@ -258,8 +259,18 @@ export default class MainContent extends Component {
               <span className="glyphicon glyphicon-comment"></span>&nbsp;
               {type === 'video' ? 'Comment' : 'Reply'}&nbsp;
               {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
-                (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')}
+                (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
+              }
             </Button>
+            {myId === uploaderId &&
+              <Button
+                style={{marginLeft: '0.5em'}}
+                className="btn btn-default btn-sm"
+                onClick={() => console.log('edit clicked')}
+              >
+                <span className="glyphicon glyphicon-pencil"></span>&nbsp;Edit&nbsp;
+              </Button>
+            }
           </div>
         }
         {type === 'discussion' &&
