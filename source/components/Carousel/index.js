@@ -198,7 +198,7 @@ export default class Carousel extends Component {
                 aria-valuemin="0"
                 aria-valuemax="100"
                 style={{width: `${slideFraction*100}%`}}
-              >{(currentSlide + 1)/slideCount}</div>
+              >{`${(currentSlide + 1)}/${slideCount}`}</div>
             </div>
           </div>
         }
@@ -250,35 +250,28 @@ export default class Carousel extends Component {
   }
 
   tweenState(path, {easing, duration, delay, beginValue, endValue, onEnd, stackBehavior: configSB}) {
-    this.setState(state => {
-      let cursor = state
+    this.setState(prevState => {
       let stateName
       // see comment below on pash hash
       let pathHash
       if (typeof path === 'string') {
         stateName = path
         pathHash = path
-      } else {
-        for (let i = 0; i < path.length - 1; i++) {
-          cursor = cursor[path[i]]
-        }
-        stateName = path[path.length - 1]
-        pathHash = path.join('|')
       }
       // see the reasoning for these defaults at the top of file
       const newConfig = {
         easing: easing || DEFAULT_EASING,
         duration: duration == null ? DEFAULT_DURATION : duration,
         delay: delay == null ? DEFAULT_DELAY : delay,
-        beginValue: beginValue == null ? cursor[stateName] : beginValue,
+        beginValue: beginValue == null ? prevState[stateName] : beginValue,
         endValue: endValue,
         onEnd: onEnd,
         stackBehavior: configSB || DEFAULT_STACK_BEHAVIOR
       }
 
-      let newTweenQueue = state.tweenQueue
+      let newTweenQueue = prevState.tweenQueue
       if (newConfig.stackBehavior === stackBehavior.DESTRUCTIVE) {
-        newTweenQueue = state.tweenQueue.filter(item => item.pathHash !== pathHash)
+        newTweenQueue = prevState.tweenQueue.filter(item => item.pathHash !== pathHash)
       }
 
       // we store path hash, so that during value retrieval we can use hash
@@ -290,16 +283,15 @@ export default class Carousel extends Component {
         initTime: Date.now() + newConfig.delay
       })
 
-      // sorry for mutating. For perf reasons we don't want to deep clone.
-      // guys, can we please all start using persistent collections so that
-      // we can stop worrying about nonesense like this
-      cursor[stateName] = newConfig.endValue
       if (newTweenQueue.length === 1) {
         this.rafID = requestAnimationFrame(this.rafCb)
       }
 
-      // this will also include the above mutated update
-      return {tweenQueue: newTweenQueue}
+      return {
+        ...prevState,
+        tweenQueue: newTweenQueue,
+        [stateName]: newConfig.endValue
+      }
     })
   }
 

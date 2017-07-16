@@ -9,7 +9,7 @@ import {timeSince} from 'helpers/timeStampHelpers'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import LongText from 'components/Texts/LongText'
 
-export default class TargetContentComment extends Component {
+export default class Comment extends Component {
   static propTypes = {
     comment: PropTypes.object,
     username: PropTypes.string,

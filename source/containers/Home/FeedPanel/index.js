@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import Heading from './Heading'
-import MainContent from './MainContent'
+import Contents from './Contents'
 import Loading from 'components/Loading'
 import {fetchFeed} from 'redux/actions/FeedActions'
 import {connect} from 'react-redux'
@@ -16,7 +16,6 @@ export default class FeedPanel extends Component {
   static propTypes = {
     feed: PropTypes.object,
     userId: PropTypes.number,
-    onLikeVideoClick: PropTypes.func,
     fetchFeed: PropTypes.func
   }
 
@@ -38,7 +37,7 @@ export default class FeedPanel extends Component {
   }
 
   render() {
-    const {feed, userId, onLikeVideoClick} = this.props
+    const {feed, userId} = this.props
     const {attachedVideoShown} = this.state
     return (
       <div
@@ -47,7 +46,7 @@ export default class FeedPanel extends Component {
       >
         {!!feed.uploaderName &&
           <Heading
-            {...feed}
+            feed={feed}
             myId={userId}
             targetCommentUploader={!!feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
             targetReplyUploader={!!feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
@@ -56,14 +55,12 @@ export default class FeedPanel extends Component {
             uploader={{name: feed.uploaderName, id: feed.uploaderId}}
             onPlayVideoClick={() => this.setState({attachedVideoShown: true})}
             attachedVideoShown={attachedVideoShown}
-            onLikeVideoClick={onLikeVideoClick}
           />
         }
         <div className="panel-body">
           {!!feed.uploaderName &&
-            <MainContent
-              {...feed}
-              onLikeVideoClick={onLikeVideoClick}
+            <Contents
+              feed={feed}
               attachedVideoShown={attachedVideoShown}
               myId={userId}
             />

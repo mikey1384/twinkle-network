@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import UserLink from '../UserLink'
+import UserLink from 'containers/Home/UserLink'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
@@ -13,7 +13,7 @@ import {
 } from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
 import InputArea from 'components/Texts/InputArea'
-import TargetContentComment from './TargetContentComment'
+import Comment from './Comment'
 import {Color} from 'constants/css'
 import LongText from 'components/Texts/LongText'
 
@@ -29,7 +29,7 @@ import LongText from 'components/Texts/LongText'
     uploadComment: uploadTargetContentComment
   }
 )
-export default class TargetContent extends Component {
+export default class Content extends Component {
   static propTypes = {
     uploader: PropTypes.object,
     isDiscussion: PropTypes.bool,
@@ -130,7 +130,7 @@ export default class TargetContent extends Component {
               {(comments.length > 0) &&
                 <ul className="media-list" style={{marginTop: '0.3em', marginBottom: '0px', lineHeight: '0px'}}>
                   {comments.map(comment =>
-                    <TargetContentComment
+                    <Comment
                       key={comment.id}
                       comment={comment}
                       username={username}

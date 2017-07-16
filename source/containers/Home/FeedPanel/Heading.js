@@ -15,46 +15,40 @@ import ProfilePic from 'components/ProfilePic'
 )
 export default class Heading extends Component {
   static propTypes = {
-    type: PropTypes.string,
-    rootType: PropTypes.string,
     action: PropTypes.string,
+    feed: PropTypes.object,
     uploader: PropTypes.object,
-    uploaderPicId: PropTypes.number,
     targetReplyUploader: PropTypes.any,
     targetCommentUploader: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.bool
     ]),
     rootContent: PropTypes.object,
-    rootId: PropTypes.number,
-    timeStamp: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
     onPlayVideoClick: PropTypes.func,
     attachedVideoShown: PropTypes.bool,
-    rootContentLikers: PropTypes.array,
     myId: PropTypes.number,
     onLikeClick: PropTypes.func
   }
 
   render() {
     const {
-      type,
-      rootType,
+      feed: {
+        type,
+        rootType,
+        uploaderPicId,
+        rootId,
+        timeStamp,
+        rootContentLikers = []
+      },
       action,
-      uploader,
-      uploaderPicId,
-      targetReplyUploader,
-      targetCommentUploader,
-      rootContent,
-      rootId,
-      timeStamp,
-      onPlayVideoClick,
       attachedVideoShown,
-      rootContentLikers = [],
       myId,
-      onLikeClick
+      onLikeClick,
+      onPlayVideoClick,
+      rootContent,
+      targetCommentUploader,
+      targetReplyUploader,
+      uploader
     } = this.props
 
     let targetAction

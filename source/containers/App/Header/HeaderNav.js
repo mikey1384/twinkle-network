@@ -21,12 +21,11 @@ export default class HeaderNav extends Component {
   }
 
   render() {
-    const {imgLabel, style = {}, to, children, isHome, isUsername, onClick, ...props} = this.props
+    const {imgLabel, style = {}, to, children, isHome, isUsername, onClick} = this.props
     const {hovered} = this.state
     return (
       <Route path={to} exact={isHome && !isUsername} children={({match}) => (
         <li
-          {...props}
           className={`header-nav ${match ? 'active' : ''}`}
           onClick={() => { if (onClick) onClick() }}
           onMouseEnter={() => this.setState({hovered: true})}

@@ -196,7 +196,7 @@ export default class Header extends Component {
             <HeaderNav
               to="/"
               isHome
-              style={{paddingLeft: '0.7em', paddingRight: '0.7em'}}
+              style={{paddingLeft: '0.6em', paddingRight: '0.6em'}}
               imgLabel="home"
               isUsername={
                 pathname.split('/')[1] !== 'videos' && pathname.split('/')[1] !== 'links' && pathname.length > 1
@@ -206,7 +206,7 @@ export default class Header extends Component {
             </HeaderNav>
             <HeaderNav
               to="/videos"
-              style={{paddingLeft: '0.7em', paddingRight: '0.7em'}}
+              style={{paddingLeft: '0.6em', paddingRight: '0.6em'}}
               imgLabel="watch"
               onClick={() => {
                 getInitialVideos()
@@ -218,13 +218,13 @@ export default class Header extends Component {
             </HeaderNav>
             <HeaderNav
               to="/links"
-              style={{paddingLeft: '0.7em', paddingRight: '0.7em'}}
+              style={{paddingLeft: '0.6em', paddingRight: '0.6em'}}
               imgLabel="read"
             >
               <span style={{marginLeft: '0.3em'}}>Read</span>
             </HeaderNav>
           </Nav>,
-          <SearchBox className="col-xs-5" style={{marginTop: '6px', marginLeft: '1em'}} key="searchBox" />]}
+          <SearchBox className="col-xs-5" style={{marginTop: '6px', marginLeft: '0.5em'}} key="searchBox" />]}
           <Nav pullRight>
             {loggedIn && [
               <ChatButton

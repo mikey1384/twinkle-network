@@ -38,51 +38,15 @@ import {cleanString} from 'helpers/stringHelpers'
     onLikeContentClick: contentFeedLike
   }
 )
-export default class MainContent extends Component {
+export default class Contents extends Component {
   static propTypes = {
-    id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
-    myId: PropTypes.number,
-    content: PropTypes.string,
-    contentLikers: PropTypes.array,
-    targetContentComments: PropTypes.array,
-    contentId: PropTypes.number,
-    type: PropTypes.string,
-    discussionId: PropTypes.number,
-    discussionTitle: PropTypes.string,
-    discussionDescription: PropTypes.string,
-    videoViews: PropTypes.string,
-    numChildComments: PropTypes.string,
-    numChildReplies: PropTypes.string,
-    replyId: PropTypes.number,
-    commentId: PropTypes.number,
-    targetReply: PropTypes.string,
-    targetContentLikers: PropTypes.array,
-    childComments: PropTypes.array,
-    commentsLoadMoreButton: PropTypes.bool,
-    rootId: PropTypes.number,
-    rootType: PropTypes.string,
-    contentTitle: PropTypes.string,
-    contentDescription: PropTypes.string,
-    rootContent: PropTypes.string,
-    loadMoreComments: PropTypes.func,
-    onSubmit: PropTypes.func,
-    onDelete: PropTypes.func,
-    onEditDone: PropTypes.func,
-    onReplySubmit: PropTypes.func,
-    onLoadMoreReplies: PropTypes.func,
-    targetReplyUploaderId: PropTypes.number,
-    targetReplyUploaderName: PropTypes.string,
     attachedVideoShown: PropTypes.bool,
-    targetCommentUploaderName: PropTypes.string,
-    targetCommentUploaderId: PropTypes.number,
-    targetComment: PropTypes.string,
-    uploaderId: PropTypes.number,
-    showFeedComments: PropTypes.func,
+    feed: PropTypes.object,
+    myId: PropTypes.number,
+    loadMoreComments: PropTypes.func,
     onLikeCommentClick: PropTypes.func,
-    onLikeContentClick: PropTypes.func
+    onLikeContentClick: PropTypes.func,
+    showFeedComments: PropTypes.func
   }
 
   constructor() {
@@ -99,13 +63,13 @@ export default class MainContent extends Component {
 
   render() {
     const {
-      id, myId, uploaderId, content, contentLikers = [], targetContentComments = [],
-      contentId, type, discussionId, discussionTitle, discussionDescription, videoViews,
-      numChildComments = 0, numChildReplies = 0, replyId, commentId, targetReply, targetContentLikers,
-      childComments, commentsLoadMoreButton, rootId, rootType, contentTitle,
-      contentDescription, rootContent, onSubmit, onDelete, onLikeCommentClick,
-      onEditDone, onReplySubmit, onLoadMoreReplies, targetReplyUploaderId, targetReplyUploaderName,
-      attachedVideoShown, targetCommentUploaderName, targetCommentUploaderId, targetComment
+      feed: {
+        uploaderId, content, contentLikers = [], contentId, type, discussionId, videoViews,
+        numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
+        commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
+        rootContent, onSubmit, onDelete, onLikeCommentClick, onEditDone,
+        onReplySubmit, onLoadMoreReplies
+      }, feed, myId, attachedVideoShown
     } = this.props
     const {userListModalShown, clickListenerState, commentsShown} = this.state
     let userLikedThis = false
@@ -125,48 +89,10 @@ export default class MainContent extends Component {
             videoCode={rootContent}
           />
         }
-        {type === 'comment' && !!replyId &&
+        {type === 'comment' && (commentId || replyId || discussionId) &&
           <TargetContent
-            contentAvailable={!!targetReply}
-            uploader={{name: targetReplyUploaderName, id: targetReplyUploaderId}}
-            likes={targetContentLikers}
-            comments={targetContentComments}
-            content={targetReply}
+            feed={feed}
             myId={myId}
-            replyId={replyId}
-            commentId={commentId}
-            discussionId={discussionId}
-            rootId={rootId}
-            rootType={rootType}
-            panelId={id}
-          />
-        }
-        {type === 'comment' && !!commentId && !replyId &&
-          <TargetContent
-            contentAvailable={!!targetComment}
-            uploader={{name: targetCommentUploaderName, id: targetCommentUploaderId}}
-            likes={targetContentLikers}
-            comments={targetContentComments}
-            content={targetComment}
-            myId={myId}
-            commentId={commentId}
-            discussionId={discussionId}
-            rootId={rootId}
-            rootType={rootType}
-            panelId={id}
-          />
-        }
-        {type === 'comment' && !replyId && !commentId && !!discussionId &&
-          <TargetContent
-            isDiscussion
-            contentAvailable={!!discussionTitle}
-            title={cleanString(discussionTitle)}
-            content={discussionDescription}
-            comments={targetContentComments}
-            discussionId={discussionId}
-            rootId={rootId}
-            rootType={rootType}
-            panelId={id}
           />
         }
         {type === 'comment' &&
@@ -336,12 +262,12 @@ export default class MainContent extends Component {
   }
 
   loadMoreComments(lastCommentId, type, contentId) {
-    const {loadMoreComments, commentId} = this.props
+    const {loadMoreComments, feed: {commentId}} = this.props
     loadMoreComments(lastCommentId, type, contentId, !!commentId)
   }
 
   onCommentButtonClick() {
-    const {type, rootType, contentId, commentId, showFeedComments} = this.props
+    const {feed: {type, rootType, contentId, commentId}, showFeedComments} = this.props
     const {clickListenerState, commentsShown} = this.state
     const isReply = !!commentId
     if (!commentsShown) {
@@ -352,7 +278,7 @@ export default class MainContent extends Component {
   }
 
   onLikeClick() {
-    const {contentId, type, rootType} = this.props
+    const {feed: {contentId, type, rootType}} = this.props
     if (type === 'comment') {
       this.props.onLikeCommentClick(contentId)
     } else {

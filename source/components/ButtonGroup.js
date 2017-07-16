@@ -18,6 +18,17 @@ export default class ButtonGroup extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.buttons !== this.props.buttons) {
+      this.setState({
+        buttons: this.props.buttons.map(button => ({
+          ...button,
+          hoverClass: button.hoverClass || button.buttonClass
+        }))
+      })
+    }
+  }
+
   render() {
     const {style} = this.props
     const {buttons} = this.state
