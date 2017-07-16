@@ -288,7 +288,6 @@ export default class Carousel extends Component {
       }
 
       return {
-        ...prevState,
         tweenQueue: newTweenQueue,
         [stateName]: newConfig.endValue
       }

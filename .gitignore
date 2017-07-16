@@ -19,3 +19,5 @@ certs
 .config
 .bash_history
 .babel.json
+.vscode
+.docker
