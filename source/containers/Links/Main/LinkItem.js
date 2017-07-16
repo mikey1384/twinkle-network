@@ -11,6 +11,7 @@ import {loadLinkPage, editTitle, deleteLink} from 'redux/actions/LinkActions'
 import {connect} from 'react-redux'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
+import {cleanString} from 'helpers/stringHelpers'
 
 @connect(
   state => ({
@@ -119,7 +120,7 @@ export default class ContentLink extends Component {
             />
           }
           <h4 className="media-heading">
-            {!onEdit && <Link to={this.to} onClickAsync={this.onLinkClick}>{title}</Link>}
+            {!onEdit && <Link to={this.to} onClickAsync={this.onLinkClick}>{cleanString(title)}</Link>}
             {onEdit &&
               <EditTitleForm
                 autoFocus

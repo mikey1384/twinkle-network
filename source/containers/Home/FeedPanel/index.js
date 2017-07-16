@@ -8,9 +8,7 @@ import {connect} from 'react-redux'
 
 @connect(
   null,
-  {
-    fetchFeed
-  }
+  {fetchFeed}
 )
 export default class FeedPanel extends Component {
   static propTypes = {
