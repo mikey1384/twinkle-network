@@ -44,6 +44,7 @@ export default class Contents extends Component {
     feed: PropTypes.object,
     myId: PropTypes.number,
     loadMoreComments: PropTypes.func,
+    onDelete: PropTypes.func,
     onLikeCommentClick: PropTypes.func,
     onLikeContentClick: PropTypes.func,
     onLoadMoreReplies: PropTypes.func,
@@ -70,8 +71,8 @@ export default class Contents extends Component {
         uploaderId, content, contentLikers = [], contentId, type, discussionId, videoViews,
         numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
-        rootContent, onDelete, onLikeCommentClick, onEditDone
-      }, feed, myId, attachedVideoShown, onLoadMoreReplies, onReplySubmit, onSubmit
+        rootContent, onLikeCommentClick, onEditDone
+      }, feed, myId, attachedVideoShown, onLoadMoreReplies, onDelete, onReplySubmit, onSubmit
     } = this.props
     const {userListModalShown, clickListenerState, commentsShown} = this.state
     let userLikedThis = false
