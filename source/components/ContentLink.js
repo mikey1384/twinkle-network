@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import {loadLinkPage} from 'redux/actions/LinkActions'
@@ -7,61 +7,53 @@ import {cleanStringWithURL} from 'helpers/stringHelpers'
 import Link from 'components/Link'
 import {Color} from 'constants/css'
 
-@connect(
+ContentLink.propTypes = {
+  content: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string
+  }).isRequired,
+  type: PropTypes.string
+}
+function ContentLink({content: {id, title}, type, ...actions}) {
+  let destination = ''
+  switch (type) {
+    case 'url':
+      destination = 'links'
+      break
+    case 'video':
+      destination = 'videos'
+      break
+    default: break
+  }
+
+  return (
+    title ? <Link
+      style={{
+        fontWeight: 'bold',
+        color: Color.blue
+      }}
+      to={`/${destination}/${id}`}
+      onClickAsync={() => onLinkClick({id, type, actions})}
+    >
+      {cleanStringWithURL(title)}
+    </Link> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
+  )
+}
+
+function onLinkClick({id, type, actions: {loadLinkPage, loadVideoPage}}) {
+  switch (type) {
+    case 'url':
+      return loadLinkPage(id)
+    case 'video':
+      return loadVideoPage(id)
+    default: return
+  }
+}
+
+export default connect(
   null,
   {
     loadVideoPage: loadVideoPageFromClientSideAsync,
     loadLinkPage
   }
-)
-export default class ContentLink extends Component {
-  static propTypes = {
-    content: PropTypes.object,
-    loadVideoPage: PropTypes.func,
-    loadLinkPage: PropTypes.func,
-    type: PropTypes.string
-  }
-
-  constructor() {
-    super()
-    this.onLinkClick = this.onLinkClick.bind(this)
-  }
-
-  render() {
-    const {content, type} = this.props
-    let destination = ''
-    switch (type) {
-      case 'url':
-        destination = 'links'
-        break
-      case 'video':
-        destination = 'videos'
-        break
-      default: break
-    }
-
-    return (
-      content.title ? <Link
-        style={{
-          fontWeight: 'bold',
-          color: Color.blue
-        }}
-        to={`/${destination}/${content.id}`}
-        onClickAsync={this.onLinkClick}
-      >
-        {cleanStringWithURL(content.title)}
-      </Link> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
-    )
-  }
-
-  onLinkClick(event) {
-    const {loadVideoPage, loadLinkPage, type, content: {id}} = this.props
-    switch (type) {
-      case 'url':
-        return loadLinkPage(id)
-      case 'video':
-        return loadVideoPage(id)
-      default: return
-    }
-  }
-}
+)(ContentLink)

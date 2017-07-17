@@ -76,7 +76,6 @@ export default class EditTextArea extends Component {
 
   onSubmit() {
     const {editedText} = this.state
-    console.log(editedText)
     this.props.onEditDone(editedText)
   }
 }

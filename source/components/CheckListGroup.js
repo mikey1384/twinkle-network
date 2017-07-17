@@ -7,12 +7,11 @@ CheckListGroup.propTypes = {
   onSelect: PropTypes.func,
   style: PropTypes.object
 }
-export default function CheckListGroup(props) {
-  const {listItems, inputType, onSelect} = props
+export default function CheckListGroup({listItems, inputType, onSelect, style}) {
   return (
     <div
       className="row container-fluid unselectable"
-      style={props.style}
+      style={style}
     >
       <form>
         {listItems.map((listItem, index) => {

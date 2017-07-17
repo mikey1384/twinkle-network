@@ -6,16 +6,19 @@ import Button from 'components/Button'
 
 export default class PanelReplies extends Component {
   static propTypes = {
-    replies: PropTypes.array,
-    type: PropTypes.string,
-    userId: PropTypes.number,
-    onEditDone: PropTypes.func,
-    onLikeClick: PropTypes.func,
-    onDelete: PropTypes.func,
     comment: PropTypes.object,
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.object,
-    onLoadMoreReplies: PropTypes.func,
-    onReplySubmit: PropTypes.func
+    replies: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number.isRequired
+    })).isRequired,
+    type: PropTypes.string,
+    userId: PropTypes.number
   }
 
   constructor() {

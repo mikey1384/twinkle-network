@@ -21,11 +21,9 @@ export default class Truncate extends Component {
     lines: 1
   }
 
-  state = {}
-
-  constructor(...args) {
-    super(...args)
-
+  constructor() {
+    super()
+    this.state = {}
     this.onResize = this.onResize.bind(this)
     this.onTruncate = this.onTruncate.bind(this)
     this.calcTargetWidth = this.calcTargetWidth.bind(this)
