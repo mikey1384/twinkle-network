@@ -29,6 +29,7 @@
     "express": "^4.15.3",
     "greenlock-express": "^2.0.11",
     "history": "^4.6.2",
+    "is-utf8": "*",
     "jwt-simple": "^0.5.1",
     "kw-react-tween-state": "^0.1.5",
     "localhost.daplie.com-certificates": "^1.2.3",
