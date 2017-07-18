@@ -4,7 +4,7 @@ import Button from 'components/Button'
 
 LoadMoreButton.propTypes = {
   style: PropTypes.object,
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
   loading: PropTypes.bool
 }
 export default function LoadMoreButton({onClick, loading, style}) {

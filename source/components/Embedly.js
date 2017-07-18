@@ -13,18 +13,12 @@ export default class Embedly extends Component {
   constructor() {
     super()
     this.state = {
-      provider_url: '',
-      description: '',
+      imageUrl: '',
       title: '',
-      thumbnail_width: 1,
-      url: '',
-      thumbnailUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
-      version: '',
-      provider_name: '',
-      type: '',
-      thumbnail_height: 1
+      description: '',
+      site: ''
     }
-    this.apiUrl = 'https://api.embedly.com/1/oembed?secure=true&scheme=https'
+    this.apiUrl = 'https://api.embed.rocks/api'
   }
 
   componentWillMount() {
@@ -32,14 +26,18 @@ export default class Embedly extends Component {
       url: this.props.url,
       key: embedlyKey
     }
-
     request.get(this.apiUrl)
       .query(params)
       .end((err, res) => {
         if (err) console.error(err)
-        if (!res.body) return
+        if (!res || !res.body) return
         if (this.mounted) {
-          this.setState(res.body)
+          this.setState({
+            imageUrl: res.body.images[0] ? res.body.images[0].url : '',
+            title: res.body.title,
+            description: res.body.description,
+            site: res.body.site
+          })
         }
       })
   }
@@ -51,30 +49,20 @@ export default class Embedly extends Component {
   componentDidUpdate(prevProps) {
     const {url} = this.props
     if (prevProps.url !== url) {
-      let params = {
-        url,
-        key: embedlyKey
-      }
-      this.setState({
-        provider_url: '',
-        description: '',
-        title: '',
-        thumbnail_width: 1,
-        url: '',
-        thumbnailUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
-        thumbnail_url: '',
-        version: '',
-        provider_name: '',
-        type: '',
-        thumbnail_height: 1
-      }, () => {
+      let params = {url}
+      this.setState({}, () => {
         request.get(this.apiUrl)
           .query(params)
           .end((err, res) => {
             if (err) console.error(err)
-            if (!res.body) return
+            if (!res || !res.body) return
             if (this.mounted) {
-              this.setState(res.body)
+              this.setState({
+                imageUrl: res.body.images[0] ? res.body.images[0].url : '',
+                title: res.body.title,
+                description: res.body.description,
+                site: res.body.site
+              })
             }
           })
       })
@@ -86,9 +74,8 @@ export default class Embedly extends Component {
   }
 
   render() {
-    const {thumbnail_url} = this.state
+    const {imageUrl, description, title, site} = this.state
     /* eslint-disable camelcase */
-    const thumbNail = thumbnail_url || '/img/link.png'
     let aStyle = {
       color: '#222',
       textDecoration: 'none',
@@ -139,16 +126,16 @@ export default class Embedly extends Component {
           className="embedly"
           target="_blank"
           rel="noopener noreferrer"
-          href={this.state.url || this.props.url}
+          href={this.props.url}
           style={aStyle}
         >
           <div className="embedly__image" style={imageStyle}>
-            <img src={thumbNail} alt={this.state.title} style={imgStyle}/>
+            <img src={imageUrl || '/img/link.png'} alt={title} style={imgStyle}/>
           </div>
           <div className="embedly__text" style={textStyle}>
-            <p className="embedly__title" style={titleStyle}>{this.state.title || this.props.title}</p>
-            <p className="embedly__desc" style={descStyle}>{this.state.description}</p>
-            <p className="embedly__provider" style={providerStyle}>{this.state.provider_url}</p>
+            <p className="embedly__title" style={titleStyle}>{title || this.props.title}</p>
+            <p className="embedly__desc" style={descStyle}>{description}</p>
+            <p className="embedly__provider" style={providerStyle}>{site}</p>
           </div>
         </a>
       </div>

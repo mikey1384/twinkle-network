@@ -4,7 +4,7 @@ import {Color} from 'constants/css'
 
 Flat.propTypes = {
   isLoading: PropTypes.bool,
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
   style: PropTypes.object
 }
 export default function Flat({isLoading, onClick, style}) {

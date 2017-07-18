@@ -133,7 +133,7 @@ export default class LinkPage extends Component {
             onDelete={() => deleteLinkFromPage(id)}
             onEditDone={params => editLinkPage(params)}
           />
-          <Embedly style={{marginTop: '1.5rem'}} url={content} />
+          <Embedly title={title} style={{marginTop: '1.5rem'}} url={content} />
           <div style={{paddingTop: '1.5em', textAlign: 'center'}}>
             <LikeButton
               onClick={() => likeLink(id)}

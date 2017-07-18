@@ -6,13 +6,13 @@ import Button from 'components/Button'
 
 export default class PanelReplies extends Component {
   static propTypes = {
-    comment: PropTypes.object,
+    comment: PropTypes.object.isRequired,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
-    parent: PropTypes.object,
+    parent: PropTypes.object.isRequired,
     replies: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       userId: PropTypes.number.isRequired

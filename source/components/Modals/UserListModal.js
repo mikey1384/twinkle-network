@@ -6,19 +6,19 @@ import {connect} from 'react-redux'
 import {Color} from 'constants/css'
 
 UserListModal.propTypes = {
+  description: PropTypes.string,
+  descriptionShown: PropTypes.func,
+  descriptionColor: PropTypes.string,
+  onHide: PropTypes.func.isRequired,
+  style: PropTypes.object,
+  title: PropTypes.string.isRequired,
+  userId: PropTypes.number,
   users: PropTypes.arrayOf(PropTypes.shape(
     {userId: PropTypes.number.isRequired}
-  )).isRequired,
-  userId: PropTypes.number,
-  descriptionShown: PropTypes.func,
-  description: PropTypes.string,
-  descriptionColor: PropTypes.string,
-  style: PropTypes.object,
-  onHide: PropTypes.func,
-  title: PropTypes.string
+  )).isRequired
 }
 function UserListModal({
-  users, userId, description = '', descriptionColor,
+  users, userId, description = '', descriptionColor = Color.green,
   descriptionShown, onHide, style, title
 }) {
   const otherUsers = users.filter(user => user.userId !== userId)
@@ -51,7 +51,7 @@ function UserListModal({
                 key={user.userId}
               >{user.username} <span
                   style={{
-                    color: descriptionColor || Color.green,
+                    color: descriptionColor,
                     fontWeight: 'bold'
                   }}
                 >{userStatusDisplayed && description}</span>

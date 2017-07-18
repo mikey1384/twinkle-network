@@ -3,9 +3,9 @@ import React from 'react'
 import {Modal, Button} from 'react-bootstrap'
 
 ConfirmModal.propTypes = {
-  onHide: PropTypes.func,
-  title: PropTypes.string,
-  onConfirm: PropTypes.func
+  onHide: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  onConfirm: PropTypes.func.isRequired
 }
 export default function ConfirmModal({onHide, title, onConfirm}) {
   return (

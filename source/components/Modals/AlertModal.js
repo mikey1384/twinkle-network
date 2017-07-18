@@ -4,9 +4,9 @@ import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
 
 AlertModal.propTypes = {
-  onHide: PropTypes.func,
-  title: PropTypes.string,
-  content: PropTypes.string
+  onHide: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired
 }
 export default function AlertModal({onHide, title, content}) {
   return (

@@ -35,7 +35,7 @@ export default class ContentLink extends Component {
       userListModalShown: false,
       onEdit: false
     }
-    this.apiUrl = 'https://api.embedly.com/1/oembed?secure=true&scheme=https'
+    this.apiUrl = 'https://api.embed.rocks/api'
     this.to = `/links/${props.link.id}`
     this.onDelete = this.onDelete.bind(this)
     this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
@@ -54,8 +54,9 @@ export default class ContentLink extends Component {
         .query(params)
         .end((err, res) => {
           if (err) console.error(err)
+          if (!res || !res.body) return
           if (this.mounted) {
-            this.setState({imageUrl: res.body ? res.body.thumbnail_url : ''})
+            this.setState({imageUrl: res.body.images[0] ? res.body.images[0].url : ''})
           }
         })
     }
