@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import request from 'superagent'
-import {embedlyKey} from 'constants/keys'
+import request from 'axios'
 import ExecutionEnvironment from 'exenv'
 import {timeSince} from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
@@ -12,6 +11,9 @@ import {connect} from 'react-redux'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import {cleanString} from 'helpers/stringHelpers'
+import {URL} from 'constants/URL'
+
+const API_URL = `${URL}/content`
 
 @connect(
   state => ({
@@ -46,24 +48,19 @@ export default class ContentLink extends Component {
   componentWillMount() {
     const {link: {content}} = this.props
     if (ExecutionEnvironment.canUseDOM && content) {
-      let params = {
-        url: content,
-        key: embedlyKey
-      }
-
-      request.get(this.apiUrl)
-        .query(params)
-        .end((err, res) => {
-          if (err) console.error(err)
-          if (!res || !res.body || res.body.type === 'error') return
-          if (this.mounted) {
-            const {body: {images: [image = {url: ''}]}} = res
-            this.setState({
-              imageUrl: image.url.replace('http://', 'https://'),
-              fallbackImage: image.url
-            })
-          }
-        })
+      return request.get(`${API_URL}/embed?url=${content}`).then(
+        ({data, data: {images: [image = {url: ''}]}}) => {
+          this.setState({
+            imageUrl: image.url.replace('http://', 'https://'),
+            fallbackImage: image.url,
+            title: data.title,
+            description: data.description,
+            site: data.site
+          })
+        }
+      ).catch(
+        error => console.error(error)
+      )
     }
   }
 

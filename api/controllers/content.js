@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const {poolQuery} = require('../helpers')
 const {stringIsEmpty} = require('../helpers/stringHelpers')
+const {embedKey, embedApiUrl} = require('../siteConfig')
+const request = require('request-promise')
 
 router.get('/search', (req, res) => {
   const searchQuery = req.query.query
@@ -21,6 +23,21 @@ router.get('/search', (req, res) => {
       return res.status(500).send({error: err})
     }
   )
+})
+
+router.get('/embed', (req, res) => {
+  const {url} = req.query
+  request({
+    uri: embedApiUrl,
+    qs: {url, key: embedKey}
+  })
+    .then(
+      body => res.send(body)
+    ).catch(
+      error => {
+        res.status(500).send({error})
+      }
+    )
 })
 
 module.exports = router

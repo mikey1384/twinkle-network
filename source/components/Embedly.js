@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import request from 'superagent'
-import {embedlyKey} from 'constants/keys'
+import request from 'axios'
+import {URL} from 'constants/URL'
+
+const API_URL = `${URL}/content`
 
 export default class Embedly extends Component {
   static propTypes = {
@@ -19,51 +21,42 @@ export default class Embedly extends Component {
       description: '',
       site: ''
     }
-    this.apiUrl = 'https://api.embed.rocks/api'
   }
 
   componentDidMount() {
-    let params = {
-      url: this.props.url,
-      key: embedlyKey
-    }
-    request.get(this.apiUrl)
-      .query(params)
-      .end((err, res) => {
-        if (err) console.error(err)
-        if (!res || !res.body || res.body.type === 'error') return
-        const {body, body: {images: [image = {url: ''}]}} = res
+    const {url} = this.props
+    return request.get(`${API_URL}/embed?url=${url}`).then(
+      ({data, data: {images: [image = {url: ''}]}}) => {
         this.setState({
           imageUrl: image.url.replace('http://', 'https://'),
           fallbackImage: image.url,
-          title: body.title,
-          description: body.description,
-          site: body.site
+          title: data.title,
+          description: data.description,
+          site: data.site
         })
-      })
+      }
+    ).catch(
+      error => console.error(error)
+    )
   }
 
   componentDidUpdate(prevProps) {
     const {url} = this.props
     if (prevProps.url !== url) {
-      let params = {url}
       this.setState({}, () => {
-        request.get(this.apiUrl)
-          .query(params)
-          .end((err, res) => {
-            if (err) console.error(err)
-            if (!res || !res.body || res.body.type === 'error') return
-            if (this.mounted) {
-              const {body, body: {images: [image = {url: ''}]}} = res
-              this.setState({
-                imageUrl: image.url.replace('http://', 'https://'),
-                fallbackImage: image.url,
-                title: body.title,
-                description: body.description,
-                site: body.site
-              })
-            }
-          })
+        return request.get(`${API_URL}/embed?url=${url}`).then(
+          ({data, data: {images: [image = {url: ''}]}}) => {
+            this.setState({
+              imageUrl: image.url.replace('http://', 'https://'),
+              fallbackImage: image.url,
+              title: data.title,
+              description: data.description,
+              site: data.site
+            })
+          }
+        ).catch(
+          error => console.error(error)
+        )
       })
     }
   }
