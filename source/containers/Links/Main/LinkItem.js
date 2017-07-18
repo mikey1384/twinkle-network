@@ -50,9 +50,10 @@ export default class ContentLink extends Component {
     if (ExecutionEnvironment.canUseDOM && content) {
       return request.get(`${API_URL}/embed?url=${content}`).then(
         ({data, data: {images: [image = {url: ''}]}}) => {
+          const imageUrl = image.safe || image.url
           this.setState({
-            imageUrl: image.safe.replace('http://', 'https://'),
-            fallbackImage: image.safe || image.url,
+            imageUrl: imageUrl.replace('http://', 'https://'),
+            fallbackImage: imageUrl,
             title: data.title,
             description: data.description,
             site: data.site
