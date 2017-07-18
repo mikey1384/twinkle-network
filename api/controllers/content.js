@@ -33,7 +33,8 @@ router.get('/embed', (req, res) => {
   })
     .then(
       body => {
-        res.send(Object.assign({}, body, {images: body.images || []}))
+        const data = JSON.parse(body)
+        res.send(Object.assign({}, data, {images: data.images || []}))
       }
     ).catch(
       error => {
