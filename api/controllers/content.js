@@ -32,7 +32,9 @@ router.get('/embed', (req, res) => {
     qs: {url, key: embedKey}
   })
     .then(
-      body => res.send(body)
+      body => {
+        res.send(Object.assign({}, body, {images: body.images || []}))
+      }
     ).catch(
       error => {
         res.status(500).send({error})
