@@ -27,10 +27,9 @@ export default class Embedly extends Component {
     const {url} = this.props
     return request.get(`${API_URL}/embed?url=${url}`).then(
       ({data, data: {images: [image = {url: '', safe: ''}]}}) => {
-        const imageUrl = image.safe || image.url
         this.setState({
-          imageUrl: imageUrl.replace('http://', 'https://'),
-          fallbackImage: imageUrl,
+          imageUrl: image.url.replace('http://', 'https://'),
+          fallbackImage: image.url,
           title: data.title,
           description: data.description,
           site: data.site
@@ -47,10 +46,9 @@ export default class Embedly extends Component {
       this.setState({}, () => {
         return request.get(`${API_URL}/embed?url=${url}`).then(
           ({data, data: {images: [image = {url: ''}]}}) => {
-            const imageUrl = image.safe || image.url
             this.setState({
-              imageUrl: imageUrl.replace('http://', 'https://'),
-              fallbackImage: imageUrl,
+              imageUrl: image.url.replace('http://', 'https://'),
+              fallbackImage: image.url,
               title: data.title,
               description: data.description,
               site: data.site
