@@ -32,9 +32,9 @@ export default class Embedly extends Component {
         if (err) console.error(err)
         if (!res || !res.body) return
         if (this.mounted) {
-          const {body, body: {images: [image = {}]}} = res
+          const {body, body: {images: [image = {url: ''}]}} = res
           this.setState({
-            imageUrl: image.url,
+            imageUrl: image.url.replace('http://', 'https://'),
             title: body.title,
             description: body.description,
             site: body.site
@@ -58,9 +58,9 @@ export default class Embedly extends Component {
             if (err) console.error(err)
             if (!res || !res.body) return
             if (this.mounted) {
-              const {body, body: {images: [image = {}]}} = res
+              const {body, body: {images: [image = {url: ''}]}} = res
               this.setState({
-                imageUrl: image.url,
+                imageUrl: image.url.replace('http://', 'https://'),
                 title: body.title,
                 description: body.description,
                 site: body.site
