@@ -28,7 +28,7 @@ export default class Embedly extends Component {
     return request.get(`${API_URL}/embed?url=${url}`).then(
       ({data, data: {images: [image = {url: ''}]}}) => {
         this.setState({
-          imageUrl: image.safe,
+          imageUrl: image.safe.replace('http://', 'https://'),
           fallbackImage: image.url,
           title: data.title,
           description: data.description,
@@ -47,7 +47,7 @@ export default class Embedly extends Component {
         return request.get(`${API_URL}/embed?url=${url}`).then(
           ({data, data: {images: [image = {url: ''}]}}) => {
             this.setState({
-              imageUrl: image.safe,
+              imageUrl: image.safe.replace('http://', 'https://'),
               fallbackImage: image.url,
               title: data.title,
               description: data.description,
