@@ -3,7 +3,7 @@ const router = express.Router()
 const {poolQuery} = require('../helpers')
 const {stringIsEmpty} = require('../helpers/stringHelpers')
 const {embedKey, embedApiUrl} = require('../siteConfig')
-const request = require('request-promise')
+const request = require('request-promise-native')
 
 router.get('/search', (req, res) => {
   const searchQuery = req.query.query
