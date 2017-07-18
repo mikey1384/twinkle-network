@@ -32,11 +32,12 @@ export default class Embedly extends Component {
         if (err) console.error(err)
         if (!res || !res.body) return
         if (this.mounted) {
+          const {body, body: {images: [image = {}]}} = res
           this.setState({
-            imageUrl: res.body.images[0] ? res.body.images[0].url : '',
-            title: res.body.title,
-            description: res.body.description,
-            site: res.body.site
+            imageUrl: image.url,
+            title: body.title,
+            description: body.description,
+            site: body.site
           })
         }
       })
@@ -57,11 +58,12 @@ export default class Embedly extends Component {
             if (err) console.error(err)
             if (!res || !res.body) return
             if (this.mounted) {
+              const {body, body: {images: [image = {}]}} = res
               this.setState({
-                imageUrl: res.body.images[0] ? res.body.images[0].url : '',
-                title: res.body.title,
-                description: res.body.description,
-                site: res.body.site
+                imageUrl: image.url,
+                title: body.title,
+                description: body.description,
+                site: body.site
               })
             }
           })

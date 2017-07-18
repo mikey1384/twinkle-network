@@ -56,7 +56,8 @@ export default class ContentLink extends Component {
           if (err) console.error(err)
           if (!res || !res.body) return
           if (this.mounted) {
-            this.setState({imageUrl: res.body.images[0] ? res.body.images[0].url : ''})
+            const {body: {images: [image = {}]}} = res
+            this.setState({imageUrl: image.url})
           }
         })
     }
