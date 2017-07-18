@@ -51,7 +51,7 @@ export default class ContentLink extends Component {
       return request.get(`${API_URL}/embed?url=${content}`).then(
         ({data, data: {images: [image = {url: ''}]}}) => {
           this.setState({
-            imageUrl: image.url.replace('http://', 'https://'),
+            imageUrl: image.safe,
             fallbackImage: image.url,
             title: data.title,
             description: data.description,
