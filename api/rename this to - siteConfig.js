@@ -5,5 +5,7 @@ module.exports = {
   mysqlDatabase: process.env.MYSQL_DB || 'twinkle_dev',
   jwtSecret: process.env.JWT_SECRET || 'jwtsecret',
   generalChatId: process.env.GENERAL_CHAT_ID || 2,
+  embedKey: process.env.EMBED_KEY || 'embedKey',
+  embedApiUrl: process.env.EMBED_API_URL || 'embedApiUrl',
   bucketName: process.env.AWS_BUCKET || 'bucketName'
 }

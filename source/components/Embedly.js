@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import request from 'axios'
+import ExecutionEnvironment from 'exenv'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
@@ -23,21 +24,29 @@ export default class Embedly extends Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const {url} = this.props
-    return request.get(`${API_URL}/embed?url=${url}`).then(
-      ({data, data: {images: [image = {url: '', safe: ''}]}}) => {
-        this.setState({
-          imageUrl: image.url.replace('http://', 'https://'),
-          fallbackImage: image.url,
-          title: data.title,
-          description: data.description,
-          site: data.site
-        })
-      }
-    ).catch(
-      error => console.error(error)
-    )
+    if (ExecutionEnvironment.canUseDOM && url) {
+      return request.get(`${API_URL}/embed?url=${url}`).then(
+        ({data, data: {images: [image = {url: '', safe: ''}]}}) => {
+          if (this.mounted) {
+            this.setState({
+              imageUrl: image.url.replace('http://', 'https://'),
+              fallbackImage: image.url,
+              title: data.title,
+              description: data.description,
+              site: data.site
+            })
+          }
+        }
+      ).catch(
+        error => console.error(error)
+      )
+    }
+  }
+
+  componentDidMount() {
+    this.mounted = true
   }
 
   componentDidUpdate(prevProps) {
@@ -46,13 +55,15 @@ export default class Embedly extends Component {
       this.setState({}, () => {
         return request.get(`${API_URL}/embed?url=${url}`).then(
           ({data, data: {images: [image = {url: ''}]}}) => {
-            this.setState({
-              imageUrl: image.url.replace('http://', 'https://'),
-              fallbackImage: image.url,
-              title: data.title,
-              description: data.description,
-              site: data.site
-            })
+            if (this.mounted) {
+              this.setState({
+                imageUrl: image.url.replace('http://', 'https://'),
+                fallbackImage: image.url,
+                title: data.title,
+                description: data.description,
+                site: data.site
+              })
+            }
           }
         ).catch(
           error => console.error(error)
