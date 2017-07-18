@@ -32,6 +32,7 @@ export default class ContentLink extends Component {
     super()
     this.state = {
       imageUrl: '',
+      fallbackImage: '',
       userListModalShown: false,
       onEdit: false
     }
@@ -57,7 +58,10 @@ export default class ContentLink extends Component {
           if (!res || !res.body || res.body.type === 'error') return
           if (this.mounted) {
             const {body: {images: [image = {url: ''}]}} = res
-            this.setState({imageUrl: image.url.replace('http://', 'https://')})
+            this.setState({
+              imageUrl: image.url.replace('http://', 'https://'),
+              fallbackImage: image.url
+            })
           }
         })
     }
@@ -73,7 +77,7 @@ export default class ContentLink extends Component {
 
   render() {
     const {link: {title, timeStamp, uploaderName, uploader, likers, numComments}, userId} = this.props
-    const {imageUrl, userListModalShown, onEdit} = this.state
+    const {imageUrl, fallbackImage, userListModalShown, onEdit} = this.state
     return (
       <li className="media">
         <div className="media-left">
@@ -89,6 +93,7 @@ export default class ContentLink extends Component {
                 <img
                   className="media-object"
                   src={imageUrl}
+                  onError={() => this.setState({imageUrl: fallbackImage})}
                   style={{width: '10rem'}}
                   alt=""
                 />

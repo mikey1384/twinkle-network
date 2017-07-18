@@ -14,6 +14,7 @@ export default class Embedly extends Component {
     super()
     this.state = {
       imageUrl: '',
+      fallbackImage: '',
       title: '',
       description: '',
       site: ''
@@ -34,6 +35,7 @@ export default class Embedly extends Component {
         const {body, body: {images: [image = {url: ''}]}} = res
         this.setState({
           imageUrl: image.url.replace('http://', 'https://'),
+          fallbackImage: image.url,
           title: body.title,
           description: body.description,
           site: body.site
@@ -55,6 +57,7 @@ export default class Embedly extends Component {
               const {body, body: {images: [image = {url: ''}]}} = res
               this.setState({
                 imageUrl: image.url.replace('http://', 'https://'),
+                fallbackImage: image.url,
                 title: body.title,
                 description: body.description,
                 site: body.site
@@ -70,7 +73,7 @@ export default class Embedly extends Component {
   }
 
   render() {
-    const {imageUrl, description, title, site} = this.state
+    const {imageUrl, fallbackImage, description, title, site} = this.state
     /* eslint-disable camelcase */
     let aStyle = {
       color: '#222',
@@ -126,7 +129,12 @@ export default class Embedly extends Component {
           style={aStyle}
         >
           <div className="embedly__image" style={imageStyle}>
-            <img src={imageUrl || '/img/link.png'} alt={title} style={imgStyle}/>
+            <img
+              src={imageUrl || '/img/link.png'}
+              onError={() => this.setState({imageUrl: fallbackImage})}
+              alt={title}
+              style={imgStyle}
+            />
           </div>
           <div className="embedly__text" style={textStyle}>
             <p className="embedly__title" style={titleStyle}>{title || this.props.title}</p>
