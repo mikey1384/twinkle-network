@@ -52,7 +52,7 @@ export default class ContentLink extends Component {
         ({data, data: {images: [image = {url: ''}]}}) => {
           this.setState({
             imageUrl: image.safe.replace('http://', 'https://'),
-            fallbackImage: image.url,
+            fallbackImage: image.safe || image.url,
             title: data.title,
             description: data.description,
             site: data.site
