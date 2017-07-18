@@ -21,7 +21,7 @@ export default class Embedly extends Component {
     this.apiUrl = 'https://api.embed.rocks/api'
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let params = {
       url: this.props.url,
       key: embedlyKey
@@ -30,21 +30,15 @@ export default class Embedly extends Component {
       .query(params)
       .end((err, res) => {
         if (err) console.error(err)
-        if (!res || !res.body) return
-        if (this.mounted) {
-          const {body, body: {images: [image = {url: ''}]}} = res
-          this.setState({
-            imageUrl: image.url.replace('http://', 'https://'),
-            title: body.title,
-            description: body.description,
-            site: body.site
-          })
-        }
+        if (!res || !res.body || res.body.type === 'error') return
+        const {body, body: {images: [image = {url: ''}]}} = res
+        this.setState({
+          imageUrl: image.url.replace('http://', 'https://'),
+          title: body.title,
+          description: body.description,
+          site: body.site
+        })
       })
-  }
-
-  componentDidMount() {
-    this.mounted = true
   }
 
   componentDidUpdate(prevProps) {
@@ -56,7 +50,7 @@ export default class Embedly extends Component {
           .query(params)
           .end((err, res) => {
             if (err) console.error(err)
-            if (!res || !res.body) return
+            if (!res || !res.body || res.body.type === 'error') return
             if (this.mounted) {
               const {body, body: {images: [image = {url: ''}]}} = res
               this.setState({

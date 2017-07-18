@@ -54,7 +54,7 @@ export default class ContentLink extends Component {
         .query(params)
         .end((err, res) => {
           if (err) console.error(err)
-          if (!res || !res.body) return
+          if (!res || !res.body || res.body.type === 'error') return
           if (this.mounted) {
             const {body: {images: [image = {url: ''}]}} = res
             this.setState({imageUrl: image.url.replace('http://', 'https://')})
