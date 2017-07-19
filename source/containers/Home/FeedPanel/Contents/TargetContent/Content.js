@@ -84,8 +84,8 @@ class Content extends Component {
                 <div style={{float: 'left'}}><UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:</div>
                 <div style={{float: 'right'}}><small>({timeSince(timeStamp)})</small></div>
               </div>
-              <div style={{paddingTop: '2.5em'}}>
-                <LongText>{content}</LongText>
+              <div style={{paddingTop: '2.3em'}}>
+                <LongText style={{marginBottom: '1em'}}>{content}</LongText>
                 <LikeButton
                   style={{marginTop: '1em'}}
                   onClick={this.onLikeClick}
@@ -156,19 +156,16 @@ class Content extends Component {
                 marginBottom: '0.2em'
               }}
             >
-              <p
-                style={{
-                  fontWeight: 'bold',
-                  color: Color.green
-                }}
-              >
-                Discuss:
-              </p>
-              <p style={{fontWeight: 'bold'}}>{title}</p>
-              {!!content && (
-                <LongText>{content}</LongText>
-              )}
-              <small>Posted by <UsernameText user={uploader} />&nbsp;<span>{timeSince(timeStamp)}</span></small>
+              <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
+                <div style={{float: 'left'}}><b style={{color: Color.green}}>Discuss: </b></div>
+                <div style={{float: 'right'}}><small>Posted by <UsernameText user={uploader} />&nbsp;({timeSince(timeStamp)})</small></div>
+              </div>
+              <div style={{paddingTop: '2.3em'}}>
+                <p style={{fontWeight: 'bold'}}>{title}</p>
+                {!!content && (
+                  <LongText>{content}</LongText>
+                )}
+              </div>
             </div>
           ) : <div style={{textAlign: 'center'}}><span>Content removed / no longer available</span></div>
         }
