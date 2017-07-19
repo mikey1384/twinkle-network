@@ -18,23 +18,7 @@ import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
 let visibilityChange
 let hidden
 
-@connect(
-  state => ({
-    loggedIn: state.UserReducer.loggedIn,
-    chatMode: state.ChatReducer.chatMode,
-    chatNumUnreads: state.ChatReducer.numUnreads
-  }),
-  {
-    initSession: initSessionAsync,
-    turnChatOff,
-    fetchNotifications,
-    clearNotifications,
-    initChat: initChatAsync,
-    resetChat,
-    changePageVisibility
-  }
-)
-export default class App extends Component {
+class App extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
     initSession: PropTypes.func,
@@ -53,6 +37,7 @@ export default class App extends Component {
   constructor() {
     super()
     this.state = {
+      chatLoading: false,
       scrollPosition: 0,
       updateNoticeShown: false
     }
@@ -128,7 +113,7 @@ export default class App extends Component {
 
   render() {
     const {chatMode, turnChatOff, resetChat, loggedIn} = this.props
-    const {scrollPosition, updateNoticeShown} = this.state
+    const {chatLoading, scrollPosition, updateNoticeShown} = this.state
     const style = chatMode && loggedIn ? {
       display: 'none'
     } : {paddingTop: '65px'}
@@ -141,8 +126,9 @@ export default class App extends Component {
         <Header
           staticTop={chatMode}
           chatMode={chatMode}
+          chatLoading={chatLoading}
           onChatButtonClick={this.onChatButtonClick}
-          turnChatOff={() => turnChatOff()}
+          turnChatOff={turnChatOff}
           showUpdateNotice={match => this.setState({updateNoticeShown: !match})}
         />
         <div
@@ -208,8 +194,10 @@ export default class App extends Component {
 
   onChatButtonClick() {
     const {initChat, chatMode, turnChatOff} = this.props
-    if (chatMode) return turnChatOff()
-    initChat()
+    this.setState({chatLoading: true})
+    return (chatMode ? turnChatOff() : initChat()).then(
+      () => this.setState({chatLoading: false})
+    )
   }
 
   onScroll(event) {
@@ -219,3 +207,20 @@ export default class App extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    loggedIn: state.UserReducer.loggedIn,
+    chatMode: state.ChatReducer.chatMode,
+    chatNumUnreads: state.ChatReducer.numUnreads
+  }),
+  {
+    initSession: initSessionAsync,
+    turnChatOff,
+    fetchNotifications,
+    clearNotifications,
+    initChat: initChatAsync,
+    resetChat,
+    changePageVisibility
+  }
+)(App)

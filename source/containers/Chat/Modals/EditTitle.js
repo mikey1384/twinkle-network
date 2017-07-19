@@ -5,8 +5,8 @@ import Input from 'components/Texts/Input'
 
 export default class editTitleModal extends Component {
   static propTypes = {
-    onHide: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
+    onHide: PropTypes.func.isRequired,
     title: PropTypes.string
   }
 

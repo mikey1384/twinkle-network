@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React from 'react'
 import {DragSource, DropTarget} from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
+import {cleanString} from 'helpers/stringHelpers'
 
 const listItemSource = {
   beginDrag(props) {
@@ -26,31 +27,33 @@ const listItemTarget = {
   }
 }
 
-@DragSource(ItemTypes.LIST_ITEM, listItemSource, (connect, monitor) => ({
+SortableListItem.propTypes = {
+  connectDragSource: PropTypes.func,
+  connectDropTarget: PropTypes.func,
+  isDragging: PropTypes.bool,
+  item: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    label: PropTypes.string.isRequired
+  }).isRequired
+}
+function SortableListItem({connectDragSource, connectDropTarget, isDragging, item}) {
+  return connectDragSource(connectDropTarget(
+    <li
+      className="list-group-item"
+      style={{
+        opacity: isDragging ? 0 : 1
+      }}
+    >
+      {cleanString(item.label)}<span className="glyphicon glyphicon-align-justify pull-right grey-color" />
+    </li>
+  ))
+}
+
+export default DragSource(ItemTypes.LIST_ITEM, listItemSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
-}))
-@DropTarget(ItemTypes.LIST_ITEM, listItemTarget, (connect) => ({
-  connectDropTarget: connect.dropTarget()
-}))
-export default class SortableListItem extends Component {
-  static propTypes = {
-    item: PropTypes.object.isRequired,
-    connectDragSource: PropTypes.func,
-    connectDropTarget: PropTypes.func,
-    isDragging: PropTypes.bool
-  }
-  render() {
-    const {connectDragSource, connectDropTarget, isDragging, item} = this.props
-    return connectDragSource(connectDropTarget(
-      <li
-        className="list-group-item"
-        style={{
-          opacity: isDragging ? 0 : 1
-        }}
-      >
-        {item.label}<span className="glyphicon glyphicon-align-justify pull-right grey-color" />
-      </li>
-    ))
-  }
-}
+}))(
+  DropTarget(ItemTypes.LIST_ITEM, listItemTarget, (connect) => ({
+    connectDropTarget: connect.dropTarget()
+  }))(SortableListItem)
+)

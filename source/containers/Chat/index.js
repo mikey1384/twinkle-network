@@ -29,39 +29,7 @@ const channelName = (channels, currentChannel) => {
   return null
 }
 
-@connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
-    currentChannel: state.ChatReducer.currentChannel,
-    selectedChannelId: state.ChatReducer.selectedChannelId,
-    channels: state.ChatReducer.channels,
-    messages: state.ChatReducer.messages,
-    channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
-    loadMoreButton: state.ChatReducer.loadMoreMessages,
-    partnerId: state.ChatReducer.partnerId,
-    subjectId: state.ChatReducer.subject.id
-  }),
-  {
-    receiveMessage: ChatActions.receiveMessage,
-    receiveMessageOnDifferentChannel: ChatActions.receiveMessageOnDifferentChannel,
-    receiveFirstMsg: ChatActions.receiveFirstMsg,
-    enterChannelWithId: ChatActions.enterChannelWithId,
-    enterEmptyChat: ChatActions.enterEmptyChat,
-    submitMessage: ChatActions.submitMessageAsync,
-    loadMoreChannels: ChatActions.loadMoreChannels,
-    loadMoreMessages: ChatActions.loadMoreMessagesAsync,
-    createNewChannel: ChatActions.createNewChannelAsync,
-    sendFirstDirectMessage: ChatActions.sendFirstDirectMessage,
-    hideChat: ChatActions.hideChatAsync,
-    leaveChannel: ChatActions.leaveChannelAsync,
-    editChannelTitle: ChatActions.editChannelTitle,
-    notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel,
-    openDirectMessageChannel: ChatActions.openDirectMessageChannel
-  }
-)
-export default class Chat extends Component {
+class Chat extends Component {
   static propTypes = {
     onUnmount: PropTypes.func.isRequired,
     notifyThatMemberLeftChannel: PropTypes.func,
@@ -69,7 +37,7 @@ export default class Chat extends Component {
     channels: PropTypes.array,
     selectedChannelId: PropTypes.number,
     userId: PropTypes.number,
-    loadMoreButton: PropTypes.func,
+    loadMoreButton: PropTypes.bool,
     channelLoadMoreButtonShown: PropTypes.bool,
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
@@ -123,6 +91,7 @@ export default class Chat extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true
     const {notifyThatMemberLeftChannel, currentChannel} = this.props
     socket.on('receive_message', this.onReceiveMessage)
     socket.on('subject_change', this.onSubjectChange)
@@ -134,14 +103,18 @@ export default class Chat extends Component {
           const {userId, username, profilePicId} = data.leftChannel
           notifyThatMemberLeftChannel({channelId: data.channelId, userId, username, profilePicId})
         }
-        this.setState({
-          currentChannelOnlineMembers: data.membersOnline
-        })
+        if (this.mounted) {
+          this.setState({
+            currentChannelOnlineMembers: data.membersOnline
+          })
+        }
       }
     })
     socket.emit('check_online_members', currentChannel.id, (err, data) => {
       if (err) console.error(err)
-      this.setState({currentChannelOnlineMembers: data.membersOnline})
+      if (this.mounted) {
+        this.setState({currentChannelOnlineMembers: data.membersOnline})
+      }
     })
     addEvent(this.channelList, 'scroll', this.onListScroll)
   }
@@ -160,15 +133,18 @@ export default class Chat extends Component {
     if (prevProps.currentChannel.id !== currentChannel.id) {
       socket.emit('check_online_members', currentChannel.id, (err, data) => {
         if (err) console.error(err)
-        this.setState({
-          currentChannelOnlineMembers: data.membersOnline,
-          loading: false
-        })
+        if (this.mounted) {
+          this.setState({
+            currentChannelOnlineMembers: data.membersOnline,
+            loading: false
+          })
+        }
       })
     }
   }
 
   componentWillUnmount() {
+    this.mounted = false
     const {onUnmount} = this.props
     socket.removeListener('receive_message', this.onReceiveMessage)
     socket.removeListener('chat_invitation', this.onChatInvitation)
@@ -625,3 +601,36 @@ export default class Chat extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId,
+    currentChannel: state.ChatReducer.currentChannel,
+    selectedChannelId: state.ChatReducer.selectedChannelId,
+    channels: state.ChatReducer.channels,
+    messages: state.ChatReducer.messages,
+    channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
+    loadMoreButton: state.ChatReducer.loadMoreMessages,
+    partnerId: state.ChatReducer.partnerId,
+    subjectId: state.ChatReducer.subject.id
+  }),
+  {
+    receiveMessage: ChatActions.receiveMessage,
+    receiveMessageOnDifferentChannel: ChatActions.receiveMessageOnDifferentChannel,
+    receiveFirstMsg: ChatActions.receiveFirstMsg,
+    enterChannelWithId: ChatActions.enterChannelWithId,
+    enterEmptyChat: ChatActions.enterEmptyChat,
+    submitMessage: ChatActions.submitMessageAsync,
+    loadMoreChannels: ChatActions.loadMoreChannels,
+    loadMoreMessages: ChatActions.loadMoreMessagesAsync,
+    createNewChannel: ChatActions.createNewChannelAsync,
+    sendFirstDirectMessage: ChatActions.sendFirstDirectMessage,
+    hideChat: ChatActions.hideChatAsync,
+    leaveChannel: ChatActions.leaveChannelAsync,
+    editChannelTitle: ChatActions.editChannelTitle,
+    notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel,
+    openDirectMessageChannel: ChatActions.openDirectMessageChannel
+  }
+)(Chat)

@@ -10,31 +10,18 @@ import {clearSearchResults, searchContent} from 'redux/actions/ContentActions'
 import {Color} from 'constants/css'
 import {recordUserAction} from 'helpers/userDataHelpers'
 
-@connect(
-  state => ({
-    searchResult: state.ContentReducer.searchResult,
-    loggedIn: state.UserReducer.loggedIn
-  }),
-  {
-    searchContent,
-    loadVideoPage: loadVideoPageFromClientSideAsync,
-    loadLinkPage,
-    clearSearchResults
-  }
-)
-@withRouter
-export default class SearchBox extends Component {
+class SearchBox extends Component {
   static propTypes = {
-    history: PropTypes.object,
-    location: PropTypes.object,
-    searchResult: PropTypes.array,
-    clearSearchResults: PropTypes.func,
     className: PropTypes.string,
-    style: PropTypes.object,
-    searchContent: PropTypes.func,
-    loadVideoPage: PropTypes.func,
-    loadLinkPage: PropTypes.func,
-    loggedIn: PropTypes.bool
+    clearSearchResults: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    loadLinkPage: PropTypes.func.isRequired,
+    loadVideoPage: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    loggedIn: PropTypes.bool,
+    searchContent: PropTypes.func.isRequired,
+    searchResult: PropTypes.array.isRequired,
+    style: PropTypes.object
   }
 
   constructor() {
@@ -114,3 +101,16 @@ export default class SearchBox extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    searchResult: state.ContentReducer.searchResult,
+    loggedIn: state.UserReducer.loggedIn
+  }),
+  {
+    searchContent,
+    loadVideoPage: loadVideoPageFromClientSideAsync,
+    loadLinkPage,
+    clearSearchResults
+  }
+)(withRouter(SearchBox))

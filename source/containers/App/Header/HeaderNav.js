@@ -4,13 +4,13 @@ import {Link, Route} from 'react-router-dom'
 
 export default class HeaderNav extends Component {
   static propTypes = {
-    to: PropTypes.string,
     children: PropTypes.node,
-    isUsername: PropTypes.bool,
+    imgLabel: PropTypes.string.isRequired,
     isHome: PropTypes.bool,
+    isUsername: PropTypes.bool,
     onClick: PropTypes.func,
-    imgLabel: PropTypes.string,
-    style: PropTypes.object
+    style: PropTypes.object,
+    to: PropTypes.string.isRequired
   }
 
   constructor() {

@@ -15,27 +15,24 @@ import Link from 'components/Link'
 import FullTextReveal from 'components/FullTextReveal'
 import {textIsOverflown} from 'helpers/domHelpers'
 
-@connect(
-  null,
-  {
-    loadVideoPage: loadVideoPageFromClientSideAsync,
-    editVideoTitle: editVideoTitleAsync,
-    deleteVideo: deleteVideoAsync
-  }
-)
-export default class VideoThumb extends Component {
+class VideoThumb extends Component {
   static propTypes = {
-    video: PropTypes.object.isRequired,
-    to: PropTypes.string.isRequired,
-    user: PropTypes.object.isRequired,
-    size: PropTypes.string,
-    editable: PropTypes.bool,
     arrayIndex: PropTypes.number,
     clickSafe: PropTypes.bool,
+    deleteVideo: PropTypes.func.isRequired,
+    editable: PropTypes.bool,
+    editVideoTitle: PropTypes.func,
     lastVideoId: PropTypes.number,
     loadVideoPage: PropTypes.func,
-    editVideoTitle: PropTypes.func,
-    deleteVideo: PropTypes.func
+    size: PropTypes.string,
+    to: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
+    video: PropTypes.shape({
+      content: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      numLikes: PropTypes.string,
+      title: PropTypes.string.isRequired
+    }).isRequired
   }
 
   constructor() {
@@ -221,3 +218,12 @@ export default class VideoThumb extends Component {
     }
   }
 }
+
+export default connect(
+  null,
+  {
+    loadVideoPage: loadVideoPageFromClientSideAsync,
+    editVideoTitle: editVideoTitleAsync,
+    deleteVideo: deleteVideoAsync
+  }
+)(VideoThumb)

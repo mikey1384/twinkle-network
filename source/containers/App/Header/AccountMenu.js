@@ -3,8 +3,8 @@ import React from 'react'
 import {NavDropdown, MenuItem} from 'react-bootstrap'
 
 AccountMenu.propTypes = {
-  title: PropTypes.string,
-  logout: PropTypes.func
+  logout: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
 }
 export default function AccountMenu({title, logout}) {
   return (

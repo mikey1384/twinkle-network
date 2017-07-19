@@ -14,7 +14,7 @@ export default class SubjectItem extends Component {
     id: PropTypes.number,
     currentSubjectId: PropTypes.number,
     content: PropTypes.string,
-    numMsgs: PropTypes.number,
+    numMsgs: PropTypes.string,
     userId: PropTypes.number,
     username: PropTypes.string,
     selectSubject: PropTypes.func,

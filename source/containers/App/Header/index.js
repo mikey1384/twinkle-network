@@ -27,56 +27,30 @@ import {Color} from 'constants/css'
 import {socket} from 'constants/io'
 import {recordUserAction} from 'helpers/userDataHelpers'
 
-@connect(
-  state => ({
-    loggedIn: state.UserReducer.loggedIn,
-    username: state.UserReducer.username,
-    userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
-    userId: state.UserReducer.userId,
-    signinModalShown: state.UserReducer.signinModalShown,
-    numChatUnreads: state.ChatReducer.numUnreads,
-    chatMode: state.ChatReducer.chatMode,
-    versionMatch: state.NotiReducer.versionMatch
-  }),
-  {
-    openSigninModal,
-    closeSigninModal,
-    logout,
-    turnChatOff,
-    getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
-    increaseNumberOfUnreadMessages,
-    getPinnedPlaylists: getPinnedPlaylistsAsync,
-    getPlaylists: getPlaylistsAsync,
-    getInitialVideos,
-    checkVersion,
-    resetChat
-  }
-)
-@withRouter
-export default class Header extends Component {
+class Header extends Component {
   static propTypes = {
-    checkVersion: PropTypes.func,
-    location: PropTypes.object,
-    turnChatOff: PropTypes.func,
-    increaseNumberOfUnreadMessages: PropTypes.func,
-    userId: PropTypes.number,
-    username: PropTypes.string,
-    getNumberOfUnreadMessages: PropTypes.func,
+    chatLoading: PropTypes.bool,
     chatMode: PropTypes.bool,
-    onProfilePage: PropTypes.bool,
-    signinModalShown: PropTypes.bool,
-    loggedIn: PropTypes.bool,
-    logout: PropTypes.func,
-    openSigninModal: PropTypes.func,
+    checkVersion: PropTypes.func,
     closeSigninModal: PropTypes.func,
-    onChatButtonClick: PropTypes.func,
-    numChatUnreads: PropTypes.number,
     getInitialVideos: PropTypes.func,
+    getNumberOfUnreadMessages: PropTypes.func,
     getPinnedPlaylists: PropTypes.func,
     getPlaylists: PropTypes.func,
+    increaseNumberOfUnreadMessages: PropTypes.func,
+    location: PropTypes.object,
+    loggedIn: PropTypes.bool,
+    logout: PropTypes.func,
+    numChatUnreads: PropTypes.number,
+    onChatButtonClick: PropTypes.func,
+    onProfilePage: PropTypes.bool,
+    openSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
+    signinModalShown: PropTypes.bool,
+    turnChatOff: PropTypes.func,
+    userId: PropTypes.number,
+    username: PropTypes.string,
     versionMatch: PropTypes.bool
   }
 
@@ -158,6 +132,7 @@ export default class Header extends Component {
 
   render() {
     const {
+      chatLoading,
       location: {pathname},
       signinModalShown,
       loggedIn,
@@ -229,8 +204,9 @@ export default class Header extends Component {
             {loggedIn && [
               <ChatButton
                 key={1}
-                onClick={() => onChatButtonClick()}
+                onClick={onChatButtonClick}
                 chatMode={chatMode}
+                loading={chatLoading}
                 numUnreads={numChatUnreads}
               />
             ]}
@@ -268,3 +244,30 @@ export default class Header extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    loggedIn: state.UserReducer.loggedIn,
+    username: state.UserReducer.username,
+    userType: state.UserReducer.userType,
+    isAdmin: state.UserReducer.isAdmin,
+    userId: state.UserReducer.userId,
+    signinModalShown: state.UserReducer.signinModalShown,
+    numChatUnreads: state.ChatReducer.numUnreads,
+    chatMode: state.ChatReducer.chatMode,
+    versionMatch: state.NotiReducer.versionMatch
+  }),
+  {
+    openSigninModal,
+    closeSigninModal,
+    logout,
+    turnChatOff,
+    getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
+    increaseNumberOfUnreadMessages,
+    getPinnedPlaylists: getPinnedPlaylistsAsync,
+    getPlaylists: getPlaylistsAsync,
+    getInitialVideos,
+    checkVersion,
+    resetChat
+  }
+)(withRouter(Header))

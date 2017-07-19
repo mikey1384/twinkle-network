@@ -22,9 +22,9 @@ export default class SubjectMsgsModal extends Component {
   constructor() {
     super()
     this.state = {
-      messages: [],
+      loading: false,
       loadMoreButtonShown: false,
-      loading: false
+      messages: []
     }
     this.onLoadMoreButtonClick = this.onLoadMoreButtonClick.bind(this)
   }

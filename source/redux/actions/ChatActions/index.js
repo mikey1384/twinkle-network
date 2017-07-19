@@ -147,10 +147,13 @@ export const increaseNumberOfUnreadMessages = () => ({
 
 export const initChatAsync = (channelId) => dispatch =>
   request.get(`${API_URL}?channelId=${channelId}`, auth()).then(
-    response => dispatch({
-      type: 'INIT_CHAT',
-      data: response.data
-    })
+    response => {
+      dispatch({
+        type: 'INIT_CHAT',
+        data: response.data
+      })
+      return Promise.resolve()
+    }
   ).catch(
     error => {
       console.error(error.response || error)
@@ -413,9 +416,12 @@ export const saveMessage = (message, index) => dispatch => {
   )
 }
 
-export const turnChatOff = () => ({
-  type: 'TURN_CHAT_OFF'
-})
+export const turnChatOff = () => dispatch => {
+  dispatch({
+    type: 'TURN_CHAT_OFF'
+  })
+  return Promise.resolve()
+}
 
 export const uploadChatSubject = content => dispatch =>
   request.post(`${API_URL}/chatSubject`, {content}, auth()).then(

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 export default class EditTextArea extends Component {
   static propTypes = {
@@ -76,6 +76,6 @@ export default class EditTextArea extends Component {
 
   onSubmit() {
     const {editedText} = this.state
-    this.props.onEditDone(editedText)
+    this.props.onEditDone(finalizeEmoji(editedText))
   }
 }

@@ -21,30 +21,13 @@ import EditSubjectForm from './EditSubjectForm'
 import {socket} from 'constants/io'
 import {defaultChatSubject} from 'constants/defaultValues'
 
-@connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
-    subject: state.ChatReducer.subject,
-    subjectSearchResults: state.ChatReducer.subjectSearchResults
-  }),
-  {
-    clearSubjectSearchResults,
-    changeChatSubject,
-    loadChatSubject,
-    reloadChatSubject,
-    uploadChatSubject,
-    searchChatSubject
-  }
-)
-export default class SubjectHeader extends Component {
+class SubjectHeader extends Component {
   static propTypes = {
     clearSubjectSearchResults: PropTypes.func,
     userId: PropTypes.number,
     username: PropTypes.string,
     profilePicId: PropTypes.number,
-    subject: PropTypes.string,
+    subject: PropTypes.object,
     changeChatSubject: PropTypes.func,
     loadChatSubject: PropTypes.func,
     reloadChatSubject: PropTypes.func,
@@ -69,14 +52,17 @@ export default class SubjectHeader extends Component {
 
   componentDidMount() {
     const {loadChatSubject} = this.props
+    this.mounted = true
     socket.on('subject_change', this.onSubjectChange)
-
     return loadChatSubject().then(
-      () => this.setState({loaded: true})
+      () => {
+        if (this.mounted) this.setState({loaded: true})
+      }
     )
   }
 
   componentWillUnmount() {
+    this.mounted = false
     socket.removeListener('subject_change', this.onSubjectChange)
   }
 
@@ -178,7 +164,9 @@ export default class SubjectHeader extends Component {
     return reloadChatSubject(subjectId).then(
       ({subjectId, message, subject}) => {
         socket.emit('new_subject', {subject, message})
-        this.setState({onEdit: false})
+        if (this.mounted) {
+          this.setState({onEdit: false})
+        }
         clearSubjectSearchResults()
       }
     )
@@ -236,3 +224,21 @@ export default class SubjectHeader extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId,
+    subject: state.ChatReducer.subject,
+    subjectSearchResults: state.ChatReducer.subjectSearchResults
+  }),
+  {
+    clearSubjectSearchResults,
+    changeChatSubject,
+    loadChatSubject,
+    reloadChatSubject,
+    uploadChatSubject,
+    searchChatSubject
+  }
+)(SubjectHeader)

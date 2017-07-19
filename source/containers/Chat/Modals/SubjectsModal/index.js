@@ -13,10 +13,7 @@ import Loading from 'components/Loading'
 
 const API_URL = `${URL}/chat`
 
-@connect(state => ({
-  userId: state.UserReducer.userId
-}))
-export default class SubjectsModal extends Component {
+class SubjectsModal extends Component {
   static propTypes = {
     currentSubjectId: PropTypes.number,
     userId: PropTypes.number,
@@ -153,3 +150,7 @@ export default class SubjectsModal extends Component {
     )
   }
 }
+
+export default connect(state => ({
+  userId: state.UserReducer.userId
+}))(SubjectsModal)

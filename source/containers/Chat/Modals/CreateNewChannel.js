@@ -6,23 +6,14 @@ import {connect} from 'react-redux'
 import TagPeopleForm from 'components/TagPeopleForm'
 import Input from 'components/Texts/Input'
 
-@connect(
-  state => ({
-    searchResults: state.ChatReducer.userSearchResults
-  }),
-  {
-    clearSearchResults: clearUserSearchResults,
-    searchUserToInvite: searchUserToInviteAsync
-  }
-)
-export default class CreateNewChannelModal extends Component {
+class CreateNewChannelModal extends Component {
   static propTypes = {
-    userId: PropTypes.number.isRequired,
-    onHide: PropTypes.func.isRequired,
+    clearSearchResults: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
-    clearSearchResults: PropTypes.func,
-    searchUserToInvite: PropTypes.func,
-    searchResults: PropTypes.func
+    onHide: PropTypes.func.isRequired,
+    userId: PropTypes.number.isRequired,
+    searchResults: PropTypes.array.isRequired,
+    searchUserToInvite: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -112,3 +103,13 @@ export default class CreateNewChannelModal extends Component {
     this.props.onDone({userId, channelName, selectedUsers})
   }
 }
+
+export default connect(
+  state => ({
+    searchResults: state.ChatReducer.userSearchResults
+  }),
+  {
+    clearSearchResults: clearUserSearchResults,
+    searchUserToInvite: searchUserToInviteAsync
+  }
+)(CreateNewChannelModal)

@@ -13,17 +13,7 @@ import Button from 'components/Button'
 import {Color} from 'constants/css'
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
 
-@connect(
-  state => ({
-    myId: state.UserReducer.userId
-  }),
-  {
-    onEditDone: editMessage,
-    onDelete: deleteMessage,
-    saveMessage
-  }
-)
-export default class Message extends Component {
+class Message extends Component {
   static propTypes = {
     message: PropTypes.object,
     style: PropTypes.object,
@@ -33,6 +23,7 @@ export default class Message extends Component {
     saveMessage: PropTypes.func,
     index: PropTypes.number
   }
+
   constructor() {
     super()
     this.state = {
@@ -47,7 +38,6 @@ export default class Message extends Component {
 
   componentWillMount() {
     const {message, myId, saveMessage, index} = this.props
-
     if (!message.id && message.userId === myId && !message.isSubject) {
       saveMessage({...message, content: cleanStringWithURL(message.content)}, index)
     }
@@ -189,3 +179,14 @@ export default class Message extends Component {
     return prefix
   }
 }
+
+export default connect(
+  state => ({
+    myId: state.UserReducer.userId
+  }),
+  {
+    onEditDone: editMessage,
+    onDelete: deleteMessage,
+    saveMessage
+  }
+)(Message)

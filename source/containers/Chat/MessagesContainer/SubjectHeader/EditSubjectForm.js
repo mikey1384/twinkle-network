@@ -11,16 +11,16 @@ import Input from 'components/Texts/Input'
 
 class EditSubjectForm extends Component {
   static propTypes = {
+    autoFocus: PropTypes.bool,
     currentSubjectId: PropTypes.number,
-    onChange: PropTypes.func,
+    maxLength: PropTypes.number,
+    onChange: PropTypes.func.isRequired,
     onClickOutSide: PropTypes.func.isRequired,
     onEditSubmit: PropTypes.func.isRequired,
     reloadChatSubject: PropTypes.func,
-    title: PropTypes.string.isRequired,
+    searchResults: PropTypes.array,
     style: PropTypes.object,
-    autoFocus: PropTypes.bool,
-    maxLength: PropTypes.number,
-    searchResults: PropTypes.array
+    title: PropTypes.string.isRequired
   }
 
   handleClickOutside = (event) => {

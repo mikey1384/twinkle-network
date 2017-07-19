@@ -6,25 +6,19 @@ import {Color} from 'constants/css'
 import {connect} from 'react-redux'
 import {addVideoViewAsync} from 'redux/actions/VideoActions'
 
-@connect(
-  state => ({
-    userId: state.UserReducer.userId
-  }),
-  {addVideoView: addVideoViewAsync}
-)
-export default class VideoPlayer extends Component {
+class VideoPlayer extends Component {
   static propTypes = {
-    videoCode: PropTypes.string,
-    title: PropTypes.string,
-    containerClassName: PropTypes.string,
-    className: PropTypes.string,
-    style: PropTypes.object,
+    addVideoView: PropTypes.func.isRequired,
     autoplay: PropTypes.bool,
+    className: PropTypes.string,
+    containerClassName: PropTypes.string,
+    onEdit: PropTypes.bool,
     small: PropTypes.bool,
-    videoId: PropTypes.number,
+    style: PropTypes.object,
+    title: PropTypes.string.isRequired,
     userId: PropTypes.number,
-    addVideoView: PropTypes.func,
-    onEdit: PropTypes.bool
+    videoCode: PropTypes.string.isRequired,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -98,3 +92,10 @@ export default class VideoPlayer extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId
+  }),
+  {addVideoView: addVideoViewAsync}
+)(VideoPlayer)
