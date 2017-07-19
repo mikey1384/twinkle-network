@@ -5,8 +5,8 @@ import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 export default class ChatInput extends Component {
   static propTypes = {
-    onMessageSubmit: PropTypes.func.isRequired,
-    currentChannelId: PropTypes.number.isRequired
+    currentChannelId: PropTypes.number.isRequired,
+    onMessageSubmit: PropTypes.func.isRequired
   }
 
   constructor() {

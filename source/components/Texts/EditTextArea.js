@@ -75,7 +75,8 @@ export default class EditTextArea extends Component {
   }
 
   onSubmit() {
+    const {onEditDone} = this.props
     const {editedText} = this.state
-    this.props.onEditDone(finalizeEmoji(editedText))
+    onEditDone(finalizeEmoji(editedText))
   }
 }

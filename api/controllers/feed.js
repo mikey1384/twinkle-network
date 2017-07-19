@@ -180,6 +180,8 @@ router.get('/feed', (req, res) => {
         user3.username AS targetReplyUploaderName,
         discussion.title AS discussionTitle,
         discussion.description AS discussionDescription,
+        discussion.userId AS discussionUploaderId,
+        user4.username AS discussionUploaderName,
 
         ${rootType}.title AS rootContentTitle, ${rootType}.description AS rootContentDescription, ${rootType}.title AS contentTitle,
         ${rootType}.content AS rootContent,
@@ -204,6 +206,8 @@ router.get('/feed', (req, res) => {
             ON comment3.userId = user3.id
           LEFT JOIN content_discussions discussion
             ON comment1.discussionId = discussion.id
+          LEFT JOiN users user4
+            ON discussion.userId = user4.id
 
         WHERE comment1.id = ?
       `

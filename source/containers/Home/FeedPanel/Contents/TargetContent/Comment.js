@@ -11,12 +11,19 @@ import LongText from 'components/Texts/LongText'
 
 export default class Comment extends Component {
   static propTypes = {
-    comment: PropTypes.object,
-    username: PropTypes.string,
-    userId: PropTypes.number,
+    comment: PropTypes.shape({
+      id: PropTypes.number,
+      content: PropTypes.string,
+      timeStamp: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ])
+    }).isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
     profilePicId: PropTypes.number,
-    onDelete: PropTypes.func,
-    onEditDone: PropTypes.func
+    userId: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired
   }
 
   constructor() {

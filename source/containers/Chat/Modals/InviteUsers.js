@@ -5,26 +5,16 @@ import TagPeopleForm from 'components/TagPeopleForm'
 import {connect} from 'react-redux'
 import {clearUserSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} from 'redux/actions/ChatActions'
 
-@connect(
-  state => ({
-    searchResults: state.ChatReducer.userSearchResults
-  }),
-  {
-    clearSearchResults: clearUserSearchResults,
-    searchUserToInvite: searchUserToInviteAsync,
-    inviteUsersToChannel: inviteUsersToChannelAsync
-  }
-)
-export default class InviteUsersModal extends Component {
+class InviteUsersModal extends Component {
   static propTypes = {
-    onHide: PropTypes.func.isRequired,
+    clearSearchResults: PropTypes.func.isRequired,
     currentChannel: PropTypes.object.isRequired,
+    inviteUsersToChannel: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
-    clearSearchResults: PropTypes.func,
-    searchUserToInvite: PropTypes.func,
-    searchResults: PropTypes.array,
-    style: PropTypes.object,
-    inviteUsersToChannel: PropTypes.func
+    onHide: PropTypes.func.isRequired,
+    searchResults: PropTypes.array.isRequired,
+    searchUserToInvite: PropTypes.func.isRequired,
+    style: PropTypes.object
   }
 
   constructor() {
@@ -100,3 +90,14 @@ export default class InviteUsersModal extends Component {
     })
   }
 }
+
+export default connect(
+  state => ({
+    searchResults: state.ChatReducer.userSearchResults
+  }),
+  {
+    clearSearchResults: clearUserSearchResults,
+    searchUserToInvite: searchUserToInviteAsync,
+    inviteUsersToChannel: inviteUsersToChannelAsync
+  }
+)(InviteUsersModal)

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import UserLink from 'containers/Home/UserLink'
+import UsernameText from 'components/Texts/UsernameText'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
@@ -16,20 +17,9 @@ import InputArea from 'components/Texts/InputArea'
 import Comment from './Comment'
 import {Color} from 'constants/css'
 import LongText from 'components/Texts/LongText'
+import {timeSince} from 'helpers/timeStampHelpers'
 
-@connect(
-  state => ({
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId
-  }),
-  {
-    onDeleteComment: feedCommentDelete,
-    onEditComment: feedCommentEdit,
-    onLikeClick: likeTargetComment,
-    uploadComment: uploadTargetContentComment
-  }
-)
-export default class Content extends Component {
+class Content extends Component {
   static propTypes = {
     uploader: PropTypes.object,
     isDiscussion: PropTypes.bool,
@@ -50,7 +40,11 @@ export default class Content extends Component {
     discussionId: PropTypes.number,
     panelId: PropTypes.number,
     uploadComment: PropTypes.func,
-    rootType: PropTypes.string
+    rootType: PropTypes.string,
+    timeStamp: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ])
   }
 
   constructor() {
@@ -67,7 +61,7 @@ export default class Content extends Component {
 
   render() {
     const {uploader, isDiscussion, title, content, contentAvailable, username, comments,
-      myId, profilePicId, likes = [], replyId, onDeleteComment, onEditComment
+      myId, profilePicId, timeStamp, likes = [], replyId, onDeleteComment, onEditComment
     } = this.props
     const {userListModalShown, replyInputShown, clickListenerState} = this.state
     let userLikedThis = false
@@ -86,33 +80,38 @@ export default class Content extends Component {
         {contentAvailable ?
           (!isDiscussion ?
             <div>
-              <UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:
-              <LongText style={{marginTop: '0.5em'}}>{content}</LongText>
-              <LikeButton
-                style={{marginTop: '1em'}}
-                onClick={this.onLikeClick}
-                liked={userLikedThis}
-                small
-              />
-              <Button
-                style={{marginTop: '1em', marginLeft: '0.5em'}}
-                className="btn btn-warning btn-sm"
-                onClick={this.onReplyClick}
-              >
-                <span className="glyphicon glyphicon-comment"></span>&nbsp;
-                Reply
-              </Button>
-              <Likers
-                style={{
-                  fontSize: '11px',
-                  marginTop: '1em',
-                  fontWeight: 'bold',
-                  color: Color.green
-                }}
-                userId={myId}
-                likes={likes}
-                onLinkClick={() => this.setState({userListModalShown: true})}
-              />
+              <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
+                <div style={{float: 'left'}}><UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:</div>
+                <div style={{float: 'right'}}><small>({timeSince(timeStamp)})</small></div>
+              </div>
+              <div style={{paddingTop: '2.5em'}}>
+                <LongText>{content}</LongText>
+                <LikeButton
+                  style={{marginTop: '1em'}}
+                  onClick={this.onLikeClick}
+                  liked={userLikedThis}
+                  small
+                />
+                <Button
+                  style={{marginTop: '1em', marginLeft: '0.5em'}}
+                  className="btn btn-warning btn-sm"
+                  onClick={this.onReplyClick}
+                >
+                  <span className="glyphicon glyphicon-comment"></span>&nbsp;
+                  Reply
+                </Button>
+                <Likers
+                  style={{
+                    fontSize: '11px',
+                    marginTop: '1em',
+                    fontWeight: 'bold',
+                    color: Color.green
+                  }}
+                  userId={myId}
+                  likes={likes}
+                  onLinkClick={() => this.setState({userListModalShown: true})}
+                />
+              </div>
               {replyInputShown &&
                 <div className="media" style={{marginTop: '0px', lineHeight: '0px'}}>
                   <div className="media-body">
@@ -169,6 +168,7 @@ export default class Content extends Component {
               {!!content && (
                 <LongText>{content}</LongText>
               )}
+              <small>Posted by <UsernameText user={uploader} />&nbsp;<span>{timeSince(timeStamp)}</span></small>
             </div>
           ) : <div style={{textAlign: 'center'}}><span>Content removed / no longer available</span></div>
         }
@@ -192,3 +192,16 @@ export default class Content extends Component {
     uploadComment({rootId, rootType, replyId, commentId, discussionId, content}, panelId)
   }
 }
+
+export default connect(
+  state => ({
+    username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId
+  }),
+  {
+    onDeleteComment: feedCommentDelete,
+    onEditComment: feedCommentEdit,
+    onLikeClick: likeTargetComment,
+    uploadComment: uploadTargetContentComment
+  }
+)(Content)

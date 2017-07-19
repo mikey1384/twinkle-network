@@ -6,28 +6,15 @@ import {stringIsEmpty} from 'helpers/stringHelpers'
 import {searchChatAsync, clearChatSearchResults, enterChannelWithId} from 'redux/actions/ChatActions'
 import {openNewChatTab} from 'redux/actions/ChatActions/actions'
 
-@connect(
-  state => ({
-    searchResults: state.ChatReducer.chatSearchResults,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username
-  }),
-  {
-    searchChat: searchChatAsync,
-    clearSearchResults: clearChatSearchResults,
-    enterChannelWithId,
-    openNewChatTab
-  }
-)
-export default class ChatSearchBox extends Component {
+class ChatSearchBox extends Component {
   static propTypes = {
-    searchResults: PropTypes.array,
-    searchChat: PropTypes.func,
-    clearSearchResults: PropTypes.func,
-    enterChannelWithId: PropTypes.func,
+    clearSearchResults: PropTypes.func.isRequired,
+    enterChannelWithId: PropTypes.func.isRequired,
+    openNewChatTab: PropTypes.func.isRequired,
+    searchChat: PropTypes.func.isRequired,
+    searchResults: PropTypes.array.isRequired,
     userId: PropTypes.number,
-    username: PropTypes.string,
-    openNewChatTab: PropTypes.func
+    username: PropTypes.string
   }
   constructor() {
     super()
@@ -83,3 +70,17 @@ export default class ChatSearchBox extends Component {
     clearSearchResults()
   }
 }
+
+export default connect(
+  state => ({
+    searchResults: state.ChatReducer.chatSearchResults,
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username
+  }),
+  {
+    searchChat: searchChatAsync,
+    clearSearchResults: clearChatSearchResults,
+    enterChannelWithId,
+    openNewChatTab
+  }
+)(ChatSearchBox)
