@@ -158,7 +158,7 @@ class Content extends Component {
             >
               <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
                 <div style={{float: 'left'}}><b style={{color: Color.green}}>Discuss: </b></div>
-                <div style={{float: 'right'}}><small>Posted by <UsernameText user={uploader} />&nbsp;({timeSince(timeStamp)})</small></div>
+                <div style={{float: 'right'}}><small><UsernameText user={uploader} />&nbsp;({timeSince(timeStamp)})</small></div>
               </div>
               <div style={{paddingTop: '2.3em'}}>
                 <p style={{fontWeight: 'bold'}}>{title}</p>
