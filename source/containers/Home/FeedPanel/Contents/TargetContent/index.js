@@ -9,9 +9,10 @@ TargetContent.propTypes = {
 }
 export default function TargetContent({
   myId, feed: {
-    commentId, discussionId, discussionDescription, discussionTitle, discussionUploaderId,
-    discussionUploaderName, id, replyId, rootId, rootType, targetComment, targetCommentUploaderId, targetCommentUploaderName, targetContentComments = [], targetContentLikers, targetReply,
-    targetReplyUploaderName, targetReplyUploaderId, timeStamp
+    commentId, discussionId, discussionDescription, discussionTimeStamp, discussionTitle, discussionUploaderId,
+    discussionUploaderName, id, replyId, rootId, rootType, targetComment, targetCommentTimeStamp,
+    targetCommentUploaderId, targetCommentUploaderName, targetContentComments = [], targetContentLikers,
+    targetReply, targetReplyTimeStamp, targetReplyUploaderName, targetReplyUploaderId, timeStamp
   }
 }) {
   return (
@@ -29,7 +30,7 @@ export default function TargetContent({
           replyId={replyId}
           rootId={rootId}
           rootType={rootType}
-          timeStamp={timeStamp}
+          timeStamp={targetReplyTimeStamp}
           uploader={{name: targetReplyUploaderName, id: targetReplyUploaderId}}
         />
       }
@@ -45,7 +46,7 @@ export default function TargetContent({
           panelId={id}
           rootId={rootId}
           rootType={rootType}
-          timeStamp={timeStamp}
+          timeStamp={targetCommentTimeStamp}
           uploader={{name: targetCommentUploaderName, id: targetCommentUploaderId}}
         />
       }
@@ -59,7 +60,7 @@ export default function TargetContent({
           panelId={id}
           rootId={rootId}
           rootType={rootType}
-          timeStamp={timeStamp}
+          timeStamp={discussionTimeStamp}
           title={cleanString(discussionTitle)}
           uploader={{name: discussionUploaderName, id: discussionUploaderId}}
         />
