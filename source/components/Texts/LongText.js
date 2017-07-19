@@ -6,9 +6,9 @@ import {limitBrs} from 'helpers/stringHelpers'
 export default class LongText extends Component {
   static propTypes = {
     children: PropTypes.string.isRequired,
-    style: PropTypes.object,
+    className: PropTypes.string,
     lines: PropTypes.number,
-    className: PropTypes.string
+    style: PropTypes.object
   }
   constructor(props) {
     super()

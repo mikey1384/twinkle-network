@@ -6,7 +6,9 @@ import Button from 'components/Button'
 
 export default class PanelReplies extends Component {
   static propTypes = {
-    comment: PropTypes.object.isRequired,
+    comment: PropTypes.shape({
+      id: PropTypes.number.isRequired
+    }).isRequired,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,

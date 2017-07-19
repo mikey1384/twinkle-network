@@ -2,9 +2,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 ProfilePic.propTypes = {
-  size: PropTypes.string,
-  userId: PropTypes.number,
-  profilePicId: PropTypes.number
+  profilePicId: PropTypes.number,
+  size: PropTypes.string.isRequired,
+  userId: PropTypes.number
 }
 export default function ProfilePic({size, userId, profilePicId}) {
   const src = `https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/${userId}/${profilePicId}.jpg`

@@ -5,14 +5,14 @@ import Button from './Button'
 
 class SmallDropdownButton extends Component {
   static propTypes = {
+    align: PropTypes.string,
+    icon: PropTypes.string,
     menuProps: PropTypes.array.isRequired,
     opacity: PropTypes.number,
     style: PropTypes.object,
     shape: PropTypes.string,
     size: PropTypes.string,
-    icon: PropTypes.string,
-    text: PropTypes.string,
-    align: PropTypes.string
+    text: PropTypes.string
   }
 
   handleClickOutside = event => {
@@ -28,7 +28,7 @@ class SmallDropdownButton extends Component {
 
   render() {
     const {menuDisplayed} = this.state
-    const {opacity = 1, style, shape, size = 'sm', icon, text = '', align = 'right'} = this.props
+    const {opacity = 1, style, shape, size = 'sm', icon = 'pencil', text = '', align = 'right'} = this.props
     const buttonShape = shape === 'button' ? `btn btn-${size} btn-default` : 'dropdown-toggle'
     return (
       <span

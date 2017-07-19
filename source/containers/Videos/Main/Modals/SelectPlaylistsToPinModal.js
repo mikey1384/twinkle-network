@@ -3,14 +3,14 @@ import React, {Component} from 'react'
 import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
 import CheckListGroup from 'components/CheckListGroup'
-import {loadMorePlaylistListAsync, changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions'
+import {loadMorePlaylistListAsync, changePinnedPlaylists} from 'redux/actions/PlaylistActions'
 import {connect} from 'react-redux'
 
 @connect(
   null,
   {
     loadMorePlaylist: loadMorePlaylistListAsync,
-    changePinnedPlaylists: changePinnedPlaylistsAsync
+    changePinnedPlaylists: changePinnedPlaylists
   }
 )
 export default class SelectPlaylistsToPinModal extends Component {
@@ -179,6 +179,10 @@ export default class SelectPlaylistsToPinModal extends Component {
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylists(this.state.selectedPlaylists, () => this.props.onHide())
+    const {changePinnedPlaylists, onHide} = this.props
+    const {selectedPlaylists} = this.state
+    return changePinnedPlaylists(selectedPlaylists).then(
+      () => onHide()
+    )
   }
 }

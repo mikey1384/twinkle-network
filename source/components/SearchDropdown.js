@@ -4,13 +4,13 @@ import React, {Component} from 'react'
 export default class Dropdown extends Component {
   static propTypes = {
     className: PropTypes.string,
-    startingIndex: PropTypes.number,
-    onUpdate: PropTypes.func.isRequired,
-    onUnmount: PropTypes.func.isRequired,
-    onItemClick: PropTypes.func.isRequired,
-    renderItemLabel: PropTypes.func.isRequired,
     indexToHighlight: PropTypes.number.isRequired,
+    onItemClick: PropTypes.func.isRequired,
+    onUnmount: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
+    renderItemLabel: PropTypes.func.isRequired,
     searchResults: PropTypes.array.isRequired,
+    startingIndex: PropTypes.number,
     style: PropTypes.object
   }
 

@@ -2,12 +2,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 Button.propTypes = {
-  onClick: PropTypes.func,
-  children: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ])
+  onClick: PropTypes.func.isRequired,
+  children: PropTypes.node
 }
 export default function Button({onClick, children = null, ...props}) {
   let Button

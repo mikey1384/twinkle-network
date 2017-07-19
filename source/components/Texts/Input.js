@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 Input.propTypes = {
-  onChange: PropTypes.func
+  onChange: PropTypes.func.isRequired
 }
 export default function Input({onChange, ...props}) {
   return (

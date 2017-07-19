@@ -6,15 +6,15 @@ import Input from 'components/Texts/Input'
 
 class SearchInput extends Component {
   static propTypes = {
-    renderItemLabel: PropTypes.func.isRequired,
-    searchResults: PropTypes.array.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onClear: PropTypes.func,
     onClickOutSide: PropTypes.func.isRequired,
+    onFocus: PropTypes.func,
     onSelect: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
-    onFocus: PropTypes.func,
-    value: PropTypes.string,
-    onChange: PropTypes.func,
-    onClear: PropTypes.func
+    renderItemLabel: PropTypes.func.isRequired,
+    searchResults: PropTypes.array.isRequired,
+    value: PropTypes.string
   }
 
   handleClickOutside = (event) => {
@@ -30,7 +30,7 @@ class SearchInput extends Component {
   }
 
   render() {
-    const {placeholder, onFocus} = this.props
+    const {placeholder, onChange, onFocus, value} = this.props
     return (
       <div className="input-group dropdown">
         <span className="input-group-addon">
@@ -40,8 +40,8 @@ class SearchInput extends Component {
           onFocus={onFocus && onFocus}
           className="form-control"
           placeholder={placeholder}
-          value={this.props.value}
-          onChange={text => this.props.onChange(text)}
+          value={value}
+          onChange={text => onChange(text)}
           onKeyDown={this.onKeyDown}
         />
         {this.renderDropdownList()}

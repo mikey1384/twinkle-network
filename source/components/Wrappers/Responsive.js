@@ -9,8 +9,8 @@ const breakpoints = {
 }
 
 Responsive.propTypes = {
-  device: PropTypes.string,
-  children: PropTypes.element
+  children: PropTypes.element,
+  device: PropTypes.string
 }
 export default function Responsive({device, children, ...props}) {
   const breakpoint = breakpoints[device] || breakpoints.desktop

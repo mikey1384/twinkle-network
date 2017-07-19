@@ -8,17 +8,20 @@ import {scrollElementToCenter} from 'helpers/domHelpers'
 export default class PanelComments extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
-    comments: PropTypes.array,
-    onSubmit: PropTypes.func,
-    loadMoreButton: PropTypes.bool,
-    inputTypeLabel: PropTypes.string,
-    parent: PropTypes.object,
     clickListenerState: PropTypes.bool,
-    userId: PropTypes.number,
-    commentActions: PropTypes.object,
+    commentActions: PropTypes.object.isRequired,
+    comments: PropTypes.array.isRequired,
+    inputTypeLabel: PropTypes.string,
+    loadMoreButton: PropTypes.bool.isRequired,
+    loadMoreComments: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    parent: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      type: PropTypes.string.isRequired
+    }).isRequired,
+    style: PropTypes.object,
     type: PropTypes.string,
-    loadMoreComments: PropTypes.func,
-    style: PropTypes.object
+    userId: PropTypes.number
   }
 
   constructor() {

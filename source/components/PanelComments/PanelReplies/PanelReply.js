@@ -18,20 +18,37 @@ import LongText from 'components/Texts/LongText'
 
 export default class PanelReply extends Component {
   static propTypes = {
+    comment: PropTypes.shape({
+      id: PropTypes.number.isRequired
+    }),
+    deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
     lastDeletedCommentIndex: PropTypes.number,
     index: PropTypes.number,
-    comment: PropTypes.object,
-    reply: PropTypes.object,
-    userId: PropTypes.number,
-    userIsOwner: PropTypes.bool,
-    type: PropTypes.string,
-    onEditDone: PropTypes.func,
-    onLikeClick: PropTypes.func,
-    deleteCallback: PropTypes.func,
-    onDelete: PropTypes.func,
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.object,
-    onReplySubmit: PropTypes.func
+    reply: PropTypes.shape({
+      content: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      likes: PropTypes.array,
+      originType: PropTypes.string,
+      profilePicId: PropTypes.number,
+      replyOfReply: PropTypes.bool,
+      targetUserId: PropTypes.number,
+      targetUserName: PropTypes.string,
+      timeStamp: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ]).isRequired,
+      userId: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired
+    }),
+    type: PropTypes.string,
+    userId: PropTypes.number,
+    userIsOwner: PropTypes.bool
   }
 
   constructor() {
@@ -105,7 +122,7 @@ export default class PanelReply extends Component {
               }}
             /> <small>&nbsp;{timeSince(reply.timeStamp)}</small>
           </h5>
-          <div style={{maxWidth: onEdit ? '100vw' : (type === 'videoDiscussionPanel' ? '78vw' : '36vw')}}>
+          <div style={{maxWidth: onEdit ? '80vw' : (type === 'videoDiscussionPanel' ? '47vw' : '37vw')}}>
             {reply.targetUserId && !!reply.replyId && reply.replyId !== comment.id &&
               <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: reply.targetUserName, id: reply.targetUserId}} />
@@ -193,15 +210,14 @@ export default class PanelReply extends Component {
   }
 
   onLikeClick() {
-    const replyId = this.props.reply.id
-    this.props.onLikeClick(replyId)
+    const {onLikeClick, reply} = this.props
+    onLikeClick(reply.id)
   }
 
   onDelete() {
-    const replyId = this.props.reply.id
-    const {deleteCallback, onDelete, index} = this.props
+    const {deleteCallback, index, onDelete, reply} = this.props
     deleteCallback(index)
-    onDelete(replyId)
+    onDelete(reply.id)
   }
 
   onReplyButtonClick() {

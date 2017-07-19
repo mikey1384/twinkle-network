@@ -8,10 +8,10 @@ import Input from './Input'
 export default class TitleDescriptionForm extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
-    rows: PropTypes.number,
-    titlePlaceholder: PropTypes.string,
     descriptionPlaceholder: PropTypes.string,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    rows: PropTypes.number,
+    titlePlaceholder: PropTypes.string
   }
 
   constructor() {

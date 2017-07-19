@@ -3,7 +3,7 @@ import React from 'react'
 import InputArea from 'components/Texts/InputArea'
 
 CommentInputArea.propTypes = {
-  onSubmit: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
   inputTypeLabel: PropTypes.string,
   clickListenerState: PropTypes.bool,
   autoFocus: PropTypes.bool

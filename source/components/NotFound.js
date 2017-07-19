@@ -2,8 +2,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 NotFound.propTypes = {
-  title: PropTypes.string,
-  text: PropTypes.string
+  text: PropTypes.string,
+  title: PropTypes.string
 }
 export default function NotFound({title, text}) {
   return (

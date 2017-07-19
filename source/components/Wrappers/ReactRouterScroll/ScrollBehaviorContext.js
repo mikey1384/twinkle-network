@@ -5,10 +5,10 @@ import PropTypes from 'prop-types'
 import SessionStorage from './StateStorage'
 
 const propTypes = {
-  shouldUpdateScroll: PropTypes.func,
   children: PropTypes.element.isRequired,
+  history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  shouldUpdateScroll: PropTypes.func
 }
 
 const childContextTypes = {

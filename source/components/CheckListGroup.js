@@ -2,9 +2,12 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 CheckListGroup.propTypes = {
-  listItems: PropTypes.array,
   inputType: PropTypes.string,
-  onSelect: PropTypes.func,
+  listItems: PropTypes.arrayOf(PropTypes.shape({
+    checked: PropTypes.bool.isRequired,
+    label: PropTypes.string.isRequired
+  })).isRequired,
+  onSelect: PropTypes.func.isRequired,
   style: PropTypes.object
 }
 export default function CheckListGroup({listItems, inputType, onSelect, style}) {

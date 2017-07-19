@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 FullTextReveal.propTypes = {
   show: PropTypes.bool,
-  text: PropTypes.string,
+  text: PropTypes.string.isRequired,
   width: PropTypes.string
 }
 export default function FullTextReveal({show, text, width = '500px'}) {

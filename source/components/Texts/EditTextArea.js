@@ -6,13 +6,13 @@ import {stringIsEmpty, addEmoji} from 'helpers/stringHelpers'
 
 export default class EditTextArea extends Component {
   static propTypes = {
-    text: PropTypes.string,
     autoFocus: PropTypes.bool,
+    marginTop: PropTypes.string,
+    onCancel: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
-    onCancel: PropTypes.func,
-    onEditDone: PropTypes.func,
     rows: PropTypes.number,
-    marginTop: PropTypes.string
+    text: PropTypes.string.isRequired
   }
 
   constructor(props) {

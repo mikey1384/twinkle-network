@@ -8,9 +8,9 @@ const API_URL = `${URL}/content`
 
 export default class Embedly extends Component {
   static propTypes = {
-    url: PropTypes.string,
+    style: PropTypes.object,
     title: PropTypes.string,
-    style: PropTypes.object
+    url: PropTypes.string.isRequired
   }
 
   constructor() {

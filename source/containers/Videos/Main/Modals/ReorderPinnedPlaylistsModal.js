@@ -4,11 +4,11 @@ import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
 import SortableListGroup from 'components/SortableListGroup'
 import {connect} from 'react-redux'
-import {changePinnedPlaylistsAsync} from 'redux/actions/PlaylistActions'
+import {changePinnedPlaylists} from 'redux/actions/PlaylistActions'
 
 @connect(
   null,
-  {changePinnedPlaylists: changePinnedPlaylistsAsync}
+  {changePinnedPlaylists}
 )
 export default class ReorderPinnedPlaylistsModal extends Component {
   static propTypes = {
@@ -80,6 +80,10 @@ export default class ReorderPinnedPlaylistsModal extends Component {
   }
 
   onSubmit() {
-    this.props.changePinnedPlaylists(this.state.playlistIds, () => this.props.onHide())
+    const {changePinnedPlaylists, onHide} = this.props
+    const {playlistIds} = this.state
+    return changePinnedPlaylists(playlistIds).then(
+      () => onHide()
+    )
   }
 }

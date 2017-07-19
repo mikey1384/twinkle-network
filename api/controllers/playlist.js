@@ -294,14 +294,9 @@ router.post('/pinned', requireAuth, (req, res) => {
       }
     },
     callback => {
-      const query = [
-        'SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader ',
-        'FROM vq_playlists a JOIN vq_pinned_playlists c ON c.playlistId = a.id ',
-        'LEFT JOIN users b ON a.creator = b.id ORDER BY c.id DESC'
-      ].join('')
-      fetchPlaylists(query, (err, playlists) => {
-        callback(err, playlists)
-      })
+      return fetchPlaylists('SELECT playlistId FROM vq_pinned_playlists ORDER BY id DESC').then(
+        playlists => callback(null, playlists)
+      )
     }
   ], (err, playlists) => {
     if (err) {

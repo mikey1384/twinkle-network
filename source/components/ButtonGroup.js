@@ -4,7 +4,7 @@ import Button from 'components/Button'
 
 export default class ButtonGroup extends Component {
   static propTypes = {
-    buttons: PropTypes.array,
+    buttons: PropTypes.array.isRequired,
     style: PropTypes.object
   }
 

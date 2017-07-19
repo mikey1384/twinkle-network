@@ -3,7 +3,7 @@ import React from 'react'
 import InputArea from 'components/Texts/InputArea'
 
 ReplyInputArea.propTypes = {
-  onSubmit: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
   numReplies: PropTypes.number,
   clickListenerState: PropTypes.bool
 }

@@ -3,12 +3,12 @@ import React from 'react'
 import {withRouter} from 'react-router'
 
 Link.propTypes = {
-  history: PropTypes.object,
-  style: PropTypes.object,
-  to: PropTypes.string,
-  onClickAsync: PropTypes.func,
   children: PropTypes.node,
-  target: PropTypes.string
+  history: PropTypes.object.isRequired,
+  onClickAsync: PropTypes.func,
+  style: PropTypes.object,
+  target: PropTypes.string,
+  to: PropTypes.string
 }
 function Link({to, onClickAsync, children, style, target, history}) {
   return (

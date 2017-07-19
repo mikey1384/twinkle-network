@@ -19,21 +19,36 @@ import LongText from 'components/Texts/LongText'
 
 export default class PanelComment extends Component {
   static propTypes = {
+    comment: PropTypes.shape({
+      content: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      likes: PropTypes.array.isRequired,
+      profilePicId: PropTypes.number,
+      replies: PropTypes.array.isRequired,
+      replyId: PropTypes.number,
+      targetUserName: PropTypes.string,
+      targetUserId: PropTypes.number,
+      timeStamp: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired,
+      userId: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired
+    }).isRequired,
+    deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
-    lastDeletedCommentIndex: PropTypes.number,
     index: PropTypes.number,
-    comment: PropTypes.object,
-    userId: PropTypes.number,
-    parent: PropTypes.object,
-    onEditDone: PropTypes.func,
-    onLikeClick: PropTypes.func,
-    onDelete: PropTypes.func,
-    type: PropTypes.string,
-    onReplySubmit: PropTypes.func,
-    onLoadMoreReplies: PropTypes.func,
+    isFirstComment: PropTypes.bool,
+    lastDeletedCommentIndex: PropTypes.number,
     marginTop: PropTypes.bool,
-    deleteCallback: PropTypes.func,
-    isFirstComment: PropTypes.bool
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    parent: PropTypes.object,
+    type: PropTypes.string,
+    userId: PropTypes.number
   }
 
   constructor() {
@@ -66,7 +81,6 @@ export default class PanelComment extends Component {
       comment, userId, parent, type, onEditDone,
       onLikeClick, onDelete, onReplySubmit, onLoadMoreReplies
     } = this.props
-
     const userIsOwner = comment.userId === userId
     let userLikedThis = false
     for (let i = 0; i < comment.likes.length; i++) {
@@ -109,7 +123,7 @@ export default class PanelComment extends Component {
               id: comment.userId
             }} /> <small>&nbsp;{timeSince(comment.timeStamp)}</small>
           </h5>
-          <div style={{maxWidth: onEdit ? '100vw' : (type === 'videoDiscussionPanel' ? '84vw' : '40vw')}}>
+          <div style={{maxWidth: onEdit ? '100vw' : (type === 'videoDiscussionPanel' ? '50vw' : '40vw')}}>
             {comment.targetUserId && !!comment.replyId && comment.replyId !== parent.id &&
               <span style={{color: Color.blue}}>
                 to: <UsernameText user={{name: comment.targetUserName, id: comment.targetUserId}} />

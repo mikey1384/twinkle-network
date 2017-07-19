@@ -3,12 +3,15 @@ import React from 'react'
 
 Likers.propTypes = {
   className: PropTypes.string,
-  likes: PropTypes.array,
-  target: PropTypes.string,
-  userId: PropTypes.number,
-  onLinkClick: PropTypes.func,
+  defaultText: PropTypes.string,
+  likes: PropTypes.arrayOf(PropTypes.shape({
+    userId: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired
+  })).isRequired,
+  onLinkClick: PropTypes.func.isRequired,
   style: PropTypes.object,
-  defaultText: PropTypes.string
+  target: PropTypes.string,
+  userId: PropTypes.number
 }
 export default function Likers({likes, target, userId, onLinkClick, style = null, className, defaultText}) {
   return (

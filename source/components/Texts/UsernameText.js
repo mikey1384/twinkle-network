@@ -4,22 +4,14 @@ import {connect} from 'react-redux'
 import {openDirectMessageChannel} from 'redux/actions/ChatActions'
 import {Color} from 'constants/css'
 
-@connect(
-  state => ({
-    username: state.UserReducer.username,
-    userId: state.UserReducer.userId,
-    chatMode: state.ChatReducer.chatMode
-  }),
-  {openDirectMessageChannel}
-)
-export default class UsernameText extends Component {
+class UsernameText extends Component {
   static propTypes = {
-    user: PropTypes.object,
-    userId: PropTypes.number,
+    chatMode: PropTypes.bool,
     color: PropTypes.string,
-    openDirectMessageChannel: PropTypes.func,
-    username: PropTypes.string,
-    chatMode: PropTypes.bool
+    openDirectMessageChannel: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
+    userId: PropTypes.number,
+    username: PropTypes.string
   }
 
   constructor() {
@@ -89,3 +81,12 @@ export default class UsernameText extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    chatMode: state.ChatReducer.chatMode,
+    username: state.UserReducer.username,
+    userId: state.UserReducer.userId
+  }),
+  {openDirectMessageChannel}
+)(UsernameText)

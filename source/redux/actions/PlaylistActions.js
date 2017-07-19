@@ -137,21 +137,17 @@ export const getPinnedPlaylistsAsync = () => dispatch =>
     }
   )
 
-export const changePinnedPlaylists = data => ({
-  type: 'CHANGE_PINNED_PLAYLISTS',
-  data
-})
-
-export const changePinnedPlaylistsAsync = (selectedPlaylists, callback) => dispatch =>
+export const changePinnedPlaylists = selectedPlaylists => dispatch =>
   request.post(`${API_URL}/pinned`, {selectedPlaylists}, auth())
     .then(
-      response => {
-        const {data} = response
-        if (data.playlists) {
-          dispatch(changePinnedPlaylists(data.playlists))
-          callback()
+      ({data: {playlists}}) => {
+        if (playlists) {
+          dispatch({
+            type: 'CHANGE_PINNED_PLAYLISTS',
+            data: playlists
+          })
         }
-        return
+        return Promise.resolve()
       }
     ).catch(
       error => {

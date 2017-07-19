@@ -6,12 +6,12 @@ import {cleanString, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
 class EditTitleForm extends Component {
   static propTypes = {
+    autoFocus: PropTypes.bool,
+    maxLength: PropTypes.number,
     onClickOutSide: PropTypes.func.isRequired,
     onEditSubmit: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired,
     style: PropTypes.object,
-    autoFocus: PropTypes.bool,
-    maxLength: PropTypes.number
+    title: PropTypes.string.isRequired
   }
 
   handleClickOutside = (event) => {

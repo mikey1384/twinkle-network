@@ -3,10 +3,10 @@ import React from 'react'
 import Button from 'components/Button'
 
 LikeButton.propTypes = {
-  style: PropTypes.object,
-  liked: PropTypes.bool,
-  onClick: PropTypes.func,
+  liked: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
   small: PropTypes.bool,
+  style: PropTypes.object,
   targetLabel: PropTypes.string
 }
 export default function LikeButton({style, liked, onClick, small, targetLabel}) {

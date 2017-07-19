@@ -7,13 +7,14 @@ import {scrollElementToCenter} from 'helpers/domHelpers'
 
 export default class InputArea extends Component {
   static propTypes = {
-    clickListenerState: PropTypes.bool,
-    placeholder: PropTypes.string,
-    rows: PropTypes.number,
     autoFocus: PropTypes.bool,
+    clickListenerState: PropTypes.bool,
     formGroupStyle: PropTypes.object,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func.isRequired,
+    placeholder: PropTypes.string,
+    rows: PropTypes.number
   }
+
   constructor() {
     super()
     this.state = {
