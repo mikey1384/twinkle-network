@@ -1,5 +1,5 @@
 const passwordHash = require('password-hash')
-const {capitalize, isValidUsername} = require('../helpers/stringHelpers')
+const {capitalize, isValidUsername, stringIsEmpty} = require('../helpers/stringHelpers')
 const {userExists} = require('../helpers/userHelpers')
 const {tokenForUser, requireAuth, requireSignin} = require('../auth')
 const express = require('express')
@@ -226,6 +226,7 @@ router.post('/signup', function(req, res) {
 
 router.get('/search', (req, res) => {
   const {queryString} = req.query
+  if (stringIsEmpty(queryString)) return res.send([])
   const query = `
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
     a.profileSecondRow, a.profileThirdRow, a.online, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE a.username LIKE ? OR a.realName LIKE ?
