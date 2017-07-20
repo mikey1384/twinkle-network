@@ -20,7 +20,6 @@ class People extends Component {
     loadMoreButton: PropTypes.bool,
     profiles: PropTypes.array.isRequired,
     searchedProfiles: PropTypes.array.isRequired,
-    searching: PropTypes.bool.isRequired,
     searchUsers: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
@@ -30,7 +29,8 @@ class People extends Component {
     this.state = {
       searchText: '',
       loading: false,
-      loaded: false
+      loaded: false,
+      searching: false
     }
     this.loadMoreProfiles = this.loadMoreProfiles.bind(this)
     this.onPeopleSearch = this.onPeopleSearch.bind(this)
@@ -45,14 +45,6 @@ class People extends Component {
     )
   }
 
-  componentWillUpdate(nextProps) {
-    const {clearUserSearch} = this.props
-    const {searchText} = this.state
-    if (nextProps.searchedProfiles.length > 0) {
-      if (stringIsEmpty(searchText)) return clearUserSearch()
-    }
-  }
-
   componentWillUnmount() {
     const {clearUserSearch} = this.props
     clearUserSearch()
@@ -60,8 +52,8 @@ class People extends Component {
   }
 
   render() {
-    const {userId, loadMoreButton, profiles, searchedProfiles, searching} = this.props
-    const {loading, loaded, searchText} = this.state
+    const {userId, loadMoreButton, profiles, searchedProfiles} = this.props
+    const {loading, loaded, searching, searchText} = this.state
     return (
       <div>
         <SearchInput
@@ -104,10 +96,15 @@ class People extends Component {
   }
 
   onPeopleSearch(text) {
-    const {clearUserSearch, searchUsers} = this.props
-    this.setState({searchText: text})
-    if (stringIsEmpty(text)) return clearUserSearch()
+    const {searchUsers} = this.props
     searchUsers(text)
+    if (stringIsEmpty(text)) {
+      return this.setState({
+        searchText: '',
+        searching: false
+      })
+    }
+    this.setState({searchText: text, searching: true})
   }
 
   onScroll() {
@@ -127,7 +124,6 @@ export default connect(
     loadMoreButton: state.UserReducer.loadMoreButton,
     profiles: state.UserReducer.profiles,
     searchedProfiles: state.UserReducer.searchedProfiles,
-    searching: state.UserReducer.searching,
     userId: state.UserReducer.userId
   }),
   {

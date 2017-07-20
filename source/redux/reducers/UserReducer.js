@@ -2,7 +2,6 @@ const defaultState = {
   profile: {},
   profiles: [],
   searchedProfiles: [],
-  searching: false,
   loadMoreButton: false
 }
 
@@ -16,8 +15,7 @@ export default function UserReducer(state = defaultState, action) {
     case 'CLEAR_USER_SEARCH':
       return {
         ...state,
-        searchedProfiles: [],
-        searching: false
+        searchedProfiles: []
       }
     case 'FETCH_SESSION':
       return (action.data !== undefined && action.data.loggedIn) ? {
@@ -48,8 +46,7 @@ export default function UserReducer(state = defaultState, action) {
     case 'SEARCH_USERS':
       return {
         ...state,
-        searchedProfiles: action.users,
-        searching: true
+        searchedProfiles: action.users
       }
     case 'SHOW_USER_NOT_EXISTS':
       return {
