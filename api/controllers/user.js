@@ -226,7 +226,7 @@ router.post('/signup', function(req, res) {
 
 router.get('/users/search', (req, res) => {
   const {queryString} = req.query
-  if (stringIsEmpty(queryString) || queryString.length < 3) return res.send([])
+  if (stringIsEmpty(queryString) || queryString.length < 2) return res.send([])
   const query = `
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
     a.profileSecondRow, a.profileThirdRow, a.online, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE a.username LIKE ? OR a.realName LIKE ?
