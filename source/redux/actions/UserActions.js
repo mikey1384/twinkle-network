@@ -113,7 +113,7 @@ export const logout = () => {
 }
 
 export const searchUsers = query => dispatch =>
-  request.get(`${API_URL}/search?queryString=${query}`).then(
+  request.get(`${API_URL}/users/search?queryString=${query}`).then(
     ({data: users}) => dispatch({
       type: 'SEARCH_USERS',
       users
