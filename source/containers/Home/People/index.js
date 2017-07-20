@@ -96,14 +96,15 @@ class People extends Component {
   }
 
   onPeopleSearch(text) {
-    const {searchUsers} = this.props
-    searchUsers(text)
+    const {searchUsers, clearUserSearch} = this.props
     if (stringIsEmpty(text)) {
-      return this.setState({
+      this.setState({
         searchText: '',
         searching: false
       })
+      return clearUserSearch()
     }
+    searchUsers(text)
     this.setState({searchText: text, searching: true})
   }
 
