@@ -45,6 +45,14 @@ class People extends Component {
     )
   }
 
+  componentWillUpdate(nextProps) {
+    const {clearUserSearch} = this.props
+    const {searchText} = this.state
+    if (nextProps.searchedProfiles.length > 0) {
+      if (stringIsEmpty(searchText)) return clearUserSearch()
+    }
+  }
+
   componentWillUnmount() {
     const {clearUserSearch} = this.props
     clearUserSearch()
@@ -97,10 +105,9 @@ class People extends Component {
 
   onPeopleSearch(text) {
     const {clearUserSearch, searchUsers} = this.props
-    this.setState({searchText: text}, () => {
-      if (stringIsEmpty(text)) return clearUserSearch()
-      searchUsers(text)
-    })
+    this.setState({searchText: text})
+    if (stringIsEmpty(text)) return clearUserSearch()
+    searchUsers(text)
   }
 
   onScroll() {
