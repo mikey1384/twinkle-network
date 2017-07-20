@@ -46,7 +46,7 @@ class People extends Component {
   }
 
   componentWillUnmount() {
-    const {clearUserSearch} = this.prosp
+    const {clearUserSearch} = this.props
     clearUserSearch()
     removeEvent(window, 'scroll', this.onScroll)
   }
