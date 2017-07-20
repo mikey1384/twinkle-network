@@ -8,8 +8,8 @@ import Input from 'components/Texts/Input'
 const maxChar = 150
 export default class BioEditModal extends Component {
   static propTypes = {
-    onHide: PropTypes.func,
-    onSubmit: PropTypes.func,
+    onHide: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     firstLine: PropTypes.string,
     secondLine: PropTypes.string,
     thirdLine: PropTypes.string

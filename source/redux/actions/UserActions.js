@@ -31,6 +31,10 @@ export const checkValidUsername = username => dispatch =>
       }
     )
 
+export const clearUserSearch = () => ({
+  type: 'CLEAR_USER_SEARCH'
+})
+
 export const fetchUsers = () => dispatch =>
   request.get(`${API_URL}/users`).then(
     response => {
@@ -107,6 +111,19 @@ export const logout = () => {
     type: 'SIGNIN_LOGOUT'
   }
 }
+
+export const searchUsers = query => dispatch =>
+  request.get(`${API_URL}/search?queryString=${query}`).then(
+    ({data: users}) => dispatch({
+      type: 'SEARCH_USERS',
+      users
+    })
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const signupAsync = params => dispatch =>
   request.post(`${API_URL}/signup`, params)

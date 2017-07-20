@@ -6,15 +6,11 @@ import Loading from 'components/Loading'
 import {fetchFeed} from 'redux/actions/FeedActions'
 import {connect} from 'react-redux'
 
-@connect(
-  null,
-  {fetchFeed}
-)
-export default class FeedPanel extends Component {
+class FeedPanel extends Component {
   static propTypes = {
-    feed: PropTypes.object,
-    userId: PropTypes.number,
-    fetchFeed: PropTypes.func
+    feed: PropTypes.object.isRequired,
+    fetchFeed: PropTypes.func.isRequired,
+    userId: PropTypes.number
   }
 
   constructor() {
@@ -42,12 +38,12 @@ export default class FeedPanel extends Component {
         className="panel panel-default"
         style={{borderTop: '#e7e7e7 1px solid'}}
       >
-        {!!feed.uploaderName &&
+        {feed.uploaderName &&
           <Heading
             feed={feed}
             myId={userId}
-            targetCommentUploader={!!feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
-            targetReplyUploader={!!feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
+            targetCommentUploader={feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
+            targetReplyUploader={feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
             rootContent={{id: feed.rootId, title: feed.rootContentTitle, content: feed.rootContent}}
             action={feed.commentId ? 'replied to' : 'commented on'}
             uploader={{name: feed.uploaderName, id: feed.uploaderId}}
@@ -56,7 +52,7 @@ export default class FeedPanel extends Component {
           />
         }
         <div className="panel-body">
-          {!!feed.uploaderName &&
+          {feed.uploaderName &&
             <Contents
               feed={feed}
               attachedVideoShown={attachedVideoShown}
@@ -71,3 +67,8 @@ export default class FeedPanel extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {fetchFeed}
+)(FeedPanel)

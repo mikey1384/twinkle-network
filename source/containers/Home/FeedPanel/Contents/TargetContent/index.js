@@ -5,7 +5,7 @@ import {cleanString} from 'helpers/stringHelpers'
 
 TargetContent.propTypes = {
   myId: PropTypes.number,
-  feed: PropTypes.object
+  feed: PropTypes.object.isRequired
 }
 export default function TargetContent({
   myId, feed: {
@@ -19,13 +19,13 @@ export default function TargetContent({
     <div>
       {replyId &&
         <Content
-          myId={myId}
           commentId={commentId}
           comments={targetContentComments}
           content={targetReply}
           contentAvailable={!!targetReply}
           discussionId={discussionId}
           likes={targetContentLikers}
+          myId={myId}
           panelId={id}
           replyId={replyId}
           rootId={rootId}

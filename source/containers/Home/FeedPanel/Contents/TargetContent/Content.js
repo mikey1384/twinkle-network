@@ -21,30 +21,33 @@ import {timeSince} from 'helpers/timeStampHelpers'
 
 class Content extends Component {
   static propTypes = {
-    uploader: PropTypes.object,
-    isDiscussion: PropTypes.bool,
-    title: PropTypes.string,
-    content: PropTypes.string,
-    contentAvailable: PropTypes.bool,
-    username: PropTypes.string,
     comments: PropTypes.array,
-    myId: PropTypes.number,
-    profilePicId: PropTypes.number,
-    likes: PropTypes.array,
-    replyId: PropTypes.number,
-    onDeleteComment: PropTypes.func,
-    onEditComment: PropTypes.func,
     commentId: PropTypes.number,
-    onLikeClick: PropTypes.func,
-    rootId: PropTypes.number,
+    content: PropTypes.string.isRequired,
+    contentAvailable: PropTypes.bool.isRequired,
     discussionId: PropTypes.number,
-    panelId: PropTypes.number,
-    uploadComment: PropTypes.func,
-    rootType: PropTypes.string,
+    isDiscussion: PropTypes.bool,
+    likes: PropTypes.array,
+    myId: PropTypes.number,
+    onDeleteComment: PropTypes.func.isRequired,
+    onEditComment: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    panelId: PropTypes.number.isRequired,
+    profilePicId: PropTypes.number,
+    replyId: PropTypes.number,
+    rootId: PropTypes.number.isRequired,
+    rootType: PropTypes.string.isRequired,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ])
+    ]).isRequired,
+    title: PropTypes.string,
+    uploadComment: PropTypes.func.isRequired,
+    uploader: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired,
+    username: PropTypes.string
   }
 
   constructor() {

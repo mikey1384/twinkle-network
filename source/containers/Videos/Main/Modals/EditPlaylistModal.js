@@ -6,13 +6,14 @@ import {connect} from 'react-redux'
 import {
   changePlaylistVideosAsync
 } from 'redux/actions/PlaylistActions'
+import Loading from 'components/Loading'
 import SelectVideosForm from './SelectVideosForm'
 import SortableThumb from './SortableThumb'
 import {DragDropContext} from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-touch-backend'
 import request from 'axios'
 import {URL} from 'constants/URL'
-import Input from 'components/Texts/Input'
+import SearchInput from 'components/Texts/SearchInput'
 
 @DragDropContext(HTML5Backend)
 @connect(
@@ -33,6 +34,7 @@ export default class EditPlaylistModal extends Component {
     super()
     this.state = {
       allVideos: [],
+      loaded: false,
       searchedVideos: [],
       selectedVideos: [],
       loadMoreButtonShown: false,
@@ -62,7 +64,8 @@ export default class EditPlaylistModal extends Component {
         this.setState({
           selectedVideos,
           allVideos,
-          loadMoreButtonShown
+          loadMoreButtonShown,
+          loaded: true
         })
       }
     ).catch(
@@ -73,7 +76,7 @@ export default class EditPlaylistModal extends Component {
   render() {
     const {modalType, onHide} = this.props
     const {
-      selectedVideos, mainTabActive, searchText,
+      selectedVideos, mainTabActive, searchText, loaded,
       loadMoreButtonShown, searchedVideos, allVideos
     } = this.state
     return (
@@ -109,7 +112,7 @@ export default class EditPlaylistModal extends Component {
             </li>
           </ul>
           {mainTabActive && modalType === 'change' &&
-            <Input
+            <SearchInput
               className="form-control"
               placeholder="Search videos..."
               autoFocus
@@ -121,6 +124,7 @@ export default class EditPlaylistModal extends Component {
               onChange={this.onVideoSearch}
             />
           }
+          {!loaded && <Loading />}
           {mainTabActive && modalType === 'change' &&
             <SelectVideosForm
               videos={searchText ? searchedVideos : allVideos}

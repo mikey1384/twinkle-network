@@ -7,9 +7,9 @@ import AvatarEditor from 'react-avatar-editor'
 
 export default class ImageEditModal extends Component {
   static propTypes = {
-    onHide: PropTypes.func,
     imageUri: PropTypes.string,
-    onConfirm: PropTypes.func,
+    onConfirm: PropTypes.func.isRequired,
+    onHide: PropTypes.func.isRequired,
     processing: PropTypes.bool
   }
 
@@ -49,7 +49,7 @@ export default class ImageEditModal extends Component {
                   <Slider
                     className="rc-slider"
                     defaultValue={50}
-                    onChange={value => this.setState({imageScale: value/100 + 0.5})}
+                    onChange={value => this.setState({imageScale: value / 100 + 0.5})}
                   />
                 </div>
               </div>

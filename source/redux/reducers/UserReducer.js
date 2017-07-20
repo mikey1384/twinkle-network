@@ -1,6 +1,8 @@
 const defaultState = {
   profile: {},
   profiles: [],
+  searchedProfiles: [],
+  searching: false,
   loadMoreButton: false
 }
 
@@ -11,6 +13,12 @@ function isAdmin(userType) {
 export default function UserReducer(state = defaultState, action) {
   let loadMoreButton = false
   switch (action.type) {
+    case 'CLEAR_USER_SEARCH':
+      return {
+        ...state,
+        searchedProfiles: [],
+        searching: false
+      }
     case 'FETCH_SESSION':
       return (action.data !== undefined && action.data.loggedIn) ? {
         ...state,
@@ -36,6 +44,12 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         profiles: state.profiles.concat(action.data),
         loadMoreButton
+      }
+    case 'SEARCH_USERS':
+      return {
+        ...state,
+        searchedProfiles: action.users,
+        searching: true
       }
     case 'SHOW_USER_NOT_EXISTS':
       return {

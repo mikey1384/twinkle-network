@@ -224,6 +224,24 @@ router.post('/signup', function(req, res) {
   }
 })
 
+router.get('/search', (req, res) => {
+  const {queryString} = req.query
+  const query = `
+    SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
+    a.profileSecondRow, a.profileThirdRow, a.online, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE a.username LIKE ? OR a.realName LIKE ?
+    ORDER BY a.online DESC, a.lastActive DESC
+    LIMIT 20
+  `
+  return poolQuery(query, [`%${queryString}%`, `%${queryString}%`]).then(
+    rows => res.send(rows)
+  ).catch(
+    err => {
+      console.error(err)
+      res.status(500).send({error: err})
+    }
+  )
+})
+
 router.get('/users', (req, res) => {
   const {shownUsers} = req.query
   const where = shownUsers ? 'WHERE ' + shownUsers.map(id => `a.id != ${id}`).join(' AND ') : ''

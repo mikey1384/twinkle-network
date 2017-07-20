@@ -13,6 +13,7 @@ import SelectVideosForm from './SelectVideosForm'
 import request from 'axios'
 import {URL} from 'constants/URL'
 import Input from 'components/Texts/Input'
+import SearchInput from 'components/Texts/SearchInput'
 
 @DragDropContext(HTML5Backend)
 @connect(
@@ -93,10 +94,8 @@ export default class AddPlaylistModal extends Component {
               <fieldset className="form-group">
                 <label><b>Playlist Title</b></label>
                 <Input
-                  name="title"
-                  placeholder="Enter Playlist Title"
                   className="form-control"
-                  type="text"
+                  placeholder="Enter Playlist Title"
                   value={title}
                   onChange={text => this.setState({title: text})}
                   onKeyUp={event => {
@@ -130,7 +129,7 @@ export default class AddPlaylistModal extends Component {
           }
           {section === 1 &&
             <div>
-              <Input
+              <SearchInput
                 className="form-control"
                 placeholder="Search videos..."
                 autoFocus

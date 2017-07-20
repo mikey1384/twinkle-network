@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import SearchInput from 'components/SearchInput'
+import SearchInput from 'components/Texts/SearchInput'
 import {stringIsEmpty} from 'helpers/stringHelpers'
 import {searchChatAsync, clearChatSearchResults, enterChannelWithId} from 'redux/actions/ChatActions'
 import {openNewChatTab} from 'redux/actions/ChatActions/actions'

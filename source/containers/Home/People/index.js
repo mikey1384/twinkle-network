@@ -1,31 +1,28 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-// import SearchInput from 'components/SearchInput'
+import SearchInput from 'components/Texts/SearchInput'
 import {connect} from 'react-redux'
-import {fetchUsers, fetchMoreUsers} from 'redux/actions/UserActions'
+import {clearUserSearch, fetchUsers, fetchMoreUsers, searchUsers} from 'redux/actions/UserActions'
 import ProfileCard from '../ProfileCard'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import {queryStringForArray} from 'helpers/apiHelpers'
+import {stringIsEmpty} from 'helpers/stringHelpers'
+import {Color} from 'constants/css'
 
-@connect(
-  state => ({
-    chatMode: state.ChatReducer.chatMode,
-    userId: state.UserReducer.userId,
-    profiles: state.UserReducer.profiles,
-    loadMoreButton: state.UserReducer.loadMoreButton
-  }),
-  {fetchUsers, fetchMoreUsers}
-)
-export default class People extends Component {
+class People extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    fetchUsers: PropTypes.func,
-    fetchMoreUsers: PropTypes.func,
-    userId: PropTypes.number,
-    profiles: PropTypes.array,
-    loadMoreButton: PropTypes.bool
+    clearUserSearch: PropTypes.func.isRequired,
+    fetchMoreUsers: PropTypes.func.isRequired,
+    fetchUsers: PropTypes.func.isRequired,
+    loadMoreButton: PropTypes.bool,
+    profiles: PropTypes.array.isRequired,
+    searchedProfiles: PropTypes.array.isRequired,
+    searching: PropTypes.bool.isRequired,
+    searchUsers: PropTypes.func.isRequired,
+    userId: PropTypes.number
   }
 
   constructor() {
@@ -38,7 +35,6 @@ export default class People extends Component {
     this.loadMoreProfiles = this.loadMoreProfiles.bind(this)
     this.onPeopleSearch = this.onPeopleSearch.bind(this)
     this.onScroll = this.onScroll.bind(this)
-    this.onSelect = this.onSelect.bind(this)
   }
 
   componentDidMount() {
@@ -54,34 +50,34 @@ export default class People extends Component {
   }
 
   render() {
-    const {userId, profiles, loadMoreButton} = this.props
-    const {loading, loaded} = this.state
+    const {userId, loadMoreButton, profiles, searchedProfiles, searching} = this.props
+    const {loading, loaded, searchText} = this.state
     return (
       <div>
-        {/* <SearchInput
+        <SearchInput
+          addonColor={Color.orange}
           placeholder="Search for users"
           onChange={this.onPeopleSearch}
           value={searchText}
-          searchResults={[]}
-          renderItemLabel={
-            item => item
-          }
-          onClickOutSide={() => {
-            this.setState({searchText: ''})
-          }}
-          onSelect={this.onSelect}
-        /> */}
+        />
         <div style={{marginTop: '1em'}}>
           {!loaded &&
             <Loading text="Loading Users..." />
           }
-          {loaded &&
+          {loaded && !searching &&
             profiles.map(
               profile => <ProfileCard expandable key={profile.id} userId={userId} profile={profile} />
             )
           }
+          {searching &&
+            searchedProfiles.map(
+              profile => <ProfileCard expandable key={profile.id} userId={userId} profile={profile} />
+            )
+          }
         </div>
-        {loaded && loadMoreButton && <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />}
+        {!searching && loaded && loadMoreButton &&
+          <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />
+        }
       </div>
     )
   }
@@ -98,7 +94,11 @@ export default class People extends Component {
   }
 
   onPeopleSearch(text) {
-    this.setState({searchText: text})
+    const {clearUserSearch, searchUsers} = this.props
+    this.setState({searchText: text}, () => {
+      if (stringIsEmpty(text)) return clearUserSearch()
+      searchUsers(text)
+    })
   }
 
   onScroll() {
@@ -110,8 +110,21 @@ export default class People extends Component {
       }
     }
   }
-
-  onSelect() {
-    console.log('selected')
-  }
 }
+
+export default connect(
+  state => ({
+    chatMode: state.ChatReducer.chatMode,
+    loadMoreButton: state.UserReducer.loadMoreButton,
+    profiles: state.UserReducer.profiles,
+    searchedProfiles: state.UserReducer.searchedProfiles,
+    searching: state.UserReducer.searching,
+    userId: state.UserReducer.userId
+  }),
+  {
+    clearUserSearch,
+    fetchUsers,
+    fetchMoreUsers,
+    searchUsers
+  }
+)(People)

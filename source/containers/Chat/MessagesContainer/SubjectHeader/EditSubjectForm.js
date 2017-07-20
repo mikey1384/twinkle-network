@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import onClickOutside from 'react-onclickoutside'
-import {cleanString, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import {cleanString, addEmoji, finalizeEmoji, trimWhiteSpaces} from 'helpers/stringHelpers'
 import SearchDropdown from 'components/SearchDropdown'
 import Button from 'components/Button'
 import {Color} from 'constants/css'
@@ -172,7 +172,7 @@ class EditSubjectForm extends Component {
     }
 
     if (title && title.length > maxLength) return
-    if (title && `${title[0].toUpperCase()}${title.slice(1)}` !== this.props.title) {
+    if (title && trimWhiteSpaces(`${title[0].toUpperCase()}${title.slice(1)}`) !== this.props.title) {
       onEditSubmit(finalizeEmoji(title))
     } else {
       onClickOutSide()

@@ -170,6 +170,21 @@ export function stringIsEmpty(string) {
   return checkedString === ''
 }
 
+export function trimWhiteSpaces(text) {
+  let newText = text
+  while (
+    newText !== '' && (newText[0] === ' ' || newText[newText.length - 1] === ' ')
+  ) {
+    if (newText[0] === ' ') {
+      newText = newText.substring(1)
+    }
+    if (newText[newText.length - 1] === ' ') {
+      newText = newText.slice(0, -1)
+    }
+  }
+  return newText
+}
+
 export function isValidUrl(url) {
   const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   return regex.test(url)

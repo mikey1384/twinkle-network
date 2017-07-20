@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import LongText from 'components/Texts/LongText'
 import LikeButton from 'components/LikeButton'
 import Button from 'components/Button'
 import Likers from 'components/Likers'
@@ -18,40 +17,25 @@ import {
 } from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
 import VideoPlayer from 'components/VideoPlayer'
-import Embedly from 'components/Embedly'
 import PanelComments from 'components/PanelComments'
+import MainContent from './MainContent'
 import TargetContent from './TargetContent'
 import {Color} from 'constants/css'
-import {cleanString} from 'helpers/stringHelpers'
 
-@connect(
-  null,
-  {
-    showFeedComments: showFeedCommentsAsync,
-    loadMoreComments: loadMoreFeedCommentsAsync,
-    onSubmit: uploadFeedComment,
-    onDelete: feedCommentDelete,
-    onEditDone: feedCommentEdit,
-    onReplySubmit: uploadFeedReply,
-    onLoadMoreReplies: loadMoreFeedReplies,
-    onLikeCommentClick: commentFeedLike,
-    onLikeContentClick: contentFeedLike
-  }
-)
-export default class Contents extends Component {
+class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
-    feed: PropTypes.object,
+    feed: PropTypes.object.isRequired,
+    loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
-    loadMoreComments: PropTypes.func,
-    onDelete: PropTypes.func,
-    onEditDone: PropTypes.func,
-    onLikeCommentClick: PropTypes.func,
-    onLikeContentClick: PropTypes.func,
-    onLoadMoreReplies: PropTypes.func,
-    onReplySubmit: PropTypes.func,
-    onSubmit: PropTypes.func,
-    showFeedComments: PropTypes.func
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeCommentClick: PropTypes.func.isRequired,
+    onLikeContentClick: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    showFeedComments: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -100,89 +84,26 @@ export default class Contents extends Component {
             myId={myId}
           />
         }
-        {type === 'comment' &&
-          <span style={{
-            fontSize: '1.2em',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word'
-          }}>
-            <LongText>{content}</LongText>
-          </span>
-        }
-        {(type === 'video' || type === 'discussion') &&
-          <VideoPlayer
-            title={contentTitle}
-            containerClassName="embed-responsive embed-responsive-16by9"
-            className="embed-responsive-item"
-            videoId={rootId}
-            videoCode={rootContent}
-          />
-        }
-        {type === 'url' &&
-        !!contentDescription && contentDescription !== 'No description' &&
-          <div style={{
-            fontSize: '1.2em',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word'
-          }}>
-            <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText>
-          </div>
-        }
-        {type === 'url' &&
-          <Embedly title={cleanString(contentTitle)} url={content} />
-        }
-        {type === 'discussion' &&
-          <div style={{
-            fontSize: '2rem',
-            marginTop: '1em',
-            marginBottom: contentDescription ? '0.5em' : '1em'
-          }}>
-            <p><b style={{color: Color.green}}>Discuss:</b></p>
-            <p>{cleanString(contentTitle)}</p>
-          </div>
-        }
-        {type === 'video' &&
-        !!contentDescription && contentDescription !== 'No description' &&
-          <div style={{
-            marginTop: '1em',
-            fontSize: '1.2em',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word'
-          }}>
-            <LongText>{contentDescription}</LongText>
-          </div>
-        }
-        {type === 'discussion' &&
-        !!contentDescription &&
-          <div style={{
-            marginBottom: '1em',
-            fontSize: '1.2em',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word'
-          }}>
-            <LongText>{contentDescription}</LongText>
-          </div>
-        }
-        {type === 'video' && videoViews > 10 &&
-          <span
-            className="pull-right"
-            style={{
-              fontSize: '1.5em',
-              marginTop: '1em'
-            }}
-          >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}</span>
-        }
-        {type === 'comment' && rootType === 'url' &&
-          <Embedly style={{marginTop: '2em'}} title={cleanString(contentTitle)} url={rootContent} />
-        }
-        {type !== 'discussion' &&
-          <div style={{paddingTop: (type !== 'comment' || rootType !== 'url') ? '2em' : '1.5em'}}>
-            <LikeButton
+        <MainContent
+          content={content}
+          contentDescription={contentDescription}
+          contentTitle={contentTitle}
+          rootId={rootId}
+          rootContent={rootContent}
+          rootType={rootType}
+          type={type}
+          videoViews={videoViews}
+        />
+        <div style={{paddingTop: type === 'video' ? '2em' : '1.5em'}}>
+          {type !== 'discussion' &&
+            [<LikeButton
+              key="likeButton"
               onClick={this.onLikeClick}
               liked={userLikedThis}
               small
-            />
+            />,
             <Button
+              key="commentButton"
               style={{marginLeft: '0.5em'}}
               className="btn btn-warning btn-sm"
               onClick={this.onCommentButtonClick}
@@ -192,27 +113,27 @@ export default class Contents extends Component {
               {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
                 (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
               }
+            </Button>]
+          }
+          {type === 'discussion' &&
+            <Button
+              style={{marginTop: '0.5em'}}
+              className="btn btn-warning"
+              onClick={this.onCommentButtonClick}
+            >
+              Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
             </Button>
-            {false && myId === uploaderId &&
-              <Button
-                style={{marginLeft: '0.5em'}}
-                className="btn btn-default btn-sm"
-                onClick={() => console.log('edit clicked')}
-              >
-                <span className="glyphicon glyphicon-pencil"></span>&nbsp;Edit&nbsp;
-              </Button>
-            }
-          </div>
-        }
-        {type === 'discussion' &&
-          <Button
-            style={{marginTop: '0.5em'}}
-            className="btn btn-warning"
-            onClick={this.onCommentButtonClick}
-          >
-            Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
-          </Button>
-        }
+          }
+          {false && myId === uploaderId &&
+            <Button
+              style={{marginLeft: '0.5em'}}
+              className="btn btn-default btn-sm"
+              onClick={() => console.log('edit clicked')}
+            >
+              <span className="glyphicon glyphicon-pencil"></span>&nbsp;Edit&nbsp;
+            </Button>
+          }
+        </div>
         <Likers
           style={{
             fontSize: '11px',
@@ -291,3 +212,18 @@ export default class Contents extends Component {
     }
   }
 }
+
+export default connect(
+  null,
+  {
+    showFeedComments: showFeedCommentsAsync,
+    loadMoreComments: loadMoreFeedCommentsAsync,
+    onSubmit: uploadFeedComment,
+    onDelete: feedCommentDelete,
+    onEditDone: feedCommentEdit,
+    onReplySubmit: uploadFeedReply,
+    onLoadMoreReplies: loadMoreFeedReplies,
+    onLikeCommentClick: commentFeedLike,
+    onLikeContentClick: contentFeedLike
+  }
+)(Contents)
