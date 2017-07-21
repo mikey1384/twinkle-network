@@ -4,8 +4,8 @@ const defaultState = {
   selectedFilter: 'all',
   scrollLocked: false,
   feeds: null,
-  loadMoreButton: false,
-  homeComponentConnected: false
+  loaded: false,
+  loadMoreButton: false
 }
 
 export default function FeedReducer(state = defaultState, action) {
@@ -15,19 +15,10 @@ export default function FeedReducer(state = defaultState, action) {
     case 'CLEAR_FEEDS':
       return {
         ...state,
+        selectedFilter: 'all',
         feeds: [],
         loadMoreButton: false,
         loaded: false
-      }
-    case 'CONNECT_HOME_COMPONENT':
-      return {
-        ...state,
-        homeComponentConnected: true
-      }
-    case 'DISCONNECT_HOME_COMPONENT':
-      return {
-        ...state,
-        homeComponentConnected: false
       }
     case 'FETCH_FEED':
       return {
@@ -44,7 +35,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: action.data,
-        selectedFilter: action.filter,
+        selectedFilter: action.filter || state.selectedFilter,
         loadMoreButton,
         loaded: true
       }
@@ -72,7 +63,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.concat(action.data),
-        selectedFilter: action.filter,
+        selectedFilter: action.filter || state.selectedFilter,
         loadMoreButton
       }
     case 'FEED_TARGET_COMMENT_LIKE':

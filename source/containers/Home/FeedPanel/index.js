@@ -10,6 +10,7 @@ class FeedPanel extends Component {
   static propTypes = {
     feed: PropTypes.object.isRequired,
     fetchFeed: PropTypes.func.isRequired,
+    loadingDisabled: PropTypes.bool,
     userId: PropTypes.number
   }
 
@@ -22,9 +23,9 @@ class FeedPanel extends Component {
   }
 
   componentDidMount() {
-    const {fetchFeed, feed} = this.props
+    const {fetchFeed, feed, loadingDisabled} = this.props
     const {feedLoaded} = this.state
-    if (!feedLoaded) {
+    if (!feedLoaded && !loadingDisabled) {
       this.setState({feedLoaded: true})
       fetchFeed(feed)
     }

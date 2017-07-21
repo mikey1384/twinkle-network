@@ -38,11 +38,18 @@ export default class Main extends Component {
   componentDidMount() {
     const {fetchLinks, history} = this.props
     const {loaded} = this.state
+    this.mounted = true
     if (!loaded || history.action === 'PUSH') {
       fetchLinks().then(
-        () => this.setState({loaded: true})
+        () => {
+          if (this.mounted) this.setState({loaded: true})
+        }
       )
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
   }
 
   render() {

@@ -23,7 +23,7 @@ class Content extends Component {
   static propTypes = {
     comments: PropTypes.array,
     commentId: PropTypes.number,
-    content: PropTypes.string.isRequired,
+    content: PropTypes.string,
     contentAvailable: PropTypes.bool.isRequired,
     discussionId: PropTypes.number,
     isDiscussion: PropTypes.bool,
@@ -40,13 +40,13 @@ class Content extends Component {
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]).isRequired,
+    ]),
     title: PropTypes.string,
     uploadComment: PropTypes.func.isRequired,
     uploader: PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired
-    }).isRequired,
+    }),
     username: PropTypes.string
   }
 
@@ -165,7 +165,7 @@ class Content extends Component {
               </div>
               <div style={{paddingTop: '2.3em'}}>
                 <p style={{fontWeight: 'bold'}}>{title}</p>
-                {!!content && (
+                {content && (
                   <LongText>{content}</LongText>
                 )}
               </div>

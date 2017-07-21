@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Route} from 'react-router'
-import {fetchUserFeeds, fetchMoreUserFeeds, clearFeeds, connectHomeComponent} from 'redux/actions/FeedActions'
+import {fetchUserFeeds, fetchMoreUserFeeds, clearFeeds} from 'redux/actions/FeedActions'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
@@ -8,37 +8,19 @@ import FeedPanel from '../../FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 
-@connect(
-  state => ({
-    chatMode: state.ChatReducer.chatMode,
-    feeds: state.FeedReducer.feeds,
-    loaded: state.FeedReducer.loaded,
-    myId: state.UserReducer.userId,
-    loadMoreButton: state.FeedReducer.loadMoreButton,
-    homeComponentConnected: state.FeedReducer.homeComponentConnected
-  }),
-  {
-    fetchUserFeeds,
-    fetchMoreUserFeeds,
-    clearFeeds,
-    connectHomeComponent
-  }
-)
-export default class Body extends Component {
+class Body extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    connectHomeComponent: PropTypes.func,
-    homeComponentConnected: PropTypes.bool,
-    match: PropTypes.object,
-    location: PropTypes.object,
-    history: PropTypes.object,
-    myId: PropTypes.number,
+    clearFeeds: PropTypes.func.isRequired,
     feeds: PropTypes.array,
-    loaded: PropTypes.bool,
-    loadMoreButton: PropTypes.bool,
-    fetchUserFeeds: PropTypes.func,
-    fetchMoreUserFeeds: PropTypes.func,
-    clearFeeds: PropTypes.func
+    fetchMoreUserFeeds: PropTypes.func.isRequired,
+    fetchUserFeeds: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    loadMoreButton: PropTypes.bool.isRequired,
+    location: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+    myId: PropTypes.number
   }
 
   constructor() {
@@ -58,14 +40,11 @@ export default class Body extends Component {
       match,
       history,
       location,
-      clearFeeds,
-      homeComponentConnected,
-      connectHomeComponent
+      clearFeeds
     } = this.props
 
     addEvent(window, 'scroll', this.onScroll)
-    if (homeComponentConnected || history.action === 'PUSH') {
-      connectHomeComponent()
+    if (history.action === 'PUSH') {
       return clearFeeds().then(
         () => {
           switch (location.pathname) {
@@ -81,8 +60,6 @@ export default class Body extends Component {
           }
         }
       )
-    } else {
-      connectHomeComponent()
     }
   }
 
@@ -136,7 +113,6 @@ export default class Body extends Component {
               fontWeight: 'bold'
             }}
           >
-            {/* <li className="active"><a>Guest Book</a></li> */}
             <Route exact path={`${route.url}/`} children={({match}) => (
               <li
                 className={match && 'active'}
@@ -241,3 +217,19 @@ export default class Body extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    chatMode: state.ChatReducer.chatMode,
+    feeds: state.FeedReducer.feeds,
+    loaded: state.FeedReducer.loaded,
+    myId: state.UserReducer.userId,
+    loadMoreButton: state.FeedReducer.loadMoreButton,
+    homeComponentConnected: state.FeedReducer.homeComponentConnected
+  }),
+  {
+    fetchUserFeeds,
+    fetchMoreUserFeeds,
+    clearFeeds
+  }
+)(Body)

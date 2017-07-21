@@ -15,20 +15,11 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers'
 
-@connect(
-  state => ({
-    username: state.UserReducer.username
-  }),
-  {
-    loadVideoPage: loadVideoPageFromClientSideAsync,
-    uploadContent: uploadContentAsync
-  }
-)
-export default class FeedInputPanel extends Component {
+class FeedInputPanel extends Component {
   static propTypes = {
-    loadVideoPage: PropTypes.func,
-    username: PropTypes.string,
-    uploadContent: PropTypes.func
+    loadVideoPage: PropTypes.func.isRequired,
+    uploadContent: PropTypes.func.isRequired,
+    username: PropTypes.string
   }
 
   constructor() {
@@ -218,3 +209,13 @@ export default class FeedInputPanel extends Component {
     })
   }
 }
+
+export default connect(
+  state => ({
+    username: state.UserReducer.username
+  }),
+  {
+    loadVideoPage: loadVideoPageFromClientSideAsync,
+    uploadContent: uploadContentAsync
+  }
+)(FeedInputPanel)

@@ -9,41 +9,29 @@ import NotFound from 'components/NotFound'
 import Loading from 'components/Loading'
 import {browserHistory} from 'react-router'
 
-@connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
-    profile: state.UserReducer.profile
-  }),
-  {checkValidUsername, unmountProfile}
-)
-export default class Profile extends Component {
+class Profile extends Component {
   static propTypes = {
-    checkValidUsername: PropTypes.func,
-    match: PropTypes.object,
+    checkValidUsername: PropTypes.func.isRequired,
+    match: PropTypes.object.isRequired,
+    profile: PropTypes.object.isRequired,
     userId: PropTypes.number,
-    profile: PropTypes.object,
     username: PropTypes.string
   }
 
-  constructor(props) {
-    super()
-    const {checkValidUsername, match} = props
+  componentWillMount() {
+    const {checkValidUsername, match} = this.props
     const {username} = match.params
     if (ExecutionEnvironment.canUseDOM) checkValidUsername(username)
   }
 
   componentDidUpdate(prevProps) {
     const {checkValidUsername, userId, profile: {unavailable}, match} = this.props
-    if (ExecutionEnvironment.canUseDOM) {
-      if (prevProps.match.params.username !== match.params.username) {
-        return checkValidUsername(match.params.username)
-      }
+    if (prevProps.match.params.username !== match.params.username) {
+      return checkValidUsername(match.params.username)
+    }
 
-      if (match.params.username === 'undefined' && !prevProps.userId && !!userId && !!unavailable) {
-        browserHistory.push(`/${this.props.username}`)
-      }
+    if (match.params.username === 'undefined' && !prevProps.userId && !!userId && !!unavailable) {
+      browserHistory.push(`/${this.props.username}`)
     }
   }
 
@@ -52,7 +40,7 @@ export default class Profile extends Component {
     return !unavailable ? (
       <div style={{width: '100%'}}>
         {!id && <Loading text="Loading Profile..." />}
-        {!!id &&
+        {id &&
           <div style={{width: '100%'}}>
             <ProfileCard {...this.props} />
             <Body {...this.props} />
@@ -62,3 +50,13 @@ export default class Profile extends Component {
     ) : <NotFound title={!userId && 'For Registered Users Only'} text={!userId && 'Please Log In or Sign Up'} />
   }
 }
+
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId,
+    profile: state.UserReducer.profile
+  }),
+  {checkValidUsername, unmountProfile}
+)(Profile)

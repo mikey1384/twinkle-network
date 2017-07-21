@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {
-  connectHomeComponent,
   fetchMoreFeedsAsync,
   fetchFeedsAsync,
   fetchFeed,
@@ -13,45 +12,26 @@ import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import {connect} from 'react-redux'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import ExecutionEnvironment from 'exenv'
 
-@connect(
-  state => ({
-    loadMoreButton: state.FeedReducer.loadMoreButton,
-    feeds: state.FeedReducer.feeds,
-    homeComponentConnected: state.FeedReducer.homeComponentConnected,
-    loaded: state.FeedReducer.loaded,
-    userId: state.UserReducer.userId,
-    selectedFilter: state.FeedReducer.selectedFilter,
-    chatMode: state.ChatReducer.chatMode,
-    noFeeds: state.FeedReducer.noFeeds
-  }),
-  {
-    connectHomeComponent,
-    fetchMoreFeeds: fetchMoreFeedsAsync,
-    fetchFeeds: fetchFeedsAsync,
-    clearFeeds,
-    fetchFeed
-  }
-)
-export default class Feeds extends Component {
+class Feeds extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    connectHomeComponent: PropTypes.func,
-    loaded: PropTypes.bool,
-    fetchFeeds: PropTypes.func,
-    homeComponentConnected: PropTypes.bool,
-    clearFeeds: PropTypes.func,
-    history: PropTypes.object,
+    clearFeeds: PropTypes.func.isRequired,
     feeds: PropTypes.array,
-    loadMoreButton: PropTypes.bool,
-    userId: PropTypes.number,
-    selectedFilter: PropTypes.string,
-    fetchMoreFeeds: PropTypes.func
+    fetchFeeds: PropTypes.func.isRequired,
+    fetchMoreFeeds: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    loadMoreButton: PropTypes.bool.isRequired,
+    selectedFilter: PropTypes.string.isRequired,
+    userId: PropTypes.number
   }
 
   constructor() {
     super()
     this.state = {
+      clearingFeeds: false,
       loadingMore: false,
       scrollPosition: 0
     }
@@ -61,16 +41,19 @@ export default class Feeds extends Component {
     this.onScroll = this.onScroll.bind(this)
   }
 
-  componentDidMount() {
-    let {history, clearFeeds, fetchFeeds, connectHomeComponent, feeds, homeComponentConnected} = this.props
-    addEvent(window, 'scroll', this.onScroll)
-    if (homeComponentConnected || history.action === 'PUSH' || !feeds) {
-      connectHomeComponent()
-      return clearFeeds().then(
-        () => fetchFeeds()
-      )
-    } else {
-      connectHomeComponent()
+  componentWillMount() {
+    let {history, clearFeeds, fetchFeeds, feeds} = this.props
+    if (ExecutionEnvironment.canUseDOM) {
+      addEvent(window, 'scroll', this.onScroll)
+      if (history.action === 'PUSH' || !feeds) {
+        this.setState({clearingFeeds: true})
+        return clearFeeds().then(
+          () => {
+            this.setState({clearingFeeds: false})
+            fetchFeeds()
+          }
+        )
+      }
     }
   }
 
@@ -80,7 +63,7 @@ export default class Feeds extends Component {
 
   render() {
     const {feeds, loadMoreButton, userId, loaded} = this.props
-    const {loadingMore} = this.state
+    const {clearingFeeds, loadingMore} = this.state
 
     return (
       <div>
@@ -102,7 +85,7 @@ export default class Feeds extends Component {
         {loaded && feeds.length > 0 &&
           <div>
             {feeds.map(feed => {
-              return <FeedPanel key={`${feed.id}`} feed={feed} userId={userId} />
+              return <FeedPanel key={`${feed.id}`} loadingDisabled={clearingFeeds} feed={feed} userId={userId} />
             })}
             {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loadingMore} />}
           </div>
@@ -207,3 +190,21 @@ export default class Feeds extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({
+    loadMoreButton: state.FeedReducer.loadMoreButton,
+    feeds: state.FeedReducer.feeds,
+    loaded: state.FeedReducer.loaded,
+    userId: state.UserReducer.userId,
+    selectedFilter: state.FeedReducer.selectedFilter,
+    chatMode: state.ChatReducer.chatMode,
+    noFeeds: state.FeedReducer.noFeeds
+  }),
+  {
+    fetchMoreFeeds: fetchMoreFeedsAsync,
+    fetchFeeds: fetchFeedsAsync,
+    clearFeeds,
+    fetchFeed
+  }
+)(Feeds)

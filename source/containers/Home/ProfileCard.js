@@ -14,16 +14,7 @@ import {cleanStringWithURL} from 'helpers/stringHelpers'
 import {withRouter} from 'react-router'
 import {Color} from 'constants/css'
 
-@connect(
-  null,
-  {
-    uploadProfilePic,
-    uploadBio,
-    openDirectMessageChannel
-  }
-)
-@withRouter
-export default class Header extends Component {
+class ProfileCard extends Component {
   static propTypes = {
     expandable: PropTypes.bool,
     history: PropTypes.object,
@@ -226,3 +217,12 @@ export default class Header extends Component {
     })
   }
 }
+
+export default connect(
+  null,
+  {
+    uploadProfilePic,
+    uploadBio,
+    openDirectMessageChannel
+  }
+)(withRouter(ProfileCard))
