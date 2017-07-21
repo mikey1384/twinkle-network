@@ -264,3 +264,19 @@ export const submitComment = ({content, linkId: rootId}) => dispatch =>
       handleError(error, dispatch)
     }
   )
+
+export const uploadLink = ({url, title, description}) => dispatch =>
+  request.post(`${API_URL}`, {url, title, description}, auth()).then(
+    ({data: linkItem}) => {
+      dispatch({
+        type: 'UPLOAD_LINK',
+        linkItem
+      })
+      return Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )

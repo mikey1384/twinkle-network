@@ -3,15 +3,15 @@ import React, {Component} from 'react'
 import Textarea from 'react-textarea-autosize'
 import {Modal} from 'react-bootstrap'
 import Button from 'components/Button'
-import {uploadVideoAsync} from 'redux/actions/VideoActions'
+import {uploadLink} from 'redux/actions/LinkActions'
 import {connect} from 'react-redux'
 import Input from 'components/Texts/Input'
-import {isValidYoutubeUrl, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import {isValidUrl, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 
-class AddVideoModal extends Component {
+class AddLinkModal extends Component {
   static propTypes = {
     onHide: PropTypes.func,
-    uploadVideo: PropTypes.func
+    uploadLink: PropTypes.func
   }
 
   constructor() {
@@ -35,12 +35,12 @@ class AddVideoModal extends Component {
     return (
       <Modal show onHide={onHide} animation={false}>
         <Modal.Header closeButton>
-          <h4>Add Videos</h4>
+          <h4>Add Links</h4>
         </Modal.Header>
         <Modal.Body>
           <form className="container-fluid">
             <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
-              <label><b>YouTube URL</b></label>
+              <label><b>Link URL</b></label>
               <div style={{display: 'inline'}}>
                 <Input
                   ref={ref => { this.UrlField = ref }}
@@ -48,7 +48,7 @@ class AddVideoModal extends Component {
                   value={form.url}
                   onChange={this.onUrlFieldChange}
                   className="form-control"
-                  placeholder="Paste video's YouTube url here"
+                  placeholder="Paste the Link's Internet Address (URL) here"
                   type="text"
                 />
               </div>
@@ -123,20 +123,22 @@ class AddVideoModal extends Component {
   }
 
   onSubmit(event) {
-    const {uploadVideo} = this.props
+    const {uploadLink, onHide} = this.props
     const {form: {url, title, description}} = this.state
 
     event.preventDefault()
-    if (!isValidYoutubeUrl(url)) {
-      this.setState({urlError: 'That is not a valid YouTube url'})
+    if (!isValidUrl(url)) {
+      this.setState({urlError: 'That is not a valid url'})
       return this.UrlField._rootDOMNode.focus()
     }
 
-    uploadVideo({
+    return uploadLink({
       url,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description)
-    })
+    }).then(
+      () => onHide()
+    )
   }
 
   onUrlFieldChange(text) {
@@ -150,5 +152,5 @@ class AddVideoModal extends Component {
 
 export default connect(
   null,
-  {uploadVideo: uploadVideoAsync}
-)(AddVideoModal)
+  {uploadLink: uploadLink}
+)(AddLinkModal)

@@ -12,27 +12,35 @@ import SmallDropdownButton from 'components/SmallDropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import {cleanString} from 'helpers/stringHelpers'
 import {URL} from 'constants/URL'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 
 const API_URL = `${URL}/content`
 
-@connect(
-  state => ({
-    userId: state.UserReducer.userId
-  }),
-  {loadLinkPage, deleteLink, editTitle}
-)
-export default class ContentLink extends Component {
+class LinkItem extends Component {
   static propTypes = {
-    deleteLink: PropTypes.func,
-    editTitle: PropTypes.func,
-    link: PropTypes.object,
-    loadLinkPage: PropTypes.func,
+    deleteLink: PropTypes.func.isRequired,
+    editTitle: PropTypes.func.isRequired,
+    link: PropTypes.shape({
+      content: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      timeStamp: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired,
+      uploaderName: PropTypes.string.isRequired,
+      uploader: PropTypes.number.isRequired,
+      likers: PropTypes.array.isRequired,
+      numComments: PropTypes.string.isRequired
+    }).isRequired,
+    loadLinkPage: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
 
   constructor(props) {
     super()
     this.state = {
+      confirmModalShown: false,
       imageUrl: '',
       fallbackImage: '',
       userListModalShown: false,
@@ -76,7 +84,7 @@ export default class ContentLink extends Component {
 
   render() {
     const {link: {title, timeStamp, uploaderName, uploader, likers, numComments}, userId} = this.props
-    const {imageUrl, fallbackImage, userListModalShown, onEdit} = this.state
+    const {confirmModalShown, imageUrl, fallbackImage, userListModalShown, onEdit} = this.state
     return (
       <li className="media">
         <div className="media-left">
@@ -120,7 +128,7 @@ export default class ContentLink extends Component {
                 },
                 {
                   label: 'Remove',
-                  onClick: this.onDelete
+                  onClick: () => this.setState({confirmModalShown: true})
                 }
               ]}
             />
@@ -158,6 +166,13 @@ export default class ContentLink extends Component {
             </small>
           </p>
         </div>
+        {confirmModalShown &&
+          <ConfirmModal
+            title="Remove Link"
+            onConfirm={this.onDelete}
+            onHide={() => this.setState({confirmModalShown: false})}
+          />
+        }
         {userListModalShown &&
           <UserListModal
             users={likers}
@@ -187,3 +202,10 @@ export default class ContentLink extends Component {
     return loadLinkPage(id)
   }
 }
+
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId
+  }),
+  {loadLinkPage, deleteLink, editTitle}
+)(LinkItem)

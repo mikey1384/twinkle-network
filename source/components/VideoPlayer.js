@@ -5,6 +5,10 @@ import Loading from 'components/Loading'
 import {Color} from 'constants/css'
 import {connect} from 'react-redux'
 import {addVideoViewAsync} from 'redux/actions/VideoActions'
+import request from 'axios'
+import {URL} from 'constants/URL'
+
+const API_URL = `${URL}/content`
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -24,9 +28,21 @@ class VideoPlayer extends Component {
   constructor(props) {
     super()
     this.state = {
-      playing: props.autoplay
+      playing: props.autoplay,
+      imageUrl: `https://img.youtube.com/vi/${props.videoCode}/mqdefault.jpg`
     }
     this.onVideoReady = this.onVideoReady.bind(this)
+  }
+
+  componentDidMount() {
+    const {videoCode} = this.props
+    return request.get(`${API_URL}/videoThumb?videoCode=${videoCode}`).then(
+      ({data: {payload}}) => {
+        if (payload) this.setState({imageUrl: payload})
+      }
+    ).catch(
+      error => console.error(error)
+    )
   }
 
   componentDidUpdate(prevProps) {
@@ -38,7 +54,7 @@ class VideoPlayer extends Component {
 
   render() {
     const {videoCode, title, containerClassName, className, style, small} = this.props
-    const {playing} = this.state
+    const {imageUrl, playing} = this.state
     return (
       <div
         className={small ? containerClassName : `video-player ${containerClassName}`}
@@ -53,7 +69,7 @@ class VideoPlayer extends Component {
           <img
             alt=""
             className="embed-responsive-item"
-            src={`https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`}
+            src={imageUrl}
           />
         </div>}
         {playing && !small ?

@@ -18,7 +18,7 @@ class Feeds extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
-    feeds: PropTypes.array,
+    feeds: PropTypes.array.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
@@ -42,10 +42,10 @@ class Feeds extends Component {
   }
 
   componentWillMount() {
-    let {history, clearFeeds, fetchFeeds, feeds} = this.props
+    let {history, clearFeeds, fetchFeeds, loaded} = this.props
     if (ExecutionEnvironment.canUseDOM) {
       addEvent(window, 'scroll', this.onScroll)
-      if (history.action === 'PUSH' || !feeds) {
+      if (history.action === 'PUSH' || !loaded) {
         this.setState({clearingFeeds: true})
         return clearFeeds().then(
           () => {

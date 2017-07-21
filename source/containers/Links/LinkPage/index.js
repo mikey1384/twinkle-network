@@ -23,47 +23,27 @@ import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
 import Description from './Description'
 
-@connect(
-  state => ({
-    pageProps: state.LinkReducer.linkPage,
-    myId: state.UserReducer.userId
-  }),
-  {
-    loadLinkPage,
-    deleteComment,
-    deleteLinkFromPage,
-    editComment,
-    editLinkPage,
-    fetchComments,
-    fetchMoreComments,
-    fetchMoreReplies,
-    likeComment,
-    likeLink,
-    submitComment,
-    submitReply
-  }
-)
-export default class LinkPage extends Component {
+class LinkPage extends Component {
   static propTypes = {
-    match: PropTypes.object,
-    pageProps: PropTypes.object,
-    loadLinkPage: PropTypes.func,
-    likeComment: PropTypes.func,
-    likeLink: PropTypes.func,
-    deleteComment: PropTypes.func,
-    deleteLinkFromPage: PropTypes.func,
-    editComment: PropTypes.func,
-    editLinkPage: PropTypes.func,
-    fetchComments: PropTypes.func,
-    fetchMoreReplies: PropTypes.func,
-    fetchMoreComments: PropTypes.func,
-    location: PropTypes.object,
-    submitComment: PropTypes.func,
-    submitReply: PropTypes.func,
-    myId: PropTypes.number
+    deleteComment: PropTypes.func.isRequired,
+    deleteLinkFromPage: PropTypes.func.isRequired,
+    editComment: PropTypes.func.isRequired,
+    editLinkPage: PropTypes.func.isRequired,
+    fetchComments: PropTypes.func.isRequired,
+    fetchMoreComments: PropTypes.func.isRequired,
+    fetchMoreReplies: PropTypes.func.isRequired,
+    likeComment: PropTypes.func.isRequired,
+    likeLink: PropTypes.func.isRequired,
+    loadLinkPage: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+    myId: PropTypes.number,
+    pageProps: PropTypes.object.isRequired,
+    submitComment: PropTypes.func.isRequired,
+    submitReply: PropTypes.func.isRequired
   }
 
-  constructor(props) {
+  constructor() {
     super()
     this.state = {
       likersModalShown: false
@@ -216,3 +196,24 @@ export default class LinkPage extends Component {
     })
   }
 }
+
+export default connect(
+  state => ({
+    pageProps: state.LinkReducer.linkPage,
+    myId: state.UserReducer.userId
+  }),
+  {
+    loadLinkPage,
+    deleteComment,
+    deleteLinkFromPage,
+    editComment,
+    editLinkPage,
+    fetchComments,
+    fetchMoreComments,
+    fetchMoreReplies,
+    likeComment,
+    likeLink,
+    submitComment,
+    submitReply
+  }
+)(LinkPage)

@@ -29,6 +29,7 @@
     "express": "^4.15.3",
     "greenlock-express": "^2.0.11",
     "history": "^4.6.2",
+    "image-size": "^0.6.1",
     "is-utf8": "^0.2.1",
     "jwt-simple": "^0.5.1",
     "kw-react-tween-state": "^0.1.5",

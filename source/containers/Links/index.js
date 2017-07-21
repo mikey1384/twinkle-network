@@ -5,7 +5,7 @@ import LinkPage from './LinkPage'
 import Main from './Main'
 
 Links.propTypes = {
-  match: PropTypes.object
+  match: PropTypes.object.isRequired
 }
 export default function Links({match}) {
   return (

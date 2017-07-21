@@ -3,12 +3,6 @@ const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
 const {
-  processedString,
-  processedTitleString,
-  fetchedVideoCodeFromURL,
-  processedURL
-} = require('../helpers/stringHelpers')
-const {
   returnComments,
   likeComments,
   postComments,
@@ -17,6 +11,7 @@ const {
   deleteComments,
   fetchReplies
 } = require('../helpers/commentHelpers')
+const {uploadContents} = require('../helpers/contentHelpers')
 const {fetchFeeds} = require('../helpers/feedHelpers')
 const {poolQuery} = require('../helpers')
 
@@ -102,28 +97,14 @@ router.post('/content', requireAuth, (req, res) => {
   const {user} = req
   const {url, title, description, checkedVideo} = req.body
   const type = checkedVideo ? 'video' : 'url'
-  const query = checkedVideo ? 'INSERT INTO vq_videos SET ?' : 'INSERT INTO content_urls SET ?'
-  const content = checkedVideo ? fetchedVideoCodeFromURL(url) : processedURL(url)
-  const post = Object.assign({}, {
-    title: processedTitleString(title),
-    description: processedString(description),
-    uploader: user.id,
-    timeStamp: Math.floor(Date.now()/1000),
-    content
-  })
-  pool.query(query, post, (err, result) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-
-    res.send({
+  return uploadContents({url, description, title, uploader: user.id, type}).then(
+    ({result, post}) => res.send({
       type,
       id: type + result.insertId,
       contentId: result.insertId,
       uploaderId: user.id,
-      content,
-      rootContent: content,
+      content: post.content,
+      rootContent: post.content,
       rootType: type,
       timeStamp: post.timeStamp,
       rootId: result.insertId,
@@ -146,7 +127,12 @@ router.post('/content', requireAuth, (req, res) => {
       contentLikers: [],
       targetContentLikers: []
     })
-  })
+  ).catch(
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
+    }
+  )
 })
 
 router.get('/feed', (req, res) => {

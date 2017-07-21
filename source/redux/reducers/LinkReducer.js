@@ -183,6 +183,11 @@ export default function linkReducer(state = defaultState, action) {
           }))
         }
       }
+    case 'UPLOAD_LINK':
+      return {
+        ...state,
+        links: [action.linkItem].concat(state.links)
+      }
     default:
       return state
   }

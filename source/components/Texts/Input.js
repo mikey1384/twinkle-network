@@ -1,16 +1,20 @@
-import React from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 
-Input.propTypes = {
-  onChange: PropTypes.func.isRequired
-}
-export default function Input({onChange, ...props}) {
-  return (
-    <input
-      {...props}
-      onChange={(event) => onChange(renderText(event.target.value))}
-    />
-  )
+export default class Input extends Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired
+  }
+  render() {
+    const {onChange, ...props} = this.props
+    return (
+      <input
+        {...props}
+        ref={ref => { this._rootDOMNode = ref }}
+        onChange={(event) => onChange(renderText(event.target.value))}
+      />
+    )
+  }
 }
 
 function renderText(text) {

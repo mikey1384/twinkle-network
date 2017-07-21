@@ -11,6 +11,7 @@ const {
   fetchComments,
   fetchReplies
 } = require('../helpers/commentHelpers')
+const {uploadContents} = require('../helpers/contentHelpers')
 const {stringIsEmpty, processedString} = require('../helpers/stringHelpers')
 
 router.get('/', (req, res) => {
@@ -42,9 +43,27 @@ router.get('/', (req, res) => {
   ).then(
     results => res.send(results)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
+router.post('/', requireAuth, (req, res) => {
+  const {url, title, description} = req.body
+  const {user} = req
+  uploadContents({url, title, description, uploader: user.id, type: 'url'}).then(
+    ({result, post}) => res.send(Object.assign({}, post, {
+      id: result.insertId,
+      uploaderName: user.username,
+      numComments: '0',
+      likers: []
+    }))
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })

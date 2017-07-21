@@ -30,7 +30,10 @@ class VideoThumb extends Component {
     video: PropTypes.shape({
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
-      numLikes: PropTypes.string,
+      numLikes: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ]),
       title: PropTypes.string.isRequired
     }).isRequired
   }

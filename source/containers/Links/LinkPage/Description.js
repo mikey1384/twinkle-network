@@ -14,19 +14,19 @@ import {
 
 export default class Description extends Component {
   static propTypes = {
-    url: PropTypes.string,
-    linkId: PropTypes.number,
-    uploaderId: PropTypes.number,
-    myId: PropTypes.number,
-    title: PropTypes.string,
     description: PropTypes.string,
+    linkId: PropTypes.number.isRequired,
+    myId: PropTypes.number,
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]),
+    ]).isRequired,
+    title: PropTypes.string.isRequired,
+    uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
-    onDelete: PropTypes.func,
-    onEditDone: PropTypes.func
+    url: PropTypes.string.isRequired
   }
 
   constructor(props) {

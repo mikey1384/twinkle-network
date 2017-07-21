@@ -3,7 +3,7 @@ import React from 'react'
 import LinkItem from './LinkItem'
 
 LinkGroup.propTypes = {
-  links: PropTypes.array
+  links: PropTypes.array.isRequired
 }
 export default function LinkGroup({links}) {
   return (

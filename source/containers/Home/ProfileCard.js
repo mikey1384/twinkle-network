@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
 /* global FileReader */
 
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import ImageEditModal from './Modals/ImageEditModal'

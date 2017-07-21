@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {poolQuery} = require('../helpers')
 const {stringIsEmpty} = require('../helpers/stringHelpers')
-const {embedKey, embedApiUrl} = require('../siteConfig')
+const {embedKey, embedApiUrl, googleKey} = require('../siteConfig')
 const request = require('request-promise-native')
 
 router.get('/search', (req, res) => {
@@ -35,6 +35,26 @@ router.get('/embed', (req, res) => {
       body => {
         const data = JSON.parse(body)
         res.send(Object.assign({}, data, {images: data.images || []}))
+      }
+    ).catch(
+      error => {
+        res.status(500).send({error})
+      }
+    )
+})
+
+router.get('/videoThumb', (req, res) => {
+  const {videoCode} = req.query
+  request({
+    uri: `https://www.googleapis.com/youtube/v3/videos`,
+    qs: {part: 'snippet', id: videoCode, key: googleKey}
+  })
+    .then(
+      (body) => {
+        const {items: [{snippet: {thumbnails}}]} = JSON.parse(body)
+        let payload = null
+        if (thumbnails.maxres) payload = thumbnails.maxres.url
+        res.send({payload})
       }
     ).catch(
       error => {

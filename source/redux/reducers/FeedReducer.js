@@ -3,7 +3,7 @@ import {processedString} from 'helpers/stringHelpers'
 const defaultState = {
   selectedFilter: 'all',
   scrollLocked: false,
-  feeds: null,
+  feeds: [],
   loaded: false,
   loadMoreButton: false
 }
@@ -15,7 +15,6 @@ export default function FeedReducer(state = defaultState, action) {
     case 'CLEAR_FEEDS':
       return {
         ...state,
-        selectedFilter: 'all',
         feeds: [],
         loadMoreButton: false,
         loaded: false

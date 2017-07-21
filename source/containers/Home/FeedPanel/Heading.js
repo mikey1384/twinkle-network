@@ -22,7 +22,7 @@ Heading.propTypes = {
     ]).isRequired,
     type: PropTypes.string.isRequired,
     uploaderPicId: PropTypes.number
-  }),
+  }).isRequired,
   myId: PropTypes.number,
   onLikeClick: PropTypes.func.isRequired,
   onPlayVideoClick: PropTypes.func,
