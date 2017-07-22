@@ -19,13 +19,13 @@ module.exports = {
         break
       default: return Promise.reject('Content type invalid')
     }
-    const post = Object.assign({}, {
+    const post = {
       title: processedTitleString(title),
       description: processedString(description),
       uploader,
       timeStamp: Math.floor(Date.now() / 1000),
       content
-    })
+    }
     return poolQuery(query, post).then(
       result => Promise.resolve({result, post})
     )

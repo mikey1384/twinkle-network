@@ -57,7 +57,7 @@ router.post('/', requireAuth, (req, res) => {
     ({result, post}) => res.send(Object.assign({}, post, {
       id: result.insertId,
       uploaderName: user.username,
-      numComments: '0',
+      numComments: 0,
       likers: []
     }))
   ).catch(

@@ -32,8 +32,8 @@ router.get('/embed', (req, res) => {
     qs: {url, key: embedKey}
   })
     .then(
-      body => {
-        const data = JSON.parse(body)
+      response => {
+        const data = JSON.parse(response)
         res.send(Object.assign({}, data, {images: data.images || []}))
       }
     ).catch(
@@ -50,10 +50,9 @@ router.get('/videoThumb', (req, res) => {
     qs: {part: 'snippet', id: videoCode, key: googleKey}
   })
     .then(
-      (body) => {
-        const {items: [{snippet: {thumbnails}}]} = JSON.parse(body)
-        let payload = null
-        if (thumbnails.maxres) payload = thumbnails.maxres.url
+      response => {
+        const {items: [{snippet: {thumbnails}}]} = JSON.parse(response)
+        const payload = thumbnails.maxres ? thumbnails.maxres.url : null
         res.send({payload})
       }
     ).catch(

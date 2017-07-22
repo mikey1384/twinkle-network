@@ -31,7 +31,10 @@ class LinkItem extends Component {
       uploaderName: PropTypes.string.isRequired,
       uploader: PropTypes.number.isRequired,
       likers: PropTypes.array.isRequired,
-      numComments: PropTypes.string.isRequired
+      numComments: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired
     }).isRequired,
     loadLinkPage: PropTypes.func.isRequired,
     userId: PropTypes.number

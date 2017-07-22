@@ -38,40 +38,36 @@ class Body extends Component {
   componentDidMount() {
     const {
       match,
-      history,
       location,
       clearFeeds
     } = this.props
-
+    this.mounted = true
     addEvent(window, 'scroll', this.onScroll)
-    if (history.action === 'PUSH') {
-      return clearFeeds().then(
-        () => {
-          switch (location.pathname) {
-            case match.url:
-              return this.changeTab('comment')
-            case `${match.url}/videos`:
-              return this.changeTab('video')
-            case `${match.url}/links`:
-              return this.changeTab('url')
-            case `${match.url}/discussions`:
-              return this.changeTab('discussion')
-            default: break
-          }
+    return clearFeeds().then(
+      () => {
+        switch (location.pathname) {
+          case match.url:
+            return this.changeTab('comment')
+          case `${match.url}/videos`:
+            return this.changeTab('video')
+          case `${match.url}/links`:
+            return this.changeTab('url')
+          case `${match.url}/discussions`:
+            return this.changeTab('discussion')
+          default: break
         }
-      )
-    }
+      }
+    )
   }
 
   componentDidUpdate(prevProps) {
     const {
       match,
-      feeds,
       location,
       clearFeeds
     } = this.props
 
-    if (prevProps.location !== this.props.location || !feeds) {
+    if (prevProps.location !== this.props.location) {
       return clearFeeds().then(
         () => {
           switch (location.pathname) {
@@ -91,6 +87,7 @@ class Body extends Component {
   }
 
   componentWillUnmount() {
+    this.mounted = false
     removeEvent(window, 'scroll', this.onScroll)
   }
 
@@ -177,7 +174,9 @@ class Body extends Component {
 
   changeTab(tabName) {
     const {match: {params: {username}}, fetchUserFeeds} = this.props
-    this.setState({currentTab: tabName})
+    if (this.mounted) {
+      this.setState({currentTab: tabName})
+    }
     fetchUserFeeds(username, tabName)
   }
 
