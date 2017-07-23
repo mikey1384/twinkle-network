@@ -8,34 +8,39 @@ const API_URL = `${URL}/content`
 
 export default class Embedly extends Component {
   static propTypes = {
+    actualTitle: PropTypes.string,
+    actualDescription: PropTypes.string,
+    id: PropTypes.number.isRequired,
+    siteUrl: PropTypes.string.isRequired,
     style: PropTypes.object,
+    thumbUrl: PropTypes.string,
     title: PropTypes.string,
     url: PropTypes.string.isRequired
   }
 
-  constructor() {
+  constructor({actualTitle, actualDescription, siteUrl, thumbUrl}) {
     super()
     this.state = {
-      imageUrl: '',
-      fallbackImage: '',
-      title: '',
-      description: '',
-      site: ''
+      imageUrl: thumbUrl ? thumbUrl.replace('http://', 'https://') : '',
+      fallbackImage: thumbUrl,
+      title: actualTitle,
+      description: actualDescription,
+      site: siteUrl
     }
   }
 
   componentWillMount() {
-    const {url} = this.props
-    if (ExecutionEnvironment.canUseDOM && url) {
-      return request.get(`${API_URL}/embed?url=${url}`).then(
-        ({data, data: {images: [image = {url: '', safe: ''}]}}) => {
+    const {id, siteUrl, url} = this.props
+    if (ExecutionEnvironment.canUseDOM && url && !siteUrl) {
+      return request.put(`${API_URL}/embed`, {url, linkId: id}).then(
+        ({data: {image, title, description, site}}) => {
           if (this.mounted) {
             this.setState({
               imageUrl: image.url.replace('http://', 'https://'),
               fallbackImage: image.url,
-              title: data.title,
-              description: data.description,
-              site: data.site
+              title,
+              description,
+              site
             })
           }
         }
@@ -50,18 +55,18 @@ export default class Embedly extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {url} = this.props
+    const {id, url} = this.props
     if (prevProps.url !== url) {
       this.setState({}, () => {
-        return request.get(`${API_URL}/embed?url=${url}`).then(
-          ({data, data: {images: [image = {url: ''}]}}) => {
+        return request.put(`${API_URL}/embed`, {url, linkId: id}).then(
+          ({data: {image, title, description, site}}) => {
             if (this.mounted) {
               this.setState({
                 imageUrl: image.url.replace('http://', 'https://'),
                 fallbackImage: image.url,
-                title: data.title,
-                description: data.description,
-                site: data.site
+                title,
+                description,
+                site
               })
             }
           }
@@ -78,7 +83,6 @@ export default class Embedly extends Component {
 
   render() {
     const {imageUrl, fallbackImage, description, title, site} = this.state
-    /* eslint-disable camelcase */
     let aStyle = {
       color: '#222',
       textDecoration: 'none',

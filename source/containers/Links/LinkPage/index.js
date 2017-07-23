@@ -78,7 +78,8 @@ class LinkPage extends Component {
         description, timeStamp,
         uploader, uploaderName,
         comments = [], likers = [],
-        loadMoreCommentsButton = false
+        loadMoreCommentsButton = false,
+        ...embedlyProps
       },
       editLinkPage,
       likeLink,
@@ -113,7 +114,13 @@ class LinkPage extends Component {
             onDelete={() => deleteLinkFromPage(id)}
             onEditDone={params => editLinkPage(params)}
           />
-          <Embedly title={title} style={{marginTop: '1.5rem'}} url={content} />
+          <Embedly
+            title={title}
+            style={{marginTop: '1.5rem'}}
+            id={id}
+            url={content}
+            {...embedlyProps}
+          />
           <div style={{paddingTop: '1.5em', textAlign: 'center'}}>
             <LikeButton
               onClick={() => likeLink(id)}

@@ -56,7 +56,7 @@ class Contents extends Component {
         uploaderId, content, contentLikers = [], contentId, type, discussionId, videoViews,
         numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
-        rootContent
+        rootContent, thumbUrl, actualTitle, actualDescription, siteUrl
       }, feed, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onDelete, onReplySubmit, onSubmit
     } = this.props
@@ -91,6 +91,7 @@ class Contents extends Component {
           rootId={rootId}
           rootContent={rootContent}
           rootType={rootType}
+          urlRelated={{thumbUrl, actualTitle, actualDescription, siteUrl}}
           type={type}
           videoViews={videoViews}
         />

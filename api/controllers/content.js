@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const {poolQuery} = require('../helpers')
 const {stringIsEmpty} = require('../helpers/stringHelpers')
-const {embedKey, embedApiUrl, googleKey} = require('../siteConfig')
+const {getThumbImageFromEmbedApi} = require('../helpers/contentHelpers')
+const {googleKey} = require('../siteConfig')
 const request = require('request-promise-native')
 
 router.get('/search', (req, res) => {
@@ -25,22 +26,20 @@ router.get('/search', (req, res) => {
   )
 })
 
-router.get('/embed', (req, res) => {
-  const {url} = req.query
-  request({
-    uri: embedApiUrl,
-    qs: {url, key: embedKey}
-  })
-    .then(
-      response => {
-        const data = JSON.parse(response)
-        res.send(Object.assign({}, data, {images: data.images || []}))
-      }
-    ).catch(
-      error => {
-        res.status(500).send({error})
-      }
-    )
+router.put('/embed', (req, res) => {
+  const {linkId, url} = req.body
+  return getThumbImageFromEmbedApi({url}).then(
+    (response) => {
+      const {image = {url: ''}, title = '', description = '', site = url} = response
+      const post = {thumbUrl: image.url, actualTitle: title, actualDescription: description, siteUrl: site}
+      poolQuery(`UPDATE content_urls SET ? WHERE id = ?`, [post, linkId])
+      res.send(response)
+    }
+  ).catch(
+    error => {
+      res.status(500).send({error})
+    }
+  )
 })
 
 router.get('/videoThumb', (req, res) => {

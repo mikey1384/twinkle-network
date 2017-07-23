@@ -36,9 +36,10 @@ class VideoPlayer extends Component {
 
   componentDidMount() {
     const {videoCode} = this.props
+    this.mounted = true
     return request.get(`${API_URL}/videoThumb?videoCode=${videoCode}`).then(
       ({data: {payload}}) => {
-        if (payload) this.setState({imageUrl: payload})
+        if (this.mounted && payload) this.setState({imageUrl: payload})
       }
     ).catch(
       error => console.error(error)
@@ -50,6 +51,10 @@ class VideoPlayer extends Component {
     if (prevProps.onEdit !== onEdit) {
       this.setState({playing: !onEdit})
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
   }
 
   render() {

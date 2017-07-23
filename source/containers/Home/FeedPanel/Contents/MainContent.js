@@ -13,12 +13,13 @@ MainContent.propTypes = {
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
   rootType: PropTypes.string,
+  urlRelated: PropTypes.object,
   type: PropTypes.string.isRequired,
   videoViews: PropTypes.string
 }
 export default function MainContent({
   content, contentDescription, contentTitle,
-  rootId, rootContent, rootType, type, videoViews
+  rootId, rootContent, rootType, urlRelated, type, videoViews
 }) {
   return (
     <div>
@@ -40,8 +41,7 @@ export default function MainContent({
           videoCode={rootContent}
         />
       }
-      {type === 'url' &&
-      !!contentDescription && contentDescription !== 'No description' &&
+      {type === 'url' && contentDescription && contentDescription !== 'No description' &&
         <div style={{
           fontSize: '1.2em',
           whiteSpace: 'pre-wrap',
@@ -51,7 +51,12 @@ export default function MainContent({
         </div>
       }
       {type === 'url' &&
-        <Embedly title={cleanString(contentTitle)} url={content} />
+        <Embedly
+          title={cleanString(contentTitle)}
+          url={content}
+          id={rootId}
+          {...urlRelated}
+        />
       }
       {type === 'discussion' &&
         <div style={{
@@ -94,7 +99,13 @@ export default function MainContent({
         >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}</span>
       }
       {type === 'comment' && rootType === 'url' &&
-        <Embedly style={{marginTop: '2em'}} title={cleanString(contentTitle)} url={rootContent} />
+        <Embedly
+          style={{marginTop: '2em'}}
+          title={cleanString(contentTitle)}
+          url={rootContent}
+          id={rootId}
+          {...urlRelated}
+        />
       }
     </div>
   )

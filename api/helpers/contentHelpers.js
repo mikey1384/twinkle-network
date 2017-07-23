@@ -3,6 +3,8 @@ const {
   fetchedVideoCodeFromURL, processedURL,
   processedString, processedTitleString
 } = require('./stringHelpers')
+const {embedKey, embedApiUrl} = require('../siteConfig')
+const request = require('request-promise-native')
 
 module.exports = {
   uploadContents({url, description, title, uploader, type}) {
@@ -28,6 +30,20 @@ module.exports = {
     }
     return poolQuery(query, post).then(
       result => Promise.resolve({result, post})
+    )
+  },
+
+  getThumbImageFromEmbedApi({url}) {
+    return request({
+      uri: embedApiUrl,
+      qs: {url, key: embedKey}
+    }).then(
+      response => {
+        const data = JSON.parse(response)
+        const {images = [], title = '', description = '', site = ''} = data
+        const image = images[0] || {url: ''}
+        return Promise.resolve({image, title, description, site})
+      }
     )
   }
 }

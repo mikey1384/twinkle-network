@@ -174,8 +174,8 @@ router.get('/feed', (req, res) => {
         discussion.timeStamp AS discussionTimeStamp,
         user4.username AS discussionUploaderName,
 
-        ${rootType}.title AS rootContentTitle, ${rootType}.description AS rootContentDescription, ${rootType}.title AS contentTitle,
-        ${rootType}.content AS rootContent,
+        ${rootType}.title AS rootContentTitle, ${rootType}.description AS rootContentDescription, ${rootType}.title AS contentTitle, ${rootType}.content AS rootContent,
+        ${rootType === 'url' ? `${['.thumbUrl', '.actualTitle', '.actualDescription', '.siteUrl'].map(prop => `${rootType}${prop}`).join(', ')},` : ''}
 
         (SELECT COUNT(id) FROM content_comments WHERE commentId = ${contentId}) AS numChildComments,
         (SELECT COUNT(id) FROM content_comments WHERE replyId = ${contentId}) AS numChildReplies
@@ -222,7 +222,9 @@ router.get('/feed', (req, res) => {
     case 'url':
       query = `
         SELECT url.title AS rootContentTitle, url.description AS rootContentDescription, 'url' AS rootType,
-        url.content AS content, url.title AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS contentDescription,
+        url.content AS content, url.title AS contentTitle, url.thumbUrl, url.actualTitle, url.actualDescription,
+        url.siteUrl, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS 
+        contentDescription,
         (SELECT COUNT(id) FROM content_comments WHERE rootType = 'url' AND rootId = url.id)
         AS numChildComments
         FROM content_urls url

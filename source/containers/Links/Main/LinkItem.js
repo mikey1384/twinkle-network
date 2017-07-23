@@ -40,34 +40,34 @@ class LinkItem extends Component {
     userId: PropTypes.number
   }
 
-  constructor(props) {
+  constructor({link: {id, thumbUrl}}) {
     super()
     this.state = {
       confirmModalShown: false,
-      imageUrl: '',
-      fallbackImage: '',
+      imageUrl: thumbUrl ? thumbUrl.replace('http://', 'https://') : '',
+      fallbackImage: thumbUrl,
       userListModalShown: false,
       onEdit: false
     }
     this.apiUrl = 'https://api.embed.rocks/api'
-    this.to = `/links/${props.link.id}`
+    this.to = `/links/${id}`
     this.onDelete = this.onDelete.bind(this)
     this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
     this.onLinkClick = this.onLinkClick.bind(this)
   }
 
   componentWillMount() {
-    const {link: {content}} = this.props
-    if (ExecutionEnvironment.canUseDOM && content) {
-      return request.get(`${API_URL}/embed?url=${content}`).then(
-        ({data, data: {images: [image = {url: ''}]}}) => {
+    const {link: {content, id, siteUrl}} = this.props
+    if (ExecutionEnvironment.canUseDOM && content && !siteUrl) {
+      return request.put(`${API_URL}/embed`, {url: content, linkId: id}).then(
+        ({data: {image, title, description, site}}) => {
           if (this.mounted) {
             this.setState({
               imageUrl: image.url.replace('http://', 'https://'),
               fallbackImage: image.url,
-              title: data.title,
-              description: data.description,
-              site: data.site
+              title,
+              description,
+              site
             })
           }
         }
