@@ -5,7 +5,7 @@ const router = express.Router()
 
 const {requireAuth} = require('../auth')
 const {processedString, processedTitleString, stringIsEmpty} = require('../helpers/stringHelpers')
-const {poolQuery} = require('../helpers/')
+const {poolQuery, promiseSeries} = require('../helpers/')
 const {generalChatId} = require('../siteConfig')
 const {
   fetchChat,
@@ -801,15 +801,24 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   const lastReadsQuery = 'SELECT channelId, lastRead FROM msg_channel_info WHERE userId = ? AND channelId = ?'
   const numUnreadQuery = `SELECT COUNT(id) AS numUnreads FROM msg_chats WHERE isSilent = '0' AND channelId = ? AND timeStamp > ? AND userId != ?`
 
+  let lastReads = []
+  let numUnreadsArray = []
+
   return poolQuery(channelQuery, user.id).then(
-    rows => Promise.all(rows.map(({channelId}) => poolQuery(lastReadsQuery, [user.id, channelId])))
+    rows => promiseSeries(
+      rows.map(
+        ({channelId}) => () => poolQuery(lastReadsQuery, [user.id, channelId]).then(([{channelId, lastRead}]) => lastReads.push({channelId, lastRead}))
+      )
+    )
   ).then(
-    results => {
-      return Promise.all(results.map(([{channelId, lastRead}]) => poolQuery(numUnreadQuery, [channelId, lastRead, user.id])))
-    }
+    () => promiseSeries(
+      lastReads.map(({channelId, lastRead}) => () => poolQuery(numUnreadQuery, [channelId, lastRead, user.id]).then(
+        ([{numUnreads}]) => numUnreadsArray.push(numUnreads)
+      ))
+    )
   ).then(
-    results => {
-      let totalNumUnreads = results.reduce((sum, [{numUnreads}]) => (
+    () => {
+      let totalNumUnreads = numUnreadsArray.reduce((sum, numUnreads) => (
         sum + Number(numUnreads)
       ), 0)
       res.send({numUnreads: totalNumUnreads})
