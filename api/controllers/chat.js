@@ -798,7 +798,11 @@ router.post('/invite', requireAuth, (req, res) => {
 router.get('/numUnreads', requireAuth, (req, res) => {
   const {user} = req
   const channelQuery = `SELECT channelId FROM msg_channel_members WHERE userId = ?`
-  const lastReadsQuery = 'SELECT channelId, lastRead FROM msg_channel_info WHERE userId = ? AND channelId = ?'
+  const lastReadsQuery = `
+    SELECT a.channelId, a.lastRead FROM msg_channel_info a JOIN msg_channels b ON
+    a.channelId = b.id AND a.lastRead > b.lastUpdated
+    WHERE a.userId = ? AND a.channelId = ?
+  `
   const numUnreadQuery = `SELECT COUNT(id) AS numUnreads FROM msg_chats WHERE isSilent = '0' AND channelId = ? AND timeStamp > ? AND userId != ?`
 
   let lastReads = []
@@ -807,7 +811,12 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   return poolQuery(channelQuery, user.id).then(
     rows => promiseSeries(
       rows.map(
-        ({channelId}) => () => poolQuery(lastReadsQuery, [user.id, channelId]).then(([{channelId, lastRead}]) => lastReads.push({channelId, lastRead}))
+        ({channelId}) => () => poolQuery(lastReadsQuery, [user.id, channelId]).then(results => {
+          if (results.length > 0) {
+            const [{channelId, lastRead}] = results
+            lastReads.push({channelId, lastRead})
+          }
+        })
       )
     )
   ).then(
