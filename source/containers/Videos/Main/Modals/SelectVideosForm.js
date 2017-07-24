@@ -11,15 +11,14 @@ SelectVideosForm.propTypes = {
   onDeselect: PropTypes.func,
   loadMoreVideos: PropTypes.func
 }
-export default function SelectVideosForm(props) {
-  const {
-    videos,
-    selectedVideos,
-    loadMoreVideosButton,
-    onSelect,
-    onDeselect,
-    loadMoreVideos
-  } = props
+export default function SelectVideosForm({
+  videos,
+  selectedVideos,
+  loadMoreVideosButton,
+  onSelect,
+  onDeselect,
+  loadMoreVideos
+}) {
   return (
     <div className="row">
       {videos.map((video, index) => {

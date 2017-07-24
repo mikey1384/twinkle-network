@@ -7,8 +7,8 @@ import Input from 'components/Texts/Input'
 
 export default class LoginForm extends Component {
   static propTypes = {
-    loginAsync: PropTypes.func,
-    showSignUpForm: PropTypes.func
+    loginAsync: PropTypes.func.isRequired,
+    showSignUpForm: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -101,8 +101,9 @@ export default class LoginForm extends Component {
   }
 
   onSubmit() {
+    const {loginAsync} = this.props
     const {username, password} = this.state
-    return this.props.loginAsync({username, password}).catch(
+    return loginAsync({username, password}).catch(
       error => this.setState({errorMessage: error})
     )
   }

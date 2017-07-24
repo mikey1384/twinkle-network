@@ -7,24 +7,16 @@ import ChatFeeds from './ChatFeeds'
 import {defaultChatSubject} from 'constants/defaultValues'
 import Responsive from 'components/Wrappers/Responsive'
 
-@connect(
-  state => ({
-    chatMode: state.ChatReducer.chatMode,
-    myId: state.UserReducer.userId,
-    notifications: state.NotiReducer.notifications,
-    currentChatSubject: state.NotiReducer.currentChatSubject
-  })
-)
-export default class Notification extends Component {
+class Notification extends Component {
   static propTypes = {
-    myId: PropTypes.number,
-    chatMode: PropTypes.bool,
+    chatMode: PropTypes.bool.isRequired,
+    children: PropTypes.node,
     className: PropTypes.string,
     currentChatSubject: PropTypes.object,
-    device: PropTypes.string,
-    notifications: PropTypes.array,
-    position: PropTypes.string,
-    children: PropTypes.node
+    device: PropTypes.string.isRequired,
+    myId: PropTypes.number,
+    notifications: PropTypes.array.isRequired,
+    position: PropTypes.string
   }
 
   constructor() {
@@ -111,3 +103,12 @@ export default class Notification extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    chatMode: state.ChatReducer.chatMode,
+    myId: state.UserReducer.userId,
+    notifications: state.NotiReducer.notifications,
+    currentChatSubject: state.NotiReducer.currentChatSubject
+  })
+)(Notification)

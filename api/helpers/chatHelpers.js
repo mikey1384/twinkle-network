@@ -1,5 +1,5 @@
 const {generalChatId} = require('../siteConfig')
-const {poolQuery} = require('../helpers')
+const {poolQuery, promiseSeries} = require('../helpers')
 
 const fetchChat = ({user, channelId}) => {
   return checkIfLastChannelExists().then(
@@ -197,8 +197,9 @@ const fetchMessages = channelId => {
   const query = `
     SELECT id FROM msg_chats WHERE channelId = ? ORDER BY id DESC LIMIT 21
   `
+  let messagesArray = []
   return poolQuery(query, channelId).then(
-    messages => Promise.all(
+    messages => promiseSeries(
       messages.map(({id}) => {
         let query = `
           SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification,
@@ -214,11 +215,11 @@ const fetchMessages = channelId => {
           LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
           WHERE a.id = ?
         `
-        return poolQuery(query, id).then(([message]) => Promise.resolve(message))
+        return () => poolQuery(query, id).then(([message]) => messagesArray.push(message))
       })
     )
   ).then(
-    messages => Promise.resolve(messages)
+    () => Promise.resolve(messagesArray)
   )
 }
 

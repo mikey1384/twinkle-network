@@ -8,11 +8,10 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import * as UserActions from 'redux/actions/UserActions'
 
-@connect()
-export default class SigninModal extends Component {
+class SigninModal extends Component {
   static propTypes = {
-    dispatch: PropTypes.func,
-    onHide: PropTypes.func
+    dispatch: PropTypes.func.isRequired,
+    onHide: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -24,11 +23,11 @@ export default class SigninModal extends Component {
 
   render() {
     const {currentPage} = this.state
-    const {dispatch} = this.props
+    const {dispatch, onHide} = this.props
     return (
       <Modal
         show
-        onHide={this.props.onHide}
+        onHide={onHide}
         animation={false}
       >
         <Modal.Header closeButton>
@@ -66,3 +65,5 @@ export default class SigninModal extends Component {
     )
   }
 }
+
+export default connect()(SigninModal)

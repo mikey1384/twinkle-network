@@ -15,14 +15,7 @@ import {URL} from 'constants/URL'
 import Input from 'components/Texts/Input'
 import SearchInput from 'components/Texts/SearchInput'
 
-@DragDropContext(HTML5Backend)
-@connect(
-  null,
-  {
-    uploadPlaylist: uploadPlaylistAsync
-  }
-)
-export default class AddPlaylistModal extends Component {
+class AddPlaylistModal extends Component {
   static propTypes = {
     onHide: PropTypes.func,
     uploadPlaylist: PropTypes.func
@@ -264,3 +257,8 @@ export default class AddPlaylistModal extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {uploadPlaylist: uploadPlaylistAsync}
+)(DragDropContext(HTML5Backend)(AddPlaylistModal))

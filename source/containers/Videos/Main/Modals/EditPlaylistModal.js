@@ -15,19 +15,12 @@ import request from 'axios'
 import {URL} from 'constants/URL'
 import SearchInput from 'components/Texts/SearchInput'
 
-@DragDropContext(HTML5Backend)
-@connect(
-  null,
-  {
-    changePlaylistVideos: changePlaylistVideosAsync
-  }
-)
-export default class EditPlaylistModal extends Component {
+class EditPlaylistModal extends Component {
   static propTypes = {
-    playlistId: PropTypes.number.isRequired,
+    changePlaylistVideos: PropTypes.func.isRequired,
+    modalType: PropTypes.string.isRequired,
     onHide: PropTypes.func.isRequired,
-    modalType: PropTypes.string,
-    changePlaylistVideos: PropTypes.func
+    playlistId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -212,3 +205,10 @@ export default class EditPlaylistModal extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {
+    changePlaylistVideos: changePlaylistVideosAsync
+  }
+)(DragDropContext(HTML5Backend)(EditPlaylistModal))

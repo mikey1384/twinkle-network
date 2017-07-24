@@ -6,16 +6,12 @@ import SortableListGroup from 'components/SortableListGroup'
 import {connect} from 'react-redux'
 import {changePinnedPlaylists} from 'redux/actions/PlaylistActions'
 
-@connect(
-  null,
-  {changePinnedPlaylists}
-)
-export default class ReorderPinnedPlaylistsModal extends Component {
+class ReorderPinnedPlaylistsModal extends Component {
   static propTypes = {
     pinnedPlaylists: PropTypes.array.isRequired,
     playlistIds: PropTypes.array.isRequired,
     onHide: PropTypes.func.isRequired,
-    changePinnedPlaylists: PropTypes.func
+    changePinnedPlaylists: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -87,3 +83,8 @@ export default class ReorderPinnedPlaylistsModal extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {changePinnedPlaylists}
+)(ReorderPinnedPlaylistsModal)

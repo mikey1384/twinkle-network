@@ -15,16 +15,12 @@ import {queryStringForArray} from 'helpers/apiHelpers'
 
 const API_URL = `${URL}/playlist`
 
-@connect(
-  null,
-  {loadVideoPage: loadVideoPageFromClientSideAsync}
-)
-export default class PlaylistModal extends Component {
+class PlaylistModal extends Component {
   static propTypes = {
-    loadVideoPage: PropTypes.func,
-    onHide: PropTypes.func,
-    playlistId: PropTypes.number,
-    title: PropTypes.string
+    loadVideoPage: PropTypes.func.isRequired,
+    onHide: PropTypes.func.isRequired,
+    playlistId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired
   }
 
   constructor() {
@@ -136,3 +132,8 @@ export default class PlaylistModal extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {loadVideoPage: loadVideoPageFromClientSideAsync}
+)(PlaylistModal)

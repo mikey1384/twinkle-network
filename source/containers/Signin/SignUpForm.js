@@ -7,8 +7,8 @@ import Input from 'components/Texts/Input'
 
 export default class SignUpForm extends Component {
   static propTypes = {
-    signupAsync: PropTypes.func,
-    showLoginForm: PropTypes.func
+    signupAsync: PropTypes.func.isRequired,
+    showLoginForm: PropTypes.func.isRequired
   }
 
   constructor() {

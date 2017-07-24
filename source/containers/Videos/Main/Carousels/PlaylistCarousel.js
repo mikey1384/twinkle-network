@@ -19,32 +19,19 @@ import {
 import {connect} from 'react-redux'
 import {cleanString} from 'helpers/stringHelpers'
 
-@connect(
-  state => ({
-    clickSafe: state.PlaylistReducer.clickSafe,
-    isAdmin: state.UserReducer.isAdmin
-  }),
-  {
-    editPlaylistTitleAsync,
-    openChangePlaylistVideosModalAsync,
-    openReorderPlaylistVideosModal,
-    deletePlaylistAsync,
-    resetPlaylistModalState
-  }
-)
-export default class PlaylistCarousel extends Component {
+class PlaylistCarousel extends Component {
   static propTypes = {
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    uploader: PropTypes.string.isRequired,
-    playlist: PropTypes.array.isRequired,
     arrayIndex: PropTypes.number.isRequired,
+    clickSafe: PropTypes.bool.isRequired,
+    deletePlaylistAsync: PropTypes.func.isRequired,
     editable: PropTypes.bool,
-    clickSafe: PropTypes.bool,
-    editPlaylistTitleAsync: PropTypes.func,
-    deletePlaylistAsync: PropTypes.func,
+    editPlaylistTitleAsync: PropTypes.func.isRequired,
+    id: PropTypes.number.isRequired,
     isAdmin: PropTypes.bool,
-    showAllButton: PropTypes.bool
+    playlist: PropTypes.array.isRequired,
+    showAllButton: PropTypes.bool.isRequired,
+    title: PropTypes.string.isRequired,
+    uploader: PropTypes.string.isRequired
   }
 
   constructor() {
@@ -272,3 +259,18 @@ export default class PlaylistCarousel extends Component {
     }
   }
 }
+
+export default connect(
+  state => ({
+    clickSafe: state.PlaylistReducer.clickSafe,
+    isAdmin: state.UserReducer.isAdmin
+  }),
+  {
+    editPlaylistTitleAsync,
+    openChangePlaylistVideosModalAsync,
+    openReorderPlaylistVideosModal,
+    deletePlaylistAsync,
+    resetPlaylistModalState
+  }
+)(PlaylistCarousel)
+

@@ -6,28 +6,21 @@ import CheckListGroup from 'components/CheckListGroup'
 import {loadMorePlaylistListAsync, changePinnedPlaylists} from 'redux/actions/PlaylistActions'
 import {connect} from 'react-redux'
 
-@connect(
-  null,
-  {
-    loadMorePlaylist: loadMorePlaylistListAsync,
-    changePinnedPlaylists: changePinnedPlaylists
-  }
-)
-export default class SelectPlaylistsToPinModal extends Component {
+class SelectPlaylistsToPinModal extends Component {
   static propTypes = {
-    playlistsToPin: PropTypes.array,
-    pinnedPlaylists: PropTypes.array,
-    selectedPlaylists: PropTypes.array,
-    loadMoreButton: PropTypes.bool,
-    onHide: PropTypes.func,
-    loadMorePlaylist: PropTypes.func,
-    changePinnedPlaylists: PropTypes.func
+    changePinnedPlaylists: PropTypes.func.isRequired,
+    loadMoreButton: PropTypes.bool.isRequired,
+    loadMorePlaylist: PropTypes.func.isRequired,
+    onHide: PropTypes.func.isRequired,
+    playlistsToPin: PropTypes.array.isRequired,
+    pinnedPlaylists: PropTypes.array.isRequired,
+    selectedPlaylists: PropTypes.array.isRequired
   }
 
-  constructor(props) {
+  constructor({selectedPlaylists}) {
     super()
     this.state = {
-      selectedPlaylists: props.selectedPlaylists,
+      selectedPlaylists: selectedPlaylists,
       selectTabActive: true
     }
     this.onSelect = this.onSelect.bind(this)
@@ -186,3 +179,11 @@ export default class SelectPlaylistsToPinModal extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {
+    loadMorePlaylist: loadMorePlaylistListAsync,
+    changePinnedPlaylists: changePinnedPlaylists
+  }
+)(SelectPlaylistsToPinModal)

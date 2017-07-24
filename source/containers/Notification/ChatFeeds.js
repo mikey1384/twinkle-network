@@ -9,30 +9,23 @@ import {initChatAsync} from 'redux/actions/ChatActions'
 import {notifyChatSubjectChange} from 'redux/actions/NotiActions'
 import {socket} from 'constants/io'
 
-@connect(
-  null,
-  {
-    openChat: initChatAsync,
-    notifyChatSubjectChange
-  }
-)
-export default class ChatFeeds extends Component {
+class ChatFeeds extends Component {
   static propTypes = {
-    userId: PropTypes.number,
-    username: PropTypes.string,
     content: PropTypes.string,
-    openChat: PropTypes.func,
+    notifyChatSubjectChange: PropTypes.func.isRequired,
+    openChat: PropTypes.func.isRequired,
     reloadedBy: PropTypes.number,
     reloaderName: PropTypes.string,
     reloadTimeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]),
-    notifyChatSubjectChange: PropTypes.func,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ])
+    ]),
+    userId: PropTypes.number,
+    username: PropTypes.string
   }
 
   constructor() {
@@ -82,6 +75,7 @@ export default class ChatFeeds extends Component {
         {reloadTimeStamp ? ` ${timeSince(reloadTimeStamp)}` : ''}
       </small>
     </div>
+
     return (
       <div style={{paddingBottom: '0.5em'}}>
         <div><small>{userId ? posterString : 'Join the conversation!'}</small></div>
@@ -90,3 +84,11 @@ export default class ChatFeeds extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {
+    openChat: initChatAsync,
+    notifyChatSubjectChange
+  }
+)(ChatFeeds)

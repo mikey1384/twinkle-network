@@ -10,8 +10,8 @@ import {isValidYoutubeUrl, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers
 
 class AddVideoModal extends Component {
   static propTypes = {
-    onHide: PropTypes.func,
-    uploadVideo: PropTypes.func
+    onHide: PropTypes.func.isRequired,
+    uploadVideo: PropTypes.func.isRequired
   }
 
   constructor() {

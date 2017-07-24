@@ -827,7 +827,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
     )
   ).then(
     () => {
-      let totalNumUnreads = numUnreadsArray.reduce((sum, numUnreads) => (
+      const totalNumUnreads = numUnreadsArray.reduce((sum, numUnreads) => (
         sum + Number(numUnreads)
       ), 0)
       res.send({numUnreads: totalNumUnreads})

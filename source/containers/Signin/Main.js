@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import Button from 'components/Button'
 
 Main.propTypes = {
-  showLoginForm: PropTypes.func,
-  showSignUpForm: PropTypes.func
+  showLoginForm: PropTypes.func.isRequired,
+  showSignUpForm: PropTypes.func.isRequired
 }
 export default function Main({showLoginForm, showSignUpForm}) {
   return (
