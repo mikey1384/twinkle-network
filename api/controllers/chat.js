@@ -800,7 +800,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   const channelQuery = `SELECT channelId FROM msg_channel_members WHERE userId = ?`
   const lastReadsQuery = `
     SELECT a.channelId, a.lastRead FROM msg_channel_info a JOIN msg_channels b ON
-    a.channelId = b.id AND a.lastRead > b.lastUpdated
+    a.channelId = b.id AND a.lastRead < b.lastUpdated
     WHERE a.userId = ? AND a.channelId = ?
   `
   const numUnreadQuery = `SELECT COUNT(id) AS numUnreads FROM msg_chats WHERE isSilent = '0' AND channelId = ? AND timeStamp > ? AND userId != ?`
