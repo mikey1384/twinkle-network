@@ -796,20 +796,30 @@ router.post('/invite', requireAuth, (req, res) => {
 })
 
 router.get('/numUnreads', requireAuth, (req, res) => {
-  const user = req.user
-  const query = `
-    SELECT a.channelId, (SELECT COUNT(id) FROM msg_chats b WHERE b.isSilent = '0' AND b.channelId = a.channelId AND b.timeStamp > a.lastRead AND b.userId != ?) AS numUnreads FROM msg_channel_info a WHERE a.userId = ?  AND a.channelId IN (SELECT channelId FROM msg_channel_members WHERE userId = ?) AND a.channelId IN (SELECT id FROM msg_channels)
-  `
-  pool.query(query, [user.id, user.id, user.id], (err, rows) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
+  const {user} = req
+  const channelQuery = `SELECT channelId FROM msg_channel_members WHERE userId = ?`
+  const lastReadsQuery = 'SELECT channelId, lastRead FROM msg_channel_info WHERE userId = ? AND channelId = ?'
+  const numUnreadQuery = `SELECT COUNT(id) AS numUnreads FROM msg_chats WHERE isSilent = '0' AND channelId = ? AND timeStamp > ? AND userId != ?`
+
+  return poolQuery(channelQuery, user.id).then(
+    rows => Promise.all(rows.map(({channelId}) => poolQuery(lastReadsQuery, [user.id, channelId])))
+  ).then(
+    results => {
+      return Promise.all(results.map(([{channelId, lastRead}]) => poolQuery(numUnreadQuery, [channelId, lastRead, user.id])))
     }
-    let totalNumUnreads = rows.reduce((sum, row) => (
-      sum + Number(row.numUnreads)
-    ), 0)
-    res.send({numUnreads: totalNumUnreads})
-  })
+  ).then(
+    results => {
+      let totalNumUnreads = results.reduce((sum, [{numUnreads}]) => (
+        sum + Number(numUnreads)
+      ), 0)
+      res.send({numUnreads: totalNumUnreads})
+    }
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
 })
 
 router.get('/search/chat', requireAuth, (req, res) => {
