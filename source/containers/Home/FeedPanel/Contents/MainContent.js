@@ -10,6 +10,7 @@ MainContent.propTypes = {
   content: PropTypes.string,
   contentDescription: PropTypes.string,
   contentTitle: PropTypes.string,
+  hasHqThumb: PropTypes.number,
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
   rootType: PropTypes.string,
@@ -18,7 +19,7 @@ MainContent.propTypes = {
   videoViews: PropTypes.string
 }
 export default function MainContent({
-  content, contentDescription, contentTitle,
+  content, contentDescription, contentTitle, hasHqThumb,
   rootId, rootContent, rootType, urlRelated, type, videoViews
 }) {
   return (
@@ -37,6 +38,7 @@ export default function MainContent({
           title={contentTitle}
           containerClassName="embed-responsive embed-responsive-16by9"
           className="embed-responsive-item"
+          hasHqThumb={hasHqThumb}
           videoId={rootId}
           videoCode={rootContent}
         />

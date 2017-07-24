@@ -53,7 +53,7 @@ class Contents extends Component {
   render() {
     const {
       feed: {
-        uploaderId, content, contentLikers = [], contentId, type, discussionId, videoViews,
+        uploaderId, content, contentLikers = [], contentId, type, discussionId, hasHqThumb, videoViews,
         numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
         rootContent, thumbUrl, actualTitle, actualDescription, siteUrl
@@ -74,6 +74,7 @@ class Contents extends Component {
             style={{marginBottom: '1em'}}
             containerClassName="embed-responsive embed-responsive-16by9"
             className="embed-responsive-item"
+            hasHqThumb={hasHqThumb}
             videoId={rootId}
             videoCode={rootContent}
           />
@@ -88,6 +89,7 @@ class Contents extends Component {
           content={content}
           contentDescription={contentDescription}
           contentTitle={contentTitle}
+          hasHqThumb={hasHqThumb}
           rootId={rootId}
           rootContent={rootContent}
           rootType={rootType}

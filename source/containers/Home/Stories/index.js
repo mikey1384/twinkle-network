@@ -6,15 +6,15 @@ import {
   fetchFeed,
   clearFeeds
 } from 'redux/actions/FeedActions'
-import FeedInputPanel from './FeedInputPanel'
-import FeedPanel from './FeedPanel'
+import InputPanel from './InputPanel'
+import FeedPanel from '../FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import {connect} from 'react-redux'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import ExecutionEnvironment from 'exenv'
 
-class Feeds extends Component {
+class Stories extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
@@ -67,7 +67,7 @@ class Feeds extends Component {
 
     return (
       <div>
-        <FeedInputPanel />
+        <InputPanel />
         {this.renderFilterBar()}
         {!loaded &&
           <Loading text="Loading Feeds..." />
@@ -207,4 +207,4 @@ export default connect(
     clearFeeds,
     fetchFeed
   }
-)(Feeds)
+)(Stories)

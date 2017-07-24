@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {Route} from 'react-router-dom'
 import Profile from './Profile'
 import People from './People'
-import Feeds from './Feeds'
+import Stories from './Stories'
 import Notification from 'containers/Notification'
 import ProfilePic from 'components/ProfilePic'
 
@@ -88,7 +88,7 @@ function Home({history, location, userId, profilePicId, username: myUsername, no
         }
       </div>
       <div className="col-md-6 col-xs-offset-3 col-xs-9">
-        <Route exact path="/" component={Feeds}/>
+        <Route exact path="/" component={Stories}/>
         <Route path="/users/:username" component={Profile}/>
         <Route exact path="/users" component={People}/>
       </div>

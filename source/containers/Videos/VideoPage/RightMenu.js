@@ -26,7 +26,10 @@ export default class RightMenu extends Component {
   static propTypes = {
     loadMorePlaylistVideos: PropTypes.func,
     loadRightMenuVideos: PropTypes.func,
-    videoId: PropTypes.number,
+    videoId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]),
     playlistId: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string

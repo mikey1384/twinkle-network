@@ -16,34 +16,41 @@ class VideoPlayer extends Component {
     autoplay: PropTypes.bool,
     className: PropTypes.string,
     containerClassName: PropTypes.string,
+    hasHqThumb: PropTypes.number.isRequired,
     onEdit: PropTypes.bool,
     small: PropTypes.bool,
     style: PropTypes.object,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number,
     videoCode: PropTypes.string.isRequired,
-    videoId: PropTypes.number.isRequired
+    videoId: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired
   }
 
-  constructor(props) {
+  constructor({autoplay, hasHqThumb, videoCode}) {
     super()
+    const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
     this.state = {
-      playing: props.autoplay,
-      imageUrl: `https://img.youtube.com/vi/${props.videoCode}/mqdefault.jpg`
+      playing: autoplay,
+      imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`
     }
     this.onVideoReady = this.onVideoReady.bind(this)
   }
 
   componentDidMount() {
-    const {videoCode} = this.props
+    const {hasHqThumb, videoCode, videoId} = this.props
     this.mounted = true
-    return request.get(`${API_URL}/videoThumb?videoCode=${videoCode}`).then(
-      ({data: {payload}}) => {
-        if (this.mounted && payload) this.setState({imageUrl: payload})
-      }
-    ).catch(
-      error => console.error(error)
-    )
+    if (typeof hasHqThumb !== 'number') {
+      return request.put(`${API_URL}/videoThumb`, {videoCode, videoId}).then(
+        ({data: {payload}}) => {
+          if (this.mounted && payload) this.setState({imageUrl: payload})
+        }
+      ).catch(
+        error => console.error(error.response || error)
+      )
+    }
   }
 
   componentDidUpdate(prevProps) {

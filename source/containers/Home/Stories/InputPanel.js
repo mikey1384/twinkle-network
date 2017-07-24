@@ -15,7 +15,7 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers'
 
-class FeedInputPanel extends Component {
+class InputPanel extends Component {
   static propTypes = {
     loadVideoPage: PropTypes.func.isRequired,
     uploadContent: PropTypes.func.isRequired,
@@ -218,4 +218,4 @@ export default connect(
     loadVideoPage: loadVideoPageFromClientSideAsync,
     uploadContent: uploadContentAsync
   }
-)(FeedInputPanel)
+)(InputPanel)

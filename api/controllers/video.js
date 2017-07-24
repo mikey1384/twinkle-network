@@ -31,8 +31,8 @@ router.get('/', (req, res) => {
     SELECT id FROM vq_videos ${where} ORDER BY id DESC LIMIT ${numberToLoad}
   `
   const videoQuery = `
-    SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName,
-    COUNT(c.id) AS numLikes
+    SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId,
+    b.username AS uploaderName, COUNT(c.id) AS numLikes
     FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
     LEFT JOIN content_likes c ON a.id = c.rootId AND c.rootType = 'video'
     WHERE a.id = ?
@@ -218,7 +218,7 @@ router.get('/more/playlistVideos', (req, res) => {
 router.get('/page', (req, res) => {
   const {videoId} = req.query
   let query = `
-    SELECT a.id AS videoId, a.title, a.description, a.content, a.timeStamp,
+    SELECT a.id AS videoId, a.title, a.description, a.content, a.hasHqThumb, a.timeStamp,
     a.uploader AS uploaderId, b.username AS uploaderName,
     (SELECT COUNT(id) FROM vq_video_views WHERE videoId = ?) AS videoViews
     FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
@@ -227,7 +227,7 @@ router.get('/page', (req, res) => {
   let finalResults
 
   return poolQuery(query, [videoId, videoId]).then(
-    rows => {
+    (rows) => {
       finalResults = rows[0]
       const {videoId} = finalResults
       const questionQuery = 'SELECT * FROM vq_questions WHERE videoId = ?'

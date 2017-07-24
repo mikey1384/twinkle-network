@@ -72,7 +72,7 @@ class LinkItem extends Component {
           }
         }
       ).catch(
-        error => console.error(error)
+        error => console.error(error.response || error)
       )
     }
   }

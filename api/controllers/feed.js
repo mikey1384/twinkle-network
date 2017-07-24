@@ -175,7 +175,7 @@ router.get('/feed', (req, res) => {
         user4.username AS discussionUploaderName,
 
         ${rootType}.title AS rootContentTitle, ${rootType}.description AS rootContentDescription, ${rootType}.title AS contentTitle, ${rootType}.content AS rootContent,
-        ${rootType === 'url' ? `${['.thumbUrl', '.actualTitle', '.actualDescription', '.siteUrl'].map(prop => `${rootType}${prop}`).join(', ')},` : ''}
+        ${rootType === 'url' ? `${['thumbUrl', 'actualTitle', 'actualDescription', 'siteUrl'].map(prop => `url.${prop}`).join(', ')},` : (rootType === 'video' ? 'video.hasHqThumb,' : '')}
 
         (SELECT COUNT(id) FROM content_comments WHERE commentId = ${contentId}) AS numChildComments,
         (SELECT COUNT(id) FROM content_comments WHERE replyId = ${contentId}) AS numChildReplies
@@ -205,7 +205,7 @@ router.get('/feed', (req, res) => {
       break
     case 'discussion':
       query = `
-        SELECT discussion.id AS discussionId, discussion.title AS contentTitle, discussion.description AS contentDescription, video.content AS rootContent, video.title AS rootContentTitle, video.description AS rootContentDescription,
+        SELECT discussion.id AS discussionId, discussion.title AS contentTitle, discussion.description AS contentDescription, video.content AS rootContent, video.title AS rootContentTitle, video.description AS rootContentDescription, video.hasHqThumb,
         user.username AS uploaderName, userPhoto.id AS uploaderPicId,
         (SELECT COUNT(id) FROM content_comments WHERE discussionId = discussion.id) AS numChildComments
         FROM content_discussions discussion
@@ -237,7 +237,7 @@ router.get('/feed', (req, res) => {
     case 'video':
       query = `
         SELECT video.title AS rootContentTitle, video.description AS rootContentDescription, 'video' AS rootType, video.content AS rootContent, video.title AS contentTitle,
-        video.description AS contentDescription,
+        video.description AS contentDescription, video.hasHqThumb,
         video.content, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
         (SELECT COUNT(id) FROM vq_video_views WHERE videoId = video.id) AS videoViews,
         (SELECT COUNT(id) FROM content_comments WHERE rootType = 'video' AND rootId = video.id)

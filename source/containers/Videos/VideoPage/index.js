@@ -44,6 +44,7 @@ import ExecutionEnvironment from 'exenv'
 )
 export default class VideoPage extends Component {
   static propTypes = {
+    hasHqThumb: PropTypes.number,
     history: PropTypes.object,
     match: PropTypes.object,
     location: PropTypes.object,
@@ -108,12 +109,11 @@ export default class VideoPage extends Component {
   }
 
   render() {
-    let {
-      uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
+    const {
+      hasHqThumb, uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
       content, title, timeStamp, questions = [], likes = [], location: {search}, videoViews,
       match: {params: {videoId}}
     } = this.props
-    videoId = Number(videoId)
     const {
       watchTabActive,
       questionsBuilderShown,
@@ -156,6 +156,7 @@ export default class VideoPage extends Component {
                       <VideoPlayer
                         autoplay
                         key={videoId}
+                        hasHqThumb={hasHqThumb}
                         onEdit={onEdit}
                         small={!watchTabActive}
                         videoId={videoId}

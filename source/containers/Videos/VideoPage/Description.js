@@ -35,7 +35,10 @@ export default class Description extends Component {
       PropTypes.string,
       PropTypes.number
     ]),
-    videoId: PropTypes.number,
+    videoId: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
     videoViews: PropTypes.string,
     onEditStart: PropTypes.func,
     onEditCancel: PropTypes.func,

@@ -37,25 +37,29 @@ router.put('/embed', (req, res) => {
     }
   ).catch(
     error => {
+      console.error(error)
       res.status(500).send({error})
     }
   )
 })
 
-router.get('/videoThumb', (req, res) => {
-  const {videoCode} = req.query
+router.put('/videoThumb', (req, res) => {
+  const {videoCode, videoId} = req.body
   request({
     uri: `https://www.googleapis.com/youtube/v3/videos`,
     qs: {part: 'snippet', id: videoCode, key: googleKey}
   })
     .then(
       response => {
-        const {items: [{snippet: {thumbnails}}]} = JSON.parse(response)
+        const {items} = JSON.parse(response)
+        const thumbnails = items.length > 0 ? items[0].snippet.thumbnails : {}
         const payload = thumbnails.maxres ? thumbnails.maxres.url : null
+        poolQuery('UPDATE vq_videos SET hasHqThumb = ? WHERE id = ?', [!!payload, videoId])
         res.send({payload})
       }
     ).catch(
       error => {
+        console.error(error)
         res.status(500).send({error})
       }
     )
