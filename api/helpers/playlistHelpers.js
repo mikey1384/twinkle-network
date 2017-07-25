@@ -11,22 +11,17 @@ module.exports = {
           WHERE a.id = ?
         `
         const playlistVideosQuery = `
-          SELECT
-            a.id, a.videoId,
-            b.title AS video_title, b.description AS video_description,
-            b.content,
-            c.id AS video_uploader_id,
-            c.username AS video_uploader,
-            COUNT(d.id) AS numLikes
-          FROM
-            vq_playlistvideos a
-          JOIN
-            vq_videos b ON a.videoId = b.id
-          JOIN
-            users c ON b.uploader = c.id
-          LEFT JOIN
-            content_likes d ON b.id = d.rootId AND d.rootType = 'video'
-          WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id LIMIT 10
+          SELECT a.id, a.videoId FROM vq_playlistvideos a JOIN vq_videos b
+          ON a.videoId = b.id
+          WHERE a.playlistId = ? ORDER BY a.id LIMIT 10
+        `
+        const videoDetailsQuery = `
+          SELECT a.title AS video_title, a.description AS video_description, a.content, 
+          b.id AS video_uploader_id, b.username AS video_uploader, COUNT(c.id) AS numLikes
+
+          FROM vq_videos a JOIN users b ON a.uploader = b.id
+          LEFT JOIN content_likes c ON a.id = c.rootId AND c.rootType = 'video'
+          WHERE a.id = ?
         `
         const playlistVideoNumberQuery = `
           SELECT COUNT(id) AS numVids FROM vq_playlistvideos WHERE playlistId = ?
@@ -34,7 +29,13 @@ module.exports = {
         return promiseSeries(playlistIds.map(playlistId => {
           return () => promiseSeries([
             () => poolQuery(playlistQuery, playlistId),
-            () => poolQuery(playlistVideosQuery, playlistId),
+            () => poolQuery(playlistVideosQuery, playlistId).then(
+              rows => promiseSeries(rows.map(({id, videoId}) => {
+                return () => poolQuery(videoDetailsQuery, videoId).then(rows => Promise.resolve(rows.map(
+                  row => Object.assign({}, row, {id, videoId})
+                )))
+              }))
+            ),
             () => poolQuery(playlistVideoNumberQuery, playlistId)
           ])
         }))
@@ -47,11 +48,16 @@ module.exports = {
           playlists[i] = Object.assign(
             {},
             playlistInfo,
-            {playlist: playlistVideos},
+            {playlist: playlistVideos.map(([video]) => video)},
             {showAllButton: numVids > 10}
           )
         }
         return Promise.resolve(playlists)
+      }
+    ).catch(
+      error => {
+        console.error(error)
+        res.status(500).send({error})
       }
     )
   }

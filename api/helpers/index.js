@@ -16,6 +16,8 @@ const promiseSeries = array => {
         if (index < array.length - 1) return Promise.resolve()
         return Promise.resolve(results)
       }
+    ).catch(
+      error => Promise.reject(error)
     )
   }, Promise.resolve())
 }
