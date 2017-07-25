@@ -3,12 +3,12 @@ import React from 'react'
 import {Modal, Button} from 'react-bootstrap'
 
 ResultModal.propTypes = {
-  onHide: PropTypes.func,
-  totalQuestions: PropTypes.number,
   numberCorrect: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.func
-  ])
+  ]).isRequired,
+  onHide: PropTypes.func.isRequired,
+  totalQuestions: PropTypes.number.isRequired
 }
 export default function ResultModal({numberCorrect, totalQuestions, onHide}) {
   const number = numberCorrect()

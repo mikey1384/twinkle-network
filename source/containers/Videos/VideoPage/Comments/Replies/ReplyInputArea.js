@@ -3,8 +3,8 @@ import React from 'react'
 import InputArea from 'components/Texts/InputArea'
 
 ReplyInputArea.propTypes = {
-  onSubmit: PropTypes.func,
   clickListenerState: PropTypes.bool,
+  onSubmit: PropTypes.func.isRequired,
   style: PropTypes.object
 }
 export default function ReplyInputArea({onSubmit, clickListenerState, style}) {

@@ -6,16 +6,16 @@ import Button from 'components/Button'
 
 export default class Replies extends Component {
   static propTypes = {
-    replies: PropTypes.array,
-    comment: PropTypes.object,
+    comment: PropTypes.object.isRequired,
+    commentId: PropTypes.number.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    replies: PropTypes.array.isRequired,
     userId: PropTypes.number,
-    onEditDone: PropTypes.func,
-    onLikeClick: PropTypes.func,
-    onDelete: PropTypes.func,
-    onReplySubmit: PropTypes.func,
-    commentId: PropTypes.number,
-    videoId: PropTypes.number,
-    onLoadMoreReplies: PropTypes.func
+    videoId: PropTypes.number.isRequired
   }
 
   constructor() {

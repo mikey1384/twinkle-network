@@ -6,58 +6,50 @@ import Button from 'components/Button'
 import {connect} from 'react-redux'
 import {
   uploadVideoCommentAsync,
-  uploadVideoDebate,
-  loadMoreDebates
+  uploadVideoDiscussion,
+  loadMoreDiscussions
 } from 'redux/actions/VideoActions'
-import DebatePanel from './DebatePanel'
+import DiscussionPanel from './DiscussionPanel'
 
-@connect(
-  null,
-  {
-    uploadComment: uploadVideoCommentAsync,
-    uploadDebate: uploadVideoDebate,
-    loadMoreDebates
-  }
-)
-export default class CommentInputArea extends Component {
+class CommentInputArea extends Component {
   static propTypes = {
-    videoId: PropTypes.number,
-    uploadComment: PropTypes.func,
-    uploadDebate: PropTypes.func,
-    loadMoreDebatesButton: PropTypes.bool,
-    debates: PropTypes.array,
-    loadMoreDebates: PropTypes.bool
+    discussions: PropTypes.array,
+    loadMoreDiscussions: PropTypes.func.isRequired,
+    loadMoreDiscussionsButton: PropTypes.bool,
+    uploadComment: PropTypes.func.isRequired,
+    uploadDiscussion: PropTypes.func.isRequired,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor() {
     super()
     this.state = {
-      debateTabActive: true,
-      debateFormShown: false
+      discussionTabActive: true,
+      discussionFormShown: false
     }
   }
   render() {
     const {
-      videoId, uploadComment, uploadDebate, loadMoreDebatesButton, debates, loadMoreDebates
+      videoId, uploadComment, uploadDiscussion, loadMoreDiscussionsButton, discussions, loadMoreDiscussions
     } = this.props
-    const {debateTabActive, debateFormShown} = this.state
+    const {discussionTabActive, discussionFormShown} = this.state
     return (
       <div className="page-header">
         <div className="row">
           <ul className="nav nav-tabs" style={{fontSize: '1.3em', fontWeight: 'bold'}}>
             <li
-              className={debateTabActive && 'active'}
+              className={discussionTabActive && 'active'}
               style={{cursor: 'pointer'}}
-              onClick={() => this.setState({debateTabActive: true})}
+              onClick={() => this.setState({discussionTabActive: true})}
             >
               <a>Discuss</a>
             </li>
             <li
-              className={!debateTabActive && 'active'}
+              className={!discussionTabActive && 'active'}
               style={{cursor: 'pointer'}}
               onClick={() => this.setState({
-                debateTabActive: false,
-                debateFormShown: false
+                discussionTabActive: false,
+                discussionFormShown: false
               })}
             >
               <a>Comment on this video</a>
@@ -65,45 +57,45 @@ export default class CommentInputArea extends Component {
           </ul>
         </div>
         <div style={{marginTop: '1.5em'}}>
-          {debateTabActive && <div>
+          {discussionTabActive && <div>
             <div>
               <div className="container-fluid">
-                {debateFormShown ?
+                {discussionFormShown ?
                   <TitleDescriptionForm
                     autoFocus
-                    onSubmit={(title, description) => uploadDebate(title, description, videoId)}
+                    onSubmit={(title, description) => uploadDiscussion(title, description, videoId)}
                     rows={4}
                     titlePlaceholder="Enter discussion topic..."
                     descriptionPlaceholder="Enter details... (Optional)"
                   /> :
                   <Button
                     className="btn btn-primary"
-                    onClick={() => this.setState({debateFormShown: true})}
+                    onClick={() => this.setState({discussionFormShown: true})}
                   >
                     Start a New Discussion
                   </Button>
                 }
               </div>
               <div className="container-fluid">
-                {!!debates && debates.length > 0 && <h3 style={{marginTop: '1em'}}>Active Discussions</h3>}
-                {!!debates && debates.map(debate =>
-                  <DebatePanel
-                    key={debate.id}
+                {!!discussions && discussions.length > 0 && <h3 style={{marginTop: '1em'}}>Active Discussions</h3>}
+                {!!discussions && discussions.map(discussion =>
+                  <DiscussionPanel
+                    key={discussion.id}
                     videoId={videoId}
-                    {...debate}
+                    {...discussion}
                   />
                 )}
-                {loadMoreDebatesButton &&
+                {loadMoreDiscussionsButton &&
                   <div className="text-center" style={{paddingTop: '0.5em'}}>
                     <Button
                       className="btn btn-success"
-                      onClick={() => loadMoreDebates(videoId, debates[debates.length - 1].id)}
+                      onClick={() => loadMoreDiscussions(videoId, discussions[discussions.length - 1].id)}
                     >
                       Load More
                     </Button>
                   </div>
                 }
-                {(!debates || debates.length === 0) &&
+                {(!discussions || discussions.length === 0) &&
                   <div>
                     <h3 style={{marginTop: '1em'}}>Comment on this video</h3>
                     <InputArea
@@ -116,7 +108,7 @@ export default class CommentInputArea extends Component {
               </div>
             </div>
           </div>}
-          {!debateTabActive && <div className="container-fluid">
+          {!discussionTabActive && <div className="container-fluid">
             <InputArea
               autoFocus
               onSubmit={text => uploadComment(text, videoId)}
@@ -129,3 +121,12 @@ export default class CommentInputArea extends Component {
     )
   }
 }
+
+export default connect(
+  null,
+  {
+    uploadComment: uploadVideoCommentAsync,
+    uploadDiscussion: uploadVideoDiscussion,
+    loadMoreDiscussions
+  }
+)(CommentInputArea)

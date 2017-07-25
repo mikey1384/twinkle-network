@@ -18,33 +18,33 @@ import LongText from 'components/Texts/LongText'
 
 export default class Reply extends Component {
   static propTypes = {
-    deleteListenerToggle: PropTypes.bool,
+    commentId: PropTypes.number.isRequired,
+    content: PropTypes.string.isRequired,
+    deleteCallback: PropTypes.func.isRequired,
+    deleteListenerToggle: PropTypes.bool.isRequired,
+    forDiscussionPanel: PropTypes.bool,
+    id: PropTypes.number.isRequired,
+    index: PropTypes.number.isRequired,
+    isFirstReply: PropTypes.bool,
     lastDeletedCommentIndex: PropTypes.number,
-    index: PropTypes.number,
-    id: PropTypes.number,
-    username: PropTypes.string,
+    likes: PropTypes.array.isRequired,
+    myId: PropTypes.number,
+    replyOfReply: PropTypes.bool,
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    profilePicId: PropTypes.number,
+    targetUserId: PropTypes.number,
+    targetUserName: PropTypes.string,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]),
-    content: PropTypes.string,
+    ]).isRequired,
+    userId: PropTypes.number.isRequired,
     userIsOwner: PropTypes.bool,
-    onEditDone: PropTypes.func,
-    likes: PropTypes.array,
-    userId: PropTypes.number,
-    profilePicId: PropTypes.number,
-    myId: PropTypes.number,
-    targetUserName: PropTypes.string,
-    targetUserId: PropTypes.number,
-    onLikeClick: PropTypes.func,
-    isFirstReply: PropTypes.bool,
-    deleteCallback: PropTypes.func,
-    onDelete: PropTypes.func,
-    onReplySubmit: PropTypes.func,
-    commentId: PropTypes.number,
-    videoId: PropTypes.number,
-    replyOfReply: PropTypes.bool,
-    forDiscussionPanel: PropTypes.bool
+    username: PropTypes.string.isRequired,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor() {

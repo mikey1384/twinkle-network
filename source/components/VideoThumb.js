@@ -110,7 +110,8 @@ class VideoThumb extends Component {
               />
             </div>
           </Link>
-          <div className="caption"
+          <div
+            className="caption"
             style={{
               height: '8rem'
             }}

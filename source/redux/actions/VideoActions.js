@@ -84,11 +84,11 @@ export const deleteVideoCommentAsync = commentId => dispatch =>
       }
     )
 
-export const deleteVideoDebate = (discussionId, callback) => dispatch =>
-  request.delete(`${API_URL}/debates?discussionId=${discussionId}`, auth())
+export const deleteVideoDiscussion = (discussionId, callback) => dispatch =>
+  request.delete(`${API_URL}/discussions?discussionId=${discussionId}`, auth())
     .then(
       response => dispatch({
-        type: 'DELETE_VIDEO_DEBATE',
+        type: 'DELETE_VIDEO_DISCUSSION',
         discussionId
       })
     ).catch(
@@ -119,12 +119,12 @@ export const editVideoCommentAsync = ({editedComment, commentId}, cb) => dispatc
       }
     )
 
-export const editVideoDebate = (discussionId, editedTitle, editedDescription, callback) => dispatch =>
-  request.post(`${API_URL}/debates/edit`, {discussionId, editedTitle, editedDescription}, auth())
+export const editVideoDiscussion = (discussionId, editedTitle, editedDescription, callback) => dispatch =>
+  request.post(`${API_URL}/discussions/edit`, {discussionId, editedTitle, editedDescription}, auth())
     .then(
       response => {
         dispatch({
-          type: 'EDIT_VIDEO_DEBATE',
+          type: 'EDIT_VIDEO_DISCUSSION',
           data: response.data,
           discussionId
         })
@@ -263,11 +263,11 @@ export const loadMoreReplies = (lastReplyId, commentId, type) => dispatch =>
       }
     )
 
-export const loadMoreDebateComments = (lastCommentId, discussionId) => dispatch =>
-  request.get(`${API_URL}/debates/comments?discussionId=${discussionId}&lastCommentId=${lastCommentId}`)
+export const loadMoreDiscussionComments = (lastCommentId, discussionId) => dispatch =>
+  request.get(`${API_URL}/discussions/comments?discussionId=${discussionId}&lastCommentId=${lastCommentId}`)
     .then(
       response => dispatch({
-        type: 'LOAD_MORE_VIDEO_DEBATE_COMMENTS',
+        type: 'LOAD_MORE_VIDEO_DISCUSSION_COMMENTS',
         data: response.data,
         discussionId
       })
@@ -278,11 +278,11 @@ export const loadMoreDebateComments = (lastCommentId, discussionId) => dispatch 
       }
     )
 
-export const loadMoreDebates = (videoId, lastDiscussionId) => dispatch =>
-  request.get(`${API_URL}/debates?videoId=${videoId}&lastDiscussionId=${lastDiscussionId}`)
+export const loadMoreDiscussions = (videoId, lastDiscussionId) => dispatch =>
+  request.get(`${API_URL}/discussions?videoId=${videoId}&lastDiscussionId=${lastDiscussionId}`)
     .then(
       response => dispatch({
-        type: 'LOAD_MORE_VIDEO_DEBATES',
+        type: 'LOAD_MORE_VIDEO_DISCUSSIONS',
         data: response.data
       })
     ).catch(
@@ -342,11 +342,11 @@ export const loadVideoCommentsAsync = videoId => dispatch =>
       }
     )
 
-export const loadVideoDebates = videoId => dispatch =>
-  request.get(`${API_URL}/debates?videoId=${videoId}`)
+export const loadVideoDiscussions = videoId => dispatch =>
+  request.get(`${API_URL}/discussions?videoId=${videoId}`)
     .then(
       response => dispatch({
-        type: 'LOAD_VIDEO_DEBATES',
+        type: 'LOAD_VIDEO_DISCUSSIONS',
         data: response.data
       })
     ).catch(
@@ -356,11 +356,11 @@ export const loadVideoDebates = videoId => dispatch =>
       }
     )
 
-export const loadVideoDebateComments = (discussionId) => dispatch =>
-  request.get(`${API_URL}/debates/comments?discussionId=${discussionId}`)
+export const loadVideoDiscussionComments = (discussionId) => dispatch =>
+  request.get(`${API_URL}/discussions/comments?discussionId=${discussionId}`)
     .then(
       response => dispatch({
-        type: 'LOAD_VIDEO_DEBATE_COMMENTS',
+        type: 'LOAD_VIDEO_DISCUSSION_COMMENTS',
         discussionId,
         data: response.data
       })
@@ -383,7 +383,7 @@ export const loadVideoPageAsync = (videoId, fromClientSide) => dispatch => {
     .then(
       response => {
         dispatch(loadVideoPage(response.data))
-        dispatch(loadVideoDebates(videoId))
+        dispatch(loadVideoDiscussions(videoId))
         return Promise.resolve()
       }
     ).catch(
@@ -484,11 +484,11 @@ export const uploadVideoCommentAsync = (comment, videoId) => dispatch =>
       }
     )
 
-export const uploadVideoDebate = (title, description, videoId) => dispatch =>
-  request.post(`${API_URL}/debates`, {title, description, videoId}, auth())
+export const uploadVideoDiscussion = (title, description, videoId) => dispatch =>
+  request.post(`${API_URL}/discussions`, {title, description, videoId}, auth())
     .then(
       response => dispatch({
-        type: 'UPLOAD_VIDEO_DEBATE',
+        type: 'UPLOAD_VIDEO_DISCUSSION',
         data: response.data
       })
     ).catch(
@@ -498,10 +498,10 @@ export const uploadVideoDebate = (title, description, videoId) => dispatch =>
       }
     )
 
-export const uploadVideoDebateComment = ({
+export const uploadVideoDiscussionComment = ({
   comment, videoId: rootId, discussionId, discussionTitle
 }) => dispatch =>
-  request.post(`${API_URL}/debates/comments`, {
+  request.post(`${API_URL}/discussions/comments`, {
     content: comment,
     rootId,
     rootType: 'video',
@@ -509,7 +509,7 @@ export const uploadVideoDebateComment = ({
   }, auth()
   ).then(
     response => dispatch({
-      type: 'UPLOAD_VIDEO_DEBATE_COMMENT',
+      type: 'UPLOAD_VIDEO_DISCUSSION_COMMENT',
       data: {...response.data, discussionTitle}
     })
   ).catch(
@@ -519,7 +519,7 @@ export const uploadVideoDebateComment = ({
     }
   )
 
-export const uploadVideoDebateReply = ({
+export const uploadVideoDiscussionReply = ({
   replyContent, comment, videoId: rootId, discussionId,
   replyOfReply, originType
 }) => dispatch => {

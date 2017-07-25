@@ -8,7 +8,6 @@ import Loading from 'components/Loading'
 import {
   editVideoCommentAsync,
   deleteVideoCommentAsync,
-  editVideoReplyAsync,
   likeVideoComment,
   uploadVideoReplyAsync,
   loadMoreCommentsAsync,
@@ -16,36 +15,20 @@ import {
   loadMoreReplies
 } from 'redux/actions/VideoActions'
 
-@connect(
-  state => ({
-    loadMoreCommentsButton: state.VideoReducer.videoPage.loadMoreCommentsButton
-  }),
-  {
-    onEditDone: editVideoCommentAsync,
-    onDelete: deleteVideoCommentAsync,
-    onReplyEditDone: editVideoReplyAsync,
-    onLikeClick: likeVideoComment,
-    onReplySubmit: uploadVideoReplyAsync,
-    loadMoreComments: loadMoreCommentsAsync,
-    loadVideoComments: loadVideoCommentsAsync,
-    loadMoreReplies
-  }
-)
-export default class Comments extends Component {
+class Comments extends Component {
   static propTypes = {
-    comments: PropTypes.array,
-    loadMoreCommentsButton: PropTypes.bool,
-    loadMoreDebatesButton: PropTypes.bool,
-    loadVideoComments: PropTypes.func,
-    loadMoreComments: PropTypes.func,
-    videoId: PropTypes.number,
-    debates: PropTypes.array,
-    onEditDone: PropTypes.func,
-    loadMoreReplies: PropTypes.func,
-    onDelete: PropTypes.func,
-    onReplyEditDone: PropTypes.func,
-    onLikeClick: PropTypes.func,
-    onReplySubmit: PropTypes.func
+    comments: PropTypes.array.isRequired,
+    discussions: PropTypes.array.isRequired,
+    loadMoreCommentsButton: PropTypes.bool.isRequired,
+    loadMoreComments: PropTypes.func.isRequired,
+    loadMoreDiscussionsButton: PropTypes.bool.isRequired,
+    loadMoreReplies: PropTypes.func.isRequired,
+    loadVideoComments: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor() {
@@ -76,12 +59,12 @@ export default class Comments extends Component {
 
   render() {
     const {
-      loadMoreCommentsButton, loadMoreDebatesButton, loadMoreComments, videoId, comments, debates
+      loadMoreCommentsButton, loadMoreDiscussionsButton, loadMoreComments, videoId, comments, discussions
     } = this.props
     return (
       <div style={{paddingBottom: '1em'}}>
         <div className="container-fluid">
-          <CommentInputArea videoId={videoId} debates={debates} loadMoreDebatesButton={loadMoreDebatesButton} />
+          <CommentInputArea videoId={videoId} discussions={discussions} loadMoreDiscussionsButton={loadMoreDiscussionsButton} />
           <div className="container-fluid">
             <ul className="media-list" ref={ref => { this.Comments = ref }}>
               {this.renderComments()}
@@ -119,7 +102,6 @@ export default class Comments extends Component {
           onEditDone={this.props.onEditDone}
           onLoadMoreReplies={this.props.loadMoreReplies}
           onDelete={this.props.onDelete}
-          onReplyEditDone={this.props.onReplyEditDone}
           onLikeClick={this.props.onLikeClick}
           onReplySubmit={this.props.onReplySubmit}
           marginTop={index !== 0}
@@ -137,3 +119,16 @@ export default class Comments extends Component {
     this.setState({lastDeletedCommentIndex: index})
   }
 }
+
+export default connect(
+  null,
+  {
+    onEditDone: editVideoCommentAsync,
+    onDelete: deleteVideoCommentAsync,
+    onLikeClick: likeVideoComment,
+    onReplySubmit: uploadVideoReplyAsync,
+    loadMoreComments: loadMoreCommentsAsync,
+    loadVideoComments: loadVideoCommentsAsync,
+    loadMoreReplies
+  }
+)(Comments)

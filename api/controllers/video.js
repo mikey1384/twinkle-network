@@ -169,23 +169,22 @@ router.post('/like', requireAuth, (req, res) => {
 router.post('/edit/page', requireAuth, (req, res) => {
   const user = req.user
   const {videoId, title, description, url} = req.body
-
-  if (stringIsEmpty(title)) {
-    return res.status(500).send({error: 'Title is empty'})
-  }
+  if (stringIsEmpty(title)) return res.status(500).send({error: 'Title is empty'})
   const post = {
     title,
     description: processedString(description),
-    content: fetchedVideoCodeFromURL(url)
+    content: fetchedVideoCodeFromURL(url),
+    hasHqThumb: null
   }
   const userId = user.id
-  pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
-    if (err) {
-      console.error(err)
-      return res.status(500).json({error: err})
+  return poolQuery('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId]).then(
+    () => res.json({success: true})
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
-    res.json({success: true})
-  })
+  )
 })
 
 router.get('/more/playlistVideos', (req, res) => {
@@ -375,7 +374,7 @@ router.get('/replies', fetchReplies)
 
 router.post('/replies', requireAuth, postReplies)
 
-router.delete('/debates', requireAuth, (req, res) => {
+router.delete('/discussions', requireAuth, (req, res) => {
   const {user} = req
   const {discussionId} = req.query
   const query = 'DELETE FROM content_discussions WHERE id = ? AND userId = ?'
@@ -388,7 +387,7 @@ router.delete('/debates', requireAuth, (req, res) => {
   })
 })
 
-router.get('/debates', (req, res) => {
+router.get('/discussions', (req, res) => {
   const {videoId, lastDiscussionId} = req.query
   const limit = 4
   const where = lastDiscussionId ? 'AND a.id < ' + lastDiscussionId + ' ' : ''
@@ -406,12 +405,12 @@ router.get('/debates', (req, res) => {
     }
     res.send(rows.map(row => Object.assign({}, row, {
       comments: [],
-      loadMoreDebateCommentsButton: false
+      loadMoreDiscussionCommentsButton: false
     })))
   })
 })
 
-router.get('/debates/comments', (req, res) => {
+router.get('/discussions/comments', (req, res) => {
   const {discussionId, lastCommentId} = req.query
   const limit = 4
   const where = !!lastCommentId && lastCommentId !== '0' ? 'AND a.id < ' + lastCommentId + ' ' : ''
@@ -441,7 +440,7 @@ router.get('/debates/comments', (req, res) => {
   })
 })
 
-router.post('/debates', requireAuth, (req, res) => {
+router.post('/discussions', requireAuth, (req, res) => {
   const {title, description, videoId} = req.body
   const {user} = req
   const query = 'INSERT INTO content_discussions SET ?'
@@ -462,12 +461,12 @@ router.post('/debates', requireAuth, (req, res) => {
       id: result.insertId,
       username: user.username,
       comments: [],
-      loadMoreDebateCommentsButton: false
+      loadMoreDiscussionCommentsButton: false
     }))
   })
 })
 
-router.post('/debates/edit', requireAuth, (req, res) => {
+router.post('/discussions/edit', requireAuth, (req, res) => {
   const {user} = req
   const {discussionId, editedTitle, editedDescription} = req.body
   const post = {title: editedTitle, description: processedString(editedDescription)}
@@ -481,7 +480,7 @@ router.post('/debates/edit', requireAuth, (req, res) => {
   })
 })
 
-router.post('/debates/comments', requireAuth, (req, res) => {
+router.post('/discussions/comments', requireAuth, (req, res) => {
   const {rootId, rootType, discussionId, content} = req.body
   const {user} = req
   const query = 'INSERT INTO content_comments SET ?'

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 Button.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   children: PropTypes.node
 }
 export default function Button({onClick, children = null, ...props}) {

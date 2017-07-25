@@ -4,12 +4,12 @@ import Textarea from 'react-textarea-autosize'
 import {cleanString} from 'helpers/stringHelpers'
 
 EditChoiceListItem.propTypes = {
-  index: PropTypes.number,
-  onEdit: PropTypes.func,
-  text: PropTypes.string,
+  checked: PropTypes.bool.isRequired,
+  index: PropTypes.number.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
-  onSelect: PropTypes.func,
-  checked: PropTypes.bool
+  text: PropTypes.string
 }
 export default function EditChoiceListItem(props) {
   return (
@@ -40,3 +40,4 @@ export default function EditChoiceListItem(props) {
     </div>
   )
 }
+

@@ -19,20 +19,32 @@ import LongText from 'components/Texts/LongText'
 
 export default class Comment extends Component {
   static propTypes = {
+    comment: PropTypes.shape({
+      content: PropTypes.string.isRequired,
+      discussionTitle: PropTypes.string,
+      likes: PropTypes.array.isRequired,
+      profilePicId: PropTypes.number,
+      replies: PropTypes.array.isRequired,
+      timeStamp: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired,
+      userId: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired
+    }).isRequired,
+    commentId: PropTypes.number.isRequired,
+    deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
+    index: PropTypes.number.isRequired,
     lastDeletedCommentIndex: PropTypes.number,
-    index: PropTypes.number,
-    comment: PropTypes.object,
-    userId: PropTypes.number,
-    onEditDone: PropTypes.func,
-    onLikeClick: PropTypes.func,
-    onDelete: PropTypes.func,
-    onReplySubmit: PropTypes.func,
-    onLoadMoreReplies: PropTypes.func,
     marginTop: PropTypes.bool,
-    deleteCallback: PropTypes.func,
-    commentId: PropTypes.number,
-    videoId: PropTypes.number
+    onDelete: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    userId: PropTypes.number,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor() {

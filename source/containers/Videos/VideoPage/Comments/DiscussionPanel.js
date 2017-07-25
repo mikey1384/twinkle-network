@@ -14,59 +14,42 @@ import Input from 'components/Texts/Input'
 import {
   deleteVideoCommentAsync,
   editVideoCommentAsync,
-  loadVideoDebateComments,
-  loadMoreDebateComments,
-  uploadVideoDebateComment,
-  uploadVideoDebateReply,
+  loadVideoDiscussionComments,
+  loadMoreDiscussionComments,
+  uploadVideoDiscussionComment,
+  uploadVideoDiscussionReply,
   likeVideoComment,
   loadMoreReplies,
-  editVideoDebate,
-  deleteVideoDebate
+  editVideoDiscussion,
+  deleteVideoDiscussion
 } from 'redux/actions/VideoActions'
 
-@connect(
-  state => ({
-    myId: state.UserReducer.userId
-  }),
-  {
-    onDelete: deleteVideoCommentAsync,
-    onEditDone: editVideoCommentAsync,
-    loadComments: loadVideoDebateComments,
-    loadMoreComments: loadMoreDebateComments,
-    onSubmit: uploadVideoDebateComment,
-    onLikeClick: likeVideoComment,
-    onReplySubmit: uploadVideoDebateReply,
-    onLoadMoreReplies: loadMoreReplies,
-    onDebateEditDone: editVideoDebate,
-    onDebateDelete: deleteVideoDebate
-  }
-)
-export default class DebatePanel extends Component {
+class DiscussionPanel extends Component {
   static propTypes = {
-    title: PropTypes.string,
+    comments: PropTypes.array.isRequired,
     description: PropTypes.string,
-    id: PropTypes.number,
-    username: PropTypes.string,
-    userId: PropTypes.number,
+    id: PropTypes.number.isRequired,
+    loadComments: PropTypes.func.isRequired,
+    loadMoreComments: PropTypes.func.isRequired,
+    loadMoreDiscussionCommentsButton: PropTypes.bool.isRequired,
+    myId: PropTypes.number,
+    numComments: PropTypes.string.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onDiscussionDelete: PropTypes.func.isRequired,
+    onDiscussionEditDone: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]),
-    numComments: PropTypes.string,
-    myId: PropTypes.number,
-    comments: PropTypes.array,
-    loadMoreDebateCommentsButton: PropTypes.bool,
-    onLikeClick: PropTypes.func,
-    onDelete: PropTypes.func,
-    onEditDone: PropTypes.func,
-    onLoadMoreReplies: PropTypes.func,
-    loadMoreComments: PropTypes.func,
-    videoId: PropTypes.number,
-    onSubmit: PropTypes.func,
-    onDebateDelete: PropTypes.func,
-    loadComments: PropTypes.func,
-    onReplySubmit: PropTypes.func,
-    onDebateEditDone: PropTypes.func
+    ]).isRequired,
+    title: PropTypes.string.isRequired,
+    userId: PropTypes.number,
+    username: PropTypes.string.isRequired,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -90,7 +73,7 @@ export default class DebatePanel extends Component {
   render() {
     const {
       id, title, description, username, userId, timeStamp, numComments, myId,
-      comments, loadMoreDebateCommentsButton, onLikeClick, onDelete, onEditDone, onLoadMoreReplies
+      comments, loadMoreDiscussionCommentsButton, onLikeClick, onDelete, onEditDone, onLoadMoreReplies
     } = this.props
     const {expanded, onEdit, confirmModalShown, editedTitle, editedDescription, editDoneButtonDisabled} = this.state
     const userIsOwner = myId === userId
@@ -186,12 +169,12 @@ export default class DebatePanel extends Component {
                   inputTypeLabel={'comment'}
                   type="videoDiscussionPanel"
                   comments={comments}
-                  loadMoreButton={loadMoreDebateCommentsButton}
+                  loadMoreButton={loadMoreDiscussionCommentsButton}
                   userId={myId}
                   onSubmit={this.onCommentSubmit}
                   contentId={id}
                   loadMoreComments={this.loadMoreComments}
-                  parent={{type: 'debate', id}}
+                  parent={{type: 'discussion', id}}
                   commentActions={{
                     onDelete,
                     onLikeClick,
@@ -249,8 +232,8 @@ export default class DebatePanel extends Component {
   }
 
   onDelete() {
-    const {id, onDebateDelete} = this.props
-    onDebateDelete(id, () => {
+    const {id, onDiscussionDelete} = this.props
+    onDiscussionDelete(id, () => {
       this.setState({confirmModalShown: false})
     })
   }
@@ -263,8 +246,8 @@ export default class DebatePanel extends Component {
 
   onEditDone() {
     const {editedTitle, editedDescription} = this.state
-    const {id, onDebateEditDone} = this.props
-    onDebateEditDone(id, editedTitle, editedDescription, () => {
+    const {id, onDiscussionEditDone} = this.props
+    onDiscussionEditDone(id, editedTitle, editedDescription, () => {
       this.setState({
         onEdit: false,
         editDoneButtonDisabled: true
@@ -277,3 +260,21 @@ export default class DebatePanel extends Component {
     onReplySubmit({discussionId: id, replyContent, comment, videoId, replyOfReply, originType})
   }
 }
+
+export default connect(
+  state => ({
+    myId: state.UserReducer.userId
+  }),
+  {
+    onDelete: deleteVideoCommentAsync,
+    onEditDone: editVideoCommentAsync,
+    loadComments: loadVideoDiscussionComments,
+    loadMoreComments: loadMoreDiscussionComments,
+    onSubmit: uploadVideoDiscussionComment,
+    onLikeClick: likeVideoComment,
+    onReplySubmit: uploadVideoDiscussionReply,
+    onLoadMoreReplies: loadMoreReplies,
+    onDiscussionEditDone: editVideoDiscussion,
+    onDiscussionDelete: deleteVideoDiscussion
+  }
+)(DiscussionPanel)

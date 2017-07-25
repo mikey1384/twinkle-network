@@ -56,16 +56,29 @@ class SortableThumb extends Component {
           opacity: isDragging ? 0.5 : 1
         }}
       >
-        <div
-          className="thumbnail"
-          style={{
-            cursor: 'pointer'
-          }}
-        >
-          <img
-            alt="Thumbnail"
-            src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
-          />
+        <div className="thumbnail">
+          <div
+            style={{
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
+              paddingBottom: '75%'
+            }}
+          >
+            <img
+              alt="Thumbnail"
+              src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
+              style={{
+                width: '100%',
+                position: 'absolute',
+                top: '0px',
+                left: '0px',
+                bottom: '0px',
+                right: '0px',
+                margin: 'auto'
+              }}
+            />
+          </div>
           <div
             className="caption"
             style={{height: '8rem'}}
