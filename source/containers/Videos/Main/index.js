@@ -21,69 +21,30 @@ import {
 } from 'redux/actions/PlaylistActions'
 import {connect} from 'react-redux'
 
-@connect(
-  state => ({
-    userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
-    userId: state.UserReducer.userId,
-
-    notificationLoaded: state.NotiReducer.loaded,
-
-    playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,
-    playlists: state.PlaylistReducer.allPlaylists,
-    loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
-
-    pinnedPlaylistsLoaded: state.PlaylistReducer.pinnedPlaylistsLoaded,
-    pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
-    loadMorePinnedPlaylists: state.PlaylistReducer.loadMorePinned,
-
-    addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
-    addVideoModalShown: state.VideoReducer.addVideoModalShown,
-
-    selectPlaylistsToPinModalShown: state.PlaylistReducer.selectPlaylistsToPinModalShown,
-    playlistsToPin: state.PlaylistReducer.playlistsToPin,
-    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton,
-
-    reorderPinnedPlaylistsModalShown: state.PlaylistReducer.reorderPinnedPlaylistsModalShown
-  }),
-  {
-    openSelectPlaylistsToPinModal: openSelectPlaylistsToPinModalAsync,
-    getVideosForModal: getVideosForModalAsync,
-    closeReorderPinnedPlaylistsModal,
-    closeSelectPlaylistsToPinModal,
-    openReorderPinnedPlaylistsModal,
-    closeAddVideoModal,
-    openAddVideoModal,
-    getPinnedPlaylists: getPinnedPlaylistsAsync,
-    getPlaylists: getPlaylistsAsync
-  }
-)
-
-export default class Main extends Component {
+class Main extends Component {
   static propTypes = {
-    getPlaylists: PropTypes.func,
-    getPinnedPlaylists: PropTypes.func,
-    notificationLoaded: PropTypes.bool,
-    userType: PropTypes.string,
-    isAdmin: PropTypes.bool,
+    addVideoModalShown: PropTypes.bool.isRequired,
+    closeAddVideoModal: PropTypes.func.isRequired,
+    closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
+    closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
+    getPinnedPlaylists: PropTypes.func.isRequired,
+    getPlaylists: PropTypes.func.isRequired,
+    isAdmin: PropTypes.bool.isRequired,
+    loadMorePlaylistsButton: PropTypes.bool.isRequired,
+    loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
+    notificationLoaded: PropTypes.bool.isRequired,
+    openAddVideoModal: PropTypes.func.isRequired,
+    openReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
+    openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
+    pinnedPlaylists: PropTypes.array.isRequired,
+    pinnedPlaylistsLoaded: PropTypes.bool.isRequired,
+    playlists: PropTypes.array.isRequired,
+    playlistsLoaded: PropTypes.bool.isRequired,
+    playlistsToPin: PropTypes.array.isRequired,
+    reorderPinnedPlaylistsModalShown: PropTypes.bool.isRequired,
+    selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
     userId: PropTypes.number,
-    playlists: PropTypes.array,
-    playlistsLoaded: PropTypes.bool,
-    loadMorePlaylistsButton: PropTypes.bool,
-    pinnedPlaylists: PropTypes.array,
-    pinnedPlaylistsLoaded: PropTypes.bool,
-    loadMorePinnedPlaylists: PropTypes.bool,
-    addVideoModalShown: PropTypes.bool,
-    selectPlaylistsToPinModalShown: PropTypes.bool,
-    playlistsToPin: PropTypes.array,
-    loadMorePlaylistsToPinButton: PropTypes.bool,
-    reorderPinnedPlaylistsModalShown: PropTypes.func,
-    openSelectPlaylistsToPinModal: PropTypes.func,
-    openReorderPinnedPlaylistsModal: PropTypes.func,
-    openAddVideoModal: PropTypes.func,
-    closeAddVideoModal: PropTypes.func,
-    closeSelectPlaylistsToPinModal: PropTypes.func,
-    closeReorderPinnedPlaylistsModal: PropTypes.func
+    userType: PropTypes.string
   }
 
   constructor() {
@@ -109,7 +70,6 @@ export default class Main extends Component {
       pinnedPlaylists,
       getPinnedPlaylists,
       pinnedPlaylistsLoaded,
-      loadMorePinnedPlaylists,
 
       addVideoModalShown,
 
@@ -156,7 +116,6 @@ export default class Main extends Component {
             buttonGroupShown={userType === 'master'}
             buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
             title="Featured Playlists"
-            loadMoreButton={loadMorePinnedPlaylists}
             userId={userId}
             playlists={pinnedPlaylists}
             loadPlaylists={getPinnedPlaylists}
@@ -248,3 +207,40 @@ export default class Main extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({
+    userType: state.UserReducer.userType,
+    isAdmin: state.UserReducer.isAdmin,
+    userId: state.UserReducer.userId,
+
+    notificationLoaded: state.NotiReducer.loaded,
+
+    playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,
+    playlists: state.PlaylistReducer.allPlaylists,
+    loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
+
+    pinnedPlaylistsLoaded: state.PlaylistReducer.pinnedPlaylistsLoaded,
+    pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
+
+    addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
+    addVideoModalShown: state.VideoReducer.addVideoModalShown,
+
+    selectPlaylistsToPinModalShown: state.PlaylistReducer.selectPlaylistsToPinModalShown,
+    playlistsToPin: state.PlaylistReducer.playlistsToPin,
+    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton,
+
+    reorderPinnedPlaylistsModalShown: state.PlaylistReducer.reorderPinnedPlaylistsModalShown
+  }),
+  {
+    openSelectPlaylistsToPinModal: openSelectPlaylistsToPinModalAsync,
+    getVideosForModal: getVideosForModalAsync,
+    closeReorderPinnedPlaylistsModal,
+    closeSelectPlaylistsToPinModal,
+    openReorderPinnedPlaylistsModal,
+    closeAddVideoModal,
+    openAddVideoModal,
+    getPinnedPlaylists: getPinnedPlaylistsAsync,
+    getPlaylists: getPlaylistsAsync
+  }
+)(Main)

@@ -24,7 +24,7 @@ export default function ChatButton({onClick, chatMode, loading, numUnreads = 0})
         >
           {!loading && !chatMode && <span><span className="glyphicon glyphicon-comment"></span>&nbsp;</span>}
           {loading && <span><span className="glyphicon glyphicon-refresh spinning"></span>&nbsp;</span>}
-          {`${chatMode ? 'Close' : (numUnreads > 0 ? 'Messages' : 'Chat')} `}
+          {`${chatMode ? 'Close' : ' Talk'} `}
           {!chatMode && numUnreads > 0 &&
             <span
               className="badge"

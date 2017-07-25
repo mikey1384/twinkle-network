@@ -805,29 +805,22 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   `
   const numUnreadQuery = `SELECT COUNT(id) AS numUnreads FROM msg_chats WHERE isSilent = '0' AND channelId = ? AND timeStamp > ? AND userId != ?`
 
-  let lastReads = []
-  let numUnreadsArray = []
-
   return poolQuery(channelQuery, user.id).then(
     rows => promiseSeries(
-      rows.map(
-        ({channelId}) => () => poolQuery(lastReadsQuery, [user.id, channelId]).then(results => {
-          if (results.length > 0) {
-            const [{channelId, lastRead}] = results
-            lastReads.push({channelId, lastRead})
-          }
-        })
-      )
+      rows.map(({channelId}) => () => poolQuery(lastReadsQuery, [user.id, channelId]))
     )
   ).then(
-    () => promiseSeries(
-      lastReads.map(({channelId, lastRead}) => () => poolQuery(numUnreadQuery, [channelId, lastRead, user.id]).then(
-        ([{numUnreads}]) => numUnreadsArray.push(numUnreads)
-      ))
+    rows => promiseSeries(
+      rows.reduce((resultingArray, [row]) => {
+        if (row) {
+          return resultingArray.concat([() => poolQuery(numUnreadQuery, [row.channelId, row.lastRead, user.id])])
+        }
+        return resultingArray
+      }, [])
     )
   ).then(
-    () => {
-      const totalNumUnreads = numUnreadsArray.reduce((sum, numUnreads) => (
+    results => {
+      const totalNumUnreads = results.reduce((sum, [{numUnreads}]) => (
         sum + Number(numUnreads)
       ), 0)
       res.send({numUnreads: totalNumUnreads})

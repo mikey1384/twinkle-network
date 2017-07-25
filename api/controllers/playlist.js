@@ -164,12 +164,9 @@ router.post('/edit/videos', requireAuth, (req, res) => {
 
   return poolQuery('DELETE FROM vq_playlistvideos WHERE playlistId = ?', playlistId).then(
     () => {
-      let tasks = []
-      for (let i = 0; i < selectedVideos.length; i++) {
-        tasks.push(() => poolQuery('INSERT INTO vq_playlistvideos SET ?', {playlistId, videoId: selectedVideos[i]}))
-      }
+      let insertQuery = 'INSERT INTO vq_playlistvideos SET ?'
       return Promise.all([
-        promiseSeries(tasks),
+        promiseSeries(selectedVideos.map(videoId => () => poolQuery(insertQuery, {playlistId, videoId}))),
         poolQuery(
           'UPDATE vq_playlists SET ? WHERE id = ?',
           [{timeStamp: Math.floor(Date.now()/1000)}, playlistId]

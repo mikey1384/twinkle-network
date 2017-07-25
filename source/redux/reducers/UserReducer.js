@@ -1,4 +1,5 @@
 const defaultState = {
+  isAdmin: false,
   profile: {},
   profiles: [],
   searchedProfiles: [],

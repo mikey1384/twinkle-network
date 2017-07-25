@@ -29,19 +29,12 @@ const thumbTarget = {
   }
 }
 
-@DragSource(ItemTypes.THUMB, thumbSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
-}))
-@DropTarget(ItemTypes.THUMB, thumbTarget, (connect) => ({
-  connectDropTarget: connect.dropTarget()
-}))
-export default class SortableThumb extends Component {
+class SortableThumb extends Component {
   static propTypes = {
-    video: PropTypes.object.isRequired,
-    connectDragSource: PropTypes.func,
-    connectDropTarget: PropTypes.func,
-    isDragging: PropTypes.bool
+    connectDragSource: PropTypes.func.isRequired,
+    connectDropTarget: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
+    video: PropTypes.object.isRequired
   }
 
   constructor() {
@@ -110,3 +103,12 @@ export default class SortableThumb extends Component {
     }
   }
 }
+
+export default DropTarget(ItemTypes.THUMB, thumbTarget, (connect) => ({
+  connectDropTarget: connect.dropTarget()
+}))(
+  DragSource(ItemTypes.THUMB, thumbSource, (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }))(SortableThumb)
+)

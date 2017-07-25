@@ -11,29 +11,17 @@ const last = (array) => {
   return array[array.length - 1]
 }
 
-@withRouter
-@connect(
-  state => ({
-    loaded: state.VideoReducer.loaded,
-    loadMoreButton: state.VideoReducer.loadMoreButton,
-    videos: state.VideoReducer.allVideoThumbs
-  }),
-  {
-    getInitialVideos,
-    getMoreVideos
-  }
-)
-export default class AllVideosPanel extends Component {
+class AllVideosPanel extends Component {
   static propTypes = {
-    location: PropTypes.object,
-    videos: PropTypes.array,
-    getInitialVideos: PropTypes.func,
+    getInitialVideos: PropTypes.func.isRequired,
+    getMoreVideos: PropTypes.func.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    loadMoreButton: PropTypes.bool.isRequired,
+    location: PropTypes.object.isRequired,
     onAddVideoClick: PropTypes.func.isRequired,
-    title: PropTypes.string,
-    loadMoreButton: PropTypes.bool,
-    loaded: PropTypes.bool,
+    title: PropTypes.string.isRequired,
     userId: PropTypes.number,
-    getMoreVideos: PropTypes.func
+    videos: PropTypes.array.isRequired
   }
 
   constructor() {
@@ -89,3 +77,15 @@ export default class AllVideosPanel extends Component {
     return getMoreVideos(lastId)
   }
 }
+
+export default connect(
+  state => ({
+    loaded: state.VideoReducer.loaded,
+    loadMoreButton: state.VideoReducer.loadMoreButton,
+    videos: state.VideoReducer.allVideoThumbs
+  }),
+  {
+    getInitialVideos,
+    getMoreVideos
+  }
+)(withRouter(AllVideosPanel))

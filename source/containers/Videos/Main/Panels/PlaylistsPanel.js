@@ -7,23 +7,18 @@ import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions'
 import SectionPanel from 'components/SectionPanel'
 import {queryStringForArray} from 'helpers/apiHelpers'
 
-@withRouter
-@connect(
-  null,
-  {getMorePlaylistsAsync}
-)
-export default class PlaylistsPanel extends Component {
+class PlaylistsPanel extends Component {
   static propTypes = {
-    location: PropTypes.object,
-    playlists: PropTypes.array.isRequired,
-    userId: PropTypes.number,
-    title: PropTypes.string,
     buttonGroup: PropTypes.func,
     buttonGroupShown: PropTypes.bool,
+    getMorePlaylistsAsync: PropTypes.func.isRequired,
+    loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool,
-    loaded: PropTypes.bool,
-    loadPlaylists: PropTypes.func,
-    getMorePlaylistsAsync: PropTypes.func
+    loadPlaylists: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    playlists: PropTypes.array.isRequired,
+    title: PropTypes.string.isRequired,
+    userId: PropTypes.number
   }
 
   constructor() {
@@ -72,3 +67,8 @@ export default class PlaylistsPanel extends Component {
     return getMorePlaylistsAsync(queryStringForArray(playlists, 'id', 'shownPlaylists'))
   }
 }
+
+export default connect(
+  null,
+  {getMorePlaylistsAsync}
+)(withRouter(PlaylistsPanel))

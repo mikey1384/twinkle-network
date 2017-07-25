@@ -1,4 +1,4 @@
-const {poolQuery} = require('../helpers')
+const {poolQuery, promiseSeries} = require('../helpers')
 
 module.exports = {
   fetchPlaylists(query) {
@@ -31,11 +31,11 @@ module.exports = {
         const playlistVideoNumberQuery = `
           SELECT COUNT(id) AS numVids FROM vq_playlistvideos WHERE playlistId = ?
         `
-        return Promise.all(playlistIds.map(playlistId => {
-          return Promise.all([
-            poolQuery(playlistQuery, playlistId),
-            poolQuery(playlistVideosQuery, playlistId),
-            poolQuery(playlistVideoNumberQuery, playlistId)
+        return promiseSeries(playlistIds.map(playlistId => {
+          return () => promiseSeries([
+            () => poolQuery(playlistQuery, playlistId),
+            () => poolQuery(playlistVideosQuery, playlistId),
+            () => poolQuery(playlistVideoNumberQuery, playlistId)
           ])
         }))
       }

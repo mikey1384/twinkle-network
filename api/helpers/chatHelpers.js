@@ -194,32 +194,29 @@ function fetchChannelTitlesAndLastMessages(channels, userId) {
 }
 
 const fetchMessages = channelId => {
-  const query = `
+  const messageQuery = `
     SELECT id FROM msg_chats WHERE channelId = ? ORDER BY id DESC LIMIT 21
   `
-  let messagesArray = []
-  return poolQuery(query, channelId).then(
+  const messageDetailsQuery = `
+    SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification,
+    a.isSubject, a.subjectId, a.isReloadedSubject, b.username,
+    IF(
+      a.isReloadedSubject = 1,
+      (SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.subjectId
+        AND isSubject != 1 AND isReloadedSubject != 1
+      ),
+      NULL
+    ) AS numMsgs,
+    c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id
+    LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
+    WHERE a.id = ?
+  `
+  return poolQuery(messageQuery, channelId).then(
     messages => promiseSeries(
-      messages.map(({id}) => {
-        let query = `
-          SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification,
-          a.isSubject, a.subjectId, a.isReloadedSubject, b.username,
-          IF(
-            a.isReloadedSubject = 1,
-            (SELECT COUNT(id) FROM msg_chats WHERE subjectId = a.subjectId
-              AND isSubject != 1 AND isReloadedSubject != 1
-            ),
-            NULL
-          ) AS numMsgs,
-          c.id AS profilePicId FROM msg_chats a LEFT JOIN users b ON a.userId = b.id
-          LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
-          WHERE a.id = ?
-        `
-        return () => poolQuery(query, id).then(([message]) => messagesArray.push(message))
-      })
+      messages.map(({id}) => () => poolQuery(messageDetailsQuery, id))
     )
   ).then(
-    () => Promise.resolve(messagesArray)
+    (results) => Promise.resolve(results.map(([message]) => message))
   )
 }
 

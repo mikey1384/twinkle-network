@@ -4,12 +4,12 @@ import VideoThumb from './ModalVideoThumb'
 import Button from 'components/Button'
 
 SelectVideosForm.propTypes = {
-  videos: PropTypes.array,
-  selectedVideos: PropTypes.array,
+  loadMoreVideos: PropTypes.func,
   loadMoreVideosButton: PropTypes.bool,
-  onSelect: PropTypes.func,
-  onDeselect: PropTypes.func,
-  loadMoreVideos: PropTypes.func
+  onSelect: PropTypes.func.isRequired,
+  onDeselect: PropTypes.func.isRequired,
+  selectedVideos: PropTypes.array.isRequired,
+  videos: PropTypes.array.isRequired
 }
 export default function SelectVideosForm({
   videos,
