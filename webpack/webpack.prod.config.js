@@ -29,6 +29,7 @@ module.exports = {
       compress: {
         warnings: false
       }
-    })
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ]
 }
