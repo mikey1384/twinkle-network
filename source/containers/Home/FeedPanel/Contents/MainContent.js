@@ -11,6 +11,7 @@ MainContent.propTypes = {
   contentDescription: PropTypes.string,
   contentTitle: PropTypes.string,
   hasHqThumb: PropTypes.number,
+  isEditing: PropTypes.bool.isRequired,
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
   rootType: PropTypes.string,
@@ -19,12 +20,12 @@ MainContent.propTypes = {
   videoViews: PropTypes.string
 }
 export default function MainContent({
-  content, contentDescription, contentTitle, hasHqThumb,
+  content, contentDescription, contentTitle, hasHqThumb, isEditing,
   rootId, rootContent, rootType, urlRelated, type, videoViews
 }) {
   return (
     <div>
-      {type === 'comment' &&
+      {!isEditing && type === 'comment' &&
         <span style={{
           fontSize: '1.2em',
           whiteSpace: 'pre-wrap',
@@ -35,6 +36,7 @@ export default function MainContent({
       }
       {(type === 'video' || type === 'discussion') &&
         <VideoPlayer
+          onEdit={isEditing}
           title={contentTitle}
           containerClassName="embed-responsive embed-responsive-16by9"
           className="embed-responsive-item"
@@ -43,7 +45,7 @@ export default function MainContent({
           videoCode={rootContent}
         />
       }
-      {type === 'url' && contentDescription && contentDescription !== 'No description' &&
+      {!isEditing && type === 'url' && contentDescription && contentDescription !== 'No description' &&
         <div style={{
           fontSize: '1.2em',
           whiteSpace: 'pre-wrap',
@@ -52,7 +54,7 @@ export default function MainContent({
           <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText>
         </div>
       }
-      {type === 'url' &&
+      {!isEditing && type === 'url' &&
         <Embedly
           title={cleanString(contentTitle)}
           url={content}
@@ -60,7 +62,7 @@ export default function MainContent({
           {...urlRelated}
         />
       }
-      {type === 'discussion' &&
+      {!isEditing && type === 'discussion' &&
         <div style={{
           fontSize: '2rem',
           marginTop: '1em'
@@ -69,8 +71,7 @@ export default function MainContent({
           <p>{cleanString(contentTitle)}</p>
         </div>
       }
-      {type === 'video' &&
-      !!contentDescription && contentDescription !== 'No description' &&
+      {!isEditing && type === 'video' && contentDescription && contentDescription !== 'No description' &&
         <div style={{
           marginTop: '1em',
           fontSize: '1.2em',
@@ -80,8 +81,7 @@ export default function MainContent({
           <LongText>{contentDescription}</LongText>
         </div>
       }
-      {type === 'discussion' &&
-      !!contentDescription &&
+      {!isEditing && type === 'discussion' && contentDescription &&
         <div style={{
           marginBottom: '1em',
           fontSize: '1.2em',
@@ -91,7 +91,7 @@ export default function MainContent({
           <LongText>{contentDescription}</LongText>
         </div>
       }
-      {type === 'video' && videoViews > 10 &&
+      {!isEditing && type === 'video' && videoViews > 10 &&
         <span
           className="pull-right"
           style={{

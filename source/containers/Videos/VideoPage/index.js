@@ -28,31 +28,31 @@ import ExecutionEnvironment from 'exenv'
 
 class VideoPage extends Component {
   static propTypes = {
+    content: PropTypes.string.isRequired,
+    deleteVideo: PropTypes.func.isRequired,
+    description: PropTypes.string,
+    editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
-    history: PropTypes.object,
-    match: PropTypes.object,
-    location: PropTypes.object,
-    loadVideoPage: PropTypes.func,
-    resetVideoPage: PropTypes.func,
-    content: PropTypes.string,
-    title: PropTypes.string,
+    history: PropTypes.object.isRequired,
+    likes: PropTypes.array.isRequired,
+    likeVideo: PropTypes.func.isRequired,
+    loadVideoPage: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+    questions: PropTypes.array.isRequired,
+    resetVideoPage: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]),
-    questions: PropTypes.array,
-    likes: PropTypes.array,
-    videoViews: PropTypes.string,
-    uploaderId: PropTypes.number,
-    uploaderName: PropTypes.string,
-    description: PropTypes.string,
+    ]).isRequired,
+    title: PropTypes.string.isRequired,
+    uploaderId: PropTypes.number.isRequired,
+    uploaderName: PropTypes.string.isRequired,
+    uploadQuestions: PropTypes.func.isRequired,
     userId: PropTypes.number,
     videoUnavailable: PropTypes.bool,
     videoLoading: PropTypes.bool,
-    editVideoPage: PropTypes.func,
-    deleteVideo: PropTypes.func,
-    uploadQuestions: PropTypes.func,
-    likeVideo: PropTypes.func
+    videoViews: PropTypes.string.isRequired
   }
 
   constructor() {

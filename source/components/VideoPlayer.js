@@ -56,7 +56,7 @@ class VideoPlayer extends Component {
   componentDidUpdate(prevProps) {
     const {onEdit} = this.props
     if (prevProps.onEdit !== onEdit) {
-      this.setState({playing: !onEdit})
+      this.setState({playing: false})
     }
   }
 
@@ -65,26 +65,26 @@ class VideoPlayer extends Component {
   }
 
   render() {
-    const {videoCode, title, containerClassName, className, style, small} = this.props
+    const {videoCode, title, containerClassName, className, onEdit, style, small} = this.props
     const {imageUrl, playing} = this.state
     return (
       <div
         className={small ? containerClassName : `video-player ${containerClassName}`}
-        style={{...style, cursor: !playing && 'pointer'}}
+        style={{...style, cursor: (!onEdit && !playing) && 'pointer'}}
         onClick={() => {
-          if (!playing) {
+          if (!onEdit && !playing) {
             this.setState({playing: true})
           }
         }}
       >
-        {!small && !playing && <div>
+        {((!small && !playing) || onEdit) && <div>
           <img
             alt=""
             className="embed-responsive-item"
             src={imageUrl}
           />
         </div>}
-        {playing && !small ?
+        {(!onEdit && !small && playing) ?
           <Loading
             style={{
               color: Color.blue,
@@ -99,7 +99,7 @@ class VideoPlayer extends Component {
             }}
           /> : <a></a>
         }
-        {playing &&
+        {!onEdit && playing &&
           <YouTube
             className={className}
             opts={{title}}

@@ -41,6 +41,7 @@ class Contents extends Component {
   constructor() {
     super()
     this.state = {
+      isEditing: false,
       userListModalShown: false,
       clickListenerState: false,
       commentsShown: false
@@ -60,43 +61,46 @@ class Contents extends Component {
       }, feed, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onDelete, onReplySubmit, onSubmit
     } = this.props
-    const {userListModalShown, clickListenerState, commentsShown} = this.state
+    const {userListModalShown, clickListenerState, commentsShown, isEditing} = this.state
     let userLikedThis = false
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId === myId) userLikedThis = true
     }
     return (
       <div>
-        {type === 'comment' && attachedVideoShown &&
-          <VideoPlayer
-            autoplay
-            title={contentTitle}
-            style={{marginBottom: '1em'}}
-            containerClassName="embed-responsive embed-responsive-16by9"
-            className="embed-responsive-item"
+        <div>
+          {type === 'comment' && attachedVideoShown &&
+            <VideoPlayer
+              autoplay
+              title={contentTitle}
+              style={{marginBottom: '1em'}}
+              containerClassName="embed-responsive embed-responsive-16by9"
+              className="embed-responsive-item"
+              hasHqThumb={hasHqThumb}
+              videoId={rootId}
+              videoCode={rootContent}
+            />
+          }
+          {type === 'comment' && (commentId || replyId || discussionId) &&
+            <TargetContent
+              feed={feed}
+              myId={myId}
+            />
+          }
+          <MainContent
+            content={content}
+            contentDescription={contentDescription}
+            contentTitle={contentTitle}
             hasHqThumb={hasHqThumb}
-            videoId={rootId}
-            videoCode={rootContent}
+            isEditing={isEditing}
+            rootId={rootId}
+            rootContent={rootContent}
+            rootType={rootType}
+            urlRelated={{thumbUrl, actualTitle, actualDescription, siteUrl}}
+            type={type}
+            videoViews={videoViews}
           />
-        }
-        {type === 'comment' && (commentId || replyId || discussionId) &&
-          <TargetContent
-            feed={feed}
-            myId={myId}
-          />
-        }
-        <MainContent
-          content={content}
-          contentDescription={contentDescription}
-          contentTitle={contentTitle}
-          hasHqThumb={hasHqThumb}
-          rootId={rootId}
-          rootContent={rootContent}
-          rootType={rootType}
-          urlRelated={{thumbUrl, actualTitle, actualDescription, siteUrl}}
-          type={type}
-          videoViews={videoViews}
-        />
+        </div>
         <div style={{paddingTop: type === 'video' ? '2em' : '1.5em'}}>
           {type !== 'discussion' &&
             [<LikeButton
@@ -120,18 +124,17 @@ class Contents extends Component {
           }
           {type === 'discussion' &&
             <Button
-              style={{marginTop: '0.5em'}}
               className="btn btn-warning"
               onClick={this.onCommentButtonClick}
             >
               Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
             </Button>
           }
-          {false && myId === uploaderId &&
+          {myId === uploaderId &&
             <Button
               style={{marginLeft: '0.5em'}}
-              className="btn btn-default btn-sm"
-              onClick={() => console.log('edit clicked')}
+              className={`btn btn-default${type === 'discussion' ? '' : ' btn-sm'}`}
+              onClick={() => this.setState({isEditing: true})}
             >
               <span className="glyphicon glyphicon-pencil"></span>&nbsp;Edit&nbsp;
             </Button>
