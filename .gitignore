@@ -21,4 +21,3 @@ certs
 .babel.json
 .vscode
 .docker
-package-lock.json
