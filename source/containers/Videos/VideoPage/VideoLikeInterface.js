@@ -4,11 +4,11 @@ import Likers from 'components/Likers'
 import LikeButton from 'components/LikeButton'
 
 VideoLikeInterface.propTypes = {
-  userId: PropTypes.number,
-  likes: PropTypes.array,
-  onLikeClick: PropTypes.func,
-  showLikerList: PropTypes.func,
-  className: PropTypes.string
+  className: PropTypes.string,
+  likes: PropTypes.array.isRequired,
+  onLikeClick: PropTypes.func.isRequired,
+  showLikerList: PropTypes.func.isRequired,
+  userId: PropTypes.number
 }
 export default function VideoLikeInterface({userId, likes, onLikeClick, showLikerList, className}) {
   return (

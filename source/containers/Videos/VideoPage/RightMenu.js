@@ -8,38 +8,24 @@ import {cleanString} from 'helpers/stringHelpers'
 import {queryStringForArray} from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
 
-@connect(
-  state => ({
-    nextVideos: state.VideoReducer.videoPage.nextVideos,
-    relatedVideos: state.VideoReducer.videoPage.relatedVideos,
-    otherVideos: state.VideoReducer.videoPage.otherVideos,
-    playlistVideos: state.VideoReducer.videoPage.playlistVideos,
-    playlistVideosLoadMoreShown: state.VideoReducer.videoPage.playlistVideosLoadMoreShown,
-    playlistTitle: state.VideoReducer.videoPage.playlistTitle
-  }),
-  {
-    loadMorePlaylistVideos,
-    loadRightMenuVideos
-  }
-)
-export default class RightMenu extends Component {
+class RightMenu extends Component {
   static propTypes = {
-    loadMorePlaylistVideos: PropTypes.func,
-    loadRightMenuVideos: PropTypes.func,
-    videoId: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string
-    ]),
+    loadMorePlaylistVideos: PropTypes.func.isRequired,
+    loadRightMenuVideos: PropTypes.func.isRequired,
+    nextVideos: PropTypes.array,
+    otherVideos: PropTypes.array,
     playlistId: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
     ]),
-    nextVideos: PropTypes.array,
+    playlistTitle: PropTypes.string,
     playlistVideos: PropTypes.array,
     playlistVideosLoadMoreShown: PropTypes.bool,
-    playlistTitle: PropTypes.string,
     relatedVideos: PropTypes.array,
-    otherVideos: PropTypes.array
+    videoId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]).isRequired
   }
 
   constructor() {
@@ -141,3 +127,18 @@ export default class RightMenu extends Component {
     ))
   }
 }
+
+export default connect(
+  state => ({
+    nextVideos: state.VideoReducer.videoPage.nextVideos,
+    relatedVideos: state.VideoReducer.videoPage.relatedVideos,
+    otherVideos: state.VideoReducer.videoPage.otherVideos,
+    playlistVideos: state.VideoReducer.videoPage.playlistVideos,
+    playlistVideosLoadMoreShown: state.VideoReducer.videoPage.playlistVideosLoadMoreShown,
+    playlistTitle: state.VideoReducer.videoPage.playlistTitle
+  }),
+  {
+    loadMorePlaylistVideos,
+    loadRightMenuVideos
+  }
+)(RightMenu)

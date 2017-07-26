@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React from 'react'
 import {DragSource, DropTarget} from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
 
@@ -26,37 +26,34 @@ const listItemTarget = {
   }
 }
 
-@DragSource(ItemTypes.LIST_ITEM, listItemSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
-}))
-@DropTarget(ItemTypes.LIST_ITEM, listItemTarget, (connect) => ({
-  connectDropTarget: connect.dropTarget()
-}))
-export default class QuestionsListItem extends Component {
-  static propTypes = {
-    connectDragSource: PropTypes.func,
-    connectDropTarget: PropTypes.func,
-    isDragging: PropTypes.bool,
-    item: PropTypes.object
-  }
-  render() {
-    const {connectDragSource, connectDropTarget, isDragging} = this.props
-    return connectDragSource(connectDropTarget(
-      <li
-        className="list-group-item"
-        style={{
-          opacity: isDragging ? 0 : 1,
-          color: (!this.props.item.label || this.props.item.deleted) && '#999'
-        }}
-      >
-        {this.props.item.label ?
-          `${this.props.item.label} ${this.props.item.deleted ? '(removed)' : ''}`
-          :
-          `Untitled Question ${this.props.item.id + 1} ${this.props.item.deleted ? '(removed)' : ''}`
-        }
-        <span className="glyphicon glyphicon-align-justify pull-right grey-color"></span>
-      </li>
-    ))
-  }
+QuestionsListItem.propTypes = {
+  connectDragSource: PropTypes.func,
+  connectDropTarget: PropTypes.func,
+  isDragging: PropTypes.bool,
+  item: PropTypes.object
 }
+function QuestionsListItem({connectDragSource, connectDropTarget, isDragging, item}) {
+  return connectDragSource(connectDropTarget(
+    <li
+      className="list-group-item"
+      style={{
+        opacity: isDragging ? 0 : 1,
+        color: (!item.label || item.deleted) && '#999'
+      }}
+    >
+      {item.label ? `${item.label} ${item.deleted ? '(removed)' : ''}` :
+        `Untitled Question ${item.id + 1} ${item.deleted ? '(removed)' : ''}`
+      }
+      <span className="glyphicon glyphicon-align-justify pull-right grey-color"></span>
+    </li>
+  ))
+}
+
+export default DropTarget(ItemTypes.LIST_ITEM, listItemTarget, (connect) => ({
+  connectDropTarget: connect.dropTarget()
+}))(
+  DragSource(ItemTypes.LIST_ITEM, listItemSource, (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }))(QuestionsListItem)
+)

@@ -8,19 +8,19 @@ import {processedString} from 'helpers/stringHelpers'
 
 export default class QuestionBlock extends Component {
   static propTypes = {
-    choices: PropTypes.array,
-    title: PropTypes.string,
-    inputType: PropTypes.string,
-    onSelectChoice: PropTypes.func,
-    questionIndex: PropTypes.number,
-    onEdit: PropTypes.bool,
-    deleted: PropTypes.bool,
-    onRemove: PropTypes.func,
-    onUndoRemove: PropTypes.func,
-    onEditStart: PropTypes.func,
-    onEditCancel: PropTypes.func,
-    onEditDone: PropTypes.func,
-    onRearrange: PropTypes.func
+    choices: PropTypes.array.isRequired,
+    deleted: PropTypes.bool.isRequired,
+    inputType: PropTypes.string.isRequired,
+    onEdit: PropTypes.bool.isRequired,
+    onEditCancel: PropTypes.func.isRequired,
+    onEditDone: PropTypes.func.isRequired,
+    onEditStart: PropTypes.func.isRequired,
+    onRearrange: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    onSelectChoice: PropTypes.func.isRequired,
+    onUndoRemove: PropTypes.func.isRequired,
+    questionIndex: PropTypes.number.isRequired,
+    title: PropTypes.string
   }
   constructor(props) {
     super()

@@ -28,7 +28,6 @@ export default function options(app) {
             plugins: [
               ['transform-object-rest-spread'],
               ['transform-class-properties'],
-              ['transform-decorators-legacy'],
               [
                 'react-transform',
                 {

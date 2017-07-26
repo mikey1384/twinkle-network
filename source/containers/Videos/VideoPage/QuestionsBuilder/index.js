@@ -67,13 +67,12 @@ const defaultState = props => ({
   reorderModeOn: false
 })
 
-@DragDropContext(HTML5Backend)
-export default class QuestionsBuilder extends Component {
+class QuestionsBuilder extends Component {
   static propTypes = {
-    title: PropTypes.string,
-    onHide: PropTypes.func,
-    videoCode: PropTypes.string,
-    onSubmit: PropTypes.func
+    onHide: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    videoCode: PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -447,3 +446,5 @@ export default class QuestionsBuilder extends Component {
     }
   }
 }
+
+export default DragDropContext(HTML5Backend)(QuestionsBuilder)

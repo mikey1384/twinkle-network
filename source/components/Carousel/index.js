@@ -39,28 +39,21 @@ const stackBehavior = {
   DESTRUCTIVE: 'DESTRUCTIVE'
 }
 
-@connect(
-  state => ({
-    chatMode: state.ChatReducer.chatMode,
-    clickSafe: state.PlaylistReducer.clickSafe
-  }),
-  {clickSafeOn, clickSafeOff}
-)
-export default class Carousel extends Component {
+class Carousel extends Component {
   static propTypes = {
-    slideIndex: PropTypes.number,
-    slidesToScroll: PropTypes.number,
-    showAllButton: PropTypes.bool,
     chatMode: PropTypes.bool,
-    children: PropTypes.array,
+    children: PropTypes.array.isRequired,
     className: PropTypes.string,
     clickSafe: PropTypes.bool,
-    style: PropTypes.object,
-    userIsUploader: PropTypes.bool,
-    showQuestionsBuilder: PropTypes.func,
-    progressBar: PropTypes.bool,
     onFinish: PropTypes.func,
-    onShowAll: PropTypes.func
+    onShowAll: PropTypes.func.isRequired,
+    progressBar: PropTypes.bool,
+    showAllButton: PropTypes.bool,
+    showQuestionsBuilder: PropTypes.func,
+    slideIndex: PropTypes.number.isRequired,
+    slidesToScroll: PropTypes.number.isRequired,
+    style: PropTypes.object,
+    userIsUploader: PropTypes.bool
   }
 
   static defaultProps = {
@@ -382,3 +375,11 @@ export default class Carousel extends Component {
     setDimensions.call(this)
   }
 }
+
+export default connect(
+  state => ({
+    chatMode: state.ChatReducer.chatMode,
+    clickSafe: state.PlaylistReducer.clickSafe
+  }),
+  {clickSafeOn, clickSafeOff}
+)(Carousel)

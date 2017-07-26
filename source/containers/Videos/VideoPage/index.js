@@ -26,23 +26,7 @@ import {stringIsEmpty} from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ExecutionEnvironment from 'exenv'
 
-@connect(
-  state => ({
-    ...state.VideoReducer.videoPage,
-    userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
-    userId: state.UserReducer.userId
-  }),
-  {
-    editVideoPage: editVideoPageAsync,
-    deleteVideo: deleteVideoAsync,
-    uploadQuestions: uploadQuestionsAsync,
-    likeVideo: likeVideoAsync,
-    resetVideoPage,
-    loadVideoPage: loadVideoPageAsync
-  }
-)
-export default class VideoPage extends Component {
+class VideoPage extends Component {
   static propTypes = {
     hasHqThumb: PropTypes.number,
     history: PropTypes.object,
@@ -71,7 +55,7 @@ export default class VideoPage extends Component {
     likeVideo: PropTypes.func
   }
 
-  constructor(props) {
+  constructor() {
     super()
     this.state = {
       watchTabActive: true,
@@ -349,3 +333,20 @@ export default class VideoPage extends Component {
     })
   }
 }
+
+export default connect(
+  state => ({
+    ...state.VideoReducer.videoPage,
+    userType: state.UserReducer.userType,
+    isAdmin: state.UserReducer.isAdmin,
+    userId: state.UserReducer.userId
+  }),
+  {
+    editVideoPage: editVideoPageAsync,
+    deleteVideo: deleteVideoAsync,
+    uploadQuestions: uploadQuestionsAsync,
+    likeVideo: likeVideoAsync,
+    resetVideoPage,
+    loadVideoPage: loadVideoPageAsync
+  }
+)(VideoPage)

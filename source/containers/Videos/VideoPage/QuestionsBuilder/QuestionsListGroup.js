@@ -3,10 +3,10 @@ import React from 'react'
 import QuestionsListItem from './QuestionsListItem'
 
 QuestionsListGroup.propTypes = {
-  questions: PropTypes.array,
-  questionIds: PropTypes.array,
-  style: PropTypes.object,
-  onMove: PropTypes.func
+  onMove: PropTypes.func.isRequired,
+  questionIds: PropTypes.array.isRequired,
+  questions: PropTypes.array.isRequired,
+  style: PropTypes.object
 }
 export default function QuestionsListGroup({questions, questionIds, style, onMove}) {
   const listItems = questionIds.reduce((result, questionId) => {

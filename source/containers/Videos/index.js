@@ -6,7 +6,7 @@ import VideoPage from './VideoPage'
 
 export default class Videos extends Component {
   static propTypes = {
-    match: PropTypes.object
+    match: PropTypes.object.isRequired
   }
 
   render() {

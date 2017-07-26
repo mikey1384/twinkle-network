@@ -22,27 +22,27 @@ import {
 
 export default class Description extends Component {
   static propTypes = {
-    title: PropTypes.string,
-    content: PropTypes.string,
-    description: PropTypes.string,
-    likes: PropTypes.array,
-    likeVideo: PropTypes.func,
-    onDelete: PropTypes.func,
-    uploaderId: PropTypes.number,
-    userId: PropTypes.number,
-    uploaderName: PropTypes.string,
+    content: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    likes: PropTypes.array.isRequired,
+    likeVideo: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onEditCancel: PropTypes.func.isRequired,
+    onEditFinish: PropTypes.func.isRequired,
+    onEditStart: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]),
+    ]).isRequired,
+    title: PropTypes.string.isRequired,
+    uploaderId: PropTypes.number.isRequired,
+    uploaderName: PropTypes.string.isRequired,
+    userId: PropTypes.number,
     videoId: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]),
-    videoViews: PropTypes.string,
-    onEditStart: PropTypes.func,
-    onEditCancel: PropTypes.func,
-    onEditFinish: PropTypes.func
+    ]).isRequired,
+    videoViews: PropTypes.string.isRequired
   }
 
   constructor(props) {

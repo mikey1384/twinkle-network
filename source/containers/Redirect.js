@@ -7,8 +7,8 @@ import {URL} from 'constants/URL'
 
 export default class Redirect extends Component {
   static propTypes = {
-    match: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired
   }
 
   constructor() {

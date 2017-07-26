@@ -2,28 +2,28 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 PageTab.propTypes = {
-  watchTabActive: PropTypes.bool,
-  onWatchTabClick: PropTypes.func,
-  onQuestionTabClick: PropTypes.func,
-  questions: PropTypes.array
+  onQuestionTabClick: PropTypes.func.isRequired,
+  onWatchTabClick: PropTypes.func.isRequired,
+  questions: PropTypes.array.isRequired,
+  watchTabActive: PropTypes.bool.isRequired
 }
-export default function PageTab(props) {
+export default function PageTab({watchTabActive, onWatchTabClick, onQuestionTabClick, questions}) {
   return (
     <div className="row container-fluid">
       <ul className="nav nav-tabs nav-justified" style={{width: '100%', fontSize: '1.3em', fontWeight: 'bold'}}>
         <li
-          className={props.watchTabActive && 'active'}
+          className={watchTabActive && 'active'}
           style={{cursor: 'pointer'}}
-          onClick={props.onWatchTabClick}
+          onClick={onWatchTabClick}
         >
           <a>Video</a>
         </li>
         <li
-          className={!props.watchTabActive && 'active'}
+          className={!watchTabActive && 'active'}
           style={{cursor: 'pointer'}}
-          onClick={props.onQuestionTabClick}
+          onClick={onQuestionTabClick}
         >
-          <a>Questions {props.questions.length > 0 && `(${props.questions.length})`}</a>
+          <a>Questions {questions.length > 0 && `(${questions.length})`}</a>
         </li>
       </ul>
     </div>

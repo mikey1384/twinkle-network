@@ -2,8 +2,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 ChoiceListGroup.propTypes = {
-  listItems: PropTypes.array,
-  onSelect: PropTypes.func
+  listItems: PropTypes.array.isRequired,
+  onSelect: PropTypes.func.isRequired
 }
 export default function ChoiceListGroup({listItems, onSelect}) {
   return (
