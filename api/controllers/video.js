@@ -119,7 +119,7 @@ router.post('/edit/title', requireAuth, (req, res) => {
   const post = { title: newTitle }
 
   const userId = user.id
-  pool.query('UPDATE vq_videos SET? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
+  pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})

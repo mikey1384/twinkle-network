@@ -54,7 +54,7 @@ export default function MainContent({
           <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText>
         </div>
       }
-      {!isEditing && type === 'url' &&
+      {type === 'url' &&
         <Embedly
           title={cleanString(contentTitle)}
           url={content}

@@ -66,12 +66,20 @@ export default class Description extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.title !== this.props.title) {
       this.setState({
-        editedTitle: cleanString(nextProps.title)
+        editedTitle: cleanString(nextProps.title),
+        onEdit: false
       })
     }
     if (nextProps.description !== this.props.description) {
       this.setState({
-        editedDescription: cleanStringWithURL(nextProps.description)
+        editedDescription: cleanStringWithURL(nextProps.description),
+        onEdit: false
+      })
+    }
+    if (nextProps.content !== this.props.content) {
+      this.setState({
+        editedUrl: `https://www.youtube.com/watch?v=${nextProps.content}`,
+        onEdit: false
       })
     }
   }

@@ -53,6 +53,14 @@ class VideoPlayer extends Component {
     }
   }
 
+  componentWillUpdate(nextProps) {
+    const {videoCode} = this.props
+    if (videoCode !== nextProps.videoCode) {
+      const nextImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      this.setState({imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${nextImageName}.jpg`})
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const {onEdit} = this.props
     if (prevProps.onEdit !== onEdit) {
@@ -97,7 +105,7 @@ class VideoPlayer extends Component {
               left: '50%',
               margin: '-20px 0 0 -20px'
             }}
-          /> : <a></a>
+          /> : (!onEdit ? <a></a> : null)
         }
         {!onEdit && playing &&
           <YouTube

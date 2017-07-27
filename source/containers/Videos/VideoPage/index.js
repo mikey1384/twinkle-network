@@ -28,31 +28,31 @@ import ExecutionEnvironment from 'exenv'
 
 class VideoPage extends Component {
   static propTypes = {
-    content: PropTypes.string.isRequired,
+    content: PropTypes.string,
     deleteVideo: PropTypes.func.isRequired,
     description: PropTypes.string,
     editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
     history: PropTypes.object.isRequired,
-    likes: PropTypes.array.isRequired,
+    likes: PropTypes.array,
     likeVideo: PropTypes.func.isRequired,
     loadVideoPage: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    questions: PropTypes.array.isRequired,
+    questions: PropTypes.array,
     resetVideoPage: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ]).isRequired,
-    title: PropTypes.string.isRequired,
-    uploaderId: PropTypes.number.isRequired,
-    uploaderName: PropTypes.string.isRequired,
+    ]),
+    title: PropTypes.string,
+    uploaderId: PropTypes.number,
+    uploaderName: PropTypes.string,
     uploadQuestions: PropTypes.func.isRequired,
     userId: PropTypes.number,
     videoUnavailable: PropTypes.bool,
     videoLoading: PropTypes.bool,
-    videoViews: PropTypes.string.isRequired
+    videoViews: PropTypes.string
   }
 
   constructor() {
