@@ -806,9 +806,15 @@ router.get('/numUnreads', requireAuth, (req, res) => {
   const numUnreadQuery = `SELECT COUNT(id) AS numUnreads FROM msg_chats WHERE isSilent = '0' AND channelId = ? AND timeStamp > ? AND userId != ?`
 
   return poolQuery(channelQuery, user.id).then(
-    rows => promiseSeries(
-      rows.map(({channelId}) => () => poolQuery(lastReadsQuery, [user.id, channelId]))
-    )
+    rows => {
+      if (rows.length > 0) {
+        return promiseSeries(
+          rows.map(({channelId}) => () => poolQuery(lastReadsQuery, [user.id, channelId]))
+        )
+      } else {
+        return Promise.reject('No Channels')
+      }
+    }
   ).then(
     rows => promiseSeries(
       rows.reduce((resultingArray, [row]) => {
@@ -827,6 +833,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
     }
   ).catch(
     error => {
+      if (error === 'No Channels') return res.send({numUnreads: 0})
       console.error(error)
       res.status(500).send({error})
     }

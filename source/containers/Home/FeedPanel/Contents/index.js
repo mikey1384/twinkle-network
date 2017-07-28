@@ -93,6 +93,7 @@ class Contents extends Component {
             contentTitle={contentTitle}
             hasHqThumb={hasHqThumb}
             isEditing={isEditing}
+            onEditCancel={() => this.setState({isEditing: false})}
             rootId={rootId}
             rootContent={rootContent}
             rootType={rootType}
@@ -101,56 +102,58 @@ class Contents extends Component {
             videoViews={videoViews}
           />
         </div>
-        <div style={{paddingTop: type === 'video' ? '2em' : '1.5em'}}>
-          {type !== 'discussion' &&
-            [<LikeButton
-              key="likeButton"
-              onClick={this.onLikeClick}
-              liked={userLikedThis}
-              small
-            />,
-            <Button
-              key="commentButton"
-              style={{marginLeft: '0.5em'}}
-              className="btn btn-warning btn-sm"
-              onClick={this.onCommentButtonClick}
-            >
-              <span className="glyphicon glyphicon-comment"></span>&nbsp;
-              {type === 'video' ? 'Comment' : 'Reply'}&nbsp;
-              {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
-                (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
-              }
-            </Button>]
-          }
-          {type === 'discussion' &&
-            <Button
-              className="btn btn-warning"
-              onClick={this.onCommentButtonClick}
-            >
-              Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
-            </Button>
-          }
-          {false && myId === uploaderId &&
-            <Button
-              style={{marginLeft: '0.5em'}}
-              className={`btn btn-default${type === 'discussion' ? '' : ' btn-sm'}`}
-              onClick={() => this.setState({isEditing: true})}
-            >
-              <span className="glyphicon glyphicon-pencil"></span>&nbsp;Edit&nbsp;
-            </Button>
-          }
-        </div>
-        <Likers
-          style={{
-            fontSize: '11px',
-            marginTop: '1em',
-            fontWeight: 'bold',
-            color: Color.green
-          }}
-          userId={myId}
-          likes={contentLikers}
-          onLinkClick={() => this.setState({userListModalShown: true})}
-        />
+        {!isEditing &&
+          <div style={{paddingTop: type === 'video' ? '2em' : '1.5em'}}>
+            {type !== 'discussion' &&
+              [<LikeButton
+                key="likeButton"
+                onClick={this.onLikeClick}
+                liked={userLikedThis}
+                small
+              />,
+              <Button
+                key="commentButton"
+                style={{marginLeft: '0.5em'}}
+                className="btn btn-warning btn-sm"
+                onClick={this.onCommentButtonClick}
+              >
+                <span className="glyphicon glyphicon-comment"></span>&nbsp;
+                {type === 'video' ? 'Comment' : 'Reply'}&nbsp;
+                {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
+                  (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
+                }
+              </Button>]
+            }
+            {type === 'discussion' &&
+              <Button
+                className="btn btn-warning"
+                onClick={this.onCommentButtonClick}
+              >
+                Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
+              </Button>
+            }
+            {false && myId === uploaderId &&
+              <Button
+                style={{marginLeft: '0.5em'}}
+                className={`btn btn-default${type === 'discussion' ? '' : ' btn-sm'}`}
+                onClick={() => this.setState({isEditing: true})}
+              >
+                <span className="glyphicon glyphicon-pencil"></span>&nbsp;Edit&nbsp;
+              </Button>
+            }
+            <Likers
+              style={{
+                fontSize: '11px',
+                marginTop: '1em',
+                fontWeight: 'bold',
+                color: Color.green
+              }}
+              userId={myId}
+              likes={contentLikers}
+              onLinkClick={() => this.setState({userListModalShown: true})}
+            />
+          </div>
+        }
         {commentsShown &&
           <PanelComments
             autoFocus

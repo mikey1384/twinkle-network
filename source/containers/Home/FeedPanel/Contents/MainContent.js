@@ -5,6 +5,7 @@ import {Color} from 'constants/css'
 import Embedly from 'components/Embedly'
 import LongText from 'components/Texts/LongText'
 import VideoPlayer from 'components/VideoPlayer'
+import EditTextArea from 'components/Texts/EditTextArea'
 
 MainContent.propTypes = {
   content: PropTypes.string,
@@ -12,6 +13,7 @@ MainContent.propTypes = {
   contentTitle: PropTypes.string,
   hasHqThumb: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
+  onEditCancel: PropTypes.func.isRequired,
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
   rootType: PropTypes.string,
@@ -21,7 +23,7 @@ MainContent.propTypes = {
 }
 export default function MainContent({
   content, contentDescription, contentTitle, hasHqThumb, isEditing,
-  rootId, rootContent, rootType, urlRelated, type, videoViews
+  onEditCancel, rootId, rootContent, rootType, urlRelated, type, videoViews
 }) {
   return (
     <div>
@@ -53,6 +55,11 @@ export default function MainContent({
         }}>
           <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText>
         </div>
+      }
+      {isEditing &&
+        <EditTextArea
+          onCancel={onEditCancel}
+        />
       }
       {type === 'url' &&
         <Embedly
