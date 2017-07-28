@@ -8,6 +8,7 @@ import {Color} from 'constants/css'
 import {timeSince} from 'helpers/timeStampHelpers'
 import SubjectsModal from '../../Modals/SubjectsModal'
 import Input from 'components/Texts/Input'
+import {edit} from 'constants/placeholders'
 
 class EditSubjectForm extends Component {
   static propTypes = {
@@ -65,7 +66,7 @@ class EditSubjectForm extends Component {
               autoFocus={autoFocus}
               type="text"
               className="form-control"
-              placeholder="Enter Title..."
+              placeholder={edit.subject}
               value={title}
               onChange={this.onInputChange}
               onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}

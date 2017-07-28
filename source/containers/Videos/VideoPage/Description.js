@@ -19,6 +19,7 @@ import {
   finalizeEmoji,
   isValidYoutubeUrl
 } from 'helpers/stringHelpers'
+import {edit} from 'constants/placeholders'
 
 export default class Description extends Component {
   static propTypes = {
@@ -120,7 +121,7 @@ export default class Description extends Component {
                       <Input
                         type="text"
                         className="form-control"
-                        placeholder="Enter YouTube Url..."
+                        placeholder={edit.video}
                         style={{width: '30em'}}
                         value={editedUrl}
                         onChange={text => {
@@ -132,7 +133,7 @@ export default class Description extends Component {
                       <Input
                         type="text"
                         className="form-control"
-                        placeholder="Enter Title..."
+                        placeholder={edit.title}
                         style={{width: '30em', marginTop: '1em'}}
                         value={editedTitle}
                         onChange={text => {
@@ -198,7 +199,7 @@ export default class Description extends Component {
                 <Textarea
                   minRows={4}
                   className="form-control"
-                  placeholder="Enter Description"
+                  placeholder={edit.description}
                   value={editedDescription}
                   onChange={event => {
                     this.determineEditButtonDoneStatus()

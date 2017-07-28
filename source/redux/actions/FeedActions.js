@@ -80,6 +80,24 @@ export const feedCommentEdit = (params, cb) => dispatch =>
     }
   )
 
+export const feedContentEdit = (params) => dispatch =>
+  request.put(`${URL}/content`, params, auth()).then(
+    ({data}) => {
+      if (params.type === 'comment') {
+        dispatch({
+          type: 'FEED_COMMENT_EDIT',
+          data: {commentId: params.contentId, editedComment: data.content}
+        })
+      }
+      return Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+
 export const fetchFeed = feed => dispatch => {
   let query = []
   for (let key in feed) {

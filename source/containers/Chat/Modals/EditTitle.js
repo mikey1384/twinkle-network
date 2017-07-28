@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {Button, Modal} from 'react-bootstrap'
 import Input from 'components/Texts/Input'
+import {edit} from 'constants/placeholders'
 
 export default class editTitleModal extends Component {
   static propTypes = {
@@ -35,7 +36,7 @@ export default class editTitleModal extends Component {
               autoFocus
               type="text"
               className="form-control"
-              placeholder="Enter Title..."
+              placeholder={edit.title}
               value={title}
               onChange={text => this.setState({title: text})}
             />

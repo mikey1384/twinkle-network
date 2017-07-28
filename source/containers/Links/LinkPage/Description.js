@@ -114,7 +114,7 @@ export default class Description extends Component {
               <form>
                 <Input
                   className="form-control"
-                  placeholder="Enter Url"
+                  placeholder="Enter URL"
                   style={{marginBottom: '1em'}}
                   value={editedUrl}
                   onChange={text => {

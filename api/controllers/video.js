@@ -227,6 +227,7 @@ router.get('/page', (req, res) => {
 
   return poolQuery(query, [videoId, videoId]).then(
     (rows) => {
+      if (rows.length === 0) return Promise.reject('Video Not Found')
       finalResults = rows[0]
       const {videoId} = finalResults
       const questionQuery = 'SELECT * FROM vq_questions WHERE videoId = ?'

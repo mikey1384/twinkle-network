@@ -16,7 +16,7 @@ export default function ReplyInputArea({onSubmit, numReplies, clickListenerState
           clickListenerState={clickListenerState}
           onSubmit={text => onSubmit(text)}
           rows={4}
-          placeholder="Post your reply"
+          placeholder="Post your reply..."
         />
       </div>
     </div>

@@ -833,7 +833,7 @@ router.get('/numUnreads', requireAuth, (req, res) => {
     }
   ).catch(
     error => {
-      if (error === 'No Channels') return res.send({numUnreads: 0})
+      if (error === 'No Channels' || error === 'Promise Series: Array is Empty') return res.send({numUnreads: 0})
       console.error(error)
       res.status(500).send({error})
     }

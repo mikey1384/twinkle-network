@@ -5,15 +5,16 @@ import {Color} from 'constants/css'
 import Embedly from 'components/Embedly'
 import LongText from 'components/Texts/LongText'
 import VideoPlayer from 'components/VideoPlayer'
-import EditTextArea from 'components/Texts/EditTextArea'
+import ContentEditor from './ContentEditor'
 
 MainContent.propTypes = {
   content: PropTypes.string,
   contentDescription: PropTypes.string,
+  contentId: PropTypes.number.isRequired,
   contentTitle: PropTypes.string,
   hasHqThumb: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
-  onEditCancel: PropTypes.func.isRequired,
+  onEditDismiss: PropTypes.func.isRequired,
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
   rootType: PropTypes.string,
@@ -22,8 +23,8 @@ MainContent.propTypes = {
   videoViews: PropTypes.string
 }
 export default function MainContent({
-  content, contentDescription, contentTitle, hasHqThumb, isEditing,
-  onEditCancel, rootId, rootContent, rootType, urlRelated, type, videoViews
+  content, contentDescription, contentId, contentTitle, hasHqThumb, isEditing,
+  onEditDismiss, rootId, rootContent, rootType, urlRelated, type, videoViews
 }) {
   return (
     <div>
@@ -57,16 +58,15 @@ export default function MainContent({
         </div>
       }
       {isEditing &&
-        <EditTextArea
-          onCancel={onEditCancel}
-        />
-      }
-      {type === 'url' &&
-        <Embedly
-          title={cleanString(contentTitle)}
-          url={content}
-          id={rootId}
-          {...urlRelated}
+        <ContentEditor
+          comment={content}
+          content={content || rootContent}
+          contentId={contentId}
+          description={contentDescription}
+          onDismiss={onEditDismiss}
+          style={{marginTop: (type === 'video' || type === 'discussion') && '1em'}}
+          title={contentTitle}
+          type={type}
         />
       }
       {!isEditing && type === 'discussion' &&
@@ -109,9 +109,17 @@ export default function MainContent({
       }
       {type === 'comment' && rootType === 'url' &&
         <Embedly
-          style={{marginTop: '2em'}}
+          style={{marginTop: '1.5em'}}
           title={cleanString(contentTitle)}
           url={rootContent}
+          id={rootId}
+          {...urlRelated}
+        />
+      }
+      {!isEditing && type === 'url' &&
+        <Embedly
+          title={cleanString(contentTitle)}
+          url={content}
           id={rootId}
           {...urlRelated}
         />

@@ -88,12 +88,13 @@ class Contents extends Component {
             />
           }
           <MainContent
+            contentId={contentId}
             content={content}
             contentDescription={contentDescription}
             contentTitle={contentTitle}
             hasHqThumb={hasHqThumb}
             isEditing={isEditing}
-            onEditCancel={() => this.setState({isEditing: false})}
+            onEditDismiss={() => this.setState({isEditing: false})}
             rootId={rootId}
             rootContent={rootContent}
             rootType={rootType}

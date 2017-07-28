@@ -1,10 +1,62 @@
 const express = require('express')
 const router = express.Router()
+const {requireAuth} = require('../auth')
 const {poolQuery} = require('../helpers')
-const {stringIsEmpty} = require('../helpers/stringHelpers')
+const {fetchedVideoCodeFromURL, processedString, stringIsEmpty} = require('../helpers/stringHelpers')
 const {getThumbImageFromEmbedApi} = require('../helpers/contentHelpers')
 const {googleKey} = require('../siteConfig')
 const request = require('request-promise-native')
+
+router.put('/', requireAuth, (req, res) => {
+  const {body: {
+    contentId,
+    editedComment,
+    editedDescription,
+    editedTitle,
+    editedUrl,
+    type
+  }} = req
+  let tableName
+  let post
+  switch (type) {
+    case 'comment':
+      tableName = 'content_comments'
+      post = {content: processedString(editedComment)}
+      break
+    case 'discussion':
+      tableName = 'content_discussions'
+      post = {
+        title: editedTitle,
+        description: processedString(editedDescription)
+      }
+      break
+    case 'url':
+      tableName = 'content_urls'
+      post = {
+        title: editedTitle,
+        description: processedString(editedDescription),
+        content: editedUrl
+      }
+      break
+    case 'video':
+      tableName = 'vq_videos'
+      post = {
+        title: editedTitle,
+        description: processedString(editedDescription),
+        content: fetchedVideoCodeFromURL(editedUrl)
+      }
+      break
+    default: return res.status(500).send({error: 'Type not specified'})
+  }
+  return poolQuery(`UPDATE ${tableName} SET ? WHERE id = ?`, [post, contentId]).then(
+    () => res.send(post)
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
 
 router.get('/search', (req, res) => {
   const searchQuery = req.query.query

@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import onClickOutside from 'react-onclickoutside'
 import Input from './Input'
 import {cleanString, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import {edit} from 'constants/placeholders'
 
 class EditTitleForm extends Component {
   static propTypes = {
@@ -36,7 +37,7 @@ class EditTitleForm extends Component {
           autoFocus={autoFocus}
           type="text"
           className="form-control"
-          placeholder="Enter Title..."
+          placeholder={edit.title}
           value={title}
           onChange={text => this.setState({title: text})}
           onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
