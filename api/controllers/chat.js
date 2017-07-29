@@ -826,14 +826,14 @@ router.get('/numUnreads', requireAuth, (req, res) => {
     )
   ).then(
     results => {
-      const totalNumUnreads = results.reduce((sum, [{numUnreads}]) => (
+      const totalNumUnreads = results.reduce((sum, [{numUnreads = 0}]) => (
         sum + Number(numUnreads)
       ), 0)
       res.send({numUnreads: totalNumUnreads})
     }
   ).catch(
     error => {
-      if (error === 'No Channels' || error === 'Promise Series: Array is Empty') return res.send({numUnreads: 0})
+      if (error === 'No Channels') return res.send({numUnreads: 0})
       console.error(error)
       res.status(500).send({error})
     }

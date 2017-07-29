@@ -9,7 +9,7 @@ const poolQuery = (query, params) => new Promise((resolve, reject) => {
 
 const promiseSeries = array => {
   let results = []
-  if (array.length === 0) return Promise.reject('Promise Series: Array is Empty')
+  if (array.length === 0) return Promise.resolve([])
   return array.reduce((promise, task, index) => {
     return promise.then(task).then(
       result => {
