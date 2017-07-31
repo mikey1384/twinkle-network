@@ -63,16 +63,14 @@ export const deleteLinkFromPage = linkId => dispatch =>
     }
   )
 
-export const editComment = (params, cb) => dispatch =>
+export const editComment = (params) => dispatch =>
   request.put(`${API_URL}/comments`, params, auth()).then(
-    response => {
-      const {success} = response.data
-      if (!success) return
+    ({data}) => {
       dispatch({
         type: 'EDIT_LINK_COMMENT',
-        data: params
+        ...data
       })
-      cb()
+      return Promise.resolve()
     }
   ).catch(
     error => {

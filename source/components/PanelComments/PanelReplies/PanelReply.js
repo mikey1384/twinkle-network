@@ -204,9 +204,9 @@ export default class PanelReply extends Component {
 
   onEditDone(editedReply) {
     const {onEditDone, reply} = this.props
-    onEditDone({editedComment: editedReply, commentId: reply.id}, () => {
-      this.setState({onEdit: false})
-    })
+    return onEditDone({editedComment: editedReply, commentId: reply.id}).then(
+      () => this.setState({onEdit: false})
+    )
   }
 
   onLikeClick() {

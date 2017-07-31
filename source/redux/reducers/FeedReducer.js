@@ -1,5 +1,3 @@
-import {processedString} from 'helpers/stringHelpers'
-
 const defaultState = {
   selectedFilter: 'all',
   scrollLocked: false,
@@ -101,34 +99,64 @@ export default function FeedReducer(state = defaultState, action) {
         }, [])
       }
     case 'FEED_COMMENT_EDIT':
-      let editedComment = processedString(action.data.editedComment)
       return {
         ...state,
         feeds: state.feeds.map(feed => {
           let targetContentComments = feed.targetContentComments || []
           let isComment = feed.type === 'comment'
-          let contentMatches = feed.contentId === action.data.commentId
-          let commentMatches = feed.commentId === action.data.commentId
-          let replyMatches = feed.replyId === action.data.commentId
+          let contentMatches = feed.contentId === action.commentId
+          let commentMatches = feed.commentId === action.commentId
+          let replyMatches = feed.replyId === action.commentId
           return {
             ...feed,
-            content: isComment && contentMatches ? editedComment : feed.content,
-            targetComment: isComment && commentMatches ? editedComment : feed.targetComment,
-            targetReply: isComment && replyMatches ? editedComment : feed.targetReply,
+            content: isComment && contentMatches ? action.editedComment : feed.content,
+            targetComment: isComment && commentMatches ? action.editedComment : feed.targetComment,
+            targetReply: isComment && replyMatches ? action.editedComment : feed.targetReply,
             targetContentComments: targetContentComments.map(comment => ({
               ...comment,
-              content: comment.id === action.data.commentId ? editedComment : comment.content
+              content: comment.id === action.commentId ? action.editedComment : comment.content
             })),
             childComments: feed.childComments.map(childComment => {
               return {
                 ...childComment,
-                content: childComment.id === action.data.commentId ? editedComment : childComment.content,
+                content: childComment.id === action.commentId ? action.editedComment : childComment.content,
                 replies: childComment.replies.map(reply => ({
                   ...reply,
-                  content: reply.id === action.data.commentId ? editedComment : reply.content
+                  content: reply.id === action.commentId ? action.editedComment : reply.content
                 }))
               }
             })
+          }
+        })
+      }
+    case 'FEED_CONTENT_EDIT':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          let contentMatches = (feed.type === action.contentType) && (feed.contentId === action.contentId)
+          let rootContentMatches = (feed.rootType === action.contentType) && (feed.rootId === action.contentId)
+          return {
+            ...feed,
+            contentTitle: contentMatches ? action.editedTitle : feed.contentTitle,
+            contentDescription: contentMatches ? action.editedDescription : feed.contentDescription,
+            content: contentMatches ? action.editedUrl : feed.content,
+            rootContentTitle: rootContentMatches ? action.editedTitle : feed.rootContentTitle,
+            rootContent: rootContentMatches ? action.editedUrl : feed.rootContent
+          }
+        })
+      }
+    case 'FEED_DISCUSSION_EDIT':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          let contentMatches = (feed.type === 'discussion') && (feed.contentId === action.contentId)
+          let discussionIdMatches = (feed.type === 'comment') && (feed.discussionId === action.contentId)
+          return {
+            ...feed,
+            contentTitle: contentMatches ? action.editedTitle : feed.contentTitle,
+            contentDescription: contentMatches ? action.editedDescription : feed.contentDescription,
+            discussionTitle: discussionIdMatches ? action.editedTitle : feed.discussionTitle,
+            discussionDescription: discussionIdMatches ? action.editedDescription: feed.discussionDescription
           }
         })
       }

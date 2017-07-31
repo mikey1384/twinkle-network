@@ -20,6 +20,7 @@ import {
 import PanelComments from 'components/PanelComments'
 import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 import UserListModal from 'components/Modals/UserListModal'
 import Description from './Description'
 
@@ -46,15 +47,12 @@ class LinkPage extends Component {
   constructor() {
     super()
     this.state = {
+      confirmModalShown: false,
       likersModalShown: false
     }
-    this.onCommentDelete = this.onCommentDelete.bind(this)
-    this.onCommentEditDone = this.onCommentEditDone.bind(this)
-    this.onCommentLike = this.onCommentLike.bind(this)
     this.onCommentSubmit = this.onCommentSubmit.bind(this)
     this.onReplySubmit = this.onReplySubmit.bind(this)
     this.loadMoreComments = this.loadMoreComments.bind(this)
-    this.loadMoreReplies = this.loadMoreReplies.bind(this)
   }
 
   componentDidMount() {
@@ -81,12 +79,16 @@ class LinkPage extends Component {
         loadMoreCommentsButton = false,
         ...embedlyProps
       },
+      deleteComment,
+      editComment,
       editLinkPage,
+      fetchMoreReplies,
+      likeComment,
       likeLink,
       deleteLinkFromPage,
       myId
     } = this.props
-    const {likersModalShown} = this.state
+    const {confirmModalShown, likersModalShown} = this.state
     let userLikedThis = false
     for (let i = 0; i < likers.length; i++) {
       if (likers[i].userId === myId) userLikedThis = true
@@ -111,7 +113,7 @@ class LinkPage extends Component {
             url={content}
             description={description}
             linkId={id}
-            onDelete={() => deleteLinkFromPage(id)}
+            onDelete={() => this.setState({confirmModalShown: true})}
             onEditDone={params => editLinkPage(params)}
           />
           <Embedly
@@ -142,15 +144,22 @@ class LinkPage extends Component {
             parent={{type: 'url', id}}
             userId={myId}
             commentActions={{
-              onDelete: this.onCommentDelete,
-              onLikeClick: this.onCommentLike,
-              onEditDone: this.onCommentEditDone,
+              onDelete: deleteComment,
+              onLikeClick: likeComment,
+              onEditDone: editComment,
               onReplySubmit: this.onReplySubmit,
-              onLoadMoreReplies: this.loadMoreReplies
+              onLoadMoreReplies: fetchMoreReplies
             }}
             loadMoreComments={this.loadMoreComments}
           />
         </div>
+        {confirmModalShown &&
+          <ConfirmModal
+            title="Remove Link"
+            onConfirm={() => deleteLinkFromPage(id)}
+            onHide={() => this.setState({confirmModalShown: false})}
+          />
+        }
         {likersModalShown &&
           <UserListModal
             users={likers}
@@ -168,26 +177,6 @@ class LinkPage extends Component {
     const {fetchMoreComments, pageProps: {id, comments}} = this.props
     const lastCommentId = comments[comments.length - 1].id
     fetchMoreComments(id, lastCommentId)
-  }
-
-  loadMoreReplies(lastReplyId, commentId) {
-    const {fetchMoreReplies} = this.props
-    fetchMoreReplies(lastReplyId, commentId)
-  }
-
-  onCommentDelete(commentId) {
-    const {deleteComment} = this.props
-    deleteComment(commentId)
-  }
-
-  onCommentEditDone(editedComment, callback) {
-    const {editComment} = this.props
-    editComment(editedComment, callback)
-  }
-
-  onCommentLike(commentId) {
-    const {likeComment} = this.props
-    likeComment(commentId)
   }
 
   onCommentSubmit(content) {

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import Input from './Input'
 
 export default class TitleDescriptionForm extends Component {
@@ -36,6 +36,7 @@ export default class TitleDescriptionForm extends Component {
             type="text"
             value={title}
             onChange={text => this.setState({title: text})}
+            onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
           />
         </fieldset>
         <fieldset className="form-group">
@@ -62,7 +63,7 @@ export default class TitleDescriptionForm extends Component {
     const {onSubmit} = this.props
     const {title, description} = this.state
     event.preventDefault()
-    onSubmit(title, description)
+    onSubmit(finalizeEmoji(title), finalizeEmoji(description))
     this.setState({
       title: '',
       description: ''

@@ -6,7 +6,7 @@ import Button from 'components/Button'
 import {edit} from 'constants/placeholders'
 import {connect} from 'react-redux'
 import {feedContentEdit} from 'redux/actions/FeedActions'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
+import {addEmoji, finalizeEmoji, cleanStringWithURL} from 'helpers/stringHelpers'
 
 class ContentEditor extends Component {
   static propTypes = {
@@ -57,6 +57,7 @@ class ContentEditor extends Component {
                 autoFocus={type === 'discussion'}
                 className="form-control"
                 onChange={text => this.setState({editedTitle: text})}
+                onKeyUp={event => this.setState({editedTitle: addEmoji(event.target.value)})}
                 placeholder={edit.title}
                 value={editedTitle}
               />
@@ -98,7 +99,14 @@ class ContentEditor extends Component {
   onSubmit(event) {
     event.preventDefault()
     const {contentId, onDismiss, onSubmit, type} = this.props
-    onSubmit({...this.state, contentId, type}).then(
+    const {editedComment, editedDescription, editedTitle} = this.state
+    const post = {
+      ...this.state,
+      editedComment: finalizeEmoji(editedComment),
+      editedDescription: finalizeEmoji(editedDescription),
+      editedTitle: finalizeEmoji(editedTitle)
+    }
+    onSubmit({...post, contentId, type}).then(
       () => onDismiss()
     )
   }

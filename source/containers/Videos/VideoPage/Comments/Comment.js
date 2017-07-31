@@ -217,10 +217,10 @@ export default class Comment extends Component {
   }
 
   onEditDone(editedComment) {
-    const {commentId} = this.props
-    this.props.onEditDone({editedComment, commentId}, () => {
-      this.setState({onEdit: false})
-    })
+    const {commentId, onEditDone} = this.props
+    return onEditDone({editedComment, commentId}).then(
+      () => this.setState({onEdit: false})
+    )
   }
 
   onLikeClick() {

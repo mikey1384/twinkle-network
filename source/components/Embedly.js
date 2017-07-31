@@ -11,7 +11,7 @@ export default class Embedly extends Component {
     actualTitle: PropTypes.string,
     actualDescription: PropTypes.string,
     id: PropTypes.number.isRequired,
-    siteUrl: PropTypes.string.isRequired,
+    siteUrl: PropTypes.string,
     style: PropTypes.object,
     thumbUrl: PropTypes.string,
     title: PropTypes.string,

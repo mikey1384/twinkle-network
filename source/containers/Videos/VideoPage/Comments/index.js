@@ -86,7 +86,7 @@ class Comments extends Component {
   }
 
   renderComments() {
-    const {comments} = this.props
+    const {comments, loadMoreReplies, onDelete, onEditDone, onLikeClick, onReplySubmit} = this.props
     const {loading} = this.state
     const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
     if (comments.length === 0) {
@@ -99,11 +99,11 @@ class Comments extends Component {
           {...this.props}
           index={index}
           comment={comment}
-          onEditDone={this.props.onEditDone}
-          onLoadMoreReplies={this.props.loadMoreReplies}
-          onDelete={this.props.onDelete}
-          onLikeClick={this.props.onLikeClick}
-          onReplySubmit={this.props.onReplySubmit}
+          onEditDone={onEditDone}
+          onLoadMoreReplies={loadMoreReplies}
+          onDelete={onDelete}
+          onLikeClick={onLikeClick}
+          onReplySubmit={onReplySubmit}
           marginTop={index !== 0}
           key={comment.id}
           commentId={comment.id}

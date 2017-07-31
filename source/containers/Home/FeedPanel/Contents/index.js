@@ -133,7 +133,7 @@ class Contents extends Component {
                 Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
               </Button>
             }
-            {false && myId === uploaderId &&
+            {myId === uploaderId &&
               <Button
                 style={{marginLeft: '0.5em'}}
                 className={`btn btn-default${type === 'discussion' ? '' : ' btn-sm'}`}

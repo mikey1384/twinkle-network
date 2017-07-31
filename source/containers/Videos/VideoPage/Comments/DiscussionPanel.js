@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText'
 import PanelComments from 'components/PanelComments'
 import SmallDropdownButton from 'components/SmallDropdownButton'
 import {connect} from 'react-redux'
-import {cleanString, cleanStringWithURL, stringIsEmpty} from 'helpers/stringHelpers'
+import {cleanString, cleanStringWithURL, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import Textarea from 'react-textarea-autosize'
 import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
@@ -33,7 +33,7 @@ class DiscussionPanel extends Component {
     loadMoreComments: PropTypes.func.isRequired,
     loadMoreDiscussionCommentsButton: PropTypes.bool.isRequired,
     myId: PropTypes.number,
-    numComments: PropTypes.string.isRequired,
+    numComments: PropTypes.string,
     onDelete: PropTypes.func.isRequired,
     onDiscussionDelete: PropTypes.func.isRequired,
     onDiscussionEditDone: PropTypes.func.isRequired,
@@ -122,6 +122,7 @@ class DiscussionPanel extends Component {
                     this.determineEditButtonDoneStatus()
                   })
                 }}
+                onKeyUp={event => this.setState({editedTitle: addEmoji(event.target.value)})}
               />
             </form>
           }
@@ -247,7 +248,7 @@ class DiscussionPanel extends Component {
   onEditDone() {
     const {editedTitle, editedDescription} = this.state
     const {id, onDiscussionEditDone} = this.props
-    onDiscussionEditDone(id, editedTitle, editedDescription, () => {
+    onDiscussionEditDone(id, finalizeEmoji(editedTitle), finalizeEmoji(editedDescription), () => {
       this.setState({
         onEdit: false,
         editDoneButtonDisabled: true

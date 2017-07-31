@@ -111,8 +111,8 @@ export default class Comment extends Component {
 
   onEditDone(editedComment) {
     const {comment, onEditDone} = this.props
-    onEditDone({editedComment, commentId: comment.id}, () => {
-      this.setState({onEdit: false})
-    })
+    return onEditDone({editedComment, commentId: comment.id}).then(
+      () => this.setState({onEdit: false})
+    )
   }
 }

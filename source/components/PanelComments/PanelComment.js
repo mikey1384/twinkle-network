@@ -219,9 +219,9 @@ export default class PanelComment extends Component {
 
   onEditDone(editedComment) {
     const {onEditDone, comment} = this.props
-    onEditDone({editedComment, commentId: comment.id}, () => {
-      this.setState({onEdit: false})
-    })
+    onEditDone({editedComment, commentId: comment.id}).then(
+      () => this.setState({onEdit: false})
+    )
   }
 
   onLikeClick() {

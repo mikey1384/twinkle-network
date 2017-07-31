@@ -34,17 +34,16 @@ export default function linkReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_LINK_COMMENT':
-      let editedComment = processedString(action.data.editedComment)
       return {
         ...state,
         linkPage: {
           ...state.linkPage,
           comments: state.linkPage.comments.map(comment => ({
             ...comment,
-            content: comment.id === action.data.commentId ? editedComment : comment.content,
+            content: comment.id === action.commentId ? action.editedComment : comment.content,
             replies: comment.replies.map(reply => ({
               ...reply,
-              content: reply.id === action.data.commentId ? editedComment : reply.content
+              content: reply.id === action.commentId ? action.editedComment : reply.content
             }))
           }))
         }

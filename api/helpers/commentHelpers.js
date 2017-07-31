@@ -14,13 +14,14 @@ module.exports = {
       }
     )
   },
+
   editComments(req, res) {
     const user = req.user
     const content = processedString(req.body.editedComment)
     const commentId = req.body.commentId
     const userId = user.id
     poolQuery('UPDATE content_comments SET ? WHERE id = ? AND userId = ?', [{content}, commentId, userId]).then(
-      () => res.send({success: true})
+      () => res.send({editedComment: content, commentId})
     ).catch(
       error => {
         console.error(error)
@@ -28,6 +29,7 @@ module.exports = {
       }
     )
   },
+
   fetchComments(req, res) {
     const {rootId, lastCommentId, rootType} = req.query
     const limit = 21
@@ -52,6 +54,7 @@ module.exports = {
       }
     )
   },
+
   fetchReplies(req, res) {
     const {lastReplyId, commentId, rootType} = req.query
     const where = !!lastReplyId && lastReplyId !== '0' ? 'AND a.id < ' + lastReplyId + ' ' : ''
@@ -83,6 +86,7 @@ module.exports = {
       }
     )
   },
+
   likeComments(req, res) {
     const user = req.user
     const commentId = req.body.commentId
@@ -116,6 +120,7 @@ module.exports = {
       })
     )
   },
+
   postComments(req, res) {
     const {user} = req
     if (!req.body.rootType) {
@@ -142,6 +147,7 @@ module.exports = {
       }
     )
   },
+
   postReplies(req, res) {
     const {user} = req
     if (!req.body.rootType) {

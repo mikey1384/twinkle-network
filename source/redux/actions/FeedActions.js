@@ -62,16 +62,14 @@ export const feedCommentDelete = commentId => dispatch =>
     }
   )
 
-export const feedCommentEdit = (params, cb) => dispatch =>
+export const feedCommentEdit = (params) => dispatch =>
   request.put(`${API_URL}/comments`, params, auth()).then(
-    response => {
-      const {success} = response.data
-      if (!success) return
+    ({data}) => {
       dispatch({
         type: 'FEED_COMMENT_EDIT',
-        data: params
+        ...data
       })
-      cb()
+      return Promise.resolve()
     }
   ).catch(
     error => {
@@ -86,7 +84,24 @@ export const feedContentEdit = (params) => dispatch =>
       if (params.type === 'comment') {
         dispatch({
           type: 'FEED_COMMENT_EDIT',
-          data: {commentId: params.contentId, editedComment: data.content}
+          commentId: params.contentId,
+          editedComment: data.content
+        })
+      } else if (params.type === 'discussion') {
+        dispatch({
+          type: 'FEED_DISCUSSION_EDIT',
+          contentId: params.contentId,
+          editedTitle: data.title,
+          editedDescription: data.description
+        })
+      } else {
+        dispatch({
+          type: 'FEED_CONTENT_EDIT',
+          contentType: params.type,
+          contentId: params.contentId,
+          editedTitle: data.title,
+          editedDescription: data.description,
+          editedUrl: data.content
         })
       }
       return Promise.resolve()

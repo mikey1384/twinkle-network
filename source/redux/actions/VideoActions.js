@@ -98,26 +98,21 @@ export const deleteVideoDiscussion = (discussionId, callback) => dispatch =>
       }
     )
 
-export const editVideoCommentAsync = ({editedComment, commentId}, cb) => dispatch =>
-  request.put(`${API_URL}/comments`, {editedComment, commentId}, auth())
-    .then(
-      response => {
-        const {data} = response
-        if (data.success) {
-          dispatch({
-            type: 'EDIT_VIDEO_COMMENT',
-            data: {editedComment, commentId}
-          })
-          cb()
-        }
-        return
-      }
-    ).catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+export const editVideoCommentAsync = (params) => dispatch =>
+  request.put(`${API_URL}/comments`, params, auth()).then(
+    ({data}) => {
+      dispatch({
+        type: 'EDIT_VIDEO_COMMENT',
+        ...data
+      })
+      return Promise.resolve()
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
 
 export const editVideoDiscussion = (discussionId, editedTitle, editedDescription, callback) => dispatch =>
   request.post(`${API_URL}/discussions/edit`, {discussionId, editedTitle, editedDescription}, auth())

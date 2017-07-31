@@ -135,9 +135,11 @@ export default class Reply extends Component {
                   autoFocus
                   text={cleanStringWithURL(content)}
                   onCancel={() => this.setState({onEdit: false})}
-                  onEditDone={editedComment => onEditDone({editedComment, commentId: id}, () => {
-                    this.setState({onEdit: false})
-                  })}
+                  onEditDone={
+                    editedComment => onEditDone({editedComment, commentId: id}).then(
+                      () => this.setState({onEdit: false})
+                    )
+                  }
                 /> :
                 <div>
                   <LongText

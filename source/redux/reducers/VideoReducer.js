@@ -73,19 +73,19 @@ export default function VideoReducer(state = defaultState, action) {
             ...discussion,
             comments: discussion.comments.map(comment => ({
               ...comment,
-              content: comment.id === action.data.commentId ? processedString(action.data.editedComment) : comment.content,
+              content: comment.id === action.commentId ? action.editedComment : comment.content,
               replies: comment.replies.map(reply => ({
                 ...reply,
-                content: reply.id === action.data.commentId ? processedString(action.data.editedComment) : reply.content
+                content: reply.id === action.commentId ? action.editedComment : reply.content
               }))
             }))
           })),
           comments: state.videoPage.comments.map(comment => ({
             ...comment,
-            content: comment.id === action.data.commentId ? processedString(action.data.editedComment) : comment.content,
+            content: comment.id === action.commentId ? action.editedComment : comment.content,
             replies: comment.replies.map(reply => ({
               ...reply,
-              content: reply.id === action.data.commentId ? processedString(action.data.editedComment) : reply.content
+              content: reply.id === action.commentId ? action.editedComment : reply.content
             }))
           }))
         }
