@@ -1,4 +1,4 @@
-module.exports = function(app, pool) {
+module.exports = function(app) {
   app.use('/chat', require('./controllers/chat'))
   app.use('/content', require('./controllers/content'))
   app.use('/feed', require('./controllers/feed'))
