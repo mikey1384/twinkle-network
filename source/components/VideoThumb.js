@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import SmallDropdownButton from './SmallDropdownButton'
+import DropdownButton from './DropdownButton'
 import EditTitleForm from './Texts/EditTitleForm'
 import ConfirmModal from './Modals/ConfirmModal'
 import {
@@ -73,7 +73,7 @@ class VideoThumb extends Component {
         <div className="thumbnail">
           {
             editable &&
-            <SmallDropdownButton
+            <DropdownButton
               style={{
                 position: 'absolute',
                 right: '0px',

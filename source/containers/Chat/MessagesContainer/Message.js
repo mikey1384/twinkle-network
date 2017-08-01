@@ -4,7 +4,7 @@ import moment from 'moment'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
 import {connect} from 'react-redux'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
@@ -79,7 +79,7 @@ class Message extends Component {
           }}
         >
           {!!messageId && !isReloadedSubject && myId === userId && !onEdit &&
-            <SmallDropdownButton
+            <DropdownButton
               shape="button"
               icon="pencil"
               style={{

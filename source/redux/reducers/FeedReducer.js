@@ -98,6 +98,11 @@ export default function FeedReducer(state = defaultState, action) {
           }])
         }, [])
       }
+    case 'FEED_CONTENT_DELETE':
+      return {
+        ...state,
+        feeds: state.feeds.filter(feed => (feed.type !== action.contentType || feed.contentId !== action.contentId))
+      }
     case 'FEED_COMMENT_EDIT':
       return {
         ...state,

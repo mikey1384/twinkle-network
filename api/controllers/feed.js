@@ -221,7 +221,7 @@ router.get('/feed', (req, res) => {
       break
     case 'url':
       query = `
-        SELECT url.id AS rootId, url.title AS rootContentTitle, url.description AS rootContentDescription, 'url' AS rootType, url.content AS content, url.title AS contentTitle, url.thumbUrl, url.actualTitle, url.actualDescription, url.siteUrl, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS contentDescription,
+        SELECT url.title AS rootContentTitle, url.description AS rootContentDescription, url.content AS content, url.title AS contentTitle, url.thumbUrl, url.actualTitle, url.actualDescription, url.siteUrl, user.username AS uploaderName, userPhoto.id AS uploaderPicId, url.description AS contentDescription,
         (SELECT COUNT(id) FROM content_comments WHERE rootType = 'url' AND rootId = url.id)
         AS numChildComments
         FROM content_urls url
@@ -233,8 +233,7 @@ router.get('/feed', (req, res) => {
       break
     case 'video':
       query = `
-        SELECT video.id AS rootId, video.title AS rootContentTitle, video.description AS rootContentDescription, 'video' AS rootType, video.content AS rootContent, video.title AS contentTitle,
-        video.description AS contentDescription, video.hasHqThumb,
+        SELECT video.title AS rootContentTitle, video.description AS rootContentDescription, video.content AS rootContent, video.title AS contentTitle, video.description AS contentDescription, video.hasHqThumb,
         video.content, user.username AS uploaderName, userPhoto.id AS uploaderPicId,
         (SELECT COUNT(id) FROM vq_video_views WHERE videoId = video.id) AS videoViews,
         (SELECT COUNT(id) FROM content_comments WHERE rootType = 'video' AND rootId = video.id)

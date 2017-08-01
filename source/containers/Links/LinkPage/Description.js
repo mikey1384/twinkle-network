@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import UsernameText from 'components/Texts/UsernameText'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import {timeSince} from 'helpers/timeStampHelpers'
 import LongText from 'components/Texts/LongText'
 import Button from 'components/Button'
@@ -54,7 +54,7 @@ export default class Description extends Component {
     return (
       <div>
         {uploaderId === myId && !onEdit &&
-          <SmallDropdownButton
+          <DropdownButton
             style={{
               top: '1em',
               right: '1em',

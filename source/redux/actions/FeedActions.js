@@ -62,6 +62,29 @@ export const feedCommentDelete = commentId => dispatch =>
     }
   )
 
+export const feedContentDelete = ({type, contentId}) => dispatch =>
+  request.delete(`${URL}/content?contentId=${contentId}&type=${type}`, auth()).then(
+    () => {
+      if (type === 'comment') {
+        return dispatch({
+          type: 'FEED_COMMENT_DELETE',
+          commentId: contentId
+        })
+      } else {
+        return dispatch({
+          type: 'FEED_CONTENT_DELETE',
+          contentType: type,
+          contentId
+        })
+      }
+    }
+  ).catch(
+    error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    }
+  )
+
 export const feedCommentEdit = (params) => dispatch =>
   request.put(`${API_URL}/comments`, params, auth()).then(
     ({data}) => {

@@ -28,10 +28,12 @@ router.get('/', requireAuth, (req, res) => {
   fetchChat({user, channelId: Number(channelId) || lastChannelId || generalChatId}).then(
     results => res.send(results)
   ).catch(
-    err => {
-      console.error(err)
-      if (err.status) return res.status(err.status).send({error: err})
-      return res.status(500).send({error: err})
+    error => {
+      if (error.status) {
+        console.error(error)
+        return res.status(error.status).send({error})
+      }
+      return res.status(500).send({error})
     }
   )
 })
@@ -61,7 +63,10 @@ router.post('/', requireAuth, (req, res) => {
   ).then(
     results => res.send({messageId: Number(results[1].insertId)})
   ).catch(
-    err => res.status(500).send(err)
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
   )
 })
 
@@ -88,9 +93,9 @@ router.get('/chatSubject', (req, res) => {
       }))
     }
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -140,9 +145,9 @@ router.post('/chatSubject', requireAuth, (req, res) => {
       )
     }
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -386,9 +391,9 @@ router.delete('/message', requireAuth, (req, res) => {
   poolQuery('DELETE FROM msg_chats WHERE id = ? AND userId = ?', [messageId, user.id]).then(
     () => res.send({success: true})
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -400,9 +405,9 @@ router.put('/message', requireAuth, (req, res) => {
   poolQuery(query, [{content: processedString(editedMessage)}, messageId, user.id]).then(
     () => res.send({success: true})
   ).catch(
-    err => {
-      console.err(err)
-      res.status(500).send({error: err})
+    error => {
+      console.err(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -413,9 +418,9 @@ router.get('/more/channels', requireAuth, (req, res) => {
   fetchChannels(user, currentChannelId, channelIds).then(
     channels => res.send(channels)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -452,9 +457,9 @@ router.get('/more/messages', requireAuth, (req, res) => {
   ).then(
     messages => res.send(messages)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -465,7 +470,10 @@ router.get('/channels', requireAuth, (req, res) => {
   fetchChannels(user, currentChannelId).then(
     channels => res.send(channels)
   ).catch(
-    err => res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
   )
 })
 
@@ -485,9 +493,9 @@ router.get('/channel', requireAuth, (req, res) => {
       )
     }
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -541,9 +549,9 @@ router.get('/channel/check', requireAuth, (req, res) => {
   ).then(
     result => res.send(result)
   ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
     }
   )
 })
@@ -554,7 +562,10 @@ router.post('/lastRead', requireAuth, (req, res) => {
   updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)}).then(
     () => res.send({success: true})
   ).catch(
-    err => res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
   )
 })
 
@@ -611,9 +622,9 @@ router.post('/channel', requireAuth, (req, res) => {
       res.send({message, members})
     }
   ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
     }
   )
 })
@@ -664,9 +675,9 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
       )
     }
   ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
     }
   )
 })
@@ -677,10 +688,10 @@ router.delete('/channel', requireAuth, (req, res) => {
   const channelId = Number(channelIdString)
   const timeStamp = Number(timeStampString)
 
-  async.parallel([postLeaveNotification, leaveChannel], (err, results) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
+  async.parallel([postLeaveNotification, leaveChannel], (error, results) => {
+    if (error) {
+      console.error(error)
+      return res.status(500).send({error})
     }
     res.send({success: true})
   })
@@ -713,10 +724,10 @@ router.post('/hideChat', requireAuth, (req, res) => {
   const {channelId} = req.body
 
   const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?'
-  pool.query(query, [{isHidden: true}, user.id, channelId], (err) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
+  pool.query(query, [{isHidden: true}, user.id, channelId], (error) => {
+    if (error) {
+      console.error(error)
+      return res.status(500).send({error})
     }
     res.send({success: true})
   })
@@ -784,10 +795,11 @@ router.post('/invite', requireAuth, (req, res) => {
         callback(err, results[results.length - 1])
       })
     }
-  ], (err, message) => {
-    if (err) {
-      let status = (err === 'not_a_member') ? 401 : 500
-      return res.status(status).send({error: err})
+  ], (error, message) => {
+    if (error) {
+      let status = (error === 'not_a_member') ? 401 : 500
+      console.error(error)
+      return res.status(status).send({error})
     }
     let allUsers = selectedUsers.concat([{userId: user.id}]).map(user => ({id: user.userId}))
     updateLastRead({users: allUsers, channelId, timeStamp: timeStamp - 1})
@@ -921,10 +933,11 @@ router.get('/search/chat', requireAuth, (req, res) => {
       )
       res.send(finalRes)
     }
-  ).catch(err => {
-    console.error(err)
-    return res.status(500).send({error: err})
-  })
+  ).catch(
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
+    })
 })
 
 router.get('/search/subject', (req, res) => {
@@ -967,8 +980,11 @@ router.post('/title', requireAuth, (req, res) => {
   const {user} = req
   const {title, channelId} = req.body
   const query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?'
-  pool.query(query, [{channelName: title}, user.id, channelId], err => {
-    if (err) return res.status(500).send({error: err})
+  pool.query(query, [{channelName: title}, user.id, channelId], error => {
+    if (error) {
+      console.error(error)
+      return res.status(500).send({error})
+    }
     res.send({success: true})
   })
 })

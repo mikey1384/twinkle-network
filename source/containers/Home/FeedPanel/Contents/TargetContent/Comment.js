@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
 import EditTextArea from 'components/Texts/EditTextArea'
@@ -46,7 +46,7 @@ export default class Comment extends Component {
       >
         {!onEdit &&
           <div className="row">
-            <SmallDropdownButton
+            <DropdownButton
               shape="button"
               icon="pencil"
               style={{

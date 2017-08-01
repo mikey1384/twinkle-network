@@ -9,6 +9,7 @@ import {
   loadMoreFeedCommentsAsync,
   uploadFeedComment,
   feedCommentDelete,
+  feedContentDelete,
   commentFeedLike,
   feedCommentEdit,
   uploadFeedReply,
@@ -21,6 +22,8 @@ import PanelComments from 'components/PanelComments'
 import MainContent from './MainContent'
 import TargetContent from './TargetContent'
 import {Color} from 'constants/css'
+import DropdownButton from 'components/DropdownButton'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 
 class Contents extends Component {
   static propTypes = {
@@ -28,7 +31,8 @@ class Contents extends Component {
     feed: PropTypes.object.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
-    onDelete: PropTypes.func.isRequired,
+    onCommentDelete: PropTypes.func.isRequired,
+    onContentDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeCommentClick: PropTypes.func.isRequired,
     onLikeContentClick: PropTypes.func.isRequired,
@@ -44,7 +48,8 @@ class Contents extends Component {
       isEditing: false,
       userListModalShown: false,
       clickListenerState: false,
-      commentsShown: false
+      commentsShown: false,
+      confirmModalShown: false
     }
     this.onLikeClick = this.onLikeClick.bind(this)
     this.onCommentButtonClick = this.onCommentButtonClick.bind(this)
@@ -59,15 +64,22 @@ class Contents extends Component {
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
         rootContent, thumbUrl, actualTitle, actualDescription, siteUrl
       }, feed, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
-      onDelete, onReplySubmit, onSubmit
+      onCommentDelete, onContentDelete, onReplySubmit, onSubmit
     } = this.props
-    const {userListModalShown, clickListenerState, commentsShown, isEditing} = this.state
+    const {userListModalShown, clickListenerState, confirmModalShown, commentsShown, isEditing} = this.state
     let userLikedThis = false
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId === myId) userLikedThis = true
     }
     return (
       <div>
+        {confirmModalShown &&
+          <ConfirmModal
+            onConfirm={() => onContentDelete({type, contentId})}
+            onHide={() => this.setState({confirmModalShown: false})}
+            title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+          />
+        }
         <div>
           {type === 'comment' && attachedVideoShown &&
             <VideoPlayer
@@ -134,13 +146,23 @@ class Contents extends Component {
               </Button>
             }
             {myId === uploaderId &&
-              <Button
+              <DropdownButton
+                noAlign
+                shape="button"
                 style={{marginLeft: '0.5em'}}
-                className={`btn btn-default${type === 'discussion' ? '' : ' btn-sm'}`}
-                onClick={() => this.setState({isEditing: true})}
-              >
-                <span className="glyphicon glyphicon-pencil"></span>&nbsp;Edit&nbsp;
-              </Button>
+                size={type !== 'discussion' ? 'sm' : null}
+                text="Edit"
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({isEditing: true})
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({confirmModalShown: true})
+                  }
+                ]}
+              />
             }
             <Likers
               style={{
@@ -177,7 +199,7 @@ class Contents extends Component {
               replyId
             }}
             commentActions={{
-              onDelete,
+              onDelete: onCommentDelete,
               onLikeClick: onLikeCommentClick,
               onEditDone,
               onReplySubmit,
@@ -229,7 +251,8 @@ export default connect(
     showFeedComments: showFeedCommentsAsync,
     loadMoreComments: loadMoreFeedCommentsAsync,
     onSubmit: uploadFeedComment,
-    onDelete: feedCommentDelete,
+    onCommentDelete: feedCommentDelete,
+    onContentDelete: feedContentDelete,
     onEditDone: feedCommentEdit,
     onReplySubmit: uploadFeedReply,
     onLoadMoreReplies: loadMoreFeedReplies,

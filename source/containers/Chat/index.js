@@ -9,7 +9,7 @@ import InviteUsersModal from './Modals/InviteUsers'
 import EditTitleModal from './Modals/EditTitle'
 import UserListModal from 'components/Modals/UserListModal'
 import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import Button from 'components/Button'
 import ChatSearchBox from './ChatSearchBox'
 import {GENERAL_CHAT_ID} from 'constants/database'
@@ -301,7 +301,7 @@ class Chat extends Component {
           }}
         >
           {currentChannel.id !== GENERAL_CHAT_ID &&
-            <SmallDropdownButton
+            <DropdownButton
               style={{
                 position: 'absolute',
                 zIndex: 100,

@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import ExecutionEnvironment from 'exenv'
 import Carousel from 'components/Carousel'
 import VideoThumb from 'components/VideoThumb'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import EditPlaylistModal from '../Modals/EditPlaylistModal'
 import PlaylistModal from '../Modals/PlaylistModal'
@@ -153,7 +153,7 @@ class PlaylistCarousel extends Component {
             </h4>
           }
           {(editable || isAdmin) &&
-            <SmallDropdownButton
+            <DropdownButton
               style={{
                 position: 'absolute',
                 right: '1em',

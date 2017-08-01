@@ -7,6 +7,19 @@ const {getThumbImageFromEmbedApi} = require('../helpers/contentHelpers')
 const {googleKey} = require('../siteConfig')
 const request = require('request-promise-native')
 
+router.delete('/', requireAuth, (req, res) => {
+  const {type, contentId} = req.query
+  const query = `DELETE FROM ${(type === 'video') ? 'vq_videos' : `content_${type}s`} WHERE id = ?`
+  return poolQuery(query, contentId).then(
+    () => res.send({success: true})
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
 router.put('/', requireAuth, (req, res) => {
   const {body: {
     contentId,
@@ -16,22 +29,18 @@ router.put('/', requireAuth, (req, res) => {
     editedUrl,
     type
   }} = req
-  let tableName
   let post
   switch (type) {
     case 'comment':
-      tableName = 'content_comments'
       post = {content: processedString(editedComment)}
       break
     case 'discussion':
-      tableName = 'content_discussions'
       post = {
         title: editedTitle,
         description: processedString(editedDescription)
       }
       break
     case 'url':
-      tableName = 'content_urls'
       post = {
         title: editedTitle,
         description: processedString(editedDescription),
@@ -39,7 +48,6 @@ router.put('/', requireAuth, (req, res) => {
       }
       break
     case 'video':
-      tableName = 'vq_videos'
       post = {
         title: editedTitle,
         description: processedString(editedDescription),
@@ -48,7 +56,8 @@ router.put('/', requireAuth, (req, res) => {
       break
     default: return res.status(500).send({error: 'Type not specified'})
   }
-  return poolQuery(`UPDATE ${tableName} SET ? WHERE id = ?`, [post, contentId]).then(
+  const query = `UPDATE ${(type === 'video') ? 'vq_videos' : `content_${type}s`} SET ? WHERE id = ?`
+  return poolQuery(query, [post, contentId]).then(
     () => res.send(post)
   ).catch(
     error => {

@@ -4,7 +4,7 @@ import Button from 'components/Button'
 import {timeSince} from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import PanelComments from 'components/PanelComments'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import {connect} from 'react-redux'
 import {cleanString, cleanStringWithURL, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import Textarea from 'react-textarea-autosize'
@@ -84,7 +84,7 @@ class DiscussionPanel extends Component {
       >
         <div className="panel-body">
           {userIsOwner && !onEdit &&
-            <SmallDropdownButton
+            <DropdownButton
               shape="button"
               icon="pencil"
               style={{

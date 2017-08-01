@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import UsernameText from 'components/Texts/UsernameText'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
@@ -172,7 +172,7 @@ export default class Description extends Component {
                 <div style={{paddingLeft: '0px'}}>
                   <div>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</div>
                   {uploaderId === userId && !onEdit &&
-                    <SmallDropdownButton
+                    <DropdownButton
                       style={{marginTop: '0.5em'}}
                       shape="button"
                       icon="pencil"

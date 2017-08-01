@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import EditTextArea from 'components/Texts/EditTextArea'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
 import Likers from 'components/Likers'
@@ -93,7 +93,7 @@ export default class PanelReply extends Component {
     return (
       <div className="media" ref={ref => { this.PanelReply = ref }}>
         {userIsOwner && !onEdit &&
-          <SmallDropdownButton
+          <DropdownButton
             shape="button"
             icon="pencil"
             style={{

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
 import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
 import ReplyInputArea from './Replies/ReplyInputArea'
@@ -90,7 +90,7 @@ export default class Comment extends Component {
         <ProfilePic size="4.5" userId={comment.userId} profilePicId={comment.profilePicId} />
         <div className="media-body">
           {userIsOwner && !onEdit &&
-            <SmallDropdownButton
+            <DropdownButton
               shape="button"
               icon="pencil"
               style={{

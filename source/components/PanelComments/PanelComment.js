@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
 import {cleanStringWithURL} from 'helpers/stringHelpers'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import Likers from 'components/Likers'
 import {Color} from 'constants/css'
 import UserListModal from 'components/Modals/UserListModal'
@@ -94,7 +94,7 @@ export default class PanelComment extends Component {
       >
         {userIsOwner && !onEdit &&
           <div className="row">
-            <SmallDropdownButton
+            <DropdownButton
               shape="button"
               icon="pencil"
               style={{

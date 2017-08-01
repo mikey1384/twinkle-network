@@ -8,7 +8,7 @@ import UserListModal from 'components/Modals/UserListModal'
 import Link from 'components/Link'
 import {loadLinkPage, editTitle, deleteLink} from 'redux/actions/LinkActions'
 import {connect} from 'react-redux'
-import SmallDropdownButton from 'components/SmallDropdownButton'
+import DropdownButton from 'components/DropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import {cleanString} from 'helpers/stringHelpers'
 import {URL} from 'constants/URL'
@@ -121,7 +121,7 @@ class LinkItem extends Component {
         </div>
         <div className="media-body">
           {!onEdit && userId === uploader &&
-            <SmallDropdownButton
+            <DropdownButton
               shape="button"
               icon="pencil"
               menuProps={[
