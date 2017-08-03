@@ -106,14 +106,19 @@ module.exports = function(io) {
         connectedUser[connection.userId].splice(connectedUser[connection.userId].indexOf(socket.id), 1)
       }
       if (connectedUser[connection.userId] && connectedUser[connection.userId].length === 0) {
-        const query = `UPDATE users SET ? WHERE id = ?`
-        poolQuery(query, [{online: false}, connection.userId])
-        poolQuery(`INSERT INTO users_actions SET ?`, {
-          userId: connection.userId,
-          action: 'leave',
-          target: 'website',
-          timeStamp: Math.floor(Date.now()/1000)
-        })
+        return poolQuery(`UPDATE users SET ? WHERE id = ?`, [{online: false}, connection.userId]).then(
+          () => poolQuery(`INSERT INTO users_actions SET ?`, {
+            userId: connection.userId,
+            action: 'leave',
+            target: 'website',
+            timeStamp: Math.floor(Date.now()/1000)
+          })
+        ).then(
+          () => {
+            delete connectedSocket[socket.id]
+            console.log(connectedSocket)
+          }
+        )
       }
     })
   })
