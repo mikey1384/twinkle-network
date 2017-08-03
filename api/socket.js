@@ -4,12 +4,16 @@ const {poolQuery} = require('./helpers')
 
 module.exports = function(io) {
   let connections = []
+  let connectedSocket = {}
+  let connectedUser = {}
   io.on('connection', socket => {
-    connections.push({
-      socketId: socket.id,
-      username: '',
-      userId: null,
-      channels: []
+    connections.push(socket.id)
+    connectedSocket = Object.assign({}, connectedSocket, {
+      [socket.id]: {
+        username: '',
+        userId: null,
+        channels: []
+      }
     })
 
     socket.on('enter_my_notification_channel', userId => {
@@ -22,63 +26,51 @@ module.exports = function(io) {
 
     socket.on('check_online_members', (channelId, callback) => {
       io.of('/').in('chatChannel' + channelId).clients((error, clients) => {
-        const membersOnline = returnMembersOnline(clients)
-        let data = {channelId, membersOnline}
+        let data = {channelId, membersOnline: returnMembersOnline(clients)}
         callback(error, data)
       })
     })
 
     socket.on('join_chat_channel', (channelId, callback) => {
       socket.join('chatChannel' + channelId)
-      for (let i = 0; i < connections.length; i++) {
-        if (connections[i].socketId === socket.id) {
-          if (connections[i].channels.indexOf(channelId) === -1) {
-            connections[i].channels.push(channelId)
-          }
-          break
-        }
-      }
+      connectedSocket[socket.id].channels.push(channelId)
       notifyChannelMembersChanged(channelId)
     })
 
     socket.on('leave_chat_channel', ({channelId, userId, username, profilePicId}) => {
       socket.leave('chatChannel' + channelId)
-      for (let i = 0; i < connections.length; i++) {
-        if (connections[i].socketId === socket.id) {
-          let index = connections[i].channels.indexOf(channelId)
-          connections[i].channels.splice(index, 1)
-          break
-        }
-      }
+      let index = connectedSocket[socket.id].channels.indexOf(channelId)
+      connectedSocket[socket.id].channels.splice(index, 1)
       notifyChannelMembersChanged(channelId, {userId, username, profilePicId})
     })
 
     socket.on('bind_uid_to_socket', (userId, username) => {
       const channelQuery = `
-        SELECT a.id AS channel FROM msg_channels a WHERE a.id IN
+        SELECT a.id AS channelId FROM msg_channels a WHERE a.id IN
         (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
         OR b.userId = ?)
       `
       poolQuery(`UPDATE users SET ? WHERE id = ?`, [{online: true}, userId])
       poolQuery(channelQuery, [generalChatId, userId]).then(
-        rows => {
-          let channels = rows.map(row => row.channel)
-          for (let i = 0; i < connections.length; i++) {
-            if (connections[i].socketId === socket.id) {
-              connections[i] = Object.assign({}, connections[i], {
-                userId, username, channels
-              })
-              break
-            }
-          }
+        channels => {
+          connectedSocket[socket.id] = Object.assign({}, connectedSocket[socket.id], {
+            userId,
+            username,
+            channels: channels.map(({channelId}) => channelId)
+          })
           for (let i = 0; i < channels.length; i++) {
-            let channelId = channels[i]
+            const {channelId} = channels[i]
             socket.join('chatChannel' + channelId)
             notifyChannelMembersChanged(channelId)
           }
+          if (!connectedUser[userId]) {
+            connectedUser[userId] = [socket.id]
+          } else {
+            connectedUser[userId].push(socket.id)
+          }
         }
       ).catch(
-        err => console.error(err)
+        error => console.error(error)
       )
     })
 
@@ -103,25 +95,25 @@ module.exports = function(io) {
     })
 
     socket.on('disconnect', () => {
-      for (let i = 0; i < connections.length; i++) {
-        if (connections[i].socketId === socket.id) {
-          let connection = connections[i]
-          for (let i = 0; i < connection.channels.length; i++) {
-            let channelId = connection.channels[i]
-            socket.leave('chatChannel' + channelId)
-            notifyChannelMembersChanged(channelId)
-          }
-          connections.splice(i, 1)
-          const query = `UPDATE users SET ? WHERE id = ?`
-          poolQuery(query, [{online: false}, connection.userId])
-          poolQuery(`INSERT INTO users_actions SET ?`, {
-            userId: connection.userId,
-            action: 'leave',
-            target: 'website',
-            timeStamp: Math.floor(Date.now()/1000)
-          })
-          break
-        }
+      let connection = connectedSocket[socket.id]
+      for (let i = 0; i < connection.channels.length; i++) {
+        let channelId = connection.channels[i]
+        socket.leave('chatChannel' + channelId)
+        notifyChannelMembersChanged(channelId)
+      }
+      connections.splice(connections.indexOf(socket.id), 1)
+      if (connectedUser[connection.userId]) {
+        connectedUser[connection.userId].splice(connectedUser[connection.userId].indexOf(socket.id), 1)
+      }
+      if (connectedUser[connection.userId] && connectedUser[connection.userId].length === 0) {
+        const query = `UPDATE users SET ? WHERE id = ?`
+        poolQuery(query, [{online: false}, connection.userId])
+        poolQuery(`INSERT INTO users_actions SET ?`, {
+          userId: connection.userId,
+          action: 'leave',
+          target: 'website',
+          timeStamp: Math.floor(Date.now()/1000)
+        })
       }
     })
   })
@@ -136,29 +128,18 @@ module.exports = function(io) {
   }
 
   function returnMembersOnline(clients) {
-    let membersOnline = clients.map(client => {
-      let member = {}
-      for (let i = 0; i < connections.length; i++) {
-        if (connections[i].socketId === client) {
-          member = {
-            userId: connections[i].userId,
-            username: connections[i].username
-          }
-        }
+    let membersOnline = []
+    let isOnline = {}
+    for (let i = 0; i < clients.length; i++) {
+      let socketId = clients[i]
+      if (connectedSocket[socketId] && !isOnline[connectedSocket[socketId].userId]) {
+        membersOnline.push({
+          userId: connectedSocket[socketId].userId,
+          username: connectedSocket[socketId].username
+        })
+        isOnline[connectedSocket[socketId].userId] = true
       }
-      return member
-    })
-    membersOnline = membersOnline.reduce(
-      (resultingArray, member) => {
-        if (resultingArray.length === 0) {
-          return resultingArray.concat([member])
-        }
-        if (resultingArray.map(elem => elem.userId).indexOf(member.userId) === -1) {
-          return resultingArray.concat([member])
-        }
-        return resultingArray
-      }, []
-    )
+    }
     return membersOnline
   }
 }

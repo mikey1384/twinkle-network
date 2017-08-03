@@ -213,6 +213,7 @@ class Chat extends Component {
             users={this.returnUsers(currentChannel, currentChannelOnlineMembers)}
             descriptionShown={this.userListDescriptionShown}
             description="(online)"
+            title="Online Status"
           />
         }
         <div
