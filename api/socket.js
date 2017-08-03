@@ -3,11 +3,9 @@ const generalChatId = require('./siteConfig').generalChatId
 const {poolQuery} = require('./helpers')
 
 module.exports = function(io) {
-  let connections = []
   let connectedSocket = {}
   let connectedUser = {}
   io.on('connection', socket => {
-    connections.push(socket.id)
     connectedSocket = Object.assign({}, connectedSocket, {
       [socket.id]: {
         username: '',
@@ -101,7 +99,6 @@ module.exports = function(io) {
         socket.leave('chatChannel' + channelId)
         notifyChannelMembersChanged(channelId)
       }
-      connections.splice(connections.indexOf(socket.id), 1)
       if (connectedUser[connection.userId]) {
         connectedUser[connection.userId].splice(connectedUser[connection.userId].indexOf(socket.id), 1)
       }
