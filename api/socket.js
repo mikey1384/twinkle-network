@@ -112,7 +112,6 @@ module.exports = function(io) {
           })
         ).then(
           () => {
-            console.log('step two')
             delete connectedSocket[socket.id]
           }
         )
