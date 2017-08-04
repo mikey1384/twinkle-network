@@ -63,6 +63,7 @@ class Header extends Component {
       feedLoading: false
     }
     this.onLogoClick = this.onLogoClick.bind(this)
+    this.onLogout = this.onLogout.bind(this)
   }
 
   componentDidMount() {
@@ -136,7 +137,6 @@ class Header extends Component {
       location: {pathname},
       signinModalShown,
       loggedIn,
-      logout,
       username,
       chatMode,
       openSigninModal,
@@ -145,8 +145,7 @@ class Header extends Component {
       numChatUnreads,
       getInitialVideos,
       getPinnedPlaylists,
-      getPlaylists,
-      resetChat
+      getPlaylists
     } = this.props
 
     const {logoBlue, logoGreen} = this.state
@@ -213,11 +212,7 @@ class Header extends Component {
             {loggedIn ?
               <AccountMenu
                 title={username}
-                logout={() => {
-                  recordUserAction({action: 'logout'})
-                  logout()
-                  resetChat()
-                }}
+                logout={this.onLogout}
               /> :
               <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
             }
@@ -242,6 +237,13 @@ class Header extends Component {
     if (this.props.chatMode) {
       this.props.turnChatOff()
     }
+  }
+
+  onLogout() {
+    const {logout, resetChat} = this.props
+    recordUserAction({action: 'logout'})
+    logout()
+    resetChat()
   }
 }
 
