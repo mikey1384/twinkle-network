@@ -63,7 +63,7 @@ module.exports = function(io) {
           }
           if (!connectedUser[userId]) {
             connectedUser[userId] = [socket.id]
-          } else {
+          } else if (connectedUser[userId].indexOf(socket.id) === -1) {
             connectedUser[userId].push(socket.id)
           }
         }
@@ -93,20 +93,16 @@ module.exports = function(io) {
     })
 
     socket.on('disconnect', () => {
-      console.log('disconnecting')
       let connection = connectedSocket[socket.id]
       for (let i = 0; i < connection.channels.length; i++) {
         let channelId = connection.channels[i]
         socket.leave('chatChannel' + channelId)
         notifyChannelMembersChanged(channelId)
       }
-      console.log(connectedUser[connection.userId], 1)
       if (connectedUser[connection.userId]) {
         connectedUser[connection.userId].splice(connectedUser[connection.userId].indexOf(socket.id), 1)
       }
-      console.log(connectedUser[connection.userId], 2)
       if (connectedUser[connection.userId] && connectedUser[connection.userId].length === 0) {
-        console.log('step one')
         return poolQuery(`UPDATE users SET ? WHERE id = ?`, [{online: false}, connection.userId]).then(
           () => poolQuery(`INSERT INTO users_actions SET ?`, {
             userId: connection.userId,
