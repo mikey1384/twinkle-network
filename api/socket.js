@@ -100,10 +100,12 @@ module.exports = function(io) {
         socket.leave('chatChannel' + channelId)
         notifyChannelMembersChanged(channelId)
       }
+      console.log(connectedUser[connection.userId], 1)
       if (connectedUser[connection.userId]) {
         connectedUser[connection.userId].splice(connectedUser[connection.userId].indexOf(socket.id), 1)
       }
-      if ((connectedUser[connection.userId] && connectedUser[connection.userId].length === 0)) {
+      console.log(connectedUser[connection.userId], 2)
+      if (connectedUser[connection.userId] && connectedUser[connection.userId].length === 0) {
         console.log('step one')
         return poolQuery(`UPDATE users SET ? WHERE id = ?`, [{online: false}, connection.userId]).then(
           () => poolQuery(`INSERT INTO users_actions SET ?`, {
