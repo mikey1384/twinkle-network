@@ -121,7 +121,10 @@ class VideoPlayer extends Component {
 
   onVideoReady(event) {
     const {videoId, userId, addVideoView} = this.props
-    event.target.playVideo()
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    if (!isMobile) {
+      event.target.playVideo()
+    }
     const time = event.target.getCurrentTime()
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
