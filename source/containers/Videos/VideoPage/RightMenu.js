@@ -72,7 +72,7 @@ class RightMenu extends Component {
             <div>
               {nextVideos.length > 0 && <h3>Up Next</h3>}
               {this.renderVideos(nextVideos)}
-              {playlistVideos.length > 0 && <h3>{playlistTitle}</h3>}
+              {playlistVideos.length > 0 && <h3>{cleanString(playlistTitle)}</h3>}
               {this.renderVideos(playlistVideos)}
               {playlistVideosLoadMoreShown && <FlatLoadMoreButton
                 isLoading={playlistVideosLoading}

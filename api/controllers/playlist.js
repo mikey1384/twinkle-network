@@ -58,12 +58,12 @@ router.get('/rightMenu', (req, res) => {
   const videosQuery = `
     SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
-    WHERE a.playlistId = ? LIMIT 11
+    WHERE a.playlistId = ? AND a.videoId != ? LIMIT 11
   `
-  return Promise.all([
-    poolQuery(titleQuery, playlistId),
-    poolQuery(nextVideoQuery, [playlistId, playlistId, videoId]),
-    poolQuery(videosQuery, playlistId)
+  return promiseSeries([
+    () => poolQuery(titleQuery, playlistId),
+    () => poolQuery(nextVideoQuery, [playlistId, playlistId, videoId]),
+    () => poolQuery(videosQuery, [playlistId, videoId])
   ]).then(
     ([[{title: playlistTitle}], nextVideos, playlistVideos]) => {
       let playlistVideosLoadMoreShown = false
