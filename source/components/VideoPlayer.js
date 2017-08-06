@@ -9,7 +9,7 @@ import request from 'axios'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
-let isMobile;
+let isMobile
 
 class VideoPlayer extends Component {
   static propTypes = {

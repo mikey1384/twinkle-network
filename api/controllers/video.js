@@ -288,7 +288,7 @@ router.get('/rightMenu', (req, res) => {
   `
   const otherVideosQuery = `
     SELECT a.id, a.id AS videoId, a.title, a.content, a.uploader, b.username
-    FROM vq_videos a JOIN users b ON a.uploader = b.id
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.id != ?
     ORDER BY a.id DESC LIMIT 21
   `
   const removeDuplicates = (array, defaults) => {
@@ -339,7 +339,7 @@ router.get('/rightMenu', (req, res) => {
         )
       }
     ),
-    poolQuery(otherVideosQuery).then(
+    poolQuery(otherVideosQuery, videoId).then(
       rows => Promise.resolve(rows)
     )
   ]).then(
