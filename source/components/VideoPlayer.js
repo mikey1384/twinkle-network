@@ -9,7 +9,7 @@ import request from 'axios'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+let isMobile;
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -42,6 +42,7 @@ class VideoPlayer extends Component {
 
   componentDidMount() {
     const {hasHqThumb, videoCode, videoId} = this.props
+    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     this.mounted = true
     if (typeof hasHqThumb !== 'number') {
       return request.put(`${API_URL}/videoThumb`, {videoCode, videoId}).then(
