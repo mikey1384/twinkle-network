@@ -9,6 +9,7 @@ import request from 'axios'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -50,6 +51,9 @@ class VideoPlayer extends Component {
       ).catch(
         error => console.error(error.response || error)
       )
+    }
+    if (isMobile) {
+      this.setState({playing: true})
     }
   }
 
@@ -121,7 +125,6 @@ class VideoPlayer extends Component {
 
   onVideoReady(event) {
     const {videoId, userId, addVideoView} = this.props
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     if (!isMobile) {
       event.target.playVideo()
     }
