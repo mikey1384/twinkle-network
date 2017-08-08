@@ -7,7 +7,9 @@ const fetchChat = ({user, channelId}) => {
   ).then(
     () => fetchCurrentChannel()
   ).then(
-    currentChannel => Promise.all([fetchChannels(user, currentChannel.id), fetchMessages(channelId)]).then(
+    currentChannel => promiseSeries([
+      () => fetchChannels(user, currentChannel.id), () => fetchMessages(channelId)
+    ]).then(
       ([channels, messages]) => Promise.resolve({currentChannel, channels, messages})
     )
   ).then(
@@ -56,7 +58,7 @@ const fetchChat = ({user, channelId}) => {
       ON a.userId = b.id WHERE a.channelId = ?
     `
 
-    return Promise.all([poolQuery(query1, channelId), poolQuery(query2, channelId)]).then(
+    return promiseSeries([() => poolQuery(query1, channelId), () => poolQuery(query2, channelId)]).then(
       res => Promise.resolve({
         id: channelId,
         twoPeople: Boolean(res[0][0].twoPeople),
@@ -124,7 +126,7 @@ const fetchChannels = (user, currentChannelId, channelIds) => {
         ${channelIds.map(id => `a.id != ${id}`).join(' AND ')}
         ORDER BY a.lastUpdated DESC LIMIT 11
       `
-      tasks = [poolQuery(query, [user.id, generalChatId, user.id])]
+      tasks = [() => poolQuery(query, [user.id, generalChatId, user.id])]
     } else {
       const query1 = `
         SELECT a.id, a.twoPeople, a.channelName, b.lastRead
@@ -142,17 +144,17 @@ const fetchChannels = (user, currentChannelId, channelIds) => {
         LIMIT 10
       `
       const params = [user.id, generalChatId, user.id, currentChannelId]
-      tasks = [poolQuery(query1, [user.id, currentChannelId]), poolQuery(query2, params)]
+      tasks = [() => poolQuery(query1, [user.id, currentChannelId]), () => poolQuery(query2, params)]
     }
 
-    return Promise.all(tasks).then(
+    return promiseSeries(tasks).then(
       rows => {
         let channels = rows.length > 1 ? rows[0].concat(rows[1]) : rows[0]
         let taskArray = []
         for (let i = 0; i < channels.length; i++) {
-          taskArray.push(fetchUserSpecificChannelData(channels[i], user.id))
+          taskArray.push(() => fetchUserSpecificChannelData(channels[i], user.id))
         }
-        return Promise.all(taskArray).then(
+        return promiseSeries(taskArray).then(
           unreads => Promise.resolve(channels.map((channel, index) => {
             return Object.assign(channel, unreads[index])
           }))
@@ -173,9 +175,9 @@ function fetchUserSpecificChannelData(channel, userId) {
 function fetchChannelTitlesAndLastMessages(channels, userId) {
   let taskArray = []
   for (let i = 0; i < channels.length; i++) {
-    taskArray.push(fetchChannelTitleAndLastMessage(channels[i], userId))
+    taskArray.push(() => fetchChannelTitleAndLastMessage(channels[i], userId))
   }
-  return Promise.all(taskArray).then(
+  return promiseSeries(taskArray).then(
     results => {
       let finalResults = channels.map((row, index) => {
         const [message, channelName] = results[index]
@@ -221,7 +223,7 @@ const fetchMessages = channelId => {
 }
 
 const fetchChannelTitleAndLastMessage = (channel, userId) => {
-  return Promise.all([fetchLastMessage(), fetchChannelTitle()])
+  return promiseSeries([() => fetchLastMessage(), () => fetchChannelTitle()])
 
   function fetchLastMessage() {
     const query = `
@@ -283,15 +285,15 @@ const generateTitleForGroupChannel = (channelId, userId) => {
 }
 
 const saveChannelMembers = (channelId, members) => {
-  let tasks = members.map(userId => poolQuery('INSERT INTO msg_channel_members SET ?', {channelId, userId}))
-  return Promise.all(tasks)
+  let tasks = members.map(userId => () => poolQuery('INSERT INTO msg_channel_members SET ?', {channelId, userId}))
+  return promiseSeries(tasks)
 }
 
 const updateLastRead = ({users, channelId, timeStamp}) => {
   let tasks = users.map(user => {
     let userId = user.id
     let query = 'SELECT COUNT(id) AS num FROM msg_channel_info WHERE userId = ? AND channelId = ?'
-    return poolQuery(query, [userId, channelId]).then(
+    return () => poolQuery(query, [userId, channelId]).then(
       ([result]) => {
         if (Number(result.num) > 0) {
           let query = 'UPDATE msg_channel_info SET ? WHERE userId = ? AND channelId = ?'
@@ -304,10 +306,10 @@ const updateLastRead = ({users, channelId, timeStamp}) => {
   })
   for (let i = 0; i < users.length; i++) {
     tasks.push(
-      poolQuery('UPDATE msg_channel_info SET ? WHERE channelId = ? AND userId = ?', [{isHidden: false}, channelId, users[i].id])
+      () => poolQuery('UPDATE msg_channel_info SET ? WHERE channelId = ? AND userId = ?', [{isHidden: false}, channelId, users[i].id])
     )
   }
-  return Promise.all(tasks)
+  return promiseSeries(tasks)
 }
 
 module.exports = {
