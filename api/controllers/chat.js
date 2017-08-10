@@ -55,9 +55,9 @@ router.post('/', requireAuth, (req, res) => {
       const query2 = `
         INSERT INTO msg_chats SET channelId = ?, userId = ?, content = ?, timeStamp = ?, subjectId = ?
       `
-      return Promise.all([
-        poolQuery(query1, channelId),
-        poolQuery(query2, [channelId, user.id, processedString(content), timeStamp, subjectId])
+      return promiseSeries([
+        () => poolQuery(query1, channelId),
+        () => poolQuery(query2, [channelId, user.id, processedString(content), timeStamp, subjectId])
       ])
     }
   ).then(
@@ -234,9 +234,9 @@ router.get('/chatSubject/modal', (req, res) => {
       )
     ) DESC LIMIT 21
   `
-  return Promise.all([
-    poolQuery(mySubjectsQuery, userId),
-    poolQuery(allSubjectsQuery)
+  return promiseSeries([
+    () => poolQuery(mySubjectsQuery, userId),
+    () => poolQuery(allSubjectsQuery)
   ]).then(
     ([mySubjects, allSubjects]) => {
       let mySubjectsLoadMoreButton = false
@@ -337,14 +337,14 @@ router.put('/chatSubject/reload', requireAuth, (req, res) => {
         subjectId,
         isReloadedSubject: true
       }
-      return Promise.all([
-        poolQuery(`UPDATE msg_channels SET ? WHERE id = 2`, {currentSubjectId: subjectId}),
-        poolQuery(`UPDATE content_chat_subjects SET ? WHERE id = ?`, [post, subjectId]),
-        poolQuery(`
+      return promiseSeries([
+        () => poolQuery(`UPDATE msg_channels SET ? WHERE id = 2`, {currentSubjectId: subjectId}),
+        () => poolQuery(`UPDATE content_chat_subjects SET ? WHERE id = ?`, [post, subjectId]),
+        () => poolQuery(`
           SELECT COUNT(id) AS numMsgs FROM msg_chats WHERE subjectId = ?
           AND isSubject != 1 AND isReloadedSubject != 1
         `, subjectId),
-        poolQuery(`INSERT INTO msg_chats SET ?`, message)
+        () => poolQuery(`INSERT INTO msg_chats SET ?`, message)
       ]).then(
         ([, , [{numMsgs}], {insertId: messageId}]) => {
           return Promise.resolve({
@@ -435,7 +435,7 @@ router.get('/more/messages', requireAuth, (req, res) => {
     SELECT id FROM msg_chats WHERE id < ? AND channelId = ? ORDER BY id DESC LIMIT 21
   `
   return poolQuery(query, [messageId, channelId]).then(
-    messages => Promise.all(
+    messages => promiseSeries(
       messages.map(({id}) => {
         let query = `
           SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, a.isNotification,
@@ -451,7 +451,7 @@ router.get('/more/messages', requireAuth, (req, res) => {
           LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = '1'
           WHERE a.id = ?
         `
-        return poolQuery(query, id).then(([message]) => Promise.resolve(message))
+        return () => poolQuery(query, id).then(([message]) => Promise.resolve(message))
       })
     )
   ).then(
@@ -590,9 +590,9 @@ router.post('/channel', requireAuth, (req, res) => {
         isNotification: true
       }
       updateLastRead({users: members.map(member => ({id: member})), channelId, timeStamp: timeStamp - 1})
-      return Promise.all([
-        saveChannelMembers(channelId, members),
-        poolQuery('INSERT INTO msg_chats SET ?', message)
+      return promiseSeries([
+        () => saveChannelMembers(channelId, members),
+        () => poolQuery('INSERT INTO msg_chats SET ?', message)
       ]).then(
         ([, result]) => Promise.resolve(Object.assign({}, message, {
           username: user.username,
@@ -643,9 +643,9 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
       return Promise.resolve(result.insertId)
     }
   ).then(
-    channelId => Promise.all([
-      saveChannelMembers(channelId, [user.id, partnerId]),
-      poolQuery('INSERT INTO msg_chats SET ?', {channelId, userId: user.id, content, timeStamp})
+    channelId => promiseSeries([
+      () => saveChannelMembers(channelId, [user.id, partnerId]),
+      () => poolQuery('INSERT INTO msg_chats SET ?', {channelId, userId: user.id, content, timeStamp})
     ]).then(
       ([, result]) => Promise.resolve({channelId, messageId: result.insertId})
     )
