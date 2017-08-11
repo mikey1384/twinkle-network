@@ -293,9 +293,9 @@ router.get('/feed', (req, res) => {
   ).then(
     feed => res.send(Object.assign({}, result, feed))
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })

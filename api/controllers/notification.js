@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
-const {poolQuery} = require('../helpers')
+const {poolQuery, promiseSeries} = require('../helpers')
 const currentVersion = 0.055
 
 router.get('/', requireAuth, (req, res) => {
@@ -75,9 +75,9 @@ router.get('/', requireAuth, (req, res) => {
     LEFT JOIN users c ON a.reloadedBy = c.id
     WHERE a.id = (SELECT currentSubjectId FROM msg_channels WHERE id = 2 LIMIT 1)
   `
-  return Promise.all([
-    poolQuery(notiQuery, [userId, userId, userId, userId]),
-    poolQuery(chatSubjectQuery)
+  return promiseSeries([
+    () => poolQuery(notiQuery, [userId, userId, userId, userId]),
+    () => poolQuery(chatSubjectQuery)
   ]).then(
     ([notifications, [currentChatSubject]]) => res.send({
       notifications,

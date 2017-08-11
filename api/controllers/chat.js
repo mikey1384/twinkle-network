@@ -25,12 +25,12 @@ router.get('/', requireAuth, (req, res) => {
     method: 'default',
     timeStamp: Math.floor(Date.now()/1000)
   })
-  fetchChat({user, channelId: Number(channelId) || lastChannelId || generalChatId}).then(
+  return fetchChat({user, channelId: Number(channelId) || lastChannelId || generalChatId}).then(
     results => res.send(results)
   ).catch(
     error => {
+      console.error(error)
       if (error.status) {
-        console.error(error)
         return res.status(error.status).send({error})
       }
       return res.status(500).send({error})
@@ -42,13 +42,13 @@ router.post('/', requireAuth, (req, res) => {
   const user = req.user
   const {message} = req.body
   const {channelId, content, subjectId} = message
-  const timeStamp = Math.floor(Date.now()/1000)
+  const timeStamp = Math.floor(Date.now() / 1000)
   if (message.userId !== user.id) {
     return res.status(401).send('Unauthorized')
   }
 
   return poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
-    () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
+    () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now() / 1000)})
   ).then(
     () => {
       const query1 = `UPDATE msg_channel_info SET isHidden = '0' WHERE channelId = ?`
@@ -388,7 +388,7 @@ router.put('/chatSubject/reload', requireAuth, (req, res) => {
 router.delete('/message', requireAuth, (req, res) => {
   const {user} = req
   const {messageId} = req.query
-  poolQuery('DELETE FROM msg_chats WHERE id = ? AND userId = ?', [messageId, user.id]).then(
+  return poolQuery('DELETE FROM msg_chats WHERE id = ? AND userId = ?', [messageId, user.id]).then(
     () => res.send({success: true})
   ).catch(
     error => {
@@ -402,7 +402,7 @@ router.put('/message', requireAuth, (req, res) => {
   const {user} = req
   const {editedMessage, messageId} = req.body
   const query = 'UPDATE msg_chats SET ? WHERE id = ? AND userId = ?'
-  poolQuery(query, [{content: processedString(editedMessage)}, messageId, user.id]).then(
+  return poolQuery(query, [{content: processedString(editedMessage)}, messageId, user.id]).then(
     () => res.send({success: true})
   ).catch(
     error => {
@@ -415,7 +415,7 @@ router.put('/message', requireAuth, (req, res) => {
 router.get('/more/channels', requireAuth, (req, res) => {
   const {currentChannelId, channelIds} = req.query
   const {user} = req
-  fetchChannels(user, currentChannelId, channelIds).then(
+  return fetchChannels(user, currentChannelId, channelIds).then(
     channels => res.send(channels)
   ).catch(
     error => {
@@ -467,7 +467,7 @@ router.get('/more/messages', requireAuth, (req, res) => {
 router.get('/channels', requireAuth, (req, res) => {
   const user = req.user
   const {currentChannelId} = req.query
-  fetchChannels(user, currentChannelId).then(
+  return fetchChannels(user, currentChannelId).then(
     channels => res.send(channels)
   ).catch(
     error => {
@@ -520,7 +520,7 @@ router.get('/channel/check', requireAuth, (req, res) => {
 
     A.id = B.id
   `
-  poolQuery(query).then(
+  return poolQuery(query).then(
     rows => {
       let query = `
         SELECT a.id, a.channelId, a.userId, a.content, a.timeStamp, b.username,
@@ -559,7 +559,7 @@ router.get('/channel/check', requireAuth, (req, res) => {
 router.post('/lastRead', requireAuth, (req, res) => {
   const user = req.user
   const channelId = req.body.channelId
-  updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)}).then(
+  return updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)}).then(
     () => res.send({success: true})
   ).catch(
     error => {
@@ -575,7 +575,7 @@ router.post('/channel', requireAuth, (req, res) => {
   const channelName = processedTitleString(params.channelName)
   const timeStamp = Math.floor(Date.now()/1000)
 
-  poolQuery('INSERT INTO msg_channels SET ?', {channelName, creator: user.id}).then(
+  return poolQuery('INSERT INTO msg_channels SET ?', {channelName, creator: user.id}).then(
     result => Promise.resolve(result.insertId)
   ).then(
     channelId => {
@@ -637,7 +637,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
     return res.status(401).send({error: 'Session mismatch'})
   }
 
-  poolQuery('INSERT INTO msg_channels SET ?', {twoPeople: true}).then(
+  return poolQuery('INSERT INTO msg_channels SET ?', {twoPeople: true}).then(
     result => {
       updateLastRead({users: [{id: partnerId}, {id: user.id}], channelId: result.insertId, timeStamp: timeStamp - 1})
       return Promise.resolve(result.insertId)
@@ -660,7 +660,7 @@ router.post('/channel/twoPeople', requireAuth, (req, res) => {
         msg_channel_members a LEFT JOIN users b ON
         a.userId = b.id WHERE a.channelId = ?
       `
-      poolQuery(query, channelId).then(
+      return poolQuery(query, channelId).then(
         members => res.send({
           id: messageId,
           messageId,

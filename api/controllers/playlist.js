@@ -18,9 +18,9 @@ router.get('/', (req, res) => {
   return fetchPlaylists(query).then(
     playlists => res.send({playlists})
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send(err)
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -36,9 +36,9 @@ router.get('/playlist', (req, res) => {
   return poolQuery(query, playlistId).then(
     videos => res.send(videos)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send(err)
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -114,9 +114,9 @@ router.post('/', requireAuth, (req, res) => {
       const numberOfVideosQuery = `
         SELECT COUNT(id) AS numVids FROM vq_playlistvideos WHERE playlistId = ?
       `
-      return Promise.all([
-        poolQuery(videosQuery, playlistId),
-        poolQuery(numberOfVideosQuery, playlistId)
+      return promiseSeries([
+        () => poolQuery(videosQuery, playlistId),
+        () => poolQuery(numberOfVideosQuery, playlistId)
       ]).then(
         ([playlist, [{numVids}]]) => Promise.resolve({playlist, numVids, playlistId})
       )
@@ -165,9 +165,9 @@ router.post('/edit/videos', requireAuth, (req, res) => {
   return poolQuery('DELETE FROM vq_playlistvideos WHERE playlistId = ?', playlistId).then(
     () => {
       let insertQuery = 'INSERT INTO vq_playlistvideos SET ?'
-      return Promise.all([
-        promiseSeries(selectedVideos.map(videoId => () => poolQuery(insertQuery, {playlistId, videoId}))),
-        poolQuery(
+      return promiseSeries([
+        () => promiseSeries(selectedVideos.map(videoId => () => poolQuery(insertQuery, {playlistId, videoId}))),
+        () => poolQuery(
           'UPDATE vq_playlists SET ? WHERE id = ?',
           [{timeStamp: Math.floor(Date.now()/1000)}, playlistId]
         )
@@ -240,9 +240,9 @@ router.get('/pinned', (req, res) => {
   return fetchPlaylists(query).then(
     playlists => res.send({playlists})
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send(err)
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -315,9 +315,9 @@ router.get('/search/video', (req, res) => {
   return poolQuery(query, '%' + searchQuery + '%').then(
     result => res.send(result)
   ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
     }
   )
 })

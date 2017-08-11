@@ -1,5 +1,5 @@
 const pool = require('../pool')
-const {poolQuery} = require('../helpers')
+const {poolQuery, promiseSeries} = require('../helpers')
 
 const {requireAuth} = require('../auth')
 const {
@@ -38,8 +38,8 @@ router.get('/', (req, res) => {
     WHERE a.id = ?
   `
   return poolQuery(idQuery, videoId).then(
-    videoIds => Promise.all(videoIds.map(({id}) => {
-      return poolQuery(videoQuery, id)
+    videoIds => promiseSeries(videoIds.map(({id}) => {
+      return () => poolQuery(videoQuery, id)
     }))
   ).then(
     rows => {
@@ -47,9 +47,9 @@ router.get('/', (req, res) => {
       res.send(videos)
     }
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -159,9 +159,9 @@ router.post('/like', requireAuth, (req, res) => {
   ).then(
     rows => res.send({likes: rows})
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -236,8 +236,8 @@ router.get('/page', (req, res) => {
         FROM content_likes a LEFT JOIN users b ON a.userId = b.id
         WHERE a.rootType = 'video' AND a.rootId = ?
       `
-      return Promise.all([
-        poolQuery(questionQuery, videoId).then(
+      return promiseSeries([
+        () => poolQuery(questionQuery, videoId).then(
           rows => {
             let questions = rows.map(row => ({
               title: row.title,
@@ -253,7 +253,7 @@ router.get('/page', (req, res) => {
             return Promise.resolve(questions)
           }
         ),
-        poolQuery(likeQuery, videoId).then(
+        () => poolQuery(likeQuery, videoId).then(
           rows => Promise.resolve(rows)
         )
       ])
@@ -264,9 +264,9 @@ router.get('/page', (req, res) => {
       likes: results[1]
     }))
   ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      return res.status(500).send({error})
     }
   )
 })
@@ -304,11 +304,11 @@ router.get('/rightMenu', (req, res) => {
     return result
   }
 
-  return Promise.all([
-    poolQuery(playlistQuery(11), videoId).then(
+  return promiseSeries([
+    () => poolQuery(playlistQuery(11), videoId).then(
       rows => {
-        return Promise.all(rows.map(({playlistId, id}) => {
-          return poolQuery(nextVideoQuery, [playlistId, id, videoId])
+        return promiseSeries(rows.map(({playlistId, id}) => {
+          return () => poolQuery(nextVideoQuery, [playlistId, id, videoId])
         })).then(
           results => {
             let videos = []
@@ -322,10 +322,10 @@ router.get('/rightMenu', (req, res) => {
         )
       }
     ),
-    poolQuery(playlistQuery(6), videoId).then(
+    () => poolQuery(playlistQuery(6), videoId).then(
       rows => {
-        return Promise.all(rows.map(({playlistId, id}) => {
-          return poolQuery(relatedVideosQuery(11), [playlistId, videoId])
+        return promiseSeries(rows.map(({playlistId, id}) => {
+          return () => poolQuery(relatedVideosQuery(11), [playlistId, videoId])
         })).then(
           results => {
             let videos = []
@@ -339,7 +339,7 @@ router.get('/rightMenu', (req, res) => {
         )
       }
     ),
-    poolQuery(otherVideosQuery, videoId).then(
+    () => poolQuery(otherVideosQuery, videoId).then(
       rows => Promise.resolve(rows)
     )
   ]).then(
@@ -354,9 +354,9 @@ router.get('/rightMenu', (req, res) => {
       res.send({nextVideos, relatedVideos, otherVideos})
     }
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })

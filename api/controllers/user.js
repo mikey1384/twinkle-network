@@ -41,9 +41,9 @@ router.get('/check', (req, res) => {
   return poolQuery(query, username).then(
     rows => res.send(rows.length > 0)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -60,9 +60,9 @@ router.post('/logout', requireAuth, (req, res) => {
   }).then(
     () => res.send(true)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -80,9 +80,9 @@ router.post('/navigation', requireAuth, (req, res) => {
   }).then(
     () => res.send(true)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -101,9 +101,9 @@ router.post('/search', requireAuth, (req, res) => {
   }).then(
     () => res.send(true)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -236,9 +236,9 @@ router.get('/users/search', (req, res) => {
   return poolQuery(query, [`%${queryString}%`, `%${queryString}%`]).then(
     rows => res.send(rows)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -255,9 +255,9 @@ router.get('/users', (req, res) => {
   return poolQuery(query).then(
     rows => res.send(rows)
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -297,7 +297,7 @@ router.post('/recordAnonTraffic', (req, res) => {
   }).then(
     () => res.send(true)
   ).catch(
-    err => console.error(err)
+    error => console.error(error)
   )
 })
 

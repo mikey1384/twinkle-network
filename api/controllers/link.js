@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
     FROM content_urls a JOIN users b ON a.uploader = b.id ${where}
     ORDER BY id DESC LIMIT 21
   `
-  poolQuery(query).then(
+  return poolQuery(query).then(
     results => {
       let tasks = results.map(result => {
         let query = `
@@ -53,7 +53,7 @@ router.get('/', (req, res) => {
 router.post('/', requireAuth, (req, res) => {
   const {url, title, description} = req.body
   const {user} = req
-  uploadContents({url, title, description, uploader: user.id, type: 'url'}).then(
+  return uploadContents({url, title, description, uploader: user.id, type: 'url'}).then(
     ({result, post}) => res.send(Object.assign({}, post, {
       id: result.insertId,
       uploaderName: user.username,
@@ -111,9 +111,9 @@ router.post('/like', requireAuth, (req, res) => {
   ).then(
     rows => res.send({likes: rows})
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
@@ -123,9 +123,9 @@ router.delete('/page', requireAuth, (req, res) => {
   return poolQuery('DELETE FROM content_urls WHERE id = ? AND uploader = ?', [linkId, user.id]).then(
     () => res.send({success: true})
   ).catch(
-    err => {
-      console.error(err)
-      res.status(500).send({error: err})
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
