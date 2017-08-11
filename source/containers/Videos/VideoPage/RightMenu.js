@@ -91,10 +91,10 @@ class RightMenu extends Component {
   }
 
   loadMorePlaylistVideos() {
-    const {loadMorePlaylistVideos, playlistId, playlistVideos} = this.props
+    const {loadMorePlaylistVideos, playlistId, playlistVideos, videoId} = this.props
     this.setState({playlistVideosLoading: true})
     return loadMorePlaylistVideos(
-      playlistId, queryStringForArray(playlistVideos, 'videoId', 'shownVideos')
+      videoId, playlistId, queryStringForArray(playlistVideos, 'videoId', 'shownVideos')
     ).then(
       () => this.setState({playlistVideosLoading: false})
     )

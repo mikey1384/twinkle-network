@@ -286,8 +286,8 @@ export const loadMoreDiscussions = (videoId, lastDiscussionId) => dispatch =>
         handleError(error, dispatch)
       }
     )
-export const loadMorePlaylistVideos = (playlistId, shownVideos) => dispatch =>
-  request.get(`${API_URL}/more/playlistVideos?playlistId=${playlistId}&${shownVideos}`).then(
+export const loadMorePlaylistVideos = (videoId, playlistId, shownVideos) => dispatch =>
+  request.get(`${API_URL}/more/playlistVideos?videoId=${videoId}&playlistId=${playlistId}&${shownVideos}`).then(
     ({data: {playlistVideos, playlistVideosLoadMoreShown}}) => {
       dispatch({
         type: 'LOAD_MORE_RIGHT_MENU_PL_VIDEOS',
