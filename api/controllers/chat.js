@@ -158,8 +158,9 @@ router.get('/chatSubject/messages', (req, res) => {
     SELECT a.*, b.username, c.id AS profilePicId FROM msg_chats a
     JOIN users b ON a.userId = b.id
     LEFT JOIN users_photos c ON a.userId = c.userId AND c.isProfilePic = 1
-    WHERE a.subjectId = ? 
-    AND a.isSubject != 1
+    WHERE a.subjectId = ?
+      AND a.channelId = 2
+      AND a.isSubject != 1
     ORDER BY id DESC LIMIT 11
   `
   return poolQuery(query, subjectId).then(
