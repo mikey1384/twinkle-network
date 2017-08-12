@@ -48,27 +48,28 @@ module.exports = function(io) {
         (SELECT b.channelId FROM msg_channel_members b WHERE b.channelId = ?
         OR b.userId = ?)
       `
-      poolQuery(`UPDATE users SET ? WHERE id = ?`, [{online: true}, userId])
-      poolQuery(channelQuery, [generalChatId, userId]).then(
-        channels => {
-          connectedSocket[socket.id] = Object.assign({}, connectedSocket[socket.id], {
-            userId,
-            username,
-            channels: channels.map(({channelId}) => channelId)
-          })
-          for (let i = 0; i < channels.length; i++) {
-            const {channelId} = channels[i]
-            socket.join('chatChannel' + channelId)
-            notifyChannelMembersChanged(channelId)
+      return poolQuery(`UPDATE users SET ? WHERE id = ?`, [{online: true}, userId]).then(
+        () => poolQuery(channelQuery, [generalChatId, userId]).then(
+          channels => {
+            connectedSocket[socket.id] = Object.assign({}, connectedSocket[socket.id], {
+              userId,
+              username,
+              channels: channels.map(({channelId}) => channelId)
+            })
+            for (let i = 0; i < channels.length; i++) {
+              const {channelId} = channels[i]
+              socket.join('chatChannel' + channelId)
+              notifyChannelMembersChanged(channelId)
+            }
+            if (!connectedUser[userId]) {
+              connectedUser[userId] = [socket.id]
+            } else if (connectedUser[userId].indexOf(socket.id) === -1) {
+              connectedUser[userId].push(socket.id)
+            }
           }
-          if (!connectedUser[userId]) {
-            connectedUser[userId] = [socket.id]
-          } else if (connectedUser[userId].indexOf(socket.id) === -1) {
-            connectedUser[userId].push(socket.id)
-          }
-        }
-      ).catch(
-        error => console.error(error)
+        ).catch(
+          error => console.error(error)
+        )
       )
     })
 
@@ -114,6 +115,8 @@ module.exports = function(io) {
           () => {
             delete connectedSocket[socket.id]
           }
+        ).catch(
+          error => console.error(error)
         )
       }
     })
