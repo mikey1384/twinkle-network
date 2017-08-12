@@ -38,6 +38,7 @@ class VideoPlayer extends Component {
       imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`
     }
     this.onVideoReady = this.onVideoReady.bind(this)
+    this.onVideoPlay = this.onVideoPlay.bind(this)
   }
 
   componentDidMount() {
@@ -118,20 +119,24 @@ class VideoPlayer extends Component {
             opts={{title}}
             videoId={videoCode}
             onReady={this.onVideoReady}
+            onPlay={this.onVideoPlay}
           />
         }
       </div>
     )
   }
 
-  onVideoReady(event) {
+  onVideoPlay(event) {
     const {videoId, userId, addVideoView} = this.props
-    if (!isMobile) {
-      event.target.playVideo()
-    }
     const time = event.target.getCurrentTime()
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
+    }
+  }
+
+  onVideoReady(event) {
+    if (!isMobile) {
+      event.target.playVideo()
     }
   }
 }
