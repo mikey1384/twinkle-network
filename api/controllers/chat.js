@@ -48,8 +48,6 @@ router.post('/', requireAuth, (req, res) => {
   }
 
   return poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
-    () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now() / 1000)})
-  ).then(
     () => {
       const query1 = `UPDATE msg_channel_info SET isHidden = '0' WHERE channelId = ?`
       const query2 = `
@@ -61,7 +59,12 @@ router.post('/', requireAuth, (req, res) => {
       ])
     }
   ).then(
-    results => res.send({messageId: Number(results[1].insertId)})
+    results => {
+      return promiseSeries([
+        () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now() / 1000)}),
+        () => res.send({messageId: Number(results[1].insertId)})
+      ])
+    }
   ).catch(
     error => {
       console.error(error)
@@ -482,16 +485,16 @@ router.get('/channel', requireAuth, (req, res) => {
   const user = req.user
   const channelId = Number(req.query.channelId) || generalChatId
 
-  updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now()/1000)})
   return fetchMessages(channelId).then(
     messages => poolQuery('UPDATE users SET ? WHERE id = ?', [{lastChannelId: channelId}, user.id]).then(
       () => Promise.resolve(messages)
     )
   ).then(
     messages => {
-      return fetchSingleChannel(channelId, user.id).then(
-        channel => res.send({messages, channel})
-      )
+      return promiseSeries([
+        () => updateLastRead({users: [{id: user.id}], channelId, timeStamp: Math.floor(Date.now() / 1000)}),
+        () => fetchSingleChannel(channelId, user.id).then(channel => res.send({messages, channel}))
+      ])
     }
   ).catch(
     error => {
