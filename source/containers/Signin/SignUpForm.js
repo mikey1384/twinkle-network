@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {Modal, Alert} from 'react-bootstrap'
 import Button from 'components/Button'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import {stringIsEmpty, trimWhiteSpaces} from 'helpers/stringHelpers'
 import Input from 'components/Texts/Input'
 
 export default class SignUpForm extends Component {
@@ -44,11 +44,11 @@ export default class SignUpForm extends Component {
             <Input
               className="form-control"
               value={username}
-              placeholder="Enter the username you wish to use on this website"
+              placeholder="Enter the username you wish to use. It has to be at least 4 characters long"
               onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  username: text
+                  username: trimWhiteSpaces(text)
                 })
               }}
               onKeyPress={event => {
@@ -88,7 +88,7 @@ export default class SignUpForm extends Component {
               onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  firstname: text
+                  firstname: trimWhiteSpaces(text)
                 })
               }}
               onKeyPress={event => {
@@ -108,7 +108,7 @@ export default class SignUpForm extends Component {
               onChange={text => {
                 this.setState({
                   errorMessage: '',
-                  lastname: text
+                  lastname: trimWhiteSpaces(text)
                 })
               }}
               onKeyPress={event => {
@@ -190,7 +190,7 @@ function isValidRealname(realName) {
 
 function isValidUsername(username) {
   var pattern = new RegExp(/^[a-zA-Z0-9]+$/)
-  return !!username && username.length < 20 && pattern.test(username)
+  return !!username && username.length < 20 && username.length > 3 && pattern.test(username)
 }
 
 function isValidPassword(password) {
