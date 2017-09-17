@@ -4,7 +4,7 @@ const lex = require('greenlock-express').create({
   server: 'https://acme-v01.api.letsencrypt.org/directory',
   email: 'mikey1384@gmail.com',
   agreeTos: true,
-  approveDomains: ['www.twin-kle.com', 'twin-kle.com'],
+  approveDomains: ['www.twin-kle.com', 'twin-kle.com', 'www.twinkle.network', 'twinkle.network'],
   challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) }
 })
 
