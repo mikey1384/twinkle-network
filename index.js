@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'production') {
     server: 'https://acme-v01.api.letsencrypt.org/directory',
     email: 'mikey1384@gmail.com',
     agreeTos: true,
-    approveDomains: ['www.twin-kle.com', 'twin-kle.com'],
+    approveDomains: ['www.twin-kle.com', 'twin-kle.com', 'www.twinkle.network', 'twinkle.network'],
     app: server
   }).listen(80, 443)
 } else {
