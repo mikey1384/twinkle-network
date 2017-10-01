@@ -11,7 +11,7 @@ import {ScrollContext} from 'components/Wrappers/ReactRouterScroll'
 const history = createHistory()
 const store = createStoreWithHistory(history)
 
-ReactDOM.render(
+ReactDOM.hydrate(
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <ScrollContext>

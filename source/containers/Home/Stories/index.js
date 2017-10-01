@@ -135,7 +135,7 @@ class Stories extends Component {
             fontWeight: 'bold'
           }}
         >
-          <li className={selectedFilter === 'all' && 'active'}>
+          <li className={selectedFilter === 'all' ? 'active' : ''}>
             <a
               style={{
                 cursor: 'pointer'
@@ -145,7 +145,7 @@ class Stories extends Component {
               All
             </a>
           </li>
-          <li className={selectedFilter === 'discussion' && 'active'}>
+          <li className={selectedFilter === 'discussion' ? 'active' : ''}>
             <a
               style={{
                 cursor: 'pointer'
@@ -155,7 +155,7 @@ class Stories extends Component {
               Discussions
             </a>
           </li>
-          <li className={selectedFilter === 'video' && 'active'}>
+          <li className={selectedFilter === 'video' ? 'active' : ''}>
             <a
               style={{
                 cursor: 'pointer'
@@ -165,7 +165,7 @@ class Stories extends Component {
               Videos
             </a>
           </li>
-          <li className={selectedFilter === 'url' && 'active'}>
+          <li className={selectedFilter === 'url' ? 'active' : ''}>
             <a
               style={{
                 cursor: 'pointer'
@@ -175,7 +175,7 @@ class Stories extends Component {
               Links
             </a>
           </li>
-          <li className={selectedFilter === 'comment' && 'active'}>
+          <li className={selectedFilter === 'comment' ? 'active' : ''}>
             <a
               style={{
                 cursor: 'pointer'

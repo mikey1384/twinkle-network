@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 /* global requestAnimationFrame, cancelAnimationFrame */
 
 import React, {Component} from 'react'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import {processedStringWithURL, isValidUrl} from 'helpers/stringHelpers'
 
 export default class Truncate extends Component {
@@ -293,15 +294,16 @@ export default class Truncate extends Component {
     }
 
     delete spanProps.onTruncate
-
     return (
-      <span {...spanProps} ref={ref => { this.Target = ref }}>
-        {text}
+      <div {...spanProps} ref={ref => { this.Target = ref }}>
+        <ErrorBoundary>
+          <p>{text}</p>
+        </ErrorBoundary>
         <span ref={ref => { this.Text = ref }}>{children}</span>
         <span ref={ref => { this.Ellipsis = ref }} style={this.styles.ellipsis}>
           {ellipsis}
         </span>
-      </span>
+      </div>
     )
   }
 

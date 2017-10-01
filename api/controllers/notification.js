@@ -65,6 +65,15 @@ router.get('/', requireAuth, (req, res) => {
         OR
           (SELECT userId FROM content_discussions WHERE id = a.discussionId) = ?
       )
+      AND IF(
+        a.rootType = 'video',
+        (SELECT title FROM vq_videos WHERE id = a.rootId),
+        (IF(
+          a.rootType = 'comment',
+          (SELECT content FROM content_comments WHERE id = a.rootId),
+          (SELECT title FROM content_urls WHERE id = a.rootId))
+        )
+      ) IS NOT NULL
       AND uploaderId != ? ORDER BY id DESC LIMIT 20
   `
   const chatSubjectQuery = `
