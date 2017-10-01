@@ -7,9 +7,14 @@ import createHistory from 'history/createBrowserHistory'
 import createStoreWithHistory from './store'
 import App from 'containers/App'
 import {ScrollContext} from 'components/Wrappers/ReactRouterScroll'
+import {Modal} from 'react-overlays'
 
 const history = createHistory()
 const store = createStoreWithHistory(history)
+
+Modal.prototype.componentWillMount = function() {
+  this.focus = () => {}
+}
 
 ReactDOM.hydrate(
   <Provider store={store}>
