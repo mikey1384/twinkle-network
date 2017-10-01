@@ -12,14 +12,14 @@ export default function PageTab({watchTabActive, onWatchTabClick, onQuestionTabC
     <div className="row container-fluid">
       <ul className="nav nav-tabs nav-justified" style={{width: '100%', fontSize: '1.3em', fontWeight: 'bold'}}>
         <li
-          className={watchTabActive && 'active'}
+          className={watchTabActive ? 'active' : ''}
           style={{cursor: 'pointer'}}
           onClick={onWatchTabClick}
         >
           <a>Video</a>
         </li>
         <li
-          className={!watchTabActive && 'active'}
+          className={watchTabActive ? '' : 'active'}
           style={{cursor: 'pointer'}}
           onClick={onQuestionTabClick}
         >

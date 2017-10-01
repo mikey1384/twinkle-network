@@ -38,14 +38,14 @@ class CommentInputArea extends Component {
         <div className="row">
           <ul className="nav nav-tabs" style={{fontSize: '1.3em', fontWeight: 'bold'}}>
             <li
-              className={discussionTabActive && 'active'}
+              className={discussionTabActive ? 'active' : ''}
               style={{cursor: 'pointer'}}
               onClick={() => this.setState({discussionTabActive: true})}
             >
               <a>Discuss</a>
             </li>
             <li
-              className={!discussionTabActive && 'active'}
+              className={!discussionTabActive ? 'active' : ''}
               style={{cursor: 'pointer'}}
               onClick={() => this.setState({
                 discussionTabActive: false,

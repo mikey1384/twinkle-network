@@ -62,7 +62,7 @@ function Home({history, location, userId, profilePicId, username: myUsername, no
           </li>
           <Route exact path='/users' children={({match}) => (
             <li
-              className={`list-group-item left-menu-item home-left-menu ${(match || ((username && myUsername) && (username !== myUsername))) && ' active'} flexbox-container`}
+              className={`list-group-item left-menu-item home-left-menu ${(match || ((username && myUsername) && (username !== myUsername))) ? ' active' : ''} flexbox-container`}
               onClick={() => history.push('/users')}
             >
               <div className="media-left">

@@ -112,7 +112,7 @@ class Body extends Component {
           >
             <Route exact path={`${route.url}/`} children={({match}) => (
               <li
-                className={match && 'active'}
+                className={match ? 'active' : ''}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
                   () => history.push(`${route.url}`)
@@ -123,7 +123,7 @@ class Body extends Component {
             )}/>
             <Route exact path={`${route.url}/videos`} children={({match}) => (
               <li
-                className={match && 'active'}
+                className={match ? 'active' : ''}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
                   () => history.push(`${route.url}/videos`)
@@ -134,7 +134,7 @@ class Body extends Component {
             )}/>
             <Route exact path={`${route.url}/links`} children={({match}) => (
               <li
-                className={match && 'active'}
+                className={match ? 'active' : ''}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
                   () => history.push(`${route.url}/links`)
@@ -145,7 +145,7 @@ class Body extends Component {
             )}/>
             <Route exact path={`${route.url}/discussions`} children={({match}) => (
               <li
-                className={match && 'active'}
+                className={match ? 'active' : ''}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
                   () => history.push(`${route.url}/discussions`)
