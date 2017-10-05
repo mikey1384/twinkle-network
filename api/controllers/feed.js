@@ -1,4 +1,3 @@
-const pool = require('../pool')
 const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
@@ -62,23 +61,21 @@ router.get('/comments', (req, res) => {
     LEFT JOIN users e ON d.userId = e.id
     WHERE a.${where} ORDER BY a.id DESC LIMIT ${limit}
   `
-  pool.query(query, contentId, (err, rows) => {
-    if (err) {
+  return poolQuery(query, contentId).then(
+    rows => {
+      if (rows.length === 0) {
+        return res.send([])
+      }
+      return returnComments(rows, rootType).then(
+        commentsArray => res.send(commentsArray)
+      )
+    }
+  ).catch(
+    err => {
       console.error(err)
       return res.status(500).send({error: err})
     }
-    if (rows.length === 0) {
-      return res.send([])
-    }
-    return returnComments(rows, rootType).then(
-      commentsArray => res.send(commentsArray)
-    ).catch(
-      err => {
-        console.error(err)
-        return res.status(500).send({error: err})
-      }
-    )
-  })
+  )
 })
 
 router.delete('/comments', requireAuth, deleteComments)
@@ -307,17 +304,18 @@ router.post('/targetContentComment', requireAuth, (req, res) => {
     userId: user.id,
     timeStamp: Math.floor(Date.now()/1000)
   })
-  pool.query(query, post, (err, result) => {
-    if (err) {
-      console.error(err)
-      res.status(500).send({error: err})
-    }
-    res.send(Object.assign({}, post, {
+  return poolQuery(query, post).then(
+    result => res.send(Object.assign({}, post, {
       id: result.insertId,
       username: user.username,
       profilePicId: user.profilePicId
     }))
-  })
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
 })
 
 module.exports = router
