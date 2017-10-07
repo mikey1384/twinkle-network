@@ -171,11 +171,12 @@ class App extends Component {
         {chatMode && this.props.loggedIn &&
           <Chat
             onUnmount={
-              () => {
-                window.scrollTo(0, scrollPosition)
-                resetChat()
-                turnChatOff()
-              }
+              () => resetChat().then(
+                () => {
+                  window.scrollTo(0, scrollPosition)
+                  turnChatOff()
+                }
+              )
             }
           />
         }

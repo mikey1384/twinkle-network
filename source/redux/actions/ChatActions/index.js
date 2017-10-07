@@ -323,9 +323,12 @@ export const reloadChatSubject = subjectId => dispatch =>
     }
   )
 
-export const resetChat = () => ({
-  type: 'RESET_CHAT'
-})
+export const resetChat = () => dispatch => {
+  dispatch({
+    type: 'RESET_CHAT'
+  })
+  return Promise.resolve()
+}
 
 export const searchChatAsync = text => dispatch =>
   request.get(`${API_URL}/search/chat?text=${text}`, auth()).then(
