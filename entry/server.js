@@ -1,4 +1,4 @@
-import "regenerator-runtime/runtime";
+import 'regenerator-runtime/runtime'
 import express from 'express'
 import React from 'react'
 import {renderToString} from 'react-dom/server'
@@ -8,6 +8,8 @@ import {Provider} from 'react-redux'
 import path from 'path'
 import App from 'containers/App'
 import createStoreWithHistory from './store'
+
+console.log(regeneratorRuntime)
 
 const app = express()
 if (process.env.NODE_ENV !== 'production') {
