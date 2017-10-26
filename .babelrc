@@ -1,4 +1,8 @@
 {
-  "presets": [["env"], "react"],
-  "plugins": ["transform-object-rest-spread", "transform-class-properties"]
+  "presets": [["env", {
+    "exclude": ["transform-regenerator"]
+  }], "react"],
+  "plugins": [["fast-async", {
+    "useRuntimeModule": true
+  }], "transform-object-rest-spread", "transform-class-properties"]
 }

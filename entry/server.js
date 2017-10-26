@@ -6,7 +6,8 @@ import createHistory from 'history/createMemoryHistory'
 import {Provider} from 'react-redux'
 import path from 'path'
 import App from 'containers/App'
-import createStoreWithHistory from './store' 
+import createStoreWithHistory from './store'
+import 'nodent-runtime'
 
 const app = express()
 if (process.env.NODE_ENV !== 'production') {
