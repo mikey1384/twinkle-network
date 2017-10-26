@@ -1,7 +1,7 @@
 {
   "presets": 
     [["env", {
-      "targets": { node: "8" },
+      "targets": { node: "current" },
     }],
     "react"
   ],
