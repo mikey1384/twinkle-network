@@ -2,7 +2,6 @@
 
 require('babel-register')({})
 require('babel-polyfill')
-require('regenerator-runtime/runtime')
 const server = require('./entry/server').default
 if (process.env.NODE_ENV === 'production') {
   require('greenlock-express').create({
