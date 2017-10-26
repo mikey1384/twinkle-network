@@ -21,6 +21,7 @@
     "aws-sdk": "^2.140.0",
     "axios": "^0.17.0",
     "babel-helpers": "^6.24.1",
+    "babel-runtime": "^6.26.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
