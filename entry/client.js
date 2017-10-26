@@ -8,6 +8,7 @@ import createStoreWithHistory from './store'
 import App from 'containers/App'
 import {ScrollContext} from 'components/Wrappers/ReactRouterScroll'
 import {Modal} from 'react-overlays'
+import 'regenerator-runtime/runtime'
 
 const history = createHistory()
 const store = createStoreWithHistory(history)
