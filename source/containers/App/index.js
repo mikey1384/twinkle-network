@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {Switch, Route} from 'react-router-dom'
@@ -15,6 +16,7 @@ import Button from 'components/Button'
 import {recordUserAction} from 'helpers/userDataHelpers'
 import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
 
+console.log(regeneratorRuntime)
 let visibilityChange
 let hidden
 
