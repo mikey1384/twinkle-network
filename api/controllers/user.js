@@ -56,7 +56,7 @@ router.post('/logout', requireAuth, (req, res) => {
     action: 'logout',
     userAgent,
     ip: req.ip,
-    timeStamp: Math.floor(Date.now()/1000)
+    timeStamp: Math.floor(Date.now() / 1000)
   }).then(
     () => res.send(true)
   ).catch(
@@ -106,6 +106,37 @@ router.post('/search', requireAuth, (req, res) => {
       res.status(500).send({error})
     }
   )
+})
+
+router.post('/parentUser', requireSignin, (req, res) => {
+  const {user} = req
+  if (user.userType === 'parent') {
+    return res.send({
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        realName: user.realName,
+        userType: user.userType
+      },
+      success: true,
+      token: tokenForUser(user.id)
+    })
+  }
+  res.send({error: 'Not a parent user'})
+})
+
+router.get('/parentSession', requireAuth, (req, res) => {
+  const {user} = req
+  res.send({
+    user: {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      realName: user.realName,
+      userType: user.userType
+    }
+  })
 })
 
 router.get('/session', requireAuth, (req, res) => {

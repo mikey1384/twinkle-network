@@ -59,29 +59,27 @@ chmod +rx .docker/init_mysql.sh && .docker/init_mysql.sh
 ```
 ###About this project:
 
-Currently this is a small social media website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web urls, create discussion topics, and chat within channels or send private messages to other users.
+Twinkle is a small social network website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat within channels or send private messages to other users.
 
-Ultimately I want this website to help children all around the world to:
+My ultimate goal for this website is to help children all around the world to:
 
-- build relationships with students of different countries, ethnicities and cultures early on in their lives
+1. Build relationships with students of different countries, ethnicities, and cultures early on in their lives
 
-- find and connect with life long mentors from all over the world
+2. Find and connect with lifelong mentors from all over the world
 
-- find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity rather than the pressure imposed to them by grownups
+3. Find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity rather than the pressure imposed on them by grownups
 
-- have opportunity to teach and help other children
+4. Have opportunity to teach and help other children
 
-- become critical thinkers
+5. Become critical thinkers
 
-- learn to discuss and debate
+6. Learn to discuss and debate
 
-- have equal opportunity in education
+7. Have equal opportunity in reaching their full potentials
 
-- be able to follow their passions and actually make sure that whichever passion they choose would deliver them the means to make living and be happy.
+And to fill their minds with wonder.
 
-- have their minds filled with wonder
+There's no fixed long-term direction for this website other than the above missions. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
 
-There's no fixed long term direction for this website other than the above missions. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
-
-Feel free to use this source code anyway you want.
+If you are interested in helping me achieving this mission, please join us at https://www.twin-kle.com
 And join us at http://www.twin-kle.com

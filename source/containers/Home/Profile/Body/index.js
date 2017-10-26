@@ -26,7 +26,7 @@ class Body extends Component {
   constructor() {
     super()
     this.state = {
-      currentTab: '',
+      currentTab: 'all',
       loading: false
     }
     this.changeTab = this.changeTab.bind(this)
@@ -47,6 +47,10 @@ class Body extends Component {
       () => {
         switch (location.pathname) {
           case match.url:
+            return this.changeTab('all')
+          case `${match.url}/questions`:
+            return this.changeTab('question')
+          case `${match.url}/comments`:
             return this.changeTab('comment')
           case `${match.url}/videos`:
             return this.changeTab('video')
@@ -72,6 +76,10 @@ class Body extends Component {
         () => {
           switch (location.pathname) {
             case match.url:
+              return this.changeTab('all')
+            case `${match.url}/questions`:
+              return this.changeTab('question')
+            case `${match.url}/comments`:
               return this.changeTab('comment')
             case `${match.url}/videos`:
               return this.changeTab('video')
@@ -110,12 +118,34 @@ class Body extends Component {
               fontWeight: 'bold'
             }}
           >
-            <Route exact path={`${route.url}/`} children={({match}) => (
+            <Route exact path={route.url} children={({match}) => (
               <li
                 className={match ? 'active' : ''}
                 style={{cursor: 'pointer'}}
                 onClick={() => clearFeeds().then(
-                  () => history.push(`${route.url}`)
+                  () => history.push(route.url)
+                )}
+              >
+                <a>All</a>
+              </li>
+            )}/>
+            <Route exact path={`${route.url}/questions`} children={({match}) => (
+              <li
+                className={match ? 'active' : ''}
+                style={{cursor: 'pointer'}}
+                onClick={() => clearFeeds().then(
+                  () => history.push(`${route.url}/questions`)
+                )}
+              >
+                <a>Questions</a>
+              </li>
+            )}/>
+            <Route exact path={`${route.url}/comments`} children={({match}) => (
+              <li
+                className={match ? 'active' : ''}
+                style={{cursor: 'pointer'}}
+                onClick={() => clearFeeds().then(
+                  () => history.push(`${route.url}/comments`)
                 )}
               >
                 <a>Comments</a>
@@ -161,7 +191,7 @@ class Body extends Component {
           {loaded && feeds.length > 0 && (
             <div>
               {feeds.map(feed => {
-                return <FeedPanel key={`${feed.id}`} feed={feed} userId={myId} />
+                return <FeedPanel key={`${feed.type}${feed.id}`} feed={feed} userId={myId} />
               })}
             </div>
           )}
@@ -195,6 +225,10 @@ class Body extends Component {
   onNoFeed(username) {
     const {currentTab} = this.state
     switch (currentTab) {
+      case 'all':
+        return `${username} has not posted a anything yet`
+      case 'question':
+        return `${username} has not posted a question yet`
       case 'comment':
         return `${username} has not posted a comment yet`
       case 'url':

@@ -1,10 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const {poolQuery, promiseSeries} = require('../helpers')
+const {requireAuth} = require('../auth')
 
 router.get('/', (req, res) => {
-  return poolQuery('SELECT dateString FROM schedule').then(
-    rows => res.send(rows.map(({dateString}) => dateString))
+  const scheduleQuery = `
+    SELECT a.type, a.mentorId, a.dateStamp, b.username
+    FROM schedule a JOIN users b ON a.mentorId = b.id
+  `
+  return poolQuery(scheduleQuery).then(
+    rows => {
+      res.send(rows)
+    }
   ).catch(
     error => {
       console.error(error)
@@ -13,16 +20,17 @@ router.get('/', (req, res) => {
   )
 })
 
-router.post('/', (req, res) => {
-  const {dates} = req.body
+router.post('/', requireAuth, (req, res) => {
+  const {user, body: {dates}} = req
   const resetQuery = 'DELETE FROM schedule WHERE userId = ?'
   const insertQuery = `INSERT INTO schedule SET ?`
-  return poolQuery(resetQuery, 100).then(
+  return poolQuery(resetQuery, user.id).then(
     () => promiseSeries(dates.map(
       date => () => poolQuery(insertQuery, {
-          userId: 100,
+          userId: user.id,
+          type: 'visit',
           mentorId: 5,
-          dateString: date,
+          dateStamp: Date.parse(date) / 1000,
           timeStamp: Math.floor(Date.now() / 1000)}
         )
       )

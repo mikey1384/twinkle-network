@@ -6,7 +6,7 @@ import Button from 'components/Button'
 import {edit} from 'constants/placeholders'
 import {connect} from 'react-redux'
 import {feedContentEdit} from 'redux/actions/FeedActions'
-import {addEmoji, finalizeEmoji, cleanStringWithURL} from 'helpers/stringHelpers'
+import {addEmoji, finalizeEmoji, cleanStringWithURL, turnStringIntoQuestion} from 'helpers/stringHelpers'
 
 class ContentEditor extends Component {
   static propTypes = {
@@ -24,6 +24,7 @@ class ContentEditor extends Component {
   constructor({comment, description, title, type, content}) {
     super()
     this.state = {
+      editedContent: cleanStringWithURL(content),
       editedComment: cleanStringWithURL(comment),
       editedDescription: cleanStringWithURL(description || ''),
       editedTitle: title,
@@ -34,7 +35,7 @@ class ContentEditor extends Component {
 
   render() {
     const {onDismiss, style, type} = this.props
-    const {editedComment, editedDescription, editedTitle, editedUrl} = this.state
+    const {editedComment, editedContent, editedDescription, editedTitle, editedUrl} = this.state
     return (
       <div
         style={style}
@@ -51,7 +52,7 @@ class ContentEditor extends Component {
               />
             </fieldset>
           }
-          {type !== 'comment' &&
+          {type !== 'comment' && type !== 'question' &&
             <fieldset className="form-group">
               <Input
                 autoFocus={type === 'discussion'}
@@ -63,18 +64,34 @@ class ContentEditor extends Component {
               />
             </fieldset>
           }
-          <fieldset className="form-group">
-            <Textarea
-              autoFocus={type === 'comment'}
-              className="form-control"
-              minRows={4}
-              onChange={event => this.setState({
-                [type === 'comment' ? 'editedComment' : 'editedDescription']: event.target.value
-              })}
-              placeholder={edit[type === 'comment' ? 'comment' : 'description']}
-              value={type === 'comment' ? editedComment : editedDescription}
-            />
-          </fieldset>
+          {type !== 'question' &&
+            <fieldset className="form-group">
+              <Textarea
+                autoFocus={type === 'comment'}
+                className="form-control"
+                minRows={4}
+                onChange={event => this.setState({
+                  [type === 'comment' ? 'editedComment' : 'editedDescription']: event.target.value
+                })}
+                placeholder={edit[type === 'comment' ? 'comment' : 'description']}
+                value={type === 'comment' ? editedComment : editedDescription}
+              />
+            </fieldset>
+          }
+          {type === 'question' &&
+            <fieldset className="form-group">
+              <Textarea
+                autoFocus
+                className="form-control"
+                minRows={4}
+                onChange={event => this.setState({
+                  editedContent: event.target.value
+                })}
+                placeholder={edit['question']}
+                value={editedContent}
+              />
+            </fieldset>
+          }
           <fieldset>
             <Button
               className="btn btn-primary"
@@ -99,10 +116,11 @@ class ContentEditor extends Component {
   onSubmit(event) {
     event.preventDefault()
     const {contentId, onDismiss, onSubmit, type} = this.props
-    const {editedComment, editedDescription, editedTitle} = this.state
+    const {editedComment, editedContent, editedDescription, editedTitle} = this.state
     const post = {
       ...this.state,
       editedComment: finalizeEmoji(editedComment),
+      editedContent: turnStringIntoQuestion(finalizeEmoji(editedContent)),
       editedDescription: finalizeEmoji(editedDescription),
       editedTitle: finalizeEmoji(editedTitle)
     }

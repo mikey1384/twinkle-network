@@ -124,6 +124,16 @@ function Heading({
           </span>
         </div>
       )
+    case 'question':
+      return (
+        <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
+          <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
+          <span className="panel-title pull-left" style={spanStyle}>
+            <UserLink user={uploader} /> asked a <b style={{color: Color.green}}>question</b>
+            <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
+          </span>
+        </div>
+      )
     case 'discussion':
       return (
         <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>

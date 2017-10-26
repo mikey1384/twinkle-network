@@ -11,6 +11,7 @@ import {
   feedCommentDelete,
   feedContentDelete,
   commentFeedLike,
+  questionFeedLike,
   feedCommentEdit,
   uploadFeedReply,
   loadMoreFeedReplies,
@@ -36,6 +37,7 @@ class Contents extends Component {
     onEditDone: PropTypes.func.isRequired,
     onLikeCommentClick: PropTypes.func.isRequired,
     onLikeContentClick: PropTypes.func.isRequired,
+    onLikeQuestionClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -131,7 +133,7 @@ class Contents extends Component {
                 onClick={this.onCommentButtonClick}
               >
                 <span className="glyphicon glyphicon-comment"></span>&nbsp;
-                {type === 'video' ? 'Comment' : 'Reply'}&nbsp;
+                {type === 'video' || type === 'url' ? 'Comment' : type === 'question' ? 'Answer' : 'Reply'}&nbsp;
                 {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
                   (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
                 }
@@ -181,7 +183,7 @@ class Contents extends Component {
           <PanelComments
             autoFocus
             clickListenerState={clickListenerState}
-            inputTypeLabel={type === 'comment' ? 'reply' : 'comment'}
+            inputTypeLabel={type === 'comment' ? 'reply' : type === 'question' ? 'answer' : 'comment'}
             comments={childComments}
             loadMoreButton={commentsLoadMoreButton}
             userId={myId}
@@ -237,10 +239,13 @@ class Contents extends Component {
 
   onLikeClick() {
     const {feed: {contentId, type, rootType}} = this.props
-    if (type === 'comment') {
-      this.props.onLikeCommentClick(contentId)
-    } else {
-      this.props.onLikeContentClick(contentId, rootType)
+    switch (type) {
+      case 'comment':
+       return this.props.onLikeCommentClick(contentId)
+      case 'question':
+        return this.props.onLikeQuestionClick(contentId)
+      default:
+        return this.props.onLikeContentClick(contentId, rootType)
     }
   }
 }
@@ -257,6 +262,7 @@ export default connect(
     onReplySubmit: uploadFeedReply,
     onLoadMoreReplies: loadMoreFeedReplies,
     onLikeCommentClick: commentFeedLike,
+    onLikeQuestionClick: questionFeedLike,
     onLikeContentClick: contentFeedLike
   }
 )(Contents)

@@ -143,7 +143,7 @@ router.post('/like', requireAuth, (req, res) => {
           rootType: 'video',
           rootId: videoId,
           userId: user.id,
-          timeStamp: Math.floor(Date.now()/1000)
+          timeStamp: Math.floor(Date.now() / 1000)
         })
       }
     }

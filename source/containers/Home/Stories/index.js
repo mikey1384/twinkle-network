@@ -67,8 +67,8 @@ class Stories extends Component {
 
     return (
       <div>
-        <InputPanel />
         {this.renderFilterBar()}
+        <InputPanel />
         {!loaded &&
           <Loading text="Loading Feeds..." />
         }
@@ -143,6 +143,16 @@ class Stories extends Component {
               onClick={() => this.applyFilter('all')}
             >
               All
+            </a>
+          </li>
+          <li className={selectedFilter === 'question' ? 'active' : ''}>
+            <a
+              style={{
+                cursor: 'pointer'
+              }}
+              onClick={() => this.applyFilter('question')}
+            >
+              Questions
             </a>
           </li>
           <li className={selectedFilter === 'discussion' ? 'active' : ''}>

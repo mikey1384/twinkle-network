@@ -12,42 +12,55 @@ export const clearFeeds = () => dispatch => {
 }
 
 export const commentFeedLike = commentId => dispatch =>
-  request.post(`${API_URL}/comments/like`, {commentId}, auth()).then(
-    response => {
-      const {data} = response
-      if (data.likes) {
-        dispatch({
-          type: 'COMMENT_FEED_LIKE',
-          data: {contentId: commentId, likes: data.likes}
-        })
-      }
-      return
+request.post(`${API_URL}/comments/like`, {commentId}, auth()).then(
+  response => {
+    const {data} = response
+    if (data.likes) {
+      dispatch({
+        type: 'COMMENT_FEED_LIKE',
+        data: {contentId: commentId, likes: data.likes}
+      })
     }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+    return
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const contentFeedLike = (contentId, rootType) => dispatch =>
-  request.post(`${URL}/${rootType}/like`, {contentId}, auth()).then(
-    response => {
-      const {data} = response
-      if (data.likes) {
-        dispatch({
-          type: 'CONTENT_FEED_LIKE',
-          data: {contentId, likes: data.likes}
-        })
-      }
-      return
+request.post(`${URL}/${rootType}/like`, {contentId}, auth()).then(
+  response => {
+    const {data} = response
+    if (data.likes) {
+      dispatch({
+        type: 'CONTENT_FEED_LIKE',
+        data: {contentId, rootType, likes: data.likes}
+      })
     }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+    return
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const questionFeedLike = contentId => async(dispatch) => {
+  try {
+    const {data: {likes}} = await request.post(`${URL}/content/question/like`, {contentId}, auth())
+    dispatch({
+      type: 'QUESTION_FEED_LIKE',
+      data: {contentId, likes}
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const feedCommentDelete = commentId => dispatch =>
   request.delete(`${API_URL}/comments?commentId=${commentId}`, auth()).then(
@@ -117,6 +130,12 @@ export const feedContentEdit = (params) => dispatch =>
           editedTitle: data.title,
           editedDescription: data.description
         })
+      } else if (params.type === 'question') {
+        dispatch({
+          type: 'FEED_QUESTION_EDIT',
+          contentId: params.contentId,
+          editedContent: data.content
+        })
       } else {
         dispatch({
           type: 'FEED_CONTENT_EDIT',
@@ -164,155 +183,153 @@ export const fetchFeed = feed => dispatch => {
 }
 
 export const fetchFeedsAsync = (filter = 'all') => dispatch =>
-  request.get(`${API_URL}?filter=${filter}`).then(
-    response => {
-      dispatch({
-        type: 'FETCH_FEEDS',
-        data: response.data,
-        filter
-      })
-      return Promise.resolve()
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.get(`${API_URL}?filter=${filter}`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_FEEDS',
+      data: response.data,
+      filter
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const fetchMoreFeedsAsync = (lastFeedId, filter = 'all') => dispatch =>
-  request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then(
-    response => {
-      dispatch({
-        type: 'FETCH_MORE_FEEDS',
-        data: response.data,
-        filter
-      })
-      return Promise.resolve()
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.get(`${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}&limit=6`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_MORE_FEEDS',
+      data: response.data,
+      filter
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const fetchUserFeeds = (username, type) => dispatch =>
-  request.get(`${API_URL}/user/?username=${username}&type=${type}`).then(
-    response => {
-      dispatch({
-        type: 'FETCH_FEEDS',
-        data: response.data
-      })
-      return Promise.resolve()
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.get(`${API_URL}/user/?username=${username}&type=${type}`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_FEEDS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const fetchMoreUserFeeds = (username, type, lastId) => dispatch =>
-  request.get(`${API_URL}/user/?username=${username}&type=${type}&lastId=${lastId}`).then(
-    response => {
-      dispatch({
-        type: 'FETCH_MORE_FEEDS',
-        data: response.data
-      })
-      return Promise.resolve()
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.get(`${API_URL}/user/?username=${username}&type=${type}&lastId=${lastId}`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_MORE_FEEDS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const likeTargetComment = contentId => dispatch =>
-  request.post(`${API_URL}/comments/like`, {commentId: contentId}, auth())
-    .then(
-      response => {
-        const {data} = response
-        if (data.likes) {
-          dispatch({
-            type: 'FEED_TARGET_COMMENT_LIKE',
-            data: {contentId, likes: data.likes}
-          })
-        }
-        return
-      }
-    ).catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+request.post(`${API_URL}/comments/like`, {commentId: contentId}, auth())
+.then(
+  response => {
+    const {data} = response
+    if (data.likes) {
+      dispatch({
+        type: 'FEED_TARGET_COMMENT_LIKE',
+        data: {contentId, likes: data.likes}
+      })
+    }
+    return
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const loadMoreFeedCommentsAsync = (lastCommentId, type, contentId, isReply) => dispatch =>
-  request.get(
-    `${API_URL}/comments?type=${type}&contentId=${contentId}&lastCommentId=${lastCommentId}&isReply=${isReply}`
-  ).then(
-    response => dispatch({
-      type: 'LOAD_MORE_FEED_COMMENTS',
-      data: {type, contentId, childComments: response.data}
-    })
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.get(
+  `${API_URL}/comments?type=${type}&contentId=${contentId}&lastCommentId=${lastCommentId}&isReply=${isReply}`
+).then(
+  response => dispatch({
+    type: 'LOAD_MORE_FEED_COMMENTS',
+    data: {type, contentId, childComments: response.data}
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const loadMoreFeedReplies = (lastReplyId, commentId, parent) => dispatch =>
-  request.get(
-    `${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${parent.rootType}`
-  ).then(
-    response => dispatch({
-      type: 'FETCH_MORE_FEED_REPLIES',
-      data: response.data,
-      commentId,
-      contentType: parent.type
-    })
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.get(
+  `${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${parent.rootType}`
+).then(
+  response => dispatch({
+    type: 'FETCH_MORE_FEED_REPLIES',
+    data: response.data,
+    commentId,
+    contentType: parent.type
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const showFeedCommentsAsync = ({rootType, type, contentId, commentLength, isReply}) => dispatch =>
-  request.get(
-    `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`
-  ).then(
-    response => dispatch({
-      type: 'SHOW_FEED_COMMENTS',
-      data: {type, contentId, childComments: response.data}
-    })
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
-
-export const uploadContent = data => ({
-  type: 'UPLOAD_CONTENT',
-  data
-})
+request.get(
+  `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`
+).then(
+  response => dispatch({
+    type: 'SHOW_FEED_COMMENTS',
+    data: {type, contentId, childComments: response.data}
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const uploadContentAsync = form => dispatch =>
-  request.post(`${API_URL}/content`, form, auth()).then(
-    response => {
-      const {data} = response
-      dispatch(uploadContent(data))
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.post(`${API_URL}/content`, form, auth()).then(
+  response => {
+    const {data} = response
+    dispatch({
+      type: 'UPLOAD_CONTENT',
+      data
+    })
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const uploadFeedComment = (comment, parent) => dispatch => {
   const contentType = parent.type
@@ -332,6 +349,10 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
       break
     case 'url':
       params = {content: comment, rootId: parent.id, rootType: 'url'}
+      commentType = 'comments'
+      break
+    case 'question':
+      params = {content: comment, rootId: parent.id, rootType: 'question'}
       commentType = 'comments'
       break
     case 'video':

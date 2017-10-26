@@ -22,8 +22,8 @@ router.get('/user', (req, res) => {
   const limit = lastId ? '6' : '21'
   const query = `
     SELECT a.id, a.type, a.contentId, a.rootType, a.rootId, a.uploaderId, a.timeStamp FROM
-    noti_feeds a JOIN users b ON a.uploaderId = b.id WHERE b.username = ? AND a.type = ? ${where}
-    ORDER BY id DESC LIMIT ${limit}
+    noti_feeds a JOIN users b ON a.uploaderId = b.id WHERE b.username = ? 
+    ${type !== 'all' ? `AND a.type = ?` : `AND a.type != 'like'`} ${where} ORDER BY id DESC LIMIT ${limit}
   `
   return poolQuery(query, [username, type]).then(
     rows => res.send(rows)
@@ -46,6 +46,9 @@ router.get('/comments', (req, res) => {
       break
     case 'url':
       where = `rootType = 'url' AND a.rootId = ? AND a.commentId IS NULL`
+      break
+    case 'question':
+      where = `rootType = 'question' AND a.rootId = ? AND a.commentId IS NULL`
       break
     default:
       console.error('Invalid Content Type')
@@ -148,11 +151,10 @@ router.get('/feed', (req, res) => {
     a.userId = b.id WHERE
     a.rootType = '${type}' AND a.rootId = ?
   `
-
   switch (type) {
     case 'comment':
       let rootTableName
-      if (rootType === 'url') rootTableName = 'content_urls'
+      if (rootType === 'url' || rootType === 'question') rootTableName = `content_${rootType}s`
       if (rootType === 'video') rootTableName = 'vq_videos'
       query = `
         SELECT comment1.content, comment1.commentId, comment1.replyId, comment1.discussionId,
@@ -171,7 +173,7 @@ router.get('/feed', (req, res) => {
         discussion.timeStamp AS discussionTimeStamp,
         user4.username AS discussionUploaderName,
 
-        ${rootType}.title AS rootContentTitle, ${rootType}.description AS rootContentDescription, ${rootType}.title AS contentTitle, ${rootType}.content AS rootContent,
+        ${rootType}.${rootType !== 'question' ? 'title' : 'content'} AS rootContentTitle, ${rootType}.${rootType !== 'question' ? 'description' : 'content'} AS rootContentDescription, ${rootType}.${rootType !== 'question' ? 'title' : 'content'} AS contentTitle, ${rootType}.content AS rootContent,
         ${rootType === 'url' ? `${['thumbUrl', 'actualTitle', 'actualDescription', 'siteUrl'].map(prop => `url.${prop}`).join(', ')},` : (rootType === 'video' ? 'video.hasHqThumb,' : '')}
 
         (SELECT COUNT(id) FROM content_comments WHERE commentId = ${contentId}) AS numChildComments,
@@ -228,6 +230,16 @@ router.get('/feed', (req, res) => {
         WHERE url.id = ?
       `
       break
+    case 'question':
+      query = `
+        SELECT question.content AS rootContentTitle, question.content AS rootContentDescription, question.content AS content, question.content AS contentTitle, user.username AS uploaderName, userPhoto.id AS uploaderPicId, question.content AS contentDescription, (SELECT COUNT(id) FROM content_comments WHERE rootType = 'question' AND rootId = question.id) AS numChildComments
+        FROM content_questions question
+        LEFT JOIN users user ON question.userId = user.id
+        LEFT JOIN users_photos userPhoto ON
+        question.userId = userPhoto.userId AND userPhoto.isProfilePic = '1'
+        WHERE question.id = ?
+      `
+      break
     case 'video':
       query = `
         SELECT video.title AS rootContentTitle, video.description AS rootContentDescription, video.content AS rootContent, video.title AS contentTitle, video.description AS contentDescription, video.hasHqThumb,
@@ -267,6 +279,13 @@ router.get('/feed', (req, res) => {
           )
         case 'url':
           return poolQuery(likeQuery('url'), contentId).then(
+            rows => {
+              feed['contentLikers'] = rows
+              return Promise.resolve(feed)
+            }
+          )
+        case 'question':
+          return poolQuery(likeQuery('question'), contentId).then(
             rows => {
               feed['contentLikers'] = rows
               return Promise.resolve(feed)

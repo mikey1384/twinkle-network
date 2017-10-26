@@ -48,6 +48,14 @@ export default function MainContent({
           videoCode={rootContent}
         />
       }
+      {!isEditing && type === 'question' &&
+        <div style={{
+          fontSize: '2rem'
+        }}>
+          <p><b style={{color: Color.green}}>Question:</b></p>
+          <p>{cleanString(content)}</p>
+        </div>
+      }
       {!isEditing && type === 'url' && contentDescription && contentDescription !== 'No description' &&
         <div style={{
           fontSize: '1.2em',
@@ -78,14 +86,16 @@ export default function MainContent({
           <p>{cleanString(contentTitle)}</p>
         </div>
       }
-      {!isEditing && type === 'video' && contentDescription && contentDescription !== 'No description' &&
+      {!isEditing && type === 'video' &&
         <div style={{
           marginTop: '1em',
           fontSize: '1.2em',
           whiteSpace: 'pre-wrap',
           wordWrap: 'break-word'
         }}>
-          <LongText>{contentDescription}</LongText>
+          <LongText>
+            {contentDescription && contentDescription !== 'No description' ? contentDescription : contentTitle}
+          </LongText>
         </div>
       }
       {!isEditing && type === 'discussion' && contentDescription &&

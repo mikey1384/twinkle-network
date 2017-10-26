@@ -16,7 +16,7 @@ export default function CommentInputArea({onSubmit, inputTypeLabel, clickListene
         autoFocus={autoFocus}
         onSubmit={text => onSubmit(text)}
         rows={4}
-        placeholder={`Write a ${inputTypeLabel}...`}
+        placeholder={`Type your ${inputTypeLabel} here...`}
       />
     </div>
   )

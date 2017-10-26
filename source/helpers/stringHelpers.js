@@ -17,6 +17,14 @@ export function cleanStringWithURL(string) {
     .replace(/<a[^>]*>|<\/a>/g, '') : ''
 }
 
+export function turnStringIntoQuestion(string) {
+  const toDelete = ['?', ' ']
+  while (toDelete.indexOf(string.charAt(string.length - 1)) !== -1) {
+    string = string.slice(0, -1)
+  }
+  return string + '?'
+}
+
 export function limitBrs(string) {
   return string.replace(/(<br ?\/?>){4,}/gi, '<br><br><br>')
 }
@@ -76,6 +84,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(bye\))/gi, '👋 ')
     .replace(/(\(wave\))/gi, '👋 ')
     .replace(/(\(fear\))/gi, '😱 ')
+    .replace(/(\(curious\))/gi, '🤔 ')
+    .replace(/(\(??\))/gi, '🤔 ')
     .replace(/(\(horror\))/gi, '😱 ')
     .replace(/(\(cry\))/gi, '😭 ')
     .replace(/(\(sad\))/gi, '😭 ')

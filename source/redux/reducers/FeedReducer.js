@@ -150,6 +150,20 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
+    case 'FEED_QUESTION_EDIT':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          let contentMatches = (feed.type === 'question') && (feed.contentId === action.contentId)
+          let rootContentMatches = (feed.rootType === 'question') && (feed.rootId === action.contentId)
+          return {
+            ...feed,
+            content: contentMatches ? action.editedContent : feed.content,
+            rootContentTitle: rootContentMatches ? action.editedContent : feed.rootContentTitle,
+            rootContent: rootContentMatches ? action.editedContent : feed.rootContent
+          }
+        })
+      }
     case 'FEED_DISCUSSION_EDIT':
       return {
         ...state,
@@ -199,10 +213,21 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: state.feeds.map(feed => ({
           ...feed,
-          contentLikers: feed.contentId === action.data.contentId ?
+          contentLikers: feed.rootType === action.data.rootType && feed.contentId === action.data.contentId ?
             action.data.likes : feed.contentLikers,
-          rootContentLikers: feed.type === 'comment' && feed.rootId === action.data.contentId ?
-            action.data.likes : feed.rootContentLikers
+          rootContentLikers: feed.type === 'comment' && feed.rootType === action.data.rootType &&
+            feed.rootId === action.data.contentId ? action.data.likes : feed.rootContentLikers
+        }))
+      }
+    case 'QUESTION_FEED_LIKE':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => ({
+          ...feed,
+          contentLikers: feed.rootType === 'question' && feed.contentId === action.data.contentId ?
+            action.data.likes : feed.contentLikers,
+          rootContentLikers: feed.type === 'comment' && feed.rootType === 'question' &&
+            feed.rootId === action.data.contentId ? action.data.likes : feed.rootContentLikers
         }))
       }
     case 'LOAD_MORE_FEED_COMMENTS':
