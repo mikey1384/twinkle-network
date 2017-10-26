@@ -36,7 +36,7 @@ function ContentLink({content: {id, title}, type, ...actions}) {
       onClickAsync={() => onLinkClick({id, type, actions})}
     >
       {cleanStringWithURL(title)}
-    </Link> : type === 'question' ? <b style={{color: Color.green}}>{cleanStringWithURL(title)}</b> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
+    </Link> : type === 'question' ? <b style={{color: Color.blue}}>{cleanStringWithURL(title)}</b> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
   )
 }
 

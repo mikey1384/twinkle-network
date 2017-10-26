@@ -31,8 +31,12 @@ router.get('/', requireAuth, (req, res) => {
         (IF(
           a.rootType = 'comment',
           (SELECT content FROM content_comments WHERE id = a.rootId),
-          (SELECT title FROM content_urls WHERE id = a.rootId))
-        )
+          IF(
+            a.rootType = 'url',
+            (SELECT title FROM content_urls WHERE id = a.rootId),
+            (SELECT content FROM content_questions WHERE id = a.rootId)
+          )
+        ))
       ) AS rootTitle,
       IF(
         a.rootCommentId IS NOT NULL,
@@ -57,7 +61,11 @@ router.get('/', requireAuth, (req, res) => {
           (IF(
             a.rootType = 'comment',
             (SELECT userId FROM content_comments WHERE id = a.rootId),
-            (SELECT uploader FROM content_urls WHERE id = a.rootId))
+            IF(
+              a.rootType = 'question',
+              (SELECT userId FROM content_questions WHERE id = a.rootId),
+              (SELECT uploader FROM content_urls WHERE id = a.rootId))
+            )
           )
         ) = ?
         OR
@@ -71,8 +79,12 @@ router.get('/', requireAuth, (req, res) => {
         (IF(
           a.rootType = 'comment',
           (SELECT content FROM content_comments WHERE id = a.rootId),
-          (SELECT title FROM content_urls WHERE id = a.rootId))
-        )
+          IF(
+            a.rootType = 'question',
+            (SELECT content FROM content_questions WHERE id = a.rootId),
+            (SELECT title FROM content_urls WHERE id = a.rootId)
+          )
+        ))
       ) IS NOT NULL
       AND uploaderId != ? ORDER BY id DESC LIMIT 20
   `
