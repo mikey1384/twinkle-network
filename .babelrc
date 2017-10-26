@@ -1,4 +1,4 @@
 {
-  "presets": [["env"], "react"],
+  "presets": ["env", "react"],
   "plugins": ["transform-async-to-generator", "transform-object-rest-spread", "transform-class-properties"]
 }
