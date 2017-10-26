@@ -7,7 +7,6 @@ import {Provider} from 'react-redux'
 import path from 'path'
 import App from 'containers/App'
 import createStoreWithHistory from './store'
-import 'regenerator-runtime/runtime'
 
 const app = express()
 if (process.env.NODE_ENV !== 'production') {
