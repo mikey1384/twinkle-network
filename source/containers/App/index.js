@@ -16,7 +16,6 @@ import Button from 'components/Button'
 import {recordUserAction} from 'helpers/userDataHelpers'
 import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
 
-console.log(regeneratorRuntime)
 let visibilityChange
 let hidden
 
