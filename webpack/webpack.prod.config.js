@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   entry: './entry/client.js',
@@ -26,7 +25,7 @@ module.exports = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new UglifyJsPlugin(),
+    new require('uglifyjs-webpack-plugin')(),
     new webpack.optimize.ModuleConcatenationPlugin()
   ]
 }
