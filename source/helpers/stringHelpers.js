@@ -85,7 +85,6 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(wave\))/gi, '👋 ')
     .replace(/(\(fear\))/gi, '😱 ')
     .replace(/(\(curious\))/gi, '🤔 ')
-    .replace(/(\(??\))/gi, '🤔 ')
     .replace(/(\(horror\))/gi, '😱 ')
     .replace(/(\(cry\))/gi, '😭 ')
     .replace(/(\(sad\))/gi, '😭 ')
