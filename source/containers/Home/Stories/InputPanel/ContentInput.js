@@ -51,7 +51,7 @@ class ContentInput extends Component {
           <form className="container-fluid">
             <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
               <label style={{paddingBottom: '0.3em'}}>
-                <p style={{marginBottom: '0px'}}>
+                <p style={{marginBottom: '0px', fontSize: '1.2em'}}>
                   <b>Share interesting videos or web links</b>
                 </p>
               </label>

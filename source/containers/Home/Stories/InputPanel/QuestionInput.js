@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import {uploadQuestion} from 'redux/actions/ContentActions'
 import Input from 'components/Texts/Input'
 import {turnStringIntoQuestion} from 'helpers/stringHelpers'
+import {Color} from 'constants/css'
 
 class QuestionInput extends Component {
   static propTypes = {
@@ -32,8 +33,8 @@ class QuestionInput extends Component {
               className="container-fluid"
               onSubmit={this.onSubmit}
             >
-              <p>
-                <b>Ask a question to friends and teachers in Twinkle</b>
+              <p style={{fontSize: '1.2em'}}>
+                <b>Ask a <span style={{color: Color.green}}>question</span> to friends and teachers in Twinkle</b>
               </p>
               <Input
                 className="form-control"

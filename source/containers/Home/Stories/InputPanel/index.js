@@ -5,8 +5,8 @@ import QuestionInput from './QuestionInput'
 export default function InputPanel() {
   return (
     <div>
-      <ContentInput />
       <QuestionInput />
+      <ContentInput />
     </div>
   )
 }
