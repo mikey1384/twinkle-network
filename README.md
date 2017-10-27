@@ -1,7 +1,7 @@
 # Twinkle Website
 
 ## Running Without Docker:
-0. Ensure that Node 7+ is installed
+0. Ensure that Node 8+ is installed
 1. git clone https://github.com/mikey1384/twin-kle.git [your directory name]
 2. Run `npm install` at the directory where you cloned the git repository.
 3. Install mysql `sudo apt-get install mysql-server` (if you haven't installed mysql already)
