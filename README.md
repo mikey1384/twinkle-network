@@ -1,8 +1,6 @@
 ## Twinkle Website
 
-### To run:
-
-## Without Docker:
+## Running Without Docker:
 0. Ensure that Node 7+ is installed
 1. git clone https://github.com/mikey1384/twin-kle.git [your directory name]
 2. Run `npm install` at the directory where you cloned the git repository.
@@ -39,7 +37,7 @@ npm run start
 ```
 
 
-## With Docker:
+## Running With Docker:
 
 1. clone the repository
 ```
