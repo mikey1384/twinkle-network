@@ -1,4 +1,4 @@
-## Twinkle Website
+# Twinkle Website
 
 ## Running Without Docker:
 0. Ensure that Node 7+ is installed
