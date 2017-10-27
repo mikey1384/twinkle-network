@@ -1,8 +1,8 @@
 ## Twinkle Website
 
-###To run:
+### To run:
 
-##Without Docker:
+## Without Docker:
 0. Ensure that Node 7+ is installed
 1. git clone https://github.com/mikey1384/twin-kle.git [your directory name]
 2. Run `npm install` at the directory where you cloned the git repository.
@@ -39,7 +39,7 @@ npm run start
 ```
 
 
-##With Docker:
+## With Docker:
 
 1. clone the repository
 ```
@@ -57,7 +57,7 @@ docker-compose up
 ```
 chmod +rx .docker/init_mysql.sh && .docker/init_mysql.sh
 ```
-###About this project:
+### About this project:
 
 Twinkle is a small social network website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat within channels or send private messages to other users.
 
