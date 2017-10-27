@@ -4,7 +4,7 @@ import ChoiceListItem from './ChoiceListItem'
 import EditChoiceListItem from './EditChoiceListItem'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
-import {processedString} from 'helpers/stringHelpers'
+import {cleanString, processedString} from 'helpers/stringHelpers'
 
 export default class QuestionBlock extends Component {
   static propTypes = {
@@ -87,7 +87,7 @@ export default class QuestionBlock extends Component {
                 type="text"
                 className="form-control"
                 placeholder="Enter Question..."
-                value={editedQuestionTitle}
+                value={cleanString(editedQuestionTitle)}
                 onChange={event => this.setState({editedQuestionTitle: event.target.value})}
               >
               </Textarea>

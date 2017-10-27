@@ -126,12 +126,17 @@ export function finalizeEmoji(string) {
   return addEmoji(emojifiedString)
 }
 
+export function processedQueryString(string) {
+  return string ? string
+    .replace(/\r?\n/g, '<br>')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\r?\n/g, '<br>') :
+    null
+}
+
 export function processedString(string) {
   return string ? string
-    .replace(/<br\s*[\/]?>/gi, '\n')
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

@@ -34,7 +34,7 @@ class QuestionInput extends Component {
               onSubmit={this.onSubmit}
             >
               <p style={{fontSize: '1.2em'}}>
-                <b>Ask a <span style={{color: Color.green}}>question</span> to friends and teachers in Twinkle</b>
+                <b>Ask <span style={{color: Color.green}}>questions</span> to friends and teachers in Twinkle</b>
               </p>
               <Input
                 className="form-control"

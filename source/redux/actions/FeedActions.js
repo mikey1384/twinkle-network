@@ -1,6 +1,7 @@
 import request from 'axios'
 import {auth, handleError} from './constants'
 import {URL} from 'constants/URL'
+import {processedQueryString} from 'helpers/stringHelpers'
 
 const API_URL = `${URL}/feed`
 
@@ -162,7 +163,7 @@ export const fetchFeed = feed => dispatch => {
   }
   query = query.join('').slice(0, -1)
   request.get(`
-    ${API_URL}/feed?${query}
+    ${API_URL}/feed?${processedQueryString(query)}
   `).then(
     response => dispatch({
       type: 'FETCH_FEED',
