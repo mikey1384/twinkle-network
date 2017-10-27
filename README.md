@@ -55,7 +55,7 @@ docker-compose up
 ```
 chmod +rx .docker/init_mysql.sh && .docker/init_mysql.sh
 ```
-### About this project:
+## About this project:
 
 Twinkle is a small social network website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat within channels or send private messages to other users.
 
