@@ -10,7 +10,7 @@ TargetContent.propTypes = {
 export default function TargetContent({
   myId, feed: {
     commentId, discussionId, discussionDescription, discussionTimeStamp, discussionTitle, discussionUploaderId,
-    discussionUploaderName, id, replyId, rootId, rootType, targetComment, targetCommentTimeStamp,
+    discussionUploaderName, id, replyId, rootContent, rootId, rootType, targetComment, targetCommentTimeStamp,
     targetCommentUploaderId, targetCommentUploaderName, targetContentComments = [], targetContentLikers,
     targetReply, targetReplyTimeStamp, targetReplyUploaderName, targetReplyUploaderId, timeStamp
   }
@@ -29,6 +29,7 @@ export default function TargetContent({
           panelId={id}
           replyId={replyId}
           rootId={rootId}
+          rootContent={rootContent}
           rootType={rootType}
           timeStamp={targetReplyTimeStamp}
           uploader={{name: targetReplyUploaderName, id: targetReplyUploaderId}}
@@ -45,6 +46,7 @@ export default function TargetContent({
           myId={myId}
           panelId={id}
           rootId={rootId}
+          rootContent={rootContent}
           rootType={rootType}
           timeStamp={targetCommentTimeStamp}
           uploader={{name: targetCommentUploaderName, id: targetCommentUploaderId}}

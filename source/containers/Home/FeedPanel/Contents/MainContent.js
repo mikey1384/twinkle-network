@@ -29,13 +29,13 @@ export default function MainContent({
   return (
     <div>
       {!isEditing && type === 'comment' &&
-        <span style={{
+        <div style={{
           fontSize: '1.2em',
           whiteSpace: 'pre-wrap',
           wordWrap: 'break-word'
         }}>
           <LongText>{content}</LongText>
-        </span>
+        </div>
       }
       {(type === 'video' || type === 'discussion') &&
         <VideoPlayer

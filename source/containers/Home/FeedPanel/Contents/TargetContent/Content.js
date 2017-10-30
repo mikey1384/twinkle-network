@@ -35,6 +35,7 @@ class Content extends Component {
     panelId: PropTypes.number.isRequired,
     profilePicId: PropTypes.number,
     replyId: PropTypes.number,
+    rootContent: PropTypes.string,
     rootId: PropTypes.number.isRequired,
     rootType: PropTypes.string.isRequired,
     timeStamp: PropTypes.oneOfType([
@@ -64,7 +65,7 @@ class Content extends Component {
 
   render() {
     const {uploader, isDiscussion, title, content, contentAvailable, username, comments,
-      myId, profilePicId, timeStamp, likes = [], replyId, onDeleteComment, onEditComment
+      myId, profilePicId, timeStamp, likes = [], rootType, rootContent, replyId, onDeleteComment, onEditComment
     } = this.props
     const {userListModalShown, replyInputShown, clickListenerState} = this.state
     let userLikedThis = false
@@ -83,6 +84,11 @@ class Content extends Component {
         {contentAvailable ?
           (!isDiscussion ?
             <div>
+              {rootType === 'question' &&
+                <div style={{fontSize: '1.2em', marginBottom: '1em'}}>
+                  <span style={{color: Color.green, fontWeight: 'bold'}}>Question: </span><span>{rootContent}</span>
+                </div>
+              }
               <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
                 <div style={{float: 'left'}}><UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:</div>
                 <div style={{float: 'right'}}><small>({timeSince(timeStamp)})</small></div>
