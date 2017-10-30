@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
 const {poolQuery, promiseSeries} = require('../helpers')
-const currentVersion = 0.057
+const currentVersion = 0.058
 
 router.get('/', requireAuth, (req, res) => {
   const {id: userId} = req.user
