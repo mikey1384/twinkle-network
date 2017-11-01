@@ -1,5 +1,5 @@
 import request from 'axios'
-import {auth, handleError} from './constants'
+import {handleError} from './constants'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
@@ -21,15 +21,3 @@ request.get(`${API_URL}/search?query=${text}`).then(
   }
 )
 
-export const uploadQuestion = question => async(dispatch) => {
-  try {
-    const {data} = await request.post(`${API_URL}/question`, {question}, auth())
-    return dispatch({
-      type: 'UPLOAD_CONTENT',
-      data
-    })
-  } catch (error) {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-}

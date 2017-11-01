@@ -332,6 +332,19 @@ request.post(`${API_URL}/content`, form, auth()).then(
   }
 )
 
+export const uploadQuestion = question => async(dispatch) => {
+  try {
+    const {data} = await request.post(`${API_URL}/question`, {question}, auth())
+    return dispatch({
+      type: 'UPLOAD_CONTENT',
+      data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
 export const uploadFeedComment = (comment, parent) => dispatch => {
   const contentType = parent.type
   let commentType

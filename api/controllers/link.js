@@ -11,7 +11,7 @@ const {
   fetchComments,
   fetchReplies
 } = require('../helpers/commentHelpers')
-const {uploadContents} = require('../helpers/contentHelpers')
+const {postContents} = require('../helpers/contentHelpers')
 const {stringIsEmpty, processedString} = require('../helpers/stringHelpers')
 
 router.get('/', (req, res) => {
@@ -53,7 +53,7 @@ router.get('/', (req, res) => {
 router.post('/', requireAuth, (req, res) => {
   const {url, title, description} = req.body
   const {user} = req
-  return uploadContents({url, title, description, uploader: user.id, type: 'url'}).then(
+  return postContents({url, title, description, uploader: user.id, type: 'url'}).then(
     ({result, post}) => res.send(Object.assign({}, post, {
       id: result.insertId,
       uploaderName: user.username,

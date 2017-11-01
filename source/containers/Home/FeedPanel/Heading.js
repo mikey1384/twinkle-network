@@ -42,6 +42,8 @@ class Heading extends Component {
     this.state = {
       questionModalShown: false
     }
+    this.renderCornerButton = this.renderCornerButton.bind(this)
+    this.renderTargetAction = this.renderTargetAction.bind(this)
   }
 
   render() {
@@ -51,26 +53,13 @@ class Heading extends Component {
         rootType,
         uploaderPicId,
         rootId,
-        timeStamp,
-        rootContentLikers = []
+        timeStamp
       },
       action,
-      attachedVideoShown,
-      myId,
-      onLikeClick,
-      onPlayVideoClick,
       rootContent,
-      targetCommentUploader,
-      targetReplyUploader,
       uploader
     } = this.props
     const {questionModalShown} = this.state
-    const targetAction = targetReplyUploader ?
-      <span><UserLink user={targetReplyUploader} />{"'s reply on"}</span> :
-      (targetCommentUploader ?
-        <span><UserLink user={targetCommentUploader} />{"'s comment on"}</span> : null
-      )
-    const userLikedVideo = rootContentLikers.map(liker => liker.userId).indexOf(myId) !== -1
     const contentLabel = rootType === 'url' ? 'link' : rootType
     const spanStyle = {fontSize: '1.4rem'}
 
@@ -99,55 +88,9 @@ class Heading extends Component {
             />}
             <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
             <span className="panel-title pull-left col-xs-9" style={{...spanStyle, padding: '0px'}}>
-              <UserLink user={uploader} /> {action} {targetAction} {contentLabel}: <ContentLink content={rootContent} type={rootType} /> <small>({timeSince(timeStamp)})</small>
+              <UserLink user={uploader} /> {action} {this.renderTargetAction()} {contentLabel}: <ContentLink content={rootContent} type={rootType} /> <small>({timeSince(timeStamp)})</small>
             </span>
-            {rootType === 'video' && <div>
-              {attachedVideoShown ?
-                <LikeButton
-                  small
-                  style={{
-                    marginLeft: 'auto',
-                    float: 'right'
-                  }}
-                  targetLabel="Video"
-                  liked={userLikedVideo}
-                  onClick={() => onLikeClick(rootId, rootType)}
-                /> :
-                (
-                  rootContent.content && <a
-                    style={{
-                      marginLeft: 'auto',
-                      float: 'right',
-                      cursor: 'pointer',
-                      fontWeight: 'bold',
-                      color: Color.blue
-                    }}
-                    onClick={onPlayVideoClick}
-                  >
-                    <div className="video-preview-thumb" style={{width: '7em'}}>
-                      <img
-                        alt=""
-                        style={{width: '7em'}}
-                        src={`https://img.youtube.com/vi/${rootContent.content}/mqdefault.jpg`}
-                      />
-                      <span></span>
-                    </div>
-                  </a>
-                )
-              }
-            </div>}
-            {rootType === 'question' &&
-              <Button
-                className="btn btn-success"
-                style={{
-                  marginLeft: 'auto',
-                  float: 'right'
-                }}
-                onClick={() => this.setState({questionModalShown: true})}
-              >
-                Answer
-              </Button>
-            }
+            {this.renderCornerButton()}
           </div>
         )
       case 'url':
@@ -184,6 +127,74 @@ class Heading extends Component {
       default:
         return <div className="panpanel-heading flexbox-container">Error</div>
     }
+  }
+
+  renderCornerButton() {
+    const {
+      feed: {rootContentLikers = [], rootId, rootType},
+      rootContent: {content},
+      attachedVideoShown, myId, onLikeClick, onPlayVideoClick
+    } = this.props
+    const userLikedVideo = rootContentLikers.map(liker => liker.userId).indexOf(myId) !== -1
+    if (rootType === 'video') {
+      return <div>
+        {attachedVideoShown ?
+          <LikeButton
+            small
+            style={{
+              marginLeft: 'auto',
+              float: 'right'
+            }}
+            targetLabel="Video"
+            liked={userLikedVideo}
+            onClick={() => onLikeClick(rootId, rootType)}
+          /> : (
+            content && <a
+              style={{
+                marginLeft: 'auto',
+                float: 'right',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                color: Color.blue
+              }}
+              onClick={onPlayVideoClick}
+            >
+              <div className="video-preview-thumb" style={{width: '7em'}}>
+                <img
+                  alt=""
+                  style={{width: '7em'}}
+                  src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                />
+                <span></span>
+              </div>
+            </a>
+          )
+        }
+      </div>
+    } else if (rootType === 'question') {
+      return (
+        <Button
+          className="btn btn-success"
+          style={{
+            marginLeft: 'auto',
+            float: 'right'
+          }}
+          onClick={() => this.setState({questionModalShown: true})}
+        >
+          Answer
+        </Button>
+      )
+    }
+  }
+
+  renderTargetAction() {
+    const {targetReplyUploader, targetCommentUploader} = this.props
+    if (targetReplyUploader) {
+      return <span><UserLink user={targetReplyUploader} />{"'s reply on"}</span>
+    } else if (targetCommentUploader) {
+      return <span><UserLink user={targetCommentUploader} />{"'s comment on"}</span>
+    }
+    return null
   }
 }
 

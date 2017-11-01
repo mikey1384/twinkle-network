@@ -90,52 +90,6 @@ router.put('/embed', (req, res) => {
   )
 })
 
-router.post('/question', requireAuth, (req, res) => {
-  const {user, body: {question}} = req
-  const query = `INSERT INTO content_questions SET ?`
-  const post = {
-    userId: user.id,
-    content: question,
-    timeStamp: Math.floor(Date.now() / 1000)
-  }
-  return poolQuery(query, post).then(
-    (result) => res.send({
-      type: 'question',
-      id: 'question' + result.insertId,
-      contentId: result.insertId,
-      uploaderId: user.id,
-      content: post.content,
-      rootContent: post.content,
-      rootType: 'question',
-      timeStamp: post.timeStamp,
-      rootId: result.insertId,
-      rootContentTitle: post.content,
-      rootContentDescription: post.content,
-      commentId: null,
-      replyId: null,
-      contentTitle: post.content,
-      contentDescription: post.content,
-      uploaderName: user.username,
-      uploaderPicId: user.profilePicId,
-      targetCommentUploaderId: null,
-      targetComment: null,
-      targetCommentUploaderName: null,
-      targetReplyUploaderId: null,
-      targetReply: null,
-      targetReplyUploaderName: null,
-      videoViews: null,
-      childComments: [],
-      contentLikers: [],
-      targetContentLikers: []
-    })
-  ).catch(
-    error => {
-      console.error(error)
-      res.status(500).send({error})
-    }
-  )
-})
-
 router.post('/question/like', requireAuth, async(req, res) => {
   try {
     const {user, body: {contentId}} = req

@@ -7,7 +7,7 @@ const {embedKey, embedApiUrl} = require('../siteConfig')
 const request = require('request-promise-native')
 
 module.exports = {
-  uploadContents({url, description, title, uploader, type}) {
+  postContents({url, description, title, uploader, type}) {
     let content
     let query
     switch (type) {
@@ -30,9 +30,24 @@ module.exports = {
     }
     return poolQuery(query, post).then(
       result => Promise.resolve({result, post})
+    ).catch(
+      error => Promise.reject(error)
     )
   },
-
+  postQuestions(req) {
+    const {user, body: {question}} = req
+    const query = `INSERT INTO content_questions SET ?`
+    const post = {
+      userId: user.id,
+      content: question,
+      timeStamp: Math.floor(Date.now() / 1000)
+    }
+    return poolQuery(query, post).then(
+      result => Promise.resolve({result, post})
+    ).catch(
+      error => Promise.reject(error)
+    )
+  },
   getThumbImageFromEmbedApi({url}) {
     return request({
       uri: embedApiUrl,

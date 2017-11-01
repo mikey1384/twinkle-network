@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {uploadQuestion} from 'redux/actions/ContentActions'
+import {uploadQuestion} from 'redux/actions/FeedActions'
 import Input from 'components/Texts/Input'
 import {turnStringIntoQuestion} from 'helpers/stringHelpers'
 import {Color} from 'constants/css'

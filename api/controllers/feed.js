@@ -10,7 +10,7 @@ const {
   deleteComments,
   fetchReplies
 } = require('../helpers/commentHelpers')
-const {uploadContents} = require('../helpers/contentHelpers')
+const {postContents, postQuestions} = require('../helpers/contentHelpers')
 const {fetchFeeds} = require('../helpers/feedHelpers')
 const {poolQuery} = require('../helpers')
 
@@ -97,7 +97,7 @@ router.post('/content', requireAuth, (req, res) => {
   const {user} = req
   const {url, title, description, checkedVideo} = req.body
   const type = checkedVideo ? 'video' : 'url'
-  return uploadContents({url, description, title, uploader: user.id, type}).then(
+  return postContents({url, description, title, uploader: user.id, type}).then(
     ({result, post}) => res.send({
       type,
       id: type + result.insertId,
@@ -131,6 +131,45 @@ router.post('/content', requireAuth, (req, res) => {
     error => {
       console.error(error)
       return res.status(500).send({error})
+    }
+  )
+})
+
+router.post('/question', requireAuth, (req, res) => {
+  return postQuestions(req).then(
+    ({result, post}) => res.send({
+      type: 'question',
+      id: 'question' + result.insertId,
+      contentId: result.insertId,
+      uploaderId: req.user.id,
+      content: post.content,
+      rootContent: post.content,
+      rootType: 'question',
+      timeStamp: post.timeStamp,
+      rootId: result.insertId,
+      rootContentTitle: post.content,
+      rootContentDescription: post.content,
+      commentId: null,
+      replyId: null,
+      contentTitle: post.content,
+      contentDescription: post.content,
+      uploaderName: req.user.username,
+      uploaderPicId: req.user.profilePicId,
+      targetCommentUploaderId: null,
+      targetComment: null,
+      targetCommentUploaderName: null,
+      targetReplyUploaderId: null,
+      targetReply: null,
+      targetReplyUploaderName: null,
+      videoViews: null,
+      childComments: [],
+      contentLikers: [],
+      targetContentLikers: []
+    })
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
     }
   )
 })
