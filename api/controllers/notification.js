@@ -133,7 +133,7 @@ router.get('/chatSubject', (req, res) => {
 
 router.get('/version', (req, res) => {
   const {version} = req.query
-  res.send({match: Number(version) === currentVersion})
+  res.send({match: version === currentVersion})
 })
 
 module.exports = router
