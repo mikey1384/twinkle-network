@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {uploadQuestion} from 'redux/actions/FeedActions'
 import Input from 'components/Texts/Input'
-import {turnStringIntoQuestion} from 'helpers/stringHelpers'
+import {stringIsEmpty, turnStringIntoQuestion} from 'helpers/stringHelpers'
 import {Color} from 'constants/css'
 
 class QuestionInput extends Component {
@@ -57,7 +57,7 @@ class QuestionInput extends Component {
     const {uploadQuestion} = this.props
     const {question} = this.state
     event.preventDefault()
-    if (question.length > 100) return
+    if (stringIsEmpty(question) || question.length > 100) return
     let questionString = turnStringIntoQuestion(question)
     await uploadQuestion(questionString)
     this.setState({question: ''})
