@@ -68,4 +68,3 @@ export default connect(
   null,
   {uploadQuestion}
 )(QuestionInput)
-
