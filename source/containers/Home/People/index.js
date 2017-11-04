@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import SearchInput from 'components/Texts/SearchInput'
 import {connect} from 'react-redux'
 import {clearUserSearch, fetchUsers, fetchMoreUsers, searchUsers} from 'redux/actions/UserActions'
-import ProfileCard from '../ProfileCard'
+import ProfilePanel from '../ProfilePanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
@@ -68,12 +68,12 @@ class People extends Component {
           }
           {loaded && !searching &&
             profiles.map(
-              profile => <ProfileCard expandable key={profile.id} userId={userId} profile={profile} />
+              profile => <ProfilePanel expandable key={profile.id} userId={userId} profile={profile} />
             )
           }
           {searching &&
             searchedProfiles.map(
-              profile => <ProfileCard expandable key={profile.id} userId={userId} profile={profile} />
+              profile => <ProfilePanel expandable key={profile.id} userId={userId} profile={profile} />
             )
           }
         </div>

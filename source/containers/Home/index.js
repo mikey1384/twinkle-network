@@ -6,7 +6,7 @@ import Profile from './Profile'
 import People from './People'
 import Stories from './Stories'
 import Notification from 'containers/Notification'
-import ProfilePic from 'components/ProfilePic'
+import ProfileWidget from './ProfileWidget'
 
 Home.propTypes = {
   history: PropTypes.object,
@@ -30,6 +30,13 @@ function Home({history, location, userId, profilePicId, username: myUsername, no
           position: 'fixed'
         }}
       >
+        <ProfileWidget
+          history={history}
+          myUsername={myUsername}
+          profilePicId={profilePicId}
+          userId={userId}
+          username={username}
+        />
         <ul className="list-group unselectable" style={{
           fontSize: '1.3em',
           maxWidth: '12em'
@@ -53,13 +60,6 @@ function Home({history, location, userId, profilePicId, username: myUsername, no
               <div className="clearfix"></div>
             </li>
           )}/>
-          <li
-            className={`list-group-item left-menu-item home-left-menu ${username === myUsername && ' active'} flexbox-container`}
-            onClick={() => history.push(`/users/${myUsername}`)}
-          >
-            <ProfilePic size='3' userId={userId} profilePicId={profilePicId} /><a>Profile</a>
-            <div className="clearfix"></div>
-          </li>
           <Route exact path='/users' children={({match}) => (
             <li
               className={`list-group-item left-menu-item home-left-menu ${(match || ((username && myUsername) && (username !== myUsername))) ? ' active' : ''} flexbox-container`}
