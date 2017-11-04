@@ -24,6 +24,7 @@ class ContentEditor extends Component {
   constructor({comment, description, title, type, content}) {
     super()
     this.state = {
+      buttonDisabled: false,
       editedContent: cleanStringWithURL(content),
       editedComment: cleanStringWithURL(comment),
       editedDescription: cleanStringWithURL(description || ''),
@@ -35,7 +36,7 @@ class ContentEditor extends Component {
 
   render() {
     const {onDismiss, style, type} = this.props
-    const {editedComment, editedContent, editedDescription, editedTitle, editedUrl} = this.state
+    const {buttonDisabled, editedComment, editedContent, editedDescription, editedTitle, editedUrl} = this.state
     return (
       <div
         style={style}
@@ -80,22 +81,28 @@ class ContentEditor extends Component {
           }
           {type === 'question' &&
             <fieldset className="form-group">
-              <Textarea
-                autoFocus
+              <Input
                 className="form-control"
-                minRows={4}
-                onChange={event => this.setState({
-                  editedContent: event.target.value
-                })}
                 placeholder={edit['question']}
                 value={editedContent}
+                onChange={text => {
+                  this.setState(() => ({
+                    editedContent: text,
+                    buttonDisabled: text.length > 100
+                  }))
+                }}
+                style={{marginBottom: '0.3em'}}
               />
+              <small style={{color: editedContent.length > 100 ? 'red' : null}}>
+                {editedContent.length}/100 Characters
+              </small>
             </fieldset>
           }
           <fieldset>
             <Button
               className="btn btn-primary"
               type="submit"
+              disabled={buttonDisabled}
             >
               Done
             </Button>
