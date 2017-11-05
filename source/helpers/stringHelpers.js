@@ -206,9 +206,10 @@ export function isValidUrl(url) {
 }
 
 export function isValidYoutubeUrl(url) {
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   let trimOne = url.split('v=')[1]
   let trimTwo = url.split('youtu.be/')[1]
-  return typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined'
+  return regex.test(url) && (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
 }
 
 export function fetchedVideoCodeFromURL(url) {

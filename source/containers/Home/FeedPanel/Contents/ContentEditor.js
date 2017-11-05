@@ -6,7 +6,14 @@ import Button from 'components/Button'
 import {edit} from 'constants/placeholders'
 import {connect} from 'react-redux'
 import {feedContentEdit} from 'redux/actions/FeedActions'
-import {addEmoji, finalizeEmoji, cleanStringWithURL, turnStringIntoQuestion} from 'helpers/stringHelpers'
+import {
+  addEmoji,
+  finalizeEmoji,
+  cleanStringWithURL,
+  turnStringIntoQuestion,
+  isValidUrl,
+  isValidYoutubeUrl
+} from 'helpers/stringHelpers'
 
 class ContentEditor extends Component {
   static propTypes = {
@@ -47,7 +54,14 @@ class ContentEditor extends Component {
               <Input
                 autoFocus
                 className="form-control"
-                onChange={text => this.setState({editedUrl: text})}
+                onChange={text => {
+                  const buttonDisabled = (type === 'video' && !isValidYoutubeUrl(text)) ||
+                    (type === 'url' && !isValidUrl(text))
+                  this.setState({
+                    editedUrl: text,
+                    buttonDisabled
+                  })
+                }}
                 placeholder={edit[type]}
                 value={editedUrl}
               />

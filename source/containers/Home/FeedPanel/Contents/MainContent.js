@@ -56,13 +56,16 @@ export default function MainContent({
           <p>{cleanString(content)}</p>
         </div>
       }
-      {!isEditing && type === 'url' && contentDescription && contentDescription !== 'No description' &&
+      {!isEditing && type === 'url' &&
         <div style={{
           fontSize: '1.2em',
           whiteSpace: 'pre-wrap',
           wordWrap: 'break-word'
         }}>
-          <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText>
+          {(contentDescription && contentDescription !== 'No description') ?
+            <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText> :
+            <div style={{paddingBottom: '1.5em'}}>{contentTitle}</div>
+          }
         </div>
       }
       {isEditing &&

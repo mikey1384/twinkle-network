@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
 const {poolQuery} = require('../helpers')
-const {fetchedVideoCodeFromURL, processedString, stringIsEmpty} = require('../helpers/stringHelpers')
+const {fetchedVideoCodeFromURL, processedString, processedURL, stringIsEmpty} = require('../helpers/stringHelpers')
 const {getThumbImageFromEmbedApi} = require('../helpers/contentHelpers')
 const {googleKey} = require('../siteConfig')
 const request = require('request-promise-native')
@@ -45,7 +45,7 @@ router.put('/', requireAuth, (req, res) => {
       post = {
         title: editedTitle,
         description: processedString(editedDescription),
-        content: editedUrl
+        content: processedURL(editedUrl)
       }
       break
     case 'question':
