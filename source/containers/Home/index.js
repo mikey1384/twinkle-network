@@ -12,11 +12,15 @@ Home.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
   notificationLoaded: PropTypes.bool,
+  realName: PropTypes.string,
   username: PropTypes.string,
   userId: PropTypes.number,
   profilePicId: PropTypes.number
 }
-function Home({history, location, userId, profilePicId, username: myUsername, notificationLoaded}) {
+function Home({
+  history, location, userId, profilePicId,
+  realName, username: myUsername, notificationLoaded
+}) {
   let username = ''
   if (location.pathname.includes('/users/')) {
     username = location.pathname.split('/')[2]
@@ -25,19 +29,18 @@ function Home({history, location, userId, profilePicId, username: myUsername, no
     <div>
       <div
         className="col-xs-3"
-        style={{
-          marginTop: '2em',
-          position: 'fixed'
-        }}
+        style={{position: 'fixed'}}
       >
         <ProfileWidget
           history={history}
           myUsername={myUsername}
           profilePicId={profilePicId}
+          realName={realName}
           userId={userId}
           username={username}
         />
         <ul className="list-group unselectable" style={{
+          marginTop: '1em',
           fontSize: '1.3em',
           maxWidth: '12em'
         }}>
@@ -104,6 +107,7 @@ function Home({history, location, userId, profilePicId, username: myUsername, no
 
 export default connect(
   state => ({
+    realName: state.UserReducer.realName,
     username: state.UserReducer.username,
     userId: state.UserReducer.userId,
     profilePicId: state.UserReducer.profilePicId,
