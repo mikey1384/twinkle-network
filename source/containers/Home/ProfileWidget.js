@@ -9,14 +9,13 @@ import {connect} from 'react-redux'
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
-  myUsername: PropTypes.string,
   openSigninModal: PropTypes.func,
   profilePicId: PropTypes.number,
   realName: PropTypes.string,
   userId: PropTypes.number,
   username: PropTypes.string
 }
-function ProfileWidget({history, openSigninModal, userId, username, myUsername, profilePicId, realName}) {
+function ProfileWidget({history, openSigninModal, userId, username, profilePicId, realName}) {
   return (
     <div
       style={{
@@ -34,7 +33,7 @@ function ProfileWidget({history, openSigninModal, userId, username, myUsername, 
           userId={userId}
           profilePicId={profilePicId}
           style={{cursor: userId ? 'pointer' : 'default'}}
-          onClick={() => userId ? history.push(`/users/${myUsername}`) : null}
+          onClick={() => userId ? history.push(`/users/${username}`) : null}
         />
       </div>
       <div className="col-xs-7">
@@ -44,7 +43,7 @@ function ProfileWidget({history, openSigninModal, userId, username, myUsername, 
             fontSize: '1.5em'
           }
         }>
-          {myUsername ? <Link to={`/users/${myUsername}`}>{myUsername}</Link> : 'Log in to access all features!'}
+          {username ? <Link to={`/users/${username}`}>{username}</Link> : 'Log in to access all features!'}
         </div>
         {realName && <div style={{color: Color.gray}}>({realName})</div>}
         {userId &&
@@ -69,4 +68,12 @@ function ProfileWidget({history, openSigninModal, userId, username, myUsername, 
   )
 }
 
-export default connect(null, {openSigninModal})(ProfileWidget)
+export default connect(
+  state => ({
+    realName: state.UserReducer.realName,
+    username: state.UserReducer.username,
+    userId: state.UserReducer.userId,
+    profilePicId: state.UserReducer.profilePicId
+  }),
+  {openSigninModal}
+)(ProfileWidget)

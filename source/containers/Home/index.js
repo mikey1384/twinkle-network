@@ -31,14 +31,7 @@ function Home({
         className="col-xs-3"
         style={{position: 'fixed'}}
       >
-        <ProfileWidget
-          history={history}
-          myUsername={myUsername}
-          profilePicId={profilePicId}
-          realName={realName}
-          userId={userId}
-          username={username}
-        />
+        <ProfileWidget history={history} />
         <ul className="list-group unselectable" style={{
           marginTop: '1em',
           fontSize: '1.3em',
