@@ -19,6 +19,7 @@ export default function UserReducer(state = defaultState, action) {
         searchedProfiles: []
       }
     case 'FETCH_SESSION':
+      console.log(action.data)
       return (action.data !== undefined && action.data.loggedIn) ? {
         ...state,
         ...action.data,
