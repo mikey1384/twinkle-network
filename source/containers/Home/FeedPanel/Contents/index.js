@@ -61,10 +61,10 @@ class Contents extends Component {
   render() {
     const {
       feed: {
-        uploaderId, content, contentLikers = [], contentId, type, discussionId, hasHqThumb, videoViews,
-        numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
+        uploaderId, content, contentLikers = [], contentId, type, discussionId, hasHqThumb, isStarred,
+        videoViews, numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
-        rootContent, thumbUrl, actualTitle, actualDescription, siteUrl
+        rootContent, rootContentIsStarred, thumbUrl, actualTitle, actualDescription, siteUrl
       }, feed, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onCommentDelete, onContentDelete, onReplySubmit, onSubmit
     } = this.props
@@ -108,9 +108,11 @@ class Contents extends Component {
             contentTitle={contentTitle}
             hasHqThumb={hasHqThumb}
             isEditing={isEditing}
+            isStarred={isStarred}
             onEditDismiss={() => this.setState({isEditing: false})}
             rootId={rootId}
             rootContent={rootContent}
+            rootContentIsStarred={rootContentIsStarred}
             rootType={rootType}
             urlRelated={{thumbUrl, actualTitle, actualDescription, siteUrl}}
             type={type}

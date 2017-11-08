@@ -132,7 +132,7 @@ class Heading extends Component {
   renderCornerButton() {
     const {
       feed: {rootContentLikers = [], rootId, rootType},
-      rootContent: {content},
+      rootContent: {content, isStarred},
       attachedVideoShown, myId, onLikeClick, onPlayVideoClick
     } = this.props
     const userLikedVideo = rootContentLikers.map(liker => liker.userId).indexOf(myId) !== -1
@@ -165,6 +165,14 @@ class Heading extends Component {
                   style={{width: '7em'}}
                   src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
                 />
+                {isStarred &&
+                  <div style={{
+                    position: 'absolute',
+                    color: 'red'
+                  }}>
+                    This is starred
+                  </div>
+                }
                 <span></span>
               </div>
             </a>

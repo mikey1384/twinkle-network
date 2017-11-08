@@ -21,7 +21,11 @@ const localLogin = new LocalStrategy(localOptions, function(username, password, 
 
     var hashedPass = rows[0].password
     if (passwordHash.verify(password, hashedPass)) {
-      done(null, rows[0])
+      let user = {}
+      for (let key in rows[0]) {
+        if (key !== 'password') user[key] = rows[0][key]
+      }
+      done(null, user)
     } else {
       done(null, false)
     }
@@ -41,7 +45,11 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
     if (!rows || rows.length === 0) {
       return done(null, false)
     }
-    done(null, rows[0])
+    let user = {}
+    for (let key in rows[0]) {
+      if (key !== 'password') user[key] = rows[0][key]
+    }
+    done(null, user)
   })
 })
 

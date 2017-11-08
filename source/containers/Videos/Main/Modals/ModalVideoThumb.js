@@ -58,6 +58,16 @@ export default class VideoThumb extends Component {
                 margin: 'auto'
               }}
             />
+            {video.isStarred &&
+              <div
+                style={{
+                  color: 'red',
+                  position: 'absolute'
+                }}
+              >
+                This is starred
+              </div>
+            }
           </div>
           <div
             className="caption"

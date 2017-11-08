@@ -16,7 +16,7 @@ module.exports = {
           WHERE a.playlistId = ? ORDER BY a.id LIMIT 10
         `
         const videoDetailsQuery = `
-          SELECT a.title AS video_title, a.description AS video_description, a.content, 
+          SELECT a.title AS video_title, a.description AS video_description, a.content, a.isStarred,
           b.id AS video_uploader_id, b.username AS video_uploader, COUNT(c.id) AS numLikes
 
           FROM vq_videos a JOIN users b ON a.uploader = b.id

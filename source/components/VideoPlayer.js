@@ -18,6 +18,7 @@ class VideoPlayer extends Component {
     className: PropTypes.string,
     containerClassName: PropTypes.string,
     hasHqThumb: PropTypes.number,
+    isStarred: PropTypes.bool.isRequired,
     onEdit: PropTypes.bool,
     small: PropTypes.bool,
     style: PropTypes.object,
@@ -79,7 +80,7 @@ class VideoPlayer extends Component {
   }
 
   render() {
-    const {videoCode, title, containerClassName, className, onEdit, style, small} = this.props
+    const {isStarred, videoCode, title, containerClassName, className, onEdit, style, small} = this.props
     const {imageUrl, playing} = this.state
     return (
       <div
@@ -97,6 +98,14 @@ class VideoPlayer extends Component {
             className="embed-responsive-item"
             src={imageUrl}
           />
+          {isStarred &&
+            <div style={{
+              position: 'absolute',
+              color: 'red'
+            }}>
+              This is starred
+            </div>
+          }
         </div>}
         {(!onEdit && !small && playing) ?
           <Loading

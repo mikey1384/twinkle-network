@@ -220,6 +220,7 @@ class PlaylistCarousel extends Component {
           video={{
             id: thumb.videoId,
             content: thumb.content,
+            isStarred: thumb.isStarred,
             title: thumb.video_title,
             description: thumb.video_description,
             uploaderName: thumb.video_uploader,

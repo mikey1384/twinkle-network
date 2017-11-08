@@ -14,17 +14,19 @@ MainContent.propTypes = {
   contentTitle: PropTypes.string,
   hasHqThumb: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
+  isStarred: PropTypes.number,
   onEditDismiss: PropTypes.func.isRequired,
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
+  rootContentIsStarred: PropTypes.number,
   rootType: PropTypes.string,
   urlRelated: PropTypes.object,
   type: PropTypes.string.isRequired,
   videoViews: PropTypes.string
 }
 export default function MainContent({
-  content, contentDescription, contentId, contentTitle, hasHqThumb, isEditing,
-  onEditDismiss, rootId, rootContent, rootType, urlRelated, type, videoViews
+  content, contentDescription, contentId, contentTitle, hasHqThumb, isEditing, isStarred,
+  onEditDismiss, rootId, rootContent, rootContentIsStarred, rootType, urlRelated, type, videoViews
 }) {
   return (
     <div>
@@ -39,6 +41,7 @@ export default function MainContent({
       }
       {(type === 'video' || type === 'discussion') &&
         <VideoPlayer
+          isStarred={!!(isStarred || rootContentIsStarred)}
           onEdit={isEditing}
           title={contentTitle}
           containerClassName="embed-responsive embed-responsive-16by9"

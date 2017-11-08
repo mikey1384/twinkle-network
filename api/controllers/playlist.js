@@ -29,7 +29,8 @@ router.get('/playlist', (req, res) => {
   const {playlistId, shownVideos, noLimit} = req.query
   const where = shownVideos ? 'AND ' + shownVideos.map(id => `a.videoId != ${id}`).join(' AND ') : ''
   const query = `
-    SELECT a.videoId AS id, b.title, b.content, b.uploader AS uploaderId, c.username AS uploaderName
+    SELECT a.videoId AS id, b.title, b.content, b.isStarred, b.uploader AS uploaderId,
+    c.username AS uploaderName
     FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? ${where}${noLimit ? '' : ' LIMIT 11'}
   `
@@ -105,8 +106,8 @@ router.post('/', requireAuth, (req, res) => {
   ).then(
     playlistId => {
       const videosQuery = `
-        SELECT a.id, a.videoId, b.title AS video_title, b.content, c.username AS video_uploader,
-        COUNT(d.id) AS numLikes
+        SELECT a.id, a.videoId, b.title AS video_title, b.content, b.isStarred,
+        c.username AS video_uploader, COUNT(d.id) AS numLikes
         FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id LEFT JOIN users c ON b.uploader = c.id
         LEFT JOIN content_likes d ON b.id = d.rootId AND d.rootType = 'video'
         WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id LIMIT 10
@@ -176,8 +177,8 @@ router.post('/edit/videos', requireAuth, (req, res) => {
   ).then(
     () => {
       let query = `
-        SELECT a.id, a.videoId, b.title AS video_title, b.content, c.username AS video_uploader,
-        COUNT(d.id) AS numLikes
+        SELECT a.id, a.videoId, b.title AS video_title, b.content, b.isStarred,
+        c.username AS video_uploader, COUNT(d.id) AS numLikes
         FROM vq_playlistvideos a
           JOIN vq_videos b ON a.videoId = b.id
           LEFT JOIN users c ON b.uploader = c.id
@@ -308,7 +309,7 @@ router.get('/search/video', (req, res) => {
   const searchQuery = req.query.query
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
   const query = `
-    SELECT a.id, a.title, a.content, a.uploader AS uploaderId, b.username AS uploaderName
+    SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
     FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
     ORDER by a.id DESC LIMIT 20
   `
