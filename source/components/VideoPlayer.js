@@ -100,10 +100,12 @@ class VideoPlayer extends Component {
           />
           {isStarred &&
             <div style={{
+              marginTop: '0.5em',
+              marginLeft: '0.5em',
               position: 'absolute',
               color: 'red'
             }}>
-              This is starred
+              <img style={{width: '3em', height: '3em'}} src={'/img/star.png'} />
             </div>
           }
         </div>}
