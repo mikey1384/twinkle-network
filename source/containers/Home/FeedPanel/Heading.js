@@ -10,6 +10,7 @@ import {Color} from 'constants/css'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import QuestionModal from './QuestionModal'
+import StarMark from 'components/StarMark'
 
 class Heading extends Component {
   static propTypes = {
@@ -165,14 +166,7 @@ class Heading extends Component {
                   style={{width: '7em'}}
                   src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
                 />
-                {isStarred &&
-                  <div style={{
-                    position: 'absolute',
-                    color: 'red'
-                  }}>
-                    This is starred
-                  </div>
-                }
+                {isStarred && <StarMark style={{top: 1, left: 1}} size={2} />}
                 <span></span>
               </div>
             </a>

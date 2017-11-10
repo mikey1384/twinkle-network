@@ -6,6 +6,7 @@ import {Color} from 'constants/css'
 import {connect} from 'react-redux'
 import {addVideoViewAsync} from 'redux/actions/VideoActions'
 import request from 'axios'
+import StarMark from 'components/StarMark'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
@@ -99,14 +100,12 @@ class VideoPlayer extends Component {
             src={imageUrl}
           />
           {isStarred &&
-            <div style={{
-              marginTop: '0.5em',
-              marginLeft: '0.5em',
-              position: 'absolute',
-              color: 'red'
-            }}>
-              <img style={{width: '3em', height: '3em'}} src={'/img/star.png'} />
-            </div>
+            <StarMark
+              style={{
+                marginTop: '0.5em',
+                marginLeft: '0.5em'
+              }}
+            />
           }
         </div>}
         {(!onEdit && !small && playing) ?
