@@ -2,23 +2,32 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import Likers from 'components/Likers'
 import LikeButton from 'components/LikeButton'
+import StarButton from 'components/StarButton'
+import {connect} from 'react-redux'
 
 VideoLikeInterface.propTypes = {
   className: PropTypes.string,
+  isAdmin: PropTypes.bool.isRequired,
   likes: PropTypes.array.isRequired,
   onLikeClick: PropTypes.func.isRequired,
   showLikerList: PropTypes.func.isRequired,
   userId: PropTypes.number
 }
-export default function VideoLikeInterface({userId, likes, onLikeClick, showLikerList, className}) {
+function VideoLikeInterface({userId, isAdmin, likes, onLikeClick, showLikerList, className}) {
   return (
     <div className="pull-right">
       <div style={{textAlign: 'center'}}>
         <LikeButton
-          style={{fontSize: '3rem'}}
+          style={{fontSize: isAdmin ? '2rem' : '3rem'}}
           onClick={() => onLikeClick()}
           liked={isLiked(likes)}
         />
+        {isAdmin && <StarButton
+          style={{
+            fontSize: '2rem',
+            marginLeft: '1rem'
+          }}
+        />}
         <div style={{marginTop: '0.5em'}}>
           <Likers
             userId={userId}
@@ -42,3 +51,5 @@ export default function VideoLikeInterface({userId, likes, onLikeClick, showLike
     return liked
   }
 }
+
+export default connect(state => ({isAdmin: state.UserReducer.isAdmin}))(VideoLikeInterface)

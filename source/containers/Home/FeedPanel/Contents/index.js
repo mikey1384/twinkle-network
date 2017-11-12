@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import LikeButton from 'components/LikeButton'
+import StarButton from 'components/StarButton'
 import Button from 'components/Button'
 import Likers from 'components/Likers'
 import {connect} from 'react-redux'
@@ -30,6 +31,7 @@ class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.object.isRequired,
+    isAdmin: PropTypes.bool.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
     onCommentDelete: PropTypes.func.isRequired,
@@ -65,7 +67,7 @@ class Contents extends Component {
         videoViews, numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
         rootContent, rootContentIsStarred, thumbUrl, actualTitle, actualDescription, siteUrl
-      }, feed, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
+      }, feed, isAdmin, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onCommentDelete, onContentDelete, onReplySubmit, onSubmit
     } = this.props
     const {userListModalShown, clickListenerState, confirmModalShown, commentsShown, isEditing} = this.state
@@ -168,6 +170,11 @@ class Contents extends Component {
                 ]}
               />
             }
+            {isAdmin && (type === 'video') &&
+              <StarButton
+                style={{float: 'right'}}
+              />
+            }
             <Likers
               style={{
                 fontSize: '11px',
@@ -253,7 +260,9 @@ class Contents extends Component {
 }
 
 export default connect(
-  null,
+  state => ({
+    isAdmin: state.UserReducer.isAdmin
+  }),
   {
     showFeedComments: showFeedCommentsAsync,
     loadMoreComments: loadMoreFeedCommentsAsync,
