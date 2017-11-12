@@ -140,7 +140,7 @@ export default class PanelComment extends Component {
                 <LongText
                   style={{
                     paddingBottom: '0.8em',
-                    wordWrap: 'break-word'
+                    wordBreak: 'break-all'
                   }}
                 >
                   {comment.content}
