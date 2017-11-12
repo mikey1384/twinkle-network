@@ -160,10 +160,12 @@ export default class Description extends Component {
                         }}
                       >
                         <span
-                          style={{wordWrap: 'break-word'}}
+                          style={{wordBreak: 'break-all'}}
                           onMouseOver={this.onMouseOver}
                           onMouseLeave={() => this.setState({onTitleHover: false})}
-                        >{cleanString(title)}</span>
+                        >
+                          {cleanString(title)}
+                        </span>
                       </h3>
                       <FullTextReveal width="100%" show={onTitleHover} text={cleanString(title)} />
                     </div>
@@ -237,7 +239,7 @@ export default class Description extends Component {
                 >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}
                 </p>
               }
-              <LongText style={{wordWrap: 'break-word', paddingLeft: '0px'}}>
+              <LongText style={{wordBreak: 'break-all', paddingLeft: '0px'}}>
                 {stringIsEmpty(description) ? 'No Description' : description}
               </LongText>
             </div>

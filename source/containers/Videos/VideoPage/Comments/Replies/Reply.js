@@ -142,9 +142,7 @@ export default class Reply extends Component {
                   }
                 /> :
                 <div>
-                  <LongText
-                    style={{paddingBottom: '1em', wordWrap: 'break-word'}}
-                  >
+                  <LongText style={{paddingBottom: '1em'}}>
                     {content}
                   </LongText>
                   <div

@@ -136,9 +136,7 @@ export default class PanelReply extends Component {
                 onEditDone={this.onEditDone}
               /> :
               <div>
-                <LongText
-                  style={{paddingBottom: '0.8em', wordWrap: 'break-word'}}
-                >
+                <LongText style={{paddingBottom: '0.8em'}}>
                   {reply.content}
                 </LongText>
                 <div
