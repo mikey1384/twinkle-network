@@ -124,7 +124,6 @@ class Content extends Component {
                 <div className="media" style={{marginTop: '0px', lineHeight: '0px'}}>
                   <div className="media-body">
                     <InputArea
-                      formGroupStyle={{marginBottom: '0px'}}
                       clickListenerState={clickListenerState}
                       autoFocus
                       onSubmit={this.onSubmit}
@@ -135,7 +134,7 @@ class Content extends Component {
                 </div>
               }
               {(comments.length > 0) &&
-                <ul className="media-list" style={{marginTop: '0.3em', marginBottom: '0px', lineHeight: '0px'}}>
+                <ul className="media-list" style={{marginTop: '1em', marginBottom: '0px', lineHeight: '0px'}}>
                   {comments.map(comment =>
                     <Comment
                       key={comment.id}
