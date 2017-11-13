@@ -77,8 +77,7 @@ class Content extends Component {
         className="well"
         style={{
           marginTop: '1em',
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word'
+          wordBreak: 'break-word'
         }}
       >
         {contentAvailable ?
@@ -90,7 +89,10 @@ class Content extends Component {
                 </div>
               }
               <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
-                <div style={{float: 'left'}}><UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:</div>
+                <div style={{float: 'left'}}>
+                  <UserLink user={uploader} />
+                  &nbsp;{replyId ? 'wrote' : rootType === 'question' ? 'answered' : 'commented'}:
+                </div>
                 <div style={{float: 'right'}}><small>({timeSince(timeStamp)})</small></div>
               </div>
               <div style={{paddingTop: '2.3em'}}>
@@ -125,7 +127,6 @@ class Content extends Component {
                 <div className="media" style={{marginTop: '0px', lineHeight: '0px'}}>
                   <div className="media-body">
                     <InputArea
-                      formGroupStyle={{marginBottom: '0px'}}
                       clickListenerState={clickListenerState}
                       autoFocus
                       onSubmit={this.onSubmit}
@@ -136,7 +137,7 @@ class Content extends Component {
                 </div>
               }
               {(comments.length > 0) &&
-                <ul className="media-list" style={{marginTop: '0.3em', marginBottom: '0px', lineHeight: '0px'}}>
+                <ul className="media-list" style={{marginTop: '1em', marginBottom: '0px', lineHeight: '0px'}}>
                   {comments.map(comment =>
                     <Comment
                       key={comment.id}

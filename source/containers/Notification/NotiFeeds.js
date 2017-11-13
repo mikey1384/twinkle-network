@@ -47,7 +47,7 @@ export default function NotiFeeds({myId, notifications, style}) {
         {notifications.length > 0 && notifications.map(notification => {
           return <li
             className="list-group-item"
-            style={{wordWrap: 'break-word'}}
+            style={{wordBreak: 'break-word'}}
             key={notification.id}>
             {renderNotificationMessage(notification, myId)}
             <small style={{color: Color.gray}}>{timeSince(notification.timeStamp)}</small>
@@ -80,7 +80,7 @@ function renderNotificationMessage(notification, myId) {
         action = 'likes'
         break
       case 'comment':
-        action = 'commented on'
+        action = rootType === 'question' ? 'answered' : 'commented on'
         break
       case 'discussion':
         action = 'added a discussion to'

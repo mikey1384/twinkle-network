@@ -12,6 +12,7 @@ const {
 } = require('../helpers/commentHelpers')
 const {postContents, postQuestions} = require('../helpers/contentHelpers')
 const {fetchFeeds} = require('../helpers/feedHelpers')
+const {processedString} = require('../helpers/stringHelpers')
 const {poolQuery} = require('../helpers')
 
 router.get('/', fetchFeeds)
@@ -363,6 +364,7 @@ router.post('/targetContentComment', requireAuth, (req, res) => {
   const {user, body} = req
   const query = `INSERT INTO content_comments SET ?`
   const post = Object.assign({}, body, {
+    content: processedString(body.content),
     userId: user.id,
     timeStamp: Math.floor(Date.now()/1000)
   })

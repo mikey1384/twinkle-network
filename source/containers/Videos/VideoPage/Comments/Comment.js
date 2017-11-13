@@ -134,9 +134,7 @@ export default class Comment extends Component {
                   {cleanString(comment.discussionTitle)}
                 </div>
               }
-              <LongText
-                style={{marginLeft: '0px', paddingBottom: '1em', wordWrap: 'break-word'}}
-              >
+              <LongText style={{marginLeft: '0px', paddingBottom: '1em'}}>
                 {comment.content}
               </LongText>
               <div

@@ -6,17 +6,15 @@ import Input from 'components/Texts/Input'
 import {stringIsEmpty, turnStringIntoQuestion} from 'helpers/stringHelpers'
 import {Color} from 'constants/css'
 
+const wordLimit = 150
+
 class QuestionInput extends Component {
   static propTypes = {
     uploadQuestion: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      question: ''
-    }
-    this.onSubmit = this.onSubmit.bind(this)
+  state = {
+    question: ''
   }
 
   render() {
@@ -43,8 +41,9 @@ class QuestionInput extends Component {
                 onChange={text => this.setState({question: text})}
                 style={{marginBottom: '0.3em'}}
               />
-              <small style={{color: question.length > 100 ? 'red' : null}}>{question.length}/100 Characters
-                {question.length <= 100 && <span> (Press <b>Enter</b> to submit)</span>}
+              <small style={{color: question.length > wordLimit ? 'red' : null}}>
+                {question.length}/{wordLimit} Characters
+                {question.length <= wordLimit && <span> (Press <b>Enter</b> to submit)</span>}
               </small>
             </form>
           </fieldset>
@@ -53,11 +52,11 @@ class QuestionInput extends Component {
     )
   }
 
-  async onSubmit(event) {
+  onSubmit = async(event) => {
     const {uploadQuestion} = this.props
     const {question} = this.state
     event.preventDefault()
-    if (stringIsEmpty(question) || question.length > 100) return
+    if (stringIsEmpty(question) || question.length > wordLimit) return
     let questionString = turnStringIntoQuestion(question)
     await uploadQuestion(questionString)
     this.setState({question: ''})

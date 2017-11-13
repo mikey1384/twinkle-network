@@ -71,7 +71,7 @@ class ProfilePanel extends Component {
                   className="col-md-8"
                   style={{
                     paddingLeft: '1em',
-                    wordWrap: 'break-word',
+                    wordBreak: 'break-word',
                     minWidth: '30vw'
                   }}>
                   {!!profileFirstRow &&
