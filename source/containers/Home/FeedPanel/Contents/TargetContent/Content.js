@@ -89,7 +89,10 @@ class Content extends Component {
                 </div>
               }
               <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
-                <div style={{float: 'left'}}><UserLink user={uploader} /> {replyId ? 'wrote' : 'commented'}:</div>
+                <div style={{float: 'left'}}>
+                  <UserLink user={uploader} />
+                  &nbsp;{replyId ? 'wrote' : rootType === 'question' ? 'answered' : 'commented'}:
+                </div>
                 <div style={{float: 'right'}}><small>({timeSince(timeStamp)})</small></div>
               </div>
               <div style={{paddingTop: '2.3em'}}>
