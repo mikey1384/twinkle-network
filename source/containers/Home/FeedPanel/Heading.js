@@ -166,7 +166,7 @@ class Heading extends Component {
                   style={{width: '7em'}}
                   src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
                 />
-                {isStarred && <StarMark style={{top: 1, left: 1}} size={2} />}
+                {!!isStarred && <StarMark style={{top: 1, left: 1}} size={2} />}
                 <span></span>
               </div>
             </a>
