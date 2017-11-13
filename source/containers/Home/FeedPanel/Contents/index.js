@@ -16,6 +16,7 @@ import {
   feedCommentEdit,
   uploadFeedReply,
   loadMoreFeedReplies,
+  feedVideoStar,
   contentFeedLike
 } from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
@@ -31,6 +32,7 @@ class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.object.isRequired,
+    feedVideoStar: PropTypes.func.isRequired,
     isGrandMaster: PropTypes.bool.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
@@ -46,18 +48,12 @@ class Contents extends Component {
     showFeedComments: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      isEditing: false,
-      userListModalShown: false,
-      clickListenerState: false,
-      commentsShown: false,
-      confirmModalShown: false
-    }
-    this.onLikeClick = this.onLikeClick.bind(this)
-    this.onCommentButtonClick = this.onCommentButtonClick.bind(this)
-    this.loadMoreComments = this.loadMoreComments.bind(this)
+  state = {
+    isEditing: false,
+    userListModalShown: false,
+    clickListenerState: false,
+    commentsShown: false,
+    confirmModalShown: false
   }
 
   render() {
@@ -110,11 +106,11 @@ class Contents extends Component {
             contentTitle={contentTitle}
             hasHqThumb={hasHqThumb}
             isEditing={isEditing}
-            isStarred={isStarred}
+            isStarred={!!isStarred}
             onEditDismiss={() => this.setState({isEditing: false})}
             rootId={rootId}
             rootContent={rootContent}
-            rootContentIsStarred={rootContentIsStarred}
+            rootContentIsStarred={!!rootContentIsStarred}
             rootType={rootType}
             urlRelated={{thumbUrl, actualTitle, actualDescription, siteUrl}}
             type={type}
@@ -172,7 +168,8 @@ class Contents extends Component {
             }
             {isGrandMaster && (type === 'video') &&
               <StarButton
-                isStarred={isStarred}
+                isStarred={!!isStarred}
+                onClick={this.onStarButtonClick}
                 style={{float: 'right'}}
               />
             }
@@ -231,12 +228,12 @@ class Contents extends Component {
     )
   }
 
-  loadMoreComments(lastCommentId, type, contentId) {
+  loadMoreComments = (lastCommentId, type, contentId) => {
     const {loadMoreComments, feed: {commentId}} = this.props
     loadMoreComments(lastCommentId, type, contentId, !!commentId)
   }
 
-  onCommentButtonClick() {
+  onCommentButtonClick = () => {
     const {feed: {type, rootType, contentId, commentId}, showFeedComments} = this.props
     const {clickListenerState, commentsShown} = this.state
     const isReply = !!commentId
@@ -247,7 +244,7 @@ class Contents extends Component {
     this.setState({clickListenerState: !clickListenerState})
   }
 
-  onLikeClick() {
+  onLikeClick = () => {
     const {feed: {contentId, type, rootType}} = this.props
     switch (type) {
       case 'comment':
@@ -258,6 +255,11 @@ class Contents extends Component {
         return this.props.onLikeContentClick(contentId, rootType)
     }
   }
+
+  onStarButtonClick = () => {
+    const {feedVideoStar, feed: {contentId}} = this.props
+    feedVideoStar(contentId)
+  }
 }
 
 export default connect(
@@ -265,6 +267,7 @@ export default connect(
     isGrandMaster: state.UserReducer.isGrandMaster
   }),
   {
+    feedVideoStar,
     showFeedComments: showFeedCommentsAsync,
     loadMoreComments: loadMoreFeedCommentsAsync,
     onSubmit: uploadFeedComment,

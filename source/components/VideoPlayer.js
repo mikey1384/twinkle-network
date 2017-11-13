@@ -19,7 +19,7 @@ class VideoPlayer extends Component {
     className: PropTypes.string,
     containerClassName: PropTypes.string,
     hasHqThumb: PropTypes.number,
-    isStarred: PropTypes.bool.isRequired,
+    isStarred: PropTypes.bool,
     onEdit: PropTypes.bool,
     small: PropTypes.bool,
     style: PropTypes.object,

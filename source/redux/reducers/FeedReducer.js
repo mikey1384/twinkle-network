@@ -179,6 +179,20 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
+    case 'FEED_VIDEO_STAR':
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          let contentMatches = (feed.type === 'video') && (feed.contentId === action.videoId)
+          let rootVideoMatches =
+            (feed.type === 'comment') && (feed.rootId === action.videoId) && (feed.rootType === 'video')
+          return {
+            ...feed,
+            isStarred: contentMatches ? action.isStarred : feed.isStarred,
+            rootContentIsStarred: rootVideoMatches ? action.isStarred : feed.rootContentIsStarred
+          }
+        })
+      }
     case 'COMMENT_FEED_LIKE':
       return {
         ...state,

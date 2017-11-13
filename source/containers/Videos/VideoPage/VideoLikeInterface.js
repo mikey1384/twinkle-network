@@ -20,7 +20,7 @@ function VideoLikeInterface({userId, isGrandMaster, isStarred, likes, onLikeClic
       <div style={{textAlign: 'center'}}>
         <LikeButton
           style={{fontSize: isGrandMaster ? '2rem' : '3rem'}}
-          onClick={() => onLikeClick()}
+          onClick={onLikeClick}
           liked={isLiked(likes)}
         />
         {isGrandMaster && <StarButton

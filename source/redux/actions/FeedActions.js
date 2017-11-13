@@ -116,45 +116,59 @@ export const feedCommentEdit = (params) => dispatch =>
   )
 
 export const feedContentEdit = (params) => dispatch =>
-  request.put(`${URL}/content`, params, auth()).then(
-    ({data}) => {
-      if (params.type === 'comment') {
-        dispatch({
-          type: 'FEED_COMMENT_EDIT',
-          commentId: params.contentId,
-          editedComment: data.content
-        })
-      } else if (params.type === 'discussion') {
-        dispatch({
-          type: 'FEED_DISCUSSION_EDIT',
-          contentId: params.contentId,
-          editedTitle: data.title,
-          editedDescription: data.description
-        })
-      } else if (params.type === 'question') {
-        dispatch({
-          type: 'FEED_QUESTION_EDIT',
-          contentId: params.contentId,
-          editedContent: data.content
-        })
-      } else {
-        dispatch({
-          type: 'FEED_CONTENT_EDIT',
-          contentType: params.type,
-          contentId: params.contentId,
-          editedTitle: data.title,
-          editedDescription: data.description,
-          editedUrl: data.content
-        })
-      }
-      return Promise.resolve()
+request.put(`${URL}/content`, params, auth()).then(
+  ({data}) => {
+    if (params.type === 'comment') {
+      dispatch({
+        type: 'FEED_COMMENT_EDIT',
+        commentId: params.contentId,
+        editedComment: data.content
+      })
+    } else if (params.type === 'discussion') {
+      dispatch({
+        type: 'FEED_DISCUSSION_EDIT',
+        contentId: params.contentId,
+        editedTitle: data.title,
+        editedDescription: data.description
+      })
+    } else if (params.type === 'question') {
+      dispatch({
+        type: 'FEED_QUESTION_EDIT',
+        contentId: params.contentId,
+        editedContent: data.content
+      })
+    } else {
+      dispatch({
+        type: 'FEED_CONTENT_EDIT',
+        contentType: params.type,
+        contentId: params.contentId,
+        editedTitle: data.title,
+        editedDescription: data.description,
+        editedUrl: data.content
+      })
     }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const feedVideoStar = videoId => async(dispatch) => {
+  try {
+    const {data} = await request.put(`${URL}/video/star`, {videoId}, auth())
+    return dispatch({
+      type: 'FEED_VIDEO_STAR',
+      videoId,
+      isStarred: data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const fetchFeed = feed => dispatch => {
   let query = []
@@ -409,51 +423,51 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
 }
 
 export const uploadFeedReply = ({replyContent, comment, parent, replyOfReply, originType}) =>
-  dispatch => {
-    const params = {
-      content: replyContent,
-      rootId: parent.rootId,
-      rootType: parent.rootType,
-      discussionId: parent.discussionId,
-      commentId: comment.commentId || comment.id,
-      replyId: comment.commentId ? comment.id : null
-    }
-    request.post(`${API_URL}/replies`, params, auth()).then(
-      response => {
-        const {data} = response
-        dispatch({
-          type: 'UPLOAD_FEED_REPLY',
-          data: {
-            type: parent.type,
-            contentId: parent.type === 'comment' ? comment.id : parent.id,
-            reply: {
-              ...data.result,
-              replyOfReply,
-              originType,
-              replies: []
-            },
-            commentId: comment.id
-          }
-        })
-      }
-    ).catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+dispatch => {
+  const params = {
+    content: replyContent,
+    rootId: parent.rootId,
+    rootType: parent.rootType,
+    discussionId: parent.discussionId,
+    commentId: comment.commentId || comment.id,
+    replyId: comment.commentId ? comment.id : null
   }
-
-export const uploadTargetContentComment = (params, panelId) =>
-  dispatch => request.post(`${API_URL}/targetContentComment`, params, auth()).then(
-    response => dispatch({
-      type: 'UPLOAD_TC_COMMENT',
-      data: response.data,
-      panelId
-    })
+  request.post(`${API_URL}/replies`, params, auth()).then(
+    response => {
+      const {data} = response
+      dispatch({
+        type: 'UPLOAD_FEED_REPLY',
+        data: {
+          type: parent.type,
+          contentId: parent.type === 'comment' ? comment.id : parent.id,
+          reply: {
+            ...data.result,
+            replyOfReply,
+            originType,
+            replies: []
+          },
+          commentId: comment.id
+        }
+      })
+    }
   ).catch(
     error => {
       console.error(error.response || error)
       handleError(error, dispatch)
     }
   )
+}
+
+export const uploadTargetContentComment = (params, panelId) =>
+dispatch => request.post(`${API_URL}/targetContentComment`, params, auth()).then(
+  response => dispatch({
+    type: 'UPLOAD_TC_COMMENT',
+    data: response.data,
+    panelId
+  })
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)

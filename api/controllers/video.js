@@ -556,6 +556,15 @@ router.post('/questions', requireAuth, (req, res) => {
   })
 })
 
+router.put('/star', requireAuth, async(req, res) => {
+  const {user, body: {videoId}} = req
+  const [{userType}] = await poolQuery(`SELECT userType FROM users WHERE id = ?`, user.id)
+  if (userType !== 'grandmaster') return res.status(403).send({error: 'Not authorized to perform that action'})
+  const [{isStarred}] = await poolQuery(`SELECT isStarred FROM vq_videos WHERE id = ?`, videoId)
+  await poolQuery(`UPDATE vq_videos SET ? WHERE id = ?`, [{isStarred: !isStarred}, videoId])
+  res.send(!isStarred)
+})
+
 router.post('/view', (req, res) => {
   const {videoId, userId} = req.body
   const post = {videoId, userId, timeStamp: Math.floor(Date.now()/1000)}

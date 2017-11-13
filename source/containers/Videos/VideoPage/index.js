@@ -34,7 +34,7 @@ class VideoPage extends Component {
     editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
     history: PropTypes.object.isRequired,
-    isStarred: PropTypes.number,
+    isStarred: PropTypes.bool,
     likes: PropTypes.array,
     likeVideo: PropTypes.func.isRequired,
     loadVideoPage: PropTypes.func.isRequired,
@@ -339,6 +339,7 @@ class VideoPage extends Component {
 export default connect(
   state => ({
     ...state.VideoReducer.videoPage,
+    isStarred: !!state.VideoReducer.isStarred,
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId

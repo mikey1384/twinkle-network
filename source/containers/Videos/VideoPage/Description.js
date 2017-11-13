@@ -25,7 +25,7 @@ export default class Description extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    isStarred: PropTypes.number,
+    isStarred: PropTypes.bool,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
