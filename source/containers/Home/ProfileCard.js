@@ -71,7 +71,7 @@ class ProfileCard extends Component {
                   className="col-md-8"
                   style={{
                     paddingLeft: '1em',
-                    wordBreak: 'break-all',
+                    wordBreak: 'break-word',
                     minWidth: '30vw'
                   }}>
                   {!!profileFirstRow &&

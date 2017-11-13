@@ -31,7 +31,7 @@ export default function Message({content, userId, username, profilePicId, timeSt
         className="media-body"
         style={{
           width: '100%',
-          wordBreak: 'break-all'
+          wordBreak: 'break-word'
         }}
       >
         <h5 className="media-heading" style={{position: 'absolute'}}>

@@ -160,7 +160,7 @@ export default class Description extends Component {
                         }}
                       >
                         <span
-                          style={{wordBreak: 'break-all'}}
+                          style={{wordBreak: 'break-word'}}
                           onMouseOver={this.onMouseOver}
                           onMouseLeave={() => this.setState({onTitleHover: false})}
                         >
@@ -239,7 +239,7 @@ export default class Description extends Component {
                 >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}
                 </p>
               }
-              <LongText style={{wordBreak: 'break-all', paddingLeft: '0px'}}>
+              <LongText style={{wordBreak: 'break-word', paddingLeft: '0px'}}>
                 {stringIsEmpty(description) ? 'No Description' : description}
               </LongText>
             </div>

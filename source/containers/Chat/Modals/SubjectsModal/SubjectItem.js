@@ -88,7 +88,7 @@ export default class SubjectItem extends Component {
           className="media-body"
           style={{
             width: '100%',
-            wordBreak: 'break-all'
+            wordBreak: 'break-word'
           }}
         >
           <div ref={ref => { this.subjectTitle = ref }} style={{marginBottom}}>

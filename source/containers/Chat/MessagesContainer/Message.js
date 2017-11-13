@@ -74,7 +74,7 @@ class Message extends Component {
           className="media-body"
           style={{
             width: '100%',
-            wordBreak: 'break-all'
+            wordBreak: 'break-word'
           }}
         >
           {!!messageId && !isReloadedSubject && myId === userId && !onEdit &&

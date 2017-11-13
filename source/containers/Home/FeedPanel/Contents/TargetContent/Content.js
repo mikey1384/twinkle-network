@@ -77,7 +77,7 @@ class Content extends Component {
         className="well"
         style={{
           marginTop: '1em',
-          wordBreak: 'break-all'
+          wordBreak: 'break-word'
         }}
       >
         {contentAvailable ?

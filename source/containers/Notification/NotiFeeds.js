@@ -47,7 +47,7 @@ export default function NotiFeeds({myId, notifications, style}) {
         {notifications.length > 0 && notifications.map(notification => {
           return <li
             className="list-group-item"
-            style={{wordBreak: 'break-all'}}
+            style={{wordBreak: 'break-word'}}
             key={notification.id}>
             {renderNotificationMessage(notification, myId)}
             <small style={{color: Color.gray}}>{timeSince(notification.timeStamp)}</small>

@@ -107,7 +107,7 @@ export default class Description extends Component {
           style={{
             fontSize: '1.7rem',
             lineHeight: '3rem',
-            wordBreak: 'break-all'
+            wordBreak: 'break-word'
           }}
         >
           {onEdit ?

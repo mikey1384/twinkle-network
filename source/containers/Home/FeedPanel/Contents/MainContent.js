@@ -31,7 +31,7 @@ export default function MainContent({
       {!isEditing && type === 'comment' &&
         <div style={{
           fontSize: '1.2em',
-          wordBreak: 'break-all'
+          wordBreak: 'break-word'
         }}>
           <LongText>{content}</LongText>
         </div>
@@ -58,7 +58,7 @@ export default function MainContent({
       {!isEditing && type === 'url' &&
         <div style={{
           fontSize: '1.2em',
-          wordBreak: 'break-all'
+          wordBreak: 'break-word'
         }}>
           {(contentDescription && contentDescription !== 'No description') ?
             <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText> :
@@ -91,7 +91,7 @@ export default function MainContent({
         <div style={{
           marginTop: '1em',
           fontSize: '1.2em',
-          wordBreak: 'break-all'
+          wordBreak: 'break-word'
         }}>
           <LongText>
             {contentDescription && contentDescription !== 'No description' ? contentDescription : contentTitle}
@@ -102,7 +102,7 @@ export default function MainContent({
         <div style={{
           marginBottom: '1em',
           fontSize: '1.2em',
-          wordBreak: 'break-all'
+          wordBreak: 'break-word'
         }}>
           <LongText>{contentDescription}</LongText>
         </div>
