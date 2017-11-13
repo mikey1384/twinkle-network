@@ -1,5 +1,6 @@
 const defaultState = {
   isAdmin: false,
+  isGrandMaster: false,
   profile: {},
   profiles: [],
   searchedProfiles: [],
@@ -7,7 +8,8 @@ const defaultState = {
 }
 
 function isAdmin(userType) {
-  return userType === 'master'
+  const admin = ['master', 'grandmaster']
+  return admin.indexOf(userType) !== -1
 }
 
 export default function UserReducer(state = defaultState, action) {
@@ -22,7 +24,8 @@ export default function UserReducer(state = defaultState, action) {
       return (action.data !== undefined && action.data.loggedIn) ? {
         ...state,
         ...action.data,
-        isAdmin: isAdmin(action.data.userType)
+        isAdmin: isAdmin(action.data.userType),
+        isGrandMaster: action.data.userType === 'grandmaster'
       } : state
     case 'FETCH_USERS':
       if (action.data.length > 20) {
@@ -69,10 +72,13 @@ export default function UserReducer(state = defaultState, action) {
         ...action.data,
         loggedIn: true,
         signinModalShown: false,
-        isAdmin: isAdmin(action.data.userType)
+        isAdmin: isAdmin(action.data.userType),
+        isGrandMaster: action.data.userType === 'grandmaster'
       }
     case 'SIGNIN_LOGOUT':
       return {
+        isAdmin: false,
+        isGrandMaster: false,
         profile: state.profile,
         profiles: state.profiles
       }
@@ -81,6 +87,7 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         ...action.data,
         isAdmin: isAdmin(action.data.userType),
+        isGrandMaster: action.data.userType === 'grandmaster',
         loggedIn: true,
         signinModalShown: false
       }

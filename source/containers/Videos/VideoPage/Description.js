@@ -25,6 +25,7 @@ export default class Description extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
+    isStarred: PropTypes.number,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
@@ -97,7 +98,7 @@ export default class Description extends Component {
       }
     ]
 
-    const {uploaderId, userId, uploaderName, title, description, likes, timeStamp, videoViews} = this.props
+    const {isStarred, uploaderId, userId, uploaderName, title, description, likes, timeStamp, videoViews} = this.props
     let {
       onEdit, editedTitle, editedUrl, editedDescription,
       editDoneButtonDisabled, userListModalShown, onTitleHover
@@ -184,6 +185,7 @@ export default class Description extends Component {
                 </div>
               </div>
               <VideoLikeInterface
+                isStarred={isStarred}
                 userId={userId}
                 likes={likes}
                 onLikeClick={this.onVideoLikeClick}

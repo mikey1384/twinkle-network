@@ -34,6 +34,7 @@ class VideoPage extends Component {
     editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
     history: PropTypes.object.isRequired,
+    isStarred: PropTypes.number,
     likes: PropTypes.array,
     likeVideo: PropTypes.func.isRequired,
     loadVideoPage: PropTypes.func.isRequired,
@@ -94,7 +95,7 @@ class VideoPage extends Component {
 
   render() {
     const {
-      hasHqThumb, uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
+      hasHqThumb, isStarred, uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
       content, title, timeStamp, questions = [], likes = [], location: {search}, videoViews,
       match: {params: {videoId}}
     } = this.props
@@ -183,6 +184,7 @@ class VideoPage extends Component {
                 </div>
               </div>
               <Description
+                isStarred={isStarred}
                 likes={likes}
                 likeVideo={likeVideo}
                 videoId={videoId}
