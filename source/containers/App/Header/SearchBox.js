@@ -44,8 +44,8 @@ class SearchBox extends Component {
           value={searchText}
           searchResults={searchResult}
           renderItemLabel={
-            item => <span>
-              <span style={{
+            item => <div>
+              <div style={{
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
@@ -59,9 +59,10 @@ class SearchBox extends Component {
                 >
                   [{item.type === 'video' ? 'Video' : 'Link'}]
                 </span>&nbsp;&nbsp;&nbsp;<span>{cleanString(item.label)}</span>
-              </span>
-            </span>
+              </div>
+            </div>
           }
+          renderItemUrl={item => `/${item.type}s/${item.id}`}
           onClickOutSide={() => {
             this.setState({searchText: ''})
             clearSearchResults()
