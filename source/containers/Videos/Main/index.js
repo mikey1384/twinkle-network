@@ -113,7 +113,7 @@ class Main extends Component {
         <div className="col-md-9">
           <PlaylistsPanel
             key={'pinnedPlaylists'}
-            buttonGroupShown={userType === 'master'}
+            buttonGroupShown={isAdmin}
             buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
             title="Featured Playlists"
             userId={userId}
