@@ -410,12 +410,22 @@ export default function VideoReducer(state = defaultState, action) {
           ...state.videoPage,
           likes: action.data
         },
-        allVideoThumbs: state.allVideoThumbs.map(thumb => {
-          if (thumb.id === action.videoId) {
-            thumb.numLikes = action.data.length
-          }
-          return thumb
-        })
+        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
+          ...thumb,
+          numLikes: (thumb.id === action.videoId) ? action.data.length : thumb.numLikes
+        }))
+      }
+    case 'VIDEO_STAR':
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          isStarred: action.isStarred
+        },
+        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
+          ...thumb,
+          isStarred: (thumb.id === action.videoId) ? action.isStarred : thumb.isStarred
+        }))
       }
     case 'UPLOAD_QUESTIONS':
       return {

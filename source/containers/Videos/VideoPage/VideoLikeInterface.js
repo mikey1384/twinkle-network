@@ -3,6 +3,7 @@ import React from 'react'
 import Likers from 'components/Likers'
 import LikeButton from 'components/LikeButton'
 import StarButton from 'components/StarButton'
+import {starVideo} from 'redux/actions/VideoActions'
 import {connect} from 'react-redux'
 
 VideoLikeInterface.propTypes = {
@@ -12,9 +13,17 @@ VideoLikeInterface.propTypes = {
   likes: PropTypes.array.isRequired,
   onLikeClick: PropTypes.func.isRequired,
   showLikerList: PropTypes.func.isRequired,
-  userId: PropTypes.number
+  starVideo: PropTypes.func.isRequired,
+  userId: PropTypes.number,
+  videoId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired
 }
-function VideoLikeInterface({userId, isGrandMaster, isStarred, likes, onLikeClick, showLikerList, className}) {
+function VideoLikeInterface({
+  userId, isGrandMaster, isStarred, likes, onLikeClick,
+  showLikerList, starVideo, className, videoId
+}) {
   return (
     <div className="pull-right">
       <div style={{textAlign: 'center'}}>
@@ -25,6 +34,7 @@ function VideoLikeInterface({userId, isGrandMaster, isStarred, likes, onLikeClic
         />
         {isGrandMaster && <StarButton
           isStarred={isStarred}
+          onClick={() => starVideo(videoId)}
           style={{
             fontSize: '2rem',
             marginLeft: '1rem'
@@ -54,4 +64,9 @@ function VideoLikeInterface({userId, isGrandMaster, isStarred, likes, onLikeClic
   }
 }
 
-export default connect(state => ({isGrandMaster: state.UserReducer.isGrandMaster}))(VideoLikeInterface)
+export default connect(
+  state => ({
+    isGrandMaster: state.UserReducer.isGrandMaster
+  }),
+  {starVideo}
+)(VideoLikeInterface)

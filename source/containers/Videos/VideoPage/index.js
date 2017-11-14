@@ -339,7 +339,7 @@ class VideoPage extends Component {
 export default connect(
   state => ({
     ...state.VideoReducer.videoPage,
-    isStarred: !!state.VideoReducer.isStarred,
+    isStarred: !!state.VideoReducer.videoPage.isStarred,
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId

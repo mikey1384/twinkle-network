@@ -109,7 +109,7 @@ class VideoThumb extends Component {
                   margin: 'auto'
                 }}
               />
-              {video.isStarred && <StarMark size={2} />}
+              {!!video.isStarred && <StarMark size={2} />}
             </div>
           </Link>
           <div

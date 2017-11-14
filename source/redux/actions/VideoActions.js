@@ -407,6 +407,20 @@ export const resetVideoState = () => ({
   type: 'RESET_VID_STATE'
 })
 
+export const starVideo = videoId => async(dispatch) => {
+  try {
+    const {data} = await request.put(`${API_URL}/star`, {videoId}, auth())
+    return dispatch({
+      type: 'VIDEO_STAR',
+      videoId,
+      isStarred: data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
 export const uploadQuestions = data => ({
   type: 'UPLOAD_QUESTIONS',
   data

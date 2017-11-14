@@ -98,7 +98,10 @@ export default class Description extends Component {
       }
     ]
 
-    const {isStarred, uploaderId, userId, uploaderName, title, description, likes, timeStamp, videoViews} = this.props
+    const {
+      isStarred, uploaderId, userId, uploaderName, title,
+      description, likes, timeStamp, videoId, videoViews
+    } = this.props
     let {
       onEdit, editedTitle, editedUrl, editedDescription,
       editDoneButtonDisabled, userListModalShown, onTitleHover
@@ -189,6 +192,7 @@ export default class Description extends Component {
               <VideoLikeInterface
                 isStarred={isStarred}
                 userId={userId}
+                videoId={videoId}
                 likes={likes}
                 onLikeClick={this.onVideoLikeClick}
                 showLikerList={() => this.setState({userListModalShown: true})}
