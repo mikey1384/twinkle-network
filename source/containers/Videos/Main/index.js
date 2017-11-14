@@ -43,8 +43,7 @@ class Main extends Component {
     playlistsToPin: PropTypes.array.isRequired,
     reorderPinnedPlaylistsModalShown: PropTypes.bool.isRequired,
     selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
-    userId: PropTypes.number,
-    userType: PropTypes.string
+    userId: PropTypes.number
   }
 
   constructor() {
@@ -56,7 +55,6 @@ class Main extends Component {
 
   render() {
     const {
-      userType,
       isAdmin,
       userId,
 
