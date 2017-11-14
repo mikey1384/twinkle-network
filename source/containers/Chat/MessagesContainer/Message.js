@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText'
 import {connect} from 'react-redux'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
+import {processedStringWithURL} from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
 import {editMessage, deleteMessage, saveMessage} from 'redux/actions/ChatActions'
 import Button from 'components/Button'
@@ -39,7 +39,7 @@ class Message extends Component {
   componentWillMount() {
     const {message, myId, saveMessage, index} = this.props
     if (!message.id && message.userId === myId && !message.isSubject) {
-      saveMessage({...message, content: cleanStringWithURL(message.content)}, index)
+      saveMessage({...message, content: message.content}, index)
     }
   }
 
@@ -111,14 +111,17 @@ class Message extends Component {
                 autoFocus
                 rows={2}
                 marginTop="0px"
-                text={cleanStringWithURL(content)}
+                text={content}
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}
               /> :
               <div>
                 <div>
                   {this.renderPrefix()}
-                  <span style={style} dangerouslySetInnerHTML={{__html: content}}></span>
+                  <span
+                    style={style}
+                    dangerouslySetInnerHTML={{__html: processedStringWithURL(content)}}
+                  />
                 </div>
                 {!!isReloadedSubject && !!numMsgs && numMsgs > 0 &&
                   <div style={{marginTop: '0.5em'}}>

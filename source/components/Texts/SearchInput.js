@@ -15,6 +15,7 @@ class SearchInput extends Component {
     onSelect: PropTypes.func,
     placeholder: PropTypes.string,
     renderItemLabel: PropTypes.func,
+    renderItemUrl: PropTypes.func,
     searchResults: PropTypes.array,
     style: PropTypes.object,
     value: PropTypes.string
@@ -56,7 +57,7 @@ class SearchInput extends Component {
   }
 
   renderDropdownList() {
-    const {searchResults, renderItemLabel, onSelect} = this.props
+    const {searchResults, renderItemLabel, renderItemUrl, onSelect} = this.props
     return searchResults.length > 0 ? <SearchDropdown
       searchResults={searchResults}
       onUpdate={() => this.setState({indexToHighlight: 0})}
@@ -64,6 +65,7 @@ class SearchInput extends Component {
       indexToHighlight={this.state.indexToHighlight}
       onItemClick={item => onSelect(item)}
       renderItemLabel={renderItemLabel}
+      renderItemUrl={renderItemUrl}
     /> : null
   }
 
