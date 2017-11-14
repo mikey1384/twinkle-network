@@ -560,7 +560,7 @@ router.put('/star', requireAuth, async(req, res) => {
   const {user, body: {videoId}} = req
   try {
     const [{userType}] = await poolQuery(`SELECT userType FROM users WHERE id = ?`, user.id)
-    if (userType !== 'grandmaster') return res.status(403).send({error: 'Not authorized to perform that action'})
+    if (userType !== 'creator') return res.status(403).send({error: 'Not authorized to perform that action'})
     const [{isStarred}] = await poolQuery(`SELECT isStarred FROM vq_videos WHERE id = ?`, videoId)
     await poolQuery(`UPDATE vq_videos SET ? WHERE id = ?`, [{isStarred: !isStarred}, videoId])
     res.send(!isStarred)

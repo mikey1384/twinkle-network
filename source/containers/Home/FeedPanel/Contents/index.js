@@ -114,7 +114,6 @@ class Contents extends Component {
             rootType={rootType}
             urlRelated={{thumbUrl, actualTitle, actualDescription, siteUrl}}
             type={type}
-            videoViews={videoViews}
           />
         </div>
         {!isEditing &&
@@ -138,6 +137,23 @@ class Contents extends Component {
                   (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
                 }
               </Button>]
+            }
+            {isCreator && type === 'video' &&
+              <StarButton
+                isStarred={!!isStarred}
+                onClick={this.onStarButtonClick}
+                style={{float: 'right'}}
+              />
+            }
+            {videoViews > 10 && type === 'video' &&
+              <div style={{
+                fontWeight: 'bold',
+                float: 'right',
+                fontSize: '2rem',
+                marginRight: isCreator ? '1rem' : null
+              }}>
+                {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+              </div>
             }
             {type === 'discussion' &&
               <Button
@@ -166,24 +182,18 @@ class Contents extends Component {
                 ]}
               />
             }
-            {isCreator && (type === 'video') &&
-              <StarButton
-                isStarred={!!isStarred}
-                onClick={this.onStarButtonClick}
-                style={{float: 'right'}}
+            <div style={{marginTop: '1em'}}>
+              <Likers
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  color: Color.green
+                }}
+                userId={myId}
+                likes={contentLikers}
+                onLinkClick={() => this.setState({userListModalShown: true})}
               />
-            }
-            <Likers
-              style={{
-                fontSize: '11px',
-                marginTop: '1em',
-                fontWeight: 'bold',
-                color: Color.green
-              }}
-              userId={myId}
-              likes={contentLikers}
-              onLinkClick={() => this.setState({userListModalShown: true})}
-            />
+            </div>
           </div>
         }
         {commentsShown &&

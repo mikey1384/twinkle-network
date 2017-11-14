@@ -84,53 +84,62 @@ class VideoPlayer extends Component {
     const {isStarred, videoCode, title, containerClassName, className, onEdit, style, small} = this.props
     const {imageUrl, playing} = this.state
     return (
-      <div
-        className={small ? containerClassName : `video-player ${containerClassName}`}
-        style={{...style, cursor: (!onEdit && !playing) && 'pointer'}}
-        onClick={() => {
-          if (!onEdit && !playing) {
-            this.setState({playing: true})
-          }
-        }}
-      >
-        {((!small && !playing) || onEdit) && <div>
-          <img
-            alt=""
-            className="embed-responsive-item"
-            src={imageUrl}
-          />
-          {isStarred &&
-            <StarMark
+      <div>
+        <div
+          className={small ? containerClassName : `video-player ${containerClassName}`}
+          style={{...style, cursor: (!onEdit && !playing) && 'pointer'}}
+          onClick={() => {
+            if (!onEdit && !playing) {
+              this.setState({playing: true})
+            }
+          }}
+        >
+          {((!small && !playing) || onEdit) && <div>
+            <img
+              alt=""
+              className="embed-responsive-item"
+              src={imageUrl}
+            />
+            {isStarred &&
+              <StarMark
+                style={{
+                  marginTop: '0.5em',
+                  marginLeft: '0.5em'
+                }}
+              />
+            }
+          </div>}
+          {(!onEdit && !small && playing) ?
+            <Loading
               style={{
-                marginTop: '0.5em',
-                marginLeft: '0.5em'
+                color: Color.blue,
+                fontSize: '3em',
+                position: 'absolute',
+                display: 'block',
+                height: '40px',
+                width: '40px',
+                top: '50%',
+                left: '50%',
+                margin: '-20px 0 0 -20px'
               }}
+            /> : (!onEdit ? <a></a> : null)
+          }
+          {!onEdit && playing &&
+            <YouTube
+              className={className}
+              opts={{title}}
+              videoId={videoCode}
+              onReady={this.onVideoReady}
+              onPlay={this.onVideoPlay}
             />
           }
-        </div>}
-        {(!onEdit && !small && playing) ?
-          <Loading
-            style={{
-              color: Color.blue,
-              fontSize: '3em',
-              position: 'absolute',
-              display: 'block',
-              height: '40px',
-              width: '40px',
-              top: '50%',
-              left: '50%',
-              margin: '-20px 0 0 -20px'
-            }}
-          /> : (!onEdit ? <a></a> : null)
-        }
-        {!onEdit && playing &&
-          <YouTube
-            className={className}
-            opts={{title}}
-            videoId={videoCode}
-            onReady={this.onVideoReady}
-            onPlay={this.onVideoPlay}
-          />
+        </div>
+        {isStarred &&
+          <div className="progress" style={{marginTop: '1rem'}}>
+            <div className="progress-bar progress-bar-success" style={{width: '40%'}}>
+              <span className="sr-only">40% Complete (success)</span>
+            </div>
+          </div>
         }
       </div>
     )
