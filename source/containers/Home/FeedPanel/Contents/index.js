@@ -33,7 +33,7 @@ class Contents extends Component {
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.object.isRequired,
     feedVideoStar: PropTypes.func.isRequired,
-    isGrandMaster: PropTypes.bool.isRequired,
+    isCreator: PropTypes.bool.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
     onCommentDelete: PropTypes.func.isRequired,
@@ -63,7 +63,7 @@ class Contents extends Component {
         videoViews, numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
         rootContent, rootContentIsStarred, thumbUrl, actualTitle, actualDescription, siteUrl
-      }, feed, isGrandMaster, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
+      }, feed, isCreator, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onCommentDelete, onContentDelete, onReplySubmit, onSubmit
     } = this.props
     const {userListModalShown, clickListenerState, confirmModalShown, commentsShown, isEditing} = this.state
@@ -166,7 +166,7 @@ class Contents extends Component {
                 ]}
               />
             }
-            {isGrandMaster && (type === 'video') &&
+            {isCreator && (type === 'video') &&
               <StarButton
                 isStarred={!!isStarred}
                 onClick={this.onStarButtonClick}
@@ -264,7 +264,7 @@ class Contents extends Component {
 
 export default connect(
   state => ({
-    isGrandMaster: state.UserReducer.isGrandMaster
+    isCreator: state.UserReducer.isCreator
   }),
   {
     feedVideoStar,
