@@ -1,5 +1,3 @@
-import {processedStringWithURL} from 'helpers/stringHelpers'
-
 const defaultState = {
   chatMode: false,
   selectedChannelId: null,
@@ -526,7 +524,7 @@ export default function ChatReducer(state = defaultState, action) {
         }, []),
         messages: state.messages.concat([{
           ...action.message,
-          content: processedStringWithURL(action.message.content)
+          content: action.message.content
         }])
       }
     case 'TURN_CHAT_OFF':

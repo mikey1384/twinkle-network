@@ -55,7 +55,7 @@ router.post('/', requireAuth, (req, res) => {
       `
       return promiseSeries([
         () => poolQuery(query1, channelId),
-        () => poolQuery(query2, [channelId, user.id, processedString(content), timeStamp, subjectId])
+        () => poolQuery(query2, [channelId, user.id, content, timeStamp, subjectId])
       ])
     }
   ).then(
@@ -406,7 +406,7 @@ router.put('/message', requireAuth, (req, res) => {
   const {user} = req
   const {editedMessage, messageId} = req.body
   const query = 'UPDATE msg_chats SET ? WHERE id = ? AND userId = ?'
-  return poolQuery(query, [{content: processedString(editedMessage)}, messageId, user.id]).then(
+  return poolQuery(query, [{content: editedMessage}, messageId, user.id]).then(
     () => res.send({success: true})
   ).catch(
     error => {

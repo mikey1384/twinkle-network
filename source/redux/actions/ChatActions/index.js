@@ -3,7 +3,6 @@ import {auth, handleError} from '../constants'
 import * as actions from './actions'
 import {GENERAL_CHAT_ID} from 'constants/database'
 import {URL} from 'constants/URL'
-import {processedStringWithURL} from 'helpers/stringHelpers'
 
 const API_URL = `${URL}/chat`
 
@@ -96,7 +95,7 @@ export const editMessage = ({editedMessage, messageId}) => dispatch =>
     response => {
       dispatch({
         type: 'EDIT_CHAT_MESSAGE',
-        data: {editedMessage: processedStringWithURL(editedMessage), messageId}
+        data: {editedMessage, messageId}
       })
       return Promise.resolve()
     }
@@ -393,7 +392,7 @@ export const sendFirstDirectMessage = (params, callback) => dispatch => {
 export const submitMessageAsync = (params) => dispatch => {
   let message = {
     ...params,
-    timeStamp: Math.floor(Date.now()/1000)
+    timeStamp: Math.floor(Date.now() / 1000)
   }
   dispatch({
     type: 'SUBMIT_MESSAGE',
