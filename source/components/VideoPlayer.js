@@ -155,9 +155,8 @@ class VideoPlayer extends Component {
 
   onVideoPlay = (event) => {
     const {videoId, userId, addVideoView} = this.props
-    const {timeWatched, totalDuration} = this.state
     const time = event.target.getCurrentTime()
-    if (timeWatched < totalDuration / 2) interval = window.setInterval(this.increaseProgress, 1000)
+    interval = window.setInterval(this.increaseProgress, 1000)
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
     }
@@ -171,17 +170,16 @@ class VideoPlayer extends Component {
     if (!isMobile) {
       event.target.playVideo()
     }
-    const totalDuration = event.target.getDuration()
-    this.setState(() => ({totalDuration}))
+    this.setState(() => ({totalDuration: event.target.getDuration()}))
   }
 
   increaseProgress = () => {
-    const {timeWatched, totalDuration} = this.state
+    const {mined, timeWatched, totalDuration} = this.state
     if (timeWatched >= totalDuration / 2) {
       this.setState(() => ({mined: true}))
-      return window.clearInterval(interval)
     }
-    this.setState(state => ({timeWatched: state.timeWatched + 1}))
+    // record watchtime to db
+    if (!mined) this.setState(state => ({timeWatched: state.timeWatched + 1}))
   }
 }
 
