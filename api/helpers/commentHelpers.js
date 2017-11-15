@@ -15,19 +15,24 @@ module.exports = {
     )
   },
 
-  editComments(req, res) {
+  async editComments(req, res) {
     const user = req.user
     const content = processedString(req.body.editedComment)
     const commentId = req.body.commentId
     const userId = user.id
-    poolQuery('UPDATE content_comments SET ? WHERE id = ? AND userId = ?', [{content}, commentId, userId]).then(
-      () => res.send({editedComment: content, commentId})
-    ).catch(
-      error => {
-        console.error(error)
-        return res.status(500).send({error})
-      }
-    )
+    let query = 'UPDATE content_comments SET ? WHERE id = ?'
+    let params = [{content}, commentId]
+    if (user.userType !== 'creator') {
+      query += ' AND userId = ?'
+      params.push(userId)
+    }
+    try {
+      await poolQuery(query, params)
+      res.send({editedComment: content, commentId})
+    } catch (error) {
+      console.error(error)
+      return res.status(500).send({error})
+    }
   },
 
   fetchComments(req, res) {
