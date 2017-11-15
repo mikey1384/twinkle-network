@@ -10,7 +10,7 @@ import {uploadProfilePic, uploadBio} from 'redux/actions/UserActions'
 import {openDirectMessageChannel} from 'redux/actions/ChatActions'
 import AlertModal from 'components/Modals/AlertModal'
 import {connect} from 'react-redux'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
+import {processedStringWithURL} from 'helpers/stringHelpers'
 import {withRouter} from 'react-router'
 import {Color} from 'constants/css'
 
@@ -75,13 +75,22 @@ class ProfileCard extends Component {
                     minWidth: '30vw'
                   }}>
                   {!!profileFirstRow &&
-                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileFirstRow}} />
+                    <li
+                      style={{marginBottom: '0px'}}
+                      dangerouslySetInnerHTML={{__html: processedStringWithURL(profileFirstRow)}}
+                    />
                   }
                   {!!profileSecondRow &&
-                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileSecondRow}} />
+                    <li
+                      style={{marginBottom: '0px'}}
+                      dangerouslySetInnerHTML={{__html: processedStringWithURL(profileSecondRow)}}
+                    />
                   }
                   {!!profileThirdRow &&
-                    <li style={{marginBottom: '0px'}} dangerouslySetInnerHTML={{__html: profileThirdRow}} />
+                    <li
+                      style={{marginBottom: '0px'}}
+                      dangerouslySetInnerHTML={{__html: processedStringWithURL(profileThirdRow)}}
+                    />
                   }
                 </ul>
               }
@@ -136,9 +145,9 @@ class ProfileCard extends Component {
         </div>
         {bioEditModalShown &&
           <BioEditModal
-            firstLine={cleanStringWithURL(profileFirstRow)}
-            secondLine={cleanStringWithURL(profileSecondRow)}
-            thirdLine={cleanStringWithURL(profileThirdRow)}
+            firstLine={profileFirstRow}
+            secondLine={profileSecondRow}
+            thirdLine={profileThirdRow}
             onSubmit={this.uploadBio}
             onHide={() =>
               this.setState({

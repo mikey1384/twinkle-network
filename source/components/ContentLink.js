@@ -3,7 +3,6 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import {loadLinkPage} from 'redux/actions/LinkActions'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
 import Link from 'components/Link'
 import {Color} from 'constants/css'
 
@@ -35,8 +34,8 @@ function ContentLink({content: {id, title}, type, ...actions}) {
       to={`/${destination}/${id}`}
       onClickAsync={() => onLinkClick({id, type, actions})}
     >
-      {cleanStringWithURL(title)}
-    </Link> : type === 'question' ? <b style={{color: Color.blue}}>{cleanStringWithURL(title)}</b> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
+      {title}
+    </Link> : type === 'question' ? <b style={{color: Color.blue}}>{title}</b> : <span style={{fontWeight: 'bold', color: Color.darkGray}}>(Deleted)</span>
   )
 }
 

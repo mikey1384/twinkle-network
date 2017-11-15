@@ -7,7 +7,6 @@ const router = express.Router()
 const pool = require('../pool')
 const {poolQuery} = require('../helpers')
 const async = require('async')
-const {processedString} = require('../helpers/stringHelpers')
 const useragent = require('useragent')
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3({signatureVersion: 'v4'})
@@ -18,9 +17,9 @@ router.post('/bio', requireAuth, (req, res) => {
   const {user} = req
   const {firstLine, secondLine, thirdLine} = req.body
   const post = {
-    profileFirstRow: processedString(firstLine),
-    profileSecondRow: processedString(secondLine),
-    profileThirdRow: processedString(thirdLine)
+    profileFirstRow: firstLine,
+    profileSecondRow: secondLine,
+    profileThirdRow: thirdLine
   }
   pool.query(`UPDATE users SET ? WHERE id = ?`, [post, user.id], (err, rows) => {
     if (err) {

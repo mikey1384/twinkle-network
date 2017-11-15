@@ -1,4 +1,4 @@
-import {processedString, fetchedVideoCodeFromURL} from 'helpers/stringHelpers'
+import {fetchedVideoCodeFromURL} from 'helpers/stringHelpers'
 
 const defaultVideoPageState = {
   videoLoading: true,
@@ -426,7 +426,7 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_VIDEO_PAGE':
-      const description = processedString(action.params.description)
+      const {description} = action.params
       const url = fetchedVideoCodeFromURL(action.params.url)
       return {
         ...state,

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
 import DropdownButton from 'components/DropdownButton'
 import Likers from 'components/Likers'
 import {Color} from 'constants/css'
@@ -132,7 +131,7 @@ export default class PanelComment extends Component {
             {onEdit ?
               <EditTextArea
                 autoFocus
-                text={cleanStringWithURL(comment.content)}
+                text={comment.content}
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}
               /> :

@@ -4,7 +4,7 @@ const express = require('express')
 const router = express.Router()
 
 const {requireAuth} = require('../auth')
-const {processedString, processedTitleString, stringIsEmpty} = require('../helpers/stringHelpers')
+const {processedTitleString, stringIsEmpty} = require('../helpers/stringHelpers')
 const {poolQuery, promiseSeries} = require('../helpers/')
 const {generalChatId} = require('../siteConfig')
 const {
@@ -636,7 +636,7 @@ router.post('/channel', requireAuth, (req, res) => {
 router.post('/channel/twoPeople', requireAuth, (req, res) => {
   const user = req.user
   const {partnerId, timeStamp} = req.body
-  const content = processedString(req.body.message)
+  const content = req.body.message
   if (user.id !== req.body.userId) {
     return res.status(401).send({error: 'Session mismatch'})
   }

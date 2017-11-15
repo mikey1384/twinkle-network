@@ -4,7 +4,6 @@ import {timeSince} from 'helpers/timeStampHelpers'
 import {Color} from 'constants/css'
 import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
 
 NotiFeeds.propTypes = {
   myId: PropTypes.number,
@@ -94,7 +93,6 @@ function renderNotificationMessage(notification, myId) {
     commentContent : (
       isDiscussionAnswerNotification ? discussionTitle : rootTitle
     ) || ''
-  contentTitle = cleanStringWithURL(contentTitle)
   let title = contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
   if (isReplyNotification) title = `"${title}"`
   const content = {

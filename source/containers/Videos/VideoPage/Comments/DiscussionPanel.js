@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText'
 import PanelComments from 'components/PanelComments'
 import DropdownButton from 'components/DropdownButton'
 import {connect} from 'react-redux'
-import {cleanString, cleanStringWithURL, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import {cleanString, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
 import Textarea from 'react-textarea-autosize'
 import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
@@ -59,7 +59,7 @@ class DiscussionPanel extends Component {
       onEdit: false,
       confirmModalShown: false,
       editedTitle: cleanString(props.title),
-      editedDescription: cleanStringWithURL(props.description),
+      editedDescription: props.description,
       editDoneButtonDisabled: true
     }
     this.onDelete = this.onDelete.bind(this)
@@ -154,7 +154,7 @@ class DiscussionPanel extends Component {
                   onClick={() => this.setState({
                     onEdit: false,
                     editedTitle: cleanString(title),
-                    editedDescription: cleanStringWithURL(description)
+                    editedDescription: description
                   })}
                 >
                   Cancel
@@ -217,7 +217,7 @@ class DiscussionPanel extends Component {
     const {title, description} = this.props
     const titleIsEmpty = stringIsEmpty(editedTitle)
     const titleChanged = editedTitle !== title
-    const descriptionChanged = editedDescription !== cleanStringWithURL(description)
+    const descriptionChanged = editedDescription !== description
     const editDoneButtonDisabled = titleIsEmpty || (!titleChanged && !descriptionChanged)
     this.setState({editDoneButtonDisabled})
   }

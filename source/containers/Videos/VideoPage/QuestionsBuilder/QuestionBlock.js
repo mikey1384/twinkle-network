@@ -186,10 +186,10 @@ export default class QuestionBlock extends Component {
   onEditDone(questionIndex) {
     this.props.onEditDone({
       questionIndex,
-      newChoicesArray: this.props.choices.map((choice, index) => {
-        choice.label = processedString(this.state.editedChoiceTitles[index])
-        return choice
-      }),
+      newChoicesArray: this.props.choices.map((choice, index) => ({
+        ...choice,
+        label: processedString(this.state.editedChoiceTitles[index])
+      })),
       newTitle: processedString(this.state.editedQuestionTitle)
     })
   }

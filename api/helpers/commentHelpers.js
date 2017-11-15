@@ -1,5 +1,4 @@
 const {poolQuery} = require('../helpers')
-const {processedString} = require('../helpers/stringHelpers')
 
 module.exports = {
   deleteComments(req, res) {
@@ -17,7 +16,7 @@ module.exports = {
 
   editComments(req, res) {
     const user = req.user
-    const content = processedString(req.body.editedComment)
+    const content = req.body.editedComment
     const commentId = req.body.commentId
     const userId = user.id
     poolQuery('UPDATE content_comments SET ? WHERE id = ? AND userId = ?', [{content}, commentId, userId]).then(
@@ -128,7 +127,7 @@ module.exports = {
       return res.status(301).send({error: 'wrong version'})
     }
     const post = Object.assign({}, req.body, {
-      content: processedString(req.body.content),
+      content: req.body.content,
       userId: user.id,
       timeStamp: Math.floor(Date.now()/1000)
     })
@@ -155,7 +154,7 @@ module.exports = {
       return res.status(301).send({error: 'wrong version'})
     }
     const post = Object.assign({}, req.body, {
-      content: processedString(req.body.content),
+      content: req.body.content,
       userId: user.id,
       timeStamp: Math.floor(Date.now()/1000)
     })

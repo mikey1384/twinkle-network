@@ -3,7 +3,6 @@ import React, {Component} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/DropdownButton'
 import EditTextArea from 'components/Texts/EditTextArea'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
 import UsernameText from 'components/Texts/UsernameText'
@@ -131,7 +130,7 @@ export default class PanelReply extends Component {
             {onEdit ?
               <EditTextArea
                 autoFocus
-                text={cleanStringWithURL(reply.content)}
+                text={reply.content}
                 onCancel={() => this.setState({onEdit: false})}
                 onEditDone={this.onEditDone}
               /> :

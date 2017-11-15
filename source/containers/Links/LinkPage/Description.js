@@ -8,8 +8,7 @@ import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
 import Input from 'components/Texts/Input'
 import {
-  cleanString, cleanStringWithURL, isValidUrl,
-  stringIsEmpty, addEmoji, finalizeEmoji
+  cleanString, isValidUrl, stringIsEmpty, addEmoji, finalizeEmoji
 } from 'helpers/stringHelpers'
 
 export default class Description extends Component {
@@ -34,7 +33,7 @@ export default class Description extends Component {
     this.state = {
       editedUrl: props.url,
       editedTitle: cleanString(props.title),
-      editedDescription: cleanStringWithURL(props.description),
+      editedDescription: props.description,
       onEdit: false,
       editDoneButtonDisabled: true
     }
@@ -173,7 +172,7 @@ export default class Description extends Component {
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
     const urlChanged = this.state.editedUrl !== this.props.url
-    const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description)
+    const descriptionChanged = this.state.editedDescription !== this.props.description
     const editDoneButtonDisabled =
       !urlIsValid || urlIsEmpty || titleIsEmpty || (!titleChanged && !descriptionChanged && !urlChanged)
     this.setState({editDoneButtonDisabled})
@@ -184,7 +183,7 @@ export default class Description extends Component {
     this.setState({
       editedUrl: url,
       editedTitle: cleanString(title),
-      editedDescription: cleanStringWithURL(description),
+      editedDescription: description,
       onEdit: false,
       editDoneButtonDisabled: true
     })

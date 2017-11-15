@@ -1,7 +1,7 @@
 const pool = require('../pool')
 const {poolQuery, promiseSeries} = require('../helpers')
 const {requireAuth} = require('../auth')
-const {processedString, processedTitleString} = require('../helpers/stringHelpers')
+const {processedTitleString} = require('../helpers/stringHelpers')
 const {fetchPlaylists} = require('../helpers/playlistHelpers')
 const async = require('async')
 const express = require('express')
@@ -89,7 +89,7 @@ router.get('/rightMenu', (req, res) => {
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
   const title = processedTitleString(req.body.title)
-  const description = processedString(req.body.description)
+  const description = req.body.description
   const videos = req.body.selectedVideos
   const taskArray = []
   const query = 'INSERT INTO vq_playlists SET ?'

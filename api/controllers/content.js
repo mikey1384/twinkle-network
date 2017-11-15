@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {requireAuth} = require('../auth')
 const {poolQuery} = require('../helpers')
-const {fetchedVideoCodeFromURL, processedString, processedURL, stringIsEmpty} = require('../helpers/stringHelpers')
+const {fetchedVideoCodeFromURL, processedURL, stringIsEmpty} = require('../helpers/stringHelpers')
 const {getThumbImageFromEmbedApi} = require('../helpers/contentHelpers')
 const {googleKey} = require('../siteConfig')
 const request = require('request-promise-native')
@@ -33,30 +33,30 @@ router.put('/', requireAuth, (req, res) => {
   let post
   switch (type) {
     case 'comment':
-      post = {content: processedString(editedComment)}
+      post = {content: editedComment}
       break
     case 'discussion':
       post = {
         title: editedTitle,
-        description: processedString(editedDescription)
+        description: editedDescription
       }
       break
     case 'url':
       post = {
         title: editedTitle,
-        description: processedString(editedDescription),
+        description: editedDescription,
         content: processedURL(editedUrl)
       }
       break
     case 'question':
       post = {
-        content: processedString(editedContent)
+        content: editedContent
       }
       break
     case 'video':
       post = {
         title: editedTitle,
-        description: processedString(editedDescription),
+        description: editedDescription,
         content: fetchedVideoCodeFromURL(editedUrl)
       }
       break

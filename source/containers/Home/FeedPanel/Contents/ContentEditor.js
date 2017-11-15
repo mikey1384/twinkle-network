@@ -9,7 +9,6 @@ import {feedContentEdit} from 'redux/actions/FeedActions'
 import {
   addEmoji,
   finalizeEmoji,
-  cleanStringWithURL,
   turnStringIntoQuestion,
   isValidUrl,
   isValidYoutubeUrl
@@ -32,9 +31,9 @@ class ContentEditor extends Component {
     super()
     this.state = {
       buttonDisabled: false,
-      editedContent: cleanStringWithURL(content),
-      editedComment: cleanStringWithURL(comment),
-      editedDescription: cleanStringWithURL(description || ''),
+      editedContent: content,
+      editedComment: comment,
+      editedDescription: description || '',
       editedTitle: title,
       editedUrl: type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content
     }
