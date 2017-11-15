@@ -402,18 +402,21 @@ router.delete('/message', requireAuth, (req, res) => {
   )
 })
 
-router.put('/message', requireAuth, (req, res) => {
+router.put('/message', requireAuth, async(req, res) => {
   const {user} = req
   const {editedMessage, messageId} = req.body
-  const query = 'UPDATE msg_chats SET ? WHERE id = ? AND userId = ?'
-  return poolQuery(query, [{content: editedMessage}, messageId, user.id]).then(
-    () => res.send({success: true})
-  ).catch(
-    error => {
-      console.err(error)
-      res.status(500).send({error})
-    }
-  )
+  const query = `
+    UPDATE msg_chats SET ? WHERE id = ?${user.userType === 'creator' ? '' : ' AND userId = ?'}
+  `
+  const params = [{content: editedMessage}, messageId]
+  if (user.userType !== 'creator') params.push(user.id)
+  try {
+    await poolQuery(query, params)
+    res.send({success: true})
+  } catch (error) {
+    console.err(error)
+    res.status(500).send({error})
+  }
 })
 
 router.get('/more/channels', requireAuth, (req, res) => {
