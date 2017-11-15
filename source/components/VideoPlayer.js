@@ -10,6 +10,7 @@ import StarMark from 'components/StarMark'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
+let interval
 let isMobile
 
 class VideoPlayer extends Component {
@@ -37,10 +38,11 @@ class VideoPlayer extends Component {
     const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
     this.state = {
       playing: autoplay,
-      imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`
+      imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`,
+      timeWatched: 0,
+      totalDuration: 0,
+      mined: false
     }
-    this.onVideoReady = this.onVideoReady.bind(this)
-    this.onVideoPlay = this.onVideoPlay.bind(this)
   }
 
   componentDidMount() {
@@ -82,7 +84,8 @@ class VideoPlayer extends Component {
 
   render() {
     const {isStarred, videoCode, title, containerClassName, className, onEdit, style, small} = this.props
-    const {imageUrl, playing} = this.state
+    const {imageUrl, playing, mined, timeWatched, totalDuration} = this.state
+    const progress = totalDuration > 0 ? Math.floor(timeWatched * 100 / (totalDuration / 2)) : 0
     return (
       <div>
         <div
@@ -131,13 +134,18 @@ class VideoPlayer extends Component {
               videoId={videoCode}
               onReady={this.onVideoReady}
               onPlay={this.onVideoPlay}
+              onPause={this.onVideoStop}
+              onEnd={this.onVideoStop}
             />
           }
         </div>
         {isStarred &&
           <div className="progress" style={{marginTop: '1rem'}}>
-            <div className="progress-bar progress-bar-success" style={{width: '40%'}}>
-              <span className="sr-only">40% Complete (success)</span>
+            <div
+              className={`progress-bar progress-bar-${mined ? 'success' : 'info'}`}
+              style={{width: `${progress}%`}}
+            >
+              {mined ? 'You have mined this Star!' : `${progress}% mined`}
             </div>
           </div>
         }
@@ -145,18 +153,35 @@ class VideoPlayer extends Component {
     )
   }
 
-  onVideoPlay(event) {
+  onVideoPlay = (event) => {
     const {videoId, userId, addVideoView} = this.props
+    const {timeWatched, totalDuration} = this.state
     const time = event.target.getCurrentTime()
+    if (timeWatched < totalDuration / 2) interval = window.setInterval(this.increaseProgress, 1000)
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
     }
   }
 
-  onVideoReady(event) {
+  onVideoStop = (event) => {
+    window.clearInterval(interval)
+  }
+
+  onVideoReady = (event) => {
     if (!isMobile) {
       event.target.playVideo()
     }
+    const totalDuration = event.target.getDuration()
+    this.setState(() => ({totalDuration}))
+  }
+
+  increaseProgress = () => {
+    const {timeWatched, totalDuration} = this.state
+    if (timeWatched >= totalDuration / 2) {
+      this.setState(() => ({mined: true}))
+      return window.clearInterval(interval)
+    }
+    this.setState(state => ({timeWatched: state.timeWatched + 1}))
   }
 }
 
