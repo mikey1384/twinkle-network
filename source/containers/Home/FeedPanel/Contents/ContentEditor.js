@@ -31,10 +31,10 @@ class ContentEditor extends Component {
     super()
     this.state = {
       buttonDisabled: false,
-      editedContent: content,
-      editedComment: comment,
+      editedContent: content || '',
+      editedComment: comment || '',
       editedDescription: description || '',
-      editedTitle: title,
+      editedTitle: title || '',
       editedUrl: type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content
     }
     this.onSubmit = this.onSubmit.bind(this)
