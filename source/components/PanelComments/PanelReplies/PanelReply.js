@@ -14,8 +14,9 @@ import ReplyInputArea from './ReplyInputArea'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
+import {connect} from 'react-redux'
 
-export default class PanelReply extends Component {
+class PanelReply extends Component {
   static propTypes = {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
@@ -47,7 +48,7 @@ export default class PanelReply extends Component {
     }),
     type: PropTypes.string,
     userId: PropTypes.number,
-    userIsOwner: PropTypes.bool
+    isCreator: PropTypes.bool
   }
 
   constructor() {
@@ -80,7 +81,7 @@ export default class PanelReply extends Component {
   }
 
   render() {
-    const {comment, reply, userId, userIsOwner, type} = this.props
+    const {comment, isCreator, reply, userId, type} = this.props
     const {
       onEdit, userListModalShown, replyInputShown,
       confirmModalShown, clickListenerState
@@ -89,9 +90,10 @@ export default class PanelReply extends Component {
     for (let i = 0; i < reply.likes.length; i++) {
       if (reply.likes[i].userId === userId) userLikedThis = true
     }
+    const canEdit = reply.userId === userId || isCreator
     return (
       <div className="media" ref={ref => { this.PanelReply = ref }}>
-        {userIsOwner && !onEdit &&
+        {canEdit && !onEdit &&
           <DropdownButton
             shape="button"
             icon="pencil"
@@ -230,3 +232,5 @@ export default class PanelReply extends Component {
     onReplySubmit({replyContent, reply, parent})
   }
 }
+
+export default connect(state => ({isCreator: state.UserReducer.isCreator}))(PanelReply)

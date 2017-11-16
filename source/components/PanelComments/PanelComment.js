@@ -15,8 +15,9 @@ import LikeButton from 'components/LikeButton'
 import {scrollElementToCenter} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
+import {connect} from 'react-redux'
 
-export default class PanelComment extends Component {
+class PanelComment extends Component {
   static propTypes = {
     comment: PropTypes.shape({
       content: PropTypes.string.isRequired,
@@ -37,6 +38,7 @@ export default class PanelComment extends Component {
     deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
     index: PropTypes.number,
+    isCreator: PropTypes.bool,
     isFirstComment: PropTypes.bool,
     lastDeletedCommentIndex: PropTypes.number,
     marginTop: PropTypes.bool,
@@ -75,12 +77,15 @@ export default class PanelComment extends Component {
   }
 
   render() {
-    const {replyInputShown, onEdit, userListModalShown, clickListenerState, confirmModalShown} = this.state
     const {
-      comment, userId, parent, type, onEditDone,
+      replyInputShown, onEdit, userListModalShown,
+      clickListenerState, confirmModalShown
+    } = this.state
+    const {
+      comment, userId, parent, type, onEditDone, isCreator,
       onLikeClick, onDelete, onReplySubmit, onLoadMoreReplies
     } = this.props
-    const userIsOwner = comment.userId === userId
+    const canEdit = comment.userId === userId || isCreator
     let userLikedThis = false
     for (let i = 0; i < comment.likes.length; i++) {
       if (comment.likes[i].userId === userId) userLikedThis = true
@@ -91,7 +96,7 @@ export default class PanelComment extends Component {
         style={{marginTop: this.props.marginTop && '1em'}}
         ref={ref => { this.PanelComment = ref }}
       >
-        {userIsOwner && !onEdit &&
+        {canEdit && !onEdit &&
           <div className="row">
             <DropdownButton
               shape="button"
@@ -245,3 +250,5 @@ export default class PanelComment extends Component {
     onDelete(comment.id)
   }
 }
+
+export default connect(state => ({isCreator: state.UserReducer.isCreator}))(PanelComment)

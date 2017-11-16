@@ -21,6 +21,7 @@ class Message extends Component {
     onEditDone: PropTypes.func,
     onDelete: PropTypes.func,
     saveMessage: PropTypes.func,
+    isCreator: PropTypes.bool,
     index: PropTypes.number
   }
 
@@ -56,9 +57,11 @@ class Message extends Component {
         isReloadedSubject,
         numMsgs
       },
+      isCreator,
       style,
       myId
     } = this.props
+    const canEdit = myId === userId || isCreator
     const {onEdit, confirmModalShown, subjectMsgsModalShown} = this.state
     return (
       <div
@@ -77,7 +80,7 @@ class Message extends Component {
             wordBreak: 'break-word'
           }}
         >
-          {!!messageId && !isReloadedSubject && myId === userId && !onEdit &&
+          {!!messageId && !isReloadedSubject && canEdit && !onEdit &&
             <DropdownButton
               shape="button"
               icon="pencil"
@@ -184,7 +187,8 @@ class Message extends Component {
 
 export default connect(
   state => ({
-    myId: state.UserReducer.userId
+    myId: state.UserReducer.userId,
+    isCreator: state.UserReducer.isCreator
   }),
   {
     onEditDone: editMessage,

@@ -3,8 +3,14 @@ const {poolQuery} = require('../helpers')
 module.exports = {
   deleteComments(req, res) {
     const user = req.user
-    const commentId = Number(req.query.commentId)
-    poolQuery('DELETE FROM content_comments WHERE id = ? AND userId = ?', [commentId, user.id]).then(
+    const {commentId} = req.query
+    let query = 'DELETE FROM content_comments WHERE id = ?'
+    let params = [commentId]
+    if (user.userType !== 'creator') {
+      query += ' AND userId = ?'
+      params.push(user.id)
+    }
+    poolQuery(query, params).then(
       () => res.send({success: true})
     ).catch(
       error => {
@@ -14,19 +20,24 @@ module.exports = {
     )
   },
 
-  editComments(req, res) {
+  async editComments(req, res) {
     const user = req.user
     const content = req.body.editedComment
     const commentId = req.body.commentId
     const userId = user.id
-    poolQuery('UPDATE content_comments SET ? WHERE id = ? AND userId = ?', [{content}, commentId, userId]).then(
-      () => res.send({editedComment: content, commentId})
-    ).catch(
-      error => {
-        console.error(error)
-        return res.status(500).send({error})
-      }
-    )
+    let query = 'UPDATE content_comments SET ? WHERE id = ?'
+    let params = [{content}, commentId]
+    if (user.userType !== 'creator') {
+      query += ' AND userId = ?'
+      params.push(userId)
+    }
+    try {
+      await poolQuery(query, params)
+      res.send({editedComment: content, commentId})
+    } catch (error) {
+      console.error(error)
+      return res.status(500).send({error})
+    }
   },
 
   fetchComments(req, res) {
