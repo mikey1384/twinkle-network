@@ -13,21 +13,23 @@ const s3 = new AWS.S3({signatureVersion: 'v4'})
 const config = require('../siteConfig')
 const {bucketName} = config
 
-router.post('/bio', requireAuth, (req, res) => {
+router.post('/bio', requireAuth, async(req, res) => {
   const {user} = req
-  const {firstLine, secondLine, thirdLine} = req.body
+  const {firstLine, secondLine, thirdLine, profileId} = req.body
   const post = {
     profileFirstRow: firstLine,
     profileSecondRow: secondLine,
     profileThirdRow: thirdLine
   }
-  pool.query(`UPDATE users SET ? WHERE id = ?`, [post, user.id], (err, rows) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
+  const params = [post]
+  user.userType === 'creator' ? params.push(profileId) : params.push(user.id)
+  try {
+    await poolQuery(`UPDATE users SET ? WHERE id = ?`, params)
     res.send(post)
-  })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
 })
 
 router.get('/check', (req, res) => {

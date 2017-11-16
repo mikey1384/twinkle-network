@@ -18,6 +18,7 @@ class ProfileCard extends Component {
   static propTypes = {
     expandable: PropTypes.bool,
     history: PropTypes.object,
+    isCreator: PropTypes.bool,
     openDirectMessageChannel: PropTypes.func,
     profile: PropTypes.object,
     userId: PropTypes.number,
@@ -42,8 +43,9 @@ class ProfileCard extends Component {
 
   render() {
     const {imageUri, imageEditModalShown, bioEditModalShown, alertModalShown, processing} = this.state
-    const {profile, userId, expandable, history, openDirectMessageChannel} = this.props
+    const {profile, userId, expandable, history, isCreator, openDirectMessageChannel} = this.props
     const {profileFirstRow, profileSecondRow, profileThirdRow} = profile
+    const canEdit = userId === profile.id || isCreator
     return (
       <div
         className="panel panel-default"
@@ -98,7 +100,7 @@ class ProfileCard extends Component {
                 {!profileFirstRow && !profileSecondRow && !profileThirdRow && userId === profile.id &&
                   <p>**Add your bio so that your Twinkle friends can know you better</p>
                 }
-                {userId === profile.id &&
+                {canEdit &&
                   <div className="col-xs-12">
                     <Button
                       className="btn btn-sm btn-default" style={{marginTop: '0.5em'}}
@@ -202,8 +204,8 @@ class ProfileCard extends Component {
   }
 
   uploadBio(params) {
-    const {uploadBio} = this.props
-    uploadBio(params, () => {
+    const {profile, uploadBio} = this.props
+    uploadBio({...params, profileId: profile.id}, () => {
       this.setState({
         bioEditModalShown: false
       })
@@ -228,7 +230,7 @@ class ProfileCard extends Component {
 }
 
 export default connect(
-  null,
+  state => ({isCreator: state.UserReducer.isCreator}),
   {
     uploadProfilePic,
     uploadBio,

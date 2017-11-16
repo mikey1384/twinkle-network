@@ -18,11 +18,12 @@ export default class BioEditModal extends Component {
   constructor(props) {
     super()
     this.state = {
-      firstLine: props.firstLine,
-      secondLine: props.secondLine,
-      thirdLine: props.thirdLine
+      firstLine: props.firstLine || '',
+      secondLine: props.secondLine || '',
+      thirdLine: props.thirdLine || ''
     }
   }
+
   render() {
     const {onHide, onSubmit} = this.props
     const {firstLine, secondLine, thirdLine} = this.state
