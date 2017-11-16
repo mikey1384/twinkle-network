@@ -392,7 +392,13 @@ router.put('/chatSubject/reload', requireAuth, (req, res) => {
 router.delete('/message', requireAuth, (req, res) => {
   const {user} = req
   const {messageId} = req.query
-  return poolQuery('DELETE FROM msg_chats WHERE id = ? AND userId = ?', [messageId, user.id]).then(
+  let query = 'DELETE FROM msg_chats WHERE id = ?'
+  let params = [messageId]
+  if (user.userType !== 'creator') {
+    query += ' AND userId = ?'
+    params.push(user.id)
+  }
+  return poolQuery(query, params).then(
     () => res.send({success: true})
   ).catch(
     error => {

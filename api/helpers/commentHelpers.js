@@ -4,8 +4,14 @@ const {processedString} = require('../helpers/stringHelpers')
 module.exports = {
   deleteComments(req, res) {
     const user = req.user
-    const commentId = Number(req.query.commentId)
-    poolQuery('DELETE FROM content_comments WHERE id = ? AND userId = ?', [commentId, user.id]).then(
+    const {commentId} = req.query
+    let query = 'DELETE FROM content_comments WHERE id = ?'
+    let params = [commentId]
+    if (user.userType !== 'creator') {
+      query += ' AND userId = ?'
+      params.push(user.id)
+    }
+    poolQuery(query, params).then(
       () => res.send({success: true})
     ).catch(
       error => {

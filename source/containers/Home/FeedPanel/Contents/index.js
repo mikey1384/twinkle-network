@@ -30,6 +30,7 @@ class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.object.isRequired,
+    isCreator: PropTypes.bool,
     loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
     onCommentDelete: PropTypes.func.isRequired,
@@ -65,7 +66,7 @@ class Contents extends Component {
         numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
         rootContent, thumbUrl, actualTitle, actualDescription, siteUrl
-      }, feed, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
+      }, feed, isCreator, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onCommentDelete, onContentDelete, onReplySubmit, onSubmit
     } = this.props
     const {userListModalShown, clickListenerState, confirmModalShown, commentsShown, isEditing} = this.state
@@ -73,6 +74,7 @@ class Contents extends Component {
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId === myId) userLikedThis = true
     }
+    const canEdit = myId === uploaderId || isCreator
     return (
       <div>
         {confirmModalShown &&
@@ -147,7 +149,7 @@ class Contents extends Component {
                 Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
               </Button>
             }
-            {myId === uploaderId &&
+            {canEdit &&
               <DropdownButton
                 noAlign
                 shape="button"
@@ -251,7 +253,7 @@ class Contents extends Component {
 }
 
 export default connect(
-  null,
+  state => ({isCreator: state.UserReducer.isCreator}),
   {
     showFeedComments: showFeedCommentsAsync,
     loadMoreComments: loadMoreFeedCommentsAsync,
