@@ -32,12 +32,8 @@ class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.object.isRequired,
-<<<<<<< HEAD
     feedVideoStar: PropTypes.func.isRequired,
     isCreator: PropTypes.bool.isRequired,
-=======
-    isCreator: PropTypes.bool,
->>>>>>> master
     loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
     onCommentDelete: PropTypes.func.isRequired,
@@ -66,11 +62,7 @@ class Contents extends Component {
         uploaderId, content, contentLikers = [], contentId, type, discussionId, hasHqThumb, isStarred,
         videoViews, numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
-<<<<<<< HEAD
         rootContent, rootContentIsStarred, thumbUrl, actualTitle, actualDescription, siteUrl
-=======
-        rootContent, thumbUrl, actualTitle, actualDescription, siteUrl
->>>>>>> master
       }, feed, isCreator, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onCommentDelete, onContentDelete, onReplySubmit, onSubmit
     } = this.props
