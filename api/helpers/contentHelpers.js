@@ -1,7 +1,6 @@
 const {poolQuery} = require('../helpers')
 const {
-  fetchedVideoCodeFromURL, processedURL,
-  processedString, processedTitleString
+  fetchedVideoCodeFromURL, processedURL, processedTitleString
 } = require('./stringHelpers')
 const {embedKey, embedApiUrl} = require('../siteConfig')
 const request = require('request-promise-native')
@@ -23,7 +22,7 @@ module.exports = {
     }
     const post = {
       title: processedTitleString(title),
-      description: processedString(description),
+      description,
       uploader,
       timeStamp: Math.floor(Date.now() / 1000),
       content

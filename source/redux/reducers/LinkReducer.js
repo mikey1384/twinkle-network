@@ -1,4 +1,3 @@
-import {processedString} from 'helpers/stringHelpers'
 const defaultState = {
   links: [],
   loadMoreLinksButtonShown: false,
@@ -85,7 +84,7 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           content,
           title,
-          description: processedString(description)
+          description
         }
       }
     case 'FETCH_LINKS':

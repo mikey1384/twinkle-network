@@ -6,7 +6,6 @@ import UsernameText from 'components/Texts/UsernameText'
 import EditTextArea from 'components/Texts/EditTextArea'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {timeSince} from 'helpers/timeStampHelpers'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
 import LongText from 'components/Texts/LongText'
 
 export default class Comment extends Component {
@@ -78,7 +77,7 @@ export default class Comment extends Component {
           {onEdit ?
             <EditTextArea
               autoFocus
-              text={cleanStringWithURL(comment.content)}
+              text={comment.content}
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}
               rows={2}

@@ -3,7 +3,6 @@ import React, {Component} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/DropdownButton'
 import EditTextArea from 'components/Texts/EditTextArea'
-import {cleanStringWithURL} from 'helpers/stringHelpers'
 import Likers from 'components/Likers'
 import {Color} from 'constants/css'
 import UserListModal from 'components/Modals/UserListModal'
@@ -133,7 +132,7 @@ export default class Reply extends Component {
               {onEdit ?
                 <EditTextArea
                   autoFocus
-                  text={cleanStringWithURL(content)}
+                  text={content}
                   onCancel={() => this.setState({onEdit: false})}
                   onEditDone={
                     editedComment => onEditDone({editedComment, commentId: id}).then(

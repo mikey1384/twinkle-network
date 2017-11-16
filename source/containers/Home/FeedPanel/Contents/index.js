@@ -32,8 +32,12 @@ class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.object.isRequired,
+<<<<<<< HEAD
     feedVideoStar: PropTypes.func.isRequired,
     isCreator: PropTypes.bool.isRequired,
+=======
+    isCreator: PropTypes.bool,
+>>>>>>> master
     loadMoreComments: PropTypes.func.isRequired,
     myId: PropTypes.number,
     onCommentDelete: PropTypes.func.isRequired,
@@ -62,7 +66,11 @@ class Contents extends Component {
         uploaderId, content, contentLikers = [], contentId, type, discussionId, hasHqThumb, isStarred,
         videoViews, numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
         commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
+<<<<<<< HEAD
         rootContent, rootContentIsStarred, thumbUrl, actualTitle, actualDescription, siteUrl
+=======
+        rootContent, thumbUrl, actualTitle, actualDescription, siteUrl
+>>>>>>> master
       }, feed, isCreator, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
       onCommentDelete, onContentDelete, onReplySubmit, onSubmit
     } = this.props
@@ -71,6 +79,7 @@ class Contents extends Component {
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId === myId) userLikedThis = true
     }
+    const canEdit = myId === uploaderId || isCreator
     return (
       <div>
         {confirmModalShown &&
@@ -163,7 +172,7 @@ class Contents extends Component {
                 Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
               </Button>
             }
-            {myId === uploaderId &&
+            {canEdit &&
               <DropdownButton
                 noAlign
                 shape="button"
@@ -273,9 +282,7 @@ class Contents extends Component {
 }
 
 export default connect(
-  state => ({
-    isCreator: state.UserReducer.isCreator
-  }),
+  state => ({isCreator: state.UserReducer.isCreator}),
   {
     feedVideoStar,
     showFeedComments: showFeedCommentsAsync,

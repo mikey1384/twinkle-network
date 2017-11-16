@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {timeSince} from 'helpers/timeStampHelpers'
-import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
+import {cleanString} from 'helpers/stringHelpers'
 import DropdownButton from 'components/DropdownButton'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
@@ -118,7 +118,7 @@ export default class Comment extends Component {
           {onEdit ?
             <EditTextArea
               autoFocus
-              text={cleanStringWithURL(comment.content)}
+              text={comment.content}
               onCancel={() => this.setState({onEdit: false})}
               onEditDone={this.onEditDone}
             /> :

@@ -8,15 +8,6 @@ export function cleanString(string) {
     .replace(/&gt;/gi, '>') : ''
 }
 
-export function cleanStringWithURL(string) {
-  return string ? string
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/<br\s*[\/]?>/gi, '\n')
-    .replace(/<a[^>]*>|<\/a>/g, '') : ''
-}
-
 export function turnStringIntoQuestion(string) {
   const toDelete = ['?', ' ']
   while (toDelete.indexOf(string.charAt(string.length - 1)) !== -1) {

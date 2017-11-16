@@ -3,7 +3,6 @@ const {poolQuery, promiseSeries} = require('../helpers')
 
 const {requireAuth} = require('../auth')
 const {
-  processedString,
   processedTitleString,
   fetchedVideoCodeFromURL,
   stringIsEmpty
@@ -59,7 +58,7 @@ router.post('/', requireAuth, (req, res) => {
   const {title, description, url} = req.body
   const post = {
     title: processedTitleString(title),
-    description: processedString(description),
+    description: description,
     content: fetchedVideoCodeFromURL(url),
     uploader: user.id,
     timeStamp: Math.floor(Date.now()/1000)
@@ -172,7 +171,7 @@ router.post('/edit/page', requireAuth, (req, res) => {
   if (stringIsEmpty(title)) return res.status(500).send({error: 'Title is empty'})
   const post = {
     title,
-    description: processedString(description),
+    description: description,
     content: fetchedVideoCodeFromURL(url),
     hasHqThumb: null
   }
@@ -448,7 +447,7 @@ router.post('/discussions', requireAuth, (req, res) => {
   const query = 'INSERT INTO content_discussions SET ?'
   const post = {
     title: processedTitleString(title),
-    description: !!description && description !== '' ? processedString(description) : null,
+    description: !!description && description !== '' ? description : null,
     userId: user.id,
     rootType: 'video',
     rootId: videoId,
@@ -471,7 +470,7 @@ router.post('/discussions', requireAuth, (req, res) => {
 router.post('/discussions/edit', requireAuth, (req, res) => {
   const {user} = req
   const {discussionId, editedTitle, editedDescription} = req.body
-  const post = {title: editedTitle, description: processedString(editedDescription)}
+  const post = {title: editedTitle, description: editedDescription}
   const query = 'UPDATE content_discussions SET ? WHERE id = ? AND userId = ?'
   pool.query(query, [post, discussionId, user.id], (err) => {
     if (err) {
@@ -488,7 +487,7 @@ router.post('/discussions/comments', requireAuth, (req, res) => {
   const query = 'INSERT INTO content_comments SET ?'
   const post = {
     userId: user.id,
-    content: processedString(content),
+    content,
     timeStamp: Math.floor(Date.now()/1000),
     rootId,
     rootType,
@@ -511,7 +510,7 @@ router.post('/discussions/comments', requireAuth, (req, res) => {
 
 router.post('/replies/edit', requireAuth, (req, res) => {
   const user = req.user
-  const content = processedString(req.body.editedReply)
+  const content = req.body.editedReply
   const replyId = req.body.replyId
 
   pool.query('UPDATE content_comments SET ? WHERE id = ? AND userId = ?', [{content}, replyId, user.id], err => {

@@ -1,5 +1,4 @@
-const processedString = require('./helpers/stringHelpers').processedString
-const generalChatId = require('./siteConfig').generalChatId
+const {generalChatId} = require('./siteConfig')
 const {poolQuery} = require('./helpers')
 
 module.exports = function(io) {
@@ -79,7 +78,6 @@ module.exports = function(io) {
 
     socket.on('new_chat_message', (message, channel) => {
       const channelId = message.channelId
-      message.content = processedString(message.content)
       io.to('chatChannel' + channelId).emit('receive_message', message, channel)
     })
 

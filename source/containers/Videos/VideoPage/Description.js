@@ -13,7 +13,6 @@ import {textIsOverflown} from 'helpers/domHelpers'
 import Input from 'components/Texts/Input'
 import {
   cleanString,
-  cleanStringWithURL,
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
@@ -54,7 +53,7 @@ export default class Description extends Component {
       onTitleHover: false,
       editedTitle: cleanString(props.title),
       editedUrl: `https://www.youtube.com/watch?v=${props.content}`,
-      editedDescription: cleanStringWithURL(props.description),
+      editedDescription: props.description,
       editDoneButtonDisabled: true,
       userListModalShown: false
     }
@@ -74,7 +73,7 @@ export default class Description extends Component {
     }
     if (nextProps.description !== this.props.description) {
       this.setState({
-        editedDescription: cleanStringWithURL(nextProps.description),
+        editedDescription: nextProps.description,
         onEdit: false
       })
     }
@@ -273,7 +272,7 @@ export default class Description extends Component {
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
     const urlChanged = this.state.editedUrl !== `https://www.youtube.com/watch?v=${this.props.content}`
-    const descriptionChanged = this.state.editedDescription !== cleanStringWithURL(this.props.description)
+    const descriptionChanged = this.state.editedDescription !== this.props.description
     const editDoneButtonDisabled = urlIsInvalid || titleIsEmpty || (
       !titleChanged && !descriptionChanged && !urlChanged
     )
@@ -282,7 +281,7 @@ export default class Description extends Component {
 
   onEditCancel() {
     const {description} = this.props
-    const editedDescription = description === 'No description' ? '' : cleanStringWithURL(description)
+    const editedDescription = description === 'No description' ? '' : description
     this.props.onEditCancel()
     this.setState({
       editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,

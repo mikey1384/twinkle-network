@@ -8,7 +8,7 @@ import CreateNewChannelModal from './Modals/CreateNewChannel'
 import InviteUsersModal from './Modals/InviteUsers'
 import EditTitleModal from './Modals/EditTitle'
 import UserListModal from 'components/Modals/UserListModal'
-import {cleanStringWithURL, cleanString} from 'helpers/stringHelpers'
+import {cleanString} from 'helpers/stringHelpers'
 import DropdownButton from 'components/DropdownButton'
 import Button from 'components/Button'
 import ChatSearchBox from './ChatSearchBox'
@@ -385,7 +385,7 @@ class Chat extends Component {
               >
                 <span>
                   {lastMessageSender && lastMessage ?
-                    `${lastMessageSender.id === userId ? 'You' : lastMessageSender.username}: ${cleanStringWithURL(lastMessage)}` : '\u00a0'
+                    `${lastMessageSender.id === userId ? 'You' : lastMessageSender.username}: ${lastMessage}` : '\u00a0'
                   }
                 </span>
               </span>

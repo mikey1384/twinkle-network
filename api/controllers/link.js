@@ -12,7 +12,7 @@ const {
   fetchReplies
 } = require('../helpers/commentHelpers')
 const {postContents} = require('../helpers/contentHelpers')
-const {stringIsEmpty, processedString} = require('../helpers/stringHelpers')
+const {stringIsEmpty} = require('../helpers/stringHelpers')
 
 router.get('/', (req, res) => {
   const linkId = typeof req.query.linkId !== 'undefined' ? req.query.linkId : null
@@ -164,7 +164,7 @@ router.put('/page', requireAuth, (req, res) => {
   if (stringIsEmpty(editedTitle)) {
     return res.status(500).send({error: 'Title is empty'})
   }
-  const post = {title: editedTitle, content: editedUrl, description: processedString(editedDescription)}
+  const post = {title: editedTitle, content: editedUrl, description: editedDescription}
   return poolQuery('UPDATE content_urls SET ? WHERE id = ? AND uploader = ?', [post, linkId, user.id]).then(
     () => res.send({success: true})
   ).catch(

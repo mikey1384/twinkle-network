@@ -77,7 +77,6 @@ export default class PanelReplies extends Component {
               comment={comment}
               reply={reply}
               userId={userId}
-              userIsOwner={reply.userId === userId}
               onDelete={onDelete}
               onLikeClick={onLikeClick}
               onEditDone={onEditDone}
