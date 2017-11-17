@@ -5,7 +5,8 @@ import {Switch, Route} from 'react-router-dom'
 import Chat from '../Chat'
 import Header from './Header'
 import {connect} from 'react-redux'
-import {initChatAsync, resetChat, turnChatOff, changePageVisibility} from 'redux/actions/ChatActions'
+import {initChatAsync, resetChat, turnChatOff} from 'redux/actions/ChatActions'
+import {changePageVisibility} from 'redux/actions/ViewActions'
 import {initSessionAsync} from 'redux/actions/UserActions'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
@@ -187,11 +188,7 @@ class App extends Component {
 
   handleVisibilityChange() {
     const {changePageVisibility} = this.props
-    if (document[hidden]) {
-      changePageVisibility(false)
-    } else {
-      changePageVisibility(true)
-    }
+    changePageVisibility(!document[hidden])
   }
 
   onChatButtonClick() {

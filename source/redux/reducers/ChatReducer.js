@@ -61,7 +61,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         userSearchResults: []
       }
-    case 'CHANGE_PAGE_VISIBILITY':
+    case 'RESET_MSG_UNREADS_ON_TAB_SWITCH':
       return {
         ...state,
         pageVisible: action.visible,

@@ -85,6 +85,7 @@ class Contents extends Component {
           {type === 'comment' && attachedVideoShown &&
             <VideoPlayer
               autoplay
+              isStarred={!!rootContentIsStarred}
               title={contentTitle}
               style={{marginBottom: '1em'}}
               containerClassName="embed-responsive embed-responsive-16by9"

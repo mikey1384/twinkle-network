@@ -7,6 +7,7 @@ import {connect} from 'react-redux'
 import {addVideoViewAsync} from 'redux/actions/VideoActions'
 import request from 'axios'
 import StarMark from 'components/StarMark'
+import VisibilityWrapper from 'components/Wrappers/VisibilityWrapper'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
@@ -22,6 +23,7 @@ class VideoPlayer extends Component {
     hasHqThumb: PropTypes.number,
     isStarred: PropTypes.bool,
     onEdit: PropTypes.bool,
+    pageVisible: PropTypes.bool,
     small: PropTypes.bool,
     style: PropTypes.object,
     title: PropTypes.string.isRequired,
@@ -32,6 +34,8 @@ class VideoPlayer extends Component {
       PropTypes.number
     ]).isRequired
   }
+
+  player = null
 
   constructor({autoplay, hasHqThumb, videoCode}) {
     super()
@@ -64,10 +68,13 @@ class VideoPlayer extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    const {videoCode} = this.props
+    const {isStarred, pageVisible, videoCode} = this.props
     if (videoCode !== nextProps.videoCode) {
       const nextImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
       this.setState({imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${nextImageName}.jpg`})
+    }
+    if (this.player && isStarred && pageVisible !== nextProps.pageVisible) {
+      this.player.pauseVideo()
     }
   }
 
@@ -87,7 +94,7 @@ class VideoPlayer extends Component {
     const {imageUrl, playing, mined, timeWatched, totalDuration} = this.state
     const progress = totalDuration > 0 ? Math.floor(timeWatched * 100 / (totalDuration / 2)) : 0
     return (
-      <div>
+      <VisibilityWrapper onChange={this.onVisibilityChange}>
         <div
           className={small ? containerClassName : `video-player ${containerClassName}`}
           style={{...style, cursor: (!onEdit && !playing) && 'pointer'}}
@@ -149,7 +156,7 @@ class VideoPlayer extends Component {
             </div>
           </div>
         }
-      </div>
+      </VisibilityWrapper>
     )
   }
 
@@ -170,7 +177,15 @@ class VideoPlayer extends Component {
     if (!isMobile) {
       event.target.playVideo()
     }
+    this.player = event.target
     this.setState(() => ({totalDuration: event.target.getDuration()}))
+  }
+
+  onVisibilityChange = (isVisible) => {
+    const {isStarred} = this.props
+    if (this.player && isStarred && !isVisible) {
+      this.player.pauseVideo()
+    }
   }
 
   increaseProgress = () => {
@@ -185,7 +200,8 @@ class VideoPlayer extends Component {
 
 export default connect(
   state => ({
-    userId: state.UserReducer.userId
+    userId: state.UserReducer.userId,
+    pageVisible: state.ViewReducer.pageVisible
   }),
   {addVideoView: addVideoViewAsync}
 )(VideoPlayer)

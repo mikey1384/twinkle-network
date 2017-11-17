@@ -36,8 +36,8 @@ export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
   )
 }
 
-export const changePageVisibility = (visible) => ({
-  type: 'CHANGE_PAGE_VISIBILITY',
+export const resetMsgUnreadsOnTabSwitch = (visible) => ({
+  type: 'RESET_MSG_UNREADS_ON_TAB_SWITCH',
   visible
 })
 

@@ -140,6 +140,7 @@ class VideoPage extends Component {
                     <div>
                       <VideoPlayer
                         autoplay
+                        isStarred={isStarred}
                         key={videoId}
                         hasHqThumb={hasHqThumb}
                         onEdit={onEdit}
