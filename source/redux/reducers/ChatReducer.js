@@ -10,7 +10,6 @@ const defaultState = {
   channelLoadMoreButton: false,
   partnerId: null,
   numUnreads: 0,
-  pageVisible: true,
   msgsWhileInvisible: 0,
   subject: {},
   subjectSearchResults: []
@@ -64,7 +63,6 @@ export default function ChatReducer(state = defaultState, action) {
     case 'RESET_MSG_UNREADS_ON_TAB_SWITCH':
       return {
         ...state,
-        pageVisible: action.visible,
         numUnreads: Math.max(state.numUnreads - state.msgsWhileInvisible, 0),
         msgsWhileInvisible: 0
       }
@@ -419,8 +417,8 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         subject: action.duplicate ? {} : state.subject,
-        numUnreads: action.duplicate && state.pageVisible ? state.numUnreads : state.numUnreads + 1,
-        msgsWhileInvisible: state.pageVisible ? 0 : state.msgsWhileInvisible + 1,
+        numUnreads: action.duplicate && action.pageVisible ? state.numUnreads : state.numUnreads + 1,
+        msgsWhileInvisible: action.pageVisible ? 0 : state.msgsWhileInvisible + 1,
         selectedChannelId: action.duplicate ? action.data.channelId : state.selectedChannelId,
         currentChannel: action.duplicate ? {
           id: action.data.channelId,
@@ -451,8 +449,8 @@ export default function ChatReducer(state = defaultState, action) {
     case 'RECEIVE_MSG':
       return {
         ...state,
-        numUnreads: state.pageVisible ? state.numUnreads : state.numUnreads + 1,
-        msgsWhileInvisible: state.pageVisible ? 0 : state.msgsWhileInvisible + 1,
+        numUnreads: action.pageVisible ? state.numUnreads : state.numUnreads + 1,
+        msgsWhileInvisible: action.pageVisible ? 0 : state.msgsWhileInvisible + 1,
         messages: state.messages.concat([action.data]),
         channels: state.channels.map(channel => {
           if (channel.id === action.data.channelId) {
