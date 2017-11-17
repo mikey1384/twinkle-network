@@ -7,10 +7,10 @@ import {connect} from 'react-redux'
 import {addVideoViewAsync} from 'redux/actions/VideoActions'
 import request from 'axios'
 import StarMark from 'components/StarMark'
-import VisibilityWrapper from 'components/Wrappers/VisibilityWrapper'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
+const intervalLength = 5000
 let interval
 let isMobile
 
@@ -92,9 +92,10 @@ class VideoPlayer extends Component {
   render() {
     const {isStarred, videoCode, title, containerClassName, className, onEdit, style, small} = this.props
     const {imageUrl, playing, mined, timeWatched, totalDuration} = this.state
-    const progress = totalDuration > 0 ? Math.floor(timeWatched * 100 / (totalDuration / 2)) : 0
+    const halfDuration = totalDuration / 2
+    const progress = halfDuration > 0 ? Math.floor(Math.min(timeWatched, halfDuration) * 100 / halfDuration) : 0
     return (
-      <VisibilityWrapper onChange={this.onVisibilityChange}>
+      <div>
         <div
           className={small ? containerClassName : `video-player ${containerClassName}`}
           style={{...style, cursor: (!onEdit && !playing) && 'pointer'}}
@@ -156,14 +157,14 @@ class VideoPlayer extends Component {
             </div>
           </div>
         }
-      </VisibilityWrapper>
+      </div>
     )
   }
 
   onVideoPlay = (event) => {
     const {videoId, userId, addVideoView} = this.props
     const time = event.target.getCurrentTime()
-    interval = window.setInterval(this.increaseProgress, 1000)
+    interval = window.setInterval(this.increaseProgress, intervalLength)
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
     }
@@ -181,20 +182,13 @@ class VideoPlayer extends Component {
     this.setState(() => ({totalDuration: event.target.getDuration()}))
   }
 
-  onVisibilityChange = (isVisible) => {
-    const {isStarred} = this.props
-    if (this.player && isStarred && !isVisible) {
-      this.player.pauseVideo()
-    }
-  }
-
   increaseProgress = () => {
     const {mined, timeWatched, totalDuration} = this.state
     if (timeWatched >= totalDuration / 2) {
       this.setState(() => ({mined: true}))
     }
     // record watchtime to db
-    if (!mined) this.setState(state => ({timeWatched: state.timeWatched + 1}))
+    if (!mined) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
   }
 }
 
