@@ -115,6 +115,7 @@ class Content extends Component {
                   style={{
                     fontSize: '11px',
                     marginTop: '1em',
+                    marginBottom: replyInputShown ? '1em' : null,
                     fontWeight: 'bold',
                     color: Color.green
                   }}

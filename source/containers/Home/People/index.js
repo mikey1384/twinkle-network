@@ -112,10 +112,11 @@ class People extends Component {
     let {chatMode, profiles} = this.props
     const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
     if (!chatMode && profiles.length > 0) {
-      this.setState({scrollPosition})
-      if (this.state.scrollPosition >= (document.body.scrollHeight - window.innerHeight) * 0.7) {
-        this.loadMoreProfiles()
-      }
+      this.setState(() => ({scrollPosition}), () => {
+        if (this.state.scrollPosition >= (document.body.scrollHeight + window.innerHeight) * 0.7) {
+          this.loadMoreProfiles()
+        }
+      })
     }
   }
 }

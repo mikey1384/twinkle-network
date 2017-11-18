@@ -117,10 +117,11 @@ class Stories extends Component {
     let {chatMode, feeds} = this.props
     const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
     if (!chatMode && feeds.length > 0) {
-      this.setState({scrollPosition})
-      if (this.state.scrollPosition >= (document.body.scrollHeight - window.innerHeight) * 0.7) {
-        this.loadMoreFeeds()
-      }
+      this.setState(() => ({scrollPosition}), () => {
+        if (this.state.scrollPosition >= (document.body.scrollHeight + window.innerHeight) * 0.7) {
+          this.loadMoreFeeds()
+        }
+      })
     }
   }
 
