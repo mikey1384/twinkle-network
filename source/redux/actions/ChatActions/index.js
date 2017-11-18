@@ -278,6 +278,7 @@ export const receiveMessage = ({message, pageVisible}) => dispatch => {
   request.post(`${API_URL}/lastRead`, {channelId}, auth()).then(
     response => dispatch({
       type: 'RECEIVE_MSG',
+      pageVisible,
       data: {
         ...message,
         timeStamp: Math.floor(Date.now()/1000)
