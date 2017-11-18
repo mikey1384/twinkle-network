@@ -161,22 +161,31 @@ export const editVideoTitle = (videoId, data) => ({
 })
 
 export const editVideoTitleAsync = (params, sender) => dispatch =>
-  request.post(`${API_URL}/edit/title`, params, auth())
-    .then(
-      response => {
-        const {data} = response
-        if (data.result) {
-          dispatch(editVideoTitle(params.videoId, data.result))
-          sender.setState({onEdit: false})
-        }
-        return
-      }
-    ).catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+request.post(`${API_URL}/edit/title`, params, auth())
+.then(
+  response => {
+    const {data} = response
+    if (data.result) {
+      dispatch(editVideoTitle(params.videoId, data.result))
+      sender.setState({onEdit: false})
+    }
+    return
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const emptyCurrentVideoSlot = () => ({
+  type: 'EMPTY_CURRENT_VIDEO_SLOT'
+})
+
+export const fillCurrentVideoSlot = videoId => ({
+  type: 'FILL_CURRENT_VIDEO_SLOT',
+  videoId
+})
 
 export const getMoreVideos = videoId => dispatch =>
   request.get(`${API_URL}?videoId=${videoId}`)

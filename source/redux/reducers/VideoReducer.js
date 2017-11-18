@@ -13,7 +13,8 @@ const defaultState = {
   loadMoreButton: false,
   allVideosLoaded: false,
   addVideoModalShown: false,
-  videoPage: defaultVideoPageState
+  videoPage: defaultVideoPageState,
+  currentVideoSlot: null
 }
 
 export default function VideoReducer(state = defaultState, action) {
@@ -101,6 +102,16 @@ export default function VideoReducer(state = defaultState, action) {
             description: discussion.id === action.discussionId ? action.data.description : discussion.description
           }))
         }
+      }
+    case 'EMPTY_CURRENT_VIDEO_SLOT':
+      return {
+        ...state,
+        currentVideoSlot: null
+      }
+    case 'FILL_CURRENT_VIDEO_SLOT':
+      return {
+        ...state,
+        currentVideoSlot: action.videoId
       }
     case 'GET_VIDEOS':
       if (action.videos.length > 12) {

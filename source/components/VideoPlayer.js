@@ -4,14 +4,13 @@ import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
 import {Color} from 'constants/css'
 import {connect} from 'react-redux'
-import {addVideoViewAsync} from 'redux/actions/VideoActions'
+import {addVideoViewAsync, fillCurrentVideoSlot, emptyCurrentVideoSlot} from 'redux/actions/VideoActions'
 import request from 'axios'
 import StarMark from 'components/StarMark'
 import {URL} from 'constants/URL'
 
 const API_URL = `${URL}/content`
 const intervalLength = 5000
-let interval
 let isMobile
 
 class VideoPlayer extends Component {
@@ -20,11 +19,14 @@ class VideoPlayer extends Component {
     autoplay: PropTypes.bool,
     className: PropTypes.string,
     containerClassName: PropTypes.string,
+    emptyCurrentVideoSlot: PropTypes.func,
+    fillCurrentVideoSlot: PropTypes.func,
     hasHqThumb: PropTypes.number,
     isStarred: PropTypes.bool,
     onEdit: PropTypes.bool,
     pageVisible: PropTypes.bool,
     small: PropTypes.bool,
+    currentVideoSlot: PropTypes.number,
     style: PropTypes.object,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number,
@@ -35,6 +37,7 @@ class VideoPlayer extends Component {
     ]).isRequired
   }
 
+  interval
   player = null
 
   constructor({autoplay, hasHqThumb, videoCode}) {
@@ -79,13 +82,19 @@ class VideoPlayer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {onEdit} = this.props
+    const {onEdit, currentVideoSlot, isStarred, videoId} = this.props
     if (prevProps.onEdit !== onEdit) {
       this.setState({playing: false})
+    }
+    const userIsCheating = this.player && isStarred && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== videoId
+    if (userIsCheating) {
+      this.player.pauseVideo()
     }
   }
 
   componentWillUnmount() {
+    const {emptyCurrentVideoSlot} = this.props
+    emptyCurrentVideoSlot()
     this.mounted = false
   }
 
@@ -162,16 +171,17 @@ class VideoPlayer extends Component {
   }
 
   onVideoPlay = (event) => {
-    const {videoId, userId, addVideoView} = this.props
+    const {videoId, userId, addVideoView, fillCurrentVideoSlot} = this.props
     const time = event.target.getCurrentTime()
-    interval = window.setInterval(this.increaseProgress, intervalLength)
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
     }
+    fillCurrentVideoSlot(videoId)
+    this.interval = window.setInterval(this.increaseProgress, intervalLength)
   }
 
   onVideoStop = (event) => {
-    window.clearInterval(interval)
+    window.clearInterval(this.interval)
   }
 
   onVideoReady = (event) => {
@@ -195,7 +205,12 @@ class VideoPlayer extends Component {
 export default connect(
   state => ({
     userId: state.UserReducer.userId,
-    pageVisible: state.ViewReducer.pageVisible
+    pageVisible: state.ViewReducer.pageVisible,
+    currentVideoSlot: state.VideoReducer.currentVideoSlot
   }),
-  {addVideoView: addVideoViewAsync}
+  {
+    addVideoView: addVideoViewAsync,
+    fillCurrentVideoSlot,
+    emptyCurrentVideoSlot
+  }
 )(VideoPlayer)
