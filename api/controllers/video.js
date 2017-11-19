@@ -508,6 +508,12 @@ router.post('/discussions/comments', requireAuth, (req, res) => {
   })
 })
 
+router.put('/duration', requireAuth, (req, res) => {
+  const {user, body: {videoId, seconds}} = req
+  console.log(user.id, videoId, seconds)
+  res.send({success: true})
+})
+
 router.post('/replies/edit', requireAuth, (req, res) => {
   const user = req.user
   const content = req.body.editedReply

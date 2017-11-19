@@ -4,7 +4,12 @@ import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
 import {Color} from 'constants/css'
 import {connect} from 'react-redux'
-import {addVideoViewAsync, fillCurrentVideoSlot, emptyCurrentVideoSlot} from 'redux/actions/VideoActions'
+import {
+  addVideoViewAsync,
+  addVideoViewDuration,
+  fillCurrentVideoSlot,
+  emptyCurrentVideoSlot
+} from 'redux/actions/VideoActions'
 import request from 'axios'
 import StarMark from 'components/StarMark'
 import {URL} from 'constants/URL'
@@ -16,6 +21,7 @@ let isMobile
 class VideoPlayer extends Component {
   static propTypes = {
     addVideoView: PropTypes.func.isRequired,
+    addVideoViewDuration: PropTypes.func,
     autoplay: PropTypes.bool,
     className: PropTypes.string,
     containerClassName: PropTypes.string,
@@ -99,7 +105,9 @@ class VideoPlayer extends Component {
   }
 
   render() {
-    const {isStarred, videoCode, title, containerClassName, className, onEdit, style, small} = this.props
+    const {
+      isStarred, videoCode, title, containerClassName, className, onEdit, style, small, userId
+    } = this.props
     const {imageUrl, playing, mined, timeWatched, totalDuration} = this.state
     const halfDuration = totalDuration / 2
     const progress = halfDuration > 0 ? Math.floor(Math.min(timeWatched, halfDuration) * 100 / halfDuration) : 0
@@ -156,7 +164,7 @@ class VideoPlayer extends Component {
             />
           }
         </div>
-        {isStarred &&
+        {isStarred && !!userId &&
           <div className="progress" style={{marginTop: '1rem'}}>
             <div
               className={`progress-bar progress-bar-${mined ? 'success' : 'info'}`}
@@ -177,7 +185,7 @@ class VideoPlayer extends Component {
       addVideoView({videoId, userId})
     }
     fillCurrentVideoSlot(videoId)
-    this.interval = window.setInterval(this.increaseProgress, intervalLength)
+    if (userId) this.interval = window.setInterval(this.increaseProgress, intervalLength)
   }
 
   onVideoStop = (event) => {
@@ -194,10 +202,11 @@ class VideoPlayer extends Component {
 
   increaseProgress = () => {
     const {mined, timeWatched, totalDuration} = this.state
+    const {addVideoViewDuration, videoId} = this.props
     if (timeWatched >= totalDuration / 2) {
       this.setState(() => ({mined: true}))
     }
-    // record watchtime to db
+    addVideoViewDuration({videoId, seconds: timeWatched})
     if (!mined) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
   }
 }
@@ -210,6 +219,7 @@ export default connect(
   }),
   {
     addVideoView: addVideoViewAsync,
+    addVideoViewDuration,
     fillCurrentVideoSlot,
     emptyCurrentVideoSlot
   }

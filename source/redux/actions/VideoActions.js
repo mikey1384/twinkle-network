@@ -22,13 +22,23 @@ export const getInitialVideos = () => dispatch => request.get(API_URL).then(
 )
 
 export const addVideoViewAsync = params => dispatch =>
-  request.post(`${API_URL}/view`, params)
-    .catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+request.post(`${API_URL}/view`, params)
+.catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const addVideoViewDuration = params => async(dispatch) => {
+  try {
+    const {data} = await request.put(`${API_URL}/duration`, params, auth())
+    console.log(data)
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const closeAddVideoModal = () => ({
   type: 'VID_MODAL_CLOSE'
