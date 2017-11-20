@@ -206,7 +206,7 @@ class VideoPlayer extends Component {
     if (timeWatched >= totalDuration / 2) {
       this.setState(() => ({mined: true}))
     }
-    addVideoViewDuration({videoId, seconds: timeWatched})
+    addVideoViewDuration({videoId})
     if (!mined) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
   }
 }

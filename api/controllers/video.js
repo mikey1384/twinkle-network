@@ -508,10 +508,26 @@ router.post('/discussions/comments', requireAuth, (req, res) => {
   })
 })
 
-router.put('/duration', requireAuth, (req, res) => {
-  const {user, body: {videoId, seconds}} = req
-  console.log(user.id, videoId, seconds)
-  res.send({success: true})
+router.put('/duration', requireAuth, async(req, res) => {
+  const {user, body: {videoId}} = req
+  const query = `SELECT * FROM users_video_view_duration WHERE userId = ? AND videoId = ?`
+  const params = [user.id, videoId]
+  try {
+    const rows = await poolQuery(query, params)
+    if (rows.length === 0) {
+      const postQuery = `INSERT INTO users_video_view_duration SET ?`
+      const post = {userId: user.id, videoId, duration: 0}
+      await poolQuery(postQuery, post)
+    } else {
+      const put = {duration: Number(rows[0].duration) + 5}
+      const putQuery = `UPDATE users_video_view_duration SET ?`
+      await poolQuery(putQuery, put)
+    }
+    res.send({success: true})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({error})
+  }
 })
 
 router.post('/replies/edit', requireAuth, (req, res) => {
