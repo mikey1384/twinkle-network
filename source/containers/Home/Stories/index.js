@@ -28,6 +28,8 @@ class Stories extends Component {
     userId: PropTypes.number
   }
 
+  scrollHeight = 0
+
   constructor() {
     super()
     this.state = {
@@ -116,13 +118,14 @@ class Stories extends Component {
   onScroll() {
     const {chatMode, feeds} = this.props
     const {loadingMore} = this.state
+    this.scrollHeight = document.body.scrollHeight > this.scrollHeight ? document.body.scrollHeight : this.scrollHeight
     if (!loadingMore) {
       const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
       if (!chatMode && feeds.length > 0) {
         this.setState(() => ({
           scrollPosition
         }), () => {
-          if (this.state.scrollPosition >= document.body.scrollHeight - window.innerHeight - 500) {
+          if (this.state.scrollPosition >= this.scrollHeight - window.innerHeight - 500) {
             this.loadMoreFeeds()
           }
         })
