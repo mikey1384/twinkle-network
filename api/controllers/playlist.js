@@ -1,7 +1,6 @@
 const pool = require('../pool')
 const {poolQuery, promiseSeries} = require('../helpers')
 const {requireAuth} = require('../auth')
-const {processedTitleString} = require('../helpers/stringHelpers')
 const {fetchPlaylists} = require('../helpers/playlistHelpers')
 const async = require('async')
 const express = require('express')
@@ -88,7 +87,7 @@ router.get('/rightMenu', (req, res) => {
 
 router.post('/', requireAuth, (req, res) => {
   const user = req.user
-  const title = processedTitleString(req.body.title)
+  const title = req.body.title
   const description = req.body.description
   const videos = req.body.selectedVideos
   const taskArray = []
@@ -145,16 +144,12 @@ router.post('/', requireAuth, (req, res) => {
 router.post('/edit/title', requireAuth, (req, res) => {
   const title = req.body.title
   const playlistId = req.body.playlistId
-  const newTitle = processedTitleString(title)
-  const post = {
-    title: newTitle
-  }
-  pool.query('UPDATE vq_playlists SET ? WHERE id = ?', [post, playlistId], err => {
+  pool.query('UPDATE vq_playlists SET ? WHERE id = ?', [{title}, playlistId], err => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})
     }
-    res.json({result: newTitle})
+    res.json({result: title})
   })
 })
 

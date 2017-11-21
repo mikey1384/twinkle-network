@@ -4,7 +4,7 @@ const express = require('express')
 const router = express.Router()
 
 const {requireAuth} = require('../auth')
-const {processedTitleString, stringIsEmpty} = require('../helpers/stringHelpers')
+const {stringIsEmpty} = require('../helpers/stringHelpers')
 const {poolQuery, promiseSeries} = require('../helpers/')
 const {generalChatId} = require('../siteConfig')
 const {
@@ -585,7 +585,7 @@ router.post('/lastRead', requireAuth, (req, res) => {
 router.post('/channel', requireAuth, (req, res) => {
   const user = req.user
   const params = req.body.params
-  const channelName = processedTitleString(params.channelName)
+  const channelName = params.channelName
   const timeStamp = Math.floor(Date.now()/1000)
 
   return poolQuery('INSERT INTO msg_channels SET ?', {channelName, creator: user.id}).then(

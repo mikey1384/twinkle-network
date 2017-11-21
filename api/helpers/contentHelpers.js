@@ -1,6 +1,6 @@
 const {poolQuery} = require('../helpers')
 const {
-  fetchedVideoCodeFromURL, processedURL, processedTitleString
+  fetchedVideoCodeFromURL, processedURL
 } = require('./stringHelpers')
 const {embedKey, embedApiUrl} = require('../siteConfig')
 const request = require('request-promise-native')
@@ -21,7 +21,7 @@ module.exports = {
       default: return Promise.reject('Content type invalid')
     }
     const post = {
-      title: processedTitleString(title),
+      title,
       description,
       uploader,
       timeStamp: Math.floor(Date.now() / 1000),

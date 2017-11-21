@@ -3,7 +3,6 @@ const {poolQuery, promiseSeries} = require('../helpers')
 
 const {requireAuth} = require('../auth')
 const {
-  processedTitleString,
   fetchedVideoCodeFromURL,
   stringIsEmpty
 } = require('../helpers/stringHelpers')
@@ -112,18 +111,16 @@ router.delete('/', requireAuth, (req, res) => {
 
 router.post('/edit/title', requireAuth, (req, res) => {
   const user = req.user
-  const title = req.body.title
+  const {title} = req.body
   const videoId = req.body.videoId
-  const newTitle = processedTitleString(title)
-  const post = { title: newTitle }
 
   const userId = user.id
-  pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId], err => {
+  pool.query('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [{title}, videoId, userId], err => {
     if (err) {
       console.error(err)
       return res.status(500).send({error: err})
     }
-    res.send({result: newTitle})
+    res.send({result: title})
   })
 })
 
@@ -446,7 +443,7 @@ router.post('/discussions', requireAuth, (req, res) => {
   const {user} = req
   const query = 'INSERT INTO content_discussions SET ?'
   const post = {
-    title: processedTitleString(title),
+    title,
     description: !!description && description !== '' ? description : null,
     userId: user.id,
     rootType: 'video',
