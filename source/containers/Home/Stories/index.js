@@ -114,14 +114,19 @@ class Stories extends Component {
   }
 
   onScroll() {
-    let {chatMode, feeds} = this.props
-    const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
-    if (!chatMode && feeds.length > 0) {
-      this.setState(() => ({scrollPosition}), () => {
-        if (this.state.scrollPosition >= document.body.scrollHeight - window.innerHeight - 500) {
-          this.loadMoreFeeds()
-        }
-      })
+    const {chatMode, feeds} = this.props
+    const {loadingMore} = this.state
+    if (!loadingMore) {
+      const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+      if (!chatMode && feeds.length > 0) {
+        this.setState(() => ({
+          scrollPosition
+        }), () => {
+          if (this.state.scrollPosition >= document.body.scrollHeight - window.innerHeight - 500) {
+            this.loadMoreFeeds()
+          }
+        })
+      }
     }
   }
 

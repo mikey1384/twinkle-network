@@ -109,14 +109,17 @@ class People extends Component {
   }
 
   onScroll() {
-    let {chatMode, profiles} = this.props
-    const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
-    if (!chatMode && profiles.length > 0) {
-      this.setState(() => ({scrollPosition}), () => {
-        if (this.state.scrollPosition >= document.body.scrollHeight - window.innerHeight - 500) {
-          this.loadMoreProfiles()
-        }
-      })
+    const {chatMode, profiles} = this.props
+    const {loading} = this.state
+    if (!loading) {
+      const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+      if (!chatMode && profiles.length > 0) {
+        this.setState(() => ({scrollPosition}), () => {
+          if (this.state.scrollPosition >= document.body.scrollHeight - window.innerHeight - 500) {
+            this.loadMoreProfiles()
+          }
+        })
+      }
     }
   }
 }
