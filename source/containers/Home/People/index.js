@@ -24,6 +24,8 @@ class People extends Component {
     userId: PropTypes.number
   }
 
+  scrollHeight = 0
+
   constructor() {
     super()
     this.state = {
@@ -110,16 +112,16 @@ class People extends Component {
 
   onScroll() {
     const {chatMode, profiles} = this.props
-    const {loading} = this.state
-    if (!loading) {
-      const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
-      if (!chatMode && profiles.length > 0) {
-        this.setState(() => ({scrollPosition}), () => {
-          if (this.state.scrollPosition >= document.body.scrollHeight - window.innerHeight - 500) {
-            this.loadMoreProfiles()
-          }
-        })
-      }
+    if (document.body.scrollHeight > this.scrollHeight) {
+      this.scrollHeight = document.body.scrollHeight
+    }
+    const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+    if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
+      this.setState(() => ({scrollPosition}), () => {
+        if (this.state.scrollPosition >= this.scrollHeight - window.innerHeight - 500) {
+          this.loadMoreProfiles()
+        }
+      })
     }
   }
 }
