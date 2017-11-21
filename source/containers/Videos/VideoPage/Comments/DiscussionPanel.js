@@ -106,7 +106,7 @@ class DiscussionPanel extends Component {
           {!onEdit &&
             <p style={{fontSize: '2rem'}}>{cleanString(title)}</p>
           }
-          {!onEdit && expanded && !!description && (
+          {!onEdit && description && (
             <LongText>{description}</LongText>
           )}
           {onEdit &&
@@ -185,7 +185,7 @@ class DiscussionPanel extends Component {
                   }}
                 /> :
                 <Button
-                  style={{marginTop: '0.5em'}}
+                  style={{marginTop: '1em'}}
                   className="btn btn-warning"
                   onClick={this.onExpand}
                 >Answer{!!numComments && numComments > 0 ? ` (${numComments})` : ''}</Button>
