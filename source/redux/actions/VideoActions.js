@@ -30,16 +30,6 @@ request.post(`${API_URL}/view`, params)
   }
 )
 
-export const addVideoViewDuration = params => async(dispatch) => {
-  try {
-    const {data} = await request.put(`${API_URL}/duration`, params, auth())
-    console.log(data)
-  } catch (error) {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-}
-
 export const closeAddVideoModal = () => ({
   type: 'VID_MODAL_CLOSE'
 })

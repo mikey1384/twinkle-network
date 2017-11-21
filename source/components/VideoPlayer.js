@@ -4,9 +4,9 @@ import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
 import {Color} from 'constants/css'
 import {connect} from 'react-redux'
+import {auth} from 'redux/actions/constants'
 import {
   addVideoViewAsync,
-  addVideoViewDuration,
   fillCurrentVideoSlot,
   emptyCurrentVideoSlot
 } from 'redux/actions/VideoActions'
@@ -14,14 +14,14 @@ import request from 'axios'
 import StarMark from 'components/StarMark'
 import {URL} from 'constants/URL'
 
-const API_URL = `${URL}/content`
+const CONTENT_URL = `${URL}/content`
+const VIDEO_URL = `${URL}/video`
 const intervalLength = 5000
 let isMobile
 
 class VideoPlayer extends Component {
   static propTypes = {
     addVideoView: PropTypes.func.isRequired,
-    addVideoViewDuration: PropTypes.func,
     autoplay: PropTypes.bool,
     className: PropTypes.string,
     containerClassName: PropTypes.string,
@@ -63,7 +63,7 @@ class VideoPlayer extends Component {
     isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     this.mounted = true
     if (typeof hasHqThumb !== 'number') {
-      return request.put(`${API_URL}/videoThumb`, {videoCode, videoId}).then(
+      return request.put(`${CONTENT_URL}/videoThumb`, {videoCode, videoId}).then(
         ({data: {payload}}) => {
           if (this.mounted && payload) this.setState({imageUrl: payload})
         }
@@ -200,14 +200,18 @@ class VideoPlayer extends Component {
     this.setState(() => ({totalDuration: event.target.getDuration()}))
   }
 
-  increaseProgress = () => {
+  increaseProgress = async() => {
     const {mined, timeWatched, totalDuration} = this.state
-    const {addVideoViewDuration, videoId} = this.props
+    const {videoId} = this.props
     if (timeWatched >= totalDuration / 2) {
       this.setState(() => ({mined: true}))
     }
-    addVideoViewDuration({videoId})
     if (!mined) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
+    try {
+      return await request.put(`${VIDEO_URL}/duration`, {videoId}, auth())
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 }
 
@@ -219,7 +223,6 @@ export default connect(
   }),
   {
     addVideoView: addVideoViewAsync,
-    addVideoViewDuration,
     fillCurrentVideoSlot,
     emptyCurrentVideoSlot
   }

@@ -513,12 +513,12 @@ router.put('/duration', requireAuth, async(req, res) => {
     const rows = await poolQuery(query, params)
     if (rows.length === 0) {
       const postQuery = `INSERT INTO users_video_view_duration SET ?`
-      const post = {userId: user.id, videoId, duration: 0}
+      const post = {userId: user.id, videoId, duration: 5}
       await poolQuery(postQuery, post)
     } else {
       const put = {duration: Number(rows[0].duration) + 5}
-      const putQuery = `UPDATE users_video_view_duration SET ?`
-      await poolQuery(putQuery, put)
+      const putQuery = `UPDATE users_video_view_duration SET ? WHERE userId = ? AND videoId = ?`
+      await poolQuery(putQuery, [put, user.id, videoId])
     }
     res.send({success: true})
   } catch (error) {
