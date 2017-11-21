@@ -57,7 +57,7 @@ router.post('/', requireAuth, (req, res) => {
   const user = req.user
   const {title, description, url} = req.body
   const post = {
-    title: processedTitleString(title),
+    title: title,
     description: description,
     content: fetchedVideoCodeFromURL(url),
     uploader: user.id,
