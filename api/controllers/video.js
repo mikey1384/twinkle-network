@@ -513,10 +513,10 @@ router.put('/duration', requireAuth, async(req, res) => {
     const rows = await poolQuery(query, params)
     if (rows.length === 0) {
       const postQuery = `INSERT INTO users_video_view_status SET ?`
-      const post = {userId: user.id, videoId, duration: 5}
+      const post = {userId: user.id, videoId, duration: 2}
       await poolQuery(postQuery, post)
     } else {
-      const put = {duration: Number(rows[0].duration) + 5}
+      const put = {duration: Number(rows[0].duration) + 2}
       const putQuery = `UPDATE users_video_view_status SET ? WHERE userId = ? AND videoId = ?`
       await poolQuery(putQuery, [put, user.id, videoId])
     }
@@ -597,6 +597,30 @@ router.post('/view', (req, res) => {
     }
     res.send({success: true})
   })
+})
+
+router.get('/xpEarned', requireAuth, async(req, res) => {
+  const {user, query: {videoId}} = req
+  const query = `SELECT xpEarned FROM users_video_view_status WHERE userId = ? AND videoId = ?`
+  try {
+    const [{xpEarned = 0} = {}] = await poolQuery(query, [user.id, videoId])
+    res.send({xpEarned})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
+})
+
+router.put('/xpEarned', requireAuth, async(req, res) => {
+  const {user, body: {videoId}} = req
+  const query = `UPDATE users_video_view_status SET ? WHERE userId = ? AND videoId = ?`
+  try {
+    await poolQuery(query, [{xpEarned: true}, user.id, videoId])
+    res.send(true)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
 })
 
 module.exports = router

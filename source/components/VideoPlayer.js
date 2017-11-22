@@ -16,7 +16,7 @@ import {URL} from 'constants/URL'
 
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
-const intervalLength = 5000
+const intervalLength = 2000
 let isMobile
 
 class VideoPlayer extends Component {
@@ -54,36 +54,53 @@ class VideoPlayer extends Component {
       imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`,
       timeWatched: 0,
       totalDuration: 0,
-      mined: false
+      xpEarned: false
     }
   }
 
-  componentDidMount() {
-    const {hasHqThumb, videoCode, videoId} = this.props
+  async componentDidMount() {
+    const {isStarred, hasHqThumb, userId, videoCode, videoId} = this.props
     isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     this.mounted = true
     if (typeof hasHqThumb !== 'number') {
-      return request.put(`${CONTENT_URL}/videoThumb`, {videoCode, videoId}).then(
-        ({data: {payload}}) => {
-          if (this.mounted && payload) this.setState({imageUrl: payload})
-        }
-      ).catch(
-        error => console.error(error.response || error)
-      )
+      try {
+        const {data: {payload}} = await request.put(`${CONTENT_URL}/videoThumb`, {videoCode, videoId})
+        if (this.mounted && payload) this.setState({imageUrl: payload})
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
+    if (isStarred && userId) {
+      try {
+        const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
+        this.setState(() => ({xpEarned: !!xpEarned}))
+      } catch (error) {
+        console.error(error.response || error)
+      }
     }
     if (isMobile) {
       this.setState({playing: true})
     }
   }
 
-  componentWillUpdate(nextProps) {
-    const {isStarred, pageVisible, videoCode} = this.props
+  async componentWillUpdate(nextProps) {
+    const {isStarred, pageVisible, userId, videoId, videoCode} = this.props
     if (videoCode !== nextProps.videoCode) {
       const nextImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
       this.setState({imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${nextImageName}.jpg`})
     }
+
     if (this.player && isStarred && pageVisible !== nextProps.pageVisible) {
       this.player.pauseVideo()
+    }
+
+    if (isStarred && nextProps.userId && (userId !== nextProps.userId)) {
+      try {
+        const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
+        if (xpEarned) this.setState(() => ({xpEarned: !!xpEarned}))
+      } catch (error) {
+        console.error(error.response || error)
+      }
     }
   }
 
@@ -92,7 +109,7 @@ class VideoPlayer extends Component {
     if (prevProps.onEdit !== onEdit) {
       this.setState({playing: false})
     }
-    const userIsCheating = this.player && isStarred && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== videoId
+    const userIsCheating = this.player && isStarred && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
     if (userIsCheating) {
       this.player.pauseVideo()
     }
@@ -108,9 +125,11 @@ class VideoPlayer extends Component {
     const {
       isStarred, videoCode, title, containerClassName, className, onEdit, style, small, userId
     } = this.props
-    const {imageUrl, playing, mined, timeWatched, totalDuration} = this.state
+    const {imageUrl, playing, timeWatched, totalDuration, xpEarned} = this.state
     const halfDuration = totalDuration / 2
-    const progress = halfDuration > 0 ? Math.floor(Math.min(timeWatched, halfDuration) * 100 / halfDuration) : 0
+    const progress = xpEarned ? 100 : (
+      halfDuration > 0 ? Math.floor(Math.min(timeWatched, halfDuration) * 100 / halfDuration) : 0
+    )
     return (
       <div>
         <div
@@ -167,10 +186,10 @@ class VideoPlayer extends Component {
         {isStarred && !!userId &&
           <div className="progress" style={{marginTop: '1rem'}}>
             <div
-              className={`progress-bar progress-bar-${mined ? 'success' : 'info'}`}
+              className={`progress-bar progress-bar-${xpEarned ? 'success' : 'info'}`}
               style={{width: `${progress}%`}}
             >
-              {mined ? 'You have mined this Star!' : `${progress}% mined`}
+              {xpEarned ? 'Twinkle XP earned!' : `${progress}%`}
             </div>
           </div>
         }
@@ -184,7 +203,7 @@ class VideoPlayer extends Component {
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
     }
-    fillCurrentVideoSlot(videoId)
+    fillCurrentVideoSlot(Number(videoId))
     if (userId) this.interval = window.setInterval(this.increaseProgress, intervalLength)
   }
 
@@ -201,12 +220,17 @@ class VideoPlayer extends Component {
   }
 
   increaseProgress = async() => {
-    const {mined, timeWatched, totalDuration} = this.state
+    const {xpEarned, timeWatched, totalDuration} = this.state
     const {videoId} = this.props
     if (timeWatched >= totalDuration / 2) {
-      this.setState(() => ({mined: true}))
+      try {
+        await request.put(`${VIDEO_URL}/xpEarned`, {videoId}, auth())
+        this.setState(() => ({xpEarned: true}))
+      } catch (error) {
+        console.error(error.response || error)
+      }
     }
-    if (!mined) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
+    if (!xpEarned) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
     try {
       return await request.put(`${VIDEO_URL}/duration`, {videoId}, auth())
     } catch (error) {
