@@ -51,7 +51,7 @@ function ProfileWidget({history, openSigninModal, twinkleCoins, userId, username
           <div style={{marginTop: '0.5em'}}>
             <div style={{fontWeight: 'bold'}}><span>{twinkleCoins}</span>
               &nbsp;<span style={{color: Color.logoGreen}}>Twin</span><span style={{color: Color.logoBlue}}>kle</span>
-              &nbsp;<span style={{color: Color.orange}}>{`Coin${twinkleCoins === 1 ? '' : 's'}`}</span>
+              &nbsp;<span style={{color: Color.orange}}>XP</span>
             </div>
             <div>Lvl 5 (Rank #3)</div>
           </div>
