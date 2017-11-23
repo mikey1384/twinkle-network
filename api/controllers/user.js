@@ -49,7 +49,7 @@ router.get('/check', (req, res) => {
   )
 })
 
-router.post('/logout', requireAuth, (req, res) => {
+router.post('/action/logout', requireAuth, (req, res) => {
   const {user} = req
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
@@ -68,7 +68,7 @@ router.post('/logout', requireAuth, (req, res) => {
   )
 })
 
-router.post('/navigation', requireAuth, (req, res) => {
+router.post('/action/navigation', requireAuth, (req, res) => {
   const {user, body: {target}} = req
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
@@ -88,7 +88,7 @@ router.post('/navigation', requireAuth, (req, res) => {
   )
 })
 
-router.post('/search', requireAuth, (req, res) => {
+router.post('/action/search', requireAuth, (req, res) => {
   const {user, body: {target, subTarget}} = req
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
