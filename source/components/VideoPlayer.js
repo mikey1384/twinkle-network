@@ -95,6 +95,15 @@ class VideoPlayer extends Component {
       this.setState({imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${nextImageName}.jpg`})
     }
 
+    if (userId && !nextProps.userId) {
+      this.setState(state => ({
+        ...state,
+        timeWatched: 0,
+        xpEarned: false,
+        justEarned: false
+      }))
+    }
+
     if (isStarred && nextProps.userId && (userId !== nextProps.userId)) {
       try {
         const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
@@ -247,10 +256,14 @@ class VideoPlayer extends Component {
       }
     }
     if (!xpEarned) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
-    try {
-      return await request.put(`${VIDEO_URL}/duration`, {videoId}, auth())
-    } catch (error) {
-      console.error(error.response || error)
+    const authorization = auth()
+    const authExists = !!authorization.headers.authorization
+    if (authExists) {
+      try {
+        return await request.put(`${VIDEO_URL}/duration`, {videoId}, authorization)
+      } catch (error) {
+        console.error(error.response || error)
+      }
     }
   }
 }
