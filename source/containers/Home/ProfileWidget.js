@@ -12,11 +12,11 @@ ProfileWidget.propTypes = {
   openSigninModal: PropTypes.func,
   profilePicId: PropTypes.number,
   realName: PropTypes.string,
-  twinkleCoins: PropTypes.number,
+  twinkleXP: PropTypes.number,
   userId: PropTypes.number,
   username: PropTypes.string
 }
-function ProfileWidget({history, openSigninModal, twinkleCoins, userId, username, profilePicId, realName}) {
+function ProfileWidget({history, openSigninModal, twinkleXP, userId, username, profilePicId, realName}) {
   return (
     <div
       style={{
@@ -49,7 +49,7 @@ function ProfileWidget({history, openSigninModal, twinkleCoins, userId, username
         {realName && <div style={{color: Color.gray}}>({realName})</div>}
         {userId &&
           <div style={{marginTop: '0.5em'}}>
-            <div style={{fontWeight: 'bold'}}><span>{twinkleCoins}</span>
+            <div style={{fontWeight: 'bold'}}><span>{twinkleXP || 0}</span>
               &nbsp;<span style={{color: Color.logoGreen}}>Twin</span><span style={{color: Color.logoBlue}}>kle</span>
               &nbsp;<span style={{color: Color.orange}}>XP</span>
             </div>
@@ -72,7 +72,7 @@ function ProfileWidget({history, openSigninModal, twinkleCoins, userId, username
 export default connect(
   state => ({
     realName: state.UserReducer.realName,
-    twinkleCoins: state.UserReducer.twinkleCoins,
+    twinkleXP: state.UserReducer.twinkleXP,
     username: state.UserReducer.username,
     userId: state.UserReducer.userId,
     profilePicId: state.UserReducer.profilePicId

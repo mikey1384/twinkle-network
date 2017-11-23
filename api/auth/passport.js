@@ -9,7 +9,7 @@ const localOptions = {}
 const pool = require('../pool')
 const query = `
   SELECT a.id, a.username, a.realName, a.class, a.email, a.userType, a.joinDate, a.password,
-  a.lastChannelId, a.twinkleCoins, b.id AS profilePicId FROM users a
+  a.lastChannelId, a.twinkleXP, a.twinkleCoins, b.id AS profilePicId FROM users a
   LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE
 `
 

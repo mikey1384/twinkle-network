@@ -15,6 +15,11 @@ function isAdmin(userType) {
 export default function UserReducer(state = defaultState, action) {
   let loadMoreButton = false
   switch (action.type) {
+    case 'CHANGE_USER_XP':
+      return {
+        ...state,
+        twinkleXP: action.xp
+      }
     case 'CLEAR_USER_SEARCH':
       return {
         ...state,

@@ -273,4 +273,26 @@ router.post('/recordAnonTraffic', (req, res) => {
   )
 })
 
+router.post('/xp', requireAuth, async(req, res) => {
+  const {user, body: params} = req
+  const post = {userId: user.id, ...params, timeStamp: Math.floor(Date.now()/1000)}
+  const postQuery = `INSERT INTO users_xp_change SET ?`
+  try {
+    await poolQuery(postQuery, post)
+    const increaseQuery = `SELECT amount FROM users_xp_change WHERE userId = ? AND type = 'increase'`
+    const increases = await poolQuery(increaseQuery, user.id)
+    const totalIncrease = increases.reduce((prev, {amount = 0} = {}) => (prev += amount), 0)
+    const decreaseQuery = `SELECT amount FROM users_xp_change WHERE userId = ? AND type = 'decrease'`
+    const decreases = await poolQuery(decreaseQuery, user.id)
+    const totalDecrease = decreases.reduce((prev, {amount = 0} = {}) => (prev += amount), 0)
+    const netXP = totalIncrease - totalDecrease
+    const putQuery = `UPDATE users SET ? WHERE id = ?`
+    await poolQuery(putQuery, [{twinkleXP: netXP}, user.id])
+    res.send({xp: netXP})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
+})
+
 module.exports = router

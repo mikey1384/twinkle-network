@@ -10,6 +10,7 @@ import {
   fillCurrentVideoSlot,
   emptyCurrentVideoSlot
 } from 'redux/actions/VideoActions'
+import {changeUserXP} from 'redux/actions/UserActions'
 import request from 'axios'
 import StarMark from 'components/StarMark'
 import {URL} from 'constants/URL'
@@ -23,11 +24,13 @@ class VideoPlayer extends Component {
   static propTypes = {
     addVideoView: PropTypes.func.isRequired,
     autoplay: PropTypes.bool,
+    chatMode: PropTypes.bool,
     className: PropTypes.string,
     containerClassName: PropTypes.string,
     emptyCurrentVideoSlot: PropTypes.func,
     fillCurrentVideoSlot: PropTypes.func,
     hasHqThumb: PropTypes.number,
+    changeUserXP: PropTypes.func,
     isStarred: PropTypes.bool,
     onEdit: PropTypes.bool,
     pageVisible: PropTypes.bool,
@@ -45,6 +48,7 @@ class VideoPlayer extends Component {
 
   interval
   player = null
+  rewardingXP = false
 
   constructor({autoplay, hasHqThumb, videoCode}) {
     super()
@@ -54,7 +58,8 @@ class VideoPlayer extends Component {
       imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`,
       timeWatched: 0,
       totalDuration: 0,
-      xpEarned: false
+      xpEarned: false,
+      justEarned: false
     }
   }
 
@@ -84,14 +89,10 @@ class VideoPlayer extends Component {
   }
 
   async componentWillUpdate(nextProps) {
-    const {isStarred, pageVisible, userId, videoId, videoCode} = this.props
+    const {isStarred, userId, videoId, videoCode} = this.props
     if (videoCode !== nextProps.videoCode) {
       const nextImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
       this.setState({imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${nextImageName}.jpg`})
-    }
-
-    if (this.player && isStarred && pageVisible !== nextProps.pageVisible) {
-      this.player.pauseVideo()
     }
 
     if (isStarred && nextProps.userId && (userId !== nextProps.userId)) {
@@ -105,12 +106,23 @@ class VideoPlayer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {onEdit, currentVideoSlot, isStarred, videoId} = this.props
+    const {onEdit, chatMode, currentVideoSlot, isStarred, pageVisible, videoId} = this.props
+    const {xpEarned, justEarned} = this.state
     if (prevProps.onEdit !== onEdit) {
       this.setState({playing: false})
     }
-    const userIsCheating = this.player && isStarred && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
-    if (userIsCheating) {
+    const userWatchingMultipleVideo = this.player && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
+    const alreadyEarned = xpEarned || justEarned
+
+    if (userWatchingMultipleVideo) {
+      this.player.pauseVideo()
+    }
+
+    if (this.player && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
+      this.player.pauseVideo()
+    }
+
+    if (this.player && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
       this.player.pauseVideo()
     }
   }
@@ -125,7 +137,7 @@ class VideoPlayer extends Component {
     const {
       isStarred, videoCode, title, containerClassName, className, onEdit, style, small, userId
     } = this.props
-    const {imageUrl, playing, timeWatched, totalDuration, xpEarned} = this.state
+    const {imageUrl, playing, timeWatched, totalDuration, xpEarned, justEarned} = this.state
     const halfDuration = totalDuration / 2
     const progress = xpEarned ? 100 : (
       halfDuration > 0 ? Math.floor(Math.min(timeWatched, halfDuration) * 100 / halfDuration) : 0
@@ -186,10 +198,10 @@ class VideoPlayer extends Component {
         {isStarred && !!userId &&
           <div className="progress" style={{marginTop: '1rem'}}>
             <div
-              className={`progress-bar progress-bar-${xpEarned ? 'success' : 'info'}`}
+              className={`progress-bar progress-bar-${justEarned ? 'success' : xpEarned ? 'info' : 'primary'}`}
               style={{width: `${progress}%`}}
             >
-              {xpEarned ? 'Twinkle XP earned!' : `${progress}%`}
+              {justEarned ? 'Twinkle XP earned!' : xpEarned ? 'You have already earned this XP' : `${progress}%`}
             </div>
           </div>
         }
@@ -221,11 +233,15 @@ class VideoPlayer extends Component {
 
   increaseProgress = async() => {
     const {xpEarned, timeWatched, totalDuration} = this.state
-    const {videoId} = this.props
-    if (timeWatched >= totalDuration / 2) {
+    const {changeUserXP, videoId} = this.props
+    if (timeWatched >= totalDuration / 2 && !this.rewardingXP) {
+      this.rewardingXP = true
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, {videoId}, auth())
-        this.setState(() => ({xpEarned: true}))
+        await changeUserXP({type: 'increase', action: 'watch', target: 'video', amount: 100})
+        this.setState(() => ({
+          justEarned: true
+        }))
       } catch (error) {
         console.error(error.response || error)
       }
@@ -241,12 +257,14 @@ class VideoPlayer extends Component {
 
 export default connect(
   state => ({
+    chatMode: state.ChatReducer.chatMode,
     userId: state.UserReducer.userId,
     pageVisible: state.ViewReducer.pageVisible,
     currentVideoSlot: state.VideoReducer.currentVideoSlot
   }),
   {
     addVideoView: addVideoViewAsync,
+    changeUserXP,
     fillCurrentVideoSlot,
     emptyCurrentVideoSlot
   }
