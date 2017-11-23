@@ -49,6 +49,66 @@ router.get('/check', (req, res) => {
   )
 })
 
+router.post('/logout', requireAuth, (req, res) => {
+  const {user} = req
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  return poolQuery(`INSERT INTO users_actions SET ?`, {
+    userId: user.id,
+    action: 'logout',
+    userAgent,
+    ip: req.ip,
+    timeStamp: Math.floor(Date.now() / 1000)
+  }).then(
+    () => res.send(true)
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
+router.post('/navigation', requireAuth, (req, res) => {
+  const {user, body: {target}} = req
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  return poolQuery(`INSERT INTO users_actions SET ?`, {
+    userId: user.id,
+    action: 'navigate',
+    target,
+    userAgent,
+    ip: req.ip,
+    timeStamp: Math.floor(Date.now()/1000)
+  }).then(
+    () => res.send(true)
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
+router.post('/search', requireAuth, (req, res) => {
+  const {user, body: {target, subTarget}} = req
+  const userAgent = useragent.parse(req.headers['user-agent']).toString()
+  return poolQuery(`INSERT INTO users_actions SET ?`, {
+    userId: user.id,
+    action: 'search',
+    target,
+    subTarget,
+    userAgent,
+    ip: req.ip,
+    timeStamp: Math.floor(Date.now()/1000)
+  }).then(
+    () => res.send(true)
+  ).catch(
+    error => {
+      console.error(error)
+      res.status(500).send({error})
+    }
+  )
+})
+
 router.post('/parentUser', requireSignin, (req, res) => {
   const {user} = req
   if (user.userType === 'parent') {
