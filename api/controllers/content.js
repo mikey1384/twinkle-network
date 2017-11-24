@@ -114,8 +114,8 @@ router.post('/question/like', requireAuth, async(req, res) => {
     const likes = await poolQuery(query, contentId)
     res.send({likes})
   } catch (error) {
-    console.error(err)
-    return res.status(500).send({error: err})
+    console.error(error)
+    return res.status(500).send({error})
   }
 })
 
