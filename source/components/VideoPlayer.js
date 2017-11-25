@@ -247,7 +247,7 @@ class VideoPlayer extends Component {
       this.rewardingXP = true
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, {videoId}, auth())
-        await changeUserXP({type: 'increase', action: 'watch', target: 'video', amount: 100})
+        await changeUserXP({type: 'increase', action: 'watch', target: 'video', targetId: videoId, amount: 100})
         this.setState(() => ({
           justEarned: true
         }))

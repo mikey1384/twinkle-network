@@ -67,9 +67,10 @@ request.get(`${API_URL}/users?${shownUsersIds}`).then(
   }
 )
 
-export const changeUserXP = ({type, action, target, amount}) => async(dispatch) => {
+export const changeUserXP = (params) => async(dispatch) => {
   try {
-    const {data: {xp}} = await request.post(`${API_URL}/xp`, {type, action, target, amount}, auth())
+    const {data: {xp, alreadyDone}} = await request.post(`${API_URL}/xp`, params, auth())
+    if (alreadyDone) return
     return dispatch({
       type: 'CHANGE_USER_XP',
       xp

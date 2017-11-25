@@ -335,9 +335,14 @@ router.post('/recordAnonTraffic', (req, res) => {
 
 router.post('/xp', requireAuth, async(req, res) => {
   const {user, body: params} = req
-  const post = {userId: user.id, ...params, timeStamp: Math.floor(Date.now()/1000)}
-  const postQuery = `INSERT INTO users_xp_change SET ?`
   try {
+    if (params.target === 'video') {
+      const checkQuery = `SELECT id FROM users_xp_change WHERE userId = ? AND target = 'video' AND targetId = ?`
+      const rows = await poolQuery(checkQuery, [user.id, params.targetId])
+      if (rows.length > 0) return res.send({alreadyDone: true})
+    }
+    const post = {userId: user.id, ...params, timeStamp: Math.floor(Date.now()/1000)}
+    const postQuery = `INSERT INTO users_xp_change SET ?`
     await poolQuery(postQuery, post)
     const increaseQuery = `SELECT amount FROM users_xp_change WHERE userId = ? AND type = 'increase'`
     const increases = await poolQuery(increaseQuery, user.id)
