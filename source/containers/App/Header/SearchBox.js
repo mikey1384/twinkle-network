@@ -37,7 +37,7 @@ class SearchBox extends Component {
     const {searchResult, clearSearchResults, className, style} = this.props
     const {searchText} = this.state
     return (
-      <form className={className} style={style}>
+      <form onSubmit={e => e.preventDefault()} className={className} style={style}>
         <SearchInput
           placeholder="Search for Videos and Links"
           onChange={this.onContentSearch}

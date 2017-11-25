@@ -11,7 +11,7 @@ export default class Input extends Component {
       <input
         {...props}
         ref={ref => { this._rootDOMNode = ref }}
-        onChange={(event) => onChange(renderText(event.target.value))}
+        onChange={event => onChange(renderText(event.target.value))}
       />
     )
   }
