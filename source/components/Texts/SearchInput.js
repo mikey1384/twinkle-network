@@ -27,16 +27,14 @@ class SearchInput extends Component {
     this.props.onClickOutSide ? this.props.onClickOutSide() : null
   }
 
-  constructor() {
-    super()
-    this.state = {
-      indexToHighlight: 0
-    }
-    this.onKeyDown = this.onKeyDown.bind(this)
+  state = {
+    indexToHighlight: 0
   }
 
+  timer = null
+
   render() {
-    const {addonColor, autoFocus, placeholder, onChange, onFocus, style, value} = this.props
+    const {addonColor, autoFocus, onChange, placeholder, onFocus, style, value} = this.props
     return (
       <div className="input-group dropdown" style={style}>
         <span className="input-group-addon" style={{backgroundColor: addonColor}}>
@@ -56,7 +54,7 @@ class SearchInput extends Component {
     )
   }
 
-  renderDropdownList() {
+  renderDropdownList = () => {
     const {searchResults, renderItemLabel, renderItemUrl, onSelect} = this.props
     return searchResults.length > 0 ? <SearchDropdown
       searchResults={searchResults}
@@ -69,7 +67,7 @@ class SearchInput extends Component {
     /> : null
   }
 
-  onKeyDown(event) {
+  onKeyDown = event => {
     const {indexToHighlight} = this.state
     const {searchResults, onSelect, onClear} = this.props
     let index = indexToHighlight

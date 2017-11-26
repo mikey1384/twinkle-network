@@ -114,29 +114,41 @@ router.post('/question/like', requireAuth, async(req, res) => {
     const likes = await poolQuery(query, contentId)
     res.send({likes})
   } catch (error) {
-    console.error(err)
-    return res.status(500).send({error: err})
+    console.error(error)
+    return res.status(500).send({error})
   }
 })
 
-router.get('/search', (req, res) => {
-  const searchQuery = req.query.query
-  if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send({result: []})
-  const query = `
+router.get('/search', async(req, res) => {
+  const {query} = req.query
+  if (stringIsEmpty(query) || query.length < 2) return res.send({result: []})
+  const queryWords = query.split(' ').map(word => `+${word} `).join('')
+  const params = [queryWords, queryWords]
+  const searchQuery = `
     SELECT id, type, title AS label FROM (
-      SELECT id, 'video' AS type, title FROM vq_videos
+      (SELECT id, 'video' AS type, title FROM vq_videos WHERE MATCH(title)
+      AGAINST(?IN BOOLEAN MODE))
       UNION
-      SELECT id, 'link' AS type, title FROM content_urls
-    ) AS u WHERE u.title LIKE ? ORDER BY u.id DESC LIMIT 20
+      (SELECT id, 'link' AS type, title FROM content_urls WHERE MATCH(title)
+      AGAINST(?IN BOOLEAN MODE))
+    ) AS u LIMIT 20
   `
-  return poolQuery(query, '%' + searchQuery + '%').then(
-    result => res.send({result})
-  ).catch(
-    err => {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-  )
+  try {
+    let result = await poolQuery(searchQuery, params)
+    if (result.length > 0) return res.send({result})
+    const alternateQuery = `
+      SELECT id, type, title AS label FROM (
+        SELECT id, 'video' AS type, title FROM vq_videos
+        UNION
+        SELECT id, 'link' AS type, title FROM content_urls
+      ) AS u WHERE u.title LIKE ? ORDER BY u.id DESC LIMIT 20
+    `
+    result = await poolQuery(alternateQuery, `%${query}%`)
+    return res.send({result})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
 })
 
 router.put('/videoThumb', (req, res) => {

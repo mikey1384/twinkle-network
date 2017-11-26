@@ -48,7 +48,7 @@ class ContentInput extends Component {
         }}
       >
         <div className="panel-body">
-          <form className="container-fluid">
+          <form className="container-fluid" onSubmit={e => e.preventDefault()}>
             <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
               <label style={{paddingBottom: '0.3em'}}>
                 <p style={{marginBottom: '0px', fontSize: '1.2em'}}>
