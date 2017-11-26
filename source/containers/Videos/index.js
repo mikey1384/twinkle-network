@@ -12,7 +12,7 @@ export default class Videos extends Component {
   render() {
     const {match} = this.props
     return (
-      <div id="contents">
+      <div>
         <Route exact path={`${match.url}`} component={Main}/>
         <Route path={`${match.url}/:videoId`} component={VideoPage}/>
       </div>
