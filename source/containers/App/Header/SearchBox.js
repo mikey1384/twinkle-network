@@ -24,14 +24,11 @@ class SearchBox extends Component {
     style: PropTypes.object
   }
 
-  constructor() {
-    super()
-    this.state = {
-      searchText: ''
-    }
-    this.onContentSearch = this.onContentSearch.bind(this)
-    this.onSelect = this.onSelect.bind(this)
+  state = {
+    searchText: ''
   }
+
+  timer = null
 
   render() {
     const {searchResult, clearSearchResults, className, style} = this.props
@@ -73,16 +70,17 @@ class SearchBox extends Component {
     )
   }
 
-  onContentSearch(text) {
+  onContentSearch = (text) => {
     const {searchContent, clearSearchResults} = this.props
+    window.clearInterval(this.timer)
     this.setState({searchText: text})
     if (stringIsEmpty(text)) {
       return clearSearchResults()
     }
-    searchContent(text)
+    this.timer = window.setInterval(() => searchContent(text), 500)
   }
 
-  onSelect(item) {
+  onSelect = (item) => {
     const {
       clearSearchResults, loadVideoPage, loadLinkPage,
       history, loggedIn, location: {pathname}
