@@ -24,6 +24,8 @@ class EditSubjectForm extends Component {
     title: PropTypes.string.isRequired
   }
 
+  timer = null
+
   handleClickOutside = (event) => {
     const {subjectsModalShown} = this.state
     if (!subjectsModalShown) this.props.onClickOutSide()
@@ -36,12 +38,6 @@ class EditSubjectForm extends Component {
       highlightedIndex: -1,
       subjectsModalShown: false
     }
-    this.onEditSubmit = this.onEditSubmit.bind(this)
-    this.onInputChange = this.onInputChange.bind(this)
-    this.onItemClick = this.onItemClick.bind(this)
-    this.onKeyDown = this.onKeyDown.bind(this)
-    this.onUpdate = this.onUpdate.bind(this)
-    this.renderItemLabel = this.renderItemLabel.bind(this)
   }
 
   render() {
@@ -102,7 +98,7 @@ class EditSubjectForm extends Component {
     )
   }
 
-  onKeyDown(event) {
+  onKeyDown = (event) => {
     const {searchResults} = this.props
     const {highlightedIndex} = this.state
     let index = highlightedIndex
@@ -119,10 +115,11 @@ class EditSubjectForm extends Component {
     }
   }
 
-  onInputChange(text) {
+  onInputChange = (text) => {
     const {onChange} = this.props
+    window.clearTimeout(this.timer)
     this.setState({title: text})
-    return onChange(text).then(
+    this.timer = window.setTimeout(() => onChange(text).then(
       () => {
         const {searchResults} = this.props
         const {title} = this.state
@@ -138,10 +135,10 @@ class EditSubjectForm extends Component {
         }
         this.setState({highlightedIndex: exactMatchExists ? matchIndex : -1})
       }
-    )
+    ), 300)
   }
 
-  onUpdate() {
+  onUpdate = () => {
     const {searchResults} = this.props
     const {title} = this.state
     let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : ''
@@ -159,7 +156,7 @@ class EditSubjectForm extends Component {
     })
   }
 
-  onEditSubmit(event) {
+  onEditSubmit = (event) => {
     const {
       onEditSubmit, onClickOutSide, maxLength = 100,
       reloadChatSubject, searchResults, currentSubjectId
@@ -180,14 +177,14 @@ class EditSubjectForm extends Component {
     }
   }
 
-  onItemClick(item) {
+  onItemClick = (item) => {
     const {currentSubjectId, reloadChatSubject, onClickOutSide} = this.props
     const {id: subjectId} = item
     if (subjectId === currentSubjectId) return onClickOutSide()
     return reloadChatSubject(subjectId)
   }
 
-  renderItemLabel(item) {
+  renderItemLabel = (item) => {
     return (
       <div>
         <div

@@ -16,13 +16,11 @@ class ChatSearchBox extends Component {
     userId: PropTypes.number,
     username: PropTypes.string
   }
-  constructor() {
-    super()
-    this.state = {
-      searchText: ''
-    }
-    this.onChatSearch = this.onChatSearch.bind(this)
-    this.onSelect = this.onSelect.bind(this)
+
+  timer = null
+
+  state = {
+    searchText: ''
   }
 
   render() {
@@ -50,16 +48,17 @@ class ChatSearchBox extends Component {
     )
   }
 
-  onChatSearch(text) {
+  onChatSearch = (text) => {
     const {searchChat, clearSearchResults} = this.props
+    window.clearTimeout(this.timer)
     this.setState({searchText: text})
     if (stringIsEmpty(text) || text.length < 2) {
       return clearSearchResults()
     }
-    searchChat(text)
+    this.timer = window.setTimeout(() => searchChat(text), 300)
   }
 
-  onSelect(item) {
+  onSelect = (item) => {
     const {enterChannelWithId, clearSearchResults, userId, username, openNewChatTab} = this.props
     if (item.primary || !!item.channelId) {
       enterChannelWithId(item.channelId, true)

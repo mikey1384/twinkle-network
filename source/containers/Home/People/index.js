@@ -26,17 +26,13 @@ class People extends Component {
 
   scrollHeight = 0
 
-  constructor() {
-    super()
-    this.state = {
-      searchText: '',
-      loading: false,
-      loaded: false,
-      searching: false
-    }
-    this.loadMoreProfiles = this.loadMoreProfiles.bind(this)
-    this.onPeopleSearch = this.onPeopleSearch.bind(this)
-    this.onScroll = this.onScroll.bind(this)
+  timer = null
+
+  state = {
+    searchText: '',
+    loading: false,
+    loaded: false,
+    searching: false
   }
 
   componentDidMount() {
@@ -86,7 +82,7 @@ class People extends Component {
     )
   }
 
-  loadMoreProfiles() {
+  loadMoreProfiles = () => {
     const {fetchMoreUsers, profiles} = this.props
     const {loading} = this.state
     if (!loading) {
@@ -97,20 +93,17 @@ class People extends Component {
     }
   }
 
-  onPeopleSearch(text) {
+  onPeopleSearch = (text) => {
     const {searchUsers, clearUserSearch} = this.props
+    window.clearTimeout(this.timer)
+    this.setState({searchText: text, searching: !stringIsEmpty(text)})
     if (stringIsEmpty(text)) {
-      this.setState({
-        searchText: '',
-        searching: false
-      })
       return clearUserSearch()
     }
-    searchUsers(text)
-    this.setState({searchText: text, searching: true})
+    this.timer = window.setTimeout(() => searchUsers(text), 300)
   }
 
-  onScroll() {
+  onScroll = () => {
     const {chatMode, profiles} = this.props
     if (document.body.scrollHeight > this.scrollHeight) {
       this.scrollHeight = document.body.scrollHeight

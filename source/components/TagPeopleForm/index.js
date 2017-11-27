@@ -23,13 +23,10 @@ export default class TagPeopleForm extends Component {
     ])
   }
 
-  constructor() {
-    super()
-    this.state={
-      searchText: ''
-    }
-    this.onUserSearch = this.onUserSearch.bind(this)
-    this.onAddUser = this.onAddUser.bind(this)
+  timer = null
+
+  state = {
+    searchText: ''
   }
 
   componentWillUnmount() {
@@ -74,7 +71,7 @@ export default class TagPeopleForm extends Component {
     )
   }
 
-  renderTags() {
+  renderTags = () => {
     const {selectedUsers, onRemoveUser} = this.props
     return selectedUsers.length > 0 ? <div
       style={{
@@ -101,16 +98,17 @@ export default class TagPeopleForm extends Component {
     </div> : null
   }
 
-  onUserSearch(text) {
+  onUserSearch = (text) => {
     const {onSearch, onClear} = this.props
+    window.clearTimeout(this.timer)
     this.setState({searchText: text})
     if (stringIsEmpty(text) || text.length < 2) {
       return onClear()
     }
-    onSearch(text)
+    this.timer = window.setTimeout(() => onSearch(text), 300)
   }
 
-  onAddUser(user) {
+  onAddUser = (user) => {
     this.setState({searchText: ''})
     this.props.onAddUser(user)
     this.props.onClear()

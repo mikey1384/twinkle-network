@@ -72,12 +72,12 @@ class SearchBox extends Component {
 
   onContentSearch = (text) => {
     const {searchContent, clearSearchResults} = this.props
-    window.clearInterval(this.timer)
+    window.clearTimeout(this.timer)
     this.setState({searchText: text})
     if (stringIsEmpty(text)) {
       return clearSearchResults()
     }
-    this.timer = window.setInterval(() => searchContent(text), 500)
+    this.timer = window.setTimeout(() => searchContent(text), 300)
   }
 
   onSelect = (item) => {
