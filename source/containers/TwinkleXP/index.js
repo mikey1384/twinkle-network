@@ -13,12 +13,24 @@ export default function TwinkleXP() {
         >
           <p
             style={{
-              fontSize: '3rem',
+              fontSize: '4rem',
               fontWeight: 'bold',
               textAlign: 'center'
-            }}>
+            }}
+          >
             About <span style={{color: Color.logoGreen}}>Twin</span><span style={{color: Color.logoBlue}}>kle</span> <span style={{color: Color.orange}}>XP</span>
           </p>
+          <p
+            style={{
+              fontSize: '3rem',
+              fontWeight: 'bold'
+            }}
+          >
+            What is it?
+          </p>
+          <div>
+            <img src="/img/starred_video_exampe.png" />
+          </div>
         </div>
       </div>
       <div
