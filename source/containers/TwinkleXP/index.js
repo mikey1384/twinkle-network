@@ -1,5 +1,6 @@
 import React from 'react'
-import {Color} from 'constants/css'
+import Styles from './Styles'
+import Rankings from './Rankings'
 
 export default function TwinkleXP() {
   const {logoHead, logoTail, spanXP} = Styles
@@ -52,50 +53,7 @@ export default function TwinkleXP() {
           </div>
         </div>
       </div>
-      <div
-        className="col-xs-offset-8"
-        style={Styles.rightMenu}
-      >
-        <p style={{...Styles.subHeader, textAlign: 'center'}}>
-          Rankings
-        </p>
-      </div>
+      <Rankings />
     </div>
   )
-}
-
-const Styles = {
-  mainContainer: {
-    background: 'white',
-    padding: '1.5rem'
-  },
-  section: {
-    marginTop: '1rem'
-  },
-  paragraph: {
-    fontSize: '2rem'
-  },
-  rightMenu: {
-    width: '30%',
-    position: 'absolute',
-    background: 'white',
-    padding: '1.5rem'
-  },
-  header: {
-    fontSize: '4rem',
-    fontWeight: 'bold'
-  },
-  subHeader: {
-    fontSize: '3rem',
-    fontWeight: 'bold'
-  },
-  logoHead: {
-    color: Color.logoGreen
-  },
-  logoTail: {
-    color: Color.logoBlue
-  },
-  spanXP: {
-    color: Color.orange
-  }
 }
