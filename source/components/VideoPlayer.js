@@ -249,9 +249,9 @@ class VideoPlayer extends Component {
   }
 
   increaseProgress = async() => {
-    const {xpEarned, timeWatched, totalDuration} = this.state
+    const {isStarred, xpEarned, timeWatched, totalDuration} = this.state
     const {changeUserXP, videoId} = this.props
-    if (timeWatched >= totalDuration / 2 && !this.rewardingXP) {
+    if (isStarred && timeWatched >= totalDuration / 2 && !this.rewardingXP) {
       this.rewardingXP = true
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, {videoId}, auth())
