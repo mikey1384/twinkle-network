@@ -22,7 +22,7 @@ function LeaderBoardItem({myId, user}) {
       <img
         alt='thumbnail'
         style={{width: '20%', height: '20%', borderRadius: '50%'}}
-        src={`https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/5/25.jpg`}
+        src={`https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/${user.id}/${user.profilePicId}.jpg`}
       />
       <div
         style={{
