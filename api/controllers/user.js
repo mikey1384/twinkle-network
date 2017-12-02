@@ -109,6 +109,19 @@ router.post('/action/search', requireAuth, (req, res) => {
   )
 })
 
+router.get('/leaderBoard', async(req, res) => {
+  try {
+    const query = `
+      SELECT a.id, a.username, a.twinkleXP, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' ORDER BY twinkleXP DESC LIMIT 30
+    `
+    const users = await poolQuery(query)
+    res.send(users)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send({error})
+  }
+})
+
 router.post('/parentUser', requireSignin, (req, res) => {
   const {user} = req
   if (user.userType === 'parent') {

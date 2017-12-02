@@ -14,7 +14,7 @@ export default function ProfilePic({size, userId, profilePicId, ...props}) {
         <img
           alt="Thumbnail"
           className="media-object"
-          style={{width: `${size}vw`, height: `${size}vw`}}
+          style={{width: `${size}vw`, height: `${size}vw`, borderRadius: '50%'}}
           src={profilePicId ? src : '/img/default.png'}
         />
       </a>

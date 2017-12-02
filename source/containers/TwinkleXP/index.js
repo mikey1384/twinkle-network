@@ -1,6 +1,6 @@
 import React from 'react'
 import Styles from './Styles'
-import Rankings from './Rankings'
+import LeaderBoard from './LeaderBoard'
 
 export default function TwinkleXP() {
   return (
@@ -44,7 +44,7 @@ export default function TwinkleXP() {
           </div>
         </div>
       </div>
-      <Rankings />
+      <LeaderBoard />
     </div>
   )
 }
