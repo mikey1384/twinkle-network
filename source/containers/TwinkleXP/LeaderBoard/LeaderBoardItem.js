@@ -9,6 +9,9 @@ LeaderBoardItem.propTypes = {
   user: PropTypes.object.isRequired
 }
 function LeaderBoardItem({myId, user}) {
+  const profileUrl = user.profilePicId ?
+  `https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/${user.id}/${user.profilePicId}.jpg` :
+  '/img/default.png'
   return (
     <div
       style={{
@@ -22,7 +25,7 @@ function LeaderBoardItem({myId, user}) {
       <img
         alt='thumbnail'
         style={{width: '20%', height: '20%', borderRadius: '50%'}}
-        src={`https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/${user.id}/${user.profilePicId}.jpg`}
+        src={profileUrl}
       />
       <div
         style={{
