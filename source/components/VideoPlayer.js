@@ -249,8 +249,8 @@ class VideoPlayer extends Component {
   }
 
   increaseProgress = async() => {
-    const {isStarred, xpEarned, timeWatched, totalDuration} = this.state
-    const {changeUserXP, videoId} = this.props
+    const {xpEarned, timeWatched, totalDuration} = this.state
+    const {changeUserXP, isStarred, videoId} = this.props
     if (isStarred && timeWatched >= totalDuration / 2 && !this.rewardingXP) {
       this.rewardingXP = true
       try {
