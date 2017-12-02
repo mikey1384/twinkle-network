@@ -109,6 +109,19 @@ router.post('/action/search', requireAuth, (req, res) => {
   )
 })
 
+router.get('/leaderBoard', async(req, res) => {
+  try {
+    const query = `
+      SELECT a.id, a.username, a.twinkleXP, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' ORDER BY twinkleXP DESC LIMIT 30
+    `
+    const users = await poolQuery(query)
+    res.send(users)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send({error})
+  }
+})
+
 router.post('/parentUser', requireSignin, (req, res) => {
   const {user} = req
   if (user.userType === 'parent') {
@@ -331,6 +344,33 @@ router.post('/recordAnonTraffic', (req, res) => {
   ).catch(
     error => console.error(error)
   )
+})
+
+router.post('/xp', requireAuth, async(req, res) => {
+  const {user, body: params} = req
+  try {
+    if (params.target === 'video') {
+      const checkQuery = `SELECT id FROM users_xp_change WHERE userId = ? AND target = 'video' AND targetId = ?`
+      const rows = await poolQuery(checkQuery, [user.id, params.targetId])
+      if (rows.length > 0) return res.send({alreadyDone: true})
+    }
+    const post = {userId: user.id, ...params, timeStamp: Math.floor(Date.now()/1000)}
+    const postQuery = `INSERT INTO users_xp_change SET ?`
+    await poolQuery(postQuery, post)
+    const increaseQuery = `SELECT amount FROM users_xp_change WHERE userId = ? AND type = 'increase'`
+    const increases = await poolQuery(increaseQuery, user.id)
+    const totalIncrease = increases.reduce((prev, {amount = 0} = {}) => (prev += amount), 0)
+    const decreaseQuery = `SELECT amount FROM users_xp_change WHERE userId = ? AND type = 'decrease'`
+    const decreases = await poolQuery(decreaseQuery, user.id)
+    const totalDecrease = decreases.reduce((prev, {amount = 0} = {}) => (prev += amount), 0)
+    const netXP = totalIncrease - totalDecrease
+    const putQuery = `UPDATE users SET ? WHERE id = ?`
+    await poolQuery(putQuery, [{twinkleXP: netXP}, user.id])
+    res.send({xp: netXP})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
 })
 
 module.exports = router

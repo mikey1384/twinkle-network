@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import ProfileCard from '../ProfileCard'
+import ProfilePanel from '../ProfilePanel'
 import Body from './Body'
 import ExecutionEnvironment from 'exenv'
 import {connect} from 'react-redux'
@@ -42,7 +42,7 @@ class Profile extends Component {
         {!id && <Loading text="Loading Profile..." />}
         {id &&
           <div style={{width: '100%'}}>
-            <ProfileCard {...this.props} />
+            <ProfilePanel {...this.props} />
             <Body {...this.props} />
           </div>
         }

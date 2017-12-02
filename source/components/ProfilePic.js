@@ -6,15 +6,15 @@ ProfilePic.propTypes = {
   size: PropTypes.string.isRequired,
   userId: PropTypes.number
 }
-export default function ProfilePic({size, userId, profilePicId}) {
+export default function ProfilePic({size, userId, profilePicId, ...props}) {
   const src = `https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/${userId}/${profilePicId}.jpg`
   return (
-    <div className="media-left">
+    <div {...props} className="media-left">
       <a>
         <img
           alt="Thumbnail"
           className="media-object"
-          style={{width: `${size}vw`, height: `${size}vw`}}
+          style={{width: `${size}vw`, height: `${size}vw`, borderRadius: '50%'}}
           src={profilePicId ? src : '/img/default.png'}
         />
       </a>

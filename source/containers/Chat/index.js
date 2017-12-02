@@ -57,6 +57,7 @@ class Chat extends Component {
     hideChat: PropTypes.func,
     leaveChannel: PropTypes.func,
     openDirectMessageChannel: PropTypes.func,
+    pageVisible: PropTypes.bool,
     subjectId: PropTypes.number
   }
 
@@ -518,11 +519,11 @@ class Chat extends Component {
   }
 
   onReceiveMessage(message, channel) {
-    const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
+    const {pageVisible, receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
     let messageIsForCurrentChannel = message.channelId === currentChannel.id
     let senderIsNotTheUser = message.userId !== userId
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
-      receiveMessage(message)
+      receiveMessage({message, pageVisible})
     }
     if (!messageIsForCurrentChannel) {
       receiveMessageOnDifferentChannel({message, channel, senderIsNotTheUser})
@@ -530,11 +531,11 @@ class Chat extends Component {
   }
 
   onSubjectChange({message}) {
-    const {receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
+    const {pageVisible, receiveMessage, receiveMessageOnDifferentChannel, currentChannel, userId} = this.props
     let messageIsForCurrentChannel = message.channelId === currentChannel.id
     let senderIsNotTheUser = message.userId !== userId
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
-      receiveMessage(message)
+      receiveMessage({message, pageVisible})
     }
     if (!messageIsForCurrentChannel) {
       receiveMessageOnDifferentChannel({
@@ -557,7 +558,7 @@ class Chat extends Component {
   }
 
   onChatInvitation(data) {
-    const {receiveFirstMsg, currentChannel, userId} = this.props
+    const {receiveFirstMsg, currentChannel, pageVisible, userId} = this.props
     let duplicate = false
     if (currentChannel.id === 0) {
       if (
@@ -565,7 +566,7 @@ class Chat extends Component {
         currentChannel.members.filter(member => member.userId !== userId)[0].userId
       ) duplicate = true
     }
-    receiveFirstMsg(data, duplicate)
+    receiveFirstMsg({data, duplicate, pageVisible})
     socket.emit('join_chat_channel', data.channelId)
   }
 
@@ -607,6 +608,7 @@ export default connect(
   state => ({
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
+    pageVisible: state.ViewReducer.pageVisible,
     profilePicId: state.UserReducer.profilePicId,
     currentChannel: state.ChatReducer.currentChannel,
     selectedChannelId: state.ChatReducer.selectedChannelId,

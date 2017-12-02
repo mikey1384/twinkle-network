@@ -8,7 +8,9 @@ const localOptions = {}
 
 const pool = require('../pool')
 const query = `
-  SELECT a.id, a.username, a.realName, a.class, a.email, a.userType, a.joinDate, a.password, a.lastChannelId, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE
+  SELECT a.id, a.username, a.realName, a.class, a.email, a.userType, a.joinDate, a.password,
+  a.lastChannelId, a.twinkleXP, a.twinkleCoins, b.id AS profilePicId FROM users a
+  LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE
 `
 
 const localLogin = new LocalStrategy(localOptions, function(username, password, done) {
@@ -19,7 +21,11 @@ const localLogin = new LocalStrategy(localOptions, function(username, password, 
 
     var hashedPass = rows[0].password
     if (passwordHash.verify(password, hashedPass)) {
-      done(null, rows[0])
+      let user = {}
+      for (let key in rows[0]) {
+        if (key !== 'password') user[key] = rows[0][key]
+      }
+      done(null, user)
     } else {
       done(null, false)
     }
@@ -39,7 +45,11 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
     if (!rows || rows.length === 0) {
       return done(null, false)
     }
-    done(null, rows[0])
+    let user = {}
+    for (let key in rows[0]) {
+      if (key !== 'password') user[key] = rows[0][key]
+    }
+    done(null, user)
   })
 })
 

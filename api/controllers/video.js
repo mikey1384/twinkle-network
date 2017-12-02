@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
   `
   const videoQuery = `
     SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId,
-    b.username AS uploaderName, COUNT(c.id) AS numLikes
+    b.username AS uploaderName, isStarred, COUNT(c.id) AS numLikes
     FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
     LEFT JOIN content_likes c ON a.id = c.rootId AND c.rootType = 'video'
     WHERE a.id = ?
@@ -214,7 +214,7 @@ router.get('/more/playlistVideos', (req, res) => {
 router.get('/page', (req, res) => {
   const {videoId} = req.query
   let query = `
-    SELECT a.id AS videoId, a.title, a.description, a.content, a.hasHqThumb, a.timeStamp,
+    SELECT a.id AS videoId, a.title, a.description, a.content, a.hasHqThumb, a.isStarred, a.timeStamp,
     a.uploader AS uploaderId, b.username AS uploaderName,
     (SELECT COUNT(id) FROM vq_video_views WHERE videoId = ?) AS videoViews
     FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id
@@ -505,6 +505,28 @@ router.post('/discussions/comments', requireAuth, (req, res) => {
   })
 })
 
+router.put('/duration', requireAuth, async(req, res) => {
+  const {user, body: {videoId}} = req
+  const query = `SELECT * FROM users_video_view_status WHERE userId = ? AND videoId = ?`
+  const params = [user.id, videoId]
+  try {
+    const rows = await poolQuery(query, params)
+    if (rows.length === 0) {
+      const postQuery = `INSERT INTO users_video_view_status SET ?`
+      const post = {userId: user.id, videoId, duration: 2}
+      await poolQuery(postQuery, post)
+    } else {
+      const put = {duration: Number(rows[0].duration) + 2}
+      const putQuery = `UPDATE users_video_view_status SET ? WHERE userId = ? AND videoId = ?`
+      await poolQuery(putQuery, [put, user.id, videoId])
+    }
+    res.send({success: true})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({error})
+  }
+})
+
 router.post('/replies/edit', requireAuth, (req, res) => {
   const user = req.user
   const content = req.body.editedReply
@@ -552,6 +574,19 @@ router.post('/questions', requireAuth, (req, res) => {
   })
 })
 
+router.put('/star', requireAuth, async(req, res) => {
+  const {user, body: {videoId}} = req
+  try {
+    if (user.userType !== 'creator') return res.status(403).send({error: 'Not authorized to perform that action'})
+    const [{isStarred}] = await poolQuery(`SELECT isStarred FROM vq_videos WHERE id = ?`, videoId)
+    await poolQuery(`UPDATE vq_videos SET ? WHERE id = ?`, [{isStarred: !isStarred}, videoId])
+    res.send(!isStarred)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({error})
+  }
+})
+
 router.post('/view', (req, res) => {
   const {videoId, userId} = req.body
   const post = {videoId, userId, timeStamp: Math.floor(Date.now()/1000)}
@@ -562,6 +597,30 @@ router.post('/view', (req, res) => {
     }
     res.send({success: true})
   })
+})
+
+router.get('/xpEarned', requireAuth, async(req, res) => {
+  const {user, query: {videoId}} = req
+  const query = `SELECT xpEarned FROM users_video_view_status WHERE userId = ? AND videoId = ?`
+  try {
+    const [{xpEarned = 0} = {}] = await poolQuery(query, [user.id, videoId])
+    res.send({xpEarned})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
+})
+
+router.put('/xpEarned', requireAuth, async(req, res) => {
+  const {user, body: {videoId}} = req
+  const query = `UPDATE users_video_view_status SET ? WHERE userId = ? AND videoId = ?`
+  try {
+    await poolQuery(query, [{xpEarned: true}, user.id, videoId])
+    res.send(true)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({error})
+  }
 })
 
 module.exports = router

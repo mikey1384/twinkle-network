@@ -22,13 +22,13 @@ export const getInitialVideos = () => dispatch => request.get(API_URL).then(
 )
 
 export const addVideoViewAsync = params => dispatch =>
-  request.post(`${API_URL}/view`, params)
-    .catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+request.post(`${API_URL}/view`, params)
+.catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const closeAddVideoModal = () => ({
   type: 'VID_MODAL_CLOSE'
@@ -161,22 +161,31 @@ export const editVideoTitle = (videoId, data) => ({
 })
 
 export const editVideoTitleAsync = (params, sender) => dispatch =>
-  request.post(`${API_URL}/edit/title`, params, auth())
-    .then(
-      response => {
-        const {data} = response
-        if (data.result) {
-          dispatch(editVideoTitle(params.videoId, data.result))
-          sender.setState({onEdit: false})
-        }
-        return
-      }
-    ).catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+request.post(`${API_URL}/edit/title`, params, auth())
+.then(
+  response => {
+    const {data} = response
+    if (data.result) {
+      dispatch(editVideoTitle(params.videoId, data.result))
+      sender.setState({onEdit: false})
+    }
+    return
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const emptyCurrentVideoSlot = () => ({
+  type: 'EMPTY_CURRENT_VIDEO_SLOT'
+})
+
+export const fillCurrentVideoSlot = videoId => ({
+  type: 'FILL_CURRENT_VIDEO_SLOT',
+  videoId
+})
 
 export const getMoreVideos = videoId => dispatch =>
   request.get(`${API_URL}?videoId=${videoId}`)
@@ -406,6 +415,20 @@ export const resetVideoPage = () => ({
 export const resetVideoState = () => ({
   type: 'RESET_VID_STATE'
 })
+
+export const starVideo = videoId => async(dispatch) => {
+  try {
+    const {data} = await request.put(`${API_URL}/star`, {videoId}, auth())
+    return dispatch({
+      type: 'VIDEO_STAR',
+      videoId,
+      isStarred: data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const uploadQuestions = data => ({
   type: 'UPLOAD_QUESTIONS',

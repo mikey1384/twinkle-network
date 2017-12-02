@@ -45,7 +45,12 @@ class FeedPanel extends Component {
             myId={userId}
             targetCommentUploader={feed.targetCommentUploaderName && {name: feed.targetCommentUploaderName, id: feed.targetCommentUploaderId}}
             targetReplyUploader={feed.targetReplyUploaderName && {name: feed.targetReplyUploaderName, id: feed.targetReplyUploaderId}}
-            rootContent={{id: feed.rootId, title: feed.rootContentTitle, content: feed.rootContent}}
+            rootContent={{
+              id: feed.rootId,
+              title: feed.rootContentTitle,
+              content: feed.rootContent,
+              isStarred: feed.rootContentIsStarred
+            }}
             action={feed.commentId ? 'replied to' : feed.rootType === 'question' ? 'answered' : 'commented on'}
             uploader={{name: feed.uploaderName, id: feed.uploaderId}}
             onPlayVideoClick={() => this.setState({attachedVideoShown: true})}

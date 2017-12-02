@@ -14,17 +14,18 @@ MainContent.propTypes = {
   contentTitle: PropTypes.string,
   hasHqThumb: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
+  isStarred: PropTypes.bool,
   onEditDismiss: PropTypes.func.isRequired,
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
+  rootContentIsStarred: PropTypes.bool,
   rootType: PropTypes.string,
   urlRelated: PropTypes.object,
-  type: PropTypes.string.isRequired,
-  videoViews: PropTypes.string
+  type: PropTypes.string.isRequired
 }
 export default function MainContent({
-  content, contentDescription, contentId, contentTitle, hasHqThumb, isEditing,
-  onEditDismiss, rootId, rootContent, rootType, urlRelated, type, videoViews
+  content, contentDescription, contentId, contentTitle, hasHqThumb, isEditing, isStarred,
+  onEditDismiss, rootId, rootContent, rootContentIsStarred, rootType, urlRelated, type
 }) {
   return (
     <div>
@@ -38,6 +39,7 @@ export default function MainContent({
       }
       {(type === 'video' || type === 'discussion') &&
         <VideoPlayer
+          isStarred={!!(isStarred || rootContentIsStarred)}
           onEdit={isEditing}
           title={contentTitle}
           containerClassName="embed-responsive embed-responsive-16by9"
@@ -106,15 +108,6 @@ export default function MainContent({
         }}>
           <LongText>{contentDescription}</LongText>
         </div>
-      }
-      {!isEditing && type === 'video' && videoViews > 10 &&
-        <span
-          className="pull-right"
-          style={{
-            fontSize: '1.5em',
-            marginTop: '1em'
-          }}
-        >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}</span>
       }
       {type === 'comment' && rootType === 'url' &&
         <Embedly

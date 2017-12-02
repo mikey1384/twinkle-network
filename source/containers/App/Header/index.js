@@ -173,7 +173,7 @@ class Header extends Component {
               style={{paddingLeft: '0.6em', paddingRight: '0.6em'}}
               imgLabel="home"
               isUsername={
-                pathname.split('/')[1] !== 'videos' && pathname.split('/')[1] !== 'links' && pathname.length > 1
+                pathname.split('/')[1] !== 'videos' && ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) === -1 && pathname.length > 1
               }
             >
               <span style={{marginLeft: '0.3em'}}>Home</span>

@@ -5,12 +5,14 @@ import {Switch, Route} from 'react-router-dom'
 import Chat from '../Chat'
 import Header from './Header'
 import {connect} from 'react-redux'
-import {initChatAsync, resetChat, turnChatOff, changePageVisibility} from 'redux/actions/ChatActions'
+import {initChatAsync, resetChat, turnChatOff} from 'redux/actions/ChatActions'
+import {changePageVisibility} from 'redux/actions/ViewActions'
 import {initSessionAsync} from 'redux/actions/UserActions'
 import {addEvent, removeEvent} from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
 import Videos from 'containers/Videos'
 import Links from 'containers/Links'
+import TwinkleXP from 'containers/TwinkleXP'
 import Redirect from 'containers/Redirect'
 import Button from 'components/Button'
 import {recordUserAction} from 'helpers/userDataHelpers'
@@ -165,6 +167,7 @@ class App extends Component {
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
             <Route path="/users" component={Home} />
+            <Route path="/twinklexp" component={TwinkleXP} />
             <Route path="/users/:username" component={Home} />
             <Route path="/:username" component={Redirect} />
           </Switch>
@@ -187,11 +190,7 @@ class App extends Component {
 
   handleVisibilityChange() {
     const {changePageVisibility} = this.props
-    if (document[hidden]) {
-      changePageVisibility(false)
-    } else {
-      changePageVisibility(true)
-    }
+    changePageVisibility(!document[hidden])
   }
 
   onChatButtonClick() {

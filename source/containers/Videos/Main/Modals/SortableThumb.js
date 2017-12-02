@@ -5,6 +5,7 @@ import ItemTypes from 'constants/itemTypes'
 import {cleanString} from 'helpers/stringHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import {textIsOverflown} from 'helpers/domHelpers'
+import StarMark from 'components/StarMark'
 
 const thumbSource = {
   beginDrag(props) {
@@ -78,6 +79,7 @@ class SortableThumb extends Component {
                 margin: 'auto'
               }}
             />
+            {!!video.isStarred && <StarMark size={2} />}
           </div>
           <div
             className="caption"

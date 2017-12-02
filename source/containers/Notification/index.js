@@ -67,7 +67,7 @@ class Notification extends Component {
               ref={ref => { this.NotificationBox = ref }}
             >
               {loaded && <ChatFeeds content={content} {...subject} />}
-              {notifications.length > 0 && <NotiFeeds notifications={notifications} myId={myId} style={{marginTop: loaded && '1.5em'}} />}
+              {notifications.length > 0 && <NotiFeeds notifications={notifications} myId={myId} style={{marginTop: loaded && '1em'}} />}
             </div>
           </div>
         </Responsive>

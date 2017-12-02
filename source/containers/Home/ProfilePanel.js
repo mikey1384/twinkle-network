@@ -14,7 +14,7 @@ import {processedStringWithURL} from 'helpers/stringHelpers'
 import {withRouter} from 'react-router'
 import {Color} from 'constants/css'
 
-class ProfileCard extends Component {
+class ProfilePanel extends Component {
   static propTypes = {
     expandable: PropTypes.bool,
     history: PropTypes.object,
@@ -236,4 +236,4 @@ export default connect(
     uploadBio,
     openDirectMessageChannel
   }
-)(withRouter(ProfileCard))
+)(withRouter(ProfilePanel))

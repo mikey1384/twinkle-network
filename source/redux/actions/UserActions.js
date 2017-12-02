@@ -52,20 +52,34 @@ export const fetchUsers = () => dispatch =>
   )
 
 export const fetchMoreUsers = (shownUsersIds) => dispatch =>
-  request.get(`${API_URL}/users?${shownUsersIds}`).then(
-    response => {
-      dispatch({
-        type: 'FETCH_MORE_USERS',
-        data: response.data
-      })
-      return Promise.resolve()
-    }
-  ).catch(
-    error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    }
-  )
+request.get(`${API_URL}/users?${shownUsersIds}`).then(
+  response => {
+    dispatch({
+      type: 'FETCH_MORE_USERS',
+      data: response.data
+    })
+    return Promise.resolve()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
+
+export const changeUserXP = (params) => async(dispatch) => {
+  try {
+    const {data: {xp, alreadyDone}} = await request.post(`${API_URL}/xp`, params, auth())
+    if (alreadyDone) return
+    return dispatch({
+      type: 'CHANGE_USER_XP',
+      xp
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const initSession = data => ({
   type: 'FETCH_SESSION',
@@ -157,21 +171,21 @@ export const uploadBio = (params, callback) => dispatch =>
     )
 
 export const uploadProfilePic = (image, callback) => dispatch =>
-  request.post(`${API_URL}/picture`, {image}, auth())
-    .then(
-      response => {
-        dispatch({
-          type: 'UPDATE_PROFILE_PICTURE',
-          data: response.data
-        })
-        callback()
-      }
-    ).catch(
-      error => {
-        console.error(error.response || error)
-        handleError(error, dispatch)
-      }
-    )
+request.post(`${API_URL}/picture`, {image}, auth())
+.then(
+  response => {
+    dispatch({
+      type: 'UPDATE_PROFILE_PICTURE',
+      data: response.data
+    })
+    callback()
+  }
+).catch(
+  error => {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+)
 
 export const openSigninModal = () => ({
   type: 'SIGNIN_OPEN'

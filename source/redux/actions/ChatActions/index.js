@@ -36,9 +36,8 @@ export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
   )
 }
 
-export const changePageVisibility = (visible) => ({
-  type: 'CHANGE_PAGE_VISIBILITY',
-  visible
+export const resetMsgUnreadsOnTabSwitch = () => ({
+  type: 'RESET_MSG_UNREADS_ON_TAB_SWITCH'
 })
 
 export const clearChatSearchResults = () => ({
@@ -274,13 +273,14 @@ export const openDirectMessageChannel = (user, partner, chatCurrentlyOn) => disp
   )
 }
 
-export const receiveMessage = data => dispatch => {
-  const {channelId} = data
+export const receiveMessage = ({message, pageVisible}) => dispatch => {
+  const {channelId} = message
   request.post(`${API_URL}/lastRead`, {channelId}, auth()).then(
     response => dispatch({
       type: 'RECEIVE_MSG',
+      pageVisible,
       data: {
-        ...data,
+        ...message,
         timeStamp: Math.floor(Date.now()/1000)
       }
     })
@@ -299,10 +299,11 @@ export const receiveMessageOnDifferentChannel = ({message, channel, senderIsNotT
   senderIsNotTheUser
 })
 
-export const receiveFirstMsg = (data, duplicate) => ({
+export const receiveFirstMsg = ({data, duplicate, pageVisible}) => ({
   type: 'RECEIVE_FIRST_MSG',
   data,
-  duplicate
+  duplicate,
+  pageVisible
 })
 
 export const reloadChatSubject = subjectId => dispatch =>

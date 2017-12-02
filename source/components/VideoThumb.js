@@ -14,6 +14,7 @@ import {cleanString} from 'helpers/stringHelpers'
 import Link from 'components/Link'
 import FullTextReveal from 'components/FullTextReveal'
 import {textIsOverflown} from 'helpers/domHelpers'
+import StarMark from 'components/StarMark'
 
 class VideoThumb extends Component {
   static propTypes = {
@@ -108,6 +109,7 @@ class VideoThumb extends Component {
                   margin: 'auto'
                 }}
               />
+              {!!video.isStarred && <StarMark size={2} />}
             </div>
           </Link>
           <div
