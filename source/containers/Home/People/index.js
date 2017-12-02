@@ -100,7 +100,7 @@ class People extends Component {
     if (stringIsEmpty(text)) {
       return clearUserSearch()
     }
-    this.timer = window.setTimeout(() => searchUsers(text), 300)
+    this.timer = setTimeout(() => searchUsers(text), 300)
   }
 
   onScroll = () => {

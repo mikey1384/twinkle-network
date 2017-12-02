@@ -55,7 +55,7 @@ class ChatSearchBox extends Component {
     if (stringIsEmpty(text) || text.length < 2) {
       return clearSearchResults()
     }
-    this.timer = window.setTimeout(() => searchChat(text), 300)
+    this.timer = setTimeout(() => searchChat(text), 300)
   }
 
   onSelect = (item) => {

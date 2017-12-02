@@ -105,7 +105,7 @@ export default class TagPeopleForm extends Component {
     if (stringIsEmpty(text) || text.length < 2) {
       return onClear()
     }
-    this.timer = window.setTimeout(() => onSearch(text), 300)
+    this.timer = setTimeout(() => onSearch(text), 300)
   }
 
   onAddUser = (user) => {

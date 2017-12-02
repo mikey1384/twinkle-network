@@ -77,7 +77,7 @@ class SearchBox extends Component {
     if (stringIsEmpty(text)) {
       return clearSearchResults()
     }
-    this.timer = window.setTimeout(() => searchContent(text), 300)
+    this.timer = setTimeout(() => searchContent(text), 300)
   }
 
   onSelect = (item) => {

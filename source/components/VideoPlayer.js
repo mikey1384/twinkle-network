@@ -225,11 +225,11 @@ class VideoPlayer extends Component {
       addVideoView({videoId, userId})
     }
     fillCurrentVideoSlot(Number(videoId))
-    if (userId) this.interval = window.setInterval(this.increaseProgress, intervalLength)
+    if (userId) this.interval = setInterval(this.increaseProgress, intervalLength)
   }
 
   onVideoStop = (event) => {
-    window.clearInterval(this.interval)
+    clearInterval(this.interval)
   }
 
   onVideoReady = (event) => {

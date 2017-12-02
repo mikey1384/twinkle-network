@@ -119,7 +119,7 @@ class EditSubjectForm extends Component {
     const {onChange} = this.props
     window.clearTimeout(this.timer)
     this.setState({title: text})
-    this.timer = window.setTimeout(() => onChange(text).then(
+    this.timer = setTimeout(() => onChange(text).then(
       () => {
         const {searchResults} = this.props
         const {title} = this.state
