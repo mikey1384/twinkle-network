@@ -1,15 +1,22 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import {NavDropdown, MenuItem} from 'react-bootstrap'
+import DropdownButton from 'components/DropdownButton'
 
 AccountMenu.propTypes = {
   logout: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired
 }
-export default function AccountMenu({title, logout}) {
+export default function AccountMenu({title, logout, ...props}) {
   return (
-    <NavDropdown eventKey="account-menu" title={title} id="account-menu">
-      <MenuItem eventKey="logout" onClick={() => logout()}>Log out</MenuItem>
-    </NavDropdown>
+    <DropdownButton
+      {...props}
+      text={title}
+      shape="button"
+      icon="triangle-bottom"
+      menuProps={[{
+        label: 'Log out',
+        onClick: () => logout()
+      }]}
+    />
   )
 }

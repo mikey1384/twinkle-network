@@ -94,7 +94,7 @@ function renderNotification(device) {
     <Notification
       device={device}
       className={device === 'desktop' ? 'col-xs-3 col-xs-offset-9' : null}
-      style={device === 'tablet' ? {position: 'relative'} : null}
+      position={device === 'tablet' ? 'relative' : 'fixed'}
     >
       <div className="well" style={{marginBottom: '0px', textAlign: 'center', padding: '1rem'}}>
         <p

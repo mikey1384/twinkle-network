@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router'
 import {Link} from 'react-router-dom'
@@ -19,7 +19,7 @@ import {
 import SigninModal from 'containers/Signin'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
-import {Navbar, Nav, NavItem} from 'react-bootstrap'
+import Button from 'components/Button'
 import {GENERAL_CHAT_ID} from 'constants/database'
 import SearchBox from './SearchBox'
 import HeaderNav from './HeaderNav'
@@ -150,8 +150,18 @@ class Header extends Component {
 
     const {logoBlue, logoGreen} = this.state
     return (
-      <Navbar fluid fixedTop={!chatMode}>
-        <Navbar.Header>
+      <nav
+        className={`navbar navbar-default${!chatMode ? ' navbar-fixed-top' : ''}`}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          width: '100%'
+        }}
+      >
+        <div
+          className="navbar-header"
+        >
           <Link
             className="navbar-brand"
             style={{
@@ -163,65 +173,75 @@ class Header extends Component {
           >
             <span style={{color: logoBlue}}>Twin</span><span style={{color: logoGreen}}>kle</span>
           </Link>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          {!chatMode && [<Nav key="navItems">
-            <HeaderNav
-              to="/"
-              isHome
-              style={{paddingLeft: '0.6em', paddingRight: '0.6em'}}
-              imgLabel="home"
-              isUsername={
-                pathname.split('/')[1] !== 'videos' && ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) === -1 && pathname.length > 1
-              }
-            >
-              <span style={{marginLeft: '0.3em'}}>Home</span>
-            </HeaderNav>
-            <HeaderNav
-              to="/videos"
-              style={{paddingLeft: '0.6em', paddingRight: '0.6em'}}
-              imgLabel="watch"
-              onClick={() => {
-                getInitialVideos()
-                getPinnedPlaylists()
-                getPlaylists()
-              }}
-            >
-              <span style={{marginLeft: '0.3em'}}>Watch</span>
-            </HeaderNav>
-            <HeaderNav
-              to="/links"
-              style={{paddingLeft: '0.6em', paddingRight: '0.6em'}}
-              imgLabel="read"
-            >
-              <span style={{marginLeft: '0.3em'}}>Read</span>
-            </HeaderNav>
-          </Nav>,
-          <SearchBox className="col-xs-5" style={{marginTop: '6px', marginLeft: '0.5em'}} key="searchBox" />]}
-          <Nav pullRight>
-            {loggedIn && [
-              <ChatButton
-                key={1}
-                onClick={onChatButtonClick}
-                chatMode={chatMode}
-                loading={chatLoading}
-                numUnreads={numChatUnreads}
-              />
-            ]}
-            {loggedIn ?
-              <AccountMenu
-                title={username}
-                logout={this.onLogout}
-              /> :
-              <NavItem onClick={() => openSigninModal()}>Log In | Sign Up</NavItem>
+        </div>
+        <div className="col-xs-4">
+          <ul
+            className="nav navbar-nav"
+            style={{display: 'flex', justifyContent: 'flex-start'}}
+          >
+            {!chatMode &&
+              <Fragment>
+                <HeaderNav
+                  to="/"
+                  isHome
+                  imgLabel="home"
+                  isUsername={
+                    pathname.split('/')[1] !== 'videos' && ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) === -1 && pathname.length > 1
+                  }
+                >
+                  <span>Home</span>
+                </HeaderNav>
+                <HeaderNav
+                  to="/videos"
+                  imgLabel="watch"
+                  onClick={() => {
+                    getInitialVideos()
+                    getPinnedPlaylists()
+                    getPlaylists()
+                  }}
+                >
+                  <span>Watch</span>
+                </HeaderNav>
+                <HeaderNav
+                  to="/links"
+                  imgLabel="read"
+                >
+                  <span>Read</span>
+                </HeaderNav>
+              </Fragment>
             }
-          </Nav>
-        </Navbar.Collapse>
+          </ul>
+        </div>
+        <div className="col-xs-6">
+          {!chatMode && <SearchBox />}
+        </div>
+        <div className="col-xs-3" style={{display: 'flex', justifyContent: 'flex-end'}}>
+          {loggedIn &&
+            <ChatButton
+              style={{marginRight: '1rem'}}
+              onClick={onChatButtonClick}
+              chatMode={chatMode}
+              loading={chatLoading}
+              numUnreads={numChatUnreads}
+            />
+          }
+          {loggedIn ?
+            <AccountMenu
+              title={username}
+              logout={this.onLogout}
+            /> :
+            <Button
+              className="btn btn-success"
+              onClick={() => openSigninModal()}
+            >
+              Log In | Sign Up
+            </Button>
+          }
+        </div>
         {signinModalShown &&
           <SigninModal show onHide={() => closeSigninModal()} />
         }
-      </Navbar>
+      </nav>
     )
   }
 
