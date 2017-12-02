@@ -253,7 +253,7 @@ router.post('/pinned', requireAuth, (req, res) => {
   async.waterfall([
     (callback) => {
       const userType = user.userType
-      if (userType !== 'master') {
+      if (userType !== 'manager' && userType !== 'creator') {
         return callback('User is not authorized to perform this action')
       }
       pool.query('SELECT * FROM vq_pinned_playlists', (err, rows) => {
