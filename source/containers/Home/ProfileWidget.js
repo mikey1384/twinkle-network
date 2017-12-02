@@ -53,7 +53,6 @@ function ProfileWidget({history, openSigninModal, twinkleXP, userId, username, p
               &nbsp;<span style={{color: Color.logoGreen}}>Twin</span><span style={{color: Color.logoBlue}}>kle</span>
               &nbsp;<span style={{color: Color.orange}}>XP</span>
             </div>
-            <div>Lvl 5 (Rank #3)</div>
           </div>
         }
         {!userId && <Button
