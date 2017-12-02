@@ -124,14 +124,17 @@ class VideoPlayer extends Component {
     const alreadyEarned = xpEarned || justEarned
 
     if (userWatchingMultipleVideo) {
+      this.onVideoStop()
       this.player.pauseVideo()
     }
 
     if (this.player && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
+      this.onVideoStop()
       this.player.pauseVideo()
     }
 
     if (this.player && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
+      this.onVideoStop()
       this.player.pauseVideo()
     }
   }
@@ -198,8 +201,13 @@ class VideoPlayer extends Component {
               opts={{title}}
               videoId={videoCode}
               onReady={this.onVideoReady}
-              onPlay={this.onVideoPlay}
-              onPause={this.onVideoStop}
+              onStateChange={(e) => {
+                if (e.data === 2) {
+                  this.onVideoStop()
+                } else if (e.data === 1) {
+                  this.onVideoPlay(e)
+                }
+              }}
               onEnd={this.onVideoStop}
             />
           }
@@ -228,7 +236,7 @@ class VideoPlayer extends Component {
     if (userId) this.interval = setInterval(this.increaseProgress, intervalLength)
   }
 
-  onVideoStop = (event) => {
+  onVideoStop = () => {
     clearInterval(this.interval)
   }
 
