@@ -1,6 +1,5 @@
 import React from 'react'
 import Styles from './Styles'
-import ProfilePic from 'components/ProfilePic'
 
 export default function Rankings() {
   return (
@@ -12,13 +11,25 @@ export default function Rankings() {
         Rankings
       </p>
       <div
-        className="media"
+        style={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
       >
-        <div className="media-left media-middle">
-          <ProfilePic size='4' userId={5} profilePicId={25} />
-        </div>
-        <div className="media-body">
-          <p style={{fontSize: '1.2em'}} className="media-heading">Some random string</p>
+        <img
+          alt='thumbnail'
+          style={{width: '20%', height: '20%'}}
+          src={`https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/5/25.jpg`}
+        />
+        <div
+          style={{
+            padding: '0 1rem 0 1rem',
+            width: '80%'
+          }}
+        >
+          <span style={{fontSize: '1.2em'}}>Sonic</span>
         </div>
       </div>
     </div>
