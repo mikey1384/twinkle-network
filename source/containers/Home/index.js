@@ -93,7 +93,7 @@ function renderNotification(device) {
   return (
     <Notification
       device={device}
-      className="col-xs-3 col-xs-offset-9"
+      className={device === 'desktop' ? 'col-xs-3 col-xs-offset-9' : 'col-xs-3'}
     >
       <div className="well" style={{marginBottom: '0px', textAlign: 'center', padding: '1rem'}}>
         <p
