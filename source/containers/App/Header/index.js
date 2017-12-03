@@ -211,7 +211,7 @@ class Header extends Component {
               </Fragment>
             }
           </ul>
-          <SearchBox style={{width: '70%', marginLeft: '2rem'}} />
+          {!chatMode && <SearchBox style={{width: '70%', marginLeft: '2rem'}} />}
         </div>
         <div className="col-xs-2" style={{display: 'flex', justifyContent: 'flex-end'}}>
           {loggedIn &&
