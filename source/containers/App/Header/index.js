@@ -174,7 +174,7 @@ class Header extends Component {
             <span style={{color: logoBlue}}>Twin</span><span style={{color: logoGreen}}>kle</span>
           </Link>
         </div>
-        <div className="col-xs-4">
+        <div className="col-xs-10" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <ul
             className="nav navbar-nav"
             style={{display: 'flex', justifyContent: 'flex-start'}}
@@ -211,11 +211,9 @@ class Header extends Component {
               </Fragment>
             }
           </ul>
+          <SearchBox style={{width: '70%', marginLeft: '2rem'}} />
         </div>
-        <div className="col-xs-6">
-          {!chatMode && <SearchBox />}
-        </div>
-        <div className="col-xs-3" style={{display: 'flex', justifyContent: 'flex-end'}}>
+        <div className="col-xs-2" style={{display: 'flex', justifyContent: 'flex-end'}}>
           {loggedIn &&
             <ChatButton
               style={{marginRight: '1rem'}}
