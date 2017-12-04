@@ -46,14 +46,14 @@ class VideoPlayer extends Component {
     ]).isRequired
   }
 
-  interval
-  player = null
+  interval = null
   rewardingXP = false
 
   constructor({autoplay, hasHqThumb, videoCode}) {
     super()
     const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
     this.state = {
+      player: null,
       playing: autoplay,
       imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`,
       timeWatched: 0,
@@ -116,26 +116,27 @@ class VideoPlayer extends Component {
 
   componentDidUpdate(prevProps) {
     const {onEdit, chatMode, currentVideoSlot, isStarred, pageVisible, videoId} = this.props
-    const {xpEarned, justEarned} = this.state
+    const {player, xpEarned, justEarned} = this.state
     if (prevProps.onEdit !== onEdit) {
+      if (onEdit === true) this.onVideoStop()
       this.setState({playing: false})
     }
-    const userWatchingMultipleVideo = this.player && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
+    const userWatchingMultipleVideo = player && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
     const alreadyEarned = xpEarned || justEarned
 
     if (userWatchingMultipleVideo) {
       this.onVideoStop()
-      this.player.pauseVideo()
+      player.pauseVideo()
     }
 
-    if (this.player && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
+    if (player && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
       this.onVideoStop()
-      this.player.pauseVideo()
+      player.pauseVideo()
     }
 
-    if (this.player && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
+    if (player && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
       this.onVideoStop()
-      this.player.pauseVideo()
+      player.pauseVideo()
     }
   }
 
@@ -244,8 +245,10 @@ class VideoPlayer extends Component {
     if (!isMobile) {
       event.target.playVideo()
     }
-    this.player = event.target
-    this.setState(() => ({totalDuration: event.target.getDuration()}))
+    this.setState(() => ({
+      player: event.target,
+      totalDuration: event.target.getDuration()}
+    ))
   }
 
   increaseProgress = async() => {

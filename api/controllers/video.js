@@ -274,17 +274,17 @@ router.get('/rightMenu', (req, res) => {
     SELECT id, playlistId FROM vq_playlistvideos WHERE videoId = ? ORDER BY id DESC LIMIT ${limit}
   `
   const nextVideoQuery = `
-    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    SELECT a.id, a.videoId, b.title, b.isStarred, b.uploader, b.content, c.username FROM vq_playlistvideos a
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? AND a.id > ? AND a.videoId != ? LIMIT 1
   `
   const relatedVideosQuery = limit => `
-    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, b.isStarred, c.username FROM vq_playlistvideos a
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? AND a.videoId != ? LIMIT ${limit}
   `
   const otherVideosQuery = `
-    SELECT a.id, a.id AS videoId, a.title, a.content, a.uploader, b.username
+    SELECT a.id, a.id AS videoId, a.title, a.content, a.uploader, a.isStarred, b.username
     FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.id != ?
     ORDER BY a.id DESC LIMIT 21
   `

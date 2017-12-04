@@ -49,14 +49,14 @@ router.get('/rightMenu', (req, res) => {
     SELECT title FROM vq_playlists WHERE id = ?
   `
   const nextVideoQuery = `
-    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, b.isStarred, c.username FROM vq_playlistvideos a
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ?
     AND a.id > (SELECT id FROM vq_playlistvideos WHERE playlistId = ? AND videoId = ? LIMIT 1)
     LIMIT 1
   `
   const videosQuery = `
-    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, b.isStarred, c.username FROM vq_playlistvideos a
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? AND a.videoId != ? LIMIT 11
   `

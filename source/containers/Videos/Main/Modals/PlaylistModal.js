@@ -12,6 +12,7 @@ import {URL} from 'constants/URL'
 import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
 import {connect} from 'react-redux'
 import {queryStringForArray} from 'helpers/apiHelpers'
+import StarMark from 'components/StarMark'
 
 const API_URL = `${URL}/playlist`
 
@@ -76,12 +77,15 @@ class PlaylistModal extends Component {
                   to={`/videos/${video.id}?playlist=${playlistId}`}
                   onClickAsync={() => loadVideoPage(video.id)}
                 >
-                  <img
-                    className="media-object"
-                    src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
-                    alt="..."
-                    style={{width: '18rem'}}
-                  />
+                  <div>
+                    {!!video.isStarred && <StarMark size={2} />}
+                    <img
+                      className="media-object"
+                      src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+                      alt="..."
+                      style={{width: '18rem'}}
+                    />
+                  </div>
                 </Link>
               </div>
               <div className="media-body">

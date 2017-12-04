@@ -7,6 +7,7 @@ import {Color} from 'constants/css'
 import {cleanString} from 'helpers/stringHelpers'
 import {queryStringForArray} from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
+import StarMark from 'components/StarMark'
 
 class RightMenu extends Component {
   static propTypes = {
@@ -109,6 +110,7 @@ class RightMenu extends Component {
       >
         <div className="media-left media-middle">
           <Link to={`/videos/${video.videoId}${playlistId ? `?playlist=${playlistId}` : ''}`}>
+            {!!video.isStarred && <StarMark size={2} />}
             <img
               className="media-object"
               src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}

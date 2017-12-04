@@ -99,6 +99,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(lol\))/gi, '😂 ')
     .replace(/(\(diamond\))/gi, '💎 ')
     .replace(/(\(clap\))/gi, '👏 ')
+    .replace(/(\(star\))/gi, '⭐ ')
 }
 
 export function addEmoji(string) {
