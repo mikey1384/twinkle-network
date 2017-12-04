@@ -117,7 +117,7 @@ class EditSubjectForm extends Component {
 
   onInputChange = (text) => {
     const {onChange} = this.props
-    window.clearTimeout(this.timer)
+    clearTimeout(this.timer)
     this.setState({title: text})
     this.timer = setTimeout(() => onChange(text).then(
       () => {

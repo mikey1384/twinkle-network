@@ -50,7 +50,7 @@ class ChatSearchBox extends Component {
 
   onChatSearch = (text) => {
     const {searchChat, clearSearchResults} = this.props
-    window.clearTimeout(this.timer)
+    clearTimeout(this.timer)
     this.setState({searchText: text})
     if (stringIsEmpty(text) || text.length < 2) {
       return clearSearchResults()

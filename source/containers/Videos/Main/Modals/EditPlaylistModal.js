@@ -23,20 +23,16 @@ class EditPlaylistModal extends Component {
     playlistId: PropTypes.number.isRequired
   }
 
-  constructor(props) {
-    super()
-    this.state = {
-      allVideos: [],
-      loaded: false,
-      searchedVideos: [],
-      selectedVideos: [],
-      loadMoreButtonShown: false,
-      mainTabActive: true,
-      searchText: ''
-    }
-    this.handleSave = this.handleSave.bind(this)
-    this.loadMoreVideos = this.loadMoreVideos.bind(this)
-    this.onVideoSearch = this.onVideoSearch.bind(this)
+  timer = null
+
+  state = {
+    allVideos: [],
+    loaded: false,
+    searchedVideos: [],
+    selectedVideos: [],
+    loadMoreButtonShown: false,
+    mainTabActive: true,
+    searchText: ''
   }
 
   componentWillMount() {
@@ -114,7 +110,7 @@ class EditPlaylistModal extends Component {
                 width: '50%'
               }}
               value={searchText}
-              onChange={this.onVideoSearch}
+              onChange={this.onVideoSearchInput}
             />
           }
           {!loaded && <Loading />}
@@ -170,13 +166,13 @@ class EditPlaylistModal extends Component {
     )
   }
 
-  handleSave() {
+  handleSave = () => {
     const {selectedVideos} = this.state
     const {playlistId, changePlaylistVideos} = this.props
     changePlaylistVideos(playlistId, selectedVideos.map(video => video.id), this)
   }
 
-  loadMoreVideos() {
+  loadMoreVideos = () => {
     const {allVideos} = this.state
     request.get(`${URL}/video?numberToLoad=18&videoId=${allVideos[allVideos.length - 1].id}`)
       .then(
@@ -196,13 +192,19 @@ class EditPlaylistModal extends Component {
       )
   }
 
-  onVideoSearch(text) {
+  onVideoSearchInput = (text) => {
+    clearTimeout(this.timer)
     this.setState({searchText: text})
-    return request.get(`${URL}/playlist/search/video?query=${text}`).then(
-      ({data: searchedVideos}) => this.setState({searchedVideos})
-    ).catch(
-      error => console.error(error.response || error)
-    )
+    this.timer = setTimeout(() => this.searchVideo(text), 300)
+  }
+
+  searchVideo = async(text) => {
+    try {
+      const {data: searchedVideos} = await request.get(`${URL}/playlist/search/video?query=${text}`)
+      this.setState({searchedVideos})
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 }
 

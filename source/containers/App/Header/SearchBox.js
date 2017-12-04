@@ -72,7 +72,7 @@ class SearchBox extends Component {
 
   onContentSearch = (text) => {
     const {searchContent, clearSearchResults} = this.props
-    window.clearTimeout(this.timer)
+    clearTimeout(this.timer)
     this.setState({searchText: text})
     if (stringIsEmpty(text)) {
       return clearSearchResults()

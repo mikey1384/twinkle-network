@@ -95,7 +95,7 @@ class People extends Component {
 
   onPeopleSearch = (text) => {
     const {searchUsers, clearUserSearch} = this.props
-    window.clearTimeout(this.timer)
+    clearTimeout(this.timer)
     this.setState({searchText: text, searching: !stringIsEmpty(text)})
     if (stringIsEmpty(text)) {
       return clearUserSearch()

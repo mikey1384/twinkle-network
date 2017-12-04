@@ -21,24 +21,18 @@ class AddPlaylistModal extends Component {
     uploadPlaylist: PropTypes.func
   }
 
-  constructor() {
-    super()
-    this.state = {
-      section: 0,
-      title: '',
-      description: '',
-      allVideos: [],
-      searchedVideos: [],
-      selectedVideos: [],
-      loadMoreButtonShown: false,
-      titleError: false,
-      searchText: ''
-    }
-    this.handlePrev = this.handlePrev.bind(this)
-    this.handleNext = this.handleNext.bind(this)
-    this.handleFinish = this.handleFinish.bind(this)
-    this.loadMoreVideos = this.loadMoreVideos.bind(this)
-    this.onVideoSearch = this.onVideoSearch.bind(this)
+  timer = null
+
+  state = {
+    section: 0,
+    title: '',
+    description: '',
+    allVideos: [],
+    searchedVideos: [],
+    selectedVideos: [],
+    loadMoreButtonShown: false,
+    titleError: false,
+    searchText: ''
   }
 
   componentWillMount() {
@@ -131,7 +125,7 @@ class AddPlaylistModal extends Component {
                   width: '50%'
                 }}
                 value={searchText}
-                onChange={this.onVideoSearch}
+                onChange={this.onVideoSearchInput}
               />
               <SelectVideosForm
                 videos={searchText ? searchedVideos : allVideos}
@@ -188,7 +182,7 @@ class AddPlaylistModal extends Component {
     )
   }
 
-  renderTitle() {
+  renderTitle = () => {
     const currentSection = this.state.section
     switch (currentSection) {
       case 0:
@@ -202,13 +196,13 @@ class AddPlaylistModal extends Component {
     }
   }
 
-  handlePrev() {
+  handlePrev = () => {
     const currentSection = this.state.section
     const prevSection = Math.max(currentSection - 1, 0)
     this.setState({section: prevSection})
   }
 
-  handleNext() {
+  handleNext = () => {
     const currentSection = this.state.section
     const {title} = this.state
     if (currentSection === 0 && stringIsEmpty(title)) return this.setState({titleError: true})
@@ -216,7 +210,7 @@ class AddPlaylistModal extends Component {
     this.setState({section: nextSection})
   }
 
-  handleFinish() {
+  handleFinish = () => {
     const {uploadPlaylist, onHide} = this.props
     const {title, description, selectedVideos} = this.state
     return uploadPlaylist({
@@ -228,7 +222,7 @@ class AddPlaylistModal extends Component {
     )
   }
 
-  loadMoreVideos() {
+  loadMoreVideos = () => {
     const {allVideos} = this.state
     request.get(`${URL}/video?numberToLoad=18&videoId=${allVideos[allVideos.length - 1].id}`)
       .then(
@@ -248,13 +242,19 @@ class AddPlaylistModal extends Component {
       )
   }
 
-  onVideoSearch(text) {
+  onVideoSearchInput = (text) => {
+    clearTimeout(this.timer)
     this.setState({searchText: text})
-    return request.get(`${URL}/playlist/search/video?query=${text}`).then(
-      ({data: searchedVideos}) => this.setState({searchedVideos})
-    ).catch(
-      error => console.error(error.response || error)
-    )
+    this.timer = setTimeout(() => this.searchVideo(text), 300)
+  }
+
+  searchVideo = async(text) => {
+    try {
+      const {data: searchedVideos} = await request.get(`${URL}/playlist/search/video?query=${text}`)
+      this.setState({searchedVideos})
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 }
 
