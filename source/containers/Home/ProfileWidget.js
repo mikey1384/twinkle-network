@@ -49,10 +49,12 @@ function ProfileWidget({history, openSigninModal, twinkleXP, userId, username, p
         {realName && <div style={{color: Color.gray}}>({realName})</div>}
         {userId &&
           <div style={{marginTop: '0.5em'}}>
-            <div style={{fontWeight: 'bold'}}><span>{twinkleXP || 0}</span>
+            <div style={{fontWeight: 'bold'}}>
+              <span>{twinkleXP || 0}</span>
               &nbsp;<span style={{color: Color.logoGreen}}>Twin</span><span style={{color: Color.logoBlue}}>kle</span>
               &nbsp;<span style={{color: Color.orange}}>XP</span>
             </div>
+            <Link to="/twinklexp">Leaderboard</Link>
           </div>
         }
         {!userId && <Button
