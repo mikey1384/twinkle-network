@@ -14,6 +14,7 @@ import {changeUserXP} from 'redux/actions/UserActions'
 import request from 'axios'
 import StarMark from 'components/StarMark'
 import {URL} from 'constants/URL'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
@@ -78,7 +79,7 @@ class VideoPlayer extends Component {
     if (isStarred && userId) {
       try {
         const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
-        this.setState(() => ({xpEarned: !!xpEarned}))
+        if (this.mounted) this.setState(() => ({xpEarned: !!xpEarned}))
       } catch (error) {
         console.error(error.response || error)
       }
@@ -107,7 +108,7 @@ class VideoPlayer extends Component {
     if (isStarred && nextProps.userId && (userId !== nextProps.userId)) {
       try {
         const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
-        if (xpEarned) this.setState(() => ({xpEarned: !!xpEarned}))
+        if (xpEarned && this.mounted) this.setState(() => ({xpEarned: !!xpEarned}))
       } catch (error) {
         console.error(error.response || error)
       }
@@ -142,8 +143,9 @@ class VideoPlayer extends Component {
 
   componentWillUnmount() {
     const {emptyCurrentVideoSlot} = this.props
-    emptyCurrentVideoSlot()
+    clearInterval(this.interval)
     this.mounted = false
+    emptyCurrentVideoSlot()
   }
 
   render() {
@@ -156,7 +158,7 @@ class VideoPlayer extends Component {
       halfDuration > 0 ? Math.floor(Math.min(timeWatched, halfDuration) * 100 / halfDuration) : 0
     )
     return (
-      <div>
+      <ErrorBoundary>
         <div
           className={small ? containerClassName : `video-player ${containerClassName}`}
           style={{...style, cursor: (!onEdit && !playing) && 'pointer'}}
@@ -223,7 +225,7 @@ class VideoPlayer extends Component {
             </div>
           </div>
         }
-      </div>
+      </ErrorBoundary>
     )
   }
 
@@ -259,14 +261,16 @@ class VideoPlayer extends Component {
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, {videoId}, auth())
         await changeUserXP({type: 'increase', action: 'watch', target: 'video', targetId: videoId, amount: 100})
-        this.setState(() => ({
-          justEarned: true
-        }))
+        if (this.mounted) {
+          this.setState(() => ({
+            justEarned: true
+          }))
+        }
       } catch (error) {
         console.error(error.response || error)
       }
     }
-    if (!xpEarned) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
+    if (!xpEarned && this.mounted) this.setState(state => ({timeWatched: state.timeWatched + intervalLength / 1000}))
     const authorization = auth()
     const authExists = !!authorization.headers.authorization
     if (authExists) {

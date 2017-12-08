@@ -296,9 +296,7 @@ export default class Truncate extends Component {
     delete spanProps.onTruncate
     return (
       <div {...spanProps} ref={ref => { this.Target = ref }}>
-        <ErrorBoundary>
-          <div>{text}</div>
-        </ErrorBoundary>
+        <ErrorBoundary>{text}</ErrorBoundary>
         <span ref={ref => { this.Text = ref }}>{children}</span>
         <span ref={ref => { this.Ellipsis = ref }} style={this.styles.ellipsis}>
           {ellipsis}

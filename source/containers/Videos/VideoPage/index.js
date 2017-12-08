@@ -24,6 +24,7 @@ import QuestionsBuilder from './QuestionsBuilder'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import {stringIsEmpty} from 'helpers/stringHelpers'
 import queryString from 'query-string'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import ExecutionEnvironment from 'exenv'
 
 class VideoPage extends Component {
@@ -115,7 +116,7 @@ class VideoPage extends Component {
     const {playlist: playlistId} = queryString.parse(search)
 
     return (
-      <div className="container-fluid">
+      <ErrorBoundary className="container-fluid">
         <div className="col-xs-8">
           {videoLoading && <Loading text="Loading Video..." />}
           {videoUnavailable && <NotFound text="Video does not exist" />}
@@ -233,7 +234,7 @@ class VideoPage extends Component {
           videoId={videoId}
           playlistId={playlistId}
         />
-      </div>
+      </ErrorBoundary>
     )
   }
 
