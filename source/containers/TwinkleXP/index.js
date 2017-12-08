@@ -1,6 +1,7 @@
 import React from 'react'
 import Styles from './Styles'
 import LeaderBoard from './LeaderBoard'
+import {Color} from 'constants/css'
 
 export default function TwinkleXP() {
   return (
@@ -20,16 +21,40 @@ export default function TwinkleXP() {
               `}
             </div>
             <br />
-            <img src="/img/starred_video_example.png" />
-            <br />
-            <br />
             <div style={Styles.subHeader}>
               How do I earn them?
             </div>
             <div style={Styles.paragraph}>
               {`
-                For now, the only way to earn `}{twinkleXpText}{` is by watching starred videos. But later you will be awarded XP for participating in discussions, answering questions, and posting great comments both on the main section and on General Chat channel.
+                For now, the only way to earn `}{twinkleXpText}{` is by watching starred videos.
               `}
+            </div>
+            <br />
+            <img src="/img/starred_video_example.png" />
+            <br />
+            <br />
+            <div style={Styles.paragraph}>
+              {
+                'Notice the progress bar right below the video'
+              }
+            </div>
+            <br />
+            <img src="/img/progress_bar_example.png" />
+            <br />
+            <br />
+            <div style={Styles.paragraph}>
+              You need to watch the video until the progress bar turns
+              &nbsp;<span style={{color: Color.green, fontWeight: 'bold'}}>green</span>
+              &nbsp;in order to earn the XP
+            </div>
+            <br />
+            <img src="/img/progress_bar_complete.png" />
+            <br />
+            <br />
+            <div style={Styles.paragraph}>
+              {
+                'Next year you will also be awarded XP for participating in discussions, answering questions, and posting great comments both on the main section and on General Chat channel.'
+              }
             </div>
             <br />
             <div style={Styles.subHeader}>
