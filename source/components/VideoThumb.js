@@ -54,11 +54,14 @@ class VideoThumb extends Component {
     xpEarned: false
   }
 
+  mounted = false
+
   async componentWillMount() {
     const {userId, video: {id: videoId, isStarred}} = this.props
+    this.mounted = true
     if (isStarred && userId) {
       const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
-      this.setState(() => ({xpEarned}))
+      if (this.mounted) this.setState(() => ({xpEarned}))
     }
   }
 
@@ -66,11 +69,24 @@ class VideoThumb extends Component {
     const {userId, video: {id: videoId, isStarred}} = this.props
     if (isStarred && nextProps.userId && nextProps.userId !== userId) {
       const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
-      this.setState(() => ({xpEarned}))
+      if (this.mounted) this.setState(() => ({xpEarned}))
     }
     if (userId && !nextProps.userId) {
       this.setState(() => ({xpEarned: false}))
     }
+  }
+
+  async componentDidUpdate(prevProps) {
+    const {video: {id: videoId, isStarred}} = this.props
+    if (prevProps.video.id !== videoId) {
+      if (!isStarred) return this.setState(() => ({xpEarned: false}))
+      const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
+      if (this.mounted) this.setState(() => ({xpEarned}))
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
   }
 
   render() {
