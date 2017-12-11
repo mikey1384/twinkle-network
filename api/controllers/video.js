@@ -623,12 +623,12 @@ router.post('/view', (req, res) => {
 
 router.get('/xpEarned', requireAuth, async(req, res) => {
   const {user, query: {videoId}} = req
-  const xpQuery = `SELECT xpEarned FROM users_video_view_status WHERE userId = ? AND videoId = ?`
   try {
     const [{currentlyWatching}] = await poolQuery(`SELECT currentlyWatching FROM users WHERE id = ?`, user.id)
     if (currentlyWatching === Number(videoId)) {
       await poolQuery('UPDATE users SET ? WHERE id = ?', [{currentlyWatching: null}, user.id])
     }
+    const xpQuery = `SELECT xpEarned FROM users_video_view_status WHERE userId = ? AND videoId = ?`
     const [{xpEarned = 0} = {}] = await poolQuery(xpQuery, [user.id, videoId])
     res.send({xpEarned})
   } catch (error) {
