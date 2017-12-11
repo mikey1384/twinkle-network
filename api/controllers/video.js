@@ -511,7 +511,7 @@ router.put('/duration', requireAuth, async(req, res) => {
     const [{currentlyWatching}] = await poolQuery(`SELECT currentlyWatching FROM users WHERE id = ?`, user.id)
     if (!currentlyWatching) {
       await poolQuery('UPDATE users SET currentlyWatching = ? WHERE id = ?', [videoId, user.id])
-    } else if (currentlyWatching !== videoId) {
+    } else if (currentlyWatching !== Number(videoId)) {
       return res.send({currentlyWatchingAnotherVideo: true})
     }
   }
@@ -599,7 +599,7 @@ router.put('/clearCurrentlyWatching', requireAuth, async(req, res) => {
   const {user, body: {videoId}} = req
   try {
     const [{currentlyWatching}] = await poolQuery(`SELECT currentlyWatching FROM users WHERE id = ?`, user.id)
-    if (currentlyWatching === videoId) {
+    if (currentlyWatching === Number(videoId)) {
       await poolQuery('UPDATE users SET ? WHERE id = ?', [{currentlyWatching: null}, user.id])
     }
     res.send({success: true})

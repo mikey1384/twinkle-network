@@ -50,13 +50,11 @@ class VideoPlayer extends Component {
   interval = null
   rewardingXP = false
 
-  constructor({autoplay, hasHqThumb, videoCode}) {
+  constructor({autoplay}) {
     super()
-    const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
     this.state = {
       player: null,
       playing: autoplay,
-      imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`,
       timeWatched: 0,
       totalDuration: 0,
       xpEarned: false,
@@ -64,10 +62,8 @@ class VideoPlayer extends Component {
     }
   }
 
-  async componentDidMount() {
-    const {isStarred, hasHqThumb, userId, videoCode, videoId} = this.props
-    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    this.mounted = true
+  async componentWillMount() {
+    const {hasHqThumb, videoCode, videoId} = this.props
     if (typeof hasHqThumb !== 'number') {
       try {
         const {data: {payload}} = await request.put(`${CONTENT_URL}/videoThumb`, {videoCode, videoId})
@@ -75,7 +71,18 @@ class VideoPlayer extends Component {
       } catch (error) {
         console.error(error.response || error)
       }
+    } else {
+      const newImageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      this.setState(() => ({
+        imageUrl: `https://img.youtube.com/vi/${videoCode}/${newImageName}.jpg`
+      }))
     }
+  }
+
+  async componentDidMount() {
+    const {isStarred, userId, videoId} = this.props
+    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    this.mounted = true
     if (isStarred && userId) {
       try {
         const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
@@ -89,13 +96,8 @@ class VideoPlayer extends Component {
     }
   }
 
-  async componentWillUpdate(nextProps) {
-    const {isStarred, userId, videoId, videoCode} = this.props
-    if (videoCode !== nextProps.videoCode) {
-      const nextImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
-      this.setState({imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${nextImageName}.jpg`})
-    }
-
+  async componentWillReceiveProps(nextProps) {
+    const {isStarred, userId, videoId} = this.props
     if (userId && !nextProps.userId) {
       this.setState(state => ({
         ...state,
@@ -122,7 +124,8 @@ class VideoPlayer extends Component {
       if (onEdit === true) this.onVideoStop()
       this.setState({playing: false})
     }
-    const userWatchingMultipleVideo = player && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
+    const userWatchingMultipleVideo =
+      player && currentVideoSlot && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
     const alreadyEarned = xpEarned || justEarned
 
     if (userWatchingMultipleVideo) {
@@ -142,19 +145,8 @@ class VideoPlayer extends Component {
   }
 
   componentWillUnmount() {
-    const {emptyCurrentVideoSlot, videoId} = this.props
-    clearInterval(this.interval)
     this.mounted = false
-    const authorization = auth()
-    emptyCurrentVideoSlot()
-    const authExists = !!authorization.headers.authorization
-    if (authExists) {
-      try {
-        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId}, auth())
-      } catch (error) {
-        console.error(error.response || error)
-      }
-    }
+    this.onVideoStop()
   }
 
   render() {
@@ -249,8 +241,9 @@ class VideoPlayer extends Component {
   }
 
   onVideoStop = () => {
-    const {videoId} = this.props
+    const {emptyCurrentVideoSlot, videoId} = this.props
     clearInterval(this.interval)
+    emptyCurrentVideoSlot()
     const authorization = auth()
     const authExists = !!authorization.headers.authorization
     if (authExists) {
@@ -302,7 +295,7 @@ class VideoPlayer extends Component {
         } = await request.put(`${VIDEO_URL}/duration`, {videoId, isStarred, xpEarned}, authorization)
         if (success) return
         if (currentlyWatchingAnotherVideo) {
-          player.pauseVideo()
+          if (player) player.pauseVideo()
         }
       } catch (error) {
         console.error(error.response || error)
