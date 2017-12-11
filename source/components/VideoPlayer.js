@@ -275,7 +275,8 @@ class VideoPlayer extends Component {
         await changeUserXP({type: 'increase', action: 'watch', target: 'video', targetId: videoId, amount: 100})
         if (this.mounted) {
           this.setState(() => ({
-            justEarned: true
+            justEarned: true,
+            xpEarned: true
           }))
         }
       } catch (error) {
