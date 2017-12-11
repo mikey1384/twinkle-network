@@ -153,8 +153,9 @@ router.get('/parentSession', requireAuth, (req, res) => {
   })
 })
 
-router.get('/session', requireAuth, (req, res) => {
+router.get('/session', requireAuth, async(req, res) => {
   const {user, query: {pathname}} = req
+  await poolQuery(`UPDATE users SET currentlyWatching = NULL WHERE id = ?`, user.id)
   const query = `INSERT INTO users_actions SET ?`
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   poolQuery(query, {

@@ -142,10 +142,19 @@ class VideoPlayer extends Component {
   }
 
   componentWillUnmount() {
-    const {emptyCurrentVideoSlot} = this.props
+    const {emptyCurrentVideoSlot, videoId} = this.props
     clearInterval(this.interval)
     this.mounted = false
+    const authorization = auth()
     emptyCurrentVideoSlot()
+    const authExists = !!authorization.headers.authorization
+    if (authExists) {
+      try {
+        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId}, auth())
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
   }
 
   render() {
@@ -240,7 +249,17 @@ class VideoPlayer extends Component {
   }
 
   onVideoStop = () => {
+    const {videoId} = this.props
     clearInterval(this.interval)
+    const authorization = auth()
+    const authExists = !!authorization.headers.authorization
+    if (authExists) {
+      try {
+        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId}, auth())
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
   }
 
   onVideoReady = (event) => {
@@ -254,7 +273,7 @@ class VideoPlayer extends Component {
   }
 
   increaseProgress = async() => {
-    const {xpEarned, timeWatched, totalDuration} = this.state
+    const {player, xpEarned, timeWatched, totalDuration} = this.state
     const {changeUserXP, isStarred, videoId} = this.props
     if (isStarred && timeWatched >= totalDuration / 2 && !this.rewardingXP) {
       this.rewardingXP = true
@@ -275,7 +294,16 @@ class VideoPlayer extends Component {
     const authExists = !!authorization.headers.authorization
     if (authExists) {
       try {
-        return await request.put(`${VIDEO_URL}/duration`, {videoId}, authorization)
+        const {
+          data: {
+            currentlyWatchingAnotherVideo,
+            success
+          }
+        } = await request.put(`${VIDEO_URL}/duration`, {videoId, isStarred, xpEarned}, authorization)
+        if (success) return
+        if (currentlyWatchingAnotherVideo) {
+          player.pauseVideo()
+        }
       } catch (error) {
         console.error(error.response || error)
       }
