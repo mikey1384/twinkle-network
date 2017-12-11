@@ -22,26 +22,26 @@ export function limitBrs(string) {
 
 export function addTwoLetterEmoji(string) {
   return string
-    .replace(/(:\))/g, '😊 ')
-    .replace(/(;\))/g, '😉 ')
-    .replace(/(XD)/g, '😆 ')
-    .replace(/(:D)/g, '😄 ')
-    .replace(/(:P)/gi, '😛 ')
-    .replace(/(:\()/g, '🙁 ')
-    .replace(/(:O)/gi, '😲 ')
-    .replace(/(<3)/g, '❤️ ')
+    .replace(/(:\) )/g, '😊  ')
+    .replace(/(;\) )/g, '😉  ')
+    .replace(/(XD )/g, '😆  ')
+    .replace(/(:D )/g, '😄  ')
+    .replace(/(:P )/gi, '😛  ')
+    .replace(/(:\( )/g, '🙁  ')
+    .replace(/(:O )/gi, '😲  ')
+    .replace(/(<3 )/g, '❤️  ')
 }
 
 export function addThreeLetterEmoji(string) {
   return string
-    .replace(/(:-\))/g, '😊 ')
-    .replace(/(;-\))/g, '😉 ')
-    .replace(/(X-D)/g, '😆 ')
-    .replace(/(:-D)/g, '😄 ')
-    .replace(/(:-P)/gi, '😛 ')
-    .replace(/(:-\()/g, '🙁 ')
-    .replace(/(:-O)/gi, '😲 ')
-    .replace(/(O_O)/gi, '😳 ')
+    .replace(/(:-\) )/g, '😊  ')
+    .replace(/(;-\) )/g, '😉  ')
+    .replace(/(X-D )/g, '😆  ')
+    .replace(/(:-D )/g, '😄  ')
+    .replace(/(:-P )/gi, '😛  ')
+    .replace(/(:-\( )/g, '🙁  ')
+    .replace(/(:-O )/gi, '😲  ')
+    .replace(/(O_O )/gi, '😳  ')
 }
 
 export function addAdvancedEmoji(string) {
@@ -141,6 +141,7 @@ export function processedStringWithURL(string) {
   const trimmedString = string => string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
   const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   let tempString = string
+    .replace(/ /g, '\u00a0')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
