@@ -91,14 +91,14 @@ class VideoPage extends Component {
     const {loadVideoPage, match: {params}} = this.props
     if (ExecutionEnvironment.canUseDOM && nextProps.match.params.videoId !== params.videoId) {
       loadVideoPage(nextProps.match.params.videoId)
-    }
-    const authorization = auth()
-    const authExists = !!authorization.headers.authorization
-    if (authExists) {
-      try {
-        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId: params.videoId}, auth())
-      } catch (error) {
-        console.error(error.response || error)
+      const authorization = auth()
+      const authExists = !!authorization.headers.authorization
+      if (authExists) {
+        try {
+          request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId: params.videoId}, auth())
+        } catch (error) {
+          console.error(error.response || error)
+        }
       }
     }
   }
