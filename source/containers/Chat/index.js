@@ -8,7 +8,7 @@ import CreateNewChannelModal from './Modals/CreateNewChannel'
 import InviteUsersModal from './Modals/InviteUsers'
 import EditTitleModal from './Modals/EditTitle'
 import UserListModal from 'components/Modals/UserListModal'
-import {cleanString} from 'helpers/stringHelpers'
+import {processedString} from 'helpers/stringHelpers'
 import DropdownButton from 'components/DropdownButton'
 import Button from 'components/Button'
 import ChatSearchBox from './ChatSearchBox'
@@ -250,12 +250,11 @@ class Chat extends Component {
                 onMouseLeave={() => this.setState({onTitleHover: false})}
               >
                 {
-                  channelName(channels, currentChannel) ?
-                    cleanString(channelName(channels, currentChannel)) : '(Deleted)'
+                  channelName(channels, currentChannel) ? channelName(channels, currentChannel) : '(Deleted)'
                 }
               </h4>
               <FullTextReveal
-                text={cleanString(channelName(channels, currentChannel))}
+                text={channelName(channels, currentChannel)}
                 show={onTitleHover}
                 width='600px'
               />
@@ -370,7 +369,7 @@ class Chat extends Component {
                 lineHeight: 'normal'
               }}
             >
-              {channelName ? cleanString(channelName) : '(Deleted)'}
+              {channelName || '(Deleted)'}
             </h4>
             <span>
               <span
@@ -386,7 +385,7 @@ class Chat extends Component {
               >
                 <span>
                   {lastMessageSender && lastMessage ?
-                    `${lastMessageSender.id === userId ? 'You' : lastMessageSender.username}: ${lastMessage}` : '\u00a0'
+                    `${lastMessageSender.id === userId ? 'You' : lastMessageSender.username}: ${processedString(lastMessage)}` : '\u00a0'
                   }
                 </span>
               </span>

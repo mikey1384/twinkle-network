@@ -26,6 +26,10 @@ import {stringIsEmpty} from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import ExecutionEnvironment from 'exenv'
+import {auth} from 'redux/actions/constants'
+import request from 'axios'
+import {URL} from 'constants/URL'
+const VIDEO_URL = `${URL}/video`
 
 class VideoPage extends Component {
   static propTypes = {
@@ -86,7 +90,26 @@ class VideoPage extends Component {
   componentWillReceiveProps(nextProps) {
     const {loadVideoPage, match: {params}} = this.props
     if (ExecutionEnvironment.canUseDOM && nextProps.match.params.videoId !== params.videoId) {
+      this.setState({
+        watchTabActive: true,
+        currentSlide: 0,
+        userAnswers: [],
+        resultModalShown: false,
+        editModalShown: false,
+        confirmModalShown: false,
+        onEdit: false,
+        questionsBuilderShown: false
+      })
       loadVideoPage(nextProps.match.params.videoId)
+      const authorization = auth()
+      const authExists = !!authorization.headers.authorization
+      if (authExists) {
+        try {
+          request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId: params.videoId}, auth())
+        } catch (error) {
+          console.error(error.response || error)
+        }
+      }
     }
   }
 

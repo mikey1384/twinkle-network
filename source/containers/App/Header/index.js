@@ -11,7 +11,7 @@ import {
   resetChat
 } from 'redux/actions/ChatActions'
 import {getInitialVideos} from 'redux/actions/VideoActions'
-import {checkVersion} from 'redux/actions/NotiActions'
+import {checkVersion, notifyChatSubjectChange} from 'redux/actions/NotiActions'
 import {
   getPlaylistsAsync,
   getPinnedPlaylistsAsync
@@ -41,6 +41,7 @@ class Header extends Component {
     location: PropTypes.object,
     loggedIn: PropTypes.bool,
     logout: PropTypes.func,
+    notifyChatSubjectChange: PropTypes.func,
     numChatUnreads: PropTypes.number,
     onChatButtonClick: PropTypes.func,
     onProfilePage: PropTypes.bool,
@@ -54,16 +55,11 @@ class Header extends Component {
     versionMatch: PropTypes.bool
   }
 
-  constructor(props) {
-    super()
-    this.state = {
-      notificationsMenuShown: false,
-      logoBlue: Color.logoBlue,
-      logoGreen: Color.logoGreen,
-      feedLoading: false
-    }
-    this.onLogoClick = this.onLogoClick.bind(this)
-    this.onLogout = this.onLogout.bind(this)
+  state = {
+    notificationsMenuShown: false,
+    logoBlue: Color.logoBlue,
+    logoGreen: Color.logoGreen,
+    feedLoading: false
   }
 
   componentDidMount() {
@@ -86,6 +82,7 @@ class Header extends Component {
     socket.on('disconnect', () => {
       turnChatOff()
     })
+    socket.on('subject_change', this.onSubjectChange)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -243,7 +240,7 @@ class Header extends Component {
     )
   }
 
-  getLogoColor() {
+  getLogoColor = () => {
     return (
       function factory(string, c) {
         return string[Math.floor(Math.random() * string.length)] + (c && factory(string, c - 1))
@@ -251,17 +248,22 @@ class Header extends Component {
     )('789ABCDEF', 4)
   }
 
-  onLogoClick() {
+  onLogoClick = () => {
     if (this.props.chatMode) {
       this.props.turnChatOff()
     }
   }
 
-  onLogout() {
+  onLogout = () => {
     const {logout, resetChat} = this.props
     recordUserAction({action: 'logout'})
     logout()
     resetChat()
+  }
+
+  onSubjectChange = ({subject}) => {
+    const {notifyChatSubjectChange} = this.props
+    notifyChatSubjectChange(subject)
   }
 }
 
@@ -287,6 +289,7 @@ export default connect(
     getPinnedPlaylists: getPinnedPlaylistsAsync,
     getPlaylists: getPlaylistsAsync,
     getInitialVideos,
+    notifyChatSubjectChange,
     checkVersion,
     resetChat
   }

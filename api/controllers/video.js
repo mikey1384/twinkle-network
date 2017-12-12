@@ -173,7 +173,11 @@ router.post('/edit/page', requireAuth, (req, res) => {
     hasHqThumb: null
   }
   const userId = user.id
-  return poolQuery('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId]).then(
+  const isCreator = user.userType === 'creator'
+  const query = `UPDATE vq_videos SET ? WHERE id = ?${isCreator ? '' : ' AND uploader = ?'}`
+  const params = [post, videoId]
+  if (!isCreator) params.push(userId)
+  return poolQuery(query, params).then(
     () => res.json({success: true})
   ).catch(
     error => {
@@ -186,7 +190,7 @@ router.post('/edit/page', requireAuth, (req, res) => {
 router.get('/more/playlistVideos', (req, res) => {
   const {videoId, playlistId, shownVideos} = req.query
   const query = `
-    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, b.isStarred, c.username FROM vq_playlistvideos a
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? AND a.videoId != ?
     AND ${shownVideos.map(id => `a.videoId != ${id}`).join(' AND ')} LIMIT 11
@@ -506,7 +510,15 @@ router.post('/discussions/comments', requireAuth, (req, res) => {
 })
 
 router.put('/duration', requireAuth, async(req, res) => {
-  const {user, body: {videoId}} = req
+  const {user, body: {videoId, isStarred, xpEarned}} = req
+  if (isStarred && !xpEarned) {
+    const [{currentlyWatching}] = await poolQuery(`SELECT currentlyWatching FROM users WHERE id = ?`, user.id)
+    if (!currentlyWatching) {
+      await poolQuery('UPDATE users SET currentlyWatching = ? WHERE id = ?', [videoId, user.id])
+    } else if (currentlyWatching !== Number(videoId)) {
+      return res.send({currentlyWatchingAnotherVideo: true})
+    }
+  }
   const query = `SELECT * FROM users_video_view_status WHERE userId = ? AND videoId = ?`
   const params = [user.id, videoId]
   try {
@@ -587,6 +599,20 @@ router.put('/star', requireAuth, async(req, res) => {
   }
 })
 
+router.put('/clearCurrentlyWatching', requireAuth, async(req, res) => {
+  const {user, body: {videoId}} = req
+  try {
+    const [{currentlyWatching}] = await poolQuery(`SELECT currentlyWatching FROM users WHERE id = ?`, user.id)
+    if (currentlyWatching === Number(videoId)) {
+      await poolQuery('UPDATE users SET ? WHERE id = ?', [{currentlyWatching: null}, user.id])
+    }
+    res.send({success: true})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({error})
+  }
+})
+
 router.post('/view', (req, res) => {
   const {videoId, userId} = req.body
   const post = {videoId, userId, timeStamp: Math.floor(Date.now()/1000)}
@@ -601,9 +627,13 @@ router.post('/view', (req, res) => {
 
 router.get('/xpEarned', requireAuth, async(req, res) => {
   const {user, query: {videoId}} = req
-  const query = `SELECT xpEarned FROM users_video_view_status WHERE userId = ? AND videoId = ?`
   try {
-    const [{xpEarned = 0} = {}] = await poolQuery(query, [user.id, videoId])
+    const [{currentlyWatching}] = await poolQuery(`SELECT currentlyWatching FROM users WHERE id = ?`, user.id)
+    if (currentlyWatching === Number(videoId)) {
+      await poolQuery('UPDATE users SET ? WHERE id = ?', [{currentlyWatching: null}, user.id])
+    }
+    const xpQuery = `SELECT xpEarned FROM users_video_view_status WHERE userId = ? AND videoId = ?`
+    const [{xpEarned = 0} = {}] = await poolQuery(xpQuery, [user.id, videoId])
     res.send({xpEarned})
   } catch (error) {
     console.error(error)

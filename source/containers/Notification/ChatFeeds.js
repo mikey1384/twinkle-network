@@ -6,13 +6,10 @@ import Button from 'components/Button'
 import {timeSince} from 'helpers/timeStampHelpers'
 import {connect} from 'react-redux'
 import {initChatAsync} from 'redux/actions/ChatActions'
-import {notifyChatSubjectChange} from 'redux/actions/NotiActions'
-import {socket} from 'constants/io'
 
 class ChatFeeds extends Component {
   static propTypes = {
     content: PropTypes.string,
-    notifyChatSubjectChange: PropTypes.func.isRequired,
     openChat: PropTypes.func.isRequired,
     reloadedBy: PropTypes.number,
     reloaderName: PropTypes.string,
@@ -26,20 +23,6 @@ class ChatFeeds extends Component {
     ]),
     userId: PropTypes.number,
     username: PropTypes.string
-  }
-
-  constructor() {
-    super()
-    this.onSubjectChange = this.onSubjectChange.bind(this)
-    this.renderDetails = this.renderDetails.bind(this)
-  }
-
-  componentDidMount() {
-    socket.on('subject_change', this.onSubjectChange)
-  }
-
-  componentWillUnmount() {
-    socket.removeListener('subject_change', this.onSubjectChange)
   }
 
   render() {
@@ -58,12 +41,7 @@ class ChatFeeds extends Component {
     )
   }
 
-  onSubjectChange({subject}) {
-    const {notifyChatSubjectChange} = this.props
-    notifyChatSubjectChange(subject)
-  }
-
-  renderDetails() {
+  renderDetails = () => {
     const {userId, username, timeStamp, reloadedBy, reloaderName, reloadTimeStamp} = this.props
     const posterString = <span>
       Started by <UsernameText user={{id: userId, name: username}} />
@@ -88,7 +66,6 @@ class ChatFeeds extends Component {
 export default connect(
   null,
   {
-    openChat: initChatAsync,
-    notifyChatSubjectChange
+    openChat: initChatAsync
   }
 )(ChatFeeds)

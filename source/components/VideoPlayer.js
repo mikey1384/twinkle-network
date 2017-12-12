@@ -48,34 +48,41 @@ class VideoPlayer extends Component {
   }
 
   interval = null
+  player = null
   rewardingXP = false
 
-  constructor({autoplay, hasHqThumb, videoCode}) {
-    super()
-    const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
-    this.state = {
-      player: null,
-      playing: autoplay,
-      imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`,
-      timeWatched: 0,
-      totalDuration: 0,
-      xpEarned: false,
-      justEarned: false
-    }
+  state = {
+    playing: false,
+    timeWatched: 0,
+    totalDuration: 0,
+    xpEarned: false,
+    justEarned: false,
+    imageUrl: ''
   }
 
   async componentDidMount() {
-    const {isStarred, hasHqThumb, userId, videoCode, videoId} = this.props
+    const {autoplay, hasHqThumb, isStarred, userId, videoCode, videoId} = this.props
     isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     this.mounted = true
+
     if (typeof hasHqThumb !== 'number') {
       try {
         const {data: {payload}} = await request.put(`${CONTENT_URL}/videoThumb`, {videoCode, videoId})
-        if (this.mounted && payload) this.setState({imageUrl: payload})
+        if (this.mounted) {
+          this.setState({
+            imageUrl: payload || `https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`
+          })
+        }
       } catch (error) {
         console.error(error.response || error)
       }
+    } else {
+      const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      this.setState({
+        imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`
+      })
     }
+
     if (isStarred && userId) {
       try {
         const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
@@ -84,18 +91,14 @@ class VideoPlayer extends Component {
         console.error(error.response || error)
       }
     }
-    if (isMobile) {
+
+    if (autoplay || isMobile) {
       this.setState({playing: true})
     }
   }
 
-  async componentWillUpdate(nextProps) {
-    const {isStarred, userId, videoId, videoCode} = this.props
-    if (videoCode !== nextProps.videoCode) {
-      const nextImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
-      this.setState({imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${nextImageName}.jpg`})
-    }
-
+  async componentWillReceiveProps(nextProps) {
+    const {isStarred, userId, videoCode, videoId} = this.props
     if (userId && !nextProps.userId) {
       this.setState(state => ({
         ...state,
@@ -103,6 +106,13 @@ class VideoPlayer extends Component {
         xpEarned: false,
         justEarned: false
       }))
+    }
+
+    if (videoCode !== nextProps.videoCode) {
+      const newImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      this.setState({
+        imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${newImageName}.jpg`
+      })
     }
 
     if (isStarred && nextProps.userId && (userId !== nextProps.userId)) {
@@ -117,40 +127,38 @@ class VideoPlayer extends Component {
 
   componentDidUpdate(prevProps) {
     const {onEdit, chatMode, currentVideoSlot, isStarred, pageVisible, videoId} = this.props
-    const {player, xpEarned, justEarned} = this.state
+    const {playing, xpEarned, justEarned} = this.state
     if (prevProps.onEdit !== onEdit) {
       if (onEdit === true) this.onVideoStop()
       this.setState({playing: false})
     }
-    const userWatchingMultipleVideo = player && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
+    const userWatchingMultipleVideo = currentVideoSlot && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
     const alreadyEarned = xpEarned || justEarned
 
-    if (userWatchingMultipleVideo) {
+    if (playing && userWatchingMultipleVideo) {
       this.onVideoStop()
-      player.pauseVideo()
+      if (this.player) this.player.pauseVideo()
     }
 
-    if (player && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
+    if (playing && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
       this.onVideoStop()
-      player.pauseVideo()
+      if (this.player) this.player.pauseVideo()
     }
 
-    if (player && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
+    if (playing && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
       this.onVideoStop()
-      player.pauseVideo()
+      if (this.player) this.player.pauseVideo()
     }
   }
 
   componentWillUnmount() {
-    const {emptyCurrentVideoSlot} = this.props
-    clearInterval(this.interval)
+    this.onVideoStop()
     this.mounted = false
-    emptyCurrentVideoSlot()
   }
 
   render() {
     const {
-      isStarred, videoCode, title, containerClassName, className, onEdit, style, small, userId
+      isStarred, onEdit, videoCode, title, containerClassName, className, style, small, userId
     } = this.props
     const {imageUrl, playing, timeWatched, totalDuration, xpEarned, justEarned} = this.state
     const halfDuration = totalDuration / 2
@@ -240,15 +248,26 @@ class VideoPlayer extends Component {
   }
 
   onVideoStop = () => {
+    const {emptyCurrentVideoSlot, videoId} = this.props
     clearInterval(this.interval)
+    emptyCurrentVideoSlot()
+    const authorization = auth()
+    const authExists = !!authorization.headers.authorization
+    if (authExists) {
+      try {
+        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId}, auth())
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
   }
 
   onVideoReady = (event) => {
     if (!isMobile) {
       event.target.playVideo()
     }
+    this.player = event.target
     this.setState(() => ({
-      player: event.target,
       totalDuration: event.target.getDuration()}
     ))
   }
@@ -263,7 +282,8 @@ class VideoPlayer extends Component {
         await changeUserXP({type: 'increase', action: 'watch', target: 'video', targetId: videoId, amount: 100})
         if (this.mounted) {
           this.setState(() => ({
-            justEarned: true
+            justEarned: true,
+            xpEarned: true
           }))
         }
       } catch (error) {
@@ -275,7 +295,16 @@ class VideoPlayer extends Component {
     const authExists = !!authorization.headers.authorization
     if (authExists) {
       try {
-        return await request.put(`${VIDEO_URL}/duration`, {videoId}, authorization)
+        const {
+          data: {
+            currentlyWatchingAnotherVideo,
+            success
+          }
+        } = await request.put(`${VIDEO_URL}/duration`, {videoId, isStarred, xpEarned}, authorization)
+        if (success) return
+        if (currentlyWatchingAnotherVideo) {
+          if (this.player) this.player.pauseVideo()
+        }
       } catch (error) {
         console.error(error.response || error)
       }
