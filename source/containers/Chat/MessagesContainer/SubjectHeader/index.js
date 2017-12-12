@@ -36,18 +36,10 @@ class SubjectHeader extends Component {
     uploadChatSubject: PropTypes.func
   }
 
-  constructor() {
-    super()
-    this.state = {
-      loaded: false,
-      onHover: false,
-      onEdit: false
-    }
-    this.onMouseOver = this.onMouseOver.bind(this)
-    this.onReloadChatSubject = this.onReloadChatSubject.bind(this)
-    this.onSubjectChange = this.onSubjectChange.bind(this)
-    this.onSubjectSubmit = this.onSubjectSubmit.bind(this)
-    this.renderDetails = this.renderDetails.bind(this)
+  state = {
+    loaded: false,
+    onHover: false,
+    onEdit: false
   }
 
   componentDidMount() {
@@ -148,18 +140,18 @@ class SubjectHeader extends Component {
     )
   }
 
-  onMouseOver() {
+  onMouseOver = () => {
     if (textIsOverflown(this.headerLabel)) {
       this.setState({onHover: true})
     }
   }
 
-  onSubjectChange({subject}) {
+  onSubjectChange = ({subject}) => {
     const {changeChatSubject} = this.props
     changeChatSubject(subject)
   }
 
-  onReloadChatSubject(subjectId) {
+  onReloadChatSubject = (subjectId) => {
     const {reloadChatSubject, clearSubjectSearchResults} = this.props
     return reloadChatSubject(subjectId).then(
       ({subjectId, message, subject}) => {
@@ -172,7 +164,7 @@ class SubjectHeader extends Component {
     )
   }
 
-  onSubjectSubmit(text) {
+  onSubjectSubmit = (text) => {
     const {uploadChatSubject, username, userId, profilePicId} = this.props
     const content = `${text[0].toUpperCase()}${text.slice(1)}`
     return uploadChatSubject(text).then(
@@ -198,12 +190,12 @@ class SubjectHeader extends Component {
           timeStamp
         }
         socket.emit('new_subject', {subject, message})
-        this.setState({onEdit: false})
+        if (this.mounted) this.setState({onEdit: false})
       }
     )
   }
 
-  renderDetails() {
+  renderDetails = () => {
     const {subject: {uploader = {}, reloader = {}, timeStamp, reloadTimeStamp}} = this.props
     const isReloaded = reloader && reloader.id
     let posterString = 'You can change this subject by clicking the blue "Change the subject" button'

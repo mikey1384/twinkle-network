@@ -36,6 +36,7 @@ class EditSubjectForm extends Component {
     this.state = {
       title: cleanString(props.title),
       highlightedIndex: -1,
+      readyForSubmit: false,
       subjectsModalShown: false
     }
   }
@@ -118,7 +119,7 @@ class EditSubjectForm extends Component {
   onInputChange = (text) => {
     const {onChange} = this.props
     clearTimeout(this.timer)
-    this.setState({title: text})
+    this.setState({title: text, readyForSubmit: false})
     this.timer = setTimeout(() => onChange(text).then(
       () => {
         const {searchResults} = this.props
@@ -133,9 +134,12 @@ class EditSubjectForm extends Component {
             break
           }
         }
-        this.setState({highlightedIndex: exactMatchExists ? matchIndex : -1})
+        this.setState({
+          highlightedIndex: exactMatchExists ? matchIndex : -1,
+          readyForSubmit: true
+        })
       }
-    ), 300)
+    ), 200)
   }
 
   onUpdate = () => {
@@ -161,8 +165,9 @@ class EditSubjectForm extends Component {
       onEditSubmit, onClickOutSide, maxLength = 100,
       reloadChatSubject, searchResults, currentSubjectId
     } = this.props
-    const {title, highlightedIndex} = this.state
+    const {title, highlightedIndex, readyForSubmit} = this.state
     event.preventDefault()
+    if (!readyForSubmit) return
     if (highlightedIndex > -1) {
       const {id: subjectId} = searchResults[highlightedIndex]
       if (subjectId === currentSubjectId) return onClickOutSide()
