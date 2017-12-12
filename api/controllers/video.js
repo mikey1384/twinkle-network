@@ -186,7 +186,7 @@ router.post('/edit/page', requireAuth, (req, res) => {
 router.get('/more/playlistVideos', (req, res) => {
   const {videoId, playlistId, shownVideos} = req.query
   const query = `
-    SELECT a.id, a.videoId, b.title, b.uploader, b.content, c.username FROM vq_playlistvideos a
+    SELECT a.id, a.videoId, b.title, b.uploader, b.content, b.isStarred, c.username FROM vq_playlistvideos a
     JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? AND a.videoId != ?
     AND ${shownVideos.map(id => `a.videoId != ${id}`).join(' AND ')} LIMIT 11
