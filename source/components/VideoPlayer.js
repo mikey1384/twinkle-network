@@ -68,7 +68,11 @@ class VideoPlayer extends Component {
     if (typeof hasHqThumb !== 'number') {
       try {
         const {data: {payload}} = await request.put(`${CONTENT_URL}/videoThumb`, {videoCode, videoId})
-        if (this.mounted && payload) this.setState({imageUrl: payload})
+        if (this.mounted) {
+          this.setState({
+            imageUrl: payload || `https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`
+          })
+        }
       } catch (error) {
         console.error(error.response || error)
       }
