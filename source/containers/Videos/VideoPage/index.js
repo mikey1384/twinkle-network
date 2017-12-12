@@ -90,6 +90,16 @@ class VideoPage extends Component {
   componentWillReceiveProps(nextProps) {
     const {loadVideoPage, match: {params}} = this.props
     if (ExecutionEnvironment.canUseDOM && nextProps.match.params.videoId !== params.videoId) {
+      this.setState({
+        watchTabActive: true,
+        currentSlide: 0,
+        userAnswers: [],
+        resultModalShown: false,
+        editModalShown: false,
+        confirmModalShown: false,
+        onEdit: false,
+        questionsBuilderShown: false
+      })
       loadVideoPage(nextProps.match.params.videoId)
       const authorization = auth()
       const authExists = !!authorization.headers.authorization

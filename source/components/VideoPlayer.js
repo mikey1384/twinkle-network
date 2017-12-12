@@ -48,22 +48,23 @@ class VideoPlayer extends Component {
   }
 
   interval = null
+  player = null
   rewardingXP = false
 
-  constructor({autoplay}) {
-    super()
-    this.state = {
-      player: null,
-      playing: autoplay,
-      timeWatched: 0,
-      totalDuration: 0,
-      xpEarned: false,
-      justEarned: false
-    }
+  state = {
+    playing: false,
+    timeWatched: 0,
+    totalDuration: 0,
+    xpEarned: false,
+    justEarned: false,
+    imageUrl: ''
   }
 
-  async componentWillMount() {
-    const {hasHqThumb, videoCode, videoId} = this.props
+  async componentDidMount() {
+    const {autoplay, hasHqThumb, isStarred, userId, videoCode, videoId} = this.props
+    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    this.mounted = true
+
     if (typeof hasHqThumb !== 'number') {
       try {
         const {data: {payload}} = await request.put(`${CONTENT_URL}/videoThumb`, {videoCode, videoId})
@@ -72,17 +73,12 @@ class VideoPlayer extends Component {
         console.error(error.response || error)
       }
     } else {
-      const newImageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
-      this.setState(() => ({
-        imageUrl: `https://img.youtube.com/vi/${videoCode}/${newImageName}.jpg`
-      }))
+      const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      this.setState({
+        imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`
+      })
     }
-  }
 
-  async componentDidMount() {
-    const {isStarred, userId, videoId} = this.props
-    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    this.mounted = true
     if (isStarred && userId) {
       try {
         const {data: {xpEarned}} = await request.get(`${VIDEO_URL}/xpEarned?videoId=${videoId}`, auth())
@@ -91,13 +87,14 @@ class VideoPlayer extends Component {
         console.error(error.response || error)
       }
     }
-    if (isMobile) {
+
+    if (autoplay || isMobile) {
       this.setState({playing: true})
     }
   }
 
   async componentWillReceiveProps(nextProps) {
-    const {isStarred, userId, videoId} = this.props
+    const {isStarred, userId, videoCode, videoId} = this.props
     if (userId && !nextProps.userId) {
       this.setState(state => ({
         ...state,
@@ -105,6 +102,13 @@ class VideoPlayer extends Component {
         xpEarned: false,
         justEarned: false
       }))
+    }
+
+    if (videoCode !== nextProps.videoCode) {
+      const newImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      this.setState({
+        imageUrl: `https://img.youtube.com/vi/${nextProps.videoCode}/${newImageName}.jpg`
+      })
     }
 
     if (isStarred && nextProps.userId && (userId !== nextProps.userId)) {
@@ -119,39 +123,38 @@ class VideoPlayer extends Component {
 
   componentDidUpdate(prevProps) {
     const {onEdit, chatMode, currentVideoSlot, isStarred, pageVisible, videoId} = this.props
-    const {player, xpEarned, justEarned} = this.state
+    const {playing, xpEarned, justEarned} = this.state
     if (prevProps.onEdit !== onEdit) {
       if (onEdit === true) this.onVideoStop()
       this.setState({playing: false})
     }
-    const userWatchingMultipleVideo =
-      player && currentVideoSlot && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
+    const userWatchingMultipleVideo = currentVideoSlot && currentVideoSlot !== prevProps.currentVideoSlot && currentVideoSlot !== Number(videoId)
     const alreadyEarned = xpEarned || justEarned
 
-    if (userWatchingMultipleVideo) {
+    if (playing && userWatchingMultipleVideo) {
       this.onVideoStop()
-      player.pauseVideo()
+      if (this.player) this.player.pauseVideo()
     }
 
-    if (player && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
+    if (playing && isStarred && pageVisible !== prevProps.pageVisible && !alreadyEarned) {
       this.onVideoStop()
-      player.pauseVideo()
+      if (this.player) this.player.pauseVideo()
     }
 
-    if (player && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
+    if (playing && isStarred && chatMode !== prevProps.chatMode && !alreadyEarned) {
       this.onVideoStop()
-      player.pauseVideo()
+      if (this.player) this.player.pauseVideo()
     }
   }
 
   componentWillUnmount() {
-    this.mounted = false
     this.onVideoStop()
+    this.mounted = false
   }
 
   render() {
     const {
-      isStarred, videoCode, title, containerClassName, className, onEdit, style, small, userId
+      isStarred, onEdit, videoCode, title, containerClassName, className, style, small, userId
     } = this.props
     const {imageUrl, playing, timeWatched, totalDuration, xpEarned, justEarned} = this.state
     const halfDuration = totalDuration / 2
@@ -259,14 +262,14 @@ class VideoPlayer extends Component {
     if (!isMobile) {
       event.target.playVideo()
     }
+    this.player = event.target
     this.setState(() => ({
-      player: event.target,
       totalDuration: event.target.getDuration()}
     ))
   }
 
   increaseProgress = async() => {
-    const {player, xpEarned, timeWatched, totalDuration} = this.state
+    const {xpEarned, timeWatched, totalDuration} = this.state
     const {changeUserXP, isStarred, videoId} = this.props
     if (isStarred && timeWatched >= totalDuration / 2 && !this.rewardingXP) {
       this.rewardingXP = true
@@ -296,7 +299,7 @@ class VideoPlayer extends Component {
         } = await request.put(`${VIDEO_URL}/duration`, {videoId, isStarred, xpEarned}, authorization)
         if (success) return
         if (currentlyWatchingAnotherVideo) {
-          if (player) player.pauseVideo()
+          if (this.player) this.player.pauseVideo()
         }
       } catch (error) {
         console.error(error.response || error)

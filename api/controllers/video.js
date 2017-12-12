@@ -173,7 +173,11 @@ router.post('/edit/page', requireAuth, (req, res) => {
     hasHqThumb: null
   }
   const userId = user.id
-  return poolQuery('UPDATE vq_videos SET ? WHERE id = ? AND uploader = ?', [post, videoId, userId]).then(
+  const isCreator = user.userType === 'creator'
+  const query = `UPDATE vq_videos SET ? WHERE id = ?${isCreator ? '' : ' AND uploader = ?'}`
+  const params = [post, videoId]
+  if (!isCreator) params.push(userId)
+  return poolQuery(query, params).then(
     () => res.json({success: true})
   ).catch(
     error => {

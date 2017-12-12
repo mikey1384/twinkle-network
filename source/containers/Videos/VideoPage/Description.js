@@ -19,11 +19,13 @@ import {
   isValidYoutubeUrl
 } from 'helpers/stringHelpers'
 import {edit} from 'constants/placeholders'
+import {connect} from 'react-redux'
 
-export default class Description extends Component {
+class Description extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
+    isCreator: PropTypes.bool.isRequired,
     isStarred: PropTypes.bool,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
@@ -98,7 +100,7 @@ export default class Description extends Component {
     ]
 
     const {
-      isStarred, uploaderId, userId, uploaderName, title,
+      isCreator, isStarred, uploaderId, userId, uploaderName, title,
       description, likes, timeStamp, videoId, videoViews
     } = this.props
     let {
@@ -176,7 +178,7 @@ export default class Description extends Component {
                 </div>
                 <div style={{paddingLeft: '0px'}}>
                   <div>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</div>
-                  {uploaderId === userId && !onEdit &&
+                  {(uploaderId === userId || isCreator) && !onEdit &&
                     <DropdownButton
                       style={{marginTop: '0.5em'}}
                       shape="button"
@@ -323,3 +325,5 @@ export default class Description extends Component {
     this.props.likeVideo(videoId)
   }
 }
+
+export default connect(state => ({isCreator: state.UserReducer.isCreator}))(Description)
