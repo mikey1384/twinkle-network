@@ -131,8 +131,7 @@ export function processedString(string) {
     .replace(/ /g, '\u00a0')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\r?\n/g, '<br>') :
+    .replace(/>/g, '&gt;') :
     null
 }
 
