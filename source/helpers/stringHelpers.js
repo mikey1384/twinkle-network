@@ -128,6 +128,7 @@ export function processedQueryString(string) {
 
 export function processedString(string) {
   return string ? string
+    .replace(/ /g, '\u00a0')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
