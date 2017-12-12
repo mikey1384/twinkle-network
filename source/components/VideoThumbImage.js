@@ -11,11 +11,10 @@ const API_URL = `${URL}/video`
 
 class VideoThumbImage extends Component {
   static propTypes = {
-    divStyle: PropTypes.object,
     imgStyle: PropTypes.object,
-    imgProps: PropTypes.object,
     isStarred: PropTypes.bool,
     src: PropTypes.string.isRequired,
+    userId: PropTypes.number,
     videoId: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
@@ -28,29 +27,26 @@ class VideoThumbImage extends Component {
 
   mounted = false
 
-  async componentWillMount() {
-    const {userId, videoId, isStarred} = this.props
+  componentWillMount() {
+    const {userId, isStarred} = this.props
     this.mounted = true
     if (isStarred && userId) {
-      const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
-      if (this.mounted) this.setState(() => ({xpEarned}))
+      this.checkXpStatus()
     }
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     const {videoId, isStarred} = this.props
     if (prevProps.videoId !== videoId) {
       if (!isStarred) return this.setState(() => ({xpEarned: false}))
-      const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
-      if (this.mounted) this.setState(() => ({xpEarned}))
+      this.checkXpStatus()
     }
   }
 
-  async componentWillReceiveProps(nextProps) {
-    const {userId, videoId, isStarred} = this.props
+  componentWillReceiveProps(nextProps) {
+    const {userId, isStarred} = this.props
     if (isStarred && nextProps.userId && nextProps.userId !== userId) {
-      const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
-      if (this.mounted) this.setState(() => ({xpEarned}))
+      this.checkXpStatus()
     }
     if (userId && !nextProps.userId) {
       this.setState(() => ({xpEarned: false}))
@@ -62,24 +58,35 @@ class VideoThumbImage extends Component {
   }
 
   render() {
-    const {src, isStarred, imgStyle, divStyle, imgProps} = this.props
+    const {src, isStarred, imgStyle} = this.props
     const {xpEarned} = this.state
     return (
-      <div
-        style={divStyle}
-      >
+      <div>
+        {isStarred && <StarMark size={2} />}
         <img
-          {...imgProps}
           alt="Thumbnail"
           src={src}
           style={{
             ...imgStyle,
-            borderBottom: !!xpEarned && `1.5rem solid ${Color.lightBlue}`
+            borderBottom: !!xpEarned && `1rem solid ${Color.lightBlue}`
           }}
         />
-        {isStarred && <StarMark size={3} />}
       </div>
     )
+  }
+
+  checkXpStatus = async() => {
+    const {videoId} = this.props
+    const authorization = auth()
+    const authExists = !!authorization.headers.authorization
+    if (authExists) {
+      try {
+        const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
+        if (this.mounted) this.setState(() => ({xpEarned}))
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
   }
 }
 

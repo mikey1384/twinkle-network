@@ -26,7 +26,7 @@ class VideoThumb extends Component {
     editVideoTitle: PropTypes.func,
     lastVideoId: PropTypes.number,
     loadVideoPage: PropTypes.func,
-    size: PropTypes.string,
+    style: PropTypes.object,
     to: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
     video: PropTypes.shape({
@@ -49,7 +49,7 @@ class VideoThumb extends Component {
 
   render() {
     const {onEdit, confirmModalShown, onTitleHover} = this.state
-    const {size, editable, video, to, user} = this.props
+    const {editable, video, style, to, user} = this.props
     const menuProps = [
       {
         label: 'Edit',
@@ -61,15 +61,19 @@ class VideoThumb extends Component {
       }
     ]
     return (
-      <ErrorBoundary className={size}>
-        <div className="thumbnail">
+      <ErrorBoundary style={style}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
           {
             editable &&
             <DropdownButton
               style={{
                 position: 'absolute',
                 right: '0px',
-                marginRight: '2rem',
                 zIndex: '1'
               }}
               icon="pencil"
@@ -83,21 +87,8 @@ class VideoThumb extends Component {
             <VideoThumbImage
               videoId={video.id}
               isStarred={!!video.isStarred}
-              divStyle={{
-                position: 'relative',
-                overflow: 'hidden',
-                paddingBottom: '75%'
-              }}
-              imgStyle={{
-                width: '100%',
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                bottom: '0px',
-                right: '0px',
-                margin: 'auto'
-              }}
-              src={`https://img.youtube.com/vi/${video.content}/0.jpg`}
+              src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+              imgStyle={{width: '100%', height: '60%'}}
             />
           </Link>
           <div

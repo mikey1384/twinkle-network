@@ -104,27 +104,29 @@ class RightMenu extends Component {
 
   renderVideos(videos) {
     const {playlistId} = this.props
-    return videos.map(video => (
+    return videos.map((video, index) => (
       <div
         key={video.id}
-        className="media"
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          marginTop: index !== 0 ? '1rem' : 0
+        }}
       >
-        <div className="media-left media-middle">
+        <div>
           <Link to={`/videos/${video.videoId}${playlistId ? `?playlist=${playlistId}` : ''}`}>
             <VideoThumbImage
               isStarred={!!video.isStarred}
-              imgProps={{
-                className: 'media-object'
-              }}
-              videoId={video.id}
+              videoId={video.videoId}
               src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
               imgStyle={{width: '18rem'}}
             />
           </Link>
         </div>
-        <div className="media-body">
+        <div style={{paddingLeft: '1rem', display: 'flex', flexDirection: 'column'}}>
           <Link to={`/videos/${video.videoId}${playlistId ? `?playlist=${playlistId}` : ''}`}>
-            <p style={{fontSize: '1.2em'}} className="media-heading">{cleanString(video.title)}</p>
+            <p style={{fontSize: '1.2em'}}>{cleanString(video.title)}</p>
           </Link>
           <small style={{color: Color.gray}}>Uploaded by {video.username}</small>
         </div>

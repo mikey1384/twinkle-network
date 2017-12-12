@@ -52,21 +52,31 @@ class AllVideosPanel extends Component {
         loadMoreButtonShown={loadMoreButton}
         loadMore={this.loadMoreVideos}
       >
-        {videos.map((video, index) => {
-          const editable = this.props.userId === video.uploaderId
-          return (
-            <VideoThumb
-              to={`videos/${video.id}`}
-              size="col-sm-3"
-              key={video.id}
-              arrayIndex={index}
-              editable={editable}
-              video={video}
-              user={{name: video.uploaderName, id: video.uploaderId}}
-              lastVideoId={last(videos) ? last(videos).id : 0}
-            />
-          )
-        })}
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around'
+          }}
+        >
+          {videos.map((video, index) => {
+            const editable = this.props.userId === video.uploaderId
+            return (
+              <VideoThumb
+                to={`videos/${video.id}`}
+                style={{width: '22%', height: '25%'}}
+                key={video.id}
+                arrayIndex={index}
+                editable={editable}
+                video={video}
+                user={{name: video.uploaderName, id: video.uploaderId}}
+                lastVideoId={last(videos) ? last(videos).id : 0}
+              />
+            )
+          })}
+        </div>
       </SectionPanel>
     )
   }
