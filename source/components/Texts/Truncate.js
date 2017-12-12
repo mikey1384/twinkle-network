@@ -69,7 +69,7 @@ export default class Truncate extends Component {
     const div = document.createElement('div')
     div.innerHTML = node.innerHTML.replace(/\r\n|\r|\n/g, ' ')
 
-    let text = div.innerText
+    let text = div.innerText.replace(/\u00a0/g, ' ')
 
     const test = document.createElement('div')
     test.innerHTML = 'foo<br/>bar'
