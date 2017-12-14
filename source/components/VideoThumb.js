@@ -62,12 +62,7 @@ class VideoThumb extends Component {
     ]
     return (
       <ErrorBoundary style={style}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-        >
+        <div>
           {
             editable &&
             <DropdownButton
@@ -80,17 +75,18 @@ class VideoThumb extends Component {
               menuProps={menuProps}
             />
           }
-          <Link
-            to={`/${to}`}
-            onClickAsync={this.onLinkClick}
-          >
-            <VideoThumbImage
-              videoId={video.id}
-              isStarred={!!video.isStarred}
-              src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
-              imgStyle={{width: '100%', height: '60%'}}
-            />
-          </Link>
+          <div style={{width: '100%'}}>
+            <Link
+              to={`/${to}`}
+              onClickAsync={this.onLinkClick}
+            >
+              <VideoThumbImage
+                videoId={video.id}
+                isStarred={!!video.isStarred}
+                src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+              />
+            </Link>
+          </div>
           <div
             className="caption"
             style={{

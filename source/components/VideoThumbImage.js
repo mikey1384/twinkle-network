@@ -11,7 +11,6 @@ const API_URL = `${URL}/video`
 
 class VideoThumbImage extends Component {
   static propTypes = {
-    imgStyle: PropTypes.object,
     isStarred: PropTypes.bool,
     src: PropTypes.string.isRequired,
     userId: PropTypes.number,
@@ -58,16 +57,33 @@ class VideoThumbImage extends Component {
   }
 
   render() {
-    const {src, isStarred, imgStyle} = this.props
+    const {src, isStarred} = this.props
     const {xpEarned} = this.state
     return (
-      <div>
+      <div
+        style={{
+          display: 'block',
+          width: '100%',
+          height: 'auto',
+          overFlow: 'hidden',
+          paddingBottom: '65%',
+          position: 'relative'
+        }}
+      >
         {isStarred && <StarMark size={2} />}
         <img
           alt="Thumbnail"
           src={src}
           style={{
-            ...imgStyle,
+            display: 'block',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            margin: 'auto',
             borderBottom: !!xpEarned && `1rem solid ${Color.lightBlue}`
           }}
         />
