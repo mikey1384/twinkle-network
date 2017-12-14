@@ -113,7 +113,7 @@ export function addEmoji(string) {
 }
 
 export function finalizeEmoji(string) {
-  let emojifiedString = addAdvancedEmoji(string)
+  let emojifiedString = addAdvancedEmoji(string + ' ').replace(/((\s*\S+)*)\s*/, '$1')
   return addEmoji(emojifiedString)
 }
 

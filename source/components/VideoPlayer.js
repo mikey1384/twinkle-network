@@ -213,10 +213,10 @@ class VideoPlayer extends Component {
               videoId={videoCode}
               onReady={this.onVideoReady}
               onStateChange={(e) => {
-                if (e.data === 2) {
-                  this.onVideoStop()
-                } else if (e.data === 1) {
+                if (e.data === 1) {
                   this.onVideoPlay(e)
+                } else {
+                  this.onVideoStop()
                 }
               }}
               onEnd={this.onVideoStop}
@@ -238,13 +238,15 @@ class VideoPlayer extends Component {
   }
 
   onVideoPlay = (event) => {
-    const {videoId, userId, addVideoView, fillCurrentVideoSlot} = this.props
+    const {currentVideoSlot, videoId, userId, addVideoView, fillCurrentVideoSlot} = this.props
     const time = event.target.getCurrentTime()
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
     }
-    fillCurrentVideoSlot(Number(videoId))
-    if (userId) this.interval = setInterval(this.increaseProgress, intervalLength)
+    if (!currentVideoSlot) {
+      fillCurrentVideoSlot(Number(videoId))
+      if (userId) this.interval = setInterval(this.increaseProgress, intervalLength)
+    }
   }
 
   onVideoStop = () => {
@@ -255,7 +257,7 @@ class VideoPlayer extends Component {
     const authExists = !!authorization.headers.authorization
     if (authExists) {
       try {
-        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId}, auth())
+        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId}, authorization)
       } catch (error) {
         console.error(error.response || error)
       }

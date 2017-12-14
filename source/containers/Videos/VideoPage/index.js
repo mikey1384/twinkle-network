@@ -105,7 +105,7 @@ class VideoPage extends Component {
       const authExists = !!authorization.headers.authorization
       if (authExists) {
         try {
-          request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId: params.videoId}, auth())
+          request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId: params.videoId}, authorization)
         } catch (error) {
           console.error(error.response || error)
         }
