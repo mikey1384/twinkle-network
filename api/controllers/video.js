@@ -513,7 +513,7 @@ router.put('/duration', requireAuth, async(req, res) => {
   const {user, body: {videoId, isStarred, xpEarned}} = req
   if (isStarred && !xpEarned) {
     const [{currentlyWatching}] = await poolQuery(`SELECT currentlyWatching FROM users WHERE id = ?`, user.id)
-    if (currentlyWatching !== Number(videoId)) {
+    if (currentlyWatching && currentlyWatching !== Number(videoId)) {
       return res.send({currentlyWatchingAnotherVideo: true})
     }
   }
