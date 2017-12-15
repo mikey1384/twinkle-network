@@ -238,7 +238,10 @@ class VideoPlayer extends Component {
   }
 
   onVideoPlay = (event) => {
-    const {currentVideoSlot, videoId, userId, addVideoView, fillCurrentVideoSlot} = this.props
+    const {
+      currentVideoSlot, isStarred, videoId, userId, addVideoView, fillCurrentVideoSlot
+    } = this.props
+    const {justEarned, xpEarned} = this.state
     const time = event.target.getCurrentTime()
     if (Math.floor(time) === 0) {
       addVideoView({videoId, userId})
@@ -247,17 +250,26 @@ class VideoPlayer extends Component {
       fillCurrentVideoSlot(Number(videoId))
       if (userId) this.interval = setInterval(this.increaseProgress, intervalLength)
     }
+    const authorization = auth()
+    const authExists = !!authorization.headers.authorization
+    if (authExists && isStarred && !(justEarned || xpEarned)) {
+      try {
+        request.put(`${VIDEO_URL}/currentlyWatching`, {videoId}, authorization)
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
   }
 
   onVideoStop = () => {
-    const {emptyCurrentVideoSlot, videoId} = this.props
+    const {emptyCurrentVideoSlot} = this.props
     clearInterval(this.interval)
     emptyCurrentVideoSlot()
     const authorization = auth()
     const authExists = !!authorization.headers.authorization
     if (authExists) {
       try {
-        request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId}, authorization)
+        request.put(`${VIDEO_URL}/currentlyWatching`, {videoId: null}, authorization)
       } catch (error) {
         console.error(error.response || error)
       }
