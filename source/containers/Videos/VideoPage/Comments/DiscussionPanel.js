@@ -59,7 +59,7 @@ class DiscussionPanel extends Component {
       onEdit: false,
       confirmModalShown: false,
       editedTitle: cleanString(props.title),
-      editedDescription: props.description,
+      editedDescription: props.description || '',
       editDoneButtonDisabled: true
     }
     this.onDelete = this.onDelete.bind(this)
