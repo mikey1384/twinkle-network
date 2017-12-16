@@ -112,11 +112,13 @@ export default function PlaylistReducer(state = defaultState, action) {
         ...state,
         pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
           ...playlist,
-          title: playlist.id === action.playlistId ? action.data : playlist.title
+          title:
+            playlist.id === action.playlistId ? action.data : playlist.title
         })),
         allPlaylists: state.allPlaylists.map(playlist => ({
           ...playlist,
-          title: playlist.id === action.playlistId ? action.data : playlist.title
+          title:
+            playlist.id === action.playlistId ? action.data : playlist.title
         }))
       }
     case 'CHANGE_PLAYLIST_VIDEOS':
@@ -124,11 +126,13 @@ export default function PlaylistReducer(state = defaultState, action) {
         ...state,
         pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
           ...playlist,
-          playlist: playlist.id === action.playlistId ? action.data : playlist.playlist
+          playlist:
+            playlist.id === action.playlistId ? action.data : playlist.playlist
         })),
         allPlaylists: state.allPlaylists.map(playlist => ({
           ...playlist,
-          playlist: playlist.id === action.playlistId ? action.data : playlist.playlist
+          playlist:
+            playlist.id === action.playlistId ? action.data : playlist.playlist
         }))
       }
     case 'DELETE_PLAYLIST':
@@ -148,14 +152,20 @@ export default function PlaylistReducer(state = defaultState, action) {
           ...playlist,
           playlist: playlist.playlist.map(video => ({
             ...video,
-            numLikes: video.videoId === action.videoId ? action.data.length : video.numLikes
+            numLikes:
+              video.videoId === action.videoId
+                ? action.data.length
+                : video.numLikes
           }))
         })),
         allPlaylists: state.allPlaylists.map(playlist => ({
           ...playlist,
           playlist: playlist.playlist.map(video => ({
             ...video,
-            numLikes: video.videoId === action.videoId ? action.data.length : video.numLikes
+            numLikes:
+              video.videoId === action.videoId
+                ? action.data.length
+                : video.numLikes
           }))
         }))
       }

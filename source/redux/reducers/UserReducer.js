@@ -26,12 +26,14 @@ export default function UserReducer(state = defaultState, action) {
         searchedProfiles: []
       }
     case 'FETCH_SESSION':
-      return (action.data !== undefined && action.data.loggedIn) ? {
-        ...state,
-        ...action.data,
-        isAdmin: isAdmin(action.data.userType),
-        isCreator: action.data.userType === 'creator'
-      } : state
+      return action.data !== undefined && action.data.loggedIn
+        ? {
+            ...state,
+            ...action.data,
+            isAdmin: isAdmin(action.data.userType),
+            isCreator: action.data.userType === 'creator'
+          }
+        : state
     case 'FETCH_USERS':
       if (action.data.length > 20) {
         action.data.pop()
@@ -124,7 +126,10 @@ export default function UserReducer(state = defaultState, action) {
         },
         profiles: state.profiles.map(profile => ({
           ...profile,
-          profilePicId: profile.id === action.data.userId ? action.data.imageId : profile.profilePicId
+          profilePicId:
+            profile.id === action.data.userId
+              ? action.data.imageId
+              : profile.profilePicId
         }))
       }
     case 'UNMOUNT_PROFILE':

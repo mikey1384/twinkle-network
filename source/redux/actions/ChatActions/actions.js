@@ -23,7 +23,7 @@ export const leaveChannel = channelId => ({
   channelId
 })
 
-export const loadMoreMessages = (data) => ({
+export const loadMoreMessages = data => ({
   type: 'LOAD_MORE_MSG',
   data
 })

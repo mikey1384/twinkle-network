@@ -29,13 +29,15 @@ module.exports = {
       },
       {
         test: /\.(png|jp(e*)g|svg)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 8000,
-            name: 'images/[hash]-[name].[ext]'
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8000,
+              name: 'images/[hash]-[name].[ext]'
+            }
           }
-        }]
+        ]
       }
     ]
   },
@@ -45,7 +47,7 @@ module.exports = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({cache: false}),
+    new webpack.optimize.UglifyJsPlugin({ cache: false }),
     new webpack.optimize.ModuleConcatenationPlugin()
   ]
 }

@@ -9,6 +9,7 @@ export default function ViewReducer(state = defaultState, action) {
         ...state,
         pageVisible: action.visible
       }
-    default: return state
+    default:
+      return state
   }
 }

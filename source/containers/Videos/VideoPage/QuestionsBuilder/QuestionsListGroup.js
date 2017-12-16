@@ -8,7 +8,12 @@ QuestionsListGroup.propTypes = {
   questions: PropTypes.array.isRequired,
   style: PropTypes.object
 }
-export default function QuestionsListGroup({questions, questionIds, style, onMove}) {
+export default function QuestionsListGroup({
+  questions,
+  questionIds,
+  style,
+  onMove
+}) {
   const listItems = questionIds.reduce((result, questionId) => {
     for (let i = 0; i < questions.length; i++) {
       if (questions[i].id === questionId) {
@@ -23,15 +28,12 @@ export default function QuestionsListGroup({questions, questionIds, style, onMov
   }, [])
 
   return (
-    <ul
-      className="list-group unselectable"
-      style={style}
-    >
+    <ul className="list-group unselectable" style={style}>
       {listItems.map((item, index) => (
         <QuestionsListItem
           key={index}
           item={item}
-          onMove={({sourceId, targetId}) => onMove({sourceId, targetId})}
+          onMove={({ sourceId, targetId }) => onMove({ sourceId, targetId })}
         />
       ))}
     </ul>

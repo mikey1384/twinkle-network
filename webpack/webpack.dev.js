@@ -6,10 +6,7 @@ import prodCfg from './webpack.prod.config.js'
 export default function options(app) {
   const config = Object.assign({}, prodCfg, {
     devtool: 'cheap-module-eval-source-map',
-    entry: [
-      'webpack-hot-middleware/client.js',
-      './entry/client.js'
-    ],
+    entry: ['webpack-hot-middleware/client.js', './entry/client.js'],
     module: {
       rules: [
         {
@@ -24,7 +21,7 @@ export default function options(app) {
           include: [/source/, /entry/],
           loader: 'babel-loader',
           options: {
-            presets: [['es2015', {'modules': false}], 'react'],
+            presets: [['es2015', { modules: false }], 'react'],
             plugins: [
               ['transform-object-rest-spread'],
               ['transform-class-properties'],
@@ -48,7 +45,10 @@ export default function options(app) {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.optimize.UglifyJsPlugin({
-        sourceMap: options.devtool && (options.devtool.indexOf('sourcemap') >= 0 || options.devtool.indexOf('source-map') >= 0)
+        sourceMap:
+          options.devtool &&
+          (options.devtool.indexOf('sourcemap') >= 0 ||
+            options.devtool.indexOf('source-map') >= 0)
       })
     ]
   })

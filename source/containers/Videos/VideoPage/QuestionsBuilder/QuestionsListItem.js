@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import {DragSource, DropTarget} from 'react-dnd'
+import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
 
 const listItemSource = {
@@ -21,7 +21,7 @@ const listItemTarget = {
     const sourceId = sourceProps.id
 
     if (sourceId !== targetId) {
-      targetProps.onMove({sourceId, targetId})
+      targetProps.onMove({ sourceId, targetId })
     }
   }
 }
@@ -32,24 +32,33 @@ QuestionsListItem.propTypes = {
   isDragging: PropTypes.bool,
   item: PropTypes.object
 }
-function QuestionsListItem({connectDragSource, connectDropTarget, isDragging, item}) {
-  return connectDragSource(connectDropTarget(
-    <li
-      className="list-group-item"
-      style={{
-        opacity: isDragging ? 0 : 1,
-        color: (!item.label || item.deleted) && '#999'
-      }}
-    >
-      {item.label ? `${item.label} ${item.deleted ? '(removed)' : ''}` :
-        `Untitled Question ${item.id + 1} ${item.deleted ? '(removed)' : ''}`
-      }
-      <span className="glyphicon glyphicon-align-justify pull-right grey-color"></span>
-    </li>
-  ))
+function QuestionsListItem({
+  connectDragSource,
+  connectDropTarget,
+  isDragging,
+  item
+}) {
+  return connectDragSource(
+    connectDropTarget(
+      <li
+        className="list-group-item"
+        style={{
+          opacity: isDragging ? 0 : 1,
+          color: (!item.label || item.deleted) && '#999'
+        }}
+      >
+        {item.label
+          ? `${item.label} ${item.deleted ? '(removed)' : ''}`
+          : `Untitled Question ${item.id + 1} ${
+              item.deleted ? '(removed)' : ''
+            }`}
+        <span className="glyphicon glyphicon-align-justify pull-right grey-color" />
+      </li>
+    )
+  )
 }
 
-export default DropTarget(ItemTypes.LIST_ITEM, listItemTarget, (connect) => ({
+export default DropTarget(ItemTypes.LIST_ITEM, listItemTarget, connect => ({
   connectDropTarget: connect.dropTarget()
 }))(
   DragSource(ItemTypes.LIST_ITEM, listItemSource, (connect, monitor) => ({

@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import DropdownButton from 'components/DropdownButton'
 import UsernameText from 'components/Texts/UsernameText'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
 import LongText from 'components/Texts/LongText'
-import {timeSince} from 'helpers/timeStampHelpers'
+import { timeSince } from 'helpers/timeStampHelpers'
 import UserListModal from 'components/Modals/UserListModal'
 import VideoLikeInterface from './VideoLikeInterface'
 import FullTextReveal from 'components/FullTextReveal'
-import {textIsOverflown} from 'helpers/domHelpers'
+import { textIsOverflown } from 'helpers/domHelpers'
 import Input from 'components/Texts/Input'
 import {
   cleanString,
@@ -18,8 +18,8 @@ import {
   finalizeEmoji,
   isValidYoutubeUrl
 } from 'helpers/stringHelpers'
-import {edit} from 'constants/placeholders'
-import {connect} from 'react-redux'
+import { edit } from 'constants/placeholders'
+import { connect } from 'react-redux'
 
 class Description extends Component {
   static propTypes = {
@@ -33,18 +33,14 @@ class Description extends Component {
     onEditCancel: PropTypes.func.isRequired,
     onEditFinish: PropTypes.func.isRequired,
     onEditStart: PropTypes.func.isRequired,
-    timeStamp: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
+    timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     title: PropTypes.string.isRequired,
     uploaderId: PropTypes.number.isRequired,
     uploaderName: PropTypes.string.isRequired,
     userId: PropTypes.number,
-    videoId: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
+    videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     videoViews: PropTypes.string.isRequired
   }
 
@@ -100,37 +96,55 @@ class Description extends Component {
     ]
 
     const {
-      isCreator, isStarred, uploaderId, userId, uploaderName, title,
-      description, likes, timeStamp, videoId, videoViews
+      isCreator,
+      isStarred,
+      uploaderId,
+      userId,
+      uploaderName,
+      title,
+      description,
+      likes,
+      timeStamp,
+      videoId,
+      videoViews
     } = this.props
     let {
-      onEdit, editedTitle, editedUrl, editedDescription,
-      editDoneButtonDisabled, userListModalShown, onTitleHover
+      onEdit,
+      editedTitle,
+      editedUrl,
+      editedDescription,
+      editDoneButtonDisabled,
+      userListModalShown,
+      onTitleHover
     } = this.state
-    editedDescription = editedDescription === 'No description' ? '' : this.state.editedDescription
+    editedDescription =
+      editedDescription === 'No description' ? '' : this.state.editedDescription
     return (
       <div>
         <div
           className="page-header"
-          style={{marginTop: '1.4em', minHeight: '7em'}}
+          style={{ marginTop: '1.4em', minHeight: '7em' }}
         >
           <div>
             <div>
-              <div className="pull-left col-xs-9" style={{paddingLeft: '0px'}}>
+              <div
+                className="pull-left col-xs-9"
+                style={{ paddingLeft: '0px' }}
+              >
                 <div>
-                  {onEdit ?
+                  {onEdit ? (
                     <form
-                      style={{paddingLeft: '0px', paddingBottom: '0.5em'}}
+                      style={{ paddingLeft: '0px', paddingBottom: '0.5em' }}
                       onSubmit={event => event.preventDefault()}
                     >
                       <Input
                         type="text"
                         className="form-control"
                         placeholder={edit.video}
-                        style={{width: '30em'}}
+                        style={{ width: '30em' }}
                         value={editedUrl}
                         onChange={text => {
-                          this.setState({editedUrl: text}, () => {
+                          this.setState({ editedUrl: text }, () => {
                             this.determineEditButtonDoneStatus()
                           })
                         }}
@@ -139,23 +153,28 @@ class Description extends Component {
                         type="text"
                         className="form-control"
                         placeholder={edit.title}
-                        style={{width: '30em', marginTop: '1em'}}
+                        style={{ width: '30em', marginTop: '1em' }}
                         value={editedTitle}
                         onChange={text => {
-                          this.setState({editedTitle: text}, () => {
+                          this.setState({ editedTitle: text }, () => {
                             this.determineEditButtonDoneStatus()
                           })
                         }}
                         onKeyUp={event => {
                           if (event.key === ' ') {
-                            this.setState({editedTitle: addEmoji(event.target.value)})
+                            this.setState({
+                              editedTitle: addEmoji(event.target.value)
+                            })
                           }
                         }}
                       />
-                    </form> :
-                    <div style={{paddingLeft: '0px'}}>
+                    </form>
+                  ) : (
+                    <div style={{ paddingLeft: '0px' }}>
                       <h3
-                        ref={ref => { this.thumbLabel = ref }}
+                        ref={ref => {
+                          this.thumbLabel = ref
+                        }}
                         style={{
                           marginTop: '0px',
                           whiteSpace: 'nowrap',
@@ -165,29 +184,42 @@ class Description extends Component {
                         }}
                       >
                         <span
-                          style={{wordBreak: 'break-word'}}
+                          style={{ wordBreak: 'break-word' }}
                           onMouseOver={this.onMouseOver}
-                          onMouseLeave={() => this.setState({onTitleHover: false})}
+                          onMouseLeave={() =>
+                            this.setState({ onTitleHover: false })
+                          }
                         >
                           {cleanString(title)}
                         </span>
                       </h3>
-                      <FullTextReveal width="100%" show={onTitleHover} text={cleanString(title)} />
+                      <FullTextReveal
+                        width="100%"
+                        show={onTitleHover}
+                        text={cleanString(title)}
+                      />
                     </div>
-                  }
+                  )}
                 </div>
-                <div style={{paddingLeft: '0px'}}>
-                  <div>Added by <UsernameText user={{name: uploaderName, id: uploaderId}} /> {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}</div>
-                  {(uploaderId === userId || isCreator) && !onEdit &&
-                    <DropdownButton
-                      style={{marginTop: '0.5em'}}
-                      shape="button"
-                      icon="pencil"
-                      align="left"
-                      text="Edit or Delete This Video"
-                      menuProps={menuProps}
-                    />
-                  }
+                <div style={{ paddingLeft: '0px' }}>
+                  <div>
+                    Added by{' '}
+                    <UsernameText
+                      user={{ name: uploaderName, id: uploaderId }}
+                    />{' '}
+                    {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
+                  </div>
+                  {(uploaderId === userId || isCreator) &&
+                    !onEdit && (
+                      <DropdownButton
+                        style={{ marginTop: '0.5em' }}
+                        shape="button"
+                        icon="pencil"
+                        align="left"
+                        text="Edit or Delete This Video"
+                        menuProps={menuProps}
+                      />
+                    )}
                 </div>
               </div>
               <VideoLikeInterface
@@ -196,15 +228,17 @@ class Description extends Component {
                 videoId={videoId}
                 likes={likes}
                 onLikeClick={this.onVideoLikeClick}
-                showLikerList={() => this.setState({userListModalShown: true})}
+                showLikerList={() =>
+                  this.setState({ userListModalShown: true })
+                }
               />
             </div>
           </div>
         </div>
         <div>
-          {onEdit ?
+          {onEdit ? (
             <div>
-              <form style={{paddingLeft: '0px'}}>
+              <form style={{ paddingLeft: '0px' }}>
                 <Textarea
                   minRows={4}
                   className="form-control"
@@ -212,49 +246,66 @@ class Description extends Component {
                   value={editedDescription}
                   onChange={event => {
                     this.determineEditButtonDoneStatus()
-                    this.setState({editedDescription: event.target.value}, () => {
-                      this.determineEditButtonDoneStatus()
-                    })
+                    this.setState(
+                      { editedDescription: event.target.value },
+                      () => {
+                        this.determineEditButtonDoneStatus()
+                      }
+                    )
                   }}
                   onKeyUp={event => {
                     if (event.key === ' ') {
-                      this.setState({editedDescription: addEmoji(event.target.value)})
+                      this.setState({
+                        editedDescription: addEmoji(event.target.value)
+                      })
                     }
                   }}
                 />
               </form>
-              <div style={{marginTop: '1em', paddingLeft: '0px', textAlign: 'left'}}>
+              <div
+                style={{
+                  marginTop: '1em',
+                  paddingLeft: '0px',
+                  textAlign: 'left'
+                }}
+              >
                 <Button
                   className="btn btn-default btn-sm"
                   disabled={editDoneButtonDisabled}
                   onClick={this.onEditFinish}
-                >Done</Button>
+                >
+                  Done
+                </Button>
                 <Button
                   className="btn btn-default btn-sm"
-                  style={{marginLeft: '5px'}}
+                  style={{ marginLeft: '5px' }}
                   onClick={this.onEditCancel}
-                >Cancel</Button>
+                >
+                  Cancel
+                </Button>
               </div>
-            </div> :
+            </div>
+          ) : (
             <div>
-              {videoViews > 10 &&
+              {videoViews > 10 && (
                 <p
                   style={{
                     fontSize: '1.6em',
                     fontWeight: 'bold'
                   }}
-                >{videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+                >
+                  {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
                 </p>
-              }
-              <LongText style={{wordBreak: 'break-word', paddingLeft: '0px'}}>
+              )}
+              <LongText style={{ wordBreak: 'break-word', paddingLeft: '0px' }}>
                 {stringIsEmpty(description) ? 'No Description' : description}
               </LongText>
             </div>
-          }
+          )}
         </div>
-        {userListModalShown &&
+        {userListModalShown && (
           <UserListModal
-            onHide={() => this.setState({userListModalShown: false})}
+            onHide={() => this.setState({ userListModalShown: false })}
             title="People who liked this video"
             users={likes.map(like => {
               return {
@@ -264,7 +315,7 @@ class Description extends Component {
             })}
             description="(You)"
           />
-        }
+        )}
       </div>
     )
   }
@@ -273,17 +324,22 @@ class Description extends Component {
     const urlIsInvalid = !isValidYoutubeUrl(this.state.editedUrl)
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
-    const urlChanged = this.state.editedUrl !== `https://www.youtube.com/watch?v=${this.props.content}`
-    const descriptionChanged = this.state.editedDescription !== this.props.description
-    const editDoneButtonDisabled = urlIsInvalid || titleIsEmpty || (
-      !titleChanged && !descriptionChanged && !urlChanged
-    )
-    this.setState({editDoneButtonDisabled})
+    const urlChanged =
+      this.state.editedUrl !==
+      `https://www.youtube.com/watch?v=${this.props.content}`
+    const descriptionChanged =
+      this.state.editedDescription !== this.props.description
+    const editDoneButtonDisabled =
+      urlIsInvalid ||
+      titleIsEmpty ||
+      (!titleChanged && !descriptionChanged && !urlChanged)
+    this.setState({ editDoneButtonDisabled })
   }
 
   onEditCancel() {
-    const {description} = this.props
-    const editedDescription = description === 'No description' ? '' : description
+    const { description } = this.props
+    const editedDescription =
+      description === 'No description' ? '' : description
     this.props.onEditCancel()
     this.setState({
       editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
@@ -301,8 +357,8 @@ class Description extends Component {
       title: finalizeEmoji(this.state.editedTitle),
       description: finalizeEmoji(this.state.editedDescription)
     }
-    this.props.onEditFinish(params).then(
-      () => this.setState({
+    this.props.onEditFinish(params).then(() =>
+      this.setState({
         onEdit: false,
         editDoneButtonDisabled: true
       })
@@ -311,19 +367,21 @@ class Description extends Component {
 
   onEditStart() {
     this.props.onEditStart()
-    this.setState({onEdit: true})
+    this.setState({ onEdit: true })
   }
 
   onMouseOver() {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({onTitleHover: true})
+      this.setState({ onTitleHover: true })
     }
   }
 
   onVideoLikeClick() {
-    const {videoId} = this.props
+    const { videoId } = this.props
     this.props.likeVideo(videoId)
   }
 }
 
-export default connect(state => ({isCreator: state.UserReducer.isCreator}))(Description)
+export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
+  Description
+)

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   editVideoPageAsync,
   deleteVideoAsync,
@@ -22,13 +22,13 @@ import RightMenu from './RightMenu'
 import ResultModal from './Modals/ResultModal'
 import QuestionsBuilder from './QuestionsBuilder'
 import ConfirmModal from 'components/Modals/ConfirmModal'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import ExecutionEnvironment from 'exenv'
-import {auth} from 'redux/actions/constants'
+import { auth } from 'redux/actions/constants'
 import request from 'axios'
-import {URL} from 'constants/URL'
+import { URL } from 'constants/URL'
 const VIDEO_URL = `${URL}/video`
 
 class VideoPage extends Component {
@@ -47,10 +47,7 @@ class VideoPage extends Component {
     match: PropTypes.object.isRequired,
     questions: PropTypes.array,
     resetVideoPage: PropTypes.func.isRequired,
-    timeStamp: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
+    timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
@@ -83,13 +80,16 @@ class VideoPage extends Component {
   }
 
   componentDidMount() {
-    const {history, match: {params}, loadVideoPage} = this.props
+    const { history, match: { params }, loadVideoPage } = this.props
     if (history.action === 'POP') loadVideoPage(params.videoId)
   }
 
   componentWillReceiveProps(nextProps) {
-    const {loadVideoPage, match: {params}} = this.props
-    if (ExecutionEnvironment.canUseDOM && nextProps.match.params.videoId !== params.videoId) {
+    const { loadVideoPage, match: { params } } = this.props
+    if (
+      ExecutionEnvironment.canUseDOM &&
+      nextProps.match.params.videoId !== params.videoId
+    ) {
       this.setState({
         watchTabActive: true,
         currentSlide: 0,
@@ -105,7 +105,11 @@ class VideoPage extends Component {
       const authExists = !!authorization.headers.authorization
       if (authExists) {
         try {
-          request.put(`${VIDEO_URL}/clearCurrentlyWatching`, {videoId: params.videoId}, authorization)
+          request.put(
+            `${VIDEO_URL}/clearCurrentlyWatching`,
+            { videoId: params.videoId },
+            authorization
+          )
         } catch (error) {
           console.error(error.response || error)
         }
@@ -119,9 +123,23 @@ class VideoPage extends Component {
 
   render() {
     const {
-      hasHqThumb, isStarred, uploaderId, uploaderName, description, likeVideo, userId, videoUnavailable, videoLoading,
-      content, title, timeStamp, questions = [], likes = [], location: {search}, videoViews,
-      match: {params: {videoId}}
+      hasHqThumb,
+      isStarred,
+      uploaderId,
+      uploaderName,
+      description,
+      likeVideo,
+      userId,
+      videoUnavailable,
+      videoLoading,
+      content,
+      title,
+      timeStamp,
+      questions = [],
+      likes = [],
+      location: { search },
+      videoViews,
+      match: { params: { videoId } }
     } = this.props
     const {
       watchTabActive,
@@ -131,139 +149,153 @@ class VideoPage extends Component {
       currentSlide,
       onEdit
     } = this.state
-    const youtubeIframeContainerClassName = watchTabActive ?
-      'embed-responsive embed-responsive-16by9' : 'video-container-fixed-left'
-    const youtubeIframeClassName = watchTabActive ?
-      'embed-responsive-item' : 'video-fixed-left'
+    const youtubeIframeContainerClassName = watchTabActive
+      ? 'embed-responsive embed-responsive-16by9'
+      : 'video-container-fixed-left'
+    const youtubeIframeClassName = watchTabActive
+      ? 'embed-responsive-item'
+      : 'video-fixed-left'
 
-    const {playlist: playlistId} = queryString.parse(search)
+    const { playlist: playlistId } = queryString.parse(search)
 
     return (
       <ErrorBoundary className="container-fluid">
         <div className="col-xs-8">
           {videoLoading && <Loading text="Loading Video..." />}
           {videoUnavailable && <NotFound text="Video does not exist" />}
-          {!videoUnavailable && !!content &&
-            <div
-              style={{
-                backgroundColor: '#fff',
-                marginBottom: '2em',
-                paddingRight: '1em',
-                paddingLeft: '1em'
-              }}
-            >
-              <div style={{paddingTop: '1.5em'}}>
-                <PageTab
-                  questions={questions}
-                  watchTabActive={watchTabActive}
-                  onWatchTabClick={() => this.setState({watchTabActive: true})}
-                  onQuestionTabClick={() => this.setState({watchTabActive: false})}
-                />
-                <div style={{paddingTop: '2em'}}>
-                  {!questionsBuilderShown &&
-                    <div>
-                      <VideoPlayer
-                        autoplay
-                        isStarred={isStarred}
-                        key={videoId}
-                        hasHqThumb={hasHqThumb}
-                        onEdit={onEdit}
-                        small={!watchTabActive}
-                        videoId={videoId}
-                        videoCode={content}
-                        title={title}
-                        containerClassName={`${youtubeIframeContainerClassName}`}
-                        className={`${youtubeIframeClassName}`}
-                      />
-                    </div>
-                  }
-                  {!watchTabActive && questions.length > 0 &&
-                    <Carousel
-                      progressBar
-                      showQuestionsBuilder={() => this.setState({questionsBuilderShown: true})}
-                      userIsUploader={userId === uploaderId}
-                      slidesToShow={1}
-                      slidesToScroll={1}
-                      slideIndex={currentSlide}
-                      dragging={false}
-                      afterSlide={this.onSlide}
-                      onFinish={this.onQuestionsFinish}
-                    >
-                      {this.renderSlides()}
-                    </Carousel>
-                  }
-                  {!watchTabActive && questions.length === 0 &&
-                    <div>
-                      <div style={{textAlign: 'center'}}>
-                        <p>There are no questions yet.</p>
-                        {userId === uploaderId &&
-                          <Button
-                            className="btn btn-default"
-                            style={{marginTop: '1em'}}
-                            onClick={() => this.setState({questionsBuilderShown: true})}
-                          >Add Questions</Button>
-                        }
+          {!videoUnavailable &&
+            !!content && (
+              <div
+                style={{
+                  backgroundColor: '#fff',
+                  marginBottom: '2em',
+                  paddingRight: '1em',
+                  paddingLeft: '1em'
+                }}
+              >
+                <div style={{ paddingTop: '1.5em' }}>
+                  <PageTab
+                    questions={questions}
+                    watchTabActive={watchTabActive}
+                    onWatchTabClick={() =>
+                      this.setState({ watchTabActive: true })
+                    }
+                    onQuestionTabClick={() =>
+                      this.setState({ watchTabActive: false })
+                    }
+                  />
+                  <div style={{ paddingTop: '2em' }}>
+                    {!questionsBuilderShown && (
+                      <div>
+                        <VideoPlayer
+                          autoplay
+                          isStarred={isStarred}
+                          key={videoId}
+                          hasHqThumb={hasHqThumb}
+                          onEdit={onEdit}
+                          small={!watchTabActive}
+                          videoId={videoId}
+                          videoCode={content}
+                          title={title}
+                          containerClassName={`${youtubeIframeContainerClassName}`}
+                          className={`${youtubeIframeClassName}`}
+                        />
                       </div>
-                    </div>
-                  }
+                    )}
+                    {!watchTabActive &&
+                      questions.length > 0 && (
+                        <Carousel
+                          progressBar
+                          showQuestionsBuilder={() =>
+                            this.setState({ questionsBuilderShown: true })
+                          }
+                          userIsUploader={userId === uploaderId}
+                          slidesToShow={1}
+                          slidesToScroll={1}
+                          slideIndex={currentSlide}
+                          dragging={false}
+                          afterSlide={this.onSlide}
+                          onFinish={this.onQuestionsFinish}
+                        >
+                          {this.renderSlides()}
+                        </Carousel>
+                      )}
+                    {!watchTabActive &&
+                      questions.length === 0 && (
+                        <div>
+                          <div style={{ textAlign: 'center' }}>
+                            <p>There are no questions yet.</p>
+                            {userId === uploaderId && (
+                              <Button
+                                className="btn btn-default"
+                                style={{ marginTop: '1em' }}
+                                onClick={() =>
+                                  this.setState({ questionsBuilderShown: true })
+                                }
+                              >
+                                Add Questions
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                  </div>
                 </div>
-              </div>
-              <Description
-                isStarred={isStarred}
-                likes={likes}
-                likeVideo={likeVideo}
-                videoId={videoId}
-                content={content}
-                title={title}
-                timeStamp={timeStamp}
-                uploaderName={uploaderName}
-                description={description}
-                uploaderId={uploaderId}
-                userId={userId}
-                onEditStart={() => this.setState({onEdit: true})}
-                onEditCancel={() => this.setState({onEdit: false})}
-                onEditFinish={this.onDescriptionEditFinish}
-                onDelete={() => this.setState({confirmModalShown: true})}
-                videoViews={videoViews}
-              />
-              <Comments {...this.props} />
-              {resultModalShown &&
-                <ResultModal
-                  onHide={() => this.setState({resultModalShown: false})}
-                  numberCorrect={this.numberCorrect}
-                  totalQuestions={questions.length}
-                />
-              }
-              {confirmModalShown &&
-                <ConfirmModal
-                  title="Remove Video"
-                  onHide={() => this.setState({confirmModalShown: false})}
-                  onConfirm={this.onVideoDelete}
-                />
-              }
-              {questionsBuilderShown &&
-                <QuestionsBuilder
-                  questions={questions}
+                <Description
+                  isStarred={isStarred}
+                  likes={likes}
+                  likeVideo={likeVideo}
+                  videoId={videoId}
+                  content={content}
                   title={title}
-                  videoCode={content}
-                  onSubmit={this.onQuestionsSubmit}
-                  onHide={() => this.setState({questionsBuilderShown: false})}
+                  timeStamp={timeStamp}
+                  uploaderName={uploaderName}
+                  description={description}
+                  uploaderId={uploaderId}
+                  userId={userId}
+                  onEditStart={() => this.setState({ onEdit: true })}
+                  onEditCancel={() => this.setState({ onEdit: false })}
+                  onEditFinish={this.onDescriptionEditFinish}
+                  onDelete={() => this.setState({ confirmModalShown: true })}
+                  videoViews={videoViews}
                 />
-              }
-            </div>
-          }
+                <Comments {...this.props} />
+                {resultModalShown && (
+                  <ResultModal
+                    onHide={() => this.setState({ resultModalShown: false })}
+                    numberCorrect={this.numberCorrect}
+                    totalQuestions={questions.length}
+                  />
+                )}
+                {confirmModalShown && (
+                  <ConfirmModal
+                    title="Remove Video"
+                    onHide={() => this.setState({ confirmModalShown: false })}
+                    onConfirm={this.onVideoDelete}
+                  />
+                )}
+                {questionsBuilderShown && (
+                  <QuestionsBuilder
+                    questions={questions}
+                    title={title}
+                    videoCode={content}
+                    onSubmit={this.onQuestionsSubmit}
+                    onHide={() =>
+                      this.setState({ questionsBuilderShown: false })
+                    }
+                  />
+                )}
+              </div>
+            )}
         </div>
-        <RightMenu
-          videoId={videoId}
-          playlistId={playlistId}
-        />
+        <RightMenu videoId={videoId} playlistId={playlistId} />
       </ErrorBoundary>
     )
   }
 
   renderSlides() {
-    const {questions} = this.props
-    const {currentSlide, userAnswers} = this.state
+    const { questions } = this.props
+    const { currentSlide, userAnswers } = this.state
     return questions.map((question, index) => {
       const filteredChoices = question.choices.filter(choice => !!choice)
       let isCurrentSlide = index === currentSlide
@@ -277,7 +309,10 @@ class VideoPage extends Component {
       return (
         <div key={index}>
           <div>
-            <h3 style={{marginTop: '1rem'}} dangerouslySetInnerHTML={{__html: question.title}} />
+            <h3
+              style={{ marginTop: '1rem' }}
+              dangerouslySetInnerHTML={{ __html: question.title }}
+            />
           </div>
           <ChoiceListGroup
             listItems={listItems}
@@ -289,7 +324,7 @@ class VideoPage extends Component {
   }
 
   numberCorrect() {
-    const {userAnswers} = this.state
+    const { userAnswers } = this.state
     const correctAnswers = this.props.questions.map(question => {
       return question.correctChoice
     })
@@ -301,31 +336,31 @@ class VideoPage extends Component {
   }
 
   onSlide(index) {
-    this.setState({currentSlide: index})
+    this.setState({ currentSlide: index })
   }
 
   onQuestionsFinish() {
-    this.setState({resultModalShown: true})
+    this.setState({ resultModalShown: true })
   }
 
   onSelectChoice(index) {
-    let {userAnswers, currentSlide} = this.state
+    let { userAnswers, currentSlide } = this.state
     userAnswers[currentSlide] = index
-    this.setState({userAnswers})
+    this.setState({ userAnswers })
   }
 
   onDescriptionEditFinish(params, sender) {
-    this.setState({onEdit: false})
+    this.setState({ onEdit: false })
     return this.props.editVideoPage(params)
   }
 
   onVideoDelete() {
-    const {match: {params: {videoId}}} = this.props
-    this.props.deleteVideo({videoId})
+    const { match: { params: { videoId } } } = this.props
+    this.props.deleteVideo({ videoId })
   }
 
   onQuestionsSubmit(questions) {
-    const {match: {params: {videoId}}} = this.props
+    const { match: { params: { videoId } } } = this.props
     const data = {
       videoId,
       questions: questions.map(question => {

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import ChoiceListItem from './ChoiceListItem'
 import EditChoiceListItem from './EditChoiceListItem'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
-import {cleanString, processedString} from 'helpers/stringHelpers'
+import { cleanString, processedString } from 'helpers/stringHelpers'
 
 export default class QuestionBlock extends Component {
   static propTypes = {
@@ -53,8 +53,20 @@ export default class QuestionBlock extends Component {
   }
 
   render() {
-    const {editedChoiceTitles, editedQuestionTitle, choiceIndices} = this.state
-    const {inputType, onSelectChoice, questionIndex, onEdit, deleted, title, choices} = this.props
+    const {
+      editedChoiceTitles,
+      editedQuestionTitle,
+      choiceIndices
+    } = this.state
+    const {
+      inputType,
+      onSelectChoice,
+      questionIndex,
+      onEdit,
+      deleted,
+      title,
+      choices
+    } = this.props
     const choicePlaceHolder = [
       'Choice A',
       'Choice B',
@@ -65,7 +77,7 @@ export default class QuestionBlock extends Component {
     return (
       <div>
         <div className="clearfix">
-          {!onEdit ?
+          {!onEdit ? (
             <h4
               className="pull-left col-sm-10"
               style={{
@@ -74,9 +86,11 @@ export default class QuestionBlock extends Component {
                 color: !title && '#999'
               }}
             >
-              <span dangerouslySetInnerHTML={{__html: title || 'Question Title'}} />
+              <span
+                dangerouslySetInnerHTML={{ __html: title || 'Question Title' }}
+              />
             </h4>
-            :
+          ) : (
             <form
               onSubmit={event => event.preventDefault()}
               style={{
@@ -88,62 +102,71 @@ export default class QuestionBlock extends Component {
                 className="form-control"
                 placeholder="Enter Question..."
                 value={cleanString(editedQuestionTitle)}
-                onChange={event => this.setState({editedQuestionTitle: event.target.value})}
-              >
-              </Textarea>
+                onChange={event =>
+                  this.setState({ editedQuestionTitle: event.target.value })
+                }
+              />
             </form>
-          }
-          {!onEdit && !deleted &&
-            <Button
-              className="col-sm-2 btn btn-danger btn-sm"
-              onClick={() => this.props.onRemove(questionIndex)}
-            >Remove</Button>
-          }
-          {deleted &&
+          )}
+          {!onEdit &&
+            !deleted && (
+              <Button
+                className="col-sm-2 btn btn-danger btn-sm"
+                onClick={() => this.props.onRemove(questionIndex)}
+              >
+                Remove
+              </Button>
+            )}
+          {deleted && (
             <Button
               className="col-sm-2 btn btn-default btn-sm"
               onClick={() => this.props.onUndoRemove(questionIndex)}
-            >Undo</Button>
-          }
+            >
+              Undo
+            </Button>
+          )}
         </div>
-        <div
-          className="list-group"
-          style={{opacity: deleted && '0.2'}}
-        >
-          {choiceIndices.map((choiceIndex, index) => (
-            !onEdit ? <ChoiceListItem
-              key={index}
-              placeholder={choicePlaceHolder[index]}
-              questionIndex={questionIndex}
-              id={choiceIndex}
-              onSelect={() => onSelectChoice(questionIndex, index)}
-              label={determineLabel(choices, choiceIndex)}
-              inputType={inputType}
-              checked={determineChecked(choices, choiceIndex)}
-              onMove={this.onMove}
-              onDrop={this.onDrop}
-              checkDisabled={deleted}
-            /> : <EditChoiceListItem
-              key={index}
-              placeholder={choicePlaceHolder[index]}
-              onSelect={() => onSelectChoice(questionIndex, index)}
-              checked={determineChecked(choices, choiceIndex)}
-              index={index}
-              text={editedChoiceTitles[index]}
-              onEdit={this.onEditChoice}
-            />
-          ))}
+        <div className="list-group" style={{ opacity: deleted && '0.2' }}>
+          {choiceIndices.map(
+            (choiceIndex, index) =>
+              !onEdit ? (
+                <ChoiceListItem
+                  key={index}
+                  placeholder={choicePlaceHolder[index]}
+                  questionIndex={questionIndex}
+                  id={choiceIndex}
+                  onSelect={() => onSelectChoice(questionIndex, index)}
+                  label={determineLabel(choices, choiceIndex)}
+                  inputType={inputType}
+                  checked={determineChecked(choices, choiceIndex)}
+                  onMove={this.onMove}
+                  onDrop={this.onDrop}
+                  checkDisabled={deleted}
+                />
+              ) : (
+                <EditChoiceListItem
+                  key={index}
+                  placeholder={choicePlaceHolder[index]}
+                  onSelect={() => onSelectChoice(questionIndex, index)}
+                  checked={determineChecked(choices, choiceIndex)}
+                  index={index}
+                  text={editedChoiceTitles[index]}
+                  onEdit={this.onEditChoice}
+                />
+              )
+          )}
         </div>
-        <div
-          className="text-center"
-        >
-          {!onEdit ?
+        <div className="text-center">
+          {!onEdit ? (
             <Button
               className="btn btn-info"
               onClick={() => this.props.onEditStart(questionIndex)}
-              style={{opacity: deleted && '0.2'}}
+              style={{ opacity: deleted && '0.2' }}
               disabled={deleted && true}
-            >Edit</Button> :
+            >
+              Edit
+            </Button>
+          ) : (
             <div>
               <Button
                 className="btn btn-default"
@@ -153,13 +176,13 @@ export default class QuestionBlock extends Component {
               </Button>
               <Button
                 className="btn btn-primary"
-                style={{marginLeft: '0.5em'}}
+                style={{ marginLeft: '0.5em' }}
                 onClick={() => this.onEditDone(questionIndex)}
               >
                 Done
               </Button>
             </div>
-          }
+          )}
         </div>
       </div>
     )
@@ -194,19 +217,19 @@ export default class QuestionBlock extends Component {
     })
   }
 
-  onMove({sourceId, targetId}) {
+  onMove({ sourceId, targetId }) {
     const newIndices = this.state.choiceIndices
     const sourceIndex = newIndices.indexOf(sourceId)
     const targetIndex = newIndices.indexOf(targetId)
     newIndices.splice(sourceIndex, 1)
     newIndices.splice(targetIndex, 0, sourceId)
-    this.setState({choiceIndices: newIndices})
+    this.setState({ choiceIndices: newIndices })
   }
 
   onDrop() {
-    const {questionIndex} = this.props
-    const {choiceIndices} = this.state
-    this.props.onRearrange({questionIndex, choiceIndices})
+    const { questionIndex } = this.props
+    const { choiceIndices } = this.state
+    this.props.onRearrange({ questionIndex, choiceIndices })
   }
 }
 

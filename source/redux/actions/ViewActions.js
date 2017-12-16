@@ -1,4 +1,4 @@
-import {resetMsgUnreadsOnTabSwitch} from './ChatActions'
+import { resetMsgUnreadsOnTabSwitch } from './ChatActions'
 
 export const changePageVisibility = visible => dispatch => {
   dispatch(resetMsgUnreadsOnTabSwitch())
