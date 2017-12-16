@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import UserLink from 'containers/Home/UserLink'
 import UsernameText from 'components/Texts/UsernameText'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import {
   feedCommentDelete,
   feedCommentEdit,
@@ -15,9 +15,9 @@ import {
 import UserListModal from 'components/Modals/UserListModal'
 import InputArea from 'components/Texts/InputArea'
 import Comment from './Comment'
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
-import {timeSince} from 'helpers/timeStampHelpers'
+import { timeSince } from 'helpers/timeStampHelpers'
 
 class Content extends Component {
   static propTypes = {
@@ -38,10 +38,7 @@ class Content extends Component {
     rootContent: PropTypes.string,
     rootId: PropTypes.number.isRequired,
     rootType: PropTypes.string.isRequired,
-    timeStamp: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
+    timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     uploadComment: PropTypes.func.isRequired,
     uploader: PropTypes.shape({
@@ -64,10 +61,29 @@ class Content extends Component {
   }
 
   render() {
-    const {uploader, isDiscussion, title, content, contentAvailable, username, comments,
-      myId, profilePicId, timeStamp, likes = [], rootType, rootContent, replyId, onDeleteComment, onEditComment
+    const {
+      uploader,
+      isDiscussion,
+      title,
+      content,
+      contentAvailable,
+      username,
+      comments,
+      myId,
+      profilePicId,
+      timeStamp,
+      likes = [],
+      rootType,
+      rootContent,
+      replyId,
+      onDeleteComment,
+      onEditComment
     } = this.props
-    const {userListModalShown, replyInputShown, clickListenerState} = this.state
+    const {
+      userListModalShown,
+      replyInputShown,
+      clickListenerState
+    } = this.state
     let userLikedThis = false
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId === myId) userLikedThis = true
@@ -80,36 +96,45 @@ class Content extends Component {
           wordBreak: 'break-word'
         }}
       >
-        {contentAvailable ?
-          (!isDiscussion ?
+        {contentAvailable ? (
+          !isDiscussion ? (
             <div>
-              {rootType === 'question' &&
-                <div style={{fontSize: '1.2em', marginBottom: '1em'}}>
-                  <span style={{color: Color.green, fontWeight: 'bold'}}>Question: </span><span>{rootContent}</span>
+              {rootType === 'question' && (
+                <div style={{ fontSize: '1.2em', marginBottom: '1em' }}>
+                  <span style={{ color: Color.green, fontWeight: 'bold' }}>
+                    Question:{' '}
+                  </span>
+                  <span>{rootContent}</span>
                 </div>
-              }
-              <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
-                <div style={{float: 'left'}}>
+              )}
+              <div
+                className="col-xs-12"
+                style={{ paddingLeft: '0px', paddingRight: '0px' }}
+              >
+                <div style={{ float: 'left' }}>
                   <UserLink user={uploader} />
-                  &nbsp;{replyId ? 'wrote' : rootType === 'question' ? 'answered' : 'commented'}:
+                  &nbsp;{replyId
+                    ? 'wrote'
+                    : rootType === 'question' ? 'answered' : 'commented'}:
                 </div>
-                <div style={{float: 'right'}}><small>({timeSince(timeStamp)})</small></div>
+                <div style={{ float: 'right' }}>
+                  <small>({timeSince(timeStamp)})</small>
+                </div>
               </div>
-              <div style={{paddingTop: '2.3em'}}>
-                <LongText style={{marginBottom: '1em'}}>{content}</LongText>
+              <div style={{ paddingTop: '2.3em' }}>
+                <LongText style={{ marginBottom: '1em' }}>{content}</LongText>
                 <LikeButton
-                  style={{marginTop: '1em'}}
+                  style={{ marginTop: '1em' }}
                   onClick={this.onLikeClick}
                   liked={userLikedThis}
                   small
                 />
                 <Button
-                  style={{marginTop: '1em', marginLeft: '0.5em'}}
+                  style={{ marginTop: '1em', marginLeft: '0.5em' }}
                   className="btn btn-warning btn-sm"
                   onClick={this.onReplyClick}
                 >
-                  <span className="glyphicon glyphicon-comment"></span>&nbsp;
-                  Reply
+                  <span className="glyphicon glyphicon-comment" />&nbsp; Reply
                 </Button>
                 <Likers
                   style={{
@@ -121,11 +146,16 @@ class Content extends Component {
                   }}
                   userId={myId}
                   likes={likes}
-                  onLinkClick={() => this.setState({userListModalShown: true})}
+                  onLinkClick={() =>
+                    this.setState({ userListModalShown: true })
+                  }
                 />
               </div>
-              {replyInputShown &&
-                <div className="media" style={{marginTop: '0px', lineHeight: '0px'}}>
+              {replyInputShown && (
+                <div
+                  className="media"
+                  style={{ marginTop: '0px', lineHeight: '0px' }}
+                >
                   <div className="media-body">
                     <InputArea
                       clickListenerState={clickListenerState}
@@ -136,10 +166,17 @@ class Content extends Component {
                     />
                   </div>
                 </div>
-              }
-              {(comments.length > 0) &&
-                <ul className="media-list" style={{marginTop: '1em', marginBottom: '0px', lineHeight: '0px'}}>
-                  {comments.map(comment =>
+              )}
+              {comments.length > 0 && (
+                <ul
+                  className="media-list"
+                  style={{
+                    marginTop: '1em',
+                    marginBottom: '0px',
+                    lineHeight: '0px'
+                  }}
+                >
+                  {comments.map(comment => (
                     <Comment
                       key={comment.id}
                       comment={comment}
@@ -149,55 +186,80 @@ class Content extends Component {
                       onDelete={onDeleteComment}
                       onEditDone={onEditComment}
                     />
-                  )}
+                  ))}
                 </ul>
-              }
-              {userListModalShown &&
+              )}
+              {userListModalShown && (
                 <UserListModal
-                  onHide={() => this.setState({userListModalShown: false})}
+                  onHide={() => this.setState({ userListModalShown: false })}
                   title="People who liked this comment"
                   users={likes}
                   description="(You)"
                 />
-              }
-            </div> :
+              )}
+            </div>
+          ) : (
             <div
               style={{
                 marginTop: '0.2em',
                 marginBottom: '0.2em'
               }}
             >
-              <div className="col-xs-12" style={{paddingLeft: '0px', paddingRight: '0px'}}>
-                <div style={{float: 'left'}}><b style={{color: Color.green}}>Discuss: </b></div>
-                <div style={{float: 'right'}}><small><UsernameText user={uploader} />&nbsp;({timeSince(timeStamp)})</small></div>
+              <div
+                className="col-xs-12"
+                style={{ paddingLeft: '0px', paddingRight: '0px' }}
+              >
+                <div style={{ float: 'left' }}>
+                  <b style={{ color: Color.green }}>Discuss: </b>
+                </div>
+                <div style={{ float: 'right' }}>
+                  <small>
+                    <UsernameText user={uploader} />&nbsp;({timeSince(
+                      timeStamp
+                    )})
+                  </small>
+                </div>
               </div>
-              <div style={{paddingTop: '2.3em'}}>
-                <p style={{fontWeight: 'bold'}}>{title}</p>
-                {content && (
-                  <LongText>{content}</LongText>
-                )}
+              <div style={{ paddingTop: '2.3em' }}>
+                <p style={{ fontWeight: 'bold' }}>{title}</p>
+                {content && <LongText>{content}</LongText>}
               </div>
             </div>
-          ) : <div style={{textAlign: 'center'}}><span>Content removed / no longer available</span></div>
-        }
+          )
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            <span>Content removed / no longer available</span>
+          </div>
+        )}
       </div>
     )
   }
 
   onLikeClick() {
-    const {replyId, commentId} = this.props
+    const { replyId, commentId } = this.props
     this.props.onLikeClick(replyId || commentId)
   }
 
   onReplyClick() {
-    const {replyInputShown, clickListenerState} = this.state
-    if (!replyInputShown) return this.setState({replyInputShown: true})
-    this.setState({clickListenerState: !clickListenerState})
+    const { replyInputShown, clickListenerState } = this.state
+    if (!replyInputShown) return this.setState({ replyInputShown: true })
+    this.setState({ clickListenerState: !clickListenerState })
   }
 
   onSubmit(content) {
-    const {replyId = null, commentId, rootType, rootId, discussionId = null, uploadComment, panelId} = this.props
-    uploadComment({rootId, rootType, replyId, commentId, discussionId, content}, panelId)
+    const {
+      replyId = null,
+      commentId,
+      rootType,
+      rootId,
+      discussionId = null,
+      uploadComment,
+      panelId
+    } = this.props
+    uploadComment(
+      { rootId, rootType, replyId, commentId, discussionId, content },
+      panelId
+    )
   }
 }
 

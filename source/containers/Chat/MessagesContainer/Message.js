@@ -1,16 +1,20 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import moment from 'moment'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
-import {processedStringWithURL} from 'helpers/stringHelpers'
+import { processedStringWithURL } from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
-import {editMessage, deleteMessage, saveMessage} from 'redux/actions/ChatActions'
+import {
+  editMessage,
+  deleteMessage,
+  saveMessage
+} from 'redux/actions/ChatActions'
 import Button from 'components/Button'
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
 
 class Message extends Component {
@@ -38,9 +42,9 @@ class Message extends Component {
   }
 
   componentWillMount() {
-    const {message, myId, saveMessage, index} = this.props
+    const { message, myId, saveMessage, index } = this.props
     if (!message.id && message.userId === myId && !message.isSubject) {
-      saveMessage({...message, content: message.content}, index)
+      saveMessage({ ...message, content: message.content }, index)
     }
   }
 
@@ -62,7 +66,7 @@ class Message extends Component {
       myId
     } = this.props
     const canEdit = myId === userId || isCreator
-    const {onEdit, confirmModalShown, subjectMsgsModalShown} = this.state
+    const { onEdit, confirmModalShown, subjectMsgsModalShown } = this.state
     return (
       <div
         className="media"
@@ -72,7 +76,7 @@ class Message extends Component {
           width: '100%'
         }}
       >
-        <ProfilePic size='4' userId={userId} profilePicId={profilePicId} />
+        <ProfilePic size="4" userId={userId} profilePicId={profilePicId} />
         <div
           className="media-body"
           style={{
@@ -80,106 +84,124 @@ class Message extends Component {
             wordBreak: 'break-word'
           }}
         >
-          {!!messageId && !isReloadedSubject && canEdit && !onEdit &&
-            <DropdownButton
-              shape="button"
-              icon="pencil"
-              style={{
-                position: 'absolute',
-                right: '2%'
-              }}
-              opacity={0.8}
-              menuProps={[
-                {
-                  label: 'Edit',
-                  onClick: () => this.setState({onEdit: true})
-                },
-                {
-                  label: 'Remove',
-                  onClick: () => this.setState({confirmModalShown: true})
-                }
-              ]}
-            />
-          }
-          <h5 className="media-heading" style={{position: 'absolute'}}>
+          {!!messageId &&
+            !isReloadedSubject &&
+            canEdit &&
+            !onEdit && (
+              <DropdownButton
+                shape="button"
+                icon="pencil"
+                style={{
+                  position: 'absolute',
+                  right: '2%'
+                }}
+                opacity={0.8}
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({ onEdit: true })
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({ confirmModalShown: true })
+                  }
+                ]}
+              />
+            )}
+          <h5 className="media-heading" style={{ position: 'absolute' }}>
             <UsernameText
               user={{
                 id: userId,
                 name: username
-              }} /> <small>{moment.unix(timeStamp).format('LLL')}</small>
+              }}
+            />{' '}
+            <small>{moment.unix(timeStamp).format('LLL')}</small>
           </h5>
-          <div style={{paddingTop: '1.5em'}}>
-            {onEdit ?
+          <div style={{ paddingTop: '1.5em' }}>
+            {onEdit ? (
               <EditTextArea
                 autoFocus
                 rows={2}
                 marginTop="0px"
                 text={content}
-                onCancel={() => this.setState({onEdit: false})}
+                onCancel={() => this.setState({ onEdit: false })}
                 onEditDone={this.onEditDone}
-              /> :
+              />
+            ) : (
               <div>
                 <div>
                   {this.renderPrefix()}
                   <span
                     style={style}
-                    dangerouslySetInnerHTML={{__html: processedStringWithURL(content)}}
+                    dangerouslySetInnerHTML={{
+                      __html: processedStringWithURL(content)
+                    }}
                   />
                 </div>
-                {!!isReloadedSubject && !!numMsgs && numMsgs > 0 &&
-                  <div style={{marginTop: '0.5em'}}>
-                    <Button
-                      className="btn btn-sm btn-success"
-                      onClick={() => this.setState({subjectMsgsModalShown: true})}
-                    >
-                      Show related conversations
-                    </Button>
-                  </div>
-                }
+                {!!isReloadedSubject &&
+                  !!numMsgs &&
+                  numMsgs > 0 && (
+                    <div style={{ marginTop: '0.5em' }}>
+                      <Button
+                        className="btn btn-sm btn-success"
+                        onClick={() =>
+                          this.setState({ subjectMsgsModalShown: true })
+                        }
+                      >
+                        Show related conversations
+                      </Button>
+                    </div>
+                  )}
               </div>
-            }
+            )}
           </div>
         </div>
-        {confirmModalShown &&
+        {confirmModalShown && (
           <ConfirmModal
-            onHide={() => this.setState({confirmModalShown: false})}
+            onHide={() => this.setState({ confirmModalShown: false })}
             title="Remove Message"
             onConfirm={this.onDelete}
           />
-        }
-        {subjectMsgsModalShown &&
+        )}
+        {subjectMsgsModalShown && (
           <SubjectMsgsModal
             subjectId={subjectId}
             subjectTitle={content}
-            onHide={() => this.setState({subjectMsgsModalShown: false})}
+            onHide={() => this.setState({ subjectMsgsModalShown: false })}
           />
-        }
+        )}
       </div>
     )
   }
 
   onDelete() {
-    const {onDelete, message: {id: messageId}} = this.props
-    onDelete(messageId).then(
-      () => this.setState({confirmModalShown: false})
-    )
+    const { onDelete, message: { id: messageId } } = this.props
+    onDelete(messageId).then(() => this.setState({ confirmModalShown: false }))
   }
 
   onEditDone(editedMessage) {
-    const {onEditDone, message} = this.props
-    onEditDone({editedMessage, messageId: message.id}).then(
-      () => this.setState({onEdit: false})
+    const { onEditDone, message } = this.props
+    onEditDone({ editedMessage, messageId: message.id }).then(() =>
+      this.setState({ onEdit: false })
     )
   }
 
   renderPrefix() {
-    const {message: {isSubject, isReloadedSubject}} = this.props
+    const { message: { isSubject, isReloadedSubject } } = this.props
     let prefix = ''
-    if (isSubject) prefix = <span style={{fontWeight: 'bold', color: Color.green}}>Subject: </span>
+    if (isSubject) {
+ prefix = (
+        <span style={{ fontWeight: 'bold', color: Color.green }}>
+          Subject:{' '}
+        </span>
+      )
+}
     if (isReloadedSubject) {
-      prefix = <span style={{fontWeight: 'bold', color: Color.green}}>
-        {'Returning Subject: '}
-      </span>
+      prefix = (
+        <span style={{ fontWeight: 'bold', color: Color.green }}>
+          {'Returning Subject: '}
+        </span>
+      )
     }
     return prefix
   }

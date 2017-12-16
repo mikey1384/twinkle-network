@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 
 export default class ChatInput extends Component {
   static propTypes = {
@@ -19,7 +19,7 @@ export default class ChatInput extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.currentChannelId !== this.props.currentChannelId) {
-      this.setState({message: ''})
+      this.setState({ message: '' })
       this.Textarea._rootDOMNode.focus()
     }
   }
@@ -27,16 +27,18 @@ export default class ChatInput extends Component {
   render() {
     return (
       <Textarea
-        ref={ref => { this.Textarea = ref }}
+        ref={ref => {
+          this.Textarea = ref
+        }}
         minRows={1}
         className="form-control"
         placeholder="Type a message..."
         onKeyDown={this.onMessageSubmit}
         value={this.state.message}
-        onChange={event => this.setState({message: event.target.value})}
+        onChange={event => this.setState({ message: event.target.value })}
         onKeyUp={event => {
           if (event.key === ' ') {
-            this.setState({message: addEmoji(event.target.value)})
+            this.setState({ message: addEmoji(event.target.value) })
           }
         }}
         autoFocus
@@ -47,13 +49,13 @@ export default class ChatInput extends Component {
   onMessageSubmit(event) {
     const shiftKeyPressed = event.shiftKey
     const enterKeyPressed = event.keyCode === 13
-    const {message} = this.state
+    const { message } = this.state
 
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault()
       if (stringIsEmpty(message)) return
       this.props.onMessageSubmit(finalizeEmoji(message))
-      this.setState({message: ''})
+      this.setState({ message: '' })
     }
   }
 }

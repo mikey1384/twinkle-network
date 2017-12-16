@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import UsernameText from 'components/Texts/UsernameText'
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 import ButtonGroup from 'components/ButtonGroup'
 import SubjectMsgsModal from '../SubjectMsgsModal'
 
@@ -18,10 +18,7 @@ export default class SubjectItem extends Component {
     userId: PropTypes.number,
     username: PropTypes.string,
     selectSubject: PropTypes.func,
-    timeStamp: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ])
+    timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   }
 
   constructor() {
@@ -35,21 +32,27 @@ export default class SubjectItem extends Component {
 
   componentDidMount() {
     const numLines = this.subjectTitle.clientHeight / subjectTitleHeight
-    this.setState({marginBottom: `${numLines * marginHeight}em`})
+    this.setState({ marginBottom: `${numLines * marginHeight}em` })
   }
 
   render() {
     const {
-      currentSubjectId, selectSubject, id, content, userId,
-      username, timeStamp, numMsgs
+      currentSubjectId,
+      selectSubject,
+      id,
+      content,
+      userId,
+      username,
+      timeStamp,
+      numMsgs
     } = this.props
-    const {marginBottom, menuShown, msgsModalShown} = this.state
+    const { marginBottom, menuShown, msgsModalShown } = this.state
     let buttons = []
     if (numMsgs > 0) {
       buttons.push({
         buttonClass: 'btn-info',
         hoverClass: 'btn-success',
-        onClick: () => this.setState({msgsModalShown: true}),
+        onClick: () => this.setState({ msgsModalShown: true }),
         label: 'View Conversations'
       })
     }
@@ -70,20 +73,22 @@ export default class SubjectItem extends Component {
           width: '100%',
           marginTop: '0px'
         }}
-        onMouseEnter={() => this.setState({menuShown: true})}
-        onMouseLeave={() => this.setState({menuShown: false})}
+        onMouseEnter={() => this.setState({ menuShown: true })}
+        onMouseLeave={() => this.setState({ menuShown: false })}
       >
-        {msgsModalShown && <SubjectMsgsModal
-          subjectId={id}
-          subjectTitle={content}
-          onHide={() => this.setState({msgsModalShown: false})}
-        />}
-        {menuShown &&
+        {msgsModalShown && (
+          <SubjectMsgsModal
+            subjectId={id}
+            subjectTitle={content}
+            onHide={() => this.setState({ msgsModalShown: false })}
+          />
+        )}
+        {menuShown && (
           <ButtonGroup
-            style={{position: 'absolute', right: '1.5em'}}
+            style={{ position: 'absolute', right: '1.5em' }}
             buttons={buttons}
           />
-        }
+        )}
         <div
           className="media-body"
           style={{
@@ -91,24 +96,34 @@ export default class SubjectItem extends Component {
             wordBreak: 'break-word'
           }}
         >
-          <div ref={ref => { this.subjectTitle = ref }} style={{marginBottom}}>
-            {currentSubjectId === id && <b style={{fontSize: '1.2em', color: Color.green}}>Current: </b>}
+          <div
+            ref={ref => {
+              this.subjectTitle = ref
+            }}
+            style={{ marginBottom }}
+          >
+            {currentSubjectId === id && (
+              <b style={{ fontSize: '1.2em', color: Color.green }}>Current: </b>
+            )}
             <span
               className="media-heading"
               style={{
                 fontSize: '1.2em',
                 fontWeight: 'bold'
               }}
-              dangerouslySetInnerHTML={{__html: content}}
-            /> {numMsgs && (numMsgs > 0) && <b style={{color: Color.blue}}>({numMsgs})</b>}
-            <div style={{position: 'absolute'}}>
+              dangerouslySetInnerHTML={{ __html: content }}
+            />{' '}
+            {numMsgs &&
+              numMsgs > 0 && <b style={{ color: Color.blue }}>({numMsgs})</b>}
+            <div style={{ position: 'absolute' }}>
               <UsernameText
                 color={Color.darkGray}
                 user={{
                   id: userId,
                   name: username
                 }}
-              /> <small>{moment.unix(timeStamp).format('LLL')}</small>
+              />{' '}
+              <small>{moment.unix(timeStamp).format('LLL')}</small>
             </div>
           </div>
         </div>

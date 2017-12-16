@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {Button, Modal} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Button, Modal } from 'react-bootstrap'
 import Input from 'components/Texts/Input'
-import {edit} from 'constants/placeholders'
+import { edit } from 'constants/placeholders'
 
 export default class editTitleModal extends Component {
   static propTypes = {
@@ -19,14 +19,10 @@ export default class editTitleModal extends Component {
   }
 
   render() {
-    const {onHide, onDone} = this.props
-    const {title} = this.state
+    const { onHide, onDone } = this.props
+    const { title } = this.state
     return (
-      <Modal
-        show
-        onHide={onHide}
-        animation={false}
-      >
+      <Modal show onHide={onHide} animation={false}>
         <Modal.Header>
           <h4>Edit Channel Title</h4>
         </Modal.Header>
@@ -38,16 +34,15 @@ export default class editTitleModal extends Component {
               className="form-control"
               placeholder={edit.title}
               value={title}
-              onChange={text => this.setState({title: text})}
+              onChange={text => this.setState({ title: text })}
             />
           </form>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onHide}>Cancel</Button>
-          <Button
-            bsStyle="primary"
-            onClick={() => onDone(title)}
-          >Done</Button>
+          <Button bsStyle="primary" onClick={() => onDone(title)}>
+            Done
+          </Button>
         </Modal.Footer>
       </Modal>
     )
