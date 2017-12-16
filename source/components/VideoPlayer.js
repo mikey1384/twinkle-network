@@ -216,6 +216,7 @@ class VideoPlayer extends Component {
                 if (e.data === 1) {
                   this.onVideoPlay(e)
                 } else {
+                  console.log(e.data)
                   this.onVideoStop()
                 }
               }}
@@ -300,6 +301,7 @@ class VideoPlayer extends Component {
             xpEarned: true
           }))
         }
+        this.rewardingXP = false
       } catch (error) {
         console.error(error.response || error)
       }
