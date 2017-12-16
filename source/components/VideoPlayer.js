@@ -273,7 +273,6 @@ class VideoPlayer extends Component {
                   if (e.data === 1) {
                     this.onVideoPlay(e)
                   } else {
-                    console.log(e.data)
                     this.onVideoStop()
                   }
                 }}
