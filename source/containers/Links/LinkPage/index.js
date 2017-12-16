@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Loading from 'components/Loading'
 import Embedly from 'components/Embedly'
 import {
@@ -56,13 +56,22 @@ class LinkPage extends Component {
   }
 
   componentDidMount() {
-    const {match: {params: {linkId}}, loadLinkPage, fetchComments} = this.props
+    const {
+      match: { params: { linkId } },
+      loadLinkPage,
+      fetchComments
+    } = this.props
     fetchComments(linkId)
     loadLinkPage(linkId)
   }
 
   componentDidUpdate(prevProps) {
-    const {location, loadLinkPage, fetchComments, match: {params: {linkId}}} = this.props
+    const {
+      location,
+      loadLinkPage,
+      fetchComments,
+      match: { params: { linkId } }
+    } = this.props
     if (prevProps.location.pathname !== location.pathname) {
       fetchComments(linkId)
       loadLinkPage(linkId)
@@ -72,10 +81,15 @@ class LinkPage extends Component {
   render() {
     const {
       pageProps: {
-        id, title, content,
-        description, timeStamp,
-        uploader, uploaderName,
-        comments = [], likers = [],
+        id,
+        title,
+        content,
+        description,
+        timeStamp,
+        uploader,
+        uploaderName,
+        comments = [],
+        likers = [],
         loadMoreCommentsButton = false,
         ...embedlyProps
       },
@@ -88,7 +102,7 @@ class LinkPage extends Component {
       deleteLinkFromPage,
       myId
     } = this.props
-    const {confirmModalShown, likersModalShown} = this.state
+    const { confirmModalShown, likersModalShown } = this.state
     let userLikedThis = false
     for (let i = 0; i < likers.length; i++) {
       if (likers[i].userId === myId) userLikedThis = true
@@ -113,35 +127,32 @@ class LinkPage extends Component {
             url={content}
             description={description}
             linkId={id}
-            onDelete={() => this.setState({confirmModalShown: true})}
+            onDelete={() => this.setState({ confirmModalShown: true })}
             onEditDone={params => editLinkPage(params)}
           />
           <Embedly
             title={title}
-            style={{marginTop: '1.5rem'}}
+            style={{ marginTop: '1.5rem' }}
             id={id}
             url={content}
             {...embedlyProps}
           />
-          <div style={{paddingTop: '1.5em', textAlign: 'center'}}>
-            <LikeButton
-              onClick={() => likeLink(id)}
-              liked={userLikedThis}
-            />
+          <div style={{ paddingTop: '1.5em', textAlign: 'center' }}>
+            <LikeButton onClick={() => likeLink(id)} liked={userLikedThis} />
             <Likers
-              style={{marginTop: '0.5em'}}
+              style={{ marginTop: '0.5em' }}
               likes={likers}
               userId={myId}
-              onLinkClick={() => this.setState({likersModalShown: true})}
+              onLinkClick={() => this.setState({ likersModalShown: true })}
             />
           </div>
           <PanelComments
-            style={{marginTop: '0.5em'}}
+            style={{ marginTop: '0.5em' }}
             comments={comments}
             onSubmit={this.onCommentSubmit}
             loadMoreButton={loadMoreCommentsButton}
             inputTypeLabel="comment"
-            parent={{type: 'url', id}}
+            parent={{ type: 'url', id }}
             userId={myId}
             commentActions={{
               onDelete: deleteComment,
@@ -153,39 +164,39 @@ class LinkPage extends Component {
             loadMoreComments={this.loadMoreComments}
           />
         </div>
-        {confirmModalShown &&
+        {confirmModalShown && (
           <ConfirmModal
             title="Remove Link"
             onConfirm={() => deleteLinkFromPage(id)}
-            onHide={() => this.setState({confirmModalShown: false})}
+            onHide={() => this.setState({ confirmModalShown: false })}
           />
-        }
-        {likersModalShown &&
+        )}
+        {likersModalShown && (
           <UserListModal
             users={likers}
             userId={myId}
             title="People who liked this"
             description="(You)"
-            onHide={() => this.setState({likersModalShown: false})}
+            onHide={() => this.setState({ likersModalShown: false })}
           />
-        }
+        )}
       </div>
     )
   }
 
   loadMoreComments() {
-    const {fetchMoreComments, pageProps: {id, comments}} = this.props
+    const { fetchMoreComments, pageProps: { id, comments } } = this.props
     const lastCommentId = comments[comments.length - 1].id
     fetchMoreComments(id, lastCommentId)
   }
 
   onCommentSubmit(content) {
-    const {submitComment, match: {params: {linkId}}} = this.props
-    submitComment({content, linkId})
+    const { submitComment, match: { params: { linkId } } } = this.props
+    submitComment({ content, linkId })
   }
 
   onReplySubmit(params) {
-    const {submitReply} = this.props
+    const { submitReply } = this.props
     submitReply({
       ...params,
       replyOfReply: true

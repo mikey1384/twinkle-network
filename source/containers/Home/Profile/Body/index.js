@@ -1,12 +1,16 @@
-import React, {Component} from 'react'
-import {Route} from 'react-router'
-import {fetchUserFeeds, fetchMoreUserFeeds, clearFeeds} from 'redux/actions/FeedActions'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { Route } from 'react-router'
+import {
+  fetchUserFeeds,
+  fetchMoreUserFeeds,
+  clearFeeds
+} from 'redux/actions/FeedActions'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
 import FeedPanel from '../../FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
-import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 
 class Body extends Component {
   static propTypes = {
@@ -36,15 +40,34 @@ class Body extends Component {
   }
 
   componentDidMount() {
-    const {
-      match,
-      location,
-      clearFeeds
-    } = this.props
+    const { match, location, clearFeeds } = this.props
     this.mounted = true
     addEvent(window, 'scroll', this.onScroll)
-    return clearFeeds().then(
-      () => {
+    return clearFeeds().then(() => {
+      switch (location.pathname) {
+        case match.url:
+          return this.changeTab('all')
+        case `${match.url}/questions`:
+          return this.changeTab('question')
+        case `${match.url}/comments`:
+          return this.changeTab('comment')
+        case `${match.url}/videos`:
+          return this.changeTab('video')
+        case `${match.url}/links`:
+          return this.changeTab('url')
+        case `${match.url}/discussions`:
+          return this.changeTab('discussion')
+        default:
+          break
+      }
+    })
+  }
+
+  componentDidUpdate(prevProps) {
+    const { match, location, clearFeeds } = this.props
+
+    if (prevProps.location !== this.props.location) {
+      return clearFeeds().then(() => {
         switch (location.pathname) {
           case match.url:
             return this.changeTab('all')
@@ -58,39 +81,10 @@ class Body extends Component {
             return this.changeTab('url')
           case `${match.url}/discussions`:
             return this.changeTab('discussion')
-          default: break
+          default:
+            break
         }
-      }
-    )
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      match,
-      location,
-      clearFeeds
-    } = this.props
-
-    if (prevProps.location !== this.props.location) {
-      return clearFeeds().then(
-        () => {
-          switch (location.pathname) {
-            case match.url:
-              return this.changeTab('all')
-            case `${match.url}/questions`:
-              return this.changeTab('question')
-            case `${match.url}/comments`:
-              return this.changeTab('comment')
-            case `${match.url}/videos`:
-              return this.changeTab('video')
-            case `${match.url}/links`:
-              return this.changeTab('url')
-            case `${match.url}/discussions`:
-              return this.changeTab('discussion')
-            default: break
-          }
-        }
-      )
+      })
     }
   }
 
@@ -101,11 +95,16 @@ class Body extends Component {
 
   render() {
     const {
-      match: route, match: {params: {username}},
-      history, feeds, myId, loaded, loadMoreButton,
+      match: route,
+      match: { params: { username } },
+      history,
+      feeds,
+      myId,
+      loaded,
+      loadMoreButton,
       clearFeeds
     } = this.props
-    const {loading} = this.state
+    const { loading } = this.state
 
     return (
       <div>
@@ -118,112 +117,162 @@ class Body extends Component {
               fontWeight: 'bold'
             }}
           >
-            <Route exact path={route.url} children={({match}) => (
-              <li
-                className={match ? 'active' : ''}
-                style={{cursor: 'pointer'}}
-                onClick={() => clearFeeds().then(
-                  () => history.push(route.url)
-                )}
-              >
-                <a>All</a>
-              </li>
-            )}/>
-            <Route exact path={`${route.url}/questions`} children={({match}) => (
-              <li
-                className={match ? 'active' : ''}
-                style={{cursor: 'pointer'}}
-                onClick={() => clearFeeds().then(
-                  () => history.push(`${route.url}/questions`)
-                )}
-              >
-                <a>Questions</a>
-              </li>
-            )}/>
-            <Route exact path={`${route.url}/comments`} children={({match}) => (
-              <li
-                className={match ? 'active' : ''}
-                style={{cursor: 'pointer'}}
-                onClick={() => clearFeeds().then(
-                  () => history.push(`${route.url}/comments`)
-                )}
-              >
-                <a>Comments</a>
-              </li>
-            )}/>
-            <Route exact path={`${route.url}/videos`} children={({match}) => (
-              <li
-                className={match ? 'active' : ''}
-                style={{cursor: 'pointer'}}
-                onClick={() => clearFeeds().then(
-                  () => history.push(`${route.url}/videos`)
-                )}
-              >
-                <a>Videos</a>
-              </li>
-            )}/>
-            <Route exact path={`${route.url}/links`} children={({match}) => (
-              <li
-                className={match ? 'active' : ''}
-                style={{cursor: 'pointer'}}
-                onClick={() => clearFeeds().then(
-                  () => history.push(`${route.url}/links`)
-                )}
-              >
-                <a>Links</a>
-              </li>
-            )}/>
-            <Route exact path={`${route.url}/discussions`} children={({match}) => (
-              <li
-                className={match ? 'active' : ''}
-                style={{cursor: 'pointer'}}
-                onClick={() => clearFeeds().then(
-                  () => history.push(`${route.url}/discussions`)
-                )}
-              >
-                <a>Discussions</a>
-              </li>
-            )}/>
+            <Route
+              exact
+              path={route.url}
+              children={({ match }) => (
+                <li
+                  className={match ? 'active' : ''}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    clearFeeds().then(() => history.push(route.url))
+                  }
+                >
+                  <a>All</a>
+                </li>
+              )}
+            />
+            <Route
+              exact
+              path={`${route.url}/questions`}
+              children={({ match }) => (
+                <li
+                  className={match ? 'active' : ''}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    clearFeeds().then(() =>
+                      history.push(`${route.url}/questions`)
+                    )
+                  }
+                >
+                  <a>Questions</a>
+                </li>
+              )}
+            />
+            <Route
+              exact
+              path={`${route.url}/comments`}
+              children={({ match }) => (
+                <li
+                  className={match ? 'active' : ''}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    clearFeeds().then(() =>
+                      history.push(`${route.url}/comments`)
+                    )
+                  }
+                >
+                  <a>Comments</a>
+                </li>
+              )}
+            />
+            <Route
+              exact
+              path={`${route.url}/videos`}
+              children={({ match }) => (
+                <li
+                  className={match ? 'active' : ''}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    clearFeeds().then(() => history.push(`${route.url}/videos`))
+                  }
+                >
+                  <a>Videos</a>
+                </li>
+              )}
+            />
+            <Route
+              exact
+              path={`${route.url}/links`}
+              children={({ match }) => (
+                <li
+                  className={match ? 'active' : ''}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    clearFeeds().then(() => history.push(`${route.url}/links`))
+                  }
+                >
+                  <a>Links</a>
+                </li>
+              )}
+            />
+            <Route
+              exact
+              path={`${route.url}/discussions`}
+              children={({ match }) => (
+                <li
+                  className={match ? 'active' : ''}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    clearFeeds().then(() =>
+                      history.push(`${route.url}/discussions`)
+                    )
+                  }
+                >
+                  <a>Discussions</a>
+                </li>
+              )}
+            />
           </ul>
         </nav>
         <div>
           {!loaded && <Loading />}
-          {loaded && feeds.length > 0 && (
-            <div>
-              {feeds.map(feed => {
-                return <FeedPanel key={`${feed.type}${feed.id}`} feed={feed} userId={myId} />
-              })}
-            </div>
-          )}
-          {loaded && feeds.length === 0 && <div style={{textAlign: 'center'}}>{this.onNoFeed(username)}</div>}
+          {loaded &&
+            feeds.length > 0 && (
+              <div>
+                {feeds.map(feed => {
+                  return (
+                    <FeedPanel
+                      key={`${feed.type}${feed.id}`}
+                      feed={feed}
+                      userId={myId}
+                    />
+                  )
+                })}
+              </div>
+            )}
+          {loaded &&
+            feeds.length === 0 && (
+              <div style={{ textAlign: 'center' }}>
+                {this.onNoFeed(username)}
+              </div>
+            )}
         </div>
-        {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loading} />}
+        {loadMoreButton && (
+          <LoadMoreButton onClick={this.loadMoreFeeds} loading={loading} />
+        )}
       </div>
     )
   }
 
   changeTab(tabName) {
-    const {match: {params: {username}}, fetchUserFeeds} = this.props
+    const { match: { params: { username } }, fetchUserFeeds } = this.props
     if (this.mounted) {
-      this.setState({currentTab: tabName})
+      this.setState({ currentTab: tabName })
     }
     fetchUserFeeds(username, tabName)
   }
 
   loadMoreFeeds() {
-    const {match: {params: {username}}, fetchMoreUserFeeds, feeds} = this.props
-    const {currentTab, loading} = this.state
+    const {
+      match: { params: { username } },
+      fetchMoreUserFeeds,
+      feeds
+    } = this.props
+    const { currentTab, loading } = this.state
 
     if (!loading) {
-      this.setState({loading: true})
-      return fetchMoreUserFeeds(username, currentTab, feeds[feeds.length - 1].id).then(
-        () => this.setState({loading: false})
-      )
+      this.setState({ loading: true })
+      return fetchMoreUserFeeds(
+        username,
+        currentTab,
+        feeds[feeds.length - 1].id
+      ).then(() => this.setState({ loading: false }))
     }
   }
 
   onNoFeed(username) {
-    const {currentTab} = this.state
+    const { currentTab } = this.state
     switch (currentTab) {
       case 'all':
         return `${username} has not posted a anything yet`
@@ -241,11 +290,15 @@ class Body extends Component {
   }
 
   onScroll() {
-    let {chatMode, feeds} = this.props
-    const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+    let { chatMode, feeds } = this.props
+    const scrollPosition =
+      document.documentElement.scrollTop || document.body.scrollTop
     if (!chatMode && feeds.length > 0) {
-      this.setState({scrollPosition})
-      if (this.state.scrollPosition >= (document.body.scrollHeight - window.innerHeight) * 0.7) {
+      this.setState({ scrollPosition })
+      if (
+        this.state.scrollPosition >=
+        (document.body.scrollHeight - window.innerHeight) * 0.7
+      ) {
         this.loadMoreFeeds()
       }
     }

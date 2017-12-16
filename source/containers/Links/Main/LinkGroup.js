@@ -5,9 +5,9 @@ import LinkItem from './LinkItem'
 LinkGroup.propTypes = {
   links: PropTypes.array.isRequired
 }
-export default function LinkGroup({links}) {
+export default function LinkGroup({ links }) {
   return (
-    <ul className="media-list" style={{marginBottom: '1.5em'}}>
+    <ul className="media-list" style={{ marginBottom: '1.5em' }}>
       {links.map(link => <LinkItem key={link.id} link={link} />)}
     </ul>
   )

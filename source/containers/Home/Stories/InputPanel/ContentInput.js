@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
-import {uploadContentAsync} from 'redux/actions/FeedActions'
-import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
+import { uploadContentAsync } from 'redux/actions/FeedActions'
+import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions'
 import Input from 'components/Texts/Input'
 import {
   isValidUrl,
@@ -37,28 +37,29 @@ class ContentInput extends Component {
   }
 
   render() {
-    const {
-      form, urlError, descriptionFieldsShown
-    } = this.state
-    const {url, title} = form
+    const { form, urlError, descriptionFieldsShown } = this.state
+    const { url, title } = form
     return (
-      <div className="panel panel-default"
+      <div
+        className="panel panel-default"
         style={{
           borderTop: '1px solid rgb(231, 231, 231)'
         }}
       >
         <div className="panel-body">
           <form className="container-fluid" onSubmit={e => e.preventDefault()}>
-            <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
-              <label style={{paddingBottom: '0.3em'}}>
-                <p style={{marginBottom: '0px', fontSize: '1.2em'}}>
+            <fieldset className="form-group" style={{ marginBottom: '0.5em' }}>
+              <label style={{ paddingBottom: '0.3em' }}>
+                <p style={{ marginBottom: '0px', fontSize: '1.2em' }}>
                   <b>Share interesting videos or web links</b>
                 </p>
               </label>
-              <div style={{display: 'inline'}}>
+              <div style={{ display: 'inline' }}>
                 <Input
-                  ref={ref => { this.UrlField = ref }}
-                  style={{borderColor: !!urlError && 'red'}}
+                  ref={ref => {
+                    this.UrlField = ref
+                  }}
+                  style={{ borderColor: !!urlError && 'red' }}
                   value={form.url}
                   onChange={this.onUrlFieldChange}
                   className="form-control"
@@ -66,7 +67,7 @@ class ContentInput extends Component {
                   type="text"
                 />
               </div>
-              {urlError &&
+              {urlError && (
                 <span
                   className="help-block"
                   style={{
@@ -76,7 +77,7 @@ class ContentInput extends Component {
                 >
                   {urlError}
                 </span>
-              }
+              )}
             </fieldset>
             <label>YouTube Video:&nbsp;&nbsp;&nbsp;</label>
             <input
@@ -92,14 +93,16 @@ class ContentInput extends Component {
               checked={form.checkedVideo}
               type="checkbox"
             />
-            {descriptionFieldsShown &&
+            {descriptionFieldsShown && (
               <div>
                 <div>
                   <fieldset className="form-group">
-                    <div style={{display: 'inline'}}>
+                    <div style={{ display: 'inline' }}>
                       <Input
                         value={form.title}
-                        onChange={text => this.setState({form: {...form, title: text}})}
+                        onChange={text =>
+                          this.setState({ form: { ...form, title: text } })
+                        }
                         className="form-control"
                         placeholder="Enter Title"
                         onKeyUp={event => {
@@ -122,7 +125,11 @@ class ContentInput extends Component {
                       className="form-control"
                       minRows={4}
                       placeholder="Enter Description (Optional, you don't need to write this)"
-                      onChange={event => this.setState({form: {...form, description: event.target.value}})}
+                      onChange={event =>
+                        this.setState({
+                          form: { ...form, description: event.target.value }
+                        })
+                      }
                       onKeyUp={event => {
                         if (event.key === ' ') {
                           this.setState({
@@ -145,7 +152,7 @@ class ContentInput extends Component {
                   Share!
                 </Button>
               </div>
-            }
+            )}
           </form>
         </div>
       </div>
@@ -153,17 +160,17 @@ class ContentInput extends Component {
   }
 
   onSubmit(event) {
-    const {uploadContent} = this.props
-    const {form} = this.state
-    const {url, checkedVideo} = form
+    const { uploadContent } = this.props
+    const { form } = this.state
+    const { url, checkedVideo } = form
     let urlError
     event.preventDefault()
 
     if (!isValidUrl(url)) urlError = 'That is not a valid url'
-    if (checkedVideo && !isValidYoutubeUrl(url)) urlError = 'That is not a valid YouTube url'
+    if (checkedVideo && !isValidYoutubeUrl(url)) { urlError = 'That is not a valid YouTube url' }
 
     if (urlError) {
-      this.setState({urlError})
+      this.setState({ urlError })
       return this.UrlField.focus()
     }
 
@@ -186,9 +193,13 @@ class ContentInput extends Component {
   }
 
   onUrlFieldChange(url) {
-    const {form} = this.state
+    const { form } = this.state
     this.setState({
-      form: {...form, url, checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo},
+      form: {
+        ...form,
+        url,
+        checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo
+      },
       urlError: null,
       descriptionFieldsShown: true
     })

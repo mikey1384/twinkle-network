@@ -1,12 +1,17 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Textarea from 'react-textarea-autosize'
-import {Modal} from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import Button from 'components/Button'
-import {uploadLink} from 'redux/actions/LinkActions'
-import {connect} from 'react-redux'
+import { uploadLink } from 'redux/actions/LinkActions'
+import { connect } from 'react-redux'
 import Input from 'components/Texts/Input'
-import {isValidUrl, stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import {
+  isValidUrl,
+  stringIsEmpty,
+  addEmoji,
+  finalizeEmoji
+} from 'helpers/stringHelpers'
 
 class AddLinkModal extends Component {
   static propTypes = {
@@ -29,9 +34,9 @@ class AddLinkModal extends Component {
   }
 
   render() {
-    const {onHide} = this.props
-    const {urlError, form} = this.state
-    const {url, title} = form
+    const { onHide } = this.props
+    const { urlError, form } = this.state
+    const { url, title } = form
     return (
       <Modal show onHide={onHide} animation={false}>
         <Modal.Header closeButton>
@@ -39,12 +44,16 @@ class AddLinkModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <form className="container-fluid">
-            <fieldset className="form-group" style={{marginBottom: '0.5em'}}>
-              <label><b>Link URL</b></label>
-              <div style={{display: 'inline'}}>
+            <fieldset className="form-group" style={{ marginBottom: '0.5em' }}>
+              <label>
+                <b>Link URL</b>
+              </label>
+              <div style={{ display: 'inline' }}>
                 <Input
-                  ref={ref => { this.UrlField = ref }}
-                  style={{borderColor: !!urlError && 'red'}}
+                  ref={ref => {
+                    this.UrlField = ref
+                  }}
+                  style={{ borderColor: !!urlError && 'red' }}
                   value={form.url}
                   onChange={this.onUrlFieldChange}
                   className="form-control"
@@ -52,7 +61,7 @@ class AddLinkModal extends Component {
                   type="text"
                 />
               </div>
-              {urlError &&
+              {urlError && (
                 <span
                   className="help-block"
                   style={{
@@ -62,14 +71,18 @@ class AddLinkModal extends Component {
                 >
                   {urlError}
                 </span>
-              }
+              )}
             </fieldset>
             <fieldset className="form-group">
-              <label><b>Title</b></label>
-              <div style={{display: 'inline'}}>
+              <label>
+                <b>Title</b>
+              </label>
+              <div style={{ display: 'inline' }}>
                 <Input
                   value={form.title}
-                  onChange={text => this.setState({form: {...form, title: text}})}
+                  onChange={text =>
+                    this.setState({ form: { ...form, title: text } })
+                  }
                   className="form-control"
                   placeholder="Enter Title"
                   type="text"
@@ -87,13 +100,19 @@ class AddLinkModal extends Component {
               </div>
             </fieldset>
             <fieldset className="form-group">
-              <label><strong>Description</strong></label>
+              <label>
+                <strong>Description</strong>
+              </label>
               <Textarea
                 value={form.description}
                 className="form-control"
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
-                onChange={event => this.setState({form: {...form, description: event.target.value}})}
+                onChange={event =>
+                  this.setState({
+                    form: { ...form, description: event.target.value }
+                  })
+                }
                 onKeyUp={event => {
                   if (event.key === ' ') {
                     this.setState({
@@ -123,12 +142,12 @@ class AddLinkModal extends Component {
   }
 
   onSubmit(event) {
-    const {uploadLink, onHide} = this.props
-    const {form: {url, title, description}} = this.state
+    const { uploadLink, onHide } = this.props
+    const { form: { url, title, description } } = this.state
 
     event.preventDefault()
     if (!isValidUrl(url)) {
-      this.setState({urlError: 'That is not a valid url'})
+      this.setState({ urlError: 'That is not a valid url' })
       return this.UrlField._rootDOMNode.focus()
     }
 
@@ -136,21 +155,16 @@ class AddLinkModal extends Component {
       url,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description)
-    }).then(
-      () => onHide()
-    )
+    }).then(() => onHide())
   }
 
   onUrlFieldChange(text) {
-    const {form} = this.state
+    const { form } = this.state
     this.setState({
-      form: {...form, url: text},
+      form: { ...form, url: text },
       urlError: null
     })
   }
 }
 
-export default connect(
-  null,
-  {uploadLink: uploadLink}
-)(AddLinkModal)
+export default connect(null, { uploadLink: uploadLink })(AddLinkModal)

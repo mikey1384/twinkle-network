@@ -1,14 +1,18 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import UsernameText from 'components/Texts/UsernameText'
 import DropdownButton from 'components/DropdownButton'
-import {timeSince} from 'helpers/timeStampHelpers'
+import { timeSince } from 'helpers/timeStampHelpers'
 import LongText from 'components/Texts/LongText'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
 import Input from 'components/Texts/Input'
 import {
-  cleanString, isValidUrl, stringIsEmpty, addEmoji, finalizeEmoji
+  cleanString,
+  isValidUrl,
+  stringIsEmpty,
+  addEmoji,
+  finalizeEmoji
 } from 'helpers/stringHelpers'
 
 export default class Description extends Component {
@@ -18,10 +22,8 @@ export default class Description extends Component {
     myId: PropTypes.number,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
-    timeStamp: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
+    timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     title: PropTypes.string.isRequired,
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
@@ -37,12 +39,22 @@ export default class Description extends Component {
       onEdit: false,
       editDoneButtonDisabled: true
     }
-    this.determineEditButtonDoneStatus = this.determineEditButtonDoneStatus.bind(this)
+    this.determineEditButtonDoneStatus = this.determineEditButtonDoneStatus.bind(
+      this
+    )
     this.onEditCancel = this.onEditCancel.bind(this)
     this.onEditFinish = this.onEditFinish.bind(this)
   }
   render() {
-    const {uploaderId, myId, title, description, uploaderName, timeStamp, onDelete} = this.props
+    const {
+      uploaderId,
+      myId,
+      title,
+      description,
+      uploaderName,
+      timeStamp,
+      onDelete
+    } = this.props
     const {
       onEdit,
       editedTitle,
@@ -52,53 +64,70 @@ export default class Description extends Component {
     } = this.state
     return (
       <div>
-        {uploaderId === myId && !onEdit &&
-          <DropdownButton
-            style={{
-              top: '1em',
-              right: '1em',
-              position: 'absolute'
-            }}
-            shape="button" icon="pencil"
-            menuProps={[
-              {
-                label: 'Edit',
-                onClick: () => this.setState({onEdit: true})
-              },
-              {
-                label: 'Delete',
-                onClick: () => onDelete()
-              }
-            ]}
-          />
-        }
-        <div className="row page-header text-center" style={{marginTop: '2.5rem'}}>
+        {uploaderId === myId &&
+          !onEdit && (
+            <DropdownButton
+              style={{
+                top: '1em',
+                right: '1em',
+                position: 'absolute'
+              }}
+              shape="button"
+              icon="pencil"
+              menuProps={[
+                {
+                  label: 'Edit',
+                  onClick: () => this.setState({ onEdit: true })
+                },
+                {
+                  label: 'Delete',
+                  onClick: () => onDelete()
+                }
+              ]}
+            />
+          )}
+        <div
+          className="row page-header text-center"
+          style={{ marginTop: '2.5rem' }}
+        >
           <div>
-            {onEdit ?
-              <form className="col-sm-6 col-sm-offset-3" onSubmit={event => event.preventDefault()}>
+            {onEdit ? (
+              <form
+                className="col-sm-6 col-sm-offset-3"
+                onSubmit={event => event.preventDefault()}
+              >
                 <Input
                   type="text"
                   className="form-control"
                   placeholder="Enter Title..."
                   value={editedTitle}
                   onChange={text => {
-                    this.setState({editedTitle: text}, () => {
+                    this.setState({ editedTitle: text }, () => {
                       this.determineEditButtonDoneStatus()
                     })
                   }}
                   onKeyUp={event => {
                     if (event.key === ' ') {
-                      this.setState({editedTitle: addEmoji(event.target.value)})
+                      this.setState({
+                        editedTitle: addEmoji(event.target.value)
+                      })
                     }
                   }}
                 />
-              </form> :
+              </form>
+            ) : (
               <h2>{title}</h2>
-            }
+            )}
           </div>
           <div>
-            <small className="col-xs-12" style={{paddingTop: onEdit && '1em'}}>
-              Added by <UsernameText user={{id: uploaderId, name: uploaderName}} /> ({timeSince(timeStamp)})
+            <small
+              className="col-xs-12"
+              style={{ paddingTop: onEdit && '1em' }}
+            >
+              Added by{' '}
+              <UsernameText user={{ id: uploaderId, name: uploaderName }} /> ({timeSince(
+                timeStamp
+              )})
             </small>
           </div>
         </div>
@@ -109,16 +138,16 @@ export default class Description extends Component {
             wordBreak: 'break-word'
           }}
         >
-          {onEdit ?
+          {onEdit ? (
             <div>
               <form>
                 <Input
                   className="form-control"
                   placeholder="Enter URL"
-                  style={{marginBottom: '1em'}}
+                  style={{ marginBottom: '1em' }}
                   value={editedUrl}
                   onChange={text => {
-                    this.setState({editedUrl: text}, () => {
+                    this.setState({ editedUrl: text }, () => {
                       this.determineEditButtonDoneStatus()
                     })
                   }}
@@ -130,13 +159,18 @@ export default class Description extends Component {
                   value={editedDescription}
                   onChange={event => {
                     this.determineEditButtonDoneStatus()
-                    this.setState({editedDescription: event.target.value}, () => {
-                      this.determineEditButtonDoneStatus()
-                    })
+                    this.setState(
+                      { editedDescription: event.target.value },
+                      () => {
+                        this.determineEditButtonDoneStatus()
+                      }
+                    )
                   }}
                   onKeyUp={event => {
                     if (event.key === ' ') {
-                      this.setState({editedDescription: addEmoji(event.target.value)})
+                      this.setState({
+                        editedDescription: addEmoji(event.target.value)
+                      })
                     }
                   }}
                 />
@@ -151,16 +185,21 @@ export default class Description extends Component {
                   className="btn btn-default btn-sm"
                   disabled={editDoneButtonDisabled}
                   onClick={this.onEditFinish}
-                >Done</Button>
+                >
+                  Done
+                </Button>
                 <Button
                   className="btn btn-default btn-sm"
-                  style={{marginLeft: '5px'}}
+                  style={{ marginLeft: '5px' }}
                   onClick={this.onEditCancel}
-                >Cancel</Button>
+                >
+                  Cancel
+                </Button>
               </div>
-            </div> :
+            </div>
+          ) : (
             <LongText lines={20}>{description || ''}</LongText>
-          }
+          )}
         </div>
       </div>
     )
@@ -172,14 +211,18 @@ export default class Description extends Component {
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
     const urlChanged = this.state.editedUrl !== this.props.url
-    const descriptionChanged = this.state.editedDescription !== this.props.description
+    const descriptionChanged =
+      this.state.editedDescription !== this.props.description
     const editDoneButtonDisabled =
-      !urlIsValid || urlIsEmpty || titleIsEmpty || (!titleChanged && !descriptionChanged && !urlChanged)
-    this.setState({editDoneButtonDisabled})
+      !urlIsValid ||
+      urlIsEmpty ||
+      titleIsEmpty ||
+      (!titleChanged && !descriptionChanged && !urlChanged)
+    this.setState({ editDoneButtonDisabled })
   }
 
   onEditCancel() {
-    const {description, title, url} = this.props
+    const { description, title, url } = this.props
     this.setState({
       editedUrl: url,
       editedTitle: cleanString(title),
@@ -190,15 +233,13 @@ export default class Description extends Component {
   }
 
   onEditFinish() {
-    const {onEditDone, linkId} = this.props
-    const {editedTitle, editedDescription, editedUrl} = this.state
+    const { onEditDone, linkId } = this.props
+    const { editedTitle, editedDescription, editedUrl } = this.state
     return onEditDone({
       editedUrl,
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
       linkId
-    }).then(
-      () => this.setState({onEdit: false})
-    )
+    }).then(() => this.setState({ onEdit: false }))
   }
 }

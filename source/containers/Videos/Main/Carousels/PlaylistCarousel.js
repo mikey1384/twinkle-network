@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import ExecutionEnvironment from 'exenv'
 import Carousel from 'components/Carousel'
 import VideoThumb from 'components/VideoThumb'
@@ -8,7 +8,7 @@ import EditTitleForm from 'components/Texts/EditTitleForm'
 import EditPlaylistModal from '../Modals/EditPlaylistModal'
 import PlaylistModal from '../Modals/PlaylistModal'
 import ConfirmModal from 'components/Modals/ConfirmModal'
-import {addEvent} from 'helpers/listenerHelpers'
+import { addEvent } from 'helpers/listenerHelpers'
 import {
   editPlaylistTitleAsync,
   openChangePlaylistVideosModalAsync,
@@ -16,8 +16,8 @@ import {
   deletePlaylistAsync,
   resetPlaylistModalState
 } from 'redux/actions/PlaylistActions'
-import {connect} from 'react-redux'
-import {cleanString} from 'helpers/stringHelpers'
+import { connect } from 'react-redux'
+import { cleanString } from 'helpers/stringHelpers'
 
 class PlaylistCarousel extends Component {
   static propTypes = {
@@ -39,7 +39,8 @@ class PlaylistCarousel extends Component {
     this.defaultNumSlides = 5
     let numSlides = this.defaultNumSlides
     if (ExecutionEnvironment.canUseDOM) {
-      numSlides = document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides
+      numSlides =
+        document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides
     }
     this.state = {
       onEdit: false,
@@ -79,7 +80,7 @@ class PlaylistCarousel extends Component {
         } else {
           elem['on' + type] = null
         }
-      };
+      }
     }
   }
 
@@ -92,14 +93,7 @@ class PlaylistCarousel extends Component {
       playlistModalShown,
       numSlides
     } = this.state
-    const {
-      title,
-      uploader,
-      editable,
-      isAdmin,
-      id,
-      showAllButton
-    } = this.props
+    const { title, uploader, editable, isAdmin, id, showAllButton } = this.props
     const menuProps = [
       {
         label: 'Edit Title',
@@ -107,11 +101,11 @@ class PlaylistCarousel extends Component {
       },
       {
         label: 'Change Videos',
-        onClick: () => this.setState({changePLVideosModalShown: true})
+        onClick: () => this.setState({ changePLVideosModalShown: true })
       },
       {
         label: 'Reorder Videos',
-        onClick: () => this.setState({reorderPLVideosModalShown: true})
+        onClick: () => this.setState({ reorderPLVideosModalShown: true })
       },
       {
         separator: true
@@ -125,7 +119,7 @@ class PlaylistCarousel extends Component {
     return (
       <div className="container-fluid">
         <div className="row container-fluid">
-          {onEdit ?
+          {onEdit ? (
             <div
               className="input-group col-sm-6 pull-left"
               style={{
@@ -139,20 +133,20 @@ class PlaylistCarousel extends Component {
                 onClickOutSide={this.onEditTitleCancel}
               />
             </div>
-            :
-            <h4
-              className="pull-left"
-            >
+          ) : (
+            <h4 className="pull-left">
               <a
-                style={{cursor: 'pointer'}}
-                onClick={() => this.setState({playlistModalShown: true})}
+                style={{ cursor: 'pointer' }}
+                onClick={() => this.setState({ playlistModalShown: true })}
               >
                 {cleanString(title)}
               </a>
-              <span>&nbsp;<small>by {uploader}</small></span>
+              <span>
+                &nbsp;<small>by {uploader}</small>
+              </span>
             </h4>
-          }
-          {(editable || isAdmin) &&
+          )}
+          {(editable || isAdmin) && (
             <DropdownButton
               style={{
                 position: 'absolute',
@@ -164,7 +158,7 @@ class PlaylistCarousel extends Component {
               icon="pencil"
               menuProps={menuProps}
             />
-          }
+          )}
         </div>
         <Carousel
           progressBar={false}
@@ -173,44 +167,44 @@ class PlaylistCarousel extends Component {
           cellSpacing={20}
           dragging={true}
           showAllButton={showAllButton}
-          onShowAll={() => this.setState({playlistModalShown: true})}
+          onShowAll={() => this.setState({ playlistModalShown: true })}
         >
           {this.renderThumbs()}
         </Carousel>
-        {playlistModalShown &&
+        {playlistModalShown && (
           <PlaylistModal
             title={cleanString(title)}
-            onHide={() => this.setState({playlistModalShown: false})}
+            onHide={() => this.setState({ playlistModalShown: false })}
             playlistId={id}
           />
-        }
-        {changePLVideosModalShown &&
+        )}
+        {changePLVideosModalShown && (
           <EditPlaylistModal
             modalType="change"
             playlistId={id}
-            onHide={() => this.setState({changePLVideosModalShown: false})}
+            onHide={() => this.setState({ changePLVideosModalShown: false })}
           />
-        }
-        {reorderPLVideosModalShown &&
+        )}
+        {reorderPLVideosModalShown && (
           <EditPlaylistModal
             modalType="reorder"
             playlistId={id}
-            onHide={() => this.setState({reorderPLVideosModalShown: false})}
+            onHide={() => this.setState({ reorderPLVideosModalShown: false })}
           />
-        }
-        {deleteConfirmModalShown &&
+        )}
+        {deleteConfirmModalShown && (
           <ConfirmModal
             title="Remove Playlist"
             onConfirm={this.onDeleteConfirm}
-            onHide={() => this.setState({deleteConfirmModalShown: false})}
+            onHide={() => this.setState({ deleteConfirmModalShown: false })}
           />
-        }
+        )}
       </div>
     )
   }
 
   renderThumbs() {
-    const {playlist, clickSafe, id: playlistId} = this.props
+    const { playlist, clickSafe, id: playlistId } = this.props
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
@@ -226,37 +220,40 @@ class PlaylistCarousel extends Component {
             uploaderName: thumb.video_uploader,
             numLikes: thumb.numLikes
           }}
-          user={{name: thumb.video_uploader, id: thumb.video_uploader_id}}
+          user={{ name: thumb.video_uploader, id: thumb.video_uploader_id }}
         />
       )
     })
   }
 
   onEditTitle() {
-    this.setState({onEdit: true})
+    this.setState({ onEdit: true })
   }
 
   onEditedTitleSubmit(title) {
-    const {editPlaylistTitleAsync, id: playlistId, arrayIndex} = this.props
-    editPlaylistTitleAsync({title, playlistId}, arrayIndex, this)
+    const { editPlaylistTitleAsync, id: playlistId, arrayIndex } = this.props
+    editPlaylistTitleAsync({ title, playlistId }, arrayIndex, this)
   }
 
   onEditTitleCancel() {
-    this.setState({onEdit: false})
+    this.setState({ onEdit: false })
   }
 
   onDeleteClick() {
-    this.setState({deleteConfirmModalShown: true})
+    this.setState({ deleteConfirmModalShown: true })
   }
 
   onDeleteConfirm() {
-    const {deletePlaylistAsync, id} = this.props
+    const { deletePlaylistAsync, id } = this.props
     deletePlaylistAsync(id, this)
   }
 
   onResize() {
     if (ExecutionEnvironment.canUseDOM) {
-      this.setState({numSlides: document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides})
+      this.setState({
+        numSlides:
+          document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides
+      })
     }
   }
 }
@@ -274,4 +271,3 @@ export default connect(
     resetPlaylistModalState
   }
 )(PlaylistCarousel)
-

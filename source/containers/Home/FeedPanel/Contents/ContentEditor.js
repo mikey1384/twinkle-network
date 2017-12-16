@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Textarea from 'react-textarea-autosize'
 import Input from 'components/Texts/Input'
 import Button from 'components/Button'
-import {edit} from 'constants/placeholders'
-import {connect} from 'react-redux'
-import {feedContentEdit} from 'redux/actions/FeedActions'
+import { edit } from 'constants/placeholders'
+import { connect } from 'react-redux'
+import { feedContentEdit } from 'redux/actions/FeedActions'
 import {
   addEmoji,
   finalizeEmoji,
@@ -27,7 +27,7 @@ class ContentEditor extends Component {
     type: PropTypes.string.isRequired
   }
 
-  constructor({comment, description, title, type, content}) {
+  constructor({ comment, description, title, type, content }) {
     super()
     this.state = {
       buttonDisabled: false,
@@ -35,26 +35,35 @@ class ContentEditor extends Component {
       editedComment: comment || '',
       editedDescription: description || '',
       editedTitle: title || '',
-      editedUrl: type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content
+      editedUrl:
+        type === 'video'
+          ? `https://www.youtube.com/watch?v=${content}`
+          : content
     }
     this.onSubmit = this.onSubmit.bind(this)
   }
 
   render() {
-    const {onDismiss, style, type} = this.props
-    const {buttonDisabled, editedComment, editedContent, editedDescription, editedTitle, editedUrl} = this.state
+    const { onDismiss, style, type } = this.props
+    const {
+      buttonDisabled,
+      editedComment,
+      editedContent,
+      editedDescription,
+      editedTitle,
+      editedUrl
+    } = this.state
     return (
-      <div
-        style={style}
-      >
+      <div style={style}>
         <form onSubmit={this.onSubmit}>
-          {(type === 'video' || type === 'url') &&
+          {(type === 'video' || type === 'url') && (
             <fieldset className="form-group">
               <Input
                 autoFocus
                 className="form-control"
                 onChange={text => {
-                  const buttonDisabled = (type === 'video' && !isValidYoutubeUrl(text)) ||
+                  const buttonDisabled =
+                    (type === 'video' && !isValidYoutubeUrl(text)) ||
                     (type === 'url' && !isValidUrl(text))
                   this.setState({
                     editedUrl: text,
@@ -65,20 +74,23 @@ class ContentEditor extends Component {
                 value={editedUrl}
               />
             </fieldset>
-          }
-          {type !== 'comment' && type !== 'question' &&
-            <fieldset className="form-group">
-              <Input
-                autoFocus={type === 'discussion'}
-                className="form-control"
-                onChange={text => this.setState({editedTitle: text})}
-                onKeyUp={event => this.setState({editedTitle: addEmoji(event.target.value)})}
-                placeholder={edit.title}
-                value={editedTitle}
-              />
-            </fieldset>
-          }
-          {type !== 'question' &&
+          )}
+          {type !== 'comment' &&
+            type !== 'question' && (
+              <fieldset className="form-group">
+                <Input
+                  autoFocus={type === 'discussion'}
+                  className="form-control"
+                  onChange={text => this.setState({ editedTitle: text })}
+                  onKeyUp={event =>
+                    this.setState({ editedTitle: addEmoji(event.target.value) })
+                  }
+                  placeholder={edit.title}
+                  value={editedTitle}
+                />
+              </fieldset>
+            )}
+          {type !== 'question' && (
             <fieldset className="form-group">
               <Textarea
                 autoFocus={type === 'comment'}
@@ -87,12 +99,14 @@ class ContentEditor extends Component {
                 onChange={event => this.setState({
                   [type === 'comment' ? 'editedComment' : 'editedDescription']: event.target.value
                 })}
-                placeholder={edit[type === 'comment' ? 'comment' : 'description']}
+                placeholder={
+                  edit[type === 'comment' ? 'comment' : 'description']
+                }
                 value={type === 'comment' ? editedComment : editedDescription}
               />
             </fieldset>
-          }
-          {type === 'question' &&
+          )}
+          {type === 'question' && (
             <fieldset className="form-group">
               <Input
                 className="form-control"
@@ -104,13 +118,15 @@ class ContentEditor extends Component {
                     buttonDisabled: text.length > 100
                   }))
                 }}
-                style={{marginBottom: '0.3em'}}
+                style={{ marginBottom: '0.3em' }}
               />
-              <small style={{color: editedContent.length > 100 ? 'red' : null}}>
+              <small
+                style={{ color: editedContent.length > 100 ? 'red' : null }}
+              >
                 {editedContent.length}/100 Characters
               </small>
             </fieldset>
-          }
+          )}
           <fieldset>
             <Button
               className="btn btn-primary"
@@ -121,7 +137,7 @@ class ContentEditor extends Component {
             </Button>
             <Button
               className="btn btn-default"
-              style={{marginLeft: '0.5em'}}
+              style={{ marginLeft: '0.5em' }}
               type="button"
               onClick={onDismiss}
             >
@@ -135,8 +151,13 @@ class ContentEditor extends Component {
 
   onSubmit(event) {
     event.preventDefault()
-    const {contentId, onDismiss, onSubmit, type} = this.props
-    const {editedComment, editedContent, editedDescription, editedTitle} = this.state
+    const { contentId, onDismiss, onSubmit, type } = this.props
+    const {
+      editedComment,
+      editedContent,
+      editedDescription,
+      editedTitle
+    } = this.state
     const post = {
       ...this.state,
       editedComment: finalizeEmoji(editedComment),
@@ -144,13 +165,8 @@ class ContentEditor extends Component {
       editedDescription: finalizeEmoji(editedDescription),
       editedTitle: finalizeEmoji(editedTitle)
     }
-    onSubmit({...post, contentId, type}).then(
-      () => onDismiss()
-    )
+    onSubmit({ ...post, contentId, type }).then(() => onDismiss())
   }
 }
 
-export default connect(
-  null,
-  {onSubmit: feedContentEdit}
-)(ContentEditor)
+export default connect(null, { onSubmit: feedContentEdit })(ContentEditor)

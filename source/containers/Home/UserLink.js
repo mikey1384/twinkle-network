@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import UsernameText from 'components/Texts/UsernameText'
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 
 UserLink.propTypes = {
   user: PropTypes.object

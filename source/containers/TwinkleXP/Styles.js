@@ -1,4 +1,4 @@
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 
 const Styles = {
   mainContainer: {

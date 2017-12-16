@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Modal} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Modal } from 'react-bootstrap'
 import Button from 'components/Button'
 import PropTypes from 'prop-types'
 import Slider from 'rc-slider'
@@ -20,8 +20,8 @@ export default class ImageEditModal extends Component {
     }
   }
   render() {
-    const {onHide, imageUri, onConfirm, processing} = this.props
-    const {imageScale} = this.state
+    const { onHide, imageUri, onConfirm, processing } = this.props
+    const { imageScale } = this.state
     return (
       <Modal
         show
@@ -33,11 +33,13 @@ export default class ImageEditModal extends Component {
           <h4>Create Profile Picture</h4>
         </Modal.Header>
         <Modal.Body>
-          <div style={{textAlign: 'center', paddingBottom: '2em'}}>
-            {imageUri &&
+          <div style={{ textAlign: 'center', paddingBottom: '2em' }}>
+            {imageUri && (
               <div>
                 <AvatarEditor
-                  ref={ref => { this.Editor = ref }}
+                  ref={ref => {
+                    this.Editor = ref
+                  }}
                   image={imageUri}
                   width={350}
                   height={350}
@@ -49,18 +51,24 @@ export default class ImageEditModal extends Component {
                   <Slider
                     className="rc-slider"
                     defaultValue={50}
-                    onChange={value => this.setState({imageScale: value / 100 + 0.5})}
+                    onChange={value =>
+                      this.setState({ imageScale: value / 100 + 0.5 })
+                    }
                   />
                 </div>
               </div>
-            }
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button className="btn btn-default" onClick={onHide}>Cancel</Button>
+          <Button className="btn btn-default" onClick={onHide}>
+            Cancel
+          </Button>
           <Button
             className="btn btn-primary"
-            onClick={() => onConfirm(this.Editor.getImage().toDataURL('image/jpeg', 0.7))}
+            onClick={() =>
+              onConfirm(this.Editor.getImage().toDataURL('image/jpeg', 0.7))
+            }
             disabled={processing}
           >
             Submit

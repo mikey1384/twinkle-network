@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import UserLink from '../UserLink'
 import ContentLink from 'components/ContentLink'
-import {timeSince} from 'helpers/timeStampHelpers'
+import { timeSince } from 'helpers/timeStampHelpers'
 import LikeButton from 'components/LikeButton'
-import {connect} from 'react-redux'
-import {contentFeedLike} from 'redux/actions/FeedActions'
-import {Color} from 'constants/css'
+import { connect } from 'react-redux'
+import { contentFeedLike } from 'redux/actions/FeedActions'
+import { Color } from 'constants/css'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import QuestionModal from './QuestionModal'
@@ -20,10 +20,8 @@ class Heading extends Component {
       rootContentLikers: PropTypes.array,
       rootId: PropTypes.number,
       rootType: PropTypes.string.isRequired,
-      timeStamp: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string
-      ]).isRequired,
+      timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired,
       type: PropTypes.string.isRequired,
       uploaderPicId: PropTypes.number
     }).isRequired,
@@ -49,78 +47,120 @@ class Heading extends Component {
 
   render() {
     const {
-      feed: {
-        type,
-        rootType,
-        uploaderPicId,
-        rootId,
-        timeStamp
-      },
+      feed: { type, rootType, uploaderPicId, rootId, timeStamp },
       action,
       rootContent,
       uploader
     } = this.props
-    const {questionModalShown} = this.state
+    const { questionModalShown } = this.state
     const contentLabel = rootType === 'url' ? 'link' : rootType
-    const spanStyle = {fontSize: '1.4rem'}
+    const spanStyle = { fontSize: '1.4rem' }
 
     switch (type) {
       case 'video':
         return (
-          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
-            <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
+          <div
+            className="panel-heading flexbox-container"
+            style={{ paddingLeft: '0.8em' }}
+          >
+            <ProfilePic
+              size="3"
+              userId={uploader.id}
+              profilePicId={uploaderPicId}
+            />
             <span className="panel-title pull-left" style={spanStyle}>
-              <UserLink user={uploader} /> uploaded a video: <ContentLink content={rootContent} type={rootType} /> <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
+              <UserLink user={uploader} /> uploaded a video:{' '}
+              <ContentLink content={rootContent} type={rootType} />{' '}
+              <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
         )
       case 'comment':
         return (
-          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
-            {questionModalShown && <QuestionModal
-              onHide={() => this.setState({questionModalShown: false})}
-              question={rootContent.content}
-              parent={{
-                id: rootId,
-                type: 'question',
-                rootId,
-                rootType
-              }}
-            />}
-            <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
-            <span className="panel-title pull-left col-xs-9" style={{...spanStyle, padding: '0px'}}>
-              <UserLink user={uploader} /> {action} {this.renderTargetAction()} {contentLabel}: <ContentLink content={rootContent} type={rootType} /> <small>({timeSince(timeStamp)})</small>
+          <div
+            className="panel-heading flexbox-container"
+            style={{ paddingLeft: '0.8em' }}
+          >
+            {questionModalShown && (
+              <QuestionModal
+                onHide={() => this.setState({ questionModalShown: false })}
+                question={rootContent.content}
+                parent={{
+                  id: rootId,
+                  type: 'question',
+                  rootId,
+                  rootType
+                }}
+              />
+            )}
+            <ProfilePic
+              size="3"
+              userId={uploader.id}
+              profilePicId={uploaderPicId}
+            />
+            <span
+              className="panel-title pull-left col-xs-9"
+              style={{ ...spanStyle, padding: '0px' }}
+            >
+              <UserLink user={uploader} /> {action} {this.renderTargetAction()}{' '}
+              {contentLabel}:{' '}
+              <ContentLink content={rootContent} type={rootType} />{' '}
+              <small>({timeSince(timeStamp)})</small>
             </span>
             {this.renderCornerButton()}
           </div>
         )
       case 'url':
         return (
-          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
-            <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
+          <div
+            className="panel-heading flexbox-container"
+            style={{ paddingLeft: '0.8em' }}
+          >
+            <ProfilePic
+              size="3"
+              userId={uploader.id}
+              profilePicId={uploaderPicId}
+            />
             <span className="panel-title pull-left" style={spanStyle}>
               <UserLink user={uploader} /> shared a link:&nbsp;
-              <ContentLink content={rootContent} type={rootType}/>
+              <ContentLink content={rootContent} type={rootType} />
               <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
         )
       case 'question':
         return (
-          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
-            <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
+          <div
+            className="panel-heading flexbox-container"
+            style={{ paddingLeft: '0.8em' }}
+          >
+            <ProfilePic
+              size="3"
+              userId={uploader.id}
+              profilePicId={uploaderPicId}
+            />
             <span className="panel-title pull-left" style={spanStyle}>
-              <UserLink user={uploader} /> asked a <b style={{color: Color.green}}>question</b>
+              <UserLink user={uploader} /> asked a{' '}
+              <b style={{ color: Color.green }}>question</b>
               <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
         )
       case 'discussion':
         return (
-          <div className="panel-heading flexbox-container" style={{paddingLeft: '0.8em'}}>
-            <ProfilePic size='3' userId={uploader.id} profilePicId={uploaderPicId} />
+          <div
+            className="panel-heading flexbox-container"
+            style={{ paddingLeft: '0.8em' }}
+          >
+            <ProfilePic
+              size="3"
+              userId={uploader.id}
+              profilePicId={uploaderPicId}
+            />
             <span className="panel-title pull-left" style={spanStyle}>
-              <UserLink user={uploader} /> started a <b style={{color: Color.green}}>discussion</b> on {contentLabel}: <ContentLink content={rootContent} type={rootType}/>
+              <UserLink user={uploader} /> started a{' '}
+              <b style={{ color: Color.green }}>discussion</b> on {contentLabel}:{' '}
+              <ContentLink content={rootContent} type={rootType} />
               <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
             </span>
           </div>
@@ -132,47 +172,57 @@ class Heading extends Component {
 
   renderCornerButton() {
     const {
-      feed: {rootContentLikers = [], rootId, rootType},
-      rootContent: {content, isStarred},
-      attachedVideoShown, myId, onLikeClick, onPlayVideoClick
+      feed: { rootContentLikers = [], rootId, rootType },
+      rootContent: { content, isStarred },
+      attachedVideoShown,
+      myId,
+      onLikeClick,
+      onPlayVideoClick
     } = this.props
-    const userLikedVideo = rootContentLikers.map(liker => liker.userId).indexOf(myId) !== -1
+    const userLikedVideo =
+      rootContentLikers.map(liker => liker.userId).indexOf(myId) !== -1
     if (rootType === 'video') {
-      return <div>
-        {attachedVideoShown ?
-          <LikeButton
-            small
-            style={{
-              marginLeft: 'auto',
-              float: 'right'
-            }}
-            targetLabel="Video"
-            liked={userLikedVideo}
-            onClick={() => onLikeClick(rootId, rootType)}
-          /> : (
-            content && <a
+      return (
+        <div>
+          {attachedVideoShown ? (
+            <LikeButton
+              small
               style={{
                 marginLeft: 'auto',
-                float: 'right',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                color: Color.blue
+                float: 'right'
               }}
-              onClick={onPlayVideoClick}
-            >
-              <div className="video-preview-thumb" style={{width: '7em'}}>
-                <img
-                  alt=""
-                  style={{width: '7em'}}
-                  src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
-                />
-                {!!isStarred && <StarMark style={{top: 1, left: 1}} size={2} />}
-                <span></span>
-              </div>
-            </a>
-          )
-        }
-      </div>
+              targetLabel="Video"
+              liked={userLikedVideo}
+              onClick={() => onLikeClick(rootId, rootType)}
+            />
+          ) : (
+            content && (
+              <a
+                style={{
+                  marginLeft: 'auto',
+                  float: 'right',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  color: Color.blue
+                }}
+                onClick={onPlayVideoClick}
+              >
+                <div className="video-preview-thumb" style={{ width: '7em' }}>
+                  <img
+                    alt=""
+                    style={{ width: '7em' }}
+                    src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                  />
+                  {!!isStarred && (
+                    <StarMark style={{ top: 1, left: 1 }} size={2} />
+                  )}
+                  <span />
+                </div>
+              </a>
+            )
+          )}
+        </div>
+      )
     } else if (rootType === 'question') {
       return (
         <Button
@@ -181,7 +231,7 @@ class Heading extends Component {
             marginLeft: 'auto',
             float: 'right'
           }}
-          onClick={() => this.setState({questionModalShown: true})}
+          onClick={() => this.setState({ questionModalShown: true })}
         >
           Answer
         </Button>
@@ -190,17 +240,24 @@ class Heading extends Component {
   }
 
   renderTargetAction() {
-    const {targetReplyUploader, targetCommentUploader} = this.props
+    const { targetReplyUploader, targetCommentUploader } = this.props
     if (targetReplyUploader) {
-      return <span><UserLink user={targetReplyUploader} />{"'s reply on"}</span>
+      return (
+        <span>
+          <UserLink user={targetReplyUploader} />
+          {"'s reply on"}
+        </span>
+      )
     } else if (targetCommentUploader) {
-      return <span><UserLink user={targetCommentUploader} />{"'s comment on"}</span>
+      return (
+        <span>
+          <UserLink user={targetCommentUploader} />
+          {"'s comment on"}
+        </span>
+      )
     }
     return null
   }
 }
 
-export default connect(
-  null,
-  {onLikeClick: contentFeedLike}
-)(Heading)
+export default connect(null, { onLikeClick: contentFeedLike })(Heading)

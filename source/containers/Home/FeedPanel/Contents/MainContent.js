@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {cleanString} from 'helpers/stringHelpers'
-import {Color} from 'constants/css'
+import { cleanString } from 'helpers/stringHelpers'
+import { Color } from 'constants/css'
 import Embedly from 'components/Embedly'
 import LongText from 'components/Texts/LongText'
 import VideoPlayer from 'components/VideoPlayer'
@@ -24,20 +24,35 @@ MainContent.propTypes = {
   type: PropTypes.string.isRequired
 }
 export default function MainContent({
-  content, contentDescription, contentId, contentTitle, hasHqThumb, isEditing, isStarred,
-  onEditDismiss, rootId, rootContent, rootContentIsStarred, rootType, urlRelated, type
+  content,
+  contentDescription,
+  contentId,
+  contentTitle,
+  hasHqThumb,
+  isEditing,
+  isStarred,
+  onEditDismiss,
+  rootId,
+  rootContent,
+  rootContentIsStarred,
+  rootType,
+  urlRelated,
+  type
 }) {
   return (
     <div>
-      {!isEditing && type === 'comment' &&
-        <div style={{
-          fontSize: '1.2em',
-          wordBreak: 'break-word'
-        }}>
-          <LongText>{content}</LongText>
-        </div>
-      }
-      {(type === 'video' || type === 'discussion') &&
+      {!isEditing &&
+        type === 'comment' && (
+          <div
+            style={{
+              fontSize: '1.2em',
+              wordBreak: 'break-word'
+            }}
+          >
+            <LongText>{content}</LongText>
+          </div>
+        )}
+      {(type === 'video' || type === 'discussion') && (
         <VideoPlayer
           isStarred={!!(isStarred || rootContentIsStarred)}
           onEdit={isEditing}
@@ -48,84 +63,113 @@ export default function MainContent({
           videoId={rootId}
           videoCode={rootContent}
         />
-      }
-      {!isEditing && type === 'question' &&
-        <div style={{
-          fontSize: '2rem'
-        }}>
-          <p><b style={{color: Color.green}}>Question:</b></p>
-          <p>{cleanString(content)}</p>
-        </div>
-      }
-      {!isEditing && type === 'url' &&
-        <div style={{
-          fontSize: '1.2em',
-          wordBreak: 'break-word'
-        }}>
-          {(contentDescription && contentDescription !== 'No description') ?
-            <LongText style={{paddingBottom: '1.5em'}}>{contentDescription || ''}</LongText> :
-            <div style={{paddingBottom: '1.5em'}}>{contentTitle}</div>
-          }
-        </div>
-      }
-      {isEditing &&
+      )}
+      {!isEditing &&
+        type === 'question' && (
+          <div
+            style={{
+              fontSize: '2rem'
+            }}
+          >
+            <p>
+              <b style={{ color: Color.green }}>Question:</b>
+            </p>
+            <p>{cleanString(content)}</p>
+          </div>
+        )}
+      {!isEditing &&
+        type === 'url' && (
+          <div
+            style={{
+              fontSize: '1.2em',
+              wordBreak: 'break-word'
+            }}
+          >
+            {contentDescription && contentDescription !== 'No description' ? (
+              <LongText style={{ paddingBottom: '1.5em' }}>
+                {contentDescription || ''}
+              </LongText>
+            ) : (
+              <div style={{ paddingBottom: '1.5em' }}>{contentTitle}</div>
+            )}
+          </div>
+        )}
+      {isEditing && (
         <ContentEditor
           comment={content}
           content={content || rootContent}
           contentId={contentId}
           description={contentDescription}
           onDismiss={onEditDismiss}
-          style={{marginTop: (type === 'video' || type === 'discussion') && '1em'}}
+          style={{
+            marginTop: (type === 'video' || type === 'discussion') && '1em'
+          }}
           title={contentTitle}
           type={type}
         />
-      }
-      {!isEditing && type === 'discussion' &&
-        <div style={{
-          fontSize: '2rem',
-          marginTop: '1em'
-        }}>
-          <p><b style={{color: Color.green}}>Discuss:</b></p>
-          <p>{cleanString(contentTitle)}</p>
-        </div>
-      }
-      {!isEditing && type === 'video' &&
-        <div style={{
-          marginTop: '1em',
-          fontSize: '1.2em',
-          wordBreak: 'break-word'
-        }}>
-          <LongText>
-            {contentDescription && contentDescription !== 'No description' ? contentDescription : contentTitle}
-          </LongText>
-        </div>
-      }
-      {!isEditing && type === 'discussion' && contentDescription &&
-        <div style={{
-          marginBottom: '1em',
-          fontSize: '1.2em',
-          wordBreak: 'break-word'
-        }}>
-          <LongText>{contentDescription}</LongText>
-        </div>
-      }
-      {type === 'comment' && rootType === 'url' &&
-        <Embedly
-          style={{marginTop: '1.5em'}}
-          title={cleanString(contentTitle)}
-          url={rootContent}
-          id={rootId}
-          {...urlRelated}
-        />
-      }
-      {!isEditing && type === 'url' &&
-        <Embedly
-          title={cleanString(contentTitle)}
-          url={content}
-          id={rootId}
-          {...urlRelated}
-        />
-      }
+      )}
+      {!isEditing &&
+        type === 'discussion' && (
+          <div
+            style={{
+              fontSize: '2rem',
+              marginTop: '1em'
+            }}
+          >
+            <p>
+              <b style={{ color: Color.green }}>Discuss:</b>
+            </p>
+            <p>{cleanString(contentTitle)}</p>
+          </div>
+        )}
+      {!isEditing &&
+        type === 'video' && (
+          <div
+            style={{
+              marginTop: '1em',
+              fontSize: '1.2em',
+              wordBreak: 'break-word'
+            }}
+          >
+            <LongText>
+              {contentDescription && contentDescription !== 'No description'
+                ? contentDescription
+                : contentTitle}
+            </LongText>
+          </div>
+        )}
+      {!isEditing &&
+        type === 'discussion' &&
+        contentDescription && (
+          <div
+            style={{
+              marginBottom: '1em',
+              fontSize: '1.2em',
+              wordBreak: 'break-word'
+            }}
+          >
+            <LongText>{contentDescription}</LongText>
+          </div>
+        )}
+      {type === 'comment' &&
+        rootType === 'url' && (
+          <Embedly
+            style={{ marginTop: '1.5em' }}
+            title={cleanString(contentTitle)}
+            url={rootContent}
+            id={rootId}
+            {...urlRelated}
+          />
+        )}
+      {!isEditing &&
+        type === 'url' && (
+          <Embedly
+            title={cleanString(contentTitle)}
+            url={content}
+            id={rootId}
+            {...urlRelated}
+          />
+        )}
     </div>
   )
 }
