@@ -6,7 +6,11 @@ VisibilityWrapper.propTypes = {
   onChange: PropTypes.func.isRequired,
   partialVisibility: PropTypes.bool
 }
-export default function VisibilityWrapper({children, onChange, partialVisibility = true}) {
+export default function VisibilityWrapper({
+  children,
+  onChange,
+  partialVisibility = true
+}) {
   const VisibilitySensor = require('react-visibility-sensor')
   return (
     <VisibilitySensor partialVisibility={partialVisibility} onChange={onChange}>

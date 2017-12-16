@@ -1,50 +1,50 @@
 const pool = require('../pool')
-const {poolQuery, promiseSeries} = require('../helpers')
-const {requireAuth} = require('../auth')
-const {fetchPlaylists} = require('../helpers/playlistHelpers')
+const { poolQuery, promiseSeries } = require('../helpers')
+const { requireAuth } = require('../auth')
+const { fetchPlaylists } = require('../helpers/playlistHelpers')
 const async = require('async')
 const express = require('express')
 const router = express.Router()
-const {stringIsEmpty} = require('../helpers/stringHelpers')
+const { stringIsEmpty } = require('../helpers/stringHelpers')
 
 router.get('/', (req, res) => {
-  const {shownPlaylists} = req.query
-  const where = shownPlaylists ? 'WHERE ' + shownPlaylists.map(id => `id != ${id}`).join(' AND ') : ''
+  const { shownPlaylists } = req.query
+  const where = shownPlaylists
+    ? 'WHERE ' + shownPlaylists.map(id => `id != ${id}`).join(' AND ')
+    : ''
   const query = `
     SELECT id AS playlistId FROM vq_playlists ${where}
     ORDER BY timeStamp DESC, id DESC LIMIT 4
   `
-  return fetchPlaylists(query).then(
-    playlists => res.send({playlists})
-  ).catch(
-    error => {
+  return fetchPlaylists(query)
+    .then(playlists => res.send({ playlists }))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/playlist', (req, res) => {
-  const {playlistId, shownVideos, noLimit} = req.query
-  const where = shownVideos ? 'AND ' + shownVideos.map(id => `a.videoId != ${id}`).join(' AND ') : ''
+  const { playlistId, shownVideos, noLimit } = req.query
+  const where = shownVideos
+    ? 'AND ' + shownVideos.map(id => `a.videoId != ${id}`).join(' AND ')
+    : ''
   const query = `
     SELECT a.videoId AS id, b.title, b.content, b.isStarred, b.uploader AS uploaderId,
     c.username AS uploaderName
     FROM vq_playlistvideos a JOIN vq_videos b ON a.videoId = b.id JOIN users c ON b.uploader = c.id
     WHERE a.playlistId = ? ${where}${noLimit ? '' : ' LIMIT 11'}
   `
-  return poolQuery(query, playlistId).then(
-    videos => res.send(videos)
-  ).catch(
-    error => {
+  return poolQuery(query, playlistId)
+    .then(videos => res.send(videos))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/rightMenu', (req, res) => {
-  const {videoId, playlistId} = req.query
+  const { videoId, playlistId } = req.query
   const titleQuery = `
     SELECT title FROM vq_playlists WHERE id = ?
   `
@@ -64,8 +64,8 @@ router.get('/rightMenu', (req, res) => {
     () => poolQuery(titleQuery, playlistId),
     () => poolQuery(nextVideoQuery, [playlistId, playlistId, videoId]),
     () => poolQuery(videosQuery, [playlistId, videoId])
-  ]).then(
-    ([[{title: playlistTitle}], nextVideos, playlistVideos]) => {
+  ])
+    .then(([[{ title: playlistTitle }], nextVideos, playlistVideos]) => {
       let playlistVideosLoadMoreShown = false
       if (playlistVideos.length > 10) {
         playlistVideosLoadMoreShown = true
@@ -77,13 +77,11 @@ router.get('/rightMenu', (req, res) => {
         playlistVideos,
         playlistVideosLoadMoreShown
       })
-    }
-  ).catch(
-    error => {
+    })
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.post('/', requireAuth, (req, res) => {
@@ -93,17 +91,23 @@ router.post('/', requireAuth, (req, res) => {
   const videos = req.body.selectedVideos
   const taskArray = []
   const query = 'INSERT INTO vq_playlists SET ?'
-  const post = {title, description, creator: user.id, timeStamp: Math.floor(Date.now()/1000)}
-  return poolQuery(query, post).then(
-    ({insertId: playlistId}) => {
+  const post = {
+    title,
+    description,
+    creator: user.id,
+    timeStamp: Math.floor(Date.now() / 1000)
+  }
+  return poolQuery(query, post)
+    .then(({ insertId: playlistId }) => {
       for (let i = 0; i < videos.length; i++) {
         let query = 'INSERT INTO vq_playlistvideos SET ?'
-        taskArray.push(() => poolQuery(query, {playlistId, videoId: videos[i]}))
+        taskArray.push(() =>
+          poolQuery(query, { playlistId, videoId: videos[i] })
+        )
       }
       return promiseSeries(taskArray).then(() => Promise.resolve(playlistId))
-    }
-  ).then(
-    playlistId => {
+    })
+    .then(playlistId => {
       const videosQuery = `
         SELECT a.id, a.videoId, b.title AS video_title, b.content, b.isStarred,
         c.username AS video_uploader, COUNT(d.id) AS numLikes
@@ -117,12 +121,11 @@ router.post('/', requireAuth, (req, res) => {
       return promiseSeries([
         () => poolQuery(videosQuery, playlistId),
         () => poolQuery(numberOfVideosQuery, playlistId)
-      ]).then(
-        ([playlist, [{numVids}]]) => Promise.resolve({playlist, numVids, playlistId})
+      ]).then(([playlist, [{ numVids }]]) =>
+        Promise.resolve({ playlist, numVids, playlistId })
       )
-    }
-  ).then(
-    ({playlist, numVids, playlistId}) => {
+    })
+    .then(({ playlist, numVids, playlistId }) => {
       res.send({
         result: {
           playlist,
@@ -133,44 +136,54 @@ router.post('/', requireAuth, (req, res) => {
           uploaderId: user.id
         }
       })
-    }
-  ).catch(
-    error => {
+    })
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.post('/edit/title', requireAuth, (req, res) => {
   const title = req.body.title
   const playlistId = req.body.playlistId
-  pool.query('UPDATE vq_playlists SET ? WHERE id = ?', [{title}, playlistId], err => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
+  pool.query(
+    'UPDATE vq_playlists SET ? WHERE id = ?',
+    [{ title }, playlistId],
+    err => {
+      if (err) {
+        console.error(err)
+        return res.status(500).send({ error: err })
+      }
+      res.json({ result: title })
     }
-    res.json({result: title})
-  })
+  )
 })
 
 router.post('/edit/videos', requireAuth, (req, res) => {
   const playlistId = req.body.playlistId
   const selectedVideos = req.body.selectedVideos
 
-  return poolQuery('DELETE FROM vq_playlistvideos WHERE playlistId = ?', playlistId).then(
-    () => {
+  return poolQuery(
+    'DELETE FROM vq_playlistvideos WHERE playlistId = ?',
+    playlistId
+  )
+    .then(() => {
       let insertQuery = 'INSERT INTO vq_playlistvideos SET ?'
       return promiseSeries([
-        () => promiseSeries(selectedVideos.map(videoId => () => poolQuery(insertQuery, {playlistId, videoId}))),
-        () => poolQuery(
-          'UPDATE vq_playlists SET ? WHERE id = ?',
-          [{timeStamp: Math.floor(Date.now()/1000)}, playlistId]
-        )
+        () =>
+          promiseSeries(
+            selectedVideos.map(videoId => () =>
+              poolQuery(insertQuery, { playlistId, videoId })
+            )
+          ),
+        () =>
+          poolQuery('UPDATE vq_playlists SET ? WHERE id = ?', [
+            { timeStamp: Math.floor(Date.now() / 1000) },
+            playlistId
+          ])
       ])
-    }
-  ).then(
-    () => {
+    })
+    .then(() => {
       let query = `
         SELECT a.id, a.videoId, b.title AS video_title, b.content, b.isStarred,
         c.username AS video_uploader, COUNT(d.id) AS numLikes
@@ -181,66 +194,86 @@ router.post('/edit/videos', requireAuth, (req, res) => {
         WHERE a.playlistId = ? GROUP BY a.id ORDER BY a.id
       `
       return poolQuery(query, playlistId)
-    }
-  ).then(
-    result => res.send({result})
-  ).catch(
-    err => {
+    })
+    .then(result => res.send({ result }))
+    .catch(err => {
       console.error(err)
-      res.status(500).send({error: err})
-    }
-  )
+      res.status(500).send({ error: err })
+    })
 })
 
 router.delete('/', requireAuth, (req, res) => {
-  const playlistId = typeof req.query.playlistId !== 'undefined' ? Number(req.query.playlistId) : 0
-  async.waterfall([
-    (callback) => {
-      pool.query('SELECT * FROM vq_playlists WHERE id = ?', playlistId, (err, rows) => {
-        if (!rows || rows.length === 0) return callback('User is not the owner of the playlist')
-        callback(err)
-      })
-    },
-    (callback) => {
-      async.parallel([
-        (callback) => {
-          pool.query('DELETE FROM vq_playlists WHERE id = ?', playlistId, (err, result) => {
-            callback(err, result)
-          })
-        },
-        (callback) => {
-          pool.query('DELETE FROM vq_pinned_playlists WHERE playlistId = ?', playlistId, (err, result) => {
-            callback(err, result)
-          })
-        },
-        (callback) => {
-          pool.query('DELETE FROM vq_playlistvideos WHERE playlistId = ?', playlistId, (err, result) => {
-            callback(err, result)
-          })
-        }
-      ], (err, results) => {
-        callback(err, results)
-      })
+  const playlistId =
+    typeof req.query.playlistId !== 'undefined'
+      ? Number(req.query.playlistId)
+      : 0
+  async.waterfall(
+    [
+      callback => {
+        pool.query(
+          'SELECT * FROM vq_playlists WHERE id = ?',
+          playlistId,
+          (err, rows) => {
+            if (!rows || rows.length === 0) { return callback('User is not the owner of the playlist') }
+            callback(err)
+          }
+        )
+      },
+      callback => {
+        async.parallel(
+          [
+            callback => {
+              pool.query(
+                'DELETE FROM vq_playlists WHERE id = ?',
+                playlistId,
+                (err, result) => {
+                  callback(err, result)
+                }
+              )
+            },
+            callback => {
+              pool.query(
+                'DELETE FROM vq_pinned_playlists WHERE playlistId = ?',
+                playlistId,
+                (err, result) => {
+                  callback(err, result)
+                }
+              )
+            },
+            callback => {
+              pool.query(
+                'DELETE FROM vq_playlistvideos WHERE playlistId = ?',
+                playlistId,
+                (err, result) => {
+                  callback(err, result)
+                }
+              )
+            }
+          ],
+          (err, results) => {
+            callback(err, results)
+          }
+        )
+      }
+    ],
+    (err, result) => {
+      if (err) {
+        console.error(err)
+        return res.status(500).send({ error: err })
+      }
+      res.send({ success: true })
     }
-  ], (err, result) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({success: true})
-  })
+  )
 })
 
 router.get('/pinned', (req, res) => {
   const query = `SELECT playlistId FROM vq_pinned_playlists ORDER BY id DESC`
-  return fetchPlaylists(query).then(
-    playlists => res.send({playlists})
-  ).catch(
-    error => {
+  return fetchPlaylists(query)
+    .then(playlists => res.send({ playlists }))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.post('/pinned', requireAuth, (req, res) => {
@@ -248,56 +281,63 @@ router.post('/pinned', requireAuth, (req, res) => {
   const selectedPlaylists = req.body.selectedPlaylists
 
   if (selectedPlaylists.length > 5) {
-    return res.status(500).send({error: 'Maximum playlist number exceeded'})
+    return res.status(500).send({ error: 'Maximum playlist number exceeded' })
   }
-  async.waterfall([
-    (callback) => {
-      const userType = user.userType
-      if (userType !== 'manager' && userType !== 'creator') {
-        return callback('User is not authorized to perform this action')
-      }
-      pool.query('SELECT * FROM vq_pinned_playlists', (err, rows) => {
-        if (rows) {
-          pool.query('TRUNCATE vq_pinned_playlists', err => {
-            if (err) {
-              return callback(err)
-            }
-            callback(err)
-          })
-        } else {
-          callback(err)
+  async.waterfall(
+    [
+      callback => {
+        const userType = user.userType
+        if (userType !== 'manager' && userType !== 'creator') {
+          return callback('User is not authorized to perform this action')
         }
-      })
-    },
-    callback => {
-      if (selectedPlaylists.length === 0) {
-        callback(null)
-      } else {
-        let taskArray = []
-        for (let i = selectedPlaylists.length - 1; i >= 0; i--) {
-          taskArray.push(callback => {
-            pool.query('INSERT INTO vq_pinned_playlists SET ?', {playlistId: selectedPlaylists[i]}, err => {
+        pool.query('SELECT * FROM vq_pinned_playlists', (err, rows) => {
+          if (rows) {
+            pool.query('TRUNCATE vq_pinned_playlists', err => {
+              if (err) {
+                return callback(err)
+              }
               callback(err)
             })
+          } else {
+            callback(err)
+          }
+        })
+      },
+      callback => {
+        if (selectedPlaylists.length === 0) {
+          callback(null)
+        } else {
+          let taskArray = []
+          for (let i = selectedPlaylists.length - 1; i >= 0; i--) {
+            taskArray.push(callback => {
+              pool.query(
+                'INSERT INTO vq_pinned_playlists SET ?',
+                { playlistId: selectedPlaylists[i] },
+                err => {
+                  callback(err)
+                }
+              )
+            })
+          }
+          async.series(taskArray, err => {
+            callback(err)
           })
         }
-        async.series(taskArray, (err) => {
-          callback(err)
-        })
+      },
+      callback => {
+        return fetchPlaylists(
+          'SELECT playlistId FROM vq_pinned_playlists ORDER BY id DESC'
+        ).then(playlists => callback(null, playlists))
       }
-    },
-    callback => {
-      return fetchPlaylists('SELECT playlistId FROM vq_pinned_playlists ORDER BY id DESC').then(
-        playlists => callback(null, playlists)
-      )
+    ],
+    (err, playlists) => {
+      if (err) {
+        console.error(err)
+        return res.status(500).send({ error: err })
+      }
+      res.json({ playlists })
     }
-  ], (err, playlists) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.json({playlists})
-  })
+  )
 })
 
 router.get('/search/video', (req, res) => {
@@ -308,14 +348,12 @@ router.get('/search/video', (req, res) => {
     FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
     ORDER by a.id DESC LIMIT 20
   `
-  return poolQuery(query, '%' + searchQuery + '%').then(
-    result => res.send(result)
-  ).catch(
-    error => {
+  return poolQuery(query, '%' + searchQuery + '%')
+    .then(result => res.send(result))
+    .catch(error => {
       console.error(error)
-      return res.status(500).send({error})
-    }
-  )
+      return res.status(500).send({ error })
+    })
 })
 
 router.get('/list', (req, res) => {
@@ -329,9 +367,9 @@ router.get('/list', (req, res) => {
   pool.query(query, (err, rows) => {
     if (err) {
       console.error(err)
-      return res.status(500).send({error: err})
+      return res.status(500).send({ error: err })
     }
-    res.send({result: rows})
+    res.send({ result: rows })
   })
 })
 

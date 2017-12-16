@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Textarea from 'react-textarea-autosize'
 import Button from 'components/Button'
-import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 import Input from './Input'
 
 export default class TitleDescriptionForm extends Component {
@@ -24,8 +24,13 @@ export default class TitleDescriptionForm extends Component {
   }
 
   render() {
-    const {autoFocus, rows, titlePlaceholder, descriptionPlaceholder} = this.props
-    const {title, description} = this.state
+    const {
+      autoFocus,
+      rows,
+      titlePlaceholder,
+      descriptionPlaceholder
+    } = this.props
+    const { title, description } = this.state
     return (
       <form onSubmit={this.onSubmit}>
         <fieldset className="form-group">
@@ -35,8 +40,10 @@ export default class TitleDescriptionForm extends Component {
             placeholder={titlePlaceholder}
             type="text"
             value={title}
-            onChange={text => this.setState({title: text})}
-            onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
+            onChange={text => this.setState({ title: text })}
+            onKeyUp={event =>
+              this.setState({ title: addEmoji(event.target.value) })
+            }
           />
         </fieldset>
         <fieldset className="form-group">
@@ -45,7 +52,9 @@ export default class TitleDescriptionForm extends Component {
             minRows={rows}
             placeholder={descriptionPlaceholder}
             value={description}
-            onChange={event => this.setState({description: event.target.value})}
+            onChange={event =>
+              this.setState({ description: event.target.value })
+            }
           />
         </fieldset>
         <Button
@@ -60,8 +69,8 @@ export default class TitleDescriptionForm extends Component {
   }
 
   onSubmit(event) {
-    const {onSubmit} = this.props
-    const {title, description} = this.state
+    const { onSubmit } = this.props
+    const { title, description } = this.state
     event.preventDefault()
     onSubmit(finalizeEmoji(title), finalizeEmoji(description))
     this.setState({

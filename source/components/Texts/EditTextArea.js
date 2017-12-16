@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
+import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 
 export default class EditTextArea extends Component {
   static propTypes = {
@@ -26,15 +26,20 @@ export default class EditTextArea extends Component {
   }
 
   render() {
-    const {editedText} = this.state
-    const {autoFocus = false, placeholder = 'Enter text', rows = 4, marginTop = '1em'} = this.props
+    const { editedText } = this.state
+    const {
+      autoFocus = false,
+      placeholder = 'Enter text',
+      rows = 4,
+      marginTop = '1em'
+    } = this.props
     return (
       <div>
         <Textarea
           placeholder={placeholder}
           autoFocus={autoFocus}
           className="form-control"
-          style={{marginTop}}
+          style={{ marginTop }}
           minRows={rows}
           value={editedText}
           onChange={this.onChange}
@@ -67,16 +72,16 @@ export default class EditTextArea extends Component {
   }
 
   onChange(event) {
-    this.setState({editedText: event.target.value})
+    this.setState({ editedText: event.target.value })
   }
 
   handleKeyUp(event) {
-    if (event.key === ' ') this.setState({editedText: addEmoji(event.target.value)})
+    if (event.key === ' ') { this.setState({ editedText: addEmoji(event.target.value) }) }
   }
 
   onSubmit() {
-    const {onEditDone} = this.props
-    const {editedText} = this.state
+    const { onEditDone } = this.props
+    const { editedText } = this.state
     return onEditDone(finalizeEmoji(editedText))
   }
 }

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import SearchDropdown from '../SearchDropdown'
 import onClickOutside from 'react-onclickoutside'
 import Input from './Input'
@@ -21,9 +21,9 @@ class SearchInput extends Component {
     value: PropTypes.string
   }
 
-  static defaultProps = {searchResults: []}
+  static defaultProps = { searchResults: [] }
 
-  handleClickOutside = (event) => {
+  handleClickOutside = event => {
     this.props.onClickOutSide ? this.props.onClickOutSide() : null
   }
 
@@ -34,11 +34,22 @@ class SearchInput extends Component {
   timer = null
 
   render() {
-    const {addonColor, autoFocus, onChange, placeholder, onFocus, style, value} = this.props
+    const {
+      addonColor,
+      autoFocus,
+      onChange,
+      placeholder,
+      onFocus,
+      style,
+      value
+    } = this.props
     return (
       <div className="input-group dropdown" style={style}>
-        <span className="input-group-addon" style={{backgroundColor: addonColor}}>
-          <span className="glyphicon glyphicon-search"></span>
+        <span
+          className="input-group-addon"
+          style={{ backgroundColor: addonColor }}
+        >
+          <span className="glyphicon glyphicon-search" />
         </span>
         <Input
           autoFocus={autoFocus}
@@ -55,33 +66,40 @@ class SearchInput extends Component {
   }
 
   renderDropdownList = () => {
-    const {searchResults, renderItemLabel, renderItemUrl, onSelect} = this.props
-    return searchResults.length > 0 ? <SearchDropdown
-      searchResults={searchResults}
-      onUpdate={() => this.setState({indexToHighlight: 0})}
-      onUnmount={() => this.setState({indexToHighlight: 0})}
-      indexToHighlight={this.state.indexToHighlight}
-      onItemClick={item => onSelect(item)}
-      renderItemLabel={renderItemLabel}
-      renderItemUrl={renderItemUrl}
-    /> : null
+    const {
+      searchResults,
+      renderItemLabel,
+      renderItemUrl,
+      onSelect
+    } = this.props
+    return searchResults.length > 0 ? (
+      <SearchDropdown
+        searchResults={searchResults}
+        onUpdate={() => this.setState({ indexToHighlight: 0 })}
+        onUnmount={() => this.setState({ indexToHighlight: 0 })}
+        indexToHighlight={this.state.indexToHighlight}
+        onItemClick={item => onSelect(item)}
+        renderItemLabel={renderItemLabel}
+        renderItemUrl={renderItemUrl}
+      />
+    ) : null
   }
 
   onKeyDown = event => {
-    const {indexToHighlight} = this.state
-    const {searchResults, onSelect, onClear} = this.props
+    const { indexToHighlight } = this.state
+    const { searchResults, onSelect, onClear } = this.props
     let index = indexToHighlight
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
         event.preventDefault()
         let highlightIndex = Math.min(++index, searchResults.length - 1)
-        this.setState({indexToHighlight: highlightIndex})
+        this.setState({ indexToHighlight: highlightIndex })
       }
 
       if (event.keyCode === 38) {
         event.preventDefault()
         let highlightIndex = Math.max(--index, 0)
-        this.setState({indexToHighlight: highlightIndex})
+        this.setState({ indexToHighlight: highlightIndex })
       }
 
       if (event.keyCode === 13) {

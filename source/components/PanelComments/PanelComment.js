@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {timeSince} from 'helpers/timeStampHelpers'
+import React, { Component } from 'react'
+import { timeSince } from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/DropdownButton'
 import Likers from 'components/Likers'
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 import UserListModal from 'components/Modals/UserListModal'
 import PanelReplies from './PanelReplies'
 import ReplyInputArea from './PanelReplies/ReplyInputArea'
@@ -12,10 +12,10 @@ import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
-import {scrollElementToCenter} from 'helpers/domHelpers'
+import { scrollElementToCenter } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 class PanelComment extends Component {
   static propTypes = {
@@ -28,10 +28,8 @@ class PanelComment extends Component {
       replyId: PropTypes.number,
       targetUserName: PropTypes.string,
       targetUserId: PropTypes.number,
-      timeStamp: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string
-      ]).isRequired,
+      timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }).isRequired,
@@ -78,12 +76,23 @@ class PanelComment extends Component {
 
   render() {
     const {
-      replyInputShown, onEdit, userListModalShown,
-      clickListenerState, confirmModalShown
+      replyInputShown,
+      onEdit,
+      userListModalShown,
+      clickListenerState,
+      confirmModalShown
     } = this.state
     const {
-      comment, userId, parent, type, onEditDone, isCreator,
-      onLikeClick, onDelete, onReplySubmit, onLoadMoreReplies
+      comment,
+      userId,
+      parent,
+      type,
+      onEditDone,
+      isCreator,
+      onLikeClick,
+      onDelete,
+      onReplySubmit,
+      onLoadMoreReplies
     } = this.props
     const canEdit = comment.userId === userId || isCreator
     let userLikedThis = false
@@ -93,53 +102,78 @@ class PanelComment extends Component {
     return (
       <li
         className="media"
-        style={{marginTop: this.props.marginTop && '1em'}}
-        ref={ref => { this.PanelComment = ref }}
+        style={{ marginTop: this.props.marginTop && '1em' }}
+        ref={ref => {
+          this.PanelComment = ref
+        }}
       >
-        {canEdit && !onEdit &&
-          <div className="row">
-            <DropdownButton
-              shape="button"
-              icon="pencil"
-              style={{
-                position: 'absolute',
-                right: type === 'videoDiscussionPanel' ? '8%' : '5.5%'
-              }}
-              opacity={0.8}
-              menuProps={[
-                {
-                  label: 'Edit',
-                  onClick: () => this.setState({onEdit: true})
-                },
-                {
-                  label: 'Remove',
-                  onClick: () => this.setState({confirmModalShown: true})
-                }
-              ]}
-            />
-          </div>
-        }
-        <ProfilePic size="3.5" userId={comment.userId} profilePicId={comment.profilePicId} />
+        {canEdit &&
+          !onEdit && (
+            <div className="row">
+              <DropdownButton
+                shape="button"
+                icon="pencil"
+                style={{
+                  position: 'absolute',
+                  right: type === 'videoDiscussionPanel' ? '8%' : '5.5%'
+                }}
+                opacity={0.8}
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({ onEdit: true })
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({ confirmModalShown: true })
+                  }
+                ]}
+              />
+            </div>
+          )}
+        <ProfilePic
+          size="3.5"
+          userId={comment.userId}
+          profilePicId={comment.profilePicId}
+        />
         <div className="media-body">
           <h5 className="media-heading">
-            <UsernameText user={{
-              name: comment.username,
-              id: comment.userId
-            }} /> <small>&nbsp;{timeSince(comment.timeStamp)}</small>
+            <UsernameText
+              user={{
+                name: comment.username,
+                id: comment.userId
+              }}
+            />{' '}
+            <small>&nbsp;{timeSince(comment.timeStamp)}</small>
           </h5>
-          <div style={{maxWidth: onEdit ? '100vw' : (type === 'videoDiscussionPanel' ? '50vw' : '40vw')}}>
-            {comment.targetUserId && !!comment.replyId && comment.replyId !== parent.id &&
-              <span style={{color: Color.blue}}>
-                to: <UsernameText user={{name: comment.targetUserName, id: comment.targetUserId}} />
-              </span>
-            }
-            {onEdit ?
+          <div
+            style={{
+              maxWidth: onEdit
+                ? '100vw'
+                : type === 'videoDiscussionPanel' ? '50vw' : '40vw'
+            }}
+          >
+            {comment.targetUserId &&
+              !!comment.replyId &&
+              comment.replyId !== parent.id && (
+                <span style={{ color: Color.blue }}>
+                  to:{' '}
+                  <UsernameText
+                    user={{
+                      name: comment.targetUserName,
+                      id: comment.targetUserId
+                    }}
+                  />
+                </span>
+              )}
+            {onEdit ? (
               <EditTextArea
                 autoFocus
                 text={comment.content}
-                onCancel={() => this.setState({onEdit: false})}
+                onCancel={() => this.setState({ onEdit: false })}
                 onEditDone={this.onEditDone}
-              /> :
+              />
+            ) : (
               <div>
                 <LongText
                   style={{
@@ -149,21 +183,19 @@ class PanelComment extends Component {
                 >
                   {comment.content}
                 </LongText>
-                <div
-                  className="row flexbox-container"
-                >
-                  <div className="pull-left" style={{paddingLeft: '1em'}}>
+                <div className="row flexbox-container">
+                  <div className="pull-left" style={{ paddingLeft: '1em' }}>
                     <LikeButton
                       onClick={this.onLikeClick}
                       liked={userLikedThis}
                       small
                     />
                     <Button
-                      style={{marginLeft: '0.5em'}}
+                      style={{ marginLeft: '0.5em' }}
                       className="btn btn-warning btn-sm"
                       onClick={this.onReplyButtonClick}
                     >
-                      <span className="glyphicon glyphicon-comment"></span> Reply
+                      <span className="glyphicon glyphicon-comment" /> Reply
                     </Button>
                   </div>
                   <small>
@@ -177,12 +209,14 @@ class PanelComment extends Component {
                       }}
                       userId={userId}
                       likes={comment.likes}
-                      onLinkClick={() => this.setState({userListModalShown: true})}
+                      onLinkClick={() =>
+                        this.setState({ userListModalShown: true })
+                      }
                     />
                   </small>
                 </div>
               </div>
-            }
+            )}
           </div>
           <PanelReplies
             userId={userId}
@@ -196,59 +230,69 @@ class PanelComment extends Component {
             onEditDone={onEditDone}
             onReplySubmit={onReplySubmit}
           />
-          {replyInputShown && <ReplyInputArea
-            clickListenerState={clickListenerState}
-            onSubmit={this.onReplySubmit}
-            numReplies={comment.replies.length}
-          />}
+          {replyInputShown && (
+            <ReplyInputArea
+              clickListenerState={clickListenerState}
+              onSubmit={this.onReplySubmit}
+              numReplies={comment.replies.length}
+            />
+          )}
         </div>
-        {userListModalShown &&
+        {userListModalShown && (
           <UserListModal
-            onHide={() => this.setState({userListModalShown: false})}
+            onHide={() => this.setState({ userListModalShown: false })}
             title="People who liked this comment"
             users={comment.likes}
             description="(You)"
           />
-        }
-        {confirmModalShown &&
+        )}
+        {confirmModalShown && (
           <ConfirmModal
-            onHide={() => this.setState({confirmModalShown: false})}
+            onHide={() => this.setState({ confirmModalShown: false })}
             title="Remove Comment"
             onConfirm={this.onDelete}
           />
-        }
+        )}
       </li>
     )
   }
 
   onEditDone(editedComment) {
-    const {onEditDone, comment} = this.props
-    onEditDone({editedComment, commentId: comment.id}).then(
-      () => this.setState({onEdit: false})
+    const { onEditDone, comment } = this.props
+    onEditDone({ editedComment, commentId: comment.id }).then(() =>
+      this.setState({ onEdit: false })
     )
   }
 
   onLikeClick() {
-    const {comment} = this.props
+    const { comment } = this.props
     this.props.onLikeClick(comment.id)
   }
 
   onReplyButtonClick() {
-    const {clickListenerState, replyInputShown} = this.state
-    if (!replyInputShown) return this.setState({replyInputShown: true})
-    this.setState({clickListenerState: !clickListenerState})
+    const { clickListenerState, replyInputShown } = this.state
+    if (!replyInputShown) return this.setState({ replyInputShown: true })
+    this.setState({ clickListenerState: !clickListenerState })
   }
 
   onReplySubmit(replyContent) {
-    const {parent, comment, onReplySubmit} = this.props
-    onReplySubmit({replyContent, comment, parent})
+    const { parent, comment, onReplySubmit } = this.props
+    onReplySubmit({ replyContent, comment, parent })
   }
 
   onDelete() {
-    const {comment, onDelete, index, deleteCallback, isFirstComment} = this.props
+    const {
+      comment,
+      onDelete,
+      index,
+      deleteCallback,
+      isFirstComment
+    } = this.props
     deleteCallback(index, isFirstComment)
     onDelete(comment.id)
   }
 }
 
-export default connect(state => ({isCreator: state.UserReducer.isCreator}))(PanelComment)
+export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
+  PanelComment
+)

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import Input from './Input'
-import {cleanString, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
-import {edit} from 'constants/placeholders'
+import { cleanString, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
+import { edit } from 'constants/placeholders'
 
 class EditTitleForm extends Component {
   static propTypes = {
@@ -15,7 +15,7 @@ class EditTitleForm extends Component {
     title: PropTypes.string.isRequired
   }
 
-  handleClickOutside = (event) => {
+  handleClickOutside = event => {
     this.props.onClickOutSide()
   }
 
@@ -28,8 +28,8 @@ class EditTitleForm extends Component {
   }
 
   render() {
-    const {title} = this.state
-    const {style, autoFocus, maxLength = 100} = this.props
+    const { title } = this.state
+    const { style, autoFocus, maxLength = 100 } = this.props
     return (
       <form onSubmit={event => this.onEditSubmit(event, title)}>
         <Input
@@ -39,16 +39,20 @@ class EditTitleForm extends Component {
           className="form-control"
           placeholder={edit.title}
           value={title}
-          onChange={text => this.setState({title: text})}
-          onKeyUp={event => this.setState({title: addEmoji(event.target.value)})}
+          onChange={text => this.setState({ title: text })}
+          onKeyUp={event =>
+            this.setState({ title: addEmoji(event.target.value) })
+          }
         />
-        <small style={{color: title.length > maxLength && 'red'}}>{title.length}/{maxLength} Characters</small>
+        <small style={{ color: title.length > maxLength && 'red' }}>
+          {title.length}/{maxLength} Characters
+        </small>
       </form>
     )
   }
 
   onEditSubmit(event, title) {
-    const {onEditSubmit, onClickOutSide, maxLength = 100} = this.props
+    const { onEditSubmit, onClickOutSide, maxLength = 100 } = this.props
     event.preventDefault()
     if (title && title.length > maxLength) return
     if (title && title !== this.props.title) {

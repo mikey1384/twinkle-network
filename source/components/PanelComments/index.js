@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import CommentInputArea from './CommentInputArea'
 import PanelComment from './PanelComment'
 import Button from 'components/Button'
-import {scrollElementToCenter} from 'helpers/domHelpers'
+import { scrollElementToCenter } from 'helpers/domHelpers'
 
 export default class PanelComments extends Component {
   static propTypes = {
@@ -36,17 +36,32 @@ export default class PanelComments extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {deleteListenerToggle, deletedFirstComment} = this.state
+    const { deleteListenerToggle, deletedFirstComment } = this.state
     if (prevProps.comments.length > this.props.comments.length) {
       if (deletedFirstComment) return scrollElementToCenter(this.PanelComments)
-      this.setState({deleteListenerToggle: !deleteListenerToggle})
+      this.setState({ deleteListenerToggle: !deleteListenerToggle })
     }
   }
 
   render() {
-    const {onSubmit, autoFocus, loadMoreButton, comments, inputTypeLabel, parent, clickListenerState, style} = this.props
+    const {
+      onSubmit,
+      autoFocus,
+      loadMoreButton,
+      comments,
+      inputTypeLabel,
+      parent,
+      clickListenerState,
+      style
+    } = this.props
     return (
-      <div className="row" style={{...style, paddingBottom: '0.5em'}} ref={ref => { this.PanelComments = ref }}>
+      <div
+        className="row"
+        style={{ ...style, paddingBottom: '0.5em' }}
+        ref={ref => {
+          this.PanelComments = ref
+        }}
+      >
         <div className="container-fluid">
           <CommentInputArea
             autoFocus={autoFocus}
@@ -54,32 +69,43 @@ export default class PanelComments extends Component {
             inputTypeLabel={inputTypeLabel}
             onSubmit={comment => onSubmit(comment, parent)}
           />
-          {comments.length !== 0 &&
-            <div style={{marginTop: '1.5em'}}>
-              <ul className="media-list" style={{marginBottom: '0px'}}>
+          {comments.length !== 0 && (
+            <div style={{ marginTop: '1.5em' }}>
+              <ul className="media-list" style={{ marginBottom: '0px' }}>
                 {this.renderComments()}
-                {loadMoreButton &&
-                  <div className="text-center" style={{paddingTop: '1em'}}>
-                    <Button className="btn btn-success" onClick={this.loadMoreComments}>Load More</Button>
+                {loadMoreButton && (
+                  <div className="text-center" style={{ paddingTop: '1em' }}>
+                    <Button
+                      className="btn btn-success"
+                      onClick={this.loadMoreComments}
+                    >
+                      Load More
+                    </Button>
                   </div>
-                }
+                )}
               </ul>
             </div>
-          }
-          {comments.length === 0 && loadMoreButton &&
-            <div className="text-center" style={{paddingTop: '1em'}}>
-              <Button className="btn btn-success" onClick={this.loadMoreComments}>Load More</Button>
-            </div>
-          }
+          )}
+          {comments.length === 0 &&
+            loadMoreButton && (
+              <div className="text-center" style={{ paddingTop: '1em' }}>
+                <Button
+                  className="btn btn-success"
+                  onClick={this.loadMoreComments}
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
         </div>
       </div>
     )
   }
 
   renderComments() {
-    const {comments, userId, parent, commentActions, type} = this.props
-    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
-    return comments.map((comment, index) =>
+    const { comments, userId, parent, commentActions, type } = this.props
+    const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
+    return comments.map((comment, index) => (
       <PanelComment
         {...commentActions}
         index={index}
@@ -94,7 +120,7 @@ export default class PanelComments extends Component {
         lastDeletedCommentIndex={lastDeletedCommentIndex}
         deleteListenerToggle={deleteListenerToggle}
       />
-    )
+    ))
   }
 
   deleteCallback(index, isFirstComment) {
@@ -105,8 +131,10 @@ export default class PanelComments extends Component {
   }
 
   loadMoreComments() {
-    const {comments, parent, loadMoreComments} = this.props
-    const lastCommentId = comments[comments.length - 1] ? comments[comments.length - 1].id : 0
+    const { comments, parent, loadMoreComments } = this.props
+    const lastCommentId = comments[comments.length - 1]
+      ? comments[comments.length - 1].id
+      : 0
     loadMoreComments(lastCommentId, parent.type, parent.id)
   }
 }

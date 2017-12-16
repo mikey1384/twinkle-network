@@ -1,9 +1,9 @@
 import express from 'express'
 import React from 'react'
-import {renderToString} from 'react-dom/server'
-import {StaticRouter} from 'react-router'
+import { renderToString } from 'react-dom/server'
+import { StaticRouter } from 'react-router'
 import createHistory from 'history/createMemoryHistory'
-import {Provider} from 'react-redux'
+import { Provider } from 'react-redux'
 import path from 'path'
 import App from 'containers/App'
 import createStoreWithHistory from './store'
@@ -18,16 +18,16 @@ const store = createStoreWithHistory(history)
 
 app.use(express.static(path.join(__dirname, '../public')))
 app.use((req, res) => {
-  res.end((function() {
-    const ReactView = renderToString(
-      <Provider store={store}>
-        <StaticRouter context={{}} location={req.url}>
-          <App />
-        </StaticRouter>
-      </Provider>
-    )
-    return (
-      `<!DOCTYPE html>
+  res.end(
+    (function() {
+      const ReactView = renderToString(
+        <Provider store={store}>
+          <StaticRouter context={{}} location={req.url}>
+            <App />
+          </StaticRouter>
+        </Provider>
+      )
+      return `<!DOCTYPE html>
       <html>
         <head>
          <meta charset="utf-8">
@@ -46,8 +46,8 @@ app.use((req, res) => {
           <script type="application/javascript" src="/main.js"></script>
         </body>
       </html>`
-    )
-  })())
+    })()
+  )
 })
 
 export default app

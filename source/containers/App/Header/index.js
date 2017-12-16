@@ -1,17 +1,24 @@
 import PropTypes from 'prop-types'
-import React, {Component, Fragment} from 'react'
-import {connect} from 'react-redux'
-import {withRouter} from 'react-router'
-import {Link} from 'react-router-dom'
-import {openSigninModal, closeSigninModal, logout} from 'redux/actions/UserActions'
+import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
+import {
+  openSigninModal,
+  closeSigninModal,
+  logout
+} from 'redux/actions/UserActions'
 import {
   getNumberOfUnreadMessagesAsync,
   increaseNumberOfUnreadMessages,
   turnChatOff,
   resetChat
 } from 'redux/actions/ChatActions'
-import {getInitialVideos} from 'redux/actions/VideoActions'
-import {checkVersion, notifyChatSubjectChange} from 'redux/actions/NotiActions'
+import { getInitialVideos } from 'redux/actions/VideoActions'
+import {
+  checkVersion,
+  notifyChatSubjectChange
+} from 'redux/actions/NotiActions'
 import {
   getPlaylistsAsync,
   getPinnedPlaylistsAsync
@@ -20,12 +27,12 @@ import SigninModal from 'containers/Signin'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
 import Button from 'components/Button'
-import {GENERAL_CHAT_ID} from 'constants/database'
+import { GENERAL_CHAT_ID } from 'constants/database'
 import SearchBox from './SearchBox'
 import HeaderNav from './HeaderNav'
-import {Color} from 'constants/css'
-import {socket} from 'constants/io'
-import {recordUserAction} from 'helpers/userDataHelpers'
+import { Color } from 'constants/css'
+import { socket } from 'constants/io'
+import { recordUserAction } from 'helpers/userDataHelpers'
 
 class Header extends Component {
   static propTypes = {
@@ -63,15 +70,27 @@ class Header extends Component {
   }
 
   componentDidMount() {
-    const {turnChatOff, increaseNumberOfUnreadMessages, checkVersion} = this.props
+    const {
+      turnChatOff,
+      increaseNumberOfUnreadMessages,
+      checkVersion
+    } = this.props
     socket.on('connect', () => {
       checkVersion()
       if (this.props.userId) {
-        socket.emit('bind_uid_to_socket', this.props.userId, this.props.username)
+        socket.emit(
+          'bind_uid_to_socket',
+          this.props.userId,
+          this.props.username
+        )
       }
     })
     socket.on('receive_message', data => {
-      if (!this.props.chatMode && data.channelId !== GENERAL_CHAT_ID && data.userId !== this.props.userId) {
+      if (
+        !this.props.chatMode &&
+        data.channelId !== GENERAL_CHAT_ID &&
+        data.userId !== this.props.userId
+      ) {
         increaseNumberOfUnreadMessages()
       }
     })
@@ -86,7 +105,7 @@ class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {getNumberOfUnreadMessages, showUpdateNotice} = this.props
+    const { getNumberOfUnreadMessages, showUpdateNotice } = this.props
     if (nextProps.userId && !this.props.userId) {
       socket.connect()
       socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username)
@@ -97,7 +116,11 @@ class Header extends Component {
     if (nextProps.userId && nextProps.userId !== this.props.userId) {
       getNumberOfUnreadMessages()
     }
-    if (nextProps.userId && nextProps.chatMode !== this.props.chatMode && nextProps.chatMode === false) {
+    if (
+      nextProps.userId &&
+      nextProps.chatMode !== this.props.chatMode &&
+      nextProps.chatMode === false
+    ) {
       getNumberOfUnreadMessages()
     }
     if (nextProps.versionMatch !== this.props.versionMatch) {
@@ -106,10 +129,10 @@ class Header extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {userId, location, onProfilePage, chatMode} = this.props
+    const { userId, location, onProfilePage, chatMode } = this.props
 
     if (userId !== prevProps.userId) {
-      if (prevProps.userId !== null) socket.emit('leave_my_notification_channel', prevProps.userId)
+      if (prevProps.userId !== null) { socket.emit('leave_my_notification_channel', prevProps.userId) }
       socket.emit('enter_my_notification_channel', userId)
     }
 
@@ -120,7 +143,10 @@ class Header extends Component {
       })
     }
 
-    if (prevProps.onProfilePage !== onProfilePage || prevProps.chatMode !== chatMode) {
+    if (
+      prevProps.onProfilePage !== onProfilePage ||
+      prevProps.chatMode !== chatMode
+    ) {
       this.setState({
         logoBlue: `#${this.getLogoColor()}`,
         logoGreen: `#${this.getLogoColor()}`
@@ -131,7 +157,7 @@ class Header extends Component {
   render() {
     const {
       chatLoading,
-      location: {pathname},
+      location: { pathname },
       signinModalShown,
       loggedIn,
       username,
@@ -145,10 +171,12 @@ class Header extends Component {
       getPlaylists
     } = this.props
 
-    const {logoBlue, logoGreen} = this.state
+    const { logoBlue, logoGreen } = this.state
     return (
       <nav
-        className={`navbar navbar-default${!chatMode ? ' navbar-fixed-top' : ''}`}
+        className={`navbar navbar-default${
+          !chatMode ? ' navbar-fixed-top' : ''
+        }`}
         style={{
           display: 'flex',
           justifyContent: 'space-around',
@@ -156,9 +184,7 @@ class Header extends Component {
           width: '100%'
         }}
       >
-        <div
-          className="navbar-header"
-        >
+        <div className="navbar-header">
           <Link
             className="navbar-brand"
             style={{
@@ -168,22 +194,33 @@ class Header extends Component {
             to="/"
             onClick={this.onLogoClick}
           >
-            <span style={{color: logoBlue}}>Twin</span><span style={{color: logoGreen}}>kle</span>
+            <span style={{ color: logoBlue }}>Twin</span>
+            <span style={{ color: logoGreen }}>kle</span>
           </Link>
         </div>
-        <div className="col-xs-10" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <div
+          className="col-xs-10"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        >
           <ul
             className="nav navbar-nav"
-            style={{display: 'flex', justifyContent: 'flex-start'}}
+            style={{ display: 'flex', justifyContent: 'flex-start' }}
           >
-            {!chatMode &&
+            {!chatMode && (
               <Fragment>
                 <HeaderNav
                   to="/"
                   isHome
                   imgLabel="home"
                   isUsername={
-                    pathname.split('/')[1] !== 'videos' && ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) === -1 && pathname.length > 1
+                    pathname.split('/')[1] !== 'videos' &&
+                    ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) ===
+                      -1 &&
+                    pathname.length > 1
                   }
                 >
                   <span>Home</span>
@@ -199,53 +236,54 @@ class Header extends Component {
                 >
                   <span>Watch</span>
                 </HeaderNav>
-                <HeaderNav
-                  to="/links"
-                  imgLabel="read"
-                >
+                <HeaderNav to="/links" imgLabel="read">
                   <span>Read</span>
                 </HeaderNav>
               </Fragment>
-            }
+            )}
           </ul>
-          {!chatMode && <SearchBox style={{width: '70%', marginLeft: '2rem'}} />}
+          {!chatMode && (
+            <SearchBox style={{ width: '70%', marginLeft: '2rem' }} />
+          )}
         </div>
-        <div className="col-xs-2" style={{display: 'flex', justifyContent: 'flex-end'}}>
-          {loggedIn &&
+        <div
+          className="col-xs-2"
+          style={{ display: 'flex', justifyContent: 'flex-end' }}
+        >
+          {loggedIn && (
             <ChatButton
-              style={{marginRight: '1rem'}}
+              style={{ marginRight: '1rem' }}
               onClick={onChatButtonClick}
               chatMode={chatMode}
               loading={chatLoading}
               numUnreads={numChatUnreads}
             />
-          }
-          {loggedIn ?
-            <AccountMenu
-              title={username}
-              logout={this.onLogout}
-            /> :
+          )}
+          {loggedIn ? (
+            <AccountMenu title={username} logout={this.onLogout} />
+          ) : (
             <Button
               className="btn btn-success"
               onClick={() => openSigninModal()}
             >
               Log In | Sign Up
             </Button>
-          }
+          )}
         </div>
-        {signinModalShown &&
+        {signinModalShown && (
           <SigninModal show onHide={() => closeSigninModal()} />
-        }
+        )}
       </nav>
     )
   }
 
   getLogoColor = () => {
-    return (
-      function factory(string, c) {
-        return string[Math.floor(Math.random() * string.length)] + (c && factory(string, c - 1))
-      }
-    )('789ABCDEF', 4)
+    return (function factory(string, c) {
+      return (
+        string[Math.floor(Math.random() * string.length)] +
+        (c && factory(string, c - 1))
+      )
+    })('789ABCDEF', 4)
   }
 
   onLogoClick = () => {
@@ -255,14 +293,14 @@ class Header extends Component {
   }
 
   onLogout = () => {
-    const {logout, resetChat} = this.props
-    recordUserAction({action: 'logout'})
+    const { logout, resetChat } = this.props
+    recordUserAction({ action: 'logout' })
     logout()
     resetChat()
   }
 
-  onSubjectChange = ({subject}) => {
-    const {notifyChatSubjectChange} = this.props
+  onSubjectChange = ({ subject }) => {
+    const { notifyChatSubjectChange } = this.props
     notifyChatSubjectChange(subject)
   }
 }

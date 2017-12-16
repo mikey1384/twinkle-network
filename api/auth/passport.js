@@ -13,7 +13,11 @@ const query = `
   LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE
 `
 
-const localLogin = new LocalStrategy(localOptions, function(username, password, done) {
+const localLogin = new LocalStrategy(localOptions, function(
+  username,
+  password,
+  done
+) {
   const usernameLowered = username.toLowerCase()
   pool.query(query + 'a.username = ?', usernameLowered, function(err, rows) {
     if (err) return done(err, false)

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import SearchDropdown from '../SearchDropdown'
 import Input from 'components/Texts/Input'
@@ -15,7 +15,7 @@ class TagInput extends Component {
     onAddUser: PropTypes.func.isRequired
   }
 
-  handleClickOutside = (event) => {
+  handleClickOutside = event => {
     this.props.onClickOutSide()
   }
 
@@ -31,7 +31,7 @@ class TagInput extends Component {
     return (
       <div className="input-group dropdown">
         <span className="input-group-addon">
-          <span className="glyphicon glyphicon-search"></span>
+          <span className="glyphicon glyphicon-search" />
         </span>
         <Input
           autoFocus={this.props.autoFocus}
@@ -47,7 +47,7 @@ class TagInput extends Component {
   }
 
   renderDropdownList() {
-    let {searchResults, selectedUsers} = this.props
+    let { searchResults, selectedUsers } = this.props
     searchResults = searchResults.filter(user => {
       let result = true
       for (let i = 0; i < selectedUsers.length; i++) {
@@ -58,20 +58,25 @@ class TagInput extends Component {
       }
       return result
     })
-    return searchResults.length > 0 ? <SearchDropdown
-      searchResults={searchResults}
-      onUpdate={() => this.setState({indexToHighlight: 0})}
-      onUnmount={() => this.setState({indexToHighlight: 0})}
-      indexToHighlight={this.state.indexToHighlight}
-      onItemClick={user => this.props.onAddUser(user)}
-      renderItemLabel={
-        item => <span>{item.username} {item.realName && <small>{`(${item.realName})`}</small>}</span>
-      }
-    /> : null
+    return searchResults.length > 0 ? (
+      <SearchDropdown
+        searchResults={searchResults}
+        onUpdate={() => this.setState({ indexToHighlight: 0 })}
+        onUnmount={() => this.setState({ indexToHighlight: 0 })}
+        indexToHighlight={this.state.indexToHighlight}
+        onItemClick={user => this.props.onAddUser(user)}
+        renderItemLabel={item => (
+          <span>
+            {item.username}{' '}
+            {item.realName && <small>{`(${item.realName})`}</small>}
+          </span>
+        )}
+      />
+    ) : null
   }
 
   onKeyDown(event) {
-    let {searchResults, selectedUsers} = this.props
+    let { searchResults, selectedUsers } = this.props
     searchResults = searchResults.filter(user => {
       let result = true
       for (let i = 0; i < selectedUsers.length; i++) {
@@ -82,19 +87,19 @@ class TagInput extends Component {
       }
       return result
     })
-    const {indexToHighlight} = this.state
+    const { indexToHighlight } = this.state
     let index = indexToHighlight
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
         event.preventDefault()
         let highlightIndex = Math.min(++index, searchResults.length - 1)
-        this.setState({indexToHighlight: highlightIndex})
+        this.setState({ indexToHighlight: highlightIndex })
       }
 
       if (event.keyCode === 38) {
         event.preventDefault()
         let highlightIndex = Math.max(--index, 0)
-        this.setState({indexToHighlight: highlightIndex})
+        this.setState({ indexToHighlight: highlightIndex })
       }
 
       if (event.keyCode === 13) {

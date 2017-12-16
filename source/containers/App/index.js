@@ -1,22 +1,29 @@
 import 'regenerator-runtime/runtime'
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {Switch, Route} from 'react-router-dom'
+import React, { Component } from 'react'
+import { Switch, Route } from 'react-router-dom'
 import Chat from '../Chat'
 import Header from './Header'
-import {connect} from 'react-redux'
-import {initChatAsync, resetChat, turnChatOff} from 'redux/actions/ChatActions'
-import {changePageVisibility} from 'redux/actions/ViewActions'
-import {initSessionAsync} from 'redux/actions/UserActions'
-import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import { connect } from 'react-redux'
+import {
+  initChatAsync,
+  resetChat,
+  turnChatOff
+} from 'redux/actions/ChatActions'
+import { changePageVisibility } from 'redux/actions/ViewActions'
+import { initSessionAsync } from 'redux/actions/UserActions'
+import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
 import Videos from 'containers/Videos'
 import Links from 'containers/Links'
 import TwinkleXP from 'containers/TwinkleXP'
 import Redirect from 'containers/Redirect'
 import Button from 'components/Button'
-import {recordUserAction} from 'helpers/userDataHelpers'
-import {fetchNotifications, clearNotifications} from 'redux/actions/NotiActions'
+import { recordUserAction } from 'helpers/userDataHelpers'
+import {
+  fetchNotifications,
+  clearNotifications
+} from 'redux/actions/NotiActions'
 
 let visibilityChange
 let hidden
@@ -54,7 +61,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const {initSession, location, fetchNotifications} = this.props
+    const { initSession, location, fetchNotifications } = this.props
     if (typeof document.hidden !== 'undefined') {
       hidden = 'hidden'
       visibilityChange = 'visibilitychange'
@@ -75,8 +82,13 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     let elements = document.documentElement.childNodes
     const {
-      chatMode, chatNumUnreads, history, location, loggedIn,
-      fetchNotifications, clearNotifications
+      chatMode,
+      chatNumUnreads,
+      history,
+      location,
+      loggedIn,
+      fetchNotifications,
+      clearNotifications
     } = this.props
 
     if (prevProps.loggedIn !== loggedIn) {
@@ -87,25 +99,33 @@ class App extends Component {
       }
     }
 
-    if (loggedIn && history.action === 'PUSH' && location !== prevProps.location) {
-      recordUserAction({action: 'navigation', target: location.pathname})
+    if (
+      loggedIn &&
+      history.action === 'PUSH' &&
+      location !== prevProps.location
+    ) {
+      recordUserAction({ action: 'navigation', target: location.pathname })
     }
 
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
-      let title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
+      let title = `${
+        chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
+      }Twinkle`
       let display = chatMode ? 'none' : 'inline'
       document.title = title
       for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') elements[i].style.display = display
+        if (elements[i].tagName === 'GRAMMARLY-CARD') { elements[i].style.display = display }
       }
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
-      let title = `${chatNumUnreads > 0 ? '('+chatNumUnreads+') ' : ''}Twinkle`
+      let title = `${
+        chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
+      }Twinkle`
       let display = chatMode ? 'none' : 'inline'
       document.title = title
       for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') elements[i].style.display = display
+        if (elements[i].tagName === 'GRAMMARLY-CARD') { elements[i].style.display = display }
       }
     }
   }
@@ -115,29 +135,29 @@ class App extends Component {
   }
 
   render() {
-    const {chatMode, turnChatOff, resetChat, loggedIn} = this.props
-    const {chatLoading, scrollPosition, updateNoticeShown} = this.state
-    const style = chatMode && loggedIn ? {
-      display: 'none'
-    } : {paddingTop: '65px'}
+    const { chatMode, turnChatOff, resetChat, loggedIn } = this.props
+    const { chatLoading, scrollPosition, updateNoticeShown } = this.state
+    const style =
+      chatMode && loggedIn
+        ? {
+            display: 'none'
+          }
+        : { paddingTop: '65px' }
 
     return (
-      <div
-        id="main-view"
-        style={{backgroundColor: chatMode && '#fff'}}
-      >
+      <div id="main-view" style={{ backgroundColor: chatMode && '#fff' }}>
         <Header
           staticTop={chatMode}
           chatMode={chatMode}
           chatLoading={chatLoading}
           onChatButtonClick={this.onChatButtonClick}
           turnChatOff={turnChatOff}
-          showUpdateNotice={match => this.setState({updateNoticeShown: !match})}
+          showUpdateNotice={match =>
+            this.setState({ updateNoticeShown: !match })
+          }
         />
-        <div
-          style={{...style, paddingBottom: '1em'}}
-        >
-          {updateNoticeShown &&
+        <div style={{ ...style, paddingBottom: '1em' }}>
+          {updateNoticeShown && (
             <div
               className="alert alert-info"
               style={{
@@ -148,8 +168,15 @@ class App extends Component {
                 left: '10%'
               }}
             >
-              <p style={{fontSize: '1.4em'}}>The website has been updated. Click the button below to apply the update.</p>
-              <p style={{fontSize: '1.2em'}}>{"Warning: Update is mandatory. Some features will not work properly if you don't!"}</p>
+              <p style={{ fontSize: '1.4em' }}>
+                The website has been updated. Click the button below to apply
+                the update.
+              </p>
+              <p style={{ fontSize: '1.2em' }}>
+                {
+                  "Warning: Update is mandatory. Some features will not work properly if you don't!"
+                }
+              </p>
               <Button
                 className="btn btn-lg btn-success"
                 style={{
@@ -161,7 +188,7 @@ class App extends Component {
                 Update!
               </Button>
             </div>
-          }
+          )}
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/videos" component={Videos} />
@@ -172,39 +199,38 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
-        {chatMode && this.props.loggedIn &&
-          <Chat
-            onUnmount={
-              () => resetChat().then(
-                () => {
+        {chatMode &&
+          this.props.loggedIn && (
+            <Chat
+              onUnmount={() =>
+                resetChat().then(() => {
                   window.scrollTo(0, scrollPosition)
                   turnChatOff()
-                }
-              )
-            }
-          />
-        }
+                })
+              }
+            />
+          )}
       </div>
     )
   }
 
   handleVisibilityChange() {
-    const {changePageVisibility} = this.props
+    const { changePageVisibility } = this.props
     changePageVisibility(!document[hidden])
   }
 
   onChatButtonClick() {
-    const {initChat, chatMode, turnChatOff} = this.props
-    this.setState({chatLoading: true})
-    return (chatMode ? turnChatOff() : initChat()).then(
-      () => this.setState({chatLoading: false})
+    const { initChat, chatMode, turnChatOff } = this.props
+    this.setState({ chatLoading: true })
+    return (chatMode ? turnChatOff() : initChat()).then(() =>
+      this.setState({ chatLoading: false })
     )
   }
 
   onScroll(event) {
-    const {chatMode} = this.props
+    const { chatMode } = this.props
     if (!chatMode) {
-      this.setState({scrollPosition: window.scrollY})
+      this.setState({ scrollPosition: window.scrollY })
     }
   }
 }

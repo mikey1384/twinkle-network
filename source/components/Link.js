@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 
 Link.propTypes = {
   children: PropTypes.node,
@@ -10,13 +10,9 @@ Link.propTypes = {
   target: PropTypes.string,
   to: PropTypes.string
 }
-function Link({to, onClickAsync, children, style, target, history}) {
+function Link({ to, onClickAsync, children, style, target, history }) {
   return (
-    <a
-      style={style}
-      href={to}
-      onClick={onLinkClick}
-    >
+    <a style={style} href={to} onClick={onLinkClick}>
       {children}
     </a>
   )
@@ -25,11 +21,9 @@ function Link({to, onClickAsync, children, style, target, history}) {
     event.preventDefault()
     if (target) return window.open(to, target)
     if (typeof onClickAsync === 'function') {
-      return onClickAsync().then(
-        clickSafe => {
-          if (!clickSafe) history.push(to)
-        }
-      )
+      return onClickAsync().then(clickSafe => {
+        if (!clickSafe) history.push(to)
+      })
     }
     history.push(to)
   }

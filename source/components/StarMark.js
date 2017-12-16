@@ -5,7 +5,7 @@ StarMark.propTypes = {
   size: PropTypes.number,
   style: PropTypes.object
 }
-export default function StarMark({style, size = 4}) {
+export default function StarMark({ style, size = 4 }) {
   return (
     <img
       style={{

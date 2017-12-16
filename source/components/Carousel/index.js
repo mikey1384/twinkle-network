@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import assign from 'object-assign'
 import ExecutionEnvironment from 'exenv'
 import ButtonGroup from 'components/ButtonGroup'
 import NavButton from './NavButton'
 import Button from 'components/Button'
-import {connect} from 'react-redux'
-import {clickSafeOn, clickSafeOff} from 'redux/actions/PlaylistActions'
+import { connect } from 'react-redux'
+import { clickSafeOn, clickSafeOff } from 'redux/actions/PlaylistActions'
 import {
   getListStyles,
   getFrameStyles,
@@ -14,20 +14,19 @@ import {
   formatChildren,
   setInitialDimensions,
   setDimensions,
-  setExternalData } from './helpers/styles'
-import {
-  goToSlide,
-  nextSlide,
-  previousSlide } from './helpers/actions'
+  setExternalData
+} from './helpers/styles'
+import { goToSlide, nextSlide, previousSlide } from './helpers/actions'
 import {
   getTouchEvents,
   getMouseEvents,
-  handleClick } from './helpers/interfaceEvents'
+  handleClick
+} from './helpers/interfaceEvents'
 
-import {easeInOutQuad} from 'tween-functions'
+import { easeInOutQuad } from 'tween-functions'
 import PropTypes from 'prop-types'
 import requestAnimationFrame from 'raf'
-import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 
 const DEFAULT_STACK_BEHAVIOR = 'ADDITIVE'
 const DEFAULT_EASING = easeInOutQuad
@@ -57,8 +56,8 @@ class Carousel extends Component {
   }
 
   static defaultProps = {
-    afterSlide: function() { },
-    beforeSlide: function() { },
+    afterSlide: function() {},
+    beforeSlide: function() {},
     cellAlign: 'left',
     cellSpacing: 0,
     data: function() {},
@@ -144,26 +143,40 @@ class Carousel extends Component {
   }
 
   render() {
-    var children = React.Children.count(this.props.children) > 1 ? formatChildren.call(this, this.props.children) : this.props.children
-    const {showAllButton, showQuestionsBuilder, onShowAll, onFinish} = this.props
-    const {slidesToScroll, currentSlide, slideCount} = this.state
-    const slideFraction = (currentSlide + 1)/slideCount
+    var children =
+      React.Children.count(this.props.children) > 1
+        ? formatChildren.call(this, this.props.children)
+        : this.props.children
+    const {
+      showAllButton,
+      showQuestionsBuilder,
+      onShowAll,
+      onFinish
+    } = this.props
+    const { slidesToScroll, currentSlide, slideCount } = this.state
+    const slideFraction = (currentSlide + 1) / slideCount
     return (
-      <div className={['slider', this.props.className || ''].join(' ')} ref={ref => { this.Slider = ref }} style={assign(getSliderStyles.call(this), this.props.style || {})}>
-        { this.props.userIsUploader &&
+      <div
+        className={['slider', this.props.className || ''].join(' ')}
+        ref={ref => {
+          this.Slider = ref
+        }}
+        style={assign(getSliderStyles.call(this), this.props.style || {})}
+      >
+        {this.props.userIsUploader && (
           <a
             style={{
               position: 'absolute',
               cursor: 'pointer'
             }}
             onClick={() => showQuestionsBuilder()}
-          >Add/Edit Questions</a>
-        }
-        {this.props.progressBar &&
+          >
+            Add/Edit Questions
+          </a>
+        )}
+        {this.props.progressBar && (
           <div>
-            <div
-              className="text-center"
-            >
+            <div className="text-center">
               <ButtonGroup
                 buttons={[
                   {
@@ -174,75 +187,100 @@ class Carousel extends Component {
                   },
                   {
                     label: currentSlide + 1 === slideCount ? 'Finish' : 'Next',
-                    onClick: currentSlide + 1 === slideCount ? onFinish : nextSlide.bind(this),
+                    onClick:
+                      currentSlide + 1 === slideCount
+                        ? onFinish
+                        : nextSlide.bind(this),
                     buttonClass: 'btn-default'
                   }
                 ]}
               />
             </div>
-            <div
-              className="progress"
-              style={{marginTop: '2rem'}}
-            >
+            <div className="progress" style={{ marginTop: '2rem' }}>
               <div
                 className="progress-bar"
                 role="progressbar"
                 aria-valuenow="0"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                style={{width: `${slideFraction*100}%`}}
-              >{`${(currentSlide + 1)}/${slideCount}`}</div>
+                style={{ width: `${slideFraction * 100}%` }}
+              >{`${currentSlide + 1}/${slideCount}`}</div>
             </div>
           </div>
-        }
-        <div className="slider-frame"
-          ref={ref => { this.Frame = ref }}
+        )}
+        <div
+          className="slider-frame"
+          ref={ref => {
+            this.Frame = ref
+          }}
           style={getFrameStyles.call(this)}
           {...getTouchEvents.call(this)}
           {...getMouseEvents.call(this)}
-          onClick={handleClick.bind(this)}>
-          <ul className="slider-list" ref={ref => { this.List = ref }} style={getListStyles.call(this)}>
+          onClick={handleClick.bind(this)}
+        >
+          <ul
+            className="slider-list"
+            ref={ref => {
+              this.List = ref
+            }}
+            style={getListStyles.call(this)}
+          >
             {children}
           </ul>
         </div>
-        {!this.props.progressBar &&
-          [
-            <NavButton
-              left
-              key={0}
-              disabled={currentSlide === 0}
-              nextSlide={previousSlide.bind(this)}
-            />,
-            <div key={1}>
-              {slideCount > 5 && (currentSlide + slidesToScroll >= slideCount) && showAllButton ?
-                <Button
-                  className="btn btn-default btn-small"
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    right: -10,
-                    transform: 'translateY(-50%)',
-                    WebkitTransform: 'translateY(-50%)',
-                    msTransform: 'translateY(-50%)'
-                  }}
-                  onClick={onShowAll}
-                >
-                  Show All
-                </Button> :
-                <NavButton
-                  disabled={currentSlide + slidesToScroll >= slideCount}
-                  nextSlide={nextSlide.bind(this)}
-                />
-              }
-            </div>
-          ]
-        }
-        <style type="text/css" dangerouslySetInnerHTML={{__html: getStyleTagStyles.call(this)}}/>
+        {!this.props.progressBar && [
+          <NavButton
+            left
+            key={0}
+            disabled={currentSlide === 0}
+            nextSlide={previousSlide.bind(this)}
+          />,
+          <div key={1}>
+            {slideCount > 5 &&
+            currentSlide + slidesToScroll >= slideCount &&
+            showAllButton ? (
+              <Button
+                className="btn btn-default btn-small"
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: -10,
+                  transform: 'translateY(-50%)',
+                  WebkitTransform: 'translateY(-50%)',
+                  msTransform: 'translateY(-50%)'
+                }}
+                onClick={onShowAll}
+              >
+                Show All
+              </Button>
+            ) : (
+              <NavButton
+                disabled={currentSlide + slidesToScroll >= slideCount}
+                nextSlide={nextSlide.bind(this)}
+              />
+            )}
+          </div>
+        ]}
+        <style
+          type="text/css"
+          dangerouslySetInnerHTML={{ __html: getStyleTagStyles.call(this) }}
+        />
       </div>
     )
   }
 
-  tweenState(path, {easing, duration, delay, beginValue, endValue, onEnd, stackBehavior: configSB}) {
+  tweenState(
+    path,
+    {
+      easing,
+      duration,
+      delay,
+      beginValue,
+      endValue,
+      onEnd,
+      stackBehavior: configSB
+    }
+  ) {
     this.setState(prevState => {
       let stateName
       // see comment below on pash hash
@@ -264,7 +302,9 @@ class Carousel extends Component {
 
       let newTweenQueue = prevState.tweenQueue
       if (newConfig.stackBehavior === stackBehavior.DESTRUCTIVE) {
-        newTweenQueue = prevState.tweenQueue.filter(item => item.pathHash !== pathHash)
+        newTweenQueue = prevState.tweenQueue.filter(
+          item => item.pathHash !== pathHash
+        )
       }
 
       // we store path hash, so that during value retrieval we can use hash
@@ -305,27 +345,31 @@ class Carousel extends Component {
     let now = Date.now()
 
     for (let i = 0; i < state.tweenQueue.length; i++) {
-      const {pathHash: itemPathHash, initTime, config} = state.tweenQueue[i]
+      const { pathHash: itemPathHash, initTime, config } = state.tweenQueue[i]
       if (itemPathHash !== pathHash) {
         continue
       }
 
-      const progressTime = now - initTime > config.duration
-        ? config.duration
-        : Math.max(0, now - initTime)
+      const progressTime =
+        now - initTime > config.duration
+          ? config.duration
+          : Math.max(0, now - initTime)
       // `now - initTime` can be negative if initTime is scheduled in the
       // future by a delay. In this case we take 0
 
       // if duration is 0, consider that as jumping to endValue directly. This
       // is needed because the easing function might have undefined behavior for
       // duration = 0
-      const easeValue = config.duration === 0 ? config.endValue : config.easing(
-        progressTime,
-        config.beginValue,
-        config.endValue,
-        config.duration,
-        // TODO: some funcs accept a 5th param
-      )
+      const easeValue =
+        config.duration === 0
+          ? config.endValue
+          : config.easing(
+              progressTime,
+              config.beginValue,
+              config.endValue,
+              config.duration
+              // TODO: some funcs accept a 5th param
+            )
       const contrib = easeValue - config.endValue
       tweeningValue += contrib
     }
@@ -344,7 +388,7 @@ class Carousel extends Component {
 
     for (let i = 0; i < state.tweenQueue.length; i++) {
       const item = state.tweenQueue[i]
-      const {initTime, config} = item
+      const { initTime, config } = item
       if (now - initTime < config.duration) {
         newTweenQueue.push(item)
       } else {
@@ -381,5 +425,5 @@ export default connect(
     chatMode: state.ChatReducer.chatMode,
     clickSafe: state.PlaylistReducer.clickSafe
   }),
-  {clickSafeOn, clickSafeOff}
+  { clickSafeOn, clickSafeOff }
 )(Carousel)

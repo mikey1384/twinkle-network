@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import DropdownButton from './DropdownButton'
 import EditTitleForm from './Texts/EditTitleForm'
 import ConfirmModal from './Modals/ConfirmModal'
@@ -8,17 +8,17 @@ import {
   editVideoTitleAsync,
   deleteVideoAsync
 } from 'redux/actions/VideoActions'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import UsernameText from './Texts/UsernameText'
-import {cleanString} from 'helpers/stringHelpers'
+import { cleanString } from 'helpers/stringHelpers'
 import Link from 'components/Link'
 import FullTextReveal from 'components/FullTextReveal'
-import {textIsOverflown} from 'helpers/domHelpers'
+import { textIsOverflown } from 'helpers/domHelpers'
 import StarMark from 'components/StarMark'
 import request from 'axios'
-import {Color} from 'constants/css'
-import {URL} from 'constants/URL'
-import {auth} from 'redux/actions/constants'
+import { Color } from 'constants/css'
+import { URL } from 'constants/URL'
+import { auth } from 'redux/actions/constants'
 
 const API_URL = `${URL}/video`
 
@@ -39,10 +39,7 @@ class VideoThumb extends Component {
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
       isStarred: PropTypes.number,
-      numLikes: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-      ]),
+      numLikes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       title: PropTypes.string.isRequired
     }).isRequired
   }
@@ -55,27 +52,33 @@ class VideoThumb extends Component {
   }
 
   async componentWillMount() {
-    const {userId, video: {id: videoId, isStarred}} = this.props
+    const { userId, video: { id: videoId, isStarred } } = this.props
     if (isStarred && userId) {
-      const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
-      this.setState(() => ({xpEarned}))
+      const { data: { xpEarned } } = await request.get(
+        `${API_URL}/xpEarned?videoId=${videoId}`,
+        auth()
+      )
+      this.setState(() => ({ xpEarned }))
     }
   }
 
   async componentWillReceiveProps(nextProps) {
-    const {userId, video: {id: videoId, isStarred}} = this.props
+    const { userId, video: { id: videoId, isStarred } } = this.props
     if (isStarred && nextProps.userId && nextProps.userId !== userId) {
-      const {data: {xpEarned}} = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
-      this.setState(() => ({xpEarned}))
+      const { data: { xpEarned } } = await request.get(
+        `${API_URL}/xpEarned?videoId=${videoId}`,
+        auth()
+      )
+      this.setState(() => ({ xpEarned }))
     }
     if (userId && !nextProps.userId) {
-      this.setState(() => ({xpEarned: false}))
+      this.setState(() => ({ xpEarned: false }))
     }
   }
 
   render() {
-    const {onEdit, confirmModalShown, onTitleHover, xpEarned} = this.state
-    const {size, editable, video, to, user} = this.props
+    const { onEdit, confirmModalShown, onTitleHover, xpEarned } = this.state
+    const { size, editable, video, to, user } = this.props
     const menuProps = [
       {
         label: 'Edit',
@@ -89,8 +92,7 @@ class VideoThumb extends Component {
     return (
       <div className={size}>
         <div className="thumbnail">
-          {
-            editable &&
+          {editable && (
             <DropdownButton
               style={{
                 position: 'absolute',
@@ -101,11 +103,8 @@ class VideoThumb extends Component {
               icon="pencil"
               menuProps={menuProps}
             />
-          }
-          <Link
-            to={`/${to}`}
-            onClickAsync={this.onLinkClick}
-          >
+          )}
+          <Link to={`/${to}`} onClickAsync={this.onLinkClick}>
             <div
               style={{
                 position: 'relative',
@@ -136,7 +135,7 @@ class VideoThumb extends Component {
               height: '8rem'
             }}
           >
-            {onEdit ?
+            {onEdit ? (
               <div
                 className="input-group col-xs-12"
                 style={{
@@ -150,10 +149,12 @@ class VideoThumb extends Component {
                   onClickOutSide={this.onEditTitleCancel}
                 />
               </div>
-              :
+            ) : (
               <div>
                 <h5
-                  ref={ref => { this.thumbLabel = ref }}
+                  ref={ref => {
+                    this.thumbLabel = ref
+                  }}
                   style={{
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
@@ -165,42 +166,50 @@ class VideoThumb extends Component {
                     href={`/${to}`}
                     onClick={this.onLinkClick}
                     onMouseOver={this.onMouseOver}
-                    onMouseLeave={() => this.setState({onTitleHover: false})}
+                    onMouseLeave={() => this.setState({ onTitleHover: false })}
                   >
                     {cleanString(video.title)}
                   </a>
                 </h5>
-                <FullTextReveal show={onTitleHover} text={cleanString(video.title)} />
+                <FullTextReveal
+                  show={onTitleHover}
+                  text={cleanString(video.title)}
+                />
               </div>
-            }
-            {!onEdit &&
-              <small style={{
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden'
-              }}>Added by <UsernameText user={user} />
+            )}
+            {!onEdit && (
+              <small
+                style={{
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden'
+                }}
+              >
+                Added by <UsernameText user={user} />
               </small>
-            }
-            {video.numLikes > 0 &&
+            )}
+            {video.numLikes > 0 && (
               <small className="pull-right">
-                <span className="glyphicon glyphicon-thumbs-up" />&times;{video.numLikes}
+                <span className="glyphicon glyphicon-thumbs-up" />&times;{
+                  video.numLikes
+                }
               </small>
-            }
+            )}
           </div>
         </div>
-        {confirmModalShown &&
+        {confirmModalShown && (
           <ConfirmModal
             title="Remove Video"
             onHide={this.onHideModal}
             onConfirm={this.onDeleteConfirm}
           />
-        }
+        )}
       </div>
     )
   }
 
   onLinkClick = () => {
-    const {video, clickSafe} = this.props
+    const { video, clickSafe } = this.props
     if (!clickSafe) {
       return this.props.loadVideoPage(video.id)
     } else {
@@ -209,45 +218,42 @@ class VideoThumb extends Component {
   }
 
   onEditTitle = () => {
-    this.setState({onEdit: true})
+    this.setState({ onEdit: true })
   }
 
   onEditedTitleSubmit = title => {
-    const {video, editVideoTitle} = this.props
+    const { video, editVideoTitle } = this.props
     const videoId = video.id
-    editVideoTitle({title, videoId}, this)
+    editVideoTitle({ title, videoId }, this)
   }
 
   onEditTitleCancel = () => {
-    this.setState({onEdit: false})
+    this.setState({ onEdit: false })
   }
 
   onDeleteClick = () => {
-    this.setState({confirmModalShown: true})
+    this.setState({ confirmModalShown: true })
   }
 
   onDeleteConfirm = () => {
-    const {deleteVideo, video, arrayIndex, lastVideoId} = this.props
+    const { deleteVideo, video, arrayIndex, lastVideoId } = this.props
     const videoId = video.id
-    deleteVideo({videoId, arrayIndex, lastVideoId})
+    deleteVideo({ videoId, arrayIndex, lastVideoId })
   }
 
   onHideModal = () => {
-    this.setState({confirmModalShown: false})
+    this.setState({ confirmModalShown: false })
   }
 
   onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({onTitleHover: true})
+      this.setState({ onTitleHover: true })
     }
   }
 }
 
-export default connect(
-  state => ({userId: state.UserReducer.userId}),
-  {
-    loadVideoPage: loadVideoPageFromClientSideAsync,
-    editVideoTitle: editVideoTitleAsync,
-    deleteVideo: deleteVideoAsync
-  }
-)(VideoThumb)
+export default connect(state => ({ userId: state.UserReducer.userId }), {
+  loadVideoPage: loadVideoPageFromClientSideAsync,
+  editVideoTitle: editVideoTitleAsync,
+  deleteVideo: deleteVideoAsync
+})(VideoThumb)

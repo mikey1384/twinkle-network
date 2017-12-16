@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Button from 'components/Button'
 import Textarea from 'react-textarea-autosize'
-import {stringIsEmpty, addEmoji, finalizeEmoji} from 'helpers/stringHelpers'
-import {scrollElementToCenter} from 'helpers/domHelpers'
+import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
+import { scrollElementToCenter } from 'helpers/domHelpers'
 
 export default class InputArea extends Component {
   static propTypes = {
@@ -37,14 +37,16 @@ export default class InputArea extends Component {
   }
 
   render() {
-    const {text} = this.state
-    const {placeholder, rows, autoFocus, formGroupStyle} = this.props
+    const { text } = this.state
+    const { placeholder, rows, autoFocus, formGroupStyle } = this.props
     return (
       <div className="container-fluid">
         <div
           className="row form-group"
           style={formGroupStyle && formGroupStyle}
-          ref={ref => { this.InputArea = ref }}
+          ref={ref => {
+            this.InputArea = ref
+          }}
         >
           <Textarea
             autoFocus={autoFocus}
@@ -52,7 +54,7 @@ export default class InputArea extends Component {
             minRows={rows}
             value={text}
             placeholder={placeholder}
-            onChange={event => this.setState({text: event.target.value})}
+            onChange={event => this.setState({ text: event.target.value })}
             onKeyUp={this.handleKeyUp}
           />
         </div>
@@ -70,13 +72,13 @@ export default class InputArea extends Component {
   }
 
   handleKeyUp(event) {
-    if (event.key === ' ') this.setState({text: addEmoji(event.target.value)})
+    if (event.key === ' ') this.setState({ text: addEmoji(event.target.value) })
   }
 
   onSubmit() {
     if (!stringIsEmpty(this.state.text)) {
       this.props.onSubmit(finalizeEmoji(this.state.text))
-      this.setState({text: ''})
+      this.setState({ text: '' })
     }
   }
 }

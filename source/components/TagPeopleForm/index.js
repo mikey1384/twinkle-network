@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import React, { Component } from 'react'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import TagInput from './TagInput'
 
 export default class TagPeopleForm extends Component {
@@ -17,10 +17,7 @@ export default class TagPeopleForm extends Component {
       PropTypes.array,
       PropTypes.node
     ]),
-    onSubmit: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.func
-    ])
+    onSubmit: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
   }
 
   timer = null
@@ -30,7 +27,7 @@ export default class TagPeopleForm extends Component {
   }
 
   componentWillUnmount() {
-    const {onClear} = this.props
+    const { onClear } = this.props
     onClear()
   }
 
@@ -43,13 +40,15 @@ export default class TagPeopleForm extends Component {
       onSubmit,
       children
     } = this.props
-    const {searchText} = this.state
+    const { searchText } = this.state
     const filteredResults = searchResults.filter(filter)
     return (
-      <form onSubmit={event => {
-        event.preventDefault()
-        onSubmit && onSubmit()
-      }}>
+      <form
+        onSubmit={event => {
+          event.preventDefault()
+          onSubmit && onSubmit()
+        }}
+      >
         <div className="form-group">
           <label>People</label>
           {this.renderTags()}
@@ -58,7 +57,7 @@ export default class TagPeopleForm extends Component {
             value={searchText}
             onChange={this.onUserSearch}
             onClickOutSide={() => {
-              this.setState({searchText: ''})
+              this.setState({ searchText: '' })
               onClear()
             }}
             searchResults={filteredResults}
@@ -72,44 +71,50 @@ export default class TagPeopleForm extends Component {
   }
 
   renderTags = () => {
-    const {selectedUsers, onRemoveUser} = this.props
-    return selectedUsers.length > 0 ? <div
-      style={{
-        marginBottom: '0.5em'
-      }}
-    >
-      {selectedUsers.map((user, index) => {
-        return <span
-          key={index}
-          style={{
-            marginLeft: index > 0 && '0.2em',
-            backgroundColor: '#18aae0',
-            color: '#fff',
-            paddingTop: '3px',
-            paddingBottom: '3px',
-            paddingLeft: '8px',
-            paddingRight: '8px',
-            borderRadius: '3px',
-            cursor: 'pointer'
-          }}
-          onClick={() => onRemoveUser(user)}
-        >{user.username} &times;</span>
-      })}
-    </div> : null
+    const { selectedUsers, onRemoveUser } = this.props
+    return selectedUsers.length > 0 ? (
+      <div
+        style={{
+          marginBottom: '0.5em'
+        }}
+      >
+        {selectedUsers.map((user, index) => {
+          return (
+            <span
+              key={index}
+              style={{
+                marginLeft: index > 0 && '0.2em',
+                backgroundColor: '#18aae0',
+                color: '#fff',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                borderRadius: '3px',
+                cursor: 'pointer'
+              }}
+              onClick={() => onRemoveUser(user)}
+            >
+              {user.username} &times;
+            </span>
+          )
+        })}
+      </div>
+    ) : null
   }
 
-  onUserSearch = (text) => {
-    const {onSearch, onClear} = this.props
+  onUserSearch = text => {
+    const { onSearch, onClear } = this.props
     clearTimeout(this.timer)
-    this.setState({searchText: text})
+    this.setState({ searchText: text })
     if (stringIsEmpty(text) || text.length < 2) {
       return onClear()
     }
     this.timer = setTimeout(() => onSearch(text), 300)
   }
 
-  onAddUser = (user) => {
-    this.setState({searchText: ''})
+  onAddUser = user => {
+    this.setState({ searchText: '' })
     this.props.onAddUser(user)
     this.props.onClear()
   }

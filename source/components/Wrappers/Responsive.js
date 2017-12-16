@@ -13,7 +13,7 @@ Responsive.propTypes = {
   children: PropTypes.element,
   device: PropTypes.string
 }
-export default function Responsive({device, children, ...props}) {
+export default function Responsive({ device, children, ...props }) {
   const breakpoint = breakpoints[device] || breakpoints.desktop
   return (
     <ErrorBoundary>

@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {withRouter} from 'react-router-dom'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import SearchInput from 'components/Texts/SearchInput'
-import {stringIsEmpty, cleanString} from 'helpers/stringHelpers'
-import {loadVideoPageFromClientSideAsync} from 'redux/actions/VideoActions'
-import {loadLinkPage} from 'redux/actions/LinkActions'
-import {clearSearchResults, searchContent} from 'redux/actions/ContentActions'
-import {Color} from 'constants/css'
-import {recordUserAction} from 'helpers/userDataHelpers'
+import { stringIsEmpty, cleanString } from 'helpers/stringHelpers'
+import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions'
+import { loadLinkPage } from 'redux/actions/LinkActions'
+import { clearSearchResults, searchContent } from 'redux/actions/ContentActions'
+import { Color } from 'constants/css'
+import { recordUserAction } from 'helpers/userDataHelpers'
 
 class SearchBox extends Component {
   static propTypes = {
@@ -31,23 +31,29 @@ class SearchBox extends Component {
   timer = null
 
   render() {
-    const {searchResult, clearSearchResults, className, style} = this.props
-    const {searchText} = this.state
+    const { searchResult, clearSearchResults, className, style } = this.props
+    const { searchText } = this.state
     return (
-      <form onSubmit={e => e.preventDefault()} className={className} style={style}>
+      <form
+        onSubmit={e => e.preventDefault()}
+        className={className}
+        style={style}
+      >
         <SearchInput
           placeholder="Search for Videos and Links"
           onChange={this.onContentSearch}
           value={searchText}
           searchResults={searchResult}
-          renderItemLabel={
-            item => <div>
-              <div style={{
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                lineHeight: 'normal'
-              }}>
+          renderItemLabel={item => (
+            <div>
+              <div
+                style={{
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  lineHeight: 'normal'
+                }}
+              >
                 <span
                   style={{
                     color: item.type === 'video' ? Color.logoBlue : Color.pink,
@@ -58,10 +64,10 @@ class SearchBox extends Component {
                 </span>&nbsp;&nbsp;&nbsp;<span>{cleanString(item.label)}</span>
               </div>
             </div>
-          }
+          )}
           renderItemUrl={item => `/${item.type}s/${item.id}`}
           onClickOutSide={() => {
-            this.setState({searchText: ''})
+            this.setState({ searchText: '' })
             clearSearchResults()
           }}
           onSelect={this.onSelect}
@@ -70,32 +76,42 @@ class SearchBox extends Component {
     )
   }
 
-  onContentSearch = (text) => {
-    const {searchContent, clearSearchResults} = this.props
+  onContentSearch = text => {
+    const { searchContent, clearSearchResults } = this.props
     clearTimeout(this.timer)
-    this.setState({searchText: text})
+    this.setState({ searchText: text })
     if (stringIsEmpty(text)) {
       return clearSearchResults()
     }
     this.timer = setTimeout(() => searchContent(text), 300)
   }
 
-  onSelect = (item) => {
+  onSelect = item => {
     const {
-      clearSearchResults, loadVideoPage, loadLinkPage,
-      history, loggedIn, location: {pathname}
+      clearSearchResults,
+      loadVideoPage,
+      loadLinkPage,
+      history,
+      loggedIn,
+      location: { pathname }
     } = this.props
-    this.setState({searchText: ''})
+    this.setState({ searchText: '' })
     clearSearchResults()
-    if (loggedIn) recordUserAction({action: 'search', target: item.type, subTarget: item.id})
+    if (loggedIn) {
+      recordUserAction({
+        action: 'search',
+        target: item.type,
+        subTarget: item.id
+      })
+    }
     if (pathname === `/${item.type}s/${item.id}`) return
     if (item.type === 'video') {
-      return loadVideoPage(item.id).then(
-        () => history.push(`/${item.type}s/${item.id}`)
+      return loadVideoPage(item.id).then(() =>
+        history.push(`/${item.type}s/${item.id}`)
       )
     } else {
-      return loadLinkPage(item.id).then(
-        () => history.push(`/${item.type}s/${item.id}`)
+      return loadLinkPage(item.id).then(() =>
+        history.push(`/${item.type}s/${item.id}`)
       )
     }
   }
