@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {withRouter} from 'react-router-dom'
+import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
-import {connect} from 'react-redux'
-import {getMorePlaylistsAsync} from 'redux/actions/PlaylistActions'
+import { connect } from 'react-redux'
+import { getMorePlaylistsAsync } from 'redux/actions/PlaylistActions'
 import SectionPanel from 'components/SectionPanel'
-import {queryStringForArray} from 'helpers/apiHelpers'
+import { queryStringForArray } from 'helpers/apiHelpers'
 
 class PlaylistsPanel extends Component {
   static propTypes = {
@@ -27,14 +27,22 @@ class PlaylistsPanel extends Component {
   }
 
   componentDidMount() {
-    const {loadPlaylists, location, loaded} = this.props
+    const { loadPlaylists, location, loaded } = this.props
     if (location.action === 'PUSH' || !loaded) {
       loadPlaylists()
     }
   }
 
   render() {
-    const {loadMoreButton, playlists, userId, buttonGroupShown = true, buttonGroup, loaded, title = 'All Playlists'} = this.props
+    const {
+      loadMoreButton,
+      playlists,
+      userId,
+      buttonGroupShown = true,
+      buttonGroup,
+      loaded,
+      title = 'All Playlists'
+    } = this.props
     let buttonGroupElement = buttonGroupShown ? buttonGroup() : null
     return (
       <SectionPanel
@@ -63,12 +71,13 @@ class PlaylistsPanel extends Component {
   }
 
   loadMorePlaylists() {
-    const {playlists, getMorePlaylistsAsync} = this.props
-    return getMorePlaylistsAsync(queryStringForArray(playlists, 'id', 'shownPlaylists'))
+    const { playlists, getMorePlaylistsAsync } = this.props
+    return getMorePlaylistsAsync(
+      queryStringForArray(playlists, 'id', 'shownPlaylists')
+    )
   }
 }
 
-export default connect(
-  null,
-  {getMorePlaylistsAsync}
-)(withRouter(PlaylistsPanel))
+export default connect(null, { getMorePlaylistsAsync })(
+  withRouter(PlaylistsPanel)
+)

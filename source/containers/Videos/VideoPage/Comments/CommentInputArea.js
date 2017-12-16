@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import InputArea from 'components/Texts/InputArea'
 import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm'
 import Button from 'components/Button'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import {
   uploadVideoCommentAsync,
   uploadVideoDiscussion,
@@ -30,103 +30,133 @@ class CommentInputArea extends Component {
   }
   render() {
     const {
-      videoId, uploadComment, uploadDiscussion, loadMoreDiscussionsButton, discussions, loadMoreDiscussions
+      videoId,
+      uploadComment,
+      uploadDiscussion,
+      loadMoreDiscussionsButton,
+      discussions,
+      loadMoreDiscussions
     } = this.props
-    const {discussionTabActive, discussionFormShown} = this.state
+    const { discussionTabActive, discussionFormShown } = this.state
     return (
       <div className="page-header">
         <div className="row">
-          <ul className="nav nav-tabs" style={{fontSize: '1.3em', fontWeight: 'bold'}}>
+          <ul
+            className="nav nav-tabs"
+            style={{ fontSize: '1.3em', fontWeight: 'bold' }}
+          >
             <li
               className={discussionTabActive ? 'active' : ''}
-              style={{cursor: 'pointer'}}
-              onClick={() => this.setState({discussionTabActive: true})}
+              style={{ cursor: 'pointer' }}
+              onClick={() => this.setState({ discussionTabActive: true })}
             >
               <a>Discuss</a>
             </li>
             <li
               className={!discussionTabActive ? 'active' : ''}
-              style={{cursor: 'pointer'}}
-              onClick={() => this.setState({
-                discussionTabActive: false,
-                discussionFormShown: false
-              })}
+              style={{ cursor: 'pointer' }}
+              onClick={() =>
+                this.setState({
+                  discussionTabActive: false,
+                  discussionFormShown: false
+                })
+              }
             >
               <a>Comment on this video</a>
             </li>
           </ul>
         </div>
-        <div style={{marginTop: '1.5em'}}>
-          {discussionTabActive && <div>
+        <div style={{ marginTop: '1.5em' }}>
+          {discussionTabActive && (
             <div>
-              <div className="container-fluid">
-                {discussionFormShown ?
-                  <TitleDescriptionForm
-                    autoFocus
-                    onSubmit={(title, description) => uploadDiscussion(title, description, videoId)}
-                    rows={4}
-                    titlePlaceholder="Enter discussion topic..."
-                    descriptionPlaceholder="Enter details... (Optional)"
-                  /> :
-                  <Button
-                    className="btn btn-primary"
-                    onClick={() => this.setState({discussionFormShown: true})}
-                  >
-                    Start a New Discussion
-                  </Button>
-                }
-              </div>
-              <div className="container-fluid">
-                {!!discussions && discussions.length > 0 && <h3 style={{marginTop: '1em'}}>Active Discussions</h3>}
-                {!!discussions && discussions.map(discussion =>
-                  <DiscussionPanel
-                    key={discussion.id}
-                    videoId={videoId}
-                    {...discussion}
-                  />
-                )}
-                {loadMoreDiscussionsButton &&
-                  <div className="text-center" style={{paddingTop: '0.5em'}}>
-                    <Button
-                      className="btn btn-success"
-                      onClick={() => loadMoreDiscussions(videoId, discussions[discussions.length - 1].id)}
-                    >
-                      Load More
-                    </Button>
-                  </div>
-                }
-                {(!discussions || discussions.length === 0) &&
-                  <div>
-                    <h3 style={{marginTop: '1em'}}>Comment on this video</h3>
-                    <InputArea
-                      onSubmit={text => uploadComment(text, videoId)}
+              <div>
+                <div className="container-fluid">
+                  {discussionFormShown ? (
+                    <TitleDescriptionForm
+                      autoFocus
+                      onSubmit={(title, description) =>
+                        uploadDiscussion(title, description, videoId)
+                      }
                       rows={4}
-                      placeholder="Write your comment here..."
+                      titlePlaceholder="Enter discussion topic..."
+                      descriptionPlaceholder="Enter details... (Optional)"
                     />
-                  </div>
-                }
+                  ) : (
+                    <Button
+                      className="btn btn-primary"
+                      onClick={() =>
+                        this.setState({ discussionFormShown: true })
+                      }
+                    >
+                      Start a New Discussion
+                    </Button>
+                  )}
+                </div>
+                <div className="container-fluid">
+                  {!!discussions &&
+                    discussions.length > 0 && (
+                      <h3 style={{ marginTop: '1em' }}>Active Discussions</h3>
+                    )}
+                  {!!discussions &&
+                    discussions.map(discussion => (
+                      <DiscussionPanel
+                        key={discussion.id}
+                        videoId={videoId}
+                        {...discussion}
+                      />
+                    ))}
+                  {loadMoreDiscussionsButton && (
+                    <div
+                      className="text-center"
+                      style={{ paddingTop: '0.5em' }}
+                    >
+                      <Button
+                        className="btn btn-success"
+                        onClick={() =>
+                          loadMoreDiscussions(
+                            videoId,
+                            discussions[discussions.length - 1].id
+                          )
+                        }
+                      >
+                        Load More
+                      </Button>
+                    </div>
+                  )}
+                  {(!discussions || discussions.length === 0) && (
+                    <div>
+                      <h3 style={{ marginTop: '1em' }}>
+                        Comment on this video
+                      </h3>
+                      <InputArea
+                        onSubmit={text => uploadComment(text, videoId)}
+                        rows={4}
+                        placeholder="Write your comment here..."
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>}
-          {!discussionTabActive && <div className="container-fluid">
-            <InputArea
-              autoFocus
-              onSubmit={text => uploadComment(text, videoId)}
-              rows={4}
-              placeholder="Write your comment here..."
-            />
-          </div>}
+          )}
+          {!discussionTabActive && (
+            <div className="container-fluid">
+              <InputArea
+                autoFocus
+                onSubmit={text => uploadComment(text, videoId)}
+                rows={4}
+                placeholder="Write your comment here..."
+              />
+            </div>
+          )}
         </div>
       </div>
     )
   }
 }
 
-export default connect(
-  null,
-  {
-    uploadComment: uploadVideoCommentAsync,
-    uploadDiscussion: uploadVideoDiscussion,
-    loadMoreDiscussions
-  }
-)(CommentInputArea)
+export default connect(null, {
+  uploadComment: uploadVideoCommentAsync,
+  uploadDiscussion: uploadVideoDiscussion,
+  loadMoreDiscussions
+})(CommentInputArea)

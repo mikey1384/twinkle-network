@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {cleanString} from 'helpers/stringHelpers'
+import React, { Component } from 'react'
+import { cleanString } from 'helpers/stringHelpers'
 import FullTextReveal from 'components/FullTextReveal'
-import {textIsOverflown} from 'helpers/domHelpers'
+import { textIsOverflown } from 'helpers/domHelpers'
 import StarMark from 'components/StarMark'
 
 export default class VideoThumb extends Component {
@@ -22,15 +22,13 @@ export default class VideoThumb extends Component {
   }
 
   render() {
-    const {video, selected, onSelect, onDeselect} = this.props
-    const {onTitleHover} = this.state
+    const { video, selected, onSelect, onDeselect } = this.props
+    const { onTitleHover } = this.state
     return (
-      <div
-        className="col-xs-2"
-      >
+      <div className="col-xs-2">
         <div
           className={`thumbnail ${selected && 'thumbnail-selected'}`}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={() => {
             if (selected) {
               onDeselect(video.id)
@@ -61,13 +59,12 @@ export default class VideoThumb extends Component {
             />
             {!!video.isStarred && <StarMark size={2} />}
           </div>
-          <div
-            className="caption"
-            style={{height: '8rem'}}
-          >
+          <div className="caption" style={{ height: '8rem' }}>
             <div>
               <h5
-                ref={ref => { this.thumbLabel = ref }}
+                ref={ref => {
+                  this.thumbLabel = ref
+                }}
                 style={{
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
@@ -75,15 +72,24 @@ export default class VideoThumb extends Component {
                   lineHeight: 'normal'
                 }}
                 onMouseOver={this.onMouseOver}
-                onMouseLeave={() => this.setState({onTitleHover: false})}
-              >{cleanString(video.title)}</h5>
-              <FullTextReveal show={onTitleHover} text={cleanString(video.title)} />
+                onMouseLeave={() => this.setState({ onTitleHover: false })}
+              >
+                {cleanString(video.title)}
+              </h5>
+              <FullTextReveal
+                show={onTitleHover}
+                text={cleanString(video.title)}
+              />
             </div>
-            <small style={{
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden'
-            }}>{video.uploaderName}</small>
+            <small
+              style={{
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden'
+              }}
+            >
+              {video.uploaderName}
+            </small>
           </div>
         </div>
       </div>
@@ -92,7 +98,7 @@ export default class VideoThumb extends Component {
 
   onMouseOver() {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({onTitleHover: true})
+      this.setState({ onTitleHover: true })
     }
   }
 }

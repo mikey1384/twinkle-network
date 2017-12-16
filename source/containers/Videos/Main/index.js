@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal'
 import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal'
 import Button from 'components/Button'
@@ -9,7 +9,10 @@ import AllVideosPanel from './Panels/AllVideosPanel'
 import PlaylistsPanel from './Panels/PlaylistsPanel'
 import AddPlaylistModal from './Modals/AddPlaylistModal'
 import Notification from 'containers/Notification'
-import {openAddVideoModal, closeAddVideoModal} from 'redux/actions/VideoActions'
+import {
+  openAddVideoModal,
+  closeAddVideoModal
+} from 'redux/actions/VideoActions'
 import {
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModalAsync,
@@ -19,7 +22,7 @@ import {
   getPinnedPlaylistsAsync,
   getPlaylistsAsync
 } from 'redux/actions/PlaylistActions'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 class Main extends Component {
   static propTypes = {
@@ -85,12 +88,12 @@ class Main extends Component {
       closeReorderPinnedPlaylistsModal
     } = this.props
 
-    const {addPlaylistModalShown} = this.state
+    const { addPlaylistModalShown } = this.state
 
     const allPlaylistButtons = [
       {
         label: '+ Add Playlist',
-        onClick: () => this.setState({addPlaylistModalShown: true}),
+        onClick: () => this.setState({ addPlaylistModalShown: true }),
         buttonClass: 'btn-default'
       }
     ]
@@ -136,73 +139,63 @@ class Main extends Component {
             userId={userId}
             onAddVideoClick={() => openAddVideoModal()}
           />
-          {addVideoModalShown &&
-            <AddVideoModal
-              onHide={() => closeAddVideoModal()}
-            />
-          }
-          {addPlaylistModalShown &&
+          {addVideoModalShown && (
+            <AddVideoModal onHide={() => closeAddVideoModal()} />
+          )}
+          {addPlaylistModalShown && (
             <AddPlaylistModal
-              onHide={() => this.setState({addPlaylistModalShown: false})}
+              onHide={() => this.setState({ addPlaylistModalShown: false })}
             />
-          }
-          {selectPlaylistsToPinModalShown &&
+          )}
+          {selectPlaylistsToPinModalShown && (
             <SelectPlaylistsToPinModal
               playlistsToPin={playlistsToPin}
               pinnedPlaylists={pinnedPlaylists}
-              selectedPlaylists={
-                pinnedPlaylists.map(playlist => {
-                  return playlist.id
-                })
-              }
+              selectedPlaylists={pinnedPlaylists.map(playlist => {
+                return playlist.id
+              })}
               loadMoreButton={loadMorePlaylistsToPinButton}
               onHide={() => closeSelectPlaylistsToPinModal()}
             />
-          }
-          {reorderPinnedPlaylistsModalShown &&
+          )}
+          {reorderPinnedPlaylistsModalShown && (
             <ReorderPinnedPlaylistsModal
               pinnedPlaylists={pinnedPlaylists}
-              playlistIds={
-                pinnedPlaylists.map(playlist => {
-                  return playlist.id
-                })
-              }
+              playlistIds={pinnedPlaylists.map(playlist => {
+                return playlist.id
+              })}
               onHide={() => closeReorderPinnedPlaylistsModal()}
             />
-          }
+          )}
         </div>
-        {notificationLoaded &&
-          <Notification
-            device="desktop"
-            className="col-xs-3 col-xs-offset-9"
-          >
+        {notificationLoaded && (
+          <Notification device="desktop" className="col-xs-3 col-xs-offset-9">
             <Button
               className="btn btn-lg btn-info"
-              style={{fontSize: '1.5em', width: '100%', marginBottom: '0.5em'}}
+              style={{
+                fontSize: '1.5em',
+                width: '100%',
+                marginBottom: '0.5em'
+              }}
               onClick={() => openAddVideoModal()}
             >
               + Add Video
             </Button>
             <Button
               className="btn btn-lg btn-info"
-              style={{fontSize: '1.5em', width: '100%'}}
-              onClick={() => this.setState({addPlaylistModalShown: true})}
+              style={{ fontSize: '1.5em', width: '100%' }}
+              onClick={() => this.setState({ addPlaylistModalShown: true })}
             >
               + Add Playlist
             </Button>
           </Notification>
-        }
+        )}
       </div>
     )
   }
 
   renderPlaylistButton(buttonsArray) {
-    return (
-      <ButtonGroup
-        style={{marginLeft: 'auto'}}
-        buttons={buttonsArray}
-      />
-    )
+    return <ButtonGroup style={{ marginLeft: 'auto' }} buttons={buttonsArray} />
   }
 }
 
@@ -224,11 +217,14 @@ export default connect(
     addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
     addVideoModalShown: state.VideoReducer.addVideoModalShown,
 
-    selectPlaylistsToPinModalShown: state.PlaylistReducer.selectPlaylistsToPinModalShown,
+    selectPlaylistsToPinModalShown:
+      state.PlaylistReducer.selectPlaylistsToPinModalShown,
     playlistsToPin: state.PlaylistReducer.playlistsToPin,
-    loadMorePlaylistsToPinButton: state.PlaylistReducer.loadMorePlaylistsToPinButton,
+    loadMorePlaylistsToPinButton:
+      state.PlaylistReducer.loadMorePlaylistsToPinButton,
 
-    reorderPinnedPlaylistsModalShown: state.PlaylistReducer.reorderPinnedPlaylistsModalShown
+    reorderPinnedPlaylistsModalShown:
+      state.PlaylistReducer.reorderPinnedPlaylistsModalShown
   }),
   {
     openSelectPlaylistsToPinModal: openSelectPlaylistsToPinModalAsync,

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {Modal} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Modal } from 'react-bootstrap'
 import QuestionBlock from './QuestionBlock'
 import ButtonGroup from 'components/ButtonGroup'
 import Button from 'components/Button'
 import HTML5Backend from 'react-dnd-html5-touch-backend'
-import {DragDropContext} from 'react-dnd'
+import { DragDropContext } from 'react-dnd'
 import QuestionsListGroup from './QuestionsListGroup'
 
 const defaultChoices = () => [
@@ -37,31 +37,34 @@ const defaultChoices = () => [
 ]
 
 const defaultState = props => ({
-  questions: props.questions.length === 0 ? [
-    {
-      title: '',
-      id: 0,
-      onEdit: true,
-      choices: defaultChoices(),
-      errorMessage: '',
-      deleted: false
-    }
-  ] : props.questions.map((question, index) => {
-    return {
-      title: question.title,
-      id: index,
-      onEdit: false,
-      choices: question.choices.map((choice, index) => {
-        return {
-          label: choice,
-          checked: index + 1 === question.correctChoice,
-          id: index
-        }
-      }),
-      errorMessage: '',
-      deleted: false
-    }
-  }),
+  questions:
+    props.questions.length === 0
+      ? [
+          {
+            title: '',
+            id: 0,
+            onEdit: true,
+            choices: defaultChoices(),
+            errorMessage: '',
+            deleted: false
+          }
+        ]
+      : props.questions.map((question, index) => {
+          return {
+            title: question.title,
+            id: index,
+            onEdit: false,
+            choices: question.choices.map((choice, index) => {
+              return {
+                label: choice,
+                checked: index + 1 === question.correctChoice,
+                id: index
+              }
+            }),
+            errorMessage: '',
+            deleted: false
+          }
+        }),
   interfaceMarginTop: 0,
   editedQuestionOrder: [],
   reorderModeOn: false
@@ -90,14 +93,16 @@ class QuestionsBuilder extends Component {
   }
 
   componentWillMount() {
-    this.setState({editedQuestionOrder: this.state.questions.map(question => {
-      return question.id
-    })})
+    this.setState({
+      editedQuestionOrder: this.state.questions.map(question => {
+        return question.id
+      })
+    })
   }
 
   render() {
-    const {reorderModeOn, questions, editedQuestionOrder} = this.state
-    const {title} = this.props
+    const { reorderModeOn, questions, editedQuestionOrder } = this.state
+    const { title } = this.props
     const topButtons = [
       {
         label: '+ Add',
@@ -106,10 +111,11 @@ class QuestionsBuilder extends Component {
       },
       {
         label: 'Reorder',
-        onClick: () => this.setState({
-          reorderModeOn: true,
-          interfaceMarginTop: 0
-        }),
+        onClick: () =>
+          this.setState({
+            reorderModeOn: true,
+            interfaceMarginTop: 0
+          }),
         buttonClass: 'btn-info'
       },
       {
@@ -131,15 +137,9 @@ class QuestionsBuilder extends Component {
           <h2 className="text-center">{title}</h2>
         </Modal.Header>
         <Modal.Body>
-          <div
-            className="row"
-            style={{paddingBottom: '2em'}}
-          >
-            <div
-              className="col-sm-5"
-              style={{marginLeft: '3%'}}
-            >
-              {reorderModeOn &&
+          <div className="row" style={{ paddingBottom: '2em' }}>
+            <div className="col-sm-5" style={{ marginLeft: '3%' }}>
+              {reorderModeOn && (
                 <QuestionsListGroup
                   questions={questions}
                   questionIds={editedQuestionOrder}
@@ -149,22 +149,24 @@ class QuestionsBuilder extends Component {
                   }}
                   onMove={this.onQuestionsRearrange}
                 />
-              }
+              )}
               {!reorderModeOn &&
                 questions.map((question, index) => {
                   return (
                     <div
                       key={index}
-                      ref={ref => { this.Questions[question.id] = ref }}
+                      ref={ref => {
+                        this.Questions[question.id] = ref
+                      }}
                       style={{
                         paddingTop: index === 0 ? '1em' : '3em'
                       }}
                     >
-                      {question.errorMessage &&
+                      {question.errorMessage && (
                         <span className="error-detected">
                           {question.errorMessage}
                         </span>
-                      }
+                      )}
                       <QuestionBlock
                         {...question}
                         questionIndex={index}
@@ -173,34 +175,33 @@ class QuestionsBuilder extends Component {
                         onRearrange={this.onChoicesRearrange}
                         onRemove={this.onRemoveQuestion}
                         onUndoRemove={this.onUndoRemove}
-                        onEditStart={
-                          questionIndex => {
-                            const newQuestions = this.state.questions.map((question, index) => {
+                        onEditStart={questionIndex => {
+                          const newQuestions = this.state.questions.map(
+                            (question, index) => {
                               if (index === questionIndex) {
                                 question.onEdit = true
                               }
                               return question
-                            })
-                            this.setState({questions: newQuestions})
-                          }
-                        }
-                        onEditCancel={
-                          questionIndex => {
-                            const newQuestions = this.state.questions.map((question, index) => {
+                            }
+                          )
+                          this.setState({ questions: newQuestions })
+                        }}
+                        onEditCancel={questionIndex => {
+                          const newQuestions = this.state.questions.map(
+                            (question, index) => {
                               if (index === questionIndex) {
                                 question.onEdit = false
                               }
                               return question
-                            })
-                            this.setState({questions: newQuestions})
-                          }
-                        }
+                            }
+                          )
+                          this.setState({ questions: newQuestions })
+                        }}
                         onEditDone={params => this.onChoiceEditDone(params)}
                       />
                     </div>
                   )
-                })
-              }
+                })}
             </div>
             <div
               className="col-sm-6 pull-right"
@@ -210,9 +211,7 @@ class QuestionsBuilder extends Component {
                 marginRight: '3%'
               }}
             >
-              <div
-                className="embed-responsive embed-responsive-16by9"
-              >
+              <div className="embed-responsive embed-responsive-16by9">
                 <iframe
                   className="embed-responsive-item"
                   frameBorder="0"
@@ -220,14 +219,11 @@ class QuestionsBuilder extends Component {
                   title={this.props.title}
                   width="640"
                   height="360"
-                  src={`https://www.youtube.com/embed/${this.props.videoCode}`}>
-                </iframe>
+                  src={`https://www.youtube.com/embed/${this.props.videoCode}`}
+                />
               </div>
-              <div
-                className="text-center"
-                style={{marginTop: '1em'}}
-              >
-                {reorderModeOn ?
+              <div className="text-center" style={{ marginTop: '1em' }}>
+                {reorderModeOn ? (
                   <div>
                     <Button
                       className="btn btn-primary"
@@ -244,21 +240,20 @@ class QuestionsBuilder extends Component {
                     >
                       Cancel
                     </Button>
-                  </div> :
+                  </div>
+                ) : (
                   <div>
-                    <ButtonGroup
-                      buttons={topButtons}
-                    />
-                    <div style={{marginTop: '1em'}}>
+                    <ButtonGroup buttons={topButtons} />
+                    <div style={{ marginTop: '1em' }}>
                       <Button
                         className="btn btn-success col-sm-2 col-sm-offset-5"
-                        onClick={ () => this.onSubmit() }
+                        onClick={() => this.onSubmit()}
                       >
                         Submit
                       </Button>
                     </div>
                   </div>
-                }
+                )}
               </div>
             </div>
           </div>
@@ -269,22 +264,27 @@ class QuestionsBuilder extends Component {
 
   onAddQuestion() {
     const questions = this.state.questions
-    const newQuestions = questions.concat([{
-      title: undefined,
-      id: questions.length,
-      onEdit: true,
-      choices: defaultChoices(),
-      errorMessage: null,
-      deleted: false
-    }])
-    this.setState({
-      questions: newQuestions,
-      editedQuestionOrder: newQuestions.map(question => {
-        return question.id
-      })
-    }, () => {
-      this.Questions[questions[questions.length-1].id].scrollIntoView()
-    })
+    const newQuestions = questions.concat([
+      {
+        title: undefined,
+        id: questions.length,
+        onEdit: true,
+        choices: defaultChoices(),
+        errorMessage: null,
+        deleted: false
+      }
+    ])
+    this.setState(
+      {
+        questions: newQuestions,
+        editedQuestionOrder: newQuestions.map(question => {
+          return question.id
+        })
+      },
+      () => {
+        this.Questions[questions[questions.length - 1].id].scrollIntoView()
+      }
+    )
   }
 
   onRemoveQuestion(questionIndex) {
@@ -300,15 +300,17 @@ class QuestionsBuilder extends Component {
   }
 
   onUndoRemove(questionIndex) {
-    this.setState({questions: this.state.questions.map((question, index) => {
-      if (index === questionIndex) {
-        question.deleted = false
-      }
-      return question
-    })})
+    this.setState({
+      questions: this.state.questions.map((question, index) => {
+        if (index === questionIndex) {
+          question.deleted = false
+        }
+        return question
+      })
+    })
   }
 
-  onChoiceEditDone({questionIndex, newChoicesArray, newTitle}) {
+  onChoiceEditDone({ questionIndex, newChoicesArray, newTitle }) {
     const newQuestion = this.state.questions[questionIndex]
     newQuestion.choices = newChoicesArray
     newQuestion.title = newTitle
@@ -335,7 +337,7 @@ class QuestionsBuilder extends Component {
     })
   }
 
-  onQuestionsRearrange({sourceId, targetId}) {
+  onQuestionsRearrange({ sourceId, targetId }) {
     const newQuestionOrder = this.state.editedQuestionOrder
     const sourceIndex = newQuestionOrder.indexOf(sourceId)
     const targetIndex = newQuestionOrder.indexOf(targetId)
@@ -347,14 +349,17 @@ class QuestionsBuilder extends Component {
   }
 
   onReorderDone() {
-    const newQuestions = this.state.editedQuestionOrder.reduce((result, questionId) => {
-      for (let i = 0; i < this.state.questions.length; i++) {
-        if (this.state.questions[i].id === questionId) {
-          result.push(this.state.questions[i])
+    const newQuestions = this.state.editedQuestionOrder.reduce(
+      (result, questionId) => {
+        for (let i = 0; i < this.state.questions.length; i++) {
+          if (this.state.questions[i].id === questionId) {
+            result.push(this.state.questions[i])
+          }
         }
-      }
-      return result
-    }, [])
+        return result
+      },
+      []
+    )
     this.setState({
       questions: newQuestions,
       reorderModeOn: false
@@ -375,7 +380,7 @@ class QuestionsBuilder extends Component {
     })
   }
 
-  onChoicesRearrange({questionIndex, choiceIndices}) {
+  onChoicesRearrange({ questionIndex, choiceIndices }) {
     const newQuestions = this.state.questions.map((question, index) => {
       if (index === questionIndex) {
         const newChoices = choiceIndices.reduce((result, choiceId) => {
@@ -390,17 +395,20 @@ class QuestionsBuilder extends Component {
       }
       return question
     })
-    this.setState({questions: newQuestions})
+    this.setState({ questions: newQuestions })
   }
 
   handleScroll(event) {
     const scrollTop = event.target.scrollTop
-    this.setState({interfaceMarginTop: scrollTop})
+    this.setState({ interfaceMarginTop: scrollTop })
   }
 
   onReset() {
     this.setState(defaultState(this.props), () =>
-      this.setState({editedQuestionOrder: this.state.questions.map(question => question.id)}))
+      this.setState({
+        editedQuestionOrder: this.state.questions.map(question => question.id)
+      })
+    )
   }
 
   onSubmit() {
@@ -420,7 +428,7 @@ class QuestionsBuilder extends Component {
 
     if (firstError !== null) {
       this.Questions[firstError].scrollIntoView()
-      this.setState({questions})
+      this.setState({ questions })
     } else {
       const finishedQuestions = questions.filter(question => {
         return !question.deleted
@@ -430,7 +438,9 @@ class QuestionsBuilder extends Component {
 
     function errorInQuestionChoices(question) {
       let validCheckExists = false
-      const validChoices = question.choices.filter(choice => choice.label && choice.label !== '')
+      const validChoices = question.choices.filter(
+        choice => choice.label && choice.label !== ''
+      )
       if (validChoices.length < 2) {
         return 'There must be at least 2 choices.'
       }

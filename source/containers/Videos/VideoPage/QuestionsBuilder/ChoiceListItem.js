@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import {DragSource, DropTarget} from 'react-dnd'
+import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
 
 const ListItemSource = {
@@ -11,7 +11,10 @@ const ListItemSource = {
     }
   },
   isDragging(props, monitor) {
-    return props.id === monitor.getItem().id && props.questionIndex === monitor.getItem().questionIndex
+    return (
+      props.id === monitor.getItem().id &&
+      props.questionIndex === monitor.getItem().questionIndex
+    )
   },
   endDrag(props, monitor) {
     const item = monitor.getItem()
@@ -31,7 +34,7 @@ const ListItemTarget = {
     const sourceQuestionIndex = sourceProps.questionIndex
 
     if (targetQuestionIndex === sourceQuestionIndex && sourceId !== targetId) {
-      targetProps.onMove({sourceId, targetId})
+      targetProps.onMove({ sourceId, targetId })
     }
   }
 }
@@ -58,40 +61,42 @@ function ChoiceListItem({
   onSelect,
   placeholder
 }) {
-  return connectDragSource(connectDropTarget(
-    <div
-      className="list-group-item container-fluid"
-      style={{
-        opacity: isDragging ? 0 : 1,
-        cursor: !checkDisabled && 'ns-resize'
-      }}
-    >
-      <span className="glyphicon glyphicon-align-justify pull-left grey-color col-sm-1"
-        style={{paddingLeft: '0px'}}
-      ></span>
-      <span
-        className="col-sm-10"
+  return connectDragSource(
+    connectDropTarget(
+      <div
+        className="list-group-item container-fluid"
         style={{
-          paddingLeft: '0px',
-          color: !label && '#999'
+          opacity: isDragging ? 0 : 1,
+          cursor: !checkDisabled && 'ns-resize'
         }}
-        dangerouslySetInnerHTML={{__html: label || placeholder}}
-      />
-      <span className="input pull-right"
       >
-        <input
-          type={inputType}
-          onChange={onSelect}
-          checked={checked}
-          disabled={checkDisabled}
-          style={{cursor: !checkDisabled && 'pointer'}}
+        <span
+          className="glyphicon glyphicon-align-justify pull-left grey-color col-sm-1"
+          style={{ paddingLeft: '0px' }}
         />
-      </span>
-    </div>
-  ))
+        <span
+          className="col-sm-10"
+          style={{
+            paddingLeft: '0px',
+            color: !label && '#999'
+          }}
+          dangerouslySetInnerHTML={{ __html: label || placeholder }}
+        />
+        <span className="input pull-right">
+          <input
+            type={inputType}
+            onChange={onSelect}
+            checked={checked}
+            disabled={checkDisabled}
+            style={{ cursor: !checkDisabled && 'pointer' }}
+          />
+        </span>
+      </div>
+    )
+  )
 }
 
-export default DropTarget(ItemTypes.LIST_ITEM, ListItemTarget, (connect) => ({
+export default DropTarget(ItemTypes.LIST_ITEM, ListItemTarget, connect => ({
   connectDropTarget: connect.dropTarget()
 }))(
   DragSource(ItemTypes.LIST_ITEM, ListItemSource, (connect, monitor) => ({

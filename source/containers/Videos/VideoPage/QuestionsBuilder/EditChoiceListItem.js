@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Textarea from 'react-textarea-autosize'
-import {cleanString} from 'helpers/stringHelpers'
+import { cleanString } from 'helpers/stringHelpers'
 
 EditChoiceListItem.propTypes = {
   checked: PropTypes.bool.isRequired,
@@ -34,10 +34,9 @@ export default function EditChoiceListItem(props) {
           type="radio"
           onChange={props.onSelect}
           checked={props.checked}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
         />
       </span>
     </div>
   )
 }
-

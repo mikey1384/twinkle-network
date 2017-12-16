@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {withRouter} from 'react-router-dom'
+import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import VideoThumb from 'components/VideoThumb'
-import {connect} from 'react-redux'
-import {getInitialVideos, getMoreVideos} from 'redux/actions/VideoActions'
+import { connect } from 'react-redux'
+import { getInitialVideos, getMoreVideos } from 'redux/actions/VideoActions'
 import SectionPanel from 'components/SectionPanel'
 import Button from 'components/Button'
 
-const last = (array) => {
+const last = array => {
   return array[array.length - 1]
 }
 
@@ -30,22 +30,32 @@ class AllVideosPanel extends Component {
   }
 
   componentDidMount() {
-    const {getInitialVideos, location, loaded} = this.props
+    const { getInitialVideos, location, loaded } = this.props
     if (location.action === 'PUSH' || !loaded) {
       getInitialVideos()
     }
   }
 
   render() {
-    const {loadMoreButton, videos, title = 'All Videos', loaded, onAddVideoClick} = this.props
+    const {
+      loadMoreButton,
+      videos,
+      title = 'All Videos',
+      loaded,
+      onAddVideoClick
+    } = this.props
     return (
       <SectionPanel
         title={title}
-        button={<Button
-          className="btn btn-default pull-right"
-          style={{marginLeft: 'auto'}}
-          onClick={() => onAddVideoClick()}
-        >+ Add Video</Button>}
+        button={
+          <Button
+            className="btn btn-default pull-right"
+            style={{ marginLeft: 'auto' }}
+            onClick={() => onAddVideoClick()}
+          >
+            + Add Video
+          </Button>
+        }
         emptyMessage="No Videos"
         isEmpty={videos.length === 0}
         loaded={loaded}
@@ -62,7 +72,7 @@ class AllVideosPanel extends Component {
               arrayIndex={index}
               editable={editable}
               video={video}
-              user={{name: video.uploaderName, id: video.uploaderId}}
+              user={{ name: video.uploaderName, id: video.uploaderId }}
               lastVideoId={last(videos) ? last(videos).id : 0}
             />
           )
@@ -72,7 +82,7 @@ class AllVideosPanel extends Component {
   }
 
   loadMoreVideos() {
-    const {videos, getMoreVideos} = this.props
+    const { videos, getMoreVideos } = this.props
     const lastId = last(videos) ? last(videos).id : 0
     return getMoreVideos(lastId)
   }
