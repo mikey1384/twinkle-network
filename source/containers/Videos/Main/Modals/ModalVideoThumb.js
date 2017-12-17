@@ -28,7 +28,7 @@ export default class VideoThumb extends Component {
       <div
         style={{
           width: '16%',
-          margin: '0.3rem',
+          margin: '0.3%',
           cursor: 'pointer'
         }}
       >

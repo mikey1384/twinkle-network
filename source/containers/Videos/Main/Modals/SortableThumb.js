@@ -61,7 +61,7 @@ class SortableThumb extends Component {
           style={{
             opacity: isDragging ? 0.5 : 1,
             width: '16%',
-            margin: '0.3rem',
+            margin: '0.3%',
             cursor: 'pointer'
           }}
         >

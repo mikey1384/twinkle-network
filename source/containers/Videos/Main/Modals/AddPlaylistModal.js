@@ -155,7 +155,14 @@ class AddPlaylistModal extends Component {
             </div>
           )}
           {section === 2 && (
-            <div className="row">
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'flex-start',
+                width: '100%'
+              }}
+            >
               {selectedVideos.map(video => (
                 <SortableThumb
                   key={video.id}
