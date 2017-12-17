@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {requireAuth} = require('../auth')
+const { requireAuth } = require('../auth')
 const {
   returnComments,
   likeComments,
@@ -10,28 +10,28 @@ const {
   deleteComments,
   fetchReplies
 } = require('../helpers/commentHelpers')
-const {postContents, postQuestions} = require('../helpers/contentHelpers')
-const {fetchFeeds} = require('../helpers/feedHelpers')
-const {poolQuery} = require('../helpers')
+const { postContents, postQuestions } = require('../helpers/contentHelpers')
+const { fetchFeeds } = require('../helpers/feedHelpers')
+const { poolQuery } = require('../helpers')
 
 router.get('/', fetchFeeds)
 
 router.get('/user', (req, res) => {
-  const {username, type, lastId} = req.query
+  const { username, type, lastId } = req.query
   const where = lastId ? `AND a.id < ${lastId}` : ''
   const limit = lastId ? '6' : '21'
   const query = `
     SELECT a.id, a.type, a.contentId, a.rootType, a.rootId, a.uploaderId, a.timeStamp FROM
     noti_feeds a JOIN users b ON a.uploaderId = b.id WHERE b.username = ? 
-    ${type !== 'all' ? `AND a.type = ?` : `AND a.type != 'like'`} ${where} ORDER BY id DESC LIMIT ${limit}
+    ${
+      type !== 'all' ? `AND a.type = ?` : `AND a.type != 'like'`
+    } ${where} ORDER BY id DESC LIMIT ${limit}
   `
-  return poolQuery(query, [username, type]).then(
-    rows => res.send(rows)
-  )
+  return poolQuery(query, [username, type]).then(rows => res.send(rows))
 })
 
 router.get('/comments', (req, res) => {
-  const {type, contentId, lastCommentId, isReply, rootType} = req.query
+  const { type, contentId, lastCommentId, isReply, rootType } = req.query
   const limit = 4
   let where
   switch (type) {
@@ -52,9 +52,9 @@ router.get('/comments', (req, res) => {
       break
     default:
       console.error('Invalid Content Type')
-      return res.status(500).send({error: 'Invalid Content Type'})
+      return res.status(500).send({ error: 'Invalid Content Type' })
   }
-  if (!!lastCommentId && lastCommentId !== '0') where += ' AND a.id < ' + lastCommentId
+  if (!!lastCommentId && lastCommentId !== '0') { where += ' AND a.id < ' + lastCommentId }
   const query = `
     SELECT a.*, b.username, c.id AS profilePicId, d.userId AS targetUserId, e.username AS targetUserName
     FROM content_comments a
@@ -64,21 +64,19 @@ router.get('/comments', (req, res) => {
     LEFT JOIN users e ON d.userId = e.id
     WHERE a.${where} ORDER BY a.id DESC LIMIT ${limit}
   `
-  return poolQuery(query, contentId).then(
-    rows => {
+  return poolQuery(query, contentId)
+    .then(rows => {
       if (rows.length === 0) {
         return res.send([])
       }
-      return returnComments(rows, rootType).then(
-        commentsArray => res.send(commentsArray)
+      return returnComments(rows, rootType).then(commentsArray =>
+        res.send(commentsArray)
       )
-    }
-  ).catch(
-    err => {
+    })
+    .catch(err => {
       console.error(err)
-      return res.status(500).send({error: err})
-    }
-  )
+      return res.status(500).send({ error: err })
+    })
 })
 
 router.delete('/comments', requireAuth, deleteComments)
@@ -94,88 +92,88 @@ router.get('/replies', fetchReplies)
 router.post('/replies', requireAuth, postReplies)
 
 router.post('/content', requireAuth, (req, res) => {
-  const {user} = req
-  const {url, title, description, checkedVideo} = req.body
+  const { user } = req
+  const { url, title, description, checkedVideo } = req.body
   const type = checkedVideo ? 'video' : 'url'
-  return postContents({url, description, title, uploader: user.id, type}).then(
-    ({result, post}) => res.send({
-      type,
-      id: type + result.insertId,
-      contentId: result.insertId,
-      uploaderId: user.id,
-      content: post.content,
-      rootContent: post.content,
-      rootType: type,
-      timeStamp: post.timeStamp,
-      rootId: result.insertId,
-      rootContentTitle: post.title,
-      rootContentDescription: post.description,
-      commentId: null,
-      replyId: null,
-      contentTitle: post.title,
-      contentDescription: post.description,
-      uploaderName: user.username,
-      uploaderPicId: user.profilePicId,
-      targetCommentUploaderId: null,
-      targetComment: null,
-      targetCommentUploaderName: null,
-      targetReplyUploaderId: null,
-      targetReply: null,
-      targetReplyUploaderName: null,
-      videoViews: null,
-      childComments: [],
-      contentLikers: [],
-      targetContentLikers: []
-    })
-  ).catch(
-    error => {
+  return postContents({ url, description, title, uploader: user.id, type })
+    .then(({ result, post }) =>
+      res.send({
+        type,
+        id: type + result.insertId,
+        contentId: result.insertId,
+        uploaderId: user.id,
+        content: post.content,
+        rootContent: post.content,
+        rootType: type,
+        timeStamp: post.timeStamp,
+        rootId: result.insertId,
+        rootContentTitle: post.title,
+        rootContentDescription: post.description,
+        commentId: null,
+        replyId: null,
+        contentTitle: post.title,
+        contentDescription: post.description,
+        uploaderName: user.username,
+        uploaderPicId: user.profilePicId,
+        targetCommentUploaderId: null,
+        targetComment: null,
+        targetCommentUploaderName: null,
+        targetReplyUploaderId: null,
+        targetReply: null,
+        targetReplyUploaderName: null,
+        videoViews: null,
+        childComments: [],
+        contentLikers: [],
+        targetContentLikers: []
+      })
+    )
+    .catch(error => {
       console.error(error)
-      return res.status(500).send({error})
-    }
-  )
+      return res.status(500).send({ error })
+    })
 })
 
 router.post('/question', requireAuth, (req, res) => {
-  return postQuestions(req).then(
-    ({result, post}) => res.send({
-      type: 'question',
-      id: 'question' + result.insertId,
-      contentId: result.insertId,
-      uploaderId: req.user.id,
-      content: post.content,
-      rootContent: post.content,
-      rootType: 'question',
-      timeStamp: post.timeStamp,
-      rootId: result.insertId,
-      rootContentTitle: post.content,
-      rootContentDescription: post.content,
-      commentId: null,
-      replyId: null,
-      contentTitle: post.content,
-      contentDescription: post.content,
-      uploaderName: req.user.username,
-      uploaderPicId: req.user.profilePicId,
-      targetCommentUploaderId: null,
-      targetComment: null,
-      targetCommentUploaderName: null,
-      targetReplyUploaderId: null,
-      targetReply: null,
-      targetReplyUploaderName: null,
-      videoViews: null,
-      childComments: [],
-      contentLikers: [],
-      targetContentLikers: []
-    })
-  ).catch(
-    error => {
+  return postQuestions(req)
+    .then(({ result, post }) =>
+      res.send({
+        type: 'question',
+        id: 'question' + result.insertId,
+        contentId: result.insertId,
+        uploaderId: req.user.id,
+        content: post.content,
+        rootContent: post.content,
+        rootType: 'question',
+        timeStamp: post.timeStamp,
+        rootId: result.insertId,
+        rootContentTitle: post.content,
+        rootContentDescription: post.content,
+        commentId: null,
+        replyId: null,
+        contentTitle: post.content,
+        contentDescription: post.content,
+        uploaderName: req.user.username,
+        uploaderPicId: req.user.profilePicId,
+        targetCommentUploaderId: null,
+        targetComment: null,
+        targetCommentUploaderName: null,
+        targetReplyUploaderId: null,
+        targetReply: null,
+        targetReplyUploaderName: null,
+        videoViews: null,
+        childComments: [],
+        contentLikers: [],
+        targetContentLikers: []
+      })
+    )
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/feed', (req, res) => {
-  const {type, contentId, rootType, rootId} = req.query
+  const { type, contentId, rootType, rootId } = req.query
   const result = Object.assign({}, req.query, {
     id: Number(req.query.id),
     contentId: Number(req.query.contentId),
@@ -193,7 +191,7 @@ router.get('/feed', (req, res) => {
   switch (type) {
     case 'comment':
       let rootTableName
-      if (rootType === 'url' || rootType === 'question') rootTableName = `content_${rootType}s`
+      if (rootType === 'url' || rootType === 'question') { rootTableName = `content_${rootType}s` }
       if (rootType === 'video') rootTableName = 'vq_videos'
       query = `
         SELECT comment1.content, comment1.commentId, comment1.replyId, comment1.discussionId,
@@ -212,9 +210,21 @@ router.get('/feed', (req, res) => {
         discussion.timeStamp AS discussionTimeStamp,
         user4.username AS discussionUploaderName,
 
-        ${rootType}.${rootType !== 'question' ? 'title' : 'content'} AS rootContentTitle, ${rootType}.${rootType !== 'question' ? 'description' : 'content'} AS rootContentDescription, ${rootType}.${rootType !== 'question' ? 'title' : 'content'} AS contentTitle, ${rootType}.content AS rootContent,
+        ${rootType}.${
+        rootType !== 'question' ? 'title' : 'content'
+      } AS rootContentTitle, ${rootType}.${
+        rootType !== 'question' ? 'description' : 'content'
+      } AS rootContentDescription, ${rootType}.${
+        rootType !== 'question' ? 'title' : 'content'
+      } AS contentTitle, ${rootType}.content AS rootContent,
         ${rootType}.isStarred AS rootContentIsStarred,
-        ${rootType === 'url' ? `${['thumbUrl', 'actualTitle', 'actualDescription', 'siteUrl'].map(prop => `url.${prop}`).join(', ')},` : (rootType === 'video' ? 'video.hasHqThumb,' : '')}
+        ${
+          rootType === 'url'
+            ? `${['thumbUrl', 'actualTitle', 'actualDescription', 'siteUrl']
+                .map(prop => `url.${prop}`)
+                .join(', ')},`
+            : rootType === 'video' ? 'video.hasHqThumb,' : ''
+        }
 
         (SELECT COUNT(id) FROM content_comments WHERE commentId = ${contentId}) AS numChildComments,
         (SELECT COUNT(id) FROM content_comments WHERE replyId = ${contentId}) AS numChildReplies
@@ -298,11 +308,12 @@ router.get('/feed', (req, res) => {
         WHERE video.id = ?
       `
       break
-    default: break
+    default:
+      break
   }
 
-  return poolQuery(query, contentId).then(
-    rows => {
+  return poolQuery(query, contentId)
+    .then(rows => {
       let feed = rows[0]
       if (!feed) return Promise.resolve({})
       let targetId = feed.replyId || feed.commentId
@@ -312,73 +323,64 @@ router.get('/feed', (req, res) => {
             poolQuery(likeQuery('comment'), contentId),
             poolQuery(likeQuery('comment'), targetId || '0'),
             poolQuery(likeQuery('video'), rootId)
-          ]).then(
-            results => {
-              feed['contentLikers'] = results[0]
-              feed['targetContentLikers'] = results[1]
-              feed['rootContentLikers'] = results[2]
-              return Promise.resolve(feed)
-            }
-          )
+          ]).then(results => {
+            feed['contentLikers'] = results[0]
+            feed['targetContentLikers'] = results[1]
+            feed['rootContentLikers'] = results[2]
+            return Promise.resolve(feed)
+          })
         case 'url':
-          return poolQuery(likeQuery('url'), contentId).then(
-            rows => {
-              feed['contentLikers'] = rows
-              return Promise.resolve(feed)
-            }
-          )
+          return poolQuery(likeQuery('url'), contentId).then(rows => {
+            feed['contentLikers'] = rows
+            return Promise.resolve(feed)
+          })
         case 'question':
-          return poolQuery(likeQuery('question'), contentId).then(
-            rows => {
-              feed['contentLikers'] = rows
-              return Promise.resolve(feed)
-            }
-          )
+          return poolQuery(likeQuery('question'), contentId).then(rows => {
+            feed['contentLikers'] = rows
+            return Promise.resolve(feed)
+          })
         case 'discussion':
           feed['contentLikers'] = []
           feed['rootContentLikers'] = []
           return Promise.resolve(feed)
         case 'video':
-          return poolQuery(likeQuery('video'), contentId).then(
-            rows => {
-              feed['contentLikers'] = rows
-              return Promise.resolve(feed)
-            }
-          )
+          return poolQuery(likeQuery('video'), contentId).then(rows => {
+            feed['contentLikers'] = rows
+            return Promise.resolve(feed)
+          })
         default:
           return Promise.resolve({})
       }
-    }
-  ).then(
-    feed => res.send(Object.assign({}, result, feed))
-  ).catch(
-    error => {
+    })
+    .then(feed => res.send(Object.assign({}, result, feed)))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.post('/targetContentComment', requireAuth, (req, res) => {
-  const {user, body} = req
+  const { user, body } = req
   const query = `INSERT INTO content_comments SET ?`
   const post = Object.assign({}, body, {
     content: body.content,
     userId: user.id,
-    timeStamp: Math.floor(Date.now()/1000)
+    timeStamp: Math.floor(Date.now() / 1000)
   })
-  return poolQuery(query, post).then(
-    result => res.send(Object.assign({}, post, {
-      id: result.insertId,
-      username: user.username,
-      profilePicId: user.profilePicId
-    }))
-  ).catch(
-    error => {
+  return poolQuery(query, post)
+    .then(result =>
+      res.send(
+        Object.assign({}, post, {
+          id: result.insertId,
+          username: user.username,
+          profilePicId: user.profilePicId
+        })
+      )
+    )
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 module.exports = router

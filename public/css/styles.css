@@ -1,136 +1,137 @@
-html, body {
-	height: 100%;
-	margin: 0px;
-	background-color: #f1f3f6;
+html,
+body {
+  height: 100%;
+  margin: 0px;
+  background-color: #f1f3f6;
 }
 
 .embed-responsive {
-	background-color: #000;
+  background-color: #000;
 }
 
 .navbar-collapse {
-	padding-right: 0px;
+  padding-right: 0px;
 }
 
 .nav-icon-home {
-	width: 50px;
-	height: 50px;
-	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -61px;
-	background-size: 100% 680%;
-	zoom: 0.50;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background: url("/img/nav-sprites.png") 0 -61px;
+  background-size: 100% 680%;
+  zoom: 0.5;
 }
 
 .nav-icon-home-hovered {
-	width: 50px;
-	height: 50px;
-	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -5px;
-	background-size: 100% 680%;
-	zoom: 0.50;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background: url("/img/nav-sprites.png") 0 -5px;
+  background-size: 100% 680%;
+  zoom: 0.5;
 }
 
 .nav-icon-read {
-	width: 50px;
-	height: 50px;
-	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -173px;
-	background-size: 100% 680%;
-	zoom: 0.50;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background: url("/img/nav-sprites.png") 0 -173px;
+  background-size: 100% 680%;
+  zoom: 0.5;
 }
 
 .nav-icon-read-hovered {
-	width: 50px;
-	height: 50px;
-	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -117px;
-	background-size: 100% 680%;
-	zoom: 0.50;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background: url("/img/nav-sprites.png") 0 -117px;
+  background-size: 100% 680%;
+  zoom: 0.5;
 }
 
 .nav-icon-watch {
-	width: 50px;
-	height: 50px;
-	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -286px;
-	background-size: 100% 680%;
-	zoom: 0.50;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background: url("/img/nav-sprites.png") 0 -286px;
+  background-size: 100% 680%;
+  zoom: 0.5;
 }
 
 .nav-icon-watch-hovered {
-	width: 50px;
-	height: 50px;
-	display: inline-block;
-	background: url('/img/nav-sprites.png') 0 -230px;
-	background-size: 100% 680%;
-	zoom: 0.50;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background: url("/img/nav-sprites.png") 0 -230px;
+  background-size: 100% 680%;
+  zoom: 0.5;
 }
 
 #react-view {
-	height: 100%;
+  height: 100%;
 }
 
 #main-view {
-	height: 100%;
+  height: 100%;
 }
 
 .flexbox-container {
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 
-	-ms-flex-align: center;
-	-webkit-align-items: center;
-	-webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
 
-	align-items: center;
+  align-items: center;
 }
 
 .thumbnail-selected {
-  -webkit-box-shadow:inset 0px 0px 0px 4px #18aae0;
-  -moz-box-shadow:inset 0px 0px 0px 4px #18aae0;
-  box-shadow:inset 0px 0px 0px 4px #18aae0;
+  -webkit-box-shadow: inset 0px 0px 0px 4px #18aae0;
+  -moz-box-shadow: inset 0px 0px 0px 4px #18aae0;
+  box-shadow: inset 0px 0px 0px 4px #18aae0;
 }
 
 .footer {
-	background-color: #f1f3f6;
+  background-color: #f1f3f6;
   bottom: 0;
-	height: auto;
-	padding: 2em;
+  height: auto;
+  padding: 2em;
 }
 
 .footer > p {
-	margin: 0;
+  margin: 0;
 }
 
 .check-list-item {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .check-list-item:hover {
-	background-color: #f5f5f5 !important;
+  background-color: #f5f5f5 !important;
 }
 
 .choice-item-unchecked:hover {
-	color: #fff !important;
-	border-color: rgba(92, 184, 92, 0.57) !important;
-	background-color: rgba(92, 184, 92, 0.57) !important;
+  color: #fff !important;
+  border-color: rgba(92, 184, 92, 0.57) !important;
+  background-color: rgba(92, 184, 92, 0.57) !important;
 }
 
 .choice-item-checked {
-	color: #fff !important;
-	border-color: #5cb85c !important;
-	background-color: #5cb85c !important;
+  color: #fff !important;
+  border-color: #5cb85c !important;
+  background-color: #5cb85c !important;
 }
 
 .choice-item-checked:hover {
-	color: #fff !important;
-	border-color: #5cb85c !important;
-	background-color: #5cb85c !important;
+  color: #fff !important;
+  border-color: #5cb85c !important;
+  background-color: #5cb85c !important;
 }
 
 .momentum-scroll-enabled {
-	overflow-y: scroll;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -144,35 +145,35 @@ html, body {
 }
 
 .grey-color {
-	color: #b9b9b9;
+  color: #b9b9b9;
 }
 
 .error-detected {
-	color: red
+  color: red;
 }
 
 .video-container-fixed-left {
-	position: fixed;
-	right: 1rem;
-	bottom: 1rem;
-	z-index: 2000;
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 2000;
 }
 
 .video-fixed-left {
-	width: 28.8rem;
-	height: 16.2rem;
+  width: 28.8rem;
+  height: 16.2rem;
 }
 
 .left-menu-item:hover > a {
-	color: rgb(51, 51, 51)!important;
+  color: rgb(51, 51, 51) !important;
 }
 
 .chat-channel-item:hover {
-	background-color: #eee;
+  background-color: #eee;
 }
 
 .dropdown-menu > li > a:hover {
-	background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .glyphicon.spinning {
@@ -181,106 +182,118 @@ html, body {
 }
 
 .home-left-menu {
-	cursor: pointer;
-	background-color: #f1f3f6;
-	border: none;
+  cursor: pointer;
+  background-color: #f1f3f6;
+  border: none;
 }
 
 .home-left-menu > a {
-	text-decoration: none;
-	color: #7c7c7c;
+  text-decoration: none;
+  color: #7c7c7c;
 }
 
 .home-left-menu.active {
-	background-color: #fbfbfb;
-	font-weight: bold;
+  background-color: #fbfbfb;
+  font-weight: bold;
 }
 
 .home-left-menu.active:hover {
-	background-color: #fbfbfb;
+  background-color: #fbfbfb;
 }
 
 .home-left-menu.active > a {
-	color: #333333;
+  color: #333333;
 }
 
 .navbar-default .navbar-nav > li > a:focus {
-	color: #999999;
+  color: #999999;
 }
 
 .navbar-default .navbar-nav > li > a:focus:hover {
-	color: #333333;
+  color: #333333;
 }
 
-.video-player { position: relative; }
+.video-player {
+  position: relative;
+}
 .video-player a {
-	position: absolute;
-	display: block;
-	background: url('/img/play-button-image.png');
-	background-size: contain;
-	height: 40px;
-	width: 40px;
-	top: 50%;
-	left: 50%;
-	margin: -20px 0 0 -20px;
+  position: absolute;
+  display: block;
+  background: url("/img/play-button-image.png");
+  background-size: contain;
+  height: 40px;
+  width: 40px;
+  top: 50%;
+  left: 50%;
+  margin: -20px 0 0 -20px;
 }
 
-.video-preview-thumb { position: relative; }
+.video-preview-thumb {
+  position: relative;
+}
 .video-preview-thumb a {
-	position: absolute;
-	display: block;
-	background: url('/img/play-button-image.png');
-	background-size: contain;
-	height: 20px;
-	width: 20px;
-	top: 50%;
-	left: 50%;
-	margin: -10px 0 0 -10px;
+  position: absolute;
+  display: block;
+  background: url("/img/play-button-image.png");
+  background-size: contain;
+  height: 20px;
+  width: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
 }
 
 .video-preview-thumb span {
-	position: absolute;
-	display: block;
-	background: url('/img/play-button-image.png');
-	background-size: contain;
-	height: 20px;
-	width: 20px;
-	top: 50%;
-	left: 50%;
-	margin: -10px 0 0 -10px;
+  position: absolute;
+  display: block;
+  background: url("/img/play-button-image.png");
+  background-size: contain;
+  height: 20px;
+  width: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
 }
 
 @keyframes spin {
-  from { transform: scale(1) rotate(0deg); }
-  to { transform: scale(1) rotate(360deg); }
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    transform: scale(1) rotate(360deg);
+  }
 }
 
 @-webkit-keyframes spin2 {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(360deg); }
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @media (min-width: 1192px) {
-	.modal-extra-lg{
+  .modal-extra-lg {
     min-width: 1180px !important;
     width: 90% !important;
-	}
+  }
 }
 
 @media (min-width: 1092px) {
-	.modal-extra-lg{
-	  width: 1080px;
-	}
+  .modal-extra-lg {
+    width: 1080px;
+  }
 }
 
 @media (min-width: 992px) {
-	.modal-extra-lg{
-	  width: 980px;
-	}
+  .modal-extra-lg {
+    width: 980px;
+  }
 }
 
 @media (min-width: 768px) {
-	.modal-extra-lg{
-	  min-width: 766px !important;
-	}
+  .modal-extra-lg {
+    min-width: 766px !important;
+  }
 }

@@ -5,7 +5,7 @@ ChoiceListGroup.propTypes = {
   listItems: PropTypes.array.isRequired,
   onSelect: PropTypes.func.isRequired
 }
-export default function ChoiceListGroup({listItems, onSelect}) {
+export default function ChoiceListGroup({ listItems, onSelect }) {
   return (
     <ul
       className="list-group unselectable"
@@ -18,8 +18,10 @@ export default function ChoiceListGroup({listItems, onSelect}) {
         return (
           <li
             key={index}
-            className={`list-group-item ${item.checked ? 'choice-item-checked' : 'choice-item-unchecked'}`}
-            dangerouslySetInnerHTML={{__html: item.label}}
+            className={`list-group-item ${
+              item.checked ? 'choice-item-checked' : 'choice-item-unchecked'
+            }`}
+            dangerouslySetInnerHTML={{ __html: item.label }}
             onClick={() => onSelect(index)}
           />
         )

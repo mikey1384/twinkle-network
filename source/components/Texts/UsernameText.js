@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {openDirectMessageChannel} from 'redux/actions/ChatActions'
-import {Color} from 'constants/css'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { openDirectMessageChannel } from 'redux/actions/ChatActions'
+import { Color } from 'constants/css'
 
 class UsernameText extends Component {
   static propTypes = {
@@ -24,24 +24,25 @@ class UsernameText extends Component {
   }
 
   render() {
-    const {menuShown} = this.state
-    const {user, userId, color} = this.props
+    const { menuShown } = this.state
+    const { user, userId, color } = this.props
     return (
       <span
         className="dropdown"
-        onMouseLeave={() => this.setState({menuShown: false})}
+        onMouseLeave={() => this.setState({ menuShown: false })}
       >
         <b
           style={{
             cursor: 'pointer',
-            color: user.name ? (color && color) : Color.darkGray
+            color: user.name ? color && color : Color.darkGray
           }}
           onMouseEnter={this.onMouseEnter}
         >
           {user.name || '(Deleted)'}
         </b>
-        {menuShown &&
-          <ul className="dropdown-menu"
+        {menuShown && (
+          <ul
+            className="dropdown-menu"
             style={{
               position: 'absolute',
               marginTop: '0px',
@@ -50,34 +51,37 @@ class UsernameText extends Component {
             }}
           >
             <li>
-              <a
-                href={`/users/${user.name}`}
-                target="_blank"
-              >
+              <a href={`/users/${user.name}`} target="_blank">
                 Profile
               </a>
-              {user.id !== userId &&
-                <a onClick={this.onLinkClick}>
-                  Message
-                </a>
-              }
+              {user.id !== userId && <a onClick={this.onLinkClick}>Message</a>}
             </li>
           </ul>
-        }
+        )}
       </span>
     )
   }
 
   onMouseEnter() {
-    const {user} = this.props
-    if (user.name) this.setState({menuShown: true})
+    const { user } = this.props
+    if (user.name) this.setState({ menuShown: true })
   }
 
   onLinkClick() {
-    const {openDirectMessageChannel, user, userId, username, chatMode} = this.props
-    this.setState({menuShown: false})
+    const {
+      openDirectMessageChannel,
+      user,
+      userId,
+      username,
+      chatMode
+    } = this.props
+    this.setState({ menuShown: false })
     if (user.id !== userId) {
-      openDirectMessageChannel({userId, username}, {userId: user.id, username: user.name}, chatMode)
+      openDirectMessageChannel(
+        { userId, username },
+        { userId: user.id, username: user.name },
+        chatMode
+      )
     }
   }
 }
@@ -88,5 +92,5 @@ export default connect(
     username: state.UserReducer.username,
     userId: state.UserReducer.userId
   }),
-  {openDirectMessageChannel}
+  { openDirectMessageChannel }
 )(UsernameText)

@@ -7,7 +7,11 @@ ReplyInputArea.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   style: PropTypes.object
 }
-export default function ReplyInputArea({onSubmit, clickListenerState, style}) {
+export default function ReplyInputArea({
+  onSubmit,
+  clickListenerState,
+  style
+}) {
   return (
     <div className="media" style={style}>
       <div className="media-body">

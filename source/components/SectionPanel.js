@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Button from 'components/Button'
 import Loading from 'components/Loading'
 
@@ -32,7 +32,7 @@ export default class SectionPanel extends Component {
       children,
       loadMoreButtonShown
     } = this.props
-    const {loading} = this.state
+    const { loading } = this.state
     return (
       <div className="panel panel-primary">
         <div className="panel-heading flexbox-container">
@@ -41,27 +41,32 @@ export default class SectionPanel extends Component {
           <div className="clearfix" />
         </div>
         <div className="panel-body">
-          {loaded ?
-            (isEmpty && <div className="text-center">{emptyMessage}</div>) :
-            (isEmpty && <Loading />)
-          }
+          {loaded
+            ? isEmpty && <div className="text-center">{emptyMessage}</div>
+            : isEmpty && <Loading />}
           {children}
-          {loadMoreButtonShown && <div className="text-center col-sm-12">
-            <Button disabled={loading} className="btn btn-success" onClick={this.onLoadMore}>Load More</Button>
-          </div>}
+          {loadMoreButtonShown && (
+            <div className="text-center col-sm-12">
+              <Button
+                disabled={loading}
+                className="btn btn-success"
+                onClick={this.onLoadMore}
+              >
+                Load More
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     )
   }
 
   onLoadMore() {
-    const {loadMore} = this.props
-    const {loading} = this.state
+    const { loadMore } = this.props
+    const { loading } = this.state
     if (!loading) {
-      this.setState({loading: true})
-      return loadMore().then(
-        () => this.setState({loading: false})
-      )
+      this.setState({ loading: true })
+      return loadMore().then(() => this.setState({ loading: false }))
     }
   }
 }

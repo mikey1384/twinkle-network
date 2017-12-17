@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Button from 'components/Button'
 
@@ -30,27 +30,34 @@ export default class ButtonGroup extends Component {
   }
 
   render() {
-    const {style} = this.props
-    const {buttons} = this.state
+    const { style } = this.props
+    const { buttons } = this.state
     return (
-      <div
-        style={style}
-        className='btn-group'
-      >
+      <div style={style} className="btn-group">
         {buttons.map((button, index) => {
           return (
             <Button
               key={index}
               type="button"
-              onMouseEnter={() => this.setState({buttons: buttons.map((b, i) => ({
-                ...b,
-                onHover: i === index
-              }))})}
-              onMouseLeave={() => this.setState({buttons: buttons.map((b, i) => ({
-                ...b,
-                onHover: false
-              }))})}
-              className={`btn ${button.onHover ? button.hoverClass : button.buttonClass}`}
+              onMouseEnter={() =>
+                this.setState({
+                  buttons: buttons.map((b, i) => ({
+                    ...b,
+                    onHover: i === index
+                  }))
+                })
+              }
+              onMouseLeave={() =>
+                this.setState({
+                  buttons: buttons.map((b, i) => ({
+                    ...b,
+                    onHover: false
+                  }))
+                })
+              }
+              className={`btn ${
+                button.onHover ? button.hoverClass : button.buttonClass
+              }`}
               onClick={button.onClick}
               disabled={button.disabled}
             >

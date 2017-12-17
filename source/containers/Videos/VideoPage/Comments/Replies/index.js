@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Reply from './Reply'
-import {scrollElementToCenter} from 'helpers/domHelpers'
+import { scrollElementToCenter } from 'helpers/domHelpers'
 import Button from 'components/Button'
 
 export default class Replies extends Component {
@@ -31,28 +31,38 @@ export default class Replies extends Component {
 
   componentDidUpdate(prevProps) {
     const length = this.props.replies.length
-    const {deleteListenerToggle, deletedFirstReply} = this.state
+    const { deleteListenerToggle, deletedFirstReply } = this.state
     if (length < prevProps.replies.length) {
       if (length === 0) {
         if (deletedFirstReply) return scrollElementToCenter(this.Replies)
         return
       }
-      this.setState({deleteListenerToggle: !deleteListenerToggle})
+      this.setState({ deleteListenerToggle: !deleteListenerToggle })
     }
   }
 
   render() {
     const {
-      comment, replies, userId, onEditDone, onLikeClick, onDelete, onReplySubmit, commentId, videoId
+      comment,
+      replies,
+      userId,
+      onEditDone,
+      onLikeClick,
+      onDelete,
+      onReplySubmit,
+      commentId,
+      videoId
     } = this.props
-    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
+    const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     return (
       <div
         className="media container-fluid"
-        style={{paddingLeft: '0px', paddingRight: '0px'}}
-        ref={ref => { this.Replies = ref }}
+        style={{ paddingLeft: '0px', paddingRight: '0px' }}
+        ref={ref => {
+          this.Replies = ref
+        }}
       >
-        {comment.loadMoreReplies &&
+        {comment.loadMoreReplies && (
           <Button
             className="btn btn-default"
             style={{
@@ -63,7 +73,7 @@ export default class Replies extends Component {
           >
             Load More
           </Button>
-        }
+        )}
         {replies.map((reply, index) => {
           return (
             <Reply
@@ -97,7 +107,7 @@ export default class Replies extends Component {
   }
 
   loadMoreReplies() {
-    const {comment, replies, onLoadMoreReplies} = this.props
+    const { comment, replies, onLoadMoreReplies } = this.props
     const lastReplyId = replies[0] ? replies[0].id : '0'
     onLoadMoreReplies(lastReplyId, comment.id, 'default')
   }

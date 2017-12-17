@@ -1,5 +1,5 @@
 import React from 'react'
-import {withRouter} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import ScrollBehavior from 'scroll-behavior'
 import PropTypes from 'prop-types'
 import SessionStorage from './StateStorage'
@@ -19,7 +19,7 @@ class ScrollContext extends React.Component {
   constructor(props, context) {
     super(props, context)
 
-    const {history} = props
+    const { history } = props
 
     this.scrollBehavior = new ScrollBehavior({
       addTransitionHook: history.listen,
@@ -58,29 +58,34 @@ class ScrollContext extends React.Component {
   }
 
   getRouterProps() {
-    const {history, location} = this.props
-    return {history, location}
+    const { history, location } = this.props
+    return { history, location }
   }
 
   shouldUpdateScroll = (prevRouterProps, routerProps) => {
-    const {shouldUpdateScroll} = this.props
+    const { shouldUpdateScroll } = this.props
     if (!shouldUpdateScroll) {
       return true
     }
 
     // Hack to allow accessing scrollBehavior._stateStorage.
     return shouldUpdateScroll.call(
-      this.scrollBehavior, prevRouterProps, routerProps,
+      this.scrollBehavior,
+      prevRouterProps,
+      routerProps
     )
   }
 
   registerElement = (key, element, shouldUpdateScroll) => {
     this.scrollBehavior.registerElement(
-      key, element, shouldUpdateScroll, this.getRouterProps(),
+      key,
+      element,
+      shouldUpdateScroll,
+      this.getRouterProps()
     )
   }
 
-  unregisterElement = (key) => {
+  unregisterElement = key => {
     this.scrollBehavior.unregisterElement(key)
   }
 

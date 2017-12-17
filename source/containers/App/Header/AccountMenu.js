@@ -6,17 +6,19 @@ AccountMenu.propTypes = {
   logout: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired
 }
-export default function AccountMenu({title, logout, ...props}) {
+export default function AccountMenu({ title, logout, ...props }) {
   return (
     <DropdownButton
       {...props}
       text={title}
       shape="button"
       icon="triangle-bottom"
-      menuProps={[{
-        label: 'Log out',
-        onClick: () => logout()
-      }]}
+      menuProps={[
+        {
+          label: 'Log out',
+          onClick: () => logout()
+        }
+      ]}
     />
   )
 }

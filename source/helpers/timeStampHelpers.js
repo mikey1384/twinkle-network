@@ -8,7 +8,7 @@ export function timeSince(dateText) {
       interval = 'a'
       s = ''
     }
-    return interval + ' year'+s+' ago'
+    return interval + ' year' + s + ' ago'
   }
   interval = Math.floor(seconds / 2592000)
   if (interval >= 1) {
@@ -16,7 +16,7 @@ export function timeSince(dateText) {
       interval = 'a'
       s = ''
     }
-    return interval + ' month'+s+' ago'
+    return interval + ' month' + s + ' ago'
   }
   interval = Math.floor(seconds / 86400)
   if (interval >= 1) {
@@ -24,7 +24,7 @@ export function timeSince(dateText) {
       interval = 'a'
       s = ''
     }
-    return interval + ' day'+s+' ago'
+    return interval + ' day' + s + ' ago'
   }
   interval = Math.floor(seconds / 3600)
   if (interval >= 1) {
@@ -32,7 +32,7 @@ export function timeSince(dateText) {
       interval = 'an'
       s = ''
     }
-    return interval + ' hour'+s+' ago'
+    return interval + ' hour' + s + ' ago'
   }
   interval = Math.floor(seconds / 60)
   if (interval >= 1) {
@@ -40,9 +40,10 @@ export function timeSince(dateText) {
       interval = 'a'
       s = ''
     }
-    return interval + ' minute'+s+' ago'
+    return interval + ' minute' + s + ' ago'
   }
   s = Math.floor(seconds) > 1 ? 's' : ''
-  var string = (seconds <= 0) ? 'Just now' : Math.floor(seconds) + ` second${s} ago`
+  var string =
+    seconds <= 0 ? 'Just now' : Math.floor(seconds) + ` second${s} ago`
   return string
 }

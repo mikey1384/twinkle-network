@@ -1,6 +1,6 @@
 import React from 'react'
-import {getTargetLeft, animateSlide} from './animations'
-import {goToSlide, nextSlide, previousSlide} from './actions'
+import { getTargetLeft, animateSlide } from './animations'
+import { goToSlide, nextSlide, previousSlide } from './actions'
 import easingTypes from 'tween-functions'
 
 export function getTouchEvents() {
@@ -14,7 +14,8 @@ export function getTouchEvents() {
       }
     },
     onTouchMove(e) {
-      var direction = swipeDirection.call(self,
+      var direction = swipeDirection.call(
+        self,
         self.touchObject.startX,
         e.touches[0].pageX,
         self.touchObject.startY,
@@ -25,7 +26,9 @@ export function getTouchEvents() {
         e.preventDefault()
       }
 
-      var length = Math.round(Math.sqrt(Math.pow(e.touches[0].pageX - self.touchObject.startX, 2)))
+      var length = Math.round(
+        Math.sqrt(Math.pow(e.touches[0].pageX - self.touchObject.startX, 2))
+      )
 
       self.touchObject = {
         startX: self.touchObject.startX,
@@ -37,7 +40,10 @@ export function getTouchEvents() {
       }
 
       self.setState({
-        left: getTargetLeft.call(self, self.touchObject.length * self.touchObject.direction),
+        left: getTargetLeft.call(
+          self,
+          self.touchObject.length * self.touchObject.direction
+        ),
         top: 0
       })
     },
@@ -72,7 +78,8 @@ export function getMouseEvents() {
       if (!self.state.dragging) {
         return
       }
-      var direction = swipeDirection.call(self,
+      var direction = swipeDirection.call(
+        self,
         self.touchObject.startX,
         e.clientX,
         self.touchObject.startY,
@@ -83,7 +90,9 @@ export function getMouseEvents() {
         e.preventDefault()
       }
 
-      var length = Math.round(Math.sqrt(Math.pow(e.clientX - self.touchObject.startX, 2)))
+      var length = Math.round(
+        Math.sqrt(Math.pow(e.clientX - self.touchObject.startX, 2))
+      )
 
       self.touchObject = {
         startX: self.touchObject.startX,
@@ -95,7 +104,10 @@ export function getMouseEvents() {
       }
 
       self.setState({
-        left: getTargetLeft.call(self, self.touchObject.length * self.touchObject.direction),
+        left: getTargetLeft.call(
+          self,
+          self.touchObject.length * self.touchObject.direction
+        ),
         top: 0
       })
     },
@@ -128,15 +140,24 @@ export function handleClick(e) {
 }
 
 function handleSwipe(e) {
-  if (typeof this.touchObject.length !== 'undefined' && this.touchObject.length > 44) {
+  if (
+    typeof this.touchObject.length !== 'undefined' &&
+    this.touchObject.length > 44
+  ) {
     this.props.clickSafeOn()
   } else {
     this.props.clickSafeOff()
   }
 
-  if (this.touchObject.length > (this.state.slideWidth / this.props.slidesToShow) / 5) {
+  if (
+    this.touchObject.length >
+    this.state.slideWidth / this.props.slidesToShow / 5
+  ) {
     if (this.touchObject.direction === 1) {
-      if (this.state.currentSlide >= React.Children.count(this.props.children) - this.props.slidesToShow) {
+      if (
+        this.state.currentSlide >=
+        React.Children.count(this.props.children) - this.props.slidesToShow
+      ) {
         animateSlide.call(this, easingTypes[this.props.edgeEasing])
       } else {
         nextSlide.call(this)
@@ -170,13 +191,13 @@ function swipeDirection(x1, x2, y1, y2) {
   if (swipeAngle < 0) {
     swipeAngle = 360 - Math.abs(swipeAngle)
   }
-  if ((swipeAngle <= 45) && (swipeAngle >= 0)) {
+  if (swipeAngle <= 45 && swipeAngle >= 0) {
     return 1
   }
-  if ((swipeAngle <= 360) && (swipeAngle >= 315)) {
+  if (swipeAngle <= 360 && swipeAngle >= 315) {
     return 1
   }
-  if ((swipeAngle >= 135) && (swipeAngle <= 225)) {
+  if (swipeAngle >= 135 && swipeAngle <= 225) {
     return -1
   }
   return 0

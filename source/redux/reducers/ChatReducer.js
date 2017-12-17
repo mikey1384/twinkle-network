@@ -36,7 +36,10 @@ export default function ChatReducer(state = defaultState, action) {
         channels: state.channels.map(channel => {
           return {
             ...channel,
-            channelName: channel.id === action.data.channelId ? action.data.title : channel.channelName
+            channelName:
+              channel.id === action.data.channelId
+                ? action.data.title
+                : channel.channelName
           }
         })
       }
@@ -70,16 +73,18 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         subject: {},
-        channels: [{
-          id: action.data.message.channelId,
-          channelName: action.data.message.channelName,
-          lastMessage: action.data.message.content,
-          lastUpdate: action.data.message.timeStamp,
-          lastMessageSender: {
-            id: action.data.message.userId,
-            username: action.data.message.username
+        channels: [
+          {
+            id: action.data.message.channelId,
+            channelName: action.data.message.channelName,
+            lastMessage: action.data.message.content,
+            lastUpdate: action.data.message.timeStamp,
+            lastMessageSender: {
+              id: action.data.message.userId,
+              username: action.data.message.username
+            }
           }
-        }].concat(state.channels),
+        ].concat(state.channels),
         selectedChannelId: action.data.message.channelId,
         currentChannel: {
           id: action.data.message.channelId,
@@ -128,7 +133,9 @@ export default function ChatReducer(state = defaultState, action) {
     case 'DELETE_CHAT_MESSAGE':
       return {
         ...state,
-        messages: state.messages.filter(message => message.id !== action.messageId)
+        messages: state.messages.filter(
+          message => message.id !== action.messageId
+        )
       }
     case 'EDIT_CHAT_MESSAGE':
       return {
@@ -136,7 +143,10 @@ export default function ChatReducer(state = defaultState, action) {
         messages: state.messages.map(message => {
           return {
             ...message,
-            content: message.id === action.data.messageId ? action.data.editedMessage : message.content
+            content:
+              message.id === action.data.messageId
+                ? action.data.editedMessage
+                : message.content
           }
         })
       }
@@ -152,22 +162,25 @@ export default function ChatReducer(state = defaultState, action) {
         subject: action.data.channel.id === 2 ? state.subject : {},
         selectedChannelId: action.data.channel.id,
         currentChannel: action.data.channel,
-        channels: state.channels.reduce(
-          (resultingArray, channel, index) => {
-            if (channel.id === action.data.channel.id) {
-              originalNumUnreads = channel.numUnreads
-            }
-            if (action.showOnTop && index === (state.channels.length - 1)) {
-              return [action.data.channel].concat(
-                resultingArray.filter(channel => channel.id !== action.data.channel.id)
+        channels: state.channels.reduce((resultingArray, channel, index) => {
+          if (channel.id === action.data.channel.id) {
+            originalNumUnreads = channel.numUnreads
+          }
+          if (action.showOnTop && index === state.channels.length - 1) {
+            return [action.data.channel].concat(
+              resultingArray.filter(
+                channel => channel.id !== action.data.channel.id
               )
-            }
-            return resultingArray.concat([{
+            )
+          }
+          return resultingArray.concat([
+            {
               ...channel,
-              numUnreads: channel.id === action.data.channel.id ? 0 : channel.numUnreads
-            }])
-          }, []
-        ),
+              numUnreads:
+                channel.id === action.data.channel.id ? 0 : channel.numUnreads
+            }
+          ])
+        }, []),
         chatMode: true,
         messages: action.data.messages,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
@@ -224,18 +237,18 @@ export default function ChatReducer(state = defaultState, action) {
         chatMode: true,
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
-        channels: action.data.channels.reduce(
-          (resultingArray, channel) => {
-            if (channel.id === action.data.currentChannel.id) {
-              if (channel.id !== 2) originalNumUnreads = channel.numUnreads
-              return [{
+        channels: action.data.channels.reduce((resultingArray, channel) => {
+          if (channel.id === action.data.currentChannel.id) {
+            if (channel.id !== 2) originalNumUnreads = channel.numUnreads
+            return [
+              {
                 ...channel,
                 numUnreads: 0
-              }].concat(resultingArray)
-            }
-            return resultingArray.concat([channel])
-          }, []
-        ),
+              }
+            ].concat(resultingArray)
+          }
+          return resultingArray.concat([channel])
+        }, []),
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: action.data.messages,
         loadMoreMessages,
@@ -258,7 +271,9 @@ export default function ChatReducer(state = defaultState, action) {
     case 'LEAVE_CHANNEL':
       return {
         ...state,
-        channels: state.channels.filter(channel => channel.id !== action.channelId)
+        channels: state.channels.filter(
+          channel => channel.id !== action.channelId
+        )
       }
     case 'LOAD_CHANNEL_LIST':
       return {
@@ -293,35 +308,42 @@ export default function ChatReducer(state = defaultState, action) {
         messages: action.data.concat(state.messages)
       }
     case 'NOTIFY_MEMBER_LEFT':
-      let timeStamp = Math.floor(Date.now()/1000)
+      let timeStamp = Math.floor(Date.now() / 1000)
       return {
         ...state,
-        channels: state.channels.map(channel => (
-          (channel.id === action.data.channelId) ? {
-            ...channel,
-            lastUpdate: timeStamp,
-            lastMessageSender: {
-              id: action.data.userId,
-              username: action.data.username
-            },
-            numUnreads: 0,
-            lastMessage: 'Left the channel'
-          } : channel)
+        channels: state.channels.map(
+          channel =>
+            channel.id === action.data.channelId
+              ? {
+                  ...channel,
+                  lastUpdate: timeStamp,
+                  lastMessageSender: {
+                    id: action.data.userId,
+                    username: action.data.username
+                  },
+                  numUnreads: 0,
+                  lastMessage: 'Left the channel'
+                }
+              : channel
         ),
         currentChannel: {
           ...state.currentChannel,
-          members: state.currentChannel.members.filter(member => member.userId !== action.data.userId)
+          members: state.currentChannel.members.filter(
+            member => member.userId !== action.data.userId
+          )
         },
-        messages: state.messages.concat([{
-          id: null,
-          channelId: action.data.channelId,
-          content: 'Left the channel',
-          timeStamp: timeStamp,
-          isNotification: true,
-          username: action.data.username,
-          userId: action.data.userId,
-          profilePicId: action.data.profilePicId
-        }])
+        messages: state.messages.concat([
+          {
+            id: null,
+            channelId: action.data.channelId,
+            content: 'Left the channel',
+            timeStamp: timeStamp,
+            isNotification: true,
+            username: action.data.username,
+            userId: action.data.userId,
+            profilePicId: action.data.profilePicId
+          }
+        ])
       }
     case 'OPEN_CHAT_FOR_DM':
       if (action.messages.length > 20) {
@@ -333,23 +355,25 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         subject: {},
         chatMode: true,
-        channels: [{
-          id: action.channelId,
-          channelName: action.partner.username,
-          lastMessage: action.lastMessage,
-          lastUpdate: action.lastUpdate,
-          lastMessageSender: action.lastMessageSender,
-          members: [
-            {
-              username: action.user.username,
-              userId: action.user.userId
-            },
-            {
-              username: action.partner.username,
-              userId: action.partner.userId
-            }
-          ]
-        }].concat(channels.filter(channel => channel.id !== action.channelId)),
+        channels: [
+          {
+            id: action.channelId,
+            channelName: action.partner.username,
+            lastMessage: action.lastMessage,
+            lastUpdate: action.lastUpdate,
+            lastMessageSender: action.lastMessageSender,
+            members: [
+              {
+                username: action.user.username,
+                userId: action.user.userId
+              },
+              {
+                username: action.partner.username,
+                userId: action.partner.userId
+              }
+            ]
+          }
+        ].concat(channels.filter(channel => channel.id !== action.channelId)),
         selectedChannelId: action.channelId,
         currentChannel: {
           id: action.channelId,
@@ -377,23 +401,25 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         subject: {},
         chatMode: true,
-        channels: [{
-          id: 0,
-          channelName: action.partner.username,
-          lastMessage: null,
-          lastUpdate: null,
-          lastMessageSender: null,
-          members: [
-            {
-              username: action.user.username,
-              userId: action.user.userId
-            },
-            {
-              username: action.partner.username,
-              userId: action.partner.userId
-            }
-          ]
-        }].concat(filteredChannel),
+        channels: [
+          {
+            id: 0,
+            channelName: action.partner.username,
+            lastMessage: null,
+            lastUpdate: null,
+            lastMessageSender: null,
+            members: [
+              {
+                username: action.user.username,
+                userId: action.user.userId
+              },
+              {
+                username: action.partner.username,
+                userId: action.partner.userId
+              }
+            ]
+          }
+        ].concat(filteredChannel),
         selectedChannelId: 0,
         currentChannel: {
           id: 0,
@@ -417,40 +443,63 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         subject: action.duplicate ? {} : state.subject,
-        numUnreads: action.duplicate && action.pageVisible ? state.numUnreads : state.numUnreads + 1,
-        msgsWhileInvisible: action.pageVisible ? 0 : state.msgsWhileInvisible + 1,
-        selectedChannelId: action.duplicate ? action.data.channelId : state.selectedChannelId,
-        currentChannel: action.duplicate ? {
-          id: action.data.channelId,
-          members: action.data.members,
-          twoPeople: true
-        } : state.currentChannel,
-        messages: action.duplicate ? [{
-          id: null,
-          channelId: action.data.channelId,
-          content: action.data.content,
-          timeStamp: action.datatimeStamp,
-          username: action.data.username,
-          userId: action.data.userId,
-          profilePicId: action.data.profilePicId
-        }] : state.messages,
-        channels: [{
-          id: action.data.channelId,
-          channelName: action.data.channelName || action.data.username,
-          lastMessage: action.data.content,
-          lastUpdate: action.data.timeStamp,
-          numUnreads: 1,
-          lastMessageSender: {
-            id: action.data.userId,
-            username: action.data.username
+        numUnreads:
+          action.duplicate && action.pageVisible
+            ? state.numUnreads
+            : state.numUnreads + 1,
+        msgsWhileInvisible: action.pageVisible
+          ? 0
+          : state.msgsWhileInvisible + 1,
+        selectedChannelId: action.duplicate
+          ? action.data.channelId
+          : state.selectedChannelId,
+        currentChannel: action.duplicate
+          ? {
+              id: action.data.channelId,
+              members: action.data.members,
+              twoPeople: true
+            }
+          : state.currentChannel,
+        messages: action.duplicate
+          ? [
+              {
+                id: null,
+                channelId: action.data.channelId,
+                content: action.data.content,
+                timeStamp: action.datatimeStamp,
+                username: action.data.username,
+                userId: action.data.userId,
+                profilePicId: action.data.profilePicId
+              }
+            ]
+          : state.messages,
+        channels: [
+          {
+            id: action.data.channelId,
+            channelName: action.data.channelName || action.data.username,
+            lastMessage: action.data.content,
+            lastUpdate: action.data.timeStamp,
+            numUnreads: 1,
+            lastMessageSender: {
+              id: action.data.userId,
+              username: action.data.username
+            }
           }
-        }].concat(state.channels.filter((channel, index) => action.duplicate ? index !== 0 : true))
+        ].concat(
+          state.channels.filter(
+            (channel, index) => (action.duplicate ? index !== 0 : true)
+          )
+        )
       }
     case 'RECEIVE_MSG':
       return {
         ...state,
-        numUnreads: action.pageVisible ? state.numUnreads : state.numUnreads + 1,
-        msgsWhileInvisible: action.pageVisible ? 0 : state.msgsWhileInvisible + 1,
+        numUnreads: action.pageVisible
+          ? state.numUnreads
+          : state.numUnreads + 1,
+        msgsWhileInvisible: action.pageVisible
+          ? 0
+          : state.msgsWhileInvisible + 1,
         messages: state.messages.concat([action.data]),
         channels: state.channels.map(channel => {
           if (channel.id === action.data.channelId) {
@@ -508,22 +557,27 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         channels: state.channels.reduce((result, channel) => {
-          return channel.id === action.message.channelId ?
-            [{
-              ...channel,
-              lastMessage: action.message.content,
-              lastUpdate: Math.floor(Date.now()/1000),
-              numUnreads: 0,
-              lastMessageSender: {
-                id: action.message.userId,
-                username: action.message.username
-              }
-            }].concat(result) : result.concat([channel])
+          return channel.id === action.message.channelId
+            ? [
+                {
+                  ...channel,
+                  lastMessage: action.message.content,
+                  lastUpdate: Math.floor(Date.now() / 1000),
+                  numUnreads: 0,
+                  lastMessageSender: {
+                    id: action.message.userId,
+                    username: action.message.username
+                  }
+                }
+              ].concat(result)
+            : result.concat([channel])
         }, []),
-        messages: state.messages.concat([{
-          ...action.message,
-          content: action.message.content
-        }])
+        messages: state.messages.concat([
+          {
+            ...action.message,
+            content: action.message.content
+          }
+        ])
       }
     case 'TURN_CHAT_OFF':
       return {
@@ -536,17 +590,22 @@ export default function ChatReducer(state = defaultState, action) {
         subject: action.data.subject,
         channels: state.channels.map(channel => ({
           ...channel,
-          lastMessage: channel.id === 2 ? action.data.subject.content : channel.lastMessage,
+          lastMessage:
+            channel.id === 2
+              ? action.data.subject.content
+              : channel.lastMessage,
           lastMessageSender: {
             id: action.data.subject.userId,
             username: action.data.subject.username
           }
         })),
-        messages: state.messages.concat([{
-          id: action.data.subject.id,
-          channelId: 2,
-          ...action.data.subject
-        }])
+        messages: state.messages.concat([
+          {
+            id: action.data.subject.id,
+            channelId: 2,
+            ...action.data.subject
+          }
+        ])
       }
     case 'RESET_CHAT':
       return defaultState

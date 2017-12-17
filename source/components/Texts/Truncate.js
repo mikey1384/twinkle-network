@@ -1,18 +1,15 @@
 import PropTypes from 'prop-types'
 /* global requestAnimationFrame, cancelAnimationFrame */
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import {processedStringWithURL, isValidUrl} from 'helpers/stringHelpers'
+import { processedStringWithURL, isValidUrl } from 'helpers/stringHelpers'
 
 export default class Truncate extends Component {
   static propTypes = {
     children: PropTypes.node,
     ellipsis: PropTypes.node,
-    lines: PropTypes.oneOfType([
-      PropTypes.oneOf([false]),
-      PropTypes.number
-    ]),
+    lines: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.number]),
     onTruncate: PropTypes.func
   }
 
@@ -34,10 +31,7 @@ export default class Truncate extends Component {
   }
 
   componentDidMount() {
-    const {
-      calcTargetWidth,
-      onResize
-    } = this
+    const { calcTargetWidth, onResize } = this
 
     const canvas = document.createElement('canvas')
     this.canvas = canvas.getContext('2d')
@@ -85,9 +79,7 @@ export default class Truncate extends Component {
   }
 
   onTruncate(didTruncate) {
-    const {
-      onTruncate
-    } = this.props
+    const { onTruncate } = this.props
 
     if (typeof onTruncate === 'function') {
       this.timeout = requestAnimationFrame(() => {
@@ -101,10 +93,7 @@ export default class Truncate extends Component {
   }
 
   calcTargetWidth(callback) {
-    const {
-      calcTargetWidth,
-      canvas
-    } = this
+    const { calcTargetWidth, canvas } = this
 
     if (!this.Target) {
       return
@@ -127,9 +116,12 @@ export default class Truncate extends Component {
 
     canvas.font = font
 
-    this.setState({
-      targetWidth
-    }, callback)
+    this.setState(
+      {
+        targetWidth
+      },
+      callback
+    )
   }
 
   measureWidth(text) {
@@ -142,13 +134,8 @@ export default class Truncate extends Component {
 
   getLines() {
     const {
-      props: {
-        lines: numLines,
-        ellipsis
-      },
-      state: {
-        targetWidth
-      },
+      props: { lines: numLines, ellipsis },
+      state: { targetWidth },
       innerText,
       measureWidth,
       onTruncate
@@ -235,7 +222,12 @@ export default class Truncate extends Component {
           }
         }
 
-        resultLine = <span>{textRest.slice(0, lower)}{ellipsis}</span>
+        resultLine = (
+          <span>
+            {textRest.slice(0, lower)}
+            {ellipsis}
+          </span>
+        )
         lines.push(processedStringWithURL(resultLine))
       }
     }
@@ -246,18 +238,19 @@ export default class Truncate extends Component {
   }
 
   renderLine(line, i, arr) {
-    let span = typeof line === 'string' ?
-      <span key={i} dangerouslySetInnerHTML={{__html: line}}/> : <span key={i}>{line}</span>
+    let span =
+      typeof line === 'string' ? (
+        <span key={i} dangerouslySetInnerHTML={{ __html: line }} />
+      ) : (
+        <span key={i}>{line}</span>
+      )
     if (i === arr.length - 1) {
       return span
     } else {
       const br = <br key={i + 'br'} />
 
       if (line) {
-        return [
-          span,
-          br
-        ]
+        return [span, br]
       } else {
         return br
       }
@@ -266,15 +259,8 @@ export default class Truncate extends Component {
 
   render() {
     const {
-      props: {
-        children,
-        ellipsis,
-        lines,
-        ...spanProps
-      },
-      state: {
-        targetWidth
-      },
+      props: { children, ellipsis, lines, ...spanProps },
+      state: { targetWidth },
       getLines,
       renderLine,
       onTruncate
@@ -295,10 +281,26 @@ export default class Truncate extends Component {
 
     delete spanProps.onTruncate
     return (
-      <div {...spanProps} ref={ref => { this.Target = ref }}>
+      <div
+        {...spanProps}
+        ref={ref => {
+          this.Target = ref
+        }}
+      >
         <ErrorBoundary>{text}</ErrorBoundary>
-        <span ref={ref => { this.Text = ref }}>{children}</span>
-        <span ref={ref => { this.Ellipsis = ref }} style={this.styles.ellipsis}>
+        <span
+          ref={ref => {
+            this.Text = ref
+          }}
+        >
+          {children}
+        </span>
+        <span
+          ref={ref => {
+            this.Ellipsis = ref
+          }}
+          style={this.styles.ellipsis}
+        >
           {ellipsis}
         </span>
       </div>

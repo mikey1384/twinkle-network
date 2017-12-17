@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import AddLinkModal from './AddLinkModal'
 import Button from 'components/Button'
 import SectionPanel from 'components/SectionPanel'
 import LinkGroup from './LinkGroup'
 import Notification from 'containers/Notification'
-import {connect} from 'react-redux'
-import {fetchLinks, fetchMoreLinks} from 'redux/actions/LinkActions'
+import { connect } from 'react-redux'
+import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions'
 
 class Main extends Component {
   static propTypes = {
@@ -28,15 +28,13 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const {fetchLinks, history} = this.props
-    const {loaded} = this.state
+    const { fetchLinks, history } = this.props
+    const { loaded } = this.state
     this.mounted = true
     if (!loaded || history.action === 'PUSH') {
-      fetchLinks().then(
-        () => {
-          if (this.mounted) this.setState({loaded: true})
-        }
-      )
+      fetchLinks().then(() => {
+        if (this.mounted) this.setState({ loaded: true })
+      })
     }
   }
 
@@ -45,8 +43,8 @@ class Main extends Component {
   }
 
   render() {
-    const {links, loadMoreLinksButtonShown, notificationLoaded} = this.props
-    const {addLinkModalShown, loaded} = this.state
+    const { links, loadMoreLinksButtonShown, notificationLoaded } = this.props
+    const { addLinkModalShown, loaded } = this.state
     return (
       <div>
         <div className="col-md-9">
@@ -55,9 +53,10 @@ class Main extends Component {
             button={
               <Button
                 className="btn btn-default pull-right"
-                style={{marginLeft: 'auto'}}
-                onClick={() => this.setState({addLinkModalShown: true})}
-              >+ Add Link
+                style={{ marginLeft: 'auto' }}
+                onClick={() => this.setState({ addLinkModalShown: true })}
+              >
+                + Add Link
               </Button>
             }
             emptyMessage="No Uploaded Links"
@@ -70,21 +69,20 @@ class Main extends Component {
             <LinkGroup links={links} />
           </SectionPanel>
         </div>
-        {addLinkModalShown &&
-          <AddLinkModal onHide={() => this.setState({addLinkModalShown: false})} />
-        }
-        {notificationLoaded &&
-          <Notification
-            device="desktop"
-            className="col-xs-3 col-xs-offset-9"
+        {addLinkModalShown && (
+          <AddLinkModal
+            onHide={() => this.setState({ addLinkModalShown: false })}
           />
-        }
+        )}
+        {notificationLoaded && (
+          <Notification device="desktop" className="col-xs-3 col-xs-offset-9" />
+        )}
       </div>
     )
   }
 
   loadMoreLinks() {
-    const {fetchMoreLinks, links} = this.props
+    const { fetchMoreLinks, links } = this.props
     const lastId = links[links.length - 1].id
     return fetchMoreLinks(lastId)
   }
@@ -101,4 +99,3 @@ export default connect(
     fetchMoreLinks
   }
 )(Main)
-

@@ -29,7 +29,7 @@ class ScrollContainer extends React.Component {
     this.context.scrollBehavior.registerElement(
       this.props.scrollKey,
       ReactDOM.findDOMNode(this), // eslint-disable-line react/no-find-dom-node
-      this.shouldUpdateScroll,
+      this.shouldUpdateScroll
     )
   }
 
@@ -54,9 +54,9 @@ class ScrollContainer extends React.Component {
     return shouldUpdateScroll.call(
       this.context.scrollBehavior.scrollBehavior,
       prevRouterProps,
-      routerProps,
+      routerProps
     )
-  };
+  }
 
   render() {
     return this.props.children

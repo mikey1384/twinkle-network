@@ -6,7 +6,7 @@ FullTextReveal.propTypes = {
   text: PropTypes.string.isRequired,
   width: PropTypes.string
 }
-export default function FullTextReveal({show, text, width = '500px'}) {
+export default function FullTextReveal({ show, text, width = '500px' }) {
   return (
     <div
       className="alert alert-info"
@@ -18,6 +18,8 @@ export default function FullTextReveal({show, text, width = '500px'}) {
         width: 'auto',
         maxWidth: width
       }}
-    >{text}</div>
+    >
+      {text}
+    </div>
   )
 }

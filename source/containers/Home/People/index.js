@@ -1,15 +1,20 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SearchInput from 'components/Texts/SearchInput'
-import {connect} from 'react-redux'
-import {clearUserSearch, fetchUsers, fetchMoreUsers, searchUsers} from 'redux/actions/UserActions'
+import { connect } from 'react-redux'
+import {
+  clearUserSearch,
+  fetchUsers,
+  fetchMoreUsers,
+  searchUsers
+} from 'redux/actions/UserActions'
 import ProfilePanel from '../ProfilePanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
-import {addEvent, removeEvent} from 'helpers/listenerHelpers'
-import {queryStringForArray} from 'helpers/apiHelpers'
-import {stringIsEmpty} from 'helpers/stringHelpers'
-import {Color} from 'constants/css'
+import { addEvent, removeEvent } from 'helpers/listenerHelpers'
+import { queryStringForArray } from 'helpers/apiHelpers'
+import { stringIsEmpty } from 'helpers/stringHelpers'
+import { Color } from 'constants/css'
 
 class People extends Component {
   static propTypes = {
@@ -36,22 +41,20 @@ class People extends Component {
   }
 
   componentDidMount() {
-    const {fetchUsers} = this.props
+    const { fetchUsers } = this.props
     addEvent(window, 'scroll', this.onScroll)
-    return fetchUsers().then(
-      () => this.setState({loaded: true})
-    )
+    return fetchUsers().then(() => this.setState({ loaded: true }))
   }
 
   componentWillUnmount() {
-    const {clearUserSearch} = this.props
+    const { clearUserSearch } = this.props
     clearUserSearch()
     removeEvent(window, 'scroll', this.onScroll)
   }
 
   render() {
-    const {userId, loadMoreButton, profiles, searchedProfiles} = this.props
-    const {loading, loaded, searching, searchText} = this.state
+    const { userId, loadMoreButton, profiles, searchedProfiles } = this.props
+    const { loading, loaded, searching, searchText } = this.state
     return (
       <div>
         <SearchInput
@@ -60,43 +63,52 @@ class People extends Component {
           onChange={this.onPeopleSearch}
           value={searchText}
         />
-        <div style={{marginTop: '1em'}}>
-          {!loaded &&
-            <Loading text="Loading Users..." />
-          }
-          {loaded && !searching &&
-            profiles.map(
-              profile => <ProfilePanel expandable key={profile.id} userId={userId} profile={profile} />
-            )
-          }
+        <div style={{ marginTop: '1em' }}>
+          {!loaded && <Loading text="Loading Users..." />}
+          {loaded &&
+            !searching &&
+            profiles.map(profile => (
+              <ProfilePanel
+                expandable
+                key={profile.id}
+                userId={userId}
+                profile={profile}
+              />
+            ))}
           {searching &&
-            searchedProfiles.map(
-              profile => <ProfilePanel expandable key={profile.id} userId={userId} profile={profile} />
-            )
-          }
+            searchedProfiles.map(profile => (
+              <ProfilePanel
+                expandable
+                key={profile.id}
+                userId={userId}
+                profile={profile}
+              />
+            ))}
         </div>
-        {!searching && loaded && loadMoreButton &&
-          <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />
-        }
+        {!searching &&
+          loaded &&
+          loadMoreButton && (
+            <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />
+          )}
       </div>
     )
   }
 
   loadMoreProfiles = () => {
-    const {fetchMoreUsers, profiles} = this.props
-    const {loading} = this.state
+    const { fetchMoreUsers, profiles } = this.props
+    const { loading } = this.state
     if (!loading) {
-      this.setState({loading: true})
-      return fetchMoreUsers(queryStringForArray(profiles, 'id', 'shownUsers')).then(
-        () => this.setState({loading: false})
-      )
+      this.setState({ loading: true })
+      return fetchMoreUsers(
+        queryStringForArray(profiles, 'id', 'shownUsers')
+      ).then(() => this.setState({ loading: false }))
     }
   }
 
-  onPeopleSearch = (text) => {
-    const {searchUsers, clearUserSearch} = this.props
+  onPeopleSearch = text => {
+    const { searchUsers, clearUserSearch } = this.props
     clearTimeout(this.timer)
-    this.setState({searchText: text, searching: !stringIsEmpty(text)})
+    this.setState({ searchText: text, searching: !stringIsEmpty(text) })
     if (stringIsEmpty(text)) {
       return clearUserSearch()
     }
@@ -104,17 +116,24 @@ class People extends Component {
   }
 
   onScroll = () => {
-    const {chatMode, profiles} = this.props
+    const { chatMode, profiles } = this.props
     if (document.body.scrollHeight > this.scrollHeight) {
       this.scrollHeight = document.body.scrollHeight
     }
-    const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+    const scrollPosition =
+      document.documentElement.scrollTop || document.body.scrollTop
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
-      this.setState(() => ({scrollPosition}), () => {
-        if (this.state.scrollPosition >= this.scrollHeight - window.innerHeight - 500) {
-          this.loadMoreProfiles()
+      this.setState(
+        () => ({ scrollPosition }),
+        () => {
+          if (
+            this.state.scrollPosition >=
+            this.scrollHeight - window.innerHeight - 500
+          ) {
+            this.loadMoreProfiles()
+          }
         }
-      })
+      )
     }
   }
 }

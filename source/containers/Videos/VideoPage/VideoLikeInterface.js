@@ -3,8 +3,8 @@ import React from 'react'
 import Likers from 'components/Likers'
 import LikeButton from 'components/LikeButton'
 import StarButton from 'components/StarButton'
-import {starVideo} from 'redux/actions/VideoActions'
-import {connect} from 'react-redux'
+import { starVideo } from 'redux/actions/VideoActions'
+import { connect } from 'react-redux'
 
 VideoLikeInterface.propTypes = {
   className: PropTypes.string,
@@ -15,32 +15,38 @@ VideoLikeInterface.propTypes = {
   showLikerList: PropTypes.func.isRequired,
   starVideo: PropTypes.func.isRequired,
   userId: PropTypes.number,
-  videoId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]).isRequired
+  videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 }
 function VideoLikeInterface({
-  userId, isCreator, isStarred, likes, onLikeClick,
-  showLikerList, starVideo, className, videoId
+  userId,
+  isCreator,
+  isStarred,
+  likes,
+  onLikeClick,
+  showLikerList,
+  starVideo,
+  className,
+  videoId
 }) {
   return (
     <div className="pull-right">
-      <div style={{textAlign: 'center'}}>
+      <div style={{ textAlign: 'center' }}>
         <LikeButton
-          style={{fontSize: isCreator ? '2rem' : '3rem'}}
+          style={{ fontSize: isCreator ? '2rem' : '3rem' }}
           onClick={onLikeClick}
           liked={isLiked(likes)}
         />
-        {isCreator && <StarButton
-          isStarred={isStarred}
-          onClick={() => starVideo(videoId)}
-          style={{
-            fontSize: '2rem',
-            marginLeft: '1rem'
-          }}
-        />}
-        <div style={{marginTop: '0.5em'}}>
+        {isCreator && (
+          <StarButton
+            isStarred={isStarred}
+            onClick={() => starVideo(videoId)}
+            style={{
+              fontSize: '2rem',
+              marginLeft: '1rem'
+            }}
+          />
+        )}
+        <div style={{ marginTop: '0.5em' }}>
           <Likers
             userId={userId}
             likes={likes}
@@ -68,5 +74,5 @@ export default connect(
   state => ({
     isCreator: state.UserReducer.isCreator
   }),
-  {starVideo}
+  { starVideo }
 )(VideoLikeInterface)

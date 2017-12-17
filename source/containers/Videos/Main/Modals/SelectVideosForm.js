@@ -26,7 +26,9 @@ export default function SelectVideosForm({
           <VideoThumb
             key={index}
             video={video}
-            selected={selectedVideos.map(video => video.id).indexOf(video.id) !== -1}
+            selected={
+              selectedVideos.map(video => video.id).indexOf(video.id) !== -1
+            }
             onSelect={video => onSelect(selectedVideos, video)}
             onDeselect={videoId => {
               let selected = selectedVideos
@@ -37,11 +39,13 @@ export default function SelectVideosForm({
           />
         )
       })}
-      {loadMoreVideosButton &&
+      {loadMoreVideosButton && (
         <div className="text-center">
-          <Button className="btn btn-success" onClick={loadMoreVideos}>Load More</Button>
+          <Button className="btn btn-success" onClick={loadMoreVideos}>
+            Load More
+          </Button>
         </div>
-      }
+      )}
     </div>
   )
 }

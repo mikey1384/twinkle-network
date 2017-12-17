@@ -1,7 +1,8 @@
 /* global localStorage */
-import {logout, openSigninModal} from './UserActions'
+import { logout, openSigninModal } from './UserActions'
 
-export const token = () => typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+export const token = () =>
+  typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
 export const auth = () => ({
   headers: {
     authorization: token()
@@ -9,7 +10,7 @@ export const auth = () => ({
 })
 export function handleError(error, dispatch) {
   if (error.response) {
-    const {status} = error.response
+    const { status } = error.response
     if (status === 401) {
       dispatch(logout())
       dispatch(openSigninModal())

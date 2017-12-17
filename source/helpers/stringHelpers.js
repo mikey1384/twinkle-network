@@ -1,11 +1,13 @@
 /* eslint-disable no-useless-escape */
 
 export function cleanString(string) {
-  return string ? string
-    .replace(/<br\s*[\/]?>/gi, '\n')
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>') : ''
+  return string
+    ? string
+        .replace(/<br\s*[\/]?>/gi, '\n')
+        .replace(/&amp;/gi, '&')
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+    : ''
 }
 
 export function turnStringIntoQuestion(string) {
@@ -113,33 +115,39 @@ export function addEmoji(string) {
 }
 
 export function finalizeEmoji(string) {
-  let emojifiedString = addAdvancedEmoji(string + ' ').replace(/((\s*\S+)*)\s*/, '$1')
+  let emojifiedString = addAdvancedEmoji(string + ' ').replace(
+    /((\s*\S+)*)\s*/,
+    '$1'
+  )
   return addEmoji(emojifiedString)
 }
 
 export function processedQueryString(string) {
-  return string ? string
-    .replace(/\r?\n/g, '<br>')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\r?\n/g, '<br>') :
-    null
+  return string
+    ? string
+        .replace(/\r?\n/g, '<br>')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\r?\n/g, '<br>')
+    : null
 }
 
 export function processedString(string) {
-  return string ? string
-    .replace(/ /g, '\u00a0')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;') :
-    null
+  return string
+    ? string
+        .replace(/ /g, '\u00a0')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+    : null
 }
 
 export function processedStringWithURL(string) {
   if (typeof string !== 'string') return string || null
   const maxChar = 100
-  const trimmedString = string => string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+  const trimmedString = string =>
+    string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
   let tempString = string
     .replace(/ /g, '\u00a0')
     .replace(/&/g, '&amp;')
@@ -149,7 +157,7 @@ export function processedStringWithURL(string) {
     .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
   let newString = ''
   while (tempString.length > 0) {
-    let hrefPos = tempString.indexOf('href=\"')
+    let hrefPos = tempString.indexOf('href="')
     if (hrefPos === -1) {
       let headPos = tempString.indexOf('target="_blank">')
       let tailPos = tempString.indexOf('</a>')
@@ -174,14 +182,17 @@ export function processedStringWithURL(string) {
 }
 
 export function stringIsEmpty(string) {
-  var checkedString = string ? string.replace(/\s/g, '').replace(/\r?\n/g, '') : ''
+  var checkedString = string
+    ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
+    : ''
   return checkedString === ''
 }
 
 export function trimWhiteSpaces(text) {
   let newText = text
   while (
-    newText !== '' && (newText[0] === ' ' || newText[newText.length - 1] === ' ')
+    newText !== '' &&
+    (newText[0] === ' ' || newText[newText.length - 1] === ' ')
   ) {
     if (newText[0] === ' ') {
       newText = newText.substring(1)
@@ -194,15 +205,18 @@ export function trimWhiteSpaces(text) {
 }
 
 export function isValidUrl(url) {
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
   return regex.test(url)
 }
 
 export function isValidYoutubeUrl(url) {
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
   let trimOne = url.split('v=')[1]
   let trimTwo = url.split('youtu.be/')[1]
-  return regex.test(url) && (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
+  return (
+    regex.test(url) &&
+    (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
+  )
 }
 
 export function fetchedVideoCodeFromURL(url) {

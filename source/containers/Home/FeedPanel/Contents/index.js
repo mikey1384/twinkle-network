@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import LikeButton from 'components/LikeButton'
 import StarButton from 'components/StarButton'
 import Button from 'components/Button'
 import Likers from 'components/Likers'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import {
   showFeedCommentsAsync,
   loadMoreFeedCommentsAsync,
@@ -24,7 +24,7 @@ import VideoPlayer from 'components/VideoPlayer'
 import PanelComments from 'components/PanelComments'
 import MainContent from './MainContent'
 import TargetContent from './TargetContent'
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 
@@ -59,14 +59,51 @@ class Contents extends Component {
   render() {
     const {
       feed: {
-        uploaderId, content, contentLikers = [], contentId, type, discussionId, hasHqThumb, isStarred,
-        videoViews, numChildComments = 0, numChildReplies = 0, replyId, commentId, childComments,
-        commentsLoadMoreButton, rootId, rootType, contentTitle, contentDescription,
-        rootContent, rootContentIsStarred, thumbUrl, actualTitle, actualDescription, siteUrl
-      }, feed, isCreator, myId, attachedVideoShown, onEditDone, onLikeCommentClick, onLoadMoreReplies,
-      onCommentDelete, onContentDelete, onReplySubmit, onSubmit
+        uploaderId,
+        content,
+        contentLikers = [],
+        contentId,
+        type,
+        discussionId,
+        hasHqThumb,
+        isStarred,
+        videoViews,
+        numChildComments = 0,
+        numChildReplies = 0,
+        replyId,
+        commentId,
+        childComments,
+        commentsLoadMoreButton,
+        rootId,
+        rootType,
+        contentTitle,
+        contentDescription,
+        rootContent,
+        rootContentIsStarred,
+        thumbUrl,
+        actualTitle,
+        actualDescription,
+        siteUrl
+      },
+      feed,
+      isCreator,
+      myId,
+      attachedVideoShown,
+      onEditDone,
+      onLikeCommentClick,
+      onLoadMoreReplies,
+      onCommentDelete,
+      onContentDelete,
+      onReplySubmit,
+      onSubmit
     } = this.props
-    const {userListModalShown, clickListenerState, confirmModalShown, commentsShown, isEditing} = this.state
+    const {
+      userListModalShown,
+      clickListenerState,
+      confirmModalShown,
+      commentsShown,
+      isEditing
+    } = this.state
     let userLikedThis = false
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId === myId) userLikedThis = true
@@ -74,33 +111,32 @@ class Contents extends Component {
     const canEdit = myId === uploaderId || isCreator
     return (
       <div>
-        {confirmModalShown &&
+        {confirmModalShown && (
           <ConfirmModal
-            onConfirm={() => onContentDelete({type, contentId})}
-            onHide={() => this.setState({confirmModalShown: false})}
+            onConfirm={() => onContentDelete({ type, contentId })}
+            onHide={() => this.setState({ confirmModalShown: false })}
             title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
           />
-        }
+        )}
         <div>
-          {type === 'comment' && attachedVideoShown &&
-            <VideoPlayer
-              autoplay
-              isStarred={!!rootContentIsStarred}
-              title={contentTitle}
-              style={{marginBottom: '1em'}}
-              containerClassName="embed-responsive embed-responsive-16by9"
-              className="embed-responsive-item"
-              hasHqThumb={hasHqThumb}
-              videoId={rootId}
-              videoCode={rootContent}
-            />
-          }
-          {type === 'comment' && (commentId || replyId || discussionId) &&
-            <TargetContent
-              feed={feed}
-              myId={myId}
-            />
-          }
+          {type === 'comment' &&
+            attachedVideoShown && (
+              <VideoPlayer
+                autoplay
+                isStarred={!!rootContentIsStarred}
+                title={contentTitle}
+                style={{ marginBottom: '1em' }}
+                containerClassName="embed-responsive embed-responsive-16by9"
+                className="embed-responsive-item"
+                hasHqThumb={hasHqThumb}
+                videoId={rootId}
+                videoCode={rootContent}
+              />
+            )}
+          {type === 'comment' &&
+            (commentId || replyId || discussionId) && (
+              <TargetContent feed={feed} myId={myId} />
+            )}
           <MainContent
             contentId={contentId}
             content={content}
@@ -109,19 +145,19 @@ class Contents extends Component {
             hasHqThumb={hasHqThumb}
             isEditing={isEditing}
             isStarred={!!isStarred}
-            onEditDismiss={() => this.setState({isEditing: false})}
+            onEditDismiss={() => this.setState({ isEditing: false })}
             rootId={rootId}
             rootContent={rootContent}
             rootContentIsStarred={!!rootContentIsStarred}
             rootType={rootType}
-            urlRelated={{thumbUrl, actualTitle, actualDescription, siteUrl}}
+            urlRelated={{ thumbUrl, actualTitle, actualDescription, siteUrl }}
             type={type}
           />
         </div>
-        {!isEditing &&
-          <div style={{paddingTop: type === 'video' ? '2em' : '1.5em'}}>
-            {type !== 'discussion' &&
-              [<LikeButton
+        {!isEditing && (
+          <div style={{ paddingTop: type === 'video' ? '2em' : '1.5em' }}>
+            {type !== 'discussion' && [
+              <LikeButton
                 key="likeButton"
                 onClick={this.onLikeClick}
                 liked={userLikedThis}
@@ -129,62 +165,74 @@ class Contents extends Component {
               />,
               <Button
                 key="commentButton"
-                style={{marginLeft: '0.5em'}}
+                style={{ marginLeft: '0.5em' }}
                 className="btn btn-warning btn-sm"
                 onClick={this.onCommentButtonClick}
               >
-                <span className="glyphicon glyphicon-comment"></span>&nbsp;
-                {type === 'video' || type === 'url' ? 'Comment' : type === 'question' ? 'Answer' : 'Reply'}&nbsp;
-                {numChildComments > 0 && !commentsShown ? `(${numChildComments})` :
-                  (numChildReplies > 0 && !commentsShown ? `(${numChildReplies})` : '')
-                }
-              </Button>]
-            }
-            {isCreator && type === 'video' &&
-              <StarButton
-                isStarred={!!isStarred}
-                onClick={this.onStarButtonClick}
-                style={{float: 'right'}}
-              />
-            }
-            {videoViews > 10 && type === 'video' &&
-              <div style={{
-                fontWeight: 'bold',
-                float: 'right',
-                fontSize: '2rem',
-                marginRight: isCreator ? '1rem' : null
-              }}>
-                {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
-              </div>
-            }
-            {type === 'discussion' &&
+                <span className="glyphicon glyphicon-comment" />&nbsp;
+                {type === 'video' || type === 'url'
+                  ? 'Comment'
+                  : type === 'question' ? 'Answer' : 'Reply'}&nbsp;
+                {numChildComments > 0 && !commentsShown
+                  ? `(${numChildComments})`
+                  : numChildReplies > 0 && !commentsShown
+                    ? `(${numChildReplies})`
+                    : ''}
+              </Button>
+            ]}
+            {isCreator &&
+              type === 'video' && (
+                <StarButton
+                  isStarred={!!isStarred}
+                  onClick={this.onStarButtonClick}
+                  style={{ float: 'right' }}
+                />
+              )}
+            {videoViews > 10 &&
+              type === 'video' && (
+                <div
+                  style={{
+                    fontWeight: 'bold',
+                    float: 'right',
+                    fontSize: '2rem',
+                    marginRight: isCreator ? '1rem' : null
+                  }}
+                >
+                  {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+                </div>
+              )}
+            {type === 'discussion' && (
               <Button
                 className="btn btn-warning"
                 onClick={this.onCommentButtonClick}
               >
-                Answer{!!numChildComments && numChildComments > 0 && !commentsShown ? ` (${numChildComments})` : ''}
+                Answer{!!numChildComments &&
+                numChildComments > 0 &&
+                !commentsShown
+                  ? ` (${numChildComments})`
+                  : ''}
               </Button>
-            }
-            {canEdit &&
+            )}
+            {canEdit && (
               <DropdownButton
                 noAlign
                 shape="button"
-                style={{marginLeft: '0.5em'}}
+                style={{ marginLeft: '0.5em' }}
                 size={type !== 'discussion' ? 'sm' : null}
                 text="Edit"
                 menuProps={[
                   {
                     label: 'Edit',
-                    onClick: () => this.setState({isEditing: true})
+                    onClick: () => this.setState({ isEditing: true })
                   },
                   {
                     label: 'Remove',
-                    onClick: () => this.setState({confirmModalShown: true})
+                    onClick: () => this.setState({ confirmModalShown: true })
                   }
                 ]}
               />
-            }
-            <div style={{marginTop: '1em'}}>
+            )}
+            <div style={{ marginTop: '1em' }}>
               <Likers
                 style={{
                   fontSize: '11px',
@@ -193,16 +241,20 @@ class Contents extends Component {
                 }}
                 userId={myId}
                 likes={contentLikers}
-                onLinkClick={() => this.setState({userListModalShown: true})}
+                onLinkClick={() => this.setState({ userListModalShown: true })}
               />
             </div>
           </div>
-        }
-        {commentsShown &&
+        )}
+        {commentsShown && (
           <PanelComments
             autoFocus
             clickListenerState={clickListenerState}
-            inputTypeLabel={type === 'comment' ? 'reply' : type === 'question' ? 'answer' : 'comment'}
+            inputTypeLabel={
+              type === 'comment'
+                ? 'reply'
+                : type === 'question' ? 'answer' : 'comment'
+            }
             comments={childComments}
             loadMoreButton={commentsLoadMoreButton}
             userId={myId}
@@ -227,40 +279,49 @@ class Contents extends Component {
               onLoadMoreReplies
             }}
           />
-        }
-        {userListModalShown &&
+        )}
+        {userListModalShown && (
           <UserListModal
-            onHide={() => this.setState({userListModalShown: false})}
+            onHide={() => this.setState({ userListModalShown: false })}
             title={`People who liked this ${type}`}
             users={contentLikers}
             description="(You)"
           />
-        }
+        )}
       </div>
     )
   }
 
   loadMoreComments = (lastCommentId, type, contentId) => {
-    const {loadMoreComments, feed: {commentId}} = this.props
+    const { loadMoreComments, feed: { commentId } } = this.props
     loadMoreComments(lastCommentId, type, contentId, !!commentId)
   }
 
   onCommentButtonClick = () => {
-    const {feed: {type, rootType, contentId, commentId}, showFeedComments} = this.props
-    const {clickListenerState, commentsShown} = this.state
+    const {
+      feed: { type, rootType, contentId, commentId },
+      showFeedComments
+    } = this.props
+    const { clickListenerState, commentsShown } = this.state
     const isReply = !!commentId
     if (!commentsShown) {
-      this.setState({commentsShown: true})
-      return showFeedComments({rootType, type, contentId, commentLength: 0, isReply})
+      this.setState({ commentsShown: true })
+      return showFeedComments({
+        rootType,
+        type,
+        contentId,
+        commentLength: 0,
+        isReply
+      })
     }
-    this.setState({clickListenerState: !clickListenerState})
+    this.setState({ clickListenerState: !clickListenerState })
   }
 
   onLikeClick = () => {
-    const {feed: {contentId, type, rootType}} = this.props
+    const { feed: { contentId, type, rootType } } = this.props
     switch (type) {
       case 'comment':
-       return this.props.onLikeCommentClick(contentId)
+        return this.props.onLikeCommentClick(contentId)
       case 'question':
         return this.props.onLikeQuestionClick(contentId)
       default:
@@ -269,25 +330,22 @@ class Contents extends Component {
   }
 
   onStarButtonClick = () => {
-    const {feedVideoStar, feed: {contentId}} = this.props
+    const { feedVideoStar, feed: { contentId } } = this.props
     feedVideoStar(contentId)
   }
 }
 
-export default connect(
-  state => ({isCreator: state.UserReducer.isCreator}),
-  {
-    feedVideoStar,
-    showFeedComments: showFeedCommentsAsync,
-    loadMoreComments: loadMoreFeedCommentsAsync,
-    onSubmit: uploadFeedComment,
-    onCommentDelete: feedCommentDelete,
-    onContentDelete: feedContentDelete,
-    onEditDone: feedCommentEdit,
-    onReplySubmit: uploadFeedReply,
-    onLoadMoreReplies: loadMoreFeedReplies,
-    onLikeCommentClick: commentFeedLike,
-    onLikeQuestionClick: questionFeedLike,
-    onLikeContentClick: contentFeedLike
-  }
-)(Contents)
+export default connect(state => ({ isCreator: state.UserReducer.isCreator }), {
+  feedVideoStar,
+  showFeedComments: showFeedCommentsAsync,
+  loadMoreComments: loadMoreFeedCommentsAsync,
+  onSubmit: uploadFeedComment,
+  onCommentDelete: feedCommentDelete,
+  onContentDelete: feedContentDelete,
+  onEditDone: feedCommentEdit,
+  onReplySubmit: uploadFeedReply,
+  onLoadMoreReplies: loadMoreFeedReplies,
+  onLikeCommentClick: commentFeedLike,
+  onLikeQuestionClick: questionFeedLike,
+  onLikeContentClick: contentFeedLike
+})(Contents)

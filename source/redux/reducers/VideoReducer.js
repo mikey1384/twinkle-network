@@ -1,4 +1,4 @@
-import {fetchedVideoCodeFromURL} from 'helpers/stringHelpers'
+import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers'
 
 const defaultVideoPageState = {
   videoLoading: true,
@@ -33,7 +33,9 @@ export default function VideoReducer(state = defaultState, action) {
         allVideoThumbs: newVideoThumbs.concat(action.data)
       }
     case 'DELETE_VIDEO_COMMENT':
-      let newComments = state.videoPage.comments.filter(comment => comment.id !== action.data.commentId)
+      let newComments = state.videoPage.comments.filter(
+        comment => comment.id !== action.data.commentId
+      )
       let noComments = newComments.length === 0
       return {
         ...state,
@@ -42,17 +44,21 @@ export default function VideoReducer(state = defaultState, action) {
           discussions: state.videoPage.discussions.map(discussion => {
             return {
               ...discussion,
-              comments: discussion.comments.filter(
-                comment => comment.id !== action.data.commentId
-              ).map(comment => ({
-                ...comment,
-                replies: comment.replies.filter(reply => reply.id !== action.data.commentId)
-              }))
+              comments: discussion.comments
+                .filter(comment => comment.id !== action.data.commentId)
+                .map(comment => ({
+                  ...comment,
+                  replies: comment.replies.filter(
+                    reply => reply.id !== action.data.commentId
+                  )
+                }))
             }
           }),
           comments: newComments.map(comment => ({
             ...comment,
-            replies: comment.replies.filter(reply => reply.id !== action.data.commentId)
+            replies: comment.replies.filter(
+              reply => reply.id !== action.data.commentId
+            )
           })),
           noComments
         }
@@ -62,7 +68,9 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          discussions: state.videoPage.discussions.filter(discussion => discussion.id !== action.discussionId)
+          discussions: state.videoPage.discussions.filter(
+            discussion => discussion.id !== action.discussionId
+          )
         }
       }
     case 'EDIT_VIDEO_COMMENT':
@@ -74,19 +82,31 @@ export default function VideoReducer(state = defaultState, action) {
             ...discussion,
             comments: discussion.comments.map(comment => ({
               ...comment,
-              content: comment.id === action.commentId ? action.editedComment : comment.content,
+              content:
+                comment.id === action.commentId
+                  ? action.editedComment
+                  : comment.content,
               replies: comment.replies.map(reply => ({
                 ...reply,
-                content: reply.id === action.commentId ? action.editedComment : reply.content
+                content:
+                  reply.id === action.commentId
+                    ? action.editedComment
+                    : reply.content
               }))
             }))
           })),
           comments: state.videoPage.comments.map(comment => ({
             ...comment,
-            content: comment.id === action.commentId ? action.editedComment : comment.content,
+            content:
+              comment.id === action.commentId
+                ? action.editedComment
+                : comment.content,
             replies: comment.replies.map(reply => ({
               ...reply,
-              content: reply.id === action.commentId ? action.editedComment : reply.content
+              content:
+                reply.id === action.commentId
+                  ? action.editedComment
+                  : reply.content
             }))
           }))
         }
@@ -98,8 +118,14 @@ export default function VideoReducer(state = defaultState, action) {
           ...state.videoPage,
           discussions: state.videoPage.discussions.map(discussion => ({
             ...discussion,
-            title: discussion.id === action.discussionId ? action.data.title : discussion.title,
-            description: discussion.id === action.discussionId ? action.data.description : discussion.description
+            title:
+              discussion.id === action.discussionId
+                ? action.data.title
+                : discussion.title,
+            description:
+              discussion.id === action.discussionId
+                ? action.data.description
+                : discussion.description
           }))
         }
       }
@@ -124,7 +150,9 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         loaded: true,
-        allVideoThumbs: action.initialRun ? action.videos : state.allVideoThumbs.concat(action.videos),
+        allVideoThumbs: action.initialRun
+          ? action.videos
+          : state.allVideoThumbs.concat(action.videos),
         loadMoreButton,
         allVideosLoaded
       }
@@ -171,9 +199,16 @@ export default function VideoReducer(state = defaultState, action) {
           comments: state.videoPage.comments.map(comment => {
             return {
               ...comment,
-              replies: action.commentType === 'default' && comment.id === action.commentId ?
-                action.data.replies.concat(comment.replies) : comment.replies,
-              loadMoreReplies: action.commentType === 'default' && comment.id === action.commentId ? action.data.loadMoreReplies : comment.loadMoreReplies
+              replies:
+                action.commentType === 'default' &&
+                comment.id === action.commentId
+                  ? action.data.replies.concat(comment.replies)
+                  : comment.replies,
+              loadMoreReplies:
+                action.commentType === 'default' &&
+                comment.id === action.commentId
+                  ? action.data.loadMoreReplies
+                  : comment.loadMoreReplies
             }
           }),
           discussions: state.videoPage.discussions.map(discussion => {
@@ -182,9 +217,16 @@ export default function VideoReducer(state = defaultState, action) {
               comments: discussion.comments.map(comment => {
                 return {
                   ...comment,
-                  replies: action.commentType !== 'default' && comment.id === action.commentId ?
-                    action.data.replies.concat(comment.replies) : comment.replies,
-                  loadMoreReplies: action.commentType !== 'default' && comment.id === action.commentId ? action.data.loadMoreReplies : comment.loadMoreReplies
+                  replies:
+                    action.commentType !== 'default' &&
+                    comment.id === action.commentId
+                      ? action.data.replies.concat(comment.replies)
+                      : comment.replies,
+                  loadMoreReplies:
+                    action.commentType !== 'default' &&
+                    comment.id === action.commentId
+                      ? action.data.loadMoreReplies
+                      : comment.loadMoreReplies
                 }
               })
             }
@@ -240,7 +282,9 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          playlistVideos: state.videoPage.playlistVideos.concat(action.playlistVideos),
+          playlistVideos: state.videoPage.playlistVideos.concat(
+            action.playlistVideos
+          ),
           playlistVideosLoadMoreShown: action.playlistVideosLoadMoreShown
         }
       }
@@ -363,8 +407,10 @@ export default function VideoReducer(state = defaultState, action) {
               comments: discussion.comments.map(comment => {
                 return {
                   ...comment,
-                  replies: comment.id === action.data.commentId ?
-                    comment.replies.concat(reply) : comment.replies
+                  replies:
+                    comment.id === action.data.commentId
+                      ? comment.replies.concat(reply)
+                      : comment.replies
                 }
               })
             }
@@ -372,8 +418,10 @@ export default function VideoReducer(state = defaultState, action) {
           comments: state.videoPage.comments.map(comment => {
             return {
               ...comment,
-              replies: comment.id === action.data.commentId ?
-                comment.replies.concat(reply) : comment.replies
+              replies:
+                comment.id === action.data.commentId
+                  ? comment.replies.concat(reply)
+                  : comment.replies
             }
           })
         }
@@ -389,11 +437,17 @@ export default function VideoReducer(state = defaultState, action) {
               comments: discussion.comments.map(comment => {
                 return {
                   ...comment,
-                  likes: comment.id === action.data.commentId ? action.data.likes : comment.likes,
+                  likes:
+                    comment.id === action.data.commentId
+                      ? action.data.likes
+                      : comment.likes,
                   replies: comment.replies.map(reply => {
                     return {
                       ...reply,
-                      likes: reply.id === action.data.commentId ? action.data.likes : reply.likes
+                      likes:
+                        reply.id === action.data.commentId
+                          ? action.data.likes
+                          : reply.likes
                     }
                   })
                 }
@@ -403,11 +457,17 @@ export default function VideoReducer(state = defaultState, action) {
           comments: state.videoPage.comments.map(comment => {
             return {
               ...comment,
-              likes: comment.id === action.data.commentId ? action.data.likes : comment.likes,
+              likes:
+                comment.id === action.data.commentId
+                  ? action.data.likes
+                  : comment.likes,
               replies: comment.replies.map(reply => {
                 return {
                   ...reply,
-                  likes: reply.id === action.data.commentId ? action.data.likes : reply.likes
+                  likes:
+                    reply.id === action.data.commentId
+                      ? action.data.likes
+                      : reply.likes
                 }
               })
             }
@@ -423,7 +483,8 @@ export default function VideoReducer(state = defaultState, action) {
         },
         allVideoThumbs: state.allVideoThumbs.map(thumb => ({
           ...thumb,
-          numLikes: (thumb.id === action.videoId) ? action.data.length : thumb.numLikes
+          numLikes:
+            thumb.id === action.videoId ? action.data.length : thumb.numLikes
         }))
       }
     case 'VIDEO_STAR':
@@ -435,7 +496,8 @@ export default function VideoReducer(state = defaultState, action) {
         },
         allVideoThumbs: state.allVideoThumbs.map(thumb => ({
           ...thumb,
-          isStarred: (thumb.id === action.videoId) ? action.isStarred : thumb.isStarred
+          isStarred:
+            thumb.id === action.videoId ? action.isStarred : thumb.isStarred
         }))
       }
     case 'UPLOAD_QUESTIONS':
@@ -447,15 +509,18 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_VIDEO_PAGE':
-      const {description} = action.params
+      const { description } = action.params
       const url = fetchedVideoCodeFromURL(action.params.url)
       return {
         ...state,
         allVideoThumbs: state.allVideoThumbs.map(thumb => {
           return {
             ...thumb,
-            title: (thumb.id === action.params.videoId) ? action.params.title : thumb.title,
-            content: (thumb.id === action.params.videoId) ? url : thumb.url
+            title:
+              thumb.id === action.params.videoId
+                ? action.params.title
+                : thumb.title,
+            content: thumb.id === action.params.videoId ? url : thumb.url
           }
         }),
         videoPage: {

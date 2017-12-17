@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {Color} from 'constants/css'
+import { Color } from 'constants/css'
 import Button from 'components/Button'
-import {cleanString} from 'helpers/stringHelpers'
+import { cleanString } from 'helpers/stringHelpers'
 import Loading from 'components/Loading'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import {
   clearSubjectSearchResults,
   loadChatSubject,
@@ -13,13 +13,13 @@ import {
   changeChatSubject,
   searchChatSubject
 } from 'redux/actions/ChatActions'
-import {textIsOverflown} from 'helpers/domHelpers'
+import { textIsOverflown } from 'helpers/domHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import UsernameText from 'components/Texts/UsernameText'
-import {timeSince} from 'helpers/timeStampHelpers'
+import { timeSince } from 'helpers/timeStampHelpers'
 import EditSubjectForm from './EditSubjectForm'
-import {socket} from 'constants/io'
-import {defaultChatSubject} from 'constants/defaultValues'
+import { socket } from 'constants/io'
+import { defaultChatSubject } from 'constants/defaultValues'
 
 class SubjectHeader extends Component {
   static propTypes = {
@@ -43,14 +43,12 @@ class SubjectHeader extends Component {
   }
 
   componentDidMount() {
-    const {loadChatSubject} = this.props
+    const { loadChatSubject } = this.props
     this.mounted = true
     socket.on('subject_change', this.onSubjectChange)
-    return loadChatSubject().then(
-      () => {
-        if (this.mounted) this.setState({loaded: true})
-      }
-    )
+    return loadChatSubject().then(() => {
+      if (this.mounted) this.setState({ loaded: true })
+    })
   }
 
   componentWillUnmount() {
@@ -60,17 +58,29 @@ class SubjectHeader extends Component {
 
   render() {
     const {
-      clearSubjectSearchResults, subject: {id: subjectId, content = defaultChatSubject},
-      searchChatSubject, subjectSearchResults
+      clearSubjectSearchResults,
+      subject: { id: subjectId, content = defaultChatSubject },
+      searchChatSubject,
+      subjectSearchResults
     } = this.props
-    const {loaded, onHover, onEdit} = this.state
+    const { loaded, onHover, onEdit } = this.state
     const subjectTitle = cleanString(content)
     return (
-      <div style={{width: '100%', height: '4.5em', position: 'absolute', backgroundColor: '#fff'}}>
-        {loaded ?
+      <div
+        style={{
+          width: '100%',
+          height: '4.5em',
+          position: 'absolute',
+          backgroundColor: '#fff'
+        }}
+      >
+        {loaded ? (
           <div>
-            <div className="col-xs-10" style={{float: 'left', paddingLeft: '0px', paddingRight: '0px'}}>
-              {!onEdit &&
+            <div
+              className="col-xs-10"
+              style={{ float: 'left', paddingLeft: '0px', paddingRight: '0px' }}
+            >
+              {!onEdit && (
                 <div>
                   <h3
                     style={{
@@ -84,8 +94,10 @@ class SubjectHeader extends Component {
                       lineHeight: 'normal'
                     }}
                     onMouseOver={this.onMouseOver}
-                    onMouseLeave={() => this.setState({onHover: false})}
-                    ref={ref => { this.headerLabel = ref }}
+                    onMouseLeave={() => this.setState({ onHover: false })}
+                    ref={ref => {
+                      this.headerLabel = ref
+                    }}
                   >
                     Subject: {subjectTitle}
                   </h3>
@@ -95,11 +107,11 @@ class SubjectHeader extends Component {
                     width="1200px"
                   />
                 </div>
-              }
+              )}
               {!onEdit && this.renderDetails()}
             </div>
             <div>
-              {onEdit &&
+              {onEdit && (
                 <EditSubjectForm
                   autoFocus
                   currentSubjectId={subjectId}
@@ -107,111 +119,130 @@ class SubjectHeader extends Component {
                   onEditSubmit={this.onSubjectSubmit}
                   onChange={text => searchChatSubject(text)}
                   onClickOutSide={() => {
-                    this.setState({onEdit: false})
+                    this.setState({ onEdit: false })
                     clearSubjectSearchResults()
                   }}
                   reloadChatSubject={this.onReloadChatSubject}
                   searchResults={subjectSearchResults}
                 />
-              }
+              )}
             </div>
-            <div className="col-xs-2 col-offset-xs-10" style={{float: 'right', paddingRight: '0px'}}>
-              {!onEdit &&
+            <div
+              className="col-xs-2 col-offset-xs-10"
+              style={{ float: 'right', paddingRight: '0px' }}
+            >
+              {!onEdit && (
                 <Button
                   className="btn btn-info"
-                  style={{float: 'right', marginRight: '1em'}}
-                  onClick={() => this.setState({onEdit: true})}
+                  style={{ float: 'right', marginRight: '1em' }}
+                  onClick={() => this.setState({ onEdit: true })}
                 >
                   Change the Subject
                 </Button>
-              }
+              )}
             </div>
-          </div> :
+          </div>
+        ) : (
           <Loading
-            style = {{
+            style={{
               textAlign: 'center',
               fontSize: '2em',
               color: Color.green
             }}
             text="Loading Subject..."
           />
-        }
+        )}
       </div>
     )
   }
 
   onMouseOver = () => {
     if (textIsOverflown(this.headerLabel)) {
-      this.setState({onHover: true})
+      this.setState({ onHover: true })
     }
   }
 
-  onSubjectChange = ({subject}) => {
-    const {changeChatSubject} = this.props
+  onSubjectChange = ({ subject }) => {
+    const { changeChatSubject } = this.props
     changeChatSubject(subject)
   }
 
-  onReloadChatSubject = (subjectId) => {
-    const {reloadChatSubject, clearSubjectSearchResults} = this.props
+  onReloadChatSubject = subjectId => {
+    const { reloadChatSubject, clearSubjectSearchResults } = this.props
     return reloadChatSubject(subjectId).then(
-      ({subjectId, message, subject}) => {
-        socket.emit('new_subject', {subject, message})
+      ({ subjectId, message, subject }) => {
+        socket.emit('new_subject', { subject, message })
         if (this.mounted) {
-          this.setState({onEdit: false})
+          this.setState({ onEdit: false })
         }
         clearSubjectSearchResults()
       }
     )
   }
 
-  onSubjectSubmit = (text) => {
-    const {uploadChatSubject, username, userId, profilePicId} = this.props
+  onSubjectSubmit = text => {
+    const { uploadChatSubject, username, userId, profilePicId } = this.props
     const content = `${text[0].toUpperCase()}${text.slice(1)}`
-    return uploadChatSubject(text).then(
-      subjectId => {
-        const timeStamp = Math.floor(Date.now()/1000)
-        const subject = {
-          id: subjectId,
-          userId,
-          username,
-          reloadedBy: null,
-          reloaderName: null,
-          uploader: {id: userId, name: username},
-          content,
-          timeStamp
-        }
-        const message = {
-          profilePicId,
-          userId,
-          username,
-          content,
-          isSubject: true,
-          channelId: 2,
-          timeStamp
-        }
-        socket.emit('new_subject', {subject, message})
-        if (this.mounted) this.setState({onEdit: false})
+    return uploadChatSubject(text).then(subjectId => {
+      const timeStamp = Math.floor(Date.now() / 1000)
+      const subject = {
+        id: subjectId,
+        userId,
+        username,
+        reloadedBy: null,
+        reloaderName: null,
+        uploader: { id: userId, name: username },
+        content,
+        timeStamp
       }
-    )
+      const message = {
+        profilePicId,
+        userId,
+        username,
+        content,
+        isSubject: true,
+        channelId: 2,
+        timeStamp
+      }
+      socket.emit('new_subject', { subject, message })
+      if (this.mounted) this.setState({ onEdit: false })
+    })
   }
 
   renderDetails = () => {
-    const {subject: {uploader = {}, reloader = {}, timeStamp, reloadTimeStamp}} = this.props
+    const {
+      subject: { uploader = {}, reloader = {}, timeStamp, reloadTimeStamp }
+    } = this.props
     const isReloaded = reloader && reloader.id
-    let posterString = 'You can change this subject by clicking the blue "Change the subject" button'
+    let posterString =
+      'You can change this subject by clicking the blue "Change the subject" button'
     if (uploader.id) {
-      posterString = <span>Started by <UsernameText user={uploader} /> {timeSince(timeStamp)}</span>
+      posterString = (
+        <span>
+          Started by <UsernameText user={uploader} /> {timeSince(timeStamp)}
+        </span>
+      )
     }
     if (isReloaded) {
-      posterString = <span>
-        Brought back by <UsernameText user={reloader} /> {timeSince(reloadTimeStamp)} (started by {<UsernameText user={uploader} />})
-      </span>
+      posterString = (
+        <span>
+          Brought back by <UsernameText user={reloader} />{' '}
+          {timeSince(reloadTimeStamp)} (started by{' '}
+          {<UsernameText user={uploader} />})
+        </span>
+      )
     }
     return (
       <div>
-        {uploader ? <small>{posterString}</small> :
-          <small>{'You can change the subject by clicking the "Change the Subject" button on the right'}</small>
-        }
+        {uploader ? (
+          <small>{posterString}</small>
+        ) : (
+          <small>
+            {
+              'You can change the subject by clicking the "Change the Subject" button on the right'
+            }
+          </small>
+        )}
       </div>
     )
   }

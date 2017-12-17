@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 export default class Dropdown extends Component {
   static propTypes = {
@@ -16,7 +16,7 @@ export default class Dropdown extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {startingIndex = 0} = this.props
+    const { startingIndex = 0 } = this.props
     let searchResultsChanged = false
     if (this.props.searchResults.length !== nextProps.searchResults.length) {
       searchResultsChanged = true
@@ -28,7 +28,7 @@ export default class Dropdown extends Component {
       }
     }
 
-    if (searchResultsChanged && (nextProps.indexToHighlight > startingIndex)) {
+    if (searchResultsChanged && nextProps.indexToHighlight > startingIndex) {
       this.props.onUpdate()
     }
   }
@@ -58,14 +58,13 @@ export default class Dropdown extends Component {
         }}
       >
         {searchResults.map((item, index) => {
-          let itemStyle = index === indexToHighlight ?
-            {background: '#f5f5f5', color: '#333333'} : null
-          const href = renderItemUrl ? {href: renderItemUrl(item)} : {}
+          let itemStyle =
+            index === indexToHighlight
+              ? { background: '#f5f5f5', color: '#333333' }
+              : null
+          const href = renderItemUrl ? { href: renderItemUrl(item) } : {}
           return (
-            <li
-              key={index}
-              onClick={() => onItemClick(item)}
-            >
+            <li key={index} onClick={() => onItemClick(item)}>
               <a
                 {...href}
                 style={{

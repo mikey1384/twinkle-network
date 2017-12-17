@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import SearchInput from 'components/Texts/SearchInput'
-import {stringIsEmpty} from 'helpers/stringHelpers'
-import {searchChatAsync, clearChatSearchResults, enterChannelWithId} from 'redux/actions/ChatActions'
-import {openNewChatTab} from 'redux/actions/ChatActions/actions'
+import { stringIsEmpty } from 'helpers/stringHelpers'
+import {
+  searchChatAsync,
+  clearChatSearchResults,
+  enterChannelWithId
+} from 'redux/actions/ChatActions'
+import { openNewChatTab } from 'redux/actions/ChatActions/actions'
 
 class ChatSearchBox extends Component {
   static propTypes = {
@@ -24,8 +28,8 @@ class ChatSearchBox extends Component {
   }
 
   render() {
-    const {searchResults, clearSearchResults} = this.props
-    const {searchText} = this.state
+    const { searchResults, clearSearchResults } = this.props
+    const { searchText } = this.state
     return (
       <div className="row container-fluid">
         <SearchInput
@@ -33,13 +37,18 @@ class ChatSearchBox extends Component {
           onChange={this.onChatSearch}
           value={searchText}
           searchResults={searchResults}
-          renderItemLabel={
-            item => !item.primary || (item.primary && item.twoPeople) ?
-              <span>{item.label} {item.subLabel && <small>{`(${item.subLabel})`}</small>}</span> :
+          renderItemLabel={item =>
+            !item.primary || (item.primary && item.twoPeople) ? (
+              <span>
+                {item.label}{' '}
+                {item.subLabel && <small>{`(${item.subLabel})`}</small>}
+              </span>
+            ) : (
               <span>{item.label}</span>
+            )
           }
           onClickOutSide={() => {
-            this.setState({searchText: ''})
+            this.setState({ searchText: '' })
             clearSearchResults()
           }}
           onSelect={this.onSelect}
@@ -48,24 +57,33 @@ class ChatSearchBox extends Component {
     )
   }
 
-  onChatSearch = (text) => {
-    const {searchChat, clearSearchResults} = this.props
+  onChatSearch = text => {
+    const { searchChat, clearSearchResults } = this.props
     clearTimeout(this.timer)
-    this.setState({searchText: text})
+    this.setState({ searchText: text })
     if (stringIsEmpty(text) || text.length < 2) {
       return clearSearchResults()
     }
     this.timer = setTimeout(() => searchChat(text), 300)
   }
 
-  onSelect = (item) => {
-    const {enterChannelWithId, clearSearchResults, userId, username, openNewChatTab} = this.props
+  onSelect = item => {
+    const {
+      enterChannelWithId,
+      clearSearchResults,
+      userId,
+      username,
+      openNewChatTab
+    } = this.props
     if (item.primary || !!item.channelId) {
       enterChannelWithId(item.channelId, true)
     } else {
-      openNewChatTab({username, userId}, {username: item.label, userId: item.userId})
+      openNewChatTab(
+        { username, userId },
+        { username: item.label, userId: item.userId }
+      )
     }
-    this.setState({searchText: ''})
+    this.setState({ searchText: '' })
     clearSearchResults()
   }
 }

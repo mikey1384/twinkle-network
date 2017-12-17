@@ -20,16 +20,21 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         linkPage: {
           ...state.linkPage,
-          comments: state.linkPage.comments.reduce((resultingArray, comment) => {
-            if (comment.id === action.commentId) return resultingArray
-            return resultingArray.concat([{
-              ...comment,
-              replies: comment.replies.reduce((resultingArray, reply) => {
-                if (reply.id === action.commentId) return resultingArray
-                return resultingArray.concat([reply])
-              }, [])
-            }])
-          }, [])
+          comments: state.linkPage.comments.reduce(
+            (resultingArray, comment) => {
+              if (comment.id === action.commentId) return resultingArray
+              return resultingArray.concat([
+                {
+                  ...comment,
+                  replies: comment.replies.reduce((resultingArray, reply) => {
+                    if (reply.id === action.commentId) return resultingArray
+                    return resultingArray.concat([reply])
+                  }, [])
+                }
+              ])
+            },
+            []
+          )
         }
       }
     case 'EDIT_LINK_COMMENT':
@@ -39,10 +44,16 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           comments: state.linkPage.comments.map(comment => ({
             ...comment,
-            content: comment.id === action.commentId ? action.editedComment : comment.content,
+            content:
+              comment.id === action.commentId
+                ? action.editedComment
+                : comment.content,
             replies: comment.replies.map(reply => ({
               ...reply,
-              content: reply.id === action.commentId ? action.editedComment : reply.content
+              content:
+                reply.id === action.commentId
+                  ? action.editedComment
+                  : reply.content
             }))
           }))
         }
@@ -77,7 +88,11 @@ export default function linkReducer(state = defaultState, action) {
         }
       }
     case 'EDIT_LINK_PAGE':
-      const {editedTitle: title, editedDescription: description, editedUrl: content} = action.data
+      const {
+        editedTitle: title,
+        editedDescription: description,
+        editedUrl: content
+      } = action.data
       return {
         ...state,
         linkPage: {
@@ -140,8 +155,14 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           comments: state.linkPage.comments.map(comment => ({
             ...comment,
-            replies: comment.id === action.commentId ? action.data.replies.concat(comment.replies) : comment.replies,
-            loadMoreReplies: comment.id === action.commentId ? action.data.loadMoreReplies : comment.loadMoreReplies
+            replies:
+              comment.id === action.commentId
+                ? action.data.replies.concat(comment.replies)
+                : comment.replies,
+            loadMoreReplies:
+              comment.id === action.commentId
+                ? action.data.loadMoreReplies
+                : comment.loadMoreReplies
           }))
         }
       }
@@ -176,8 +197,11 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           comments: state.linkPage.comments.map(comment => ({
             ...comment,
-            replies: (comment.id === action.data.commentId || comment.id === action.data.reply.commentId) ?
-              comment.replies.concat([action.data.reply]) : comment.replies
+            replies:
+              comment.id === action.data.commentId ||
+              comment.id === action.data.reply.commentId
+                ? comment.replies.concat([action.data.reply])
+                : comment.replies
           }))
         }
       }

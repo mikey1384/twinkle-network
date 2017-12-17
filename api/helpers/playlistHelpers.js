@@ -1,10 +1,10 @@
-const {poolQuery, promiseSeries} = require('../helpers')
+const { poolQuery, promiseSeries } = require('../helpers')
 
 module.exports = {
   fetchPlaylists(query) {
-    return poolQuery(query).then(
-      rows => {
-        let playlistIds = rows.map(({playlistId}) => playlistId)
+    return poolQuery(query)
+      .then(rows => {
+        let playlistIds = rows.map(({ playlistId }) => playlistId)
         const playlistQuery = `
           SELECT a.id, a.title, a.creator AS uploaderId, b.username AS uploader
           FROM vq_playlists a LEFT JOIN users b ON a.creator = b.id
@@ -26,34 +26,43 @@ module.exports = {
         const playlistVideoNumberQuery = `
           SELECT COUNT(id) AS numVids FROM vq_playlistvideos WHERE playlistId = ?
         `
-        return promiseSeries(playlistIds.map(playlistId => {
-          return () => promiseSeries([
-            () => poolQuery(playlistQuery, playlistId),
-            () => poolQuery(playlistVideosQuery, playlistId).then(
-              rows => promiseSeries(rows.map(({id, videoId}) => {
-                return () => poolQuery(videoDetailsQuery, videoId).then(rows => Promise.resolve(rows.map(
-                  row => Object.assign({}, row, {id, videoId})
-                )))
-              }))
-            ),
-            () => poolQuery(playlistVideoNumberQuery, playlistId)
-          ])
-        }))
-      }
-    ).then(
-      results => {
+        return promiseSeries(
+          playlistIds.map(playlistId => {
+            return () =>
+              promiseSeries([
+                () => poolQuery(playlistQuery, playlistId),
+                () =>
+                  poolQuery(playlistVideosQuery, playlistId).then(rows =>
+                    promiseSeries(
+                      rows.map(({ id, videoId }) => {
+                        return () =>
+                          poolQuery(videoDetailsQuery, videoId).then(rows =>
+                            Promise.resolve(
+                              rows.map(row =>
+                                Object.assign({}, row, { id, videoId })
+                              )
+                            )
+                          )
+                      })
+                    )
+                  ),
+                () => poolQuery(playlistVideoNumberQuery, playlistId)
+              ])
+          })
+        )
+      })
+      .then(results => {
         let playlists = []
         for (let i = 0; i < results.length; i++) {
-          const [[playlistInfo], playlistVideos, [{numVids}]] = results[i]
+          const [[playlistInfo], playlistVideos, [{ numVids }]] = results[i]
           playlists[i] = Object.assign(
             {},
             playlistInfo,
-            {playlist: playlistVideos.map(([video]) => video)},
-            {showAllButton: numVids > 10}
+            { playlist: playlistVideos.map(([video]) => video) },
+            { showAllButton: numVids > 10 }
           )
         }
         return Promise.resolve(playlists)
-      }
-    )
+      })
   }
 }

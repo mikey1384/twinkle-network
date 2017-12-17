@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PanelReply from './PanelReply'
-import {scrollElementToCenter} from 'helpers/domHelpers'
+import { scrollElementToCenter } from 'helpers/domHelpers'
 import Button from 'components/Button'
 
 export default class PanelReplies extends Component {
@@ -15,10 +15,12 @@ export default class PanelReplies extends Component {
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.object.isRequired,
-    replies: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      userId: PropTypes.number.isRequired
-    })).isRequired,
+    replies: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        userId: PropTypes.number.isRequired
+      })
+    ).isRequired,
     type: PropTypes.string,
     userId: PropTypes.number
   }
@@ -35,27 +37,36 @@ export default class PanelReplies extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {deleteListenerToggle} = this.state
+    const { deleteListenerToggle } = this.state
     const length = this.props.replies.length
 
     if (length < prevProps.replies.length) {
       if (length === 0) return scrollElementToCenter(this.PanelReplies)
-      this.setState({deleteListenerToggle: !deleteListenerToggle})
+      this.setState({ deleteListenerToggle: !deleteListenerToggle })
     }
   }
 
   render() {
     const {
-      type, replies, userId, onEditDone, onLikeClick, onDelete, comment, parent
+      type,
+      replies,
+      userId,
+      onEditDone,
+      onLikeClick,
+      onDelete,
+      comment,
+      parent
     } = this.props
-    const {lastDeletedCommentIndex, deleteListenerToggle} = this.state
+    const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     return (
       <div
         className="media container-fluid"
-        style={{paddingLeft: '0px', paddingRight: '0px'}}
-        ref={ref => { this.PanelReplies = ref }}
+        style={{ paddingLeft: '0px', paddingRight: '0px' }}
+        ref={ref => {
+          this.PanelReplies = ref
+        }}
       >
-        {comment.loadMoreReplies &&
+        {comment.loadMoreReplies && (
           <Button
             className="btn btn-default"
             style={{
@@ -66,7 +77,7 @@ export default class PanelReplies extends Component {
           >
             Load More
           </Button>
-        }
+        )}
         {replies.map((reply, index) => {
           return (
             <PanelReply
@@ -92,17 +103,17 @@ export default class PanelReplies extends Component {
   }
 
   deleteCallback(index) {
-    this.setState({lastDeletedCommentIndex: index})
+    this.setState({ lastDeletedCommentIndex: index })
   }
 
   loadMoreReplies() {
-    const {comment, replies, onLoadMoreReplies, parent} = this.props
+    const { comment, replies, onLoadMoreReplies, parent } = this.props
     const lastReplyId = replies[0] ? replies[0].id : '0'
     onLoadMoreReplies(lastReplyId, comment.id, parent)
   }
 
-  onReplyOfReplySubmit({replyContent, reply, parent}) {
-    const {onReplySubmit, type} = this.props
+  onReplyOfReplySubmit({ replyContent, reply, parent }) {
+    const { onReplySubmit, type } = this.props
     onReplySubmit({
       replyContent,
       parent,

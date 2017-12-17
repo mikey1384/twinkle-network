@@ -1,6 +1,6 @@
 import request from 'axios'
-import {handleError} from './constants'
-import {URL} from 'constants/URL'
+import { handleError } from './constants'
+import { URL } from 'constants/URL'
 
 const API_URL = `${URL}/content`
 
@@ -9,15 +9,15 @@ export const clearSearchResults = () => ({
 })
 
 export const searchContent = text => dispatch =>
-request.get(`${API_URL}/search?query=${text}`).then(
-  response => dispatch({
-    type: 'SEARCH_CONTENT',
-    data: response.data
-  })
-).catch(
-  error => {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-)
-
+  request
+    .get(`${API_URL}/search?query=${text}`)
+    .then(response =>
+      dispatch({
+        type: 'SEARCH_CONTENT',
+        data: response.data
+      })
+    )
+    .catch(error => {
+      console.error(error.response || error)
+      handleError(error, dispatch)
+    })

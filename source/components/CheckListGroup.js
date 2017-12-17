@@ -3,19 +3,23 @@ import React from 'react'
 
 CheckListGroup.propTypes = {
   inputType: PropTypes.string,
-  listItems: PropTypes.arrayOf(PropTypes.shape({
-    checked: PropTypes.bool.isRequired,
-    label: PropTypes.string.isRequired
-  })).isRequired,
+  listItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      checked: PropTypes.bool.isRequired,
+      label: PropTypes.string.isRequired
+    })
+  ).isRequired,
   onSelect: PropTypes.func.isRequired,
   style: PropTypes.object
 }
-export default function CheckListGroup({listItems, inputType, onSelect, style}) {
+export default function CheckListGroup({
+  listItems,
+  inputType,
+  onSelect,
+  style
+}) {
   return (
-    <div
-      className="row container-fluid unselectable"
-      style={style}
-    >
+    <div className="row container-fluid unselectable" style={style}>
       <form>
         {listItems.map((listItem, index) => {
           let leftStyle = {
@@ -66,14 +70,8 @@ export default function CheckListGroup({listItems, inputType, onSelect, style}) 
             }
           }
           return (
-            <div
-              className="input-group"
-              key={index}
-            >
-              <label
-                className="input-group-addon"
-                style={leftStyle}
-              >
+            <div className="input-group" key={index}>
+              <label className="input-group-addon" style={leftStyle}>
                 <input
                   type={inputType}
                   checked={listItem.checked}
@@ -84,8 +82,8 @@ export default function CheckListGroup({listItems, inputType, onSelect, style}) 
                 className="list-group-item check-list-item"
                 style={rightStyle}
                 onClick={() => onSelect(index)}
-                dangerouslySetInnerHTML={{__html: listItem.label}}
-              ></div>
+                dangerouslySetInnerHTML={{ __html: listItem.label }}
+              />
             </div>
           )
         })}

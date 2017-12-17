@@ -1,21 +1,25 @@
 const passwordHash = require('password-hash')
-const {capitalize, isValidUsername, stringIsEmpty} = require('../helpers/stringHelpers')
-const {userExists} = require('../helpers/userHelpers')
-const {tokenForUser, requireAuth, requireSignin} = require('../auth')
+const {
+  capitalize,
+  isValidUsername,
+  stringIsEmpty
+} = require('../helpers/stringHelpers')
+const { userExists } = require('../helpers/userHelpers')
+const { tokenForUser, requireAuth, requireSignin } = require('../auth')
 const express = require('express')
 const router = express.Router()
 const pool = require('../pool')
-const {poolQuery} = require('../helpers')
+const { poolQuery } = require('../helpers')
 const async = require('async')
 const useragent = require('useragent')
 const AWS = require('aws-sdk')
-const s3 = new AWS.S3({signatureVersion: 'v4'})
+const s3 = new AWS.S3({ signatureVersion: 'v4' })
 const config = require('../siteConfig')
-const {bucketName} = config
+const { bucketName } = config
 
 router.post('/bio', requireAuth, async(req, res) => {
-  const {user} = req
-  const {firstLine, secondLine, thirdLine, profileId} = req.body
+  const { user } = req
+  const { firstLine, secondLine, thirdLine, profileId } = req.body
   const post = {
     profileFirstRow: firstLine,
     profileSecondRow: secondLine,
@@ -28,29 +32,27 @@ router.post('/bio', requireAuth, async(req, res) => {
     res.send(post)
   } catch (error) {
     console.error(error)
-    return res.status(500).send({error})
+    return res.status(500).send({ error })
   }
 })
 
 router.get('/check', (req, res) => {
-  const {username} = req.query
+  const { username } = req.query
   const query = `
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
     a.profileSecondRow, a.profileThirdRow, b.id AS profilePicId
     FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE a.username = ?
   `
-  return poolQuery(query, username).then(
-    rows => res.send(rows.length > 0)
-  ).catch(
-    error => {
+  return poolQuery(query, username)
+    .then(rows => res.send(rows.length > 0))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.post('/action/logout', requireAuth, (req, res) => {
-  const {user} = req
+  const { user } = req
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
     userId: user.id,
@@ -58,18 +60,16 @@ router.post('/action/logout', requireAuth, (req, res) => {
     userAgent,
     ip: req.ip,
     timeStamp: Math.floor(Date.now() / 1000)
-  }).then(
-    () => res.send(true)
-  ).catch(
-    error => {
+  })
+    .then(() => res.send(true))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.post('/action/navigation', requireAuth, (req, res) => {
-  const {user, body: {target}} = req
+  const { user, body: { target } } = req
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
     userId: user.id,
@@ -77,19 +77,17 @@ router.post('/action/navigation', requireAuth, (req, res) => {
     target,
     userAgent,
     ip: req.ip,
-    timeStamp: Math.floor(Date.now()/1000)
-  }).then(
-    () => res.send(true)
-  ).catch(
-    error => {
+    timeStamp: Math.floor(Date.now() / 1000)
+  })
+    .then(() => res.send(true))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.post('/action/search', requireAuth, (req, res) => {
-  const {user, body: {target, subTarget}} = req
+  const { user, body: { target, subTarget } } = req
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(`INSERT INTO users_actions SET ?`, {
     userId: user.id,
@@ -98,15 +96,13 @@ router.post('/action/search', requireAuth, (req, res) => {
     subTarget,
     userAgent,
     ip: req.ip,
-    timeStamp: Math.floor(Date.now()/1000)
-  }).then(
-    () => res.send(true)
-  ).catch(
-    error => {
+    timeStamp: Math.floor(Date.now() / 1000)
+  })
+    .then(() => res.send(true))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/leaderBoard', async(req, res) => {
@@ -118,12 +114,12 @@ router.get('/leaderBoard', async(req, res) => {
     res.send(users)
   } catch (error) {
     console.error(error)
-    res.status(500).send({error})
+    res.status(500).send({ error })
   }
 })
 
 router.post('/parentUser', requireSignin, (req, res) => {
-  const {user} = req
+  const { user } = req
   if (user.userType === 'parent') {
     return res.send({
       user: {
@@ -137,11 +133,11 @@ router.post('/parentUser', requireSignin, (req, res) => {
       token: tokenForUser(user.id)
     })
   }
-  res.send({error: 'Not a parent user'})
+  res.send({ error: 'Not a parent user' })
 })
 
 router.get('/parentSession', requireAuth, (req, res) => {
-  const {user} = req
+  const { user } = req
   res.send({
     user: {
       id: user.id,
@@ -154,8 +150,11 @@ router.get('/parentSession', requireAuth, (req, res) => {
 })
 
 router.get('/session', requireAuth, async(req, res) => {
-  const {user, query: {pathname}} = req
-  await poolQuery(`UPDATE users SET currentlyWatching = NULL WHERE id = ?`, user.id)
+  const { user, query: { pathname } } = req
+  await poolQuery(
+    `UPDATE users SET currentlyWatching = NULL WHERE id = ?`,
+    user.id
+  )
   const query = `INSERT INTO users_actions SET ?`
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   poolQuery(query, {
@@ -166,9 +165,9 @@ router.get('/session', requireAuth, async(req, res) => {
     method: 'default',
     userAgent,
     ip: req.ip,
-    timeStamp: Math.floor(Date.now()/1000)
+    timeStamp: Math.floor(Date.now() / 1000)
   })
-  res.send(Object.assign({}, user, {userId: user.id}))
+  res.send(Object.assign({}, user, { userId: user.id }))
 })
 
 router.post('/login', requireSignin, function(req, res) {
@@ -179,7 +178,7 @@ router.post('/login', requireSignin, function(req, res) {
     action: 'login',
     userAgent,
     ip: req.ip,
-    timeStamp: Math.floor(Date.now()/1000)
+    timeStamp: Math.floor(Date.now() / 1000)
   })
   res.send(
     Object.assign({}, req.user, {
@@ -192,32 +191,47 @@ router.post('/login', requireSignin, function(req, res) {
 
 router.post('/picture', requireAuth, (req, res) => {
   const dataUri = req.body.image.replace(/^data:image\/\w+;base64,/, '')
-  const {user} = req
+  const { user } = req
 
-  async.waterfall([
-    callback => {
-      pool.query('UPDATE users_photos SET ? WHERE userId = ?', [{isProfilePic: 0}, user.id], err => {
-        callback(err)
-      })
-    },
-    callback => {
-      pool.query('INSERT INTO users_photos SET ?', {userId: user.id, isProfilePic: 1}, (err, result) => {
-        callback(err, result.insertId)
-      })
-    },
-    (insertId, callback) => {
-      const params = {Bucket: bucketName, Key: `pictures/${user.id}/${insertId}.jpg`, Body: new Buffer(dataUri, 'base64')}
-      s3.putObject(params, function(err, data) {
-        callback(err, insertId)
-      })
+  async.waterfall(
+    [
+      callback => {
+        pool.query(
+          'UPDATE users_photos SET ? WHERE userId = ?',
+          [{ isProfilePic: 0 }, user.id],
+          err => {
+            callback(err)
+          }
+        )
+      },
+      callback => {
+        pool.query(
+          'INSERT INTO users_photos SET ?',
+          { userId: user.id, isProfilePic: 1 },
+          (err, result) => {
+            callback(err, result.insertId)
+          }
+        )
+      },
+      (insertId, callback) => {
+        const params = {
+          Bucket: bucketName,
+          Key: `pictures/${user.id}/${insertId}.jpg`,
+          Body: new Buffer(dataUri, 'base64')
+        }
+        s3.putObject(params, function(err, data) {
+          callback(err, insertId)
+        })
+      }
+    ],
+    (err, imageId) => {
+      if (err) {
+        console.error(err)
+        return res.status(500).send({ error: err })
+      }
+      res.send({ imageId, userId: user.id })
     }
-  ], (err, imageId) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).send({error: err})
-    }
-    res.send({imageId, userId: user.id})
-  })
+  )
 })
 
 router.post('/signup', function(req, res) {
@@ -227,20 +241,24 @@ router.post('/signup', function(req, res) {
   const email = req.body.email
   const password = req.body.password
   const realName = capitalize(firstname) + ' ' + capitalize(lastname)
-  pool.query('SELECT * FROM users WHERE username = ?', username, (err, rows) => {
-    if (!err) {
-      if (userExists(rows)) {
-        res.status(500).send('That account already exists')
+  pool.query(
+    'SELECT * FROM users WHERE username = ?',
+    username,
+    (err, rows) => {
+      if (!err) {
+        if (userExists(rows)) {
+          res.status(500).send('That account already exists')
+        } else {
+          saveUserData()
+        }
       } else {
-        saveUserData()
+        console.error(err)
+        res.status(500).send({
+          error: err
+        })
       }
-    } else {
-      console.error(err)
-      res.status(500).send({
-        error: err
-      })
     }
-  })
+  )
 
   function saveUserData() {
     const hashedPass = passwordHash.generate(password)
@@ -250,7 +268,7 @@ router.post('/signup', function(req, res) {
       realName,
       email,
       password: hashedPass,
-      joinDate: Math.floor(Date.now()/1000)
+      joinDate: Math.floor(Date.now() / 1000)
     }
     pool.query('INSERT INTO users SET?', post, function(err, result) {
       if (!err) {
@@ -271,7 +289,7 @@ router.post('/signup', function(req, res) {
 })
 
 router.get('/users/search', (req, res) => {
-  const {queryString} = req.query
+  const { queryString } = req.query
   if (stringIsEmpty(queryString) || queryString.length < 2) return res.send([])
   const query = `
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
@@ -279,57 +297,55 @@ router.get('/users/search', (req, res) => {
     ORDER BY a.online DESC, a.lastActive DESC
     LIMIT 10
   `
-  return poolQuery(query, [`%${queryString}%`, `%${queryString}%`]).then(
-    rows => res.send(rows)
-  ).catch(
-    error => {
+  return poolQuery(query, [`%${queryString}%`, `%${queryString}%`])
+    .then(rows => res.send(rows))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/users', (req, res) => {
-  const {shownUsers} = req.query
-  const where = shownUsers ? 'WHERE ' + shownUsers.map(id => `a.id != ${id}`).join(' AND ') : ''
+  const { shownUsers } = req.query
+  const where = shownUsers
+    ? 'WHERE ' + shownUsers.map(id => `a.id != ${id}`).join(' AND ')
+    : ''
   const query = `
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
     a.profileSecondRow, a.profileThirdRow, a.online, b.id AS profilePicId FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' ${where}
     ORDER BY a.online DESC, a.lastActive DESC
     LIMIT 21
   `
-  return poolQuery(query).then(
-    rows => res.send(rows)
-  ).catch(
-    error => {
+  return poolQuery(query)
+    .then(rows => res.send(rows))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/username/check', (req, res) => {
-  const {username} = req.query
+  const { username } = req.query
   const query = `
     SELECT a.id, a.username, a.realName, a.email, a.userType, a.joinDate, a.profileFirstRow,
     a.profileSecondRow, a.profileThirdRow, b.id AS profilePicId
     FROM users a LEFT JOIN users_photos b ON a.id = b.userId AND b.isProfilePic = '1' WHERE a.username = ?
   `
-  if (!isValidUsername(username)) return res.send({pageNotExists: true})
+  if (!isValidUsername(username)) return res.send({ pageNotExists: true })
   pool.query(query, username, (err, rows) => {
     if (err) {
       console.error(err)
-      return res.send({error: err})
+      return res.send({ error: err })
     }
     if (rows.length === 0 || !rows) {
-      return res.send({pageNotExists: true})
+      return res.send({ pageNotExists: true })
     }
-    res.send({user: rows[0]})
+    res.send({ user: rows[0] })
   })
 })
 
 router.post('/recordAnonTraffic', (req, res) => {
-  const {pathname} = req.body
+  const { pathname } = req.body
   const query = `INSERT INTO users_actions SET ?`
   const userAgent = useragent.parse(req.headers['user-agent']).toString()
   return poolQuery(query, {
@@ -339,38 +355,46 @@ router.post('/recordAnonTraffic', (req, res) => {
     method: 'default',
     userAgent,
     ip: req.ip,
-    timeStamp: Math.floor(Date.now()/1000)
-  }).then(
-    () => res.send(true)
-  ).catch(
-    error => console.error(error)
-  )
+    timeStamp: Math.floor(Date.now() / 1000)
+  })
+    .then(() => res.send(true))
+    .catch(error => console.error(error))
 })
 
 router.post('/xp', requireAuth, async(req, res) => {
-  const {user, body: params} = req
+  const { user, body: params } = req
   try {
     if (params.target === 'video') {
       const checkQuery = `SELECT id FROM users_xp_change WHERE userId = ? AND target = 'video' AND targetId = ?`
       const rows = await poolQuery(checkQuery, [user.id, params.targetId])
-      if (rows.length > 0) return res.send({alreadyDone: true})
+      if (rows.length > 0) return res.send({ alreadyDone: true })
     }
-    const post = {userId: user.id, ...params, timeStamp: Math.floor(Date.now()/1000)}
+    const post = {
+      userId: user.id,
+      ...params,
+      timeStamp: Math.floor(Date.now() / 1000)
+    }
     const postQuery = `INSERT INTO users_xp_change SET ?`
     await poolQuery(postQuery, post)
     const increaseQuery = `SELECT amount FROM users_xp_change WHERE userId = ? AND type = 'increase'`
     const increases = await poolQuery(increaseQuery, user.id)
-    const totalIncrease = increases.reduce((prev, {amount = 0} = {}) => (prev += amount), 0)
+    const totalIncrease = increases.reduce(
+      (prev, { amount = 0 } = {}) => (prev += amount),
+      0
+    )
     const decreaseQuery = `SELECT amount FROM users_xp_change WHERE userId = ? AND type = 'decrease'`
     const decreases = await poolQuery(decreaseQuery, user.id)
-    const totalDecrease = decreases.reduce((prev, {amount = 0} = {}) => (prev += amount), 0)
+    const totalDecrease = decreases.reduce(
+      (prev, { amount = 0 } = {}) => (prev += amount),
+      0
+    )
     const netXP = totalIncrease - totalDecrease
     const putQuery = `UPDATE users SET ? WHERE id = ?`
-    await poolQuery(putQuery, [{twinkleXP: netXP}, user.id])
-    res.send({xp: netXP})
+    await poolQuery(putQuery, [{ twinkleXP: netXP }, user.id])
+    res.send({ xp: netXP })
   } catch (error) {
     console.error(error)
-    return res.status(500).send({error})
+    return res.status(500).send({ error })
   }
 })
 

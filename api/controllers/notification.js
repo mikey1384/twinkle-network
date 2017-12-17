@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const {requireAuth} = require('../auth')
-const {poolQuery, promiseSeries} = require('../helpers')
-const currentVersion = '0.0.71'
+const { requireAuth } = require('../auth')
+const { poolQuery, promiseSeries } = require('../helpers')
+const currentVersion = '0.0.72'
 
 router.get('/', requireAuth, (req, res) => {
-  const {id: userId} = req.user
+  const { id: userId } = req.user
   const notiQuery = `
     SELECT
       a.id,
@@ -99,17 +99,19 @@ router.get('/', requireAuth, (req, res) => {
   return promiseSeries([
     () => poolQuery(notiQuery, [userId, userId, userId, userId]),
     () => poolQuery(chatSubjectQuery)
-  ]).then(
-    ([notifications, [currentChatSubject]]) => res.send({
-      notifications,
-      currentChatSubject: Object.assign({}, currentChatSubject, {loaded: true})
-    })
-  ).catch(
-    error => {
+  ])
+    .then(([notifications, [currentChatSubject]]) =>
+      res.send({
+        notifications,
+        currentChatSubject: Object.assign({}, currentChatSubject, {
+          loaded: true
+        })
+      })
+    )
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/chatSubject', (req, res) => {
@@ -121,19 +123,17 @@ router.get('/chatSubject', (req, res) => {
     LEFT JOIN users c ON a.reloadedBy = c.id
     WHERE a.id = (SELECT currentSubjectId FROM msg_channels WHERE id = 2 LIMIT 1)
   `
-  return poolQuery(query).then(
-    ([result]) => res.send(Object.assign({}, result, {loaded: true}))
-  ).catch(
-    error => {
+  return poolQuery(query)
+    .then(([result]) => res.send(Object.assign({}, result, { loaded: true })))
+    .catch(error => {
       console.error(error)
-      res.status(500).send({error})
-    }
-  )
+      res.status(500).send({ error })
+    })
 })
 
 router.get('/version', (req, res) => {
-  const {version} = req.query
-  res.send({match: version === currentVersion})
+  const { version } = req.query
+  res.send({ match: version === currentVersion })
 })
 
 module.exports = router

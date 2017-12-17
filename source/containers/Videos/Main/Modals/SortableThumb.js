@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {DragSource, DropTarget} from 'react-dnd'
+import React, { Component } from 'react'
+import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
-import {cleanString} from 'helpers/stringHelpers'
+import { cleanString } from 'helpers/stringHelpers'
 import FullTextReveal from 'components/FullTextReveal'
-import {textIsOverflown} from 'helpers/domHelpers'
+import { textIsOverflown } from 'helpers/domHelpers'
 import StarMark from 'components/StarMark'
 
 const thumbSource = {
@@ -14,7 +14,7 @@ const thumbSource = {
     }
   },
   isDragging(props, monitor) {
-    return props.video.id && (props.video.id === monitor.getItem().id)
+    return props.video.id && props.video.id === monitor.getItem().id
   }
 }
 
@@ -25,7 +25,7 @@ const thumbTarget = {
     const sourceId = sourceProps.id
 
     if (sourceId !== targetId) {
-      targetProps.onMove({sourceId, targetId})
+      targetProps.onMove({ sourceId, targetId })
     }
   }
 }
@@ -47,79 +47,92 @@ class SortableThumb extends Component {
   }
 
   render() {
-    const {connectDragSource, connectDropTarget, isDragging, video} = this.props
-    const {onTitleHover} = this.state
-    return connectDragSource(connectDropTarget(
-      <div
-        className="col-sm-2"
-        key={video.id}
-        style={{
-          opacity: isDragging ? 0.5 : 1
-        }}
-      >
-        <div className="thumbnail">
-          <div
-            style={{
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
-              paddingBottom: '75%'
-            }}
-          >
-            <img
-              alt="Thumbnail"
-              src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
+    const {
+      connectDragSource,
+      connectDropTarget,
+      isDragging,
+      video
+    } = this.props
+    const { onTitleHover } = this.state
+    return connectDragSource(
+      connectDropTarget(
+        <div
+          className="col-sm-2"
+          key={video.id}
+          style={{
+            opacity: isDragging ? 0.5 : 1
+          }}
+        >
+          <div className="thumbnail">
+            <div
               style={{
-                width: '100%',
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                bottom: '0px',
-                right: '0px',
-                margin: 'auto'
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden',
+                paddingBottom: '75%'
               }}
-            />
-            {!!video.isStarred && <StarMark size={2} />}
-          </div>
-          <div
-            className="caption"
-            style={{height: '8rem'}}
-          >
-            <div>
-              <h5
-                ref={ref => { this.thumbLabel = ref }}
+            >
+              <img
+                alt="Thumbnail"
+                src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
+                style={{
+                  width: '100%',
+                  position: 'absolute',
+                  top: '0px',
+                  left: '0px',
+                  bottom: '0px',
+                  right: '0px',
+                  margin: 'auto'
+                }}
+              />
+              {!!video.isStarred && <StarMark size={2} />}
+            </div>
+            <div className="caption" style={{ height: '8rem' }}>
+              <div>
+                <h5
+                  ref={ref => {
+                    this.thumbLabel = ref
+                  }}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    lineHeight: 'normal'
+                  }}
+                  onMouseOver={this.onMouseOver}
+                  onMouseLeave={() => this.setState({ onTitleHover: false })}
+                >
+                  {cleanString(video.title)}
+                </h5>
+                <FullTextReveal
+                  show={onTitleHover}
+                  text={cleanString(video.title)}
+                />
+              </div>
+              <small
                 style={{
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  lineHeight: 'normal'
+                  overflow: 'hidden'
                 }}
-                onMouseOver={this.onMouseOver}
-                onMouseLeave={() => this.setState({onTitleHover: false})}
               >
-                {cleanString(video.title)}
-              </h5>
-              <FullTextReveal show={onTitleHover} text={cleanString(video.title)} />
+                {video.uploaderName}
+              </small>
             </div>
-            <small style={{
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden'
-            }}>{video.uploaderName}</small>
           </div>
         </div>
-      </div>
-    ))
+      )
+    )
   }
 
   onMouseOver() {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({onTitleHover: true})
+      this.setState({ onTitleHover: true })
     }
   }
 }
 
-export default DropTarget(ItemTypes.THUMB, thumbTarget, (connect) => ({
+export default DropTarget(ItemTypes.THUMB, thumbTarget, connect => ({
   connectDropTarget: connect.dropTarget()
 }))(
   DragSource(ItemTypes.THUMB, thumbSource, (connect, monitor) => ({

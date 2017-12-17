@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {Modal, Alert} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Modal, Alert } from 'react-bootstrap'
 import Button from 'components/Button'
-import {stringIsEmpty} from 'helpers/stringHelpers'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import Input from 'components/Texts/Input'
 
 export default class LoginForm extends Component {
@@ -22,15 +22,11 @@ export default class LoginForm extends Component {
   }
 
   render() {
-    const {showSignUpForm} = this.props
-    const {username, password, errorMessage} = this.state
+    const { showSignUpForm } = this.props
+    const { username, password, errorMessage } = this.state
     return (
       <div>
-        {errorMessage &&
-          <Alert bsStyle="warning">
-            {errorMessage}
-          </Alert>
-        }
+        {errorMessage && <Alert bsStyle="warning">{errorMessage}</Alert>}
         <div className="container-fluid">
           <fieldset className="form-group">
             <label>Username</label>
@@ -47,7 +43,11 @@ export default class LoginForm extends Component {
               placeholder="Enter your username"
               type="text"
               onKeyPress={event => {
-                if (!stringIsEmpty(username) && !stringIsEmpty(password) && event.key === 'Enter') {
+                if (
+                  !stringIsEmpty(username) &&
+                  !stringIsEmpty(password) &&
+                  event.key === 'Enter'
+                ) {
                   this.onSubmit()
                 }
               }}
@@ -68,7 +68,11 @@ export default class LoginForm extends Component {
               placeholder="Enter your password"
               type="password"
               onKeyPress={event => {
-                if (!stringIsEmpty(username) && !stringIsEmpty(password) && event.key === 'Enter') {
+                if (
+                  !stringIsEmpty(username) &&
+                  !stringIsEmpty(password) &&
+                  event.key === 'Enter'
+                ) {
                   this.onSubmit()
                 }
               }}
@@ -89,7 +93,7 @@ export default class LoginForm extends Component {
           </Button>
           <Button
             className="btn btn-lg btn-primary"
-            style={{fontSize: '1.5em'}}
+            style={{ fontSize: '1.5em' }}
             disabled={stringIsEmpty(username) || stringIsEmpty(password)}
             onClick={this.onSubmit}
           >
@@ -101,10 +105,10 @@ export default class LoginForm extends Component {
   }
 
   onSubmit() {
-    const {loginAsync} = this.props
-    const {username, password} = this.state
-    return loginAsync({username, password}).catch(
-      error => this.setState({errorMessage: error})
+    const { loginAsync } = this.props
+    const { username, password } = this.state
+    return loginAsync({ username, password }).catch(error =>
+      this.setState({ errorMessage: error })
     )
   }
 }

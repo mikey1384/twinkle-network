@@ -7,9 +7,13 @@ ReplyInputArea.propTypes = {
   numReplies: PropTypes.number,
   clickListenerState: PropTypes.bool
 }
-export default function ReplyInputArea({onSubmit, numReplies, clickListenerState}) {
+export default function ReplyInputArea({
+  onSubmit,
+  numReplies,
+  clickListenerState
+}) {
   return (
-    <div className="media" style={{marginTop: numReplies === 0 && '0px'}}>
+    <div className="media" style={{ marginTop: numReplies === 0 && '0px' }}>
       <div className="media-body">
         <InputArea
           autoFocus

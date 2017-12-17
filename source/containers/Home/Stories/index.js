@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import {
   fetchMoreFeedsAsync,
   fetchFeedsAsync,
@@ -10,8 +10,8 @@ import InputPanel from './InputPanel'
 import FeedPanel from '../FeedPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
-import {connect} from 'react-redux'
-import {addEvent, removeEvent} from 'helpers/listenerHelpers'
+import { connect } from 'react-redux'
+import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import ExecutionEnvironment from 'exenv'
 
 class Stories extends Component {
@@ -44,17 +44,15 @@ class Stories extends Component {
   }
 
   componentWillMount() {
-    let {history, clearFeeds, fetchFeeds, loaded} = this.props
+    let { history, clearFeeds, fetchFeeds, loaded } = this.props
     if (ExecutionEnvironment.canUseDOM) {
       addEvent(window, 'scroll', this.onScroll)
       if (history.action === 'PUSH' || !loaded) {
-        this.setState({clearingFeeds: true})
-        return clearFeeds().then(
-          () => {
-            this.setState({clearingFeeds: false})
-            fetchFeeds()
-          }
-        )
+        this.setState({ clearingFeeds: true })
+        return clearFeeds().then(() => {
+          this.setState({ clearingFeeds: false })
+          fetchFeeds()
+        })
       }
     }
   }
@@ -64,76 +62,95 @@ class Stories extends Component {
   }
 
   render() {
-    const {feeds, loadMoreButton, userId, loaded} = this.props
-    const {clearingFeeds, loadingMore} = this.state
+    const { feeds, loadMoreButton, userId, loaded } = this.props
+    const { clearingFeeds, loadingMore } = this.state
 
     return (
       <div>
         {this.renderFilterBar()}
         <InputPanel />
-        {!loaded &&
-          <Loading text="Loading Feeds..." />
-        }
-        {loaded && feeds.length === 0 &&
-          <p style={{
-            textAlign: 'center',
-            paddingTop: '1em',
-            paddingBottom: '1em',
-            fontSize: '2em'
-          }}>
-            <span>Hello there!</span>
-          </p>
-        }
-        {loaded && feeds.length > 0 &&
-          <div>
-            {feeds.map(feed => {
-              return <FeedPanel key={`${feed.id}`} loadingDisabled={clearingFeeds} feed={feed} userId={userId} />
-            })}
-            {loadMoreButton && <LoadMoreButton onClick={this.loadMoreFeeds} loading={loadingMore} />}
-          </div>
-        }
+        {!loaded && <Loading text="Loading Feeds..." />}
+        {loaded &&
+          feeds.length === 0 && (
+            <p
+              style={{
+                textAlign: 'center',
+                paddingTop: '1em',
+                paddingBottom: '1em',
+                fontSize: '2em'
+              }}
+            >
+              <span>Hello there!</span>
+            </p>
+          )}
+        {loaded &&
+          feeds.length > 0 && (
+            <div>
+              {feeds.map(feed => {
+                return (
+                  <FeedPanel
+                    key={`${feed.id}`}
+                    loadingDisabled={clearingFeeds}
+                    feed={feed}
+                    userId={userId}
+                  />
+                )
+              })}
+              {loadMoreButton && (
+                <LoadMoreButton
+                  onClick={this.loadMoreFeeds}
+                  loading={loadingMore}
+                />
+              )}
+            </div>
+          )}
       </div>
     )
   }
 
   applyFilter(filter) {
-    const {fetchFeeds, selectedFilter, clearFeeds} = this.props
+    const { fetchFeeds, selectedFilter, clearFeeds } = this.props
     if (filter === selectedFilter) return
-    return clearFeeds().then(
-      () => fetchFeeds(filter)
-    )
+    return clearFeeds().then(() => fetchFeeds(filter))
   }
 
   loadMoreFeeds() {
-    const {feeds, fetchMoreFeeds, selectedFilter} = this.props
-    const {loadingMore} = this.state
+    const { feeds, fetchMoreFeeds, selectedFilter } = this.props
+    const { loadingMore } = this.state
     if (!loadingMore) {
-      this.setState({loadingMore: true})
-      fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter).then(
-        () => this.setState({loadingMore: false})
+      this.setState({ loadingMore: true })
+      fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter).then(() =>
+        this.setState({ loadingMore: false })
       )
     }
   }
 
   onScroll() {
-    const {chatMode, feeds} = this.props
+    const { chatMode, feeds } = this.props
     if (document.body.scrollHeight > this.scrollHeight) {
       this.scrollHeight = document.body.scrollHeight
     }
-    const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+    const scrollPosition =
+      document.documentElement.scrollTop || document.body.scrollTop
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
-      this.setState(() => ({
-        scrollPosition
-      }), () => {
-        if (this.state.scrollPosition >= this.scrollHeight - window.innerHeight - 500) {
-          this.loadMoreFeeds()
+      this.setState(
+        () => ({
+          scrollPosition
+        }),
+        () => {
+          if (
+            this.state.scrollPosition >=
+            this.scrollHeight - window.innerHeight - 500
+          ) {
+            this.loadMoreFeeds()
+          }
         }
-      })
+      )
     }
   }
 
   renderFilterBar() {
-    const {selectedFilter} = this.props
+    const { selectedFilter } = this.props
     return (
       <nav className="navbar navbar-inverse">
         <ul

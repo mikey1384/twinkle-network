@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
 import NotFound from 'components/NotFound'
 import request from 'axios'
-import {URL} from 'constants/URL'
+import { URL } from 'constants/URL'
 
 export default class Redirect extends Component {
   static propTypes = {
@@ -19,21 +19,17 @@ export default class Redirect extends Component {
   }
 
   componentDidMount() {
-    const {match: {params: {username}}, history} = this.props
-    return request.get(`${URL}/user/check?username=${username}`).then(
-      ({data: userExists}) => {
+    const { match: { params: { username } }, history } = this.props
+    return request
+      .get(`${URL}/user/check?username=${username}`)
+      .then(({ data: userExists }) => {
         if (userExists) return history.push(`/users/${username}`)
-        this.setState({loaded: true})
-      }
-    )
+        this.setState({ loaded: true })
+      })
   }
 
   render() {
-    const {loaded} = this.state
-    return (
-      <div>
-        {loaded ? <NotFound /> : <Loading text="Loading" />}
-      </div>
-    )
+    const { loaded } = this.state
+    return <div>{loaded ? <NotFound /> : <Loading text="Loading" />}</div>
   }
 }

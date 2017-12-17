@@ -28,7 +28,8 @@ module.exports = {
   trimWhiteSpaces(text) {
     let newText = text
     while (
-      newText !== '' && (newText[0] === ' ' || newText[newText.length - 1] === ' ')
+      newText !== '' &&
+      (newText[0] === ' ' || newText[newText.length - 1] === ' ')
     ) {
       if (newText[0] === ' ') {
         newText = newText.substring(1)

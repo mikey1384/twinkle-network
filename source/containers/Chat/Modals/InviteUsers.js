@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {Modal, Button} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Modal, Button } from 'react-bootstrap'
 import TagPeopleForm from 'components/TagPeopleForm'
-import {connect} from 'react-redux'
-import {clearUserSearchResults, searchUserToInviteAsync, inviteUsersToChannelAsync} from 'redux/actions/ChatActions'
+import { connect } from 'react-redux'
+import {
+  clearUserSearchResults,
+  searchUserToInviteAsync,
+  inviteUsersToChannelAsync
+} from 'redux/actions/ChatActions'
 
 class InviteUsersModal extends Component {
   static propTypes = {
@@ -28,16 +32,20 @@ class InviteUsersModal extends Component {
   }
 
   render() {
-    const {clearSearchResults, searchUserToInvite, searchResults, onHide, style, currentChannel} = this.props
-    const {selectedUsers} = this.state
-    const currentMembersUID = currentChannel.members.map(member => member.userId)
+    const {
+      clearSearchResults,
+      searchUserToInvite,
+      searchResults,
+      onHide,
+      style,
+      currentChannel
+    } = this.props
+    const { selectedUsers } = this.state
+    const currentMembersUID = currentChannel.members.map(
+      member => member.userId
+    )
     return (
-      <Modal
-        show
-        style={style}
-        onHide={onHide}
-        animation={false}
-      >
+      <Modal show style={style} onHide={onHide} animation={false}>
         <Modal.Header closeButton>
           <h4>Invite people to this channel</h4>
         </Modal.Header>
@@ -59,35 +67,44 @@ class InviteUsersModal extends Component {
             bsStyle="primary"
             onClick={this.onDone}
             disabled={selectedUsers.length === 0}
-          >Invite</Button>
+          >
+            Invite
+          </Button>
         </Modal.Footer>
       </Modal>
     )
   }
 
   onAddUser(user) {
-    const {selectedUsers} = this.state
+    const { selectedUsers } = this.state
     this.setState({
-      selectedUsers: selectedUsers.concat([{
-        userId: user.id,
-        username: user.username
-      }])
+      selectedUsers: selectedUsers.concat([
+        {
+          userId: user.id,
+          username: user.username
+        }
+      ])
     })
   }
 
   onRemoveUser(user) {
-    const {selectedUsers} = this.state
+    const { selectedUsers } = this.state
     this.setState({
-      selectedUsers: selectedUsers.filter(selectedUser => selectedUser.userId !== user.userId)
+      selectedUsers: selectedUsers.filter(
+        selectedUser => selectedUser.userId !== user.userId
+      )
     })
   }
 
   onDone() {
-    const {inviteUsersToChannel, currentChannel, onDone} = this.props
-    const {selectedUsers} = this.state
-    inviteUsersToChannel({selectedUsers, channelId: currentChannel.id}, message => {
-      onDone(selectedUsers.map(user => user.userId), message)
-    })
+    const { inviteUsersToChannel, currentChannel, onDone } = this.props
+    const { selectedUsers } = this.state
+    inviteUsersToChannel(
+      { selectedUsers, channelId: currentChannel.id },
+      message => {
+        onDone(selectedUsers.map(user => user.userId), message)
+      }
+    )
   }
 }
 
