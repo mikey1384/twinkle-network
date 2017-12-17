@@ -126,10 +126,11 @@ class RightMenu extends Component {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'flex-start',
+          width: '100%',
           marginTop: index !== 0 ? '1rem' : 0
         }}
       >
-        <div>
+        <div style={{ width: '50%' }}>
           <Link
             to={`/videos/${video.videoId}${
               playlistId ? `?playlist=${playlistId}` : ''
@@ -139,14 +140,13 @@ class RightMenu extends Component {
               isStarred={!!video.isStarred}
               videoId={video.videoId}
               src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
-              imgStyle={{ width: '18rem' }}
             />
           </Link>
         </div>
         <div
           style={{
             paddingLeft: '1rem',
-            display: 'flex',
+            width: '50%',
             flexDirection: 'column'
           }}
         >

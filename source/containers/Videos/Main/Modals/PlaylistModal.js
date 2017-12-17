@@ -12,7 +12,7 @@ import { URL } from 'constants/URL'
 import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
 import { queryStringForArray } from 'helpers/apiHelpers'
-import StarMark from 'components/StarMark'
+import VideoThumbImage from 'components/VideoThumbImage'
 
 const API_URL = `${URL}/playlist`
 
@@ -62,27 +62,30 @@ class PlaylistModal extends Component {
         </Modal.Header>
         <Modal.Body>
           {videos.length === 0 && <Loading text="Loading..." />}
-          {videos.map(video => (
-            <div key={video.id} className="media">
-              <div className="media-left media-middle">
+          {videos.map((video, index) => (
+            <div
+              key={video.id}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'flex-start',
+                width: '100%',
+                marginTop: index !== 0 ? '1rem' : 0
+              }}
+            >
+              <div style={{ width: '35%' }}>
                 <Link
                   to={`/videos/${video.id}?playlist=${playlistId}`}
                   onClickAsync={() => loadVideoPage(video.id)}
                 >
-                  <div>
-                    {!!video.isStarred && <StarMark size={2} />}
-                    <img
-                      className="media-object"
-                      src={`https://img.youtube.com/vi/${
-                        video.content
-                      }/mqdefault.jpg`}
-                      alt="..."
-                      style={{ width: '18rem' }}
-                    />
-                  </div>
+                  <VideoThumbImage
+                    isStarred={!!video.isStarred}
+                    videoId={video.id}
+                    src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+                  />
                 </Link>
               </div>
-              <div className="media-body">
+              <div style={{ width: '60%' }}>
                 <Link
                   to={`/videos/${video.id}?playlist=${playlistId}`}
                   onClickAsync={() => loadVideoPage(video.id)}

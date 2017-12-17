@@ -20,7 +20,14 @@ export default function SelectVideosForm({
   loadMoreVideos
 }) {
   return (
-    <div className="row">
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        width: '100%'
+      }}
+    >
       {videos.map((video, index) => {
         return (
           <VideoThumb
@@ -40,7 +47,13 @@ export default function SelectVideosForm({
         )
       })}
       {loadMoreVideosButton && (
-        <div className="text-center">
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%'
+          }}
+        >
           <Button className="btn btn-success" onClick={loadMoreVideos}>
             Load More
           </Button>

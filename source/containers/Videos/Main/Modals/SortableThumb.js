@@ -5,7 +5,7 @@ import ItemTypes from 'constants/itemTypes'
 import { cleanString } from 'helpers/stringHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
-import StarMark from 'components/StarMark'
+import VideoThumbImage from 'components/VideoThumbImage'
 
 const thumbSource = {
   beginDrag(props) {
@@ -57,37 +57,39 @@ class SortableThumb extends Component {
     return connectDragSource(
       connectDropTarget(
         <div
-          className="col-sm-2"
           key={video.id}
           style={{
-            opacity: isDragging ? 0.5 : 1
+            opacity: isDragging ? 0.5 : 1,
+            width: '16%',
+            margin: '0.3rem',
+            cursor: 'pointer'
           }}
         >
-          <div className="thumbnail">
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              flexDirection: 'column',
+              alignItems: 'flex-end'
+            }}
+          >
+            <div style={{ width: '100%' }}>
+              <VideoThumbImage
+                height="65%"
+                videoId={video.id}
+                isStarred={!!video.isStarred}
+                src={`https://img.youtube.com/vi/${
+                  video.content
+                }/mqdefault.jpg`}
+              />
+            </div>
             <div
+              className="caption"
               style={{
-                cursor: 'pointer',
-                position: 'relative',
-                overflow: 'hidden',
-                paddingBottom: '75%'
+                height: '8rem',
+                width: '100%'
               }}
             >
-              <img
-                alt="Thumbnail"
-                src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
-                style={{
-                  width: '100%',
-                  position: 'absolute',
-                  top: '0px',
-                  left: '0px',
-                  bottom: '0px',
-                  right: '0px',
-                  margin: 'auto'
-                }}
-              />
-              {!!video.isStarred && <StarMark size={2} />}
-            </div>
-            <div className="caption" style={{ height: '8rem' }}>
               <div>
                 <h5
                   ref={ref => {

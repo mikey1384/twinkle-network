@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { cleanString } from 'helpers/stringHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
-import StarMark from 'components/StarMark'
+import VideoThumbImage from 'components/VideoThumbImage'
 
 export default class VideoThumb extends Component {
   static propTypes = {
@@ -25,10 +25,21 @@ export default class VideoThumb extends Component {
     const { video, selected, onSelect, onDeselect } = this.props
     const { onTitleHover } = this.state
     return (
-      <div className="col-xs-2">
+      <div
+        style={{
+          width: '16%',
+          margin: '0.3rem',
+          cursor: 'pointer'
+        }}
+      >
         <div
-          className={`thumbnail ${selected && 'thumbnail-selected'}`}
-          style={{ cursor: 'pointer' }}
+          className={selected ? 'thumbnail-selected' : ''}
+          style={{
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'column',
+            alignItems: 'flex-end'
+          }}
           onClick={() => {
             if (selected) {
               onDeselect(video.id)
@@ -37,29 +48,21 @@ export default class VideoThumb extends Component {
             }
           }}
         >
+          <div style={{ width: '100%' }}>
+            <VideoThumbImage
+              height="65%"
+              videoId={video.id}
+              isStarred={!!video.isStarred}
+              src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+            />
+          </div>
           <div
+            className="caption"
             style={{
-              position: 'relative',
-              overflow: 'hidden',
-              paddingBottom: '75%'
+              height: '8rem',
+              width: '100%'
             }}
           >
-            <img
-              alt="Thumbnail"
-              src={`http://img.youtube.com/vi/${video.content}/0.jpg`}
-              style={{
-                width: '100%',
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                bottom: '0px',
-                right: '0px',
-                margin: 'auto'
-              }}
-            />
-            {!!video.isStarred && <StarMark size={2} />}
-          </div>
-          <div className="caption" style={{ height: '8rem' }}>
             <div>
               <h5
                 ref={ref => {

@@ -139,14 +139,23 @@ class EditPlaylistModal extends Component {
             )}
           {mainTabActive &&
             modalType === 'reorder' && (
-              <div className="row">
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  justifyContent: 'flex-start',
+                  width: '100%'
+                }}
+              >
                 {selectedVideos.map(video => (
                   <SortableThumb
                     key={video.id}
                     video={video}
                     onMove={({ sourceId, targetId }) => {
                       let selected = [...selectedVideos]
-                      const selectedVideoArray = selected.map(video => video.id)
+                      const selectedVideoArray = selected.map(
+                        video => video.id
+                      )
                       const sourceIndex = selectedVideoArray.indexOf(sourceId)
                       const sourceVideo = selected[sourceIndex]
                       const targetIndex = selectedVideoArray.indexOf(targetId)

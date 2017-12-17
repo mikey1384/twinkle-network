@@ -59,12 +59,18 @@ class VideoThumb extends Component {
     ]
     return (
       <ErrorBoundary style={style}>
-        <div>
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'column',
+            alignItems: 'flex-end'
+          }}
+        >
           {editable && (
             <DropdownButton
               style={{
                 position: 'absolute',
-                right: '0px',
                 zIndex: '1'
               }}
               icon="pencil"
@@ -74,6 +80,7 @@ class VideoThumb extends Component {
           <div style={{ width: '100%' }}>
             <Link to={`/${to}`} onClickAsync={this.onLinkClick}>
               <VideoThumbImage
+                height="65%"
                 videoId={video.id}
                 isStarred={!!video.isStarred}
                 src={`https://img.youtube.com/vi/${
@@ -85,14 +92,16 @@ class VideoThumb extends Component {
           <div
             className="caption"
             style={{
-              height: '8rem'
+              height: '8rem',
+              width: '100%'
             }}
           >
             {onEdit ? (
               <div
                 className="input-group col-xs-12"
                 style={{
-                  paddingBottom: '0.3em'
+                  paddingTop: '0.5rem',
+                  paddingBottom: '0.5rem'
                 }}
               >
                 <EditTitleForm
@@ -103,7 +112,11 @@ class VideoThumb extends Component {
                 />
               </div>
             ) : (
-              <div>
+              <div
+                style={{
+                  width: '100%'
+                }}
+              >
                 <h5
                   ref={ref => {
                     this.thumbLabel = ref
