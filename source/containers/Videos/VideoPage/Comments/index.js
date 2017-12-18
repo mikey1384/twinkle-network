@@ -128,7 +128,7 @@ class Comments extends Component {
     const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     if (comments.length === 0) {
       if (loading) return <Loading />
-      return <li className="text-center">There are no comments, yet.</li>
+      return <div style={{textAlign: 'center'}}>There are no comments, yet.</div>
     }
     return comments.map((comment, index) => {
       return (

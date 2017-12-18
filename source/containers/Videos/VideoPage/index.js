@@ -141,9 +141,8 @@ class VideoPage extends Component {
               <div
                 style={{
                   backgroundColor: '#fff',
-                  marginBottom: '2em',
-                  paddingRight: '1em',
-                  paddingLeft: '1em'
+                  marginBottom: '2rem',
+                  padding: '1rem'
                 }}
               >
                 <div style={{ paddingTop: '1.5em' }}>
@@ -316,7 +315,7 @@ class VideoPage extends Component {
     this.setState({ resultModalShown: true })
   }
 
-  onSelectChoice = (index) => {
+  onSelectChoice = index => {
     let { userAnswers, currentSlide } = this.state
     userAnswers[currentSlide] = index
     this.setState({ userAnswers })
