@@ -26,10 +26,6 @@ import { stringIsEmpty } from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import ExecutionEnvironment from 'exenv'
-import { auth } from 'redux/actions/constants'
-import request from 'axios'
-import { URL } from 'constants/URL'
-const VIDEO_URL = `${URL}/video`
 
 class VideoPage extends Component {
   static propTypes = {
@@ -58,25 +54,15 @@ class VideoPage extends Component {
     videoViews: PropTypes.string
   }
 
-  constructor() {
-    super()
-    this.state = {
-      watchTabActive: true,
-      currentSlide: 0,
-      userAnswers: [],
-      resultModalShown: false,
-      editModalShown: false,
-      confirmModalShown: false,
-      onEdit: false,
-      questionsBuilderShown: false
-    }
-    this.onDescriptionEditFinish = this.onDescriptionEditFinish.bind(this)
-    this.onSlide = this.onSlide.bind(this)
-    this.onQuestionsFinish = this.onQuestionsFinish.bind(this)
-    this.onQuestionsSubmit = this.onQuestionsSubmit.bind(this)
-    this.numberCorrect = this.numberCorrect.bind(this)
-    this.onVideoDelete = this.onVideoDelete.bind(this)
-    this.onSelectChoice = this.onSelectChoice.bind(this)
+  state = {
+    watchTabActive: true,
+    currentSlide: 0,
+    userAnswers: [],
+    resultModalShown: false,
+    editModalShown: false,
+    confirmModalShown: false,
+    onEdit: false,
+    questionsBuilderShown: false
   }
 
   componentDidMount() {
@@ -101,19 +87,6 @@ class VideoPage extends Component {
         questionsBuilderShown: false
       })
       loadVideoPage(nextProps.match.params.videoId)
-      const authorization = auth()
-      const authExists = !!authorization.headers.authorization
-      if (authExists) {
-        try {
-          request.put(
-            `${VIDEO_URL}/clearCurrentlyWatching`,
-            { videoId: params.videoId },
-            authorization
-          )
-        } catch (error) {
-          console.error(error.response || error)
-        }
-      }
     }
   }
 
@@ -293,7 +266,7 @@ class VideoPage extends Component {
     )
   }
 
-  renderSlides() {
+  renderSlides = () => {
     const { questions } = this.props
     const { currentSlide, userAnswers } = this.state
     return questions.map((question, index) => {
@@ -323,7 +296,7 @@ class VideoPage extends Component {
     })
   }
 
-  numberCorrect() {
+  numberCorrect = () => {
     const { userAnswers } = this.state
     const correctAnswers = this.props.questions.map(question => {
       return question.correctChoice
@@ -335,31 +308,31 @@ class VideoPage extends Component {
     return numberCorrect
   }
 
-  onSlide(index) {
+  onSlide = index => {
     this.setState({ currentSlide: index })
   }
 
-  onQuestionsFinish() {
+  onQuestionsFinish = () => {
     this.setState({ resultModalShown: true })
   }
 
-  onSelectChoice(index) {
+  onSelectChoice = (index) => {
     let { userAnswers, currentSlide } = this.state
     userAnswers[currentSlide] = index
     this.setState({ userAnswers })
   }
 
-  onDescriptionEditFinish(params, sender) {
+  onDescriptionEditFinish = (params, sender) => {
     this.setState({ onEdit: false })
     return this.props.editVideoPage(params)
   }
 
-  onVideoDelete() {
+  onVideoDelete = () => {
     const { match: { params: { videoId } } } = this.props
     this.props.deleteVideo({ videoId })
   }
 
-  onQuestionsSubmit(questions) {
+  onQuestionsSubmit = questions => {
     const { match: { params: { videoId } } } = this.props
     const data = {
       videoId,
