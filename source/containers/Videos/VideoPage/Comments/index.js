@@ -81,11 +81,15 @@ class Comments extends Component {
             discussions={discussions}
             loadMoreDiscussionsButton={loadMoreDiscussionsButton}
           />
-          <div className="container-fluid">
-            <ul
-              className="media-list"
+          <div style={{ width: '100%' }}>
+            <div
               ref={ref => {
                 this.Comments = ref
+              }}
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column'
               }}
             >
               {this.renderComments()}
@@ -104,7 +108,7 @@ class Comments extends Component {
                   </Button>
                 </div>
               )}
-            </ul>
+            </div>
           </div>
         </div>
       </div>

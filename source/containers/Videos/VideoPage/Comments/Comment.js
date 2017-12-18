@@ -91,9 +91,12 @@ export default class Comment extends Component {
       if (comment.likes[i].userId === userId) userLikedThis = true
     }
     return (
-      <li
-        className="media"
-        style={{ marginTop: this.props.marginTop && '2em' }}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          marginTop: this.props.marginTop && '2em'
+        }}
         ref={ref => {
           this.Comment = ref
         }}
@@ -103,7 +106,11 @@ export default class Comment extends Component {
           userId={comment.userId}
           profilePicId={comment.profilePicId}
         />
-        <div className="media-body">
+        <div
+          style={{
+            width: '90%'
+          }}
+        >
           {userIsOwner &&
             !onEdit && (
               <DropdownButton
@@ -125,15 +132,16 @@ export default class Comment extends Component {
                 ]}
               />
             )}
-          <h4 className="media-heading">
+          <div>
             <UsernameText
               user={{
                 name: comment.username,
                 id: comment.userId
               }}
+              style={{fontSize: '3rem'}}
             />{' '}
-            <small>&nbsp;{timeSince(comment.timeStamp)}</small>
-          </h4>
+            <small style={{color: Color.gray}}>&nbsp;{timeSince(comment.timeStamp)}</small>
+          </div>
           {onEdit ? (
             <EditTextArea
               autoFocus
@@ -226,7 +234,7 @@ export default class Comment extends Component {
             onConfirm={this.onDelete}
           />
         )}
-      </li>
+      </div>
     )
   }
 
