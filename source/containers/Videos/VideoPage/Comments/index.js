@@ -94,7 +94,7 @@ class Comments extends Component {
             >
               {this.renderComments()}
               {loadMoreCommentsButton && (
-                <div className="text-center" style={{ paddingTop: '2em' }}>
+                <div className="text-center" style={{ paddingTop: '2rem' }}>
                   <Button
                     className="btn btn-success"
                     onClick={() =>

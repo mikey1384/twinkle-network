@@ -56,8 +56,12 @@ export default class Replies extends Component {
     const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     return (
       <div
-        className="media container-fluid"
-        style={{ paddingLeft: '0px', paddingRight: '0px' }}
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          marginTop: '1.5rem'
+        }}
         ref={ref => {
           this.Replies = ref
         }}
@@ -67,7 +71,7 @@ export default class Replies extends Component {
             className="btn btn-default"
             style={{
               width: '100%',
-              marginBottom: replies.length === 0 && '1em'
+              marginBottom: replies.length !== 0 && '1.5rem'
             }}
             onClick={this.loadMoreReplies}
           >

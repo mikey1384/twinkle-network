@@ -8,6 +8,7 @@ class UsernameText extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
     color: PropTypes.string,
+    style: PropTypes.object,
     openDirectMessageChannel: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     userId: PropTypes.number,
@@ -25,7 +26,7 @@ class UsernameText extends Component {
 
   render() {
     const { menuShown } = this.state
-    const { user, userId, color } = this.props
+    const { user, userId, color, style } = this.props
     return (
       <span
         className="dropdown"
@@ -34,7 +35,8 @@ class UsernameText extends Component {
         <b
           style={{
             cursor: 'pointer',
-            color: user.name ? color && color : Color.darkGray
+            color: user.name ? color && color : Color.darkGray,
+            ...style
           }}
           onMouseEnter={this.onMouseEnter}
         >

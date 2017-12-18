@@ -95,7 +95,7 @@ export default class Comment extends Component {
         style={{
           width: '100%',
           display: 'flex',
-          marginTop: this.props.marginTop && '2em'
+          marginTop: this.props.marginTop && '2rem'
         }}
         ref={ref => {
           this.Comment = ref
@@ -114,6 +114,7 @@ export default class Comment extends Component {
           {userIsOwner &&
             !onEdit && (
               <DropdownButton
+                opacity={0.8}
                 shape="button"
                 icon="pencil"
                 style={{
@@ -138,7 +139,7 @@ export default class Comment extends Component {
                 name: comment.username,
                 id: comment.userId
               }}
-              style={{fontSize: '3rem'}}
+              style={{fontSize: '2.5rem'}}
             />{' '}
             <small style={{color: Color.gray}}>&nbsp;{timeSince(comment.timeStamp)}</small>
           </div>
@@ -150,7 +151,7 @@ export default class Comment extends Component {
               onEditDone={this.onEditDone}
             />
           ) : (
-            <div style={{ maxWidth: '85vw' }}>
+            <div>
               {!!comment.discussionTitle && (
                 <div
                   style={{

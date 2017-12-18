@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { timeSince } from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/DropdownButton'
 import EditTextArea from 'components/Texts/EditTextArea'
@@ -75,6 +75,7 @@ export default class Reply extends Component {
   render() {
     const {
       id,
+      index,
       username,
       timeStamp,
       content,
@@ -100,15 +101,20 @@ export default class Reply extends Component {
     }
     return (
       <div
-        className="media"
         key={id}
         ref={ref => {
           this.Reply = ref
+        }}
+        style={{
+          width: '100%',
+          display: 'flex',
+          marginTop: index !== 0 && '1.5rem'
         }}
       >
         {userIsOwner &&
           !onEdit && (
             <DropdownButton
+              opacity={0.8}
               shape="button"
               icon="pencil"
               style={{
@@ -128,26 +134,30 @@ export default class Reply extends Component {
             />
           )}
         <ProfilePic size="4.5" userId={userId} profilePicId={profilePicId} />
-        <div className="media-body">
-          <h4 className="media-heading">
+        <div style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>
+          <div>
             <UsernameText
               user={{
                 name: username,
                 id: userId
               }}
+              style={{ fontSize: '2rem' }}
             />{' '}
-            <small>&nbsp;{timeSince(timeStamp)}</small>
-          </h4>
-          <div className="media-body">
+            <small style={{ color: Color.gray }}>
+              &nbsp;{timeSince(timeStamp)}
+            </small>
+          </div>
+          <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
             {targetUserId && (
               <span style={{ color: Color.blue }}>
                 to:{' '}
                 <UsernameText
                   user={{ name: targetUserName, id: targetUserId }}
+                  style={{ fontSize: '1.5rem' }}
                 />
               </span>
             )}
-            <div style={{ maxWidth: '77vw' }}>
+            <Fragment>
               {onEdit ? (
                 <EditTextArea
                   autoFocus
@@ -160,8 +170,8 @@ export default class Reply extends Component {
                   }
                 />
               ) : (
-                <div>
-                  <LongText style={{ paddingBottom: '1em' }}>
+                <div style={{ width: '100%' }}>
+                  <LongText style={{ paddingBottom: '2rem' }}>
                     {content}
                   </LongText>
                   <div className="row flexbox-container">
@@ -198,7 +208,7 @@ export default class Reply extends Component {
                   </div>
                 </div>
               )}
-            </div>
+            </Fragment>
           </div>
           {replyInputShown && (
             <ReplyInputArea
