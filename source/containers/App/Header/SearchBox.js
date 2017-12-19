@@ -34,8 +34,7 @@ class SearchBox extends Component {
     const { searchResult, clearSearchResults, className, style } = this.props
     const { searchText } = this.state
     return (
-      <form
-        onSubmit={e => e.preventDefault()}
+      <div
         className={className}
         style={style}
       >
@@ -72,7 +71,7 @@ class SearchBox extends Component {
           }}
           onSelect={this.onSelect}
         />
-      </form>
+      </div>
     )
   }
 

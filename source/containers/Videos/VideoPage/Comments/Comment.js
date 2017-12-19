@@ -16,8 +16,9 @@ import { scrollElementToCenter } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
+import { connect } from 'react-redux'
 
-export default class Comment extends Component {
+class Comment extends Component {
   static propTypes = {
     comment: PropTypes.shape({
       content: PropTypes.string.isRequired,
@@ -34,6 +35,7 @@ export default class Comment extends Component {
     deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
     index: PropTypes.number.isRequired,
+    isCreator: PropTypes.bool,
     lastDeletedCommentIndex: PropTypes.number,
     marginTop: PropTypes.bool,
     onDelete: PropTypes.func.isRequired,
@@ -79,13 +81,14 @@ export default class Comment extends Component {
     } = this.state
     const {
       comment,
+      isCreator,
       userId,
       commentId,
       videoId,
       onEditDone,
       onLoadMoreReplies
     } = this.props
-    const userIsOwner = comment.userId === userId
+    const userIsOwner = comment.userId === userId || isCreator
     let userLikedThis = false
     for (let i = 0; i < comment.likes.length; i++) {
       if (comment.likes[i].userId === userId) userLikedThis = true
@@ -139,9 +142,11 @@ export default class Comment extends Component {
                 name: comment.username,
                 id: comment.userId
               }}
-              style={{fontSize: '2.5rem'}}
+              style={{ fontSize: '2.5rem' }}
             />{' '}
-            <small style={{color: Color.gray}}>&nbsp;{timeSince(comment.timeStamp)}</small>
+            <small style={{ color: Color.gray }}>
+              &nbsp;{timeSince(comment.timeStamp)}
+            </small>
           </div>
           {onEdit ? (
             <EditTextArea
@@ -201,6 +206,7 @@ export default class Comment extends Component {
             </div>
           )}
           <Replies
+            isCreator={isCreator}
             onLoadMoreReplies={onLoadMoreReplies}
             userId={userId}
             comment={comment}
@@ -270,3 +276,7 @@ export default class Comment extends Component {
     this.props.onReplySubmit({ reply, commentId, videoId })
   }
 }
+
+export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
+  Comment
+)

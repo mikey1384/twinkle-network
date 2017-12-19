@@ -8,6 +8,7 @@ export default class Replies extends Component {
   static propTypes = {
     comment: PropTypes.object.isRequired,
     commentId: PropTypes.number.isRequired,
+    isCreator: PropTypes.bool,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
@@ -44,6 +45,7 @@ export default class Replies extends Component {
   render() {
     const {
       comment,
+      isCreator,
       replies,
       userId,
       onEditDone,
@@ -91,7 +93,7 @@ export default class Replies extends Component {
               onDelete={onDelete}
               myId={userId}
               key={reply.id}
-              userIsOwner={reply.userId === userId}
+              userIsOwner={reply.userId === userId || isCreator}
               deleteCallback={this.deleteCallback}
               lastDeletedCommentIndex={lastDeletedCommentIndex}
               deleteListenerToggle={deleteListenerToggle}

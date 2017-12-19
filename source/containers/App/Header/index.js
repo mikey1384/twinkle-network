@@ -132,7 +132,9 @@ class Header extends Component {
     const { userId, location, onProfilePage, chatMode } = this.props
 
     if (userId !== prevProps.userId) {
-      if (prevProps.userId !== null) { socket.emit('leave_my_notification_channel', prevProps.userId) }
+      if (prevProps.userId !== null) {
+        socket.emit('leave_my_notification_channel', prevProps.userId)
+      }
       socket.emit('enter_my_notification_channel', userId)
     }
 
@@ -199,9 +201,9 @@ class Header extends Component {
           </Link>
         </div>
         <div
-          className="col-xs-10"
           style={{
             display: 'flex',
+            width: '30%',
             justifyContent: 'space-between',
             alignItems: 'center'
           }}
@@ -242,33 +244,46 @@ class Header extends Component {
               </Fragment>
             )}
           </ul>
-          {!chatMode && (
-            <SearchBox style={{ width: '70%', marginLeft: '2rem' }} />
-          )}
         </div>
         <div
-          className="col-xs-2"
-          style={{ display: 'flex', justifyContent: 'flex-end' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+            marginLeft: '2%'
+          }}
         >
-          {loggedIn && (
-            <ChatButton
-              style={{ marginRight: '1rem' }}
-              onClick={onChatButtonClick}
-              chatMode={chatMode}
-              loading={chatLoading}
-              numUnreads={numChatUnreads}
-            />
-          )}
-          {loggedIn ? (
-            <AccountMenu title={username} logout={this.onLogout} />
-          ) : (
-            <Button
-              className="btn btn-success"
-              onClick={() => openSigninModal()}
-            >
-              Log In | Sign Up
-            </Button>
-          )}
+          <div style={{display: 'flex', width: '65%'}}>
+            {!chatMode && <SearchBox style={{ width: '100%' }} />}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              width: '20%',
+              marginRight: '1rem',
+              justifyContent: 'flex-end'
+            }}
+          >
+            {loggedIn && (
+              <ChatButton
+                style={{ marginRight: '1rem' }}
+                onClick={onChatButtonClick}
+                chatMode={chatMode}
+                loading={chatLoading}
+                numUnreads={numChatUnreads}
+              />
+            )}
+            {loggedIn ? (
+              <AccountMenu title={username} logout={this.onLogout} />
+            ) : (
+              <Button
+                className="btn btn-success"
+                onClick={() => openSigninModal()}
+              >
+                Log In | Sign Up
+              </Button>
+            )}
+          </div>
         </div>
         {signinModalShown && (
           <SigninModal show onHide={() => closeSigninModal()} />
