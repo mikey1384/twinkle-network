@@ -46,7 +46,9 @@ function ProfileWidget({
         <div
           style={{
             fontWeight: 'bold',
-            fontSize: '1.5em'
+            fontSize: '1.5em',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden'
           }}
         >
           {username ? (
