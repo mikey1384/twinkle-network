@@ -24,6 +24,7 @@ class AddPlaylistModal extends Component {
   timer = null
 
   state = {
+    isUploading: false,
     section: 0,
     title: '',
     description: '',
@@ -55,6 +56,7 @@ class AddPlaylistModal extends Component {
   render() {
     const { onHide } = this.props
     const {
+      isUploading,
       section,
       titleError,
       title,
@@ -196,7 +198,11 @@ class AddPlaylistModal extends Component {
             </Button>
           )}
           {section === 2 ? (
-            <Button className="btn btn-primary" onClick={this.handleFinish}>
+            <Button
+              className="btn btn-primary"
+              disabled={isUploading}
+              onClick={this.handleFinish}
+            >
               Finish
             </Button>
           ) : (
@@ -242,19 +248,23 @@ class AddPlaylistModal extends Component {
   handleNext = () => {
     const currentSection = this.state.section
     const { title } = this.state
-    if (currentSection === 0 && stringIsEmpty(title)) { return this.setState({ titleError: true }) }
+    if (currentSection === 0 && stringIsEmpty(title)) {
+      return this.setState({ titleError: true })
+    }
     const nextSection = Math.min(currentSection + 1, 2)
     this.setState({ section: nextSection })
   }
 
-  handleFinish = () => {
+  handleFinish = async() => {
     const { uploadPlaylist, onHide } = this.props
     const { title, description, selectedVideos } = this.state
-    return uploadPlaylist({
+    this.setState({ isUploading: true })
+    await uploadPlaylist({
       title: finalizeEmoji(title),
       description: finalizeEmoji(description),
       selectedVideos: selectedVideos.map(video => video.id)
-    }).then(() => onHide())
+    })
+    onHide()
   }
 
   loadMoreVideos = () => {

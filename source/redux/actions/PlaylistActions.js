@@ -85,18 +85,14 @@ export const changePlaylistVideos = (playlistId, data) => ({
 
 export const changePlaylistVideosAsync = (
   playlistId,
-  selectedVideos,
-  sender
+  selectedVideos
 ) => dispatch =>
   request
     .post(`${API_URL}/edit/videos`, { playlistId, selectedVideos }, auth())
     .then(response => {
       const { data } = response
-      if (data.result) {
-        dispatch(changePlaylistVideos(playlistId, data.result))
-        sender.props.onHide()
-      }
-      return
+      dispatch(changePlaylistVideos(playlistId, data.result))
+      return Promise.resolve()
     })
     .catch(error => {
       console.error(error.response || error)

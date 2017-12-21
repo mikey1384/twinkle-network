@@ -26,6 +26,7 @@ class EditPlaylistModal extends Component {
   state = {
     allVideos: [],
     loaded: false,
+    isSaving: false,
     searchedVideos: [],
     selectedVideos: [],
     loadMoreButtonShown: false,
@@ -62,6 +63,7 @@ class EditPlaylistModal extends Component {
   render() {
     const { modalType, onHide } = this.props
     const {
+      isSaving,
       selectedVideos,
       mainTabActive,
       searchText,
@@ -153,9 +155,7 @@ class EditPlaylistModal extends Component {
                     video={video}
                     onMove={({ sourceId, targetId }) => {
                       let selected = [...selectedVideos]
-                      const selectedVideoArray = selected.map(
-                        video => video.id
-                      )
+                      const selectedVideoArray = selected.map(video => video.id)
                       const sourceIndex = selectedVideoArray.indexOf(sourceId)
                       const sourceVideo = selected[sourceIndex]
                       const targetIndex = selectedVideoArray.indexOf(targetId)
@@ -189,7 +189,7 @@ class EditPlaylistModal extends Component {
           <Button
             className="btn btn-primary"
             onClick={this.handleSave}
-            disabled={selectedVideos.length < 2}
+            disabled={selectedVideos.length < 2 || isSaving}
           >
             Save
           </Button>
@@ -198,14 +198,15 @@ class EditPlaylistModal extends Component {
     )
   }
 
-  handleSave = () => {
+  handleSave = async() => {
     const { selectedVideos } = this.state
-    const { playlistId, changePlaylistVideos } = this.props
-    changePlaylistVideos(
+    const { onHide, playlistId, changePlaylistVideos } = this.props
+    this.setState({ isSaving: true })
+    await changePlaylistVideos(
       playlistId,
-      selectedVideos.map(video => video.id),
-      this
+      selectedVideos.map(video => video.id)
     )
+    onHide()
   }
 
   loadMoreVideos = () => {

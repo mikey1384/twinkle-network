@@ -19,6 +19,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
 const intervalLength = 2000
+const denominator = 3
 let isMobile
 
 class VideoPlayer extends Component {
@@ -213,11 +214,11 @@ class VideoPlayer extends Component {
       xpEarned,
       justEarned
     } = this.state
-    const halfDuration = totalDuration / 2
+    const requiredViewDuration = totalDuration / denominator
     const progress = xpEarned
       ? 100
-      : halfDuration > 0
-        ? Math.floor(Math.min(timeWatched, halfDuration) * 100 / halfDuration)
+      : requiredViewDuration > 0
+        ? Math.floor(Math.min(timeWatched, requiredViewDuration) * 100 / requiredViewDuration)
         : 0
     return (
       <ErrorBoundary>
@@ -364,9 +365,19 @@ class VideoPlayer extends Component {
   }
 
   increaseProgress = async() => {
-    const { xpEarned, timeWatched, totalDuration } = this.state
+    const { justEarned, xpEarned, timeWatched, totalDuration } = this.state
     const { changeUserXP, isStarred, videoId } = this.props
-    if (isStarred && timeWatched >= totalDuration / 2 && !this.rewardingXP) {
+    if (isStarred && !xpEarned && !justEarned && this.player) {
+      if (this.player.isMuted()) {
+        this.player.pauseVideo()
+        this.player.unMute()
+      }
+      if (this.player.getVolume() < 50) {
+        this.player.pauseVideo()
+        this.player.setVolume(50)
+      }
+    }
+    if (isStarred && timeWatched >= totalDuration / denominator && !this.rewardingXP) {
       this.rewardingXP = true
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, { videoId }, auth())
@@ -389,10 +400,10 @@ class VideoPlayer extends Component {
       }
     }
     if (!xpEarned && this.mounted) {
- this.setState(state => ({
+      this.setState(state => ({
         timeWatched: state.timeWatched + intervalLength / 1000
       }))
-}
+    }
     const authorization = auth()
     const authExists = !!authorization.headers.authorization
     if (authExists) {
