@@ -372,9 +372,9 @@ class VideoPlayer extends Component {
         this.player.pauseVideo()
         this.player.unMute()
       }
-      if (this.player.getVolume() < 50) {
+      if (this.player.getVolume() < 30) {
         this.player.pauseVideo()
-        this.player.setVolume(50)
+        this.player.setVolume(30)
       }
     }
     if (isStarred && timeWatched >= totalDuration / denominator && !this.rewardingXP) {
