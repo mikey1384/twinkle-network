@@ -373,7 +373,6 @@ class VideoPlayer extends Component {
         this.player.unMute()
       }
       if (this.player.getVolume() < 30) {
-        this.player.pauseVideo()
         this.player.setVolume(30)
       }
     }
