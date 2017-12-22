@@ -9,6 +9,7 @@ import { feedContentEdit } from 'redux/actions/FeedActions'
 import {
   addEmoji,
   finalizeEmoji,
+  stringIsEmpty,
   turnStringIntoQuestion,
   isValidUrl,
   isValidYoutubeUrl
@@ -83,7 +84,10 @@ class ContentEditor extends Component {
                   className="form-control"
                   onChange={text => this.setState({ editedTitle: text })}
                   onKeyUp={event =>
-                    this.setState({ editedTitle: addEmoji(event.target.value) })
+                    this.setState({
+                      editedTitle: addEmoji(event.target.value),
+                      buttonDisabled: stringIsEmpty(event.target.value)
+                    })
                   }
                   placeholder={edit.title}
                   value={editedTitle}
@@ -96,9 +100,12 @@ class ContentEditor extends Component {
                 autoFocus={type === 'comment'}
                 className="form-control"
                 minRows={4}
-                onChange={event => this.setState({
-                  [type === 'comment' ? 'editedComment' : 'editedDescription']: event.target.value
-                })}
+                onChange={event =>
+                  this.setState({
+                    [type === 'comment' ? 'editedComment' : 'editedDescription']: event.target.value,
+                    buttonDisabled: stringIsEmpty(event.target.value)
+                  })
+                }
                 placeholder={
                   edit[type === 'comment' ? 'comment' : 'description']
                 }
@@ -115,7 +122,7 @@ class ContentEditor extends Component {
                 onChange={text => {
                   this.setState(() => ({
                     editedContent: text,
-                    buttonDisabled: text.length > 100
+                    buttonDisabled: text.length > 100 || stringIsEmpty(text)
                   }))
                 }}
                 style={{ marginBottom: '0.3em' }}
