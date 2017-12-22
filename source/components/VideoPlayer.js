@@ -136,7 +136,9 @@ class VideoPlayer extends Component {
           `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
           auth()
         )
-        if (xpEarned && this.mounted) { this.setState(() => ({ xpEarned: !!xpEarned })) }
+        if (xpEarned && this.mounted) {
+          this.setState(() => ({ xpEarned: !!xpEarned }))
+        }
       } catch (error) {
         console.error(error.response || error)
       }
@@ -218,7 +220,11 @@ class VideoPlayer extends Component {
     const progress = xpEarned
       ? 100
       : requiredViewDuration > 0
-        ? Math.floor(Math.min(timeWatched, requiredViewDuration) * 100 / requiredViewDuration)
+        ? Math.floor(
+            Math.min(timeWatched, requiredViewDuration) *
+              100 /
+              requiredViewDuration
+          )
         : 0
     return (
       <ErrorBoundary>
@@ -318,7 +324,9 @@ class VideoPlayer extends Component {
     }
     if (!currentVideoSlot) {
       fillCurrentVideoSlot(Number(videoId))
-      if (userId) { this.interval = setInterval(this.increaseProgress, intervalLength) }
+      if (userId) {
+        this.interval = setInterval(this.increaseProgress, intervalLength)
+      }
     }
     const authorization = auth()
     const authExists = !!authorization.headers.authorization
@@ -376,7 +384,11 @@ class VideoPlayer extends Component {
         this.player.setVolume(30)
       }
     }
-    if (isStarred && timeWatched >= totalDuration / denominator && !this.rewardingXP) {
+    if (
+      isStarred &&
+      timeWatched >= totalDuration / denominator &&
+      !this.rewardingXP
+    ) {
       this.rewardingXP = true
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, { videoId }, auth())
