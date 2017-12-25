@@ -135,7 +135,6 @@ export function processedQueryString(string) {
 export function processedString(string) {
   return string
     ? string
-        .replace(/ /g, '\u00a0')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -149,7 +148,6 @@ export function processedStringWithURL(string) {
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
   const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
   let tempString = string
-    .replace(/ /g, '\u00a0')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
