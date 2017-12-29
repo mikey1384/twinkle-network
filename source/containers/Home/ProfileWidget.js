@@ -57,7 +57,7 @@ function ProfileWidget({
         <div
           style={{
             fontWeight: 'bold',
-            fontSize: '3rem',
+            fontSize: username ? '3rem' : '2rem',
             textOverflow: 'ellipsis',
             overflow: 'hidden'
           }}
@@ -81,7 +81,11 @@ function ProfileWidget({
           </div>
         )}
         {!userId && (
-          <Button className="btn btn-success" onClick={openSigninModal}>
+          <Button
+            className="btn btn-success"
+            style={{ marginTop: '2rem' }}
+            onClick={openSigninModal}
+          >
             Log In / Sign Up
           </Button>
         )}

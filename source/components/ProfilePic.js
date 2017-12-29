@@ -3,7 +3,6 @@ import React from 'react'
 
 ProfilePic.propTypes = {
   profilePicId: PropTypes.number,
-  size: PropTypes.string.isRequired,
   userId: PropTypes.number
 }
 export default function ProfilePic({ userId, profilePicId, ...props }) {
