@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.20)
 # Database: localhost
-# Generation Time: 2017-12-29 08:36:20 +0000
+# Generation Time: 2017-12-29 16:20:25 +0000
 # ************************************************************
 
 
@@ -1725,7 +1725,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `username`, `realName`, `class`, `email`, `userType`, `joinDate`, `password`, `lastChannelId`, `profileFirstRow`, `profileSecondRow`, `profileThirdRow`, `online`, `lastActive`, `twinkleXP`, `twinkleCoins`, `currentlyWatching`)
 VALUES
-	(5,'mikey','Mikey Langelo',NULL,'twinkle.mikey@gmail.com','creator',NULL,'sha1$a1b4e5d8$1$9d276b32dfd2bd1aeabbde0c7d9f4b40820f16a8',2,'Hi this is a test account','my favorite activity is recording (even though im not making videos much), my favorite books are gaming and magic tree house books.I like Minecraft! ','i go to gaeil. im now 5th. i like arts. I like talking about facts and theories',1,1514536346,NULL,NULL,NULL),
+	(5,'mikey','Mikey Langelo',NULL,'twinkle.mikey@gmail.com','creator',NULL,'sha1$a1b4e5d8$1$9d276b32dfd2bd1aeabbde0c7d9f4b40820f16a8',2,'Hi this is a test account','my favorite activity is recording (even though im not making videos much), my favorite books are gaming and magic tree house books.I like Minecraft! ','i go to gaeil. im now 5th. i like arts. I like talking about facts and theories',1,1514551348,100,NULL,NULL),
 	(205,'charlie','Charlie Shin',NULL,'twinkle.teacher@gmail.com','',1459947370,'sha1$bb97bb36$1$bf37ba395a3a281fe6f60dac9df35700926cc0c2',2,'This is Miles. I\'m a linguist, which is a kind of scientist who studies languages. I am also a teacher here at Twin.kle.','','',0,1500547102,NULL,NULL,NULL),
 	(206,'user','mike Ser',NULL,NULL,'',1459947427,'sha1$7d1504e0$1$853f1b45bbe54f120bdef7a7c187edd992ae8dd3',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),
 	(208,'testingsignup','Testing Signup',NULL,'twinkle.contact@gmail.com','',1461661347,'sha1$bd66bf25$1$e7eab82f167ef1ab1fac89b357484d234d600627',211,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),
@@ -8515,7 +8515,22 @@ VALUES
 	(6720,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514535055),
 	(6721,5,'enter','chat',NULL,'default',NULL,NULL,1514535080),
 	(6722,5,'leave','website',NULL,NULL,NULL,NULL,1514536345),
-	(6723,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514536346);
+	(6723,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514536346),
+	(6724,5,'leave','website',NULL,NULL,NULL,NULL,1514536761),
+	(6725,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514536763),
+	(6726,5,'navigate','/users',NULL,NULL,'Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514536768),
+	(6727,5,'navigate','/',NULL,NULL,'Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514536774),
+	(6728,5,'leave','website',NULL,NULL,NULL,NULL,1514536800),
+	(6729,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514548878),
+	(6730,5,'leave','website',NULL,NULL,NULL,NULL,1514548892),
+	(6731,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514548893),
+	(6732,5,'leave','website',NULL,NULL,NULL,NULL,1514549074),
+	(6733,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514549075),
+	(6734,5,'leave','website',NULL,NULL,NULL,NULL,1514549157),
+	(6735,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514549158),
+	(6736,5,'navigate','/users',NULL,NULL,'Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514549378),
+	(6737,5,'navigate','/',NULL,NULL,'Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514549378),
+	(6738,5,'enter','website','/','default','Chrome 63.0.3239 / Mac OS X 10.13.2','::1',1514551348);
 
 /*!40000 ALTER TABLE `users_actions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -8634,9 +8649,38 @@ LOCK TABLES `users_video_view_status` WRITE;
 
 INSERT INTO `users_video_view_status` (`id`, `userId`, `videoId`, `duration`, `xpEarned`)
 VALUES
-	(1,5,109,148,NULL);
+	(1,5,109,184,0),
+	(2,5,97,132,1);
 
 /*!40000 ALTER TABLE `users_video_view_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table users_xp_change
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `users_xp_change`;
+
+CREATE TABLE `users_xp_change` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(11) DEFAULT NULL,
+  `target` varchar(200) DEFAULT NULL,
+  `targetId` int(11) DEFAULT NULL,
+  `type` varchar(200) DEFAULT NULL,
+  `action` varchar(200) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL,
+  `timeStamp` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+LOCK TABLES `users_xp_change` WRITE;
+/*!40000 ALTER TABLE `users_xp_change` DISABLE KEYS */;
+
+INSERT INTO `users_xp_change` (`id`, `userId`, `target`, `targetId`, `type`, `action`, `amount`, `timeStamp`)
+VALUES
+	(1,5,'video',97,'increase','watch',100,1514549152);
+
+/*!40000 ALTER TABLE `users_xp_change` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -9931,7 +9975,10 @@ VALUES
 	(1022,106,218,1503038808),
 	(1023,67,5,1506863950),
 	(1024,108,5,1508923227),
-	(1025,109,5,1514536351);
+	(1025,109,5,1514536351),
+	(1026,109,5,1514548900),
+	(1027,97,5,1514548919),
+	(1028,97,5,1514549088);
 
 /*!40000 ALTER TABLE `vq_video_views` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -10029,7 +10076,7 @@ VALUES
 	(94,'The world in next 50 years & what we could do','','KhtNNQk8lZw',5,0,1499237986,NULL),
 	(95,'This Dolphine was dying on the shore, but this family saved his life! ','','RwTNePOrM5A',5,0,1500090742,NULL),
 	(96,'Starcraft 2 Video','','1FR48I3cTWI',5,1,1500634121,NULL),
-	(97,'Starcraft Remaster Video','Wow...','btrtPzHzbmE',5,0,1500636127,NULL),
+	(97,'Starcraft Remaster Video','Wow...','btrtPzHzbmE',5,0,1500636127,1),
 	(99,'Ultralisks! (SC2)','GREAT!','sdHfls4nl0o',5,1,1500640159,NULL),
 	(100,'DANA WHITE ON MAY VS MAC','','orUWrepmHUc',5,1,1500640235,NULL),
 	(101,'How lannister commands respect','','z_Nn2qMZXjA',5,1,1500842023,NULL),
