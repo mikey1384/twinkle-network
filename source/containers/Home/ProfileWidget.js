@@ -28,25 +28,36 @@ function ProfileWidget({
   return (
     <div
       style={{
-        paddingTop: '1em',
-        paddingBottom: '1em',
-        backgroundColor: '#fff'
+        display: 'flex',
+        width: '100%',
+        height: '100%',
+        padding: '3%',
+        background: '#fff',
+        alignItems: 'center',
+        justifyContent: 'space-between'
       }}
     >
-      <div className="col-xs-5" style={{ float: 'left' }}>
+      <div style={{ width: '45%' }}>
         <ProfilePic
-          size="8"
+          style={{
+            width: '100%',
+            height: '100%',
+            cursor: userId ? 'pointer' : 'default'
+          }}
           userId={userId}
           profilePicId={profilePicId}
-          style={{ cursor: userId ? 'pointer' : 'default' }}
           onClick={() => (userId ? history.push(`/users/${username}`) : null)}
         />
       </div>
-      <div className="col-xs-7">
+      <div
+        style={{
+          width: '45%'
+        }}
+      >
         <div
           style={{
             fontWeight: 'bold',
-            fontSize: '1.5em',
+            fontSize: '3rem',
             textOverflow: 'ellipsis',
             overflow: 'hidden'
           }}
@@ -59,7 +70,7 @@ function ProfileWidget({
         </div>
         {realName && <div style={{ color: Color.gray }}>({realName})</div>}
         {userId && (
-          <div style={{ marginTop: '0.5em' }}>
+          <div>
             <div style={{ fontWeight: 'bold' }}>
               <span>{twinkleXP || 0}</span>
               &nbsp;<span style={{ color: Color.logoGreen }}>Twin</span>
@@ -70,16 +81,11 @@ function ProfileWidget({
           </div>
         )}
         {!userId && (
-          <Button
-            className="btn btn-success"
-            style={{ marginTop: '1em' }}
-            onClick={openSigninModal}
-          >
+          <Button className="btn btn-success" onClick={openSigninModal}>
             Log In / Sign Up
           </Button>
         )}
       </div>
-      <div className="clearfix" />
     </div>
   )
 }
