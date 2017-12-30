@@ -51,52 +51,37 @@ export default class PanelComments extends Component {
       comments,
       inputTypeLabel,
       parent,
-      clickListenerState,
-      style
+      style,
+      clickListenerState
     } = this.props
     return (
       <div
-        className="row"
-        style={{ ...style, paddingBottom: '0.5em' }}
+        style={{
+          ...style,
+          width: '100%'
+        }}
         ref={ref => {
           this.PanelComments = ref
         }}
       >
-        <div className="container-fluid">
-          <CommentInputArea
-            autoFocus={autoFocus}
-            clickListenerState={clickListenerState}
-            inputTypeLabel={inputTypeLabel}
-            onSubmit={comment => onSubmit(comment, parent)}
-          />
-          {comments.length !== 0 && (
-            <div style={{ marginTop: '1.5em' }}>
-              <ul className="media-list" style={{ marginBottom: '0px' }}>
-                {this.renderComments()}
-                {loadMoreButton && (
-                  <div className="text-center" style={{ paddingTop: '1em' }}>
-                    <Button
-                      className="btn btn-success"
-                      onClick={this.loadMoreComments}
-                    >
-                      Load More
-                    </Button>
-                  </div>
-                )}
-              </ul>
+        <CommentInputArea
+          autoFocus={autoFocus}
+          clickListenerState={clickListenerState}
+          inputTypeLabel={inputTypeLabel}
+          onSubmit={comment => onSubmit(comment, parent)}
+        />
+        <div style={{ width: '100%', marginTop: '1.5rem' }}>
+          {comments.length > 0 && this.renderComments()}
+          {loadMoreButton && (
+            <div>
+              <Button
+                className="btn btn-success"
+                onClick={this.loadMoreComments}
+              >
+                Load More
+              </Button>
             </div>
           )}
-          {comments.length === 0 &&
-            loadMoreButton && (
-              <div className="text-center" style={{ paddingTop: '1em' }}>
-                <Button
-                  className="btn btn-success"
-                  onClick={this.loadMoreComments}
-                >
-                  Load More
-                </Button>
-              </div>
-            )}
         </div>
       </div>
     )
@@ -113,7 +98,6 @@ export default class PanelComments extends Component {
         parent={parent}
         comment={comment}
         isFirstComment={index === 0}
-        marginTop={index !== 0}
         key={comment.id}
         userId={userId}
         deleteCallback={this.deleteCallback}

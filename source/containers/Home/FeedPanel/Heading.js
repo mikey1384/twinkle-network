@@ -41,7 +41,12 @@ class Heading extends Component {
   }
 
   render() {
-    const { feed: { uploaderPicId }, uploader } = this.props
+    const {
+      feed: { type, uploaderPicId, rootType, rootId, timeStamp },
+      uploader,
+      rootContent
+    } = this.props
+    const { questionModalShown } = this.state
     return (
       <div
         className="panel-heading"
@@ -61,41 +66,13 @@ class Heading extends Component {
             justifyContent: 'space-between'
           }}
         >
-          {this.renderHeading()}
-        </div>
-      </div>
-    )
-  }
-
-  renderHeading = () => {
-    const {
-      feed: { type, rootType, rootId, timeStamp },
-      action,
-      rootContent,
-      uploader
-    } = this.props
-    const { questionModalShown } = this.state
-    const contentLabel = rootType === 'url' ? 'link' : rootType
-    switch (type) {
-      case 'video':
-        return (
-          <Fragment>
-            <span className="panel-title">
-              <UserLink user={uploader} /> uploaded a video:{' '}
-              <ContentLink content={rootContent} type={rootType} />{' '}
-              <small>{timeStamp ? `(${timeSince(timeStamp)})` : ''}</small>
-            </span>
-          </Fragment>
-        )
-      case 'comment':
-        return (
-          <Fragment>
-            <div className="panel-title" style={{ width: '80%' }}>
-              <UserLink user={uploader} /> {action} {this.renderTargetAction()}{' '}
-              {contentLabel}:{' '}
-              <ContentLink content={rootContent} type={rootType} />{' '}
-              <small>({timeSince(timeStamp)})</small>
-            </div>
+          <div className="panel-title" style={{width: type === 'comment' && '78%'}}>
+            {this.renderHeading()}
+            <small style={{ fontSize: '1.2rem', color: Color.gray }}>
+              {timeStamp ? `(${timeSince(timeStamp)})` : ''}
+            </small>
+          </div>
+          {type === 'comment' && (
             <div
               style={{
                 width: '20%',
@@ -105,49 +82,68 @@ class Heading extends Component {
             >
               {this.renderCornerButton()}
             </div>
-            {questionModalShown && (
-              <QuestionModal
-                onHide={() => this.setState({ questionModalShown: false })}
-                question={rootContent.content}
-                parent={{
-                  id: rootId,
-                  type: 'question',
-                  rootId,
-                  rootType
-                }}
-              />
-            )}
+          )}
+        </div>
+        {questionModalShown && (
+          <QuestionModal
+            onHide={() => this.setState({ questionModalShown: false })}
+            question={rootContent.content}
+            parent={{
+              id: rootId,
+              type: 'question',
+              rootId,
+              rootType
+            }}
+          />
+        )}
+      </div>
+    )
+  }
+
+  renderHeading = () => {
+    const {
+      feed: { type, rootType },
+      action,
+      rootContent,
+      uploader
+    } = this.props
+    const contentLabel = rootType === 'url' ? 'link' : rootType
+    switch (type) {
+      case 'video':
+        return (
+          <Fragment>
+            <UserLink user={uploader} /> uploaded a video:{' '}
+            <ContentLink content={rootContent} type={rootType} />{' '}
+          </Fragment>
+        )
+      case 'comment':
+        return (
+          <Fragment>
+            <UserLink user={uploader} /> {action} {this.renderTargetAction()}{' '}
+            {contentLabel}:{' '}
+            <ContentLink content={rootContent} type={rootType} />{' '}
           </Fragment>
         )
       case 'url':
         return (
           <Fragment>
-            <span className="panel-title">
-              <UserLink user={uploader} /> shared a link:&nbsp;
-              <ContentLink content={rootContent} type={rootType} />
-              <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
-            </span>
+            <UserLink user={uploader} /> shared a link:&nbsp;
+            <ContentLink content={rootContent} type={rootType} />{' '}
           </Fragment>
         )
       case 'question':
         return (
           <Fragment>
-            <span className="panel-title">
-              <UserLink user={uploader} /> asked a{' '}
-              <b style={{ color: Color.green }}>question</b>
-              <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
-            </span>
+            <UserLink user={uploader} /> asked a{' '}
+            <b style={{ color: Color.green }}>question</b>{' '}
           </Fragment>
         )
       case 'discussion':
         return (
           <Fragment>
-            <span className="panel-title">
-              <UserLink user={uploader} /> started a{' '}
-              <b style={{ color: Color.green }}>discussion</b> on {contentLabel}:{' '}
-              <ContentLink content={rootContent} type={rootType} />
-              <small>{timeStamp ? ` (${timeSince(timeStamp)})` : ''}</small>
-            </span>
+            <UserLink user={uploader} /> started a{' '}
+            <b style={{ color: Color.green }}>discussion</b> on {contentLabel}:{' '}
+            <ContentLink content={rootContent} type={rootType} />
           </Fragment>
         )
       default:
@@ -191,7 +187,7 @@ class Heading extends Component {
                 <div className="video-preview-thumb">
                   <img
                     alt="thumb"
-                    style={{ width: '12rem' }}
+                    style={{ width: '100%' }}
                     src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
                   />
                   {!!isStarred && (

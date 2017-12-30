@@ -67,7 +67,9 @@ class PanelReply extends Component {
 
   componentDidMount() {
     const { reply: { replyOfReply, originType }, type } = this.props
-    if (replyOfReply && type === originType) { scrollElementToCenter(this.PanelReply) }
+    if (replyOfReply && type === originType) {
+      scrollElementToCenter(this.PanelReply)
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -122,7 +124,7 @@ class PanelReply extends Component {
             />
           )}
         <ProfilePic
-          size="3.5"
+          style={{ width: '10%', height: '10%' }}
           userId={reply.userId}
           profilePicId={reply.profilePicId}
         />

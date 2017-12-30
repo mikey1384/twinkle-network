@@ -12,10 +12,11 @@ export default function CommentInputArea({
   onSubmit,
   inputTypeLabel,
   clickListenerState,
-  autoFocus
+  autoFocus,
+  ...props
 }) {
   return (
-    <div style={{ paddingTop: '1em' }}>
+    <div {...props}>
       <InputArea
         clickListenerState={clickListenerState}
         autoFocus={autoFocus}

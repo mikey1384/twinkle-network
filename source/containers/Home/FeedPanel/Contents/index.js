@@ -24,7 +24,7 @@ import VideoPlayer from 'components/VideoPlayer'
 import PanelComments from 'components/PanelComments'
 import MainContent from './MainContent'
 import TargetContent from './TargetContent'
-import { Color } from 'constants/css'
+import Style from '../Style'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 
@@ -165,7 +165,7 @@ class Contents extends Component {
               />,
               <Button
                 key="commentButton"
-                style={{ marginLeft: '0.5em' }}
+                style={{ marginLeft: '0.5rem' }}
                 className="btn btn-warning btn-sm"
                 onClick={this.onCommentButtonClick}
               >
@@ -215,9 +215,9 @@ class Contents extends Component {
             )}
             {canEdit && (
               <DropdownButton
-                noAlign
+                alignLeft
                 shape="button"
-                style={{ marginLeft: '0.5em' }}
+                style={{ marginLeft: '0.5rem', display: 'inline-block' }}
                 size={type !== 'discussion' ? 'sm' : null}
                 text="Edit"
                 menuProps={[
@@ -232,23 +232,18 @@ class Contents extends Component {
                 ]}
               />
             )}
-            <div style={{ marginTop: '1em' }}>
-              <Likers
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 'bold',
-                  color: Color.green
-                }}
-                userId={myId}
-                likes={contentLikers}
-                onLinkClick={() => this.setState({ userListModalShown: true })}
-              />
-            </div>
+            <Likers
+              style={Style().likers}
+              userId={myId}
+              likes={contentLikers}
+              onLinkClick={() => this.setState({ userListModalShown: true })}
+            />
           </div>
         )}
         {commentsShown && (
           <PanelComments
             autoFocus
+            style={{ marginTop: '1rem' }}
             clickListenerState={clickListenerState}
             inputTypeLabel={
               type === 'comment'

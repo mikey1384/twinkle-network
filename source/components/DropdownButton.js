@@ -5,9 +5,8 @@ import Button from './Button'
 
 class DropdownButton extends Component {
   static propTypes = {
-    align: PropTypes.string,
+    alignLeft: PropTypes.bool,
     icon: PropTypes.string,
-    noAlign: PropTypes.bool,
     menuProps: PropTypes.array.isRequired,
     opacity: PropTypes.number,
     style: PropTypes.object,
@@ -30,14 +29,13 @@ class DropdownButton extends Component {
   render() {
     const { menuDisplayed } = this.state
     const {
+      alignLeft,
       opacity = 1,
       style,
       shape,
       size,
       icon = 'pencil',
-      text = '',
-      align = 'right',
-      noAlign
+      text = ''
     } = this.props
     const buttonShape =
       shape === 'button'
@@ -45,10 +43,9 @@ class DropdownButton extends Component {
         : 'dropdown-toggle'
     return (
       <div
-        className={`dropdown${!noAlign ? ` pull-${align}` : ''}`}
+        className={`dropdown ${!alignLeft && 'pull-right'}`}
         style={{
           ...style,
-          display: 'inline-block',
           opacity: menuDisplayed ? 1 : opacity
         }}
       >

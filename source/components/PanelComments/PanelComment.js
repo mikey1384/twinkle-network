@@ -39,7 +39,6 @@ class PanelComment extends Component {
     isCreator: PropTypes.bool,
     isFirstComment: PropTypes.bool,
     lastDeletedCommentIndex: PropTypes.number,
-    marginTop: PropTypes.bool,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
@@ -100,23 +99,25 @@ class PanelComment extends Component {
       if (comment.likes[i].userId === userId) userLikedThis = true
     }
     return (
-      <li
-        className="media"
-        style={{ marginTop: this.props.marginTop && '1em' }}
+      <div
+        style={{ display: 'flex', width: '100%', flexDirection: 'column' }}
         ref={ref => {
           this.PanelComment = ref
         }}
       >
         {canEdit &&
           !onEdit && (
-            <div className="row">
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row-reverse'
+              }}
+            >
               <DropdownButton
+                style={{ position: 'absolute' }}
                 shape="button"
                 icon="pencil"
-                style={{
-                  position: 'absolute',
-                  right: type === 'videoDiscussionPanel' ? '8%' : '5.5%'
-                }}
                 opacity={0.8}
                 menuProps={[
                   {
@@ -131,112 +132,101 @@ class PanelComment extends Component {
               />
             </div>
           )}
-        <ProfilePic
-          size="3.5"
-          userId={comment.userId}
-          profilePicId={comment.profilePicId}
-        />
-        <div className="media-body">
-          <h5 className="media-heading">
-            <UsernameText
-              user={{
-                name: comment.username,
-                id: comment.userId
-              }}
-            />{' '}
-            <small>&nbsp;{timeSince(comment.timeStamp)}</small>
-          </h5>
-          <div
-            style={{
-              maxWidth: onEdit
-                ? '100vw'
-                : type === 'videoDiscussionPanel' ? '50vw' : '40vw'
-            }}
-          >
-            {comment.targetUserId &&
-              !!comment.replyId &&
-              comment.replyId !== parent.id && (
-                <span style={{ color: Color.blue }}>
-                  to:{' '}
-                  <UsernameText
-                    user={{
-                      name: comment.targetUserName,
-                      id: comment.targetUserId
-                    }}
-                  />
-                </span>
-              )}
-            {onEdit ? (
-              <EditTextArea
-                autoFocus
-                text={comment.content}
-                onCancel={() => this.setState({ onEdit: false })}
-                onEditDone={this.onEditDone}
-              />
-            ) : (
-              <div>
-                <LongText
-                  style={{
-                    paddingBottom: '0.8em',
-                    wordBreak: 'break-word'
-                  }}
-                >
-                  {comment.content}
-                </LongText>
-                <div className="row flexbox-container">
-                  <div className="pull-left" style={{ paddingLeft: '1em' }}>
-                    <LikeButton
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                      small
-                    />
-                    <Button
-                      style={{ marginLeft: '0.5em' }}
-                      className="btn btn-warning btn-sm"
-                      onClick={this.onReplyButtonClick}
-                    >
-                      <span className="glyphicon glyphicon-comment" /> Reply
-                    </Button>
-                  </div>
-                  <small>
-                    <Likers
-                      className="pull-left"
-                      style={{
-                        fontWeight: 'bold',
-                        marginLeft: '0.8em',
-                        color: Color.green,
-                        marginTop: '1em'
+        <div style={{ display: 'flex', width: '100%' }}>
+          <ProfilePic
+            style={{ width: '8%', height: '8%' }}
+            userId={comment.userId}
+            profilePicId={comment.profilePicId}
+          />
+          <div style={{ width: '80%', marginLeft: '1.5rem' }}>
+            <div>
+              <UsernameText
+                user={{
+                  name: comment.username,
+                  id: comment.userId
+                }}
+              />{' '}
+              <small>&nbsp;{timeSince(comment.timeStamp)}</small>
+            </div>
+            <div>
+              {comment.targetUserId &&
+                !!comment.replyId &&
+                comment.replyId !== parent.id && (
+                  <span style={{ color: Color.blue }}>
+                    to:{' '}
+                    <UsernameText
+                      user={{
+                        name: comment.targetUserName,
+                        id: comment.targetUserId
                       }}
-                      userId={userId}
-                      likes={comment.likes}
-                      onLinkClick={() =>
-                        this.setState({ userListModalShown: true })
-                      }
                     />
-                  </small>
+                  </span>
+                )}
+              {onEdit ? (
+                <EditTextArea
+                  autoFocus
+                  text={comment.content}
+                  onCancel={() => this.setState({ onEdit: false })}
+                  onEditDone={this.onEditDone}
+                />
+              ) : (
+                <div>
+                  <LongText style={{ wordBreak: 'break-word' }}>
+                    {comment.content}
+                  </LongText>
+                  <div>
+                    <div>
+                      <LikeButton
+                        onClick={this.onLikeClick}
+                        liked={userLikedThis}
+                        small
+                      />
+                      <Button
+                        className="btn btn-warning btn-sm"
+                        onClick={this.onReplyButtonClick}
+                      >
+                        <span className="glyphicon glyphicon-comment" /> Reply
+                      </Button>
+                    </div>
+                    <small>
+                      <Likers
+                        style={{
+                          fontWeight: 'bold',
+                          marginLeft: '0.8em',
+                          color: Color.green,
+                          marginTop: '1em'
+                        }}
+                        userId={userId}
+                        likes={comment.likes}
+                        onLinkClick={() =>
+                          this.setState({ userListModalShown: true })
+                        }
+                      />
+                    </small>
+                  </div>
                 </div>
-              </div>
+              )}
+            </div>
+            <PanelReplies
+              userId={userId}
+              replies={comment.replies}
+              comment={comment}
+              parent={parent}
+              type={type}
+              onDelete={onDelete}
+              onLoadMoreReplies={onLoadMoreReplies}
+              onLikeClick={onLikeClick}
+              onEditDone={onEditDone}
+              onReplySubmit={onReplySubmit}
+            />
+            {replyInputShown && (
+              <ReplyInputArea
+                clickListenerState={clickListenerState}
+                onSubmit={this.onReplySubmit}
+                numReplies={comment.replies.length}
+              />
             )}
           </div>
-          <PanelReplies
-            userId={userId}
-            replies={comment.replies}
-            comment={comment}
-            parent={parent}
-            type={type}
-            onDelete={onDelete}
-            onLoadMoreReplies={onLoadMoreReplies}
-            onLikeClick={onLikeClick}
-            onEditDone={onEditDone}
-            onReplySubmit={onReplySubmit}
-          />
-          {replyInputShown && (
-            <ReplyInputArea
-              clickListenerState={clickListenerState}
-              onSubmit={this.onReplySubmit}
-              numReplies={comment.replies.length}
-            />
-          )}
         </div>
         {userListModalShown && (
           <UserListModal
@@ -253,7 +243,7 @@ class PanelComment extends Component {
             onConfirm={this.onDelete}
           />
         )}
-      </li>
+      </div>
     )
   }
 
