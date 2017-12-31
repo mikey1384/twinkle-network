@@ -63,7 +63,7 @@ class People extends Component {
           onChange={this.onPeopleSearch}
           value={searchText}
         />
-        <div style={{ marginTop: '1em' }}>
+        <div style={{ marginTop: '1rem' }}>
           {!loaded && <Loading text="Loading Users..." />}
           {loaded &&
             !searching &&

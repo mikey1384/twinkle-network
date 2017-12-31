@@ -64,133 +64,140 @@ class ProfilePanel extends Component {
     return (
       <div
         className="panel panel-default"
-        style={{ borderTop: '#e7e7e7 1px solid' }}
+        style={{
+          borderTop: '#e7e7e7 1px solid',
+          padding: '2rem'
+        }}
       >
-        <div className="panel-body">
-          <div className="media" style={{ height: 'auto' }}>
+        <div
+          style={{
+            display: 'flex',
+            width: '100%'
+          }}
+        >
+          <div style={{ width: '33%', height: '33%', display: 'flex' }}>
             <ProfilePic
+              style={{ width: '87%', height: '87%' }}
               userId={profile.id}
               profilePicId={profile.profilePicId}
-              size="13"
             />
-            <div
-              className="media-body"
-              style={{ paddingLeft: '1em', paddingRight: '5em' }}
-            >
-              <h2 className="media-heading">
-                {profile.username} <small>{`(${profile.realName})`}</small>
-              </h2>
-              {userId !== profile.id &&
-                !!profile.online && (
-                  <p style={{ color: Color.green, fontWeight: 'bold' }}>
-                    (online)
-                  </p>
-                )}
-              {(!!profileFirstRow ||
-                !!profileSecondRow ||
-                !!profileThirdRow) && (
-                <ul
-                  className="col-md-8"
+          </div>
+          <div
+            style={{ width: '70%', display: 'flex', flexDirection: 'column' }}
+          >
+            <div>
+              <span style={{ fontSize: '3.5rem', fontWeight: 'bold' }}>
+                {profile.username}
+              </span>{' '}
+              <span style={{ fontSize: '1.5rem', color: Color.gray }}>{`(${
+                profile.realName
+              })`}</span>
+            </div>
+            {userId !== profile.id &&
+              !!profile.online && (
+                <p
                   style={{
-                    paddingLeft: '1em',
-                    wordBreak: 'break-word',
-                    minWidth: '30vw'
+                    color: Color.green,
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold'
                   }}
                 >
-                  {!!profileFirstRow && (
-                    <li
-                      style={{ marginBottom: '0px' }}
-                      dangerouslySetInnerHTML={{
-                        __html: processedStringWithURL(profileFirstRow)
-                      }}
-                    />
-                  )}
-                  {!!profileSecondRow && (
-                    <li
-                      style={{ marginBottom: '0px' }}
-                      dangerouslySetInnerHTML={{
-                        __html: processedStringWithURL(profileSecondRow)
-                      }}
-                    />
-                  )}
-                  {!!profileThirdRow && (
-                    <li
-                      style={{ marginBottom: '0px' }}
-                      dangerouslySetInnerHTML={{
-                        __html: processedStringWithURL(profileThirdRow)
-                      }}
-                    />
-                  )}
-                </ul>
+                  (online)
+                </p>
               )}
-              <div>
-                {!profileFirstRow &&
-                  !profileSecondRow &&
-                  !profileThirdRow &&
-                  userId === profile.id && (
-                    <p>
-                      **Add your bio so that your Twinkle friends can know you
-                      better
-                    </p>
-                  )}
-                {canEdit && (
-                  <div className="col-xs-12">
+            {(!!profileFirstRow || !!profileSecondRow || !!profileThirdRow) && (
+              <ul
+                style={{
+                  wordBreak: 'break-word',
+                  paddingLeft: '2rem'
+                }}
+              >
+                {!!profileFirstRow && (
+                  <li
+                    dangerouslySetInnerHTML={{
+                      __html: processedStringWithURL(profileFirstRow)
+                    }}
+                  />
+                )}
+                {!!profileSecondRow && (
+                  <li
+                    dangerouslySetInnerHTML={{
+                      __html: processedStringWithURL(profileSecondRow)
+                    }}
+                  />
+                )}
+                {!!profileThirdRow && (
+                  <li
+                    dangerouslySetInnerHTML={{
+                      __html: processedStringWithURL(profileThirdRow)
+                    }}
+                  />
+                )}
+              </ul>
+            )}
+            <div>
+              {!profileFirstRow &&
+                !profileSecondRow &&
+                !profileThirdRow &&
+                userId === profile.id && (
+                  <p>
+                    **Add your bio so that your Twinkle friends can know you
+                    better
+                  </p>
+                )}
+              {canEdit && (
+                <div style={{ marginTop: '1.5rem' }}>
+                  <Button
+                    className="btn btn-sm btn-default"
+                    onClick={() => this.setState({ bioEditModalShown: true })}
+                  >
+                    Edit Bio
+                  </Button>
+                  <br />
+                  <Button
+                    className="btn btn-sm btn-default"
+                    style={{ marginTop: '0.5rem' }}
+                    onClick={this.onChangeProfilePictureClick}
+                  >
+                    Change Profile Picture
+                  </Button>
+                </div>
+              )}
+              {expandable &&
+                userId !== profile.id && (
+                  <div style={{ marginTop: '1.5rem' }}>
                     <Button
-                      className="btn btn-sm btn-default"
-                      style={{ marginTop: '0.5em' }}
-                      onClick={() => this.setState({ bioEditModalShown: true })}
+                      className="btn btn-lg btn-info"
+                      onClick={() => history.push(`/users/${profile.username}`)}
                     >
-                      Edit Bio
+                      View Profile
                     </Button>
-                    <br />
                     <Button
-                      className="btn btn-sm btn-default"
-                      style={{ marginTop: '0.5em' }}
-                      onClick={this.onChangeProfilePictureClick}
+                      style={{ marginLeft: '0.5rem' }}
+                      className="btn btn-lg btn-success"
+                      onClick={() =>
+                        openDirectMessageChannel(
+                          { userId },
+                          { userId: profile.id, username: profile.username },
+                          false
+                        )
+                      }
                     >
-                      Change Profile Picture
+                      Message
                     </Button>
                   </div>
                 )}
-                {expandable &&
-                  userId !== profile.id && (
-                    <div className="col-xs-12" style={{ paddingLeft: '0px' }}>
-                      <Button
-                        className="btn btn-lg btn-info"
-                        style={{ marginTop: '0.5em' }}
-                        onClick={() =>
-                          history.push(`/users/${profile.username}`)
-                        }
-                      >
-                        View Profile
-                      </Button>
-                      <Button
-                        className="btn btn-lg btn-success"
-                        style={{ marginTop: '0.5em', marginLeft: '0.5em' }}
-                        onClick={() =>
-                          openDirectMessageChannel(
-                            { userId },
-                            { userId: profile.id, username: profile.username },
-                            false
-                          )
-                        }
-                      >
-                        Message
-                      </Button>
-                    </div>
-                  )}
-              </div>
             </div>
-            <input
-              ref={ref => {
-                this.fileInput = ref
-              }}
-              style={{ display: 'none' }}
-              type="file"
-              onChange={this.handlePicture}
-              accept="image/*"
-            />
           </div>
+          <input
+            ref={ref => {
+              this.fileInput = ref
+            }}
+            style={{ display: 'none' }}
+            type="file"
+            onChange={this.handlePicture}
+            accept="image/*"
+          />
         </div>
         {bioEditModalShown && (
           <BioEditModal
@@ -238,7 +245,9 @@ class ProfilePanel extends Component {
     const reader = new FileReader()
     const maxSize = 5000
     const file = event.target.files[0]
-    if (file.size / 1000 > maxSize) { return this.setState({ alertModalShown: true }) }
+    if (file.size / 1000 > maxSize) {
+      return this.setState({ alertModalShown: true })
+    }
     reader.onload = upload => {
       this.setState({
         imageEditModalShown: true,

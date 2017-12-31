@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import LikeButton from 'components/LikeButton'
 import StarButton from 'components/StarButton'
 import Button from 'components/Button'
@@ -157,31 +157,33 @@ class Contents extends Component {
           />
         </div>
         {!isEditing && (
-          <div style={{ paddingTop: type === 'video' ? '2em' : '1.5em' }}>
-            {type !== 'discussion' && [
-              <LikeButton
-                key="likeButton"
-                onClick={this.onLikeClick}
-                liked={userLikedThis}
-                small
-              />,
-              <Button
-                key="commentButton"
-                style={{ marginLeft: '0.5rem' }}
-                className="btn btn-warning btn-sm"
-                onClick={this.onCommentButtonClick}
-              >
-                <span className="glyphicon glyphicon-comment" />&nbsp;
-                {type === 'video' || type === 'url'
-                  ? 'Comment'
-                  : type === 'question' ? 'Answer' : 'Reply'}&nbsp;
-                {numChildComments > 0 && !commentsShown
-                  ? `(${numChildComments})`
-                  : numChildReplies > 0 && !commentsShown
-                    ? `(${numChildReplies})`
-                    : ''}
-              </Button>
-            ]}
+          <div style={{ marginTop: '3rem' }}>
+            {type !== 'discussion' && (
+              <Fragment>
+                <LikeButton
+                  key="likeButton"
+                  onClick={this.onLikeClick}
+                  liked={userLikedThis}
+                  small
+                />
+                <Button
+                  key="commentButton"
+                  style={{ marginLeft: '0.5rem' }}
+                  className="btn btn-warning btn-sm"
+                  onClick={this.onCommentButtonClick}
+                >
+                  <span className="glyphicon glyphicon-comment" />&nbsp;
+                  {type === 'video' || type === 'url'
+                    ? 'Comment'
+                    : type === 'question' ? 'Answer' : 'Reply'}&nbsp;
+                  {numChildComments > 0 && !commentsShown
+                    ? `(${numChildComments})`
+                    : numChildReplies > 0 && !commentsShown
+                      ? `(${numChildReplies})`
+                      : ''}
+                </Button>
+              </Fragment>
+            )}
             {isCreator &&
               type === 'video' && (
                 <StarButton
@@ -315,19 +317,12 @@ class Contents extends Component {
   }
 
   onLikeClick = () => {
-    const { feed: { contentId, type, rootType, commentId }, showFeedComments } = this.props
+    const {
+      feed: { contentId, type, rootType, commentId },
+      showFeedComments
+    } = this.props
     const { commentsShown } = this.state
     const isReply = !!commentId
-    if (!commentsShown) {
-      this.setState({ commentsShown: true })
-      showFeedComments({
-        rootType,
-        type,
-        contentId,
-        commentLength: 0,
-        isReply
-      })
-    }
     switch (type) {
       case 'comment':
         this.props.onLikeCommentClick(contentId)
@@ -337,6 +332,16 @@ class Contents extends Component {
         break
       default:
         this.props.onLikeContentClick(contentId, rootType)
+    }
+    if (!commentsShown) {
+      this.setState({ commentsShown: true })
+      showFeedComments({
+        rootType,
+        type,
+        contentId,
+        commentLength: 0,
+        isReply
+      })
     }
   }
 
