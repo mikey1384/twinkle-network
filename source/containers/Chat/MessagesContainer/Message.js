@@ -68,19 +68,17 @@ class Message extends Component {
     const canEdit = myId === userId || isCreator
     const { onEdit, confirmModalShown, subjectMsgsModalShown } = this.state
     return (
-      <div
-        className="media"
-        style={{
-          minHeight: '64px',
-          height: 'auto',
-          width: '100%'
-        }}
-      >
-        <ProfilePic size="4" userId={userId} profilePicId={profilePicId} />
+      <div style={{ display: 'flex', width: '98%', padding: '1rem 0' }}>
+        <div style={{ width: '8%', height: '8%' }}>
+          <ProfilePic
+            style={{ width: '80%', height: '80%' }}
+            userId={userId}
+            profilePicId={profilePicId}
+          />
+        </div>
         <div
-          className="media-body"
           style={{
-            width: '100%',
+            width: '92%',
             wordBreak: 'break-word'
           }}
         >
@@ -91,10 +89,6 @@ class Message extends Component {
               <DropdownButton
                 shape="button"
                 icon="pencil"
-                style={{
-                  position: 'absolute',
-                  right: '2%'
-                }}
                 opacity={0.8}
                 menuProps={[
                   {
@@ -108,28 +102,30 @@ class Message extends Component {
                 ]}
               />
             )}
-          <h5 className="media-heading" style={{ position: 'absolute' }}>
+          <div>
             <UsernameText
+              style={{ fontSize: '1.8rem' }}
               user={{
                 id: userId,
                 name: username
               }}
             />{' '}
-            <small>{moment.unix(timeStamp).format('LLL')}</small>
-          </h5>
-          <div style={{ paddingTop: '1.5em' }}>
+            <span style={{ fontSize: '1rem', color: Color.gray }}>
+              {moment.unix(timeStamp).format('LLL')}
+            </span>
+          </div>
+          <div>
             {onEdit ? (
               <EditTextArea
                 autoFocus
                 rows={2}
-                marginTop="0px"
                 text={content}
                 onCancel={() => this.setState({ onEdit: false })}
                 onEditDone={this.onEditDone}
               />
             ) : (
               <div>
-                <div>
+                <div style={{ marginTop: '0.5rem' }}>
                   {this.renderPrefix()}
                   <span
                     style={style}
@@ -141,7 +137,7 @@ class Message extends Component {
                 {!!isReloadedSubject &&
                   !!numMsgs &&
                   numMsgs > 0 && (
-                    <div style={{ marginTop: '0.5em' }}>
+                    <div style={{ marginTop: '1rem' }}>
                       <Button
                         className="btn btn-sm btn-success"
                         onClick={() =>
@@ -190,12 +186,12 @@ class Message extends Component {
     const { message: { isSubject, isReloadedSubject } } = this.props
     let prefix = ''
     if (isSubject) {
- prefix = (
+      prefix = (
         <span style={{ fontWeight: 'bold', color: Color.green }}>
           Subject:{' '}
         </span>
       )
-}
+    }
     if (isReloadedSubject) {
       prefix = (
         <span style={{ fontWeight: 'bold', color: Color.green }}>

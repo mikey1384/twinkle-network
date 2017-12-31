@@ -115,13 +115,13 @@ export default class MessagesContainer extends Component {
               this.content = ref
             }}
             style={{
-              paddingTop: currentChannelId === 2 ? '4.5em' : '0px'
+              paddingTop: currentChannelId === 2 ? '4.5rem' : '0px'
             }}
           >
             {loadMoreButton ? (
               <div
                 style={{
-                  marginBottom: '2em',
+                  marginBottom: '2rem',
                   textAlign: 'center'
                 }}
               >

@@ -66,7 +66,7 @@ class Stories extends Component {
     const { clearingFeeds, loadingMore } = this.state
 
     return (
-      <div>
+      <div style={{ paddingBottom: '1rem' }}>
         {this.renderFilterBar()}
         <InputPanel />
         {!loaded && <Loading text="Loading Feeds..." />}
