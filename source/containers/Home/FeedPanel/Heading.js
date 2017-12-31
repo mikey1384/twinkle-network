@@ -72,7 +72,7 @@ class Heading extends Component {
               width: type === 'comment' && rootType !== 'url' ? '78%' : '100%'
             }}
           >
-            {this.renderHeading()}
+            {this.renderHeading()}{' '}
             <small style={{ fontSize: '1.2rem', color: Color.gray }}>
               {timeStamp ? `(${timeSince(timeStamp)})` : ''}
             </small>
