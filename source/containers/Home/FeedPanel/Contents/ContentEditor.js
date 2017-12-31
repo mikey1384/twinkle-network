@@ -101,10 +101,10 @@ class ContentEditor extends Component {
                 className="form-control"
                 minRows={4}
                 onChange={event =>
-                  this.setState({
+                  this.setState(state => ({
                     [type === 'comment' ? 'editedComment' : 'editedDescription']: event.target.value,
-                    buttonDisabled: stringIsEmpty(event.target.value)
-                  })
+                    buttonDisabled: type === 'comment' ? stringIsEmpty(event.target.value) : state.buttonDisabled
+                  }))
                 }
                 placeholder={
                   edit[type === 'comment' ? 'comment' : 'description']
