@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
+import { Style } from '../../Style'
 import { Color } from 'constants/css'
 import moment from 'moment'
 
@@ -22,33 +23,29 @@ export default function Message({
   isReloadedSubject
 }) {
   return (
-    <div
-      className="media"
-      style={{
-        minHeight: '50px',
-        height: 'auto',
-        width: '100%'
-      }}
-    >
-      <ProfilePic size="4" userId={userId} profilePicId={profilePicId} />
-      <div
-        className="media-body"
-        style={{
-          width: '100%',
-          wordBreak: 'break-word'
-        }}
-      >
-        <h5 className="media-heading" style={{ position: 'absolute' }}>
+    <div style={Style.container}>
+      <div style={Style.profilePicWrapper}>
+        <ProfilePic
+          style={Style.profilePic}
+          userId={userId}
+          profilePicId={profilePicId}
+        />
+      </div>
+      <div style={Style.contentWrapper}>
+        <div>
           <UsernameText
+            style={Style.usernameText}
             user={{
               id: userId,
               name: username
             }}
           />{' '}
-          <small>{moment.unix(timeStamp).format('LLL')}</small>
-        </h5>
-        <div style={{ paddingTop: '1.5em' }}>
-          <div>
+          <span style={Style.timeStamp}>
+            {moment.unix(timeStamp).format('LLL')}
+          </span>
+        </div>
+        <div>
+          <div style={Style.messageWrapper}>
             <span
               style={{
                 color: isReloadedSubject && Color.green,
