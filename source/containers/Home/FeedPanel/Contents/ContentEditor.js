@@ -100,12 +100,16 @@ class ContentEditor extends Component {
                 autoFocus={type === 'comment'}
                 className="form-control"
                 minRows={4}
-                onChange={event =>
-                  this.setState({
-                    [type === 'comment' ? 'editedComment' : 'editedDescription']: event.target.value,
-                    buttonDisabled: stringIsEmpty(event.target.value)
-                  })
-                }
+                onChange={event => {
+                  const { value } = event.target
+                  this.setState(state => ({
+                    [type === 'comment' ? 'editedComment' : 'editedDescription']: value,
+                    buttonDisabled:
+                      type === 'comment'
+                        ? stringIsEmpty(value)
+                        : state.buttonDisabled
+                  }))
+                }}
                 placeholder={
                   edit[type === 'comment' ? 'comment' : 'description']
                 }
