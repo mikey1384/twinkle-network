@@ -49,6 +49,7 @@ class Contents extends Component {
   }
 
   state = {
+    autoFocusWhenCommentShown: false,
     isEditing: false,
     userListModalShown: false,
     clickListenerState: false,
@@ -98,6 +99,7 @@ class Contents extends Component {
       onSubmit
     } = this.props
     const {
+      autoFocusWhenCommentShown,
       userListModalShown,
       clickListenerState,
       confirmModalShown,
@@ -242,7 +244,7 @@ class Contents extends Component {
         )}
         {commentsShown && (
           <PanelComments
-            autoFocus
+            autoFocus={autoFocusWhenCommentShown}
             style={{ marginTop: '1rem' }}
             clickListenerState={clickListenerState}
             inputTypeLabel={
@@ -300,7 +302,7 @@ class Contents extends Component {
     const { clickListenerState, commentsShown } = this.state
     const isReply = !!commentId
     if (!commentsShown) {
-      this.setState({ commentsShown: true })
+      this.setState({ commentsShown: true, autoFocusWhenCommentShown: true })
       return showFeedComments({
         rootType,
         type,
@@ -313,14 +315,28 @@ class Contents extends Component {
   }
 
   onLikeClick = () => {
-    const { feed: { contentId, type, rootType } } = this.props
+    const { feed: { contentId, type, rootType, commentId }, showFeedComments } = this.props
+    const { commentsShown } = this.state
+    const isReply = !!commentId
+    if (!commentsShown) {
+      this.setState({ commentsShown: true })
+      showFeedComments({
+        rootType,
+        type,
+        contentId,
+        commentLength: 0,
+        isReply
+      })
+    }
     switch (type) {
       case 'comment':
-        return this.props.onLikeCommentClick(contentId)
+        this.props.onLikeCommentClick(contentId)
+        break
       case 'question':
-        return this.props.onLikeQuestionClick(contentId)
+        this.props.onLikeQuestionClick(contentId)
+        break
       default:
-        return this.props.onLikeContentClick(contentId, rootType)
+        this.props.onLikeContentClick(contentId, rootType)
     }
   }
 
