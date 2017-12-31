@@ -66,23 +66,29 @@ class Heading extends Component {
             justifyContent: 'space-between'
           }}
         >
-          <div className="panel-title" style={{width: (type === 'comment' && rootType !== 'url') ? '78%' : '100%'}}>
+          <div
+            className="panel-title"
+            style={{
+              width: type === 'comment' && rootType !== 'url' ? '78%' : '100%'
+            }}
+          >
             {this.renderHeading()}
             <small style={{ fontSize: '1.2rem', color: Color.gray }}>
               {timeStamp ? `(${timeSince(timeStamp)})` : ''}
             </small>
           </div>
-          {(type === 'comment' && rootType !== 'url') && (
-            <div
-              style={{
-                width: '20%',
-                display: 'flex',
-                justifyContent: 'flex-end'
-              }}
-            >
-              {this.renderCornerButton()}
-            </div>
-          )}
+          {type === 'comment' &&
+            rootType !== 'url' && (
+              <div
+                style={{
+                  width: '20%',
+                  display: 'flex',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                {this.renderCornerButton()}
+              </div>
+            )}
         </div>
         {questionModalShown && (
           <QuestionModal
