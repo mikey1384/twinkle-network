@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { timeSince } from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/DropdownButton'
 import Likers from 'components/Likers'
-import { Color } from 'constants/css'
 import UserListModal from 'components/Modals/UserListModal'
 import PanelReplies from './PanelReplies'
 import ReplyInputArea from './PanelReplies/ReplyInputArea'
@@ -15,6 +14,7 @@ import LikeButton from 'components/LikeButton'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
+import { Style } from './Style'
 import { connect } from 'react-redux'
 
 class PanelComment extends Component {
@@ -100,22 +100,16 @@ class PanelComment extends Component {
     }
     return (
       <div
-        style={{ display: 'flex', width: '100%', flexDirection: 'column' }}
+        style={Style.container}
         ref={ref => {
           this.PanelComment = ref
         }}
       >
         {canEdit &&
           !onEdit && (
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'row-reverse'
-              }}
-            >
+            <div style={Style.dropdownWrapper}>
               <DropdownButton
-                style={{ position: 'absolute' }}
+                style={Style.dropdownButton}
                 shape="button"
                 icon="pencil"
                 opacity={0.8}
@@ -132,27 +126,30 @@ class PanelComment extends Component {
               />
             </div>
           )}
-        <div style={{ display: 'flex', width: '100%' }}>
+        <div style={Style.contentWrapper}>
           <ProfilePic
-            style={{ width: '8%', height: '8%' }}
+            style={Style.profilePic}
             userId={comment.userId}
             profilePicId={comment.profilePicId}
           />
-          <div style={{ width: '80%', marginLeft: '1.5rem' }}>
+          <div style={Style.innerContentWrapper}>
             <div>
               <UsernameText
+                style={Style.usernameText}
                 user={{
                   name: comment.username,
                   id: comment.userId
                 }}
               />{' '}
-              <small>&nbsp;{timeSince(comment.timeStamp)}</small>
+              <small style={Style.timeStamp}>
+                &nbsp;{timeSince(comment.timeStamp)}
+              </small>
             </div>
             <div>
               {comment.targetUserId &&
                 !!comment.replyId &&
                 comment.replyId !== parent.id && (
-                  <span style={{ color: Color.blue }}>
+                  <span style={Style.toText}>
                     to:{' '}
                     <UsernameText
                       user={{
@@ -171,7 +168,9 @@ class PanelComment extends Component {
                 />
               ) : (
                 <div>
-                  <LongText style={{ wordBreak: 'break-word' }}>
+                  <LongText
+                    style={Style.longText}
+                  >
                     {comment.content}
                   </LongText>
                   <div>
@@ -182,6 +181,7 @@ class PanelComment extends Component {
                         small
                       />
                       <Button
+                        style={Style.replyButton}
                         className="btn btn-warning btn-sm"
                         onClick={this.onReplyButtonClick}
                       >
@@ -190,12 +190,7 @@ class PanelComment extends Component {
                     </div>
                     <small>
                       <Likers
-                        style={{
-                          fontWeight: 'bold',
-                          marginLeft: '0.8em',
-                          color: Color.green,
-                          marginTop: '1em'
-                        }}
+                        style={Style.likers}
                         userId={userId}
                         likes={comment.likes}
                         onLinkClick={() =>

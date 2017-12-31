@@ -24,15 +24,10 @@ export default class PanelComments extends Component {
     userId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      lastDeletedCommentIndex: null,
-      deleteListenerToggle: false,
-      deletedFirstComment: false
-    }
-    this.loadMoreComments = this.loadMoreComments.bind(this)
-    this.deleteCallback = this.deleteCallback.bind(this)
+  state = {
+    lastDeletedCommentIndex: null,
+    deleteListenerToggle: false,
+    deletedFirstComment: false
   }
 
   componentDidUpdate(prevProps) {
@@ -87,7 +82,7 @@ export default class PanelComments extends Component {
     )
   }
 
-  renderComments() {
+  renderComments = () => {
     const { comments, userId, parent, commentActions, type } = this.props
     const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     return comments.map((comment, index) => (
@@ -107,14 +102,14 @@ export default class PanelComments extends Component {
     ))
   }
 
-  deleteCallback(index, isFirstComment) {
+  deleteCallback = (index, isFirstComment) => {
     this.setState({
       lastDeletedCommentIndex: index,
       deletedFirstComment: isFirstComment
     })
   }
 
-  loadMoreComments() {
+  loadMoreComments = () => {
     const { comments, parent, loadMoreComments } = this.props
     const lastCommentId = comments[comments.length - 1]
       ? comments[comments.length - 1].id

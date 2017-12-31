@@ -8,12 +8,12 @@ import UserListModal from 'components/Modals/UserListModal'
 import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
-import { Color } from 'constants/css'
 import LikeButton from 'components/LikeButton'
 import ReplyInputArea from './ReplyInputArea'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
+import { Style } from '../Style'
 import { connect } from 'react-redux'
 
 class PanelReply extends Component {
@@ -96,123 +96,113 @@ class PanelReply extends Component {
     const canEdit = reply.userId === userId || isCreator
     return (
       <div
-        className="media"
+        style={Style.container}
         ref={ref => {
           this.PanelReply = ref
         }}
       >
         {canEdit &&
           !onEdit && (
-            <DropdownButton
-              shape="button"
-              icon="pencil"
-              style={{
-                position: 'absolute',
-                right: type === 'videoDiscussionPanel' ? '8%' : '5.5%'
-              }}
-              opacity={0.8}
-              menuProps={[
-                {
-                  label: 'Edit',
-                  onClick: () => this.setState({ onEdit: true })
-                },
-                {
-                  label: 'Remove',
-                  onClick: () => this.setState({ confirmModalShown: true })
-                }
-              ]}
-            />
-          )}
-        <ProfilePic
-          style={{ width: '10%', height: '10%' }}
-          userId={reply.userId}
-          profilePicId={reply.profilePicId}
-        />
-        <div className="media-body">
-          <h5 className="media-heading">
-            <UsernameText
-              user={{
-                name: reply.username,
-                id: reply.userId
-              }}
-            />{' '}
-            <small>&nbsp;{timeSince(reply.timeStamp)}</small>
-          </h5>
-          <div
-            style={{
-              maxWidth: onEdit
-                ? '80vw'
-                : type === 'videoDiscussionPanel' ? '47vw' : '37vw'
-            }}
-          >
-            {reply.targetUserId &&
-              !!reply.replyId &&
-              reply.replyId !== comment.id && (
-                <span style={{ color: Color.blue }}>
-                  to:{' '}
-                  <UsernameText
-                    user={{
-                      name: reply.targetUserName,
-                      id: reply.targetUserId
-                    }}
-                  />
-                </span>
-              )}
-            {onEdit ? (
-              <EditTextArea
-                autoFocus
-                text={reply.content}
-                onCancel={() => this.setState({ onEdit: false })}
-                onEditDone={this.onEditDone}
+            <div style={Style.dropdownWrapper}>
+              <DropdownButton
+                shape="button"
+                icon="pencil"
+                style={Style.dropdownButton}
+                opacity={0.8}
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({ onEdit: true })
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({ confirmModalShown: true })
+                  }
+                ]}
               />
-            ) : (
-              <div>
-                <LongText style={{ paddingBottom: '0.8em' }}>
-                  {reply.content}
-                </LongText>
-                <div className="row flexbox-container">
-                  <div className="pull-left" style={{ paddingLeft: '1em' }}>
-                    <LikeButton
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                      small
-                    />
-                    {type !== 'comment' && (
-                      <Button
-                        style={{ marginLeft: '0.5em' }}
-                        className="btn btn-warning btn-sm"
-                        onClick={this.onReplyButtonClick}
-                      >
-                        <span className="glyphicon glyphicon-comment" /> Reply
-                      </Button>
-                    )}
-                  </div>
-                  <small>
-                    <Likers
-                      className="pull-left"
-                      style={{
-                        fontWeight: 'bold',
-                        marginLeft: '0.8em',
-                        color: Color.green,
-                        marginTop: '1em'
+            </div>
+          )}
+        <div style={Style.contentWrapper}>
+          <ProfilePic
+            style={Style.profilePic}
+            userId={reply.userId}
+            profilePicId={reply.profilePicId}
+          />
+          <div style={Style.innerContentWrapper}>
+            <div>
+              <UsernameText
+                style={Style.usernameText}
+                user={{
+                  name: reply.username,
+                  id: reply.userId
+                }}
+              />{' '}
+              <small style={Style.timeStamp}>
+                &nbsp;{timeSince(reply.timeStamp)}
+              </small>
+            </div>
+            <div>
+              {reply.targetUserId &&
+                !!reply.replyId &&
+                reply.replyId !== comment.id && (
+                  <span style={Style.toText}>
+                    to:{' '}
+                    <UsernameText
+                      user={{
+                        name: reply.targetUserName,
+                        id: reply.targetUserId
                       }}
-                      userId={userId}
-                      likes={reply.likes}
-                      onLinkClick={() =>
-                        this.setState({ userListModalShown: true })
-                      }
                     />
-                  </small>
+                  </span>
+                )}
+              {onEdit ? (
+                <EditTextArea
+                  autoFocus
+                  text={reply.content}
+                  onCancel={() => this.setState({ onEdit: false })}
+                  onEditDone={this.onEditDone}
+                />
+              ) : (
+                <div>
+                  <LongText style={Style.longText}>{reply.content}</LongText>
+                  <div>
+                    <div>
+                      <LikeButton
+                        onClick={this.onLikeClick}
+                        liked={userLikedThis}
+                        small
+                      />
+                      {type !== 'comment' && (
+                        <Button
+                          style={Style.replyButton}
+                          className="btn btn-warning btn-sm"
+                          onClick={this.onReplyButtonClick}
+                        >
+                          <span className="glyphicon glyphicon-comment" /> Reply
+                        </Button>
+                      )}
+                    </div>
+                    <small>
+                      <Likers
+                        style={Style.likers}
+                        userId={userId}
+                        likes={reply.likes}
+                        onLinkClick={() =>
+                          this.setState({ userListModalShown: true })
+                        }
+                      />
+                    </small>
+                  </div>
                 </div>
-              </div>
+              )}
+            </div>
+            {replyInputShown && (
+              <ReplyInputArea
+                onSubmit={this.onReplySubmit}
+                clickListenerState={clickListenerState}
+              />
             )}
           </div>
-          {replyInputShown && (
-            <ReplyInputArea
-              onSubmit={this.onReplySubmit}
-              clickListenerState={clickListenerState}
-            />
-          )}
         </div>
         {userListModalShown && (
           <UserListModal
