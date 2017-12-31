@@ -133,7 +133,13 @@ export default class Reply extends Component {
               ]}
             />
           )}
-        <ProfilePic size="4.5" userId={userId} profilePicId={profilePicId} />
+        <div style={{ width: '10%', height: '10%' }}>
+          <ProfilePic
+            style={{ width: '80%', height: '80%' }}
+            userId={userId}
+            profilePicId={profilePicId}
+          />
+        </div>
         <div style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>
           <div>
             <UsernameText
@@ -147,7 +153,9 @@ export default class Reply extends Component {
               &nbsp;{timeSince(timeStamp)}
             </small>
           </div>
-          <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
+          <div
+            style={{ display: 'flex', width: '100%', flexDirection: 'column' }}
+          >
             {targetUserId && (
               <span style={{ color: Color.blue }}>
                 to:{' '}

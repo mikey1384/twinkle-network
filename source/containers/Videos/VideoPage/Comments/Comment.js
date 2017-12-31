@@ -104,11 +104,13 @@ class Comment extends Component {
           this.Comment = ref
         }}
       >
-        <ProfilePic
-          size="4.5"
-          userId={comment.userId}
-          profilePicId={comment.profilePicId}
-        />
+        <div style={{ width: '10%', height: '10%' }}>
+          <ProfilePic
+            style={{ width: '80%', height: '80%' }}
+            userId={comment.userId}
+            profilePicId={comment.profilePicId}
+          />
+        </div>
         <div
           style={{
             width: '90%'

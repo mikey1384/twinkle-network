@@ -114,7 +114,8 @@ class LinkPage extends Component {
         className="col-md-6 col-md-offset-3"
         style={{
           backgroundColor: '#fff',
-          paddingBottom: '2em'
+          paddingBottom: '2rem',
+          marginBottom: '2rem'
         }}
       >
         <div className="container-fluid">
