@@ -1,7 +1,7 @@
 import { Color } from 'constants/css'
 
 export const Style = {
-  container: { display: 'flex', width: '100%', flexDirection: 'column' },
+  container: { display: 'flex', width: '100%', flexDirection: 'column', marginTop: '1.5rem' },
   dropdownWrapper: {
     width: '100%',
     display: 'flex',

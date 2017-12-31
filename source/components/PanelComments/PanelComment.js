@@ -168,11 +168,7 @@ class PanelComment extends Component {
                 />
               ) : (
                 <div>
-                  <LongText
-                    style={Style.longText}
-                  >
-                    {comment.content}
-                  </LongText>
+                  <LongText style={Style.longText}>{comment.content}</LongText>
                   <div>
                     <div>
                       <LikeButton
@@ -202,18 +198,20 @@ class PanelComment extends Component {
                 </div>
               )}
             </div>
-            <PanelReplies
-              userId={userId}
-              replies={comment.replies}
-              comment={comment}
-              parent={parent}
-              type={type}
-              onDelete={onDelete}
-              onLoadMoreReplies={onLoadMoreReplies}
-              onLikeClick={onLikeClick}
-              onEditDone={onEditDone}
-              onReplySubmit={onReplySubmit}
-            />
+            {comment.replies.length > 0 && (
+              <PanelReplies
+                userId={userId}
+                replies={comment.replies}
+                comment={comment}
+                parent={parent}
+                type={type}
+                onDelete={onDelete}
+                onLoadMoreReplies={onLoadMoreReplies}
+                onLikeClick={onLikeClick}
+                onEditDone={onEditDone}
+                onReplySubmit={onReplySubmit}
+              />
+            )}
             {replyInputShown && (
               <ReplyInputArea
                 clickListenerState={clickListenerState}

@@ -65,19 +65,21 @@ export default class PanelComments extends Component {
           inputTypeLabel={inputTypeLabel}
           onSubmit={comment => onSubmit(comment, parent)}
         />
-        <div style={{ width: '100%', marginTop: '1.5rem' }}>
-          {comments.length > 0 && this.renderComments()}
-          {loadMoreButton && (
-            <div>
-              <Button
-                className="btn btn-success"
-                onClick={this.loadMoreComments}
-              >
-                Load More
-              </Button>
-            </div>
-          )}
-        </div>
+        {comments.length > 0 && (
+          <div style={{ width: '100%' }}>
+            {this.renderComments()}
+            {loadMoreButton && (
+              <div>
+                <Button
+                  className="btn btn-success"
+                  onClick={this.loadMoreComments}
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     )
   }

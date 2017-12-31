@@ -60,8 +60,6 @@ export default class PanelReplies extends Component {
     const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     return (
       <div
-        className="media container-fluid"
-        style={{ paddingLeft: '0px', paddingRight: '0px' }}
         ref={ref => {
           this.PanelReplies = ref
         }}
@@ -70,8 +68,8 @@ export default class PanelReplies extends Component {
           <Button
             className="btn btn-default"
             style={{
-              width: '100%',
-              marginBottom: replies.length === 0 && '1em'
+              marginTop: '0.5rem',
+              width: '100%'
             }}
             onClick={this.loadMoreReplies}
           >
