@@ -29,66 +29,89 @@ function ProfileWidget({
     <div
       style={{
         display: 'flex',
+        border: `1px solid ${Color.borderGray}`,
+        borderRadius: '4px',
+        flexDirection: 'column',
         width: '100%',
         height: '100%',
-        padding: '3%',
-        background: '#fff',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        background: '#fff'
       }}
     >
-      <div style={{ width: '45%' }}>
-        <ProfilePic
-          style={{
-            width: '100%',
-            height: '100%',
-            cursor: userId ? 'pointer' : 'default'
-          }}
-          userId={userId}
-          profilePicId={profilePicId}
-          onClick={() => (userId ? history.push(`/users/${username}`) : null)}
-        />
-      </div>
-      <div
-        style={{
-          width: '45%'
-        }}
-      >
+      {username && (
         <div
           style={{
-            fontWeight: 'bold',
-            fontSize: username ? '3rem' : '2rem',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden'
+            width: '100%',
+            background: Color.headingGray,
+            padding: '3%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
           }}
         >
-          {username ? (
+          <div
+            style={{
+              fontWeight: 'bold',
+              fontSize: '3rem',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden'
+            }}
+          >
             <Link to={`/users/${username}`}>{username}</Link>
-          ) : (
-            'Log in to access all features!'
+          </div>
+          {realName && <div style={{ color: Color.gray }}>({realName})</div>}
+        </div>
+      )}
+      <div
+        style={{
+          padding: '5%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
+        <div style={{ width: '45%' }}>
+          <ProfilePic
+            style={{
+              width: '100%',
+              height: '100%',
+              cursor: userId ? 'pointer' : 'default'
+            }}
+            userId={userId}
+            profilePicId={profilePicId}
+            onClick={() => (userId ? history.push(`/users/${username}`) : null)}
+          />
+        </div>
+        <div
+          style={{
+            width: '45%'
+          }}
+        >
+          {userId && (
+            <div>
+              <div style={{ fontWeight: 'bold' }}>
+                <span>{twinkleXP || 0}</span>
+                &nbsp;<span style={{ color: Color.logoGreen }}>Twin</span>
+                <span style={{ color: Color.logoBlue }}>kle</span>
+                &nbsp;<span style={{ color: Color.orange }}>XP</span>
+              </div>
+              <Link to="/twinklexp">Leaderboard</Link>
+            </div>
+          )}
+          {!userId && (
+            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
+              Log in to access all features!
+            </div>
+          )}
+          {!userId && (
+            <Button
+              className="btn btn-success"
+              style={{ marginTop: '2rem' }}
+              onClick={openSigninModal}
+            >
+              Log In / Sign Up
+            </Button>
           )}
         </div>
-        {realName && <div style={{ color: Color.gray }}>({realName})</div>}
-        {userId && (
-          <div>
-            <div style={{ fontWeight: 'bold' }}>
-              <span>{twinkleXP || 0}</span>
-              &nbsp;<span style={{ color: Color.logoGreen }}>Twin</span>
-              <span style={{ color: Color.logoBlue }}>kle</span>
-              &nbsp;<span style={{ color: Color.orange }}>XP</span>
-            </div>
-            <Link to="/twinklexp">Leaderboard</Link>
-          </div>
-        )}
-        {!userId && (
-          <Button
-            className="btn btn-success"
-            style={{ marginTop: '2rem' }}
-            onClick={openSigninModal}
-          >
-            Log In / Sign Up
-          </Button>
-        )}
       </div>
     </div>
   )
