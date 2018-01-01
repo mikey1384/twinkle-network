@@ -121,124 +121,108 @@ class Description extends Component {
       editedDescription === 'No description' ? '' : this.state.editedDescription
     return (
       <div>
-        <div
-          className="page-header"
-          style={{ marginTop: '1.4em', minHeight: '7em' }}
-        >
+        <div>
           <div>
             <div>
-              <div
-                className="pull-left col-xs-9"
-                style={{ paddingLeft: '0px' }}
-              >
-                <div>
-                  {onEdit ? (
-                    <form
-                      style={{ paddingLeft: '0px', paddingBottom: '0.5em' }}
-                      onSubmit={event => event.preventDefault()}
-                    >
-                      <Input
-                        type="text"
-                        className="form-control"
-                        placeholder={edit.video}
-                        style={{ width: '30em' }}
-                        value={editedUrl}
-                        onChange={text => {
-                          this.setState({ editedUrl: text }, () => {
-                            this.determineEditButtonDoneStatus()
-                          })
-                        }}
-                      />
-                      <Input
-                        type="text"
-                        className="form-control"
-                        placeholder={edit.title}
-                        style={{ width: '30em', marginTop: '1em' }}
-                        value={editedTitle}
-                        onChange={text => {
-                          this.setState({ editedTitle: text }, () => {
-                            this.determineEditButtonDoneStatus()
-                          })
-                        }}
-                        onKeyUp={event => {
-                          if (event.key === ' ') {
-                            this.setState({
-                              editedTitle: addEmoji(event.target.value)
-                            })
-                          }
-                        }}
-                      />
-                    </form>
-                  ) : (
-                    <div style={{ paddingLeft: '0px' }}>
-                      <h3
-                        ref={ref => {
-                          this.thumbLabel = ref
-                        }}
-                        style={{
-                          marginTop: '0px',
-                          whiteSpace: 'nowrap',
-                          textOverflow: 'ellipsis',
-                          overflow: 'hidden',
-                          lineHeight: 'normal'
-                        }}
-                      >
-                        <span
-                          style={{ wordBreak: 'break-word' }}
-                          onMouseOver={this.onMouseOver}
-                          onMouseLeave={() =>
-                            this.setState({ onTitleHover: false })
-                          }
-                        >
-                          {cleanString(title)}
-                        </span>
-                      </h3>
-                      <FullTextReveal
-                        width="100%"
-                        show={onTitleHover}
-                        text={cleanString(title)}
-                      />
-                    </div>
-                  )}
-                </div>
+              {onEdit ? (
+                <form onSubmit={event => event.preventDefault()}>
+                  <Input
+                    type="text"
+                    className="form-control"
+                    placeholder={edit.video}
+                    value={editedUrl}
+                    onChange={text => {
+                      this.setState({ editedUrl: text }, () => {
+                        this.determineEditButtonDoneStatus()
+                      })
+                    }}
+                  />
+                  <Input
+                    type="text"
+                    className="form-control"
+                    placeholder={edit.title}
+                    value={editedTitle}
+                    onChange={text => {
+                      this.setState({ editedTitle: text }, () => {
+                        this.determineEditButtonDoneStatus()
+                      })
+                    }}
+                    onKeyUp={event => {
+                      if (event.key === ' ') {
+                        this.setState({
+                          editedTitle: addEmoji(event.target.value)
+                        })
+                      }
+                    }}
+                  />
+                </form>
+              ) : (
                 <div style={{ paddingLeft: '0px' }}>
-                  <div>
-                    Added by{' '}
-                    <UsernameText
-                      user={{ name: uploaderName, id: uploaderId }}
-                    />{' '}
-                    {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
-                  </div>
-                  {(uploaderId === userId || isCreator) &&
-                    !onEdit && (
-                      <DropdownButton
-                        style={{ marginTop: '0.5em' }}
-                        shape="button"
-                        icon="pencil"
-                        align="left"
-                        text="Edit or Delete This Video"
-                        menuProps={menuProps}
-                      />
-                    )}
+                  <h3
+                    ref={ref => {
+                      this.thumbLabel = ref
+                    }}
+                    style={{
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      lineHeight: 'normal'
+                    }}
+                  >
+                    <span
+                      style={{ wordBreak: 'break-word' }}
+                      onMouseOver={this.onMouseOver}
+                      onMouseLeave={() =>
+                        this.setState({ onTitleHover: false })
+                      }
+                    >
+                      {cleanString(title)}
+                    </span>
+                  </h3>
+                  <FullTextReveal
+                    width="100%"
+                    show={onTitleHover}
+                    text={cleanString(title)}
+                  />
                 </div>
-              </div>
-              <VideoLikeInterface
-                isStarred={isStarred}
-                userId={userId}
-                videoId={videoId}
-                likes={likes}
-                onLikeClick={this.onVideoLikeClick}
-                showLikerList={() =>
-                  this.setState({ userListModalShown: true })
-                }
-              />
+              )}
             </div>
+            <div>
+              <div>
+                Added by{' '}
+                <UsernameText
+                  user={{ name: uploaderName, id: uploaderId }}
+                />{' '}
+                {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
+              </div>
+              {(uploaderId === userId || isCreator) &&
+                !onEdit && (
+                  <DropdownButton
+                    style={{ marginTop: '0.5em' }}
+                    shape="button"
+                    icon="pencil"
+                    align="left"
+                    text="Edit or Delete This Video"
+                    menuProps={menuProps}
+                  />
+                )}
+            </div>
+            <VideoLikeInterface
+              isStarred={isStarred}
+              userId={userId}
+              videoId={videoId}
+              likes={likes}
+              onLikeClick={this.onVideoLikeClick}
+              showLikerList={() =>
+                this.setState({ userListModalShown: true })
+              }
+            />
           </div>
         </div>
         <div>
           {onEdit ? (
             <div>
-              <form style={{ paddingLeft: '0px' }}>
+              <form>
                 <Textarea
                   minRows={4}
                   className="form-control"
@@ -262,13 +246,7 @@ class Description extends Component {
                   }}
                 />
               </form>
-              <div
-                style={{
-                  marginTop: '1em',
-                  paddingLeft: '0px',
-                  textAlign: 'left'
-                }}
-              >
+              <div>
                 <Button
                   className="btn btn-default btn-sm"
                   disabled={editDoneButtonDisabled}
@@ -278,7 +256,6 @@ class Description extends Component {
                 </Button>
                 <Button
                   className="btn btn-default btn-sm"
-                  style={{ marginLeft: '5px' }}
                   onClick={this.onEditCancel}
                 >
                   Cancel
@@ -288,16 +265,11 @@ class Description extends Component {
           ) : (
             <div>
               {videoViews > 10 && (
-                <p
-                  style={{
-                    fontSize: '1.6em',
-                    fontWeight: 'bold'
-                  }}
-                >
+                <p>
                   {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
                 </p>
               )}
-              <LongText style={{ wordBreak: 'break-word', paddingLeft: '0px' }}>
+              <LongText style={{ wordBreak: 'break-word' }}>
                 {stringIsEmpty(description) ? 'No Description' : description}
               </LongText>
             </div>

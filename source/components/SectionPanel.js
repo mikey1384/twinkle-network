@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Button from 'components/Button'
 import Loading from 'components/Loading'
+import SearchInput from 'components/Texts/SearchInput'
 
 export default class SectionPanel extends Component {
   static propTypes = {
@@ -35,18 +36,26 @@ export default class SectionPanel extends Component {
     const { loading } = this.state
     return (
       <div className="panel panel-primary">
-        <div className="panel-heading flexbox-container">
-          <h3 className="panel-title pull-left">{title}</h3>
-          {button}
-          <div className="clearfix" />
+        <div
+          className="panel-heading"
+          style={{ display: 'flex', width: '100%' }}
+        >
+          <div style={{ width: '30%' }}>{title}</div>
+          <SearchInput
+            style={{ width: '40%' }}
+            onChange={() => console.log('changing')}
+            placeholder="test placeholder"
+            value="tesitng"
+          />
+          <div style={{ width: '30%' }}>{button}</div>
         </div>
         <div className="panel-body">
           {loaded
-            ? isEmpty && <div className="text-center">{emptyMessage}</div>
+            ? isEmpty && <div>{emptyMessage}</div>
             : isEmpty && <Loading />}
           {children}
           {loadMoreButtonShown && (
-            <div className="text-center col-sm-12">
+            <div>
               <Button
                 disabled={loading}
                 className="btn btn-success"
