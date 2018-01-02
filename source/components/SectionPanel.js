@@ -40,14 +40,31 @@ export default class SectionPanel extends Component {
           className="panel-heading"
           style={{ display: 'flex', width: '100%' }}
         >
-          <div style={{ width: '30%' }}>{title}</div>
+          <div
+            style={{
+              width: '25%',
+              fontSize: '2.5rem',
+              alignItems: 'center',
+              display: 'flex'
+            }}
+          >
+            {title}
+          </div>
           <SearchInput
-            style={{ width: '40%' }}
+            style={{ width: '45%' }}
             onChange={() => console.log('changing')}
             placeholder="test placeholder"
             value="tesitng"
           />
-          <div style={{ width: '30%' }}>{button}</div>
+          <div
+            style={{
+              width: '30%',
+              display: 'flex',
+              flexDirection: 'row-reverse'
+            }}
+          >
+            {button}
+          </div>
         </div>
         <div className="panel-body">
           {loaded
@@ -55,7 +72,7 @@ export default class SectionPanel extends Component {
             : isEmpty && <Loading />}
           {children}
           {loadMoreButtonShown && (
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button
                 disabled={loading}
                 className="btn btn-success"
