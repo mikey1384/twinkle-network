@@ -16,6 +16,7 @@ class PlaylistsPanel extends Component {
     loadMoreButton: PropTypes.bool,
     loadPlaylists: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
+    onSearch: PropTypes.func,
     playlists: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number
@@ -41,6 +42,7 @@ class PlaylistsPanel extends Component {
       buttonGroupShown = true,
       buttonGroup,
       loaded,
+      onSearch,
       title = 'All Playlists'
     } = this.props
     let buttonGroupElement = buttonGroupShown ? buttonGroup() : null
@@ -53,6 +55,7 @@ class PlaylistsPanel extends Component {
         loaded={loaded}
         loadMoreButtonShown={loadMoreButton}
         loadMore={this.loadMorePlaylists}
+        onSearch={onSearch}
       >
         {playlists.map((playlist, index) => {
           const editable = userId === playlist.uploaderId

@@ -49,11 +49,8 @@ class Main extends Component {
     userId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      addPlaylistModalShown: false
-    }
+  state = {
+    addPlaylistModalShown: false
   }
 
   render() {
@@ -125,6 +122,7 @@ class Main extends Component {
           <PlaylistsPanel
             key={'allplaylists'}
             buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
+            onSearch={() => console.log('on playlist search')}
             title="All Playlists"
             loadMoreButton={loadMorePlaylistsButton}
             userId={userId}
@@ -194,7 +192,7 @@ class Main extends Component {
     )
   }
 
-  renderPlaylistButton(buttonsArray) {
+  renderPlaylistButton = (buttonsArray) => {
     return <ButtonGroup style={{ marginLeft: 'auto' }} buttons={buttonsArray} />
   }
 }

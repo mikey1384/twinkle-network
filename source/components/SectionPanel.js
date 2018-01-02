@@ -13,14 +13,12 @@ export default class SectionPanel extends Component {
     loaded: PropTypes.bool,
     loadMore: PropTypes.func,
     children: PropTypes.node,
-    loadMoreButtonShown: PropTypes.bool
+    loadMoreButtonShown: PropTypes.bool,
+    onSearch: PropTypes.func
   }
-  constructor() {
-    super()
-    this.state = {
-      loading: false
-    }
-    this.onLoadMore = this.onLoadMore.bind(this)
+
+  state = {
+    loading: false
   }
 
   render() {
@@ -31,14 +29,19 @@ export default class SectionPanel extends Component {
       isEmpty,
       loaded,
       children,
-      loadMoreButtonShown
+      loadMoreButtonShown,
+      onSearch
     } = this.props
     const { loading } = this.state
     return (
       <div className="panel panel-primary">
         <div
           className="panel-heading"
-          style={{ display: 'flex', width: '100%' }}
+          style={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'space-between'
+          }}
         >
           <div
             style={{
@@ -50,12 +53,14 @@ export default class SectionPanel extends Component {
           >
             {title}
           </div>
-          <SearchInput
-            style={{ width: '45%' }}
-            onChange={() => console.log('changing')}
-            placeholder="test placeholder"
-            value="tesitng"
-          />
+          {onSearch && (
+            <SearchInput
+              style={{ width: '45%' }}
+              onChange={this.onSearch}
+              placeholder="test placeholder"
+              value="tesitng"
+            />
+          )}
           <div
             style={{
               width: '30%',
@@ -87,7 +92,12 @@ export default class SectionPanel extends Component {
     )
   }
 
-  onLoadMore() {
+  onSearch = () => {
+    const { onSearch } = this.props
+    onSearch()
+  }
+
+  onLoadMore = () => {
     const { loadMore } = this.props
     const { loading } = this.state
     if (!loading) {

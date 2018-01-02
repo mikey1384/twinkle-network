@@ -61,6 +61,7 @@ class AllVideosPanel extends Component {
         loaded={loaded}
         loadMoreButtonShown={loadMoreButton}
         loadMore={this.loadMoreVideos}
+        onSearch={() => console.log('searching videos')}
       >
         <div
           style={{
