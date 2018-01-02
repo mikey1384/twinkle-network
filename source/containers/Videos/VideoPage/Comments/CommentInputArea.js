@@ -39,7 +39,7 @@ class CommentInputArea extends Component {
     } = this.props
     const { discussionTabActive, discussionFormShown } = this.state
     return (
-      <div className="page-header">
+      <div className="page-header" style={{ marginTop: '2rem' }}>
         <div className="row">
           <ul
             className="nav nav-tabs"

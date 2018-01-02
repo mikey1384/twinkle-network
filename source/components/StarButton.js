@@ -8,12 +8,13 @@ StarButton.propTypes = {
 }
 export default function StarButton({ isStarred, onClick, ...props }) {
   return (
-    <Button
-      {...props}
-      className={`btn btn-${isStarred ? 'danger' : 'default'} btn-sm`}
-      onClick={onClick}
-    >
-      <span className="glyphicon glyphicon-star" />
-    </Button>
+    <div {...props}>
+      <Button
+        className={`btn btn-${isStarred ? 'danger' : 'default'} btn-sm`}
+        onClick={onClick}
+      >
+        <span className="glyphicon glyphicon-star" />
+      </Button>
+    </div>
   )
 }

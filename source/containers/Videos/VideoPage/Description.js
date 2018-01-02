@@ -7,7 +7,6 @@ import Button from 'components/Button'
 import LongText from 'components/Texts/LongText'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UserListModal from 'components/Modals/UserListModal'
-import VideoLikeInterface from './VideoLikeInterface'
 import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
 import Input from 'components/Texts/Input'
@@ -19,6 +18,10 @@ import {
   isValidYoutubeUrl
 } from 'helpers/stringHelpers'
 import { edit } from 'constants/placeholders'
+import Likers from 'components/Likers'
+import LikeButton from 'components/LikeButton'
+import StarButton from 'components/StarButton'
+import { starVideo } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
 
 class Description extends Component {
@@ -33,6 +36,7 @@ class Description extends Component {
     onEditCancel: PropTypes.func.isRequired,
     onEditFinish: PropTypes.func.isRequired,
     onEditStart: PropTypes.func.isRequired,
+    starVideo: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
@@ -104,6 +108,7 @@ class Description extends Component {
       title,
       description,
       likes,
+      starVideo,
       timeStamp,
       videoId,
       videoViews
@@ -119,107 +124,122 @@ class Description extends Component {
     } = this.state
     editedDescription =
       editedDescription === 'No description' ? '' : this.state.editedDescription
+    const starButtonGrid = isCreator ? 'starButton' : 'likeButton'
     return (
-      <div>
-        <div>
-          <div>
+      <div
+        style={{
+          display: 'grid',
+          height: 'auto',
+          marginTop: '1.5rem',
+          alignItems: 'center',
+          alignContent: 'space-around',
+          gridTemplateColumns: '30% 1fr 1fr 5% 18%',
+          gridTemplateRows: '20% 2% 60% auto',
+          gridColumnGap: '1rem',
+          gridRowGap: '1.2rem',
+          gridTemplateAreas: `
+            "title title title ${starButtonGrid} likeButton"
+            "description description description likers likers"
+            "description description description . ."
+          `
+        }}
+      >
+        <div style={{ gridArea: 'title', alignSelf: 'center' }}>
+          {onEdit ? (
             <div>
-              {onEdit ? (
-                <form onSubmit={event => event.preventDefault()}>
-                  <Input
-                    type="text"
-                    className="form-control"
-                    placeholder={edit.video}
-                    value={editedUrl}
-                    onChange={text => {
-                      this.setState({ editedUrl: text }, () => {
-                        this.determineEditButtonDoneStatus()
-                      })
-                    }}
-                  />
-                  <Input
-                    type="text"
-                    className="form-control"
-                    placeholder={edit.title}
-                    value={editedTitle}
-                    onChange={text => {
-                      this.setState({ editedTitle: text }, () => {
-                        this.determineEditButtonDoneStatus()
-                      })
-                    }}
-                    onKeyUp={event => {
-                      if (event.key === ' ') {
-                        this.setState({
-                          editedTitle: addEmoji(event.target.value)
-                        })
-                      }
-                    }}
-                  />
-                </form>
-              ) : (
-                <div style={{ paddingLeft: '0px' }}>
-                  <h3
-                    ref={ref => {
-                      this.thumbLabel = ref
-                    }}
-                    style={{
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      lineHeight: 'normal'
-                    }}
-                  >
-                    <span
-                      style={{ wordBreak: 'break-word' }}
-                      onMouseOver={this.onMouseOver}
-                      onMouseLeave={() =>
-                        this.setState({ onTitleHover: false })
-                      }
-                    >
-                      {cleanString(title)}
-                    </span>
-                  </h3>
-                  <FullTextReveal
-                    width="100%"
-                    show={onTitleHover}
-                    text={cleanString(title)}
-                  />
-                </div>
-              )}
+              <Input
+                type="text"
+                className="form-control"
+                placeholder={edit.video}
+                value={editedUrl}
+                onChange={text => {
+                  this.setState({ editedUrl: text }, () => {
+                    this.determineEditButtonDoneStatus()
+                  })
+                }}
+              />
+              <Input
+                style={{ marginTop: '1rem' }}
+                type="text"
+                className="form-control"
+                placeholder={edit.title}
+                value={editedTitle}
+                onChange={text => {
+                  this.setState({ editedTitle: text }, () => {
+                    this.determineEditButtonDoneStatus()
+                  })
+                }}
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    this.setState({
+                      editedTitle: addEmoji(event.target.value)
+                    })
+                  }
+                }}
+              />
             </div>
+          ) : (
             <div>
-              <div>
-                Added by{' '}
-                <UsernameText
-                  user={{ name: uploaderName, id: uploaderId }}
-                />{' '}
-                {`${timeStamp ? '(' + timeSince(timeStamp) + ')' : ''}`}
+              <div
+                ref={ref => {
+                  this.thumbLabel = ref
+                }}
+                style={{
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  lineHeight: 'normal'
+                }}
+              >
+                <span
+                  style={{
+                    wordBreak: 'break-word',
+                    fontSize: '3rem',
+                    fontWeight: 'bold'
+                  }}
+                  onMouseOver={this.onMouseOver}
+                  onMouseLeave={() => this.setState({ onTitleHover: false })}
+                >
+                  {cleanString(title)}
+                </span>
               </div>
-              {(uploaderId === userId || isCreator) &&
-                !onEdit && (
-                  <DropdownButton
-                    style={{ marginTop: '0.5em' }}
-                    shape="button"
-                    icon="pencil"
-                    align="left"
-                    text="Edit or Delete This Video"
-                    menuProps={menuProps}
-                  />
-                )}
+              <FullTextReveal
+                width="100%"
+                show={onTitleHover}
+                text={cleanString(title)}
+              />
             </div>
-            <VideoLikeInterface
-              isStarred={isStarred}
-              userId={userId}
-              videoId={videoId}
-              likes={likes}
-              onLikeClick={this.onVideoLikeClick}
-              showLikerList={() =>
-                this.setState({ userListModalShown: true })
-              }
-            />
-          </div>
+          )}
+          {!onEdit && (
+            <div>
+              Added by{' '}
+              <UsernameText
+                user={{ name: uploaderName, id: uploaderId }}
+              />{' '}
+              <span>{`${
+                timeStamp ? timeSince(timeStamp) : ''
+              }`}</span>
+            </div>
+          )}
+          {!onEdit &&
+            videoViews > 10 && (
+              <div
+                style={{
+                  fontSize: '2rem',
+                  fontWeight: 'bold',
+                  marginTop: '0.5rem'
+                }}
+              >
+                {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+              </div>
+            )}
         </div>
-        <div>
+        <div
+          style={{
+            gridArea: 'description',
+            alignSelf: 'start'
+          }}
+        >
           {onEdit ? (
             <div>
               <form>
@@ -246,7 +266,7 @@ class Description extends Component {
                   }}
                 />
               </form>
-              <div>
+              <div style={{ marginTop: '1rem' }}>
                 <Button
                   className="btn btn-default btn-sm"
                   disabled={editDoneButtonDisabled}
@@ -256,6 +276,7 @@ class Description extends Component {
                 </Button>
                 <Button
                   className="btn btn-default btn-sm"
+                  style={{ marginLeft: '0.5rem' }}
                   onClick={this.onEditCancel}
                 >
                   Cancel
@@ -264,16 +285,72 @@ class Description extends Component {
             </div>
           ) : (
             <div>
-              {videoViews > 10 && (
-                <p>
-                  {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
-                </p>
-              )}
               <LongText style={{ wordBreak: 'break-word' }}>
                 {stringIsEmpty(description) ? 'No Description' : description}
               </LongText>
             </div>
           )}
+          {(uploaderId === userId || isCreator) &&
+            !onEdit && (
+              <DropdownButton
+                alignLeft
+                style={{ marginTop: '1.5rem' }}
+                shape="button"
+                icon="pencil"
+                text="Edit or Delete This Video"
+                menuProps={menuProps}
+              />
+            )}
+        </div>
+        {isCreator && (
+          <StarButton
+            style={{
+              gridArea: 'starButton',
+              alignSelf: 'end',
+              justifySelf: 'end'
+            }}
+            isStarred={isStarred}
+            onClick={() => starVideo(videoId)}
+          />
+        )}
+        <div
+          style={{
+            gridArea: 'likeButton',
+            alignSelf: 'end',
+            width: '100%'
+          }}
+        >
+          <LikeButton
+            style={{
+              fontSize: '3rem',
+              width: '100%'
+            }}
+            onClick={this.onVideoLikeClick}
+            liked={(likes => {
+              let liked = false
+              if (likes) {
+                for (let i = 0; i < likes.length; i++) {
+                  if (likes[i].userId === userId) liked = true
+                }
+              }
+              return liked
+            })(likes)}
+          />
+        </div>
+        <div
+          style={{
+            gridArea: 'likers',
+            alignSelf: 'start',
+            textAlign: 'center'
+          }}
+        >
+          <Likers
+            userId={userId}
+            likes={likes}
+            onLinkClick={() => this.setState({ userListModalShown: true })}
+            target="video"
+            defaultText="Be the first to like this video"
+          />
         </div>
         {userListModalShown && (
           <UserListModal
@@ -354,6 +431,6 @@ class Description extends Component {
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
-  Description
-)
+export default connect(state => ({ isCreator: state.UserReducer.isCreator }), {
+  starVideo
+})(Description)

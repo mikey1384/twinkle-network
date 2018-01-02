@@ -31,14 +31,10 @@ class Comments extends Component {
     videoId: PropTypes.number.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      lastDeletedCommentIndex: null,
-      deleteListenerToggle: false,
-      loading: false
-    }
-    this.deleteCallback = this.deleteCallback.bind(this)
+  state = {
+    lastDeletedCommentIndex: null,
+    deleteListenerToggle: false,
+    loading: false
   }
 
   componentDidMount() {
@@ -74,7 +70,7 @@ class Comments extends Component {
       discussions
     } = this.props
     return (
-      <div style={{ paddingBottom: '1em' }}>
+      <div style={{ paddingBottom: '1rem' }}>
         <div className="container-fluid">
           <CommentInputArea
             videoId={videoId}
@@ -115,7 +111,7 @@ class Comments extends Component {
     )
   }
 
-  renderComments() {
+  renderComments = () => {
     const {
       comments,
       loadMoreReplies,
@@ -152,7 +148,7 @@ class Comments extends Component {
     })
   }
 
-  deleteCallback(index) {
+  deleteCallback = (index) => {
     this.setState({ lastDeletedCommentIndex: index })
   }
 }

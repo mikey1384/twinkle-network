@@ -32,7 +32,7 @@ export default class MessagesContainer extends Component {
   }
 
   componentDidMount() {
-    this.setFillerHeight()
+    this.setScrollToBottom()
   }
 
   componentWillReceiveProps() {
@@ -53,12 +53,12 @@ export default class MessagesContainer extends Component {
       prevProps.messages[0] !== this.props.messages[0]
 
     if (loadedPrevMessage) return
-    if (switchedChannel) return this.setFillerHeight()
+    if (switchedChannel) return this.setScrollToBottom()
     if (newMessageArrived) {
       let { messages, userId } = this.props
       let messageSenderId = messages[messages.length - 1].userId
       if (messageSenderId === userId || this.state.scrollAtBottom) {
-        this.setFillerHeight()
+        this.setScrollToBottom()
       } else {
         let newUnseenMessage = false
         if (prevProps.messages && prevProps.messages.length > 0) {
@@ -69,7 +69,7 @@ export default class MessagesContainer extends Component {
     }
   }
 
-  setFillerHeight() {
+  setScrollToBottom() {
     const container = this.messagesContainer
     const messages = this.messages
     const containerHeight = container.offsetHeight
@@ -78,12 +78,11 @@ export default class MessagesContainer extends Component {
       messagesHeight < containerHeight
         ? { fillerHeight: containerHeight - messagesHeight }
         : { fillerHeight: 20 }
-    this.setState(state, () => {
-      container.scrollTop = Math.max(
-        container.offsetHeight,
-        messages.offsetHeight
-      )
-    })
+    this.setState(state)
+    container.scrollTop = Math.max(
+      container.offsetHeight,
+      messages.offsetHeight
+    )
   }
 
   render() {
