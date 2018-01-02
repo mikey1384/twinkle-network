@@ -66,7 +66,7 @@ export default class PanelComments extends Component {
           onSubmit={comment => onSubmit(comment, parent)}
         />
         {comments.length > 0 && (
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             {this.renderComments()}
             {loadMoreButton && (
               <div>
