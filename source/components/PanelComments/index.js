@@ -69,7 +69,14 @@ export default class PanelComments extends Component {
           <div style={{ width: '100%' }}>
             {this.renderComments()}
             {loadMoreButton && (
-              <div>
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginTop: '1rem'
+                }}
+              >
                 <Button
                   className="btn btn-success"
                   onClick={this.loadMoreComments}
