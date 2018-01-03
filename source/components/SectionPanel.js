@@ -14,7 +14,8 @@ export default class SectionPanel extends Component {
     loadMore: PropTypes.func,
     children: PropTypes.node,
     loadMoreButtonShown: PropTypes.bool,
-    onSearch: PropTypes.func
+    onSearch: PropTypes.func,
+    searchQuery: PropTypes.string
   }
 
   state = {
@@ -25,12 +26,10 @@ export default class SectionPanel extends Component {
     const {
       title,
       button,
-      emptyMessage,
-      isEmpty,
-      loaded,
       children,
       loadMoreButtonShown,
-      onSearch
+      onSearch,
+      searchQuery = ''
     } = this.props
     const { loading } = this.state
     return (
@@ -58,7 +57,7 @@ export default class SectionPanel extends Component {
               style={{ width: '45%' }}
               onChange={this.onSearch}
               placeholder="test placeholder"
-              value="tesitng"
+              value={searchQuery}
             />
           )}
           <div
@@ -72,29 +71,28 @@ export default class SectionPanel extends Component {
           </div>
         </div>
         <div className="panel-body">
-          {loaded
-            ? isEmpty && <div>{emptyMessage}</div>
-            : isEmpty && <Loading />}
+          {this.renderEmptyMessage()}
           {children}
-          {loadMoreButtonShown && (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button
-                disabled={loading}
-                className="btn btn-success"
-                onClick={this.onLoadMore}
-              >
-                Load More
-              </Button>
-            </div>
-          )}
+          {loadMoreButtonShown &&
+            !searchQuery && (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  disabled={loading}
+                  className="btn btn-success"
+                  onClick={this.onLoadMore}
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
         </div>
       </div>
     )
   }
 
-  onSearch = () => {
+  onSearch = text => {
     const { onSearch } = this.props
-    onSearch()
+    onSearch(text)
   }
 
   onLoadMore = () => {
@@ -104,5 +102,29 @@ export default class SectionPanel extends Component {
       this.setState({ loading: true })
       return loadMore().then(() => this.setState({ loading: false }))
     }
+  }
+
+  renderEmptyMessage = () => {
+    const { emptyMessage, isEmpty, loaded, searchQuery } = this.props
+    if (isEmpty) {
+      if (loaded) {
+        return (
+          <div
+            style={{
+              fontSize: '3rem',
+              fontWeight: 'bold',
+              padding: '2rem 0',
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+          >
+            {searchQuery ? 'No Results' : emptyMessage}
+          </div>
+        )
+      } else {
+        return <Loading />
+      }
+    }
+    return null
   }
 }

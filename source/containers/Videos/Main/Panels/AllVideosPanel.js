@@ -24,9 +24,9 @@ class AllVideosPanel extends Component {
     videos: PropTypes.array.isRequired
   }
 
-  constructor() {
-    super()
-    this.loadMoreVideos = this.loadMoreVideos.bind(this)
+  state = {
+    searchQuery: '',
+    searchedVideos: []
   }
 
   componentDidMount() {
@@ -39,17 +39,19 @@ class AllVideosPanel extends Component {
   render() {
     const {
       loadMoreButton,
-      videos,
+      videos: allVideos,
       title = 'All Videos',
       loaded,
       onAddVideoClick
     } = this.props
+    const { searchQuery, searchedVideos } = this.state
+    const videos = searchQuery ? searchedVideos : allVideos
     return (
       <SectionPanel
         title={title}
         button={
           <Button
-            className="btn btn-default pull-right"
+            className="btn btn-default"
             style={{ marginLeft: 'auto' }}
             onClick={() => onAddVideoClick()}
           >
@@ -61,7 +63,8 @@ class AllVideosPanel extends Component {
         loaded={loaded}
         loadMoreButtonShown={loadMoreButton}
         loadMore={this.loadMoreVideos}
-        onSearch={() => console.log('searching videos')}
+        onSearch={this.onVideoSearch}
+        searchQuery={searchQuery}
       >
         <div
           style={{
@@ -92,10 +95,14 @@ class AllVideosPanel extends Component {
     )
   }
 
-  loadMoreVideos() {
+  loadMoreVideos = () => {
     const { videos, getMoreVideos } = this.props
     const lastId = last(videos) ? last(videos).id : 0
     return getMoreVideos(lastId)
+  }
+
+  onVideoSearch = text => {
+    this.setState({ searchQuery: text })
   }
 }
 
