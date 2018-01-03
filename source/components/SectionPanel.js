@@ -121,9 +121,8 @@ export default class SectionPanel extends Component {
             {searchQuery ? 'No Results' : emptyMessage}
           </div>
         )
-      } else {
-        return <Loading />
       }
+      return <Loading />
     }
     return null
   }
