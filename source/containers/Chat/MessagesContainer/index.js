@@ -32,7 +32,9 @@ export default class MessagesContainer extends Component {
   }
 
   componentWillReceiveProps() {
-    this.setState({ scrollAtBottom: scrollIsAtTheBottom(this.content, this.messagesContainer) })
+    this.setState({
+      scrollAtBottom: scrollIsAtTheBottom(this.content, this.messagesContainer)
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -56,7 +58,9 @@ export default class MessagesContainer extends Component {
       } else {
         let newUnseenMessage = false
         if (prevProps.messages && prevProps.messages.length > 0) {
-          if (this.props.messages.length >= prevProps.messages.length) { newUnseenMessage = true }
+          if (this.props.messages.length >= prevProps.messages.length) {
+            newUnseenMessage = true
+          }
         }
         this.setState({ newUnseenMessage })
       }
@@ -64,9 +68,20 @@ export default class MessagesContainer extends Component {
   }
 
   setScrollToBottom() {
-    let fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
-    this.setState({fillerHeight})
-    this.messagesContainer.scrollTop = 1000000
+    let fillerHeight = 20
+    if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
+      fillerHeight =
+        this.messagesContainer.offsetHeight - this.messages.offsetHeight
+    }
+    this.setState({ fillerHeight })
+    scrollBottom.bind(this)()
+    setTimeout(() => {
+      scrollBottom.bind(this)()
+    }, 10)
+
+    function scrollBottom() {
+      this.messagesContainer.scrollTop = 1000000
+    }
   }
 
   render() {
@@ -90,7 +105,9 @@ export default class MessagesContainer extends Component {
           onScroll={() => {
             const content = this.content
             const container = this.messagesContainer
-            if (scrollIsAtTheBottom(content, container)) { this.setState({ newUnseenMessage: false }) }
+            if (scrollIsAtTheBottom(content, container)) {
+              this.setState({ newUnseenMessage: false })
+            }
           }}
         >
           <div
