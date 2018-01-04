@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import {
+  contentFeedLike,
   fetchMoreFeedsAsync,
   fetchFeedsAsync,
   fetchFeed,
-  clearFeeds
+  clearFeeds,
+  uploadFeedComment
 } from 'redux/actions/FeedActions'
 import InputPanel from './InputPanel'
-import FeedPanel from '../FeedPanel'
+import ContentPanel from '../ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import { connect } from 'react-redux'
@@ -18,13 +20,16 @@ class Stories extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
+    contentFeedLike: PropTypes.func.isRequired,
     feeds: PropTypes.array.isRequired,
+    fetchFeed: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
     selectedFilter: PropTypes.string.isRequired,
+    uploadFeedComment: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
 
@@ -62,7 +67,15 @@ class Stories extends Component {
   }
 
   render() {
-    const { feeds, loadMoreButton, userId, loaded } = this.props
+    const {
+      contentFeedLike,
+      feeds,
+      fetchFeed,
+      loadMoreButton,
+      userId,
+      loaded,
+      uploadFeedComment
+    } = this.props
     const { clearingFeeds, loadingMore } = this.state
 
     return (
@@ -88,10 +101,13 @@ class Stories extends Component {
             <div>
               {feeds.map(feed => {
                 return (
-                  <FeedPanel
+                  <ContentPanel
                     key={`${feed.id}`}
                     loadingDisabled={clearingFeeds}
+                    onLikeClick={contentFeedLike}
                     feed={feed}
+                    fetchFeed={fetchFeed}
+                    uploadFeedComment={uploadFeedComment}
                     userId={userId}
                   />
                 )
@@ -238,9 +254,11 @@ export default connect(
     noFeeds: state.FeedReducer.noFeeds
   }),
   {
+    contentFeedLike,
     fetchMoreFeeds: fetchMoreFeedsAsync,
+    fetchFeed,
     fetchFeeds: fetchFeedsAsync,
     clearFeeds,
-    fetchFeed
+    uploadFeedComment
   }
 )(Stories)
