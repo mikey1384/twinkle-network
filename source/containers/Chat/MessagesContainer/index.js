@@ -20,15 +20,11 @@ export default class MessagesContainer extends Component {
     loading: PropTypes.bool
   }
 
-  constructor() {
-    super()
-    this.state = {
-      fillerHeight: 0,
-      scrollAtBottom: true,
-      newUnseenMessage: false,
-      loadMoreButtonLock: false
-    }
-    this.onLoadMoreButtonClick = this.onLoadMoreButtonClick.bind(this)
+  state = {
+    fillerHeight: 0,
+    scrollAtBottom: true,
+    newUnseenMessage: false,
+    loadMoreButtonLock: false
   }
 
   componentDidMount() {
@@ -36,9 +32,7 @@ export default class MessagesContainer extends Component {
   }
 
   componentWillReceiveProps() {
-    const content = this.content
-    const container = this.messagesContainer
-    this.setState({ scrollAtBottom: scrollIsAtTheBottom(content, container) })
+    this.setState({ scrollAtBottom: scrollIsAtTheBottom(this.content, this.messagesContainer) })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -70,18 +64,14 @@ export default class MessagesContainer extends Component {
   }
 
   setScrollToBottom() {
-    const container = this.messagesContainer
-    const messages = this.messages
-    const containerHeight = container.offsetHeight
-    const messagesHeight = messages.offsetHeight
-    let state =
-      messagesHeight < containerHeight
-        ? { fillerHeight: containerHeight - messagesHeight }
-        : { fillerHeight: 20 }
-    this.setState(state)
-    container.scrollTop = Math.max(
-      container.offsetHeight,
-      messages.offsetHeight
+    let fillerHeight = 20
+    if (this.messages.offsetHeight < this.messagesContainer.offsetHeight) {
+      fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
+    }
+    this.setState({fillerHeight})
+    this.messagesContainer.scrollTop = Math.max(
+      this.messagesContainer.offsetHeight,
+      this.messages.offsetHeight
     )
   }
 
@@ -178,7 +168,7 @@ export default class MessagesContainer extends Component {
     )
   }
 
-  onLoadMoreButtonClick() {
+  onLoadMoreButtonClick = () => {
     const messageId = this.props.messages[0].id
     const channelId = this.props.messages[0].channelId
     const { userId, loadMoreMessages } = this.props
@@ -191,7 +181,7 @@ export default class MessagesContainer extends Component {
     }
   }
 
-  renderMessages() {
+  renderMessages = () => {
     const { messages } = this.props
     return messages.map((message, index) => {
       let { isNotification } = message
