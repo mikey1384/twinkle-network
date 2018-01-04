@@ -340,29 +340,43 @@ router.post('/pinned', requireAuth, (req, res) => {
   )
 })
 
-router.get('/search/video', (req, res) => {
+router.get('/search/video', async(req, res) => {
   const searchQuery = req.query.query
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
   const query = `
     SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
-    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE MATCH (a.title) AGAINST(?IN BOOLEAN MODE)
     ORDER by a.id DESC LIMIT 18
   `
-  return poolQuery(query, '%' + searchQuery + '%')
-    .then(result => res.send(result))
-    .catch(error => {
-      console.error(error)
-      return res.status(500).send({ error })
-    })
+  try {
+    let result = await poolQuery(query, searchQuery)
+    if (result.length === 0) {
+      const alternateQuery = `
+        SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
+        FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ? ORDER BY a.id DESC LIMIT 12
+      `
+      result = await poolQuery(alternateQuery, `%${searchQuery}%`)
+    }
+    res.send(result)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({ error })
+  }
 })
 
 router.get('/search/playlist', async(req, res) => {
   const searchQuery = req.query.query
   const query = `
-    SELECT id AS playlistId FROM vq_playlists WHERE title LIKE '%${searchQuery}%' ORDER BY playlistId DESC LIMIT 5
+    SELECT id AS playlistId FROM vq_playlists WHERE MATCH (title) AGAINST(?IN BOOLEAN MODE) ORDER BY playlistId DESC LIMIT 5
   `
   try {
-    const playlists = await fetchPlaylists(query)
+    let playlists = await fetchPlaylists(query, searchQuery)
+    if (playlists.length === 0) {
+      const alternateQuery = `
+        SELECT id AS playlistId FROM vq_playlists WHERE title LIKE ? ORDER BY playlistId DESC LIMIT 5
+      `
+      playlists = await fetchPlaylists(alternateQuery, `%${searchQuery}%`)
+    }
     res.send(playlists)
   } catch (error) {
     console.error(error)

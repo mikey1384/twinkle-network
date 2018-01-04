@@ -652,11 +652,18 @@ router.get('/search', async(req, res) => {
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
   const query = `
     SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
-    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE MATCH(a.title) AGAINST(?IN BOOLEAN MODE)
     ORDER BY a.id DESC LIMIT 12
   `
   try {
-    const result = await poolQuery(query, '%' + searchQuery + '%')
+    let result = await poolQuery(query, searchQuery)
+    if (result.length === 0) {
+      const alternateQuery = `
+        SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
+        FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ? ORDER BY a.id DESC LIMIT 12
+      `
+      result = await poolQuery(alternateQuery, `%${searchQuery}%`)
+    }
     res.send(result)
   } catch (error) {
     console.error(error)
