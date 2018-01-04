@@ -346,7 +346,7 @@ router.get('/search/video', (req, res) => {
   const query = `
     SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
     FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
-    ORDER by a.id DESC LIMIT 20
+    ORDER by a.id DESC LIMIT 18
   `
   return poolQuery(query, '%' + searchQuery + '%')
     .then(result => res.send(result))
@@ -354,6 +354,20 @@ router.get('/search/video', (req, res) => {
       console.error(error)
       return res.status(500).send({ error })
     })
+})
+
+router.get('/search/playlist', async(req, res) => {
+  const searchQuery = req.query.query
+  const query = `
+    SELECT id AS playlistId FROM vq_playlists WHERE title LIKE '%${searchQuery}%' ORDER BY playlistId DESC LIMIT 5
+  `
+  try {
+    const playlists = await fetchPlaylists(query)
+    res.send(playlists)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send({ error })
+  }
 })
 
 router.get('/list', (req, res) => {

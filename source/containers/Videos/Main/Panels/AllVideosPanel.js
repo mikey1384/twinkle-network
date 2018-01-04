@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import { getInitialVideos, getMoreVideos } from 'redux/actions/VideoActions'
 import SectionPanel from 'components/SectionPanel'
 import Button from 'components/Button'
+import request from 'axios'
+import { URL } from 'constants/URL'
 
 const last = array => {
   return array[array.length - 1]
@@ -24,9 +26,12 @@ class AllVideosPanel extends Component {
     videos: PropTypes.array.isRequired
   }
 
+  timer = null
+
   state = {
     searchQuery: '',
-    searchedVideos: []
+    searchedVideos: [],
+    isSearching: false
   }
 
   componentDidMount() {
@@ -44,11 +49,12 @@ class AllVideosPanel extends Component {
       loaded,
       onAddVideoClick
     } = this.props
-    const { searchQuery, searchedVideos } = this.state
+    const { searchQuery, searchedVideos, isSearching } = this.state
     const videos = searchQuery ? searchedVideos : allVideos
     return (
       <SectionPanel
         title={title}
+        searchPlaceholder="Search videos"
         button={
           <Button
             className="btn btn-default"
@@ -65,6 +71,7 @@ class AllVideosPanel extends Component {
         loadMore={this.loadMoreVideos}
         onSearch={this.onVideoSearch}
         searchQuery={searchQuery}
+        isSearching={isSearching}
       >
         <div
           style={{
@@ -102,7 +109,20 @@ class AllVideosPanel extends Component {
   }
 
   onVideoSearch = text => {
-    this.setState({ searchQuery: text })
+    clearTimeout(this.timer)
+    this.setState({ searchQuery: text, isSearching: true })
+    this.timer = setTimeout(() => this.searchVideo(text), 300)
+  }
+
+  searchVideo = async text => {
+    try {
+      const { data: searchedVideos } = await request.get(
+        `${URL}/video/search?query=${text}`
+      )
+      this.setState({ searchedVideos, isSearching: false })
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 }
 

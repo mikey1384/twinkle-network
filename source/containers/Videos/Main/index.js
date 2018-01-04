@@ -23,6 +23,8 @@ import {
   getPlaylistsAsync
 } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
+import request from 'axios'
+import { URL } from 'constants/URL'
 
 class Main extends Component {
   static propTypes = {
@@ -49,8 +51,13 @@ class Main extends Component {
     userId: PropTypes.number
   }
 
+  timer = null
+
   state = {
-    addPlaylistModalShown: false
+    addPlaylistModalShown: false,
+    playlistSearchQuery: '',
+    searchedPlaylists: [],
+    isSearching: false
   }
 
   render() {
@@ -60,7 +67,7 @@ class Main extends Component {
 
       notificationLoaded,
 
-      playlists,
+      playlists: allPlaylists,
       getPlaylists,
       playlistsLoaded,
       loadMorePlaylistsButton,
@@ -85,7 +92,14 @@ class Main extends Component {
       closeReorderPinnedPlaylistsModal
     } = this.props
 
-    const { addPlaylistModalShown } = this.state
+    const {
+      addPlaylistModalShown,
+      playlistSearchQuery,
+      isSearching,
+      searchedPlaylists
+    } = this.state
+
+    const playlists = playlistSearchQuery ? searchedPlaylists : allPlaylists
 
     const allPlaylistButtons = [
       {
@@ -122,13 +136,15 @@ class Main extends Component {
           <PlaylistsPanel
             key={'allplaylists'}
             buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
-            onSearch={() => console.log('on playlist search')}
             title="All Playlists"
             loadMoreButton={loadMorePlaylistsButton}
             userId={userId}
             playlists={playlists}
             loadPlaylists={getPlaylists}
             loaded={playlistsLoaded}
+            isSearching={isSearching}
+            onSearch={this.onSearchPlaylist}
+            searchQuery={playlistSearchQuery}
           />
           <AllVideosPanel
             key={'allvideos'}
@@ -192,8 +208,26 @@ class Main extends Component {
     )
   }
 
-  renderPlaylistButton = (buttonsArray) => {
+  onSearchPlaylist = text => {
+    clearTimeout(this.timer)
+    this.setState({ playlistSearchQuery: text, isSearching: true })
+    this.timer = setTimeout(() => this.searchPlaylist(text), 300)
+  }
+
+  renderPlaylistButton = buttonsArray => {
     return <ButtonGroup style={{ marginLeft: 'auto' }} buttons={buttonsArray} />
+  }
+
+  searchPlaylist = async(text) => {
+    this.setState({isSearching: false})
+    try {
+      const { data: searchedPlaylists } = await request.get(
+        `${URL}/playlist/search/playlist?query=${text}`
+      )
+      this.setState({ searchedPlaylists, isSearching: false })
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 }
 

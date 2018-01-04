@@ -10,11 +10,13 @@ export default class SectionPanel extends Component {
     button: PropTypes.node,
     emptyMessage: PropTypes.string,
     isEmpty: PropTypes.bool,
+    isSearching: PropTypes.bool,
     loaded: PropTypes.bool,
     loadMore: PropTypes.func,
     children: PropTypes.node,
     loadMoreButtonShown: PropTypes.bool,
     onSearch: PropTypes.func,
+    searchPlaceholder: PropTypes.string,
     searchQuery: PropTypes.string
   }
 
@@ -29,6 +31,7 @@ export default class SectionPanel extends Component {
       children,
       loadMoreButtonShown,
       onSearch,
+      searchPlaceholder,
       searchQuery = ''
     } = this.props
     const { loading } = this.state
@@ -56,7 +59,7 @@ export default class SectionPanel extends Component {
             <SearchInput
               style={{ width: '45%' }}
               onChange={this.onSearch}
-              placeholder="test placeholder"
+              placeholder={searchPlaceholder}
               value={searchQuery}
             />
           )}
@@ -105,7 +108,13 @@ export default class SectionPanel extends Component {
   }
 
   renderEmptyMessage = () => {
-    const { emptyMessage, isEmpty, loaded, searchQuery } = this.props
+    const {
+      emptyMessage,
+      isEmpty,
+      isSearching,
+      loaded,
+      searchQuery
+    } = this.props
     if (isEmpty) {
       if (loaded) {
         return (
@@ -118,7 +127,9 @@ export default class SectionPanel extends Component {
               justifyContent: 'center'
             }}
           >
-            {searchQuery ? 'No Results' : emptyMessage}
+            {searchQuery
+              ? isSearching ? 'Searching...' : 'No Results'
+              : emptyMessage}
           </div>
         )
       }

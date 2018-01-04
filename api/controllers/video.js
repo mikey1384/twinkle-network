@@ -647,6 +647,23 @@ router.put('/currentlyWatching', requireAuth, async(req, res) => {
   }
 })
 
+router.get('/search', async(req, res) => {
+  const searchQuery = req.query.query
+  if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
+  const query = `
+    SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
+    ORDER BY a.id DESC LIMIT 12
+  `
+  try {
+    const result = await poolQuery(query, '%' + searchQuery + '%')
+    res.send(result)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({ error })
+  }
+})
+
 router.post('/view', (req, res) => {
   const { videoId, userId } = req.body
   const post = { videoId, userId, timeStamp: Math.floor(Date.now() / 1000) }

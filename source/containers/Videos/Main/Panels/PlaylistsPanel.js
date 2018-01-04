@@ -11,6 +11,7 @@ class PlaylistsPanel extends Component {
   static propTypes = {
     buttonGroup: PropTypes.func,
     buttonGroupShown: PropTypes.bool,
+    isSearching: PropTypes.bool,
     getMorePlaylistsAsync: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool,
@@ -18,13 +19,9 @@ class PlaylistsPanel extends Component {
     location: PropTypes.object.isRequired,
     onSearch: PropTypes.func,
     playlists: PropTypes.array.isRequired,
+    searchQuery: PropTypes.string,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number
-  }
-
-  constructor() {
-    super()
-    this.loadMorePlaylists = this.loadMorePlaylists.bind(this)
   }
 
   componentDidMount() {
@@ -36,6 +33,7 @@ class PlaylistsPanel extends Component {
 
   render() {
     const {
+      isSearching,
       loadMoreButton,
       playlists,
       userId,
@@ -43,6 +41,7 @@ class PlaylistsPanel extends Component {
       buttonGroup,
       loaded,
       onSearch,
+      searchQuery,
       title = 'All Playlists'
     } = this.props
     let buttonGroupElement = buttonGroupShown ? buttonGroup() : null
@@ -50,12 +49,15 @@ class PlaylistsPanel extends Component {
       <SectionPanel
         title={title}
         button={buttonGroupElement}
+        searchPlaceholder="Search playlists"
         emptyMessage="No Playlists"
         isEmpty={playlists.length === 0}
         loaded={loaded}
         loadMoreButtonShown={loadMoreButton}
         loadMore={this.loadMorePlaylists}
+        isSearching={isSearching}
         onSearch={onSearch}
+        searchQuery={searchQuery}
       >
         {playlists.map((playlist, index) => {
           const editable = userId === playlist.uploaderId
@@ -73,7 +75,7 @@ class PlaylistsPanel extends Component {
     )
   }
 
-  loadMorePlaylists() {
+  loadMorePlaylists = () => {
     const { playlists, getMorePlaylistsAsync } = this.props
     return getMorePlaylistsAsync(
       queryStringForArray(playlists, 'id', 'shownPlaylists')
