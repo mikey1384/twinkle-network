@@ -64,10 +64,7 @@ export default class MessagesContainer extends Component {
   }
 
   setScrollToBottom() {
-    let fillerHeight = 20
-    if (this.messages.offsetHeight < this.messagesContainer.offsetHeight) {
-      fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
-    }
+    let fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
     this.setState({fillerHeight})
     this.messagesContainer.scrollTop = Math.max(
       this.messagesContainer.offsetHeight,
