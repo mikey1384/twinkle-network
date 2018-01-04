@@ -77,7 +77,7 @@ export default class MessagesContainer extends Component {
     scrollBottom.bind(this)()
     setTimeout(() => {
       scrollBottom.bind(this)()
-    }, 10)
+    }, 50)
 
     function scrollBottom() {
       this.messagesContainer.scrollTop = Math.max(
