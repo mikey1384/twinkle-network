@@ -6,6 +6,7 @@ const async = require('async')
 const express = require('express')
 const router = express.Router()
 const { stringIsEmpty } = require('../helpers/stringHelpers')
+const { searchContents } = require('../helpers/contentHelpers')
 
 router.get('/', (req, res) => {
   const { shownPlaylists } = req.query
@@ -343,20 +344,21 @@ router.post('/pinned', requireAuth, (req, res) => {
 router.get('/search/video', async(req, res) => {
   const searchQuery = req.query.query
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
-  const query = `
+  const matchQuery = `
     SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
     FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE MATCH (a.title) AGAINST(?IN BOOLEAN MODE)
     ORDER by a.id DESC LIMIT 18
   `
+  const likeQuery = `
+    SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ? ORDER BY a.id DESC LIMIT 12
+  `
   try {
-    let result = await poolQuery(query, searchQuery)
-    if (result.length === 0) {
-      const alternateQuery = `
-        SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
-        FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ? ORDER BY a.id DESC LIMIT 12
-      `
-      result = await poolQuery(alternateQuery, `%${searchQuery}%`)
-    }
+    const result = await searchContents({
+      match: { query: matchQuery, params: searchQuery },
+      like: { query: likeQuery, params: `%${searchQuery}%` },
+      poolQuery
+    })
     res.send(result)
   } catch (error) {
     console.error(error)
@@ -366,17 +368,18 @@ router.get('/search/video', async(req, res) => {
 
 router.get('/search/playlist', async(req, res) => {
   const searchQuery = req.query.query
-  const query = `
+  const matchQuery = `
     SELECT id AS playlistId FROM vq_playlists WHERE MATCH (title) AGAINST(?IN BOOLEAN MODE) ORDER BY playlistId DESC LIMIT 5
   `
+  const likeQuery = `
+    SELECT id AS playlistId FROM vq_playlists WHERE title LIKE ? ORDER BY playlistId DESC LIMIT 5
+  `
   try {
-    let playlists = await fetchPlaylists(query, searchQuery)
-    if (playlists.length === 0) {
-      const alternateQuery = `
-        SELECT id AS playlistId FROM vq_playlists WHERE title LIKE ? ORDER BY playlistId DESC LIMIT 5
-      `
-      playlists = await fetchPlaylists(alternateQuery, `%${searchQuery}%`)
-    }
+    const playlists = await searchContents({
+      match: { query: matchQuery, params: searchQuery },
+      like: { query: likeQuery, params: `%${searchQuery}%` },
+      poolQuery: fetchPlaylists
+    })
     res.send(playlists)
   } catch (error) {
     console.error(error)

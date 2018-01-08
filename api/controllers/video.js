@@ -16,6 +16,7 @@ const {
   fetchReplies,
   postReplies
 } = require('../helpers/commentHelpers')
+const { searchContents } = require('../helpers/contentHelpers')
 
 const async = require('async')
 const express = require('express')
@@ -175,7 +176,9 @@ router.post('/like', requireAuth, (req, res) => {
 router.post('/edit/page', requireAuth, (req, res) => {
   const user = req.user
   const { videoId, title, description, url } = req.body
-  if (stringIsEmpty(title)) { return res.status(500).send({ error: 'Title is empty' }) }
+  if (stringIsEmpty(title)) {
+    return res.status(500).send({ error: 'Title is empty' })
+  }
   const post = {
     title,
     description: description,
@@ -614,10 +617,10 @@ router.put('/star', requireAuth, async(req, res) => {
   const { user, body: { videoId } } = req
   try {
     if (user.userType !== 'creator') {
- return res
+      return res
         .status(403)
         .send({ error: 'Not authorized to perform that action' })
-}
+    }
     const [{ isStarred }] = await poolQuery(
       `SELECT isStarred FROM vq_videos WHERE id = ?`,
       videoId
@@ -650,20 +653,21 @@ router.put('/currentlyWatching', requireAuth, async(req, res) => {
 router.get('/search', async(req, res) => {
   const searchQuery = req.query.query
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
-  const query = `
+  const matchQuery = `
     SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
     FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE MATCH(a.title) AGAINST(?IN BOOLEAN MODE)
     ORDER BY a.id DESC LIMIT 12
   `
+  const likeQuery = `
+    SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ? ORDER BY a.id DESC LIMIT 12
+  `
   try {
-    let result = await poolQuery(query, searchQuery)
-    if (result.length === 0) {
-      const alternateQuery = `
-        SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
-        FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ? ORDER BY a.id DESC LIMIT 12
-      `
-      result = await poolQuery(alternateQuery, `%${searchQuery}%`)
-    }
+    const result = await searchContents({
+      match: { query: matchQuery, params: searchQuery },
+      like: { query: likeQuery, params: `%${searchQuery}%` },
+      poolQuery
+    })
     res.send(result)
   } catch (error) {
     console.error(error)
