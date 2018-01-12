@@ -5,6 +5,7 @@ const { poolQuery } = require('../helpers')
 const {
   fetchedVideoCodeFromURL,
   processedURL,
+  processedString,
   stringIsEmpty
 } = require('../helpers/stringHelpers')
 const {
@@ -140,7 +141,8 @@ router.post('/question/like', requireAuth, async(req, res) => {
 router.get('/search', async(req, res) => {
   const { query } = req.query
   if (stringIsEmpty(query) || query.length < 2) return res.send({ result: [] })
-  const params = [query, query]
+  const processedQuery = processedString(query)
+  const params = [processedQuery, processedQuery]
   const matchQuery = `
     SELECT id, type, title AS label FROM (
       (SELECT id, 'video' AS type, title FROM vq_videos WHERE MATCH(title)

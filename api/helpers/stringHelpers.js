@@ -18,6 +18,16 @@ module.exports = {
     return videoCode
   },
 
+  processedString(string) {
+    return string
+      .replace(/@/g, '&commat;')
+      .replace(/-/g, '&ndash;')
+      .replace(/~/g, '&tilde;')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+  },
+
   processedURL(url) {
     if (url.indexOf('://') === -1) {
       url = 'http://' + url
