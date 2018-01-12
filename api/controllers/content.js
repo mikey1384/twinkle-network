@@ -140,11 +140,7 @@ router.post('/question/like', requireAuth, async(req, res) => {
 router.get('/search', async(req, res) => {
   const { query } = req.query
   if (stringIsEmpty(query) || query.length < 2) return res.send({ result: [] })
-  const queryWords = query
-    .split(' ')
-    .map(word => `+${word} `)
-    .join('')
-  const params = [queryWords, queryWords]
+  const params = [query, query]
   const matchQuery = `
     SELECT id, type, title AS label FROM (
       (SELECT id, 'video' AS type, title FROM vq_videos WHERE MATCH(title)
