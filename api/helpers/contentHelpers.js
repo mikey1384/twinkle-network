@@ -42,6 +42,20 @@ module.exports = {
       .then(result => Promise.resolve({ result, post }))
       .catch(error => Promise.reject(error))
   },
+  async searchContents({ match, like, poolQuery }) {
+    const matchQueryResults = await poolQuery(match.query, match.params)
+    const likeQueryResults = await poolQuery(like.query, like.params)
+    const matchQueryIds = matchQueryResults.map(
+      result => `${result.id}${result.type ? result.type : ''}`
+    )
+    const filteredLikeQueryResults = likeQueryResults.filter(
+      result =>
+        matchQueryIds.indexOf(
+          `${result.id}${result.type ? result.type : ''}`
+        ) === -1
+    )
+    return matchQueryResults.concat(filteredLikeQueryResults)
+  },
   getThumbImageFromEmbedApi({ url }) {
     return request({
       uri: embedApiUrl,

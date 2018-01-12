@@ -1,8 +1,8 @@
 const { poolQuery, promiseSeries } = require('../helpers')
 
 module.exports = {
-  fetchPlaylists(query) {
-    return poolQuery(query)
+  fetchPlaylists(...params) {
+    return poolQuery(...params)
       .then(rows => {
         let playlistIds = rows.map(({ playlistId }) => playlistId)
         const playlistQuery = `

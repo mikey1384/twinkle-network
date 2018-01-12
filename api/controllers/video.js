@@ -16,6 +16,7 @@ const {
   fetchReplies,
   postReplies
 } = require('../helpers/commentHelpers')
+const { searchContents } = require('../helpers/contentHelpers')
 
 const async = require('async')
 const express = require('express')
@@ -79,44 +80,34 @@ router.post('/', requireAuth, (req, res) => {
   })
 })
 
-router.delete('/', requireAuth, (req, res) => {
+router.delete('/', requireAuth, async(req, res) => {
   const user = req.user
   const videoId =
     req.query.videoId !== 'undefined' ? Number(req.query.videoId) : 0
   const lastVideoId =
     req.query.lastVideoId !== 'undefined' ? Number(req.query.lastVideoId) : 0
-
-  async.parallel(
-    [
-      callback => {
-        pool.query(
-          'DELETE FROM vq_videos WHERE id = ? AND uploader = ?',
-          [videoId, user.id],
-          err => {
-            callback(err)
-          }
-        )
-      },
-      callback => {
-        const query = [
-          'SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName ',
-          'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
-          'WHERE a.id < ? ',
-          'ORDER BY a.id DESC LIMIT 1'
-        ].join('')
-        pool.query(query, lastVideoId, (err, rows) => {
-          callback(err, rows)
-        })
-      }
-    ],
-    (err, results) => {
-      if (err) {
-        console.error(err)
-        return res.status(500).send({ error: err })
-      }
-      res.json({ result: results[1] })
+  const isCreator = user.userType === 'creator'
+  try {
+    const deleteQuery = `DELETE FROM vq_videos WHERE id = ?${
+      isCreator ? '' : ' AND uploader = ?'
+    }`
+    const params = [videoId]
+    if (!isCreator) params.push(user.id)
+    await poolQuery(deleteQuery, params)
+    const lastVideoQuery = `
+      SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName 
+      FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id 
+      WHERE a.id < ? 
+      ORDER BY a.id DESC LIMIT 1
+    `
+    const result = await poolQuery(lastVideoQuery, lastVideoId)
+    res.json({ result })
+  } catch (error) {
+    if (error) {
+      console.error(error)
+      return res.status(500).send({ error })
     }
-  )
+  }
 })
 
 router.post('/edit/title', requireAuth, (req, res) => {
@@ -175,7 +166,9 @@ router.post('/like', requireAuth, (req, res) => {
 router.post('/edit/page', requireAuth, (req, res) => {
   const user = req.user
   const { videoId, title, description, url } = req.body
-  if (stringIsEmpty(title)) { return res.status(500).send({ error: 'Title is empty' }) }
+  if (stringIsEmpty(title)) {
+    return res.status(500).send({ error: 'Title is empty' })
+  }
   const post = {
     title,
     description: description,
@@ -614,10 +607,10 @@ router.put('/star', requireAuth, async(req, res) => {
   const { user, body: { videoId } } = req
   try {
     if (user.userType !== 'creator') {
- return res
+      return res
         .status(403)
         .send({ error: 'Not authorized to perform that action' })
-}
+    }
     const [{ isStarred }] = await poolQuery(
       `SELECT isStarred FROM vq_videos WHERE id = ?`,
       videoId
@@ -650,13 +643,21 @@ router.put('/currentlyWatching', requireAuth, async(req, res) => {
 router.get('/search', async(req, res) => {
   const searchQuery = req.query.query
   if (stringIsEmpty(searchQuery) || searchQuery.length < 2) return res.send([])
-  const query = `
+  const matchQuery = `
     SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
-    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ?
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE MATCH(a.title) AGAINST(?IN BOOLEAN MODE)
     ORDER BY a.id DESC LIMIT 12
   `
+  const likeQuery = `
+    SELECT a.id, a.title, a.content, a.isStarred, a.uploader AS uploaderId, b.username AS uploaderName
+    FROM vq_videos a JOIN users b ON a.uploader = b.id WHERE a.title LIKE ? ORDER BY a.id DESC LIMIT 12
+  `
   try {
-    const result = await poolQuery(query, '%' + searchQuery + '%')
+    const result = await searchContents({
+      match: { query: matchQuery, params: searchQuery },
+      like: { query: likeQuery, params: `%${searchQuery}%` },
+      poolQuery
+    })
     res.send(result)
   } catch (error) {
     console.error(error)

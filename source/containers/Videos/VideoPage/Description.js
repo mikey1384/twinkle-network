@@ -133,7 +133,7 @@ class Description extends Component {
           marginTop: '1.5rem',
           alignItems: 'center',
           alignContent: 'space-around',
-          gridTemplateColumns: '30% 1fr 1fr 5% 18%',
+          gridTemplateColumns: '30% 1fr 1fr 2% 15%',
           gridTemplateRows: '20% 2% 60% auto',
           gridColumnGap: '1rem',
           gridRowGap: '1.2rem',
@@ -185,6 +185,7 @@ class Description extends Component {
                   this.thumbLabel = ref
                 }}
                 style={{
+                  width: '100%',
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -317,12 +318,13 @@ class Description extends Component {
           style={{
             gridArea: 'likeButton',
             alignSelf: 'end',
+            justifySelf: 'end',
             width: '100%'
           }}
         >
           <LikeButton
             style={{
-              fontSize: '3rem',
+              fontSize: '2.5rem',
               width: '100%'
             }}
             onClick={this.onVideoLikeClick}

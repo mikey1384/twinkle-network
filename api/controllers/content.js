@@ -5,9 +5,13 @@ const { poolQuery } = require('../helpers')
 const {
   fetchedVideoCodeFromURL,
   processedURL,
+  processedString,
   stringIsEmpty
 } = require('../helpers/stringHelpers')
-const { getThumbImageFromEmbedApi } = require('../helpers/contentHelpers')
+const {
+  getThumbImageFromEmbedApi,
+  searchContents
+} = require('../helpers/contentHelpers')
 const { googleKey } = require('../siteConfig')
 const request = require('request-promise-native')
 
@@ -137,12 +141,9 @@ router.post('/question/like', requireAuth, async(req, res) => {
 router.get('/search', async(req, res) => {
   const { query } = req.query
   if (stringIsEmpty(query) || query.length < 2) return res.send({ result: [] })
-  const queryWords = query
-    .split(' ')
-    .map(word => `+${word} `)
-    .join('')
-  const params = [queryWords, queryWords]
-  const searchQuery = `
+  const processedQuery = processedString(query)
+  const params = [processedQuery, processedQuery]
+  const matchQuery = `
     SELECT id, type, title AS label FROM (
       (SELECT id, 'video' AS type, title FROM vq_videos WHERE MATCH(title)
       AGAINST(?IN BOOLEAN MODE))
@@ -151,17 +152,19 @@ router.get('/search', async(req, res) => {
       AGAINST(?IN BOOLEAN MODE))
     ) AS u LIMIT 20
   `
+  const likeQuery = `
+    SELECT id, type, title AS label FROM (
+      SELECT id, 'video' AS type, title FROM vq_videos
+      UNION
+      SELECT id, 'link' AS type, title FROM content_urls
+    ) AS u WHERE u.title LIKE ? ORDER BY u.id DESC LIMIT 20
+  `
   try {
-    let result = await poolQuery(searchQuery, params)
-    if (result.length > 0) return res.send({ result })
-    const alternateQuery = `
-      SELECT id, type, title AS label FROM (
-        SELECT id, 'video' AS type, title FROM vq_videos
-        UNION
-        SELECT id, 'link' AS type, title FROM content_urls
-      ) AS u WHERE u.title LIKE ? ORDER BY u.id DESC LIMIT 20
-    `
-    result = await poolQuery(alternateQuery, `%${query}%`)
+    const result = await searchContents({
+      match: { query: matchQuery, params },
+      like: { query: likeQuery, params: `%${query}%` },
+      poolQuery
+    })
     return res.send({ result })
   } catch (error) {
     console.error(error)

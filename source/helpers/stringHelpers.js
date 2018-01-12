@@ -135,6 +135,7 @@ export function processedQueryString(string) {
 export function processedString(string) {
   return string
     ? string
+        .replace(/~/g, '&tilde;')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
