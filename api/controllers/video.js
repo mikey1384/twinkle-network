@@ -80,44 +80,34 @@ router.post('/', requireAuth, (req, res) => {
   })
 })
 
-router.delete('/', requireAuth, (req, res) => {
+router.delete('/', requireAuth, async(req, res) => {
   const user = req.user
   const videoId =
     req.query.videoId !== 'undefined' ? Number(req.query.videoId) : 0
   const lastVideoId =
     req.query.lastVideoId !== 'undefined' ? Number(req.query.lastVideoId) : 0
-
-  async.parallel(
-    [
-      callback => {
-        pool.query(
-          'DELETE FROM vq_videos WHERE id = ? AND uploader = ?',
-          [videoId, user.id],
-          err => {
-            callback(err)
-          }
-        )
-      },
-      callback => {
-        const query = [
-          'SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName ',
-          'FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id ',
-          'WHERE a.id < ? ',
-          'ORDER BY a.id DESC LIMIT 1'
-        ].join('')
-        pool.query(query, lastVideoId, (err, rows) => {
-          callback(err, rows)
-        })
-      }
-    ],
-    (err, results) => {
-      if (err) {
-        console.error(err)
-        return res.status(500).send({ error: err })
-      }
-      res.json({ result: results[1] })
+  const isCreator = user.userType === 'creator'
+  try {
+    const deleteQuery = `DELETE FROM vq_videos WHERE id = ?${
+      isCreator ? '' : ' AND uploader = ?'
+    }`
+    const params = [videoId]
+    if (!isCreator) params.push(user.id)
+    await poolQuery(deleteQuery, params)
+    const lastVideoQuery = `
+      SELECT a.id, a.title, a.description, a.content, a.uploader AS uploaderId, b.username AS uploaderName 
+      FROM vq_videos a LEFT JOIN users b ON a.uploader = b.id 
+      WHERE a.id < ? 
+      ORDER BY a.id DESC LIMIT 1
+    `
+    const result = await poolQuery(lastVideoQuery, lastVideoId)
+    res.json({ result })
+  } catch (error) {
+    if (error) {
+      console.error(error)
+      return res.status(500).send({ error })
     }
-  )
+  }
 })
 
 router.post('/edit/title', requireAuth, (req, res) => {
