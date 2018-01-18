@@ -1,12 +1,24 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import {
+  commentFeedLike,
   contentFeedLike,
+  feedCommentDelete,
+  feedCommentEdit,
+  feedContentDelete,
+  feedVideoStar,
   fetchMoreFeedsAsync,
   fetchFeedsAsync,
   fetchFeed,
+  likeTargetComment,
+  loadMoreFeedReplies,
+  loadMoreFeedCommentsAsync,
   clearFeeds,
-  uploadFeedComment
+  questionFeedLike,
+  showFeedCommentsAsync,
+  uploadFeedComment,
+  uploadFeedReply,
+  uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import InputPanel from './InputPanel'
 import ContentPanel from '../ContentPanel'
@@ -21,15 +33,27 @@ class Stories extends Component {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
+    commentFeedLike: PropTypes.func.isRequired,
     feeds: PropTypes.array.isRequired,
+    feedCommentDelete: PropTypes.func.isRequired,
+    feedContentDelete: PropTypes.func.isRequired,
+    feedCommentEdit: PropTypes.func.isRequired,
+    feedVideoStar: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    likeTargetComment: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
+    loadMoreFeedCommentsAsync: PropTypes.func.isRequired,
+    loadMoreFeedReplies: PropTypes.func.isRequired,
+    questionFeedLike: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
+    showFeedCommentsAsync: PropTypes.func.isRequired,
     uploadFeedComment: PropTypes.func.isRequired,
+    uploadFeedReply: PropTypes.func.isRequired,
+    uploadTargetContentComment: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
 
@@ -69,12 +93,24 @@ class Stories extends Component {
   render() {
     const {
       contentFeedLike,
+      commentFeedLike,
       feeds,
+      feedCommentDelete,
+      feedCommentEdit,
+      feedContentDelete,
+      feedVideoStar,
       fetchFeed,
+      likeTargetComment,
       loadMoreButton,
+      loadMoreFeedReplies,
+      uploadFeedReply,
       userId,
       loaded,
-      uploadFeedComment
+      loadMoreFeedCommentsAsync,
+      questionFeedLike,
+      showFeedCommentsAsync,
+      uploadFeedComment,
+      uploadTargetContentComment
     } = this.props
     const { clearingFeeds, loadingMore } = this.state
 
@@ -104,10 +140,39 @@ class Stories extends Component {
                   <ContentPanel
                     key={`${feed.id}`}
                     loadingDisabled={clearingFeeds}
-                    onLikeClick={contentFeedLike}
                     feed={feed}
-                    fetchFeed={fetchFeed}
-                    uploadFeedComment={uploadFeedComment}
+                    methods={{
+                      ContentPanel: {
+                        fetchContent: fetchFeed
+                      },
+                      Heading: {
+                        onUploadAnswer: uploadFeedComment,
+                        onLikeClick: contentFeedLike
+                      },
+                      Contents: {
+                        commentActions: {
+                          onDelete: feedCommentDelete,
+                          onLikeClick: commentFeedLike,
+                          onEditDone: feedCommentEdit,
+                          onReplySubmit: uploadFeedReply,
+                          onLoadMoreReplies: loadMoreFeedReplies
+                        },
+                        feedVideoStar,
+                        loadMoreComments: loadMoreFeedCommentsAsync,
+                        onCommentSubmit: uploadFeedComment,
+                        onContentDelete: feedContentDelete,
+                        onLikeCommentClick: commentFeedLike,
+                        onLikeQuestionClick: questionFeedLike,
+                        onLikeContentClick: contentFeedLike,
+                        showFeedComments: showFeedCommentsAsync,
+                        TargetContent: {
+                          onDeleteComment: feedCommentDelete,
+                          onEditComment: feedCommentEdit,
+                          onLikeClick: likeTargetComment,
+                          uploadComment: uploadTargetContentComment
+                        }
+                      }
+                    }}
                     userId={userId}
                   />
                 )
@@ -255,10 +320,22 @@ export default connect(
   }),
   {
     contentFeedLike,
+    commentFeedLike,
     fetchMoreFeeds: fetchMoreFeedsAsync,
     fetchFeed,
     fetchFeeds: fetchFeedsAsync,
+    feedCommentDelete,
+    feedContentDelete,
+    feedCommentEdit,
+    feedVideoStar,
+    likeTargetComment,
+    loadMoreFeedCommentsAsync,
+    loadMoreFeedReplies,
     clearFeeds,
-    uploadFeedComment
+    questionFeedLike,
+    showFeedCommentsAsync,
+    uploadFeedComment,
+    uploadFeedReply,
+    uploadTargetContentComment
   }
 )(Stories)

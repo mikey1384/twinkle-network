@@ -6,6 +6,7 @@ import UsernameText from 'components/Texts/UsernameText'
 import EditTextArea from 'components/Texts/EditTextArea'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { timeSince } from 'helpers/timeStampHelpers'
+import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
 
 export default class Comment extends Component {
@@ -36,17 +37,18 @@ export default class Comment extends Component {
     const { comment, username, userId, profilePicId } = this.props
     const { onEdit, confirmModalShown } = this.state
     return (
-      <li className="media" style={{ marginTop: '0px' }}>
+      <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
         {!onEdit && (
-          <div className="row">
+          <div style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row-reverse'
+          }}>
             <DropdownButton
               shape="button"
               icon="pencil"
-              style={{
-                position: 'absolute',
-                right: '7%',
-                opacity: 0.7
-              }}
+              style={{ position: 'absolute' }}
+              opacity={0.7}
               menuProps={[
                 {
                   label: 'Edit',
@@ -60,32 +62,38 @@ export default class Comment extends Component {
             />
           </div>
         )}
-        <ProfilePic size="3.5" userId={userId} profilePicId={profilePicId} />
-        <div className="media-body">
-          <h5 className="media-heading" style={{ marginBottom: '0px' }}>
-            <UsernameText
-              user={{
-                name: username,
-                id: userId
-              }}
-            />{' '}
-            <small>&nbsp;{timeSince(comment.timeStamp)}</small>
-          </h5>
-          {onEdit ? (
-            <EditTextArea
-              autoFocus
-              text={comment.content}
-              onCancel={() => this.setState({ onEdit: false })}
-              onEditDone={this.onEditDone}
-              rows={2}
-            />
-          ) : (
-            <div className="container-fluid" style={{ paddingLeft: '0px' }}>
-              <LongText style={{ lineHeight: '2rem' }}>
-                {comment.content}
-              </LongText>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <ProfilePic style={{ width: '8%', height: '8%' }} userId={userId} profilePicId={profilePicId} />
+          <div style={{ width: '90%', marginLeft: '2%' }}>
+            <div>
+              <UsernameText
+                style={{ fontSize: '1.7rem' }}
+                user={{
+                  name: username,
+                  id: userId
+                }}
+              />{' '}
+              <small style={{ color: Color.gray }}>&nbsp;{timeSince(comment.timeStamp)}</small>
             </div>
-          )}
+            {onEdit ? (
+              <EditTextArea
+                autoFocus
+                text={comment.content}
+                onCancel={() => this.setState({ onEdit: false })}
+                onEditDone={this.onEditDone}
+                rows={2}
+              />
+            ) : (
+                <div className="container-fluid" style={{ paddingLeft: '0px' }}>
+                  <LongText style={{
+                    wordBreak: 'break-word',
+                    margin: '0.5rem 0 1rem 0'
+                  }}>
+                    {comment.content}
+                  </LongText>
+                </div>
+              )}
+          </div>
         </div>
         {confirmModalShown && (
           <ConfirmModal
@@ -94,7 +102,7 @@ export default class Comment extends Component {
             onConfirm={this.onDelete}
           />
         )}
-      </li>
+      </div>
     )
   }
 

@@ -13,6 +13,10 @@ import StarMark from 'components/StarMark'
 export default class Heading extends Component {
   static propTypes = {
     action: PropTypes.string,
+    methods: PropTypes.shape({
+      onUploadAnswer: PropTypes.func.isRequired,
+      onLikeClick: PropTypes.func.isRequired
+    }),
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.shape({
       rootContentLikers: PropTypes.array,
@@ -24,15 +28,13 @@ export default class Heading extends Component {
       uploaderPicId: PropTypes.number
     }).isRequired,
     myId: PropTypes.number,
-    onLikeClick: PropTypes.func.isRequired,
     onPlayVideoClick: PropTypes.func,
     rootContent: PropTypes.shape({
       content: PropTypes.string
     }).isRequired,
     targetReplyUploader: PropTypes.object,
     targetCommentUploader: PropTypes.object,
-    uploader: PropTypes.object,
-    uploadFeedComment: PropTypes.func.isRequired
+    uploader: PropTypes.object
   }
 
   state = {
@@ -44,7 +46,7 @@ export default class Heading extends Component {
       feed: { type, uploaderPicId, rootType, rootId, timeStamp },
       uploader,
       rootContent,
-      uploadFeedComment
+      methods
     } = this.props
     const { questionModalShown } = this.state
     return (
@@ -94,7 +96,7 @@ export default class Heading extends Component {
           <QuestionModal
             onHide={() => this.setState({ questionModalShown: false })}
             question={rootContent.content}
-            uploadAnswer={uploadFeedComment}
+            uploadAnswer={methods.uploadAnswer}
             parent={{
               id: rootId,
               type: 'question',
@@ -164,7 +166,7 @@ export default class Heading extends Component {
       rootContent: { content, isStarred },
       attachedVideoShown,
       myId,
-      onLikeClick,
+      methods,
       onPlayVideoClick
     } = this.props
     const userLikedVideo =
@@ -177,34 +179,34 @@ export default class Heading extends Component {
               small
               targetLabel="Video"
               liked={userLikedVideo}
-              onClick={() => onLikeClick(rootId, rootType)}
+              onClick={() => methods.onLikeClick(rootId, rootType)}
             />
           ) : (
-            content && (
-              <a
-                style={{
-                  marginLeft: 'auto',
-                  float: 'right',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  color: Color.blue
-                }}
-                onClick={onPlayVideoClick}
-              >
-                <div className="video-preview-thumb">
-                  <img
-                    alt="thumb"
-                    style={{ width: '100%' }}
-                    src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
-                  />
-                  {!!isStarred && (
-                    <StarMark style={{ top: 1, left: 1 }} size={2} />
-                  )}
-                  <span />
-                </div>
-              </a>
-            )
-          )}
+              content && (
+                <a
+                  style={{
+                    marginLeft: 'auto',
+                    float: 'right',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: Color.blue
+                  }}
+                  onClick={onPlayVideoClick}
+                >
+                  <div className="video-preview-thumb">
+                    <img
+                      alt="thumb"
+                      style={{ width: '100%' }}
+                      src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                    />
+                    {!!isStarred && (
+                      <StarMark style={{ top: 1, left: 1 }} size={2} />
+                    )}
+                    <span />
+                  </div>
+                </a>
+              )
+            )}
         </Fragment>
       )
     } else if (rootType === 'question') {

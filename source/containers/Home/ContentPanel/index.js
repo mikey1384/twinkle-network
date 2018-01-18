@@ -7,11 +7,15 @@ import Loading from 'components/Loading'
 export default class ContentPanel extends Component {
   static propTypes = {
     feed: PropTypes.object.isRequired,
-    fetchFeed: PropTypes.func.isRequired,
     loadingDisabled: PropTypes.bool,
-    onLikeClick: PropTypes.func.isRequired,
-    uploadFeedComment: PropTypes.func.isRequired,
-    userId: PropTypes.number
+    userId: PropTypes.number,
+    methods: PropTypes.shape({
+      ContentPanel: PropTypes.shape({
+        fetchContent: PropTypes.func.isRequired
+      }),
+      Heading: PropTypes.object,
+      Contents: PropTypes.object
+    })
   }
 
   constructor() {
@@ -23,16 +27,16 @@ export default class ContentPanel extends Component {
   }
 
   componentDidMount() {
-    const { fetchFeed, feed, loadingDisabled } = this.props
+    const { methods, feed, loadingDisabled } = this.props
     const { feedLoaded } = this.state
     if (!feedLoaded && !loadingDisabled) {
       this.setState({ feedLoaded: true })
-      fetchFeed(feed)
+      methods.ContentPanel.fetchContent(feed)
     }
   }
 
   render() {
-    const { feed, onLikeClick, uploadFeedComment, userId } = this.props
+    const { feed, methods, userId } = this.props
     const { attachedVideoShown } = this.state
     return (
       <div
@@ -42,7 +46,7 @@ export default class ContentPanel extends Component {
         {feed.uploaderName && (
           <Heading
             feed={feed}
-            onLikeClick={onLikeClick}
+            methods={methods.Heading}
             myId={userId}
             targetCommentUploader={
               feed.targetCommentUploaderName && {
@@ -68,7 +72,6 @@ export default class ContentPanel extends Component {
                 : feed.rootType === 'question' ? 'answered' : 'commented on'
             }
             uploader={{ name: feed.uploaderName, id: feed.uploaderId }}
-            uploadFeedComment={uploadFeedComment}
             onPlayVideoClick={() => this.setState({ attachedVideoShown: true })}
             attachedVideoShown={attachedVideoShown}
           />
@@ -77,6 +80,7 @@ export default class ContentPanel extends Component {
           {feed.uploaderName && (
             <Contents
               feed={feed}
+              methods={methods.Contents}
               attachedVideoShown={attachedVideoShown}
               myId={userId}
             />
