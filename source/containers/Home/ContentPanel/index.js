@@ -3,15 +3,19 @@ import React, { Component } from 'react'
 import Heading from './Heading'
 import Contents from './Contents'
 import Loading from 'components/Loading'
-import { fetchFeed } from 'redux/actions/FeedActions'
-import { connect } from 'react-redux'
 
-class FeedPanel extends Component {
+export default class ContentPanel extends Component {
   static propTypes = {
     feed: PropTypes.object.isRequired,
-    fetchFeed: PropTypes.func.isRequired,
     loadingDisabled: PropTypes.bool,
-    userId: PropTypes.number
+    userId: PropTypes.number,
+    methods: PropTypes.shape({
+      ContentPanel: PropTypes.shape({
+        fetchContent: PropTypes.func.isRequired
+      }),
+      Heading: PropTypes.object,
+      Contents: PropTypes.object
+    })
   }
 
   constructor() {
@@ -23,16 +27,16 @@ class FeedPanel extends Component {
   }
 
   componentDidMount() {
-    const { fetchFeed, feed, loadingDisabled } = this.props
+    const { methods, feed, loadingDisabled } = this.props
     const { feedLoaded } = this.state
     if (!feedLoaded && !loadingDisabled) {
       this.setState({ feedLoaded: true })
-      fetchFeed(feed)
+      methods.ContentPanel.fetchContent(feed)
     }
   }
 
   render() {
-    const { feed, userId } = this.props
+    const { feed, methods, userId } = this.props
     const { attachedVideoShown } = this.state
     return (
       <div
@@ -42,6 +46,7 @@ class FeedPanel extends Component {
         {feed.uploaderName && (
           <Heading
             feed={feed}
+            methods={methods.Heading}
             myId={userId}
             targetCommentUploader={
               feed.targetCommentUploaderName && {
@@ -75,6 +80,7 @@ class FeedPanel extends Component {
           {feed.uploaderName && (
             <Contents
               feed={feed}
+              methods={methods.Contents}
               attachedVideoShown={attachedVideoShown}
               myId={userId}
             />
@@ -85,5 +91,3 @@ class FeedPanel extends Component {
     )
   }
 }
-
-export default connect(null, { fetchFeed })(FeedPanel)

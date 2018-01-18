@@ -4,11 +4,13 @@ import Content from './Content'
 import { cleanString } from 'helpers/stringHelpers'
 
 TargetContent.propTypes = {
+  methods: PropTypes.object.isRequired,
   myId: PropTypes.number,
   feed: PropTypes.object.isRequired
 }
 export default function TargetContent({
   myId,
+  methods,
   feed: {
     commentId,
     discussionId,
@@ -45,6 +47,7 @@ export default function TargetContent({
           contentAvailable={!!targetReply}
           discussionId={discussionId}
           likes={targetContentLikers}
+          methods={methods}
           myId={myId}
           panelId={id}
           replyId={replyId}
@@ -68,6 +71,7 @@ export default function TargetContent({
             discussionId={discussionId}
             likes={targetContentLikers}
             myId={myId}
+            methods={methods}
             panelId={id}
             rootId={rootId}
             rootContent={rootContent}
@@ -87,6 +91,7 @@ export default function TargetContent({
             content={discussionDescription}
             contentAvailable={!!discussionTitle}
             discussionId={discussionId}
+            methods={methods}
             isDiscussion
             panelId={id}
             rootId={rootId}

@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router'
 import {
+  contentFeedLike,
+  fetchFeed,
   fetchUserFeeds,
   fetchMoreUserFeeds,
-  clearFeeds
+  clearFeeds,
+  uploadFeedComment
 } from 'redux/actions/FeedActions'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
-import FeedPanel from '../../FeedPanel'
+import ContentPanel from '../../ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 
@@ -16,7 +19,9 @@ class Body extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
+    contentFeedLike: PropTypes.func.isRequired,
     feeds: PropTypes.array,
+    fetchFeed: PropTypes.func.isRequired,
     fetchMoreUserFeeds: PropTypes.func.isRequired,
     fetchUserFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
@@ -24,6 +29,7 @@ class Body extends Component {
     loadMoreButton: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
+    uploadFeedComment: PropTypes.func.isRequired,
     myId: PropTypes.number
   }
 
@@ -95,14 +101,17 @@ class Body extends Component {
 
   render() {
     const {
+      contentFeedLike,
       match: route,
       match: { params: { username } },
       history,
       feeds,
+      fetchFeed,
       myId,
       loaded,
       loadMoreButton,
-      clearFeeds
+      clearFeeds,
+      uploadFeedComment
     } = this.props
     const { loading } = this.state
 
@@ -222,10 +231,13 @@ class Body extends Component {
               <div>
                 {feeds.map(feed => {
                   return (
-                    <FeedPanel
+                    <ContentPanel
                       key={`${feed.type}${feed.id}`}
+                      onLikeClick={contentFeedLike}
                       feed={feed}
                       userId={myId}
+                      fetchFeed={fetchFeed}
+                      uploadFeedComment={uploadFeedComment}
                     />
                   )
                 })}
@@ -315,8 +327,11 @@ export default connect(
     homeComponentConnected: state.FeedReducer.homeComponentConnected
   }),
   {
+    contentFeedLike,
+    fetchFeed,
     fetchUserFeeds,
     fetchMoreUserFeeds,
+    uploadFeedComment,
     clearFeeds
   }
 )(Body)

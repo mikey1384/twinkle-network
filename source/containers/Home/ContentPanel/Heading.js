@@ -4,17 +4,19 @@ import UserLink from '../UserLink'
 import ContentLink from 'components/ContentLink'
 import { timeSince } from 'helpers/timeStampHelpers'
 import LikeButton from 'components/LikeButton'
-import { connect } from 'react-redux'
-import { contentFeedLike } from 'redux/actions/FeedActions'
 import { Color } from 'constants/css'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import QuestionModal from './QuestionModal'
 import StarMark from 'components/StarMark'
 
-class Heading extends Component {
+export default class Heading extends Component {
   static propTypes = {
     action: PropTypes.string,
+    methods: PropTypes.shape({
+      onUploadAnswer: PropTypes.func.isRequired,
+      onLikeClick: PropTypes.func.isRequired
+    }),
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.shape({
       rootContentLikers: PropTypes.array,
@@ -26,7 +28,6 @@ class Heading extends Component {
       uploaderPicId: PropTypes.number
     }).isRequired,
     myId: PropTypes.number,
-    onLikeClick: PropTypes.func.isRequired,
     onPlayVideoClick: PropTypes.func,
     rootContent: PropTypes.shape({
       content: PropTypes.string
@@ -44,7 +45,8 @@ class Heading extends Component {
     const {
       feed: { type, uploaderPicId, rootType, rootId, timeStamp },
       uploader,
-      rootContent
+      rootContent,
+      methods
     } = this.props
     const { questionModalShown } = this.state
     return (
@@ -94,6 +96,7 @@ class Heading extends Component {
           <QuestionModal
             onHide={() => this.setState({ questionModalShown: false })}
             question={rootContent.content}
+            uploadAnswer={methods.uploadAnswer}
             parent={{
               id: rootId,
               type: 'question',
@@ -163,7 +166,7 @@ class Heading extends Component {
       rootContent: { content, isStarred },
       attachedVideoShown,
       myId,
-      onLikeClick,
+      methods,
       onPlayVideoClick
     } = this.props
     const userLikedVideo =
@@ -176,34 +179,34 @@ class Heading extends Component {
               small
               targetLabel="Video"
               liked={userLikedVideo}
-              onClick={() => onLikeClick(rootId, rootType)}
+              onClick={() => methods.onLikeClick(rootId, rootType)}
             />
           ) : (
-            content && (
-              <a
-                style={{
-                  marginLeft: 'auto',
-                  float: 'right',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  color: Color.blue
-                }}
-                onClick={onPlayVideoClick}
-              >
-                <div className="video-preview-thumb">
-                  <img
-                    alt="thumb"
-                    style={{ width: '100%' }}
-                    src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
-                  />
-                  {!!isStarred && (
-                    <StarMark style={{ top: 1, left: 1 }} size={2} />
-                  )}
-                  <span />
-                </div>
-              </a>
-            )
-          )}
+              content && (
+                <a
+                  style={{
+                    marginLeft: 'auto',
+                    float: 'right',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: Color.blue
+                  }}
+                  onClick={onPlayVideoClick}
+                >
+                  <div className="video-preview-thumb">
+                    <img
+                      alt="thumb"
+                      style={{ width: '100%' }}
+                      src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                    />
+                    {!!isStarred && (
+                      <StarMark style={{ top: 1, left: 1 }} size={2} />
+                    )}
+                    <span />
+                  </div>
+                </a>
+              )
+            )}
         </Fragment>
       )
     } else if (rootType === 'question') {
@@ -238,5 +241,3 @@ class Heading extends Component {
     return null
   }
 }
-
-export default connect(null, { onLikeClick: contentFeedLike })(Heading)

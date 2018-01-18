@@ -5,10 +5,8 @@ import Button from 'components/Button'
 import { Color } from 'constants/css'
 import { addEmoji, finalizeEmoji, stringIsEmpty } from 'helpers/stringHelpers'
 import Textarea from 'react-textarea-autosize'
-import { uploadFeedComment } from 'redux/actions/FeedActions'
-import { connect } from 'react-redux'
 
-class QuestionModal extends Component {
+export default class QuestionModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
     uploadAnswer: PropTypes.func.isRequired,
@@ -83,4 +81,3 @@ class QuestionModal extends Component {
   }
 }
 
-export default connect(null, { uploadAnswer: uploadFeedComment })(QuestionModal)
