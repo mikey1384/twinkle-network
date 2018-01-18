@@ -5,20 +5,6 @@ import StarButton from 'components/StarButton'
 import Button from 'components/Button'
 import Likers from 'components/Likers'
 import { connect } from 'react-redux'
-import {
-  showFeedCommentsAsync,
-  loadMoreFeedCommentsAsync,
-  uploadFeedComment,
-  feedCommentDelete,
-  feedContentDelete,
-  commentFeedLike,
-  questionFeedLike,
-  feedCommentEdit,
-  uploadFeedReply,
-  loadMoreFeedReplies,
-  feedVideoStar,
-  contentFeedLike
-} from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
 import VideoPlayer from 'components/VideoPlayer'
 import PanelComments from 'components/PanelComments'
@@ -32,20 +18,9 @@ class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
     feed: PropTypes.object.isRequired,
-    feedVideoStar: PropTypes.func.isRequired,
     isCreator: PropTypes.bool.isRequired,
-    loadMoreComments: PropTypes.func.isRequired,
-    myId: PropTypes.number,
-    onCommentDelete: PropTypes.func.isRequired,
-    onContentDelete: PropTypes.func.isRequired,
-    onEditDone: PropTypes.func.isRequired,
-    onLikeCommentClick: PropTypes.func.isRequired,
-    onLikeContentClick: PropTypes.func.isRequired,
-    onLikeQuestionClick: PropTypes.func.isRequired,
-    onLoadMoreReplies: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    showFeedComments: PropTypes.func.isRequired
+    methods: PropTypes.object.isRequired,
+    myId: PropTypes.number
   }
 
   state = {
@@ -61,42 +36,36 @@ class Contents extends Component {
     const {
       feed: {
         uploaderId,
-        content,
-        contentLikers = [],
-        contentId,
-        type,
-        discussionId,
-        hasHqThumb,
-        isStarred,
-        videoViews,
-        numChildComments = 0,
-        numChildReplies = 0,
-        replyId,
-        commentId,
-        childComments,
-        commentsLoadMoreButton,
-        rootId,
-        rootType,
-        contentTitle,
-        contentDescription,
-        rootContent,
-        rootContentIsStarred,
-        thumbUrl,
-        actualTitle,
-        actualDescription,
-        siteUrl
+      content,
+      contentLikers = [],
+      contentId,
+      type,
+      discussionId,
+      hasHqThumb,
+      isStarred,
+      videoViews,
+      numChildComments = 0,
+      numChildReplies = 0,
+      replyId,
+      commentId,
+      childComments,
+      commentsLoadMoreButton,
+      rootId,
+      rootType,
+      contentTitle,
+      contentDescription,
+      rootContent,
+      rootContentIsStarred,
+      thumbUrl,
+      actualTitle,
+      actualDescription,
+      siteUrl
       },
       feed,
       isCreator,
+      methods,
       myId,
-      attachedVideoShown,
-      onEditDone,
-      onLikeCommentClick,
-      onLoadMoreReplies,
-      onCommentDelete,
-      onContentDelete,
-      onReplySubmit,
-      onSubmit
+      attachedVideoShown
     } = this.props
     const {
       autoFocusWhenCommentShown,
@@ -115,7 +84,7 @@ class Contents extends Component {
       <div>
         {confirmModalShown && (
           <ConfirmModal
-            onConfirm={() => onContentDelete({ type, contentId })}
+            onConfirm={() => methods.onContentDelete({ type, contentId })}
             onHide={() => this.setState({ confirmModalShown: false })}
             title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
           />
@@ -137,7 +106,7 @@ class Contents extends Component {
             )}
           {type === 'comment' &&
             (commentId || replyId || discussionId) && (
-              <TargetContent feed={feed} myId={myId} />
+              <TargetContent feed={feed} myId={myId} methods={methods.TargetContent} />
             )}
           <MainContent
             contentId={contentId}
@@ -211,8 +180,8 @@ class Contents extends Component {
                 onClick={this.onCommentButtonClick}
               >
                 Answer{!!numChildComments &&
-                numChildComments > 0 &&
-                !commentsShown
+                  numChildComments > 0 &&
+                  !commentsShown
                   ? ` (${numChildComments})`
                   : ''}
               </Button>
@@ -258,7 +227,6 @@ class Contents extends Component {
             loadMoreButton={commentsLoadMoreButton}
             userId={myId}
             loadMoreComments={this.loadMoreComments}
-            onSubmit={onSubmit}
             contentId={contentId}
             type={type}
             parent={{
@@ -270,13 +238,8 @@ class Contents extends Component {
               commentId,
               replyId
             }}
-            commentActions={{
-              onDelete: onCommentDelete,
-              onLikeClick: onLikeCommentClick,
-              onEditDone,
-              onReplySubmit,
-              onLoadMoreReplies
-            }}
+            onSubmit={methods.onCommentSubmit}
+            commentActions={methods.commentActions}
           />
         )}
         {userListModalShown && (
@@ -292,20 +255,19 @@ class Contents extends Component {
   }
 
   loadMoreComments = (lastCommentId, type, contentId) => {
-    const { loadMoreComments, feed: { commentId } } = this.props
-    loadMoreComments(lastCommentId, type, contentId, !!commentId)
+    const { methods, feed: { commentId } } = this.props
+    methods.loadMoreComments(lastCommentId, type, contentId, !!commentId)
   }
 
   onCommentButtonClick = () => {
     const {
-      feed: { type, rootType, contentId, commentId },
-      showFeedComments
+      feed: { type, rootType, contentId, commentId }, methods
     } = this.props
     const { clickListenerState, commentsShown } = this.state
     const isReply = !!commentId
     if (!commentsShown) {
       this.setState({ commentsShown: true, autoFocusWhenCommentShown: true })
-      return showFeedComments({
+      return methods.showFeedComments({
         rootType,
         type,
         contentId,
@@ -319,23 +281,23 @@ class Contents extends Component {
   onLikeClick = () => {
     const {
       feed: { contentId, type, rootType, commentId },
-      showFeedComments
+      methods
     } = this.props
     const { commentsShown } = this.state
     const isReply = !!commentId
     switch (type) {
       case 'comment':
-        this.props.onLikeCommentClick(contentId)
+        methods.onLikeCommentClick(contentId)
         break
       case 'question':
-        this.props.onLikeQuestionClick(contentId)
+        methods.onLikeQuestionClick(contentId)
         break
       default:
-        this.props.onLikeContentClick(contentId, rootType)
+        methods.onLikeContentClick(contentId, rootType)
     }
     if (!commentsShown) {
       this.setState({ commentsShown: true })
-      showFeedComments({
+      methods.showFeedComments({
         rootType,
         type,
         contentId,
@@ -346,22 +308,9 @@ class Contents extends Component {
   }
 
   onStarButtonClick = () => {
-    const { feedVideoStar, feed: { contentId } } = this.props
-    feedVideoStar(contentId)
+    const { methods, feed: { contentId } } = this.props
+    methods.feedVideoStar(contentId)
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }), {
-  feedVideoStar,
-  showFeedComments: showFeedCommentsAsync,
-  loadMoreComments: loadMoreFeedCommentsAsync,
-  onSubmit: uploadFeedComment,
-  onCommentDelete: feedCommentDelete,
-  onContentDelete: feedContentDelete,
-  onEditDone: feedCommentEdit,
-  onReplySubmit: uploadFeedReply,
-  onLoadMoreReplies: loadMoreFeedReplies,
-  onLikeCommentClick: commentFeedLike,
-  onLikeQuestionClick: questionFeedLike,
-  onLikeContentClick: contentFeedLike
-})(Contents)
+export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(Contents)

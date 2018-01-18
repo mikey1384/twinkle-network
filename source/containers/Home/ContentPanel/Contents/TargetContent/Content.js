@@ -6,12 +6,6 @@ import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
 import { connect } from 'react-redux'
-import {
-  feedCommentDelete,
-  feedCommentEdit,
-  likeTargetComment,
-  uploadTargetContentComment
-} from 'redux/actions/FeedActions'
 import UserListModal from 'components/Modals/UserListModal'
 import InputArea from 'components/Texts/InputArea'
 import Comment from './Comment'
@@ -28,10 +22,8 @@ class Content extends Component {
     discussionId: PropTypes.number,
     isDiscussion: PropTypes.bool,
     likes: PropTypes.array,
+    methods: PropTypes.object,
     myId: PropTypes.number,
-    onDeleteComment: PropTypes.func.isRequired,
-    onEditComment: PropTypes.func.isRequired,
-    onLikeClick: PropTypes.func.isRequired,
     panelId: PropTypes.number.isRequired,
     profilePicId: PropTypes.number,
     replyId: PropTypes.number,
@@ -40,7 +32,6 @@ class Content extends Component {
     rootType: PropTypes.string.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
-    uploadComment: PropTypes.func.isRequired,
     uploader: PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired
@@ -76,8 +67,7 @@ class Content extends Component {
       rootType,
       rootContent,
       replyId,
-      onDeleteComment,
-      onEditComment
+      methods
     } = this.props
     const {
       userListModalShown,
@@ -168,12 +158,10 @@ class Content extends Component {
                 </div>
               )}
               {comments.length > 0 && (
-                <ul
-                  className="media-list"
+                <div
                   style={{
                     marginTop: '1em',
-                    marginBottom: '0px',
-                    lineHeight: '0px'
+                    width: '100%'
                   }}
                 >
                   {comments.map(comment => (
@@ -183,11 +171,11 @@ class Content extends Component {
                       username={username}
                       userId={myId}
                       profilePicId={profilePicId}
-                      onDelete={onDeleteComment}
-                      onEditDone={onEditComment}
+                      onDelete={methods.onDeleteComment}
+                      onEditDone={methods.onEditComment}
                     />
                   ))}
-                </ul>
+                </div>
               )}
               {userListModalShown && (
                 <UserListModal
@@ -199,45 +187,45 @@ class Content extends Component {
               )}
             </div>
           ) : (
-            <div
-              style={{
-                marginTop: '0.2em',
-                marginBottom: '0.2em'
-              }}
-            >
               <div
-                className="col-xs-12"
-                style={{ paddingLeft: '0px', paddingRight: '0px' }}
+                style={{
+                  marginTop: '0.2em',
+                  marginBottom: '0.2em'
+                }}
               >
-                <div style={{ float: 'left' }}>
-                  <b style={{ color: Color.green }}>Discuss: </b>
-                </div>
-                <div style={{ float: 'right' }}>
-                  <small>
-                    <UsernameText user={uploader} />&nbsp;({timeSince(
-                      timeStamp
-                    )})
+                <div
+                  className="col-xs-12"
+                  style={{ paddingLeft: '0px', paddingRight: '0px' }}
+                >
+                  <div style={{ float: 'left' }}>
+                    <b style={{ color: Color.green }}>Discuss: </b>
+                  </div>
+                  <div style={{ float: 'right' }}>
+                    <small>
+                      <UsernameText user={uploader} />&nbsp;({timeSince(
+                        timeStamp
+                      )})
                   </small>
+                  </div>
+                </div>
+                <div style={{ paddingTop: '2.3em' }}>
+                  <p style={{ fontWeight: 'bold' }}>{title}</p>
+                  {content && <LongText>{content}</LongText>}
                 </div>
               </div>
-              <div style={{ paddingTop: '2.3em' }}>
-                <p style={{ fontWeight: 'bold' }}>{title}</p>
-                {content && <LongText>{content}</LongText>}
-              </div>
-            </div>
-          )
+            )
         ) : (
-          <div style={{ textAlign: 'center' }}>
-            <span>Content removed / no longer available</span>
-          </div>
-        )}
+            <div style={{ textAlign: 'center' }}>
+              <span>Content removed / no longer available</span>
+            </div>
+          )}
       </div>
     )
   }
 
   onLikeClick() {
-    const { replyId, commentId } = this.props
-    this.props.onLikeClick(replyId || commentId)
+    const { replyId, commentId, methods } = this.props
+    methods.onLikeClick(replyId || commentId)
   }
 
   onReplyClick() {
@@ -253,10 +241,10 @@ class Content extends Component {
       rootType,
       rootId,
       discussionId = null,
-      uploadComment,
+      methods,
       panelId
     } = this.props
-    uploadComment(
+    methods.uploadComment(
       { rootId, rootType, replyId, commentId, discussionId, content },
       panelId
     )
@@ -267,11 +255,5 @@ export default connect(
   state => ({
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId
-  }),
-  {
-    onDeleteComment: feedCommentDelete,
-    onEditComment: feedCommentEdit,
-    onLikeClick: likeTargetComment,
-    uploadComment: uploadTargetContentComment
-  }
+  })
 )(Content)
