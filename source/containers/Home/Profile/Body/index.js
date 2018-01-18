@@ -1,12 +1,24 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router'
 import {
+  commentFeedLike,
   contentFeedLike,
+  feedCommentDelete,
+  feedCommentEdit,
+  feedContentDelete,
+  feedVideoStar,
   fetchFeed,
   fetchUserFeeds,
   fetchMoreUserFeeds,
+  likeTargetComment,
   clearFeeds,
-  uploadFeedComment
+  loadMoreFeedCommentsAsync,
+  loadMoreFeedReplies,
+  questionFeedLike,
+  showFeedCommentsAsync,
+  uploadFeedComment,
+  uploadFeedReply,
+  uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -19,17 +31,29 @@ class Body extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
+    commentFeedLike: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
     feeds: PropTypes.array,
+    feedCommentDelete: PropTypes.func.isRequired,
+    feedCommentEdit: PropTypes.func.isRequired,
+    feedContentDelete: PropTypes.func.isRequired,
+    feedVideoStar: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
     fetchMoreUserFeeds: PropTypes.func.isRequired,
     fetchUserFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    likeTargetComment: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
+    loadMoreFeedCommentsAsync: PropTypes.func.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
+    loadMoreFeedReplies: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
+    questionFeedLike: PropTypes.func.isRequired,
+    showFeedCommentsAsync: PropTypes.func.isRequired,
     uploadFeedComment: PropTypes.func.isRequired,
+    uploadFeedReply: PropTypes.func.isRequired,
+    uploadTargetContentComment: PropTypes.func.isRequired,
     myId: PropTypes.number
   }
 
@@ -101,17 +125,29 @@ class Body extends Component {
 
   render() {
     const {
+      commentFeedLike,
       contentFeedLike,
       match: route,
       match: { params: { username } },
       history,
+      likeTargetComment,
+      loadMoreFeedReplies,
       feeds,
+      feedCommentDelete,
+      feedCommentEdit,
+      feedContentDelete,
+      feedVideoStar,
       fetchFeed,
+      loadMoreFeedCommentsAsync,
       myId,
       loaded,
       loadMoreButton,
       clearFeeds,
-      uploadFeedComment
+      questionFeedLike,
+      showFeedCommentsAsync,
+      uploadFeedComment,
+      uploadFeedReply,
+      uploadTargetContentComment
     } = this.props
     const { loading } = this.state
 
@@ -233,11 +269,40 @@ class Body extends Component {
                   return (
                     <ContentPanel
                       key={`${feed.type}${feed.id}`}
-                      onLikeClick={contentFeedLike}
                       feed={feed}
                       userId={myId}
-                      fetchFeed={fetchFeed}
-                      uploadFeedComment={uploadFeedComment}
+                      methods={{
+                        ContentPanel: {
+                          fetchContent: fetchFeed
+                        },
+                        Heading: {
+                          onUploadAnswer: uploadFeedComment,
+                          onLikeClick: contentFeedLike
+                        },
+                        Contents: {
+                          commentActions: {
+                            onDelete: feedCommentDelete,
+                            onLikeClick: commentFeedLike,
+                            onEditDone: feedCommentEdit,
+                            onReplySubmit: uploadFeedReply,
+                            onLoadMoreReplies: loadMoreFeedReplies
+                          },
+                          feedVideoStar,
+                          loadMoreComments: loadMoreFeedCommentsAsync,
+                          onCommentSubmit: uploadFeedComment,
+                          onContentDelete: feedContentDelete,
+                          onLikeCommentClick: commentFeedLike,
+                          onLikeQuestionClick: questionFeedLike,
+                          onLikeContentClick: contentFeedLike,
+                          showFeedComments: showFeedCommentsAsync,
+                          TargetContent: {
+                            onDeleteComment: feedCommentDelete,
+                            onEditComment: feedCommentEdit,
+                            onLikeClick: likeTargetComment,
+                            uploadComment: uploadTargetContentComment
+                          }
+                        }
+                      }}
                     />
                   )
                 })}
@@ -331,7 +396,19 @@ export default connect(
     fetchFeed,
     fetchUserFeeds,
     fetchMoreUserFeeds,
+    clearFeeds,
+    commentFeedLike,
+    feedCommentDelete,
+    feedContentDelete,
+    feedCommentEdit,
+    feedVideoStar,
+    likeTargetComment,
+    loadMoreFeedCommentsAsync,
+    loadMoreFeedReplies,
+    questionFeedLike,
+    showFeedCommentsAsync,
     uploadFeedComment,
-    clearFeeds
+    uploadFeedReply,
+    uploadTargetContentComment
   }
 )(Body)
