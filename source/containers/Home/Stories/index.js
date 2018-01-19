@@ -140,7 +140,7 @@ class Stories extends Component {
                   <ContentPanel
                     key={`${feed.id}`}
                     loadingDisabled={clearingFeeds}
-                    feed={feed}
+                    contentObj={feed}
                     methodObj={{
                       onFetchContent: fetchFeed,
                       onCommentSubmit: uploadFeedComment,

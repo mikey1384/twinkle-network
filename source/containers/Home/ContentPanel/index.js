@@ -6,10 +6,10 @@ import Loading from 'components/Loading'
 
 export default class ContentPanel extends Component {
   static propTypes = {
-    feed: PropTypes.object.isRequired,
+    contentObj: PropTypes.object.isRequired,
+    methodObj: PropTypes.object.isRequired,
     loadingDisabled: PropTypes.bool,
-    userId: PropTypes.number,
-    methodObj: PropTypes.object.isRequired
+    userId: PropTypes.number
   }
 
   constructor() {
@@ -21,16 +21,16 @@ export default class ContentPanel extends Component {
   }
 
   componentDidMount() {
-    const { methodObj, feed, loadingDisabled } = this.props
+    const { methodObj, contentObj, loadingDisabled } = this.props
     const { feedLoaded } = this.state
     if (!feedLoaded && !loadingDisabled) {
       this.setState({ feedLoaded: true })
-      methodObj.onFetchContent(feed)
+      methodObj.onFetchContent(contentObj)
     }
   }
 
   render() {
-    const { feed, methodObj, userId } = this.props
+    const { contentObj, methodObj, userId } = this.props
     const { attachedVideoShown } = this.state
     const methods = {
       Heading: {
@@ -67,49 +67,49 @@ export default class ContentPanel extends Component {
         className="panel panel-default"
         style={{ borderTop: '#e7e7e7 1px solid' }}
       >
-        {feed.uploaderName && (
+        {contentObj.uploaderName && (
           <Heading
-            feed={feed}
+            contentObj={contentObj}
             methods={methods.Heading}
             myId={userId}
             targetCommentUploader={
-              feed.targetCommentUploaderName && {
-                name: feed.targetCommentUploaderName,
-                id: feed.targetCommentUploaderId
+              contentObj.targetCommentUploaderName && {
+                name: contentObj.targetCommentUploaderName,
+                id: contentObj.targetCommentUploaderId
               }
             }
             targetReplyUploader={
-              feed.targetReplyUploaderName && {
-                name: feed.targetReplyUploaderName,
-                id: feed.targetReplyUploaderId
+              contentObj.targetReplyUploaderName && {
+                name: contentObj.targetReplyUploaderName,
+                id: contentObj.targetReplyUploaderId
               }
             }
             rootContent={{
-              id: feed.rootId,
-              title: feed.rootContentTitle,
-              content: feed.rootContent,
-              isStarred: feed.rootContentIsStarred
+              id: contentObj.rootId,
+              title: contentObj.rootContentTitle,
+              content: contentObj.rootContent,
+              isStarred: contentObj.rootContentIsStarred
             }}
             action={
-              feed.commentId
+              contentObj.commentId
                 ? 'replied to'
-                : feed.rootType === 'question' ? 'answered' : 'commented on'
+                : contentObj.rootType === 'question' ? 'answered' : 'commented on'
             }
-            uploader={{ name: feed.uploaderName, id: feed.uploaderId }}
+            uploader={{ name: contentObj.uploaderName, id: contentObj.uploaderId }}
             onPlayVideoClick={() => this.setState({ attachedVideoShown: true })}
             attachedVideoShown={attachedVideoShown}
           />
         )}
         <div className="panel-body">
-          {feed.uploaderName && (
+          {contentObj.uploaderName && (
             <Contents
-              feed={feed}
+              feed={contentObj}
               methods={methods.Contents}
               attachedVideoShown={attachedVideoShown}
               myId={userId}
             />
           )}
-          {!feed.uploaderName && <Loading />}
+          {!contentObj.uploaderName && <Loading />}
         </div>
       </div>
     )

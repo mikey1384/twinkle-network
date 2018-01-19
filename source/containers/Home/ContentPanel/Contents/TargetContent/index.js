@@ -6,12 +6,12 @@ import { cleanString } from 'helpers/stringHelpers'
 TargetContent.propTypes = {
   methods: PropTypes.object.isRequired,
   myId: PropTypes.number,
-  feed: PropTypes.object.isRequired
+  contentObj: PropTypes.object.isRequired
 }
 export default function TargetContent({
   myId,
   methods,
-  feed: {
+  contentObj: {
     commentId,
     discussionId,
     discussionDescription,

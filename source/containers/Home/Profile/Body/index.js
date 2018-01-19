@@ -269,7 +269,7 @@ class Body extends Component {
                   return (
                     <ContentPanel
                       key={`${feed.type}${feed.id}`}
-                      feed={feed}
+                      contentObj={feed}
                       userId={myId}
                       methodObj={{
                         onFetchContent: fetchFeed,

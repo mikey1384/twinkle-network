@@ -18,7 +18,7 @@ export default class Heading extends Component {
       onLikeClick: PropTypes.func.isRequired
     }),
     attachedVideoShown: PropTypes.bool,
-    feed: PropTypes.shape({
+    contentObj: PropTypes.shape({
       rootContentLikers: PropTypes.array,
       rootId: PropTypes.number,
       rootType: PropTypes.string.isRequired,
@@ -43,7 +43,7 @@ export default class Heading extends Component {
 
   render() {
     const {
-      feed: { type, uploaderPicId, rootType, rootId, timeStamp },
+      contentObj: { type, uploaderPicId, rootType, rootId, timeStamp },
       uploader,
       rootContent,
       methods
@@ -111,7 +111,7 @@ export default class Heading extends Component {
 
   renderHeading = () => {
     const {
-      feed: { type, rootType },
+      contentObj: { type, rootType },
       action,
       rootContent,
       uploader
@@ -162,7 +162,7 @@ export default class Heading extends Component {
 
   renderCornerButton = () => {
     const {
-      feed: { rootContentLikers = [], rootId, rootType },
+      contentObj: { rootContentLikers = [], rootId, rootType },
       rootContent: { content, isStarred },
       attachedVideoShown,
       myId,

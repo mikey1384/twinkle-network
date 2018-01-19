@@ -17,7 +17,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
-    feed: PropTypes.object.isRequired,
+    contentObj: PropTypes.object.isRequired,
     isCreator: PropTypes.bool.isRequired,
     methods: PropTypes.object.isRequired,
     myId: PropTypes.number
@@ -34,7 +34,7 @@ class Contents extends Component {
 
   render() {
     const {
-      feed: {
+      contentObj: {
         uploaderId,
       content,
       contentLikers = [],
@@ -61,7 +61,7 @@ class Contents extends Component {
       actualDescription,
       siteUrl
       },
-      feed,
+      contentObj,
       isCreator,
       methods,
       myId,
@@ -106,7 +106,7 @@ class Contents extends Component {
             )}
           {type === 'comment' &&
             (commentId || replyId || discussionId) && (
-              <TargetContent feed={feed} myId={myId} methods={methods.TargetContent} />
+              <TargetContent feed={contentObj} myId={myId} methods={methods.TargetContent} />
             )}
           <MainContent
             contentId={contentId}
@@ -255,13 +255,13 @@ class Contents extends Component {
   }
 
   loadMoreComments = (lastCommentId, type, contentId) => {
-    const { methods, feed: { commentId } } = this.props
+    const { methods, contentObj: { commentId } } = this.props
     methods.loadMoreComments(lastCommentId, type, contentId, !!commentId)
   }
 
   onCommentButtonClick = () => {
     const {
-      feed: { type, rootType, contentId, commentId }, methods
+      contentObj: { type, rootType, contentId, commentId }, methods
     } = this.props
     const { clickListenerState, commentsShown } = this.state
     const isReply = !!commentId
@@ -280,7 +280,7 @@ class Contents extends Component {
 
   onLikeClick = () => {
     const {
-      feed: { contentId, type, rootType, commentId },
+      contentObj: { contentId, type, rootType, commentId },
       methods
     } = this.props
     const { commentsShown } = this.state
@@ -308,7 +308,7 @@ class Contents extends Component {
   }
 
   onStarButtonClick = () => {
-    const { methods, feed: { contentId } } = this.props
+    const { methods, contentObj: { contentId } } = this.props
     methods.feedVideoStar(contentId)
   }
 }
