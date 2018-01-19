@@ -36,30 +36,30 @@ class Contents extends Component {
     const {
       contentObj: {
         uploaderId,
-      content,
-      contentLikers = [],
-      contentId,
-      type,
-      discussionId,
-      hasHqThumb,
-      isStarred,
-      videoViews,
-      numChildComments = 0,
-      numChildReplies = 0,
-      replyId,
-      commentId,
-      childComments,
-      commentsLoadMoreButton,
-      rootId,
-      rootType,
-      contentTitle,
-      contentDescription,
-      rootContent,
-      rootContentIsStarred,
-      thumbUrl,
-      actualTitle,
-      actualDescription,
-      siteUrl
+        content,
+        contentLikers = [],
+        contentId,
+        type,
+        discussionId,
+        hasHqThumb,
+        isStarred,
+        videoViews,
+        numChildComments = 0,
+        numChildReplies = 0,
+        replyId,
+        commentId,
+        childComments,
+        commentsLoadMoreButton,
+        rootId,
+        rootType,
+        contentTitle,
+        contentDescription,
+        rootContent,
+        rootContentIsStarred,
+        thumbUrl,
+        actualTitle,
+        actualDescription,
+        siteUrl
       },
       contentObj,
       isCreator,
@@ -106,7 +106,7 @@ class Contents extends Component {
             )}
           {type === 'comment' &&
             (commentId || replyId || discussionId) && (
-              <TargetContent feed={contentObj} myId={myId} methods={methods.TargetContent} />
+              <TargetContent contentObj={contentObj} myId={myId} methods={methods.TargetContent} />
             )}
           <MainContent
             contentId={contentId}

@@ -103,7 +103,7 @@ export default class ContentPanel extends Component {
         <div className="panel-body">
           {contentObj.uploaderName && (
             <Contents
-              feed={contentObj}
+              contentObj={contentObj}
               methods={methods.Contents}
               attachedVideoShown={attachedVideoShown}
               myId={userId}
