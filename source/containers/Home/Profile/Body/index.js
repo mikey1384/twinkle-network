@@ -271,37 +271,22 @@ class Body extends Component {
                       key={`${feed.type}${feed.id}`}
                       feed={feed}
                       userId={myId}
-                      methods={{
-                        ContentPanel: {
-                          fetchContent: fetchFeed
-                        },
-                        Heading: {
-                          onUploadAnswer: uploadFeedComment,
-                          onLikeClick: contentFeedLike
-                        },
-                        Contents: {
-                          commentActions: {
-                            onDelete: feedCommentDelete,
-                            onLikeClick: commentFeedLike,
-                            onEditDone: feedCommentEdit,
-                            onReplySubmit: uploadFeedReply,
-                            onLoadMoreReplies: loadMoreFeedReplies
-                          },
-                          feedVideoStar,
-                          loadMoreComments: loadMoreFeedCommentsAsync,
-                          onCommentSubmit: uploadFeedComment,
-                          onContentDelete: feedContentDelete,
-                          onLikeCommentClick: commentFeedLike,
-                          onLikeQuestionClick: questionFeedLike,
-                          onLikeContentClick: contentFeedLike,
-                          showFeedComments: showFeedCommentsAsync,
-                          TargetContent: {
-                            onDeleteComment: feedCommentDelete,
-                            onEditComment: feedCommentEdit,
-                            onLikeClick: likeTargetComment,
-                            uploadComment: uploadTargetContentComment
-                          }
-                        }
+                      methodObj={{
+                        onFetchContent: fetchFeed,
+                        onCommentSubmit: uploadFeedComment,
+                        onReplySubmit: uploadFeedReply,
+                        onTargetCommentSubmit: uploadTargetContentComment,
+                        onLikeContent: contentFeedLike,
+                        onLikeComment: commentFeedLike,
+                        onLikeTargetComment: likeTargetComment,
+                        onLikeQuestion: questionFeedLike,
+                        onDeleteContent: feedContentDelete,
+                        onDeleteComment: feedCommentDelete,
+                        onEditComment: feedCommentEdit,
+                        onLoadMoreComments: loadMoreFeedCommentsAsync,
+                        onLoadMoreReplies: loadMoreFeedReplies,
+                        onShowComments: showFeedCommentsAsync,
+                        onVideoStar: feedVideoStar
                       }}
                     />
                   )

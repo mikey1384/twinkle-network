@@ -96,7 +96,7 @@ export default class Heading extends Component {
           <QuestionModal
             onHide={() => this.setState({ questionModalShown: false })}
             question={rootContent.content}
-            uploadAnswer={methods.uploadAnswer}
+            uploadAnswer={methods.onUploadAnswer}
             parent={{
               id: rootId,
               type: 'question',

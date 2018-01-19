@@ -9,7 +9,7 @@ export default class ContentPanel extends Component {
     feed: PropTypes.object.isRequired,
     loadingDisabled: PropTypes.bool,
     userId: PropTypes.number,
-    methods: PropTypes.shape({
+    methodObj: PropTypes.shape({
       ContentPanel: PropTypes.shape({
         fetchContent: PropTypes.func.isRequired
       }),
@@ -27,17 +27,47 @@ export default class ContentPanel extends Component {
   }
 
   componentDidMount() {
-    const { methods, feed, loadingDisabled } = this.props
+    const { methodObj, feed, loadingDisabled } = this.props
     const { feedLoaded } = this.state
     if (!feedLoaded && !loadingDisabled) {
       this.setState({ feedLoaded: true })
-      methods.ContentPanel.fetchContent(feed)
+      methodObj.onFetchContent(feed)
     }
   }
 
   render() {
-    const { feed, methods, userId } = this.props
+    const { feed, methodObj, userId } = this.props
     const { attachedVideoShown } = this.state
+    const methods = {
+      Heading: {
+        onUploadAnswer: methodObj.onCommentSubmit,
+        onLikeClick: methodObj.onLikeContent
+      },
+      Contents: {
+        commentActions: {
+          onDelete: methodObj.onDeleteComment,
+          onLikeClick: methodObj.onLikeComment,
+          onEditDone: methodObj.onEditComment,
+          onReplySubmit: methodObj.onReplySubmit,
+          onLoadMoreReplies: methodObj.onLoadMoreReplies
+        },
+        feedVideoStar: methodObj.onVideoStar,
+        loadMoreComments: methodObj.onLoadMoreComments,
+        onCommentSubmit: methodObj.onCommentSubmit,
+        onContentDelete: methodObj.onDeleteContent,
+        onLikeCommentClick: methodObj.onLikeComment,
+        onLikeQuestionClick: methodObj.onLikeQuestion,
+        onLikeContentClick: methodObj.onLikeContent,
+        showFeedComments: methodObj.onShowComments,
+        TargetContent: {
+          onDeleteComment: methodObj.onDeleteComment,
+          onEditComment: methodObj.onEditComment,
+          onLikeClick: methodObj.onLikeTargetComment,
+          uploadComment: methodObj.onTargetCommentSubmit
+        }
+      }
+    }
+
     return (
       <div
         className="panel panel-default"
