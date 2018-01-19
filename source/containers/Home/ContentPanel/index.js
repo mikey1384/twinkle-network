@@ -9,13 +9,7 @@ export default class ContentPanel extends Component {
     feed: PropTypes.object.isRequired,
     loadingDisabled: PropTypes.bool,
     userId: PropTypes.number,
-    methodObj: PropTypes.shape({
-      ContentPanel: PropTypes.shape({
-        fetchContent: PropTypes.func.isRequired
-      }),
-      Heading: PropTypes.object,
-      Contents: PropTypes.object
-    })
+    methodObj: PropTypes.object.isRequired
   }
 
   constructor() {
