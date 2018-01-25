@@ -377,7 +377,6 @@ class VideoPlayer extends Component {
     const { changeUserXP, isStarred, videoId } = this.props
     if (isStarred && !xpEarned && !justEarned && this.player) {
       if (this.player.isMuted()) {
-        this.player.pauseVideo()
         this.player.unMute()
       }
       if (this.player.getVolume() < 30) {
