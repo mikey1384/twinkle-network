@@ -25,11 +25,14 @@ function ContentLink({ content: { id, title }, type, ...actions }) {
     case 'comment':
       destination = 'comments'
       break
+    case 'question':
+      destination = 'questions'
+      break
     default:
       break
   }
 
-  return title && type !== 'question' ? (
+  return title ? (
     <Link
       style={{
         fontWeight: 'bold',
@@ -40,8 +43,6 @@ function ContentLink({ content: { id, title }, type, ...actions }) {
     >
       {title}
     </Link>
-  ) : type === 'question' ? (
-    <b style={{ color: Color.blue }}>{title}</b>
   ) : (
     <span style={{ fontWeight: 'bold', color: Color.darkGray }}>(Deleted)</span>
   )

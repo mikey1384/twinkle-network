@@ -14,7 +14,7 @@ import { changePageVisibility } from 'redux/actions/ViewActions'
 import { initSessionAsync } from 'redux/actions/UserActions'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
-import CommentPage from 'containers/CommentPage'
+import ContentPage from 'containers/ContentPage'
 import Videos from 'containers/Videos'
 import Links from 'containers/Links'
 import TwinkleXP from 'containers/TwinkleXP'
@@ -192,7 +192,8 @@ class App extends Component {
           )}
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/comments" component={CommentPage} />
+            <Route path="/questions" component={ContentPage} />
+            <Route path="/comments" component={ContentPage} />
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
             <Route path="/users" component={Home} />
