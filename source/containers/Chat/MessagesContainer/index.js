@@ -77,7 +77,7 @@ export default class MessagesContainer extends Component {
     this.messagesContainer.scrollTop = Math.max(
       this.messagesContainer.offsetHeight,
       this.messages.offsetHeight
-    )
+    ) + 1000
   }
 
   render() {
