@@ -190,6 +190,7 @@ export default class MessagesContainer extends Component {
 
   renderMessages = () => {
     const { messages } = this.props
+    console.log(messages)
     return messages.map((message, index) => {
       let { isNotification } = message
       let messageStyle = isNotification ? { color: Color.darkGray } : null
