@@ -41,8 +41,7 @@ export default class MessagesContainer extends Component {
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId
     const newMessageArrived =
-      this.props.messages.length !== 0 &&
-      prevProps.messages !== this.props.messages
+      prevProps.messages.length >= 0 && prevProps.messages < this.props.messages
     const loadedPrevMessage =
       !switchedChannel &&
       prevProps.messages.length !== 0 &&
@@ -65,6 +64,7 @@ export default class MessagesContainer extends Component {
         this.setState({ newUnseenMessage })
       }
     }
+    if (prevProps.loading && !this.props.loading) this.setScrollToBottom()
   }
 
   setScrollToBottom() {
@@ -74,17 +74,10 @@ export default class MessagesContainer extends Component {
         this.messagesContainer.offsetHeight - this.messages.offsetHeight
     }
     this.setState({ fillerHeight })
-    scrollBottom.bind(this)()
-    setTimeout(() => {
-      scrollBottom.bind(this)()
-    }, 100)
-
-    function scrollBottom() {
-      this.messagesContainer.scrollTop = Math.max(
-        this.messagesContainer.offsetHeight,
-        this.messages.offsetHeight
-      )
-    }
+    this.messagesContainer.scrollTop = Math.max(
+      this.messagesContainer.offsetHeight,
+      this.messages.offsetHeight
+    )
   }
 
   render() {
