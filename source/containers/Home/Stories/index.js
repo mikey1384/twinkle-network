@@ -139,7 +139,7 @@ class Stories extends Component {
                 return (
                   <ContentPanel
                     key={`${feed.id}`}
-                    loadingDisabled={clearingFeeds}
+                    selfLoadingDisabled={clearingFeeds}
                     contentObj={feed}
                     methodObj={{
                       onFetchContent: fetchFeed,

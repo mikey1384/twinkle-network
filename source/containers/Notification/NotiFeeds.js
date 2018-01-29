@@ -9,6 +9,7 @@ NotiFeeds.propTypes = {
   myId: PropTypes.number,
   notifications: PropTypes.arrayOf(
     PropTypes.shape({
+      contentId: PropTypes.number,
       commentContent: PropTypes.string,
       discussionTitle: PropTypes.string,
       discussionUploader: PropTypes.number,
@@ -60,6 +61,7 @@ export default function NotiFeeds({ myId, notifications, style }) {
 
 function renderNotificationMessage(notification, myId) {
   const {
+    contentId,
     type,
     rootType,
     rootTitle,
@@ -108,13 +110,13 @@ function renderNotificationMessage(notification, myId) {
   if (isReplyNotification) title = `"${title}"`
   const content = {
     title,
-    id: rootId
+    id: isReplyNotification ? contentId : rootId
   }
   return (
     <div>
       <UsernameText user={{ id: userId, name: username }} color={Color.blue} />
       &nbsp;{action}
-      <ContentLink content={content} type={rootType} />
+      <ContentLink content={content} type={isReplyNotification ? 'comment' : rootType} />
     </div>
   )
 }

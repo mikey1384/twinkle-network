@@ -8,7 +8,7 @@ export default class ContentPanel extends Component {
   static propTypes = {
     contentObj: PropTypes.object.isRequired,
     methodObj: PropTypes.object.isRequired,
-    loadingDisabled: PropTypes.bool,
+    selfLoadingDisabled: PropTypes.bool,
     userId: PropTypes.number
   }
 
@@ -21,9 +21,9 @@ export default class ContentPanel extends Component {
   }
 
   componentDidMount() {
-    const { methodObj, contentObj, loadingDisabled } = this.props
+    const { methodObj, contentObj, selfLoadingDisabled } = this.props
     const { feedLoaded } = this.state
-    if (!feedLoaded && !loadingDisabled) {
+    if (!feedLoaded && !selfLoadingDisabled) {
       this.setState({ feedLoaded: true })
       methodObj.onFetchContent(contentObj)
     }

@@ -23,7 +23,7 @@ class Content extends Component {
     likes: PropTypes.array,
     methods: PropTypes.object,
     myId: PropTypes.number,
-    panelId: PropTypes.number.isRequired,
+    panelId: PropTypes.number,
     profilePicId: PropTypes.number,
     replyId: PropTypes.number,
     rootContent: PropTypes.string,
