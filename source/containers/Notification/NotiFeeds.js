@@ -14,11 +14,9 @@ NotiFeeds.propTypes = {
       discussionUploader: PropTypes.number,
       id: PropTypes.number.isRequired,
       rootCommentUploader: PropTypes.number,
-      rootRootType: PropTypes.string,
       rootTitle: PropTypes.string.isRequired,
       rootType: PropTypes.string.isRequired,
       rootId: PropTypes.number.isRequired,
-      rootRootId: PropTypes.number,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       type: PropTypes.string.isRequired,
       userId: PropTypes.number.isRequired,
@@ -64,10 +62,8 @@ function renderNotificationMessage(notification, myId) {
   const {
     type,
     rootType,
-    rootRootType,
     rootTitle,
     rootId,
-    rootRootId,
     userId,
     username,
     commentContent,
@@ -112,14 +108,13 @@ function renderNotificationMessage(notification, myId) {
   if (isReplyNotification) title = `"${title}"`
   const content = {
     title,
-    id: rootType === 'comment' ? rootRootId : rootId
+    id: rootId
   }
-  const contentType = rootType === 'comment' ? rootRootType : rootType
   return (
     <div>
       <UsernameText user={{ id: userId, name: username }} color={Color.blue} />
       &nbsp;{action}
-      <ContentLink content={content} type={contentType} />
+      <ContentLink content={content} type={rootType} />
     </div>
   )
 }

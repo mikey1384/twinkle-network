@@ -23,7 +23,7 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
-import ContentPanel from '../../ContentPanel'
+import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 

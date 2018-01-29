@@ -22,6 +22,9 @@ function ContentLink({ content: { id, title }, type, ...actions }) {
     case 'video':
       destination = 'videos'
       break
+    case 'comment':
+      destination = 'comments'
+      break
     default:
       break
   }
@@ -51,7 +54,7 @@ function onLinkClick({ id, type, actions: { loadLinkPage, loadVideoPage } }) {
     case 'video':
       return loadVideoPage(id)
     default:
-      return
+      return Promise.resolve()
   }
 }
 

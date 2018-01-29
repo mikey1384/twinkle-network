@@ -21,7 +21,7 @@ import {
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import InputPanel from './InputPanel'
-import ContentPanel from '../ContentPanel'
+import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import { connect } from 'react-redux'
