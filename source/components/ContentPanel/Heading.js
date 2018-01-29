@@ -21,7 +21,7 @@ export default class Heading extends Component {
     contentObj: PropTypes.shape({
       rootContentLikers: PropTypes.array,
       rootId: PropTypes.number,
-      rootType: PropTypes.string.isRequired,
+      rootType: PropTypes.string,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
       type: PropTypes.string.isRequired,

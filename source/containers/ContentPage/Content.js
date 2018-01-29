@@ -16,10 +16,10 @@ class Comment extends Component {
   }
 
   async componentDidMount() {
-    const { match: { params: { commentId } } } = this.props
+    const { match, match: { params: { contentId } } } = this.props
     try {
       const { data } = await request.get(
-        `${URL}/content/commentPage?commentId=${commentId}`
+        `${URL}/content/${match.url.split('/')[1].slice(0, -1)}?contentId=${contentId}`
       )
       this.setState({ contentObj: data })
     } catch (error) {
