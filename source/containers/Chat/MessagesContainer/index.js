@@ -74,10 +74,17 @@ export default class MessagesContainer extends Component {
         this.messagesContainer.offsetHeight - this.messages.offsetHeight
     }
     this.setState({ fillerHeight })
-    this.messagesContainer.scrollTop = Math.max(
-      this.messagesContainer.offsetHeight,
-      this.messages.offsetHeight
-    ) + 1000
+    scrollBottom.bind(this)()
+    setTimeout(() => {
+      scrollBottom.bind(this)()
+    }, 200)
+
+    function scrollBottom() {
+      this.messagesContainer.scrollTop = Math.max(
+        this.messagesContainer.offsetHeight,
+        this.messages.offsetHeight
+      )
+    }
   }
 
   render() {
@@ -190,7 +197,6 @@ export default class MessagesContainer extends Component {
 
   renderMessages = () => {
     const { messages } = this.props
-    console.log(messages)
     return messages.map((message, index) => {
       let { isNotification } = message
       let messageStyle = isNotification ? { color: Color.darkGray } : null
