@@ -46,6 +46,7 @@ export default class MessagesContainer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { messages, userId } = this.props
+    const { newUnseenMessage } = this.state
     const messageSenderId = messages[messages.length - 1].userId
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId
@@ -74,7 +75,7 @@ export default class MessagesContainer extends Component {
     ) {
       this.setState({ newUnseenMessage: true })
     } else {
-      this.setScrollToBottom()
+      if (!newUnseenMessage) this.setScrollToBottom()
     }
   }
 
