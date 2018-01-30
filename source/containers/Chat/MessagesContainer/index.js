@@ -28,7 +28,14 @@ export default class MessagesContainer extends Component {
   }
 
   componentDidMount() {
-    this.setScrollToBottom()
+    let fillerHeight = 20
+    if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
+      fillerHeight =
+        this.messagesContainer.offsetHeight - this.messages.offsetHeight
+    }
+    this.setState({ fillerHeight }, () => {
+      this.setScrollToBottom()
+    })
   }
 
   componentWillReceiveProps() {
@@ -38,53 +45,45 @@ export default class MessagesContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { messages, userId } = this.props
+    const messageSenderId = messages[messages.length - 1].userId
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId
-    const newMessageArrived =
-      prevProps.messages.length >= 0 && prevProps.messages < this.props.messages
     const loadedPrevMessage =
       !switchedChannel &&
       prevProps.messages.length !== 0 &&
       prevProps.messages[0] !== this.props.messages[0]
+    const newMessageArrived =
+      prevProps.messages.length >= 0 && prevProps.messages < this.props.messages
 
     if (loadedPrevMessage) return
-    if (switchedChannel) return this.setScrollToBottom()
-    if (newMessageArrived) {
-      let { messages, userId } = this.props
-      let messageSenderId = messages[messages.length - 1].userId
-      if (messageSenderId === userId || this.state.scrollAtBottom) {
-        this.setScrollToBottom()
-      } else {
-        let newUnseenMessage = false
-        if (prevProps.messages && prevProps.messages.length > 0) {
-          if (this.props.messages.length >= prevProps.messages.length) {
-            newUnseenMessage = true
-          }
-        }
-        this.setState({ newUnseenMessage })
+    if (switchedChannel) {
+      let fillerHeight = 20
+      if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
+        fillerHeight =
+          this.messagesContainer.offsetHeight - this.messages.offsetHeight
       }
+      this.setState({ fillerHeight }, () => {
+        return this.setScrollToBottom()
+      })
     }
-    if (prevProps.loading && !this.props.loading) this.setScrollToBottom()
+    if (
+      newMessageArrived &&
+      messageSenderId !== userId &&
+      !this.state.scrollAtBottom
+    ) {
+      this.setState({ newUnseenMessage: true })
+    } else {
+      this.setScrollToBottom()
+    }
   }
 
   setScrollToBottom() {
-    let fillerHeight = 20
-    if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
-      fillerHeight =
-        this.messagesContainer.offsetHeight - this.messages.offsetHeight
-    }
-    this.setState({ fillerHeight })
-    scrollBottom.bind(this)()
-    setTimeout(() => {
-      scrollBottom.bind(this)()
-    }, 300)
-
-    function scrollBottom() {
-      this.messagesContainer.scrollTop = Math.max(
-        this.messagesContainer.offsetHeight,
-        this.messages.offsetHeight
-      )
-    }
+    const { fillerHeight } = this.state
+    this.messagesContainer.scrollTop = Math.max(
+      this.messagesContainer.offsetHeight,
+      fillerHeight + this.messages.offsetHeight
+    )
   }
 
   render() {
