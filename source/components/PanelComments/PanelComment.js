@@ -24,7 +24,7 @@ class PanelComment extends Component {
       id: PropTypes.number.isRequired,
       likes: PropTypes.array.isRequired,
       profilePicId: PropTypes.number,
-      replies: PropTypes.array.isRequired,
+      replies: PropTypes.array,
       replyId: PropTypes.number,
       targetUserName: PropTypes.string,
       targetUserId: PropTypes.number,
@@ -83,6 +83,9 @@ class PanelComment extends Component {
     } = this.state
     const {
       comment,
+      comment: {
+        replies = []
+      },
       userId,
       parent,
       type,
@@ -198,10 +201,10 @@ class PanelComment extends Component {
                 </div>
               )}
             </div>
-            {comment.replies.length > 0 && (
+            {replies.length > 0 && (
               <PanelReplies
                 userId={userId}
-                replies={comment.replies}
+                replies={replies}
                 comment={comment}
                 parent={parent}
                 type={type}

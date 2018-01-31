@@ -19,7 +19,9 @@ class Comment extends Component {
     const { match, match: { params: { contentId } } } = this.props
     try {
       const { data } = await request.get(
-        `${URL}/content/${match.url.split('/')[1].slice(0, -1)}?contentId=${contentId}`
+        `${URL}/content/${match.url
+          .split('/')[1]
+          .slice(0, -1)}?contentId=${contentId}`
       )
       this.setState({ contentObj: data })
     } catch (error) {
@@ -35,7 +37,6 @@ class Comment extends Component {
         selfLoadingDisabled
         contentObj={contentObj}
         methodObj={{
-          onFetchContent: () => console.log('content fetch'),
           onCommentSubmit: () => console.log('comment submit'),
           onReplySubmit: () => console.log('reply submit'),
           onTargetCommentSubmit: () => console.log('target comment submit'),
@@ -48,12 +49,49 @@ class Comment extends Component {
           onEditComment: () => console.log('edit comment'),
           onLoadMoreComments: () => console.log('load more comments'),
           onLoadMoreReplies: () => console.log('load more replies'),
-          onShowComments: () => console.log('show comments'),
+          onShowComments: this.onShowComments,
           onVideoStar: () => console.log('video star')
         }}
         userId={userId}
       />
     )
+  }
+
+  onShowComments = async() => {
+    const { match, match: { params: { contentId } } } = this.props
+    const { contentObj } = this.state
+    const type = match.url.split('/')[1].slice(0, -1)
+    const params =
+      type === 'comment'
+        ? {
+            commentType: 'replies',
+            contentIdLabel: 'commentId',
+            loadMoreButtonLabel: 'loadMoreReplies'
+          }
+        : {
+            commentType: 'comments',
+            contentIdLabel: 'rootId',
+            loadMoreButtonLabel: 'loadMoreComments'
+          }
+    const { commentType, contentIdLabel, loadMoreButtonLabel } = params
+    try {
+      const {
+        data: { [commentType]: comments, [loadMoreButtonLabel]: loadMoreButton }
+      } = await request.get(
+        `${URL}/content/${commentType}?rootType=${
+          contentObj.rootType || contentObj.type
+        }&${contentIdLabel}=${contentId}`
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...contentObj,
+          childComments: comments,
+          commentsLoadMoreButton: loadMoreButton
+        }
+      }))
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
