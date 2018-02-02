@@ -65,6 +65,7 @@ export default class MessagesContainer extends Component {
       if (messageSenderId !== userId && !this.state.scrollAtBottom) {
         this.setState({ newUnseenMessage: true })
       } else {
+        this.fillerHeight = 0
         this.setScrollToBottom()
       }
     }
