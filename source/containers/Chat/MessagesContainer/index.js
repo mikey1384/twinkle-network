@@ -57,7 +57,7 @@ export default class MessagesContainer extends Component {
         this.fillerHeight =
           this.messagesContainer.offsetHeight - this.messages.offsetHeight
       }
-      return this.setScrollToBottom()
+      return setTimeout(() => this.setScrollToBottom(), 200)
     }
     if (newMessageArrived) {
       if (messageSenderId !== userId && !this.state.scrollAtBottom) {
