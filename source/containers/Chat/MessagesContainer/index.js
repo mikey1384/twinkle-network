@@ -34,7 +34,7 @@ export default class MessagesContainer extends Component {
       this.fillerHeight =
         this.messagesContainer.offsetHeight - this.messages.offsetHeight
     }
-    this.setScrollToBottom()
+    setTimeout(() => this.setScrollToBottom(), 200)
   }
 
   componentWillReceiveProps() {
