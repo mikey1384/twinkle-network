@@ -20,22 +20,20 @@ export default class MessagesContainer extends Component {
     loading: PropTypes.bool
   }
 
+  fillerHeight = 20
+  maxScroll = 0
+
   state = {
-    fillerHeight: 0,
     scrollAtBottom: true,
     newUnseenMessage: false,
     loadMoreButtonLock: false
   }
 
   componentDidMount() {
-    let fillerHeight = 20
     if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
-      fillerHeight =
-        this.messagesContainer.offsetHeight - this.messages.offsetHeight
+      this.fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
     }
-    this.setState({ fillerHeight }, () => {
-      setTimeout(() => this.setScrollToBottom(), 100)
-    })
+    this.setScrollToBottom()
   }
 
   componentWillReceiveProps() {
@@ -59,14 +57,10 @@ export default class MessagesContainer extends Component {
 
     if (loadedPrevMessage) return
     if (switchedChannel) {
-      let fillerHeight = 20
       if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
-        fillerHeight =
-          this.messagesContainer.offsetHeight - this.messages.offsetHeight
+        this.fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
       }
-      this.setState({ fillerHeight }, () => {
-        return this.setScrollToBottom()
-      })
+      return this.setScrollToBottom()
     }
     if (
       newMessageArrived &&
@@ -80,16 +74,17 @@ export default class MessagesContainer extends Component {
   }
 
   setScrollToBottom() {
-    const { fillerHeight } = this.state
     this.messagesContainer.scrollTop = Math.max(
+      this.maxScroll,
       this.messagesContainer.offsetHeight,
-      fillerHeight + this.messages.offsetHeight
+      this.fillerHeight + this.messages.offsetHeight
     )
+    this.maxScroll = this.messagesContainer.scrollTop
   }
 
   render() {
     const { loadMoreButton, loading, currentChannelId } = this.props
-    const { fillerHeight, newUnseenMessage } = this.state
+    const { newUnseenMessage } = this.state
     return (
       <div>
         {!!loading && <Loading />}
@@ -139,7 +134,7 @@ export default class MessagesContainer extends Component {
             ) : (
               <div
                 style={{
-                  height: fillerHeight + 'px'
+                  height: this.fillerHeight + 'px'
                 }}
               />
             )}
