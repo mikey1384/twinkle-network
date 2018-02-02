@@ -4,6 +4,7 @@ import ContentPanel from 'components/ContentPanel'
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
+import { auth, handleError } from 'redux/actions/constants'
 
 class Comment extends Component {
   static propTypes = {
@@ -40,10 +41,10 @@ class Comment extends Component {
           onCommentSubmit: () => console.log('comment submit'),
           onReplySubmit: () => console.log('reply submit'),
           onTargetCommentSubmit: () => console.log('target comment submit'),
-          onLikeContent: () => console.log('like content'),
-          onLikeComment: () => console.log('like comment'),
+          onLikeContent: this.onLikeContent,
+          onLikeComment: this.onLikeComment,
           onLikeTargetComment: () => console.log('like target comment'),
-          onLikeQuestion: () => console.log('like question'),
+          onLikeQuestion: this.onLikeQuestion,
           onDeleteContent: () => console.log('delete content'),
           onDeleteComment: () => console.log('delete comment'),
           onEditComment: () => console.log('edit comment'),
@@ -57,42 +58,73 @@ class Comment extends Component {
     )
   }
 
-  onShowComments = async() => {
-    const { match, match: { params: { contentId } } } = this.props
-    const { contentObj } = this.state
-    const type = match.url.split('/')[1].slice(0, -1)
-    const params =
-      type === 'comment'
-        ? {
-            commentType: 'replies',
-            contentIdLabel: 'commentId',
-            loadMoreButtonLabel: 'loadMoreReplies'
-          }
-        : {
-            commentType: 'comments',
-            contentIdLabel: 'rootId',
-            loadMoreButtonLabel: 'loadMoreComments'
-          }
-    const { commentType, contentIdLabel, loadMoreButtonLabel } = params
+  onLikeComment = async commentId => {
+    const { handleError } = this.props
     try {
-      const {
-        data: { [commentType]: comments, [loadMoreButtonLabel]: loadMoreButton }
-      } = await request.get(
-        `${URL}/content/${commentType}?rootType=${
-          contentObj.rootType || contentObj.type
-        }&${contentIdLabel}=${contentId}`
+      const { data: { likes } } = await request.post(
+        `${URL}/content/comment/like`,
+        {
+          commentId
+        },
+        auth()
       )
       this.setState(state => ({
         contentObj: {
-          ...contentObj,
-          childComments: comments,
-          commentsLoadMoreButton: loadMoreButton
+          ...state.contentObj,
+          contentLikers:
+            state.contentObj.contentId === commentId
+              ? likes
+              : state.contentObj.contentLikers,
+          childComments: state.contentObj.childComments.map(comment => ({
+            ...comment,
+            likes: comment.id === commentId ? likes : comment.likes
+          }))
         }
       }))
+    } catch (error) {
+      handleError(error)
+    }
+  }
+
+  onLikeContent = async() => {
+    console.log('on like content')
+  }
+
+  onLikeQuestion = async() => {
+    const { match: { params: { contentId } }, handleError } = this.props
+    try {
+      const { data: { likes } } = await request.post(
+        `${URL}/content/question/like`,
+        {
+          contentId
+        },
+        auth()
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          contentLikers: likes
+        }
+      }))
+    } catch (error) {
+      handleError(error)
+    }
+  }
+
+  onShowComments = async({ contentId, isReply, rootType, type }) => {
+    try {
+      console.log(contentId, isReply, rootType)
     } catch (error) {
       console.error(error)
     }
   }
 }
 
-export default connect(state => ({ userId: state.UserReducer.userId }))(Comment)
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId
+  }),
+  dispatch => ({
+    handleError: error => handleError(error, dispatch)
+  })
+)(Comment)

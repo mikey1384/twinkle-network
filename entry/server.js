@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const history = createHistory()
-const store = createStoreWithHistory(history)
+export const store = createStoreWithHistory(history)
 
 app.use(express.static(path.join(__dirname, '../public')))
 app.use((req, res) => {
