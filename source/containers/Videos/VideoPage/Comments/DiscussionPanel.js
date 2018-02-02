@@ -191,11 +191,11 @@ class DiscussionPanel extends Component {
             </div>
           )}
           {!onEdit && (
-            <div>
+            <div style={{ marginTop: '1rem' }}>
               {expanded ? (
                 <PanelComments
                   autoFocus
-                  inputTypeLabel={'comment'}
+                  inputTypeLabel={'answer'}
                   type="videoDiscussionPanel"
                   comments={comments}
                   loadMoreButton={loadMoreDiscussionCommentsButton}
@@ -213,11 +213,7 @@ class DiscussionPanel extends Component {
                   }}
                 />
               ) : (
-                <Button
-                  style={{ marginTop: '1em' }}
-                  className="btn btn-warning"
-                  onClick={this.onExpand}
-                >
+                <Button className="btn btn-warning" onClick={this.onExpand}>
                   Answer{!!numComments && numComments > 0
                     ? ` (${numComments})`
                     : ''}
@@ -260,9 +256,9 @@ class DiscussionPanel extends Component {
     this.setState({ editDoneButtonDisabled })
   }
 
-  loadMoreComments(lastCommentId) {
+  loadMoreComments({ lastCommentId }) {
     const { id, loadMoreComments } = this.props
-    loadMoreComments(lastCommentId, id)
+    loadMoreComments({ lastCommentId, discussionId: id })
   }
 
   onCommentSubmit(comment) {

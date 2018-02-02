@@ -234,7 +234,7 @@ export const submitReply = ({
         type: 'SUBMIT_LINK_REPLY',
         data: {
           reply: {
-            ...data.result,
+            ...data,
             replyOfReply,
             replies: []
           },

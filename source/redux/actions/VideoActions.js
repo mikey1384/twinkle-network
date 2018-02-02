@@ -232,7 +232,7 @@ export const likeVideoComment = commentId => dispatch =>
       handleError(error, dispatch)
     })
 
-export const loadMoreCommentsAsync = (videoId, lastCommentId) => dispatch =>
+export const loadMoreCommentsAsync = ({ videoId, lastCommentId }) => dispatch =>
   request
     .get(
       `${API_URL}/comments?rootId=${videoId}&lastCommentId=${lastCommentId}&rootType=video`
@@ -266,10 +266,10 @@ export const loadMoreReplies = (lastReplyId, commentId, type) => dispatch =>
       handleError(error, dispatch)
     })
 
-export const loadMoreDiscussionComments = (
+export const loadMoreDiscussionComments = ({
   lastCommentId,
   discussionId
-) => dispatch =>
+}) => dispatch =>
   request
     .get(
       `${API_URL}/discussions/comments?discussionId=${discussionId}&lastCommentId=${lastCommentId}`
@@ -583,7 +583,7 @@ export const uploadVideoDiscussionReply = ({
           replyOfReply,
           originType
         },
-        data: response.data.result
+        data: response.data
       })
     )
     .catch(error => {
@@ -613,13 +613,11 @@ export const uploadVideoReplyAsync = ({
     )
     .then(response => {
       const { data } = response
-      if (data.result) {
-        dispatch({
-          type: 'UPLOAD_VIDEO_REPLY',
-          replyType: { replyOfReply },
-          data: data.result
-        })
-      }
+      dispatch({
+        type: 'UPLOAD_VIDEO_REPLY',
+        replyType: { replyOfReply },
+        data
+      })
       return
     })
     .catch(error => {

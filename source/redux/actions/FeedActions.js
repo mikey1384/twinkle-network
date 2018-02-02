@@ -429,7 +429,7 @@ export const uploadFeedComment = (comment, parent) => dispatch => {
           ? {
               type: 'UPLOAD_FEED_REPLY',
               data: {
-                reply: { ...data.result, replies: [] },
+                reply: { ...data, replies: [] },
                 type: parent.type,
                 contentId: parent.id
               }
@@ -456,7 +456,7 @@ export const uploadFeedReply = ({
   parent,
   replyOfReply,
   originType
-}) => dispatch => {
+}) => async dispatch => {
   const params = {
     content: replyContent,
     rootId: parent.rootId,
@@ -465,29 +465,26 @@ export const uploadFeedReply = ({
     commentId: comment.commentId || comment.id,
     replyId: comment.commentId ? comment.id : null
   }
-  request
-    .post(`${API_URL}/replies`, params, auth())
-    .then(response => {
-      const { data } = response
-      dispatch({
-        type: 'UPLOAD_FEED_REPLY',
-        data: {
-          type: parent.type,
-          contentId: parent.type === 'comment' ? comment.id : parent.id,
-          reply: {
-            ...data.result,
-            replyOfReply,
-            originType,
-            replies: []
-          },
-          commentId: comment.id
-        }
-      })
+  try {
+    const { data } = await request.post(`${API_URL}/replies`, params, auth())
+    dispatch({
+      type: 'UPLOAD_FEED_REPLY',
+      data: {
+        type: parent.type,
+        contentId: parent.type === 'comment' ? comment.id : parent.id,
+        reply: {
+          ...data,
+          replyOfReply,
+          originType,
+          replies: []
+        },
+        commentId: comment.id
+      }
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
 }
 
 export const uploadTargetContentComment = (params, panelId) => dispatch =>

@@ -94,10 +94,10 @@ class Comments extends Component {
                   <Button
                     className="btn btn-success"
                     onClick={() =>
-                      loadMoreComments(
+                      loadMoreComments({
                         videoId,
-                        comments[comments.length - 1].id
-                      )
+                        lastCommentId: comments[comments.length - 1].id
+                      })
                     }
                   >
                     Load More

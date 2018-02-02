@@ -84,7 +84,8 @@ class PanelComment extends Component {
     const {
       comment,
       comment: {
-        replies = []
+        replies = [],
+        likes = []
       },
       userId,
       parent,
@@ -98,8 +99,8 @@ class PanelComment extends Component {
     } = this.props
     const canEdit = comment.userId === userId || isCreator
     let userLikedThis = false
-    for (let i = 0; i < comment.likes.length; i++) {
-      if (comment.likes[i].userId === userId) userLikedThis = true
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i].userId === userId) userLikedThis = true
     }
     return (
       <div
@@ -219,7 +220,7 @@ class PanelComment extends Component {
               <ReplyInputArea
                 clickListenerState={clickListenerState}
                 onSubmit={this.onReplySubmit}
-                numReplies={comment.replies.length}
+                numReplies={replies.length}
               />
             )}
           </div>

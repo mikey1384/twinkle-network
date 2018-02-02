@@ -49,7 +49,7 @@ export default class PanelReplies extends Component {
   render() {
     const {
       type,
-      replies,
+      replies = [],
       userId,
       onEditDone,
       onLikeClick,

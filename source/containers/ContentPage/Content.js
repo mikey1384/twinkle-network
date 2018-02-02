@@ -39,8 +39,8 @@ class Comment extends Component {
         contentObj={contentObj}
         methodObj={{
           onCommentSubmit: this.onCommentSubmit,
-          onReplySubmit: () => console.log('reply submit'),
-          onTargetCommentSubmit: () => console.log('target comment submit'),
+          onReplySubmit: this.onReplySubmit,
+          onTargetCommentSubmit: this.onTargetCommentSubmit,
           onLikeContent: this.onLikeContent,
           onLikeComment: this.onLikeComment,
           onLikeTargetComment: () => console.log('like target comment'),
@@ -48,10 +48,9 @@ class Comment extends Component {
           onDeleteContent: () => console.log('delete content'),
           onDeleteComment: () => console.log('delete comment'),
           onEditComment: () => console.log('edit comment'),
-          onLoadMoreComments: () => console.log('load more comments'),
-          onLoadMoreReplies: () => console.log('load more replies'),
-          onShowComments: this.onShowComments,
-          onVideoStar: () => console.log('video star')
+          onLoadMoreComments: this.onLoadMoreComments,
+          onLoadMoreReplies: this.onLoadMoreReplies,
+          onShowComments: this.onShowComments
         }}
         userId={userId}
       />
@@ -95,6 +94,52 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
+      console.error(error.response || error)
+      handleError(error)
+    }
+  }
+
+  onReplySubmit = async({
+    replyContent,
+    parent,
+    comment,
+    replyOfReply,
+    originType
+  }) => {
+    const params = {
+      content: replyContent,
+      rootId: parent.rootId,
+      rootType: parent.rootType,
+      discussionId: parent.discussionId,
+      commentId: comment.commentId || comment.id,
+      replyId: comment.commentId ? comment.id : null
+    }
+    try {
+      const { data } = await request.post(
+        `${URL}/content/replies`,
+        params,
+        auth()
+      )
+      const reply = {
+        ...data,
+        replyOfReply,
+        originType
+      }
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          childComments: state.contentObj.childComments.map(childComment => ({
+            ...childComment,
+            replies:
+              childComment.id === comment.id ||
+              childComment.id === reply.commentId
+                ? (childComment.replies || []).concat(reply)
+                : childComment.replies
+          }))
+        }
+      }))
+    } catch (error) {
+      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -118,11 +163,16 @@ class Comment extends Component {
               : state.contentObj.contentLikers,
           childComments: state.contentObj.childComments.map(comment => ({
             ...comment,
-            likes: comment.id === commentId ? likes : comment.likes
+            likes: comment.id === commentId ? likes : comment.likes,
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              likes: reply.id === commentId ? likes : reply.likes
+            }))
           }))
         }
       }))
     } catch (error) {
+      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -142,6 +192,7 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
+      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -163,7 +214,67 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
+      console.error(error.response || error)
       handleError(error)
+    }
+  }
+
+  onLoadMoreComments = async({
+    contentId,
+    isReply,
+    rootType,
+    type,
+    lastCommentId
+  }) => {
+    try {
+      const { data } = await request.get(
+        `
+          ${URL}/content/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}&lastCommentId=${lastCommentId}
+        `
+      )
+      let commentsLoadMoreButton = false
+      if (data.length > 3) {
+        data.pop()
+        commentsLoadMoreButton = true
+      }
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          childComments: state.contentObj.childComments.concat(data),
+          commentsLoadMoreButton
+        }
+      }))
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  onLoadMoreReplies = async(lastReplyId, commentId, parent) => {
+    try {
+      const { data: { replies, loadMoreReplies } } = await request.get(
+        `${URL}/content/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${
+          parent.rootType
+        }`
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          childComments: state.contentObj.childComments.map(comment => ({
+            ...comment,
+            replies:
+              comment.id === commentId
+                ? replies.concat(comment.replies)
+                : comment.replies,
+            loadMoreReplies:
+              comment.id === commentId
+                ? loadMoreReplies
+                : comment.loadMoreReplies
+          }))
+        }
+      }))
+      return Promise.resolve()
+    } catch (error) {
+      console.error(error.response || error)
     }
   }
 
@@ -172,15 +283,26 @@ class Comment extends Component {
       const { data } = await request.get(
         `${URL}/content/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}`
       )
+      let commentsLoadMoreButton = false
+      if (data.length > 3) {
+        data.pop()
+        commentsLoadMoreButton = true
+      }
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          childComments: data
+          childComments: data,
+          commentsLoadMoreButton
         }
       }))
+      return Promise.resolve()
     } catch (error) {
       console.error(error)
     }
+  }
+
+  onTargetCommentSubmit = async(params) => {
+    console.log(params)
   }
 }
 
