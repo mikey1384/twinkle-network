@@ -280,61 +280,61 @@ export const likeTargetComment = contentId => dispatch =>
       handleError(error, dispatch)
     })
 
-export const loadMoreFeedCommentsAsync = (
+export const loadMoreFeedCommentsAsync = ({
   lastCommentId,
   type,
   contentId,
-  isReply
-) => dispatch =>
-  request
-    .get(
-      `${API_URL}/comments?type=${type}&contentId=${contentId}&lastCommentId=${lastCommentId}&isReply=${isReply}`
+  isReply,
+  rootType
+}) => async dispatch => {
+  try {
+    const response = await request.get(
+      `${API_URL}/comments?type=${type}&rootType=${rootType}&contentId=${contentId}&lastCommentId=${lastCommentId}&isReply=${isReply}`
     )
-    .then(response =>
-      dispatch({
-        type: 'LOAD_MORE_FEED_COMMENTS',
-        data: { type, contentId, childComments: response.data }
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: 'LOAD_MORE_FEED_COMMENTS',
+      data: { type, contentId, childComments: response.data }
     })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const loadMoreFeedReplies = (
   lastReplyId,
   commentId,
   parent
-) => dispatch =>
-  request
-    .get(
+) => async dispatch => {
+  try {
+    const response = await request.get(
       `${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${
         parent.rootType
       }`
     )
-    .then(response =>
-      dispatch({
-        type: 'FETCH_MORE_FEED_REPLIES',
-        data: response.data,
-        commentId,
-        contentType: parent.type
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: 'FETCH_MORE_FEED_REPLIES',
+      data: response.data,
+      commentId,
+      contentType: parent.type
     })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const showFeedCommentsAsync = ({
   rootType,
   type,
   contentId,
-  commentLength,
   isReply
 }) => dispatch =>
   request
     .get(
-      `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&commentLength=${commentLength}&isReply=${isReply}`
+      `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}`
     )
     .then(response =>
       dispatch({

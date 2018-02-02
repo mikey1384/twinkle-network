@@ -106,7 +106,11 @@ class Contents extends Component {
             )}
           {type === 'comment' &&
             (commentId || replyId || discussionId) && (
-              <TargetContent contentObj={contentObj} myId={myId} methods={methods.TargetContent} />
+              <TargetContent
+                contentObj={contentObj}
+                myId={myId}
+                methods={methods.TargetContent}
+              />
             )}
           <MainContent
             contentId={contentId}
@@ -180,8 +184,8 @@ class Contents extends Component {
                 onClick={this.onCommentButtonClick}
               >
                 Answer{!!numChildComments &&
-                  numChildComments > 0 &&
-                  !commentsShown
+                numChildComments > 0 &&
+                !commentsShown
                   ? ` (${numChildComments})`
                   : ''}
               </Button>
@@ -254,14 +258,21 @@ class Contents extends Component {
     )
   }
 
-  loadMoreComments = (lastCommentId, type, contentId) => {
+  loadMoreComments = async({ lastCommentId, type, rootType, contentId }) => {
     const { methods, contentObj: { commentId } } = this.props
-    methods.loadMoreComments(lastCommentId, type, contentId, !!commentId)
+    await methods.loadMoreComments({
+      lastCommentId,
+      type,
+      contentId,
+      isReply: !!commentId,
+      rootType
+    })
   }
 
   onCommentButtonClick = () => {
     const {
-      contentObj: { type, rootType, contentId, commentId }, methods
+      contentObj: { type, rootType, contentId, commentId },
+      methods
     } = this.props
     const { clickListenerState, commentsShown } = this.state
     const isReply = !!commentId
@@ -313,4 +324,6 @@ class Contents extends Component {
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(Contents)
+export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
+  Contents
+)

@@ -25,6 +25,7 @@ export default class PanelComments extends Component {
   }
 
   state = {
+    isLoading: false,
     lastDeletedCommentIndex: null,
     deleteListenerToggle: false,
     deletedFirstComment: false
@@ -49,6 +50,7 @@ export default class PanelComments extends Component {
       style,
       clickListenerState
     } = this.props
+    const { isLoading } = this.state
     return (
       <div
         style={{
@@ -79,6 +81,7 @@ export default class PanelComments extends Component {
               >
                 <Button
                   className="btn btn-success"
+                  disabled={isLoading}
                   onClick={this.loadMoreComments}
                 >
                   Load More
@@ -119,10 +122,25 @@ export default class PanelComments extends Component {
   }
 
   loadMoreComments = () => {
-    const { comments, parent, loadMoreComments } = this.props
-    const lastCommentId = comments[comments.length - 1]
-      ? comments[comments.length - 1].id
-      : 0
-    loadMoreComments(lastCommentId, parent.type, parent.id)
+    const { isLoading } = this.state
+    if (!isLoading) {
+      const { comments, parent, loadMoreComments } = this.props
+      this.setState({ isLoading: true }, async() => {
+        const lastCommentId = comments[comments.length - 1]
+          ? comments[comments.length - 1].id
+          : 0
+        try {
+          await loadMoreComments({
+            lastCommentId,
+            type: parent.type,
+            contentId: parent.id,
+            rootType: parent.type
+          })
+          this.setState({ isLoading: false })
+        } catch (error) {
+          console.error(error)
+        }
+      })
+    }
   }
 }

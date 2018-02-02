@@ -38,7 +38,7 @@ class Comment extends Component {
         selfLoadingDisabled
         contentObj={contentObj}
         methodObj={{
-          onCommentSubmit: () => console.log('comment submit'),
+          onCommentSubmit: this.onCommentSubmit,
           onReplySubmit: () => console.log('reply submit'),
           onTargetCommentSubmit: () => console.log('target comment submit'),
           onLikeContent: this.onLikeContent,
@@ -56,6 +56,47 @@ class Comment extends Component {
         userId={userId}
       />
     )
+  }
+
+  onCommentSubmit = async(comment, parent) => {
+    const { handleError } = this.props
+    const contentType = parent.type
+    let commentType
+    let params
+    switch (contentType) {
+      case 'comment':
+        params = {
+          content: comment,
+          rootId: parent.rootId,
+          rootType: parent.rootType,
+          discussionId: parent.discussionId,
+          commentId: parent.commentId || parent.id,
+          replyId: parent.commentId ? parent.id : null
+        }
+        commentType = 'replies'
+        break
+      case 'question':
+        params = { content: comment, rootId: parent.id, rootType: 'question' }
+        commentType = 'comments'
+        break
+      default:
+        return console.error('Invalid content type')
+    }
+    try {
+      const { data } = await request.post(
+        `${URL}/content/${commentType}`,
+        params,
+        auth()
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          childComments: [data].concat(state.contentObj.childComments)
+        }
+      }))
+    } catch (error) {
+      handleError(error)
+    }
   }
 
   onLikeComment = async commentId => {
@@ -86,12 +127,27 @@ class Comment extends Component {
     }
   }
 
-  onLikeContent = async() => {
-    console.log('on like content')
+  onLikeContent = async(contentId, contentType) => {
+    const { handleError } = this.props
+    try {
+      const { data: { likes } } = await request.post(
+        `${URL}/${contentType}/like`,
+        { contentId },
+        auth()
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          rootContentLikers: likes
+        }
+      }))
+    } catch (error) {
+      handleError(error)
+    }
   }
 
-  onLikeQuestion = async() => {
-    const { match: { params: { contentId } }, handleError } = this.props
+  onLikeQuestion = async contentId => {
+    const { handleError } = this.props
     try {
       const { data: { likes } } = await request.post(
         `${URL}/content/question/like`,
@@ -113,7 +169,15 @@ class Comment extends Component {
 
   onShowComments = async({ contentId, isReply, rootType, type }) => {
     try {
-      console.log(contentId, isReply, rootType)
+      const { data } = await request.get(
+        `${URL}/content/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}`
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          childComments: data
+        }
+      }))
     } catch (error) {
       console.error(error)
     }
