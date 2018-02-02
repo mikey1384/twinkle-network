@@ -54,10 +54,10 @@ export default class MessagesContainer extends Component {
       prevProps.messages.length < this.props.messages.length &&
       prevProps.messages[0].id === this.props.messages[0].id
     if (switchedChannel) {
-      if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
-        this.fillerHeight =
-          this.messagesContainer.offsetHeight - this.messages.offsetHeight
-      }
+      this.fillerHeight =
+        this.messagesContainer.offsetHeight > this.messages.offsetHeight
+          ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+          : 0
       this.setScrollToBottom()
       return setTimeout(() => this.setScrollToBottom(), 200)
     }
