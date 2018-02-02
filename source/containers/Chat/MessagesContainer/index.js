@@ -31,7 +31,8 @@ export default class MessagesContainer extends Component {
 
   componentDidMount() {
     if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
-      this.fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
+      this.fillerHeight =
+        this.messagesContainer.offsetHeight - this.messages.offsetHeight
     }
     this.setScrollToBottom()
   }
@@ -44,32 +45,26 @@ export default class MessagesContainer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { messages, userId } = this.props
-    const { newUnseenMessage } = this.state
     const messageSenderId = messages[messages.length - 1].userId
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId
-    const loadedPrevMessage =
-      !switchedChannel &&
-      prevProps.messages.length !== 0 &&
-      prevProps.messages[0] !== this.props.messages[0]
     const newMessageArrived =
-      prevProps.messages.length >= 0 && prevProps.messages < this.props.messages
-
-    if (loadedPrevMessage) return
+      prevProps.messages.length >= 0 &&
+      prevProps.messages.length < this.props.messages.length &&
+      prevProps.messages[0].id === this.props.messages[0].id
     if (switchedChannel) {
       if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
-        this.fillerHeight = this.messagesContainer.offsetHeight - this.messages.offsetHeight
+        this.fillerHeight =
+          this.messagesContainer.offsetHeight - this.messages.offsetHeight
       }
       return this.setScrollToBottom()
     }
-    if (
-      newMessageArrived &&
-      messageSenderId !== userId &&
-      !this.state.scrollAtBottom
-    ) {
-      this.setState({ newUnseenMessage: true })
-    } else {
-      if (!newUnseenMessage) this.setScrollToBottom()
+    if (newMessageArrived) {
+      if (messageSenderId !== userId && !this.state.scrollAtBottom) {
+        return this.setState({ newUnseenMessage: true })
+      } else {
+        this.setScrollToBottom()
+      }
     }
   }
 
