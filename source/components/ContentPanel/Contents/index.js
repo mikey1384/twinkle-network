@@ -120,6 +120,7 @@ class Contents extends Component {
             hasHqThumb={hasHqThumb}
             isEditing={isEditing}
             isStarred={!!isStarred}
+            onEditContent={methods.onContentEdit}
             onEditDismiss={() => this.setState({ isEditing: false })}
             rootId={rootId}
             rootContent={rootContent}

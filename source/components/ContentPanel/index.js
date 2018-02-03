@@ -49,6 +49,7 @@ export default class ContentPanel extends Component {
         loadMoreComments: methodObj.onLoadMoreComments,
         onCommentSubmit: methodObj.onCommentSubmit,
         onContentDelete: methodObj.onDeleteContent,
+        onContentEdit: methodObj.onEditContent,
         onLikeCommentClick: methodObj.onLikeComment,
         onLikeQuestionClick: methodObj.onLikeQuestion,
         onLikeContentClick: methodObj.onLikeContent,

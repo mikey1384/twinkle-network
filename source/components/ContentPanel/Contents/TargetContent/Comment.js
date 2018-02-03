@@ -37,7 +37,7 @@ export default class Comment extends Component {
     const { comment, username, userId, profilePicId } = this.props
     const { onEdit, confirmModalShown } = this.state
     return (
-      <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', width: '100%', flexDirection: 'column', paddingTop: '1rem' }}>
         {!onEdit && (
           <div style={{
             width: '100%',
@@ -63,7 +63,7 @@ export default class Comment extends Component {
           </div>
         )}
         <div style={{ display: 'flex', width: '100%' }}>
-          <ProfilePic style={{ width: '8%', height: '8%' }} userId={userId} profilePicId={profilePicId} />
+          <ProfilePic style={{ width: '7%', height: '7%' }} userId={userId} profilePicId={profilePicId} />
           <div style={{ width: '90%', marginLeft: '2%' }}>
             <div>
               <UsernameText

@@ -8,10 +8,10 @@ export const Style = {
     flexDirection: 'row-reverse'
   },
   dropdownButton: { position: 'absolute' },
-  profilePic: { width: '8%', height: '8%' },
+  profilePic: { width: '7%', height: '7%' },
   contentWrapper: { display: 'flex', width: '100%' },
   timeStamp: { color: Color.gray },
-  innerContentWrapper: { width: '90%', marginLeft: '2%' },
+  innerContentWrapper: { width: '100%', marginLeft: '2%' },
   toText: { color: Color.blue },
   usernameText: { fontSize: '1.7rem' },
   longText: {

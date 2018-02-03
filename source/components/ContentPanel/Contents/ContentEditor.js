@@ -4,8 +4,6 @@ import Textarea from 'react-textarea-autosize'
 import Input from 'components/Texts/Input'
 import Button from 'components/Button'
 import { edit } from 'constants/placeholders'
-import { connect } from 'react-redux'
-import { feedContentEdit } from 'redux/actions/FeedActions'
 import {
   addEmoji,
   finalizeEmoji,
@@ -15,14 +13,14 @@ import {
   isValidYoutubeUrl
 } from 'helpers/stringHelpers'
 
-class ContentEditor extends Component {
+export default class ContentEditor extends Component {
   static propTypes = {
     comment: PropTypes.string,
     content: PropTypes.string,
     contentId: PropTypes.number.isRequired,
     description: PropTypes.string,
     onDismiss: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    onEditContent: PropTypes.func.isRequired,
     style: PropTypes.object,
     title: PropTypes.string,
     type: PropTypes.string.isRequired
@@ -162,7 +160,7 @@ class ContentEditor extends Component {
 
   onSubmit(event) {
     event.preventDefault()
-    const { contentId, onDismiss, onSubmit, type } = this.props
+    const { contentId, onDismiss, onEditContent, type } = this.props
     const {
       editedComment,
       editedContent,
@@ -176,8 +174,7 @@ class ContentEditor extends Component {
       editedDescription: finalizeEmoji(editedDescription),
       editedTitle: finalizeEmoji(editedTitle)
     }
-    onSubmit({ ...post, contentId, type }).then(() => onDismiss())
+    onEditContent({ ...post, contentId, type }).then(() => onDismiss())
   }
 }
 
-export default connect(null, { onSubmit: feedContentEdit })(ContentEditor)

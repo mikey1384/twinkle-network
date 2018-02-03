@@ -15,6 +15,7 @@ MainContent.propTypes = {
   hasHqThumb: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
   isStarred: PropTypes.bool,
+  onEditContent: PropTypes.func.isRequired,
   onEditDismiss: PropTypes.func.isRequired,
   rootId: PropTypes.number,
   rootContent: PropTypes.string,
@@ -31,6 +32,7 @@ export default function MainContent({
   hasHqThumb,
   isEditing,
   isStarred,
+  onEditContent,
   onEditDismiss,
   rootId,
   rootContent,
@@ -101,6 +103,7 @@ export default function MainContent({
           contentId={contentId}
           description={contentDescription}
           onDismiss={onEditDismiss}
+          onEditContent={onEditContent}
           style={{
             marginTop: (type === 'video' || type === 'discussion') && '1em'
           }}

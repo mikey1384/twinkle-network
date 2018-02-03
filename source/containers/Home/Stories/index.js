@@ -26,7 +26,7 @@ import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import ExecutionEnvironment from 'exenv'
+import { feedContentEdit } from '../../../redux/actions/FeedActions'
 
 class Stories extends Component {
   static propTypes = {
@@ -37,6 +37,7 @@ class Stories extends Component {
     feeds: PropTypes.array.isRequired,
     feedCommentDelete: PropTypes.func.isRequired,
     feedContentDelete: PropTypes.func.isRequired,
+    feedContentEdit: PropTypes.func.isRequired,
     feedCommentEdit: PropTypes.func.isRequired,
     feedVideoStar: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
@@ -72,17 +73,15 @@ class Stories extends Component {
     this.onScroll = this.onScroll.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let { history, clearFeeds, fetchFeeds, loaded } = this.props
-    if (ExecutionEnvironment.canUseDOM) {
-      addEvent(window, 'scroll', this.onScroll)
-      if (history.action === 'PUSH' || !loaded) {
-        this.setState({ clearingFeeds: true })
-        return clearFeeds().then(() => {
-          this.setState({ clearingFeeds: false })
-          fetchFeeds()
-        })
-      }
+    addEvent(window, 'scroll', this.onScroll)
+    if (history.action === 'PUSH' || !loaded) {
+      this.setState({ clearingFeeds: true })
+      return clearFeeds().then(() => {
+        this.setState({ clearingFeeds: false })
+        fetchFeeds()
+      })
     }
   }
 
@@ -98,6 +97,7 @@ class Stories extends Component {
       feedCommentDelete,
       feedCommentEdit,
       feedContentDelete,
+      feedContentEdit,
       feedVideoStar,
       fetchFeed,
       likeTargetComment,
@@ -150,6 +150,7 @@ class Stories extends Component {
                       onLikeComment: commentFeedLike,
                       onLikeTargetComment: likeTargetComment,
                       onLikeQuestion: questionFeedLike,
+                      onEditContent: feedContentEdit,
                       onDeleteContent: feedContentDelete,
                       onDeleteComment: feedCommentDelete,
                       onEditComment: feedCommentEdit,
@@ -311,6 +312,7 @@ export default connect(
     fetchFeeds: fetchFeedsAsync,
     feedCommentDelete,
     feedContentDelete,
+    feedContentEdit,
     feedCommentEdit,
     feedVideoStar,
     likeTargetComment,

@@ -14,15 +14,15 @@ class Main extends Component {
     fetchMoreLinks: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     links: PropTypes.array.isRequired,
-    loadMoreLinksButtonShown: PropTypes.bool.isRequired,
-    notificationLoaded: PropTypes.bool.isRequired
+    loadMoreLinksButtonShown: PropTypes.bool.isRequired
   }
 
   constructor(props) {
     super()
     this.state = {
       addLinkModalShown: false,
-      loaded: !!props.links.length
+      loaded: !!props.links.length,
+      notificationMenu: null
     }
     this.loadMoreLinks = this.loadMoreLinks.bind(this)
   }
@@ -36,6 +36,11 @@ class Main extends Component {
         if (this.mounted) this.setState({ loaded: true })
       })
     }
+    this.setState({
+      notificationMenu: (
+        <Notification device="desktop" className="col-xs-3 col-xs-offset-9" />
+      )
+    })
   }
 
   componentWillUnmount() {
@@ -43,8 +48,8 @@ class Main extends Component {
   }
 
   render() {
-    const { links, loadMoreLinksButtonShown, notificationLoaded } = this.props
-    const { addLinkModalShown, loaded } = this.state
+    const { links, loadMoreLinksButtonShown } = this.props
+    const { addLinkModalShown, loaded, notificationMenu } = this.state
     return (
       <div>
         <div className="col-md-9">
@@ -74,9 +79,7 @@ class Main extends Component {
             onHide={() => this.setState({ addLinkModalShown: false })}
           />
         )}
-        {notificationLoaded && (
-          <Notification device="desktop" className="col-xs-3 col-xs-offset-9" />
-        )}
+        {notificationMenu}
       </div>
     )
   }

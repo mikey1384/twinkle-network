@@ -9,7 +9,8 @@ import { auth, handleError } from 'redux/actions/constants'
 class Comment extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
-    userId: PropTypes.number
+    userId: PropTypes.number,
+    history: PropTypes.object.isRequired
   }
 
   state = {
@@ -43,11 +44,12 @@ class Comment extends Component {
           onTargetCommentSubmit: this.onTargetCommentSubmit,
           onLikeContent: this.onLikeContent,
           onLikeComment: this.onLikeComment,
-          onLikeTargetComment: () => console.log('like target comment'),
+          onLikeTargetComment: this.onLikeTargetComment,
           onLikeQuestion: this.onLikeQuestion,
-          onDeleteContent: () => console.log('delete content'),
-          onDeleteComment: () => console.log('delete comment'),
-          onEditComment: () => console.log('edit comment'),
+          onDeleteContent: this.onDeleteContent,
+          onEditContent: this.onEditContent,
+          onDeleteComment: this.onDeleteComment,
+          onEditComment: this.onEditComment,
           onLoadMoreComments: this.onLoadMoreComments,
           onLoadMoreReplies: this.onLoadMoreReplies,
           onShowComments: this.onShowComments
@@ -106,6 +108,7 @@ class Comment extends Component {
     replyOfReply,
     originType
   }) => {
+    const { handleError } = this.props
     const params = {
       content: replyContent,
       rootId: parent.rootId,
@@ -144,6 +147,95 @@ class Comment extends Component {
     }
   }
 
+  onDeleteComment = async commentId => {
+    const { handleError } = this.props
+    try {
+      await request.delete(
+        `${URL}/content/comments?commentId=${commentId}`,
+        auth()
+      )
+      this.setState(state => {
+        const comments = state.contentObj.childComments.filter(
+          comment => comment.id !== commentId
+        )
+        return {
+          contentObj: {
+            ...state.contentObj,
+            childComments: comments.map(comment => ({
+              ...comment,
+              replies: comment.replies.filter(reply => reply.id !== commentId)
+            }))
+          }
+        }
+      })
+    } catch (error) {
+      console.error(error.response || error)
+      handleError(error)
+    }
+  }
+
+  onEditComment = async params => {
+    const { handleError } = this.props
+    try {
+      const { data: { editedComment, commentId } } = await request.put(
+        `${URL}/content/comments`,
+        params,
+        auth()
+      )
+      this.setState(state => {
+        const comments = state.contentObj.childComments.map(comment => ({
+          ...comment,
+          content: comment.id === commentId ? editedComment : comment.content
+        }))
+        return {
+          contentObj: {
+            ...state.contentObj,
+            childComments: comments.map(comment => ({
+              ...comment,
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                content: reply.id === commentId ? editedComment : reply.content
+              }))
+            }))
+          }
+        }
+      })
+    } catch (error) {
+      console.error(error.response || error)
+      handleError(error)
+    }
+  }
+
+  onDeleteContent = async({ contentId, type }) => {
+    const { handleError, history } = this.props
+    try {
+      await request.delete(
+        `${URL}/content?contentId=${contentId}&type=${type}`,
+        auth()
+      )
+      history.push('/')
+    } catch (error) {
+      console.error(error.response || error)
+      handleError(error)
+    }
+  }
+
+  onEditContent = async params => {
+    const { handleError } = this.props
+    try {
+      const { data } = await request.put(`${URL}/content`, params, auth())
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          ...data
+        }
+      }))
+    } catch (error) {
+      console.error(error.response || error)
+      handleError(error)
+    }
+  }
+
   onLikeComment = async commentId => {
     const { handleError } = this.props
     try {
@@ -169,6 +261,26 @@ class Comment extends Component {
               likes: reply.id === commentId ? likes : reply.likes
             }))
           }))
+        }
+      }))
+    } catch (error) {
+      console.error(error.response || error)
+      handleError(error)
+    }
+  }
+
+  onLikeTargetComment = async commentId => {
+    const { handleError } = this.props
+    try {
+      const { data: { likes } } = await request.post(
+        `${URL}/content/comment/like`,
+        { commentId },
+        auth()
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          targetContentLikers: likes
         }
       }))
     } catch (error) {
@@ -301,8 +413,26 @@ class Comment extends Component {
     }
   }
 
-  onTargetCommentSubmit = async(params) => {
-    console.log(params)
+  onTargetCommentSubmit = async params => {
+    const { handleError } = this.props
+    try {
+      const { data } = await request.post(
+        `${URL}/content/targetContentComment`,
+        params,
+        auth()
+      )
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          targetContentComments: [data].concat(
+            state.contentObj.targetContentComments || []
+          )
+        }
+      }))
+    } catch (error) {
+      console.error(error.response || error)
+      handleError(error)
+    }
   }
 }
 

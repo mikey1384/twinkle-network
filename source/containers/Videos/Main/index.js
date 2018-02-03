@@ -37,7 +37,6 @@ class Main extends Component {
     isAdmin: PropTypes.bool.isRequired,
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
     loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
-    notificationLoaded: PropTypes.bool.isRequired,
     openAddVideoModal: PropTypes.func.isRequired,
     openReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
@@ -56,16 +55,42 @@ class Main extends Component {
   state = {
     addPlaylistModalShown: false,
     playlistSearchQuery: '',
+    notificationMenu: null,
     searchedPlaylists: [],
     isSearching: false
+  }
+
+  componentDidMount() {
+    this.setState({
+      notificationMenu: (
+        <Notification device="desktop" className="col-xs-3 col-xs-offset-9">
+          <Button
+            className="btn btn-lg btn-info"
+            style={{
+              fontSize: '1.5em',
+              width: '100%',
+              marginBottom: '0.5em'
+            }}
+            onClick={() => openAddVideoModal()}
+          >
+            + Add Video
+          </Button>
+          <Button
+            className="btn btn-lg btn-info"
+            style={{ fontSize: '1.5em', width: '100%' }}
+            onClick={() => this.setState({ addPlaylistModalShown: true })}
+          >
+            + Add Playlist
+          </Button>
+        </Notification>
+      )
+    })
   }
 
   render() {
     const {
       isAdmin,
       userId,
-
-      notificationLoaded,
 
       playlists: allPlaylists,
       getPlaylists,
@@ -96,6 +121,7 @@ class Main extends Component {
       addPlaylistModalShown,
       playlistSearchQuery,
       isSearching,
+      notificationMenu,
       searchedPlaylists
     } = this.state
 
@@ -182,28 +208,7 @@ class Main extends Component {
             />
           )}
         </div>
-        {notificationLoaded && (
-          <Notification device="desktop" className="col-xs-3 col-xs-offset-9">
-            <Button
-              className="btn btn-lg btn-info"
-              style={{
-                fontSize: '1.5em',
-                width: '100%',
-                marginBottom: '0.5em'
-              }}
-              onClick={() => openAddVideoModal()}
-            >
-              + Add Video
-            </Button>
-            <Button
-              className="btn btn-lg btn-info"
-              style={{ fontSize: '1.5em', width: '100%' }}
-              onClick={() => this.setState({ addPlaylistModalShown: true })}
-            >
-              + Add Playlist
-            </Button>
-          </Notification>
-        )}
+        {notificationMenu}
       </div>
     )
   }
@@ -218,8 +223,8 @@ class Main extends Component {
     return <ButtonGroup style={{ marginLeft: 'auto' }} buttons={buttonsArray} />
   }
 
-  searchPlaylist = async(text) => {
-    this.setState({isSearching: false})
+  searchPlaylist = async text => {
+    this.setState({ isSearching: false })
     try {
       const { data: searchedPlaylists } = await request.get(
         `${URL}/playlist/search/playlist?query=${text}`
@@ -236,8 +241,6 @@ export default connect(
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
-
-    notificationLoaded: state.NotiReducer.loaded,
 
     playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,
     playlists: state.PlaylistReducer.allPlaylists,

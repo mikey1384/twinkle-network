@@ -62,7 +62,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { initSession, location, fetchNotifications } = this.props
+    const { initSession, location } = this.props
     if (typeof document.hidden !== 'undefined') {
       hidden = 'hidden'
       visibilityChange = 'visibilitychange'
@@ -76,8 +76,6 @@ class App extends Component {
     initSession(location.pathname)
     addEvent(window, 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
-
-    fetchNotifications()
   }
 
   componentDidUpdate(prevProps) {

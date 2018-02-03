@@ -6,6 +6,8 @@ import NotiFeeds from './NotiFeeds'
 import ChatFeeds from './ChatFeeds'
 import { defaultChatSubject } from 'constants/defaultValues'
 import Responsive from 'components/Wrappers/Responsive'
+import { fetchNotifications } from 'redux/actions/NotiActions'
+import ExecutionEnvironment from 'exenv'
 
 class Notification extends Component {
   static propTypes = {
@@ -14,30 +16,29 @@ class Notification extends Component {
     className: PropTypes.string,
     currentChatSubject: PropTypes.object,
     device: PropTypes.string.isRequired,
+    fetchNotifications: PropTypes.func.isRequired,
     myId: PropTypes.number,
     notifications: PropTypes.array.isRequired,
     position: PropTypes.string
   }
 
-  constructor() {
-    super()
-    this.state = {
-      scrollPosition: window.scrollY,
-      scrollLocked: false
-    }
-    this.handleScroll = this.handleScroll.bind(this)
-    this.onMouseMove = this.onMouseMove.bind(this)
-    this.onPageScroll = this.onPageScroll.bind(this)
+  state = {
+    scrollPosition: ExecutionEnvironment.canUseDOM ? window.scrollY : 0,
+    scrollLocked: false
   }
 
   componentDidMount() {
+    const { fetchNotifications } = this.props
     addEvent(window, 'mousemove', this.onMouseMove)
     addEvent(window, 'scroll', this.onPageScroll)
+    fetchNotifications()
   }
 
   componentWillUnmount() {
-    removeEvent(window, 'mousemove', this.onMouseMove)
-    removeEvent(window, 'scroll', this.onPageScroll)
+    if (ExecutionEnvironment.canUseDOM) {
+      removeEvent(window, 'mousemove', this.onMouseMove)
+      removeEvent(window, 'scroll', this.onPageScroll)
+    }
   }
 
   render() {
@@ -82,7 +83,7 @@ class Notification extends Component {
     )
   }
 
-  handleScroll() {
+  handleScroll = () => {
     const { device } = this.props
     const { scrollHeight, clientHeight, scrollTop } = this.NotificationBox
     if (device === 'desktop') {
@@ -94,12 +95,12 @@ class Notification extends Component {
     }
   }
 
-  onMouseMove() {
+  onMouseMove = () => {
     const { scrollLocked } = this.state
     if (scrollLocked) this.setState({ scrollLocked: false })
   }
 
-  onPageScroll() {
+  onPageScroll = () => {
     const { chatMode } = this.props
     const { scrollLocked } = this.state
     if (scrollLocked) {
@@ -111,9 +112,12 @@ class Notification extends Component {
   }
 }
 
-export default connect(state => ({
-  chatMode: state.ChatReducer.chatMode,
-  myId: state.UserReducer.userId,
-  notifications: state.NotiReducer.notifications,
-  currentChatSubject: state.NotiReducer.currentChatSubject
-}))(Notification)
+export default connect(
+  state => ({
+    chatMode: state.ChatReducer.chatMode,
+    myId: state.UserReducer.userId,
+    notifications: state.NotiReducer.notifications,
+    currentChatSubject: state.NotiReducer.currentChatSubject
+  }),
+  { fetchNotifications }
+)(Notification)

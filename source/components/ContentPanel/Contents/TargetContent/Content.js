@@ -32,8 +32,8 @@ class Content extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     uploader: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
+      id: PropTypes.number,
+      name: PropTypes.string
     }),
     username: PropTypes.string
   }

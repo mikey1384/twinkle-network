@@ -452,7 +452,7 @@ export default function FeedReducer(state = defaultState, action) {
           let comments = []
           if (feed.id === action.panelId) {
             let prevComments = feed.targetContentComments || []
-            comments = prevComments.concat([action.data])
+            comments = [action.data].concat(prevComments)
           }
           return {
             ...feed,

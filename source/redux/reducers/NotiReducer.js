@@ -1,8 +1,7 @@
 const defaultState = {
   versionMatch: true,
   notifications: [],
-  currentChatSubject: {},
-  loaded: false
+  currentChatSubject: {}
 }
 
 export default function NotiReducer(state = defaultState, action) {
@@ -20,8 +19,7 @@ export default function NotiReducer(state = defaultState, action) {
     case 'FETCH_NOTIFICATIONS':
       return {
         ...state,
-        ...action.data,
-        loaded: true
+        ...action.data
       }
     case 'NOTIFY_CHAT_SUBJECT_CHANGE':
       return {
