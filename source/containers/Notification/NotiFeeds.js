@@ -110,13 +110,23 @@ function renderNotificationMessage(notification, myId) {
   if (isReplyNotification) title = `"${title}"`
   const content = {
     title,
-    id: isReplyNotification ? contentId : rootId
+    id:
+      isReplyNotification || isDiscussionAnswerNotification
+        ? contentId
+        : type === 'discussion' ? contentId : rootId
   }
   return (
     <div>
       <UsernameText user={{ id: userId, name: username }} color={Color.blue} />
       &nbsp;{action}
-      <ContentLink content={content} type={isReplyNotification ? 'comment' : rootType} />
+      <ContentLink
+        content={content}
+        type={
+          isReplyNotification || isDiscussionAnswerNotification
+            ? 'comment'
+            : type === 'discussion' ? type : rootType
+        }
+      />
     </div>
   )
 }

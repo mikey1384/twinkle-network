@@ -192,6 +192,7 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />
             <Route path="/comments" component={ContentPage} />
+            <Route path="/discussions" component={ContentPage} />
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
             <Route path="/users" component={Home} />
