@@ -8,7 +8,6 @@ export default class HeaderNav extends Component {
     imgLabel: PropTypes.string.isRequired,
     isHome: PropTypes.bool,
     isUsername: PropTypes.bool,
-    onClick: PropTypes.func,
     style: PropTypes.object,
     to: PropTypes.string.isRequired
   }
@@ -27,8 +26,7 @@ export default class HeaderNav extends Component {
       to,
       children,
       isHome,
-      isUsername,
-      onClick
+      isUsername
     } = this.props
     const { hovered } = this.state
     return (
@@ -38,9 +36,6 @@ export default class HeaderNav extends Component {
         children={({ match }) => (
           <li
             className={`header-nav ${match ? 'active' : ''}`}
-            onClick={() => {
-              if (onClick) onClick()
-            }}
             onMouseEnter={() => this.setState({ hovered: true })}
             onMouseLeave={() => this.setState({ hovered: false })}
           >

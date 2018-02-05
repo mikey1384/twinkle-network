@@ -14,15 +14,10 @@ import {
   turnChatOff,
   resetChat
 } from 'redux/actions/ChatActions'
-import { getInitialVideos } from 'redux/actions/VideoActions'
 import {
   checkVersion,
   notifyChatSubjectChange
 } from 'redux/actions/NotiActions'
-import {
-  getPlaylistsAsync,
-  getPinnedPlaylistsAsync
-} from 'redux/actions/PlaylistActions'
 import SigninModal from 'containers/Signin'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
@@ -40,10 +35,7 @@ class Header extends Component {
     chatMode: PropTypes.bool,
     checkVersion: PropTypes.func,
     closeSigninModal: PropTypes.func,
-    getInitialVideos: PropTypes.func,
     getNumberOfUnreadMessages: PropTypes.func,
-    getPinnedPlaylists: PropTypes.func,
-    getPlaylists: PropTypes.func,
     increaseNumberOfUnreadMessages: PropTypes.func,
     location: PropTypes.object,
     loggedIn: PropTypes.bool,
@@ -167,10 +159,7 @@ class Header extends Component {
       openSigninModal,
       closeSigninModal,
       onChatButtonClick,
-      numChatUnreads,
-      getInitialVideos,
-      getPinnedPlaylists,
-      getPlaylists
+      numChatUnreads
     } = this.props
 
     const { logoBlue, logoGreen } = this.state
@@ -230,11 +219,6 @@ class Header extends Component {
                 <HeaderNav
                   to="/videos"
                   imgLabel="watch"
-                  onClick={() => {
-                    getInitialVideos()
-                    getPinnedPlaylists()
-                    getPlaylists()
-                  }}
                 >
                   <span>Watch</span>
                 </HeaderNav>
@@ -339,9 +323,6 @@ export default connect(
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
     increaseNumberOfUnreadMessages,
-    getPinnedPlaylists: getPinnedPlaylistsAsync,
-    getPlaylists: getPlaylistsAsync,
-    getInitialVideos,
     notifyChatSubjectChange,
     checkVersion,
     resetChat
