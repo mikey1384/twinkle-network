@@ -58,12 +58,12 @@ class Stories extends Component {
     userId: PropTypes.number
   }
 
+  clearingFeeds = false
   scrollHeight = 0
 
   constructor() {
     super()
     this.state = {
-      clearingFeeds: false,
       loadingMore: false,
       scrollPosition: 0
     }
@@ -73,15 +73,14 @@ class Stories extends Component {
     this.onScroll = this.onScroll.bind(this)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     let { history, clearFeeds, fetchFeeds, loaded } = this.props
     addEvent(window, 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
-      this.setState({ clearingFeeds: true })
-      return clearFeeds().then(() => {
-        this.setState({ clearingFeeds: false })
-        fetchFeeds()
-      })
+      this.clearingFeeds = true
+      await clearFeeds()
+      this.clearingFeeds = false
+      fetchFeeds()
     }
   }
 
@@ -112,7 +111,7 @@ class Stories extends Component {
       uploadFeedComment,
       uploadTargetContentComment
     } = this.props
-    const { clearingFeeds, loadingMore } = this.state
+    const { loadingMore } = this.state
 
     return (
       <div style={{ paddingBottom: '1rem' }}>
@@ -139,7 +138,7 @@ class Stories extends Component {
                 return (
                   <ContentPanel
                     key={`${feed.id}`}
-                    selfLoadingDisabled={clearingFeeds}
+                    selfLoadingDisabled={this.clearingFeeds}
                     contentObj={feed}
                     methodObj={{
                       onFetchContent: fetchFeed,
