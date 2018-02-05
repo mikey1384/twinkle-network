@@ -77,9 +77,11 @@ class Stories extends Component {
     let { history, clearFeeds, fetchFeeds, loaded } = this.props
     addEvent(window, 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
+      console.log('clearing feeds')
       this.clearingFeeds = true
       await clearFeeds()
       this.clearingFeeds = false
+      console.log('fetching feeds')
       fetchFeeds()
     }
   }
