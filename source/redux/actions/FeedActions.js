@@ -170,34 +170,30 @@ export const feedVideoStar = videoId => async dispatch => {
   }
 }
 
-export const fetchFeed = feed => dispatch => {
+export const fetchFeed = feed => async dispatch => {
   let query = []
   for (let key in feed) {
     query.push(`${key}=${feed[key]}&`)
   }
   query = query.join('').slice(0, -1)
-  request
-    .get(
-      `
-    ${API_URL}/feed?${processedQueryString(query)}
-  `
+  try {
+    const { data } = await request.get(
+      `${API_URL}/feed?${processedQueryString(query)}`
     )
-    .then(response =>
-      dispatch({
-        type: 'FETCH_FEED',
-        data: {
-          ...response.data,
-          childComments: [],
-          commentsShown: false,
-          commentsLoadMoreButton: false,
-          isReply: false
-        }
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: 'FETCH_FEED',
+      data: {
+        ...data,
+        childComments: [],
+        commentsShown: false,
+        commentsLoadMoreButton: false,
+        isReply: false
+      }
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
 }
 
 export const fetchFeedsAsync = (filter = 'all') => dispatch =>
