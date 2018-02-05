@@ -15,7 +15,6 @@ ContentLink.propTypes = {
 }
 function ContentLink({ content: { id, title }, type, ...actions }) {
   let destination = ''
-  console.log(type)
   switch (type) {
     case 'url':
       destination = 'links'
