@@ -10,6 +10,7 @@ import InputArea from 'components/Texts/InputArea'
 import Comment from './Comment'
 import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
+import ContentLink from 'components/ContentLink'
 import { timeSince } from 'helpers/timeStampHelpers'
 
 class Content extends Component {
@@ -52,6 +53,7 @@ class Content extends Component {
 
   render() {
     const {
+      discussionId,
       uploader,
       isDiscussion,
       title,
@@ -65,6 +67,7 @@ class Content extends Component {
       likes = [],
       rootType,
       rootContent,
+      rootId,
       replyId,
       methods
     } = this.props
@@ -90,9 +93,11 @@ class Content extends Component {
             <div>
               {rootType === 'question' && (
                 <div style={{ fontSize: '1.2em', marginBottom: '1em' }}>
-                  <span style={{ color: Color.green, fontWeight: 'bold' }}>
-                    Question:{' '}
-                  </span>
+                  <ContentLink
+                    content={{ id: rootId, title: 'Question: ' }}
+                    type="question"
+                    style={{color: Color.green}}
+                  />
                   <span>{rootContent}</span>
                 </div>
               )}
@@ -186,38 +191,42 @@ class Content extends Component {
               )}
             </div>
           ) : (
+            <div
+              style={{
+                marginTop: '0.2em',
+                marginBottom: '0.2em'
+              }}
+            >
               <div
-                style={{
-                  marginTop: '0.2em',
-                  marginBottom: '0.2em'
-                }}
+                className="col-xs-12"
+                style={{ paddingLeft: '0px', paddingRight: '0px' }}
               >
-                <div
-                  className="col-xs-12"
-                  style={{ paddingLeft: '0px', paddingRight: '0px' }}
-                >
-                  <div style={{ float: 'left' }}>
-                    <b style={{ color: Color.green }}>Discuss: </b>
-                  </div>
-                  <div style={{ float: 'right' }}>
-                    <small>
-                      <UsernameText user={uploader} />&nbsp;({timeSince(
-                        timeStamp
-                      )})
-                  </small>
-                  </div>
+                <div style={{ float: 'left' }}>
+                  <ContentLink
+                    content={{ id: discussionId, title: 'Discuss: ' }}
+                    type="discussion"
+                    style={{color: Color.green}}
+                  />
                 </div>
-                <div style={{ paddingTop: '2.3em' }}>
-                  <p style={{ fontWeight: 'bold' }}>{title}</p>
-                  {content && <LongText>{content}</LongText>}
+                <div style={{ float: 'right' }}>
+                  <small>
+                    <UsernameText user={uploader} />&nbsp;({timeSince(
+                      timeStamp
+                    )})
+                  </small>
                 </div>
               </div>
-            )
-        ) : (
-            <div style={{ textAlign: 'center' }}>
-              <span>Content removed / no longer available</span>
+              <div style={{ paddingTop: '2.3em' }}>
+                <p style={{ fontWeight: 'bold' }}>{title}</p>
+                {content && <LongText>{content}</LongText>}
+              </div>
             </div>
-          )}
+          )
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            <span>Content removed / no longer available</span>
+          </div>
+        )}
       </div>
     )
   }
@@ -250,9 +259,7 @@ class Content extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId
-  })
-)(Content)
+export default connect(state => ({
+  username: state.UserReducer.username,
+  profilePicId: state.UserReducer.profilePicId
+}))(Content)

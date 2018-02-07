@@ -85,8 +85,6 @@ class Stories extends Component {
   }
 
   componentWillUnmount() {
-    const { clearFeeds } = this.props
-    clearFeeds()
     removeEvent(window, 'scroll', this.onScroll)
   }
 
