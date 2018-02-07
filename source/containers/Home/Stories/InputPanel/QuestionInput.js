@@ -8,6 +8,7 @@ import Textarea from 'react-textarea-autosize'
 import {
   addEmoji,
   stringIsEmpty,
+  finalizeEmoji,
   turnStringIntoQuestion
 } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
@@ -70,7 +71,7 @@ class QuestionInput extends Component {
                   minRows={4}
                   placeholder="Enter Description (Optional, you don't need to write this)"
                   onChange={event =>
-                    this.setState({ description: event.target.value })
+                    this.setState({ description: addEmoji(event.target.value) })
                   }
                   onKeyUp={event => {
                     if (event.key === ' ') {
@@ -108,11 +109,14 @@ class QuestionInput extends Component {
 
   onSubmit = async event => {
     const { uploadQuestion } = this.props
-    const { question } = this.state
+    const { question, description } = this.state
     event.preventDefault()
     if (stringIsEmpty(question) || question.length > wordLimit) return
-    let questionString = turnStringIntoQuestion(question)
-    await uploadQuestion(questionString)
+    console.log(description)
+    await uploadQuestion({
+      question: turnStringIntoQuestion(question),
+      description: finalizeEmoji(description)
+    })
     this.setState({
       question: '',
       description: '',

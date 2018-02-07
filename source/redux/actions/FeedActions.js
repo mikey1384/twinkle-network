@@ -137,7 +137,8 @@ export const feedContentEdit = params => dispatch =>
         dispatch({
           type: 'FEED_QUESTION_EDIT',
           contentId: params.contentId,
-          editedContent: data.content
+          editedContent: data.content,
+          editedDescription: data.description
         })
       } else {
         dispatch({
@@ -362,7 +363,7 @@ export const uploadQuestion = question => async dispatch => {
   try {
     const { data } = await request.post(
       `${API_URL}/question`,
-      { question },
+      question,
       auth()
     )
     return dispatch({

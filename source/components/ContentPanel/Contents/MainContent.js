@@ -80,7 +80,7 @@ export default function MainContent({
           </div>
         )}
       {!isEditing &&
-        type === 'url' && (
+        (type === 'url' || type === 'question') && (
           <div
             style={{
               fontSize: '1.2em',
@@ -88,12 +88,12 @@ export default function MainContent({
             }}
           >
             {contentDescription && contentDescription !== 'No description' ? (
-              <LongText style={{ paddingBottom: '1.5em' }}>
+              <LongText style={{ paddingBottom: type === 'url' && '1.5em' }}>
                 {contentDescription || ''}
               </LongText>
-            ) : (
+            ) : type === 'url' ? (
               <div style={{ paddingBottom: '1.5em' }}>{contentTitle}</div>
-            )}
+            ) : null}
           </div>
         )}
       {isEditing && (

@@ -99,7 +99,9 @@ export default function FeedReducer(state = defaultState, action) {
             feed.contentId === action.commentId ||
             feed.commentId === action.commentId ||
             feed.replyId === action.commentId
-          ) { return resultingArray }
+          ) {
+            return resultingArray
+          }
           return resultingArray.concat([
             {
               ...feed,
@@ -110,13 +112,17 @@ export default function FeedReducer(state = defaultState, action) {
                 : [],
               childComments: feed.childComments.reduce(
                 (resultingArray, childComment) => {
-                  if (childComment.id === action.commentId) { return resultingArray }
+                  if (childComment.id === action.commentId) {
+                    return resultingArray
+                  }
                   return resultingArray.concat([
                     {
                       ...childComment,
                       replies: childComment.replies.reduce(
                         (resultingArray, reply) => {
-                          if (reply.id === action.commentId) { return resultingArray }
+                          if (reply.id === action.commentId) {
+                            return resultingArray
+                          }
                           return resultingArray.concat([reply])
                         },
                         []
@@ -225,12 +231,18 @@ export default function FeedReducer(state = defaultState, action) {
           return {
             ...feed,
             content: contentMatches ? action.editedContent : feed.content,
+            contentDescription: contentMatches
+              ? action.editedDescription
+              : feed.description,
             rootContentTitle: rootContentMatches
               ? action.editedContent
               : feed.rootContentTitle,
             rootContent: rootContentMatches
               ? action.editedContent
-              : feed.rootContent
+              : feed.rootContent,
+            rootContentDescription: rootContentMatches
+              ? action.editedDescription
+              : feed.rootContentDescription
           }
         })
       }

@@ -92,29 +92,6 @@ export default class ContentEditor extends Component {
                 />
               </fieldset>
             )}
-          {type !== 'question' && (
-            <fieldset className="form-group">
-              <Textarea
-                autoFocus={type === 'comment'}
-                className="form-control"
-                minRows={4}
-                onChange={event => {
-                  const { value } = event.target
-                  this.setState(state => ({
-                    [type === 'comment' ? 'editedComment' : 'editedDescription']: value,
-                    buttonDisabled:
-                      type === 'comment'
-                        ? stringIsEmpty(value)
-                        : state.buttonDisabled
-                  }))
-                }}
-                placeholder={
-                  edit[type === 'comment' ? 'comment' : 'description']
-                }
-                value={type === 'comment' ? editedComment : editedDescription}
-              />
-            </fieldset>
-          )}
           {type === 'question' && (
             <fieldset className="form-group">
               <Input
@@ -136,6 +113,25 @@ export default class ContentEditor extends Component {
               </small>
             </fieldset>
           )}
+          <fieldset className="form-group">
+            <Textarea
+              autoFocus={type === 'comment'}
+              className="form-control"
+              minRows={4}
+              onChange={event => {
+                const { value } = event.target
+                this.setState(state => ({
+                  [type === 'comment' ? 'editedComment' : 'editedDescription']: value,
+                  buttonDisabled:
+                    type === 'comment'
+                      ? stringIsEmpty(value)
+                      : state.buttonDisabled
+                }))
+              }}
+              placeholder={edit[type === 'comment' ? 'comment' : 'description']}
+              value={type === 'comment' ? editedComment : editedDescription}
+            />
+          </fieldset>
           <fieldset>
             <Button
               className="btn btn-primary"
@@ -177,4 +173,3 @@ export default class ContentEditor extends Component {
     onEditContent({ ...post, contentId, type }).then(() => onDismiss())
   }
 }
-
