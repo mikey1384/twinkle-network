@@ -31,6 +31,22 @@ class Comment extends Component {
     }
   }
 
+  async componentDidUpdate(prevProps) {
+    const { match, match: { params: { contentId } } } = this.props
+    if (prevProps.match.params.contentId !== contentId) {
+      try {
+        const { data } = await request.get(
+          `${URL}/content/${match.url
+            .split('/')[1]
+            .slice(0, -1)}?contentId=${contentId}`
+        )
+        this.setState({ contentObj: data })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   render() {
     const { userId } = this.props
     const { contentObj } = this.state

@@ -20,6 +20,8 @@ export default class Heading extends Component {
     attachedVideoShown: PropTypes.bool,
     contentObj: PropTypes.shape({
       contentId: PropTypes.number,
+      commentId: PropTypes.number,
+      replyId: PropTypes.number,
       rootContentLikers: PropTypes.array,
       rootId: PropTypes.number,
       rootType: PropTypes.string,
@@ -238,19 +240,35 @@ export default class Heading extends Component {
   }
 
   renderTargetAction = () => {
-    const { targetReplyUploader, targetCommentUploader } = this.props
+    const {
+      contentObj: { commentId, replyId },
+      targetReplyUploader,
+      targetCommentUploader
+    } = this.props
     if (targetReplyUploader) {
       return (
         <span>
           <UsernameText user={targetReplyUploader} color={Color.blue} />
-          {"'s reply on"}
+          {"'s "}
+          <ContentLink
+            content={{ id: replyId, title: 'reply ' }}
+            type="comment"
+            style={{ color: Color.green }}
+          />
+          {'on'}
         </span>
       )
     } else if (targetCommentUploader) {
       return (
         <span>
           <UsernameText user={targetCommentUploader} color={Color.blue} />
-          {"'s comment on"}
+          {"'s "}
+          <ContentLink
+            content={{ id: commentId, title: 'comment ' }}
+            type="comment"
+            style={{ color: Color.green }}
+          />
+          {'on'}
         </span>
       )
     }

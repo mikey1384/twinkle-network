@@ -32,6 +32,10 @@ class Contents extends Component {
     confirmModalShown: false
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.contentObj.contentId !== this.props.contentObj.contentId) { this.setState({ commentsShown: false }) }
+  }
+
   render() {
     const {
       contentObj: {
