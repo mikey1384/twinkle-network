@@ -10,7 +10,7 @@ CommentPage.propTypes = {
 export default function CommentPage({ match }) {
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-      <div style={{ width: '80%' }}>
+      <div style={{ width: '65%' }}>
         <Switch>
           <Route exact path={`${match.url}/:contentId`} component={Content} />
           <Route component={NotFound} />

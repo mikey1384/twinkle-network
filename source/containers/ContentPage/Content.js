@@ -80,6 +80,15 @@ class Comment extends Component {
         params = { content: comment, rootId: parent.id, rootType: 'question' }
         commentType = 'comments'
         break
+      case 'discussion':
+        params = {
+          content: comment,
+          rootId: parent.rootId,
+          rootType: parent.rootType,
+          discussionId: parent.id
+        }
+        commentType = 'comments'
+        break
       default:
         return console.error('Invalid content type')
     }
@@ -227,7 +236,9 @@ class Comment extends Component {
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          ...data
+          ...data,
+          contentTitle: data.title,
+          contentDescription: data.description
         }
       }))
     } catch (error) {

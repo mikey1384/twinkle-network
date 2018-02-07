@@ -19,6 +19,7 @@ export default class Heading extends Component {
     }),
     attachedVideoShown: PropTypes.bool,
     contentObj: PropTypes.shape({
+      contentId: PropTypes.number,
       rootContentLikers: PropTypes.array,
       rootId: PropTypes.number,
       rootType: PropTypes.string,
@@ -111,7 +112,7 @@ export default class Heading extends Component {
 
   renderHeading = () => {
     const {
-      contentObj: { type, rootType },
+      contentObj: { contentId, type, rootType },
       action,
       rootContent,
       uploader
@@ -121,22 +122,28 @@ export default class Heading extends Component {
       case 'video':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} /> uploaded a video:{' '}
-            <ContentLink content={rootContent} type={rootType} />{' '}
+            <UsernameText user={uploader} color={Color.blue} /> uploaded a
+            video: <ContentLink content={rootContent} type={rootType} />{' '}
           </Fragment>
         )
       case 'comment':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} /> {action} {this.renderTargetAction()}{' '}
-            {contentLabel}:{' '}
+            <UsernameText user={uploader} color={Color.blue} />{' '}
+            <ContentLink
+              content={{ id: contentId, title: action }}
+              type={type}
+              style={{ color: Color.green }}
+            />{' '}
+            {this.renderTargetAction()} {contentLabel}:{' '}
             <ContentLink content={rootContent} type={rootType} />{' '}
           </Fragment>
         )
       case 'url':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} /> shared a link:&nbsp;
+            <UsernameText user={uploader} color={Color.blue} /> shared a
+            link:&nbsp;
             <ContentLink content={rootContent} type={rootType} />{' '}
           </Fragment>
         )
@@ -144,14 +151,23 @@ export default class Heading extends Component {
         return (
           <Fragment>
             <UsernameText user={uploader} color={Color.blue} /> asked a{' '}
-            <b style={{ color: Color.green }}>question</b>{' '}
+            <ContentLink
+              content={{ id: contentId, title: 'question' }}
+              type={type}
+              style={{ color: Color.green }}
+            />{' '}
           </Fragment>
         )
       case 'discussion':
         return (
           <Fragment>
             <UsernameText user={uploader} color={Color.blue} /> started a{' '}
-            <b style={{ color: Color.green }}>discussion</b> on {contentLabel}:{' '}
+            <ContentLink
+              content={{ id: contentId, title: 'discussion' }}
+              type={type}
+              style={{ color: Color.green }}
+            />
+            &nbsp;on {contentLabel}:{' '}
             <ContentLink content={rootContent} type={rootType} />
           </Fragment>
         )
@@ -182,31 +198,31 @@ export default class Heading extends Component {
               onClick={() => methods.onLikeClick(rootId, rootType)}
             />
           ) : (
-              content && (
-                <a
-                  style={{
-                    marginLeft: 'auto',
-                    float: 'right',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    color: Color.blue
-                  }}
-                  onClick={onPlayVideoClick}
-                >
-                  <div className="video-preview-thumb">
-                    <img
-                      alt="thumb"
-                      style={{ width: '100%' }}
-                      src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
-                    />
-                    {!!isStarred && (
-                      <StarMark style={{ top: 1, left: 1 }} size={2} />
-                    )}
-                    <span />
-                  </div>
-                </a>
-              )
-            )}
+            content && (
+              <a
+                style={{
+                  marginLeft: 'auto',
+                  float: 'right',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  color: Color.blue
+                }}
+                onClick={onPlayVideoClick}
+              >
+                <div className="video-preview-thumb">
+                  <img
+                    alt="thumb"
+                    style={{ width: '100%' }}
+                    src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                  />
+                  {!!isStarred && (
+                    <StarMark style={{ top: 1, left: 1 }} size={2} />
+                  )}
+                  <span />
+                </div>
+              </a>
+            )
+          )}
         </Fragment>
       )
     } else if (rootType === 'question') {

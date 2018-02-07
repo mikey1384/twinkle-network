@@ -11,13 +11,17 @@ ContentLink.propTypes = {
     id: PropTypes.number,
     title: PropTypes.string
   }).isRequired,
+  style: PropTypes.object,
   type: PropTypes.string
 }
-function ContentLink({ content: { id, title }, type, ...actions }) {
+function ContentLink({ style, content: { id, title }, type, ...actions }) {
   let destination = ''
   switch (type) {
     case 'url':
       destination = 'links'
+      break
+    case 'discussion':
+      destination = 'discussions'
       break
     case 'video':
       destination = 'videos'
@@ -36,7 +40,8 @@ function ContentLink({ content: { id, title }, type, ...actions }) {
     <Link
       style={{
         fontWeight: 'bold',
-        color: Color.blue
+        color: Color.blue,
+        ...style
       }}
       to={`/${destination}/${id}`}
       onClickAsync={() => onLinkClick({ id, type, actions })}
@@ -44,7 +49,9 @@ function ContentLink({ content: { id, title }, type, ...actions }) {
       {title}
     </Link>
   ) : (
-    <span style={{ fontWeight: 'bold', color: Color.darkGray }}>(Deleted)</span>
+    <span style={{ fontWeight: 'bold', color: Color.darkGray }}>
+      (Deleted)
+    </span>
   )
 }
 
