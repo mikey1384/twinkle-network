@@ -11,6 +11,7 @@ NotiFeeds.propTypes = {
     PropTypes.shape({
       contentId: PropTypes.number,
       commentContent: PropTypes.string,
+      discussionId: PropTypes.number,
       discussionTitle: PropTypes.string,
       discussionUploader: PropTypes.number,
       id: PropTypes.number.isRequired,
@@ -62,6 +63,7 @@ export default function NotiFeeds({ myId, notifications, style }) {
 function renderNotificationMessage(notification, myId) {
   const {
     contentId,
+    discussionId,
     type,
     rootType,
     rootTitle,
@@ -79,16 +81,19 @@ function renderNotificationMessage(notification, myId) {
   let isDiscussionAnswerNotification =
     discussionTitle && discussionUploader === myId
   if (isReplyNotification) {
-    action = 'replied to'
+    action = returnCommentActionText('reply')
   } else if (isDiscussionAnswerNotification) {
-    action = 'commented on'
+    action = returnCommentActionText('comment')
   } else {
     switch (type) {
       case 'like':
         action = 'likes'
         break
       case 'comment':
-        action = rootType === 'question' ? 'answered' : 'commented on'
+        action =
+          rootType === 'question'
+            ? returnCommentActionText('answer')
+            : returnCommentActionText('comment')
         break
       case 'discussion':
         action = 'added a discussion to'
@@ -97,7 +102,7 @@ function renderNotificationMessage(notification, myId) {
         break
     }
   }
-  action += ` your ${
+  const target = `your ${
     isReplyNotification
       ? 'comment'
       : isDiscussionAnswerNotification ? 'discussion topic' : rootType
@@ -111,22 +116,36 @@ function renderNotificationMessage(notification, myId) {
   const content = {
     title,
     id:
-      isReplyNotification || isDiscussionAnswerNotification
+      isReplyNotification
         ? contentId
-        : type === 'discussion' ? contentId : rootId
+        : type === 'discussion' ? contentId : isDiscussionAnswerNotification ? discussionId : rootId
   }
   return (
     <div>
       <UsernameText user={{ id: userId, name: username }} color={Color.blue} />
-      &nbsp;{action}
+      &nbsp;{action} {target}
       <ContentLink
         content={content}
         type={
-          isReplyNotification || isDiscussionAnswerNotification
+          isReplyNotification
             ? 'comment'
-            : type === 'discussion' ? type : rootType
+            : type === 'discussion' || isDiscussionAnswerNotification ? 'discussion' : rootType
         }
       />
     </div>
   )
+
+  function returnCommentActionText(type) {
+    const title =
+      type === 'comment'
+        ? 'commented on'
+        : type === 'reply' ? 'replied to' : 'answered'
+    return (
+      <ContentLink
+        style={{ color: Color.green }}
+        content={{ id: contentId, title }}
+        type="comment"
+      />
+    )
+  }
 }
