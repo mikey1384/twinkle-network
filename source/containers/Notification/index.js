@@ -18,9 +18,23 @@ class Notification extends Component {
     position: PropTypes.string
   }
 
+  state = {
+    scrollPosition: ExecutionEnvironment.canUseDOM ? window.scrollY : 0,
+    scrollLocked: false
+  }
+
   componentDidMount() {
     const { fetchNotifications } = this.props
+    addEvent(window, 'mousemove', this.onMouseMove)
+    addEvent(window, 'scroll', this.onPageScroll)
     fetchNotifications()
+  }
+
+  componentWillUnmount() {
+    if (ExecutionEnvironment.canUseDOM) {
+      removeEvent(window, 'mousemove', this.onMouseMove)
+      removeEvent(window, 'scroll', this.onPageScroll)
+    }
   }
 
   render() {
