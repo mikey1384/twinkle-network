@@ -61,6 +61,31 @@ class Notification extends Component {
       </div>
     )
   }
+
+  handleScroll = () => {
+    const { scrollHeight, clientHeight, scrollTop } = this.NotificationBox
+    if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
+      this.setState({ scrollLocked: true })
+    } else {
+      this.setState({ scrollLocked: false })
+    }
+  }
+
+  onMouseMove = () => {
+    const { scrollLocked } = this.state
+    if (scrollLocked) this.setState({ scrollLocked: false })
+  }
+
+  onPageScroll = () => {
+    const { chatMode } = this.props
+    const { scrollLocked } = this.state
+    if (scrollLocked) {
+      window.scrollTo(0, this.state.scrollPosition)
+    }
+    if (!chatMode) {
+      this.setState({ scrollPosition: window.scrollY })
+    }
+  }
 }
 
 export default connect(
