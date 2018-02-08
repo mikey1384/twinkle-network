@@ -57,8 +57,12 @@ class Notification extends Component {
           bottom: 0
         }}
       >
-        <div className="well">
-          <div>
+        <div className="well" onScroll={this.handleScroll}>
+          <div
+            ref={ref => {
+              this.NotificationBox = ref
+            }}
+          >
             {children && (
               <div style={{ minHeight: '3rem', marginBottom: '1rem' }}>
                 {children}
@@ -69,7 +73,7 @@ class Notification extends Component {
               <NotiFeeds
                 notifications={notifications}
                 myId={myId}
-                style={{ marginTop: loaded && '1em' }}
+                style={{ marginTop: loaded && '1rem' }}
               />
             )}
           </div>
@@ -80,6 +84,7 @@ class Notification extends Component {
 
   handleScroll = () => {
     const { scrollHeight, clientHeight, scrollTop } = this.NotificationBox
+    console.log(scrollTop, scrollHeight - clientHeight, scrollTop)
     if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
       this.setState({ scrollLocked: true })
     } else {
