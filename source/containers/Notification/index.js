@@ -6,6 +6,7 @@ import NotiFeeds from './NotiFeeds'
 import ChatFeeds from './ChatFeeds'
 import { defaultChatSubject } from 'constants/defaultValues'
 import { fetchNotifications } from 'redux/actions/NotiActions'
+import ExecutionEnvironment from 'exenv'
 
 class Notification extends Component {
   static propTypes = {
