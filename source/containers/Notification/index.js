@@ -57,7 +57,10 @@ class Notification extends Component {
           bottom: 0
         }}
       >
-        <div className="well" onScroll={this.handleScroll}>
+        <div
+          className="well momentum-scroll-enabled"
+          onScroll={this.handleScroll}
+        >
           <div
             ref={ref => {
               this.NotificationBox = ref
