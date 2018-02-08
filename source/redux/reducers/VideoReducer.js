@@ -537,11 +537,7 @@ export default function VideoReducer(state = defaultState, action) {
       }
     case 'RESET_VID_STATE':
       return {
-        ...state,
-        allVideoThumbs: [],
-        loadMoreButton: false,
-        allVideosLoaded: false,
-        addVideoModalShown: false
+        ...defaultState
       }
     case 'VIDEO_PAGE_UNAVAILABLE':
       return {

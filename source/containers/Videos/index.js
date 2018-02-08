@@ -4,10 +4,11 @@ import { Route } from 'react-router-dom'
 import Main from './Main'
 import VideoPage from './VideoPage'
 import { connect } from 'react-redux'
-import { getInitialVideos } from 'redux/actions/VideoActions'
+import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions'
 import {
   getPlaylistsAsync,
-  getPinnedPlaylistsAsync
+  getPinnedPlaylistsAsync,
+  resetPlaylistState
 } from 'redux/actions/PlaylistActions'
 
 class Videos extends Component {
@@ -15,7 +16,9 @@ class Videos extends Component {
     match: PropTypes.object.isRequired,
     getInitialVideos: PropTypes.func.isRequired,
     getPlaylists: PropTypes.func.isRequired,
-    getPinnedPlaylists: PropTypes.func.isRequired
+    getPinnedPlaylists: PropTypes.func.isRequired,
+    resetPlaylistState: PropTypes.func.isRequired,
+    resetVideoState: PropTypes.func.isRequired
   }
 
   componentDidMount() {
@@ -23,6 +26,12 @@ class Videos extends Component {
     getInitialVideos()
     getPlaylists()
     getPinnedPlaylists()
+  }
+
+  componentWillUnmount() {
+    const { resetPlaylistState, resetVideoState } = this.props
+    resetPlaylistState()
+    resetVideoState()
   }
 
   render() {
@@ -39,5 +48,7 @@ class Videos extends Component {
 export default connect(null, {
   getPlaylists: getPlaylistsAsync,
   getPinnedPlaylists: getPinnedPlaylistsAsync,
-  getInitialVideos
+  getInitialVideos,
+  resetPlaylistState,
+  resetVideoState
 })(Videos)

@@ -223,6 +223,10 @@ export const resetPlaylistModalState = () => ({
   type: 'RESET_PL_MODAL_STATE'
 })
 
+export const resetPlaylistState = () => ({
+  type: 'RESET_PL_STATE'
+})
+
 export const clickSafeOn = () => ({
   type: 'CLICK_SAFE_ON'
 })

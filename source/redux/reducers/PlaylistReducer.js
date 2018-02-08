@@ -171,9 +171,7 @@ export default function PlaylistReducer(state = defaultState, action) {
       }
     case 'RESET_PL_STATE':
       return {
-        ...defaultState,
-        allPlaylists: [],
-        pinnedPlaylists: []
+        ...defaultState
       }
     case 'CLICK_SAFE_ON':
       return {
