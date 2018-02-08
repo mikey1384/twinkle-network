@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import NotiFeeds from './NotiFeeds'
 import ChatFeeds from './ChatFeeds'
 import { defaultChatSubject } from 'constants/defaultValues'
