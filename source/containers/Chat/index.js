@@ -246,10 +246,11 @@ class Chat extends Component {
           }}
         >
           <div
-            className="flexbox-container"
             style={{
-              marginBottom: '1em',
-              paddingBottom: '0.5em',
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '1.5rem',
+              paddingBottom: '1rem',
               borderBottom: '1px solid #eee'
             }}
           >

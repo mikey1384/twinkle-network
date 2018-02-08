@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
+import { Color } from 'constants/css'
 
 const ListItemSource = {
   beginDrag(props) {
@@ -71,8 +72,8 @@ function ChoiceListItem({
         }}
       >
         <span
-          className="glyphicon glyphicon-align-justify pull-left grey-color col-sm-1"
-          style={{ paddingLeft: '0px' }}
+          className="glyphicon glyphicon-align-justify pull-left col-sm-1"
+          style={{ paddingLeft: '0px', color: Color.menuGray }}
         />
         <span
           className="col-sm-10"

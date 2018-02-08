@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
+import { Color } from 'constants/css'
 
 const listItemSource = {
   beginDrag(props) {
@@ -52,7 +53,10 @@ function QuestionsListItem({
           : `Untitled Question ${item.id + 1} ${
               item.deleted ? '(removed)' : ''
             }`}
-        <span className="glyphicon glyphicon-align-justify pull-right grey-color" />
+        <span
+          className="glyphicon glyphicon-align-justify pull-right"
+          style={{ color: Color.gray }}
+        />
       </li>
     )
   )

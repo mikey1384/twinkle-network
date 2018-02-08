@@ -3,6 +3,7 @@ import React from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
 import { cleanString } from 'helpers/stringHelpers'
+import { Color } from 'constants/css'
 
 const listItemSource = {
   beginDrag(props) {
@@ -51,7 +52,10 @@ function SortableListItem({
         }}
       >
         {cleanString(item.label)}
-        <span className="glyphicon glyphicon-align-justify pull-right grey-color" />
+        <span
+          className="glyphicon glyphicon-align-justify pull-right"
+          style={{ color: Color.menuGray }}
+        />
       </li>
     )
   )

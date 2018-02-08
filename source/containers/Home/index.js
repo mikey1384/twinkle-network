@@ -16,35 +16,27 @@ class Home extends Component {
     username: PropTypes.string
   }
 
-  state = {
-    tabletNotification: null,
-    desktopNotification: null
-  }
-
-  componentDidMount() {
-    this.setState({
-      tabletNotification: this.renderNotification('tablet'),
-      desktopNotification: this.renderNotification('desktop')
-    })
-  }
-
   render() {
     const { history, location, username: myUsername } = this.props
-    const { tabletNotification, desktopNotification } = this.state
     let username = ''
     if (location.pathname.includes('/users/')) {
       username = location.pathname.split('/')[2]
     }
     return (
-      <div>
-        <div className="col-xs-3" style={{ position: 'fixed' }}>
+      <div className="stories">
+        <div
+          style={{
+            position: 'fixed',
+            left: 0
+          }}
+          className="left"
+        >
           <ProfileWidget history={history} />
           <ul
             className="list-group unselectable"
             style={{
-              marginTop: '1em',
-              fontSize: '1.3em',
-              maxWidth: '12em'
+              marginTop: '1rem',
+              fontSize: '1.3rem'
             }}
           >
             <Route
@@ -53,7 +45,11 @@ class Home extends Component {
               children={({ match }) => (
                 <li
                   className={`list-group-item left-menu-item home-left-menu ${match &&
-                    ' active'}  flexbox-container`}
+                    ' active'}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
                   onClick={() => history.push('/')}
                 >
                   <div className="media-left">
@@ -80,7 +76,11 @@ class Home extends Component {
                     match || (username && myUsername && username !== myUsername)
                       ? ' active'
                       : ''
-                  } flexbox-container`}
+                  }`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
                   onClick={() => history.push('/users')}
                 >
                   <div className="media-left">
@@ -99,48 +99,45 @@ class Home extends Component {
               )}
             />
           </ul>
-          {tabletNotification}
         </div>
-        <div className="col-md-6 col-xs-offset-3 col-xs-9">
+        <div className="center">
           <Route exact path="/" component={Stories} />
           <Route path="/users/:username" component={Profile} />
           <Route exact path="/users" component={People} />
         </div>
-        {desktopNotification}
-      </div>
-    )
-  }
-
-  renderNotification = device => {
-    return (
-      <Notification
-        device={device}
-        className={device === 'desktop' ? 'col-xs-3 col-xs-offset-9' : null}
-        position={device === 'tablet' ? 'relative' : 'fixed'}
-      >
-        <div
-          className="well"
-          style={{ marginBottom: '0px', textAlign: 'center', padding: '1rem' }}
-        >
-          <p
-            style={{
-              fontSize: '3rem',
-              fontWeight: 'bold',
-              marginBottom: '0px'
-            }}
-          >
-            <span style={{ color: Color.logoGreen }}>Twin</span>
-            <span style={{ color: Color.logoBlue }}>kle</span>&nbsp;
-            <span style={{ color: Color.orange }}>XP!</span>
-          </p>
-          <Link
-            to="/twinklexp"
-            style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-          >
-            Click here to learn how to earn them
-          </Link>
+        <div className="right">
+          <Notification>
+            <div
+              style={{
+                marginBottom: '0px',
+                textAlign: 'center',
+                padding: '1rem',
+                background: '#fff',
+                border: `1px solid #eeeeee`,
+                borderRadius: '5px'
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '3rem',
+                  fontWeight: 'bold',
+                  marginBottom: '0px'
+                }}
+              >
+                <span style={{ color: Color.logoGreen }}>Twin</span>
+                <span style={{ color: Color.logoBlue }}>kle</span>&nbsp;
+                <span style={{ color: Color.orange }}>XP!</span>
+              </p>
+              <Link
+                to="/twinklexp"
+                style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
+              >
+                Click here to learn how to earn them
+              </Link>
+            </div>
+          </Notification>
         </div>
-      </Notification>
+      </div>
     )
   }
 }

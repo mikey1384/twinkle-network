@@ -173,7 +173,12 @@ class Comment extends Component {
               <LongText style={{ marginLeft: '0px', paddingBottom: '1em' }}>
                 {comment.content}
               </LongText>
-              <div className="flexbox-container">
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
                 <div className="pull-left">
                   <LikeButton
                     onClick={this.onLikeClick}

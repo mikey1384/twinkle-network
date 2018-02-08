@@ -4,6 +4,7 @@ export const Color = {
   gray: '#999999',
   black: '#333333',
   backgroundGray: '#f1f3f6',
+  menuGray: '#b9b9b9',
   darkGray: '#7c7c7c',
   borderGray: '#e7e7e7',
   lightGray: '#fbfbfb',

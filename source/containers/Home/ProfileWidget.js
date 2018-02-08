@@ -33,32 +33,46 @@ function ProfileWidget({
         borderRadius: '4px',
         flexDirection: 'column',
         width: '100%',
-        height: '100%',
         background: '#fff'
       }}
     >
       {username && (
         <div
           style={{
-            width: '100%',
+            display: 'flex',
             background: Color.headingGray,
             padding: '3%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent: 'flex-start'
           }}
         >
-          <div
-            style={{
-              fontWeight: 'bold',
-              fontSize: '3rem',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden'
-            }}
-          >
-            <Link to={`/users/${username}`}>{username}</Link>
+          <div style={{ width: '35%' }}>
+            <ProfilePic
+              style={{
+                width: '100%',
+                height: '100%',
+                cursor: userId ? 'pointer' : 'default'
+              }}
+              userId={userId}
+              profilePicId={profilePicId}
+              onClick={() =>
+                userId ? history.push(`/users/${username}`) : null
+              }
+            />
           </div>
-          {realName && <div style={{ color: Color.gray }}>({realName})</div>}
+          <div style={{ width: '65%', textAlign: 'center' }}>
+            <div
+              style={{
+                fontWeight: 'bold',
+                fontSize: '2rem',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden'
+              }}
+            >
+              <Link to={`/users/${username}`}>{username}</Link>
+            </div>
+            {realName && <div style={{ color: Color.gray, fontSize: '1rem' }}>({realName})</div>}
+          </div>
         </div>
       )}
       <div
@@ -69,18 +83,6 @@ function ProfileWidget({
           alignItems: 'center'
         }}
       >
-        <div style={{ width: '45%' }}>
-          <ProfilePic
-            style={{
-              width: '100%',
-              height: '100%',
-              cursor: userId ? 'pointer' : 'default'
-            }}
-            userId={userId}
-            profilePicId={profilePicId}
-            onClick={() => (userId ? history.push(`/users/${username}`) : null)}
-          />
-        </div>
         <div
           style={{
             width: '45%'

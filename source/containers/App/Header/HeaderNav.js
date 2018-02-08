@@ -40,14 +40,18 @@ export default class HeaderNav extends Component {
             onMouseLeave={() => this.setState({ hovered: false })}
           >
             <Link style={style} to={to}>
-              <div className="flexbox-container">
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
                 <span
                   className={`nav-icon-${imgLabel}${
                     match || hovered ? '-hovered' : ''
                   }`}
                 />
                 {children}
-                <div className="clear-fix" />
               </div>
             </Link>
           </li>

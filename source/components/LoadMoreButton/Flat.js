@@ -11,6 +11,7 @@ export default function Flat({ isLoading, onClick, style }) {
   return (
     <div
       style={{
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '0',
@@ -22,7 +23,6 @@ export default function Flat({ isLoading, onClick, style }) {
         opacity: isLoading && '0.5',
         ...style
       }}
-      className="flexbox-container"
       onClick={onClick}
     >
       {isLoading ? 'Loading' : 'Load More'}

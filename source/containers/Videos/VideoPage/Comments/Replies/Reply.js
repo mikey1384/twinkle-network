@@ -182,7 +182,13 @@ export default class Reply extends Component {
                   <LongText style={{ paddingBottom: '2rem' }}>
                     {content}
                   </LongText>
-                  <div className="row flexbox-container">
+                  <div
+                    className="row"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
+                  >
                     <div className="pull-left" style={{ paddingLeft: '1em' }}>
                       <LikeButton
                         onClick={this.onLikeClick}

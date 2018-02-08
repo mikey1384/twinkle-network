@@ -5,7 +5,6 @@ import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import NotiFeeds from './NotiFeeds'
 import ChatFeeds from './ChatFeeds'
 import { defaultChatSubject } from 'constants/defaultValues'
-import Responsive from 'components/Wrappers/Responsive'
 import { fetchNotifications } from 'redux/actions/NotiActions'
 import ExecutionEnvironment from 'exenv'
 
@@ -15,16 +14,16 @@ class Notification extends Component {
     children: PropTypes.node,
     className: PropTypes.string,
     currentChatSubject: PropTypes.object,
-    device: PropTypes.string.isRequired,
     fetchNotifications: PropTypes.func.isRequired,
     myId: PropTypes.number,
     notifications: PropTypes.array.isRequired,
     position: PropTypes.string
   }
 
+  scrollLocked = false
+
   state = {
-    scrollPosition: ExecutionEnvironment.canUseDOM ? window.scrollY : 0,
-    scrollLocked: false
+    scrollPosition: ExecutionEnvironment.canUseDOM ? window.scrollY : 0
   }
 
   componentDidMount() {
@@ -46,64 +45,59 @@ class Notification extends Component {
       notifications,
       myId,
       className,
-      device,
       position = 'fixed',
       currentChatSubject: { content = defaultChatSubject, loaded, ...subject },
       children
     } = this.props
     return (
-      <div className={className} style={{ position }}>
-        <Responsive device={device}>
-          <div>
+      <div
+        className={className}
+        style={{ position }}
+        onScroll={this.handleScroll}
+      >
+        <div>
+          <div
+            className="well momentum-scroll-enabled"
+            style={{ height: '92vh' }}
+            ref={ref => {
+              this.NotificationBox = ref
+            }}
+          >
             {children && (
-              <div style={{ minHeight: '3em', marginBottom: '1em' }}>
+              <div style={{ minHeight: '3rem', marginBottom: '1rem' }}>
                 {children}
               </div>
             )}
-            <div
-              className="well momentum-scroll-enabled"
-              onScroll={this.handleScroll}
-              style={{ maxHeight: '35em' }}
-              ref={ref => {
-                this.NotificationBox = ref
-              }}
-            >
-              {loaded && <ChatFeeds content={content} {...subject} />}
-              {notifications.length > 0 && (
-                <NotiFeeds
-                  notifications={notifications}
-                  myId={myId}
-                  style={{ marginTop: loaded && '1em' }}
-                />
-              )}
-            </div>
+            {loaded && <ChatFeeds content={content} {...subject} />}
+            {notifications.length > 0 && (
+              <NotiFeeds
+                notifications={notifications}
+                myId={myId}
+                style={{ marginTop: loaded && '1em' }}
+              />
+            )}
           </div>
-        </Responsive>
+        </div>
       </div>
     )
   }
 
   handleScroll = () => {
-    const { device } = this.props
     const { scrollHeight, clientHeight, scrollTop } = this.NotificationBox
-    if (device === 'desktop') {
-      if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
-        this.setState({ scrollLocked: true })
-      } else {
-        this.setState({ scrollLocked: false })
-      }
+    if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
+      this.scrollLocked = true
+    } else {
+      this.scrollLocked = false
     }
   }
 
   onMouseMove = () => {
-    const { scrollLocked } = this.state
-    if (scrollLocked) this.setState({ scrollLocked: false })
+    this.scrollLocked = false
   }
 
   onPageScroll = () => {
     const { chatMode } = this.props
-    const { scrollLocked } = this.state
-    if (scrollLocked) {
+    if (this.scrollLocked) {
       window.scrollTo(0, this.state.scrollPosition)
     }
     if (!chatMode) {

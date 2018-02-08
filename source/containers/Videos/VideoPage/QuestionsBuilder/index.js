@@ -163,7 +163,7 @@ class QuestionsBuilder extends Component {
                       }}
                     >
                       {question.errorMessage && (
-                        <span className="error-detected">
+                        <span style={{ color: 'red' }}>
                           {question.errorMessage}
                         </span>
                       )}

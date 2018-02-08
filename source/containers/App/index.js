@@ -113,7 +113,9 @@ class App extends Component {
       let display = chatMode ? 'none' : 'inline'
       document.title = title
       for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') { elements[i].style.display = display }
+        if (elements[i].tagName === 'GRAMMARLY-CARD') {
+          elements[i].style.display = display
+        }
       }
     }
 
@@ -124,7 +126,9 @@ class App extends Component {
       let display = chatMode ? 'none' : 'inline'
       document.title = title
       for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') { elements[i].style.display = display }
+        if (elements[i].tagName === 'GRAMMARLY-CARD') {
+          elements[i].style.display = display
+        }
       }
     }
   }
@@ -141,10 +145,10 @@ class App extends Component {
         ? {
             display: 'none'
           }
-        : { paddingTop: '65px' }
+        : { paddingTop: '8vh' }
 
     return (
-      <div id="main-view" style={{ backgroundColor: chatMode && '#fff' }}>
+      <div style={{ height: '100%', backgroundColor: chatMode && '#fff' }}>
         <Header
           staticTop={chatMode}
           chatMode={chatMode}
@@ -155,7 +159,12 @@ class App extends Component {
             this.setState({ updateNoticeShown: !match })
           }
         />
-        <div style={{ ...style, paddingBottom: '1em' }}>
+        <div
+          style={{
+            ...style,
+            paddingBottom: '1rem'
+          }}
+        >
           {updateNoticeShown && (
             <div
               className="alert alert-info"
