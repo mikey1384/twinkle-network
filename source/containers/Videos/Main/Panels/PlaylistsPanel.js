@@ -2,10 +2,10 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
-import { connect } from 'react-redux'
-import { getMorePlaylistsAsync } from 'redux/actions/PlaylistActions'
 import SectionPanel from 'components/SectionPanel'
 import { queryStringForArray } from 'helpers/apiHelpers'
+import { getMorePlaylistsAsync } from 'redux/actions/PlaylistActions'
+import { connect } from 'react-redux'
 
 class PlaylistsPanel extends Component {
   static propTypes = {
@@ -15,20 +15,12 @@ class PlaylistsPanel extends Component {
     getMorePlaylistsAsync: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool,
-    loadPlaylists: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     onSearch: PropTypes.func,
     playlists: PropTypes.array.isRequired,
     searchQuery: PropTypes.string,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number
-  }
-
-  componentDidMount() {
-    const { loadPlaylists, location, loaded } = this.props
-    if (location.action === 'PUSH' || !loaded) {
-      loadPlaylists()
-    }
   }
 
   render() {

@@ -18,9 +18,7 @@ import {
   openSelectPlaylistsToPinModalAsync,
   getVideosForModalAsync,
   closeReorderPinnedPlaylistsModal,
-  closeSelectPlaylistsToPinModal,
-  getPinnedPlaylistsAsync,
-  getPlaylistsAsync
+  closeSelectPlaylistsToPinModal
 } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
 import request from 'axios'
@@ -32,8 +30,6 @@ class Main extends Component {
     closeAddVideoModal: PropTypes.func.isRequired,
     closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
-    getPinnedPlaylists: PropTypes.func.isRequired,
-    getPlaylists: PropTypes.func.isRequired,
     isAdmin: PropTypes.bool.isRequired,
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
     loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
@@ -93,12 +89,10 @@ class Main extends Component {
       userId,
 
       playlists: allPlaylists,
-      getPlaylists,
       playlistsLoaded,
       loadMorePlaylistsButton,
 
       pinnedPlaylists,
-      getPinnedPlaylists,
       pinnedPlaylistsLoaded,
 
       addVideoModalShown,
@@ -156,7 +150,6 @@ class Main extends Component {
             title="Featured Playlists"
             userId={userId}
             playlists={pinnedPlaylists}
-            loadPlaylists={getPinnedPlaylists}
             loaded={pinnedPlaylistsLoaded}
           />
           <PlaylistsPanel
@@ -166,7 +159,6 @@ class Main extends Component {
             loadMoreButton={loadMorePlaylistsButton}
             userId={userId}
             playlists={playlists}
-            loadPlaylists={getPlaylists}
             loaded={playlistsLoaded}
             isSearching={isSearching}
             onSearch={this.onSearchPlaylist}
@@ -268,8 +260,6 @@ export default connect(
     closeSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,
     closeAddVideoModal,
-    openAddVideoModal,
-    getPinnedPlaylists: getPinnedPlaylistsAsync,
-    getPlaylists: getPlaylistsAsync
+    openAddVideoModal
   }
 )(Main)

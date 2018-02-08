@@ -5,16 +5,24 @@ import Main from './Main'
 import VideoPage from './VideoPage'
 import { connect } from 'react-redux'
 import { getInitialVideos } from 'redux/actions/VideoActions'
+import {
+  getPlaylistsAsync,
+  getPinnedPlaylistsAsync
+} from 'redux/actions/PlaylistActions'
 
 class Videos extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
-    getInitialVideos: PropTypes.func.isRequired
+    getInitialVideos: PropTypes.func.isRequired,
+    getPlaylists: PropTypes.func.isRequired,
+    getPinnedPlaylists: PropTypes.func.isRequired
   }
 
   componentDidMount() {
-    const { getInitialVideos } = this.props
+    const { getPlaylists, getPinnedPlaylists, getInitialVideos } = this.props
     getInitialVideos()
+    getPlaylists()
+    getPinnedPlaylists()
   }
 
   render() {
@@ -28,4 +36,8 @@ class Videos extends Component {
   }
 }
 
-export default connect(null, { getInitialVideos })(Videos)
+export default connect(null, {
+  getPlaylists: getPlaylistsAsync,
+  getPinnedPlaylists: getPinnedPlaylistsAsync,
+  getInitialVideos
+})(Videos)
