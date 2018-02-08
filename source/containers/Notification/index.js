@@ -50,6 +50,7 @@ class Notification extends Component {
     return (
       <div
         className={className}
+        onScroll={this.handleScroll}
         style={{
           position: 'fixed',
           overflowY: 'scroll',
@@ -59,27 +60,23 @@ class Notification extends Component {
       >
         <div
           className="well momentum-scroll-enabled"
-          onScroll={this.handleScroll}
+          ref={ref => {
+            this.NotificationBox = ref
+          }}
         >
-          <div
-            ref={ref => {
-              this.NotificationBox = ref
-            }}
-          >
-            {children && (
-              <div style={{ minHeight: '3rem', marginBottom: '1rem' }}>
-                {children}
-              </div>
-            )}
-            {loaded && <ChatFeeds content={content} {...subject} />}
-            {notifications.length > 0 && (
-              <NotiFeeds
-                notifications={notifications}
-                myId={myId}
-                style={{ marginTop: loaded && '1rem' }}
-              />
-            )}
-          </div>
+          {children && (
+            <div style={{ minHeight: '3rem', marginBottom: '1rem' }}>
+              {children}
+            </div>
+          )}
+          {loaded && <ChatFeeds content={content} {...subject} />}
+          {notifications.length > 0 && (
+            <NotiFeeds
+              notifications={notifications}
+              myId={myId}
+              style={{ marginTop: loaded && '1rem' }}
+            />
+          )}
         </div>
       </div>
     )
@@ -87,7 +84,6 @@ class Notification extends Component {
 
   handleScroll = () => {
     const { scrollHeight, clientHeight, scrollTop } = this.NotificationBox
-    console.log(scrollTop, scrollHeight - clientHeight, scrollTop)
     if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
       this.setState({ scrollLocked: true })
     } else {
@@ -100,11 +96,11 @@ class Notification extends Component {
     if (scrollLocked) this.setState({ scrollLocked: false })
   }
 
-  onPageScroll = () => {
+  onPageScroll = (event) => {
     const { chatMode } = this.props
     const { scrollLocked } = this.state
     if (scrollLocked) {
-      window.scrollTo(0, this.state.scrollPosition)
+      return window.scrollTo(0, this.state.scrollPosition)
     }
     if (!chatMode) {
       this.setState({ scrollPosition: window.scrollY })
