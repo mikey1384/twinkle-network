@@ -3,10 +3,18 @@ import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import Main from './Main'
 import VideoPage from './VideoPage'
+import { connect } from 'react-redux'
+import { getInitialVideos } from 'redux/actions/VideoActions'
 
-export default class Videos extends Component {
+class Videos extends Component {
   static propTypes = {
-    match: PropTypes.object.isRequired
+    match: PropTypes.object.isRequired,
+    getInitialVideos: PropTypes.func.isRequired
+  }
+
+  componentDidMount() {
+    const { getInitialVideos } = this.props
+    getInitialVideos()
   }
 
   render() {
@@ -19,3 +27,5 @@ export default class Videos extends Component {
     )
   }
 }
+
+export default connect(null, { getInitialVideos })(Videos)

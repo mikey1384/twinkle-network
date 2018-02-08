@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import VideoThumb from 'components/VideoThumb'
 import { connect } from 'react-redux'
-import { getInitialVideos, getMoreVideos } from 'redux/actions/VideoActions'
+import { getMoreVideos } from 'redux/actions/VideoActions'
 import SectionPanel from 'components/SectionPanel'
 import Button from 'components/Button'
 import request from 'axios'
@@ -15,11 +15,9 @@ const last = array => {
 
 class AllVideosPanel extends Component {
   static propTypes = {
-    getInitialVideos: PropTypes.func.isRequired,
     getMoreVideos: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
-    location: PropTypes.object.isRequired,
     onAddVideoClick: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number,
@@ -32,13 +30,6 @@ class AllVideosPanel extends Component {
     searchQuery: '',
     searchedVideos: [],
     isSearching: false
-  }
-
-  componentDidMount() {
-    const { getInitialVideos, location, loaded } = this.props
-    if (location.action === 'PUSH' || !loaded) {
-      getInitialVideos()
-    }
   }
 
   render() {
@@ -133,7 +124,6 @@ export default connect(
     videos: state.VideoReducer.allVideoThumbs
   }),
   {
-    getInitialVideos,
     getMoreVideos
   }
 )(withRouter(AllVideosPanel))
