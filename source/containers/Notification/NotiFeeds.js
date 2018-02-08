@@ -30,15 +30,6 @@ NotiFeeds.propTypes = {
 export default function NotiFeeds({ myId, notifications, style }) {
   return (
     <div style={style}>
-      <h4
-        style={{
-          fontWeight: 'bold',
-          marginTop: '0px',
-          textAlign: 'center'
-        }}
-      >
-        Other Notifications
-      </h4>
       <ul className="list-group">
         {notifications.length > 0 &&
           notifications.map(notification => {

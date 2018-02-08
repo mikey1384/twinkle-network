@@ -145,7 +145,7 @@ class App extends Component {
         ? {
             display: 'none'
           }
-        : { paddingTop: '8vh' }
+        : { paddingTop: '65px' }
 
     return (
       <div style={{ height: '100%', backgroundColor: chatMode && '#fff' }}>

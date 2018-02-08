@@ -85,10 +85,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-.navbar-default {
-  height: 7vh;
-}
-
 .nav-icon-home {
   width: 50px;
   height: 50px;
@@ -223,7 +219,7 @@ body {
   }
 }
 
-@-webkit-keyframes spin2 {
+@keyframes spin2 {
   from {
     -webkit-transform: rotate(0deg);
   }
@@ -268,7 +264,7 @@ body {
     width: 40%;
   }
   .right {
-    width: 30rem;
+    min-width: 20rem;
   }
 }
 
