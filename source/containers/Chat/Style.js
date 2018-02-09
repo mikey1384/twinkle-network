@@ -1,7 +1,7 @@
 import { Color } from 'constants/css'
 
 export const Style = {
-  container: { display: 'flex', width: '98%', padding: '1rem 0' },
+  container: { display: 'flex', width: '98%', padding: '1rem 0', minHeight: '8rem' },
   profilePicWrapper: { width: '8%', height: '8%' },
   profilePic: { width: '80%', height: '80%' },
   contentWrapper: {
