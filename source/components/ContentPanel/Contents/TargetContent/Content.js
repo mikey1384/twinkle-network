@@ -53,6 +53,7 @@ class Content extends Component {
 
   render() {
     const {
+      commentId,
       discussionId,
       uploader,
       isDiscussion,
@@ -96,7 +97,7 @@ class Content extends Component {
                   <ContentLink
                     content={{ id: rootId, title: 'Question: ' }}
                     type="question"
-                    style={{color: Color.green}}
+                    style={{ color: Color.green }}
                   />
                   <span>{rootContent}</span>
                 </div>
@@ -106,10 +107,19 @@ class Content extends Component {
                 style={{ paddingLeft: '0px', paddingRight: '0px' }}
               >
                 <div style={{ float: 'left' }}>
-                  <UsernameText user={uploader} color={Color.blue} />
-                  &nbsp;{replyId
-                    ? 'wrote'
-                    : rootType === 'question' ? 'answered' : 'commented'}:
+                  <UsernameText user={uploader} color={Color.blue} />{' '}
+                  <ContentLink
+                    content={{
+                      id: replyId || commentId,
+                      title: `${
+                        replyId
+                          ? 'replied'
+                          : rootType === 'question' ? 'answered' : 'commented'
+                      }:`
+                    }}
+                    type="comment"
+                    style={{ color: Color.green }}
+                  />
                 </div>
                 <div style={{ float: 'right' }}>
                   <small>({timeSince(timeStamp)})</small>
@@ -205,7 +215,7 @@ class Content extends Component {
                   <ContentLink
                     content={{ id: discussionId, title: 'Discuss: ' }}
                     type="discussion"
-                    style={{color: Color.green}}
+                    style={{ color: Color.green }}
                   />
                 </div>
                 <div style={{ float: 'right' }}>
