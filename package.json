@@ -25,6 +25,8 @@
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "crypto": "^1.0.1",
+    "emotion": "^9.0.0",
+    "emotion-server": "^9.0.0",
     "exenv": "^1.2.2",
     "express": "^4.16.2",
     "greenlock-express": "^2.0.11",
