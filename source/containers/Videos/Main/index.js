@@ -57,6 +57,7 @@ class Main extends Component {
   }
 
   componentDidMount() {
+    const { openAddVideoModal } = this.props
     this.setState({
       notificationMenu: (
         <Notification device="desktop" className="col-xs-3 col-xs-offset-9">
