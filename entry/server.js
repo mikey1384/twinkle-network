@@ -1,6 +1,7 @@
 import express from 'express'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
+import { renderStylesToString } from 'emotion-server'
 import { StaticRouter } from 'react-router'
 import createHistory from 'history/createMemoryHistory'
 import { Provider } from 'react-redux'
@@ -20,13 +21,13 @@ app.use(express.static(path.join(__dirname, '../public')))
 app.use((req, res) => {
   res.end(
     (function() {
-      const ReactView = renderToString(
+      const ReactView = renderStylesToString(renderToString(
         <Provider store={store}>
           <StaticRouter context={{}} location={req.url}>
             <App />
           </StaticRouter>
         </Provider>
-      )
+      ))
       return `<!DOCTYPE html>
       <html>
         <head>
