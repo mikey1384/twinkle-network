@@ -17,6 +17,7 @@ class Notification extends Component {
     fetchNotifications: PropTypes.func.isRequired,
     myId: PropTypes.number,
     notifications: PropTypes.array.isRequired,
+    style: PropTypes.object,
     position: PropTypes.string
   }
 
@@ -45,7 +46,8 @@ class Notification extends Component {
       myId,
       className,
       currentChatSubject: { content = defaultChatSubject, loaded, ...subject },
-      children
+      children,
+      style
     } = this.props
     return (
       <div
@@ -55,7 +57,8 @@ class Notification extends Component {
           position: 'fixed',
           overflowY: 'scroll',
           top: '65px',
-          bottom: 0
+          bottom: 0,
+          ...style
         }}
       >
         <div
@@ -84,7 +87,7 @@ class Notification extends Component {
 
   handleScroll = () => {
     const { scrollHeight, clientHeight, scrollTop } = this.NotificationBox
-    if (scrollTop === 0 || scrollHeight - clientHeight === scrollTop) {
+    if (scrollTop === 0 || scrollHeight - clientHeight >= scrollTop) {
       this.setState({ scrollLocked: true })
     } else {
       this.setState({ scrollLocked: false })

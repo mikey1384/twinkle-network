@@ -230,7 +230,6 @@ body {
 
 .stories {
   display: flex;
-  justify-content: space-around;
 }
 
 @media (min-width: 1192px) {
@@ -257,14 +256,14 @@ body {
     min-width: 766px;
   }
   .left {
-    width: 20rem;
+    width: 15%;
   }
   .center {
-    margin-left: 21rem;
-    width: 40%;
+    margin-left: 20%;
+    width: 45%;
   }
   .right {
-    min-width: 20rem;
+    width: 30%;
   }
 }
 

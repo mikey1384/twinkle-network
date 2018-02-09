@@ -27,7 +27,7 @@ class Home extends Component {
         <div
           style={{
             position: 'fixed',
-            left: 0
+            left: '1rem'
           }}
           className="left"
         >
@@ -36,7 +36,7 @@ class Home extends Component {
             className="list-group unselectable"
             style={{
               marginTop: '1rem',
-              fontSize: '1.3rem'
+              fontSize: '2rem'
             }}
           >
             <Route
@@ -105,38 +105,36 @@ class Home extends Component {
           <Route path="/users/:username" component={Profile} />
           <Route exact path="/users" component={People} />
         </div>
-        <div className="right">
-          <Notification>
-            <div
+        <Notification className="right" style={{ right: '1rem' }}>
+          <div
+            style={{
+              marginBottom: '0px',
+              textAlign: 'center',
+              padding: '1rem',
+              background: '#fff',
+              border: `1px solid #eeeeee`,
+              borderRadius: '5px'
+            }}
+          >
+            <p
               style={{
-                marginBottom: '0px',
-                textAlign: 'center',
-                padding: '1rem',
-                background: '#fff',
-                border: `1px solid #eeeeee`,
-                borderRadius: '5px'
+                fontSize: '3rem',
+                fontWeight: 'bold',
+                marginBottom: '0px'
               }}
             >
-              <p
-                style={{
-                  fontSize: '3rem',
-                  fontWeight: 'bold',
-                  marginBottom: '0px'
-                }}
-              >
-                <span style={{ color: Color.logoGreen }}>Twin</span>
-                <span style={{ color: Color.logoBlue }}>kle</span>&nbsp;
-                <span style={{ color: Color.orange }}>XP!</span>
-              </p>
-              <Link
-                to="/twinklexp"
-                style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-              >
-                Click here to learn how to earn them
-              </Link>
-            </div>
-          </Notification>
-        </div>
+              <span style={{ color: Color.logoGreen }}>Twin</span>
+              <span style={{ color: Color.logoBlue }}>kle</span>&nbsp;
+              <span style={{ color: Color.orange }}>XP!</span>
+            </p>
+            <Link
+              to="/twinklexp"
+              style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
+            >
+              Click here to learn how to earn them
+            </Link>
+          </div>
+        </Notification>
       </div>
     )
   }
