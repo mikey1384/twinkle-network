@@ -25,10 +25,10 @@ class Home extends Component {
     return (
       <div className="stories">
         <div
-          style={{
-            position: 'fixed',
-            left: '1rem'
-          }}
+          css={`
+            position: fixed;
+            left: 1rem;
+          `}
           className="left"
         >
           <ProfileWidget history={history} />
