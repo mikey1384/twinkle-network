@@ -59,13 +59,11 @@ class Message extends Component {
     const { onEdit, subjectMsgsModalShown } = this.state
     return (
       <div style={Style.container}>
-        <div style={Style.profilePicWrapper}>
-          <ProfilePic
-            style={Style.profilePic}
-            userId={userId}
-            profilePicId={profilePicId}
-          />
-        </div>
+        <ProfilePic
+          style={Style.profilePic}
+          userId={userId}
+          profilePicId={profilePicId}
+        />
         <div style={Style.contentWrapper}>
           {!!messageId &&
             !isReloadedSubject &&
