@@ -85,6 +85,7 @@
     "babel-eslint": "^8.0.1",
     "babel-jest": "^22.1.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-emotion": "^9.0.0",
     "babel-plugin-react-transform": "^3.0.0",
     "babel-plugin-transform-class-properties": "^6.19.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
