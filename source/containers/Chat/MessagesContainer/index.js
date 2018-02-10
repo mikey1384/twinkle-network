@@ -29,18 +29,23 @@ class MessagesContainer extends Component {
       messageId: null
     },
     fillerHeight: 20,
+    maxScroll: 0,
     scrollAtBottom: true,
     newUnseenMessage: false,
     loadMoreButtonLock: false
   }
 
   componentDidMount() {
-    this.setState({
-      fillerHeight:
-        this.messagesContainer.offsetHeight > this.messages.offsetHeight
-          ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
-          : 0
-    }, () => this.setScrollToBottom())
+    this.setScrollToBottom()
+    this.setState(
+      {
+        fillerHeight:
+          this.messagesContainer.offsetHeight > this.messages.offsetHeight
+            ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+            : 0
+      },
+      () => this.setScrollToBottom()
+    )
     setTimeout(() => this.setScrollToBottom(), 300)
   }
 
@@ -98,11 +103,11 @@ class MessagesContainer extends Component {
 
   setScrollToBottom() {
     this.messagesContainer.scrollTop = Math.max(
-      this.maxScroll,
+      this.state.maxScroll,
       this.messagesContainer.offsetHeight,
       this.state.fillerHeight + this.messages.offsetHeight
     )
-    this.maxScroll = this.messagesContainer.scrollTop
+    this.setState({ maxScroll: this.messagesContainer.scrollTop })
   }
 
   render() {
