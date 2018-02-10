@@ -22,7 +22,6 @@ class MessagesContainer extends Component {
     loadMoreMessages: PropTypes.func,
     loading: PropTypes.bool
   }
-  maxScroll = 0
 
   state = {
     deleteModal: {
