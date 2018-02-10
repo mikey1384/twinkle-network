@@ -8,6 +8,7 @@ import Stories from './Stories'
 import Notification from 'containers/Notification'
 import ProfileWidget from './ProfileWidget'
 import { Color } from 'constants/css'
+import { Container, Left, MenuItems } from './Styles'
 
 class Home extends Component {
   static propTypes = {
@@ -23,47 +24,22 @@ class Home extends Component {
       username = location.pathname.split('/')[2]
     }
     return (
-      <div className="stories">
-        <div
-          css={`
-            position: fixed;
-            left: 1rem;
-          `}
-          className="left"
-        >
+      <Container>
+        <Left>
           <ProfileWidget history={history} />
-          <ul
-            className="list-group unselectable"
-            style={{
-              marginTop: '1rem',
-              fontSize: '2rem'
-            }}
-          >
+          <MenuItems className="unselectable">
             <Route
               path="/"
               exact
               children={({ match }) => (
                 <li
-                  className={`list-group-item left-menu-item home-left-menu ${match &&
-                    ' active'}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
+                  className={match && 'active'}
                   onClick={() => history.push('/')}
                 >
-                  <div className="media-left">
-                    <a>
-                      <img
-                        alt="Thumbnail"
-                        className="media-object"
-                        style={{ width: '3vw', height: '3vw' }}
-                        src="/img/feed.png"
-                      />
-                    </a>
-                  </div>
+                  <a>
+                    <img alt="Thumbnail" src="/img/feed.png" />
+                  </a>
                   <a>Stories</a>
-                  <div className="clearfix" />
                 </li>
               )}
             />
@@ -72,34 +48,28 @@ class Home extends Component {
               path="/users"
               children={({ match }) => (
                 <li
-                  className={`list-group-item left-menu-item home-left-menu ${
+                  className={
                     match || (username && myUsername && username !== myUsername)
-                      ? ' active'
+                      ? 'active'
                       : ''
-                  }`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
+                  }
                   onClick={() => history.push('/users')}
                 >
-                  <div className="media-left">
+                  <div>
                     <a>
                       <img
                         alt="Thumbnail"
-                        className="media-object"
                         style={{ width: '3vw', height: '3vw' }}
                         src="/img/people.png"
                       />
                     </a>
                   </div>
                   <a>People</a>
-                  <div className="clearfix" />
                 </li>
               )}
             />
-          </ul>
-        </div>
+          </MenuItems>
+        </Left>
         <div className="center">
           <Route exact path="/" component={Stories} />
           <Route path="/users/:username" component={Profile} />
@@ -135,7 +105,7 @@ class Home extends Component {
             </Link>
           </div>
         </Notification>
-      </div>
+      </Container>
     )
   }
 }

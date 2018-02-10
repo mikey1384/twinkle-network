@@ -58,7 +58,7 @@ export default class Heading extends Component {
         style={{ display: 'flex', alignItems: 'center', width: '100%' }}
       >
         <ProfilePic
-          style={{ width: '8%' }}
+          style={{ width: '8%', height: '8%' }}
           userId={uploader.id}
           profilePicId={uploaderPicId}
         />

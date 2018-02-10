@@ -1723,6 +1723,12 @@ create-emotion-server@^9.0.0:
     multipipe "^1.0.2"
     through "^2.3.8"
 
+create-emotion-styled@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/create-emotion-styled/-/create-emotion-styled-9.0.0.tgz#86d8e9c627cc976d25b3277bcc394db61a0d7f54"
+  dependencies:
+    emotion-utils "^9.0.0"
+
 create-emotion@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/create-emotion/-/create-emotion-9.0.0.tgz#ad0f24002fccadb0e9c09c5ba55c672b22580bb1"
@@ -2677,6 +2683,10 @@ extsprintf@1.3.0:
 extsprintf@^1.2.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
+
+facepaint@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/facepaint/-/facepaint-1.2.0.tgz#d8cdba370091c864e3fe089dd1640afec580bbcb"
 
 fast-deep-equal@^1.0.0:
   version "1.0.0"
@@ -5506,6 +5516,13 @@ react-embedly@^0.3.5:
   resolved "https://registry.yarnpkg.com/react-embedly/-/react-embedly-0.3.5.tgz#1914a37bd5966b55feb8dd4b934f45978c65e49c"
   dependencies:
     superagent "^1.8.3"
+
+react-emotion@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-9.0.0.tgz#10df4a2e4122db0187390f876d52fc7ad05438ab"
+  dependencies:
+    babel-plugin-emotion "^9.0.0"
+    create-emotion-styled "^9.0.0"
 
 react-onclickoutside@^6.6.2:
   version "6.7.1"

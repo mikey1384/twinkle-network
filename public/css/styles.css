@@ -52,30 +52,6 @@ body {
   -webkit-animation: spin2 1s infinite linear;
 }
 
-.home-left-menu {
-  cursor: pointer;
-  background-color: #f1f3f6;
-  border: none;
-}
-
-.home-left-menu > a {
-  text-decoration: none;
-  color: #7c7c7c;
-}
-
-.home-left-menu.active {
-  background-color: #fbfbfb;
-  font-weight: bold;
-}
-
-.home-left-menu.active:hover {
-  background-color: #fbfbfb;
-}
-
-.home-left-menu.active > a {
-  color: #333333;
-}
-
 .left-menu-item:hover > a {
   color: rgb(51, 51, 51) !important;
 }
@@ -228,10 +204,6 @@ body {
   }
 }
 
-.stories {
-  display: flex;
-}
-
 @media (min-width: 1192px) {
   .modal-extra-lg {
     min-width: 1180px;
@@ -255,9 +227,6 @@ body {
   .modal-extra-lg {
     min-width: 766px;
   }
-  .left {
-    width: 15%;
-  }
   .center {
     margin-left: 20%;
     width: 45%;
@@ -274,3 +243,4 @@ body {
 @media (max-width: 413px) {
 
 }
+
