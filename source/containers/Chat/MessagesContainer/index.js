@@ -71,7 +71,7 @@ class MessagesContainer extends Component {
             : 0
       })
       this.setScrollToBottom()
-      return setTimeout(() => this.setScrollToBottom(), 200)
+      return setTimeout(() => this.setScrollToBottom(), 300)
     }
     if (messageDeleted) {
       this.setState({
