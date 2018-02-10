@@ -5,12 +5,15 @@ import { Color } from 'constants/css'
 import Loading from 'components/Loading'
 import Message from './Message'
 import SubjectHeader from './SubjectHeader'
+import ConfirmModal from 'components/Modals/ConfirmModal'
+import { connect } from 'react-redux'
+import { deleteMessage } from 'redux/actions/ChatActions'
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop
 }
 
-export default class MessagesContainer extends Component {
+class MessagesContainer extends Component {
   static propTypes = {
     userId: PropTypes.number.isRequired,
     currentChannelId: PropTypes.number.isRequired,
@@ -19,21 +22,26 @@ export default class MessagesContainer extends Component {
     loadMoreMessages: PropTypes.func,
     loading: PropTypes.bool
   }
-
-  fillerHeight = 20
   maxScroll = 0
 
   state = {
+    deleteModal: {
+      shown: false,
+      messageId: null
+    },
+    fillerHeight: 20,
     scrollAtBottom: true,
     newUnseenMessage: false,
     loadMoreButtonLock: false
   }
 
   componentDidMount() {
-    if (this.messagesContainer.offsetHeight > this.messages.offsetHeight) {
-      this.fillerHeight =
-        this.messagesContainer.offsetHeight - this.messages.offsetHeight
-    }
+    this.setState({
+      fillerHeight:
+        this.messagesContainer.offsetHeight > this.messages.offsetHeight
+          ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+          : 0
+    })
     this.setScrollToBottom()
     setTimeout(() => this.setScrollToBottom(), 200)
   }
@@ -53,22 +61,38 @@ export default class MessagesContainer extends Component {
       prevProps.messages.length >= 0 &&
       prevProps.messages.length < this.props.messages.length &&
       prevProps.messages[0].id === this.props.messages[0].id
+    const messageDeleted =
+      prevProps.currentChannelId === this.props.currentChannelId &&
+      prevProps.messages.length > this.props.messages.length
     if (switchedChannel) {
-      this.fillerHeight =
-        this.messagesContainer.offsetHeight > this.messages.offsetHeight
-          ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
-          : 0
+      this.setState({
+        fillerHeight:
+          this.messagesContainer.offsetHeight > this.messages.offsetHeight
+            ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+            : 0
+      })
       this.setScrollToBottom()
       return setTimeout(() => this.setScrollToBottom(), 200)
+    }
+    if (messageDeleted) {
+      this.setState({
+        fillerHeight:
+          this.messagesContainer.offsetHeight > this.messages.offsetHeight
+            ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+            : 0
+      })
+      return
     }
     if (newMessageArrived) {
       if (messageSenderId !== userId && !this.state.scrollAtBottom) {
         this.setState({ newUnseenMessage: true })
       } else {
-        this.fillerHeight =
-        this.messagesContainer.offsetHeight > this.messages.offsetHeight
-          ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
-          : 0
+        this.setState({
+          fillerHeight:
+            this.messagesContainer.offsetHeight > this.messages.offsetHeight
+              ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+              : 0
+        })
         this.setScrollToBottom()
       }
     }
@@ -78,14 +102,14 @@ export default class MessagesContainer extends Component {
     this.messagesContainer.scrollTop = Math.max(
       this.maxScroll,
       this.messagesContainer.offsetHeight,
-      this.fillerHeight + this.messages.offsetHeight
+      this.state.fillerHeight + this.messages.offsetHeight
     )
     this.maxScroll = this.messagesContainer.scrollTop
   }
 
   render() {
     const { loadMoreButton, loading, currentChannelId } = this.props
-    const { newUnseenMessage } = this.state
+    const { deleteModal, newUnseenMessage } = this.state
     return (
       <div>
         {!!loading && <Loading />}
@@ -135,7 +159,7 @@ export default class MessagesContainer extends Component {
             ) : (
               <div
                 style={{
-                  height: this.fillerHeight + 'px'
+                  height: this.state.fillerHeight + 'px'
                 }}
               />
             )}
@@ -174,8 +198,28 @@ export default class MessagesContainer extends Component {
             </Button>
           )}
         </div>
+        {deleteModal.shown && (
+          <ConfirmModal
+            onHide={() =>
+              this.setState({ deleteModal: { shown: false, messageId: null } })
+            }
+            title="Remove Message"
+            onConfirm={this.onDelete}
+          />
+        )}
       </div>
     )
+  }
+
+  onDelete = async() => {
+    const { deleteMessage } = this.props
+    const { messageId } = this.state.deleteModal
+    try {
+      await deleteMessage(messageId)
+      this.setState({ deleteModal: { shown: false, messageId: null } })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   onLoadMoreButtonClick = () => {
@@ -199,6 +243,14 @@ export default class MessagesContainer extends Component {
       return (
         <Message
           key={index}
+          onDelete={messageId =>
+            this.setState({
+              deleteModal: {
+                shown: true,
+                messageId
+              }
+            })
+          }
           index={index}
           style={messageStyle}
           message={message}
@@ -207,3 +259,5 @@ export default class MessagesContainer extends Component {
     })
   }
 }
+
+export default connect(null, { deleteMessage })(MessagesContainer)

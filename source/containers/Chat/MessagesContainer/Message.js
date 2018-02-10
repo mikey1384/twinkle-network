@@ -5,14 +5,9 @@ import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
 import { connect } from 'react-redux'
 import DropdownButton from 'components/DropdownButton'
-import ConfirmModal from 'components/Modals/ConfirmModal'
 import { processedStringWithURL } from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
-import {
-  editMessage,
-  deleteMessage,
-  saveMessage
-} from 'redux/actions/ChatActions'
+import { editMessage, saveMessage } from 'redux/actions/ChatActions'
 import Button from 'components/Button'
 import { Style } from '../Style'
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
@@ -22,23 +17,17 @@ class Message extends Component {
     message: PropTypes.object,
     style: PropTypes.object,
     myId: PropTypes.number,
-    onEditDone: PropTypes.func,
     onDelete: PropTypes.func,
+    onEditDone: PropTypes.func,
     saveMessage: PropTypes.func,
     isCreator: PropTypes.bool,
     index: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      onEdit: false,
-      subjectMsgsModalShown: false,
-      confirmModalShown: false
-    }
-    this.onDelete = this.onDelete.bind(this)
-    this.onEditDone = this.onEditDone.bind(this)
-    this.renderPrefix = this.renderPrefix.bind(this)
+  state = {
+    onEdit: false,
+    subjectMsgsModalShown: false,
+    confirmModalShown: false
   }
 
   componentWillMount() {
@@ -62,11 +51,12 @@ class Message extends Component {
         numMsgs
       },
       isCreator,
+      onDelete,
       style,
       myId
     } = this.props
     const canEdit = myId === userId || isCreator
-    const { onEdit, confirmModalShown, subjectMsgsModalShown } = this.state
+    const { onEdit, subjectMsgsModalShown } = this.state
     return (
       <div style={Style.container}>
         <div style={Style.profilePicWrapper}>
@@ -92,7 +82,7 @@ class Message extends Component {
                   },
                   {
                     label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
+                    onClick: () => onDelete(messageId)
                   }
                 ]}
               />
@@ -147,13 +137,6 @@ class Message extends Component {
             )}
           </div>
         </div>
-        {confirmModalShown && (
-          <ConfirmModal
-            onHide={() => this.setState({ confirmModalShown: false })}
-            title="Remove Message"
-            onConfirm={this.onDelete}
-          />
-        )}
         {subjectMsgsModalShown && (
           <SubjectMsgsModal
             subjectId={subjectId}
@@ -165,19 +148,14 @@ class Message extends Component {
     )
   }
 
-  onDelete() {
-    const { onDelete, message: { id: messageId } } = this.props
-    onDelete(messageId).then(() => this.setState({ confirmModalShown: false }))
-  }
-
-  onEditDone(editedMessage) {
+  onEditDone = editedMessage => {
     const { onEditDone, message } = this.props
     onEditDone({ editedMessage, messageId: message.id }).then(() =>
       this.setState({ onEdit: false })
     )
   }
 
-  renderPrefix() {
+  renderPrefix = () => {
     const { message: { isSubject, isReloadedSubject } } = this.props
     let prefix = ''
     if (isSubject) {
@@ -197,7 +175,6 @@ export default connect(
   }),
   {
     onEditDone: editMessage,
-    onDelete: deleteMessage,
     saveMessage
   }
 )(Message)
