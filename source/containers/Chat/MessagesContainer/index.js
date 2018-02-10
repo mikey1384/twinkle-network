@@ -40,8 +40,7 @@ class MessagesContainer extends Component {
         this.messagesContainer.offsetHeight > this.messages.offsetHeight
           ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
           : 0
-    })
-    this.setScrollToBottom()
+    }, () => this.setScrollToBottom())
     setTimeout(() => this.setScrollToBottom(), 300)
   }
 
