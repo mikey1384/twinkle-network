@@ -19,8 +19,15 @@ export const Left = css`
 export const Center = css`
   width: 100%;
   section {
-    width: 48%;
     margin-left: calc(15% + 5rem);
+    @media (max-width: 991px) {
+      width: CALC(70% - 3rem);
+      margin-left: 1rem;
+    }
+    @media (min-width: 992px) {
+      display: block;
+      width: CALC(55% - 10rem);
+    }
   }
 `
 
