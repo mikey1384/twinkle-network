@@ -358,7 +358,9 @@ class Body extends Component {
   onScroll() {
     let { chatMode, feeds } = this.props
     const scrollPosition =
-      document.documentElement.scrollTop || document.body.scrollTop
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop
     if (!chatMode && feeds.length > 0) {
       this.setState({ scrollPosition })
       if (

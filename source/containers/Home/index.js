@@ -8,7 +8,7 @@ import Stories from './Stories'
 import Notification from 'containers/Notification'
 import ProfileWidget from './ProfileWidget'
 import { Color } from 'constants/css'
-import { Container, Left, MenuItems } from './Styles'
+import { Container, Left, Center, Right, MenuItems, TwinkleXP } from './Styles'
 
 class Home extends Component {
   static propTypes = {
@@ -24,10 +24,10 @@ class Home extends Component {
       username = location.pathname.split('/')[2]
     }
     return (
-      <Container>
-        <Left>
+      <div className={Container}>
+        <div className={Left}>
           <ProfileWidget history={history} />
-          <MenuItems className="unselectable">
+          <ul className={`unselectable ${MenuItems}`}>
             <Route
               path="/"
               exact
@@ -68,44 +68,26 @@ class Home extends Component {
                 </li>
               )}
             />
-          </MenuItems>
-        </Left>
-        <div className="center">
-          <Route exact path="/" component={Stories} />
-          <Route path="/users/:username" component={Profile} />
-          <Route exact path="/users" component={People} />
+          </ul>
         </div>
-        <Notification className="right" style={{ right: '1rem' }}>
-          <div
-            style={{
-              marginBottom: '0px',
-              textAlign: 'center',
-              padding: '1rem',
-              background: '#fff',
-              border: `1px solid #eeeeee`,
-              borderRadius: '5px'
-            }}
-          >
-            <p
-              style={{
-                fontSize: '3rem',
-                fontWeight: 'bold',
-                marginBottom: '0px'
-              }}
-            >
+        <div className={Center}>
+          <section>
+            <Route exact path="/" component={Stories} />
+            <Route path="/users/:username" component={Profile} />
+            <Route exact path="/users" component={People} />
+          </section>
+        </div>
+        <Notification className={Right}>
+          <div className={TwinkleXP}>
+            <p>
               <span style={{ color: Color.logoGreen }}>Twin</span>
               <span style={{ color: Color.logoBlue }}>kle</span>&nbsp;
               <span style={{ color: Color.orange }}>XP!</span>
             </p>
-            <Link
-              to="/twinklexp"
-              style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-            >
-              Click here to learn how to earn them
-            </Link>
+            <Link to="/twinklexp">Click here to learn how to earn them</Link>
           </div>
         </Notification>
-      </Container>
+      </div>
     )
   }
 }

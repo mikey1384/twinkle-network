@@ -118,7 +118,7 @@ class PlaylistCarousel extends Component {
 
     return (
       <div className="container-fluid">
-        <div className="row container-fluid">
+        <div className="row container-fluid" style={{ position: 'relative' }}>
           {onEdit ? (
             <div
               className="input-group col-sm-6 pull-left"
@@ -150,8 +150,7 @@ class PlaylistCarousel extends Component {
             <DropdownButton
               style={{
                 position: 'absolute',
-                right: '1em',
-                marginRight: '1em',
+                right: 0,
                 zIndex: '1'
               }}
               shape="button"

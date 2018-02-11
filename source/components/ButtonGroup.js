@@ -33,12 +33,13 @@ export default class ButtonGroup extends Component {
     const { style } = this.props
     const { buttons } = this.state
     return (
-      <div style={style} className="btn-group">
+      <div style={{ ...style, display: 'flex' }}>
         {buttons.map((button, index) => {
           return (
             <Button
               key={index}
               type="button"
+              style={{ marginLeft: index !== 0 && '1rem' }}
               onMouseEnter={() =>
                 this.setState({
                   buttons: buttons.map((b, i) => ({

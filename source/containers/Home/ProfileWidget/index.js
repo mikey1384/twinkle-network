@@ -6,7 +6,7 @@ import Button from 'components/Button'
 import { openSigninModal } from 'redux/actions/UserActions'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Container, Heading } from './Styles'
+import { Container, Details, Heading, Names } from './Styles'
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
@@ -27,9 +27,9 @@ function ProfileWidget({
   realName
 }) {
   return (
-    <Container>
+    <div className={Container}>
       {username && (
-        <Heading>
+        <div className={Heading}>
           <ProfilePic
             style={{
               width: '35%',
@@ -38,70 +38,48 @@ function ProfileWidget({
             }}
             userId={userId}
             profilePicId={profilePicId}
-            onClick={() =>
-              userId ? history.push(`/users/${username}`) : null
-            }
+            onClick={() => (userId ? history.push(`/users/${username}`) : null)}
           />
-          <div style={{ width: '65%', textAlign: 'center' }}>
-            <div
-              style={{
-                fontWeight: 'bold',
-                fontSize: '2rem',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden'
-              }}
-            >
+          <div className={Names}>
+            <div>
               <Link to={`/users/${username}`}>{username}</Link>
             </div>
             {realName && (
-              <div style={{ color: Color.gray, fontSize: '1rem' }}>
-                ({realName})
+              <div>
+                <span>({realName})</span>
               </div>
             )}
           </div>
-        </Heading>
-      )}
-      <div
-        style={{
-          padding: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <div
-          style={{
-            width: '100%'
-          }}
-        >
-          {userId && (
-            <div>
-              <div style={{ fontWeight: 'bold' }}>
-                <span>{twinkleXP || 0}</span>
-                &nbsp;<span style={{ color: Color.logoGreen }}>Twin</span>
-                <span style={{ color: Color.logoBlue }}>kle</span>
-                &nbsp;<span style={{ color: Color.orange }}>XP</span>
-              </div>
-              <Link to="/twinklexp">Leaderboard</Link>
-            </div>
-          )}
-          {!userId && (
-            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-              Log in to access all features!
-            </div>
-          )}
-          {!userId && (
-            <Button
-              className="btn btn-success"
-              style={{ marginTop: '2rem' }}
-              onClick={openSigninModal}
-            >
-              Log In / Sign Up
-            </Button>
-          )}
         </div>
+      )}
+      <div className={Details}>
+        {userId && (
+          <div>
+            <div style={{ fontWeight: 'bold' }}>
+              <span>{twinkleXP || 0}</span>
+              &nbsp;<span style={{ color: Color.logoGreen }}>Twin</span>
+              <span style={{ color: Color.logoBlue }}>kle</span>
+              &nbsp;<span style={{ color: Color.orange }}>XP</span>
+            </div>
+            <Link to="/twinklexp">Leaderboard</Link>
+          </div>
+        )}
+        {!userId && (
+          <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
+            Log in to access all features!
+          </div>
+        )}
+        {!userId && (
+          <Button
+            className="btn btn-success"
+            style={{ marginTop: '2rem' }}
+            onClick={openSigninModal}
+          >
+            Log In / Sign Up
+          </Button>
+        )}
       </div>
-    </Container>
+    </div>
   )
 }
 

@@ -7,6 +7,7 @@ import LinkGroup from './LinkGroup'
 import Notification from 'containers/Notification'
 import { connect } from 'react-redux'
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions'
+import { Left, Right } from './Styles'
 
 class Main extends Component {
   static propTypes = {
@@ -21,8 +22,7 @@ class Main extends Component {
     super()
     this.state = {
       addLinkModalShown: false,
-      loaded: !!props.links.length,
-      notificationMenu: null
+      loaded: !!props.links.length
     }
     this.loadMoreLinks = this.loadMoreLinks.bind(this)
   }
@@ -36,11 +36,6 @@ class Main extends Component {
         if (this.mounted) this.setState({ loaded: true })
       })
     }
-    this.setState({
-      notificationMenu: (
-        <Notification device="desktop" className="col-xs-3 col-xs-offset-9" />
-      )
-    })
   }
 
   componentWillUnmount() {
@@ -49,10 +44,10 @@ class Main extends Component {
 
   render() {
     const { links, loadMoreLinksButtonShown } = this.props
-    const { addLinkModalShown, loaded, notificationMenu } = this.state
+    const { addLinkModalShown, loaded } = this.state
     return (
       <div>
-        <div className="col-md-9">
+        <div className={Left}>
           <SectionPanel
             title="All Links"
             button={
@@ -79,7 +74,7 @@ class Main extends Component {
             onHide={() => this.setState({ addLinkModalShown: false })}
           />
         )}
-        {notificationMenu}
+        <Notification className={Right} />
       </div>
     )
   }

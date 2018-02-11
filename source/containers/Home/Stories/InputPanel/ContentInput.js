@@ -184,7 +184,7 @@ class ContentInput extends Component {
       },
       urlError: null
     })
-    window.scrollTo(0, 0)
+    document.body.scrollTo(0, 0)
     uploadContent({
       ...form,
       title: finalizeEmoji(form.title),

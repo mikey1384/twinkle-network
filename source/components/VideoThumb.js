@@ -64,7 +64,8 @@ class VideoThumb extends Component {
             display: 'flex',
             width: '100%',
             flexDirection: 'column',
-            alignItems: 'flex-end'
+            alignItems: 'flex-end',
+            position: 'relative'
           }}
         >
           {editable && (

@@ -1,6 +1,14 @@
-html,
+html {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow: hidden;
+  margin: 0px;
+}
 body {
   height: 100%;
+  width: 100%;
+  overflow: auto;
   margin: 0px;
   background-color: #f1f3f6;
 }
@@ -226,10 +234,6 @@ body {
 @media (min-width: 768px) {
   .modal-extra-lg {
     min-width: 766px;
-  }
-  .center {
-    margin-left: 20%;
-    width: 45%;
   }
   .right {
     width: 30%;

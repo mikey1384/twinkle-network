@@ -6,17 +6,19 @@ CommentInputArea.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   inputTypeLabel: PropTypes.string,
   clickListenerState: PropTypes.bool,
-  autoFocus: PropTypes.bool
+  autoFocus: PropTypes.bool,
+  style: PropTypes.object
 }
 export default function CommentInputArea({
   onSubmit,
   inputTypeLabel,
   clickListenerState,
   autoFocus,
+  style,
   ...props
 }) {
   return (
-    <div {...props}>
+    <div {...props} style={{ ...style, position: 'relative' }}>
       <InputArea
         clickListenerState={clickListenerState}
         autoFocus={autoFocus}

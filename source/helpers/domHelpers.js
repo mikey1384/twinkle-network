@@ -1,5 +1,5 @@
 export function scrollElementToCenter(element) {
-  window.scrollTo(0, element.offsetTop - window.innerHeight / 2)
+  document.body.scrollTo(0, element.offsetTop - document.body.innerHeight / 2)
 }
 
 export function textIsOverflown(element) {

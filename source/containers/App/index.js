@@ -45,20 +45,11 @@ class App extends Component {
     history: PropTypes.object
   }
 
-  constructor() {
-    super()
-    this.state = {
-      chatLoading: false,
-      scrollPosition: 0,
-      updateNoticeShown: false
-    }
-    this.onChatButtonClick = this.onChatButtonClick.bind(this)
-    this.onScroll = this.onScroll.bind(this)
-    this.handleVisibilityChange = this.handleVisibilityChange.bind(this)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.chatMode && !!nextProps.chatMode) window.scrollTo(0, 0)
+  state = {
+    chatLoading: false,
+    scrollPosition: 0,
+    updateNoticeShown: false,
+    navScrollPositions: {}
   }
 
   componentDidMount() {
@@ -74,7 +65,7 @@ class App extends Component {
       visibilityChange = 'webkitvisibilitychange'
     }
     initSession(location.pathname)
-    addEvent(window, 'scroll', this.onScroll)
+    addEvent(document.body, 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
   }
 
@@ -90,6 +81,8 @@ class App extends Component {
       clearNotifications
     } = this.props
 
+    const { navScrollPositions } = this.state
+
     if (prevProps.loggedIn !== loggedIn) {
       if (loggedIn) {
         fetchNotifications()
@@ -98,12 +91,22 @@ class App extends Component {
       }
     }
 
-    if (
-      loggedIn &&
-      history.action === 'PUSH' &&
-      location !== prevProps.location
-    ) {
-      recordUserAction({ action: 'navigation', target: location.pathname })
+    if (location !== prevProps.location) {
+      if (history.action === 'PUSH') {
+        if (loggedIn) {
+          recordUserAction({ action: 'navigation', target: location.pathname })
+        }
+        document.body.scrollTop = 0
+        const navScrollPosition = { [location.key]: 0 }
+        this.setState(state => ({
+          navScrollPositions: {
+            ...state.navScrollPositions,
+            ...navScrollPosition
+          }
+        }))
+      } else {
+        document.body.scrollTop = navScrollPositions[location.key]
+      }
     }
 
     if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
@@ -134,7 +137,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(window, 'scroll', this.onScroll)
+    removeEvent(document.body, 'scroll', this.onScroll)
   }
 
   render() {
@@ -148,7 +151,13 @@ class App extends Component {
         : { paddingTop: '65px' }
 
     return (
-      <div style={{ height: '100%', backgroundColor: chatMode && '#fff' }}>
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          backgroundColor: chatMode && '#fff'
+        }}
+      >
         <Header
           staticTop={chatMode}
           chatMode={chatMode}
@@ -169,10 +178,9 @@ class App extends Component {
             <div
               className="alert alert-info"
               style={{
-                position: 'fixed',
+                position: 'absolute',
                 textAlign: 'center',
                 width: '80%',
-                zIndex: '2000',
                 left: '10%'
               }}
             >
@@ -215,7 +223,7 @@ class App extends Component {
             <Chat
               onUnmount={() =>
                 resetChat().then(() => {
-                  window.scrollTo(0, scrollPosition)
+                  document.body.scrollTo(0, scrollPosition)
                   turnChatOff()
                 })
               }
@@ -225,12 +233,12 @@ class App extends Component {
     )
   }
 
-  handleVisibilityChange() {
+  handleVisibilityChange = () => {
     const { changePageVisibility } = this.props
     changePageVisibility(!document[hidden])
   }
 
-  onChatButtonClick() {
+  onChatButtonClick = () => {
     const { initChat, chatMode, turnChatOff } = this.props
     this.setState({ chatLoading: true })
     return (chatMode ? turnChatOff() : initChat()).then(() =>
@@ -238,10 +246,16 @@ class App extends Component {
     )
   }
 
-  onScroll(event) {
-    const { chatMode } = this.props
+  onScroll = event => {
+    const { chatMode, location } = this.props
     if (!chatMode) {
-      this.setState({ scrollPosition: window.scrollY })
+      this.setState(state => ({
+        scrollPosition: document.body.scrollTop,
+        navScrollPositions: {
+          ...state.navScrollPositions,
+          [location.key]: document.body.scrollTop
+        }
+      }))
     }
   }
 }

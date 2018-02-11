@@ -42,14 +42,14 @@ class People extends Component {
 
   componentDidMount() {
     const { fetchUsers } = this.props
-    addEvent(window, 'scroll', this.onScroll)
+    addEvent(document.body, 'scroll', this.onScroll)
     return fetchUsers().then(() => this.setState({ loaded: true }))
   }
 
   componentWillUnmount() {
     const { clearUserSearch } = this.props
     clearUserSearch()
-    removeEvent(window, 'scroll', this.onScroll)
+    removeEvent(document.body, 'scroll', this.onScroll)
   }
 
   render() {
@@ -120,11 +120,9 @@ class People extends Component {
     if (document.body.scrollHeight > this.scrollHeight) {
       this.scrollHeight = document.body.scrollHeight
     }
-    const scrollPosition =
-      document.documentElement.scrollTop || document.body.scrollTop
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
       this.setState(
-        () => ({ scrollPosition }),
+        { scrollPosition: window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop },
         () => {
           if (
             this.state.scrollPosition >=

@@ -1,11 +1,11 @@
-import styled from 'react-emotion'
+import { css } from 'react-emotion'
 
-export const Container = styled('div')`
-  display: flex;
+export const Container = css`
+  width: 100%;
 `
 
-export const Left = styled('div')`
-  position: fixed;
+export const Left = css`
+  position: absolute;
   left: 1rem;
   @media (max-width: 991px) {
     display: none;
@@ -16,14 +16,31 @@ export const Left = styled('div')`
   }
 `
 
-export const MenuItems = styled('ul')`
+export const Center = css`
+  width: 100%;
+  section {
+    width: 48%;
+    margin-left: calc(15% + 5rem);
+  }
+`
+
+export const Right = css`
+  position: absolute;
+  right: 1rem;
+  top: 65px;
+  bottom: 0;
+  width: 30%;
+  overflow-y: scroll;
+`
+
+export const MenuItems = css`
   margin-top: 2rem;
   display: flex;
   font-size: 2rem;
   padding-left: 0;
   flex-direction: column;
   li {
-    margin-top: 1rem;
+    padding: 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -39,35 +56,34 @@ export const MenuItems = styled('ul')`
       margin-left: 1rem;
     }
   }
-  li:first-child {
-    margin-top: 0;
+  li:hover {
+    a {
+      color: #333333;
+    }
+  }
+  li.active {
+    background-color: #fbfbfb;
+    font-weight: bold;
+    a {
+      color: #333333;
+    }
   }
 `
 
-/*
-
-.home-left-menu {
-  cursor: pointer;
-  background-color: #f1f3f6;
-  border: none;
-}
-
-.home-left-menu > a {
-  text-decoration: none;
-  color: #7c7c7c;
-}
-
-.home-left-menu.active {
-  background-color: #fbfbfb;
-  font-weight: bold;
-}
-
-.home-left-menu.active:hover {
-  background-color: #fbfbfb;
-}
-
-.home-left-menu.active > a {
-  color: #333333;
-}
-
-*/
+export const TwinkleXP = css`
+  margin-bottom: 0px;
+  text-align: center;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #eeeeee;
+  borderradius: 5px;
+  p {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0px;
+  }
+  a {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+`

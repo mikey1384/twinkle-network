@@ -23,6 +23,7 @@ import {
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
+import { Left, Right } from './Styles'
 
 class Main extends Component {
   static propTypes = {
@@ -51,37 +52,8 @@ class Main extends Component {
   state = {
     addPlaylistModalShown: false,
     playlistSearchQuery: '',
-    notificationMenu: null,
     searchedPlaylists: [],
     isSearching: false
-  }
-
-  componentDidMount() {
-    const { openAddVideoModal } = this.props
-    this.setState({
-      notificationMenu: (
-        <Notification device="desktop" className="col-xs-3 col-xs-offset-9">
-          <Button
-            className="btn btn-lg btn-info"
-            style={{
-              fontSize: '1.5em',
-              width: '100%',
-              marginBottom: '0.5em'
-            }}
-            onClick={() => openAddVideoModal()}
-          >
-            + Add Video
-          </Button>
-          <Button
-            className="btn btn-lg btn-info"
-            style={{ fontSize: '1.5em', width: '100%' }}
-            onClick={() => this.setState({ addPlaylistModalShown: true })}
-          >
-            + Add Playlist
-          </Button>
-        </Notification>
-      )
-    })
   }
 
   render() {
@@ -116,7 +88,6 @@ class Main extends Component {
       addPlaylistModalShown,
       playlistSearchQuery,
       isSearching,
-      notificationMenu,
       searchedPlaylists
     } = this.state
 
@@ -143,7 +114,7 @@ class Main extends Component {
     ]
     return (
       <div>
-        <div className="col-md-9">
+        <div className={Left}>
           <PlaylistsPanel
             key={'pinnedPlaylists'}
             buttonGroupShown={isAdmin}
@@ -201,7 +172,26 @@ class Main extends Component {
             />
           )}
         </div>
-        {notificationMenu}
+        <Notification className={Right}>
+          <Button
+            className="btn btn-lg btn-info"
+            style={{
+              fontSize: '1.5em',
+              width: '100%',
+              marginBottom: '0.5em'
+            }}
+            onClick={() => openAddVideoModal()}
+          >
+            + Add Video
+          </Button>
+          <Button
+            className="btn btn-lg btn-info"
+            style={{ fontSize: '1.5em', width: '100%' }}
+            onClick={() => this.setState({ addPlaylistModalShown: true })}
+          >
+            + Add Playlist
+          </Button>
+        </Notification>
       </div>
     )
   }

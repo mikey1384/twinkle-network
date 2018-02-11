@@ -30,7 +30,7 @@ NotiFeeds.propTypes = {
 export default function NotiFeeds({ myId, notifications, style }) {
   return (
     <div style={style}>
-      <ul className="list-group">
+      <ul className="list-group" style={{ marginBottom: 0 }}>
         {notifications.length > 0 &&
           notifications.map(notification => {
             return (
@@ -106,10 +106,11 @@ function renderNotificationMessage(notification, myId) {
   if (isReplyNotification) title = `"${title}"`
   const content = {
     title,
-    id:
-      isReplyNotification
+    id: isReplyNotification
+      ? contentId
+      : type === 'discussion'
         ? contentId
-        : type === 'discussion' ? contentId : isDiscussionAnswerNotification ? discussionId : rootId
+        : isDiscussionAnswerNotification ? discussionId : rootId
   }
   return (
     <div>
@@ -120,7 +121,9 @@ function renderNotificationMessage(notification, myId) {
         type={
           isReplyNotification
             ? 'comment'
-            : type === 'discussion' || isDiscussionAnswerNotification ? 'discussion' : rootType
+            : type === 'discussion' || isDiscussionAnswerNotification
+              ? 'discussion'
+              : rootType
         }
       />
     </div>

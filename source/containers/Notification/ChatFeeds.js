@@ -14,18 +14,17 @@ class ChatFeeds extends Component {
     reloadedBy: PropTypes.number,
     reloaderName: PropTypes.string,
     reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    style: PropTypes.object,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     userId: PropTypes.number,
     username: PropTypes.string
   }
 
   render() {
-    const { content, openChat } = this.props
+    const { content, openChat, style } = this.props
     return (
-      <div style={{ textAlign: 'center' }}>
-        <h4 style={{ marginTop: '0px', fontWeight: 'bold' }}>
-          People are talking about:
-        </h4>
+      <div style={{ ...style, textAlign: 'center' }}>
+        <h4 style={{ fontWeight: 'bold' }}>People are talking about:</h4>
         <ul className="list-group" style={{ marginBottom: '0px' }}>
           <li className="list-group-item">
             <p

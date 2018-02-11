@@ -1,7 +1,7 @@
-import styled from 'react-emotion'
-import {Color} from 'constants/css'
+import { css } from 'react-emotion'
+import { Color } from 'constants/css'
 
-export const Container = styled('div')`
+export const Container = css`
   display: flex;
   border: 1px solid ${Color.borderGray};
   border-radius: 4px;
@@ -10,10 +10,29 @@ export const Container = styled('div')`
   background: #fff;
 `
 
-export const Heading = styled('div')`
+export const Heading = css`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   background: ${Color.headingGray};
   padding: 3%;
+`
+
+export const Names = css`
+  width: 65%;
+  text-align: center;
+  a {
+    font-weight: bold;
+    font-size: 2rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  span {
+    color: ${Color.gray};
+    font-size: 1rem;
+  }
+`
+
+export const Details = css`
+  padding: 2rem;
 `

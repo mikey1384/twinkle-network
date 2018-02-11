@@ -1,15 +1,21 @@
 import { Color } from 'constants/css'
 
 export const Style = {
-  container: { display: 'flex', width: '100%', flexDirection: 'column', marginTop: '1.5rem' },
+  container: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    marginTop: '1.5rem'
+  },
   dropdownWrapper: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'row-reverse'
+    flexDirection: 'row-reverse',
+    position: 'relative'
   },
   dropdownButton: { position: 'absolute' },
   profilePic: { width: '7%', height: '7%' },
-  contentWrapper: { display: 'flex', width: '100%' },
+  contentWrapper: { display: 'flex', width: '100%', position: 'relative' },
   timeStamp: { color: Color.gray },
   innerContentWrapper: { width: '100%', marginLeft: '2%' },
   toText: { color: Color.blue },

@@ -75,7 +75,7 @@ class Stories extends Component {
 
   async componentDidMount() {
     let { history, clearFeeds, fetchFeeds, loaded } = this.props
-    addEvent(window, 'scroll', this.onScroll)
+    addEvent(document.body, 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
       await clearFeeds()
@@ -85,7 +85,7 @@ class Stories extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(window, 'scroll', this.onScroll)
+    removeEvent(document.body, 'scroll', this.onScroll)
   }
 
   render() {
@@ -196,13 +196,11 @@ class Stories extends Component {
     if (document.body.scrollHeight > this.scrollHeight) {
       this.scrollHeight = document.body.scrollHeight
     }
-    const scrollPosition =
-      document.documentElement.scrollTop || document.body.scrollTop
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
       this.setState(
-        () => ({
-          scrollPosition
-        }),
+        {
+          scrollPosition: window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+        },
         () => {
           if (
             this.state.scrollPosition >=

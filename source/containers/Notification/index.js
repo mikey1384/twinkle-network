@@ -21,22 +21,15 @@ class Notification extends Component {
     position: PropTypes.string
   }
 
-  state = {
-    scrollPosition: ExecutionEnvironment.canUseDOM ? window.scrollY : 0,
-    scrollLocked: false
-  }
-
   componentDidMount() {
     const { fetchNotifications } = this.props
     addEvent(window, 'mousemove', this.onMouseMove)
-    addEvent(window, 'scroll', this.onPageScroll)
     fetchNotifications()
   }
 
   componentWillUnmount() {
     if (ExecutionEnvironment.canUseDOM) {
       removeEvent(window, 'mousemove', this.onMouseMove)
-      removeEvent(window, 'scroll', this.onPageScroll)
     }
   }
 
@@ -46,33 +39,19 @@ class Notification extends Component {
       myId,
       className,
       currentChatSubject: { content = defaultChatSubject, loaded, ...subject },
-      children,
-      style
+      children
     } = this.props
     return (
-      <div
-        className={className}
-        onScroll={this.handleScroll}
-        style={{
-          position: 'fixed',
-          overflowY: 'scroll',
-          top: '65px',
-          bottom: 0,
-          ...style
-        }}
-      >
-        <div
-          className="well momentum-scroll-enabled"
-          ref={ref => {
-            this.NotificationBox = ref
-          }}
-        >
-          {children && (
-            <div style={{ minHeight: '3rem', marginBottom: '1rem' }}>
-              {children}
-            </div>
+      <div className={className} onScroll={this.handleScroll}>
+        <div className="well momentum-scroll-enabled">
+          {children && <div style={{ minHeight: '3rem' }}>{children}</div>}
+          {loaded && (
+            <ChatFeeds
+              content={content}
+              style={{ marginTop: !!children && '1rem' }}
+              {...subject}
+            />
           )}
-          {loaded && <ChatFeeds content={content} {...subject} />}
           {notifications.length > 0 && (
             <NotiFeeds
               notifications={notifications}
@@ -83,31 +62,6 @@ class Notification extends Component {
         </div>
       </div>
     )
-  }
-
-  handleScroll = () => {
-    const { scrollHeight, clientHeight, scrollTop } = this.NotificationBox
-    if (scrollTop === 0 || scrollHeight - clientHeight >= scrollTop) {
-      this.setState({ scrollLocked: true })
-    } else {
-      this.setState({ scrollLocked: false })
-    }
-  }
-
-  onMouseMove = () => {
-    const { scrollLocked } = this.state
-    if (scrollLocked) this.setState({ scrollLocked: false })
-  }
-
-  onPageScroll = (event) => {
-    const { chatMode } = this.props
-    const { scrollLocked } = this.state
-    if (scrollLocked) {
-      return window.scrollTo(0, this.state.scrollPosition)
-    }
-    if (!chatMode) {
-      this.setState({ scrollPosition: window.scrollY })
-    }
   }
 }
 

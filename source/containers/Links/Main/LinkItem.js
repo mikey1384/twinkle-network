@@ -160,7 +160,7 @@ class LinkItem extends Component {
               />
             )}
           </h4>
-          <div>
+          <div style={{ position: 'relative' }}>
             <small style={{ position: 'absolute' }}>
               Uploaded {`${timeSince(timeStamp)} `}by{' '}
               <UsernameText user={{ name: uploaderName, id: uploader }} />

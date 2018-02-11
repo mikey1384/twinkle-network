@@ -47,7 +47,7 @@ export default class SectionPanel extends Component {
         >
           <div
             style={{
-              width: '25%',
+              width: onSearch ? '25%' : '55%',
               fontSize: '2.5rem',
               alignItems: 'center',
               display: 'flex'
