@@ -18,6 +18,8 @@ export const Left = css`
 
 export const Center = css`
   width: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
   section {
     margin-left: calc(15% + 5rem);
     @media (max-width: 991px) {
@@ -38,6 +40,7 @@ export const Right = css`
   bottom: 0;
   width: 30%;
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 `
 
 export const MenuItems = css`
