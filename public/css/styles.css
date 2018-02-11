@@ -8,9 +8,10 @@ html {
 body {
   height: 100%;
   width: 100%;
-  overflow: auto;
   margin: 0px;
   background-color: #f1f3f6;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 #react-view {
