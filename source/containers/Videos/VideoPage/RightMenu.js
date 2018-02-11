@@ -66,39 +66,35 @@ class RightMenu extends Component {
         playlistVideos.length ===
       0
     return (
-      <ErrorBoundary>
+      <ErrorBoundary
+        css={`
+          width: CALC(30% - 2rem);
+          padding: 2rem;
+          margin-right: 1rem;
+          background-color: #fff;
+        `}
+      >
         {!noVideos && (
-          <div
-            css={`
-              width: CALC(100% - 1rem);
-              padding: 2rem;
-              margin-right: 1rem;
-              background-color: #fff;
-            `}
-          >
-            <div>
-              {nextVideos.length > 0 && (
-                <h3 style={{ marginTop: 0 }}>Up Next</h3>
-              )}
-              {this.renderVideos(nextVideos)}
-              {playlistVideos.length > 0 && (
-                <h3 style={{ marginTop: nextVideos.length === 0 && 0 }}>
-                  {cleanString(playlistTitle)}
-                </h3>
-              )}
-              {this.renderVideos(playlistVideos)}
-              {playlistVideosLoadMoreShown && (
-                <FlatLoadMoreButton
-                  isLoading={playlistVideosLoading}
-                  onClick={this.loadMorePlaylistVideos}
-                  style={{ marginTop: '1.5em' }}
-                />
-              )}
-              {relatedVideos.length > 0 && <h3>Related Videos</h3>}
-              {this.renderVideos(relatedVideos)}
-              {otherVideos.length > 0 && <h3>Recent Videos</h3>}
-              {this.renderVideos(otherVideos)}
-            </div>
+          <div>
+            {nextVideos.length > 0 && <h3 style={{ marginTop: 0 }}>Up Next</h3>}
+            {this.renderVideos(nextVideos)}
+            {playlistVideos.length > 0 && (
+              <h3 style={{ marginTop: nextVideos.length === 0 && 0 }}>
+                {cleanString(playlistTitle)}
+              </h3>
+            )}
+            {this.renderVideos(playlistVideos)}
+            {playlistVideosLoadMoreShown && (
+              <FlatLoadMoreButton
+                isLoading={playlistVideosLoading}
+                onClick={this.loadMorePlaylistVideos}
+                style={{ marginTop: '1.5em' }}
+              />
+            )}
+            {relatedVideos.length > 0 && <h3>Related Videos</h3>}
+            {this.renderVideos(relatedVideos)}
+            {otherVideos.length > 0 && <h3>Recent Videos</h3>}
+            {this.renderVideos(otherVideos)}
           </div>
         )}
       </ErrorBoundary>

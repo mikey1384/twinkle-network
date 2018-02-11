@@ -132,8 +132,19 @@ class VideoPage extends Component {
     const { playlist: playlistId } = queryString.parse(search)
 
     return (
-      <ErrorBoundary style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ width: '70%', marginLeft: '1rem' }}>
+      <ErrorBoundary
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%'
+        }}
+      >
+        <div
+          css={`
+            width: CALC(70% - 1rem);
+            margin-left: 1rem;
+          `}
+        >
           {videoLoading && <Loading text="Loading Video..." />}
           {videoUnavailable && <NotFound text="Video does not exist" />}
           {!videoUnavailable &&
