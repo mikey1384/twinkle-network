@@ -23,7 +23,7 @@ import {
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { Left, Right } from './Styles'
+import { Container, Left, Right } from './Styles'
 
 class Main extends Component {
   static propTypes = {
@@ -113,7 +113,7 @@ class Main extends Component {
       }
     ]
     return (
-      <div>
+      <div className={Container}>
         <div className={Left}>
           <PlaylistsPanel
             key={'pinnedPlaylists'}

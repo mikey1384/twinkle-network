@@ -7,7 +7,7 @@ import LinkGroup from './LinkGroup'
 import Notification from 'containers/Notification'
 import { connect } from 'react-redux'
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions'
-import { Left, Right } from './Styles'
+import { Container, Left, Right } from './Styles'
 
 class Main extends Component {
   static propTypes = {
@@ -46,7 +46,7 @@ class Main extends Component {
     const { links, loadMoreLinksButtonShown } = this.props
     const { addLinkModalShown, loaded } = this.state
     return (
-      <div>
+      <div className={Container}>
         <div className={Left}>
           <SectionPanel
             title="All Links"
