@@ -75,6 +75,7 @@ class Body extends Component {
     const { match, location, clearFeeds } = this.props
     this.mounted = true
     addEvent(window, 'scroll', this.onScroll)
+    addEvent(document.body, 'scroll', this.onScroll)
     return clearFeeds().then(() => {
       switch (location.pathname) {
         case match.url:
@@ -123,6 +124,7 @@ class Body extends Component {
   componentWillUnmount() {
     this.mounted = false
     removeEvent(window, 'scroll', this.onScroll)
+    removeEvent(document.body, 'scroll', this.onScroll)
   }
 
   render() {
