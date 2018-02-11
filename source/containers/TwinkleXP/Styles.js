@@ -13,7 +13,6 @@ const Styles = {
   },
   rightMenu: {
     width: '30%',
-    position: 'absolute',
     background: 'white',
     padding: '1.5rem'
   },
