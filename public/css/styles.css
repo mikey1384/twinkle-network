@@ -1,17 +1,14 @@
 html {
   height: 100%;
   width: 100%;
-  position: absolute;
-  overflow: hidden;
   margin: 0px;
 }
+
 body {
   height: 100%;
   width: 100%;
   margin: 0px;
   background-color: #f1f3f6;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
 }
 
 #react-view {
@@ -230,6 +227,20 @@ body {
   .modal-extra-lg {
     width: 980px;
   }
+  html {
+    overflow: hidden;
+    position: absolute;
+  }
+  body {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 991px) {
+  html {
+    position: relative;
+  }
 }
 
 @media (min-width: 768px) {
@@ -240,12 +251,3 @@ body {
     width: 30%;
   }
 }
-
-@media (min-width: 414px) {
-  
-}
-
-@media (max-width: 413px) {
-
-}
-

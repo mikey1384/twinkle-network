@@ -65,7 +65,8 @@ class App extends Component {
       visibilityChange = 'webkitvisibilitychange'
     }
     initSession(location.pathname)
-    addEvent(document.body, 'scroll', this.onScroll)
+    addEvent(window, 'scroll', this.onWindowScroll)
+    addEvent(document.body, 'scroll', this.onBodyScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
   }
 
@@ -96,6 +97,7 @@ class App extends Component {
         if (loggedIn) {
           recordUserAction({ action: 'navigation', target: location.pathname })
         }
+        window.scrollTo(0, 0)
         document.body.scrollTop = 0
         const navScrollPosition = { [location.key]: 0 }
         this.setState(state => ({
@@ -137,7 +139,8 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(document.body, 'scroll', this.onScroll)
+    removeEvent(window, 'scroll', this.onWindowScroll)
+    removeEvent(document.body, 'scroll', this.onBodyScroll)
   }
 
   render() {
@@ -223,6 +226,7 @@ class App extends Component {
             <Chat
               onUnmount={() =>
                 resetChat().then(() => {
+                  window.scrollTo(0, scrollPosition)
                   document.body.scrollTo(0, scrollPosition)
                   turnChatOff()
                 })
@@ -246,7 +250,7 @@ class App extends Component {
     )
   }
 
-  onScroll = event => {
+  onBodyScroll = event => {
     const { chatMode, location } = this.props
     if (!chatMode) {
       this.setState(state => ({
@@ -254,6 +258,19 @@ class App extends Component {
         navScrollPositions: {
           ...state.navScrollPositions,
           [location.key]: document.body.scrollTop
+        }
+      }))
+    }
+  }
+
+  onWindowScroll = event => {
+    const { chatMode, location } = this.props
+    if (!chatMode) {
+      this.setState(state => ({
+        scrollPosition: window.scrollY,
+        navScrollPositions: {
+          ...state.navScrollPositions,
+          [location.key]: window.scrollY
         }
       }))
     }

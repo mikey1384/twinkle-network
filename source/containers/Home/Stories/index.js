@@ -76,6 +76,7 @@ class Stories extends Component {
   async componentDidMount() {
     let { history, clearFeeds, fetchFeeds, loaded } = this.props
     addEvent(document.body, 'scroll', this.onScroll)
+    addEvent(window, 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
       await clearFeeds()
@@ -86,6 +87,7 @@ class Stories extends Component {
 
   componentWillUnmount() {
     removeEvent(document.body, 'scroll', this.onScroll)
+    removeEvent(window, 'scroll', this.onScroll)
   }
 
   render() {
