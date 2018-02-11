@@ -69,19 +69,22 @@ class RightMenu extends Component {
       <ErrorBoundary>
         {!noVideos && (
           <div
-            className="col-xs-offset-8 col-xs-4"
-            style={{
-              width: '30%',
-              backgroundColor: '#fff',
-              position: 'absolute',
-              paddingBottom: '2em'
-            }}
+            css={`
+              width: CALC(100% - 1rem);
+              padding: 2rem;
+              margin-right: 1rem;
+              background-color: #fff;
+            `}
           >
             <div>
-              {nextVideos.length > 0 && <h3>Up Next</h3>}
+              {nextVideos.length > 0 && (
+                <h3 style={{ marginTop: 0 }}>Up Next</h3>
+              )}
               {this.renderVideos(nextVideos)}
               {playlistVideos.length > 0 && (
-                <h3>{cleanString(playlistTitle)}</h3>
+                <h3 style={{ marginTop: nextVideos.length === 0 && 0 }}>
+                  {cleanString(playlistTitle)}
+                </h3>
               )}
               {this.renderVideos(playlistVideos)}
               {playlistVideosLoadMoreShown && (

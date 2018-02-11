@@ -179,7 +179,7 @@ export default class Reply extends Component {
                 />
               ) : (
                 <div style={{ width: '100%' }}>
-                  <LongText style={{ paddingBottom: '2rem' }}>
+                  <LongText style={{ paddingBottom: '2rem', wordWrap: 'break-word' }}>
                     {content}
                   </LongText>
                   <div
