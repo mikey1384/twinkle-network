@@ -242,8 +242,11 @@ class QuestionsBuilder extends Component {
                     </Button>
                   </div>
                 ) : (
-                  <div>
-                    <ButtonGroup buttons={topButtons} />
+                  <div style={{ width: '100%' }}>
+                    <ButtonGroup
+                      style={{ width: '100%', justifyContent: 'center' }}
+                      buttons={topButtons}
+                    />
                     <div style={{ marginTop: '1em' }}>
                       <Button
                         className="btn btn-success col-sm-2 col-sm-offset-5"

@@ -176,7 +176,13 @@ class Carousel extends Component {
         )}
         {this.props.progressBar && (
           <div>
-            <div className="text-center">
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'center'
+              }}
+            >
               <ButtonGroup
                 buttons={[
                   {
