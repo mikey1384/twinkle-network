@@ -95,7 +95,7 @@ class CommentInputArea extends Component {
                 <div>
                   {!!discussions &&
                     discussions.length > 0 && (
-                      <h3 style={{ marginTop: '1em' }}>Active Discussions</h3>
+                      <h3 style={{ marginTop: '1.5rem' }}>Active Discussions</h3>
                     )}
                   {!!discussions &&
                     discussions.map(discussion => (
@@ -125,7 +125,7 @@ class CommentInputArea extends Component {
                   )}
                   {(!discussions || discussions.length === 0) && (
                     <div>
-                      <h3 style={{ marginTop: '1rem' }}>
+                      <h3 style={{ marginTop: '1.5rem' }}>
                         Comment on this video
                       </h3>
                       <InputArea
