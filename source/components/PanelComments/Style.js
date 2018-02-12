@@ -5,15 +5,15 @@ export const Style = {
     display: 'flex',
     width: '100%',
     flexDirection: 'column',
-    marginTop: '1.5rem'
+    marginTop: '1.5rem',
+    position: 'relative'
   },
   dropdownWrapper: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row-reverse',
-    position: 'relative'
+    position: 'absolute'
   },
-  dropdownButton: { position: 'absolute' },
   profilePic: { width: '7%', height: '7%' },
   contentWrapper: { display: 'flex', width: '100%', position: 'relative' },
   timeStamp: { color: Color.gray },

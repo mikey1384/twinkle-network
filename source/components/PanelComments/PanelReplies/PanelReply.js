@@ -101,27 +101,6 @@ class PanelReply extends Component {
           this.PanelReply = ref
         }}
       >
-        {canEdit &&
-          !onEdit && (
-            <div style={Style.dropdownWrapper}>
-              <DropdownButton
-                shape="button"
-                icon="pencil"
-                style={Style.dropdownButton}
-                opacity={0.8}
-                menuProps={[
-                  {
-                    label: 'Edit',
-                    onClick: () => this.setState({ onEdit: true })
-                  },
-                  {
-                    label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
-                  }
-                ]}
-              />
-            </div>
-          )}
         <div style={Style.contentWrapper}>
           <ProfilePic
             style={Style.profilePic}
@@ -204,6 +183,27 @@ class PanelReply extends Component {
             )}
           </div>
         </div>
+        {canEdit &&
+          !onEdit && (
+            <div style={Style.dropdownWrapper}>
+              <DropdownButton
+                shape="button"
+                icon="pencil"
+                style={Style.dropdownButton}
+                opacity={0.8}
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({ onEdit: true })
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({ confirmModalShown: true })
+                  }
+                ]}
+              />
+            </div>
+          )}
         {userListModalShown && (
           <UserListModal
             onHide={() => this.setState({ userListModalShown: false })}
