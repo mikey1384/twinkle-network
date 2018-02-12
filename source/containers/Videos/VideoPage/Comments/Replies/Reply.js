@@ -108,31 +108,10 @@ export default class Reply extends Component {
         style={{
           width: '100%',
           display: 'flex',
-          marginTop: index !== 0 && '1.5rem'
+          marginTop: index !== 0 && '1.5rem',
+          position: 'relative'
         }}
       >
-        {userIsOwner &&
-          !onEdit && (
-            <DropdownButton
-              opacity={0.8}
-              shape="button"
-              icon="pencil"
-              style={{
-                position: 'absolute',
-                right: '3.5em'
-              }}
-              menuProps={[
-                {
-                  label: 'Edit',
-                  onClick: () => this.setState({ onEdit: true })
-                },
-                {
-                  label: 'Remove',
-                  onClick: () => this.setState({ confirmModalShown: true })
-                }
-              ]}
-            />
-          )}
         <div style={{ width: '10%', height: '10%' }}>
           <ProfilePic
             style={{ width: '80%', height: '80%' }}
@@ -179,7 +158,9 @@ export default class Reply extends Component {
                 />
               ) : (
                 <div style={{ width: '100%' }}>
-                  <LongText style={{ paddingBottom: '2rem', wordWrap: 'break-word' }}>
+                  <LongText
+                    style={{ paddingBottom: '2rem', wordWrap: 'break-word' }}
+                  >
                     {content}
                   </LongText>
                   <div
@@ -230,6 +211,28 @@ export default class Reply extends Component {
               clickListenerState={clickListenerState}
             />
           )}
+          {userIsOwner &&
+            !onEdit && (
+              <DropdownButton
+                opacity={0.8}
+                shape="button"
+                icon="pencil"
+                style={{
+                  position: 'absolute',
+                  right: 0
+                }}
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({ onEdit: true })
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({ confirmModalShown: true })
+                  }
+                ]}
+              />
+            )}
         </div>
         {userListModalShown && (
           <UserListModal

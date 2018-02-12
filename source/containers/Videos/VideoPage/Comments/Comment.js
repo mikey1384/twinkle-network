@@ -98,7 +98,8 @@ class Comment extends Component {
         style={{
           width: '100%',
           display: 'flex',
-          marginTop: this.props.marginTop && '2rem'
+          marginTop: this.props.marginTop && '2rem',
+          position: 'relative'
         }}
         ref={ref => {
           this.Comment = ref
@@ -112,32 +113,8 @@ class Comment extends Component {
           />
         </div>
         <div
-          style={{
-            width: '90%'
-          }}
+          style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
         >
-          {userIsOwner &&
-            !onEdit && (
-              <DropdownButton
-                opacity={0.8}
-                shape="button"
-                icon="pencil"
-                style={{
-                  position: 'absolute',
-                  right: '3.5em'
-                }}
-                menuProps={[
-                  {
-                    label: 'Edit',
-                    onClick: () => this.setState({ onEdit: true })
-                  },
-                  {
-                    label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
-                  }
-                ]}
-              />
-            )}
           <div>
             <UsernameText
               user={{
@@ -170,7 +147,13 @@ class Comment extends Component {
                   {cleanString(comment.discussionTitle)}
                 </div>
               )}
-              <LongText style={{ marginLeft: '0px', paddingBottom: '1em', wordWrap: 'break-word' }}>
+              <LongText
+                style={{
+                  marginLeft: '0px',
+                  paddingBottom: '1em',
+                  wordWrap: 'break-word'
+                }}
+              >
                 {comment.content}
               </LongText>
               <div
@@ -232,6 +215,28 @@ class Comment extends Component {
               onSubmit={this.onReplySubmit}
             />
           )}
+          {userIsOwner &&
+            !onEdit && (
+              <DropdownButton
+                opacity={0.8}
+                shape="button"
+                icon="pencil"
+                style={{
+                  position: 'absolute',
+                  right: 0
+                }}
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({ onEdit: true })
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({ confirmModalShown: true })
+                  }
+                ]}
+              />
+            )}
         </div>
         {userListModalShown && (
           <UserListModal
