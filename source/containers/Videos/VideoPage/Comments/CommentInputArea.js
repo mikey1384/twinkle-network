@@ -40,7 +40,7 @@ class CommentInputArea extends Component {
     const { discussionTabActive, discussionFormShown } = this.state
     return (
       <div className="page-header" style={{ marginTop: '2rem' }}>
-        <div className="row">
+        <div>
           <ul
             className="nav nav-tabs"
             style={{ fontSize: '1.3em', fontWeight: 'bold' }}
@@ -68,9 +68,9 @@ class CommentInputArea extends Component {
         </div>
         <div style={{ marginTop: '1.5em' }}>
           {discussionTabActive && (
-            <div>
+            <div style={{ padding: '0 1rem' }}>
               <div>
-                <div className="container-fluid">
+                <div>
                   {discussionFormShown ? (
                     <TitleDescriptionForm
                       autoFocus
@@ -92,7 +92,7 @@ class CommentInputArea extends Component {
                     </Button>
                   )}
                 </div>
-                <div className="container-fluid">
+                <div>
                   {!!discussions &&
                     discussions.length > 0 && (
                       <h3 style={{ marginTop: '1em' }}>Active Discussions</h3>
@@ -125,7 +125,7 @@ class CommentInputArea extends Component {
                   )}
                   {(!discussions || discussions.length === 0) && (
                     <div>
-                      <h3 style={{ marginTop: '1em' }}>
+                      <h3 style={{ marginTop: '1rem' }}>
                         Comment on this video
                       </h3>
                       <InputArea

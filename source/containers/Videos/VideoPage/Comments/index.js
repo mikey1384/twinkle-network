@@ -70,8 +70,8 @@ class Comments extends Component {
       discussions
     } = this.props
     return (
-      <div style={{ paddingBottom: '1rem' }}>
-        <div className="container-fluid">
+      <div style={{ padding: '1rem' }}>
+        <div>
           <CommentInputArea
             videoId={videoId}
             discussions={discussions}
@@ -83,6 +83,7 @@ class Comments extends Component {
                 this.Comments = ref
               }}
               style={{
+                padding: '0 1rem',
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column'
@@ -124,7 +125,9 @@ class Comments extends Component {
     const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     if (comments.length === 0) {
       if (loading) return <Loading />
-      return <div style={{textAlign: 'center'}}>There are no comments, yet.</div>
+      return (
+        <div style={{ textAlign: 'center' }}>There are no comments, yet.</div>
+      )
     }
     return comments.map((comment, index) => {
       return (
@@ -148,7 +151,7 @@ class Comments extends Component {
     })
   }
 
-  deleteCallback = (index) => {
+  deleteCallback = index => {
     this.setState({ lastDeletedCommentIndex: index })
   }
 }
