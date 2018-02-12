@@ -4,8 +4,6 @@ body {
   width: 100vw;
   margin: 0px;
   background-color: #f1f3f6;
-  overflow: hidden;
-  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
@@ -226,15 +224,13 @@ body {
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 991px) {
+  html, body {
+    overflow: hidden;
+    position: absolute;
+  }
   .modal-extra-lg {
     width: 980px;
-  }
-}
-
-@media (max-width: 991px) {
-  html, body {
-    position: relative;
   }
 }
 
