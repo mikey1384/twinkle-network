@@ -28,8 +28,6 @@ import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { feedContentEdit } from '../../../redux/actions/FeedActions'
 
-const REACT_VIEW = document ? document.getElementById('react-view') : null
-
 class Stories extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
@@ -77,7 +75,7 @@ class Stories extends Component {
 
   async componentDidMount() {
     let { history, clearFeeds, fetchFeeds, loaded } = this.props
-    addEvent(REACT_VIEW, 'scroll', this.onScroll)
+    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
       await clearFeeds()
@@ -87,7 +85,7 @@ class Stories extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(REACT_VIEW, 'scroll', this.onScroll)
+    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
   }
 
   render() {
@@ -200,13 +198,13 @@ class Stories extends Component {
 
   onScroll() {
     const { chatMode, feeds } = this.props
-    if (REACT_VIEW.scrollHeight > this.scrollHeight) {
-      this.scrollHeight = REACT_VIEW.scrollHeight
+    if (document.getElementById('react-view').scrollHeight > this.scrollHeight) {
+      this.scrollHeight = document.getElementById('react-view').scrollHeight
     }
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
       this.setState(
         {
-          scrollPosition: REACT_VIEW.scrollTop
+          scrollPosition: document.getElementById('react-view').scrollTop
         },
         () => {
           if (

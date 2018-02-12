@@ -28,8 +28,6 @@ import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 
-const REACT_VIEW = document ? document.getElementById('react-view') : null
-
 class Body extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
@@ -76,7 +74,7 @@ class Body extends Component {
   componentDidMount() {
     const { match, location, clearFeeds } = this.props
     this.mounted = true
-    addEvent(REACT_VIEW, 'scroll', this.onScroll)
+    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     return clearFeeds().then(() => {
       switch (location.pathname) {
         case match.url:
@@ -124,7 +122,7 @@ class Body extends Component {
 
   componentWillUnmount() {
     this.mounted = false
-    removeEvent(REACT_VIEW, 'scroll', this.onScroll)
+    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
   }
 
   render() {
@@ -363,7 +361,7 @@ class Body extends Component {
 
   onScroll() {
     let { chatMode, feeds } = this.props
-    const scrollPosition = REACT_VIEW.scrollTop
+    const scrollPosition = document.getElementById('react-view').scrollTop
     if (!chatMode && feeds.length > 0) {
       this.setState({ scrollPosition })
       if (

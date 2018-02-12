@@ -29,8 +29,6 @@ import {
 let visibilityChange
 let hidden
 
-const REACT_VIEW = document ? document.getElementById('react-view') : null
-
 class App extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
@@ -67,7 +65,7 @@ class App extends Component {
       visibilityChange = 'webkitvisibilitychange'
     }
     initSession(location.pathname)
-    addEvent(REACT_VIEW, 'scroll', this.onScroll)
+    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
   }
 
@@ -98,7 +96,7 @@ class App extends Component {
         if (loggedIn) {
           recordUserAction({ action: 'navigation', target: location.pathname })
         }
-        REACT_VIEW.scrollTop = 0
+        document.getElementById('react-view').scrollTop = 0
         const navScrollPosition = { [location.key]: 0 }
         this.setState(state => ({
           navScrollPositions: {
@@ -107,7 +105,7 @@ class App extends Component {
           }
         }))
       } else {
-        REACT_VIEW.scrollTop = navScrollPositions[location.key]
+        document.getElementById('react-view').scrollTop = navScrollPositions[location.key]
       }
     }
 
@@ -139,7 +137,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(REACT_VIEW, 'scroll', this.onScroll)
+    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
   }
 
   render() {
@@ -225,7 +223,7 @@ class App extends Component {
             <Chat
               onUnmount={() =>
                 resetChat().then(() => {
-                  REACT_VIEW.scrollTop = scrollPosition
+                  document.getElementById('react-view').scrollTop = scrollPosition
                   turnChatOff()
                 })
               }
@@ -252,10 +250,10 @@ class App extends Component {
     const { chatMode, location } = this.props
     if (!chatMode) {
       this.setState(state => ({
-        scrollPosition: REACT_VIEW.scrollTop,
+        scrollPosition: document.getElementById('react-view').scrollTop,
         navScrollPositions: {
           ...state.navScrollPositions,
-          [location.key]: REACT_VIEW.scrollTop
+          [location.key]: document.getElementById('react-view').scrollTop
         }
       }))
     }

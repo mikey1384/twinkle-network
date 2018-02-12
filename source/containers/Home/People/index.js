@@ -16,8 +16,6 @@ import { queryStringForArray } from 'helpers/apiHelpers'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 
-const REACT_VIEW = document ? document.getElementById('react-view') : null
-
 class People extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
@@ -44,14 +42,14 @@ class People extends Component {
 
   componentDidMount() {
     const { fetchUsers } = this.props
-    addEvent(REACT_VIEW, 'scroll', this.onScroll)
+    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     return fetchUsers().then(() => this.setState({ loaded: true }))
   }
 
   componentWillUnmount() {
     const { clearUserSearch } = this.props
     clearUserSearch()
-    removeEvent(REACT_VIEW, 'scroll', this.onScroll)
+    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
   }
 
   render() {
@@ -123,11 +121,11 @@ class People extends Component {
 
   onScroll = () => {
     const { chatMode, profiles } = this.props
-    if (REACT_VIEW.scrollHeight > this.scrollHeight) {
-      this.scrollHeight = REACT_VIEW.scrollHeight
+    if (document.getElementById('react-view').scrollHeight > this.scrollHeight) {
+      this.scrollHeight = document.getElementById('react-view').scrollHeight
     }
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
-      this.setState({ scrollPosition: REACT_VIEW.scrollTop }, () => {
+      this.setState({ scrollPosition: document.getElementById('react-view').scrollTop }, () => {
         if (
           this.state.scrollPosition >=
           this.Container.offsetHeight - window.innerHeight - 500
