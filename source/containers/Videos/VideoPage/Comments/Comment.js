@@ -113,7 +113,7 @@ class Comment extends Component {
           />
         </div>
         <div
-          style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
+          style={{ width: '90%', display: 'flex', flexDirection: 'column' }}
         >
           <div>
             <UsernameText
@@ -135,7 +135,7 @@ class Comment extends Component {
               onEditDone={this.onEditDone}
             />
           ) : (
-            <div>
+            <div style={{ width: '100%' }}>
               {!!comment.discussionTitle && (
                 <div
                   style={{
@@ -149,6 +149,7 @@ class Comment extends Component {
               )}
               <LongText
                 style={{
+                  width: '100%',
                   marginLeft: '0px',
                   paddingBottom: '1em',
                   wordWrap: 'break-word'
