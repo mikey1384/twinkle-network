@@ -28,7 +28,7 @@ import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { feedContentEdit } from '../../../redux/actions/FeedActions'
 
-const REACT_VIEW = document.getElementById('react-view')
+const REACT_VIEW = document ? document.getElementById('react-view') : null
 
 class Stories extends Component {
   static propTypes = {

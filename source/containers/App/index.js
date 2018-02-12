@@ -29,7 +29,7 @@ import {
 let visibilityChange
 let hidden
 
-const REACT_VIEW = document.getElementById('react-view')
+const REACT_VIEW = document ? document.getElementById('react-view') : null
 
 class App extends Component {
   static propTypes = {
@@ -180,7 +180,7 @@ class App extends Component {
             <div
               className="alert alert-info"
               style={{
-                position: 'absolute',
+                position: 'fixed',
                 textAlign: 'center',
                 width: '80%',
                 left: '10%'

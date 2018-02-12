@@ -16,7 +16,7 @@ import { queryStringForArray } from 'helpers/apiHelpers'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 
-const REACT_VIEW = document.getElementById('react-view')
+const REACT_VIEW = document ? document.getElementById('react-view') : null
 
 class People extends Component {
   static propTypes = {

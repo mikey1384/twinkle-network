@@ -28,7 +28,7 @@ import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 
-const REACT_VIEW = document.getElementById('react-view')
+const REACT_VIEW = document ? document.getElementById('react-view') : null
 
 class Body extends Component {
   static propTypes = {
