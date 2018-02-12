@@ -29,6 +29,8 @@ import {
 let visibilityChange
 let hidden
 
+const REACT_VIEW = document.getElementById('react-view')
+
 class App extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
@@ -65,8 +67,7 @@ class App extends Component {
       visibilityChange = 'webkitvisibilitychange'
     }
     initSession(location.pathname)
-    addEvent(window, 'scroll', this.onWindowScroll)
-    addEvent(document.body, 'scroll', this.onBodyScroll)
+    addEvent(REACT_VIEW, 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
   }
 
@@ -97,8 +98,7 @@ class App extends Component {
         if (loggedIn) {
           recordUserAction({ action: 'navigation', target: location.pathname })
         }
-        window.scrollTo(0, 0)
-        document.body.scrollTop = 0
+        REACT_VIEW.scrollTop = 0
         const navScrollPosition = { [location.key]: 0 }
         this.setState(state => ({
           navScrollPositions: {
@@ -107,7 +107,7 @@ class App extends Component {
           }
         }))
       } else {
-        document.body.scrollTop = navScrollPositions[location.key]
+        REACT_VIEW.scrollTop = navScrollPositions[location.key]
       }
     }
 
@@ -139,8 +139,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(window, 'scroll', this.onWindowScroll)
-    removeEvent(document.body, 'scroll', this.onBodyScroll)
+    removeEvent(REACT_VIEW, 'scroll', this.onScroll)
   }
 
   render() {
@@ -226,8 +225,7 @@ class App extends Component {
             <Chat
               onUnmount={() =>
                 resetChat().then(() => {
-                  window.scrollTo(0, scrollPosition)
-                  document.body.scrollTo(0, scrollPosition)
+                  REACT_VIEW.scrollTop = scrollPosition
                   turnChatOff()
                 })
               }
@@ -250,27 +248,14 @@ class App extends Component {
     )
   }
 
-  onBodyScroll = event => {
+  onScroll = event => {
     const { chatMode, location } = this.props
     if (!chatMode) {
       this.setState(state => ({
-        scrollPosition: document.body.scrollTop,
+        scrollPosition: REACT_VIEW.scrollTop,
         navScrollPositions: {
           ...state.navScrollPositions,
-          [location.key]: document.body.scrollTop
-        }
-      }))
-    }
-  }
-
-  onWindowScroll = event => {
-    const { chatMode, location } = this.props
-    if (!chatMode) {
-      this.setState(state => ({
-        scrollPosition: window.scrollY,
-        navScrollPositions: {
-          ...state.navScrollPositions,
-          [location.key]: window.scrollY
+          [location.key]: REACT_VIEW.scrollTop
         }
       }))
     }

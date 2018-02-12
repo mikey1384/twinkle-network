@@ -16,6 +16,8 @@ import { queryStringForArray } from 'helpers/apiHelpers'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 
+const REACT_VIEW = document.getElementById('react-view')
+
 class People extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
@@ -42,23 +44,25 @@ class People extends Component {
 
   componentDidMount() {
     const { fetchUsers } = this.props
-    addEvent(window, 'scroll', this.onScroll)
-    addEvent(document.body, 'scroll', this.onScroll)
+    addEvent(REACT_VIEW, 'scroll', this.onScroll)
     return fetchUsers().then(() => this.setState({ loaded: true }))
   }
 
   componentWillUnmount() {
     const { clearUserSearch } = this.props
     clearUserSearch()
-    removeEvent(window, 'scroll', this.onScroll)
-    removeEvent(document.body, 'scroll', this.onScroll)
+    removeEvent(REACT_VIEW, 'scroll', this.onScroll)
   }
 
   render() {
     const { userId, loadMoreButton, profiles, searchedProfiles } = this.props
     const { loading, loaded, searching, searchText } = this.state
     return (
-      <div>
+      <div
+        ref={ref => {
+          this.Container = ref
+        }}
+      >
         <SearchInput
           addonColor={Color.orange}
           placeholder="Search for users"
@@ -119,21 +123,18 @@ class People extends Component {
 
   onScroll = () => {
     const { chatMode, profiles } = this.props
-    if (document.body.scrollHeight > this.scrollHeight) {
-      this.scrollHeight = document.body.scrollHeight
+    if (REACT_VIEW.scrollHeight > this.scrollHeight) {
+      this.scrollHeight = REACT_VIEW.scrollHeight
     }
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
-      this.setState(
-        { scrollPosition: window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop },
-        () => {
-          if (
-            this.state.scrollPosition >=
-            this.scrollHeight - window.innerHeight - 500
-          ) {
-            this.loadMoreProfiles()
-          }
+      this.setState({ scrollPosition: REACT_VIEW.scrollTop }, () => {
+        if (
+          this.state.scrollPosition >=
+          this.Container.offsetHeight - window.innerHeight - 500
+        ) {
+          this.loadMoreProfiles()
         }
-      )
+      })
     }
   }
 }

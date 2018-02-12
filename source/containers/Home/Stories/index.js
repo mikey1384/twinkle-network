@@ -28,6 +28,8 @@ import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { feedContentEdit } from '../../../redux/actions/FeedActions'
 
+const REACT_VIEW = document.getElementById('react-view')
+
 class Stories extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
@@ -75,8 +77,7 @@ class Stories extends Component {
 
   async componentDidMount() {
     let { history, clearFeeds, fetchFeeds, loaded } = this.props
-    addEvent(document.body, 'scroll', this.onScroll)
-    addEvent(window, 'scroll', this.onScroll)
+    addEvent(REACT_VIEW, 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
       await clearFeeds()
@@ -86,8 +87,7 @@ class Stories extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(document.body, 'scroll', this.onScroll)
-    removeEvent(window, 'scroll', this.onScroll)
+    removeEvent(REACT_VIEW, 'scroll', this.onScroll)
   }
 
   render() {
@@ -116,7 +116,12 @@ class Stories extends Component {
     const { loadingMore } = this.state
 
     return (
-      <div style={{ paddingBottom: '1rem' }}>
+      <div
+        ref={ref => {
+          this.Container = ref
+        }}
+        style={{ paddingBottom: '1rem' }}
+      >
         {this.renderFilterBar()}
         <InputPanel />
         {!loaded && <Loading text="Loading Feeds..." />}
@@ -195,18 +200,18 @@ class Stories extends Component {
 
   onScroll() {
     const { chatMode, feeds } = this.props
-    if (document.body.scrollHeight > this.scrollHeight) {
-      this.scrollHeight = document.body.scrollHeight
+    if (REACT_VIEW.scrollHeight > this.scrollHeight) {
+      this.scrollHeight = REACT_VIEW.scrollHeight
     }
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
       this.setState(
         {
-          scrollPosition: window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          scrollPosition: REACT_VIEW.scrollTop
         },
         () => {
           if (
             this.state.scrollPosition >=
-            this.scrollHeight - window.innerHeight - 500
+            this.Container.offsetHeight - window.innerHeight - 500
           ) {
             this.loadMoreFeeds()
           }
