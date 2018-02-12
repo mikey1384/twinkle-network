@@ -9,8 +9,8 @@ import { processedStringWithURL } from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
 import { editMessage, saveMessage } from 'redux/actions/ChatActions'
 import Button from 'components/Button'
-import { Style } from '../Style'
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
+import { MessageStyle } from '../Styles'
 
 class Message extends Component {
   static propTypes = {
@@ -58,13 +58,13 @@ class Message extends Component {
     const canEdit = myId === userId || isCreator
     const { onEdit, subjectMsgsModalShown } = this.state
     return (
-      <div style={Style.container}>
+      <div className={MessageStyle.container}>
         <ProfilePic
-          style={Style.profilePic}
+          style={MessageStyle.profilePic}
           userId={userId}
           profilePicId={profilePicId}
         />
-        <div style={Style.contentWrapper}>
+        <div className={MessageStyle.contentWrapper}>
           {!!messageId &&
             !isReloadedSubject &&
             canEdit &&
@@ -87,13 +87,13 @@ class Message extends Component {
             )}
           <div>
             <UsernameText
-              style={Style.usernameText}
+              style={MessageStyle.usernameText}
               user={{
                 id: userId,
                 name: username
               }}
             />{' '}
-            <span style={Style.timeStamp}>
+            <span className={MessageStyle.timeStamp}>
               {moment.unix(timeStamp).format('LLL')}
             </span>
           </div>
@@ -108,7 +108,7 @@ class Message extends Component {
               />
             ) : (
               <div>
-                <div style={Style.messageWrapper}>
+                <div className={MessageStyle.messageWrapper}>
                   {this.renderPrefix()}
                   <span
                     style={style}
@@ -120,7 +120,7 @@ class Message extends Component {
                 {!!isReloadedSubject &&
                   !!numMsgs &&
                   numMsgs > 0 && (
-                    <div style={Style.relatedConversationsButton}>
+                    <div className={MessageStyle.relatedConversationsButton}>
                       <Button
                         className="btn btn-sm btn-success"
                         onClick={() =>
@@ -157,10 +157,14 @@ class Message extends Component {
     const { message: { isSubject, isReloadedSubject } } = this.props
     let prefix = ''
     if (isSubject) {
-      prefix = <span style={Style.subjectPrefix}>Subject: </span>
+      prefix = <span className={MessageStyle.subjectPrefix}>Subject: </span>
     }
     if (isReloadedSubject) {
-      prefix = <span style={Style.subjectPrefix}>{'Returning Subject: '}</span>
+      prefix = (
+        <span className={MessageStyle.subjectPrefix}>
+          {'Returning Subject: '}
+        </span>
+      )
     }
     return prefix
   }

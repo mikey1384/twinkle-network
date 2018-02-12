@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
-import { Style } from '../../Style'
+import { MessageStyle } from '../../Styles'
 import { Color } from 'constants/css'
 import moment from 'moment'
 
@@ -23,29 +23,27 @@ export default function Message({
   isReloadedSubject
 }) {
   return (
-    <div style={Style.container}>
-      <div style={Style.profilePicWrapper}>
-        <ProfilePic
-          style={Style.profilePic}
-          userId={userId}
-          profilePicId={profilePicId}
-        />
-      </div>
-      <div style={Style.contentWrapper}>
+    <div className={MessageStyle.container}>
+      <ProfilePic
+        style={MessageStyle.profilePic}
+        userId={userId}
+        profilePicId={profilePicId}
+      />
+      <div className={MessageStyle.contentWrapper}>
         <div>
           <UsernameText
-            style={Style.usernameText}
+            style={MessageStyle.usernameText}
             user={{
               id: userId,
               name: username
             }}
           />{' '}
-          <span style={Style.timeStamp}>
+          <span className={MessageStyle.timeStamp}>
             {moment.unix(timeStamp).format('LLL')}
           </span>
         </div>
         <div>
-          <div style={Style.messageWrapper}>
+          <div className={MessageStyle.messageWrapper}>
             <span
               style={{
                 color: isReloadedSubject && Color.green,
