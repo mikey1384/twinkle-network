@@ -105,7 +105,8 @@ class App extends Component {
           }
         }))
       } else {
-        document.getElementById('react-view').scrollTop = navScrollPositions[location.key]
+        document.getElementById('react-view').scrollTop =
+          navScrollPositions[location.key]
       }
     }
 
@@ -158,6 +159,39 @@ class App extends Component {
           backgroundColor: chatMode && '#fff'
         }}
       >
+        {updateNoticeShown && (
+          <div
+            className="alert alert-info"
+            style={{
+              position: 'fixed',
+              textAlign: 'center',
+              width: '80%',
+              left: '10%',
+              top: '1rem',
+              zIndex: '2000'
+            }}
+          >
+            <p style={{ fontSize: '1.4em' }}>
+              The website has been updated. Click the button below to apply the
+              update.
+            </p>
+            <p style={{ fontSize: '1.2em' }}>
+              {
+                "Warning: Update is mandatory. Some features will not work properly if you don't!"
+              }
+            </p>
+            <Button
+              className="btn btn-lg btn-success"
+              style={{
+                marginTop: '1em',
+                fontSize: '1.5em'
+              }}
+              onClick={() => window.location.reload()}
+            >
+              Update!
+            </Button>
+          </div>
+        )}
         <Header
           staticTop={chatMode}
           chatMode={chatMode}
@@ -174,37 +208,6 @@ class App extends Component {
             paddingBottom: '1rem'
           }}
         >
-          {updateNoticeShown && (
-            <div
-              className="alert alert-info"
-              style={{
-                position: 'fixed',
-                textAlign: 'center',
-                width: '80%',
-                left: '10%'
-              }}
-            >
-              <p style={{ fontSize: '1.4em' }}>
-                The website has been updated. Click the button below to apply
-                the update.
-              </p>
-              <p style={{ fontSize: '1.2em' }}>
-                {
-                  "Warning: Update is mandatory. Some features will not work properly if you don't!"
-                }
-              </p>
-              <Button
-                className="btn btn-lg btn-success"
-                style={{
-                  marginTop: '1em',
-                  fontSize: '1.5em'
-                }}
-                onClick={() => window.location.reload()}
-              >
-                Update!
-              </Button>
-            </div>
-          )}
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />
@@ -223,7 +226,9 @@ class App extends Component {
             <Chat
               onUnmount={() =>
                 resetChat().then(() => {
-                  document.getElementById('react-view').scrollTop = scrollPosition
+                  document.getElementById(
+                    'react-view'
+                  ).scrollTop = scrollPosition
                   turnChatOff()
                 })
               }
