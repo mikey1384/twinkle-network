@@ -156,7 +156,7 @@ class VideoPage extends Component {
                   padding: '1rem'
                 }}
               >
-                <div style={{ paddingTop: '1.5em' }}>
+                <div>
                   <PageTab
                     questions={questions}
                     watchTabActive={watchTabActive}
@@ -167,7 +167,7 @@ class VideoPage extends Component {
                       this.setState({ watchTabActive: false })
                     }
                   />
-                  <div style={{ paddingTop: '2em' }}>
+                  <div style={{ paddingTop: '2rem' }}>
                     {!questionsBuilderShown && (
                       <div>
                         <VideoPlayer
