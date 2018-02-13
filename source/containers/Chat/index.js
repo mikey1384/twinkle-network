@@ -242,22 +242,29 @@ class Chat extends Component {
               width: 100%;
               padding: 1rem;
               display: grid;
-              grid-template-columns: fr 10rem;
-              grid-template-areas: 'channelDetail newButton';
+              grid-template-columns: fr fr fr 10rem;
+              grid-template-areas: 'channelDetail channelDetail channelDetail newButton';
+              justify-items: stretch;
             `}
           >
             <div
-              style={{
-                gridArea: 'channelDetail',
-                textAlign: 'center',
-                marginLeft: '10rem'
-              }}
+              css={`
+                grid-area: channelDetail;
+                display: grid;
+                grid-template-colums: 15rem fr;
+                grid-template-rows: fr fr;
+                grid-template-areas:
+                  '. channelName'
+                  '. channelMembers';
+              `}
             >
               <span
                 ref={ref => {
                   this.channelTitle = ref
                 }}
                 style={{
+                  gridArea: 'channelName',
+                  textAlign: 'center',
                   fontSize: '2rem',
                   fontWeight: 'bold',
                   display: 'block',
@@ -282,7 +289,9 @@ class Chat extends Component {
                 width="100%"
               />
               {currentChannel.id !== 0 ? (
-                <small>
+                <small
+                  style={{ gridArea: 'channelMembers', textAlign: 'center' }}
+                >
                   <a
                     style={{
                       cursor: 'pointer'

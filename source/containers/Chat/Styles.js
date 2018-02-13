@@ -3,6 +3,7 @@ import { css } from 'react-emotion'
 
 export const Container = css`
   display: flex;
+  padding-left: 1rem;
   height: CALC(100% - 54px);
   width: 100%;
   align-items: center;
@@ -13,8 +14,7 @@ export const ChannelContainer = css`
   display: flex;
   flex-direction: column;
   border: 1px solid #eee;
-  marginleft: 0.5em;
-  paddingtop: 0.5em;
+  paddingtop: 1rem;
   height: CALC(100% - 2rem);
   width: 25%;
   position: relative;
