@@ -238,24 +238,26 @@ class Chat extends Component {
         )}
         <div className={ChannelContainer}>
           <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '1.5rem',
-              paddingBottom: '1rem',
-              borderBottom: '1px solid #eee',
-              position: 'relative',
-              justifyContent: 'center'
-            }}
+            css={`
+              width: 100%;
+              padding: 1rem;
+              display: grid;
+              grid-template-columns: fr 10rem;
+              grid-template-areas: 'channelDetail newButton';
+            `}
           >
-            <div style={{ textAlign: 'center' }}>
+            <div
+              style={{
+                gridArea: 'channelDetail',
+                textAlign: 'center',
+                marginLeft: '10rem'
+              }}
+            >
               <span
                 ref={ref => {
                   this.channelTitle = ref
                 }}
                 style={{
-                  paddingTop: '1rem',
                   fontSize: '2rem',
                   fontWeight: 'bold',
                   display: 'block',
@@ -277,7 +279,7 @@ class Chat extends Component {
               <FullTextReveal
                 text={channelName(channels, currentChannel)}
                 show={onTitleHover}
-                width="600px"
+                width="100%"
               />
               {currentChannel.id !== 0 ? (
                 <small>
@@ -296,9 +298,13 @@ class Chat extends Component {
               )}
             </div>
             <Button
+              style={{
+                gridArea: 'newButton',
+                justifySelf: 'right',
+                alignSelf: 'center'
+              }}
               className="btn btn-default btn-sm"
               onClick={this.onNewButtonClick}
-              style={{ position: 'absolute', right: '1rem' }}
             >
               +New
             </Button>
@@ -308,9 +314,10 @@ class Chat extends Component {
             style={{
               overflow: 'scroll',
               position: 'absolute',
-              top: '12.5rem',
-              bottom: 0,
-              width: '100%'
+              top: '11.5rem',
+              left: 0,
+              right: 0,
+              bottom: 0
             }}
             ref={ref => {
               this.channelList = ref
