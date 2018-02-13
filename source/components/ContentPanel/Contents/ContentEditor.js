@@ -113,7 +113,7 @@ export default class ContentEditor extends Component {
               </small>
             </fieldset>
           )}
-          <fieldset className="form-group">
+          <fieldset className="form-group" style={{ position: 'relative' }}>
             <Textarea
               autoFocus={type === 'comment'}
               className="form-control"

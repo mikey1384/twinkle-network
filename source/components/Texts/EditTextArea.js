@@ -31,7 +31,7 @@ export default class EditTextArea extends Component {
       autoFocus = false,
       placeholder = 'Enter text',
       rows = 4,
-      marginTop = '1em'
+      marginTop = '1rem'
     } = this.props
     return (
       <div>
@@ -39,7 +39,7 @@ export default class EditTextArea extends Component {
           placeholder={placeholder}
           autoFocus={autoFocus}
           className="form-control"
-          style={{ marginTop }}
+          style={{ marginTop, position: 'relative' }}
           minRows={rows}
           value={editedText}
           onChange={this.onChange}
@@ -76,7 +76,9 @@ export default class EditTextArea extends Component {
   }
 
   handleKeyUp(event) {
-    if (event.key === ' ') { this.setState({ editedText: addEmoji(event.target.value) }) }
+    if (event.key === ' ') {
+      this.setState({ editedText: addEmoji(event.target.value) })
+    }
   }
 
   onSubmit() {
