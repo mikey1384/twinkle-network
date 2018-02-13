@@ -121,8 +121,13 @@ class MessagesContainer extends Component {
           ref={ref => {
             this.messagesContainer = ref
           }}
-          className={`momentum-scroll-enabled ${MsgContainerStyle.messagesWrapper}`}
-          style={{ opacity: !!loading && '0.3' }}
+          className={`momentum-scroll-enabled ${
+            MsgContainerStyle.messagesWrapper
+          }`}
+          style={{
+            opacity: !!loading && '0.3',
+            top: currentChannelId === 2 ? '4rem' : 0
+          }}
           onScroll={() => {
             const content = this.content
             const container = this.messagesContainer
@@ -135,20 +140,17 @@ class MessagesContainer extends Component {
             ref={ref => {
               this.content = ref
             }}
-            style={{
-              paddingTop: currentChannelId === 2 ? '4.5rem' : '0px'
-            }}
           >
             {loadMoreButton ? (
               <div
                 style={{
-                  marginBottom: '2rem',
+                  marginBottom: '1rem',
                   textAlign: 'center'
                 }}
               >
                 <Button
                   className="btn btn-success"
-                  style={{ width: '20%' }}
+                  style={{ width: '20%', marginTop: '1rem' }}
                   onClick={this.onLoadMoreButtonClick}
                 >
                   Load More

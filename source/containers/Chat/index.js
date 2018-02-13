@@ -338,8 +338,8 @@ class Chat extends Component {
               style={{
                 position: 'absolute',
                 zIndex: 100,
-                top: '0px',
-                right: '0px'
+                top: '1rem',
+                right: '1rem'
               }}
               shape="button"
               icon="menu-hamburger"

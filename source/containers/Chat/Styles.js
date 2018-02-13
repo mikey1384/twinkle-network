@@ -28,7 +28,6 @@ export const MsgContainerStyle = {
   `,
   messagesWrapper: css`
     position: absolute;
-    top: 4rem;
     bottom: 5rem;
     left: 0;
     right: 0;
