@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import {
   cleanString,
@@ -25,7 +25,6 @@ class EditSubjectForm extends Component {
     onEditSubmit: PropTypes.func.isRequired,
     reloadChatSubject: PropTypes.func,
     searchResults: PropTypes.array,
-    style: PropTypes.object,
     title: PropTypes.string.isRequired
   }
 
@@ -51,13 +50,18 @@ class EditSubjectForm extends Component {
     const {
       currentSubjectId,
       reloadChatSubject,
-      style,
       autoFocus,
       maxLength = 100,
       searchResults
     } = this.props
     return (
-      <div>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}
+      >
         {subjectsModalShown && (
           <SubjectsModal
             currentSubjectId={currentSubjectId}
@@ -68,13 +72,12 @@ class EditSubjectForm extends Component {
             }}
           />
         )}
-        <div
-          className="col-xs-10"
-          style={{ paddingLeft: '0px', paddingRight: '0px' }}
-        >
-          <form onSubmit={event => this.onEditSubmit(event)}>
+        <Fragment>
+          <form
+            style={{ width: '88%' }}
+            onSubmit={event => this.onEditSubmit(event)}
+          >
             <Input
-              style={style}
               autoFocus={autoFocus}
               type="text"
               className="form-control"
@@ -107,14 +110,10 @@ class EditSubjectForm extends Component {
               searchResults={searchResults}
             />
           )}
-        </div>
-        <div
-          className="col-xs-2 col-offset-xs-10"
-          style={{ float: 'right', paddingRight: '0px' }}
-        >
+        </Fragment>
+        <div style={{ width: '10%' }}>
           <Button
             className="btn btn-success"
-            style={{ float: 'right', marginRight: '1em', width: '90%' }}
             onClick={() => this.setState({ subjectsModalShown: true })}
           >
             View Subjects

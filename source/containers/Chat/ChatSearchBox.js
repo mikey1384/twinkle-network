@@ -31,7 +31,7 @@ class ChatSearchBox extends Component {
     const { searchResults, clearSearchResults } = this.props
     const { searchText } = this.state
     return (
-      <div className="row container-fluid">
+      <div style={{ padding: '0 1rem' }}>
         <SearchInput
           placeholder="Search for channels / users"
           onChange={this.onChatSearch}

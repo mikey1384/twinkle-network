@@ -172,7 +172,8 @@ class Header extends Component {
           display: 'flex',
           justifyContent: 'space-around',
           alignItems: 'center',
-          width: '100%'
+          width: '100%',
+          marginBottom: '0px'
         }}
       >
         <div className="navbar-header">

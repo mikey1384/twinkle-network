@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Color } from 'constants/css'
 import Button from 'components/Button'
@@ -68,30 +68,32 @@ class SubjectHeader extends Component {
     return (
       <div
         style={{
-          width: '100%',
-          height: '4.5em',
+          right: 0,
+          left: 0,
+          padding: '1rem 0',
           position: 'absolute',
-          backgroundColor: '#fff'
+          backgroundColor: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}
       >
         {loaded ? (
-          <div>
-            <div
-              className="col-xs-10"
-              style={{ float: 'left', paddingLeft: '0px', paddingRight: '0px' }}
-            >
-              {!onEdit && (
+          <Fragment>
+            {!onEdit && (
+              <Fragment>
                 <div>
-                  <h3
+                  <span
                     style={{
                       cursor: 'default',
-                      marginTop: '0px',
-                      marginBottom: '3px',
                       color: Color.green,
                       whiteSpace: 'nowrap',
                       textOverflow: 'ellipsis',
                       overflow: 'hidden',
-                      lineHeight: 'normal'
+                      lineHeight: 'normal',
+                      fontSize: '2.5rem',
+                      fontWeight: 'bold',
+                      display: 'block'
                     }}
                     onMouseOver={this.onMouseOver}
                     onMouseLeave={() => this.setState({ onHover: false })}
@@ -100,48 +102,40 @@ class SubjectHeader extends Component {
                     }}
                   >
                     Subject: {subjectTitle}
-                  </h3>
+                  </span>
                   <FullTextReveal
                     text={subjectTitle}
                     show={onHover}
-                    width="1200px"
+                    width="100%"
                   />
+                  {this.renderDetails()}
                 </div>
-              )}
-              {!onEdit && this.renderDetails()}
-            </div>
-            <div>
-              {onEdit && (
-                <EditSubjectForm
-                  autoFocus
-                  currentSubjectId={subjectId}
-                  title={subjectTitle}
-                  onEditSubmit={this.onSubjectSubmit}
-                  onChange={text => searchChatSubject(text)}
-                  onClickOutSide={() => {
-                    this.setState({ onEdit: false })
-                    clearSubjectSearchResults()
-                  }}
-                  reloadChatSubject={this.onReloadChatSubject}
-                  searchResults={subjectSearchResults}
-                />
-              )}
-            </div>
-            <div
-              className="col-xs-2 col-offset-xs-10"
-              style={{ float: 'right', paddingRight: '0px' }}
-            >
-              {!onEdit && (
-                <Button
-                  className="btn btn-info"
-                  style={{ float: 'right', marginRight: '1em' }}
-                  onClick={() => this.setState({ onEdit: true })}
-                >
-                  Change the Subject
-                </Button>
-              )}
-            </div>
-          </div>
+                <div>
+                  <Button
+                    className="btn btn-info"
+                    onClick={() => this.setState({ onEdit: true })}
+                  >
+                    Change the Subject
+                  </Button>
+                </div>
+              </Fragment>
+            )}
+            {onEdit && (
+              <EditSubjectForm
+                autoFocus
+                currentSubjectId={subjectId}
+                title={subjectTitle}
+                onEditSubmit={this.onSubjectSubmit}
+                onChange={text => searchChatSubject(text)}
+                onClickOutSide={() => {
+                  this.setState({ onEdit: false })
+                  clearSubjectSearchResults()
+                }}
+                reloadChatSubject={this.onReloadChatSubject}
+                searchResults={subjectSearchResults}
+              />
+            )}
+          </Fragment>
         ) : (
           <Loading
             style={{
@@ -233,7 +227,7 @@ class SubjectHeader extends Component {
       )
     }
     return (
-      <div>
+      <Fragment>
         {uploader ? (
           <small>{posterString}</small>
         ) : (
@@ -243,7 +237,7 @@ class SubjectHeader extends Component {
             }
           </small>
         )}
-      </div>
+      </Fragment>
     )
   }
 }
