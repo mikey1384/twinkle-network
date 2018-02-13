@@ -287,6 +287,7 @@ class Chat extends Component {
                 text={channelName(channels, currentChannel)}
                 show={onTitleHover}
                 width="100%"
+                style={{ top: '4rem' }}
               />
               {currentChannel.id !== 0 ? (
                 <small

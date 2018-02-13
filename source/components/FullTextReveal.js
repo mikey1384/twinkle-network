@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 
 FullTextReveal.propTypes = {
   show: PropTypes.bool,
+  style: PropTypes.object,
   text: PropTypes.string.isRequired,
   width: PropTypes.string
 }
-export default function FullTextReveal({ show, text, width = '500px' }) {
+export default function FullTextReveal({ style, show, text, width = '500px' }) {
   return (
     <div
       className="alert alert-info"
@@ -16,7 +17,8 @@ export default function FullTextReveal({ show, text, width = '500px' }) {
         padding: '5px',
         display: show ? 'block' : 'none',
         width: 'auto',
-        maxWidth: width
+        maxWidth: width,
+        ...style
       }}
     >
       {text}
