@@ -18,6 +18,7 @@ import FullTextReveal from 'components/FullTextReveal'
 import { socket } from 'constants/io'
 import { queryStringForArray } from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
+import { Container, ChannelContainer } from './Styles'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -201,7 +202,7 @@ class Chat extends Component {
         ]
 
     return (
-      <div style={{ display: 'flex', height: '90%', alignItems: 'center', backgroundColor: '#fff' }}>
+      <div className={Container}>
         {createNewChannelModalShown && (
           <CreateNewChannelModal
             userId={userId}
@@ -235,30 +236,29 @@ class Chat extends Component {
             title="Online Status"
           />
         )}
-        <div
-          className="col-xs-3"
-          style={{
-            border: '1px solid #eee',
-            marginLeft: '0.5em',
-            paddingTop: '0.5em',
-            height: '96%'
-          }}
-        >
+        <div className={ChannelContainer}>
           <div
             style={{
+              width: '100%',
               display: 'flex',
               alignItems: 'center',
               marginBottom: '1.5rem',
               paddingBottom: '1rem',
-              borderBottom: '1px solid #eee'
+              borderBottom: '1px solid #eee',
+              position: 'relative',
+              justifyContent: 'center'
             }}
           >
-            <div className="text-center col-xs-8 col-xs-offset-2">
-              <h4
+            <div style={{ textAlign: 'center' }}>
+              <span
                 ref={ref => {
                   this.channelTitle = ref
                 }}
                 style={{
+                  paddingTop: '1rem',
+                  fontSize: '2rem',
+                  fontWeight: 'bold',
+                  display: 'block',
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -273,7 +273,7 @@ class Chat extends Component {
                 {channelName(channels, currentChannel)
                   ? channelName(channels, currentChannel)
                   : '(Deleted)'}
-              </h4>
+              </span>
               <FullTextReveal
                 text={channelName(channels, currentChannel)}
                 show={onTitleHover}
@@ -296,20 +296,20 @@ class Chat extends Component {
               )}
             </div>
             <Button
-              className="btn btn-default btn-sm pull-right"
+              className="btn btn-default btn-sm"
               onClick={this.onNewButtonClick}
+              style={{ position: 'absolute', right: '1rem' }}
             >
               +New
             </Button>
           </div>
           <ChatSearchBox />
           <div
-            className="row"
             style={{
-              marginTop: '1em',
               overflow: 'scroll',
               position: 'absolute',
-              height: '75%',
+              top: '12.5rem',
+              bottom: 0,
               width: '100%'
             }}
             ref={ref => {
@@ -326,11 +326,11 @@ class Chat extends Component {
           </div>
         </div>
         <div
-          className="col-xs-9 pull-right"
           style={{
             height: '100%',
-            width: '73%',
-            top: 0
+            width: '75%',
+            padding: '0 1rem',
+            position: 'relative'
           }}
         >
           {currentChannel.id !== GENERAL_CHAT_ID && (
@@ -358,8 +358,9 @@ class Chat extends Component {
           <div
             style={{
               position: 'absolute',
-              width: '98%',
-              bottom: '10px'
+              right: '1rem',
+              left: '1rem',
+              bottom: '1rem'
             }}
           >
             <ChatInput
@@ -637,7 +638,9 @@ class Chat extends Component {
         data.members.filter(member => member.userId !== userId)[0].userId ===
         currentChannel.members.filter(member => member.userId !== userId)[0]
           .userId
-      ) { duplicate = true }
+      ) {
+        duplicate = true
+      }
     }
     receiveFirstMsg({ data, duplicate, pageVisible })
     socket.emit('join_chat_channel', data.channelId)

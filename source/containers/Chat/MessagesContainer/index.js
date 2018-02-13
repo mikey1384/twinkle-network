@@ -8,6 +8,7 @@ import SubjectHeader from './SubjectHeader'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { connect } from 'react-redux'
 import { deleteMessage } from 'redux/actions/ChatActions'
+import { MsgContainerStyle } from '../Styles'
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop
@@ -114,20 +115,14 @@ class MessagesContainer extends Component {
     const { loadMoreButton, loading, currentChannelId } = this.props
     const { deleteModal, newUnseenMessage } = this.state
     return (
-      <div>
+      <div className={MsgContainerStyle.container}>
         {!!loading && <Loading />}
         <div
           ref={ref => {
             this.messagesContainer = ref
           }}
-          className="momentum-scroll-enabled"
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '91%',
-            bottom: '50px',
-            opacity: !!loading && '0.3'
-          }}
+          className={`momentum-scroll-enabled ${MsgContainerStyle.messagesWrapper}`}
+          style={{ opacity: !!loading && '0.3' }}
           onScroll={() => {
             const content = this.content
             const container = this.messagesContainer
