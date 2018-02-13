@@ -126,7 +126,7 @@ class MessagesContainer extends Component {
           }`}
           style={{
             opacity: !!loading && '0.3',
-            top: currentChannelId === 2 ? '4rem' : 0
+            top: currentChannelId === 2 ? '7rem' : 0
           }}
           onScroll={() => {
             const content = this.content
