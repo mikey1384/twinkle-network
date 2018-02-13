@@ -82,7 +82,7 @@ class SubjectHeader extends Component {
           <Fragment>
             {!onEdit && (
               <Fragment>
-                <div>
+                <div style={{ width: '85%' }}>
                   <span
                     style={{
                       cursor: 'default',
@@ -110,8 +110,9 @@ class SubjectHeader extends Component {
                   />
                   {this.renderDetails()}
                 </div>
-                <div>
+                <div style={{ width: '14%' }}>
                   <Button
+                    style={{ width: '100%' }}
                     className="btn btn-info"
                     onClick={() => this.setState({ onEdit: true })}
                   >

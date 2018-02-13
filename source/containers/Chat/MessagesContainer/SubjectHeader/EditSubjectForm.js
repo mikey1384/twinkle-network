@@ -111,8 +111,9 @@ class EditSubjectForm extends Component {
             />
           )}
         </Fragment>
-        <div style={{ width: '10%' }}>
+        <div style={{ width: '11%' }}>
           <Button
+            style={{ width: '100%' }}
             className="btn btn-success"
             onClick={() => this.setState({ subjectsModalShown: true })}
           >
