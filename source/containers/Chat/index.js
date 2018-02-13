@@ -61,34 +61,16 @@ class Chat extends Component {
     subjectId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      loading: false,
-      currentChannelOnlineMembers: [],
-      createNewChannelModalShown: false,
-      inviteUsersModalShown: false,
-      userListModalShown: false,
-      editTitleModalShown: false,
-      onTitleHover: false,
-      listScrollPosition: 0,
-      channelsLoading: false
-    }
-
-    this.onCreateNewChannel = this.onCreateNewChannel.bind(this)
-    this.onNewButtonClick = this.onNewButtonClick.bind(this)
-    this.onMessageSubmit = this.onMessageSubmit.bind(this)
-    this.onReceiveMessage = this.onReceiveMessage.bind(this)
-    this.onChatInvitation = this.onChatInvitation.bind(this)
-    this.userListDescriptionShown = this.userListDescriptionShown.bind(this)
-    this.onInviteUsersDone = this.onInviteUsersDone.bind(this)
-    this.onEditTitleDone = this.onEditTitleDone.bind(this)
-    this.onHideChat = this.onHideChat.bind(this)
-    this.onLeaveChannel = this.onLeaveChannel.bind(this)
-    this.onMouseOverTitle = this.onMouseOverTitle.bind(this)
-    this.loadMoreChannels = this.loadMoreChannels.bind(this)
-    this.onListScroll = this.onListScroll.bind(this)
-    this.onSubjectChange = this.onSubjectChange.bind(this)
+  state = {
+    loading: false,
+    currentChannelOnlineMembers: [],
+    createNewChannelModalShown: false,
+    inviteUsersModalShown: false,
+    userListModalShown: false,
+    editTitleModalShown: false,
+    onTitleHover: false,
+    listScrollPosition: 0,
+    channelsLoading: false
   }
 
   componentDidMount() {
@@ -390,7 +372,7 @@ class Chat extends Component {
     )
   }
 
-  renderChannels() {
+  renderChannels = () => {
     const { userId, currentChannel, channels, selectedChannelId } = this.props
     return channels.filter(channel => !channel.isHidden).map(channel => {
       const {
@@ -467,7 +449,7 @@ class Chat extends Component {
     })
   }
 
-  loadMoreChannels() {
+  loadMoreChannels = () => {
     const { currentChannel, channels, loadMoreChannels } = this.props
     const { channelsLoading } = this.state
     if (!channelsLoading) {
@@ -479,7 +461,7 @@ class Chat extends Component {
     }
   }
 
-  renderNumberOfMembers() {
+  renderNumberOfMembers = () => {
     const { currentChannel } = this.props
     const { currentChannelOnlineMembers } = this.state
     const numberOfMembers = currentChannel.members.length
@@ -488,7 +470,7 @@ class Chat extends Component {
     }`
   }
 
-  userListDescriptionShown(user) {
+  userListDescriptionShown = user => {
     const { currentChannelOnlineMembers } = this.state
     let result = false
     for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
@@ -497,11 +479,11 @@ class Chat extends Component {
     return result
   }
 
-  returnUsers({ members: allMembers }, currentChannelOnlineMembers) {
+  returnUsers = ({ members: allMembers }, currentChannelOnlineMembers) => {
     return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers
   }
 
-  onListScroll() {
+  onListScroll = () => {
     if (
       this.channelList.scrollTop >=
       (this.channelList.scrollHeight - this.channelList.offsetHeight) * 0.7
@@ -510,7 +492,7 @@ class Chat extends Component {
     }
   }
 
-  onMessageSubmit(message) {
+  onMessageSubmit = message => {
     const {
       submitMessage,
       userId,
@@ -557,11 +539,11 @@ class Chat extends Component {
     )
   }
 
-  onNewButtonClick() {
+  onNewButtonClick = () => {
     this.setState({ createNewChannelModalShown: true })
   }
 
-  onChannelEnter(id) {
+  onChannelEnter = id => {
     const { enterChannelWithId, enterEmptyChat } = this.props
     if (id === 0) {
       this.setState({ currentChannelOnlineMembers: [] })
@@ -570,7 +552,7 @@ class Chat extends Component {
     enterChannelWithId(id)
   }
 
-  onCreateNewChannel(params) {
+  onCreateNewChannel = params => {
     const {
       createNewChannel,
       username,
@@ -594,7 +576,7 @@ class Chat extends Component {
     })
   }
 
-  onReceiveMessage(message, channel) {
+  onReceiveMessage = (message, channel) => {
     const {
       pageVisible,
       receiveMessage,
@@ -612,7 +594,7 @@ class Chat extends Component {
     }
   }
 
-  onSubjectChange({ message }) {
+  onSubjectChange = ({ message }) => {
     const {
       pageVisible,
       receiveMessage,
@@ -647,7 +629,7 @@ class Chat extends Component {
     }
   }
 
-  onChatInvitation(data) {
+  onChatInvitation = data => {
     const { receiveFirstMsg, currentChannel, pageVisible, userId } = this.props
     let duplicate = false
     if (currentChannel.id === 0) {
@@ -663,7 +645,7 @@ class Chat extends Component {
     socket.emit('join_chat_channel', data.channelId)
   }
 
-  onInviteUsersDone(users, message) {
+  onInviteUsersDone = (users, message) => {
     socket.emit('new_chat_message', {
       ...message,
       channelId: message.channelId
@@ -674,19 +656,19 @@ class Chat extends Component {
     this.setState({ inviteUsersModalShown: false })
   }
 
-  onEditTitleDone(title) {
+  onEditTitleDone = title => {
     const { editChannelTitle, currentChannel } = this.props
     editChannelTitle({ title, channelId: currentChannel.id }, () => {
       this.setState({ editTitleModalShown: false })
     })
   }
 
-  onHideChat() {
+  onHideChat = () => {
     const { hideChat, currentChannel } = this.props
     hideChat(currentChannel.id)
   }
 
-  onLeaveChannel() {
+  onLeaveChannel = () => {
     const {
       leaveChannel,
       currentChannel,
@@ -703,7 +685,7 @@ class Chat extends Component {
     })
   }
 
-  onMouseOverTitle() {
+  onMouseOverTitle = () => {
     if (textIsOverflown(this.channelTitle)) {
       this.setState({ onTitleHover: true })
     }
