@@ -38,7 +38,7 @@ export const Right = css`
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   @media (max-width: 991px) {
-    position: relative;
+    display: none;
   }
   @media (min-width: 992px) {
     right: 1rem;

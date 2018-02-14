@@ -28,6 +28,7 @@ import HeaderNav from './HeaderNav'
 import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
+import { Container } from './Styles'
 
 class Header extends Component {
   static propTypes = {
@@ -165,15 +166,9 @@ class Header extends Component {
     const { logoBlue, logoGreen } = this.state
     return (
       <nav
-        className={`navbar navbar-default${
-          !chatMode ? ' navbar-fixed-top' : ''
-        }`}
+        className={`navbar navbar-default ${Container}`}
         style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          width: '100%',
-          marginBottom: '0px'
+          position: chatMode ? 'relative' : 'fixed'
         }}
       >
         <div className="navbar-header">
@@ -217,10 +212,7 @@ class Header extends Component {
                 >
                   <span>Home</span>
                 </HeaderNav>
-                <HeaderNav
-                  to="/videos"
-                  imgLabel="watch"
-                >
+                <HeaderNav to="/videos" imgLabel="watch">
                   <span>Watch</span>
                 </HeaderNav>
                 <HeaderNav to="/links" imgLabel="read">
@@ -238,7 +230,7 @@ class Header extends Component {
             marginLeft: '2%'
           }}
         >
-          <div style={{display: 'flex', width: '65%'}}>
+          <div style={{ display: 'flex', width: '65%' }}>
             {!chatMode && <SearchBox style={{ width: '100%' }} />}
           </div>
           <div

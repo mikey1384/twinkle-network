@@ -25,6 +25,7 @@ import {
   fetchNotifications,
   clearNotifications
 } from 'redux/actions/NotiActions'
+import { SiteContent } from './Styles'
 
 let visibilityChange
 let hidden
@@ -144,13 +145,6 @@ class App extends Component {
   render() {
     const { chatMode, turnChatOff, resetChat, loggedIn } = this.props
     const { chatLoading, scrollPosition, updateNoticeShown } = this.state
-    const style =
-      chatMode && loggedIn
-        ? {
-            display: 'none'
-          }
-        : { paddingTop: '65px' }
-
     return (
       <div
         style={{
@@ -203,9 +197,9 @@ class App extends Component {
           }
         />
         <div
+          className={SiteContent}
           style={{
-            ...style,
-            paddingBottom: '1rem'
+            display: chatMode && loggedIn && 'none'
           }}
         >
           <Switch>
