@@ -43,7 +43,10 @@ class Notification extends Component {
     } = this.props
     return (
       <div className={className} onScroll={this.handleScroll}>
-        <div className="well momentum-scroll-enabled">
+        <div
+          className="well momentum-scroll-enabled"
+          style={{ marginBottom: '1rem' }}
+        >
           {children && <div style={{ minHeight: '3rem' }}>{children}</div>}
           {loaded && (
             <ChatFeeds
