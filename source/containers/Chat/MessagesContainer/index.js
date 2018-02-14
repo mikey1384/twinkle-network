@@ -58,13 +58,14 @@ class MessagesContainer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { messages, userId } = this.props
-    const messageSenderId = messages[messages.length - 1].userId
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId
     const newMessageArrived =
       prevProps.messages.length >= 0 &&
       prevProps.messages.length < this.props.messages.length &&
-      prevProps.messages[0].id === this.props.messages[0].id
+      (prevProps.messages[0]
+        ? prevProps.messages[0].id === this.props.messages[0].id
+        : false)
     const messageDeleted =
       prevProps.currentChannelId === this.props.currentChannelId &&
       prevProps.messages.length > this.props.messages.length
@@ -88,6 +89,7 @@ class MessagesContainer extends Component {
       return
     }
     if (newMessageArrived) {
+      const messageSenderId = messages[messages.length - 1].userId
       if (messageSenderId !== userId && !this.state.scrollAtBottom) {
         this.setState({ newUnseenMessage: true })
       } else {
