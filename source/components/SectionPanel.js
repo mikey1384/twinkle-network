@@ -36,7 +36,7 @@ export default class SectionPanel extends Component {
     } = this.props
     const { loading } = this.state
     return (
-      <div className="panel panel-primary">
+      <div className="panel panel-primary" style={{ marginBottom: '1rem' }}>
         <div
           className="panel-heading"
           style={{

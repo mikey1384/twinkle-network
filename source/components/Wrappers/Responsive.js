@@ -4,9 +4,8 @@ import MediaQuery from 'react-responsive'
 import ErrorBoundary from './ErrorBoundary'
 
 const breakpoints = {
-  desktop: '(min-width: 1025px)',
-  tablet: '(min-width: 768px) and (max-width: 1024px)',
-  phone: '(max-width: 767px)'
+  desktop: '(min-width: 992px)',
+  mobile: '(max-width: 991px)'
 }
 
 Responsive.propTypes = {

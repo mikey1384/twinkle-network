@@ -28,7 +28,8 @@ import HeaderNav from './HeaderNav'
 import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
-import { Container } from './Styles'
+import { Container, MainTabs } from './Styles'
+import Responsive from 'components/Wrappers/Responsive'
 
 class Header extends Component {
   static propTypes = {
@@ -171,31 +172,30 @@ class Header extends Component {
           position: chatMode ? 'relative' : 'fixed'
         }}
       >
-        <div className="navbar-header">
-          <Link
-            className="navbar-brand"
-            style={{
-              cursor: 'pointer',
-              fontWeight: 'bold'
-            }}
-            to="/"
-            onClick={this.onLogoClick}
-          >
-            <span style={{ color: logoBlue }}>Twin</span>
-            <span style={{ color: logoGreen }}>kle</span>
-          </Link>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            width: '30%',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
+        <Responsive device="desktop">
+          <div className="navbar-header">
+            <Link
+              className="navbar-brand"
+              style={{
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+              to="/"
+              onClick={this.onLogoClick}
+            >
+              <span style={{ color: logoBlue }}>Twin</span>
+              <span style={{ color: logoGreen }}>kle</span>
+            </Link>
+          </div>
+        </Responsive>
+        <div className={MainTabs}>
           <ul
             className="nav navbar-nav"
-            style={{ display: 'flex', justifyContent: 'flex-start' }}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              width: '100%'
+            }}
           >
             {!chatMode && (
               <Fragment>
@@ -222,46 +222,48 @@ class Header extends Component {
             )}
           </ul>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '100%',
-            marginLeft: '2%'
-          }}
-        >
-          <div style={{ display: 'flex', width: '65%' }}>
-            {!chatMode && <SearchBox style={{ width: '100%' }} />}
-          </div>
+        <Responsive device="desktop">
           <div
             style={{
               display: 'flex',
-              width: '20%',
-              marginRight: '1rem',
-              justifyContent: 'flex-end'
+              justifyContent: 'space-between',
+              width: '96%',
+              marginLeft: '4%'
             }}
           >
-            {loggedIn && (
-              <ChatButton
-                style={{ marginRight: '1rem' }}
-                onClick={onChatButtonClick}
-                chatMode={chatMode}
-                loading={chatLoading}
-                numUnreads={numChatUnreads}
-              />
-            )}
-            {loggedIn ? (
-              <AccountMenu title={username} logout={this.onLogout} />
-            ) : (
-              <Button
-                className="btn btn-success"
-                onClick={() => openSigninModal()}
-              >
-                Log In | Sign Up
-              </Button>
-            )}
+            <div style={{ display: 'flex', width: '65%' }}>
+              {!chatMode && <SearchBox style={{ width: '100%' }} />}
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                width: '20%',
+                marginRight: '1rem',
+                justifyContent: 'flex-end'
+              }}
+            >
+              {loggedIn && (
+                <ChatButton
+                  style={{ marginRight: '1rem' }}
+                  onClick={onChatButtonClick}
+                  chatMode={chatMode}
+                  loading={chatLoading}
+                  numUnreads={numChatUnreads}
+                />
+              )}
+              {loggedIn ? (
+                <AccountMenu title={username} logout={this.onLogout} />
+              ) : (
+                <Button
+                  className="btn btn-success"
+                  onClick={() => openSigninModal()}
+                >
+                  Log In | Sign Up
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        </Responsive>
         {signinModalShown && (
           <SigninModal show onHide={() => closeSigninModal()} />
         )}

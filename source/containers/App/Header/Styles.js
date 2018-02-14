@@ -14,3 +14,14 @@ export const Container = css`
     bottom: 0;
   }
 `
+
+export const MainTabs = css`
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @media (max-width: 991px) {
+    padding: 0;
+    width: 100%;
+  }
+`

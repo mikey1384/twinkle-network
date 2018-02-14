@@ -177,8 +177,8 @@ class App extends Component {
             <Button
               className="btn btn-lg btn-success"
               style={{
-                marginTop: '1em',
-                fontSize: '1.5em'
+                marginTop: '1.5rem',
+                fontSize: '1.5rem'
               }}
               onClick={() => window.location.reload()}
             >
