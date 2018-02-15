@@ -1,60 +1,58 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Link, Route } from 'react-router-dom'
+import { HeaderNavStyle } from './Styles'
 
 export default class HeaderNav extends Component {
   static propTypes = {
+    active: PropTypes.bool,
+    className: PropTypes.string,
     children: PropTypes.node,
-    imgLabel: PropTypes.string.isRequired,
+    imgLabel: PropTypes.string,
     isHome: PropTypes.bool,
     isUsername: PropTypes.bool,
-    style: PropTypes.object,
-    to: PropTypes.string.isRequired
-  }
-
-  constructor() {
-    super()
-    this.state = {
-      hovered: false
-    }
+    to: PropTypes.string
   }
 
   render() {
     const {
-      imgLabel,
-      style = {},
+      className,
       to,
       children,
+      imgLabel,
       isHome,
-      isUsername
+      isUsername,
+      active
     } = this.props
-    const { hovered } = this.state
     return (
       <Route
         path={to}
         exact={isHome && !isUsername}
         children={({ match }) => (
-          <li
-            className={`header-nav ${match ? 'active' : ''}`}
-            onMouseEnter={() => this.setState({ hovered: true })}
-            onMouseLeave={() => this.setState({ hovered: false })}
-          >
-            <Link style={style} to={to}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
+          <div className={`${className} ${HeaderNavStyle}`}>
+            {to ? (
+              <Link
+                className={to && match && 'active'}
+                style={{ display: 'flex' }}
+                to={to}
               >
                 <span
-                  className={`nav-icon-${imgLabel}${
-                    match || hovered ? '-hovered' : ''
+                  className={`glyphicon glyphicon-${
+                    isHome ? 'home' : imgLabel
                   }`}
                 />
-                {children}
-              </div>
-            </Link>
-          </li>
+                <span className="nav-label">{children}</span>
+              </Link>
+            ) : (
+              <a
+                className={active && 'active'}
+                style={{ display: 'flex', cursor: 'pointer' }}
+              >
+                <span className={`glyphicon glyphicon-${imgLabel}`} />
+                <span className="nav-label">{children}</span>
+              </a>
+            )}
+          </div>
         )}
       />
     )

@@ -6,7 +6,7 @@ export const Color = {
   backgroundGray: '#f1f3f6',
   menuGray: '#b9b9b9',
   darkGray: '#7c7c7c',
-  borderGray: '#e7e7e7',
+  borderGray: '#eee',
   lightGray: '#fbfbfb',
   headingGray: '#f5f5f5',
   logoBlue: 'rgb(106, 171, 227)',
@@ -15,3 +15,7 @@ export const Color = {
   orange: '#f0ad4e',
   pink: '#fcb296'
 }
+
+export const borderRadius = '5px'
+export const mobileMaxWidth = '991px'
+export const desktopMinWidth = '992px'

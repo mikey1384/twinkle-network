@@ -63,6 +63,10 @@ body {
   color: rgb(51, 51, 51) !important;
 }
 
+.mobile {
+  display: none!important;
+}
+
 .momentum-scroll-enabled {
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
@@ -224,13 +228,22 @@ body {
   }
 }
 
-@media (min-width: 991px) {
+@media (min-width: 992px) {
   html, body {
     overflow: hidden;
     position: absolute;
   }
   .modal-extra-lg {
     width: 980px;
+  }
+}
+
+@media (max-width: 991px) {
+  .mobile {
+    display: flex!important;
+  }
+  .desktop {
+    display: none!important;
   }
 }
 

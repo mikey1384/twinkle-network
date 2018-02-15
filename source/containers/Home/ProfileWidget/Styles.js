@@ -1,10 +1,10 @@
 import { css } from 'react-emotion'
-import { Color } from 'constants/css'
+import { borderRadius, Color } from 'constants/css'
 
 export const Container = css`
   display: flex;
   border: 1px solid ${Color.borderGray};
-  border-radius: 4px;
+  border-radius: ${borderRadius};
   flex-direction: column;
   width: 100%;
   background: #fff;

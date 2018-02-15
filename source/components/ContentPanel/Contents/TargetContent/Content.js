@@ -85,7 +85,6 @@ class Content extends Component {
       <div
         className="well"
         style={{
-          marginTop: '1em',
           wordBreak: 'break-word'
         }}
       >
@@ -143,8 +142,8 @@ class Content extends Component {
                 <Likers
                   style={{
                     fontSize: '11px',
-                    marginTop: '1em',
-                    marginBottom: replyInputShown ? '1em' : null,
+                    marginTop: '0.5rem',
+                    marginBottom: replyInputShown ? '1rem' : null,
                     fontWeight: 'bold',
                     color: Color.green
                   }}

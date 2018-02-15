@@ -12,6 +12,7 @@ import {
   turnStringIntoQuestion
 } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
+import { PanelStyle } from './Styles'
 
 const wordLimit = 150
 
@@ -29,73 +30,62 @@ class QuestionInput extends Component {
   render() {
     const { description, descriptionInputShown, question } = this.state
     return (
-      <div
-        className="panel panel-default"
-        style={{
-          borderTop: '1px solid rgb(231, 231, 231)'
-        }}
-      >
-        <div className="panel-body">
-          <form className="container-fluid" onSubmit={this.onSubmit}>
-            <p style={{ fontSize: '1.2em' }}>
-              <b>
-                Ask <span style={{ color: Color.green }}>questions</span> to
-                friends and teachers in Twinkle
-              </b>
-            </p>
-            <Input
+      <div className={PanelStyle}>
+        <p>
+          Ask <span style={{ color: Color.green }}>questions</span> to friends
+          and teachers in Twinkle
+        </p>
+        <Input
+          className="form-control"
+          placeholder="Ask a question (and feel free to answer your own questions)"
+          value={question}
+          onChange={this.onInputChange}
+          style={{
+            marginBottom: '0.3rem',
+            color: question.length > wordLimit && 'red'
+          }}
+        />
+        <small style={{ color: question.length > wordLimit ? 'red' : null }}>
+          {question.length}/{wordLimit} Characters
+        </small>
+        {descriptionInputShown && (
+          <Fragment>
+            <Textarea
               className="form-control"
-              placeholder="Ask a question (and feel free to answer your own questions)"
-              value={question}
-              onChange={this.onInputChange}
+              type="text"
               style={{
-                marginBottom: '0.3em',
+                marginTop: '1rem',
                 color: question.length > wordLimit && 'red'
               }}
-            />
-            <small
-              style={{ color: question.length > wordLimit ? 'red' : null }}
-            >
-              {question.length}/{wordLimit} Characters
-            </small>
-            {descriptionInputShown && (
-              <Fragment>
-                <Textarea
-                  className="form-control"
-                  type="text"
-                  style={{
-                    marginTop: '1rem',
-                    color: question.length > wordLimit && 'red'
-                  }}
-                  value={description}
-                  minRows={4}
-                  placeholder="Enter Description (Optional, you don't need to write this)"
-                  onChange={event =>
-                    this.setState({ description: addEmoji(event.target.value) })
-                  }
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        form: {
-                          ...this.state.form,
-                          description: addEmoji(event.target.value)
-                        }
-                      })
+              value={description}
+              minRows={4}
+              placeholder="Enter Description (Optional, you don't need to write this)"
+              onChange={event =>
+                this.setState({ description: addEmoji(event.target.value) })
+              }
+              onKeyUp={event => {
+                if (event.key === ' ') {
+                  this.setState({
+                    form: {
+                      ...this.state.form,
+                      description: addEmoji(event.target.value)
                     }
-                  }}
-                />
-                <Button
-                  className="btn btn-primary"
-                  type="submit"
-                  style={{ marginTop: '1rem' }}
-                  onClick={this.onSubmit}
-                >
-                  Ask!
-                </Button>
-              </Fragment>
-            )}
-          </form>
-        </div>
+                  })
+                }
+              }}
+            />
+            <div className="mobile-button">
+              <Button
+                className="btn btn-primary"
+                type="submit"
+                style={{ marginTop: '1rem' }}
+                onClick={this.onSubmit}
+              >
+                Ask!
+              </Button>
+            </div>
+          </Fragment>
+        )}
       </div>
     )
   }

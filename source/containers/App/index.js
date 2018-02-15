@@ -25,7 +25,7 @@ import {
   fetchNotifications,
   clearNotifications
 } from 'redux/actions/NotiActions'
-import { SiteContent } from './Styles'
+import { siteContent } from './Styles'
 
 let visibilityChange
 let hidden
@@ -197,7 +197,7 @@ class App extends Component {
           }
         />
         <div
-          className={SiteContent}
+          className={siteContent}
           style={{
             display: chatMode && loggedIn && 'none'
           }}

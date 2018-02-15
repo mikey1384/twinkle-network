@@ -68,15 +68,9 @@ export default function MainContent({
       )}
       {!isEditing &&
         type === 'question' && (
-          <div
-            style={{
-              fontSize: '2rem'
-            }}
-          >
-            <p>
-              <b style={{ color: Color.green }}>Question:</b>
-            </p>
-            <p>{cleanString(content)}</p>
+          <div className="question">
+            <span style={{ color: Color.green }}>Question: </span>
+            {cleanString(content)}
           </div>
         )}
       {!isEditing &&

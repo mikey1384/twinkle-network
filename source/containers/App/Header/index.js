@@ -29,7 +29,6 @@ import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import { Container, MainTabs } from './Styles'
-import Responsive from 'components/Wrappers/Responsive'
 
 class Header extends Component {
   static propTypes = {
@@ -167,29 +166,27 @@ class Header extends Component {
     const { logoBlue, logoGreen } = this.state
     return (
       <nav
-        className={`navbar navbar-default ${Container}`}
+        className={Container}
         style={{
           position: chatMode ? 'relative' : 'fixed'
         }}
       >
-        <Responsive device="desktop">
-          <div className="navbar-header">
-            <Link
-              className="navbar-brand"
-              style={{
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
-              to="/"
-              onClick={this.onLogoClick}
-            >
-              <span style={{ color: logoBlue }}>Twin</span>
-              <span style={{ color: logoGreen }}>kle</span>
-            </Link>
-          </div>
-        </Responsive>
+        <div className="desktop">
+          <Link
+            className="navbar-brand"
+            style={{
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+            to="/"
+            onClick={this.onLogoClick}
+          >
+            <span style={{ color: logoBlue }}>Twin</span>
+            <span style={{ color: logoGreen }}>kle</span>
+          </Link>
+        </div>
         <div className={MainTabs}>
-          <ul
+          <div
             className="nav navbar-nav"
             style={{
               display: 'flex',
@@ -199,6 +196,9 @@ class Header extends Component {
           >
             {!chatMode && (
               <Fragment>
+                <HeaderNav className="mobile" imgLabel="user">
+                  Menu
+                </HeaderNav>
                 <HeaderNav
                   to="/"
                   isHome
@@ -210,60 +210,59 @@ class Header extends Component {
                     pathname.length > 1
                   }
                 >
-                  <span>Home</span>
+                  Home
                 </HeaderNav>
-                <HeaderNav to="/videos" imgLabel="watch">
-                  <span>Watch</span>
+                <HeaderNav to="/videos" imgLabel="film">
+                  Watch
                 </HeaderNav>
-                <HeaderNav to="/links" imgLabel="read">
-                  <span>Read</span>
+                <HeaderNav to="/links" imgLabel="book">
+                  Read
                 </HeaderNav>
               </Fragment>
             )}
-          </ul>
+          </div>
         </div>
-        <Responsive device="desktop">
+        <div
+          className="desktop"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '98%',
+            marginLeft: '2%'
+          }}
+        >
+          <div style={{ display: 'flex', width: '65%' }}>
+            {!chatMode && <SearchBox style={{ width: '100%' }} />}
+          </div>
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between',
-              width: '96%',
-              marginLeft: '4%'
+              width: '20%',
+              marginRight: '1rem',
+              justifyContent: 'flex-end'
             }}
           >
-            <div style={{ display: 'flex', width: '65%' }}>
-              {!chatMode && <SearchBox style={{ width: '100%' }} />}
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                width: '20%',
-                marginRight: '1rem',
-                justifyContent: 'flex-end'
-              }}
-            >
-              {loggedIn && (
-                <ChatButton
-                  style={{ marginRight: '1rem' }}
-                  onClick={onChatButtonClick}
-                  chatMode={chatMode}
-                  loading={chatLoading}
-                  numUnreads={numChatUnreads}
-                />
-              )}
-              {loggedIn ? (
-                <AccountMenu title={username} logout={this.onLogout} />
-              ) : (
-                <Button
-                  className="btn btn-success"
-                  onClick={() => openSigninModal()}
-                >
-                  Log In | Sign Up
-                </Button>
-              )}
-            </div>
+            {loggedIn && (
+              <ChatButton
+                style={{ marginRight: '1rem' }}
+                onClick={onChatButtonClick}
+                chatMode={chatMode}
+                loading={chatLoading}
+                numUnreads={numChatUnreads}
+              />
+            )}
+            {loggedIn ? (
+              <AccountMenu title={username} logout={this.onLogout} />
+            ) : (
+              <Button
+                className="btn btn-success"
+                onClick={() => openSigninModal()}
+              >
+                Log In | Sign Up
+              </Button>
+            )}
           </div>
-        </Responsive>
+        </div>
         {signinModalShown && (
           <SigninModal show onHide={() => closeSigninModal()} />
         )}
