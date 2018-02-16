@@ -6,7 +6,7 @@ import Button from 'components/Button'
 import { openSigninModal } from 'redux/actions/UserActions'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Container, Details, Heading, Names } from './Styles'
+import { container } from './Styles'
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
@@ -27,20 +27,24 @@ function ProfileWidget({
   realName
 }) {
   return (
-    <div className={Container}>
+    <div className={container}>
       {username && (
-        <div className={Heading}>
-          <ProfilePic
-            style={{
-              width: '35%',
-              height: '35%',
-              cursor: userId ? 'pointer' : 'default'
-            }}
-            userId={userId}
-            profilePicId={profilePicId}
-            onClick={() => (userId ? history.push(`/users/${username}`) : null)}
-          />
-          <div className={Names}>
+        <div className="heading">
+          <div className="profile-pic">
+            <ProfilePic
+              style={{
+                width: '90%',
+                height: '90%',
+                cursor: userId ? 'pointer' : 'default'
+              }}
+              userId={userId}
+              profilePicId={profilePicId}
+              onClick={() =>
+                userId ? history.push(`/users/${username}`) : null
+              }
+            />
+          </div>
+          <div className="names">
             <div>
               <Link to={`/users/${username}`}>{username}</Link>
             </div>
@@ -52,7 +56,7 @@ function ProfileWidget({
           </div>
         </div>
       )}
-      <div className={Details}>
+      <div className="details">
         {userId && (
           <div>
             <div style={{ fontWeight: 'bold' }}>

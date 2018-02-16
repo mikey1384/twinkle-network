@@ -406,6 +406,7 @@ export default function FeedReducer(state = defaultState, action) {
         })
       }
     case 'UPLOAD_CONTENT':
+      console.log(action.data)
       return {
         ...state,
         feeds: [{ ...action.data, commentsLoadMoreButton: false }].concat(

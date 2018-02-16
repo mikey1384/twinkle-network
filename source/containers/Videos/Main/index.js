@@ -8,7 +8,7 @@ import AddVideoModal from './Modals/AddVideoModal'
 import AllVideosPanel from './Panels/AllVideosPanel'
 import PlaylistsPanel from './Panels/PlaylistsPanel'
 import AddPlaylistModal from './Modals/AddPlaylistModal'
-import Notification from 'containers/Notification'
+import Notification from 'components/Notification'
 import {
   openAddVideoModal,
   closeAddVideoModal

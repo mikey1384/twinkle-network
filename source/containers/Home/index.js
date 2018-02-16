@@ -5,10 +5,12 @@ import { Link, Route } from 'react-router-dom'
 import Profile from './Profile'
 import People from './People'
 import Stories from './Stories'
-import Notification from 'containers/Notification'
-import ProfileWidget from './ProfileWidget'
+import Notification from 'components/Notification'
+import ProfileWidget from 'components/ProfileWidget'
+import HomeMenuItems from 'components/HomeMenuItems'
 import { Color } from 'constants/css'
-import { Container, Left, Center, Right, MenuItems, TwinkleXP } from './Styles'
+import { Container, Left, Center, Right } from './Styles'
+import { css } from 'react-emotion'
 
 class Home extends Component {
   static propTypes = {
@@ -16,59 +18,18 @@ class Home extends Component {
     location: PropTypes.object,
     username: PropTypes.string
   }
-
   render() {
-    const { history, location, username: myUsername } = this.props
-    let username = ''
-    if (location.pathname.includes('/users/')) {
-      username = location.pathname.split('/')[2]
-    }
+    const { history, location, username } = this.props
     return (
       <div className={Container}>
         <div className={Left}>
           <ProfileWidget history={history} />
-          <ul className={`unselectable ${MenuItems}`}>
-            <Route
-              path="/"
-              exact
-              children={({ match }) => (
-                <li
-                  className={match && 'active'}
-                  onClick={() => history.push('/')}
-                >
-                  <a>
-                    <img alt="Thumbnail" src="/img/feed.png" />
-                  </a>
-                  <a>Stories</a>
-                </li>
-              )}
-            />
-            <Route
-              exact
-              path="/users"
-              children={({ match }) => (
-                <li
-                  className={
-                    match || (username && myUsername && username !== myUsername)
-                      ? 'active'
-                      : ''
-                  }
-                  onClick={() => history.push('/users')}
-                >
-                  <div>
-                    <a>
-                      <img
-                        alt="Thumbnail"
-                        style={{ width: '3vw', height: '3vw' }}
-                        src="/img/people.png"
-                      />
-                    </a>
-                  </div>
-                  <a>People</a>
-                </li>
-              )}
-            />
-          </ul>
+          <HomeMenuItems
+            style={{ marginTop: '2rem' }}
+            history={history}
+            location={location}
+            myUsername={username}
+          />
         </div>
         <div className={Center}>
           <section>
@@ -78,7 +39,25 @@ class Home extends Component {
           </section>
         </div>
         <Notification className={Right}>
-          <div className={TwinkleXP}>
+          <div
+            className={css`
+              margin-bottom: 0px;
+              text-align: center;
+              padding: 1rem;
+              background: #fff;
+              border: 1px solid #eeeeee;
+              borderradius: 5px;
+              p {
+                font-size: 3rem;
+                font-weight: bold;
+                margin-bottom: 0px;
+              }
+              a {
+                font-size: 1.5rem;
+                font-weight: bold;
+              }
+            `}
+          >
             <p>
               <span style={{ color: Color.logoGreen }}>Twin</span>
               <span style={{ color: Color.logoBlue }}>kle</span>&nbsp;

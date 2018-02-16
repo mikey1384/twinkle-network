@@ -45,6 +45,7 @@ class Header extends Component {
     numChatUnreads: PropTypes.number,
     onChatButtonClick: PropTypes.func,
     onProfilePage: PropTypes.bool,
+    onMobileMenuOpen: PropTypes.func,
     openSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
@@ -160,6 +161,7 @@ class Header extends Component {
       openSigninModal,
       closeSigninModal,
       onChatButtonClick,
+      onMobileMenuOpen,
       numChatUnreads
     } = this.props
 
@@ -196,7 +198,7 @@ class Header extends Component {
           >
             {!chatMode && (
               <Fragment>
-                <HeaderNav className="mobile" imgLabel="user">
+                <HeaderNav className="mobile" imgLabel="user" onClick={onMobileMenuOpen}>
                   Menu
                 </HeaderNav>
                 <HeaderNav

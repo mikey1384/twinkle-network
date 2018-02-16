@@ -7,6 +7,7 @@ import ChatFeeds from './ChatFeeds'
 import { defaultChatSubject } from 'constants/defaultValues'
 import { fetchNotifications } from 'redux/actions/NotiActions'
 import ExecutionEnvironment from 'exenv'
+import {container} from './Styles'
 
 class Notification extends Component {
   static propTypes = {
@@ -42,7 +43,7 @@ class Notification extends Component {
       children
     } = this.props
     return (
-      <div className={className} onScroll={this.handleScroll}>
+      <div className={`${container} ${className}`} onScroll={this.handleScroll}>
         <div
           className="well momentum-scroll-enabled"
           style={{ marginBottom: '1rem' }}

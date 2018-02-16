@@ -11,18 +11,20 @@ export default class HeaderNav extends Component {
     imgLabel: PropTypes.string,
     isHome: PropTypes.bool,
     isUsername: PropTypes.bool,
+    onClick: PropTypes.func,
     to: PropTypes.string
   }
 
   render() {
     const {
+      active,
       className,
       to,
       children,
       imgLabel,
       isHome,
       isUsername,
-      active
+      onClick
     } = this.props
     return (
       <Route
@@ -47,6 +49,7 @@ export default class HeaderNav extends Component {
               <a
                 className={active && 'active'}
                 style={{ display: 'flex', cursor: 'pointer' }}
+                onClick={onClick}
               >
                 <span className={`glyphicon glyphicon-${imgLabel}`} />
                 <span className="nav-label">{children}</span>
