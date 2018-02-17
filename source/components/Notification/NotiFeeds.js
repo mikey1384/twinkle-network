@@ -4,6 +4,7 @@ import { timeSince } from 'helpers/timeStampHelpers'
 import { Color } from 'constants/css'
 import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
+import UnorderedList from 'components/UnorderedList'
 
 NotiFeeds.propTypes = {
   myId: PropTypes.number,
@@ -30,12 +31,11 @@ NotiFeeds.propTypes = {
 export default function NotiFeeds({ myId, notifications, style }) {
   return (
     <div style={style}>
-      <ul className="list-group" style={{ marginBottom: 0 }}>
+      <UnorderedList>
         {notifications.length > 0 &&
           notifications.map(notification => {
             return (
               <li
-                className="list-group-item"
                 style={{ wordBreak: 'break-word' }}
                 key={notification.id}
               >
@@ -46,7 +46,7 @@ export default function NotiFeeds({ myId, notifications, style }) {
               </li>
             )
           })}
-      </ul>
+      </UnorderedList>
     </div>
   )
 }

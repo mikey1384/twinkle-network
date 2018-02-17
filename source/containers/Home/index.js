@@ -15,11 +15,10 @@ import { css } from 'react-emotion'
 class Home extends Component {
   static propTypes = {
     history: PropTypes.object,
-    location: PropTypes.object,
-    username: PropTypes.string
+    location: PropTypes.object
   }
   render() {
-    const { history, location, username } = this.props
+    const { history, location } = this.props
     return (
       <div className={Container}>
         <div className={Left}>
@@ -28,7 +27,6 @@ class Home extends Component {
             style={{ marginTop: '2rem' }}
             history={history}
             location={location}
-            myUsername={username}
           />
         </div>
         <div className={Center}>

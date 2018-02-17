@@ -6,15 +6,9 @@ import { container } from './Styles'
 HomeMenuItems.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
-  myUsername: PropTypes.string,
   style: PropTypes.object
 }
-export default function HomeMenuItems({
-  history,
-  location,
-  myUsername,
-  style = {}
-}) {
+export default function HomeMenuItems({ history, location, style = {} }) {
   let username = ''
   if (location.pathname.includes('/users/')) {
     username = location.pathname.split('/')[2]
@@ -42,11 +36,7 @@ export default function HomeMenuItems({
         path="/users"
         children={({ match }) => (
           <nav
-            className={
-              match || (username && myUsername && username !== myUsername)
-                ? 'active'
-                : ''
-            }
+            className={match || username ? 'active' : ''}
             onClick={() => history.push('/users')}
           >
             <div className="item-icon">

@@ -160,6 +160,7 @@ class Body extends Component {
         ref={ref => {
           this.Container = ref
         }}
+        style={{ paddingBottom: '1rem' }}
       >
         <div className={FilterBar}>
           <Route

@@ -52,9 +52,10 @@ export const container = css`
       .item-icon {
         width: auto;
         text-align: left;
+        margin-left: -2rem;
       }
       .item-name {
-        margin-left: 2rem;
+        margin-left: 4rem;
         width: auto;
         text-align: left;
       }

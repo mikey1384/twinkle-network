@@ -8,6 +8,9 @@ export const container = css`
   flex-direction: column;
   width: 100%;
   background: #fff;
+  a {
+    text-decoration: none;
+  }
   .heading {
     display: flex;
     width: 100%;
@@ -37,6 +40,10 @@ export const container = css`
   }
   .details {
     padding: 2rem;
+    .login-message {
+      font-size: 2rem;
+      font-weight: bold;
+    }
   }
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;
@@ -59,6 +66,12 @@ export const container = css`
     .details {
       text-align: center;
       font-size: 3rem;
+      .login-message {
+        font-size: 3rem;
+      }
+      button {
+        font-size: 3rem;
+      }
     }
   }
 `

@@ -39,9 +39,9 @@ function ProfileWidget({
               }}
               userId={userId}
               profilePicId={profilePicId}
-              onClick={() =>
-                userId ? history.push(`/users/${username}`) : null
-              }
+              onClick={() => {
+                if (userId) history.push(`/users/${username}`)
+              }}
             />
           </div>
           <div className="names">
@@ -69,9 +69,7 @@ function ProfileWidget({
           </div>
         )}
         {!userId && (
-          <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-            Log in to access all features!
-          </div>
+          <div className="login-message">Log in to access all features!</div>
         )}
         {!userId && (
           <Button

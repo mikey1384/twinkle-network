@@ -13,7 +13,8 @@ export const Color = {
   logoGreen: '#61e265',
   green: '#28b62c',
   orange: '#f0ad4e',
-  pink: '#fcb296'
+  pink: '#fcb296',
+  red: '#ff4136'
 }
 
 export const borderRadius = '5px'

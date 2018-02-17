@@ -18,6 +18,9 @@ export const PanelStyle = css`
     p {
       font-size: 2.5rem;
     }
+    small {
+      font-size: 1.5rem;
+    }
     input {
       height: 6rem;
       font-size: 2rem;

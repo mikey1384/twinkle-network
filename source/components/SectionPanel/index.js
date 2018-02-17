@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Button from 'components/Button'
 import Loading from 'components/Loading'
 import SearchInput from 'components/Texts/SearchInput'
+import { sectionPanel } from './styles'
 
 export default class SectionPanel extends Component {
   static propTypes = {
@@ -17,7 +18,8 @@ export default class SectionPanel extends Component {
     loadMoreButtonShown: PropTypes.bool,
     onSearch: PropTypes.func,
     searchPlaceholder: PropTypes.string,
-    searchQuery: PropTypes.string
+    searchQuery: PropTypes.string,
+    style: PropTypes.object
   }
 
   state = {
@@ -32,48 +34,31 @@ export default class SectionPanel extends Component {
       loadMoreButtonShown,
       onSearch,
       searchPlaceholder,
-      searchQuery = ''
+      searchQuery = '',
+      style = {}
     } = this.props
     const { loading } = this.state
     return (
-      <div className="panel panel-primary" style={{ marginBottom: '1rem' }}>
-        <div
-          className="panel-heading"
-          style={{
-            display: 'flex',
-            width: '100%',
-            justifyContent: 'space-between'
-          }}
-        >
-          <div
-            style={{
-              width: onSearch ? '25%' : '55%',
-              fontSize: '2.5rem',
-              alignItems: 'center',
-              display: 'flex'
-            }}
-          >
-            {title}
-          </div>
+      <div className={sectionPanel} style={style}>
+        <div className="header">
+          <div style={{ gridArea: 'title' }}>{title}</div>
           {onSearch && (
             <SearchInput
-              style={{ width: '45%' }}
+              style={{
+                gridArea: 'search',
+                width: '80%',
+                justifySelf: 'center'
+              }}
               onChange={this.onSearch}
               placeholder={searchPlaceholder}
               value={searchQuery}
             />
           )}
-          <div
-            style={{
-              width: '30%',
-              display: 'flex',
-              flexDirection: 'row-reverse'
-            }}
-          >
+          <div style={{ gridArea: 'buttons', justifySelf: 'end' }}>
             {button}
           </div>
         </div>
-        <div className="panel-body">
+        <div className="body">
           {this.renderEmptyMessage()}
           {children}
           {loadMoreButtonShown &&

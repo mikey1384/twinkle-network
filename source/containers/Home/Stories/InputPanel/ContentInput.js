@@ -73,7 +73,7 @@ class ContentInput extends Component {
           </div>
           <div>
             <input
-              style={{ height: '2rem', marginTop: '0.5rem' }}
+              style={{ height: '2rem' }}
               onClick={() => {
                 this.setState({
                   form: {

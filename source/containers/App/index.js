@@ -234,9 +234,11 @@ class App extends Component {
         </div>
         {mobileMenuShown && (
           <MobileMenu
+            chatMode={chatMode}
             location={location}
             history={history}
             username={username}
+            onClose={() => this.setState({ mobileMenuShown: false })}
           />
         )}
         {chatMode &&

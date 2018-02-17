@@ -1,32 +1,30 @@
-import { css } from 'react-emotion'
+import { css } from 'emotion'
+import { mobileMaxWidth } from 'constants/css'
 
-export const Container = css`
+export const container = css`
   width: 100%;
-  @media (max-width: 991px) {
+  @media (max-width: ${mobileMaxWidth}) {
     display: flex;
   }
-`
-
-export const Left = css`
-  width: CALC(70% - 3rem);
-  margin-left: 1rem;
-  @media (max-width: 991px) {
-    width: 70%;
-    margin-right: 1rem;
+  .left {
+    width: CALC(70% - 3rem);
+    margin-left: 1rem;
+    @media (max-width: ${mobileMaxWidth}) {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
-`
-
-export const Right = css`
-  width: 30%;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-  @media (max-width: 991px) {
-    position: relative;
-  }
-  @media (min-width: 992px) {
+  .right {
+    width: 30%;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     right: 1rem;
     top: 65px;
     bottom: 0;
     position: absolute;
+    @media (max-width: ${mobileMaxWidth}) {
+      display: none;
+    }
   }
 `
