@@ -37,7 +37,7 @@ class Videos extends Component {
   render() {
     const { match } = this.props
     return (
-      <div>
+      <div style={{ width: '100%' }}>
         <Route exact path={`${match.url}`} component={Main} />
         <Route path={`${match.url}/:videoId`} component={VideoPage} />
       </div>

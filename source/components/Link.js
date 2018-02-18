@@ -5,12 +5,13 @@ import { withRouter } from 'react-router'
 Link.propTypes = {
   children: PropTypes.node,
   history: PropTypes.object.isRequired,
+  onClick: PropTypes.func,
   onClickAsync: PropTypes.func,
   style: PropTypes.object,
   target: PropTypes.string,
   to: PropTypes.string
 }
-function Link({ to, onClickAsync, children, style, target, history }) {
+function Link({ to, onClick, onClickAsync, children, style, target, history }) {
   return (
     <a style={style} href={to} onClick={onLinkClick}>
       {children}
@@ -26,6 +27,7 @@ function Link({ to, onClickAsync, children, style, target, history }) {
       })
     }
     history.push(to)
+    if (onClick) onClick()
   }
 }
 

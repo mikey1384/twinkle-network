@@ -28,6 +28,7 @@ import HeaderNav from './HeaderNav'
 import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
+import { container } from './styles'
 
 class Header extends Component {
   static propTypes = {
@@ -44,6 +45,7 @@ class Header extends Component {
     numChatUnreads: PropTypes.number,
     onChatButtonClick: PropTypes.func,
     onProfilePage: PropTypes.bool,
+    onMobileMenuOpen: PropTypes.func,
     openSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
@@ -159,24 +161,20 @@ class Header extends Component {
       openSigninModal,
       closeSigninModal,
       onChatButtonClick,
-      numChatUnreads
+      onMobileMenuOpen,
+      numChatUnreads,
+      turnChatOff
     } = this.props
 
     const { logoBlue, logoGreen } = this.state
     return (
       <nav
-        className={`navbar navbar-default${
-          !chatMode ? ' navbar-fixed-top' : ''
-        }`}
+        className={`${container} ${chatMode && 'chat-mode'}`}
         style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          width: '100%',
-          marginBottom: '0px'
+          position: 'fixed'
         }}
       >
-        <div className="navbar-header">
+        <div className="desktop">
           <Link
             className="navbar-brand"
             style={{
@@ -190,20 +188,24 @@ class Header extends Component {
             <span style={{ color: logoGreen }}>kle</span>
           </Link>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            width: '30%',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
-          <ul
+        <div className="main-tabs">
+          <div
             className="nav navbar-nav"
-            style={{ display: 'flex', justifyContent: 'flex-start' }}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              width: '100%'
+            }}
           >
             {!chatMode && (
               <Fragment>
+                <HeaderNav
+                  className="mobile"
+                  imgLabel="user"
+                  onClick={onMobileMenuOpen}
+                >
+                  Menu
+                </HeaderNav>
                 <HeaderNav
                   to="/"
                   isHome
@@ -215,30 +217,49 @@ class Header extends Component {
                     pathname.length > 1
                   }
                 >
-                  <span>Home</span>
+                  Home
                 </HeaderNav>
-                <HeaderNav
-                  to="/videos"
-                  imgLabel="watch"
+                <HeaderNav to="/videos" imgLabel="film">
+                  Watch
+                </HeaderNav>
+                <HeaderNav to="/links" imgLabel="book">
+                  Read
+                </HeaderNav>
+                <div
+                  className="header-nav mobile"
+                  onClick={onChatButtonClick}
                 >
-                  <span>Watch</span>
-                </HeaderNav>
-                <HeaderNav to="/links" imgLabel="read">
-                  <span>Read</span>
-                </HeaderNav>
+                  <a><span className="glyphicon glyphicon-comment" /></a>
+                </div>
               </Fragment>
             )}
-          </ul>
+            {chatMode && (
+              <div
+                className="header-nav mobile"
+                style={{ display: 'flex', alignItems: 'center' }}
+                onClick={turnChatOff}
+              >
+                <div>
+                  <span
+                    style={{ marginTop: '1.5rem' }}
+                    className="glyphicon glyphicon-remove"
+                  />
+                </div>
+                <div style={{ marginLeft: '1rem' }}>Tap to close chat</div>
+              </div>
+            )}
+          </div>
         </div>
         <div
+          className="desktop"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            width: '100%',
+            width: '98%',
             marginLeft: '2%'
           }}
         >
-          <div style={{display: 'flex', width: '65%'}}>
+          <div style={{ display: 'flex', width: '65%' }}>
             {!chatMode && <SearchBox style={{ width: '100%' }} />}
           </div>
           <div

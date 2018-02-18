@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
-import { MessageStyle } from '../../Styles'
+import { MessageStyle } from '../../styles'
 import { Color } from 'constants/css'
 import moment from 'moment'
 

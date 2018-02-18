@@ -8,7 +8,7 @@ import AddVideoModal from './Modals/AddVideoModal'
 import AllVideosPanel from './Panels/AllVideosPanel'
 import PlaylistsPanel from './Panels/PlaylistsPanel'
 import AddPlaylistModal from './Modals/AddPlaylistModal'
-import Notification from 'containers/Notification'
+import Notification from 'components/Notification'
 import {
   openAddVideoModal,
   closeAddVideoModal
@@ -23,7 +23,7 @@ import {
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { Container, Left, Right } from './Styles'
+import { main } from './styles'
 
 class Main extends Component {
   static propTypes = {
@@ -113,8 +113,8 @@ class Main extends Component {
       }
     ]
     return (
-      <div className={Container}>
-        <div className={Left}>
+      <div className={main}>
+        <div className="left">
           <PlaylistsPanel
             key={'pinnedPlaylists'}
             buttonGroupShown={isAdmin}
@@ -172,7 +172,7 @@ class Main extends Component {
             />
           )}
         </div>
-        <Notification className={Right}>
+        <Notification className="right">
           <Button
             className="btn btn-lg btn-info"
             style={{

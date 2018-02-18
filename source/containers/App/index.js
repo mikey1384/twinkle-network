@@ -25,6 +25,8 @@ import {
   fetchNotifications,
   clearNotifications
 } from 'redux/actions/NotiActions'
+import { siteContent } from './Styles'
+import MobileMenu from './MobileMenu'
 
 let visibilityChange
 let hidden
@@ -42,13 +44,15 @@ class App extends Component {
     location: PropTypes.object,
     initChat: PropTypes.func,
     changePageVisibility: PropTypes.func,
-    history: PropTypes.object
+    history: PropTypes.object,
+    username: PropTypes.string
   }
 
   state = {
     chatLoading: false,
     scrollPosition: 0,
     updateNoticeShown: false,
+    mobileMenuShown: false,
     navScrollPositions: {}
   }
 
@@ -70,9 +74,7 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    let elements = document.documentElement.childNodes
     const {
-      chatMode,
       chatNumUnreads,
       history,
       location,
@@ -114,26 +116,14 @@ class App extends Component {
       let title = `${
         chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
       }Twinkle`
-      let display = chatMode ? 'none' : 'inline'
       document.title = title
-      for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') {
-          elements[i].style.display = display
-        }
-      }
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
       let title = `${
         chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
       }Twinkle`
-      let display = chatMode ? 'none' : 'inline'
       document.title = title
-      for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') {
-          elements[i].style.display = display
-        }
-      }
     }
   }
 
@@ -142,15 +132,20 @@ class App extends Component {
   }
 
   render() {
-    const { chatMode, turnChatOff, resetChat, loggedIn } = this.props
-    const { chatLoading, scrollPosition, updateNoticeShown } = this.state
-    const style =
-      chatMode && loggedIn
-        ? {
-            display: 'none'
-          }
-        : { paddingTop: '65px' }
-
+    const {
+      chatMode,
+      location,
+      history,
+      turnChatOff,
+      username,
+      resetChat
+    } = this.props
+    const {
+      chatLoading,
+      mobileMenuShown,
+      scrollPosition,
+      updateNoticeShown
+    } = this.state
     return (
       <div
         style={{
@@ -183,8 +178,8 @@ class App extends Component {
             <Button
               className="btn btn-lg btn-success"
               style={{
-                marginTop: '1em',
-                fontSize: '1.5em'
+                marginTop: '1.5rem',
+                fontSize: '1.5rem'
               }}
               onClick={() => window.location.reload()}
             >
@@ -201,13 +196,9 @@ class App extends Component {
           showUpdateNotice={match =>
             this.setState({ updateNoticeShown: !match })
           }
+          onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
-        <div
-          style={{
-            ...style,
-            paddingBottom: '1rem'
-          }}
-        >
+        <div className={siteContent}>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />
@@ -221,6 +212,15 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
+        {mobileMenuShown && (
+          <MobileMenu
+            chatMode={chatMode}
+            location={location}
+            history={history}
+            username={username}
+            onClose={() => this.setState({ mobileMenuShown: false })}
+          />
+        )}
         {chatMode &&
           this.props.loggedIn && (
             <Chat
@@ -269,7 +269,8 @@ export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
     chatMode: state.ChatReducer.chatMode,
-    chatNumUnreads: state.ChatReducer.numUnreads
+    chatNumUnreads: state.ChatReducer.numUnreads,
+    username: state.UserReducer.username
   }),
   {
     initSession: initSessionAsync,

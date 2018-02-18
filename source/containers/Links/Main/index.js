@@ -4,10 +4,10 @@ import AddLinkModal from './AddLinkModal'
 import Button from 'components/Button'
 import SectionPanel from 'components/SectionPanel'
 import LinkGroup from './LinkGroup'
-import Notification from 'containers/Notification'
+import Notification from 'components/Notification'
 import { connect } from 'react-redux'
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions'
-import { Container, Left, Right } from './Styles'
+import { container } from './styles'
 
 class Main extends Component {
   static propTypes = {
@@ -46,8 +46,8 @@ class Main extends Component {
     const { links, loadMoreLinksButtonShown } = this.props
     const { addLinkModalShown, loaded } = this.state
     return (
-      <div className={Container}>
-        <div className={Left}>
+      <div className={container}>
+        <div className="left">
           <SectionPanel
             title="All Links"
             button={
@@ -74,7 +74,7 @@ class Main extends Component {
             onHide={() => this.setState({ addLinkModalShown: false })}
           />
         )}
-        <Notification className={Right} />
+        <Notification className="right" />
       </div>
     )
   }

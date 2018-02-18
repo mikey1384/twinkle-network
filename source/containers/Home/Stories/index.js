@@ -27,6 +27,7 @@ import Loading from 'components/Loading'
 import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { feedContentEdit } from '../../../redux/actions/FeedActions'
+import { FilterBar } from '../Styles'
 
 class Stories extends Component {
   static propTypes = {
@@ -198,7 +199,9 @@ class Stories extends Component {
 
   onScroll() {
     const { chatMode, feeds } = this.props
-    if (document.getElementById('react-view').scrollHeight > this.scrollHeight) {
+    if (
+      document.getElementById('react-view').scrollHeight > this.scrollHeight
+    ) {
       this.scrollHeight = document.getElementById('react-view').scrollHeight
     }
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
@@ -221,77 +224,44 @@ class Stories extends Component {
   renderFilterBar() {
     const { selectedFilter } = this.props
     return (
-      <nav className="navbar navbar-inverse">
-        <ul
-          className="nav nav-pills"
-          style={{
-            margin: '0.5em',
-            fontSize: '1.2em',
-            fontWeight: 'bold'
-          }}
+      <div className={FilterBar}>
+        <nav
+          className={selectedFilter === 'all' ? 'active' : ''}
+          onClick={() => this.applyFilter('all')}
         >
-          <li className={selectedFilter === 'all' ? 'active' : ''}>
-            <a
-              style={{
-                cursor: 'pointer'
-              }}
-              onClick={() => this.applyFilter('all')}
-            >
-              All
-            </a>
-          </li>
-          <li className={selectedFilter === 'question' ? 'active' : ''}>
-            <a
-              style={{
-                cursor: 'pointer'
-              }}
-              onClick={() => this.applyFilter('question')}
-            >
-              Questions
-            </a>
-          </li>
-          <li className={selectedFilter === 'discussion' ? 'active' : ''}>
-            <a
-              style={{
-                cursor: 'pointer'
-              }}
-              onClick={() => this.applyFilter('discussion')}
-            >
-              Discussions
-            </a>
-          </li>
-          <li className={selectedFilter === 'video' ? 'active' : ''}>
-            <a
-              style={{
-                cursor: 'pointer'
-              }}
-              onClick={() => this.applyFilter('video')}
-            >
-              Videos
-            </a>
-          </li>
-          <li className={selectedFilter === 'url' ? 'active' : ''}>
-            <a
-              style={{
-                cursor: 'pointer'
-              }}
-              onClick={() => this.applyFilter('url')}
-            >
-              Links
-            </a>
-          </li>
-          <li className={selectedFilter === 'comment' ? 'active' : ''}>
-            <a
-              style={{
-                cursor: 'pointer'
-              }}
-              onClick={() => this.applyFilter('comment')}
-            >
-              Comments
-            </a>
-          </li>
-        </ul>
-      </nav>
+          <a>All</a>
+        </nav>
+        <nav
+          className={selectedFilter === 'question' ? 'active' : ''}
+          onClick={() => this.applyFilter('question')}
+        >
+          <a>Questions</a>
+        </nav>
+        <nav
+          className={selectedFilter === 'discussion' ? 'active' : ''}
+          onClick={() => this.applyFilter('discussion')}
+        >
+          <a>Discussions</a>
+        </nav>
+        <nav
+          className={selectedFilter === 'video' ? 'active' : ''}
+          onClick={() => this.applyFilter('video')}
+        >
+          <a>Videos</a>
+        </nav>
+        <nav
+          className={selectedFilter === 'url' ? 'active' : ''}
+          onClick={() => this.applyFilter('url')}
+        >
+          <a>Links</a>
+        </nav>
+        <nav
+          className={selectedFilter === 'comment' ? 'active' : ''}
+          onClick={() => this.applyFilter('comment')}
+        >
+          <a>Comments</a>
+        </nav>
+      </div>
     )
   }
 }

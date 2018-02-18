@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Heading from './Heading'
 import Contents from './Contents'
 import Loading from 'components/Loading'
+import { container } from './Styles'
 
 export default class ContentPanel extends Component {
   static propTypes = {
@@ -64,10 +65,7 @@ export default class ContentPanel extends Component {
     }
 
     return (
-      <div
-        className="panel panel-default"
-        style={{ borderTop: '#e7e7e7 1px solid' }}
-      >
+      <div className={container}>
         {contentObj.uploaderName && (
           <Heading
             contentObj={contentObj}
@@ -94,14 +92,19 @@ export default class ContentPanel extends Component {
             action={
               contentObj.commentId
                 ? 'replied to'
-                : contentObj.rootType === 'question' ? 'answered' : 'commented on'
+                : contentObj.rootType === 'question'
+                  ? 'answered'
+                  : 'commented on'
             }
-            uploader={{ name: contentObj.uploaderName, id: contentObj.uploaderId }}
+            uploader={{
+              name: contentObj.uploaderName,
+              id: contentObj.uploaderId
+            }}
             onPlayVideoClick={() => this.setState({ attachedVideoShown: true })}
             attachedVideoShown={attachedVideoShown}
           />
         )}
-        <div className="panel-body">
+        <div className="body">
           {contentObj.uploaderName && (
             <Contents
               contentObj={contentObj}

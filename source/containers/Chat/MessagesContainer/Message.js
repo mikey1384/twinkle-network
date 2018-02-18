@@ -10,7 +10,7 @@ import EditTextArea from 'components/Texts/EditTextArea'
 import { editMessage, saveMessage } from 'redux/actions/ChatActions'
 import Button from 'components/Button'
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
-import { MessageStyle } from '../Styles'
+import { MessageStyle } from '../styles'
 
 class Message extends Component {
   static propTypes = {

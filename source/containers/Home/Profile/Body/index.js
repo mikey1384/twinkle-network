@@ -27,6 +27,7 @@ import Loading from 'components/Loading'
 import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
+import { FilterBar } from '../../Styles'
 
 class Body extends Component {
   static propTypes = {
@@ -159,114 +160,102 @@ class Body extends Component {
         ref={ref => {
           this.Container = ref
         }}
+        style={{ paddingBottom: '1rem' }}
       >
-        <nav className="navbar navbar-inverse">
-          <ul
-            className="nav nav-pills"
-            style={{
-              margin: '0.5em',
-              fontSize: '1.2em',
-              fontWeight: 'bold'
-            }}
-          >
-            <Route
-              exact
-              path={route.url}
-              children={({ match }) => (
-                <li
-                  className={match ? 'active' : ''}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    clearFeeds().then(() => history.push(route.url))
-                  }
-                >
-                  <a>All</a>
-                </li>
-              )}
-            />
-            <Route
-              exact
-              path={`${route.url}/questions`}
-              children={({ match }) => (
-                <li
-                  className={match ? 'active' : ''}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    clearFeeds().then(() =>
-                      history.push(`${route.url}/questions`)
-                    )
-                  }
-                >
-                  <a>Questions</a>
-                </li>
-              )}
-            />
-            <Route
-              exact
-              path={`${route.url}/comments`}
-              children={({ match }) => (
-                <li
-                  className={match ? 'active' : ''}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    clearFeeds().then(() =>
-                      history.push(`${route.url}/comments`)
-                    )
-                  }
-                >
-                  <a>Comments</a>
-                </li>
-              )}
-            />
-            <Route
-              exact
-              path={`${route.url}/videos`}
-              children={({ match }) => (
-                <li
-                  className={match ? 'active' : ''}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    clearFeeds().then(() => history.push(`${route.url}/videos`))
-                  }
-                >
-                  <a>Videos</a>
-                </li>
-              )}
-            />
-            <Route
-              exact
-              path={`${route.url}/links`}
-              children={({ match }) => (
-                <li
-                  className={match ? 'active' : ''}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    clearFeeds().then(() => history.push(`${route.url}/links`))
-                  }
-                >
-                  <a>Links</a>
-                </li>
-              )}
-            />
-            <Route
-              exact
-              path={`${route.url}/discussions`}
-              children={({ match }) => (
-                <li
-                  className={match ? 'active' : ''}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    clearFeeds().then(() =>
-                      history.push(`${route.url}/discussions`)
-                    )
-                  }
-                >
-                  <a>Discussions</a>
-                </li>
-              )}
-            />
-          </ul>
-        </nav>
+        <div className={FilterBar}>
+          <Route
+            exact
+            path={route.url}
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                style={{ cursor: 'pointer' }}
+                onClick={() => clearFeeds().then(() => history.push(route.url))}
+              >
+                <a>All</a>
+              </nav>
+            )}
+          />
+          <Route
+            exact
+            path={`${route.url}/questions`}
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  clearFeeds().then(() =>
+                    history.push(`${route.url}/questions`)
+                  )
+                }
+              >
+                <a>Questions</a>
+              </nav>
+            )}
+          />
+          <Route
+            exact
+            path={`${route.url}/comments`}
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  clearFeeds().then(() => history.push(`${route.url}/comments`))
+                }
+              >
+                <a>Comments</a>
+              </nav>
+            )}
+          />
+          <Route
+            exact
+            path={`${route.url}/videos`}
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  clearFeeds().then(() => history.push(`${route.url}/videos`))
+                }
+              >
+                <a>Videos</a>
+              </nav>
+            )}
+          />
+          <Route
+            exact
+            path={`${route.url}/links`}
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  clearFeeds().then(() => history.push(`${route.url}/links`))
+                }
+              >
+                <a>Links</a>
+              </nav>
+            )}
+          />
+          <Route
+            exact
+            path={`${route.url}/discussions`}
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  clearFeeds().then(() =>
+                    history.push(`${route.url}/discussions`)
+                  )
+                }
+              >
+                <a>Discussions</a>
+              </nav>
+            )}
+          />
+        </div>
         <div>
           {!loaded && <Loading />}
           {loaded &&

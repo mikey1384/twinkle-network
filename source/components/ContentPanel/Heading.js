@@ -53,10 +53,7 @@ export default class Heading extends Component {
     } = this.props
     const { questionModalShown } = this.state
     return (
-      <div
-        className="panel-heading"
-        style={{ display: 'flex', alignItems: 'center', width: '100%' }}
-      >
+      <header className="heading">
         <ProfilePic
           style={{ width: '8%', height: '8%' }}
           userId={uploader.id}
@@ -72,13 +69,12 @@ export default class Heading extends Component {
           }}
         >
           <div
-            className="panel-title"
             style={{
               width: type === 'comment' && rootType !== 'url' ? '78%' : '100%'
             }}
           >
-            {this.renderHeading()}{' '}
-            <small style={{ fontSize: '1.2rem', color: Color.gray }}>
+            <span className="title">{this.renderHeading()} </span>
+            <small className="time-stamp">
               {timeStamp ? `(${timeSince(timeStamp)})` : ''}
             </small>
           </div>
@@ -108,7 +104,7 @@ export default class Heading extends Component {
             }}
           />
         )}
-      </div>
+      </header>
     )
   }
 
