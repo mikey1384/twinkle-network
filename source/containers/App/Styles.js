@@ -10,6 +10,6 @@ export const siteContent = css`
   margin-top: 65px;
   @media (max-width: ${mobileMaxWidth}) {
     margin-top: 0;
-    margin-bottom: 9rem;
+    padding-bottom: 9rem;
   }
 `
