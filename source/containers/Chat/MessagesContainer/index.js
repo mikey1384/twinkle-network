@@ -8,7 +8,7 @@ import SubjectHeader from './SubjectHeader'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { connect } from 'react-redux'
 import { deleteMessage } from 'redux/actions/ChatActions'
-import { MsgContainerStyle } from '../styles'
+import { MsgContainerStyle } from '../Styles'
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop

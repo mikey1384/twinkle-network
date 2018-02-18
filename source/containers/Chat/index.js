@@ -18,7 +18,7 @@ import FullTextReveal from 'components/FullTextReveal'
 import { socket } from 'constants/io'
 import { queryStringForArray } from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
-import { chatStyle, channelContainer } from './styles'
+import { chatStyle, channelContainer } from './Styles'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
