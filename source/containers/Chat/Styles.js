@@ -2,11 +2,9 @@ import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'react-emotion'
 
 export const chatStyle = css`
-  top: 50px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: fixed;
+  width: 100%;
+  height: CALC(100% - 50px);
+  padding-top: 50px;
   display: flex;
   padding-left: 1rem;
   align-items: top;
@@ -22,7 +20,7 @@ export const channelContainer = css`
   flex-direction: column;
   border: 1px solid #eee;
   margin-top: 1rem;
-  height: CALC(100% - 2rem);
+  height: CALC(100% + 2rem);
   width: 25%;
   position: relative;
 `
@@ -30,7 +28,7 @@ export const channelContainer = css`
 export const MsgContainerStyle = {
   container: css`
     width: 100%;
-    height: CALC(100% - 4.5rem);
+    height: 100%;
     position: relative;
   `,
   messagesWrapper: css`

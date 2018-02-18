@@ -178,7 +178,7 @@ class MessagesContainer extends Component {
         <div
           style={{
             position: 'absolute',
-            bottom: '60px',
+            bottom: '3rem',
             textAlign: 'center',
             width: '100%'
           }}

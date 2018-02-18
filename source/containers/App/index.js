@@ -25,7 +25,7 @@ import {
   fetchNotifications,
   clearNotifications
 } from 'redux/actions/NotiActions'
-import { siteContent } from './Styles'
+import { appStyle, siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
 
 let visibilityChange
@@ -148,9 +148,8 @@ class App extends Component {
     } = this.state
     return (
       <div
+        className={appStyle}
         style={{
-          height: '100%',
-          width: '100%',
           backgroundColor: chatMode && '#fff'
         }}
       >
