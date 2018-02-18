@@ -11,6 +11,7 @@ export const chatStyle = css`
   padding-left: 1rem;
   align-items: top;
   background-color: #fff;
+  z-index: 1000;
   @media (max-width: ${mobileMaxWidth}) {
     top: 9rem;
   }
