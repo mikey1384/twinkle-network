@@ -60,6 +60,7 @@ class People extends Component {
         ref={ref => {
           this.Container = ref
         }}
+        style={{ marginBottom: '1rem' }}
       >
         <SearchInput
           addonColor={Color.orange}
@@ -121,18 +122,23 @@ class People extends Component {
 
   onScroll = () => {
     const { chatMode, profiles } = this.props
-    if (document.getElementById('react-view').scrollHeight > this.scrollHeight) {
+    if (
+      document.getElementById('react-view').scrollHeight > this.scrollHeight
+    ) {
       this.scrollHeight = document.getElementById('react-view').scrollHeight
     }
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
-      this.setState({ scrollPosition: document.getElementById('react-view').scrollTop }, () => {
-        if (
-          this.state.scrollPosition >=
-          this.Container.offsetHeight - window.innerHeight - 500
-        ) {
-          this.loadMoreProfiles()
+      this.setState(
+        { scrollPosition: document.getElementById('react-view').scrollTop },
+        () => {
+          if (
+            this.state.scrollPosition >=
+            this.Container.offsetHeight - window.innerHeight - 500
+          ) {
+            this.loadMoreProfiles()
+          }
         }
-      })
+      )
     }
   }
 }
