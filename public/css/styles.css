@@ -54,6 +54,10 @@ body {
   background-color: #000;
 }
 
+.hidden {
+  display: none!important;
+}
+
 .glyphicon.spinning {
   animation: spin 1s infinite linear;
   -webkit-animation: spin2 1s infinite linear;

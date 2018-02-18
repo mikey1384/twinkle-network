@@ -198,7 +198,7 @@ class App extends Component {
           }
           onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
-        <div className={siteContent}>
+        <div className={`${siteContent} ${chatMode && 'hidden'}`}>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />
