@@ -44,7 +44,7 @@ class Home extends Component {
               padding: 1rem;
               background: #fff;
               border: 1px solid #eeeeee;
-              borderradius: 5px;
+              border-radius: 5px;
               p {
                 font-size: 3rem;
                 font-weight: bold;

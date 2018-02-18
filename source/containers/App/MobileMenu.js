@@ -86,7 +86,19 @@ class MobileMenu extends Component {
             </div>
           )}
         </div>
-        <div style={{ width: '30%' }} onClick={onClose} />
+        <div style={{ width: '30%', position: 'relative' }} onClick={onClose}>
+          <span
+            className="glyphicon glyphicon-remove"
+            style={{
+              color: '#fff',
+              position: 'absolute',
+              top: '2rem',
+              right: '2rem',
+              fontSize: '4rem',
+              opacity: '0.8'
+            }}
+          />
+        </div>
       </div>
     )
   }

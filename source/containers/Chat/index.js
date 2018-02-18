@@ -18,7 +18,7 @@ import FullTextReveal from 'components/FullTextReveal'
 import { socket } from 'constants/io'
 import { queryStringForArray } from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
-import { Container, ChannelContainer } from './Styles'
+import { chatStyle, channelContainer } from './styles'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -184,7 +184,7 @@ class Chat extends Component {
         ]
 
     return (
-      <div className={Container}>
+      <div className={chatStyle}>
         {createNewChannelModalShown && (
           <CreateNewChannelModal
             userId={userId}
@@ -218,7 +218,7 @@ class Chat extends Component {
             title="Online Status"
           />
         )}
-        <div className={ChannelContainer}>
+        <div className={channelContainer}>
           <div
             css={`
               width: 100%;
@@ -354,14 +354,7 @@ class Chat extends Component {
             userId={this.props.userId}
             loadMoreMessages={this.props.loadMoreMessages}
           />
-          <div
-            style={{
-              position: 'absolute',
-              right: '1rem',
-              left: '1rem',
-              bottom: '1rem'
-            }}
-          >
+          <div>
             <ChatInput
               currentChannelId={this.props.currentChannel.id}
               onMessageSubmit={this.onMessageSubmit}

@@ -28,7 +28,7 @@ import HeaderNav from './HeaderNav'
 import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
-import { Container, MainTabs } from './Styles'
+import { container } from './styles'
 
 class Header extends Component {
   static propTypes = {
@@ -162,15 +162,16 @@ class Header extends Component {
       closeSigninModal,
       onChatButtonClick,
       onMobileMenuOpen,
-      numChatUnreads
+      numChatUnreads,
+      turnChatOff
     } = this.props
 
     const { logoBlue, logoGreen } = this.state
     return (
       <nav
-        className={Container}
+        className={`${container} ${chatMode && 'chat-mode'}`}
         style={{
-          position: chatMode ? 'relative' : 'fixed'
+          position: 'fixed'
         }}
       >
         <div className="desktop">
@@ -187,7 +188,7 @@ class Header extends Component {
             <span style={{ color: logoGreen }}>kle</span>
           </Link>
         </div>
-        <div className={MainTabs}>
+        <div className="main-tabs">
           <div
             className="nav navbar-nav"
             style={{
@@ -198,7 +199,11 @@ class Header extends Component {
           >
             {!chatMode && (
               <Fragment>
-                <HeaderNav className="mobile" imgLabel="user" onClick={onMobileMenuOpen}>
+                <HeaderNav
+                  className="mobile"
+                  imgLabel="user"
+                  onClick={onMobileMenuOpen}
+                >
                   Menu
                 </HeaderNav>
                 <HeaderNav
@@ -220,7 +225,28 @@ class Header extends Component {
                 <HeaderNav to="/links" imgLabel="book">
                   Read
                 </HeaderNav>
+                <div
+                  className="header-nav mobile"
+                  onClick={onChatButtonClick}
+                >
+                  <a><span className="glyphicon glyphicon-comment" /></a>
+                </div>
               </Fragment>
+            )}
+            {chatMode && (
+              <div
+                className="header-nav mobile"
+                style={{ display: 'flex', alignItems: 'center' }}
+                onClick={turnChatOff}
+              >
+                <div>
+                  <span
+                    style={{ marginTop: '1.5rem' }}
+                    className="glyphicon glyphicon-remove"
+                  />
+                </div>
+                <div style={{ marginLeft: '1rem' }}>Tap to close chat</div>
+              </div>
             )}
           </div>
         </div>

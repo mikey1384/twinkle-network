@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Link, Route } from 'react-router-dom'
-import { HeaderNavStyle } from './Styles'
 
 export default class HeaderNav extends Component {
   static propTypes = {
@@ -31,7 +30,7 @@ export default class HeaderNav extends Component {
         path={to}
         exact={isHome && !isUsername}
         children={({ match }) => (
-          <div className={`${className} ${HeaderNavStyle}`}>
+          <div className={`${className} header-nav`}>
             {to ? (
               <Link
                 className={to && match && 'active'}

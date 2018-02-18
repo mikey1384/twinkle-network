@@ -116,7 +116,7 @@ class SubjectHeader extends Component {
                     className="btn btn-info"
                     onClick={() => this.setState({ onEdit: true })}
                   >
-                    Change the Subject
+                    Change Subject
                   </Button>
                 </div>
               </Fragment>

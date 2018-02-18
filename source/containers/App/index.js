@@ -74,9 +74,7 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    let elements = document.documentElement.childNodes
     const {
-      chatMode,
       chatNumUnreads,
       history,
       location,
@@ -118,26 +116,14 @@ class App extends Component {
       let title = `${
         chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
       }Twinkle`
-      let display = chatMode ? 'none' : 'inline'
       document.title = title
-      for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') {
-          elements[i].style.display = display
-        }
-      }
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
       let title = `${
         chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
       }Twinkle`
-      let display = chatMode ? 'none' : 'inline'
       document.title = title
-      for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'GRAMMARLY-CARD') {
-          elements[i].style.display = display
-        }
-      }
     }
   }
 
@@ -152,8 +138,7 @@ class App extends Component {
       history,
       turnChatOff,
       username,
-      resetChat,
-      loggedIn
+      resetChat
     } = this.props
     const {
       chatLoading,
@@ -213,12 +198,7 @@ class App extends Component {
           }
           onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
-        <div
-          className={siteContent}
-          style={{
-            display: chatMode && loggedIn && 'none'
-          }}
-        >
+        <div className={siteContent}>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />

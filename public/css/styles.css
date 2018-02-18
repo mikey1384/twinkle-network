@@ -239,6 +239,9 @@ body {
 }
 
 @media (max-width: 991px) {
+  .chat-mode {
+    top: 0!important;
+  }
   .mobile {
     display: flex!important;
   }
