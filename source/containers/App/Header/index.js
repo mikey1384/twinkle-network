@@ -28,7 +28,7 @@ import HeaderNav from './HeaderNav'
 import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
-import { container } from './styles'
+import { container } from './Styles'
 
 class Header extends Component {
   static propTypes = {

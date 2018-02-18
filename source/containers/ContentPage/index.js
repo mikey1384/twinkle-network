@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Route, Switch } from 'react-router-dom'
 import NotFound from 'components/NotFound'
 import Content from './Content'
-import { contentPage } from './styles'
+import { contentPage } from './Styles'
 
 CommentPage.propTypes = {
   match: PropTypes.object.isRequired

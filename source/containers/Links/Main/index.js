@@ -7,7 +7,7 @@ import LinkGroup from './LinkGroup'
 import Notification from 'components/Notification'
 import { connect } from 'react-redux'
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions'
-import { container } from './styles'
+import { container } from './Styles'
 
 class Main extends Component {
   static propTypes = {

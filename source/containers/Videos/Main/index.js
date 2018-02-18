@@ -23,7 +23,7 @@ import {
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { main } from './styles'
+import { main } from './Styles'
 
 class Main extends Component {
   static propTypes = {
