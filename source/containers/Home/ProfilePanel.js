@@ -63,10 +63,12 @@ class ProfilePanel extends Component {
     const canEdit = userId === profile.id || isCreator
     return (
       <div
-        className="panel panel-default"
         style={{
-          borderTop: '#e7e7e7 1px solid',
-          padding: '2rem'
+          border: '#e7e7e7 1px solid',
+          background: '#fff',
+          marginBottom: '1rem',
+          padding: '2rem',
+          borderRadius: '5px'
         }}
       >
         <div
