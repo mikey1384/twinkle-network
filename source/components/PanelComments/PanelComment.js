@@ -14,7 +14,7 @@ import LikeButton from 'components/LikeButton'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
-import { Style } from './Style'
+import { container } from './Styles'
 import { connect } from 'react-redux'
 
 class PanelComment extends Component {
@@ -101,27 +101,28 @@ class PanelComment extends Component {
     }
     return (
       <div
-        style={Style.container}
+        className={container}
         ref={ref => {
           this.PanelComment = ref
         }}
       >
-        <div style={Style.contentWrapper}>
+        <div className="content-wrapper">
           <ProfilePic
-            style={Style.profilePic}
+            className="profile-pic"
+            style={{ height: '7%', width: '7%' }}
             userId={comment.userId}
             profilePicId={comment.profilePicId}
           />
-          <div style={Style.innerContentWrapper}>
+          <section>
             <div>
               <UsernameText
-                style={Style.usernameText}
+                className="username"
                 user={{
                   name: comment.username,
                   id: comment.userId
                 }}
               />{' '}
-              <small style={Style.timeStamp}>
+              <small className="timestamp">
                 &nbsp;{timeSince(comment.timeStamp)}
               </small>
             </div>
@@ -129,7 +130,7 @@ class PanelComment extends Component {
               {comment.targetUserId &&
                 !!comment.replyId &&
                 comment.replyId !== parent.id && (
-                  <span style={Style.toText}>
+                  <span className="to">
                     to:{' '}
                     <UsernameText
                       user={{
@@ -148,7 +149,7 @@ class PanelComment extends Component {
                 />
               ) : (
                 <div>
-                  <LongText style={Style.longText}>{comment.content}</LongText>
+                  <LongText className="content">{comment.content}</LongText>
                   <div>
                     <div>
                       <LikeButton
@@ -157,8 +158,7 @@ class PanelComment extends Component {
                         small
                       />
                       <Button
-                        style={Style.replyButton}
-                        className="btn btn-warning btn-sm"
+                        className="btn btn-warning btn-sm reply-button"
                         onClick={this.onReplyButtonClick}
                       >
                         <span className="glyphicon glyphicon-comment" /> Reply
@@ -166,7 +166,7 @@ class PanelComment extends Component {
                     </div>
                     <small>
                       <Likers
-                        style={Style.likers}
+                        className="likers"
                         userId={userId}
                         likes={comment.likes}
                         onLinkClick={() =>
@@ -199,11 +199,11 @@ class PanelComment extends Component {
                 numReplies={replies.length}
               />
             )}
-          </div>
+          </section>
         </div>
         {canEdit &&
           !onEdit && (
-            <div style={Style.dropdownWrapper}>
+            <div className="dropdown-wrapper">
               <DropdownButton
                 shape="button"
                 icon="pencil"

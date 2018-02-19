@@ -7,6 +7,7 @@ import { Color } from 'constants/css'
 class UsernameText extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
+    className: PropTypes.string,
     color: PropTypes.string,
     style: PropTypes.object,
     openDirectMessageChannel: PropTypes.func.isRequired,
@@ -26,13 +27,14 @@ class UsernameText extends Component {
 
   render() {
     const { menuShown } = this.state
-    const { user, userId, color, style } = this.props
+    const { user, userId, color, className, style } = this.props
     return (
       <span
         className="dropdown"
         onMouseLeave={() => this.setState({ menuShown: false })}
       >
         <b
+          className={className}
           style={{
             cursor: 'pointer',
             color: user.name ? color && color : Color.darkGray,

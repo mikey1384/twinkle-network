@@ -20,7 +20,7 @@ export default function Likers({
   target,
   userId,
   onLinkClick,
-  style = null,
+  style = {},
   className,
   defaultText
 }) {
@@ -47,7 +47,7 @@ export default function Likers({
           let otherLikerName = otherLikes[0].username
           return (
             <div>
-              You and <strong>{otherLikerName}</strong> like{' '}
+              You and {otherLikerName} like{' '}
               {`this${target ? ' ' + target : ''}.`}
             </div>
           )
@@ -55,11 +55,9 @@ export default function Likers({
           return (
             <div>
               You and{' '}
-              <strong>
-                <a style={{ cursor: 'pointer' }} onClick={() => onLinkClick()}>
-                  {totalLikes} others
-                </a>
-              </strong>{' '}
+              <a style={{ cursor: 'pointer' }} onClick={() => onLinkClick()}>
+                {totalLikes} others
+              </a>{' '}
               like {`this${target ? ' ' + target : ''}.`}
             </div>
           )
@@ -71,18 +69,15 @@ export default function Likers({
         const likerName = likes[0].username
         return (
           <div>
-            <strong>{likerName}</strong> likes{' '}
-            {`this${target ? ' ' + target : ''}.`}
+            {likerName} likes {`this${target ? ' ' + target : ''}.`}
           </div>
         )
       } else {
         return (
           <div>
-            <strong>
-              <a style={{ cursor: 'pointer' }} onClick={() => onLinkClick()}>
-                {totalLikes} people
-              </a>
-            </strong>{' '}
+            <a style={{ cursor: 'pointer' }} onClick={() => onLinkClick()}>
+              {totalLikes} people
+            </a>{' '}
             like {`this${target ? ' ' + target : ''}.`}
           </div>
         )

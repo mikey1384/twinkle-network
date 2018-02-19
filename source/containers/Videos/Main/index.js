@@ -178,7 +178,7 @@ class Main extends Component {
             style={{
               fontSize: '1.5em',
               width: '100%',
-              marginBottom: '0.5em'
+              marginBottom: '1rem'
             }}
             onClick={() => openAddVideoModal()}
           >

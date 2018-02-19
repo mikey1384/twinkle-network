@@ -11,6 +11,7 @@ export default function UnorderedList({ children }) {
   const StyledList = styled('ul')`
     list-style: none;
     padding: 0;
+    margin-bottom: 0;
     li {
       width: 100%;
       background: #fff;

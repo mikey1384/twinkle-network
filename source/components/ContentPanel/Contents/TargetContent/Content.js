@@ -92,7 +92,7 @@ class Content extends Component {
           !isDiscussion ? (
             <div>
               {rootType === 'question' && (
-                <div style={{ fontSize: '1.2em', marginBottom: '1em' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <ContentLink
                     content={{ id: rootId, title: 'Question: ' }}
                     type="question"
@@ -140,12 +140,9 @@ class Content extends Component {
                   <span className="glyphicon glyphicon-comment" />&nbsp; Reply
                 </Button>
                 <Likers
+                  className="likers"
                   style={{
-                    fontSize: '11px',
-                    marginTop: '0.5rem',
-                    marginBottom: replyInputShown ? '1rem' : null,
-                    fontWeight: 'bold',
-                    color: Color.green
+                    marginBottom: replyInputShown ? '1rem' : null
                   }}
                   userId={myId}
                   likes={likes}

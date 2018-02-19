@@ -1,13 +1,6 @@
 import { css } from 'react-emotion'
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css'
 
-export const likers = css`
-  margin-top: 0.5rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: ${Color.green};
-`
-
 export const container = css`
   background: #fff;
   width: 100%;
@@ -22,6 +15,12 @@ export const container = css`
   }
   .body {
     padding: 1rem 1.5rem 1.5rem 1.5rem;
+  }
+  .likers {
+    margin-top: 0.5rem;
+    font-weight: bold;
+    color: ${Color.green};
+    font-size: 1.2rem;
   }
   .question {
     font-size: 2rem;
@@ -42,6 +41,9 @@ export const container = css`
     border-right: none;
     .body {
       font-size: 2rem;
+    }
+    .likers {
+      font-size: 1.7rem;
     }
     .question {
       font-size: 3rem;

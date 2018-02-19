@@ -10,7 +10,6 @@ import VideoPlayer from 'components/VideoPlayer'
 import PanelComments from 'components/PanelComments'
 import MainContent from './MainContent'
 import TargetContent from './TargetContent'
-import { likers } from '../Styles'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 
@@ -215,7 +214,7 @@ class Contents extends Component {
               />
             )}
             <Likers
-              className={likers}
+              className="likers"
               userId={myId}
               likes={contentLikers}
               onLinkClick={() => this.setState({ userListModalShown: true })}

@@ -13,7 +13,7 @@ import ReplyInputArea from './ReplyInputArea'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
-import { Style } from '../Style'
+import { container } from '../Styles'
 import { connect } from 'react-redux'
 
 class PanelReply extends Component {
@@ -96,27 +96,27 @@ class PanelReply extends Component {
     const canEdit = reply.userId === userId || isCreator
     return (
       <div
-        style={Style.container}
+        style={container}
         ref={ref => {
           this.PanelReply = ref
         }}
       >
-        <div style={Style.contentWrapper}>
+        <div className="content-wrapper">
           <ProfilePic
-            style={Style.profilePic}
+            style={{ height: '7%', width: '7%' }}
             userId={reply.userId}
             profilePicId={reply.profilePicId}
           />
-          <div style={Style.innerContentWrapper}>
+          <section>
             <div>
               <UsernameText
-                style={Style.usernameText}
+                className="username"
                 user={{
                   name: reply.username,
                   id: reply.userId
                 }}
               />{' '}
-              <small style={Style.timeStamp}>
+              <small className="timestamp">
                 &nbsp;{timeSince(reply.timeStamp)}
               </small>
             </div>
@@ -124,7 +124,7 @@ class PanelReply extends Component {
               {reply.targetUserId &&
                 !!reply.replyId &&
                 reply.replyId !== comment.id && (
-                  <span style={Style.toText}>
+                  <span className="to">
                     to:{' '}
                     <UsernameText
                       user={{
@@ -143,7 +143,7 @@ class PanelReply extends Component {
                 />
               ) : (
                 <div>
-                  <LongText style={Style.longText}>{reply.content}</LongText>
+                  <LongText className="content">{reply.content}</LongText>
                   <div>
                     <div>
                       <LikeButton
@@ -153,8 +153,7 @@ class PanelReply extends Component {
                       />
                       {type !== 'comment' && (
                         <Button
-                          style={Style.replyButton}
-                          className="btn btn-warning btn-sm"
+                          className="btn btn-warning btn-sm reply-button"
                           onClick={this.onReplyButtonClick}
                         >
                           <span className="glyphicon glyphicon-comment" /> Reply
@@ -163,7 +162,7 @@ class PanelReply extends Component {
                     </div>
                     <small>
                       <Likers
-                        style={Style.likers}
+                        className="likers"
                         userId={userId}
                         likes={reply.likes}
                         onLinkClick={() =>
@@ -181,15 +180,14 @@ class PanelReply extends Component {
                 clickListenerState={clickListenerState}
               />
             )}
-          </div>
+          </section>
         </div>
         {canEdit &&
           !onEdit && (
-            <div style={Style.dropdownWrapper}>
+            <div className="dropdown-wrapper">
               <DropdownButton
                 shape="button"
                 icon="pencil"
-                style={Style.dropdownButton}
                 opacity={0.8}
                 menuProps={[
                   {
