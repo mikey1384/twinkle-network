@@ -18,8 +18,8 @@ export const container = css`
     width: 100%;
     position: relative;
     section {
-      width: 100%;
-      margin-left: 2%;
+      margin-left: 1rem;
+      width: 93%;
     }
   }
   .timestamp {

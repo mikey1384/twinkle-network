@@ -96,7 +96,7 @@ class PanelReply extends Component {
     const canEdit = reply.userId === userId || isCreator
     return (
       <div
-        style={container}
+        className={container}
         ref={ref => {
           this.PanelReply = ref
         }}
