@@ -20,7 +20,7 @@ export default function Likers({
   target,
   userId,
   onLinkClick,
-  style = {},
+  style = null,
   className,
   defaultText
 }) {
