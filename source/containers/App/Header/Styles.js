@@ -16,28 +16,39 @@ export const container = css`
       color: ${Color.menuGray};
     }
     a {
-      color: ${Color.menuGray};
       text-decoration: none;
       margin-left: 0.5rem;
-      .glyphicon {
+      span {
+        color: ${Color.menuGray};
+      }
+      span.new {
+        color: ${Color.lightBlue};
+      }
+      span.glyphicon {
         margin-top: 2%;
         margin-right: 0.7rem;
-        color: ${Color.menuGray};
         display: block;
       }
     }
     a.active {
-      color: ${Color.black};
       span {
         color: ${Color.black};
       }
+      span.no-hover {
+        color: ${Color.menuGray}!important;
+      }
     }
     &:hover {
-      .glyphicon {
-        color: ${Color.black};
-      }
       a {
-        color: ${Color.black};
+        span {
+          color: ${Color.black};
+        }
+        span.no-hover {
+          color: ${Color.menuGray}!important;
+        }
+        span.new {
+          color: ${Color.lightBlue}!important;
+        }
       }
     }
     @media (max-width: ${mobileMaxWidth}) {

@@ -50,7 +50,7 @@ export default class HeaderNav extends Component {
                 style={{ display: 'flex', cursor: 'pointer' }}
                 onClick={onClick}
               >
-                <span className={`glyphicon glyphicon-${imgLabel}`} />
+                <span className={`glyphicon glyphicon-${imgLabel} no-hover`} />
                 <span className="nav-label">{children}</span>
               </a>
             )}

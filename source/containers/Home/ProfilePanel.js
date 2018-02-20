@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { processedStringWithURL } from 'helpers/stringHelpers'
 import { withRouter } from 'react-router'
 import { Color } from 'constants/css'
+import { profilePanel } from './Styles'
 
 class ProfilePanel extends Component {
   static propTypes = {
@@ -26,21 +27,12 @@ class ProfilePanel extends Component {
     uploadProfilePic: PropTypes.func
   }
 
-  constructor() {
-    super()
-    this.state = {
-      imageUri: null,
-      processing: false,
-      imageEditModalShown: false,
-      bioEditModalShown: false,
-      alertModalShown: false
-    }
-    this.onChangeProfilePictureClick = this.onChangeProfilePictureClick.bind(
-      this
-    )
-    this.handlePicture = this.handlePicture.bind(this)
-    this.uploadBio = this.uploadBio.bind(this)
-    this.uploadImage = this.uploadImage.bind(this)
+  state = {
+    imageUri: null,
+    processing: false,
+    imageEditModalShown: false,
+    bioEditModalShown: false,
+    alertModalShown: false
   }
 
   render() {
@@ -62,145 +54,128 @@ class ProfilePanel extends Component {
     const { profileFirstRow, profileSecondRow, profileThirdRow } = profile
     const canEdit = userId === profile.id || isCreator
     return (
-      <div
-        style={{
-          border: '#e7e7e7 1px solid',
-          background: '#fff',
-          marginBottom: '1rem',
-          padding: '2rem',
-          borderRadius: '5px'
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            width: '100%'
-          }}
-        >
-          <div style={{ width: '33%', height: '33%', display: 'flex' }}>
-            <ProfilePic
-              style={{ width: '87%', height: '87%' }}
-              userId={profile.id}
-              profilePicId={profile.profilePicId}
-            />
+      <div className={profilePanel}>
+        <div style={{ width: '33%', height: '33%', display: 'flex' }}>
+          <ProfilePic
+            style={{ width: '87%', height: '87%' }}
+            userId={profile.id}
+            profilePicId={profile.profilePicId}
+          />
+        </div>
+        <div style={{ width: '70%', display: 'flex', flexDirection: 'column' }}>
+          <div>
+            <span style={{ fontSize: '3.5rem', fontWeight: 'bold' }}>
+              {profile.username}
+            </span>{' '}
+            <span style={{ fontSize: '1.5rem', color: Color.gray }}>{`(${
+              profile.realName
+            })`}</span>
           </div>
-          <div
-            style={{ width: '70%', display: 'flex', flexDirection: 'column' }}
-          >
-            <div>
-              <span style={{ fontSize: '3.5rem', fontWeight: 'bold' }}>
-                {profile.username}
-              </span>{' '}
-              <span style={{ fontSize: '1.5rem', color: Color.gray }}>{`(${
-                profile.realName
-              })`}</span>
-            </div>
-            {userId !== profile.id &&
-              !!profile.online && (
-                <p
-                  style={{
-                    color: Color.green,
-                    fontSize: '1.5rem',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  (online)
-                </p>
-              )}
-            {(!!profileFirstRow || !!profileSecondRow || !!profileThirdRow) && (
-              <ul
+          {userId !== profile.id &&
+            !!profile.online && (
+              <p
                 style={{
-                  wordBreak: 'break-word',
-                  paddingLeft: '2rem'
+                  color: Color.green,
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold'
                 }}
               >
-                {!!profileFirstRow && (
-                  <li
-                    dangerouslySetInnerHTML={{
-                      __html: processedStringWithURL(profileFirstRow)
-                    }}
-                  />
-                )}
-                {!!profileSecondRow && (
-                  <li
-                    dangerouslySetInnerHTML={{
-                      __html: processedStringWithURL(profileSecondRow)
-                    }}
-                  />
-                )}
-                {!!profileThirdRow && (
-                  <li
-                    dangerouslySetInnerHTML={{
-                      __html: processedStringWithURL(profileThirdRow)
-                    }}
-                  />
-                )}
-              </ul>
+                (online)
+              </p>
             )}
-            <div>
-              {!profileFirstRow &&
-                !profileSecondRow &&
-                !profileThirdRow &&
-                userId === profile.id && (
-                  <p>
-                    **Add your bio so that your Twinkle friends can know you
-                    better
-                  </p>
-                )}
-              {canEdit && (
+          {(!!profileFirstRow || !!profileSecondRow || !!profileThirdRow) && (
+            <ul
+              style={{
+                wordBreak: 'break-word',
+                paddingLeft: '2rem'
+              }}
+            >
+              {!!profileFirstRow && (
+                <li
+                  dangerouslySetInnerHTML={{
+                    __html: processedStringWithURL(profileFirstRow)
+                  }}
+                />
+              )}
+              {!!profileSecondRow && (
+                <li
+                  dangerouslySetInnerHTML={{
+                    __html: processedStringWithURL(profileSecondRow)
+                  }}
+                />
+              )}
+              {!!profileThirdRow && (
+                <li
+                  dangerouslySetInnerHTML={{
+                    __html: processedStringWithURL(profileThirdRow)
+                  }}
+                />
+              )}
+            </ul>
+          )}
+          <div>
+            {!profileFirstRow &&
+              !profileSecondRow &&
+              !profileThirdRow &&
+              userId === profile.id && (
+                <p>
+                  **Add your bio so that your Twinkle friends can know you
+                  better
+                </p>
+              )}
+            {canEdit && (
+              <div style={{ marginTop: '1.5rem' }}>
+                <Button
+                  className="btn btn-sm btn-default"
+                  onClick={() => this.setState({ bioEditModalShown: true })}
+                >
+                  Edit Bio
+                </Button>
+                <br />
+                <Button
+                  className="btn btn-sm btn-default"
+                  style={{ marginTop: '0.5rem' }}
+                  onClick={this.onChangeProfilePictureClick}
+                >
+                  Change Profile Picture
+                </Button>
+              </div>
+            )}
+            {expandable &&
+              userId !== profile.id && (
                 <div style={{ marginTop: '1.5rem' }}>
                   <Button
-                    className="btn btn-sm btn-default"
-                    onClick={() => this.setState({ bioEditModalShown: true })}
+                    className="btn btn-lg btn-info"
+                    onClick={() => history.push(`/users/${profile.username}`)}
                   >
-                    Edit Bio
+                    View Profile
                   </Button>
-                  <br />
                   <Button
-                    className="btn btn-sm btn-default"
-                    style={{ marginTop: '0.5rem' }}
-                    onClick={this.onChangeProfilePictureClick}
+                    style={{ marginLeft: '0.5rem' }}
+                    className="btn btn-lg btn-success"
+                    onClick={() =>
+                      openDirectMessageChannel(
+                        { userId },
+                        { userId: profile.id, username: profile.username },
+                        false
+                      )
+                    }
                   >
-                    Change Profile Picture
+                    Message
                   </Button>
                 </div>
               )}
-              {expandable &&
-                userId !== profile.id && (
-                  <div style={{ marginTop: '1.5rem' }}>
-                    <Button
-                      className="btn btn-lg btn-info"
-                      onClick={() => history.push(`/users/${profile.username}`)}
-                    >
-                      View Profile
-                    </Button>
-                    <Button
-                      style={{ marginLeft: '0.5rem' }}
-                      className="btn btn-lg btn-success"
-                      onClick={() =>
-                        openDirectMessageChannel(
-                          { userId },
-                          { userId: profile.id, username: profile.username },
-                          false
-                        )
-                      }
-                    >
-                      Message
-                    </Button>
-                  </div>
-                )}
-            </div>
           </div>
-          <input
-            ref={ref => {
-              this.fileInput = ref
-            }}
-            style={{ display: 'none' }}
-            type="file"
-            onChange={this.handlePicture}
-            accept="image/*"
-          />
         </div>
+        <input
+          ref={ref => {
+            this.fileInput = ref
+          }}
+          style={{ display: 'none' }}
+          type="file"
+          onChange={this.handlePicture}
+          accept="image/*"
+        />
         {bioEditModalShown && (
           <BioEditModal
             firstLine={profileFirstRow}
@@ -239,11 +214,11 @@ class ProfilePanel extends Component {
     )
   }
 
-  onChangeProfilePictureClick() {
+  onChangeProfilePictureClick = () => {
     this.fileInput.click()
   }
 
-  handlePicture(event) {
+  handlePicture = event => {
     const reader = new FileReader()
     const maxSize = 5000
     const file = event.target.files[0]
@@ -261,7 +236,7 @@ class ProfilePanel extends Component {
     event.target.value = null
   }
 
-  uploadBio(params) {
+  uploadBio = params => {
     const { profile, uploadBio } = this.props
     uploadBio({ ...params, profileId: profile.id }, () => {
       this.setState({
@@ -270,7 +245,7 @@ class ProfilePanel extends Component {
     })
   }
 
-  uploadImage(image) {
+  uploadImage = image => {
     const { uploadProfilePic } = this.props
 
     this.setState({

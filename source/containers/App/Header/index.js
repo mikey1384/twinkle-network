@@ -169,7 +169,7 @@ class Header extends Component {
     const { logoBlue, logoGreen } = this.state
     return (
       <nav
-        className={`${container} ${chatMode && 'chat-mode'}`}
+        className={`${container} ${chatMode && 'header chat'}`}
         style={{
           position: 'fixed'
         }}
@@ -200,7 +200,7 @@ class Header extends Component {
             {!chatMode && (
               <Fragment>
                 <HeaderNav
-                  className="mobile"
+                  className={chatLoading ? 'hidden' : 'mobile'}
                   imgLabel="user"
                   onClick={onMobileMenuOpen}
                 >
@@ -209,6 +209,7 @@ class Header extends Component {
                 <HeaderNav
                   to="/"
                   isHome
+                  className={chatLoading ? 'desktop' : ''}
                   imgLabel="home"
                   isUsername={
                     pathname.split('/')[1] !== 'videos' &&
@@ -219,17 +220,33 @@ class Header extends Component {
                 >
                   Home
                 </HeaderNav>
-                <HeaderNav to="/videos" imgLabel="film">
+                <HeaderNav
+                  to="/videos"
+                  className={chatLoading ? 'desktop' : ''}
+                  imgLabel="film"
+                >
                   Watch
                 </HeaderNav>
-                <HeaderNav to="/links" imgLabel="book">
+                <HeaderNav
+                  to="/links"
+                  className={chatLoading ? 'desktop' : ''}
+                  imgLabel="book"
+                >
                   Read
                 </HeaderNav>
                 <div
-                  className="header-nav mobile"
+                  className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
                   onClick={onChatButtonClick}
                 >
-                  <a><span className="glyphicon glyphicon-comment" /></a>
+                  <a>
+                    <span
+                      className={`glyphicon glyphicon-comment no-hover ${numChatUnreads >
+                        0 && 'new'}`}
+                    />
+                  </a>
+                </div>
+                <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
+                  Loading...
                 </div>
               </Fragment>
             )}

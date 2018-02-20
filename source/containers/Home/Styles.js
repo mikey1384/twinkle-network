@@ -118,3 +118,18 @@ export const Right = css`
   }
 `
 
+export const profilePanel = css`
+  border: #e7e7e7 1px solid;
+  display: flex;
+  width: 100%;
+  background: #fff;
+  margin-bottom: 1rem;
+  padding: 2rem;
+  border-radius: 5px;
+  @media (max-width: ${mobileMaxWidth}) {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+`
+
