@@ -120,18 +120,18 @@ export default class Heading extends Component {
       case 'video':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} /> uploaded a
+            <UsernameText user={uploader} color={Color.blue()} /> uploaded a
             video: <ContentLink content={rootContent} type={rootType} />{' '}
           </Fragment>
         )
       case 'comment':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} />{' '}
+            <UsernameText user={uploader} color={Color.blue()} />{' '}
             <ContentLink
               content={{ id: contentId, title: action }}
               type={type}
-              style={{ color: Color.green }}
+              style={{ color: Color.green() }}
             />{' '}
             {this.renderTargetAction()} {contentLabel}:{' '}
             <ContentLink content={rootContent} type={rootType} />{' '}
@@ -140,7 +140,7 @@ export default class Heading extends Component {
       case 'url':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} /> shared a
+            <UsernameText user={uploader} color={Color.blue()} /> shared a
             link:&nbsp;
             <ContentLink content={rootContent} type={rootType} />{' '}
           </Fragment>
@@ -148,22 +148,22 @@ export default class Heading extends Component {
       case 'question':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} /> asked a{' '}
+            <UsernameText user={uploader} color={Color.blue()} /> asked a{' '}
             <ContentLink
               content={{ id: contentId, title: 'question' }}
               type={type}
-              style={{ color: Color.green }}
+              style={{ color: Color.green() }}
             />{' '}
           </Fragment>
         )
       case 'discussion':
         return (
           <Fragment>
-            <UsernameText user={uploader} color={Color.blue} /> started a{' '}
+            <UsernameText user={uploader} color={Color.blue()} /> started a{' '}
             <ContentLink
               content={{ id: contentId, title: 'discussion' }}
               type={type}
-              style={{ color: Color.green }}
+              style={{ color: Color.green() }}
             />
             &nbsp;on {contentLabel}:{' '}
             <ContentLink content={rootContent} type={rootType} />
@@ -203,7 +203,7 @@ export default class Heading extends Component {
                   float: 'right',
                   cursor: 'pointer',
                   fontWeight: 'bold',
-                  color: Color.blue
+                  color: Color.blue()
                 }}
                 onClick={onPlayVideoClick}
               >
@@ -226,7 +226,7 @@ export default class Heading extends Component {
     } else if (rootType === 'question') {
       return (
         <Button
-          className="btn btn-success"
+          success
           onClick={() => this.setState({ questionModalShown: true })}
         >
           Answer
@@ -244,7 +244,7 @@ export default class Heading extends Component {
     if (targetReplyUploader) {
       return (
         <span>
-          <UsernameText user={targetReplyUploader} color={Color.blue} />
+          <UsernameText user={targetReplyUploader} color={Color.blue()} />
           {"'s "}
           <ContentLink
             content={{ id: replyId, title: 'reply ' }}
@@ -257,12 +257,12 @@ export default class Heading extends Component {
     } else if (targetCommentUploader) {
       return (
         <span>
-          <UsernameText user={targetCommentUploader} color={Color.blue} />
+          <UsernameText user={targetCommentUploader} color={Color.blue()} />
           {"'s "}
           <ContentLink
             content={{ id: commentId, title: 'comment ' }}
             type="comment"
-            style={{ color: Color.green }}
+            style={{ color: Color.green() }}
           />
           {'on'}
         </span>

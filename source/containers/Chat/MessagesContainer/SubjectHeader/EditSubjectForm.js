@@ -231,7 +231,7 @@ class EditSubjectForm extends Component {
       <div>
         <div
           style={{
-            color: Color.green,
+            color: Color.green(),
             fontWeight: 'bold'
           }}
         >

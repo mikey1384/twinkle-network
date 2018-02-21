@@ -64,10 +64,10 @@ class ProfilePanel extends Component {
         </div>
         <div style={{ width: '70%', display: 'flex', flexDirection: 'column' }}>
           <div>
-            <span style={{ fontSize: '3.5rem', fontWeight: 'bold' }}>
+            <span style={{ fontSize: '3.5rem', fontWeight: 'bold', color: Color.darkGray() }}>
               {profile.username}
             </span>{' '}
-            <span style={{ fontSize: '1.5rem', color: Color.gray }}>{`(${
+            <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
               profile.realName
             })`}</span>
           </div>
@@ -75,7 +75,7 @@ class ProfilePanel extends Component {
             !!profile.online && (
               <p
                 style={{
-                  color: Color.green,
+                  color: Color.green(),
                   fontSize: '1.5rem',
                   fontWeight: 'bold'
                 }}
@@ -145,14 +145,14 @@ class ProfilePanel extends Component {
               userId !== profile.id && (
                 <div style={{ marginTop: '1.5rem' }}>
                   <Button
-                    className="btn btn-lg btn-info"
+                    info
                     onClick={() => history.push(`/users/${profile.username}`)}
                   >
                     View Profile
                   </Button>
                   <Button
                     style={{ marginLeft: '0.5rem' }}
-                    className="btn btn-lg btn-success"
+                    success
                     onClick={() =>
                       openDirectMessageChannel(
                         { userId },

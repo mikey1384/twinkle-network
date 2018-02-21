@@ -4,7 +4,7 @@ import { timeSince } from 'helpers/timeStampHelpers'
 import { Color } from 'constants/css'
 import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
-import UnorderedList from 'components/UnorderedList'
+import RoundList from 'components/RoundList'
 
 NotiFeeds.propTypes = {
   myId: PropTypes.number,
@@ -31,7 +31,7 @@ NotiFeeds.propTypes = {
 export default function NotiFeeds({ myId, notifications, style }) {
   return (
     <div style={style}>
-      <UnorderedList>
+      <RoundList>
         {notifications.length > 0 &&
           notifications.map(notification => {
             return (
@@ -40,13 +40,13 @@ export default function NotiFeeds({ myId, notifications, style }) {
                 key={notification.id}
               >
                 {renderNotificationMessage(notification, myId)}
-                <small style={{ color: Color.gray }}>
+                <small style={{ color: Color.gray() }}>
                   {timeSince(notification.timeStamp)}
                 </small>
               </li>
             )
           })}
-      </UnorderedList>
+      </RoundList>
     </div>
   )
 }
@@ -114,7 +114,7 @@ function renderNotificationMessage(notification, myId) {
   }
   return (
     <div>
-      <UsernameText user={{ id: userId, name: username }} color={Color.blue} />
+      <UsernameText user={{ id: userId, name: username }} color={Color.blue()} />
       &nbsp;{action} {target}
       <ContentLink
         content={content}
@@ -136,7 +136,7 @@ function renderNotificationMessage(notification, myId) {
         : type === 'reply' ? 'replied to' : 'answered'
     return (
       <ContentLink
-        style={{ color: Color.green }}
+        style={{ color: Color.green() }}
         content={{ id: contentId, title }}
         type="comment"
       />

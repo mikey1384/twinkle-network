@@ -2,13 +2,20 @@ import { css } from 'react-emotion'
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css'
 
 export const container = css`
-  background: ${Color.headingGray};
+  font-family: Helvetica;
+  font-size: 1.5rem;
+  background: ${Color.heading()};
+  padding: 0.5rem;
   display: flex;
   z-index: 100;
   justify-content: space-around;
   align-items: center;
   width: 100%;
   margin-bottom: 0px;
+  .logo {
+    font-size: 2rem;
+    padding: 1rem;
+  }
   .header-nav {
     display: flex;
     margin-right: 2rem;
@@ -19,20 +26,20 @@ export const container = css`
       text-decoration: none;
       margin-left: 0.5rem;
       span {
-        color: ${Color.menuGray};
+        color: ${Color.menuGray()};
       }
       span.new {
-        color: ${Color.lightBlue};
+        color: ${Color.lightBlue()};
       }
       span.glyphicon {
-        margin-top: 2%;
+        line-height: 1.7rem;
         margin-right: 0.7rem;
         display: block;
       }
     }
     a.active {
       span {
-        color: ${Color.black};
+        color: ${Color.darkGray()};
       }
       span.no-hover {
         color: ${Color.menuGray}!important;
@@ -41,13 +48,10 @@ export const container = css`
     &:hover {
       a {
         span {
-          color: ${Color.black};
-        }
-        span.no-hover {
-          color: ${Color.menuGray}!important;
+          color: ${Color.darkGray()};
         }
         span.new {
-          color: ${Color.lightBlue}!important;
+          color: ${Color.lightBlue()}!important;
         }
       }
     }
@@ -78,11 +82,11 @@ export const container = css`
   }
   @media (min-width: ${desktopMinWidth}) {
     top: 0;
-    border-bottom: 1px solid ${Color.borderGray};
+    border-bottom: 1px solid ${Color.borderGray()};
   }
   @media (max-width: ${mobileMaxWidth}) {
     bottom: 0;
     height: 9rem;
-    border-top: 1px solid ${Color.borderGray};
+    border-top: 1px solid ${Color.borderGray()};
   }
 `

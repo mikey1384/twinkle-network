@@ -42,7 +42,7 @@ export default function TwinkleXP() {
             <br />
             <div style={Styles.paragraph}>
               You need to watch the video until the progress bar turns &nbsp;<span
-                style={{ color: Color.green, fontWeight: 'bold' }}
+                style={{ color: Color.green(), fontWeight: 'bold' }}
               >
                 green
               </span>

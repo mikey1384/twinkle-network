@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import request from 'axios'
 import ExecutionEnvironment from 'exenv'
 import { URL } from 'constants/URL'
+import { borderRadius } from 'constants/css'
 
 const API_URL = `${URL}/content`
 
@@ -87,7 +88,7 @@ export default class Embedly extends Component {
       position: 'relative',
       border: 'solid 1px #E1E8ED',
       display: 'block',
-      borderRadius: '5px',
+      borderRadius,
       overflow: 'hidden'
     }
     let imageStyle = {

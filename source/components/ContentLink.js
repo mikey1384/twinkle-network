@@ -40,7 +40,7 @@ function ContentLink({ style, content: { id, title }, type, ...actions }) {
     <Link
       style={{
         fontWeight: 'bold',
-        color: Color.blue,
+        color: Color.blue(),
         ...style
       }}
       to={`/${destination}/${id}`}
@@ -49,7 +49,7 @@ function ContentLink({ style, content: { id, title }, type, ...actions }) {
       {title}
     </Link>
   ) : (
-    <span style={{ fontWeight: 'bold', color: Color.darkGray }}>
+    <span style={{ fontWeight: 'bold', color: Color.darkGray() }}>
       (Deleted)
     </span>
   )

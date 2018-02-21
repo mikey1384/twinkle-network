@@ -18,7 +18,7 @@ export default function Flat({ isLoading, onClick, style }) {
         margin: '0',
         height: '3rem',
         cursor: isLoading ? 'default' : 'pointer',
-        backgroundColor: Color.green,
+        backgroundColor: Color.green(),
         color: '#fff',
         opacity: isLoading && '0.5',
         ...style

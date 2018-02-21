@@ -55,7 +55,7 @@ class SearchBox extends Component {
               >
                 <span
                   style={{
-                    color: item.type === 'video' ? Color.logoBlue : Color.pink,
+                    color: item.type === 'video' ? Color.logoBlue() : Color.pink(),
                     fontWeight: 'bold'
                   }}
                 >

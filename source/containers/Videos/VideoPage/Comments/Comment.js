@@ -123,7 +123,7 @@ class Comment extends Component {
               }}
               style={{ fontSize: '2.5rem' }}
             />{' '}
-            <small style={{ color: Color.gray }}>
+            <small style={{ color: Color.gray() }}>
               &nbsp;{timeSince(comment.timeStamp)}
             </small>
           </div>
@@ -139,7 +139,7 @@ class Comment extends Component {
               {!!comment.discussionTitle && (
                 <div
                   style={{
-                    color: Color.blue,
+                    color: Color.blue(),
                     fontWeight: 'bold',
                     marginBottom: '0.5em'
                   }}
@@ -183,7 +183,7 @@ class Comment extends Component {
                     style={{
                       fontWeight: 'bold',
                       marginLeft: '0.8em',
-                      color: Color.green,
+                      color: Color.green(),
                       marginTop: '1em'
                     }}
                     userId={userId}

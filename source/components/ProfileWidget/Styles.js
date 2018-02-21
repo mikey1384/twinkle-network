@@ -3,21 +3,24 @@ import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 
 export const container = css`
   display: flex;
-  border: 1px solid ${Color.borderGray};
-  border-radius: ${borderRadius};
+  border: none;
   flex-direction: column;
   width: 100%;
-  background: #fff;
   a {
     text-decoration: none;
   }
   .heading {
+    border: 1px solid ${Color.borderGray};
+    border-bottom: none;
+    border-radius: ${borderRadius};
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     display: flex;
+    background: ${Color.heading()};
     width: 100%;
     align-items: center;
     justify-content: flex-start;
-    background: ${Color.headingGray};
-    padding: 3%;
+    padding: 5%;
     .profile-pic {
       width: 40%;
       display: flex;
@@ -27,18 +30,23 @@ export const container = css`
       width: 60%;
       text-align: center;
       a {
+        color: ${Color.blue()};
         font-weight: bold;
         font-size: 2rem;
         text-overflow: ellipsis;
         overflow: hidden;
       }
       span {
-        color: ${Color.gray};
+        color: ${Color.menuGray()};
         font-size: 1rem;
       }
     }
   }
   .details {
+    border: 1px solid ${Color.borderGray};
+    border-bottom-left-radius: ${borderRadius};
+    border-bottom-right-radius: ${borderRadius};
+    background: #fff;
     padding: 2rem;
     .login-message {
       font-size: 2rem;

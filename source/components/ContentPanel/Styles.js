@@ -5,7 +5,7 @@ export const container = css`
   background: #fff;
   width: 100%;
   margin-bottom: 1.5rem;
-  border: 1px solid ${Color.borderGray};
+  border: 1px solid ${Color.borderGray()};
   border-radius: ${borderRadius};
   .heading {
     padding: 1rem 1.5rem;

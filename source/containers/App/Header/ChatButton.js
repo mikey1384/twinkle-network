@@ -18,7 +18,8 @@ export default function ChatButton({
   return (
     <Button
       {...props}
-      className={`btn ${chatMode ? 'btn-warning' : 'btn-default'}`}
+      success={!chatMode && numUnreads > 0}
+      love={chatMode}
       onClick={onClick}
       disabled={loading}
     >
@@ -34,12 +35,6 @@ export default function ChatButton({
         </span>
       )}
       {`${chatMode ? 'Close' : ' Talk'} `}
-      {!chatMode &&
-        numUnreads > 0 && (
-          <span className="badge" style={{ backgroundColor: 'red' }}>
-            {numUnreads}
-          </span>
-        )}
     </Button>
   )
 }

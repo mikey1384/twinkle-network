@@ -26,9 +26,9 @@ export default class LeaderBoard extends Component {
     return (
       <div className="col-xs-offset-8" style={Styles.rightMenu}>
         <div style={{ ...Styles.subHeader, textAlign: 'center' }}>
-          <span style={{ color: Color.logoGreen }}>Top</span>
-          &nbsp;<span style={{ color: Color.logoBlue }}>30</span>
-          &nbsp;<span style={{ color: Color.orange }}>Leaderboard</span>
+          <span style={{ color: Color.logoGreen() }}>Top</span>
+          &nbsp;<span style={{ color: Color.logoBlue() }}>30</span>
+          &nbsp;<span style={{ color: Color.gold() }}>Leaderboard</span>
         </div>
         {users.length === 0 && <Loading />}
         {users.length > 0 &&

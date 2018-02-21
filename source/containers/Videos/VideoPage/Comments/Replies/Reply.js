@@ -128,7 +128,7 @@ export default class Reply extends Component {
               }}
               style={{ fontSize: '2rem' }}
             />{' '}
-            <small style={{ color: Color.gray }}>
+            <small style={{ color: Color.gray() }}>
               &nbsp;{timeSince(timeStamp)}
             </small>
           </div>
@@ -190,7 +190,7 @@ export default class Reply extends Component {
                         style={{
                           fontWeight: 'bold',
                           marginLeft: '0.8em',
-                          color: Color.green,
+                          color: Color.green(),
                           marginTop: '1em'
                         }}
                         userId={myId}

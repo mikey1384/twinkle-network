@@ -145,8 +145,8 @@ class Contents extends Component {
                 />
                 <Button
                   key="commentButton"
+                  gold
                   style={{ marginLeft: '0.5rem' }}
-                  className="btn btn-warning btn-sm"
                   onClick={this.onCommentButtonClick}
                 >
                   <span className="glyphicon glyphicon-comment" />&nbsp;
@@ -184,7 +184,7 @@ class Contents extends Component {
               )}
             {type === 'discussion' && (
               <Button
-                className="btn btn-warning"
+                gold
                 onClick={this.onCommentButtonClick}
               >
                 Answer{!!numChildComments &&

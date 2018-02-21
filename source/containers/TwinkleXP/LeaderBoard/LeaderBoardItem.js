@@ -39,7 +39,7 @@ function LeaderBoardItem({ myId, user }) {
       >
         <div style={{ fontSize: '1.2em', display: 'inline' }}>
           <UsernameText
-            color={Color.logoBlue}
+            color={Color.logoBlue()}
             user={{ ...user, name: user.username }}
             userId={myId}
           />
@@ -51,13 +51,13 @@ function LeaderBoardItem({ myId, user }) {
             display: 'inline'
           }}
         >
-          <span style={{ color: Color.logoGreen }}>
+          <span style={{ color: Color.logoGreen() }}>
             {user.twinkleXP ? user.twinkleXP : 0}
           </span>
           &nbsp;
           <span
             style={{
-              color: Color.orange
+              color: Color.gold()
             }}
           >
             XP

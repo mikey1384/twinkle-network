@@ -6,7 +6,7 @@ import Button from 'components/Button'
 import { timeSince } from 'helpers/timeStampHelpers'
 import { connect } from 'react-redux'
 import { initChatAsync } from 'redux/actions/ChatActions'
-import UnorderedList from 'components/UnorderedList'
+import RoundList from 'components/RoundList'
 
 class ChatFeeds extends Component {
   static propTypes = {
@@ -25,12 +25,12 @@ class ChatFeeds extends Component {
     const { content, openChat, style } = this.props
     return (
       <div style={{ ...style, textAlign: 'center' }}>
-        <UnorderedList>
+        <RoundList>
           <li>
             <p
               style={{
                 fontWeight: 'bold',
-                color: Color.green,
+                color: Color.green(),
                 marginBottom: '0px',
                 fontSize: '1.2em'
               }}
@@ -38,11 +38,11 @@ class ChatFeeds extends Component {
               {content}
             </p>
             {this.renderDetails()}
-            <Button className="btn btn-success" onClick={() => openChat(2)}>
+            <Button success onClick={() => openChat(2)}>
               Join Conversation
             </Button>
           </li>
-        </UnorderedList>
+        </RoundList>
       </div>
     )
   }

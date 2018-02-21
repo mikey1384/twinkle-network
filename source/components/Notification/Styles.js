@@ -3,6 +3,7 @@ import { mobileMaxWidth } from 'constants/css'
 
 export const styles = css`
   margin-bottom: 1rem;
+  font-size: 1.4rem;
   @media (max-width: ${mobileMaxWidth}) {
     margin-bottom: 2rem;
     margin-top: 2rem;

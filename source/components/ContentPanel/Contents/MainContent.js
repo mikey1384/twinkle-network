@@ -59,8 +59,6 @@ export default function MainContent({
           isStarred={!!(isStarred || rootContentIsStarred)}
           onEdit={isEditing}
           title={contentTitle}
-          containerClassName="embed-responsive embed-responsive-16by9"
-          className="embed-responsive-item"
           hasHqThumb={hasHqThumb}
           videoId={rootId}
           videoCode={rootContent}
@@ -69,7 +67,7 @@ export default function MainContent({
       {!isEditing &&
         type === 'question' && (
           <div className="question">
-            <span style={{ color: Color.green }}>Question: </span>
+            <span style={{ color: Color.green() }}>Question: </span>
             {cleanString(content)}
           </div>
         )}
@@ -114,7 +112,7 @@ export default function MainContent({
             }}
           >
             <p>
-              <b style={{ color: Color.green }}>Discuss:</b>
+              <b style={{ color: Color.green() }}>Discuss:</b>
             </p>
             <p>{cleanString(contentTitle)}</p>
           </div>

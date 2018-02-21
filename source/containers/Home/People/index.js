@@ -63,7 +63,7 @@ class People extends Component {
         style={{ marginBottom: '1rem' }}
       >
         <SearchInput
-          addonColor={Color.orange}
+          addonColor={Color.gold()}
           placeholder="Search for users"
           onChange={this.onPeopleSearch}
           value={searchText}

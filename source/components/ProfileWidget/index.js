@@ -61,9 +61,9 @@ function ProfileWidget({
           <div>
             <div style={{ fontWeight: 'bold' }}>
               <span>{twinkleXP || 0}</span>
-              &nbsp;<span style={{ color: Color.logoGreen }}>Twin</span>
-              <span style={{ color: Color.logoBlue }}>kle</span>
-              &nbsp;<span style={{ color: Color.orange }}>XP</span>
+              &nbsp;<span style={{ color: Color.logoBlue() }}>Twin</span>
+              <span style={{ color: Color.logoGreen() }}>kle</span>
+              &nbsp;<span style={{ color: Color.gold() }}>XP</span>
             </div>
             <Link to="/twinklexp">Leaderboard</Link>
           </div>

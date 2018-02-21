@@ -1,13 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
   width: 100%;
-  margin: 0px;
+  font-size: 10px;
+  font-family: arial, verdana;
   background-color: #f1f3f6;
+  margin: 0px;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: #158cba;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 #react-view {
@@ -16,55 +36,29 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-.chat-channel-item:hover {
-  background-color: #eee;
+@keyframes spin {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    transform: scale(1) rotate(360deg);
+  }
 }
-
-.check-list-item {
-  cursor: pointer;
+@keyframes spin2 {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
-
-.check-list-item:hover {
-  background-color: #f5f5f5 !important;
-}
-
-.choice-item-unchecked:hover {
-  color: #fff !important;
-  border-color: rgba(92, 184, 92, 0.57) !important;
-  background-color: rgba(92, 184, 92, 0.57) !important;
-}
-
-.choice-item-checked {
-  color: #fff !important;
-  border-color: #5cb85c !important;
-  background-color: #5cb85c !important;
-}
-
-.choice-item-checked:hover {
-  color: #fff !important;
-  border-color: #5cb85c !important;
-  background-color: #5cb85c !important;
-}
-
-.dropdown-menu > li > a:hover {
-  background-color: #f5f5f5;
-}
-
-.embed-responsive {
-  background-color: #000;
-}
-
-.hidden {
-  display: none!important;
-}
-
 .glyphicon.spinning {
   animation: spin 1s infinite linear;
   -webkit-animation: spin2 1s infinite linear;
 }
 
-.left-menu-item:hover > a {
-  color: rgb(51, 51, 51) !important;
+.hidden {
+  display: none!important;
 }
 
 .mobile {
@@ -76,67 +70,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-.nav-icon-home {
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-  background: url('/img/nav-sprites.png') 0 -61px;
-  background-size: 100% 680%;
-  zoom: 0.5;
-}
-
-.nav-icon-home-hovered {
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-  background: url('/img/nav-sprites.png') 0 -5px;
-  background-size: 100% 680%;
-  zoom: 0.5;
-}
-
-.nav-icon-read {
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-  background: url('/img/nav-sprites.png') 0 -173px;
-  background-size: 100% 680%;
-  zoom: 0.5;
-}
-
-.nav-icon-read-hovered {
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-  background: url('/img/nav-sprites.png') 0 -117px;
-  background-size: 100% 680%;
-  zoom: 0.5;
-}
-
-.nav-icon-watch {
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-  background: url('/img/nav-sprites.png') 0 -286px;
-  background-size: 100% 680%;
-  zoom: 0.5;
-}
-
-.nav-icon-watch-hovered {
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-  background: url('/img/nav-sprites.png') 0 -230px;
-  background-size: 100% 680%;
-  zoom: 0.5;
-}
-
-.thumbnail-selected {
-  -webkit-box-shadow: inset 0px 0px 0px 4px #18aae0;
-  -moz-box-shadow: inset 0px 0px 0px 4px #18aae0;
-  box-shadow: inset 0px 0px 0px 4px #18aae0;
-  padding: 0.5rem;
-}
-
 .unselectable {
   -moz-user-select: none;
   -khtml-user-select: none;
@@ -146,99 +79,10 @@ body {
   user-select: none;
 }
 
-.video-container-fixed-left {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 2000;
-}
-
-.video-fixed-left {
-  width: 28.8rem;
-  height: 16.2rem;
-}
-
-.video-player {
-  position: relative;
-}
-
-.video-player a {
-  position: absolute;
-  display: block;
-  background: url('/img/play-button-image.png');
-  background-size: contain;
-  height: 40px;
-  width: 40px;
-  top: 50%;
-  left: 50%;
-  margin: -20px 0 0 -20px;
-}
-
-.video-preview-thumb {
-  position: relative;
-}
-.video-preview-thumb a {
-  position: absolute;
-  display: block;
-  background: url('/img/play-button-image.png');
-  background-size: contain;
-  height: 20px;
-  width: 20px;
-  top: 50%;
-  left: 50%;
-  margin: -10px 0 0 -10px;
-}
-
-.video-preview-thumb span {
-  position: absolute;
-  display: block;
-  background: url('/img/play-button-image.png');
-  background-size: contain;
-  height: 20px;
-  width: 20px;
-  top: 50%;
-  left: 50%;
-  margin: -10px 0 0 -10px;
-}
-
-@keyframes spin {
-  from {
-    transform: scale(1) rotate(0deg);
-  }
-  to {
-    transform: scale(1) rotate(360deg);
-  }
-}
-
-@keyframes spin2 {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@media (min-width: 1192px) {
-  .modal-extra-lg {
-    min-width: 1180px;
-    width: 90%;
-  }
-}
-
-@media (min-width: 1092px) {
-  .modal-extra-lg {
-    width: 1080px;
-  }
-}
-
 @media (min-width: 992px) {
   html, body {
     overflow: hidden;
     position: absolute;
-  }
-  .modal-extra-lg {
-    width: 980px;
   }
 }
 
@@ -255,9 +99,6 @@ body {
 }
 
 @media (min-width: 768px) {
-  .modal-extra-lg {
-    min-width: 766px;
-  }
   .right {
     width: 30%;
   }

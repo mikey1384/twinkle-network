@@ -94,7 +94,7 @@ class PlaylistModal extends Component {
                     {cleanString(video.title)}
                   </p>
                 </Link>
-                <small style={{ color: Color.gray }}>
+                <small style={{ color: Color.gray() }}>
                   Uploaded by {video.uploaderName}
                 </small>
               </div>

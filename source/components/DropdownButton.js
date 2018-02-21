@@ -5,13 +5,10 @@ import Button from './Button'
 
 class DropdownButton extends Component {
   static propTypes = {
-    alignLeft: PropTypes.bool,
     icon: PropTypes.string,
     menuProps: PropTypes.array.isRequired,
     opacity: PropTypes.number,
     style: PropTypes.object,
-    shape: PropTypes.string,
-    size: PropTypes.string,
     text: PropTypes.string
   }
 
@@ -29,28 +26,19 @@ class DropdownButton extends Component {
   render() {
     const { menuDisplayed } = this.state
     const {
-      alignLeft,
       opacity = 1,
       style,
-      shape,
-      size,
       icon = 'pencil',
       text = ''
     } = this.props
-    const buttonShape =
-      shape === 'button'
-        ? `btn ${size ? `btn-${size} ` : ''}btn-default`
-        : 'dropdown-toggle'
     return (
       <div
-        className={`dropdown ${!alignLeft && 'pull-right'}`}
         style={{
           ...style,
           opacity: menuDisplayed ? 1 : opacity
         }}
       >
         <Button
-          className={buttonShape}
           onClick={() => this.setState({ menuDisplayed: !menuDisplayed })}
         >
           <span className={`glyphicon glyphicon-${icon}`} />
@@ -58,7 +46,6 @@ class DropdownButton extends Component {
           <span>{text}</span>
         </Button>
         <ul
-          className="dropdown-menu"
           style={{
             cursor: 'pointer',
             display: menuDisplayed ? 'block' : 'none'
@@ -74,7 +61,7 @@ class DropdownButton extends Component {
     const { menuProps } = this.props
     return menuProps.map((prop, index) => {
       if (prop.separator) {
-        return <li key={index} role="separator" className="divider" />
+        return <li key={index} role="separator" />
       }
       return (
         <li onClick={() => this.handleMenuClick(prop.onClick)} key={index}>

@@ -25,13 +25,13 @@ const Styles = {
     fontWeight: 'bold'
   },
   logoHead: {
-    color: Color.logoGreen
+    color: Color.logoBlue()
   },
   logoTail: {
-    color: Color.logoBlue
+    color: Color.logoGreen()
   },
   spanXP: {
-    color: Color.orange
+    color: Color.gold()
   }
 }
 

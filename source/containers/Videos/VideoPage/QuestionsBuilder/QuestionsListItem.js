@@ -55,7 +55,7 @@ function QuestionsListItem({
             }`}
         <span
           className="glyphicon glyphicon-align-justify pull-right"
-          style={{ color: Color.gray }}
+          style={{ color: Color.gray() }}
         />
       </li>
     )

@@ -2,12 +2,15 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import SearchDropdown from '../SearchDropdown'
 import onClickOutside from 'react-onclickoutside'
+import { css } from 'emotion'
+import { Color } from 'constants/css'
 import Input from './Input'
 
 class SearchInput extends Component {
   static propTypes = {
     addonColor: PropTypes.string,
     autoFocus: PropTypes.bool,
+    className: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     onClear: PropTypes.func,
     onClickOutSide: PropTypes.func,
@@ -37,6 +40,7 @@ class SearchInput extends Component {
     const {
       addonColor,
       autoFocus,
+      className,
       onChange,
       placeholder,
       onFocus,
@@ -44,17 +48,33 @@ class SearchInput extends Component {
       value
     } = this.props
     return (
-      <div className="input-group dropdown" style={style}>
-        <span
-          className="input-group-addon"
-          style={{ backgroundColor: addonColor }}
-        >
+      <div
+        className={`${css`
+          display: flex;
+          align-items: center;
+          .addon {
+            border: 1px solid ${addonColor || Color.inputBorderGray};
+            align-self: stretch;
+            padding: 0 1rem;
+          }
+          .glyphicon {
+            line-height: 4rem;
+            font-size: 1.5rem;
+          }
+          .input {
+            border: 1px solid ${Color.inputBorderGray};
+            border-left: none;
+          }
+        `} ${className}`}
+        style={style}
+      >
+        <div className="addon" style={{ backgroundColor: addonColor || Color.borderGray() }}>
           <span className="glyphicon glyphicon-search" />
-        </span>
+        </div>
         <Input
+          className="input"
           autoFocus={autoFocus}
           onFocus={onFocus && onFocus}
-          className="form-control"
           placeholder={placeholder}
           value={value}
           onChange={text => onChange(text)}

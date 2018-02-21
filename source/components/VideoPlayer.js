@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
 import { Color } from 'constants/css'
@@ -15,7 +15,7 @@ import request from 'axios'
 import StarMark from 'components/StarMark'
 import { URL } from 'constants/URL'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-
+import {css} from 'emotion'
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
 const intervalLength = 2000
@@ -27,8 +27,6 @@ class VideoPlayer extends Component {
     addVideoView: PropTypes.func.isRequired,
     autoplay: PropTypes.bool,
     chatMode: PropTypes.bool,
-    className: PropTypes.string,
-    containerClassName: PropTypes.string,
     emptyCurrentVideoSlot: PropTypes.func,
     fillCurrentVideoSlot: PropTypes.func,
     hasHqThumb: PropTypes.number,
@@ -202,8 +200,6 @@ class VideoPlayer extends Component {
       onEdit,
       videoCode,
       title,
-      containerClassName,
-      className,
       style,
       small,
       userId
@@ -229,9 +225,15 @@ class VideoPlayer extends Component {
     return (
       <ErrorBoundary>
         <div
-          className={
-            small ? containerClassName : `video-player ${containerClassName}`
-          }
+          className={css`
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            position: relative;
+            img {
+              width: 100%;
+            }
+          `}
           style={{ ...style, cursor: !onEdit && !playing && 'pointer' }}
           onClick={() => {
             if (!onEdit && !playing) {
@@ -240,39 +242,32 @@ class VideoPlayer extends Component {
           }}
         >
           {((!small && !playing) || onEdit) && (
-            <div>
-              <img alt="" className="embed-responsive-item" src={imageUrl} />
+            <Fragment>
+              <img alt="" src={imageUrl} />
               {isStarred && (
                 <StarMark
                   style={{
-                    marginTop: '0.5em',
-                    marginLeft: '0.5em'
+                    position: 'absolute',
+                    top: '1rem',
+                    right: '1rem'
                   }}
                 />
               )}
-            </div>
+            </Fragment>
           )}
-          {!onEdit && !small && playing ? (
-            <Loading
-              style={{
-                color: Color.blue,
-                fontSize: '3em',
-                position: 'absolute',
-                display: 'block',
-                height: '40px',
-                width: '40px',
-                top: '50%',
-                left: '50%',
-                margin: '-20px 0 0 -20px'
-              }}
-            />
-          ) : !onEdit ? (
-            <a />
-          ) : null}
           {!onEdit &&
             playing && (
               <YouTube
-                className={className}
+                className={css`
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  top: 0;
+                  left: 0;
+                  bottom: 0;
+                  right: 0;
+                  z-index: 1;
+                `}
                 opts={{ title }}
                 videoId={videoCode}
                 onReady={this.onVideoReady}
@@ -286,16 +281,28 @@ class VideoPlayer extends Component {
                 onEnd={this.onVideoStop}
               />
             )}
+          {!onEdit && !small && playing ? (
+            <Loading
+              style={{
+                color: Color.blue(),
+                fontSize: '3em',
+                position: 'absolute',
+                display: 'block',
+                height: '40px',
+                width: '40px',
+                top: '50%',
+                left: '50%',
+                margin: '-20px 0 0 -20px'
+              }}
+            />
+          ) : !onEdit ? (
+            <a />
+          ) : null}
         </div>
         {isStarred &&
           !!userId && (
-            <div className="progress" style={{ marginTop: '1rem' }}>
-              <div
-                className={`progress-bar progress-bar-${
-                  justEarned ? 'success' : xpEarned ? 'info' : 'primary'
-                }`}
-                style={{ width: `${progress}%` }}
-              >
+            <div style={{ marginTop: '1rem' }}>
+              <div style={{ width: `${progress}%` }}>
                 {justEarned
                   ? 'Twinkle XP earned!'
                   : xpEarned

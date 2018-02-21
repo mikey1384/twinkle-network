@@ -46,7 +46,7 @@ export default function Message({
           <div className={MessageStyle.messageWrapper}>
             <span
               style={{
-                color: isReloadedSubject && Color.green,
+                color: isReloadedSubject && Color.green(),
                 fontWeight: isReloadedSubject && 'bold'
               }}
               dangerouslySetInnerHTML={{

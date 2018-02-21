@@ -12,7 +12,7 @@ export const main = css`
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     right: 1rem;
-    top: 65px;
+    top: 6.5rem;
     bottom: 0;
     position: absolute;
   }

@@ -20,7 +20,7 @@ export const container = css`
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     right: 1rem;
-    top: 65px;
+    top: 5.5rem;
     bottom: 0;
     position: absolute;
     @media (max-width: ${mobileMaxWidth}) {

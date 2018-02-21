@@ -44,13 +44,12 @@ class ContentInput extends Component {
       <div className={PanelStyle}>
         <p>Share interesting videos or web links</p>
         <Input
-          ref={ref => {
+          inputRef={ref => {
             this.UrlField = ref
           }}
           style={{ borderColor: !!urlError && 'red' }}
           value={form.url}
           onChange={this.onUrlFieldChange}
-          className="form-control"
           placeholder="Copy the URL address of a website or a YouTube video and paste it here"
           type="text"
         />
@@ -66,7 +65,7 @@ class ContentInput extends Component {
           </span>
         )}
         <div
-          style={{ marginTop: '0.3rem', display: 'flex', alignItems: 'center' }}
+          style={{ display: 'flex', alignItems: 'center' }}
         >
           <div>
             <small>YouTube Video:&nbsp;&nbsp;&nbsp;</small>

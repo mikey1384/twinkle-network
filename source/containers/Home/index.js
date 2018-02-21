@@ -8,8 +8,8 @@ import Stories from './Stories'
 import Notification from 'components/Notification'
 import ProfileWidget from 'components/ProfileWidget'
 import HomeMenuItems from 'components/HomeMenuItems'
-import { Color } from 'constants/css'
-import { Container, Left, Center, Right } from './Styles'
+import { borderRadius, Color } from 'constants/css'
+import { container, Left, Center, Right } from './Styles'
 import { css } from 'react-emotion'
 
 class Home extends Component {
@@ -20,7 +20,7 @@ class Home extends Component {
   render() {
     const { history, location } = this.props
     return (
-      <div className={Container}>
+      <div className={container}>
         <div className={Left}>
           <ProfileWidget history={history} />
           <HomeMenuItems
@@ -44,7 +44,7 @@ class Home extends Component {
               padding: 1rem;
               background: #fff;
               border: 1px solid #eeeeee;
-              border-radius: 5px;
+              border-radius: ${borderRadius};
               p {
                 font-size: 3rem;
                 font-weight: bold;
@@ -57,9 +57,9 @@ class Home extends Component {
             `}
           >
             <p>
-              <span style={{ color: Color.logoGreen }}>Twin</span>
-              <span style={{ color: Color.logoBlue }}>kle</span>&nbsp;
-              <span style={{ color: Color.orange }}>XP!</span>
+              <span style={{ color: Color.logoBlue() }}>Twin</span>
+              <span style={{ color: Color.logoGreen() }}>kle</span>&nbsp;
+              <span style={{ color: Color.gold() }}>XP!</span>
             </p>
             <Link to="/twinklexp">Click here to learn how to earn them</Link>
           </div>

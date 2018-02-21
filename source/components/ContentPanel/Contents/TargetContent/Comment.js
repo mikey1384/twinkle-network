@@ -73,7 +73,7 @@ export default class Comment extends Component {
                   id: userId
                 }}
               />{' '}
-              <small style={{ color: Color.gray }}>&nbsp;{timeSince(comment.timeStamp)}</small>
+              <small style={{ color: Color.gray() }}>&nbsp;{timeSince(comment.timeStamp)}</small>
             </div>
             {onEdit ? (
               <EditTextArea

@@ -31,7 +31,7 @@ export default class QuestionModal extends Component {
         <Modal.Header>
           <span
             style={{
-              color: Color.green,
+              color: Color.green(),
               fontSize: '2.5rem',
               fontWeight: 'bold'
             }}

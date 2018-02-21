@@ -44,7 +44,6 @@ class Header extends Component {
     notifyChatSubjectChange: PropTypes.func,
     numChatUnreads: PropTypes.number,
     onChatButtonClick: PropTypes.func,
-    onProfilePage: PropTypes.bool,
     onMobileMenuOpen: PropTypes.func,
     openSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
@@ -58,8 +57,8 @@ class Header extends Component {
 
   state = {
     notificationsMenuShown: false,
-    logoBlue: Color.logoBlue,
-    logoGreen: Color.logoGreen,
+    logoBlue: Color.logoBlue(),
+    logoGreen: Color.logoGreen(),
     feedLoading: false
   }
 
@@ -123,30 +122,13 @@ class Header extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { userId, location, onProfilePage, chatMode } = this.props
+    const { userId } = this.props
 
     if (userId !== prevProps.userId) {
       if (prevProps.userId !== null) {
         socket.emit('leave_my_notification_channel', prevProps.userId)
       }
       socket.emit('enter_my_notification_channel', userId)
-    }
-
-    if (prevProps.location !== location) {
-      this.setState({
-        logoBlue: `#${this.getLogoColor()}`,
-        logoGreen: `#${this.getLogoColor()}`
-      })
-    }
-
-    if (
-      prevProps.onProfilePage !== onProfilePage ||
-      prevProps.chatMode !== chatMode
-    ) {
-      this.setState({
-        logoBlue: `#${this.getLogoColor()}`,
-        logoGreen: `#${this.getLogoColor()}`
-      })
     }
   }
 
@@ -174,9 +156,8 @@ class Header extends Component {
           position: 'fixed'
         }}
       >
-        <div className="desktop">
+        <div className="desktop logo">
           <Link
-            className="navbar-brand"
             style={{
               cursor: 'pointer',
               fontWeight: 'bold'
@@ -240,7 +221,7 @@ class Header extends Component {
                 >
                   <a>
                     <span
-                      className={`glyphicon glyphicon-comment no-hover ${numChatUnreads >
+                      className={`glyphicon glyphicon-comment mobile-no-hover ${numChatUnreads >
                         0 && 'new'}`}
                     />
                   </a>
@@ -273,7 +254,8 @@ class Header extends Component {
             display: 'flex',
             justifyContent: 'space-between',
             width: '98%',
-            marginLeft: '2%'
+            marginLeft: '2%',
+            alignItems: 'center'
           }}
         >
           <div style={{ display: 'flex', width: '65%' }}>
@@ -282,8 +264,7 @@ class Header extends Component {
           <div
             style={{
               display: 'flex',
-              width: '20%',
-              marginRight: '1rem',
+              width: '35%',
               justifyContent: 'flex-end'
             }}
           >
@@ -300,7 +281,7 @@ class Header extends Component {
               <AccountMenu title={username} logout={this.onLogout} />
             ) : (
               <Button
-                className="btn btn-success"
+                success
                 onClick={() => openSigninModal()}
               >
                 Log In | Sign Up
@@ -313,15 +294,6 @@ class Header extends Component {
         )}
       </nav>
     )
-  }
-
-  getLogoColor = () => {
-    return (function factory(string, c) {
-      return (
-        string[Math.floor(Math.random() * string.length)] +
-        (c && factory(string, c - 1))
-      )
-    })('789ABCDEF', 4)
   }
 
   onLogoClick = () => {

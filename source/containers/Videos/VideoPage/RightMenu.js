@@ -158,7 +158,7 @@ class RightMenu extends Component {
           >
             <p style={{ fontSize: '1.2em' }}>{cleanString(video.title)}</p>
           </Link>
-          <small style={{ color: Color.gray }}>
+          <small style={{ color: Color.gray() }}>
             Uploaded by {video.username}
           </small>
         </div>

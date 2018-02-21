@@ -18,9 +18,8 @@ export default function LikeButton({
 }) {
   return (
     <Button
-      className={`btn btn-${liked ? 'primary' : 'info'}${
-        small ? ' btn-sm' : ''
-      }`}
+      primary
+      filled={liked}
       style={style}
       onClick={onClick}
     >

@@ -1,18 +1,36 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { css } from 'emotion'
+import { Color } from 'constants/css'
 
 export default class Input extends Component {
   static propTypes = {
+    className: PropTypes.string,
+    inputRef: PropTypes.func,
     onChange: PropTypes.func.isRequired
   }
   render() {
-    const { onChange, ...props } = this.props
+    const { className, inputRef, onChange, ...props } = this.props
     return (
       <input
         {...props}
-        ref={ref => {
-          this._rootDOMNode = ref
-        }}
+        className={`${css`
+          border: 1px solid ${Color.inputBorderGray()};
+          width: 100%;
+          line-height: 2rem;
+          font-size: 1.7rem;
+          padding: 1rem;
+          &:focus {
+            outline: none;
+            ::placeholder {
+              color: ${Color.lightGray()};
+            }
+          }
+          ::placeholder {
+            color: ${Color.gray()};
+          }
+        `} ${className}`}
+        ref={inputRef}
         onChange={event => onChange(renderText(event.target.value))}
       />
     )

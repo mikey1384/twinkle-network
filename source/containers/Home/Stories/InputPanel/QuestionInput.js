@@ -32,7 +32,7 @@ class QuestionInput extends Component {
     return (
       <div className={PanelStyle}>
         <p>
-          Ask <span style={{ color: Color.green }}>questions</span> to friends
+          Ask <span style={{ color: Color.green() }}>questions</span> to friends
           and teachers in Twinkle
         </p>
         <Input
@@ -41,7 +41,6 @@ class QuestionInput extends Component {
           value={question}
           onChange={this.onInputChange}
           style={{
-            marginBottom: '0.3rem',
             color: question.length > wordLimit && 'red'
           }}
         />

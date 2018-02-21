@@ -86,7 +86,7 @@ class SubjectHeader extends Component {
                   <span
                     style={{
                       cursor: 'default',
-                      color: Color.green,
+                      color: Color.green(),
                       whiteSpace: 'nowrap',
                       textOverflow: 'ellipsis',
                       overflow: 'hidden',

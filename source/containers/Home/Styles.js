@@ -2,7 +2,7 @@ import { css } from 'react-emotion'
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 import { desktopMinWidth } from '../../constants/css'
 
-export const Container = css`
+export const container = css`
   width: 100%;
   @media (max-width: 991px) {
     display: flex;
@@ -13,12 +13,12 @@ export const FilterBar = css`
   background: #fff;
   height: 6rem;
   margin-bottom: 2rem;
-  border-top: 1px solid ${Color.borderGray};
-  border-left: 1px solid ${Color.borderGray};
-  border-right: 1px solid ${Color.borderGray};
+  border-top: 1px solid ${Color.borderGray()};
+  border-left: 1px solid ${Color.borderGray()};
+  border-right: 1px solid ${Color.borderGray()};
   border-radius: ${borderRadius};
   display: flex;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   width: 100%;
   align-items: center;
   justify-content: space-around;
@@ -30,20 +30,20 @@ export const FilterBar = css`
     justify-content: center;
     height: 100%;
     width: 100%;
-    border-bottom: 1px solid ${Color.borderGray};
+    border-bottom: 1px solid ${Color.borderGray()};
     a {
       color: ${Color.menuGray};
       text-decoration: none;
     }
   }
   nav.active {
-    border-bottom: 3px solid ${Color.blue};
+    border-bottom: 3px solid ${Color.blue()};
     font-weight: bold;
     a {
       color: ${Color.blue};
     }
     @media (max-width: ${mobileMaxWidth}) {
-      border-bottom: 6px solid ${Color.blue};
+      border-bottom: 6px solid ${Color.blue()};
     }
   }
   nav:first-child {
@@ -60,9 +60,9 @@ export const FilterBar = css`
   }
   nav:hover {
     transition: border-bottom 0.5s;
-    border-bottom: 3px solid ${Color.blue};
+    border-bottom: 3px solid ${Color.blue()};
     a {
-      color: ${Color.blue};
+      color: ${Color.blue()};
       transition: color 0.5s, font-weight 0.5s;
       font-weight: bold;
     }
@@ -107,14 +107,12 @@ export const Right = css`
   width: 30%;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
+  right: 1rem;
+  top: 6.5rem;
+  bottom: 0;
+  position: absolute;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
-  }
-  @media (min-width: ${desktopMinWidth}) {
-    right: 1rem;
-    top: 65px;
-    bottom: 0;
-    position: absolute;
   }
 `
 
@@ -125,11 +123,10 @@ export const profilePanel = css`
   background: #fff;
   margin-bottom: 1rem;
   padding: 2rem;
-  border-radius: 5px;
+  border-radius: ${borderRadius};
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;
     border-left: none;
     border-right: none;
   }
 `
-

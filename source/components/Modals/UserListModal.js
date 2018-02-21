@@ -21,7 +21,7 @@ function UserListModal({
   users,
   userId,
   description = '',
-  descriptionColor = Color.green,
+  descriptionColor = Color.green(),
   descriptionShown,
   onHide,
   style,

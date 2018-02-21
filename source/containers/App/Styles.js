@@ -7,7 +7,7 @@ export const appStyle = css`
 `
 
 export const siteContent = css`
-  margin-top: 65px;
+  margin-top: 6.5rem;
   @media (max-width: ${mobileMaxWidth}) {
     margin-top: 0;
     padding-bottom: 9rem;

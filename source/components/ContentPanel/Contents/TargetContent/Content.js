@@ -96,7 +96,7 @@ class Content extends Component {
                   <ContentLink
                     content={{ id: rootId, title: 'Question: ' }}
                     type="question"
-                    style={{ color: Color.green }}
+                    style={{ color: Color.green() }}
                   />
                   <span>{rootContent}</span>
                 </div>
@@ -106,7 +106,7 @@ class Content extends Component {
                 style={{ paddingLeft: '0px', paddingRight: '0px' }}
               >
                 <div style={{ float: 'left' }}>
-                  <UsernameText user={uploader} color={Color.blue} />{' '}
+                  <UsernameText user={uploader} color={Color.blue()} />{' '}
                   <ContentLink
                     content={{
                       id: replyId || commentId,
@@ -117,7 +117,7 @@ class Content extends Component {
                       }:`
                     }}
                     type="comment"
-                    style={{ color: Color.green }}
+                    style={{ color: Color.green() }}
                   />
                 </div>
                 <div style={{ float: 'right' }}>
@@ -134,7 +134,7 @@ class Content extends Component {
                 />
                 <Button
                   style={{ marginTop: '1em', marginLeft: '0.5em' }}
-                  className="btn btn-warning btn-sm"
+                  gold
                   onClick={this.onReplyClick}
                 >
                   <span className="glyphicon glyphicon-comment" />&nbsp; Reply
@@ -211,7 +211,7 @@ class Content extends Component {
                   <ContentLink
                     content={{ id: discussionId, title: 'Discuss: ' }}
                     type="discussion"
-                    style={{ color: Color.green }}
+                    style={{ color: Color.green() }}
                   />
                 </div>
                 <div style={{ float: 'right' }}>

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import TagInput from './TagInput'
+import { borderRadius } from 'constants/css'
 
 export default class TagPeopleForm extends Component {
   static propTypes = {
@@ -90,7 +91,7 @@ export default class TagPeopleForm extends Component {
                 paddingBottom: '3px',
                 paddingLeft: '8px',
                 paddingRight: '8px',
-                borderRadius: '3px',
+                borderRadius,
                 cursor: 'pointer'
               }}
               onClick={() => onRemoveUser(user)}
