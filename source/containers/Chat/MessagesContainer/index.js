@@ -151,7 +151,6 @@ class MessagesContainer extends Component {
                 }}
               >
                 <Button
-                  className="btn btn-success"
                   style={{ width: '20%', marginTop: '1rem' }}
                   onClick={this.onLoadMoreButtonClick}
                 >

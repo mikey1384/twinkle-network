@@ -7,7 +7,7 @@ import ChatFeeds from './ChatFeeds'
 import { defaultChatSubject } from 'constants/defaultValues'
 import { fetchNotifications } from 'redux/actions/NotiActions'
 import ExecutionEnvironment from 'exenv'
-import { styles } from './Styles'
+import { container } from './Styles'
 
 class Notification extends Component {
   static propTypes = {
@@ -43,7 +43,7 @@ class Notification extends Component {
       children
     } = this.props
     return (
-      <div className={`${styles} ${className}`} onScroll={this.handleScroll}>
+      <div className={`${container} ${className}`} onScroll={this.handleScroll}>
         <section className="momentum-scroll-enabled">
           {children && <div style={{ minHeight: '3rem' }}>{children}</div>}
           {loaded && (

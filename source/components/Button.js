@@ -33,11 +33,11 @@ export default function Button({
   ...props
 }) {
   let Button
-  let buttonColor = opacity => Color.gray(opacity)
+  let buttonColor = opacity => Color.buttonGray(opacity)
   if (info) buttonColor = opacity => Color.lightBlue(opacity)
   if (love) buttonColor = opacity => Color.pink(opacity)
-  if (primary) buttonColor = opacity => Color.logoBlue(opacity)
-  if (success) buttonColor = opacity => Color.logoGreen(opacity)
+  if (primary) buttonColor = opacity => Color.blue(opacity)
+  if (success) buttonColor = opacity => Color.green(opacity)
   if (warning) buttonColor = opacity => Color.orange(opacity)
   if (gold) buttonColor = opacity => Color.gold(opacity)
   if (danger) buttonColor = opacity => Color.red(opacity)
@@ -56,11 +56,10 @@ export default function Button({
         font-weight: bold;
         border: 2px solid ${buttonColor(0)};
         border-radius: ${borderRadius};
-        transition: color 0.5s, background 0.5s;
         &:hover {
           background: ${isDefault ? Color.gray(0) : buttonColor(0.6)};
           color: ${isDefault ? Color.darkGray() : '#fff'};
-          border-color: ${isDefault ? Color.darkGray() : buttonColor()};
+          border-color: ${isDefault ? Color.gray(0) : buttonColor()};
         }
       `} ${className}`}
       ref={ref => {

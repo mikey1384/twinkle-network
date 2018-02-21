@@ -16,7 +16,7 @@ export const container = css`
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     display: flex;
-    background: ${Color.heading()};
+    background: ${Color.headingGray()};
     width: 100%;
     align-items: center;
     justify-content: flex-start;
@@ -43,13 +43,17 @@ export const container = css`
     }
   }
   .details {
-    border: 1px solid ${Color.borderGray};
+    font-size: 1.3rem;
+    line-height: 2rem;
+    border: 1px solid ${Color.borderGray()};
     border-bottom-left-radius: ${borderRadius};
     border-bottom-right-radius: ${borderRadius};
     background: #fff;
-    padding: 2rem;
+    padding: 1.5rem;
     .login-message {
       font-size: 2rem;
+      line-height: 3rem;
+      color: ${Color.darkGray()};
       font-weight: bold;
     }
   }

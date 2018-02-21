@@ -2,10 +2,13 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import Button from './Button'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 class DropdownButton extends Component {
   static propTypes = {
     icon: PropTypes.string,
+    direction: PropTypes.string,
     menuProps: PropTypes.array.isRequired,
     opacity: PropTypes.number,
     style: PropTypes.object,
@@ -25,12 +28,7 @@ class DropdownButton extends Component {
 
   render() {
     const { menuDisplayed } = this.state
-    const {
-      opacity = 1,
-      style,
-      icon = 'pencil',
-      text = ''
-    } = this.props
+    const { direction = 'left', opacity = 1, style, icon = 'pencil', text = '' } = this.props
     return (
       <div
         style={{
@@ -45,14 +43,45 @@ class DropdownButton extends Component {
           {text && <span>&nbsp;&nbsp;</span>}
           <span>{text}</span>
         </Button>
-        <ul
-          style={{
-            cursor: 'pointer',
-            display: menuDisplayed ? 'block' : 'none'
-          }}
+        <div
+          className={css`
+            position: relative;
+            float: right;
+            width: 100%;
+          `}
         >
-          {this.renderMenu()}
-        </ul>
+          <ul
+            className={css`
+              padding: 0;
+              z-index: 10;
+              margin-top: 0.5rem;
+              top: 0;
+              left: ${direction === 'left' ? '-6rem' : '0'};
+              right: ${direction === 'right' ? '-6rem' : '0'};
+              border: none;
+              list-style: none;
+              position: absolute;
+              cursor: pointer;
+              background: #fff;
+              display: ${menuDisplayed ? 'block' : 'none'};
+              box-shadow: 1px 1px 2px rgba(100, 100, 100, 0.49);
+              li {
+                width: 100%;
+                padding: 1rem;
+                text-align: center;
+                font-size: 1.5rem;
+                color: ${Color.buttonGray()};
+                cursor: pointer;
+                &:hover {
+                  color: #fff;
+                  background: ${Color.lightBlue()};
+                }
+              }
+            `}
+          >
+            {this.renderMenu()}
+          </ul>
+        </div>
       </div>
     )
   }
@@ -65,7 +94,7 @@ class DropdownButton extends Component {
       }
       return (
         <li onClick={() => this.handleMenuClick(prop.onClick)} key={index}>
-          <a>{prop.label}</a>
+          {prop.label}
         </li>
       )
     })

@@ -43,17 +43,6 @@ export default function MainContent({
 }) {
   return (
     <div>
-      {!isEditing &&
-        type === 'comment' && (
-          <div
-            style={{
-              fontSize: '1.2em',
-              wordBreak: 'break-word'
-            }}
-          >
-            <LongText>{content}</LongText>
-          </div>
-        )}
       {(type === 'video' || type === 'discussion') && (
         <VideoPlayer
           isStarred={!!(isStarred || rootContentIsStarred)}
@@ -64,30 +53,77 @@ export default function MainContent({
           videoCode={rootContent}
         />
       )}
-      {!isEditing &&
-        type === 'question' && (
-          <div className="question">
-            <span style={{ color: Color.green() }}>Question: </span>
-            {cleanString(content)}
-          </div>
-        )}
-      {!isEditing &&
-        (type === 'url' || type === 'question') && (
-          <div
-            style={{
-              fontSize: '1.2em',
-              wordBreak: 'break-word'
-            }}
-          >
-            {contentDescription && contentDescription !== 'No description' ? (
-              <LongText style={{ paddingBottom: type === 'url' && '1.5em' }}>
-                {contentDescription || ''}
+      {!isEditing && (
+        <div className="content">
+          {type === 'comment' && (
+            <div
+              style={{
+                wordBreak: 'break-word'
+              }}
+            >
+              <LongText>{content}</LongText>
+            </div>
+          )}
+          {type === 'question' && (
+            <div className="question">
+              <span style={{ color: Color.green() }}>Question: </span>
+              <span style={{ color: Color.darkGray() }}>
+                {cleanString(content)}
+              </span>
+            </div>
+          )}
+          {(type === 'url' || type === 'question') && (
+            <div
+              style={{
+                wordBreak: 'break-word'
+              }}
+            >
+              {contentDescription && contentDescription !== 'No description' ? (
+                <LongText>{contentDescription || ''}</LongText>
+              ) : type === 'url' ? (
+                <div>{contentTitle}</div>
+              ) : null}
+            </div>
+          )}
+          {type === 'discussion' && (
+            <div>
+              <p
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '2.5rem',
+                  color: Color.green()
+                }}
+              >
+                Discuss:
+              </p>
+              <p>{cleanString(contentTitle)}</p>
+            </div>
+          )}
+          {type === 'video' && (
+            <div
+              style={{
+                wordBreak: 'break-word'
+              }}
+            >
+              <LongText>
+                {contentDescription && contentDescription !== 'No description'
+                  ? contentDescription
+                  : contentTitle}
               </LongText>
-            ) : type === 'url' ? (
-              <div style={{ paddingBottom: '1.5em' }}>{contentTitle}</div>
-            ) : null}
-          </div>
-        )}
+            </div>
+          )}
+          {type === 'discussion' &&
+            contentDescription && (
+              <div
+                style={{
+                  wordBreak: 'break-word'
+                }}
+              >
+                <LongText>{contentDescription}</LongText>
+              </div>
+            )}
+        </div>
+      )}
       {isEditing && (
         <ContentEditor
           comment={content}
@@ -103,53 +139,9 @@ export default function MainContent({
           type={type}
         />
       )}
-      {!isEditing &&
-        type === 'discussion' && (
-          <div
-            style={{
-              fontSize: '2rem',
-              marginTop: '1em'
-            }}
-          >
-            <p>
-              <b style={{ color: Color.green() }}>Discuss:</b>
-            </p>
-            <p>{cleanString(contentTitle)}</p>
-          </div>
-        )}
-      {!isEditing &&
-        type === 'video' && (
-          <div
-            style={{
-              marginTop: '1em',
-              fontSize: '1.2em',
-              wordBreak: 'break-word'
-            }}
-          >
-            <LongText>
-              {contentDescription && contentDescription !== 'No description'
-                ? contentDescription
-                : contentTitle}
-            </LongText>
-          </div>
-        )}
-      {!isEditing &&
-        type === 'discussion' &&
-        contentDescription && (
-          <div
-            style={{
-              marginBottom: '1em',
-              fontSize: '1.2em',
-              wordBreak: 'break-word'
-            }}
-          >
-            <LongText>{contentDescription}</LongText>
-          </div>
-        )}
       {type === 'comment' &&
         rootType === 'url' && (
           <Embedly
-            style={{ marginTop: '1.5em' }}
             title={cleanString(contentTitle)}
             url={rootContent}
             id={rootId}

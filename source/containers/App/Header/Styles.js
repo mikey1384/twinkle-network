@@ -4,7 +4,7 @@ import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css'
 export const container = css`
   font-family: Helvetica;
   font-size: 1.5rem;
-  background: ${Color.heading()};
+  background: ${Color.headingGray()};
   padding: 0.5rem;
   display: flex;
   z-index: 100;

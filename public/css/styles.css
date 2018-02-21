@@ -6,6 +6,7 @@ html,
 body {
   height: 100%;
   width: 100%;
+  line-height: normal;
   font-size: 10px;
   font-family: arial, verdana;
   background-color: #f1f3f6;
@@ -23,6 +24,10 @@ h1 {
 a {
   text-decoration: none;
   color: #158cba;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 p {

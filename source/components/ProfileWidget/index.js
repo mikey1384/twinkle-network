@@ -65,7 +65,12 @@ function ProfileWidget({
               <span style={{ color: Color.logoGreen() }}>kle</span>
               &nbsp;<span style={{ color: Color.gold() }}>XP</span>
             </div>
-            <Link to="/twinklexp">Leaderboard</Link>
+            <Link
+              style={{ color: Color.blue(), fontWeight: 'bold' }}
+              to="/twinklexp"
+            >
+              Leaderboard
+            </Link>
           </div>
         )}
         {!userId && (
@@ -73,11 +78,11 @@ function ProfileWidget({
         )}
         {!userId && (
           <Button
-            className="btn btn-success"
-            style={{ marginTop: '2rem' }}
+            success
+            style={{ marginTop: '1rem' }}
             onClick={openSigninModal}
           >
-            Log In / Sign Up
+            Log In | Sign Up
           </Button>
         )}
       </div>

@@ -1,9 +1,12 @@
 import { css } from 'emotion'
 import { mobileMaxWidth } from 'constants/css'
 
-export const styles = css`
+export const container = css`
   margin-bottom: 1rem;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
+  li, a {
+    line-height: 2rem;
+  }
   @media (max-width: ${mobileMaxWidth}) {
     margin-bottom: 2rem;
     margin-top: 2rem;

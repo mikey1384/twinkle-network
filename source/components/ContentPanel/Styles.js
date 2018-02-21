@@ -14,12 +14,18 @@ export const container = css`
     width: 100%;
   }
   .body {
-    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    .content {
+      margin-top: 2rem;
+      word-break: break-word;
+      font-size: 1.6rem;
+      line-height: 2.5rem;
+    }
+    padding: 1rem 1.5rem 1rem 1.5rem;
   }
   .likers {
     margin-top: 0.5rem;
     font-weight: bold;
-    color: ${Color.green};
+    color: ${Color.darkGray()};
     font-size: 1.2rem;
   }
   .question {
@@ -33,7 +39,7 @@ export const container = css`
   }
   .time-stamp {
     font-size: 1rem;
-    color: ${Color.gray};
+    color: ${Color.gray()};
   }
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;

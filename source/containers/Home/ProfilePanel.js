@@ -62,9 +62,22 @@ class ProfilePanel extends Component {
             profilePicId={profile.profilePicId}
           />
         </div>
-        <div style={{ width: '70%', display: 'flex', flexDirection: 'column' }}>
+        <div
+          style={{
+            width: '70%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
           <div>
-            <span style={{ fontSize: '3.5rem', fontWeight: 'bold', color: Color.darkGray() }}>
+            <span
+              style={{
+                fontSize: '3.5rem',
+                fontWeight: 'bold',
+                color: Color.darkGray()
+              }}
+            >
               {profile.username}
             </span>{' '}
             <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
@@ -143,9 +156,8 @@ class ProfilePanel extends Component {
             )}
             {expandable &&
               userId !== profile.id && (
-                <div style={{ marginTop: '1.5rem' }}>
+                <div style={{ alignSelf: 'flex-end' }}>
                   <Button
-                    info
                     onClick={() => history.push(`/users/${profile.username}`)}
                   >
                     View Profile

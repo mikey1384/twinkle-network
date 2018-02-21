@@ -32,7 +32,9 @@ class Contents extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.contentObj.contentId !== this.props.contentObj.contentId) { this.setState({ commentsShown: false }) }
+    if (prevProps.contentObj.contentId !== this.props.contentObj.contentId) {
+      this.setState({ commentsShown: false })
+    }
   }
 
   render() {
@@ -145,7 +147,6 @@ class Contents extends Component {
                 />
                 <Button
                   key="commentButton"
-                  gold
                   style={{ marginLeft: '0.5rem' }}
                   onClick={this.onCommentButtonClick}
                 >
@@ -183,11 +184,8 @@ class Contents extends Component {
                 </div>
               )}
             {type === 'discussion' && (
-              <Button
-                gold
-                onClick={this.onCommentButtonClick}
-              >
-                Answer{!!numChildComments &&
+              <Button onClick={this.onCommentButtonClick}>
+                <span className="glyphicon glyphicon-comment" />&nbsp; Answer{!!numChildComments &&
                 numChildComments > 0 &&
                 !commentsShown
                   ? ` (${numChildComments})`
@@ -196,7 +194,7 @@ class Contents extends Component {
             )}
             {canEdit && (
               <DropdownButton
-                alignLeft
+                direction="right"
                 shape="button"
                 style={{ marginLeft: '0.5rem', display: 'inline-block' }}
                 size={type !== 'discussion' ? 'sm' : null}

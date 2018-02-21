@@ -336,7 +336,7 @@ class Chat extends Component {
             <DropdownButton
               style={{
                 position: 'absolute',
-                zIndex: 100,
+                zIndex: 10,
                 top: '1rem',
                 right: '1rem'
               }}

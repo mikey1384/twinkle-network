@@ -8,10 +8,11 @@ import { connect } from 'react-redux'
 import UserListModal from 'components/Modals/UserListModal'
 import InputArea from 'components/Texts/InputArea'
 import Comment from './Comment'
-import { Color } from 'constants/css'
+import { borderRadius, Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
 import ContentLink from 'components/ContentLink'
 import { timeSince } from 'helpers/timeStampHelpers'
+import { css } from 'emotion'
 
 class Content extends Component {
   static propTypes = {
@@ -83,10 +84,14 @@ class Content extends Component {
     }
     return (
       <div
-        className="well"
-        style={{
-          wordBreak: 'break-word'
-        }}
+        className={css`
+          word-break: break-word;
+          border-radius: ${borderRadius};
+          border: 1px solid ${Color.inputBorderGray()};
+          padding: 1.5rem;
+          background: ${Color.whiteGray()};
+          margin-bottom: 2rem;
+        `}
       >
         {contentAvailable ? (
           !isDiscussion ? (
@@ -134,7 +139,6 @@ class Content extends Component {
                 />
                 <Button
                   style={{ marginTop: '1em', marginLeft: '0.5em' }}
-                  gold
                   onClick={this.onReplyClick}
                 >
                   <span className="glyphicon glyphicon-comment" />&nbsp; Reply

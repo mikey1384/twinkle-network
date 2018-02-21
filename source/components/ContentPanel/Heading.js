@@ -229,7 +229,7 @@ export default class Heading extends Component {
           success
           onClick={() => this.setState({ questionModalShown: true })}
         >
-          Answer
+          <span className="glyphicon glyphicon-comment" />&nbsp;Answer
         </Button>
       )
     }
@@ -249,7 +249,7 @@ export default class Heading extends Component {
           <ContentLink
             content={{ id: replyId, title: 'reply ' }}
             type="comment"
-            style={{ color: Color.green }}
+            style={{ color: Color.green() }}
           />
           {'on'}
         </span>

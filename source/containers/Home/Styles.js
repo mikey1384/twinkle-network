@@ -120,6 +120,7 @@ export const profilePanel = css`
   border: #e7e7e7 1px solid;
   display: flex;
   width: 100%;
+  height: 100%;
   background: #fff;
   margin-bottom: 1rem;
   padding: 2rem;
