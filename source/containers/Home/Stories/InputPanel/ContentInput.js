@@ -175,12 +175,12 @@ class ContentInput extends Component {
       },
       urlError: null
     })
-    document.body.scrollTo(0, 0)
     uploadContent({
       ...form,
       title: finalizeEmoji(form.title),
       description: finalizeEmoji(form.description)
     })
+    document.getElementById('react-view').scrollTop = 0
   }
 
   onUrlFieldChange(url) {
