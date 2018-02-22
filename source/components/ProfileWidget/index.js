@@ -45,9 +45,7 @@ function ProfileWidget({
             />
           </div>
           <div className="names">
-            <div>
-              <Link to={`/users/${username}`}>{username}</Link>
-            </div>
+            <Link to={`/users/${username}`}>{username}</Link>
             {realName && (
               <div>
                 <span>({realName})</span>

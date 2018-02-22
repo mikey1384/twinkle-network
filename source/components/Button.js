@@ -76,7 +76,7 @@ export default function Button({
           background: ${isDefault
             ? Color.gray(0)
             : buttonColor(disabled ? 0.2 : 0.6)};
-          color: ${isDefault ? Color.darkGray() : '#fff'};
+          color: ${isDefault ? disabled ? buttonColor(0.2) : Color.darkGray() : '#fff'};
           border-color: ${isDefault
             ? Color.gray(0)
             : buttonColor(disabled ? 0.2 : 0.6)};

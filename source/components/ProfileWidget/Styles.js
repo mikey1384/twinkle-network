@@ -29,12 +29,12 @@ export const container = css`
     .names {
       width: 60%;
       text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
       a {
         color: ${Color.blue()};
         font-weight: bold;
         font-size: 2rem;
-        text-overflow: ellipsis;
-        overflow: hidden;
       }
       span {
         color: ${Color.menuGray()};

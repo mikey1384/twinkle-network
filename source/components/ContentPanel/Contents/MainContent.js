@@ -57,8 +57,8 @@ export default function MainContent({
         <div
           className="content"
           style={{
-            marginTop: type === 'url' && 0,
-            marginBottom: type === 'url' && '1rem'
+            marginTop: type !== 'video' && type !== 'discussion' && 0,
+            marginBottom: type !== 'video' && '1rem'
           }}
         >
           {type === 'comment' && (
@@ -97,6 +97,7 @@ export default function MainContent({
                 style={{
                   fontWeight: 'bold',
                   fontSize: '2.5rem',
+                  marginBottom: '1.5rem',
                   color: Color.green()
                 }}
               >
