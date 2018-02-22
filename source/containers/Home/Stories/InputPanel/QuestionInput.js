@@ -102,7 +102,6 @@ class QuestionInput extends Component {
     const { question, description } = this.state
     event.preventDefault()
     if (stringIsEmpty(question) || question.length > wordLimit) return
-    console.log(description)
     await uploadQuestion({
       question: turnStringIntoQuestion(question),
       description: finalizeEmoji(description)
