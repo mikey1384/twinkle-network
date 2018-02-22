@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import InputArea from 'components/Texts/InputArea'
+import InputForm from 'components/Texts/InputForm'
 
 CommentInputArea.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -19,7 +19,7 @@ export default function CommentInputArea({
 }) {
   return (
     <div {...props} style={{ ...style, position: 'relative' }}>
-      <InputArea
+      <InputForm
         clickListenerState={clickListenerState}
         autoFocus={autoFocus}
         onSubmit={text => onSubmit(text)}

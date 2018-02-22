@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import InputArea from 'components/Texts/InputArea'
+import InputForm from 'components/Texts/InputForm'
 import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm'
 import Button from 'components/Button'
 import { connect } from 'react-redux'
@@ -130,7 +130,7 @@ class CommentInputArea extends Component {
                       <h3 style={{ marginTop: '1.5rem' }}>
                         Comment on this video
                       </h3>
-                      <InputArea
+                      <InputForm
                         onSubmit={text => uploadComment(text, videoId)}
                         rows={4}
                         placeholder="Write your comment here..."
@@ -143,7 +143,7 @@ class CommentInputArea extends Component {
           )}
           {!discussionTabActive && (
             <div className="container-fluid">
-              <InputArea
+              <InputForm
                 autoFocus
                 onSubmit={text => uploadComment(text, videoId)}
                 rows={4}

@@ -38,7 +38,11 @@ export default function TargetContent({
   }
 }) {
   return (
-    <div>
+    <div
+      css={`
+        font-size: 1.5rem;
+      `}
+    >
       {replyId && (
         <Content
           commentId={commentId}

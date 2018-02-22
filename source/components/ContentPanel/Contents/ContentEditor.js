@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import Input from 'components/Texts/Input'
 import Button from 'components/Button'
 import { edit } from 'constants/placeholders'
@@ -56,46 +56,39 @@ export default class ContentEditor extends Component {
       <div style={style}>
         <form onSubmit={this.onSubmit}>
           {(type === 'video' || type === 'url') && (
-            <fieldset className="form-group">
-              <Input
-                autoFocus
-                className="form-control"
-                onChange={text => {
-                  const buttonDisabled =
-                    (type === 'video' && !isValidYoutubeUrl(text)) ||
-                    (type === 'url' && !isValidUrl(text))
-                  this.setState({
-                    editedUrl: text,
-                    buttonDisabled
-                  })
-                }}
-                placeholder={edit[type]}
-                value={editedUrl}
-              />
-            </fieldset>
+            <Input
+              autoFocus
+              onChange={text => {
+                const buttonDisabled =
+                  (type === 'video' && !isValidYoutubeUrl(text)) ||
+                  (type === 'url' && !isValidUrl(text))
+                this.setState({
+                  editedUrl: text,
+                  buttonDisabled
+                })
+              }}
+              placeholder={edit[type]}
+              value={editedUrl}
+            />
           )}
           {type !== 'comment' &&
             type !== 'question' && (
-              <fieldset className="form-group">
-                <Input
-                  autoFocus={type === 'discussion'}
-                  className="form-control"
-                  onChange={text => this.setState({ editedTitle: text })}
-                  onKeyUp={event =>
-                    this.setState({
-                      editedTitle: addEmoji(event.target.value),
-                      buttonDisabled: stringIsEmpty(event.target.value)
-                    })
-                  }
-                  placeholder={edit.title}
-                  value={editedTitle}
-                />
-              </fieldset>
+              <Input
+                autoFocus={type === 'discussion'}
+                onChange={text => this.setState({ editedTitle: text })}
+                onKeyUp={event =>
+                  this.setState({
+                    editedTitle: addEmoji(event.target.value),
+                    buttonDisabled: stringIsEmpty(event.target.value)
+                  })
+                }
+                placeholder={edit.title}
+                value={editedTitle}
+              />
             )}
           {type === 'question' && (
-            <fieldset className="form-group">
+            <Fragment>
               <Input
-                className="form-control"
                 placeholder={edit['question']}
                 value={editedContent}
                 onChange={text => {
@@ -111,12 +104,11 @@ export default class ContentEditor extends Component {
               >
                 {editedContent.length}/100 Characters
               </small>
-            </fieldset>
+            </Fragment>
           )}
-          <fieldset className="form-group" style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }}>
             <Textarea
               autoFocus={type === 'comment'}
-              className="form-control"
               minRows={4}
               onChange={event => {
                 const { value } = event.target
@@ -131,24 +123,21 @@ export default class ContentEditor extends Component {
               placeholder={edit[type === 'comment' ? 'comment' : 'description']}
               value={type === 'comment' ? editedComment : editedDescription}
             />
-          </fieldset>
-          <fieldset>
-            <Button
-              className="btn btn-primary"
-              type="submit"
-              disabled={buttonDisabled}
-            >
-              Done
-            </Button>
-            <Button
-              className="btn btn-default"
-              style={{ marginLeft: '0.5em' }}
-              type="button"
-              onClick={onDismiss}
-            >
-              Cancel
-            </Button>
-          </fieldset>
+          </div>
+          <Button
+            primary
+            type="submit"
+            disabled={buttonDisabled}
+          >
+            Done
+          </Button>
+          <Button
+            style={{ marginLeft: '0.5em' }}
+            type="button"
+            onClick={onDismiss}
+          >
+            Cancel
+          </Button>
         </form>
       </div>
     )

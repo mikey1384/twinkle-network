@@ -12,13 +12,36 @@ export const container = css`
     display: flex;
     align-items: center;
     width: 100%;
+    span,
+    a {
+      line-height: 2.5rem;
+    }
   }
   .body {
     .content {
-      margin-top: 2rem;
+      margin-top: 1rem;
+      padding: 1rem;
       word-break: break-word;
       font-size: 1.6rem;
       line-height: 2.5rem;
+    }
+    .bottom-interface {
+      display: flex;
+      flex-direction: column;
+      .buttons-bar {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .left {
+          display: flex;
+        }
+        .right {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+        }
+      }
     }
     padding: 1rem 1.5rem 1rem 1.5rem;
   }

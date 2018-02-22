@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import { cleanString } from 'helpers/stringHelpers'
 
 EditChoiceListItem.propTypes = {

@@ -10,7 +10,8 @@ export default function StarButton({ isStarred, onClick, ...props }) {
   return (
     <div {...props}>
       <Button
-        className={`btn btn-${isStarred ? 'danger' : 'default'} btn-sm`}
+        love
+        filled={isStarred}
         onClick={onClick}
       >
         <span className="glyphicon glyphicon-star" />

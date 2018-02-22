@@ -13,11 +13,15 @@ export const PanelStyle = css`
     color: ${Color.darkGray()};
   }
   p {
-    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, arial, verdana;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, arial, verdana;
     color: ${Color.darkGray()};
     margin-bottom: 1rem;
     font-size: 2rem;
     font-weight: bold;
+  }
+  .button-container {
+    display: flex;
+    flex-direction: row-reverse;
   }
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;
@@ -36,9 +40,7 @@ export const PanelStyle = css`
     textarea {
       font-size: 2rem;
     }
-    .mobile-button {
-      display: flex;
-      flex-direction: row-reverse;
+    .button-container {
       button {
         font-size: 3rem;
       }

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import Button from 'components/Button'
 import { uploadContentAsync } from 'redux/actions/FeedActions'
 import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions'
 import Input from 'components/Texts/Input'
+import { scrollElementToCenter } from 'helpers/domHelpers'
 import {
   isValidUrl,
   isValidYoutubeUrl,
@@ -64,9 +65,7 @@ class ContentInput extends Component {
             {urlError}
           </span>
         )}
-        <div
-          style={{ display: 'flex', alignItems: 'center' }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <div>
             <small>YouTube Video:&nbsp;&nbsp;&nbsp;</small>
           </div>
@@ -88,59 +87,54 @@ class ContentInput extends Component {
           </div>
         </div>
         {descriptionFieldsShown && (
-          <div style={{ marginTop: '1rem' }}>
-            <div>
-              <fieldset className="form-group">
-                <div style={{ display: 'inline' }}>
-                  <Input
-                    value={form.title}
-                    onChange={text =>
-                      this.setState({ form: { ...form, title: text } })
-                    }
-                    className="form-control"
-                    placeholder="Enter Title"
-                    onKeyUp={event => {
-                      if (event.key === ' ') {
-                        this.setState({
-                          form: {
-                            ...this.state.form,
-                            title: addEmoji(event.target.value)
-                          }
-                        })
-                      }
-                    }}
-                    type="text"
-                  />
-                </div>
-              </fieldset>
-              <fieldset className="form-group">
-                <Textarea
-                  value={form.description}
-                  className="form-control"
-                  minRows={4}
-                  placeholder="Enter Description (Optional, you don't need to write this)"
-                  onChange={event =>
+          <div style={{ marginTop: '0.5rem' }}>
+            <div style={{ position: 'relative' }}>
+              <Input
+                value={form.title}
+                onChange={text =>
+                  this.setState({ form: { ...form, title: text } })
+                }
+                placeholder="Enter Title"
+                onKeyUp={event => {
+                  if (event.key === ' ') {
                     this.setState({
-                      form: { ...form, description: event.target.value }
+                      form: {
+                        ...this.state.form,
+                        title: addEmoji(event.target.value)
+                      }
                     })
                   }
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        form: {
-                          ...this.state.form,
-                          description: addEmoji(event.target.value)
-                        }
-                      })
-                    }
-                  }}
-                />
-              </fieldset>
+                }}
+                type="text"
+              />
+              <Textarea
+                style={{ marginTop: '1rem' }}
+                value={form.description}
+                minRows={4}
+                placeholder="Enter Description (Optional, you don't need to write this)"
+                onChange={event =>
+                  this.setState({
+                    form: { ...form, description: event.target.value }
+                  })
+                }
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    this.setState({
+                      form: {
+                        ...this.state.form,
+                        description: addEmoji(event.target.value)
+                      }
+                    })
+                  }
+                }}
+              />
             </div>
-            <div className="mobile-button">
+            <div className="button-container">
               <Button
-                className="btn btn-primary"
                 type="submit"
+                filled
+                success
+                style={{ marginTop: '1rem' }}
                 disabled={stringIsEmpty(url) || stringIsEmpty(title)}
                 onClick={this.onSubmit}
               >
@@ -167,7 +161,8 @@ class ContentInput extends Component {
 
     if (urlError) {
       this.setState({ urlError })
-      return this.UrlField.focus()
+      this.UrlField.focus()
+      return scrollElementToCenter(this.UrlField)
     }
 
     this.setState({

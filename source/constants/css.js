@@ -23,6 +23,6 @@ export const Color = {
   red: (opacity = 1) => `rgba(255,65,54, ${opacity})`
 }
 
-export const borderRadius = '6px'
+export const borderRadius = '5px'
 export const mobileMaxWidth = '991px'
 export const desktopMinWidth = '992px'

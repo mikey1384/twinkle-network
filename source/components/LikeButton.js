@@ -18,7 +18,7 @@ export default function LikeButton({
 }) {
   return (
     <Button
-      primary
+      logo
       filled={liked}
       style={style}
       onClick={onClick}

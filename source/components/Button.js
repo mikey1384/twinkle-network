@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { css } from 'emotion'
 import { borderRadius, Color } from 'constants/css'
 
 Button.propTypes = {
   warning: PropTypes.bool,
   className: PropTypes.string,
+  disabled: PropTypes.bool,
   filled: PropTypes.bool,
   gold: PropTypes.bool,
   love: PropTypes.bool,
   info: PropTypes.bool,
+  logo: PropTypes.bool,
   onClick: PropTypes.func,
   children: PropTypes.node,
   danger: PropTypes.bool,
@@ -18,14 +19,14 @@ Button.propTypes = {
   style: PropTypes.object
 }
 export default function Button({
+  disabled,
   onClick,
   children = null,
-  className,
+  logo,
   gold,
   love,
   filled,
   info,
-  style = {},
   primary,
   success,
   warning,
@@ -37,42 +38,55 @@ export default function Button({
   if (info) buttonColor = opacity => Color.lightBlue(opacity)
   if (love) buttonColor = opacity => Color.pink(opacity)
   if (primary) buttonColor = opacity => Color.blue(opacity)
+  if (logo) buttonColor = opacity => Color.logoBlue(opacity)
   if (success) buttonColor = opacity => Color.green(opacity)
   if (warning) buttonColor = opacity => Color.orange(opacity)
   if (gold) buttonColor = opacity => Color.gold(opacity)
   if (danger) buttonColor = opacity => Color.red(opacity)
-  const isDefault = !info && !primary && !success && !warning && !danger && !love && !gold
+  const isDefault =
+    !info &&
+    !primary &&
+    !success &&
+    !warning &&
+    !danger &&
+    !love &&
+    !gold &&
+    !logo
   return (
     <button
       {...props}
-      className={`${css`
-        cursor: pointer;
-        font-family: "Helvetica Neue";
+      css={`
+        cursor: ${disabled ? 'default' : 'pointer'};
+        overflow: hidden;
+        font-family: 'Helvetica Neue';
         font-size: 1.5rem;
         text-transform: uppercase;
         padding: 1rem;
-        color: ${buttonColor()};
-        background: ${Color.gray(0)};
+        color: ${filled ? '#fff' : buttonColor(disabled ? 0.2 : 1)};
+        background: ${filled ? buttonColor(disabled ? 0.2 : 1) : Color.gray(0)};
         font-weight: bold;
-        border: 2px solid ${buttonColor(0)};
+        border: 1px solid
+          ${filled ? buttonColor(disabled ? 0.2 : 1) : Color.gray(0)};
         border-radius: ${borderRadius};
-        &:hover {
-          background: ${isDefault ? Color.gray(0) : buttonColor(0.6)};
-          color: ${isDefault ? Color.darkGray() : '#fff'};
-          border-color: ${isDefault ? Color.gray(0) : buttonColor()};
+        transition: background 0.2s;
+        &:focus {
+          outline: ${(isDefault || disabled) && 0};
         }
-      `} ${className}`}
+        &:hover {
+          background: ${isDefault
+            ? Color.gray(0)
+            : buttonColor(disabled ? 0.2 : 0.6)};
+          color: ${isDefault ? Color.darkGray() : '#fff'};
+          border-color: ${isDefault
+            ? Color.gray(0)
+            : buttonColor(disabled ? 0.2 : 0.6)};
+        }
+      `}
       ref={ref => {
         Button = ref
       }}
-      style={{
-        ...style,
-        overflow: 'hidden',
-        background: filled && buttonColor(0.6),
-        borderColor: filled && buttonColor(),
-        color: filled && '#fff'
-      }}
       onClick={event => {
+        if (disabled) return
         if (Button !== null) Button.blur()
         if (onClick) onClick(event)
       }}

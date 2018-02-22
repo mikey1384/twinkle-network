@@ -136,81 +136,87 @@ class Contents extends Component {
           />
         </div>
         {!isEditing && (
-          <div style={{ marginTop: '3rem' }}>
-            {type !== 'discussion' && (
-              <Fragment>
-                <LikeButton
-                  key="likeButton"
-                  onClick={this.onLikeClick}
-                  liked={userLikedThis}
-                  small
-                />
-                <Button
-                  key="commentButton"
-                  style={{ marginLeft: '0.5rem' }}
-                  onClick={this.onCommentButtonClick}
-                >
-                  <span className="glyphicon glyphicon-comment" />&nbsp;
-                  {type === 'video' || type === 'url'
-                    ? 'Comment'
-                    : type === 'question' ? 'Answer' : 'Reply'}&nbsp;
-                  {numChildComments > 0 && !commentsShown
-                    ? `(${numChildComments})`
-                    : numChildReplies > 0 && !commentsShown
-                      ? `(${numChildReplies})`
+          <div className="bottom-interface">
+            <div className="buttons-bar">
+              <div className="left">
+                {type !== 'discussion' && (
+                  <Fragment>
+                    <LikeButton
+                      key="likeButton"
+                      onClick={this.onLikeClick}
+                      liked={userLikedThis}
+                      small
+                    />
+                    <Button
+                      key="commentButton"
+                      style={{ marginLeft: '0.5rem' }}
+                      onClick={this.onCommentButtonClick}
+                    >
+                      <span className="glyphicon glyphicon-comment" />&nbsp;
+                      {type === 'video' || type === 'url'
+                        ? 'Comment'
+                        : type === 'question' ? 'Answer' : 'Reply'}&nbsp;
+                      {numChildComments > 0 && !commentsShown
+                        ? `(${numChildComments})`
+                        : numChildReplies > 0 && !commentsShown
+                          ? `(${numChildReplies})`
+                          : ''}
+                    </Button>
+                  </Fragment>
+                )}
+                {type === 'discussion' && (
+                  <Button onClick={this.onCommentButtonClick}>
+                    <span className="glyphicon glyphicon-comment" />&nbsp;
+                    Answer{!!numChildComments &&
+                    numChildComments > 0 &&
+                    !commentsShown
+                      ? ` (${numChildComments})`
                       : ''}
-                </Button>
-              </Fragment>
-            )}
-            {isCreator &&
-              type === 'video' && (
-                <StarButton
-                  isStarred={!!isStarred}
-                  onClick={this.onStarButtonClick}
-                  style={{ float: 'right' }}
-                />
-              )}
-            {videoViews > 10 &&
-              type === 'video' && (
-                <div
-                  style={{
-                    fontWeight: 'bold',
-                    float: 'right',
-                    fontSize: '2rem',
-                    marginRight: isCreator ? '1rem' : null
-                  }}
-                >
-                  {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
-                </div>
-              )}
-            {type === 'discussion' && (
-              <Button onClick={this.onCommentButtonClick}>
-                <span className="glyphicon glyphicon-comment" />&nbsp; Answer{!!numChildComments &&
-                numChildComments > 0 &&
-                !commentsShown
-                  ? ` (${numChildComments})`
-                  : ''}
-              </Button>
-            )}
-            {canEdit && (
-              <DropdownButton
-                direction="right"
-                shape="button"
-                style={{ marginLeft: '0.5rem', display: 'inline-block' }}
-                size={type !== 'discussion' ? 'sm' : null}
-                text="Edit"
-                menuProps={[
-                  {
-                    label: 'Edit',
-                    onClick: () => this.setState({ isEditing: true })
-                  },
-                  {
-                    label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
-                  }
-                ]}
-              />
-            )}
+                  </Button>
+                )}
+                {canEdit && (
+                  <DropdownButton
+                    direction="right"
+                    shape="button"
+                    style={{ marginLeft: '0.5rem', display: 'inline-block' }}
+                    size={type !== 'discussion' ? 'sm' : null}
+                    text="Edit"
+                    menuProps={[
+                      {
+                        label: 'Edit',
+                        onClick: () => this.setState({ isEditing: true })
+                      },
+                      {
+                        label: 'Remove',
+                        onClick: () =>
+                          this.setState({ confirmModalShown: true })
+                      }
+                    ]}
+                  />
+                )}
+              </div>
+              <div className="right">
+                {videoViews > 10 &&
+                  type === 'video' && (
+                    <div
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: '2rem'
+                      }}
+                    >
+                      {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+                    </div>
+                  )}
+                {isCreator &&
+                  type === 'video' && (
+                    <StarButton
+                      isStarred={!!isStarred}
+                      onClick={this.onStarButtonClick}
+                      style={{ marginLeft: '1rem' }}
+                    />
+                  )}
+              </div>
+            </div>
             <Likers
               className="likers"
               userId={myId}

@@ -5,7 +5,7 @@ import DropdownButton from 'components/DropdownButton'
 import { timeSince } from 'helpers/timeStampHelpers'
 import LongText from 'components/Texts/LongText'
 import Button from 'components/Button'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import Input from 'components/Texts/Input'
 import {
   cleanString,

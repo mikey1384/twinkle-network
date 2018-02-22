@@ -18,8 +18,7 @@ export default function ChatButton({
   return (
     <Button
       {...props}
-      success={!chatMode && numUnreads > 0}
-      love={chatMode}
+      logo={!chatMode && numUnreads > 0}
       onClick={onClick}
       disabled={loading}
     >
@@ -32,6 +31,11 @@ export default function ChatButton({
       {loading && (
         <span>
           <span className="glyphicon glyphicon-refresh spinning" />&nbsp;
+        </span>
+      )}
+      {chatMode && (
+        <span>
+          <span className="glyphicon glyphicon-remove" />&nbsp;
         </span>
       )}
       {`${chatMode ? 'Close' : ' Talk'} `}

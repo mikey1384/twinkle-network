@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import UsernameText from 'components/Texts/UsernameText'
+import { Color } from 'constants/css'
 
 Likers.propTypes = {
   className: PropTypes.string,
@@ -25,7 +27,13 @@ export default function Likers({
   defaultText
 }) {
   return (
-    <div style={style} className={className}>
+    <div
+      css={`
+        line-height: 2.5rem;
+      `}
+      style={style}
+      className={className}
+    >
       {renderLikers()}
     </div>
   )
@@ -44,11 +52,17 @@ export default function Likers({
       if (totalLikes > 0) {
         if (totalLikes === 1) {
           let otherLikes = likes.filter(like => like.userId !== userId)
-          let otherLikerName = otherLikes[0].username
           return (
             <div>
-              You and {otherLikerName} like{' '}
-              {`this${target ? ' ' + target : ''}.`}
+              You and{' '}
+              <UsernameText
+                color={Color.blue()}
+                user={{
+                  id: otherLikes[0].userId,
+                  name: otherLikes[0].username
+                }}
+              />{' '}
+              like {`this${target ? ' ' + target : ''}.`}
             </div>
           )
         } else {
@@ -66,10 +80,13 @@ export default function Likers({
       return <div>You like {`this${target ? ' ' + target : ''}.`}</div>
     } else if (totalLikes > 0) {
       if (totalLikes === 1) {
-        const likerName = likes[0].username
         return (
           <div>
-            {likerName} likes {`this${target ? ' ' + target : ''}.`}
+            <UsernameText
+              color={Color.blue()}
+              user={{ id: likes[0].userId, name: likes[0].username }}
+            />{' '}
+            likes {`this${target ? ' ' + target : ''}.`}
           </div>
         )
       } else {

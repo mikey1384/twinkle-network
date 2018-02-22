@@ -64,17 +64,16 @@ class DropdownButton extends Component {
               cursor: pointer;
               background: #fff;
               display: ${menuDisplayed ? 'block' : 'none'};
-              box-shadow: 1px 1px 2px rgba(100, 100, 100, 0.49);
+              box-shadow: 1px 1px 2px ${Color.black(0.49)};
               li {
                 width: 100%;
                 padding: 1rem;
                 text-align: center;
                 font-size: 1.5rem;
-                color: ${Color.buttonGray()};
+                color: ${Color.darkGray()};
                 cursor: pointer;
                 &:hover {
-                  color: #fff;
-                  background: ${Color.lightBlue()};
+                  background: ${Color.headingGray()};
                 }
               }
             `}

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import { Modal } from 'react-bootstrap'
 import Button from 'components/Button'
 import { uploadPlaylistAsync } from 'redux/actions/PlaylistActions'

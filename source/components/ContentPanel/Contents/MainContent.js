@@ -54,7 +54,13 @@ export default function MainContent({
         />
       )}
       {!isEditing && (
-        <div className="content">
+        <div
+          className="content"
+          style={{
+            marginTop: type === 'url' && 0,
+            marginBottom: type === 'url' && '1rem'
+          }}
+        >
           {type === 'comment' && (
             <div
               style={{

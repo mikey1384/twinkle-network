@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { uploadQuestion } from 'redux/actions/FeedActions'
 import Button from 'components/Button'
 import Input from 'components/Texts/Input'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import {
   addEmoji,
   stringIsEmpty,
@@ -36,7 +36,6 @@ class QuestionInput extends Component {
           and teachers in Twinkle
         </p>
         <Input
-          className="form-control"
           placeholder="Ask a question (and feel free to answer your own questions)"
           value={question}
           onChange={this.onInputChange}
@@ -48,9 +47,12 @@ class QuestionInput extends Component {
           {question.length}/{wordLimit} Characters
         </small>
         {descriptionInputShown && (
-          <Fragment>
+          <div
+            css={`
+              position: relative;
+            `}
+          >
             <Textarea
-              className="form-control"
               type="text"
               style={{
                 marginTop: '1rem',
@@ -73,17 +75,19 @@ class QuestionInput extends Component {
                 }
               }}
             />
-            <div className="mobile-button">
+            <div className="button-container">
               <Button
-                className="btn btn-primary"
+                filled
+                success
                 type="submit"
                 style={{ marginTop: '1rem' }}
+                disabled={question.length > wordLimit}
                 onClick={this.onSubmit}
               >
                 Ask!
               </Button>
             </div>
-          </Fragment>
+          </div>
         )}
       </div>
     )
@@ -101,7 +105,6 @@ class QuestionInput extends Component {
     const { question, description } = this.state
     event.preventDefault()
     if (stringIsEmpty(question) || question.length > wordLimit) return
-    console.log(description)
     await uploadQuestion({
       question: turnStringIntoQuestion(question),
       description: finalizeEmoji(description)

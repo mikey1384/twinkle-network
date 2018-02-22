@@ -4,7 +4,7 @@ import { Modal } from 'react-bootstrap'
 import Button from 'components/Button'
 import { Color } from 'constants/css'
 import { addEmoji, finalizeEmoji, stringIsEmpty } from 'helpers/stringHelpers'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 
 export default class QuestionModal extends Component {
   static propTypes = {

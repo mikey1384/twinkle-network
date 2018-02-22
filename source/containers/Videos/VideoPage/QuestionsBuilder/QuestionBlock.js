@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ChoiceListItem from './ChoiceListItem'
 import EditChoiceListItem from './EditChoiceListItem'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import Button from 'components/Button'
 import { cleanString, processedString } from 'helpers/stringHelpers'
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import InputArea from 'components/Texts/InputArea'
+import InputForm from 'components/Texts/InputForm'
 
 ReplyInputArea.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -9,7 +9,7 @@ ReplyInputArea.propTypes = {
 export default function ReplyInputArea({ onSubmit, clickListenerState }) {
   return (
     <div style={{ marginTop: '1rem' }}>
-      <InputArea
+      <InputForm
         autoFocus
         clickListenerState={clickListenerState}
         onSubmit={text => onSubmit(text)}

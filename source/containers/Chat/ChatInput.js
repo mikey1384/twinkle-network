@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 
 export default class ChatInput extends Component {
@@ -27,11 +27,10 @@ export default class ChatInput extends Component {
   render() {
     return (
       <Textarea
-        ref={ref => {
+        innerRef={ref => {
           this.Textarea = ref
         }}
         minRows={1}
-        className="form-control"
         placeholder="Type a message..."
         onKeyDown={this.onMessageSubmit}
         value={this.state.message}

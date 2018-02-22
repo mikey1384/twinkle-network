@@ -62,6 +62,11 @@ p {
   -webkit-animation: spin2 1s infinite linear;
 }
 
+.help-block {
+  line-height: 3rem;
+  font-size: 1.3rem;
+}
+
 .hidden {
   display: none!important;
 }

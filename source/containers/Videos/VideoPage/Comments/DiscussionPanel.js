@@ -12,7 +12,7 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import Input from 'components/Texts/Input'

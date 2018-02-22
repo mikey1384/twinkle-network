@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Button from 'components/Button'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 
 export default class EditTextArea extends Component {

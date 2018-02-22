@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import InputArea from 'components/Texts/InputArea'
+import InputForm from 'components/Texts/InputForm'
 
 ReplyInputArea.propTypes = {
   clickListenerState: PropTypes.bool,
@@ -15,7 +15,7 @@ export default function ReplyInputArea({
   return (
     <div className="media" style={style}>
       <div className="media-body">
-        <InputArea
+        <InputForm
           autoFocus
           clickListenerState={clickListenerState}
           onSubmit={text => onSubmit(text)}

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import Textarea from 'react-textarea-autosize'
+import Textarea from 'components/Texts/Textarea'
 import Button from 'components/Button'
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 import Input from './Input'

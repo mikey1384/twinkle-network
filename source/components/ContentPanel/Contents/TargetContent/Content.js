@@ -6,7 +6,7 @@ import LikeButton from 'components/LikeButton'
 import Likers from 'components/Likers'
 import { connect } from 'react-redux'
 import UserListModal from 'components/Modals/UserListModal'
-import InputArea from 'components/Texts/InputArea'
+import InputForm from 'components/Texts/InputForm'
 import Comment from './Comment'
 import { borderRadius, Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
@@ -97,19 +97,18 @@ class Content extends Component {
           !isDiscussion ? (
             <div>
               {rootType === 'question' && (
-                <div style={{ marginBottom: '1rem' }}>
+                <div style={{ marginBottom: '1rem', fontSize: '1.7rem' }}>
                   <ContentLink
                     content={{ id: rootId, title: 'Question: ' }}
                     type="question"
                     style={{ color: Color.green() }}
                   />
-                  <span>{rootContent}</span>
+                  <span style={{ fontWeight: 'bold', color: Color.darkGray() }}>
+                    {rootContent}
+                  </span>
                 </div>
               )}
-              <div
-                className="col-xs-12"
-                style={{ paddingLeft: '0px', paddingRight: '0px' }}
-              >
+              <div style={{ paddingLeft: '0px', paddingRight: '0px' }}>
                 <div style={{ float: 'left' }}>
                   <UsernameText user={uploader} color={Color.blue()} />{' '}
                   <ContentLink
@@ -156,19 +155,14 @@ class Content extends Component {
                 />
               </div>
               {replyInputShown && (
-                <div
-                  className="media"
-                  style={{ marginTop: '0px', lineHeight: '0px' }}
-                >
-                  <div className="media-body">
-                    <InputArea
-                      clickListenerState={clickListenerState}
-                      autoFocus
-                      onSubmit={this.onSubmit}
-                      rows={4}
-                      placeholder={`Write a reply...`}
-                    />
-                  </div>
+                <div style={{ marginTop: '0px', lineHeight: '0px' }}>
+                  <InputForm
+                    clickListenerState={clickListenerState}
+                    autoFocus
+                    onSubmit={this.onSubmit}
+                    rows={4}
+                    placeholder={`Write a reply...`}
+                  />
                 </div>
               )}
               {comments.length > 0 && (
@@ -203,14 +197,11 @@ class Content extends Component {
           ) : (
             <div
               style={{
-                marginTop: '0.2em',
-                marginBottom: '0.2em'
+                marginTop: '0.2rem',
+                marginBottom: '0.2rem'
               }}
             >
-              <div
-                className="col-xs-12"
-                style={{ paddingLeft: '0px', paddingRight: '0px' }}
-              >
+              <div style={{ paddingLeft: '0px', paddingRight: '0px' }}>
                 <div style={{ float: 'left' }}>
                   <ContentLink
                     content={{ id: discussionId, title: 'Discuss: ' }}
@@ -226,7 +217,7 @@ class Content extends Component {
                   </small>
                 </div>
               </div>
-              <div style={{ paddingTop: '2.3em' }}>
+              <div style={{ paddingTop: '2.3rem' }}>
                 <p style={{ fontWeight: 'bold' }}>{title}</p>
                 {content && <LongText>{content}</LongText>}
               </div>

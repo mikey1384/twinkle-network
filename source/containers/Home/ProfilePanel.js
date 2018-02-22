@@ -139,15 +139,11 @@ class ProfilePanel extends Component {
             {canEdit && (
               <div style={{ marginTop: '1.5rem' }}>
                 <Button
-                  className="btn btn-sm btn-default"
                   onClick={() => this.setState({ bioEditModalShown: true })}
                 >
                   Edit Bio
                 </Button>
-                <br />
                 <Button
-                  className="btn btn-sm btn-default"
-                  style={{ marginTop: '0.5rem' }}
                   onClick={this.onChangeProfilePictureClick}
                 >
                   Change Profile Picture
@@ -158,6 +154,7 @@ class ProfilePanel extends Component {
               userId !== profile.id && (
                 <div style={{ alignSelf: 'flex-end' }}>
                   <Button
+                    primary
                     onClick={() => history.push(`/users/${profile.username}`)}
                   >
                     View Profile
