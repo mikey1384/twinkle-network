@@ -109,7 +109,7 @@ export const Right = css`
   -webkit-overflow-scrolling: touch;
   right: 1rem;
   top: 6.5rem;
-  bottom: 0;
+  max-height: CALC(100% - 7.5rem);
   position: absolute;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;

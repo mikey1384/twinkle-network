@@ -9,6 +9,7 @@ import Button from 'components/Button'
 import QuestionModal from './QuestionModal'
 import StarMark from 'components/StarMark'
 import UsernameText from 'components/Texts/UsernameText'
+import { css } from 'emotion'
 
 export default class Heading extends Component {
   static propTypes = {
@@ -62,6 +63,7 @@ export default class Heading extends Component {
         <div
           style={{
             width: '90%',
+            height: '100%',
             marginLeft: '2%',
             display: 'flex',
             alignItems: 'center',
@@ -74,7 +76,7 @@ export default class Heading extends Component {
             }}
           >
             <span className="title">{this.renderHeading()} </span>
-            <small className="time-stamp">
+            <small className="timestamp">
               {timeStamp ? `(${timeSince(timeStamp)})` : ''}
             </small>
           </div>
@@ -83,7 +85,9 @@ export default class Heading extends Component {
               <div
                 style={{
                   width: '20%',
+                  height: '100%',
                   display: 'flex',
+                  alignItems: 'center',
                   justifyContent: 'flex-end'
                 }}
               >
@@ -191,34 +195,52 @@ export default class Heading extends Component {
           {attachedVideoShown ? (
             <LikeButton
               small
-              targetLabel="Video"
               liked={userLikedVideo}
               onClick={() => methods.onLikeClick(rootId, rootType)}
             />
           ) : (
             content && (
-              <a
+              <div
                 style={{
-                  marginLeft: 'auto',
-                  float: 'right',
                   cursor: 'pointer',
                   fontWeight: 'bold',
-                  color: Color.blue()
+                  color: Color.blue(),
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center'
                 }}
                 onClick={onPlayVideoClick}
               >
-                <div className="video-preview-thumb">
-                  <img
-                    alt="thumb"
-                    style={{ width: '100%' }}
-                    src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
-                  />
+                <div
+                  className={css`
+                    background-image: url(https://img.youtube.com/vi/${content}/mqdefault.jpg);
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    position: relative;
+                    width: 100%;
+                    height: 85%;
+                  `}
+                >
                   {!!isStarred && (
                     <StarMark style={{ top: 1, left: 1 }} size={2} />
                   )}
                   <span />
+                  <a
+                    className={css`
+                      position: absolute;
+                      display: block;
+                      background: url('/img/play-button-image.png');
+                      background-size: contain;
+                      height: 3rem;
+                      width: 3rem;
+                      top: 50%;
+                      left: 50%;
+                      margin: -1.5rem 0 0 -1.5rem;
+                    `}
+                  />
                 </div>
-              </a>
+              </div>
             )
           )}
         </Fragment>

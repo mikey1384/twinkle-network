@@ -15,7 +15,7 @@ import request from 'axios'
 import StarMark from 'components/StarMark'
 import { URL } from 'constants/URL'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import {css} from 'emotion'
+import { css } from 'emotion'
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
 const intervalLength = 2000
@@ -283,20 +283,32 @@ class VideoPlayer extends Component {
             )}
           {!onEdit && !small && playing ? (
             <Loading
-              style={{
-                color: Color.blue(),
-                fontSize: '3em',
-                position: 'absolute',
-                display: 'block',
-                height: '40px',
-                width: '40px',
-                top: '50%',
-                left: '50%',
-                margin: '-20px 0 0 -20px'
-              }}
+              className={css`
+                color: ${Color.blue()};
+                font-size: 3em;
+                position: absolute;
+                display: block;
+                height: 5rem;
+                width: 5rem;
+                top: 50%;
+                left: 50%;
+                margin: -2.5rem 0 0 -2.5rem;
+              `}
             />
           ) : !onEdit ? (
-            <a />
+            <a
+              className={css`
+                position: absolute;
+                display: block;
+                background: url('/img/play-button-image.png');
+                background-size: contain;
+                height: 5rem;
+                width: 5rem;
+                top: 50%;
+                left: 50%;
+                margin: -2.5rem 0 0 -2.5rem;
+              `}
+            />
           ) : null}
         </div>
         {isStarred &&

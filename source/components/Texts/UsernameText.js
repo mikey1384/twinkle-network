@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { openDirectMessageChannel } from 'redux/actions/ChatActions'
+import DropdownList from 'components/DropdownList'
 import { Color } from 'constants/css'
 
 class UsernameText extends Component {
@@ -26,43 +27,49 @@ class UsernameText extends Component {
   }
 
   render() {
+    const { user, userId, color, className, style = {} } = this.props
     const { menuShown } = this.state
-    const { user, userId, color, className, style } = this.props
     return (
-      <span
-        className="dropdown"
+      <div
+        style={{ display: 'inline', position: 'relative' }}
         onMouseLeave={() => this.setState({ menuShown: false })}
       >
-        <b
+        <span
           className={className}
           style={{
             cursor: 'pointer',
-            color: user.name ? color && color : Color.darkGray,
+            fontWeight: 'bold',
+            color: user.name ? color || Color.darkGray() : Color.lightGray(),
             ...style
           }}
           onMouseEnter={this.onMouseEnter}
         >
           {user.name || '(Deleted)'}
-        </b>
+        </span>
         {menuShown && (
-          <ul
-            className="dropdown-menu"
-            style={{
-              position: 'absolute',
-              marginTop: '0px',
-              cursor: 'pointer',
-              display: 'block'
-            }}
-          >
+          <DropdownList>
             <li>
-              <a href={`/users/${user.name}`} target="_blank">
+              <a
+                href={`/users/${user.name}`}
+                style={{ color: Color.darkGray() }}
+                target="_blank"
+              >
                 Profile
               </a>
-              {user.id !== userId && <a onClick={this.onLinkClick}>Message</a>}
             </li>
-          </ul>
+            {user.id !== userId && (
+              <li>
+                <a
+                  style={{ color: Color.darkGray() }}
+                  onClick={this.onLinkClick}
+                >
+                  Message
+                </a>
+              </li>
+            )}
+          </DropdownList>
         )}
-      </span>
+      </div>
     )
   }
 

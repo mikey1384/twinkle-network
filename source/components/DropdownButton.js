@@ -2,13 +2,13 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import Button from './Button'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
+import DropdownList from 'components/DropdownList'
 
 class DropdownButton extends Component {
   static propTypes = {
     icon: PropTypes.string,
     direction: PropTypes.string,
+    listStyle: PropTypes.object,
     menuProps: PropTypes.array.isRequired,
     opacity: PropTypes.number,
     style: PropTypes.object,
@@ -28,12 +28,20 @@ class DropdownButton extends Component {
 
   render() {
     const { menuDisplayed } = this.state
-    const { direction = 'left', opacity = 1, style, icon = 'pencil', text = '' } = this.props
+    const {
+      direction,
+      opacity = 1,
+      style,
+      icon = 'pencil',
+      listStyle = {},
+      text = ''
+    } = this.props
     return (
       <div
         style={{
           ...style,
-          opacity: menuDisplayed ? 1 : opacity
+          opacity: menuDisplayed ? 1 : opacity,
+          position: 'relative'
         }}
       >
         <Button
@@ -43,44 +51,14 @@ class DropdownButton extends Component {
           {text && <span>&nbsp;&nbsp;</span>}
           <span>{text}</span>
         </Button>
-        <div
-          className={css`
-            position: relative;
-            float: right;
-            width: 100%;
-          `}
-        >
-          <ul
-            className={css`
-              padding: 0;
-              z-index: 10;
-              margin-top: 0.5rem;
-              top: 0;
-              left: ${direction === 'left' ? '-6rem' : '0'};
-              right: ${direction === 'right' ? '-6rem' : '0'};
-              border: none;
-              list-style: none;
-              position: absolute;
-              cursor: pointer;
-              background: #fff;
-              display: ${menuDisplayed ? 'block' : 'none'};
-              box-shadow: 1px 1px 2px ${Color.black(0.49)};
-              li {
-                width: 100%;
-                padding: 1rem;
-                text-align: center;
-                font-size: 1.5rem;
-                color: ${Color.darkGray()};
-                cursor: pointer;
-                &:hover {
-                  background: ${Color.headingGray()};
-                }
-              }
-            `}
+        {menuDisplayed && (
+          <DropdownList
+            style={{ minWidth: '12rem', ...listStyle }}
+            direction={direction}
           >
             {this.renderMenu()}
-          </ul>
-        </div>
+          </DropdownList>
+        )}
       </div>
     )
   }

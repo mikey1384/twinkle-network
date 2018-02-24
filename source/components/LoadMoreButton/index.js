@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Button from 'components/Button'
+import { css } from 'emotion'
 
 LoadMoreButton.propTypes = {
   style: PropTypes.object,
@@ -9,8 +10,13 @@ LoadMoreButton.propTypes = {
 }
 export default function LoadMoreButton({ onClick, loading, style }) {
   return (
-    <div className="text-center" style={style}>
-      <Button disabled={loading} className="btn btn-success" onClick={onClick}>
+    <div
+      className={css`
+        text-align: center;
+      `}
+      style={style}
+    >
+      <Button disabled={loading} success filled onClick={onClick}>
         {loading ? 'Loading' : 'Load More'}
         {loading && (
           <span>

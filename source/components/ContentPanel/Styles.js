@@ -8,16 +8,18 @@ export const container = css`
   border: 1px solid ${Color.borderGray()};
   border-radius: ${borderRadius};
   .heading {
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1.5rem 1rem 1.5rem;
     display: flex;
     align-items: center;
     width: 100%;
+    height: 10rem;
     span,
     a {
       line-height: 2.5rem;
     }
   }
   .body {
+    padding: 0 1.5rem 1rem 1.5rem;
     .content {
       margin-top: 1rem;
       padding: 1rem;
@@ -43,7 +45,6 @@ export const container = css`
         }
       }
     }
-    padding: 1rem 1.5rem 1rem 1.5rem;
   }
   .likers {
     margin-top: 0.5rem;
@@ -60,7 +61,7 @@ export const container = css`
   .title {
     font-size: 1.7rem;
   }
-  .time-stamp {
+  .timestamp {
     font-size: 1rem;
     color: ${Color.gray()};
   }
@@ -81,7 +82,7 @@ export const container = css`
       .title {
         font-size: 2.5rem;
       }
-      .time-stamp {
+      .timestamp {
         font-size: 1.5rem;
       }
     }

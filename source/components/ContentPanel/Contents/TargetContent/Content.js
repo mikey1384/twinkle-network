@@ -88,25 +88,45 @@ class Content extends Component {
           word-break: break-word;
           border-radius: ${borderRadius};
           border: 1px solid ${Color.inputBorderGray()};
-          padding: 1.5rem;
+          padding: 1.5rem 1.5rem 1rem 1.5rem;
           background: ${Color.whiteGray()};
           margin-bottom: 2rem;
+          line-height: 2.3rem;
+          .buttons {
+            margin-top: 2rem;
+          }
+          .root-block {
+            margin-bottom: 1rem;
+          }
+          .root-content {
+            color: ${Color.darkGray()};
+            font-weight: bold;
+          }
+          .timestamp {
+            color: ${Color.gray()};
+            font-size: 1.2rem;
+          }
         `}
       >
         {contentAvailable ? (
           !isDiscussion ? (
             <div>
               {rootType === 'question' && (
-                <div>
+                <div className="root-block">
                   <ContentLink
-                    className="root-type"
+                    style={{ color: Color.green() }}
                     content={{ id: rootId, title: 'Question: ' }}
                     type="question"
                   />
-                  <span>{rootContent}</span>
+                  <span className="root-content">{rootContent}</span>
                 </div>
               )}
-              <div>
+              <div
+                className={css`
+                  display: flex;
+                  justify-content: space-between;
+                `}
+              >
                 <div>
                   <UsernameText user={uploader} color={Color.blue()} />{' '}
                   <ContentLink
@@ -121,13 +141,19 @@ class Content extends Component {
                     type="comment"
                     style={{ color: Color.green() }}
                   />
+                  <LongText
+                    className={css`
+                      margin-top: 1rem;
+                    `}
+                  >
+                    {content}
+                  </LongText>
                 </div>
                 <div>
-                  <small>({timeSince(timeStamp)})</small>
+                  <span className="timestamp">({timeSince(timeStamp)})</span>
                 </div>
               </div>
-              <div>
-                <LongText>{content}</LongText>
+              <div className="buttons">
                 <LikeButton
                   onClick={this.onLikeClick}
                   liked={userLikedThis}
@@ -179,22 +205,36 @@ class Content extends Component {
               )}
             </div>
           ) : (
-            <div>
-              <div>
+            <div
+              className={css`
+                display: flex;
+                justify-content: space-between;
+              `}
+            >
+              <div className="root-block">
                 <ContentLink
-                  className="root-type"
                   content={{ id: discussionId, title: 'Discuss: ' }}
                   type="discussion"
                   style={{ color: Color.green() }}
                 />
                 <div>
-                  <p>{title}</p>
-                  {content && <LongText>{content}</LongText>}
+                  <span className="root-content">{title}</span>
+                  {content && (
+                    <LongText
+                      className={css`
+                        margin-top: 1rem;
+                      `}
+                    >
+                      {content}
+                    </LongText>
+                  )}
                 </div>
               </div>
-              <small>
-                <UsernameText user={uploader} />&nbsp;({timeSince(timeStamp)})
-              </small>
+              <div>
+                <UsernameText user={uploader} />&nbsp;<span className="timestamp">
+                  ({timeSince(timeStamp)})
+                </span>
+              </div>
             </div>
           )
         ) : (

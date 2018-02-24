@@ -226,7 +226,9 @@ class Header extends Component {
                     />
                   </a>
                 </div>
-                <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
+                <div
+                  className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}
+                >
                   Loading...
                 </div>
               </Fragment>
@@ -278,12 +280,12 @@ class Header extends Component {
               />
             )}
             {loggedIn ? (
-              <AccountMenu title={username} logout={this.onLogout} />
+              <AccountMenu
+                title={username}
+                logout={this.onLogout}
+              />
             ) : (
-              <Button
-                success
-                onClick={() => openSigninModal()}
-              >
+              <Button success onClick={() => openSigninModal()}>
                 Log In | Sign Up
               </Button>
             )}
