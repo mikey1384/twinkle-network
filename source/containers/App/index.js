@@ -19,7 +19,6 @@ import Videos from 'containers/Videos'
 import Links from 'containers/Links'
 import TwinkleXP from 'containers/TwinkleXP'
 import Redirect from 'containers/Redirect'
-import Button from 'components/Button'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import {
   fetchNotifications,
@@ -27,6 +26,7 @@ import {
 } from 'redux/actions/NotiActions'
 import { appStyle, siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
+import Banner from 'components/Banner'
 
 let visibilityChange
 let hidden
@@ -154,37 +154,7 @@ class App extends Component {
         }}
       >
         {updateNoticeShown && (
-          <div
-            className="alert alert-info"
-            style={{
-              position: 'fixed',
-              textAlign: 'center',
-              width: '80%',
-              left: '10%',
-              top: '1rem',
-              zIndex: '2000'
-            }}
-          >
-            <p style={{ fontSize: '1.4em' }}>
-              The website has been updated. Click the button below to apply the
-              update.
-            </p>
-            <p style={{ fontSize: '1.2em' }}>
-              {
-                "Warning: Update is mandatory. Some features will not work properly if you don't!"
-              }
-            </p>
-            <Button
-              className="btn btn-lg btn-success"
-              style={{
-                marginTop: '1.5rem',
-                fontSize: '1.5rem'
-              }}
-              onClick={() => window.location.reload()}
-            >
-              Update!
-            </Button>
-          </div>
+          <Banner />
         )}
         <Header
           staticTop={chatMode}

@@ -63,10 +63,14 @@ export default function Button({
         text-transform: uppercase;
         padding: 1rem;
         color: ${filled ? '#fff' : buttonColor(disabled ? 0.2 : 1)};
-        background: ${filled ? buttonColor(disabled ? 0.2 : 1) : Color.gray(0)};
+        background: ${filled
+          ? buttonColor(isDefault ? 0 : disabled ? 0.2 : 1)
+          : Color.gray(0)};
         font-weight: bold;
         border: 1px solid
-          ${filled ? buttonColor(disabled ? 0.2 : 1) : Color.gray(0)};
+          ${filled
+            ? buttonColor(isDefault ? 0 : disabled ? 0.2 : 1)
+            : Color.gray(0)};
         border-radius: ${borderRadius};
         transition: background 0.2s;
         &:focus {
@@ -76,9 +80,11 @@ export default function Button({
           background: ${isDefault
             ? Color.gray(0)
             : buttonColor(disabled ? 0.2 : 0.6)};
-          color: ${isDefault ? disabled ? buttonColor(0.2) : Color.darkGray() : '#fff'};
+          color: ${isDefault
+            ? filled ? '#fff' : disabled ? buttonColor(0.2) : Color.darkGray()
+            : '#fff'};
           border-color: ${isDefault
-            ? Color.gray(0)
+            ? filled ? '#fff' : Color.gray(0)
             : buttonColor(disabled ? 0.2 : 0.6)};
         }
       `}
