@@ -25,24 +25,20 @@ export const container = css`
     a {
       text-decoration: none;
       margin-left: 0.5rem;
-      span {
-        color: ${Color.menuGray()};
-      }
+      color: ${Color.menuGray()};
       span.new {
         color: ${Color.lightBlue()};
       }
-      span.glyphicon {
+      .icon {
         line-height: 1.7rem;
         margin-right: 0.7rem;
         display: block;
       }
     }
     a.active {
-      span {
-        color: ${Color.darkGray()};
-      }
+      color: ${Color.darkGray()};
       span.no-hover {
-        color: ${Color.menuGray}!important;
+        color: ${Color.menuGray};
       }
     }
     &:hover {

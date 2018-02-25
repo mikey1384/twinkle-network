@@ -4,16 +4,23 @@ import { mobileMaxWidth } from 'constants/css'
 export const container = css`
   display: flex;
   font-size: 2rem;
+  font-family: 'Helvetica Neue';
   padding-left: 0;
   flex-direction: column;
   nav {
-    padding: 1rem;
+    padding: 1.5rem;
     cursor: pointer;
     display: flex;
+    padding-left: 2rem;
     align-items: center;
+    color: #7c7c7c;
+    .icon {
+      text-align: center;
+      margin-right: 1rem;
+    }
     a {
-      text-decoration: none;
       color: #7c7c7c;
+      text-decoration: none;
       img {
         width: 4rem;
         height: 4rem;
@@ -22,15 +29,9 @@ export const container = css`
     a:nth-child(2) {
       margin-left: 1rem;
     }
-    .item-icon {
-      width: 20%;
-    }
-    .item-name {
-      width: 80%;
-      text-align: center;
-    }
   }
   nav:hover {
+    color: #333333;
     a {
       color: #333333;
     }
@@ -38,6 +39,7 @@ export const container = css`
   nav.active {
     background-color: #fff;
     font-weight: bold;
+    color: #333333;
     a {
       color: #333333;
     }

@@ -8,6 +8,14 @@ import createStoreWithHistory from './store'
 import App from 'containers/App'
 import { ScrollContext } from 'components/Wrappers/ReactRouterScroll'
 import { Modal } from 'react-overlays'
+import fontawesome from '@fortawesome/fontawesome'
+import faUsers from '@fortawesome/fontawesome-free-solid/faUsers'
+import faBolt from '@fortawesome/fontawesome-free-solid/faBolt'
+import faHome from '@fortawesome/fontawesome-free-solid/faHome'
+import faFilm from '@fortawesome/fontawesome-free-solid/faFilm'
+import faComment from '@fortawesome/fontawesome-free-solid/faComment'
+import faBook from '@fortawesome/fontawesome-free-solid/faBook'
+fontawesome.library.add(faUsers, faComment, faBolt, faBook, faFilm, faHome)
 
 const history = createHistory()
 const store = createStoreWithHistory(history)

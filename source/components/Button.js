@@ -79,13 +79,13 @@ export default function Button({
         &:hover {
           background: ${isDefault
             ? Color.gray(0)
-            : buttonColor(disabled ? 0.2 : 0.6)};
+            : buttonColor(disabled ? 0 : 0.6)};
           color: ${isDefault
             ? filled ? '#fff' : disabled ? buttonColor(0.2) : Color.darkGray()
-            : '#fff'};
+            : disabled ? buttonColor(0.2) : '#fff'};
           border-color: ${isDefault
             ? filled ? '#fff' : Color.gray(0)
-            : buttonColor(disabled ? 0.2 : 0.6)};
+            : buttonColor(disabled ? 0 : 0.6)};
         }
       `}
       ref={ref => {

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Link, Route } from 'react-router-dom'
+import Icon from 'components/Icon'
 
 export default class HeaderNav extends Component {
   static propTypes = {
@@ -37,11 +38,9 @@ export default class HeaderNav extends Component {
                 style={{ display: 'flex' }}
                 to={to}
               >
-                <span
-                  className={`glyphicon glyphicon-${
-                    isHome ? 'home' : imgLabel
-                  } mobile-no-hover`}
-                />
+                <span className="icon">
+                  <Icon icon={isHome ? 'home' : imgLabel} />
+                </span>
                 <span className="nav-label">{children}</span>
               </Link>
             ) : (
@@ -50,7 +49,9 @@ export default class HeaderNav extends Component {
                 style={{ display: 'flex', cursor: 'pointer' }}
                 onClick={onClick}
               >
-                <span className={`glyphicon glyphicon-${imgLabel} mobile-no-hover`} />
+                <span
+                  className={`glyphicon glyphicon-${imgLabel} mobile-no-hover`}
+                />
                 <span className="nav-label">{children}</span>
               </a>
             )}

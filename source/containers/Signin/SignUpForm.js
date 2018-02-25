@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Modal, Alert } from 'react-bootstrap'
 import Button from 'components/Button'
 import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers'
 import Input from 'components/Texts/Input'
+import { css } from 'emotion'
+import { Color } from 'constants/css'
 
 export default class SignUpForm extends Component {
   static propTypes = {
@@ -44,114 +45,127 @@ export default class SignUpForm extends Component {
       stringIsEmpty(lastname) ||
       errorMessage
     return (
-      <div>
-        {errorMessage && <Alert bsStyle="warning">{errorMessage}</Alert>}
-        <div className="container-fluid">
-          <fieldset className="form-group">
-            <label>Username</label>
-            <Input
-              className="form-control"
-              value={username}
-              placeholder="Enter the username you wish to use. It has to be at least 4 characters long"
-              onChange={text => {
-                this.setState({
-                  errorMessage: '',
-                  username: trimWhiteSpaces(text)
-                })
-              }}
-              onKeyPress={event => {
-                if (event.key === 'Enter' && !submitDisabled) {
-                  this.onSubmit()
-                }
-              }}
-              type="text"
-            />
-          </fieldset>
-          <fieldset className="form-group">
-            <label>Password</label>
-            <Input
-              className="form-control"
-              value={password}
-              placeholder="Password (You MUST remember your password. Write it down somewhere!)"
-              onChange={text => {
-                this.setState({
-                  errorMessage: '',
-                  password: text
-                })
-              }}
-              onKeyPress={event => {
-                if (event.key === 'Enter' && !submitDisabled) {
-                  this.onSubmit()
-                }
-              }}
-              type="password"
-            />
-          </fieldset>
-          <fieldset className="form-group">
-            <label>First Name</label>
-            <Input
-              className="form-control"
-              value={firstname}
-              placeholder="What is your first name? Mine is Mikey"
-              onChange={text => {
-                this.setState({
-                  errorMessage: '',
-                  firstname: trimWhiteSpaces(text)
-                })
-              }}
-              onKeyPress={event => {
-                if (event.key === 'Enter' && !submitDisabled) {
-                  this.onSubmit()
-                }
-              }}
-              type="text"
-            />
-          </fieldset>
-          <fieldset className="form-group">
-            <label>Last Name</label>
-            <Input
-              className="form-control"
-              value={lastname}
-              placeholder="What is your last name? Mine is Lee"
-              onChange={text => {
-                this.setState({
-                  errorMessage: '',
-                  lastname: trimWhiteSpaces(text)
-                })
-              }}
-              onKeyPress={event => {
-                if (event.key === 'Enter' && !submitDisabled) {
-                  this.onSubmit()
-                }
-              }}
-              type="text"
-            />
-          </fieldset>
-          <fieldset className="form-group">
-            <label>{"Email (optional, you don't need to enter this)"}</label>
-            <Input
-              className="form-control"
-              value={email}
-              placeholder="Email is not required, but if you have one, enter it here"
-              onChange={text => {
-                this.setState({
-                  errorMessage: '',
-                  email: text
-                })
-              }}
-              onKeyPress={event => {
-                if (event.key === 'Enter' && !submitDisabled) {
-                  this.onSubmit()
-                }
-              }}
-              type="email"
-            />
-          </fieldset>
-        </div>
-        <br />
-        <Modal.Footer>
+      <div
+        className={css`
+          width: 100%;
+          padding: 1rem 1.5rem 1.5rem 1.5rem;
+          section {
+            margin-top: 1rem;
+          }
+          section:first-child {
+            margin-top: 0;
+          }
+          input {
+            margin-top: 0.5rem;
+          }
+          label {
+            font-weight: bold;
+          }
+        `}
+      >
+        {errorMessage && <div>{errorMessage}</div>}
+        <section>
+          <label>Username</label>
+          <Input
+            value={username}
+            placeholder="Enter the username you wish to use. It has to be at least 4 characters long"
+            onChange={text => {
+              this.setState({
+                errorMessage: '',
+                username: trimWhiteSpaces(text)
+              })
+            }}
+            onKeyPress={event => {
+              if (event.key === 'Enter' && !submitDisabled) {
+                this.onSubmit()
+              }
+            }}
+            type="text"
+          />
+        </section>
+        <section>
+          <label>Password</label>
+          <Input
+            value={password}
+            placeholder="Password (You MUST remember your password. Write it down somewhere!)"
+            onChange={text => {
+              this.setState({
+                errorMessage: '',
+                password: text
+              })
+            }}
+            onKeyPress={event => {
+              if (event.key === 'Enter' && !submitDisabled) {
+                this.onSubmit()
+              }
+            }}
+            type="password"
+          />
+        </section>
+        <section>
+          <label>First Name</label>
+          <Input
+            value={firstname}
+            placeholder="What is your first name? Mine is Mikey"
+            onChange={text => {
+              this.setState({
+                errorMessage: '',
+                firstname: trimWhiteSpaces(text)
+              })
+            }}
+            onKeyPress={event => {
+              if (event.key === 'Enter' && !submitDisabled) {
+                this.onSubmit()
+              }
+            }}
+            type="text"
+          />
+        </section>
+        <section>
+          <label>Last Name</label>
+          <Input
+            value={lastname}
+            placeholder="What is your last name? Mine is Lee"
+            onChange={text => {
+              this.setState({
+                errorMessage: '',
+                lastname: trimWhiteSpaces(text)
+              })
+            }}
+            onKeyPress={event => {
+              if (event.key === 'Enter' && !submitDisabled) {
+                this.onSubmit()
+              }
+            }}
+            type="text"
+          />
+        </section>
+        <section style={{ marginTop: '2rem' }}>
+          <label style={{ fontWeight: 'normal' }}>
+            {'Email '}
+            <span
+              style={{ color: Color.gray() }}
+            >{`(optional, you don't need to enter this)`}</span>
+          </label>
+          <Input
+            value={email}
+            placeholder="Email is not required, but if you have one, enter it here"
+            onChange={text => {
+              this.setState({
+                errorMessage: '',
+                email: text
+              })
+            }}
+            onKeyPress={event => {
+              if (event.key === 'Enter' && !submitDisabled) {
+                this.onSubmit()
+              }
+            }}
+            type="email"
+          />
+        </section>
+        <div className="footer">
           <Button
-            className="btn btn-warning"
             style={{
               fontSize: '1em',
               marginRight: '1em'
@@ -161,14 +175,14 @@ export default class SignUpForm extends Component {
             Wait, I already have an account!
           </Button>
           <Button
-            className="btn btn-lg btn-primary"
+            primary
             disabled={submitDisabled}
             onClick={this.onSubmit}
             style={{ fontSize: '1.5em' }}
           >
             Create my account!
           </Button>
-        </Modal.Footer>
+        </div>
       </div>
     )
   }

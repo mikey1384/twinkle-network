@@ -22,29 +22,27 @@ class ChatFeeds extends Component {
   }
 
   render() {
-    const { content, openChat, style } = this.props
+    const { content, openChat, style = {} } = this.props
     return (
-      <div style={{ ...style, textAlign: 'center' }}>
-        <RoundList>
-          <li>
-            <p
-              style={{
-                fontWeight: 'bold',
-                color: Color.green(),
-                marginBottom: '0px',
-                fontSize: '1.2em'
-              }}
-            >
-              {content}
-            </p>
-            {this.renderDetails()}
-            <Button onClick={() => openChat(2)}>
-              <span className="glyphicon glyphicon-comment" />&nbsp;Join
-              Conversation
-            </Button>
-          </li>
-        </RoundList>
-      </div>
+      <RoundList style={{ ...style, textAlign: 'center' }}>
+        <li>
+          <p
+            style={{
+              fontWeight: 'bold',
+              color: Color.green(),
+              marginBottom: '0px',
+              fontSize: '1.2em'
+            }}
+          >
+            {content}
+          </p>
+          {this.renderDetails()}
+          <Button onClick={() => openChat(2)}>
+            <span className="glyphicon glyphicon-comment" />&nbsp;Join
+            Conversation
+          </Button>
+        </li>
+      </RoundList>
     )
   }
 
@@ -72,7 +70,7 @@ class ChatFeeds extends Component {
     )
 
     return (
-      <div style={{ paddingBottom: '0.5em' }}>
+      <div style={{ paddingBottom: '0.5rem' }}>
         <div>
           <small>{userId ? posterString : 'Join the conversation!'}</small>
         </div>

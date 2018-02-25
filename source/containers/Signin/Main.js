@@ -8,25 +8,21 @@ Main.propTypes = {
 }
 export default function Main({ showLoginForm, showSignUpForm }) {
   return (
-    <div>
-      <div>
-        <Button
-          className="btn btn-lg btn-success"
-          style={{ fontSize: '2em', padding: '1em' }}
-          onClick={showLoginForm}
-        >
-          Yes, I have an account
-        </Button>
-      </div>
-      <div style={{ marginTop: '1em' }}>
-        <Button
-          className="btn btn-lg btn-primary"
-          style={{ fontSize: '1.5em', padding: '1em' }}
-          onClick={showSignUpForm}
-        >
-          {"No, I'm a new user. Make me a new account, please!"}
-        </Button>
-      </div>
+    <div style={{ height: '50%' }}>
+      <Button
+        success
+        style={{ display: 'block', fontSize: '2.5rem', padding: '1rem' }}
+        onClick={showLoginForm}
+      >
+        Yes, I have an account
+      </Button>
+      <Button
+        warning
+        style={{ marginTop: '1.5rem', fontSize: '2rem', padding: '1rem' }}
+        onClick={showSignUpForm}
+      >
+        {"No, I'm a new user. Make me a new account, please!"}
+      </Button>
     </div>
   )
 }

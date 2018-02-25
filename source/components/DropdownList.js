@@ -22,11 +22,12 @@ export default function DropdownList({
         float: left;
         margin-top: 0;
         display: block;
-        z-index: 10;
+        z-index: 1000;
         padding: 0;
         top: 100%;
         right: ${direction === 'right' ? 'auto' : 0};
         left: ${direction === 'left' ? 'auto' : 0};
+        min-width: 10rem;
         border: none;
         list-style: none;
         position: absolute;
@@ -36,6 +37,8 @@ export default function DropdownList({
         font-weight: normal !important;
         li {
           display: list-item;
+          border-radius: 0!important;
+          border: none!important;
           width: 100%;
           padding: 1rem;
           text-align: center;

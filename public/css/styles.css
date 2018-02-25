@@ -17,6 +17,13 @@ body {
   right: 0;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+}
+
 h1 {
   font-size: 20px;
 }
@@ -68,11 +75,11 @@ p {
 }
 
 .hidden {
-  display: none!important;
+  display: none !important;
 }
 
 .mobile {
-  display: none!important;
+  display: none !important;
 }
 
 .momentum-scroll-enabled {
@@ -90,7 +97,8 @@ p {
 }
 
 @media (min-width: 992px) {
-  html, body {
+  html,
+  body {
     overflow: hidden;
     position: absolute;
   }
@@ -98,13 +106,13 @@ p {
 
 @media (max-width: 991px) {
   .header.chat {
-    top: 0!important;
+    top: 0 !important;
   }
   .mobile {
-    display: flex!important;
+    display: flex !important;
   }
   .desktop {
-    display: none!important;
+    display: none !important;
   }
 }
 

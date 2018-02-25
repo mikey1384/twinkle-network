@@ -4,9 +4,10 @@ import { css } from 'emotion'
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 
 RoundList.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  style: PropTypes.object
 }
-export default function RoundList({ children }) {
+export default function RoundList({ children, style = {} }) {
   return (
     <ul
       className={css`
@@ -47,6 +48,7 @@ export default function RoundList({ children }) {
           margin-top: 2rem;
         }
       `}
+      style={style}
     >
       {children}
     </ul>

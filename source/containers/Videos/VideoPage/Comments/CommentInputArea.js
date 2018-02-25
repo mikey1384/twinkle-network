@@ -66,7 +66,7 @@ class CommentInputArea extends Component {
             </li>
           </ul>
         </div>
-        <div style={{ marginTop: '1.5em' }}>
+        <div style={{ marginTop: '1.5rem' }}>
           {discussionTabActive && (
             <div style={{ padding: '0 1rem' }}>
               <div>
@@ -83,7 +83,6 @@ class CommentInputArea extends Component {
                     />
                   ) : (
                     <Button
-                      className="btn btn-primary"
                       onClick={() =>
                         this.setState({ discussionFormShown: true })
                       }
