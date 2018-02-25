@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import {
   commentFeedLike,
   contentFeedLike,
@@ -119,63 +119,66 @@ class Stories extends Component {
         ref={ref => {
           this.Container = ref
         }}
-        style={{ paddingBottom: '1rem' }}
+        style={{ position: 'relative', paddingBottom: '1rem' }}
       >
         {this.renderFilterBar()}
         <InputPanel />
-        {!loaded && <Loading text="Loading Feeds..." />}
-        {loaded &&
-          feeds.length === 0 && (
-            <p
-              style={{
-                textAlign: 'center',
-                paddingTop: '1em',
-                paddingBottom: '1em',
-                fontSize: '2em'
-              }}
-            >
-              <span>Hello there!</span>
-            </p>
-          )}
-        {loaded &&
-          feeds.length > 0 && (
-            <div>
-              {feeds.map(feed => {
-                return (
-                  <ContentPanel
-                    key={`${feed.id}`}
-                    selfLoadingDisabled={this.clearingFeeds}
-                    contentObj={feed}
-                    methodObj={{
-                      onFetchContent: fetchFeed,
-                      onCommentSubmit: uploadFeedComment,
-                      onReplySubmit: uploadFeedReply,
-                      onTargetCommentSubmit: uploadTargetContentComment,
-                      onLikeContent: contentFeedLike,
-                      onLikeComment: commentFeedLike,
-                      onLikeTargetComment: likeTargetComment,
-                      onLikeQuestion: questionFeedLike,
-                      onEditContent: feedContentEdit,
-                      onDeleteContent: feedContentDelete,
-                      onDeleteComment: feedCommentDelete,
-                      onEditComment: feedCommentEdit,
-                      onLoadMoreComments: loadMoreFeedCommentsAsync,
-                      onLoadMoreReplies: loadMoreFeedReplies,
-                      onShowComments: showFeedCommentsAsync,
-                      onVideoStar: feedVideoStar
-                    }}
-                    userId={userId}
+        <div style={{ position: 'relative', minHeight: '10rem' }}>
+          {!loaded && <Loading text="Loading Feeds..." />}
+          {loaded &&
+            feeds.length === 0 && (
+              <div
+                style={{
+                  width: '100%',
+                  textAlign: 'center',
+                  paddingTop: '1em',
+                  paddingBottom: '1em',
+                  fontSize: '2em'
+                }}
+              >
+                <span>Hello there!</span>
+              </div>
+            )}
+          {loaded &&
+            feeds.length > 0 && (
+              <Fragment>
+                {feeds.map(feed => {
+                  return (
+                    <ContentPanel
+                      key={`${feed.id}`}
+                      selfLoadingDisabled={this.clearingFeeds}
+                      contentObj={feed}
+                      methodObj={{
+                        onFetchContent: fetchFeed,
+                        onCommentSubmit: uploadFeedComment,
+                        onReplySubmit: uploadFeedReply,
+                        onTargetCommentSubmit: uploadTargetContentComment,
+                        onLikeContent: contentFeedLike,
+                        onLikeComment: commentFeedLike,
+                        onLikeTargetComment: likeTargetComment,
+                        onLikeQuestion: questionFeedLike,
+                        onEditContent: feedContentEdit,
+                        onDeleteContent: feedContentDelete,
+                        onDeleteComment: feedCommentDelete,
+                        onEditComment: feedCommentEdit,
+                        onLoadMoreComments: loadMoreFeedCommentsAsync,
+                        onLoadMoreReplies: loadMoreFeedReplies,
+                        onShowComments: showFeedCommentsAsync,
+                        onVideoStar: feedVideoStar
+                      }}
+                      userId={userId}
+                    />
+                  )
+                })}
+                {loadMoreButton && (
+                  <LoadMoreButton
+                    onClick={this.loadMoreFeeds}
+                    loading={loadingMore}
                   />
-                )
-              })}
-              {loadMoreButton && (
-                <LoadMoreButton
-                  onClick={this.loadMoreFeeds}
-                  loading={loadingMore}
-                />
-              )}
-            </div>
-          )}
+                )}
+              </Fragment>
+            )}
+        </div>
       </div>
     )
   }

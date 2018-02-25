@@ -7,6 +7,7 @@ export const container = css`
   margin-bottom: 1.5rem;
   border: 1px solid ${Color.borderGray()};
   border-radius: ${borderRadius};
+  position: relative;
   .heading {
     padding: 0.5rem 1.5rem 1rem 1.5rem;
     display: flex;

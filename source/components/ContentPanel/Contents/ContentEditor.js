@@ -74,6 +74,7 @@ export default class ContentEditor extends Component {
           {type !== 'comment' &&
             type !== 'question' && (
               <Input
+                style={{ marginTop: '1rem' }}
                 autoFocus={type === 'discussion'}
                 onChange={text => this.setState({ editedTitle: text })}
                 onKeyUp={event =>
@@ -89,6 +90,7 @@ export default class ContentEditor extends Component {
           {type === 'question' && (
             <Fragment>
               <Input
+                style={{ marginTop: '1rem' }}
                 placeholder={edit['question']}
                 value={editedContent}
                 onChange={text => {
@@ -97,7 +99,6 @@ export default class ContentEditor extends Component {
                     buttonDisabled: text.length > 100 || stringIsEmpty(text)
                   }))
                 }}
-                style={{ marginBottom: '0.3em' }}
               />
               <small
                 style={{ color: editedContent.length > 100 ? 'red' : null }}
@@ -106,7 +107,7 @@ export default class ContentEditor extends Component {
               </small>
             </Fragment>
           )}
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', marginTop: '1rem' }}>
             <Textarea
               autoFocus={type === 'comment'}
               minRows={4}
@@ -124,20 +125,18 @@ export default class ContentEditor extends Component {
               value={type === 'comment' ? editedComment : editedDescription}
             />
           </div>
-          <Button
-            primary
-            type="submit"
-            disabled={buttonDisabled}
-          >
-            Done
-          </Button>
-          <Button
-            style={{ marginLeft: '0.5em' }}
-            type="button"
-            onClick={onDismiss}
-          >
-            Cancel
-          </Button>
+          <div style={{ marginTop: '1rem' }}>
+            <Button primary type="submit" disabled={buttonDisabled}>
+              Done
+            </Button>
+            <Button
+              style={{ marginLeft: '0.5em' }}
+              type="button"
+              onClick={onDismiss}
+            >
+              Cancel
+            </Button>
+          </div>
         </form>
       </div>
     )
