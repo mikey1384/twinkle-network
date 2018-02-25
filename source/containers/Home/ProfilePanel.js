@@ -53,6 +53,7 @@ class ProfilePanel extends Component {
     } = this.props
     const { profileFirstRow, profileSecondRow, profileThirdRow } = profile
     const canEdit = userId === profile.id || isCreator
+    const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow
     return (
       <div className={profilePanel}>
         <div style={{ width: '33%', height: '33%', display: 'flex' }}>
@@ -65,7 +66,6 @@ class ProfilePanel extends Component {
         <div
           style={{
             width: '70%',
-            height: '100%',
             display: 'flex',
             flexDirection: 'column'
           }}
@@ -96,28 +96,28 @@ class ProfilePanel extends Component {
                 (online)
               </p>
             )}
-          {(!!profileFirstRow || !!profileSecondRow || !!profileThirdRow) && (
+          {!noProfile && (
             <ul
               style={{
                 wordBreak: 'break-word',
                 paddingLeft: '2rem'
               }}
             >
-              {!!profileFirstRow && (
+              {profileFirstRow && (
                 <li
                   dangerouslySetInnerHTML={{
                     __html: processedStringWithURL(profileFirstRow)
                   }}
                 />
               )}
-              {!!profileSecondRow && (
+              {profileSecondRow && (
                 <li
                   dangerouslySetInnerHTML={{
                     __html: processedStringWithURL(profileSecondRow)
                   }}
                 />
               )}
-              {!!profileThirdRow && (
+              {profileThirdRow && (
                 <li
                   dangerouslySetInnerHTML={{
                     __html: processedStringWithURL(profileThirdRow)
@@ -126,55 +126,69 @@ class ProfilePanel extends Component {
               )}
             </ul>
           )}
-          <div>
-            {!profileFirstRow &&
-              !profileSecondRow &&
-              !profileThirdRow &&
-              userId === profile.id && (
-                <p>
+          {noProfile && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                height: '60%',
+                paddingLeft: '1rem'
+              }}
+            >
+              {userId === profile.id ? (
+                <span>
                   **Add your bio so that your Twinkle friends can know you
                   better
-                </p>
+                </span>
+              ) : (
+                <span>
+                  {profile.username} {`does not have a bio, yet`}
+                </span>
               )}
-            {canEdit && (
-              <div style={{ marginTop: '1.5rem' }}>
+            </div>
+          )}
+          {canEdit && (
+            <div style={{ marginTop: '1.5rem' }}>
+              <Button
+                onClick={() => this.setState({ bioEditModalShown: true })}
+              >
+                Edit Bio
+              </Button>
+              <Button onClick={this.onChangeProfilePictureClick}>
+                Change Profile Picture
+              </Button>
+            </div>
+          )}
+          {expandable &&
+            userId !== profile.id && (
+              <div
+                style={{
+                  marginTop: !noProfile && '1rem',
+                  position: noProfile && 'absolute',
+                  bottom: noProfile && '2rem'
+                }}
+              >
                 <Button
-                  onClick={() => this.setState({ bioEditModalShown: true })}
+                  primary
+                  onClick={() => history.push(`/users/${profile.username}`)}
                 >
-                  Edit Bio
+                  View Profile
                 </Button>
                 <Button
-                  onClick={this.onChangeProfilePictureClick}
+                  style={{ marginLeft: '0.5rem' }}
+                  success
+                  onClick={() =>
+                    openDirectMessageChannel(
+                      { userId },
+                      { userId: profile.id, username: profile.username },
+                      false
+                    )
+                  }
                 >
-                  Change Profile Picture
+                  Message
                 </Button>
               </div>
             )}
-            {expandable &&
-              userId !== profile.id && (
-                <div style={{ alignSelf: 'flex-end' }}>
-                  <Button
-                    primary
-                    onClick={() => history.push(`/users/${profile.username}`)}
-                  >
-                    View Profile
-                  </Button>
-                  <Button
-                    style={{ marginLeft: '0.5rem' }}
-                    success
-                    onClick={() =>
-                      openDirectMessageChannel(
-                        { userId },
-                        { userId: profile.id, username: profile.username },
-                        false
-                      )
-                    }
-                  >
-                    Message
-                  </Button>
-                </div>
-              )}
-          </div>
         </div>
         <input
           ref={ref => {
