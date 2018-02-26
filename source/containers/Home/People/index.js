@@ -53,14 +53,14 @@ class People extends Component {
   }
 
   render() {
-    const { userId, loadMoreButton, profiles, searchedProfiles } = this.props
+    const { loadMoreButton, userId, profiles, searchedProfiles } = this.props
     const { loading, loaded, searching, searchText } = this.state
     return (
       <div
         ref={ref => {
           this.Container = ref
         }}
-        style={{ marginBottom: '1rem' }}
+        style={{ height: '100%' }}
       >
         <SearchInput
           addonColor={Color.gold()}
@@ -68,7 +68,14 @@ class People extends Component {
           onChange={this.onPeopleSearch}
           value={searchText}
         />
-        <div style={{ marginTop: '1rem' }}>
+        <div
+          style={{
+            marginTop: '1rem',
+            marginBottom: '1rem',
+            position: 'relative',
+            minHeight: '30%'
+          }}
+        >
           {!loaded && <Loading text="Loading Users..." />}
           {loaded &&
             !searching &&
@@ -89,12 +96,15 @@ class People extends Component {
                 profile={profile}
               />
             ))}
+          {!searching &&
+            loaded &&
+            loadMoreButton && (
+              <LoadMoreButton
+                onClick={this.loadMoreProfiles}
+                loading={loading}
+              />
+            )}
         </div>
-        {!searching &&
-          loaded &&
-          loadMoreButton && (
-            <LoadMoreButton onClick={this.loadMoreProfiles} loading={loading} />
-          )}
       </div>
     )
   }

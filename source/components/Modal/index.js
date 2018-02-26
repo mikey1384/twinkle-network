@@ -14,6 +14,7 @@ export default class Modal extends Component {
     return (
       <div
         className={css`
+          z-index: 2000;
           position: fixed;
           top: 0;
           right: 0;
@@ -53,7 +54,7 @@ export default class Modal extends Component {
                 opacity: 1;
               }
             }
-            .heading {
+            .modal-heading {
               display: flex;
               align-items: center;
               line-height: 2rem;
@@ -61,20 +62,22 @@ export default class Modal extends Component {
               font-weight: bold;
               font-size: 2rem;
               padding: 2rem;
-              padding-top: 2.5rem;
+              margin-top: 0.5rem;
             }
-            .body {
+            .modal-body {
               display: flex;
-              padding: 1.5rem;
+              padding: 1.5rem 2rem;
               flex-direction: column;
               justify-content: center;
               align-items: center;
               min-height: 20vh;
             }
-            .footer {
-              margin-top: 3rem;
+            .modal-footer {
+              padding: 1.5rem 1.5rem 1.5rem 1.5rem;
               display: flex;
               align-items: center;
+              flex-direction: row-reverse;
+              border-top: 1px solid ${Color.inputBorderGray()};
             }
           `}
           onHide={onHide}

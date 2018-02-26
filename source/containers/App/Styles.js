@@ -2,12 +2,13 @@ import { css } from 'react-emotion'
 import { mobileMaxWidth } from 'constants/css'
 
 export const appStyle = css`
-  height: 100%;
+  height: CALC(100% - 6.5rem);
   width: 100%;
 `
 
 export const siteContent = css`
   margin-top: 6.5rem;
+  height: 100%;
   @media (max-width: ${mobileMaxWidth}) {
     margin-top: 0;
     padding-bottom: 9rem;

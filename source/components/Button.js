@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import { css } from 'emotion'
 import { borderRadius, Color } from 'constants/css'
 
 Button.propTypes = {
@@ -55,7 +56,7 @@ export default function Button({
   return (
     <button
       {...props}
-      css={`
+      className={css`
         cursor: ${disabled ? 'default' : 'pointer'};
         overflow: hidden;
         font-family: 'Helvetica Neue';

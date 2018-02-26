@@ -32,7 +32,7 @@ export const container = css`
       display: flex;
       flex-direction: column;
       .buttons-bar {
-        margin-top: 1rem;
+        margin-top: 1.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;

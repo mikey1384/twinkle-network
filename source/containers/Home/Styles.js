@@ -4,6 +4,7 @@ import { desktopMinWidth } from '../../constants/css'
 
 export const container = css`
   width: 100%;
+  height: 100%;
   @media (max-width: 991px) {
     display: flex;
   }
@@ -91,7 +92,9 @@ export const Left = css`
 
 export const Center = css`
   width: 100%;
+  height: 100%;
   section {
+    height: 100%;
     margin-left: calc(15% + 5rem);
     @media (max-width: ${mobileMaxWidth}) {
       width: 100% - 2rem;
@@ -120,7 +123,6 @@ export const profilePanel = css`
   border: #e7e7e7 1px solid;
   display: flex;
   width: 100%;
-  height: 100%;
   background: #fff;
   margin-bottom: 1rem;
   padding: 2rem;

@@ -26,18 +26,18 @@ class Signin extends Component {
     const { dispatch, onHide } = this.props
     return (
       <Modal show onHide={onHide}>
-        <div className="heading">
+        <div className="modal-heading">
           {currentPage === 'main' && (
-            <span>Welcome to Twinkle. Do you have a Twinkle account?</span>
+            <span>{`Welcome to Twinkle. Do you have a Twinkle account?`}</span>
           )}
           {currentPage === 'login' && (
-            <span>{"Great! What's your username and password?"}</span>
+            <span>{`Great! What's your username and password?`}</span>
           )}
           {currentPage === 'signUp' && (
-            <span>{"Sure, let's set up your account..."}</span>
+            <span>{`Sure, let's set up your account...`}</span>
           )}
         </div>
-        <div className="body">
+        <div>
           {currentPage === 'main' && (
             <Main
               showLoginForm={() => this.setState({ currentPage: 'login' })}

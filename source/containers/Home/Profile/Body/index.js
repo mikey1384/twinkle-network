@@ -160,7 +160,7 @@ class Body extends Component {
         ref={ref => {
           this.Container = ref
         }}
-        style={{ paddingBottom: '1rem' }}
+        style={{ height: '100%' }}
       >
         <div className={FilterBar}>
           <Route
@@ -256,7 +256,7 @@ class Body extends Component {
             )}
           />
         </div>
-        <div>
+        <div style={{ position: 'relative', height: '100%' }}>
           {!loaded && <Loading />}
           {loaded &&
             feeds.length > 0 && (
@@ -292,13 +292,23 @@ class Body extends Component {
             )}
           {loaded &&
             feeds.length === 0 && (
-              <div style={{ textAlign: 'center' }}>
+              <div
+                style={{
+                  textAlign: 'center',
+                  fontSize: '2rem',
+                  padding: '2rem'
+                }}
+              >
                 {this.onNoFeed(username)}
               </div>
             )}
         </div>
         {loadMoreButton && (
-          <LoadMoreButton onClick={this.loadMoreFeeds} loading={loading} />
+          <LoadMoreButton
+            style={{ marginBottom: '1rem' }}
+            onClick={this.loadMoreFeeds}
+            loading={loading}
+          />
         )}
       </div>
     )

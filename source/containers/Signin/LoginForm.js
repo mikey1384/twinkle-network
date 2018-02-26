@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Button from 'components/Button'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import Input from 'components/Texts/Input'
@@ -24,55 +24,67 @@ export default class LoginForm extends Component {
     const { showSignUpForm } = this.props
     const { username, password, errorMessage } = this.state
     return (
-      <div style={{ width: '100%', padding: '1rem' }}>
-        {errorMessage && <div>{errorMessage}</div>}
-        <div>
-          <Input
-            name="username"
-            value={username}
-            onChange={text => {
-              this.setState({
-                errorMessage: '',
-                username: text
-              })
-            }}
-            placeholder="Enter your username"
-            type="text"
-            onKeyPress={event => {
-              if (
-                !stringIsEmpty(username) &&
-                !stringIsEmpty(password) &&
-                event.key === 'Enter'
-              ) {
-                this.onSubmit()
-              }
-            }}
-          />
+      <Fragment>
+        <div className="modal-body">
+          {errorMessage && <div>{errorMessage}</div>}
+          <div style={{ width: '100%' }}>
+            <div>
+              <Input
+                name="username"
+                value={username}
+                onChange={text => {
+                  this.setState({
+                    errorMessage: '',
+                    username: text
+                  })
+                }}
+                placeholder="Enter your username"
+                type="text"
+                onKeyPress={event => {
+                  if (
+                    !stringIsEmpty(username) &&
+                    !stringIsEmpty(password) &&
+                    event.key === 'Enter'
+                  ) {
+                    this.onSubmit()
+                  }
+                }}
+              />
+            </div>
+            <div style={{ marginTop: '1rem' }}>
+              <Input
+                name="password"
+                value={password}
+                onChange={text => {
+                  this.setState({
+                    errorMessage: '',
+                    password: text
+                  })
+                }}
+                placeholder="Enter your password"
+                type="password"
+                onKeyPress={event => {
+                  if (
+                    !stringIsEmpty(username) &&
+                    !stringIsEmpty(password) &&
+                    event.key === 'Enter'
+                  ) {
+                    this.onSubmit()
+                  }
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <div style={{ marginTop: '1rem' }}>
-          <Input
-            name="password"
-            value={password}
-            onChange={text => {
-              this.setState({
-                errorMessage: '',
-                password: text
-              })
-            }}
-            placeholder="Enter your password"
-            type="password"
-            onKeyPress={event => {
-              if (
-                !stringIsEmpty(username) &&
-                !stringIsEmpty(password) &&
-                event.key === 'Enter'
-              ) {
-                this.onSubmit()
-              }
-            }}
-          />
-        </div>
-        <div className="footer">
+        <div className="modal-footer">
+          <Button
+            primary
+            style={{ fontSize: '2.5rem' }}
+            disabled={stringIsEmpty(username) || stringIsEmpty(password)}
+            onClick={this.onSubmit}
+          >
+            Log me in!
+          </Button>
           <Button
             style={{
               fontSize: '1.5rem',
@@ -82,16 +94,8 @@ export default class LoginForm extends Component {
           >
             {"Wait, I don't think I have an account, yet"}
           </Button>
-          <Button
-            primary
-            style={{ fontSize: '2.5rem' }}
-            disabled={stringIsEmpty(username) || stringIsEmpty(password)}
-            onClick={this.onSubmit}
-          >
-            Log me in!
-          </Button>
         </div>
-      </div>
+      </Fragment>
     )
   }
 

@@ -95,8 +95,9 @@ class Content extends Component {
           .buttons {
             margin-top: 2rem;
           }
-          .root-block {
-            margin-bottom: 1rem;
+          .detail-block {
+            display: flex;
+            justify-content: space-between;
           }
           .root-content {
             color: ${Color.darkGray()};
@@ -112,7 +113,11 @@ class Content extends Component {
           !isDiscussion ? (
             <div>
               {rootType === 'question' && (
-                <div className="root-block">
+                <div
+                  className={css`
+                    margin-bottom: 1rem;
+                  `}
+                >
                   <ContentLink
                     style={{ color: Color.green() }}
                     content={{ id: rootId, title: 'Question: ' }}
@@ -124,34 +129,36 @@ class Content extends Component {
               <div
                 className={css`
                   display: flex;
-                  justify-content: space-between;
+                  flex-direction: column;
                 `}
               >
-                <div>
-                  <UsernameText user={uploader} color={Color.blue()} />{' '}
-                  <ContentLink
-                    content={{
-                      id: replyId || commentId,
-                      title: `${
-                        replyId
-                          ? 'replied'
-                          : rootType === 'question' ? 'answered' : 'commented'
-                      }:`
-                    }}
-                    type="comment"
-                    style={{ color: Color.green() }}
-                  />
-                  <LongText
-                    className={css`
-                      margin-top: 1rem;
-                    `}
-                  >
-                    {content}
-                  </LongText>
+                <div className="detail-block">
+                  <div>
+                    <UsernameText user={uploader} color={Color.blue()} />{' '}
+                    <ContentLink
+                      content={{
+                        id: replyId || commentId,
+                        title: `${
+                          replyId
+                            ? 'replied'
+                            : rootType === 'question' ? 'answered' : 'commented'
+                        }:`
+                      }}
+                      type="comment"
+                      style={{ color: Color.green() }}
+                    />
+                  </div>
+                  <div>
+                    <span className="timestamp">({timeSince(timeStamp)})</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="timestamp">({timeSince(timeStamp)})</span>
-                </div>
+                <LongText
+                  className={css`
+                    margin-top: 1rem;
+                  `}
+                >
+                  {content}
+                </LongText>
               </div>
               <div className="buttons">
                 <LikeButton
@@ -205,35 +212,30 @@ class Content extends Component {
               )}
             </div>
           ) : (
-            <div
-              className={css`
-                display: flex;
-                justify-content: space-between;
-              `}
-            >
-              <div className="root-block">
+            <div>
+              <div className="detail-block">
                 <ContentLink
                   content={{ id: discussionId, title: 'Discuss: ' }}
                   type="discussion"
                   style={{ color: Color.green() }}
                 />
                 <div>
-                  <span className="root-content">{title}</span>
-                  {content && (
-                    <LongText
-                      className={css`
-                        margin-top: 1rem;
-                      `}
-                    >
-                      {content}
-                    </LongText>
-                  )}
+                  <UsernameText user={uploader} />&nbsp;<span className="timestamp">
+                    ({timeSince(timeStamp)})
+                  </span>
                 </div>
               </div>
               <div>
-                <UsernameText user={uploader} />&nbsp;<span className="timestamp">
-                  ({timeSince(timeStamp)})
-                </span>
+                <span className="root-content">{title}</span>
+                {content && (
+                  <LongText
+                    className={css`
+                      margin-top: 1rem;
+                    `}
+                  >
+                    {content}
+                  </LongText>
+                )}
               </div>
             </div>
           )

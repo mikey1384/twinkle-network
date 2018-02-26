@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
+import RoundList from 'components/RoundList'
 import { connect } from 'react-redux'
 import { Color } from 'constants/css'
 
@@ -33,19 +34,17 @@ function UserListModal({
     if (users[i].userId === userId) userArray.push(users[i])
   }
   return (
-    <Modal show style={style} onHide={onHide} animation={false} bsSize="sm">
-      <Modal.Header closeButton>
-        <h5>{title}</h5>
-      </Modal.Header>
-      <Modal.Body>
-        <ul className="list-group" style={{ marginBottom: '0px' }}>
+    <Modal onHide={onHide}>
+      <div className="modal-heading"><span>{title}</span></div>
+      <div className="modal-body">
+        <RoundList>
           {userArray.concat(otherUsers).map(user => {
             let userStatusDisplayed =
               typeof descriptionShown === 'function'
                 ? descriptionShown(user)
                 : user.userId === userId
             return (
-              <li className="list-group-item" key={user.userId}>
+              <li key={user.userId}>
                 {user.username}{' '}
                 <span
                   style={{
@@ -58,13 +57,11 @@ function UserListModal({
               </li>
             )
           })}
-        </ul>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button className="btn btn-default" onClick={onHide}>
-          Close
-        </Button>
-      </Modal.Footer>
+        </RoundList>
+      </div>
+      <div className="modal-footer">
+        <Button onClick={onHide}>Close</Button>
+      </div>
     </Modal>
   )
 }

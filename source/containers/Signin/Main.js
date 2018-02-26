@@ -8,7 +8,7 @@ Main.propTypes = {
 }
 export default function Main({ showLoginForm, showSignUpForm }) {
   return (
-    <div style={{ height: '50%' }}>
+    <div className="modal-body">
       <Button
         success
         style={{ display: 'block', fontSize: '2.5rem', padding: '1rem' }}

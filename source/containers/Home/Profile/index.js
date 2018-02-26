@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import ProfilePanel from '../ProfilePanel'
 import Body from './Body'
 import ExecutionEnvironment from 'exenv'
@@ -48,13 +48,13 @@ class Profile extends Component {
   render() {
     const { profile: { unavailable, id }, userId } = this.props
     return !unavailable ? (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', minHeight: '30%', position: 'relative' }}>
         {!id && <Loading text="Loading Profile..." />}
         {id && (
-          <div style={{ width: '100%' }}>
+          <Fragment>
             <ProfilePanel {...this.props} />
             <Body {...this.props} />
-          </div>
+          </Fragment>
         )}
       </div>
     ) : (

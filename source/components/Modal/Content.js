@@ -5,7 +5,7 @@ import onClickOutside from 'react-onclickoutside'
 class Content extends Component {
   static propTypes = {
     onHide: PropTypes.func,
-    className: PropTypes.object,
+    className: PropTypes.string,
     children: PropTypes.node
   }
   handleClickOutside = event => {

@@ -189,6 +189,7 @@ export default class Heading extends Component {
     } = this.props
     const userLikedVideo =
       rootContentLikers.map(liker => liker.userId).indexOf(myId) !== -1
+    if (!content) return null
     if (rootType === 'video') {
       return (
         <Fragment>

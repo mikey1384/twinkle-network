@@ -48,23 +48,12 @@ class UsernameText extends Component {
         </span>
         {menuShown && (
           <DropdownList>
-            <li>
-              <a
-                href={`/users/${user.name}`}
-                style={{ color: Color.darkGray() }}
-                target="_blank"
-              >
-                Profile
-              </a>
+            <li onClick={() => window.open(`/users/${user.name}`)}>
+              <a style={{ color: Color.darkGray() }}>Profile</a>
             </li>
             {user.id !== userId && (
-              <li>
-                <a
-                  style={{ color: Color.darkGray() }}
-                  onClick={this.onLinkClick}
-                >
-                  Message
-                </a>
+              <li onClick={this.onLinkClick}>
+                <a style={{ color: Color.darkGray() }}>Message</a>
               </li>
             )}
           </DropdownList>
