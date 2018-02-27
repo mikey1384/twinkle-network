@@ -34,7 +34,7 @@ function UserListModal({
     if (users[i].userId === userId) userArray.push(users[i])
   }
   return (
-    <Modal onHide={onHide}>
+    <Modal small onHide={onHide}>
       <div className="modal-heading"><span>{title}</span></div>
       <div className="modal-body">
         <RoundList>

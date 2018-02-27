@@ -13,7 +13,10 @@ export default function RoundList({ children, style = {} }) {
       className={css`
         list-style: none;
         padding: 0;
+        margin-top: 0;
         margin-bottom: 0;
+        width: 100%;
+        font-size: 1.5rem;
         li {
           width: 100%;
           background: #fff;

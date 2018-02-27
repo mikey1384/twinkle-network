@@ -91,6 +91,7 @@ export default class LoginForm extends Component {
               fontSize: '1.5rem',
               marginRight: '1.5rem'
             }}
+            transparent
             onClick={showSignUpForm}
           >
             {"Wait, I don't think I have an account, yet"}

@@ -7,10 +7,21 @@ import Content from './Content'
 export default class Modal extends Component {
   static propTypes = {
     children: PropTypes.node,
-    onHide: PropTypes.func
+    onHide: PropTypes.func,
+    small: PropTypes.bool
   }
   render() {
-    const { children, onHide } = this.props
+    const { children, onHide, small } = this.props
+    const modalWidth = {
+      default: '50%',
+      small: '26%'
+    }
+    const marginLeft = {
+      default: '25%',
+      small: '37%'
+    }
+    let widthKey = 'default'
+    if (small) widthKey = 'small'
     return (
       <div
         className={css`
@@ -28,9 +39,9 @@ export default class Modal extends Component {
             position: relative;
             border-radius: ${borderRadius};
             background: #fff;
-            width: 50%;
+            width: ${modalWidth[widthKey]};
             min-height: 30vh;
-            margin-left: 25%;
+            margin-left: ${marginLeft[widthKey]};
             margin-top: 13vh;
             box-shadow: 3px 4px 5px ${Color.black(1)};
             display: flex;

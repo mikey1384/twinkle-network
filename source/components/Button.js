@@ -95,7 +95,7 @@ export default function Button({
           background: ${buttonColor(
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )[colorKey]};
-          color: ${transparent ? Color.darkGray() : '#fff'};
+          color: ${transparent ? Color.darkGray() : disabled ? buttonColor(textOpacity)[colorKey] : '#fff'};
           border-color: ${buttonColor(
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )[colorKey]};

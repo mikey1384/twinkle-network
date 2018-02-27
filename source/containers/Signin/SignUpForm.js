@@ -179,6 +179,7 @@ export default class SignUpForm extends Component {
             Create my account!
           </Button>
           <Button
+            transparent
             style={{
               fontSize: '1.5rem',
               marginRight: '1rem'
