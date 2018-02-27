@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import PropTypes from 'prop-types'
 import Slider from 'rc-slider'
@@ -13,26 +13,17 @@ export default class ImageEditModal extends Component {
     processing: PropTypes.bool
   }
 
-  constructor() {
-    super()
-    this.state = {
-      imageScale: 1
-    }
+  state = {
+    imageScale: 1
   }
+
   render() {
     const { onHide, imageUri, onConfirm, processing } = this.props
     const { imageScale } = this.state
     return (
-      <Modal
-        show
-        onHide={onHide}
-        animation={false}
-        dialogClassName="modal-extra-lg"
-      >
-        <Modal.Header closeButton>
-          <h4>Create Profile Picture</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={onHide}>
+        <div className="modal-heading">Create Profile Picture</div>
+        <div className="modal-body">
           <div style={{ textAlign: 'center', paddingBottom: '2em' }}>
             {imageUri && (
               <div>
@@ -59,13 +50,10 @@ export default class ImageEditModal extends Component {
               </div>
             )}
           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button className="btn btn-default" onClick={onHide}>
-            Cancel
-          </Button>
+        </div>
+        <div className="modal-footer">
           <Button
-            className="btn btn-primary"
+            primary
             onClick={() =>
               onConfirm(this.Editor.getImage().toDataURL('image/jpeg', 0.7))
             }
@@ -73,7 +61,10 @@ export default class ImageEditModal extends Component {
           >
             Submit
           </Button>
-        </Modal.Footer>
+          <Button transparent onClick={onHide} style={{ marginRight: '1rem' }}>
+            Cancel
+          </Button>
+        </div>
       </Modal>
     )
   }

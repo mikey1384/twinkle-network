@@ -6,12 +6,13 @@ import Content from './Content'
 
 export default class Modal extends Component {
   static propTypes = {
+    className: PropTypes.string,
     children: PropTypes.node,
     onHide: PropTypes.func,
     small: PropTypes.bool
   }
   render() {
-    const { children, onHide, small } = this.props
+    const { className, children, onHide, small } = this.props
     const modalWidth = {
       default: '50%',
       small: '26%'
@@ -24,7 +25,7 @@ export default class Modal extends Component {
     if (small) widthKey = 'small'
     return (
       <div
-        className={css`
+        className={`${css`
           z-index: 2000;
           position: fixed;
           top: 0;
@@ -32,7 +33,9 @@ export default class Modal extends Component {
           left: 0;
           bottom: 0;
           background: ${Color.black(0.5)};
-        `}
+          overflow-y: scroll;
+          padding: 7rem 0;
+        `} ${className}`}
       >
         <Content
           className={css`
@@ -42,13 +45,13 @@ export default class Modal extends Component {
             width: ${modalWidth[widthKey]};
             min-height: 30vh;
             margin-left: ${marginLeft[widthKey]};
-            margin-top: 13vh;
             box-shadow: 3px 4px 5px ${Color.black(1)};
             display: flex;
             justify-content: center;
             flex-direction: column;
             height: auto;
             .close {
+              color: ${Color.darkGray()};
               display: flex;
               align-items: center;
               justify-content: center;
@@ -78,6 +81,7 @@ export default class Modal extends Component {
             .modal-body {
               display: flex;
               padding: 1.5rem 2rem;
+              font-size: 1.5rem;
               flex-direction: column;
               justify-content: center;
               align-items: center;

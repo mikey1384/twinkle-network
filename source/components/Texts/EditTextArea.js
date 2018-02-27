@@ -47,20 +47,22 @@ export default class EditTextArea extends Component {
         />
         <div
           style={{
-            marginTop: '1em'
+            display: 'flex',
+            flexDirection: 'row-reverse',
+            marginTop: '1rem'
           }}
         >
           <Button
-            className="btn btn-default btn-sm"
+            primary
             onClick={this.onSubmit}
             disabled={stringIsEmpty(editedText)}
           >
             Done
           </Button>
           <Button
-            className="btn btn-default btn-sm"
+            transparent
             style={{
-              marginLeft: '0.5em'
+              marginRight: '1rem'
             }}
             onClick={() => this.props.onCancel()}
           >

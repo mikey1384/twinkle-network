@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import Modal from 'components/Modal'
+import Button from 'components/Button'
 
 ConfirmModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -9,19 +10,21 @@ ConfirmModal.propTypes = {
 }
 export default function ConfirmModal({ onHide, title, onConfirm }) {
   return (
-    <Modal show onHide={onHide} animation={false}>
-      <Modal.Header closeButton>
+    <Modal onHide={onHide}>
+      <div className="modal-heading">
         <h4>{title}</h4>
-      </Modal.Header>
-      <Modal.Body>
-        <p>Are you sure?</p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={onHide}>Cancel</Button>
-        <Button bsStyle="primary" onClick={() => onConfirm()}>
+      </div>
+      <div className="modal-body" style={{ fontSize: '3rem', paddingTop: 0 }}>
+        Are you sure?
+      </div>
+      <div className="modal-footer">
+        <Button primary onClick={() => onConfirm()}>
           Confirm
         </Button>
-      </Modal.Footer>
+        <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+      </div>
     </Modal>
   )
 }

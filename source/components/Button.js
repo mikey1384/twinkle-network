@@ -16,6 +16,7 @@ Button.propTypes = {
   children: PropTypes.node,
   danger: PropTypes.bool,
   primary: PropTypes.bool,
+  snow: PropTypes.bool,
   success: PropTypes.bool,
   style: PropTypes.object,
   transparent: PropTypes.bool
@@ -34,6 +35,7 @@ export default function Button({
   success,
   warning,
   danger,
+  snow,
   style = {},
   transparent
 }) {
@@ -48,6 +50,7 @@ export default function Button({
     warning: Color.orange(opacity),
     gold: Color.gold(opacity),
     danger: Color.red(opacity),
+    snow: Color.white(opacity),
     transparent: Color.buttonGray(opacity)
   })
 
@@ -60,6 +63,7 @@ export default function Button({
   if (warning) colorKey = 'warning'
   if (gold) colorKey = 'gold'
   if (danger) colorKey = 'danger'
+  if (snow) colorKey = 'snow'
   if (transparent) colorKey = 'transparent'
 
   const backgroundOpacity = filled ? 1 : 0
@@ -77,7 +81,9 @@ export default function Button({
         font-size: 1.5rem;
         text-transform: uppercase;
         padding: 1rem;
-        color: ${filled ? `#fff` : buttonColor(textOpacity)[colorKey]};
+        color: ${filled
+          ? '#fff'
+          : snow ? Color.black(0.7) : buttonColor(textOpacity)[colorKey]};
         background: ${buttonColor(
           disabled ? backgroundDisabledOpacity : backgroundOpacity
         )[colorKey]};
@@ -88,6 +94,7 @@ export default function Button({
           )[colorKey]};
         border-radius: ${borderRadius};
         transition: background 0.2s;
+        ${snow ? `box-shadow: 0 0 1px ${Color.black(0.8)};` : ''}
         &:focus {
           outline: ${(transparent || disabled) && 0};
         }
@@ -95,7 +102,12 @@ export default function Button({
           background: ${buttonColor(
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )[colorKey]};
-          color: ${transparent ? Color.darkGray() : disabled ? buttonColor(textOpacity)[colorKey] : '#fff'};
+          ${snow ? `box-shadow: 0 0 3px ${Color.black()};` : ''}
+          color: ${transparent
+            ? Color.darkGray()
+            : !filled && disabled
+              ? buttonColor(textOpacity)[colorKey]
+              : snow ? Color.black() : '#fff'};
           border-color: ${buttonColor(
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )[colorKey]};

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
-import { Color } from 'constants/css'
+import { borderRadius, Color } from 'constants/css'
 import { connect } from 'react-redux'
 import { auth } from 'redux/actions/constants'
 import {
@@ -313,14 +313,55 @@ class VideoPlayer extends Component {
         </div>
         {isStarred &&
           !!userId && (
-            <div style={{ marginTop: '1rem' }}>
-              <div style={{ width: `${progress}%` }}>
-                {justEarned
-                  ? 'Twinkle XP earned!'
-                  : xpEarned
-                    ? 'You have already earned this XP'
-                    : `${progress}%`}
-              </div>
+            <div
+              className={css`
+                border: 1px solid ${Color.borderGray()};
+                border-radius: ${borderRadius};
+                height: 2rem;
+                line-height: 1rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                section {
+                  margin-left: 0;
+                  transition: width 0.5s;
+                  border: 1px solid
+                    ${justEarned
+                      ? Color.green()
+                      : xpEarned ? Color.lightBlue() : Color.blue()};
+                  border-top-left-radius: 4px;
+                  border-bottom-left-radius: 4px;
+                  border-top-right-radius: ${progress >= 100 ? '4px' : 0};
+                  border-bottom-right-radius: ${progress >= 100 ? '4px' : 0};
+                }
+              `}
+              style={{ marginTop: '1rem' }}
+            >
+              <section
+                style={{
+                  background: justEarned
+                    ? Color.green()
+                    : xpEarned ? Color.lightBlue() : Color.blue(),
+                  width: `${progress}%`,
+                  height: '100%',
+                  display: 'flex',
+                  opacity: progress > 0 ? 1 : 0,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <span
+                  style={{
+                    color: '#fff'
+                  }}
+                >
+                  {justEarned
+                    ? 'Twinkle XP earned!'
+                    : xpEarned
+                      ? 'You have already earned this XP'
+                      : `${progress}%`}
+                </span>
+              </section>
             </div>
           )}
       </ErrorBoundary>

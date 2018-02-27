@@ -35,7 +35,7 @@ function UserListModal({
   }
   return (
     <Modal small onHide={onHide}>
-      <div className="modal-heading"><span>{title}</span></div>
+      <div className="modal-heading">{title}</div>
       <div className="modal-body">
         <RoundList>
           {userArray.concat(otherUsers).map(user => {
@@ -60,7 +60,7 @@ function UserListModal({
         </RoundList>
       </div>
       <div className="modal-footer">
-        <Button onClick={onHide}>Close</Button>
+        <Button transparent onClick={onHide}>Close</Button>
       </div>
     </Modal>
   )

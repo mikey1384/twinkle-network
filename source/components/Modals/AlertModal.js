@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 
 AlertModal.propTypes = {
@@ -10,18 +10,18 @@ AlertModal.propTypes = {
 }
 export default function AlertModal({ onHide, title, content }) {
   return (
-    <Modal show onHide={onHide} animation={false}>
-      <Modal.Header closeButton>
-        <h4>{title}</h4>
-      </Modal.Header>
-      <Modal.Body>
+    <Modal onHide={onHide}>
+      <div className="modal-heading">
+        {title}
+      </div>
+      <div className="modal-body">
         <p>{content}</p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button className="btn btn-primary" onClick={onHide}>
+      </div>
+      <div className="modal-footer">
+        <Button primary onClick={onHide}>
           OK
         </Button>
-      </Modal.Footer>
+      </div>
     </Modal>
   )
 }

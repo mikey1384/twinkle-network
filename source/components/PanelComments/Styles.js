@@ -23,10 +23,13 @@ export const container = css`
     }
   }
   .timestamp {
-    color: ${Color.gray};
+    color: ${Color.gray()};
   }
   .to {
-    color: ${Color.blue};
+    color: ${Color.blue()};
+    font-size: 1.3rem;
+    line-height: 2.3rem;
+    font-weight: bold;
   }
   .username {
     font-size: 1.7rem;

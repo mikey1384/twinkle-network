@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { Color } from 'constants/css'
 import { addEmoji, finalizeEmoji, stringIsEmpty } from 'helpers/stringHelpers'
@@ -27,8 +27,8 @@ export default class QuestionModal extends Component {
     const { onHide, question } = this.props
     const { answer, answerSubmitted } = this.state
     return (
-      <Modal show onHide={onHide} animation={false}>
-        <Modal.Header>
+      <Modal onHide={onHide}>
+        <div className="modal-heading">
           <span
             style={{
               color: Color.green(),
@@ -38,38 +38,42 @@ export default class QuestionModal extends Component {
           >
             Question
           </span>
-        </Modal.Header>
-        <Modal.Body>
-          <span style={{ fontSize: '2.5rem' }}>{question}</span>
+        </div>
+        <div className="modal-body">
+          <span style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
+            {question}
+          </span>
           <Textarea
             autoFocus
             value={answer}
             onChange={event => this.setState({ answer: event.target.value })}
             onKeyUp={this.handleKeyUp}
-            style={{ marginTop: '1em' }}
-            className="form-control"
+            style={{ marginTop: '3rem' }}
             minRows={4}
             placeholder="Type your answer here..."
           />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button className="btn btn-default" onClick={onHide}>
-            Cancel
-          </Button>
+        </div>
+        <div className="modal-footer">
           <Button
             disabled={answerSubmitted || stringIsEmpty(answer)}
-            className={`btn ${answerSubmitted ? 'btn-success' : 'btn-primary'}`}
+            success={answerSubmitted}
+            primary={!answerSubmitted}
             onClick={this.onSubmit}
           >
             {answerSubmitted ? 'Answer Submitted!' : 'Submit'}
           </Button>
-        </Modal.Footer>
+          <Button transparent onClick={onHide} style={{ marginRight: '1rem' }}>
+            Cancel
+          </Button>
+        </div>
       </Modal>
     )
   }
 
   handleKeyUp(event) {
-    if (event.key === ' ') { this.setState({ answer: addEmoji(event.target.value) }) }
+    if (event.key === ' ') {
+      this.setState({ answer: addEmoji(event.target.value) })
+    }
   }
 
   async onSubmit() {
@@ -80,4 +84,3 @@ export default class QuestionModal extends Component {
     setTimeout(() => onHide(), 1000)
   }
 }
-

@@ -135,6 +135,7 @@ class ProfilePanel extends Component {
               <div
                 style={{
                   position: 'absolute',
+                  zIndex: 0,
                   top: 0,
                   right: 0,
                   left: '34%',
@@ -150,7 +151,7 @@ class ProfilePanel extends Component {
               </div>
             ))}
           {canEdit && (
-            <div style={{ marginTop: '1.5rem' }}>
+            <div style={{ marginTop: '1.5rem', zIndex: 1 }}>
               <Button
                 transparent
                 onClick={() => this.setState({ bioEditModalShown: true })}

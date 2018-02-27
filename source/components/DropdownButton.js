@@ -55,7 +55,7 @@ class DropdownButton extends Component {
         </Button>
         {menuDisplayed && (
           <DropdownList
-            style={{ minWidth: '12rem', ...listStyle }}
+            style={{ marginTop: '0.3rem', minWidth: '12rem', ...listStyle }}
             direction={direction}
           >
             {this.renderMenu()}

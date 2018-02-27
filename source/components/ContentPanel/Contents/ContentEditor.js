@@ -4,6 +4,7 @@ import Textarea from 'components/Texts/Textarea'
 import Input from 'components/Texts/Input'
 import Button from 'components/Button'
 import { edit } from 'constants/placeholders'
+import { css } from 'emotion'
 import {
   addEmoji,
   finalizeEmoji,
@@ -53,7 +54,15 @@ export default class ContentEditor extends Component {
       editedUrl
     } = this.state
     return (
-      <div style={style}>
+      <div
+        style={style}
+        className={css`
+          small {
+            font-size: 1.3rem;
+            line-height: 2.5rem;
+          }
+        `}
+      >
         <form onSubmit={this.onSubmit}>
           {(type === 'video' || type === 'url') && (
             <Input
@@ -69,12 +78,12 @@ export default class ContentEditor extends Component {
               }}
               placeholder={edit[type]}
               value={editedUrl}
+              style={{ marginBottom: '1rem' }}
             />
           )}
           {type !== 'comment' &&
             type !== 'question' && (
               <Input
-                style={{ marginTop: '1rem' }}
                 autoFocus={type === 'discussion'}
                 onChange={text => this.setState({ editedTitle: text })}
                 onKeyUp={event =>
@@ -90,7 +99,6 @@ export default class ContentEditor extends Component {
           {type === 'question' && (
             <Fragment>
               <Input
-                style={{ marginTop: '1rem' }}
                 placeholder={edit['question']}
                 value={editedContent}
                 onChange={text => {
@@ -114,7 +122,9 @@ export default class ContentEditor extends Component {
               onChange={event => {
                 const { value } = event.target
                 this.setState(state => ({
-                  [type === 'comment' ? 'editedComment' : 'editedDescription']: value,
+                  [type === 'comment'
+                    ? 'editedComment'
+                    : 'editedDescription']: value,
                   buttonDisabled:
                     type === 'comment'
                       ? stringIsEmpty(value)
@@ -125,13 +135,19 @@ export default class ContentEditor extends Component {
               value={type === 'comment' ? editedComment : editedDescription}
             />
           </div>
-          <div style={{ marginTop: '1rem' }}>
+          <div
+            style={{
+              marginTop: '1rem',
+              display: 'flex',
+              flexDirection: 'row-reverse'
+            }}
+          >
             <Button primary type="submit" disabled={buttonDisabled}>
               Done
             </Button>
             <Button
-              style={{ marginLeft: '0.5em' }}
-              type="button"
+              transparent
+              style={{ marginRight: '1rem' }}
               onClick={onDismiss}
             >
               Cancel

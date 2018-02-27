@@ -113,6 +113,27 @@ class PanelComment extends Component {
             userId={comment.userId}
             profilePicId={comment.profilePicId}
           />
+          {canEdit &&
+            !onEdit && (
+              <div className="dropdown-wrapper">
+                <DropdownButton
+                  snow
+                  direction="left"
+                  icon="pencil"
+                  opacity={0.8}
+                  menuProps={[
+                    {
+                      label: 'Edit',
+                      onClick: () => this.setState({ onEdit: true })
+                    },
+                    {
+                      label: 'Remove',
+                      onClick: () => this.setState({ confirmModalShown: true })
+                    }
+                  ]}
+                />
+              </div>
+            )}
           <section>
             <div>
               <UsernameText
@@ -155,10 +176,10 @@ class PanelComment extends Component {
                       <LikeButton
                         onClick={this.onLikeClick}
                         liked={userLikedThis}
-                        small
                       />
                       <Button
-                        className="btn btn-warning btn-sm reply-button"
+                        transparent
+                        style={{ marginLeft: '1rem' }}
                         onClick={this.onReplyButtonClick}
                       >
                         <span className="glyphicon glyphicon-comment" /> Reply
@@ -201,26 +222,6 @@ class PanelComment extends Component {
             )}
           </section>
         </div>
-        {canEdit &&
-          !onEdit && (
-            <div className="dropdown-wrapper">
-              <DropdownButton
-                shape="button"
-                icon="pencil"
-                opacity={0.8}
-                menuProps={[
-                  {
-                    label: 'Edit',
-                    onClick: () => this.setState({ onEdit: true })
-                  },
-                  {
-                    label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
-                  }
-                ]}
-              />
-            </div>
-          )}
         {userListModalShown && (
           <UserListModal
             onHide={() => this.setState({ userListModalShown: false })}
