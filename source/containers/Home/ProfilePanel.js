@@ -152,11 +152,12 @@ class ProfilePanel extends Component {
           {canEdit && (
             <div style={{ marginTop: '1.5rem' }}>
               <Button
+                transparent
                 onClick={() => this.setState({ bioEditModalShown: true })}
               >
                 Edit Bio
               </Button>
-              <Button onClick={this.onChangeProfilePictureClick}>
+              <Button transparent onClick={this.onChangeProfilePictureClick}>
                 Change Profile Picture
               </Button>
             </div>

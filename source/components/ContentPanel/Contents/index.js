@@ -148,6 +148,7 @@ class Contents extends Component {
                       small
                     />
                     <Button
+                      transparent
                       key="commentButton"
                       style={{ marginLeft: '0.5rem' }}
                       onClick={this.onCommentButtonClick}
@@ -165,7 +166,7 @@ class Contents extends Component {
                   </Fragment>
                 )}
                 {type === 'discussion' && (
-                  <Button onClick={this.onCommentButtonClick}>
+                  <Button transparent onClick={this.onCommentButtonClick}>
                     <span className="glyphicon glyphicon-comment" />&nbsp;
                     Answer{!!numChildComments &&
                     numChildComments > 0 &&
@@ -176,6 +177,7 @@ class Contents extends Component {
                 )}
                 {canEdit && (
                   <DropdownButton
+                    transparent
                     direction="right"
                     shape="button"
                     style={{ marginLeft: '0.5rem', display: 'inline-block' }}

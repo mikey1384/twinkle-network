@@ -10,6 +10,7 @@ export default function AccountMenu({ title, logout, ...props }) {
   return (
     <DropdownButton
       {...props}
+      transparent
       listStyle={{ marginTop: '0.5rem', width: '11rem' }}
       direction="left"
       text={title}

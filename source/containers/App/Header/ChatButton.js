@@ -18,6 +18,7 @@ export default function ChatButton({
   return (
     <Button
       {...props}
+      transparent
       logo={!chatMode && numUnreads > 0}
       onClick={onClick}
       disabled={loading}

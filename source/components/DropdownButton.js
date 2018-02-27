@@ -34,7 +34,8 @@ class DropdownButton extends Component {
       style,
       icon = 'pencil',
       listStyle = {},
-      text = ''
+      text = '',
+      ...props
     } = this.props
     return (
       <div
@@ -45,6 +46,7 @@ class DropdownButton extends Component {
         }}
       >
         <Button
+          {...props}
           onClick={() => this.setState({ menuDisplayed: !menuDisplayed })}
         >
           <span className={`glyphicon glyphicon-${icon}`} />

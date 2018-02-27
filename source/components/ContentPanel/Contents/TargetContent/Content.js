@@ -88,7 +88,7 @@ class Content extends Component {
           word-break: break-word;
           border-radius: ${borderRadius};
           border: 1px solid ${Color.inputBorderGray()};
-          padding: 1.5rem 1.5rem 1rem 1.5rem;
+          padding: 1.5rem 1.5rem ${isDiscussion ? '1.5rem' : '1rem'} 1.5rem;
           background: ${Color.whiteGray()};
           margin-bottom: 2rem;
           line-height: 2.3rem;
@@ -166,7 +166,7 @@ class Content extends Component {
                   liked={userLikedThis}
                   small
                 />
-                <Button onClick={this.onReplyClick}>
+                <Button transparent onClick={this.onReplyClick}>
                   <span className="glyphicon glyphicon-comment" />&nbsp; Reply
                 </Button>
                 <Likers

@@ -37,7 +37,7 @@ class ChatFeeds extends Component {
             {content}
           </p>
           {this.renderDetails()}
-          <Button onClick={() => openChat(2)}>
+          <Button transparent onClick={() => openChat(2)}>
             <span className="glyphicon glyphicon-comment" />&nbsp;Join
             Conversation
           </Button>

@@ -21,6 +21,7 @@ Button.propTypes = {
   transparent: PropTypes.bool
 }
 export default function Button({
+  className,
   disabled,
   onClick,
   children = null,
@@ -33,8 +34,8 @@ export default function Button({
   success,
   warning,
   danger,
-  transparent,
-  ...props
+  style = {},
+  transparent
 }) {
   let Button
   const buttonColor = opacity => ({
@@ -47,7 +48,7 @@ export default function Button({
     warning: Color.orange(opacity),
     gold: Color.gold(opacity),
     danger: Color.red(opacity),
-    transparent: Color.gray(0)
+    transparent: Color.buttonGray(opacity)
   })
 
   let colorKey = 'default'
@@ -62,14 +63,14 @@ export default function Button({
   if (transparent) colorKey = 'transparent'
 
   const backgroundOpacity = filled ? 1 : 0
-  const backgroundHoverOpacity = 0.6
+  const backgroundHoverOpacity = transparent ? 0 : 0.6
   const backgroundDisabledOpacity = filled ? 0.2 : 0
   const textOpacity = disabled ? 0.2 : 1
 
   return (
     <button
-      {...props}
-      className={css`
+      style={style}
+      className={`${css`
         cursor: ${disabled ? 'default' : 'pointer'};
         overflow: hidden;
         font-family: 'Helvetica Neue';
@@ -77,20 +78,29 @@ export default function Button({
         text-transform: uppercase;
         padding: 1rem;
         color: ${filled ? `#fff` : buttonColor(textOpacity)[colorKey]};
-        background: ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundOpacity)[colorKey]};
+        background: ${buttonColor(
+          disabled ? backgroundDisabledOpacity : backgroundOpacity
+        )[colorKey]};
         font-weight: bold;
-        border: 1px solid ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundOpacity)[colorKey]};
+        border: 1px solid
+          ${buttonColor(
+            disabled ? backgroundDisabledOpacity : backgroundOpacity
+          )[colorKey]};
         border-radius: ${borderRadius};
         transition: background 0.2s;
         &:focus {
           outline: ${(transparent || disabled) && 0};
         }
         &:hover {
-          background: ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundHoverOpacity)[colorKey]};
-          color: #fff;
-          border-color: ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundHoverOpacity)[colorKey]};
+          background: ${buttonColor(
+            disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
+          )[colorKey]};
+          color: ${transparent ? Color.darkGray() : '#fff'};
+          border-color: ${buttonColor(
+            disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
+          )[colorKey]};
         }
-      `}
+      `} ${className}`}
       ref={ref => {
         Button = ref
       }}
