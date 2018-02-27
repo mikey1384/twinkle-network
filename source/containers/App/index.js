@@ -26,7 +26,9 @@ import {
 } from 'redux/actions/NotiActions'
 import { appStyle, siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
-import Banner from 'components/Banner'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
+import Button from 'components/Button'
 
 let visibilityChange
 let hidden
@@ -154,7 +156,42 @@ class App extends Component {
         }}
       >
         {updateNoticeShown && (
-          <Banner />
+          <div
+            className={css`
+              position: absolute;
+              width: 80%;
+              height: 20rem;
+              left: 10%;
+              top: 2rem;
+              z-index: 2000;
+              background: ${Color.blue()};
+              color: #fff;
+              padding: 1rem;
+              text-align: center;
+              font-size: 2rem;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+            `}
+          >
+            <p>
+              The website has been updated. Click the button below to apply the
+              update.
+            </p>
+            <p style={{ fontSize: '1.2em' }}>
+              {
+                "Warning: Update is mandatory. Some features will not work properly if you don't update!"
+              }
+            </p>
+            <Button
+              gold
+              filled
+              style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
+              onClick={() => window.location.reload()}
+            >
+              Update!
+            </Button>
+          </div>
         )}
         <Header
           staticTop={chatMode}

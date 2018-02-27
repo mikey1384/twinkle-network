@@ -17,7 +17,8 @@ Button.propTypes = {
   danger: PropTypes.bool,
   primary: PropTypes.bool,
   success: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  transparent: PropTypes.bool
 }
 export default function Button({
   disabled,
@@ -32,27 +33,39 @@ export default function Button({
   success,
   warning,
   danger,
+  transparent,
   ...props
 }) {
   let Button
-  let buttonColor = opacity => Color.buttonGray(opacity)
-  if (info) buttonColor = opacity => Color.lightBlue(opacity)
-  if (love) buttonColor = opacity => Color.pink(opacity)
-  if (primary) buttonColor = opacity => Color.blue(opacity)
-  if (logo) buttonColor = opacity => Color.logoBlue(opacity)
-  if (success) buttonColor = opacity => Color.green(opacity)
-  if (warning) buttonColor = opacity => Color.orange(opacity)
-  if (gold) buttonColor = opacity => Color.gold(opacity)
-  if (danger) buttonColor = opacity => Color.red(opacity)
-  const isDefault =
-    !info &&
-    !primary &&
-    !success &&
-    !warning &&
-    !danger &&
-    !love &&
-    !gold &&
-    !logo
+  const buttonColor = opacity => ({
+    default: Color.buttonGray(opacity),
+    info: Color.lightBlue(opacity),
+    love: Color.pink(opacity),
+    primary: Color.blue(opacity),
+    logo: Color.logoBlue(opacity),
+    success: Color.green(opacity),
+    warning: Color.orange(opacity),
+    gold: Color.gold(opacity),
+    danger: Color.red(opacity),
+    transparent: Color.gray(0)
+  })
+
+  let colorKey = 'default'
+  if (info) colorKey = 'info'
+  if (love) colorKey = 'love'
+  if (primary) colorKey = 'primary'
+  if (logo) colorKey = 'logo'
+  if (success) colorKey = 'success'
+  if (warning) colorKey = 'warning'
+  if (gold) colorKey = 'gold'
+  if (danger) colorKey = 'danger'
+  if (transparent) colorKey = 'transparent'
+
+  const backgroundOpacity = filled ? 1 : 0
+  const backgroundHoverOpacity = 0.6
+  const backgroundDisabledOpacity = filled ? 0.2 : 0
+  const textOpacity = disabled ? 0.2 : 1
+
   return (
     <button
       {...props}
@@ -63,30 +76,19 @@ export default function Button({
         font-size: 1.5rem;
         text-transform: uppercase;
         padding: 1rem;
-        color: ${filled ? '#fff' : buttonColor(disabled ? 0.2 : 1)};
-        background: ${filled
-          ? buttonColor(isDefault ? 0 : disabled ? 0.2 : 1)
-          : Color.gray(0)};
+        color: ${filled ? `#fff` : buttonColor(textOpacity)[colorKey]};
+        background: ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundOpacity)[colorKey]};
         font-weight: bold;
-        border: 1px solid
-          ${filled
-            ? buttonColor(isDefault ? 0 : disabled ? 0.2 : 1)
-            : Color.gray(0)};
+        border: 1px solid ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundOpacity)[colorKey]};
         border-radius: ${borderRadius};
         transition: background 0.2s;
         &:focus {
-          outline: ${(isDefault || disabled) && 0};
+          outline: ${(transparent || disabled) && 0};
         }
         &:hover {
-          background: ${isDefault
-            ? Color.gray(0)
-            : buttonColor(disabled ? 0 : 0.6)};
-          color: ${isDefault
-            ? filled ? '#fff' : disabled ? buttonColor(0.2) : Color.darkGray()
-            : disabled ? buttonColor(0.2) : '#fff'};
-          border-color: ${isDefault
-            ? filled ? '#fff' : Color.gray(0)
-            : buttonColor(disabled ? 0 : 0.6)};
+          background: ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundHoverOpacity)[colorKey]};
+          color: #fff;
+          border-color: ${buttonColor(disabled ? backgroundDisabledOpacity : backgroundHoverOpacity)[colorKey]};
         }
       `}
       ref={ref => {

@@ -12,7 +12,9 @@ export default class InputForm extends Component {
     formGroupStyle: PropTypes.object,
     onSubmit: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
-    rows: PropTypes.number
+    rows: PropTypes.number,
+    style: PropTypes.object,
+    className: PropTypes.string
   }
 
   state = {
@@ -38,10 +40,14 @@ export default class InputForm extends Component {
       rows,
       autoFocus,
       formGroupStyle = {},
-      ...props
+      style = {},
+      className = ''
     } = this.props
     return (
-      <div {...props}>
+      <div
+        style={style}
+        className={className}
+      >
         <div
           style={{
             position: 'relative',

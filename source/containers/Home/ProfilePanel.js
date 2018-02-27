@@ -126,27 +126,29 @@ class ProfilePanel extends Component {
               )}
             </ul>
           )}
-          {noProfile && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                height: '60%',
-                paddingLeft: '1rem'
-              }}
-            >
-              {userId === profile.id ? (
-                <span>
-                  **Add your bio so that your Twinkle friends can know you
-                  better
-                </span>
-              ) : (
+          {noProfile &&
+            (userId === profile.id ? (
+              <div style={{ padding: '4rem 1rem 3rem 1rem' }}>
+                **Add your bio so that your Twinkle friends can know you better
+              </div>
+            ) : (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  left: '34%',
+                  bottom: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}
+              >
                 <span>
                   {profile.username} {`does not have a bio, yet`}
                 </span>
-              )}
-            </div>
-          )}
+              </div>
+            ))}
           {canEdit && (
             <div style={{ marginTop: '1.5rem' }}>
               <Button

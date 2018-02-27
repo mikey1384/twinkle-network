@@ -344,17 +344,17 @@ class Body extends Component {
     const { currentTab } = this.state
     switch (currentTab) {
       case 'all':
-        return `${username} has not posted a anything yet`
+        return `${username} has not posted anything, yet`
       case 'question':
-        return `${username} has not posted a question yet`
+        return `${username} has not posted a question, yet`
       case 'comment':
-        return `${username} has not posted a comment yet`
+        return `${username} has not posted a comment, yet`
       case 'url':
-        return `${username} has not posted a link yet`
+        return `${username} has not posted a link, yet`
       case 'video':
-        return `${username} has not posted a video yet`
+        return `${username} has not posted a video, yet`
       case 'discussion':
-        return `${username} has not posted a discussion yet`
+        return `${username} has not posted a discussion, yet`
     }
   }
 

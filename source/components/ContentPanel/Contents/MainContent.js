@@ -81,7 +81,8 @@ export default function MainContent({
           {(type === 'url' || type === 'question') && (
             <div
               style={{
-                wordBreak: 'break-word'
+                wordBreak: 'break-word',
+                marginBottom: '1rem'
               }}
             >
               {contentDescription && contentDescription !== 'No description' ? (

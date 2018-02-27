@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react'
 import Button from 'components/Button'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import Input from 'components/Texts/Input'
+import Banner from 'components/Banner'
 
 export default class LoginForm extends Component {
   static propTypes = {
@@ -25,8 +26,8 @@ export default class LoginForm extends Component {
     const { username, password, errorMessage } = this.state
     return (
       <Fragment>
+        {errorMessage && <Banner love>{errorMessage}</Banner>}
         <div className="modal-body">
-          {errorMessage && <div>{errorMessage}</div>}
           <div style={{ width: '100%' }}>
             <div>
               <Input

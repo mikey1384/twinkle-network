@@ -5,6 +5,7 @@ import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers'
 import Input from 'components/Texts/Input'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
+import Banner from 'components/Banner'
 
 export default class SignUpForm extends Component {
   static propTypes = {
@@ -46,6 +47,7 @@ export default class SignUpForm extends Component {
       errorMessage
     return (
       <Fragment>
+        {errorMessage && <Banner love>{errorMessage}</Banner>}
         <div className="modal-body">
           <div
             className={css`
@@ -65,7 +67,6 @@ export default class SignUpForm extends Component {
               }
             `}
           >
-            {errorMessage && <div>{errorMessage}</div>}
             <section>
               <label>Username</label>
               <Input

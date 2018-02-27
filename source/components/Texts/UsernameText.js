@@ -17,13 +17,8 @@ class UsernameText extends Component {
     username: PropTypes.string
   }
 
-  constructor() {
-    super()
-    this.state = {
-      menuShown: false
-    }
-    this.onLinkClick = this.onLinkClick.bind(this)
-    this.onMouseEnter = this.onMouseEnter.bind(this)
+  state = {
+    menuShown: false
   }
 
   render() {
@@ -49,7 +44,13 @@ class UsernameText extends Component {
         {menuShown && (
           <DropdownList>
             <li onClick={() => window.open(`/users/${user.name}`)}>
-              <a style={{ color: Color.darkGray() }}>Profile</a>
+              <a
+                href={`/users/${user.name}`}
+                style={{ color: Color.darkGray() }}
+                onClick={e => e.preventDefault()}
+              >
+                Profile
+              </a>
             </li>
             {user.id !== userId && (
               <li onClick={this.onLinkClick}>
@@ -62,12 +63,12 @@ class UsernameText extends Component {
     )
   }
 
-  onMouseEnter() {
+  onMouseEnter = () => {
     const { user } = this.props
     if (user.name) this.setState({ menuShown: true })
   }
 
-  onLinkClick() {
+  onLinkClick = () => {
     const {
       openDirectMessageChannel,
       user,
