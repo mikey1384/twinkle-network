@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import CheckListGroup from 'components/CheckListGroup'
 import {
@@ -36,11 +36,9 @@ class SelectPlaylistsToPinModal extends Component {
     const { loadMoreButton, playlistsToPin, pinnedPlaylists } = this.props
     const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id
     return (
-      <Modal show onHide={this.props.onHide} animation={false}>
-        <Modal.Header closeButton>
-          <h4>Select up to 5 playlists</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={this.props.onHide}>
+        <div className="modal-heading">Select up to 5 playlists</div>
+        <div className="modal-body">
           <ul className="nav nav-tabs nav-justified">
             <li
               className={selectTabActive ? 'active' : ''}
@@ -128,8 +126,8 @@ class SelectPlaylistsToPinModal extends Component {
               </div>
             )}
           </div>
-        </Modal.Body>
-        <Modal.Footer>
+        </div>
+        <div className="modal-footer">
           {selectedPlaylists.length > 5 && (
             <span className="help-block pull-left" style={{ color: '#843534' }}>
               Please limit your selection to 5 playlists
@@ -145,7 +143,7 @@ class SelectPlaylistsToPinModal extends Component {
           >
             Done
           </Button>
-        </Modal.Footer>
+        </div>
       </Modal>
     )
   }

@@ -80,7 +80,7 @@ export default class PanelComments extends Component {
                 }}
               >
                 <Button
-                  className="btn btn-success"
+                  transparent
                   disabled={isLoading}
                   onClick={this.loadMoreComments}
                 >

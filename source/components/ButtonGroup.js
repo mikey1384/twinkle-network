@@ -38,7 +38,6 @@ export default class ButtonGroup extends Component {
           return (
             <Button
               key={index}
-              type="button"
               style={{ marginLeft: index !== 0 && '1rem' }}
               onMouseEnter={() =>
                 this.setState({
@@ -56,11 +55,9 @@ export default class ButtonGroup extends Component {
                   }))
                 })
               }
-              className={`btn ${
-                button.onHover ? button.hoverClass : button.buttonClass
-              }`}
               onClick={button.onClick}
               disabled={button.disabled}
+              {...{ [button.buttonClass]: true }}
             >
               {button.label}
             </Button>

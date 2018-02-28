@@ -39,6 +39,7 @@ class Home extends Component {
         <Notification className={Right}>
           <div
             className={css`
+              width: 100%;
               margin-bottom: 0px;
               text-align: center;
               padding: 1rem;

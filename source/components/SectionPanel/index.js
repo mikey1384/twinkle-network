@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import Button from 'components/Button'
 import Loading from 'components/Loading'
 import SearchInput from 'components/Texts/SearchInput'
-import { sectionPanel } from './styles'
+import { sectionPanel } from './Styles'
+import { Color } from 'constants/css'
 
 export default class SectionPanel extends Component {
   static propTypes = {
@@ -45,8 +46,9 @@ export default class SectionPanel extends Component {
           {onSearch && (
             <SearchInput
               style={{
+                color: Color.black(),
                 gridArea: 'search',
-                width: '80%',
+                width: '100%',
                 justifySelf: 'center'
               }}
               onChange={this.onSearch}
@@ -65,9 +67,10 @@ export default class SectionPanel extends Component {
             !searchQuery && (
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Button
+                  transparent
                   disabled={loading}
-                  className="btn btn-success"
                   onClick={this.onLoadMore}
+                  style={{ fontSize: '2rem' }}
                 >
                   Load More
                 </Button>

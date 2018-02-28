@@ -246,14 +246,11 @@ class Carousel extends Component {
             currentSlide + slidesToScroll >= slideCount &&
             showAllButton ? (
               <Button
-                className="btn btn-default btn-small"
+                snow
                 style={{
                   position: 'absolute',
-                  top: '50%',
-                  right: -10,
-                  transform: 'translateY(-50%)',
-                  WebkitTransform: 'translateY(-50%)',
-                  msTransform: 'translateY(-50%)'
+                  top: '4.5rem',
+                  right: '-1.5rem'
                 }}
                 onClick={onShowAll}
               >

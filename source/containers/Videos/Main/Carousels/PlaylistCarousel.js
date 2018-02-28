@@ -18,6 +18,8 @@ import {
 } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
 import { cleanString } from 'helpers/stringHelpers'
+import { css } from 'emotion'
+import { Color } from 'constants/css'
 
 class PlaylistCarousel extends Component {
   static propTypes = {
@@ -117,43 +119,49 @@ class PlaylistCarousel extends Component {
     ]
 
     return (
-      <div className="container-fluid">
-        <div className="row container-fluid" style={{ position: 'relative' }}>
+      <div>
+        <div
+          className={css`
+            position: relative;
+            padding-bottom: 1.5rem;
+            h1 {
+              font-size: 2.5rem;
+              line-height: 3rem;
+              font-weight: bold;
+              cursor: pointer;
+              display: inline;
+              color: ${Color.blue()};
+              &:hover {
+                color: ${Color.logoBlue()};
+              }
+            }
+            small {
+              font-size: 1.5rem;
+              color: ${Color.gray()};
+            }
+          `}
+        >
           {onEdit ? (
-            <div
-              className="input-group col-sm-6 pull-left"
-              style={{
-                paddingBottom: '0.3em'
-              }}
-            >
-              <EditTitleForm
-                autoFocus
-                title={title}
-                onEditSubmit={this.onEditedTitleSubmit}
-                onClickOutSide={this.onEditTitleCancel}
-              />
-            </div>
+            <EditTitleForm
+              autoFocus
+              style={{ width: '90%' }}
+              title={title}
+              onEditSubmit={this.onEditedTitleSubmit}
+              onClickOutSide={this.onEditTitleCancel}
+            />
           ) : (
-            <h4 className="pull-left">
-              <a
-                style={{ cursor: 'pointer' }}
-                onClick={() => this.setState({ playlistModalShown: true })}
-              >
+            <div>
+              <h1 onClick={() => this.setState({ playlistModalShown: true })}>
                 {cleanString(title)}
-              </a>
-              <span>
-                &nbsp;<small>by {uploader}</small>
-              </span>
-            </h4>
+              </h1>
+              &nbsp;&nbsp;<small>by {uploader}</small>
+            </div>
           )}
           {(editable || isAdmin) && (
             <DropdownButton
-              style={{
-                position: 'absolute',
-                right: 0,
-                zIndex: '1'
-              }}
-              shape="button"
+              snow
+              style={{ position: 'absolute', right: 0, top: 0 }}
+              direction="left"
               icon="pencil"
               menuProps={menuProps}
             />

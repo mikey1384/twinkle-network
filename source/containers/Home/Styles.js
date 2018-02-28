@@ -111,8 +111,8 @@ export const Right = css`
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   right: 1rem;
-  top: 6.5rem;
-  max-height: CALC(100% - 7.5rem);
+  top: 7rem;
+  max-height: CALC(100% - 8rem);
   position: absolute;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;

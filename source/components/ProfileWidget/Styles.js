@@ -37,7 +37,7 @@ export const container = css`
         font-size: 2rem;
       }
       span {
-        color: ${Color.menuGray()};
+        color: ${Color.darkGray()};
         font-size: 1rem;
         line-height: 2rem;
       }

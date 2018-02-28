@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { connect } from 'react-redux'
 import { changePlaylistVideosAsync } from 'redux/actions/PlaylistActions'
@@ -73,21 +73,15 @@ class EditPlaylistModal extends Component {
       allVideos
     } = this.state
     return (
-      <Modal
-        show
-        onHide={onHide}
-        animation={false}
-        backdrop="static"
-        dialogClassName="modal-extra-lg"
-      >
-        <Modal.Header closeButton>
+      <Modal onHide={onHide}>
+        <div className="modal-heading">
           {modalType === 'change' ? (
             <h4>Change Playlist Videos</h4>
           ) : (
             <h4>Reorder Videos</h4>
           )}
-        </Modal.Header>
-        <Modal.Body>
+        </div>
+        <div className="modal-body">
           <ul
             className="nav nav-tabs nav-justified"
             style={{ marginBottom: '2em' }}
@@ -181,8 +175,8 @@ class EditPlaylistModal extends Component {
               }
             />
           )}
-        </Modal.Body>
-        <Modal.Footer>
+        </div>
+        <div className="modal-footer">
           <Button className="btn btn-default" onClick={onHide}>
             Cancel
           </Button>
@@ -193,7 +187,7 @@ class EditPlaylistModal extends Component {
           >
             Save
           </Button>
-        </Modal.Footer>
+        </div>
       </Modal>
     )
   }

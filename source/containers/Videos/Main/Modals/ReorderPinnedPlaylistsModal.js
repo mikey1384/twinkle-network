@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import SortableListGroup from 'components/SortableListGroup'
 import { connect } from 'react-redux'
@@ -39,21 +39,19 @@ class ReorderPinnedPlaylistsModal extends Component {
     }, [])
 
     return (
-      <Modal show onHide={this.props.onHide} animation={false}>
-        <Modal.Header closeButton>
-          <h4>Reorder Pinned Playlists</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={this.props.onHide}>
+        <div className="modal-heading">Reorder Pinned Playlists</div>
+        <div className="modal-body">
           <SortableListGroup listItems={listItems} onMove={this.onMove} />
-        </Modal.Body>
-        <Modal.Footer>
+        </div>
+        <div className="modal-footer">
           <Button className="btn btn-default" onClick={this.props.onHide}>
             Cancel
           </Button>
           <Button className="btn btn-primary" onClick={this.onSubmit}>
             Done
           </Button>
-        </Modal.Footer>
+        </div>
       </Modal>
     )
   }

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Textarea from 'components/Texts/Textarea'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { uploadPlaylistAsync } from 'redux/actions/PlaylistActions'
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
@@ -14,6 +14,7 @@ import request from 'axios'
 import { URL } from 'constants/URL'
 import Input from 'components/Texts/Input'
 import SearchInput from 'components/Texts/SearchInput'
+import { css } from 'emotion'
 
 class AddPlaylistModal extends Component {
   static propTypes = {
@@ -32,7 +33,6 @@ class AddPlaylistModal extends Component {
     searchedVideos: [],
     selectedVideos: [],
     loadMoreButtonShown: false,
-    titleError: false,
     searchText: ''
   }
 
@@ -58,7 +58,6 @@ class AddPlaylistModal extends Component {
     const {
       isUploading,
       section,
-      titleError,
       title,
       description,
       loadMoreButtonShown,
@@ -69,25 +68,24 @@ class AddPlaylistModal extends Component {
     } = this.state
     return (
       <Modal
-        show
-        animation={false}
-        backdrop="static"
         onHide={onHide}
-        dialogClassName={section >= 1 ? 'modal-extra-lg' : ''}
+        className={css`
+          .left-button {
+            margin-right: 1rem;
+          }
+        `}
+        large={section > 0}
       >
-        <Modal.Header closeButton>{this.renderTitle()}</Modal.Header>
-
-        <Modal.Body>
+        <div className="modal-heading">{this.renderTitle()}</div>
+        <div className="modal-body" style={{ paddingBottom: '1rem' }}>
           {section === 0 && (
             <form
-              className="container-fluid"
+              className={css`
+                width: 100%;
+              `}
               onSubmit={event => event.preventDefault()}
-              onChange={() => this.setState({ titleError: false })}
             >
-              <fieldset className="form-group">
-                <label>
-                  <b>Playlist Title</b>
-                </label>
+              <section>
                 <Input
                   className="form-control"
                   placeholder="Enter Playlist Title"
@@ -99,19 +97,12 @@ class AddPlaylistModal extends Component {
                     }
                   }}
                 />
-                <span className="help-block" style={{ color: 'red' }}>
-                  {titleError && 'Enter title'}
-                </span>
-              </fieldset>
-              <fieldset className="form-group">
-                <label>
-                  <b>Description</b>
-                </label>
+              </section>
+              <section style={{ marginTop: '1.5rem' }}>
                 <Textarea
                   name="description"
                   placeholder="Enter Description (Optional)"
-                  className="form-control"
-                  minRows={4}
+                  minRows={5}
                   value={description}
                   onChange={event =>
                     this.setState({ description: event.target.value })
@@ -124,13 +115,12 @@ class AddPlaylistModal extends Component {
                     }
                   }}
                 />
-              </fieldset>
+              </section>
             </form>
           )}
           {section === 1 && (
-            <div>
+            <div style={{ width: '100%' }}>
               <SearchInput
-                className="form-control"
                 placeholder="Search videos..."
                 autoFocus
                 style={{
@@ -185,37 +175,39 @@ class AddPlaylistModal extends Component {
               ))}
             </div>
           )}
-        </Modal.Body>
-
-        <Modal.Footer>
-          {section === 0 ? (
-            <Button className="btn btn-default" onClick={onHide}>
-              Cancel
-            </Button>
-          ) : (
-            <Button className="btn btn-default" onClick={this.handlePrev}>
-              Prev
-            </Button>
-          )}
+        </div>
+        <div className="modal-footer">
           {section === 2 ? (
-            <Button
-              className="btn btn-primary"
-              disabled={isUploading}
-              onClick={this.handleFinish}
-            >
+            <Button primary disabled={isUploading} onClick={this.handleFinish}>
               Finish
             </Button>
           ) : (
             <Button
-              className="btn btn-primary"
+              primary
               type="submit"
-              disabled={section === 1 && this.state.selectedVideos.length < 2}
+              disabled={
+                (section === 0 && stringIsEmpty(title)) ||
+                (section === 1 && this.state.selectedVideos.length < 2)
+              }
               onClick={this.handleNext}
             >
               Next
             </Button>
           )}
-        </Modal.Footer>
+          {section === 0 ? (
+            <Button className="left-button" transparent onClick={onHide}>
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              className="left-button"
+              transparent
+              onClick={this.handlePrev}
+            >
+              Prev
+            </Button>
+          )}
+        </div>
       </Modal>
     )
   }
@@ -247,10 +239,6 @@ class AddPlaylistModal extends Component {
 
   handleNext = () => {
     const currentSection = this.state.section
-    const { title } = this.state
-    if (currentSection === 0 && stringIsEmpty(title)) {
-      return this.setState({ titleError: true })
-    }
     const nextSection = Math.min(currentSection + 1, 2)
     this.setState({ section: nextSection })
   }

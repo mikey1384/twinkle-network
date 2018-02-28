@@ -97,19 +97,19 @@ class Main extends Component {
       {
         label: '+ Add Playlist',
         onClick: () => this.setState({ addPlaylistModalShown: true }),
-        buttonClass: 'btn-default'
+        buttonClass: 'snow'
       }
     ]
     const pinnedPlaylistButtons = [
       {
         label: 'Select Playlists',
         onClick: () => openSelectPlaylistsToPinModal(),
-        buttonClass: 'btn-default'
+        buttonClass: 'snow'
       },
       {
         label: 'Reorder Playlists',
         onClick: () => openReorderPinnedPlaylistsModal(),
-        buttonClass: 'btn-default'
+        buttonClass: 'snow'
       }
     ]
     return (
@@ -174,10 +174,11 @@ class Main extends Component {
         </div>
         <Notification className="right">
           <Button
-            className="btn btn-lg btn-info"
+            snow
             style={{
-              fontSize: '1.5em',
-              width: '100%',
+              fontSize: '2rem',
+              width: '99%',
+              marginTop: '0.1rem',
               marginBottom: '1rem'
             }}
             onClick={() => openAddVideoModal()}
@@ -185,8 +186,8 @@ class Main extends Component {
             + Add Video
           </Button>
           <Button
-            className="btn btn-lg btn-info"
-            style={{ fontSize: '1.5em', width: '100%' }}
+            snow
+            style={{ fontSize: '2rem', width: '99%' }}
             onClick={() => this.setState({ addPlaylistModalShown: true })}
           >
             + Add Playlist

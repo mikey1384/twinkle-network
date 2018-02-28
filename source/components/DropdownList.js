@@ -36,16 +36,18 @@ export default function DropdownList({
         box-shadow: 1px 1px 2px ${Color.black(0.49)};
         font-weight: normal !important;
         li {
-          display: list-item;
+          display: inline-block;
+          clear: both;
+          float: left;
           border-radius: 0!important;
           border: none!important;
-          width: 100%;
           padding: 1rem;
           text-align: center;
           font-size: 1.5rem;
           color: ${Color.darkGray()};
           cursor: pointer;
           border-bottom: none !important;
+          width: 100%;
           &:hover {
             background: ${Color.headingGray()};
           }

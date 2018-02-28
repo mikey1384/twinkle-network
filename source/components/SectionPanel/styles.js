@@ -21,7 +21,10 @@ export const sectionPanel = css`
     margin-bottom: 1rem;
   }
   .body {
+    position: relative;
     padding: 1rem;
+    width: 100%;
+    min-height: 15rem;
   }
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;

@@ -167,7 +167,11 @@ class Content extends Component {
                   liked={userLikedThis}
                   small
                 />
-                <Button transparent onClick={this.onReplyClick}>
+                <Button
+                  style={{ marginLeft: '1rem' }}
+                  transparent
+                  onClick={this.onReplyClick}
+                >
                   <span className="glyphicon glyphicon-comment" />&nbsp; Reply
                 </Button>
                 <Likers

@@ -150,7 +150,7 @@ class Contents extends Component {
                     <Button
                       transparent
                       key="commentButton"
-                      style={{ marginLeft: '0.5rem' }}
+                      style={{ marginLeft: '1rem' }}
                       onClick={this.onCommentButtonClick}
                     >
                       <span className="glyphicon glyphicon-comment" />&nbsp;

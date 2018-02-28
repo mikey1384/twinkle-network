@@ -4,11 +4,12 @@ import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css'
 export const container = css`
   font-family: Helvetica;
   font-size: 1.5rem;
-  background: ${Color.headingGray()};
-  padding: 0.5rem;
+  background: #fff;
+  padding: 0.7rem;
   display: flex;
   z-index: 100;
   justify-content: space-around;
+  box-shadow: 0 3px 3px -3px ${Color.menuGray()};
   align-items: center;
   width: 100%;
   margin-bottom: 0px;
@@ -36,15 +37,16 @@ export const container = css`
       }
     }
     a.active {
-      color: ${Color.darkGray()};
+      font-weight: bold;
+      color: ${Color.black()};
       span.no-hover {
-        color: ${Color.menuGray};
+        color: ${Color.menuGray()};
       }
     }
     &:hover {
       a {
         span {
-          color: ${Color.darkGray()};
+          color: ${Color.black()};
         }
         span.new {
           color: ${Color.lightBlue()}!important;
@@ -78,7 +80,6 @@ export const container = css`
   }
   @media (min-width: ${desktopMinWidth}) {
     top: 0;
-    border-bottom: 1px solid ${Color.borderGray()};
   }
   @media (max-width: ${mobileMaxWidth}) {
     bottom: 0;

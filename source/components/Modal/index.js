@@ -9,20 +9,22 @@ export default class Modal extends Component {
     className: PropTypes.string,
     children: PropTypes.node,
     onHide: PropTypes.func,
-    small: PropTypes.bool
+    small: PropTypes.bool,
+    large: PropTypes.bool
   }
   render() {
-    const { className, children, onHide, small } = this.props
+    const { className, children, onHide, small, large } = this.props
     const modalWidth = {
       default: '50%',
-      small: '26%'
+      small: '26%',
+      large: '80%'
     }
     const marginLeft = {
       default: '25%',
-      small: '37%'
+      small: '37%',
+      large: '10%'
     }
-    let widthKey = 'default'
-    if (small) widthKey = 'small'
+    const widthKey = small ? 'small' : large ? 'large' : 'default'
     return (
       <div
         className={`${css`
@@ -52,6 +54,7 @@ export default class Modal extends Component {
             height: auto;
             .close {
               color: ${Color.darkGray()};
+              background: #fff;
               display: flex;
               align-items: center;
               justify-content: center;

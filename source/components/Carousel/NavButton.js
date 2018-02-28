@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Button from 'components/Button'
+import { css } from 'emotion'
 
 NavButton.propTypes = {
   disabled: PropTypes.bool,
@@ -9,38 +10,21 @@ NavButton.propTypes = {
 }
 
 export default function NavButton({ disabled, nextSlide, left }) {
-  const style = left
-    ? {
-        position: 'absolute',
-        top: '50%',
-        left: -10,
-        transform: 'translateY(-50%)',
-        WebkitTransform: 'translateY(-50%)',
-        msTransform: 'translateY(-50%)'
-      }
-    : {
-        position: 'absolute',
-        top: '50%',
-        right: -10,
-        transform: 'translateY(-50%)',
-        WebkitTransform: 'translateY(-50%)',
-        msTransform: 'translateY(-50%)'
-      }
-
-  return (
-    <div style={style}>
-      <Button
-        className="btn btn-default btn-small"
-        onClick={handleClick}
-        disabled={disabled}
-      >
-        <span
-          className={`glyphicon ${
-            left ? 'glyphicon-chevron-left' : 'glyphicon-chevron-right'
-          }`}
-        />
-      </Button>
-    </div>
+  return disabled ? null : (
+    <Button
+      className={css`
+        position: absolute;
+        ${left ? 'left: -1.5rem;' : 'right: -1.5rem;'} top: 4.5rem;
+      `}
+      snow
+      onClick={handleClick}
+    >
+      <span
+        className={`glyphicon ${
+          left ? 'glyphicon-chevron-left' : 'glyphicon-chevron-right'
+        }`}
+      />
+    </Button>
   )
 
   function handleClick(event) {

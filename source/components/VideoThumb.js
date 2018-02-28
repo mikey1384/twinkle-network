@@ -16,6 +16,7 @@ import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import VideoThumbImage from 'components/VideoThumbImage'
+import { css } from 'emotion'
 
 class VideoThumb extends Component {
   static propTypes = {
@@ -60,13 +61,18 @@ class VideoThumb extends Component {
     return (
       <ErrorBoundary style={style}>
         <div
-          style={{
-            display: 'flex',
-            width: '100%',
-            flexDirection: 'column',
-            alignItems: 'flex-end',
-            position: 'relative'
-          }}
+          className={css`
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            align-items: flex-end;
+            position: relative;
+            font-size: 1.4rem;
+            p {
+              font-weight: bold;
+              margin-top: 1rem;
+            }
+          `}
         >
           {editable && (
             <DropdownButton
@@ -74,7 +80,10 @@ class VideoThumb extends Component {
                 position: 'absolute',
                 zIndex: '1'
               }}
+              direction="left"
+              snow
               icon="pencil"
+              noBorderRadius
               menuProps={menuProps}
             />
           )}
@@ -91,7 +100,6 @@ class VideoThumb extends Component {
             </Link>
           </div>
           <div
-            className="caption"
             style={{
               height: '8rem',
               width: '100%'
@@ -118,7 +126,7 @@ class VideoThumb extends Component {
                   width: '100%'
                 }}
               >
-                <h5
+                <p
                   ref={ref => {
                     this.thumbLabel = ref
                   }}
@@ -137,7 +145,7 @@ class VideoThumb extends Component {
                   >
                     {cleanString(video.title)}
                   </a>
-                </h5>
+                </p>
                 <FullTextReveal
                   show={onTitleHover}
                   text={cleanString(video.title)}

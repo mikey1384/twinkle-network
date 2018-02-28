@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
@@ -56,11 +56,11 @@ class PlaylistModal extends Component {
     const { loadVideoPage, onHide, playlistId, title } = this.props
     const { videos, loading, loadMoreButtonShown } = this.state
     return (
-      <Modal show onHide={onHide} animation={false}>
-        <Modal.Header closeButton>
+      <Modal onHide={onHide}>
+        <div className="modal-heading">
           <h4>{title}</h4>
-        </Modal.Header>
-        <Modal.Body>
+        </div>
+        <div className="modal-body">
           {videos.length === 0 && <Loading text="Loading..." />}
           {videos.map((video, index) => (
             <div
@@ -81,7 +81,9 @@ class PlaylistModal extends Component {
                   <VideoThumbImage
                     isStarred={!!video.isStarred}
                     videoId={video.id}
-                    src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+                    src={`https://img.youtube.com/vi/${
+                      video.content
+                    }/mqdefault.jpg`}
                   />
                 </Link>
               </div>
@@ -107,12 +109,12 @@ class PlaylistModal extends Component {
               onClick={this.onLoadMoreVideos}
             />
           )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button className="btn btn-default" onClick={onHide}>
+        </div>
+        <div className="modal-footer">
+          <Button transparent onClick={onHide}>
             Close
           </Button>
-        </Modal.Footer>
+        </div>
       </Modal>
     )
   }

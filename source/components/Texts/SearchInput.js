@@ -52,10 +52,13 @@ class SearchInput extends Component {
         className={`${css`
           display: flex;
           align-items: center;
+          height: 4.3rem;
           .addon {
             border: 1px solid ${addonColor || Color.inputBorderGray};
             align-self: stretch;
             padding: 0 1rem;
+            display: flex;
+            align-items: center;
           }
           .glyphicon {
             line-height: 4rem;
@@ -68,10 +71,14 @@ class SearchInput extends Component {
         `} ${className}`}
         style={style}
       >
-        <div className="addon" style={{ backgroundColor: addonColor || Color.borderGray() }}>
+        <div
+          className="addon"
+          style={{ backgroundColor: addonColor || Color.borderGray() }}
+        >
           <span className="glyphicon glyphicon-search" />
         </div>
         <Input
+          style={{ height: '100%' }}
           className="input"
           autoFocus={autoFocus}
           onFocus={onFocus && onFocus}

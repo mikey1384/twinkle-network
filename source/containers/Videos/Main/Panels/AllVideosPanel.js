@@ -48,7 +48,7 @@ class AllVideosPanel extends Component {
         searchPlaceholder="Search videos"
         button={
           <Button
-            className="btn btn-default"
+            snow
             style={{ marginLeft: 'auto' }}
             onClick={() => onAddVideoClick()}
           >

@@ -54,7 +54,7 @@ export default function SelectVideosForm({
             width: '100%'
           }}
         >
-          <Button className="btn btn-success" onClick={loadMoreVideos}>
+          <Button transparent onClick={loadMoreVideos}>
             Load More
           </Button>
         </div>

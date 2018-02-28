@@ -31,9 +31,8 @@ class EditTitleForm extends Component {
     const { title } = this.state
     const { style, autoFocus, maxLength = 100 } = this.props
     return (
-      <form onSubmit={event => this.onEditSubmit(event, title)}>
+      <form style={style} onSubmit={event => this.onEditSubmit(event, title)}>
         <Input
-          style={style}
           autoFocus={autoFocus}
           type="text"
           className="form-control"
@@ -44,9 +43,16 @@ class EditTitleForm extends Component {
             this.setState({ title: addEmoji(event.target.value) })
           }
         />
-        <small style={{ color: title.length > maxLength && 'red' }}>
-          {title.length}/{maxLength} Characters
-        </small>
+        <div>
+          <small
+            style={{
+              color: title.length > maxLength && 'red',
+              lineHeight: '3rem'
+            }}
+          >
+            {title.length}/{maxLength} Characters
+          </small>
+        </div>
       </form>
     )
   }

@@ -91,11 +91,13 @@ class SortableThumb extends Component {
               }}
             >
               <div>
-                <h5
+                <p
                   ref={ref => {
                     this.thumbLabel = ref
                   }}
                   style={{
+                    marginTop: '1rem',
+                    fontWeight: 'bold',
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
@@ -105,7 +107,7 @@ class SortableThumb extends Component {
                   onMouseLeave={() => this.setState({ onTitleHover: false })}
                 >
                   {cleanString(video.title)}
-                </h5>
+                </p>
                 <FullTextReveal
                   show={onTitleHover}
                   text={cleanString(video.title)}

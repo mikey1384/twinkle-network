@@ -4,6 +4,7 @@ import { cleanString } from 'helpers/stringHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
 import VideoThumbImage from 'components/VideoThumbImage'
+import { Color } from 'constants/css'
 
 export default class VideoThumb extends Component {
   static propTypes = {
@@ -33,8 +34,8 @@ export default class VideoThumb extends Component {
         }}
       >
         <div
-          className={selected ? 'thumbnail-selected' : ''}
           style={{
+            border: selected && `0.5rem solid ${Color.gold()}`,
             display: 'flex',
             width: '100%',
             flexDirection: 'column',
@@ -57,18 +58,19 @@ export default class VideoThumb extends Component {
             />
           </div>
           <div
-            className="caption"
             style={{
               height: '8rem',
               width: '100%'
             }}
           >
             <div>
-              <h5
+              <p
                 ref={ref => {
                   this.thumbLabel = ref
                 }}
                 style={{
+                  marginTop: '1rem',
+                  fontWeight: 'bold',
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -78,7 +80,7 @@ export default class VideoThumb extends Component {
                 onMouseLeave={() => this.setState({ onTitleHover: false })}
               >
                 {cleanString(video.title)}
-              </h5>
+              </p>
               <FullTextReveal
                 show={onTitleHover}
                 text={cleanString(video.title)}

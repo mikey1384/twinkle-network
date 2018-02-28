@@ -10,6 +10,7 @@ class DropdownButton extends Component {
     direction: PropTypes.string,
     listStyle: PropTypes.object,
     menuProps: PropTypes.array.isRequired,
+    noBorderRadius: PropTypes.bool,
     opacity: PropTypes.number,
     style: PropTypes.object,
     text: PropTypes.string
@@ -19,11 +20,8 @@ class DropdownButton extends Component {
     this.setState({ menuDisplayed: false })
   }
 
-  constructor() {
-    super()
-    this.state = {
-      menuDisplayed: false
-    }
+  state = {
+    menuDisplayed: false
   }
 
   render() {
@@ -34,19 +32,25 @@ class DropdownButton extends Component {
       style,
       icon = 'pencil',
       listStyle = {},
+      noBorderRadius,
       text = '',
       ...props
     } = this.props
     return (
       <div
         style={{
-          ...style,
           opacity: menuDisplayed ? 1 : opacity,
-          position: 'relative'
+          position: 'relative',
+          ...style
         }}
       >
         <Button
           {...props}
+          style={{
+            borderRadius: noBorderRadius && 0,
+            border: noBorderRadius && 0,
+            margin: noBorderRadius && 0
+          }}
           onClick={() => this.setState({ menuDisplayed: !menuDisplayed })}
         >
           <span className={`glyphicon glyphicon-${icon}`} />
@@ -55,7 +59,7 @@ class DropdownButton extends Component {
         </Button>
         {menuDisplayed && (
           <DropdownList
-            style={{ marginTop: '0.3rem', minWidth: '12rem', ...listStyle }}
+            style={{ minWidth: '12rem', ...listStyle }}
             direction={direction}
           >
             {this.renderMenu()}
@@ -65,11 +69,11 @@ class DropdownButton extends Component {
     )
   }
 
-  renderMenu() {
+  renderMenu = () => {
     const { menuProps } = this.props
     return menuProps.map((prop, index) => {
       if (prop.separator) {
-        return <li key={index} role="separator" />
+        return <hr />
       }
       return (
         <li onClick={() => this.handleMenuClick(prop.onClick)} key={index}>
@@ -79,7 +83,7 @@ class DropdownButton extends Component {
     })
   }
 
-  handleMenuClick(action) {
+  handleMenuClick = action => {
     action()
     this.setState({ menuDisplayed: false })
   }

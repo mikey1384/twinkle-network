@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Textarea from 'components/Texts/Textarea'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { uploadVideoAsync } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
@@ -38,52 +38,41 @@ class AddVideoModal extends Component {
     const { urlError, form } = this.state
     const { url, title } = form
     return (
-      <Modal show onHide={onHide} animation={false}>
-        <Modal.Header closeButton>
-          <h4>Add Videos</h4>
-        </Modal.Header>
-        <Modal.Body>
-          <form className="container-fluid">
-            <fieldset className="form-group" style={{ marginBottom: '0.5em' }}>
-              <label>
-                <b>YouTube URL</b>
-              </label>
-              <div style={{ display: 'inline' }}>
-                <Input
-                  ref={ref => {
-                    this.UrlField = ref
-                  }}
-                  style={{ borderColor: !!urlError && 'red' }}
-                  value={form.url}
-                  onChange={this.onUrlFieldChange}
-                  className="form-control"
-                  placeholder="Paste video's YouTube url here"
-                  type="text"
-                />
-              </div>
+      <Modal onHide={onHide}>
+        <div className="modal-heading">Add Videos</div>
+        <div className="modal-body">
+          <form style={{ width: '100%' }}>
+            <section>
+              <Input
+                ref={ref => {
+                  this.UrlField = ref
+                }}
+                style={{ borderColor: !!urlError && 'red' }}
+                value={form.url}
+                onChange={this.onUrlFieldChange}
+                className="form-control"
+                placeholder="Paste video's YouTube url here"
+                type="text"
+              />
               {urlError && (
                 <span
-                  className="help-block"
                   style={{
                     color: 'red',
+                    lineHeight: '3rem',
                     marginBottom: '0px'
                   }}
                 >
                   {urlError}
                 </span>
               )}
-            </fieldset>
-            <fieldset className="form-group">
-              <label>
-                <b>Title</b>
-              </label>
+            </section>
+            <section style={{ marginTop: '1rem' }}>
               <div style={{ display: 'inline' }}>
                 <Input
                   value={form.title}
                   onChange={text =>
                     this.setState({ form: { ...form, title: text } })
                   }
-                  className="form-control"
                   placeholder="Enter Title"
                   type="text"
                   onKeyUp={event => {
@@ -98,14 +87,10 @@ class AddVideoModal extends Component {
                   }}
                 />
               </div>
-            </fieldset>
-            <fieldset className="form-group">
-              <label>
-                <strong>Description</strong>
-              </label>
+            </section>
+            <section style={{ marginTop: '1rem', position: 'relative' }}>
               <Textarea
                 value={form.description}
-                className="form-control"
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
                 onChange={event =>
@@ -124,19 +109,19 @@ class AddVideoModal extends Component {
                   }
                 }}
               />
-            </fieldset>
+            </section>
           </form>
-        </Modal.Body>
-        <Modal.Footer>
+        </div>
+        <div className="modal-footer">
           <Button
-            className="btn btn-primary"
+            primary
             type="submit"
             onClick={this.onSubmit}
             disabled={!url || !title || stringIsEmpty(title)}
           >
             Add
           </Button>
-        </Modal.Footer>
+        </div>
       </Modal>
     )
   }

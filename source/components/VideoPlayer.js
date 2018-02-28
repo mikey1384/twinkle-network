@@ -226,13 +226,11 @@ class VideoPlayer extends Component {
       <ErrorBoundary>
         <div
           className={css`
+            display: block;
             width: 100%;
-            height: 0;
+            height: auto;
             padding-bottom: 56.25%;
             position: relative;
-            img {
-              width: 100%;
-            }
           `}
           style={{ ...style, cursor: !onEdit && !playing && 'pointer' }}
           onClick={() => {
@@ -243,13 +241,24 @@ class VideoPlayer extends Component {
         >
           {((!small && !playing) || onEdit) && (
             <Fragment>
-              <img alt="" src={imageUrl} />
+              <img
+                alt=""
+                src={imageUrl}
+                className={css`
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  top: 0;
+                  right: 0;
+                  left: 0;
+                  bottom: 0;
+                `}
+              />
               {isStarred && (
                 <StarMark
                   style={{
-                    position: 'absolute',
                     top: '1rem',
-                    right: '1rem'
+                    left: '1rem'
                   }}
                 />
               )}
