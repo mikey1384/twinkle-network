@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Modal from 'components/Modal'
 import Button from 'components/Button'
 import CheckListGroup from 'components/CheckListGroup'
@@ -7,6 +7,8 @@ import {
   loadMorePlaylistListAsync,
   changePinnedPlaylists
 } from 'redux/actions/PlaylistActions'
+import FilterBar from 'components/FilterBar'
+import Banner from 'components/Banner'
 import { connect } from 'react-redux'
 
 class SelectPlaylistsToPinModal extends Component {
@@ -37,113 +39,105 @@ class SelectPlaylistsToPinModal extends Component {
     const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id
     return (
       <Modal onHide={this.props.onHide}>
-        <div className="modal-heading">Select up to 5 playlists</div>
-        <div className="modal-body">
-          <ul className="nav nav-tabs nav-justified">
-            <li
+        <header>Select up to 5 playlists</header>
+        <main>
+          {selectedPlaylists.length > 5 && (
+            <Banner love>Please limit your selection to 5 playlists</Banner>
+          )}
+          <FilterBar>
+            <nav
               className={selectTabActive ? 'active' : ''}
               onClick={() => this.setState({ selectTabActive: true })}
               style={{ cursor: 'pointer' }}
             >
               <a>Select</a>
-            </li>
-            <li
+            </nav>
+            <nav
               className={selectTabActive ? '' : 'active'}
               onClick={() => this.setState({ selectTabActive: false })}
               style={{ cursor: 'pointer' }}
             >
               <a>Selected</a>
-            </li>
-          </ul>
-          <div
-            className="container-fluid"
-            style={{
-              paddingTop: '2em'
-            }}
-          >
-            {selectTabActive && (
-              <div>
-                <CheckListGroup
-                  inputType="checkbox"
-                  onSelect={this.onSelect}
-                  listItems={playlistsToPin.map(playlist => {
-                    return {
-                      label: playlist.title,
-                      checked: selectedPlaylists.indexOf(playlist.id) !== -1
-                    }
-                  })}
-                />
-                {loadMoreButton && (
-                  <div className="text-center" style={{ marginTop: '1em' }}>
-                    <Button
-                      className="btn btn-success"
-                      onClick={() => this.loadMorePlaylists(lastPlaylistId)}
-                    >
-                      Load More
-                    </Button>
-                  </div>
-                )}
-                {playlistsToPin.length === 0 && (
-                  <div className="text-center">No Playlists</div>
-                )}
-              </div>
-            )}
-            {!selectTabActive && (
-              <div>
-                <CheckListGroup
-                  inputType="checkbox"
-                  onSelect={this.onDeselect}
-                  listItems={selectedPlaylists.reduce((result, playlistId) => {
-                    let label = ''
-                    for (let i = 0; i < pinnedPlaylists.length; i++) {
-                      if (pinnedPlaylists[i].id === playlistId) {
-                        label = pinnedPlaylists[i].title
-                        return result.concat([
-                          {
-                            label,
-                            checked: true
-                          }
-                        ])
-                      }
-                    }
-                    for (let i = 0; i < playlistsToPin.length; i++) {
-                      if (playlistsToPin[i].id === playlistId) {
-                        label = playlistsToPin[i].title
-                        return result.concat([
-                          {
-                            label,
-                            checked: true
-                          }
-                        ])
-                      }
-                    }
-                    return result
-                  }, [])}
-                />
-                {selectedPlaylists.length === 0 && (
-                  <div className="text-center">No Playlist Selected</div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="modal-footer">
-          {selectedPlaylists.length > 5 && (
-            <span className="help-block pull-left" style={{ color: '#843534' }}>
-              Please limit your selection to 5 playlists
-            </span>
+            </nav>
+          </FilterBar>
+          {selectTabActive && (
+            <Fragment>
+              <CheckListGroup
+                inputType="checkbox"
+                onSelect={this.onSelect}
+                listItems={playlistsToPin.map(playlist => {
+                  return {
+                    label: playlist.title,
+                    checked: selectedPlaylists.indexOf(playlist.id) !== -1
+                  }
+                })}
+              />
+              {loadMoreButton && (
+                <Button
+                  style={{ marginTop: '2rem' }}
+                  transparent
+                  onClick={() => this.loadMorePlaylists(lastPlaylistId)}
+                >
+                  Load More
+                </Button>
+              )}
+              {playlistsToPin.length === 0 && <div>No Playlists</div>}
+            </Fragment>
           )}
-          <Button className="btn btn-default" onClick={this.props.onHide}>
-            Cancel
-          </Button>
+          {!selectTabActive && (
+            <Fragment>
+              <CheckListGroup
+                inputType="checkbox"
+                onSelect={this.onDeselect}
+                listItems={selectedPlaylists.reduce((result, playlistId) => {
+                  let label = ''
+                  for (let i = 0; i < pinnedPlaylists.length; i++) {
+                    if (pinnedPlaylists[i].id === playlistId) {
+                      label = pinnedPlaylists[i].title
+                      return result.concat([
+                        {
+                          label,
+                          checked: true
+                        }
+                      ])
+                    }
+                  }
+                  for (let i = 0; i < playlistsToPin.length; i++) {
+                    if (playlistsToPin[i].id === playlistId) {
+                      label = playlistsToPin[i].title
+                      return result.concat([
+                        {
+                          label,
+                          checked: true
+                        }
+                      ])
+                    }
+                  }
+                  return result
+                }, [])}
+              />
+              {selectedPlaylists.length === 0 && (
+                <div>No Playlist Selected</div>
+              )}
+            </Fragment>
+          )}
+        </main>
+        <footer>
           <Button
-            className="btn btn-primary"
+            primary
             onClick={this.onSubmit}
             disabled={selectedPlaylists.length > 5}
           >
             Done
           </Button>
-        </div>
+          <Button
+            transparent
+            style={{ marginRight: '1rem' }}
+            onClick={this.props.onHide}
+          >
+            Cancel
+          </Button>
+        </footer>
       </Modal>
     )
   }

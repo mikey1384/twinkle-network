@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import LinkItem from './LinkItem'
+import { linkGroup } from './Styles'
 
 LinkGroup.propTypes = {
   links: PropTypes.array.isRequired
 }
 export default function LinkGroup({ links }) {
   return (
-    <ul className="media-list" style={{ marginBottom: '1.5em' }}>
+    <div className={linkGroup}>
       {links.map(link => <LinkItem key={link.id} link={link} />)}
-    </ul>
+    </div>
   )
 }

@@ -71,7 +71,7 @@ export default class Modal extends Component {
                 opacity: 1;
               }
             }
-            .modal-heading {
+            header {
               display: flex;
               align-items: center;
               line-height: 2rem;
@@ -81,7 +81,7 @@ export default class Modal extends Component {
               padding: 2rem;
               margin-top: 0.5rem;
             }
-            .modal-body {
+            main {
               display: flex;
               padding: 1.5rem 2rem;
               font-size: 1.5rem;
@@ -90,7 +90,7 @@ export default class Modal extends Component {
               align-items: center;
               min-height: 20vh;
             }
-            .modal-footer {
+            footer {
               padding: 1.5rem 1.5rem 1.5rem 1.5rem;
               display: flex;
               align-items: center;

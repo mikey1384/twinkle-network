@@ -2,7 +2,8 @@ import { css } from 'emotion'
 import { mobileMaxWidth } from 'constants/css'
 
 export const container = css`
-  margin-bottom: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   font-size: 1.5rem;
   section {
     min-height: 30vh;

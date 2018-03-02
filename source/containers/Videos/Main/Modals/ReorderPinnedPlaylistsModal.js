@@ -20,8 +20,6 @@ class ReorderPinnedPlaylistsModal extends Component {
       playlists: props.pinnedPlaylists,
       playlistIds: props.playlistIds
     }
-    this.onMove = this.onMove.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
   }
 
   render() {
@@ -40,23 +38,27 @@ class ReorderPinnedPlaylistsModal extends Component {
 
     return (
       <Modal onHide={this.props.onHide}>
-        <div className="modal-heading">Reorder Pinned Playlists</div>
-        <div className="modal-body">
+        <header>Reorder Pinned Playlists</header>
+        <main>
           <SortableListGroup listItems={listItems} onMove={this.onMove} />
-        </div>
-        <div className="modal-footer">
-          <Button className="btn btn-default" onClick={this.props.onHide}>
-            Cancel
-          </Button>
-          <Button className="btn btn-primary" onClick={this.onSubmit}>
+        </main>
+        <footer>
+          <Button primary onClick={this.onSubmit}>
             Done
           </Button>
-        </div>
+          <Button
+            transparent
+            style={{ marginRight: '1rem' }}
+            onClick={this.props.onHide}
+          >
+            Cancel
+          </Button>
+        </footer>
       </Modal>
     )
   }
 
-  onMove({ sourceId, targetId }) {
+  onMove = ({ sourceId, targetId }) => {
     const { playlistIds } = this.state
     const sourceIndex = playlistIds.indexOf(sourceId)
     const targetIndex = playlistIds.indexOf(targetId)
@@ -67,7 +69,7 @@ class ReorderPinnedPlaylistsModal extends Component {
     })
   }
 
-  onSubmit() {
+  onSubmit = () => {
     const { changePinnedPlaylists, onHide } = this.props
     const { playlistIds } = this.state
     return changePinnedPlaylists(playlistIds).then(() => onHide())

@@ -2,11 +2,16 @@ import React from 'react'
 import Styles from './Styles'
 import LeaderBoard from './LeaderBoard'
 import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 export default function TwinkleXP() {
   return (
-    <div className="container-fluid">
-      <div className="col-xs-8">
+    <div
+      className={css`
+        display: flex;
+      `}
+    >
+      <div style={{ marginRight: '1rem', marginLeft: '1rem' }}>
         <div style={Styles.mainContainer}>
           <div style={{ ...Styles.header, textAlign: 'center' }}>
             About {twinkleXpText}

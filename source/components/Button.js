@@ -67,7 +67,7 @@ export default function Button({
   if (transparent) colorKey = 'transparent'
 
   const backgroundOpacity = filled ? 1 : 0
-  const backgroundHoverOpacity = transparent ? 0 : 0.6
+  const backgroundHoverOpacity = transparent ? 0 : 0.9
   const backgroundDisabledOpacity = filled ? 0.2 : 0
   const textOpacity = disabled ? 0.2 : 1
 

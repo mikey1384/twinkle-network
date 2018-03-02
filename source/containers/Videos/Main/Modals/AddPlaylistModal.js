@@ -76,8 +76,8 @@ class AddPlaylistModal extends Component {
         `}
         large={section > 0}
       >
-        <div className="modal-heading">{this.renderTitle()}</div>
-        <div className="modal-body" style={{ paddingBottom: '1rem' }}>
+        <header>{this.renderTitle()}</header>
+        <main style={{ paddingBottom: '1rem' }}>
           {section === 0 && (
             <form
               className={css`
@@ -175,8 +175,8 @@ class AddPlaylistModal extends Component {
               ))}
             </div>
           )}
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           {section === 2 ? (
             <Button primary disabled={isUploading} onClick={this.handleFinish}>
               Finish
@@ -207,7 +207,7 @@ class AddPlaylistModal extends Component {
               Prev
             </Button>
           )}
-        </div>
+        </footer>
       </Modal>
     )
   }

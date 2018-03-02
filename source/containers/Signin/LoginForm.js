@@ -27,7 +27,7 @@ export default class LoginForm extends Component {
     return (
       <Fragment>
         {errorMessage && <Banner love>{errorMessage}</Banner>}
-        <div className="modal-body">
+        <main>
           <div style={{ width: '100%' }}>
             <div>
               <Input
@@ -76,8 +76,8 @@ export default class LoginForm extends Component {
               />
             </div>
           </div>
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           <Button
             primary
             style={{ fontSize: '2.5rem' }}
@@ -96,7 +96,7 @@ export default class LoginForm extends Component {
           >
             {"Wait, I don't think I have an account, yet"}
           </Button>
-        </div>
+        </footer>
       </Fragment>
     )
   }

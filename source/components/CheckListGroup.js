@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import { css } from 'emotion'
+import { borderRadius, innerBorderRadius, Color } from 'constants/css'
 
 CheckListGroup.propTypes = {
   inputType: PropTypes.string,
@@ -9,85 +11,74 @@ CheckListGroup.propTypes = {
       label: PropTypes.string.isRequired
     })
   ).isRequired,
-  onSelect: PropTypes.func.isRequired,
-  style: PropTypes.object
+  onSelect: PropTypes.func.isRequired
 }
-export default function CheckListGroup({
-  listItems,
-  inputType,
-  onSelect,
-  style
-}) {
+export default function CheckListGroup({ listItems, inputType, onSelect }) {
   return (
-    <div className="row container-fluid unselectable" style={style}>
-      <form>
-        {listItems.map((listItem, index) => {
-          let leftStyle = {
-            borderTopLeftRadius: '0px',
-            borderBottomLeftRadius: '0px',
-            borderBottom: 'none'
+    <div
+      className={css`
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        nav {
+          border: 1px solid ${Color.borderGray()};
+          border-top: none;
+        }
+        nav:first-child {
+          border: 1px solid ${Color.borderGray()};
+          border-top-left-radius: ${borderRadius};
+          border-top-right-radius: ${borderRadius};
+          section {
+            border-top-left-radius: ${innerBorderRadius};
           }
-          let rightStyle = {
-            borderTopRightRadius: '0px',
-            borderBottomRightRadius: '0px',
-            borderTopLeftRadius: '0px',
-            borderBottomLeftRadius: '0px',
-            borderBottom: 'none'
+        }
+        nav:last-child {
+          border-bottom-left-radius: ${borderRadius};
+          border-bottom-right-radius: ${borderRadius};
+          section {
+            border-bottom-left-radius: ${innerBorderRadius};
           }
-          if (index === 0 && listItems.length !== 1) {
-            leftStyle = {
-              borderBottomLeftRadius: '0px',
-              borderBottom: 'none'
-            }
-            rightStyle = {
-              borderTopRightRadius: '5px',
-              borderBottomRightRadius: '0px',
-              borderBottomLeftRadius: '0px',
-              borderBottom: 'none'
-            }
-          }
-          if (index === listItems.length - 1) {
-            leftStyle = {
-              borderTopLeftRadius: '0px',
-              borderBottomLeftRadius: '5px'
-            }
-            rightStyle = {
-              borderTopRightRadius: '0px',
-              borderBottomRightRadius: '5px',
-              borderTopLeftRadius: '0px',
-              borderBottomLeftRadius: '0px'
-            }
-          }
-          if (index === 0 && listItems.length === 1) {
-            leftStyle = {
-              borderTopLeftRadius: '5px',
-              borderBottomLeftRadius: '5px'
-            }
-            rightStyle = {
-              borderTopRightRadius: '5px',
-              borderBottomRightRadius: '5px',
-              borderBottomLeftRadius: '0px'
-            }
-          }
-          return (
-            <div className="input-group" key={index}>
-              <label className="input-group-addon" style={leftStyle}>
-                <input
-                  type={inputType}
-                  checked={listItem.checked}
-                  onChange={() => onSelect(index)}
-                />
-              </label>
-              <div
-                className="list-group-item check-list-item"
-                style={rightStyle}
-                onClick={() => onSelect(index)}
-                dangerouslySetInnerHTML={{ __html: listItem.label }}
+        }
+      `}
+    >
+      {listItems.map((listItem, index) => {
+        return (
+          <nav
+            className={css`
+              display: flex;
+              align-items: center;
+              width: 100%;
+              cursor: pointer;
+              &:hover {
+                background: ${Color.headingGray()};
+              }
+            `}
+            onClick={() => onSelect(index)}
+            key={index}
+          >
+            <section
+              className={css`
+                height: 4.3rem;
+                width: 4.3rem;
+                background: ${Color.inputBorderGray()};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              `}
+            >
+              <input
+                type={inputType}
+                checked={listItem.checked}
+                onChange={() => onSelect(index)}
               />
-            </div>
-          )
-        })}
-      </form>
+            </section>
+            <div
+              style={{ padding: '0 2rem' }}
+              dangerouslySetInnerHTML={{ __html: listItem.label }}
+            />
+          </nav>
+        )
+      })}
     </div>
   )
 }

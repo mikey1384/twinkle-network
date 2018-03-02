@@ -39,8 +39,8 @@ class AddVideoModal extends Component {
     const { url, title } = form
     return (
       <Modal onHide={onHide}>
-        <div className="modal-heading">Add Videos</div>
-        <div className="modal-body">
+        <header>Add Videos</header>
+        <main>
           <form style={{ width: '100%' }}>
             <section>
               <Input
@@ -111,8 +111,8 @@ class AddVideoModal extends Component {
               />
             </section>
           </form>
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           <Button
             primary
             type="submit"
@@ -121,7 +121,7 @@ class AddVideoModal extends Component {
           >
             Add
           </Button>
-        </div>
+        </footer>
       </Modal>
     )
   }

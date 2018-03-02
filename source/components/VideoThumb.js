@@ -164,7 +164,7 @@ class VideoThumb extends Component {
               </small>
             )}
             {video.numLikes > 0 && (
-              <small className="pull-right">
+              <small style={{ float: 'right' }}>
                 <span className="glyphicon glyphicon-thumbs-up" />&times;{
                   video.numLikes
                 }

@@ -12,7 +12,10 @@ const Styles = {
     fontSize: '2rem'
   },
   rightMenu: {
-    width: '30%',
+    width: '100%',
+    fontSize: '1.5rem',
+    marginRight: '1rem',
+    marginBottom: '1rem',
     background: 'white',
     padding: '1.5rem'
   },

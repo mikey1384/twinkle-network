@@ -27,7 +27,7 @@ import Loading from 'components/Loading'
 import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { feedContentEdit } from '../../../redux/actions/FeedActions'
-import { FilterBar } from '../Styles'
+import FilterBar from 'components/FilterBar'
 
 class Stories extends Component {
   static propTypes = {
@@ -227,7 +227,7 @@ class Stories extends Component {
   renderFilterBar() {
     const { selectedFilter } = this.props
     return (
-      <div className={FilterBar}>
+      <FilterBar bordered>
         <nav
           className={selectedFilter === 'all' ? 'active' : ''}
           onClick={() => this.applyFilter('all')}
@@ -264,7 +264,7 @@ class Stories extends Component {
         >
           <a>Comments</a>
         </nav>
-      </div>
+      </FilterBar>
     )
   }
 }

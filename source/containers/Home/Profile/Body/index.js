@@ -27,7 +27,7 @@ import Loading from 'components/Loading'
 import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import { FilterBar } from '../../Styles'
+import FilterBar from 'components/FilterBar'
 
 class Body extends Component {
   static propTypes = {
@@ -162,7 +162,7 @@ class Body extends Component {
         }}
         style={{ height: '100%' }}
       >
-        <div className={FilterBar}>
+        <FilterBar bordered>
           <Route
             exact
             path={route.url}
@@ -255,7 +255,7 @@ class Body extends Component {
               </nav>
             )}
           />
-        </div>
+        </FilterBar>
         <div style={{ position: 'relative', height: '100%' }}>
           {!loaded && <Loading />}
           {loaded &&

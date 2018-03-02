@@ -11,20 +11,20 @@ ConfirmModal.propTypes = {
 export default function ConfirmModal({ onHide, title, onConfirm }) {
   return (
     <Modal onHide={onHide}>
-      <div className="modal-heading">
-        <h4>{title}</h4>
-      </div>
-      <div className="modal-body" style={{ fontSize: '3rem', paddingTop: 0 }}>
+      <header>
+        {title}
+      </header>
+      <main style={{ fontSize: '3rem', paddingTop: 0 }}>
         Are you sure?
-      </div>
-      <div className="modal-footer">
+      </main>
+      <footer>
         <Button primary onClick={() => onConfirm()}>
           Confirm
         </Button>
         <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
           Cancel
         </Button>
-      </div>
+      </footer>
     </Modal>
   )
 }

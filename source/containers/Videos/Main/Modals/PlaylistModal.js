@@ -57,10 +57,10 @@ class PlaylistModal extends Component {
     const { videos, loading, loadMoreButtonShown } = this.state
     return (
       <Modal onHide={onHide}>
-        <div className="modal-heading">
+        <header>
           <h4>{title}</h4>
-        </div>
-        <div className="modal-body">
+        </header>
+        <main>
           {videos.length === 0 && <Loading text="Loading..." />}
           {videos.map((video, index) => (
             <div
@@ -109,12 +109,12 @@ class PlaylistModal extends Component {
               onClick={this.onLoadMoreVideos}
             />
           )}
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           <Button transparent onClick={onHide}>
             Close
           </Button>
-        </div>
+        </footer>
       </Modal>
     )
   }

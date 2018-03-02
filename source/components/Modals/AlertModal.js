@@ -11,17 +11,17 @@ AlertModal.propTypes = {
 export default function AlertModal({ onHide, title, content }) {
   return (
     <Modal onHide={onHide}>
-      <div className="modal-heading">
+      <header>
         {title}
-      </div>
-      <div className="modal-body">
-        <p>{content}</p>
-      </div>
-      <div className="modal-footer">
+      </header>
+      <main>
+        {content}
+      </main>
+      <footer>
         <Button primary onClick={onHide}>
           OK
         </Button>
-      </div>
+      </footer>
     </Modal>
   )
 }

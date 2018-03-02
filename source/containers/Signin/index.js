@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Modal from 'components/Modal'
 import LoginForm from './LoginForm'
 import SignUpForm from './SignUpForm'
@@ -26,7 +26,7 @@ class Signin extends Component {
     const { dispatch, onHide } = this.props
     return (
       <Modal show onHide={onHide}>
-        <div className="modal-heading">
+        <header>
           {currentPage === 'main' && (
             <span>{`Welcome to Twinkle. Do you have a Twinkle account?`}</span>
           )}
@@ -36,8 +36,8 @@ class Signin extends Component {
           {currentPage === 'signUp' && (
             <span>{`Sure, let's set up your account...`}</span>
           )}
-        </div>
-        <div>
+        </header>
+        <Fragment>
           {currentPage === 'main' && (
             <Main
               showLoginForm={() => this.setState({ currentPage: 'login' })}
@@ -56,7 +56,7 @@ class Signin extends Component {
               {...bindActionCreators(UserActions, dispatch)}
             />
           )}
-        </div>
+        </Fragment>
       </Modal>
     )
   }

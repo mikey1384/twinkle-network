@@ -5,7 +5,7 @@ export const container = css`
   font-family: Helvetica;
   font-size: 1.5rem;
   background: #fff;
-  padding: 0.7rem;
+  padding: 0.8rem;
   display: flex;
   z-index: 100;
   justify-content: space-around;

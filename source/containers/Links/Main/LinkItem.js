@@ -13,6 +13,7 @@ import EditTitleForm from 'components/Texts/EditTitleForm'
 import { cleanString } from 'helpers/stringHelpers'
 import { URL } from 'constants/URL'
 import ConfirmModal from 'components/Modals/ConfirmModal'
+import { linkItem } from './Styles'
 
 const API_URL = `${URL}/content`
 
@@ -93,8 +94,8 @@ class LinkItem extends Component {
       onEdit
     } = this.state
     return (
-      <li className="media">
-        <div className="media-left">
+      <nav className={linkItem}>
+        <div>
           {imageUrl ? (
             <Link to={this.to} onClickAsync={this.onLinkClick}>
               <div
@@ -107,7 +108,6 @@ class LinkItem extends Component {
                 }}
               >
                 <img
-                  className="media-object"
                   src={imageUrl}
                   onError={() => this.setState({ imageUrl: fallbackImage })}
                   style={{ width: '10rem' }}
@@ -117,77 +117,79 @@ class LinkItem extends Component {
             </Link>
           ) : (
             <Link to={this.to} onClickAsync={this.onLinkClick}>
-              <img
-                className="media-object"
-                src="/img/link.png"
-                style={{ width: '10rem' }}
-                alt=""
-              />
+              <img src="/img/link.png" style={{ width: '10rem' }} alt="" />
             </Link>
           )}
         </div>
-        <div className="media-body">
-          {!onEdit &&
-            userId === uploader && (
-              <DropdownButton
-                shape="button"
-                icon="pencil"
-                menuProps={[
-                  {
-                    label: 'Edit',
-                    onClick: () => this.setState({ onEdit: true })
-                  },
-                  {
-                    label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
-                  }
-                ]}
-              />
-            )}
-          <h4 className="media-heading">
-            {!onEdit && (
-              <Link to={this.to} onClickAsync={this.onLinkClick}>
-                {cleanString(title)}
-              </Link>
-            )}
-            {onEdit && (
-              <EditTitleForm
-                autoFocus
-                maxLength={200}
-                title={title}
-                onEditSubmit={this.onEditedTitleSubmit}
-                onClickOutSide={() => this.setState({ onEdit: false })}
-              />
-            )}
-          </h4>
-          <div style={{ position: 'relative' }}>
-            <small style={{ position: 'absolute' }}>
-              Uploaded {`${timeSince(timeStamp)} `}by{' '}
-              <UsernameText user={{ name: uploaderName, id: uploader }} />
-            </small>
+        <section>
+          <div>
+            <span>
+              {!onEdit && (
+                <Link to={this.to} onClickAsync={this.onLinkClick}>
+                  {cleanString(title)}
+                </Link>
+              )}
+              {onEdit && (
+                <EditTitleForm
+                  autoFocus
+                  maxLength={200}
+                  title={title}
+                  onEditSubmit={this.onEditedTitleSubmit}
+                  onClickOutSide={() => this.setState({ onEdit: false })}
+                />
+              )}
+            </span>
+            <div style={{ position: 'relative' }}>
+              <small style={{ position: 'absolute' }}>
+                Uploaded {`${timeSince(timeStamp)} `}by{' '}
+                <UsernameText user={{ name: uploaderName, id: uploader }} />
+              </small>
+            </div>
+            <p>
+              <small>
+                {likers.length > 0 && (
+                  <span>
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        this.setState({ userListModalShown: true })
+                      }
+                    >
+                      <span>
+                        {`${likers.length}`} like{likers.length > 1 ? 's' : ''}
+                      </span>
+                    </a>&nbsp;&nbsp;
+                  </span>
+                )}
+                {numComments > 0 && (
+                  <span>
+                    {numComments} comment{numComments > 1 ? 's' : ''}
+                  </span>
+                )}
+              </small>
+            </p>
           </div>
-          <p style={{ marginTop: '1.5em' }}>
-            <small>
-              {likers.length > 0 && (
-                <b>
-                  <a
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => this.setState({ userListModalShown: true })}
-                  >
-                    <span>
-                      {`${likers.length}`} like{likers.length > 1 ? 's' : ''}
-                    </span>
-                  </a>&nbsp;&nbsp;
-                </b>
+          <div>
+            {!onEdit &&
+              userId === uploader && (
+                <DropdownButton
+                  snow
+                  direction="left"
+                  icon="pencil"
+                  menuProps={[
+                    {
+                      label: 'Edit',
+                      onClick: () => this.setState({ onEdit: true })
+                    },
+                    {
+                      label: 'Remove',
+                      onClick: () => this.setState({ confirmModalShown: true })
+                    }
+                  ]}
+                />
               )}
-              {numComments > 0 && (
-                <b>
-                  {numComments} comment{numComments > 1 ? 's' : ''}
-                </b>
-              )}
-            </small>
-          </p>
-        </div>
+          </div>
+        </section>
         {confirmModalShown && (
           <ConfirmModal
             title="Remove Link"
@@ -203,7 +205,7 @@ class LinkItem extends Component {
             title="People who liked this link"
           />
         )}
-      </li>
+      </nav>
     )
   }
 

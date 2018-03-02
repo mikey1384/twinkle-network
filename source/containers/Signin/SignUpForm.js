@@ -48,7 +48,7 @@ export default class SignUpForm extends Component {
     return (
       <Fragment>
         {errorMessage && <Banner love>{errorMessage}</Banner>}
-        <div className="modal-body">
+        <main>
           <div
             className={css`
               width: 100%;
@@ -168,8 +168,8 @@ export default class SignUpForm extends Component {
               />
             </section>
           </div>
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           <Button
             primary
             disabled={submitDisabled}
@@ -188,7 +188,7 @@ export default class SignUpForm extends Component {
           >
             Wait, I already have an account!
           </Button>
-        </div>
+        </footer>
       </Fragment>
     )
   }

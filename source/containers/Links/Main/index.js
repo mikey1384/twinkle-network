@@ -52,8 +52,7 @@ class Main extends Component {
             title="All Links"
             button={
               <Button
-                className="btn btn-default pull-right"
-                style={{ marginLeft: 'auto' }}
+                snow
                 onClick={() => this.setState({ addLinkModalShown: true })}
               >
                 + Add Link

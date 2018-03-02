@@ -35,8 +35,8 @@ function UserListModal({
   }
   return (
     <Modal small onHide={onHide}>
-      <div className="modal-heading">{title}</div>
-      <div className="modal-body">
+      <header>{title}</header>
+      <main>
         <RoundList>
           {userArray.concat(otherUsers).map(user => {
             let userStatusDisplayed =
@@ -58,10 +58,12 @@ function UserListModal({
             )
           })}
         </RoundList>
-      </div>
-      <div className="modal-footer">
-        <Button transparent onClick={onHide}>Close</Button>
-      </div>
+      </main>
+      <footer>
+        <Button transparent onClick={onHide}>
+          Close
+        </Button>
+      </footer>
     </Modal>
   )
 }

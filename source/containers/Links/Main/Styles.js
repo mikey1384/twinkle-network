@@ -28,3 +28,20 @@ export const container = css`
     }
   }
 `
+
+export const linkGroup = css`
+  nav {
+    margin-bottom: 2rem;
+  }
+`
+
+export const linkItem = css`
+  display: flex;
+  width: 100%;
+  section {
+    width: 100%;
+    margin-left: 2rem;
+    display: flex;
+    justify-content: space-between;
+  }
+`

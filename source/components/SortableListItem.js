@@ -31,6 +31,7 @@ const listItemTarget = {
 SortableListItem.propTypes = {
   connectDragSource: PropTypes.func,
   connectDropTarget: PropTypes.func,
+  index: PropTypes.number,
   isDragging: PropTypes.bool,
   item: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -41,22 +42,23 @@ function SortableListItem({
   connectDragSource,
   connectDropTarget,
   isDragging,
+  index,
   item
 }) {
   return connectDragSource(
     connectDropTarget(
-      <li
-        className="list-group-item"
+      <nav
         style={{
-          opacity: isDragging ? 0 : 1
+          opacity: isDragging ? 0 : 1,
+          borderTop: index === 0 && `1px solid ${Color.borderGray()}`
         }}
       >
-        {cleanString(item.label)}
+        <section>{cleanString(item.label)}</section>
         <span
-          className="glyphicon glyphicon-align-justify pull-right"
-          style={{ color: Color.menuGray }}
+          className="glyphicon glyphicon-align-justify"
+          style={{ color: Color.menuGray() }}
         />
-      </li>
+      </nav>
     )
   )
 }

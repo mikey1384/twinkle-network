@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
-import { borderRadius, Color } from 'constants/css'
+import { borderRadius, Color, innerBorderRadius } from 'constants/css'
 import { connect } from 'react-redux'
 import { auth } from 'redux/actions/constants'
 import {
@@ -338,10 +338,14 @@ class VideoPlayer extends Component {
                     ${justEarned
                       ? Color.green()
                       : xpEarned ? Color.lightBlue() : Color.blue()};
-                  border-top-left-radius: 4px;
-                  border-bottom-left-radius: 4px;
-                  border-top-right-radius: ${progress >= 100 ? '4px' : 0};
-                  border-bottom-right-radius: ${progress >= 100 ? '4px' : 0};
+                  border-top-left-radius: ${innerBorderRadius};
+                  border-bottom-left-radius: ${innerBorderRadius};
+                  border-top-right-radius: ${progress >= 100
+                    ? innerBorderRadius
+                    : 0};
+                  border-bottom-right-radius: ${progress >= 100
+                    ? innerBorderRadius
+                    : 0};
                 }
               `}
               style={{ marginTop: '1rem' }}

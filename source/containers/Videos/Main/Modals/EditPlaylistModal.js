@@ -11,6 +11,7 @@ import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-touch-backend'
 import request from 'axios'
 import { URL } from 'constants/URL'
+import FilterBar from 'components/FilterBar'
 import SearchInput from 'components/Texts/SearchInput'
 
 class EditPlaylistModal extends Component {
@@ -73,20 +74,13 @@ class EditPlaylistModal extends Component {
       allVideos
     } = this.state
     return (
-      <Modal onHide={onHide}>
-        <div className="modal-heading">
-          {modalType === 'change' ? (
-            <h4>Change Playlist Videos</h4>
-          ) : (
-            <h4>Reorder Videos</h4>
-          )}
-        </div>
-        <div className="modal-body">
-          <ul
-            className="nav nav-tabs nav-justified"
-            style={{ marginBottom: '2em' }}
-          >
-            <li
+      <Modal large onHide={onHide}>
+        <header>
+          {modalType === 'change' ? 'Change Playlist Videos' : 'Reorder Videos'}
+        </header>
+        <main>
+          <FilterBar style={{ marginBottom: '2rem' }}>
+            <nav
               className={mainTabActive ? 'active' : ''}
               onClick={() => this.setState({ mainTabActive: true })}
               style={{ cursor: 'pointer' }}
@@ -94,24 +88,23 @@ class EditPlaylistModal extends Component {
               <a style={{ fontWeight: 'bold' }}>
                 {modalType === 'change' ? 'Add Videos' : 'Reorder Videos'}
               </a>
-            </li>
-            <li
+            </nav>
+            <nav
               className={mainTabActive ? '' : 'active'}
               onClick={() => this.setState({ mainTabActive: false })}
               style={{ cursor: 'pointer' }}
             >
               <a style={{ fontWeight: 'bold' }}>Remove Videos</a>
-            </li>
-          </ul>
+            </nav>
+          </FilterBar>
           {mainTabActive &&
             modalType === 'change' && (
               <SearchInput
-                className="form-control"
                 placeholder="Search videos..."
                 autoFocus
                 style={{
-                  marginBottom: '2em',
-                  width: '50%'
+                  marginBottom: '2rem',
+                  width: '70%'
                 }}
                 value={searchText}
                 onChange={this.onVideoSearchInput}
@@ -175,19 +168,19 @@ class EditPlaylistModal extends Component {
               }
             />
           )}
-        </div>
-        <div className="modal-footer">
-          <Button className="btn btn-default" onClick={onHide}>
-            Cancel
-          </Button>
+        </main>
+        <footer>
           <Button
-            className="btn btn-primary"
+            primary
             onClick={this.handleSave}
             disabled={selectedVideos.length < 2 || isSaving}
           >
             Save
           </Button>
-        </div>
+          <Button style={{ marginRight: '1rem' }} transparent onClick={onHide}>
+            Cancel
+          </Button>
+        </footer>
       </Modal>
     )
   }
