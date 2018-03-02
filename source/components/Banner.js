@@ -6,9 +6,10 @@ import { Color } from 'constants/css'
 Banner.propTypes = {
   children: PropTypes.node.isRequired,
   primary: PropTypes.bool,
+  style: PropTypes.object,
   love: PropTypes.bool
 }
-export default function Banner({ children, primary, love }) {
+export default function Banner({ children, primary, love, style = {} }) {
   const backgroundColor = {
     primary: Color.blue(),
     love: Color.pink(),
@@ -30,6 +31,7 @@ export default function Banner({ children, primary, love }) {
         flex-direction: column;
         justify-content: center;
       `}
+      style={style}
     >
       {children}
     </div>

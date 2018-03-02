@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 export default class Dropdown extends Component {
   static propTypes = {
@@ -41,47 +43,70 @@ export default class Dropdown extends Component {
     const {
       searchResults,
       indexToHighlight,
-      style,
-      className = 'dropdown-menu',
+      style = {},
       onItemClick,
       renderItemLabel,
       renderItemUrl
     } = this.props
     return (
-      <ul
-        className={className}
-        style={{
-          width: '100%',
-          cursor: 'pointer',
-          display: 'block',
-          ...style
-        }}
+      <div
+        className={css`
+          position: absolute;
+          top: 1rem;
+          left: 0;
+          right: 0;
+          background: #fff;
+          box-shadow: 1px 1px 5px ${Color.black()};
+        `}
+        style={style}
       >
-        {searchResults.map((item, index) => {
-          let itemStyle =
-            index === indexToHighlight
-              ? { background: '#f5f5f5', color: '#333333' }
-              : null
-          const href = renderItemUrl ? { href: renderItemUrl(item) } : {}
-          return (
-            <li key={index} onClick={() => onItemClick(item)}>
-              <a
-                {...href}
-                style={{
-                  ...itemStyle,
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  lineHeight: 'normal'
-                }}
-                onClick={e => e.preventDefault()}
+        <div
+          className={css`
+            width: 100%;
+            cursor: pointer;
+            display: block;
+            nav {
+              padding: 1rem;
+              color: ${Color.darkGray()};
+              &:hover {
+                background: ${Color.headingGray()};
+              }
+              a {
+                text-decoration: none;
+                color: ${Color.darkGray()};
+              }
+            }
+          `}
+        >
+          {searchResults.map((item, index) => {
+            let itemStyle =
+              index === indexToHighlight
+                ? { background: Color.headingGray() }
+                : {}
+            const href = renderItemUrl ? { href: renderItemUrl(item) } : {}
+            return (
+              <nav
+                key={index}
+                style={itemStyle}
+                onClick={() => onItemClick(item)}
               >
-                {renderItemLabel(item)}
-              </a>
-            </li>
-          )
-        })}
-      </ul>
+                <a
+                  {...href}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    lineHeight: 'normal'
+                  }}
+                  onClick={e => e.preventDefault()}
+                >
+                  {renderItemLabel(item)}
+                </a>
+              </nav>
+            )
+          })}
+        </div>
+      </div>
     )
   }
 }

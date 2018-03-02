@@ -21,9 +21,8 @@ export default function RoundList({ children, style = {} }) {
           width: 100%;
           background: #fff;
           padding: 1.5rem;
-          border-right: 1px solid ${Color.borderGray()};
-          border-left: 1px solid ${Color.borderGray()};
-          border-bottom: 1px solid ${Color.borderGray()};
+          border: 1px solid ${Color.borderGray()};
+          margin-bottom: -1px;
           @media (max-width: ${mobileMaxWidth}) {
             border-left: 0;
             border-right: 0;
@@ -32,8 +31,6 @@ export default function RoundList({ children, style = {} }) {
         li:first-child {
           border-top-left-radius: ${borderRadius};
           border-top-right-radius: ${borderRadius};
-          border-top: 1px solid ${Color.borderGray()};
-          border-bottom: 1px solid ${Color.borderGray()};
           @media (max-width: ${mobileMaxWidth}) {
             border-radius: 0;
           }
@@ -41,8 +38,6 @@ export default function RoundList({ children, style = {} }) {
         li:last-child {
           border-bottom-left-radius: ${borderRadius};
           border-bottom-right-radius: ${borderRadius};
-          border-top: none;
-          border-bottom: 1px solid ${Color.borderGray()};
           @media (max-width: ${mobileMaxWidth}) {
             border-radius: 0;
           }

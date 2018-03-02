@@ -53,6 +53,7 @@ class SearchInput extends Component {
           display: flex;
           align-items: center;
           height: 4.3rem;
+          position: relative;
           .addon {
             border: 1px solid ${addonColor || Color.inputBorderGray()};
             align-self: stretch;
@@ -107,6 +108,7 @@ class SearchInput extends Component {
         onItemClick={item => onSelect(item)}
         renderItemLabel={renderItemLabel}
         renderItemUrl={renderItemUrl}
+        style={{ top: 'CALC(4.3rem - 1px)' }}
       />
     ) : null
   }

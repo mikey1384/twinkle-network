@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import request from 'axios'
 import ExecutionEnvironment from 'exenv'
 import { timeSince } from 'helpers/timeStampHelpers'
@@ -13,7 +13,8 @@ import EditTitleForm from 'components/Texts/EditTitleForm'
 import { cleanString } from 'helpers/stringHelpers'
 import { URL } from 'constants/URL'
 import ConfirmModal from 'components/Modals/ConfirmModal'
-import { linkItem } from './Styles'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 const API_URL = `${URL}/content`
 
@@ -94,23 +95,44 @@ class LinkItem extends Component {
       onEdit
     } = this.state
     return (
-      <nav className={linkItem}>
+      <nav
+        className={css`
+          display: flex;
+          width: 100%;
+          section {
+            width: 100%;
+            margin-left: 2rem;
+            display: flex;
+            justify-content: space-between;
+          }
+        `}
+      >
         <div>
           {imageUrl ? (
             <Link to={this.to} onClickAsync={this.onLinkClick}>
               <div
-                style={{
-                  width: '10rem',
-                  minHeight: '10rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
+                className={css`
+                  display: block;
+                  width: 10rem;
+                  height: auto;
+                  over-flow: hidden;
+                  padding-bottom: 100%;
+                  position: relative;
+                  img {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                  }
+                `}
               >
                 <img
                   src={imageUrl}
                   onError={() => this.setState({ imageUrl: fallbackImage })}
-                  style={{ width: '10rem' }}
                   alt=""
                 />
               </div>
@@ -122,52 +144,74 @@ class LinkItem extends Component {
           )}
         </div>
         <section>
-          <div>
-            <span>
-              {!onEdit && (
-                <Link to={this.to} onClickAsync={this.onLinkClick}>
-                  {cleanString(title)}
-                </Link>
-              )}
-              {onEdit && (
-                <EditTitleForm
-                  autoFocus
-                  maxLength={200}
-                  title={title}
-                  onEditSubmit={this.onEditedTitleSubmit}
-                  onClickOutSide={() => this.setState({ onEdit: false })}
-                />
-              )}
-            </span>
-            <div style={{ position: 'relative' }}>
-              <small style={{ position: 'absolute' }}>
+          <div
+            className={css`
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              width: 100%;
+            `}
+          >
+            <div style={{ width: '100%' }}>
+              <div
+                className={css`
+                  width: 100%;
+                  a {
+                    font-size: 2rem;
+                    font-weight: bold;
+                  }
+                `}
+              >
+                {!onEdit && (
+                  <Link to={this.to} onClickAsync={this.onLinkClick}>
+                    {cleanString(title)}
+                  </Link>
+                )}
+                {onEdit && (
+                  <EditTitleForm
+                    autoFocus
+                    style={{ width: '80%' }}
+                    maxLength={200}
+                    title={title}
+                    onEditSubmit={this.onEditedTitleSubmit}
+                    onClickOutSide={() => this.setState({ onEdit: false })}
+                  />
+                )}
+              </div>
+              <div
+                className={css`
+                  font-size: 1.2rem;
+                  line-height: 2rem;
+                `}
+              >
                 Uploaded {`${timeSince(timeStamp)} `}by{' '}
                 <UsernameText user={{ name: uploaderName, id: uploader }} />
-              </small>
+              </div>
             </div>
-            <p>
-              <small>
-                {likers.length > 0 && (
-                  <span>
-                    <a
-                      style={{ cursor: 'pointer' }}
-                      onClick={() =>
-                        this.setState({ userListModalShown: true })
-                      }
-                    >
-                      <span>
-                        {`${likers.length}`} like{likers.length > 1 ? 's' : ''}
-                      </span>
-                    </a>&nbsp;&nbsp;
-                  </span>
-                )}
-                {numComments > 0 && (
-                  <span>
-                    {numComments} comment{numComments > 1 ? 's' : ''}
-                  </span>
-                )}
-              </small>
-            </p>
+            <div
+              className={css`
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: ${Color.darkGray()};
+                margin-bottom: 0.5rem;
+              `}
+            >
+              {likers.length > 0 && (
+                <Fragment>
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => this.setState({ userListModalShown: true })}
+                  >
+                    {`${likers.length}`} like{likers.length > 1 ? 's' : ''}
+                  </span>&nbsp;&nbsp;
+                </Fragment>
+              )}
+              {numComments > 0 && (
+                <span>
+                  {numComments} comment{numComments > 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
           </div>
           <div>
             {!onEdit &&

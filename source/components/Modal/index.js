@@ -47,7 +47,7 @@ export default class Modal extends Component {
             width: ${modalWidth[widthKey]};
             min-height: 30vh;
             margin-left: ${marginLeft[widthKey]};
-            box-shadow: 3px 4px 5px ${Color.black(1)};
+            box-shadow: 3px 4px 5px ${Color.black()};
             display: flex;
             justify-content: center;
             flex-direction: column;

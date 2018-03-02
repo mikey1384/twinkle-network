@@ -24,7 +24,6 @@ class EditTitleForm extends Component {
     this.state = {
       title: cleanString(props.title)
     }
-    this.onEditSubmit = this.onEditSubmit.bind(this)
   }
 
   render() {
@@ -33,9 +32,9 @@ class EditTitleForm extends Component {
     return (
       <form style={style} onSubmit={event => this.onEditSubmit(event, title)}>
         <Input
+          style={{ width: '100%', color: title.length > maxLength && 'red' }}
           autoFocus={autoFocus}
           type="text"
-          className="form-control"
           placeholder={edit.title}
           value={title}
           onChange={text => this.setState({ title: text })}
@@ -47,7 +46,8 @@ class EditTitleForm extends Component {
           <small
             style={{
               color: title.length > maxLength && 'red',
-              lineHeight: '3rem'
+              fontSize: '1.3rem',
+              lineHeight: '2rem'
             }}
           >
             {title.length}/{maxLength} Characters
@@ -57,7 +57,7 @@ class EditTitleForm extends Component {
     )
   }
 
-  onEditSubmit(event, title) {
+  onEditSubmit = (event, title) => {
     const { onEditSubmit, onClickOutSide, maxLength = 100 } = this.props
     event.preventDefault()
     if (title && title.length > maxLength) return
