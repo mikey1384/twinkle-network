@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Color } from 'constants/css'
 
 export default class ErrorBoundary extends Component {
   static propTypes = {
@@ -17,7 +18,7 @@ export default class ErrorBoundary extends Component {
     const { children, ...props } = this.props
     const { hasError } = this.state
     if (hasError) {
-      return <h1 style={{ color: 'red' }}>Something went wrong.</h1>
+      return <span style={{ color: Color.red() }}>Something went wrong.</span>
     }
     return <div {...props}>{children}</div>
   }

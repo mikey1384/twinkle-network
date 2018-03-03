@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import FilterBar from 'components/FilterBar'
 
 PageTab.propTypes = {
   onQuestionTabClick: PropTypes.func.isRequired,
@@ -14,26 +15,16 @@ export default function PageTab({
   questions
 }) {
   return (
-    <div className="row container-fluid">
-      <ul
-        className="nav nav-tabs nav-justified"
-        style={{ width: '100%', fontSize: '1.3em', fontWeight: 'bold' }}
+    <FilterBar>
+      <nav className={watchTabActive ? 'active' : ''} onClick={onWatchTabClick}>
+        <a>Video</a>
+      </nav>
+      <nav
+        className={watchTabActive ? '' : 'active'}
+        onClick={onQuestionTabClick}
       >
-        <li
-          className={watchTabActive ? 'active' : ''}
-          style={{ cursor: 'pointer' }}
-          onClick={onWatchTabClick}
-        >
-          <a>Video</a>
-        </li>
-        <li
-          className={watchTabActive ? '' : 'active'}
-          style={{ cursor: 'pointer' }}
-          onClick={onQuestionTabClick}
-        >
-          <a>Questions {questions.length > 0 && `(${questions.length})`}</a>
-        </li>
-      </ul>
-    </div>
+        <a>Questions {questions.length > 0 && `(${questions.length})`}</a>
+      </nav>
+    </FilterBar>
   )
 }

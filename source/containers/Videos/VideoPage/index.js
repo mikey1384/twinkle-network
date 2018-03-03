@@ -26,6 +26,7 @@ import { stringIsEmpty } from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import ExecutionEnvironment from 'exenv'
+import { css } from 'emotion'
 
 class VideoPage extends Component {
   static propTypes = {
@@ -122,25 +123,19 @@ class VideoPage extends Component {
       currentSlide,
       onEdit
     } = this.state
-    const youtubeIframeContainerClassName = watchTabActive
-      ? 'embed-responsive embed-responsive-16by9'
-      : 'video-container-fixed-left'
-    const youtubeIframeClassName = watchTabActive
-      ? 'embed-responsive-item'
-      : 'video-fixed-left'
 
     const { playlist: playlistId } = queryString.parse(search)
 
     return (
       <ErrorBoundary
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          width: '100%'
-        }}
+        className={css`
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        `}
       >
         <div
-          css={`
+          className={css`
             width: CALC(70% - 1rem);
             margin-left: 1rem;
           `}
@@ -148,7 +143,7 @@ class VideoPage extends Component {
           {videoLoading && <Loading text="Loading Video..." />}
           {videoUnavailable && <NotFound text="Video does not exist" />}
           {!videoUnavailable &&
-            !!content && (
+            content && (
               <div
                 style={{
                   backgroundColor: '#fff',
@@ -167,23 +162,26 @@ class VideoPage extends Component {
                       this.setState({ watchTabActive: false })
                     }
                   />
-                  <div style={{ paddingTop: '2rem' }}>
+                  <div>
                     {!questionsBuilderShown && (
-                      <div>
-                        <VideoPlayer
-                          autoplay
-                          isStarred={isStarred}
-                          key={videoId}
-                          hasHqThumb={hasHqThumb}
-                          onEdit={onEdit}
-                          small={!watchTabActive}
-                          videoId={videoId}
-                          videoCode={content}
-                          title={title}
-                          containerClassName={`${youtubeIframeContainerClassName}`}
-                          className={`${youtubeIframeClassName}`}
-                        />
-                      </div>
+                      <VideoPlayer
+                        autoplay
+                        isStarred={isStarred}
+                        key={videoId}
+                        hasHqThumb={hasHqThumb}
+                        onEdit={onEdit}
+                        small={!watchTabActive}
+                        videoId={videoId}
+                        videoCode={content}
+                        title={title}
+                        style={{
+                          width: !watchTabActive && '39rem',
+                          paddingBottom: !watchTabActive && '22rem',
+                          position: !watchTabActive && 'absolute',
+                          bottom: !watchTabActive && '1rem',
+                          right: !watchTabActive && '1rem'
+                        }}
+                      />
                     )}
                     {!watchTabActive &&
                       questions.length > 0 && (
@@ -210,8 +208,7 @@ class VideoPage extends Component {
                             <p>There are no questions yet.</p>
                             {userId === uploaderId && (
                               <Button
-                                className="btn btn-default"
-                                style={{ marginTop: '1em' }}
+                                style={{ marginTop: '1rem' }}
                                 onClick={() =>
                                   this.setState({ questionsBuilderShown: true })
                                 }

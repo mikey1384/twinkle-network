@@ -66,7 +66,6 @@ export default class PanelReplies extends Component {
       >
         {comment.loadMoreReplies && (
           <Button
-            transparent
             style={{
               marginTop: '0.5rem',
               width: '100%'

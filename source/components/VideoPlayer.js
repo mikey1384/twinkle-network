@@ -326,7 +326,7 @@ class VideoPlayer extends Component {
               className={css`
                 border: 1px solid ${Color.borderGray()};
                 border-radius: ${borderRadius};
-                height: 2rem;
+                height: 2.2rem;
                 line-height: 1rem;
                 display: flex;
                 flex-direction: column;
@@ -365,7 +365,8 @@ class VideoPlayer extends Component {
               >
                 <span
                   style={{
-                    color: '#fff'
+                    color: '#fff',
+                    fontSize: '1.2rem'
                   }}
                 >
                   {justEarned
