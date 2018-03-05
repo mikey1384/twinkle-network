@@ -32,9 +32,9 @@ class VideoPlayer extends Component {
     hasHqThumb: PropTypes.number,
     changeUserXP: PropTypes.func,
     isStarred: PropTypes.bool,
+    minimized: PropTypes.bool,
     onEdit: PropTypes.bool,
     pageVisible: PropTypes.bool,
-    small: PropTypes.bool,
     currentVideoSlot: PropTypes.number,
     style: PropTypes.object,
     title: PropTypes.string.isRequired,
@@ -197,11 +197,11 @@ class VideoPlayer extends Component {
   render() {
     const {
       isStarred,
+      minimized,
       onEdit,
       videoCode,
       title,
       style,
-      small,
       userId
     } = this.props
     const {
@@ -232,14 +232,23 @@ class VideoPlayer extends Component {
             padding-bottom: 56.25%;
             position: relative;
           `}
-          style={{ ...style, cursor: !onEdit && !playing && 'pointer' }}
+          style={{
+            ...style,
+            display: minimized && !playing && 'none',
+            width: playing && minimized && '39rem',
+            paddingBottom: playing && minimized && '22rem',
+            position: playing && minimized && 'absolute',
+            bottom: playing && minimized && '1rem',
+            right: playing && minimized && '1rem',
+            cursor: !onEdit && !playing && 'pointer'
+          }}
           onClick={() => {
             if (!onEdit && !playing) {
               this.setState({ playing: true })
             }
           }}
         >
-          {((!small && !playing) || onEdit) && (
+          {!minimized && !playing && (
             <Fragment>
               <img
                 alt=""
@@ -290,7 +299,7 @@ class VideoPlayer extends Component {
                 onEnd={this.onVideoStop}
               />
             )}
-          {!onEdit && !small && playing ? (
+          {!onEdit && !minimized && playing ? (
             <Loading
               className={css`
                 color: ${Color.blue()};

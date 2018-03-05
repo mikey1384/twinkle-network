@@ -25,6 +25,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import CommentInputArea from './CommentInputArea'
 import ExecutionEnvironment from 'exenv'
 import { css } from 'emotion'
 
@@ -33,12 +34,14 @@ class VideoPage extends Component {
     content: PropTypes.string,
     deleteVideo: PropTypes.func.isRequired,
     description: PropTypes.string,
+    discussions: PropTypes.array.isRequired,
     editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
     history: PropTypes.object.isRequired,
     isStarred: PropTypes.bool,
     likes: PropTypes.array,
     likeVideo: PropTypes.func.isRequired,
+    loadMoreDiscussionsButton: PropTypes.bool.isRequired,
     loadVideoPage: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
@@ -97,8 +100,10 @@ class VideoPage extends Component {
 
   render() {
     const {
+      discussions,
       hasHqThumb,
       isStarred,
+      loadMoreDiscussionsButton,
       uploaderId,
       uploaderName,
       description,
@@ -132,6 +137,7 @@ class VideoPage extends Component {
           display: flex;
           justify-content: space-between;
           width: 100%;
+          margin-bottom: 1rem;
         `}
       >
         <div
@@ -144,14 +150,10 @@ class VideoPage extends Component {
           {videoUnavailable && <NotFound text="Video does not exist" />}
           {!videoUnavailable &&
             content && (
-              <div
-                style={{
-                  backgroundColor: '#fff',
-                  marginBottom: '2rem',
-                  padding: '1rem'
-                }}
-              >
-                <div>
+              <div>
+                <div
+                  style={{ background: '#fff', padding: '1rem', paddingTop: 0 }}
+                >
                   <PageTab
                     questions={questions}
                     watchTabActive={watchTabActive}
@@ -170,17 +172,10 @@ class VideoPage extends Component {
                         key={videoId}
                         hasHqThumb={hasHqThumb}
                         onEdit={onEdit}
-                        small={!watchTabActive}
                         videoId={videoId}
                         videoCode={content}
                         title={title}
-                        style={{
-                          width: !watchTabActive && '39rem',
-                          paddingBottom: !watchTabActive && '22rem',
-                          position: !watchTabActive && 'absolute',
-                          bottom: !watchTabActive && '1rem',
-                          right: !watchTabActive && '1rem'
-                        }}
+                        minimized={!watchTabActive}
                       />
                     )}
                     {!watchTabActive &&
@@ -203,20 +198,29 @@ class VideoPage extends Component {
                       )}
                     {!watchTabActive &&
                       questions.length === 0 && (
-                        <div>
-                          <div style={{ textAlign: 'center' }}>
-                            <p>There are no questions yet.</p>
-                            {userId === uploaderId && (
-                              <Button
-                                style={{ marginTop: '1rem' }}
-                                onClick={() =>
-                                  this.setState({ questionsBuilderShown: true })
-                                }
-                              >
-                                Add Questions
-                              </Button>
-                            )}
-                          </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: '2rem',
+                            height: '15rem'
+                          }}
+                        >
+                          <p>There are no questions yet.</p>
+                          {userId === uploaderId && (
+                            <Button
+                              style={{ marginTop: '2rem', fontSize: '2rem' }}
+                              success
+                              filled
+                              onClick={() =>
+                                this.setState({ questionsBuilderShown: true })
+                              }
+                            >
+                              Add Questions
+                            </Button>
+                          )}
                         </div>
                       )}
                   </div>
@@ -238,6 +242,11 @@ class VideoPage extends Component {
                   onEditFinish={this.onDescriptionEditFinish}
                   onDelete={() => this.setState({ confirmModalShown: true })}
                   videoViews={videoViews}
+                />
+                <CommentInputArea
+                  videoId={videoId}
+                  discussions={discussions}
+                  loadMoreDiscussionsButton={loadMoreDiscussionsButton}
                 />
                 <Comments {...this.props} />
                 {resultModalShown && (

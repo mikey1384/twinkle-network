@@ -163,15 +163,14 @@ class Comment extends Component {
                   alignItems: 'center'
                 }}
               >
-                <div className="pull-left">
+                <div>
                   <LikeButton
                     onClick={this.onLikeClick}
                     liked={userLikedThis}
                     small
                   />
                   <Button
-                    style={{ marginLeft: '0.5em' }}
-                    className="btn btn-warning btn-sm"
+                    style={{ marginLeft: '1rem' }}
                     onClick={this.onReplyButtonClick}
                   >
                     <span className="glyphicon glyphicon-comment" /> Reply

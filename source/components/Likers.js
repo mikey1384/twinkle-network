@@ -22,7 +22,7 @@ export default function Likers({
   target,
   userId,
   onLinkClick,
-  style = null,
+  style = {},
   className,
   defaultText
 }) {
@@ -69,7 +69,10 @@ export default function Likers({
           return (
             <div>
               You and{' '}
-              <a style={{ cursor: 'pointer' }} onClick={() => onLinkClick()}>
+              <a
+                style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                onClick={() => onLinkClick()}
+              >
                 {totalLikes} others
               </a>{' '}
               like {`this${target ? ' ' + target : ''}.`}
@@ -92,7 +95,10 @@ export default function Likers({
       } else {
         return (
           <div>
-            <a style={{ cursor: 'pointer' }} onClick={() => onLinkClick()}>
+            <a
+              style={{ cursor: 'pointer', fontWeight: 'bold' }}
+              onClick={() => onLinkClick()}
+            >
               {totalLikes} people
             </a>{' '}
             like {`this${target ? ' ' + target : ''}.`}

@@ -12,6 +12,7 @@ import { queryStringForArray } from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import VideoThumbImage from 'components/VideoThumbImage'
+import { css } from 'emotion'
 
 class RightMenu extends Component {
   static propTypes = {
@@ -59,32 +60,39 @@ class RightMenu extends Component {
       playlistVideosLoadMoreShown
     } = this.props
     const { playlistVideosLoading } = this.state
-    const noVideos =
-      nextVideos.length +
-        relatedVideos.length +
-        otherVideos.length +
-        playlistVideos.length ===
-      0
     return (
       <ErrorBoundary
-        css={`
+        className={css`
           width: CALC(30% - 2rem);
-          padding: 2rem;
           margin-right: 1rem;
+          section {
+            padding: 1rem;
+            background: #fff;
+            margin-bottom: 1rem;
+            p {
+              margin-bottom: 1rem;
+              font-size: 2.5rem;
+              font-weight: bold;
+            }
+            a {
+              font-size: 1.7rem;
+              font-weight: bold;
+            }
+          }
+          section:last-child {
+            margin-bottom: 0;
+          }
         `}
-        style={{ backgroundColor: !noVideos && '#fff' }}
       >
-        {
-          <div
-            css={`
-              h3:first-child {
-                margin-top: 0px;
-              }
-            `}
-          >
-            {nextVideos.length > 0 && <h3>Up Next</h3>}
+        {nextVideos.length > 0 && (
+          <section>
+            <p>Up Next</p>
             {this.renderVideos(nextVideos)}
-            {playlistVideos.length > 0 && <h3>{cleanString(playlistTitle)}</h3>}
+          </section>
+        )}
+        {playlistVideos.length > 0 && (
+          <section>
+            <p>{cleanString(playlistTitle)}</p>
             {this.renderVideos(playlistVideos)}
             {playlistVideosLoadMoreShown && (
               <FlatLoadMoreButton
@@ -93,12 +101,20 @@ class RightMenu extends Component {
                 style={{ marginTop: '1.5em' }}
               />
             )}
-            {relatedVideos.length > 0 && <h3>Related Videos</h3>}
+          </section>
+        )}
+        {relatedVideos.length > 0 && (
+          <section>
+            <p>Related Videos</p>
             {this.renderVideos(relatedVideos)}
-            {otherVideos.length > 0 && <h3>Recent Videos</h3>}
+          </section>
+        )}
+        {otherVideos.length > 0 && (
+          <section>
+            <p>Recent Videos</p>
             {this.renderVideos(otherVideos)}
-          </div>
-        }
+          </section>
+        )}
       </ErrorBoundary>
     )
   }
@@ -156,9 +172,16 @@ class RightMenu extends Component {
               playlistId ? `?playlist=${playlistId}` : ''
             }`}
           >
-            <p style={{ fontSize: '1.2em' }}>{cleanString(video.title)}</p>
+            {cleanString(video.title)}
           </Link>
-          <small style={{ color: Color.gray() }}>
+          <small
+            style={{
+              color: Color.gray(),
+              display: 'block',
+              fontSize: '1.3rem',
+              lineHeight: '2rem'
+            }}
+          >
             Uploaded by {video.username}
           </small>
         </div>

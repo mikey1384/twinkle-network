@@ -4,7 +4,7 @@ import { Color, borderRadius, mobileMaxWidth } from 'constants/css'
 export const container = css`
   background: #fff;
   width: 100%;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   border: 1px solid ${Color.borderGray()};
   border-radius: ${borderRadius};
   position: relative;

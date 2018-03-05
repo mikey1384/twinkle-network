@@ -10,6 +10,9 @@ import {
   loadMoreDiscussions
 } from 'redux/actions/VideoActions'
 import DiscussionPanel from './DiscussionPanel'
+import FilterBar from 'components/FilterBar'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 class CommentInputArea extends Component {
   static propTypes = {
@@ -39,34 +42,37 @@ class CommentInputArea extends Component {
     } = this.props
     const { discussionTabActive, discussionFormShown } = this.state
     return (
-      <div className="page-header" style={{ marginTop: '2rem' }}>
-        <div>
-          <ul
-            className="nav nav-tabs"
-            style={{ fontSize: '1.3em', fontWeight: 'bold' }}
+      <div
+        className={css`
+          background: #fff;
+          margin-top: 1rem;
+          padding: 1rem;
+          padding-top: 0;
+          font-size: 1.5rem;
+        `}
+      >
+        <FilterBar info>
+          <nav
+            className={discussionTabActive ? 'active' : ''}
+            style={{ cursor: 'pointer' }}
+            onClick={() => this.setState({ discussionTabActive: true })}
           >
-            <li
-              className={discussionTabActive ? 'active' : ''}
-              style={{ cursor: 'pointer' }}
-              onClick={() => this.setState({ discussionTabActive: true })}
-            >
-              <a>Discuss</a>
-            </li>
-            <li
-              className={!discussionTabActive ? 'active' : ''}
-              style={{ cursor: 'pointer' }}
-              onClick={() =>
-                this.setState({
-                  discussionTabActive: false,
-                  discussionFormShown: false
-                })
-              }
-            >
-              <a>Comment on this video</a>
-            </li>
-          </ul>
-        </div>
-        <div style={{ marginTop: '1.5rem' }}>
+            <a>Discuss</a>
+          </nav>
+          <nav
+            className={!discussionTabActive ? 'active' : ''}
+            style={{ cursor: 'pointer' }}
+            onClick={() =>
+              this.setState({
+                discussionTabActive: false,
+                discussionFormShown: false
+              })
+            }
+          >
+            <a>Comment on this video</a>
+          </nav>
+        </FilterBar>
+        <div style={{ marginTop: '2rem' }}>
           {discussionTabActive && (
             <div style={{ padding: '0 1rem' }}>
               <div>
@@ -83,11 +89,15 @@ class CommentInputArea extends Component {
                     />
                   ) : (
                     <Button
+                      logo
+                      filled
+                      style={{ fontSize: '2rem' }}
                       onClick={() =>
                         this.setState({ discussionFormShown: true })
                       }
                     >
-                      Start a New Discussion
+                      <span className="glyphicon glyphicon-comment" /> Start a
+                      New Discussion
                     </Button>
                   )}
                 </div>
@@ -107,29 +117,35 @@ class CommentInputArea extends Component {
                       />
                     ))}
                   {loadMoreDiscussionsButton && (
-                    <div
-                      className="text-center"
-                      style={{ paddingTop: '0.5em' }}
+                    <Button
+                      transparent
+                      onClick={() =>
+                        loadMoreDiscussions(
+                          videoId,
+                          discussions[discussions.length - 1].id
+                        )
+                      }
                     >
-                      <Button
-                        className="btn btn-success"
-                        onClick={() =>
-                          loadMoreDiscussions(
-                            videoId,
-                            discussions[discussions.length - 1].id
-                          )
-                        }
-                      >
-                        Load More
-                      </Button>
-                    </div>
+                      Load More
+                    </Button>
                   )}
                   {(!discussions || discussions.length === 0) && (
-                    <div>
-                      <h3 style={{ marginTop: '1.5rem' }}>
+                    <div
+                      style={{
+                        marginTop: '2rem'
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '2.5rem',
+                          fontWeight: 'bold',
+                          color: Color.darkGray()
+                        }}
+                      >
                         Comment on this video
-                      </h3>
+                      </span>
                       <InputForm
+                        style={{ marginTop: '1rem' }}
                         onSubmit={text => uploadComment(text, videoId)}
                         rows={4}
                         placeholder="Write your comment here..."
@@ -141,14 +157,12 @@ class CommentInputArea extends Component {
             </div>
           )}
           {!discussionTabActive && (
-            <div className="container-fluid">
-              <InputForm
-                autoFocus
-                onSubmit={text => uploadComment(text, videoId)}
-                rows={4}
-                placeholder="Write your comment here..."
-              />
-            </div>
+            <InputForm
+              autoFocus
+              onSubmit={text => uploadComment(text, videoId)}
+              rows={4}
+              placeholder="Write your comment here..."
+            />
           )}
         </div>
       </div>

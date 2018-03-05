@@ -100,20 +100,13 @@ class DiscussionPanel extends Component {
     } = this.state
     const userIsOwner = myId === userId
     return (
-      <div
-        className="panel panel-default"
-        style={{ borderTop: '#e7e7e7 1px solid' }}
-      >
-        <div className="panel-body">
+      <div>
+        <div>
           {userIsOwner &&
             !onEdit && (
               <DropdownButton
-                shape="button"
+                snow
                 icon="pencil"
-                style={{
-                  float: 'right',
-                  position: 'relative'
-                }}
                 menuProps={[
                   {
                     label: 'Edit',
@@ -133,7 +126,6 @@ class DiscussionPanel extends Component {
               <Input
                 autoFocus
                 type="text"
-                className="form-control"
                 placeholder="Enter Title..."
                 value={editedTitle}
                 onChange={text => {
@@ -213,8 +205,9 @@ class DiscussionPanel extends Component {
                   }}
                 />
               ) : (
-                <Button className="btn btn-warning" onClick={this.onExpand}>
-                  Answer{!!numComments && numComments > 0
+                <Button onClick={this.onExpand}>
+                  <span className="glyphicon glyphicon-comment" />{' '}
+                  Answer{numComments && numComments > 0
                     ? ` (${numComments})`
                     : ''}
                 </Button>
@@ -222,7 +215,7 @@ class DiscussionPanel extends Component {
             </div>
           )}
         </div>
-        <div className="panel-footer">
+        <div>
           By{' '}
           <strong>
             <UsernameText

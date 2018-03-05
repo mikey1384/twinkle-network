@@ -5,7 +5,7 @@ export const PanelStyle = css`
   background: #fff;
   border-radius: ${borderRadius};
   border: 1px solid ${Color.borderGray()};
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding: 1.5rem 2.5rem;
   small {
     font-size: 1.3rem;

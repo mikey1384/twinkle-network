@@ -1,6 +1,5 @@
 import { css } from 'react-emotion'
 import { borderRadius, mobileMaxWidth } from 'constants/css'
-import { desktopMinWidth } from '../../constants/css'
 
 export const container = css`
   width: 100%;
@@ -13,28 +12,19 @@ export const container = css`
 export const Left = css`
   position: absolute;
   left: 1rem;
+  display: block;
+  width: CALC(15% + 2rem);
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
-  }
-  @media (min-width: ${desktopMinWidth}) {
-    display: block;
-    width: 15%;
   }
 `
 
 export const Center = css`
-  width: 100%;
-  height: 100%;
-  section {
-    height: 100%;
-    margin-left: calc(15% + 5rem);
-    @media (max-width: ${mobileMaxWidth}) {
-      width: 100% - 2rem;
-      margin-left: 0;
-    }
-    @media (min-width: ${desktopMinWidth}) {
-      width: CALC(55% - 10rem);
-    }
+  width: CALC(55% - 6rem);
+  margin-left: calc(15% + 4rem);
+  @media (max-width: ${mobileMaxWidth}) {
+    width: 100%;
+    margin-left: 0;
   }
 `
 

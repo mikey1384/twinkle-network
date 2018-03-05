@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import CommentInputArea from './CommentInputArea'
 import Comment from './Comment'
 import { connect } from 'react-redux'
 import Button from 'components/Button'
@@ -14,6 +13,7 @@ import {
   loadVideoCommentsAsync,
   loadMoreReplies
 } from 'redux/actions/VideoActions'
+import { css } from 'emotion'
 
 class Comments extends Component {
   static propTypes = {
@@ -63,49 +63,46 @@ class Comments extends Component {
   render() {
     const {
       loadMoreCommentsButton,
-      loadMoreDiscussionsButton,
       loadMoreComments,
       videoId,
-      comments,
-      discussions
+      comments
     } = this.props
     return (
-      <div style={{ padding: '1rem' }}>
-        <div>
-          <CommentInputArea
-            videoId={videoId}
-            discussions={discussions}
-            loadMoreDiscussionsButton={loadMoreDiscussionsButton}
-          />
-          <div style={{ width: '100%' }}>
-            <div
-              ref={ref => {
-                this.Comments = ref
-              }}
-              style={{
-                padding: '0 1rem',
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
-              {this.renderComments()}
-              {loadMoreCommentsButton && (
-                <div className="text-center" style={{ paddingTop: '2rem' }}>
-                  <Button
-                    className="btn btn-success"
-                    onClick={() =>
-                      loadMoreComments({
-                        videoId,
-                        lastCommentId: comments[comments.length - 1].id
-                      })
-                    }
-                  >
-                    Load More
-                  </Button>
-                </div>
-              )}
-            </div>
+      <div
+        className={css`
+          background: #fff;
+          padding: 1rem;
+          font-size: 1.5rem;
+          margin-top: 1rem;
+        `}
+      >
+        <div style={{ width: '100%' }}>
+          <div
+            ref={ref => {
+              this.Comments = ref
+            }}
+            style={{
+              padding: '0 1rem',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            {this.renderComments()}
+            {loadMoreCommentsButton && (
+              <div style={{ paddingTop: '2rem' }}>
+                <Button
+                  onClick={() =>
+                    loadMoreComments({
+                      videoId,
+                      lastCommentId: comments[comments.length - 1].id
+                    })
+                  }
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -126,7 +123,18 @@ class Comments extends Component {
     if (comments.length === 0) {
       if (loading) return <Loading />
       return (
-        <div style={{ textAlign: 'center' }}>There are no comments, yet.</div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: '4rem',
+            fontSize: '2rem'
+          }}
+        >
+          There are no comments, yet.
+        </div>
       )
     }
     return comments.map((comment, index) => {

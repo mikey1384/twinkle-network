@@ -23,6 +23,8 @@ import LikeButton from 'components/LikeButton'
 import StarButton from 'components/StarButton'
 import { starVideo } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 class Description extends Component {
   static propTypes = {
@@ -59,11 +61,6 @@ class Description extends Component {
       editDoneButtonDisabled: true,
       userListModalShown: false
     }
-    this.onEditStart = this.onEditStart.bind(this)
-    this.onEditFinish = this.onEditFinish.bind(this)
-    this.onEditCancel = this.onEditCancel.bind(this)
-    this.onMouseOver = this.onMouseOver.bind(this)
-    this.onVideoLikeClick = this.onVideoLikeClick.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -127,29 +124,36 @@ class Description extends Component {
     const starButtonGrid = isCreator ? 'starButton' : 'likeButton'
     return (
       <div
-        style={{
-          display: 'grid',
-          height: 'auto',
-          marginTop: '1.5rem',
-          alignItems: 'center',
-          alignContent: 'space-around',
-          gridTemplateColumns: '30% 1fr 1fr 2% 15%',
-          gridTemplateRows: '20% 2% 60% auto',
-          gridColumnGap: '1rem',
-          gridRowGap: '1.2rem',
-          gridTemplateAreas: `
+        className={css`
+          display: grid;
+          height: auto;
+          background: #fff;
+          padding: 1rem;
+          margin-top: 1rem;
+          align-items: center;
+          align-content: space-around;
+          font-size: 1.5rem;
+          grid-template-columns: 30% 1fr 1fr 2% 15%;
+          grid-template-rows: 20% 2% auto;
+          grid-column-gap: 1rem;
+          grid-row-gap: 1.3rem;
+          grid-template-areas: 
             "title title title ${starButtonGrid} likeButton"
             "description description description likers likers"
             "description description description . ."
-          `
-        }}
+        `}
       >
-        <div style={{ gridArea: 'title', alignSelf: 'center' }}>
+        <div
+          style={{
+            gridArea: 'title',
+            alignSelf: 'start',
+            marginRight: '1rem'
+          }}
+        >
           {onEdit ? (
             <div>
               <Input
                 type="text"
-                className="form-control"
                 placeholder={edit.video}
                 value={editedUrl}
                 onChange={text => {
@@ -161,7 +165,6 @@ class Description extends Component {
               <Input
                 style={{ marginTop: '1rem' }}
                 type="text"
-                className="form-control"
                 placeholder={edit.title}
                 value={editedTitle}
                 onChange={text => {
@@ -179,7 +182,7 @@ class Description extends Component {
               />
             </div>
           ) : (
-            <div>
+            <div style={{ position: 'relative' }}>
               <div
                 ref={ref => {
                   this.thumbLabel = ref
@@ -212,14 +215,10 @@ class Description extends Component {
             </div>
           )}
           {!onEdit && (
-            <div>
+            <div style={{ marginTop: '0.5rem' }}>
               Added by{' '}
-              <UsernameText
-                user={{ name: uploaderName, id: uploaderId }}
-              />{' '}
-              <span>{`${
-                timeStamp ? timeSince(timeStamp) : ''
-              }`}</span>
+              <UsernameText user={{ name: uploaderName, id: uploaderId }} />{' '}
+              <span>{`${timeStamp ? timeSince(timeStamp) : ''}`}</span>
             </div>
           )}
           {!onEdit &&
@@ -228,7 +227,8 @@ class Description extends Component {
                 style={{
                   fontSize: '2rem',
                   fontWeight: 'bold',
-                  marginTop: '0.5rem'
+                  marginTop: '1rem',
+                  color: Color.darkGray()
                 }}
               >
                 {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
@@ -242,42 +242,45 @@ class Description extends Component {
           }}
         >
           {onEdit ? (
-            <div>
-              <form>
-                <Textarea
-                  minRows={4}
-                  className="form-control"
-                  placeholder={edit.description}
-                  value={editedDescription}
-                  onChange={event => {
-                    this.determineEditButtonDoneStatus()
-                    this.setState(
-                      { editedDescription: event.target.value },
-                      () => {
-                        this.determineEditButtonDoneStatus()
-                      }
-                    )
-                  }}
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        editedDescription: addEmoji(event.target.value)
-                      })
+            <div style={{ marginRight: '1rem' }}>
+              <Textarea
+                minRows={4}
+                placeholder={edit.description}
+                value={editedDescription}
+                onChange={event => {
+                  this.determineEditButtonDoneStatus()
+                  this.setState(
+                    { editedDescription: event.target.value },
+                    () => {
+                      this.determineEditButtonDoneStatus()
                     }
-                  }}
-                />
-              </form>
-              <div style={{ marginTop: '1rem' }}>
+                  )
+                }}
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    this.setState({
+                      editedDescription: addEmoji(event.target.value)
+                    })
+                  }
+                }}
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row-reverse',
+                  marginTop: '1rem'
+                }}
+              >
                 <Button
-                  className="btn btn-default btn-sm"
+                  primary
                   disabled={editDoneButtonDisabled}
                   onClick={this.onEditFinish}
                 >
                   Done
                 </Button>
                 <Button
-                  className="btn btn-default btn-sm"
-                  style={{ marginLeft: '0.5rem' }}
+                  transparent
+                  style={{ marginRight: '1rem' }}
                   onClick={this.onEditCancel}
                 >
                   Cancel
@@ -285,17 +288,16 @@ class Description extends Component {
               </div>
             </div>
           ) : (
-            <div>
-              <LongText style={{ wordBreak: 'break-word' }}>
-                {stringIsEmpty(description) ? 'No Description' : description}
-              </LongText>
-            </div>
+            <LongText style={{ wordBreak: 'break-word', padding: '1rem' }}>
+              {stringIsEmpty(description) ? 'No Description' : description}
+            </LongText>
           )}
           {(uploaderId === userId || isCreator) &&
             !onEdit && (
               <DropdownButton
+                snow
                 alignLeft
-                style={{ marginTop: '1.5rem' }}
+                style={{ marginTop: '2rem' }}
                 shape="button"
                 icon="pencil"
                 text="Edit or Delete This Video"
@@ -307,7 +309,7 @@ class Description extends Component {
           <StarButton
             style={{
               gridArea: 'starButton',
-              alignSelf: 'end',
+              alignSelf: 'start',
               justifySelf: 'end'
             }}
             isStarred={isStarred}
@@ -317,12 +319,13 @@ class Description extends Component {
         <div
           style={{
             gridArea: 'likeButton',
-            alignSelf: 'end',
+            alignSelf: 'start',
             justifySelf: 'end',
             width: '100%'
           }}
         >
           <LikeButton
+            filled
             style={{
               fontSize: '2.5rem',
               width: '100%'
@@ -338,15 +341,12 @@ class Description extends Component {
               return liked
             })(likes)}
           />
-        </div>
-        <div
-          style={{
-            gridArea: 'likers',
-            alignSelf: 'start',
-            textAlign: 'center'
-          }}
-        >
           <Likers
+            style={{
+              textAlign: 'center',
+              lineHeight: '1.7rem',
+              marginTop: '0.5rem'
+            }}
             userId={userId}
             likes={likes}
             onLinkClick={() => this.setState({ userListModalShown: true })}
@@ -371,7 +371,7 @@ class Description extends Component {
     )
   }
 
-  determineEditButtonDoneStatus() {
+  determineEditButtonDoneStatus = () => {
     const urlIsInvalid = !isValidYoutubeUrl(this.state.editedUrl)
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
     const titleChanged = this.state.editedTitle !== this.props.title
@@ -387,7 +387,7 @@ class Description extends Component {
     this.setState({ editDoneButtonDisabled })
   }
 
-  onEditCancel() {
+  onEditCancel = () => {
     const { description } = this.props
     const editedDescription =
       description === 'No description' ? '' : description
@@ -401,7 +401,7 @@ class Description extends Component {
     })
   }
 
-  onEditFinish() {
+  onEditFinish = () => {
     const params = {
       url: this.state.editedUrl,
       videoId: this.props.videoId,
@@ -416,18 +416,18 @@ class Description extends Component {
     )
   }
 
-  onEditStart() {
+  onEditStart = () => {
     this.props.onEditStart()
     this.setState({ onEdit: true })
   }
 
-  onMouseOver() {
+  onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
       this.setState({ onTitleHover: true })
     }
   }
 
-  onVideoLikeClick() {
+  onVideoLikeClick = () => {
     const { videoId } = this.props
     this.props.likeVideo(videoId)
   }

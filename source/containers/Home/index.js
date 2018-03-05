@@ -24,17 +24,15 @@ class Home extends Component {
         <div className={Left}>
           <ProfileWidget history={history} />
           <HomeMenuItems
-            style={{ marginTop: '2rem' }}
+            style={{ marginTop: '1rem' }}
             history={history}
             location={location}
           />
         </div>
         <div className={Center}>
-          <section>
-            <Route exact path="/" component={Stories} />
-            <Route path="/users/:username" component={Profile} />
-            <Route exact path="/users" component={People} />
-          </section>
+          <Route exact path="/" component={Stories} />
+          <Route path="/users/:username" component={Profile} />
+          <Route exact path="/users" component={People} />
         </div>
         <Notification className={Right}>
           <div

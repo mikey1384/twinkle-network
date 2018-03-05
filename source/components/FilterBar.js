@@ -5,15 +5,25 @@ import { css } from 'emotion'
 
 FilterBar.propTypes = {
   children: PropTypes.node,
-  bordered: PropTypes.bool
+  bordered: PropTypes.bool,
+  info: PropTypes.bool,
+  success: PropTypes.bool
 }
-export default function FilterBar({ bordered, children }) {
+export default function FilterBar({ bordered, children, info, success }) {
+  const color = {
+    default: Color.blue(),
+    success: Color.green(),
+    info: Color.lightBlue()
+  }
+  let colorKey = 'default'
+  if (info) colorKey = 'info'
+  if (success) colorKey = 'success'
   return (
     <div
       className={css`
         background: #fff;
         height: 6rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         ${bordered
           ? `
         border-top: 1px solid ${Color.borderGray()};
@@ -36,18 +46,18 @@ export default function FilterBar({ bordered, children }) {
           width: 100%;
           border-bottom: 1px solid ${Color.borderGray()};
           a {
-            color: ${Color.menuGray};
+            color: ${Color.menuGray()};
             text-decoration: none;
           }
         }
         nav.active {
-          border-bottom: 3px solid ${Color.blue()};
+          border-bottom: 3px solid ${color[colorKey]};
           font-weight: bold;
           a {
-            color: ${Color.blue};
+            color: ${color[colorKey]};
           }
           @media (max-width: ${mobileMaxWidth}) {
-            border-bottom: 6px solid ${Color.blue()};
+            border-bottom: 6px solid ${color[colorKey]};
           }
         }
         nav:first-child {
@@ -66,9 +76,9 @@ export default function FilterBar({ bordered, children }) {
         }
         nav:hover {
           transition: border-bottom 0.5s;
-          border-bottom: 3px solid ${Color.blue()};
+          border-bottom: 3px solid ${color[colorKey]};
           a {
-            color: ${Color.blue()};
+            color: ${color[colorKey]};
             transition: color 0.5s, font-weight 0.5s;
             font-weight: bold;
           }

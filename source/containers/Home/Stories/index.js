@@ -130,10 +130,11 @@ class Stories extends Component {
               <div
                 style={{
                   width: '100%',
-                  textAlign: 'center',
-                  paddingTop: '1em',
-                  paddingBottom: '1em',
-                  fontSize: '2em'
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '15rem',
+                  fontSize: '2rem'
                 }}
               >
                 <span>Hello there!</span>

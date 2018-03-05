@@ -160,6 +160,7 @@ class Header extends Component {
           <Link
             style={{
               cursor: 'pointer',
+              textDecoration: 'none',
               fontWeight: 'bold'
             }}
             to="/"
