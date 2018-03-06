@@ -70,8 +70,8 @@ class Comments extends Component {
     return (
       <div
         className={css`
+          padding: 1rem 0;
           background: #fff;
-          padding: 1rem;
           font-size: 1.5rem;
           margin-top: 1rem;
         `}
@@ -90,18 +90,18 @@ class Comments extends Component {
           >
             {this.renderComments()}
             {loadMoreCommentsButton && (
-              <div style={{ paddingTop: '2rem' }}>
-                <Button
-                  onClick={() =>
-                    loadMoreComments({
-                      videoId,
-                      lastCommentId: comments[comments.length - 1].id
-                    })
-                  }
-                >
-                  Load More
-                </Button>
-              </div>
+              <Button
+                transparent
+                style={{ fontSize: '2rem' }}
+                onClick={() =>
+                  loadMoreComments({
+                    videoId,
+                    lastCommentId: comments[comments.length - 1].id
+                  })
+                }
+              >
+                Load More
+              </Button>
             )}
           </div>
         </div>
@@ -121,8 +121,11 @@ class Comments extends Component {
     const { loading } = this.state
     const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     if (comments.length === 0) {
-      if (loading) return <Loading />
-      return (
+      return loading ? (
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          <Loading />
+        </div>
+      ) : (
         <div
           style={{
             display: 'flex',

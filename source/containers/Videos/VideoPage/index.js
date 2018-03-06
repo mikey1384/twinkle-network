@@ -7,7 +7,9 @@ import {
   uploadQuestionsAsync,
   likeVideoAsync,
   resetVideoPage,
-  loadVideoPageAsync
+  loadVideoPageAsync,
+  loadMoreDiscussions,
+  uploadVideoCommentAsync
 } from 'redux/actions/VideoActions'
 import Carousel from 'components/Carousel'
 import Button from 'components/Button'
@@ -26,6 +28,7 @@ import { stringIsEmpty } from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import CommentInputArea from './CommentInputArea'
+import Discussions from './Discussions'
 import ExecutionEnvironment from 'exenv'
 import { css } from 'emotion'
 
@@ -49,6 +52,7 @@ class VideoPage extends Component {
     resetVideoPage: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
+    uploadComment: PropTypes.func,
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
     uploadQuestions: PropTypes.func.isRequired,
@@ -66,7 +70,8 @@ class VideoPage extends Component {
     editModalShown: false,
     confirmModalShown: false,
     onEdit: false,
-    questionsBuilderShown: false
+    questionsBuilderShown: false,
+    discussionTabActive: true
   }
 
   componentDidMount() {
@@ -117,10 +122,12 @@ class VideoPage extends Component {
       questions = [],
       likes = [],
       location: { search },
+      uploadComment,
       videoViews,
       match: { params: { videoId } }
     } = this.props
     const {
+      discussionTabActive,
       watchTabActive,
       questionsBuilderShown,
       resultModalShown,
@@ -162,9 +169,14 @@ class VideoPage extends Component {
           {!videoLoading &&
             !videoUnavailable &&
             content && (
-              <div style={{ marginBottom: '1rem' }}>
+              <div style={{ width: '100%', marginBottom: '1rem' }}>
                 <div
-                  style={{ background: '#fff', padding: '1rem', paddingTop: 0 }}
+                  style={{
+                    width: '100%',
+                    background: '#fff',
+                    padding: '1rem',
+                    paddingTop: 0
+                  }}
                 >
                   <PageTab
                     questions={questions}
@@ -257,9 +269,20 @@ class VideoPage extends Component {
                 />
                 <CommentInputArea
                   videoId={videoId}
-                  discussions={discussions}
-                  loadMoreDiscussionsButton={loadMoreDiscussionsButton}
+                  onDiscussionTabClick={status =>
+                    this.setState({ discussionTabActive: status })
+                  }
+                  discussionTabActive={discussionTabActive}
                 />
+                {discussionTabActive && (
+                  <Discussions
+                    loadMoreDiscussionsButton={loadMoreDiscussionsButton}
+                    discussions={discussions}
+                    loadMoreDiscussions={loadMoreDiscussions}
+                    uploadComment={uploadComment}
+                    videoId={videoId}
+                  />
+                )}
                 <Comments {...this.props} />
                 {resultModalShown && (
                   <ResultModal
@@ -410,7 +433,9 @@ export default connect(
     deleteVideo: deleteVideoAsync,
     uploadQuestions: uploadQuestionsAsync,
     likeVideo: likeVideoAsync,
+    loadMoreDiscussions,
     resetVideoPage,
+    uploadComment: uploadVideoCommentAsync,
     loadVideoPage: loadVideoPageAsync
   }
 )(VideoPage)

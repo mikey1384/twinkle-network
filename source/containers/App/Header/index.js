@@ -151,7 +151,7 @@ class Header extends Component {
     const { logoBlue, logoGreen } = this.state
     return (
       <nav
-        className={`${container} ${chatMode && 'header chat'}`}
+        className={`unselectable ${container} ${chatMode && 'header chat'}`}
         style={{
           position: 'fixed'
         }}
@@ -281,10 +281,7 @@ class Header extends Component {
               />
             )}
             {loggedIn ? (
-              <AccountMenu
-                title={username}
-                logout={this.onLogout}
-              />
+              <AccountMenu title={username} logout={this.onLogout} />
             ) : (
               <Button success onClick={() => openSigninModal()}>
                 Log In | Sign Up

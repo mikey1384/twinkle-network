@@ -6,26 +6,22 @@ import Button from 'components/Button'
 import { connect } from 'react-redux'
 import {
   uploadVideoCommentAsync,
-  uploadVideoDiscussion,
-  loadMoreDiscussions
+  uploadVideoDiscussion
 } from 'redux/actions/VideoActions'
-import DiscussionPanel from './DiscussionPanel'
 import FilterBar from 'components/FilterBar'
-import { Color } from 'constants/css'
 import { css } from 'emotion'
 
 class CommentInputArea extends Component {
   static propTypes = {
-    discussions: PropTypes.array,
-    loadMoreDiscussions: PropTypes.func.isRequired,
-    loadMoreDiscussionsButton: PropTypes.bool,
+    discussionTabActive: PropTypes.bool.isRequired,
+    onDiscussionTabClick: PropTypes.func.isRequired,
     uploadComment: PropTypes.func.isRequired,
     uploadDiscussion: PropTypes.func.isRequired,
-    videoId: PropTypes.number.isRequired
+    videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired
   }
 
   state = {
-    discussionTabActive: true,
     discussionFormShown: false
   }
 
@@ -34,38 +30,39 @@ class CommentInputArea extends Component {
       videoId,
       uploadComment,
       uploadDiscussion,
-      loadMoreDiscussionsButton,
-      discussions,
-      loadMoreDiscussions
+      discussionTabActive,
+      onDiscussionTabClick
     } = this.props
-    const { discussionTabActive, discussionFormShown } = this.state
+    const { discussionFormShown } = this.state
     return (
       <div
         className={css`
           background: #fff;
           margin-top: 1rem;
-          padding: 1rem;
+          padding: 1rem 1rem ${discussionTabActive ? '2rem' : '1rem'} 1rem;
           padding-top: 0;
-          font-size: 1.5rem;
+          ${!discussionTabActive
+            ? 'margin-bottom: -1rem;'
+            : ''} font-size: 1.5rem;
         `}
       >
         <FilterBar info>
           <nav
             className={discussionTabActive ? 'active' : ''}
             style={{ cursor: 'pointer' }}
-            onClick={() => this.setState({ discussionTabActive: true })}
+            onClick={() => onDiscussionTabClick(true)}
           >
             <a>Discuss</a>
           </nav>
           <nav
             className={!discussionTabActive ? 'active' : ''}
             style={{ cursor: 'pointer' }}
-            onClick={() =>
+            onClick={() => {
+              onDiscussionTabClick(false)
               this.setState({
-                discussionTabActive: false,
                 discussionFormShown: false
               })
-            }
+            }}
           >
             <a>Comment on this video</a>
           </nav>
@@ -73,85 +70,30 @@ class CommentInputArea extends Component {
         <div style={{ marginTop: '2rem' }}>
           {discussionTabActive && (
             <div style={{ padding: '0 1rem' }}>
-              <div>
-                <div>
-                  {discussionFormShown ? (
-                    <TitleDescriptionForm
-                      autoFocus
-                      onSubmit={(title, description) =>
-                        uploadDiscussion(title, description, videoId)
-                      }
-                      rows={4}
-                      titlePlaceholder="Enter discussion topic..."
-                      descriptionPlaceholder="Enter details... (Optional)"
-                    />
-                  ) : (
-                    <Button
-                      logo
-                      filled
-                      style={{ fontSize: '2rem' }}
-                      onClick={() =>
-                        this.setState({ discussionFormShown: true })
-                      }
-                    >
-                      <span className="glyphicon glyphicon-comment" /> Start a
-                      New Discussion
-                    </Button>
-                  )}
+              {discussionFormShown ? (
+                <TitleDescriptionForm
+                  autoFocus
+                  onSubmit={(title, description) =>
+                    uploadDiscussion(title, description, videoId)
+                  }
+                  onClose={() => this.setState({ discussionFormShown: false })}
+                  rows={4}
+                  titlePlaceholder="Enter discussion topic..."
+                  descriptionPlaceholder="Enter details... (Optional)"
+                />
+              ) : (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <Button
+                    logo
+                    filled
+                    style={{ fontSize: '2rem' }}
+                    onClick={() => this.setState({ discussionFormShown: true })}
+                  >
+                    <span className="glyphicon glyphicon-comment" /> Start a New
+                    Discussion
+                  </Button>
                 </div>
-                <div>
-                  {!!discussions &&
-                    discussions.length > 0 && (
-                      <h3 style={{ marginTop: '1.5rem' }}>
-                        Active Discussions
-                      </h3>
-                    )}
-                  {!!discussions &&
-                    discussions.map(discussion => (
-                      <DiscussionPanel
-                        key={discussion.id}
-                        videoId={videoId}
-                        {...discussion}
-                      />
-                    ))}
-                  {loadMoreDiscussionsButton && (
-                    <Button
-                      transparent
-                      onClick={() =>
-                        loadMoreDiscussions(
-                          videoId,
-                          discussions[discussions.length - 1].id
-                        )
-                      }
-                    >
-                      Load More
-                    </Button>
-                  )}
-                  {(!discussions || discussions.length === 0) && (
-                    <div
-                      style={{
-                        marginTop: '2rem'
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: '2.5rem',
-                          fontWeight: 'bold',
-                          color: Color.darkGray()
-                        }}
-                      >
-                        Comment on this video
-                      </span>
-                      <InputForm
-                        style={{ marginTop: '1rem' }}
-                        onSubmit={text => uploadComment(text, videoId)}
-                        rows={4}
-                        placeholder="Write your comment here..."
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
+              )}
             </div>
           )}
           {!discussionTabActive && (
@@ -170,6 +112,5 @@ class CommentInputArea extends Component {
 
 export default connect(null, {
   uploadComment: uploadVideoCommentAsync,
-  uploadDiscussion: uploadVideoDiscussion,
-  loadMoreDiscussions
+  uploadDiscussion: uploadVideoDiscussion
 })(CommentInputArea)

@@ -62,7 +62,7 @@ export default class Replies extends Component {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          marginTop: '1.5rem'
+          marginTop: '1rem'
         }}
         ref={ref => {
           this.Replies = ref
@@ -70,7 +70,6 @@ export default class Replies extends Component {
       >
         {comment.loadMoreReplies && (
           <Button
-            className="btn btn-default"
             style={{
               width: '100%',
               marginBottom: replies.length !== 0 && '1.5rem'

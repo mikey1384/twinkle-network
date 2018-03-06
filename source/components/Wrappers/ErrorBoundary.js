@@ -18,7 +18,22 @@ export default class ErrorBoundary extends Component {
     const { children, ...props } = this.props
     const { hasError } = this.state
     if (hasError) {
-      return <span style={{ color: Color.red() }}>Something went wrong.</span>
+      return (
+        <div
+          style={{
+            color: Color.darkGray(),
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            width: '100%',
+            height: '30%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          Something went wrong
+        </div>
+      )
     }
     return <div {...props}>{children}</div>
   }

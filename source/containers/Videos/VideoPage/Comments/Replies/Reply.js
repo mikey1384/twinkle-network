@@ -159,47 +159,52 @@ export default class Reply extends Component {
               ) : (
                 <div style={{ width: '100%' }}>
                   <LongText
-                    style={{ paddingBottom: '2rem', wordWrap: 'break-word' }}
+                    style={{
+                      width: '100%',
+                      margin: '1rem 0 2rem 0',
+                      lineHeight: '2rem',
+                      paddingBottom: '1rem',
+                      wordWrap: 'break-word'
+                    }}
                   >
                     {content}
                   </LongText>
                   <div
-                    className="row"
                     style={{
                       display: 'flex',
-                      alignItems: 'center'
+                      flexDirection: 'column'
                     }}
                   >
-                    <div className="pull-left" style={{ paddingLeft: '1em' }}>
+                    <div
+                      style={{
+                        display: 'flex'
+                      }}
+                    >
                       <LikeButton
                         onClick={this.onLikeClick}
                         liked={userLikedThis}
-                        small
                       />
                       <Button
-                        style={{ marginLeft: '0.5em' }}
-                        className="btn btn-warning btn-sm"
+                        transparent
+                        style={{ marginLeft: '1rem' }}
                         onClick={this.onReplyButtonClick}
                       >
                         <span className="glyphicon glyphicon-comment" /> Reply
                       </Button>
                     </div>
-                    <small>
-                      <Likers
-                        className="pull-left"
-                        style={{
-                          fontWeight: 'bold',
-                          marginLeft: '0.8em',
-                          color: Color.green(),
-                          marginTop: '1em'
-                        }}
-                        userId={myId}
-                        likes={likes}
-                        onLinkClick={() =>
-                          this.setState({ userListModalShown: true })
-                        }
-                      />
-                    </small>
+                    <Likers
+                      style={{
+                        fontSize: '1.2rem',
+                        marginTop: '0.5rem',
+                        fontWeight: 'bold',
+                        color: Color.darkGray()
+                      }}
+                      userId={myId}
+                      likes={likes}
+                      onLinkClick={() =>
+                        this.setState({ userListModalShown: true })
+                      }
+                    />
                   </div>
                 </div>
               )}
@@ -207,6 +212,7 @@ export default class Reply extends Component {
           </div>
           {replyInputShown && (
             <ReplyInputArea
+              style={{ marginTop: '1rem' }}
               onSubmit={this.onReplySubmit}
               clickListenerState={clickListenerState}
             />
@@ -214,8 +220,9 @@ export default class Reply extends Component {
           {userIsOwner &&
             !onEdit && (
               <DropdownButton
+                snow
+                direction="left"
                 opacity={0.8}
-                shape="button"
                 icon="pencil"
                 style={{
                   position: 'absolute',

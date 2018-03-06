@@ -9,6 +9,7 @@ export default class TitleDescriptionForm extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
     descriptionPlaceholder: PropTypes.string,
+    onClose: PropTypes.func,
     onSubmit: PropTypes.func,
     rows: PropTypes.number,
     titlePlaceholder: PropTypes.string
@@ -26,6 +27,7 @@ export default class TitleDescriptionForm extends Component {
   render() {
     const {
       autoFocus,
+      onClose,
       rows,
       titlePlaceholder,
       descriptionPlaceholder
@@ -33,22 +35,19 @@ export default class TitleDescriptionForm extends Component {
     const { title, description } = this.state
     return (
       <form onSubmit={this.onSubmit}>
-        <fieldset className="form-group">
-          <Input
-            autoFocus={autoFocus}
-            className="form-control"
-            placeholder={titlePlaceholder}
-            type="text"
-            value={title}
-            onChange={text => this.setState({ title: text })}
-            onKeyUp={event =>
-              this.setState({ title: addEmoji(event.target.value) })
-            }
-          />
-        </fieldset>
-        <fieldset className="form-group">
+        <Input
+          autoFocus={autoFocus}
+          placeholder={titlePlaceholder}
+          type="text"
+          value={title}
+          onChange={text => this.setState({ title: text })}
+          onKeyUp={event =>
+            this.setState({ title: addEmoji(event.target.value) })
+          }
+        />
+        <div style={{ position: 'relative' }}>
           <Textarea
-            className="form-control"
+            style={{ marginTop: '1rem' }}
             minRows={rows}
             placeholder={descriptionPlaceholder}
             value={description}
@@ -56,14 +55,30 @@ export default class TitleDescriptionForm extends Component {
               this.setState({ description: event.target.value })
             }
           />
-        </fieldset>
-        <Button
-          className="btn btn-default btn-sm"
-          type="submit"
-          disabled={!title || stringIsEmpty(title)}
+        </div>
+        <div
+          style={{
+            marginTop: '1rem',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
         >
-          Submit
-        </Button>
+          <Button
+            transparent
+            style={{ fontSize: '1.7rem', marginRight: '1rem' }}
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            primary
+            style={{ fontSize: '1.7rem' }}
+            type="submit"
+            disabled={!title || stringIsEmpty(title)}
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     )
   }

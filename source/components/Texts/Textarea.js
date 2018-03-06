@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Color } from 'constants/css'
+import { css } from 'emotion'
 import TextareaAutosize from 'react-textarea-autosize'
 
 Textarea.propTypes = {
@@ -11,8 +12,9 @@ export default function Textarea({ innerRef, ...props }) {
     <TextareaAutosize
       {...props}
       ref={innerRef}
-      css={`
+      className={css`
         width: 100%;
+        line-height: 2.5rem;
         position: relative;
         font-size: 1.6rem;
         padding: 1rem;

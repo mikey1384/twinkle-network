@@ -112,9 +112,7 @@ class Comment extends Component {
             profilePicId={comment.profilePicId}
           />
         </div>
-        <div
-          style={{ width: '90%', display: 'flex', flexDirection: 'column' }}
-        >
+        <div style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>
           <div>
             <UsernameText
               user={{
@@ -136,12 +134,11 @@ class Comment extends Component {
             />
           ) : (
             <div style={{ width: '100%' }}>
-              {!!comment.discussionTitle && (
+              {comment.discussionTitle && (
                 <div
                   style={{
-                    color: Color.blue(),
-                    fontWeight: 'bold',
-                    marginBottom: '0.5em'
+                    color: Color.green(),
+                    fontWeight: 'bold'
                   }}
                 >
                   {cleanString(comment.discussionTitle)}
@@ -150,8 +147,9 @@ class Comment extends Component {
               <LongText
                 style={{
                   width: '100%',
-                  marginLeft: '0px',
-                  paddingBottom: '1em',
+                  margin: '1rem 0 2rem 0',
+                  lineHeight: '2rem',
+                  paddingBottom: '1rem',
                   wordWrap: 'break-word'
                 }}
               >
@@ -160,30 +158,29 @@ class Comment extends Component {
               <div
                 style={{
                   display: 'flex',
-                  alignItems: 'center'
+                  flexDirection: 'column'
                 }}
               >
-                <div>
+                <div style={{ display: 'flex' }}>
                   <LikeButton
                     onClick={this.onLikeClick}
                     liked={userLikedThis}
-                    small
                   />
                   <Button
+                    transparent
                     style={{ marginLeft: '1rem' }}
                     onClick={this.onReplyButtonClick}
                   >
                     <span className="glyphicon glyphicon-comment" /> Reply
                   </Button>
                 </div>
-                <small>
+                <div>
                   <Likers
-                    className="pull-left"
                     style={{
+                      fontSize: '1.2rem',
+                      marginTop: '0.5rem',
                       fontWeight: 'bold',
-                      marginLeft: '0.8em',
-                      color: Color.green(),
-                      marginTop: '1em'
+                      color: Color.darkGray()
                     }}
                     userId={userId}
                     likes={comment.likes}
@@ -191,7 +188,7 @@ class Comment extends Component {
                       this.setState({ userListModalShown: true })
                     }
                   />
-                </small>
+                </div>
               </div>
             </div>
           )}
@@ -210,7 +207,7 @@ class Comment extends Component {
           />
           {replyInputShown && (
             <ReplyInputArea
-              style={{ marginTop: comment.replies.length === 0 && '0px' }}
+              style={{ marginTop: comment.replies.length === 0 ? 0 : '1rem' }}
               clickListenerState={clickListenerState}
               onSubmit={this.onReplySubmit}
             />
@@ -218,8 +215,9 @@ class Comment extends Component {
           {userIsOwner &&
             !onEdit && (
               <DropdownButton
+                snow
+                direction="left"
                 opacity={0.8}
-                shape="button"
                 icon="pencil"
                 style={{
                   position: 'absolute',

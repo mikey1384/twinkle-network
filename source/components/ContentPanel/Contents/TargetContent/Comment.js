@@ -37,18 +37,28 @@ export default class Comment extends Component {
     const { comment, username, userId, profilePicId } = this.props
     const { onEdit, confirmModalShown } = this.state
     return (
-      <div style={{ display: 'flex', width: '100%', flexDirection: 'column', paddingTop: '1rem' }}>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          flexDirection: 'column',
+          paddingTop: '1rem'
+        }}
+      >
         {!onEdit && (
-          <div style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'row-reverse'
-          }}>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'row-reverse'
+            }}
+          >
             <DropdownButton
-              shape="button"
+              snow
               icon="pencil"
+              direction="left"
               style={{ position: 'absolute' }}
-              opacity={0.7}
+              opacity={0.8}
               menuProps={[
                 {
                   label: 'Edit',
@@ -63,7 +73,11 @@ export default class Comment extends Component {
           </div>
         )}
         <div style={{ display: 'flex', width: '100%' }}>
-          <ProfilePic style={{ width: '7%', height: '7%' }} userId={userId} profilePicId={profilePicId} />
+          <ProfilePic
+            style={{ width: '7%', height: '7%' }}
+            userId={userId}
+            profilePicId={profilePicId}
+          />
           <div style={{ width: '90%', marginLeft: '2%' }}>
             <div>
               <UsernameText
@@ -73,7 +87,9 @@ export default class Comment extends Component {
                   id: userId
                 }}
               />{' '}
-              <small style={{ color: Color.gray() }}>&nbsp;{timeSince(comment.timeStamp)}</small>
+              <small style={{ color: Color.gray() }}>
+                &nbsp;{timeSince(comment.timeStamp)}
+              </small>
             </div>
             {onEdit ? (
               <EditTextArea
@@ -84,15 +100,17 @@ export default class Comment extends Component {
                 rows={2}
               />
             ) : (
-                <div className="container-fluid" style={{ paddingLeft: '0px' }}>
-                  <LongText style={{
+              <div className="container-fluid" style={{ paddingLeft: '0px' }}>
+                <LongText
+                  style={{
                     wordBreak: 'break-word',
                     margin: '0.5rem 0 1rem 0'
-                  }}>
-                    {comment.content}
-                  </LongText>
-                </div>
-              )}
+                  }}
+                >
+                  {comment.content}
+                </LongText>
+              </div>
+            )}
           </div>
         </div>
         {confirmModalShown && (

@@ -11,9 +11,15 @@ CheckListGroup.propTypes = {
       label: PropTypes.string.isRequired
     })
   ).isRequired,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  style: PropTypes.object
 }
-export default function CheckListGroup({ listItems, inputType, onSelect }) {
+export default function CheckListGroup({
+  listItems,
+  inputType,
+  onSelect,
+  style = {}
+}) {
   return (
     <div
       className={css`
@@ -40,6 +46,7 @@ export default function CheckListGroup({ listItems, inputType, onSelect }) {
           }
         }
       `}
+      style={style}
     >
       {listItems.map((listItem, index) => {
         return (

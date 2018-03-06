@@ -127,6 +127,7 @@ class Description extends Component {
         className={css`
           display: grid;
           height: auto;
+          width: 100%;
           background: #fff;
           padding: 1rem;
           margin-top: 1rem;
@@ -139,8 +140,8 @@ class Description extends Component {
           grid-row-gap: 1.3rem;
           grid-template-areas: 
             "title title title ${starButtonGrid} likeButton"
-            "description description description likers likers"
-            "description description description . ."
+            "description description description description description"
+            "description description description description description"
         `}
       >
         <div
@@ -236,15 +237,21 @@ class Description extends Component {
             )}
         </div>
         <div
-          style={{
-            gridArea: 'description',
-            alignSelf: 'start'
-          }}
+          className={css`
+            grid-area: description;
+            align-self: start;
+            display: grid;
+            grid-template-areas:
+              'content content content content'
+              ${!onEdit ? '"editButton . . ."' : ''};
+            grid-row-gap: 2rem;
+            grid-template-columns: auto 1fr 1fr 1fr;
+          `}
         >
           {onEdit ? (
-            <div style={{ marginRight: '1rem' }}>
+            <div style={{ gridArea: 'content' }}>
               <Textarea
-                minRows={4}
+                minRows={5}
                 placeholder={edit.description}
                 value={editedDescription}
                 onChange={event => {
@@ -267,38 +274,48 @@ class Description extends Component {
               <div
                 style={{
                   display: 'flex',
-                  flexDirection: 'row-reverse',
+                  justifyContent: 'center',
                   marginTop: '1rem'
                 }}
               >
                 <Button
-                  primary
-                  disabled={editDoneButtonDisabled}
-                  onClick={this.onEditFinish}
-                >
-                  Done
-                </Button>
-                <Button
                   transparent
-                  style={{ marginRight: '1rem' }}
+                  style={{ fontSize: '1.7rem', marginRight: '1rem' }}
                   onClick={this.onEditCancel}
                 >
                   Cancel
                 </Button>
+                <Button
+                  primary
+                  disabled={editDoneButtonDisabled}
+                  onClick={this.onEditFinish}
+                  style={{ fontSize: '1.7rem' }}
+                >
+                  Done
+                </Button>
               </div>
             </div>
           ) : (
-            <LongText style={{ wordBreak: 'break-word', padding: '1rem' }}>
-              {stringIsEmpty(description) ? 'No Description' : description}
-            </LongText>
+            <div style={{ padding: '0 1rem', gridArea: 'content' }}>
+              <LongText
+                style={{
+                  wordBreak: 'break-word',
+                  lineHeight: '2.3rem'
+                }}
+              >
+                {stringIsEmpty(description) ? 'No Description' : description}
+              </LongText>
+            </div>
           )}
           {(uploaderId === userId || isCreator) &&
             !onEdit && (
               <DropdownButton
                 snow
-                alignLeft
-                style={{ marginTop: '2rem' }}
-                shape="button"
+                direction="left"
+                style={{
+                  gridArea: 'editButton'
+                }}
+                stretch
                 icon="pencil"
                 text="Edit or Delete This Video"
                 menuProps={menuProps}

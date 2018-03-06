@@ -102,7 +102,7 @@ class AddPlaylistModal extends Component {
                 <Textarea
                   name="description"
                   placeholder="Enter Description (Optional)"
-                  minRows={5}
+                  minRows={4}
                   value={description}
                   onChange={event =>
                     this.setState({ description: event.target.value })

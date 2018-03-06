@@ -27,13 +27,7 @@ export default function Likers({
   defaultText
 }) {
   return (
-    <div
-      css={`
-        line-height: 2.5rem;
-      `}
-      style={style}
-      className={className}
-    >
+    <div style={style} className={className}>
       {renderLikers()}
     </div>
   )

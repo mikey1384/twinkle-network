@@ -12,6 +12,7 @@ class DropdownButton extends Component {
     menuProps: PropTypes.array.isRequired,
     noBorderRadius: PropTypes.bool,
     opacity: PropTypes.number,
+    stretch: PropTypes.bool,
     style: PropTypes.object,
     text: PropTypes.string
   }
@@ -34,6 +35,7 @@ class DropdownButton extends Component {
       listStyle = {},
       noBorderRadius,
       text = '',
+      stretch,
       ...props
     } = this.props
     return (
@@ -49,7 +51,8 @@ class DropdownButton extends Component {
           style={{
             borderRadius: noBorderRadius && 0,
             border: noBorderRadius && 0,
-            margin: noBorderRadius && 0
+            margin: noBorderRadius && 0,
+            width: stretch && '100%'
           }}
           onClick={() => this.setState({ menuDisplayed: !menuDisplayed })}
         >
@@ -59,7 +62,10 @@ class DropdownButton extends Component {
         </Button>
         {menuDisplayed && (
           <DropdownList
-            style={{ minWidth: '12rem', ...listStyle }}
+            style={{
+              minWidth: '12rem',
+              ...listStyle
+            }}
             direction={direction}
           >
             {this.renderMenu()}

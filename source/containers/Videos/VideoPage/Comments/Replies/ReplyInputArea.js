@@ -13,7 +13,7 @@ export default function ReplyInputArea({
   style
 }) {
   return (
-    <div className="media" style={style}>
+    <div style={style}>
       <div className="media-body">
         <InputForm
           autoFocus
