@@ -46,9 +46,8 @@ export default class BioEditModal extends Component {
           }
         `}
       >
-        <div className="modal-heading">Edit Your Bio</div>
-        <div
-          className="modal-body"
+        <header>Edit Your Bio</header>
+        <main
           style={{ width: '100%', justifyContent: 'flex-start' }}
         >
           <div>
@@ -119,8 +118,8 @@ export default class BioEditModal extends Component {
               }
             </p>
           </div>
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           <Button
             primary
             onClick={() => onSubmit({ firstLine, secondLine, thirdLine })}
@@ -136,7 +135,7 @@ export default class BioEditModal extends Component {
           <Button transparent onClick={onHide} style={{ marginRight: '1rem' }}>
             Cancel
           </Button>
-        </div>
+        </footer>
       </Modal>
     )
   }

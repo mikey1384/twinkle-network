@@ -175,7 +175,7 @@ class Content extends Component {
                   <span className="glyphicon glyphicon-comment" />&nbsp; Reply
                 </Button>
                 <Likers
-                  className="likers"
+                  className="content-panel__likers"
                   userId={myId}
                   likes={likes}
                   onLinkClick={() =>

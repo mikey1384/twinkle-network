@@ -137,20 +137,32 @@ class VideoPage extends Component {
           display: flex;
           justify-content: space-between;
           width: 100%;
-          margin-bottom: 1rem;
+          height: 100%;
         `}
       >
         <div
           className={css`
             width: CALC(70% - 1rem);
+            height: 100%;
             margin-left: 1rem;
           `}
         >
-          {videoLoading && <Loading text="Loading Video..." />}
-          {videoUnavailable && <NotFound text="Video does not exist" />}
-          {!videoUnavailable &&
+          {(videoLoading || videoUnavailable) && (
+            <div
+              className={css`
+                width: 100%;
+                height: 20%;
+                position: relative;
+              `}
+            >
+              {videoLoading && <Loading text="Loading Video..." />}
+              {videoUnavailable && <NotFound text="Video does not exist" />}
+            </div>
+          )}
+          {!videoLoading &&
+            !videoUnavailable &&
             content && (
-              <div>
+              <div style={{ marginBottom: '1rem' }}>
                 <div
                   style={{ background: '#fff', padding: '1rem', paddingTop: 0 }}
                 >
@@ -164,7 +176,7 @@ class VideoPage extends Component {
                       this.setState({ watchTabActive: false })
                     }
                   />
-                  <div>
+                  <div style={{ marginTop: '2rem' }}>
                     {!questionsBuilderShown && (
                       <VideoPlayer
                         autoplay

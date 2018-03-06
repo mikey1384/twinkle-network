@@ -24,13 +24,11 @@ class CommentInputArea extends Component {
     videoId: PropTypes.number.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      discussionTabActive: true,
-      discussionFormShown: false
-    }
+  state = {
+    discussionTabActive: true,
+    discussionFormShown: false
   }
+
   render() {
     const {
       videoId,

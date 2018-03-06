@@ -7,6 +7,7 @@ export const container = css`
   flex-direction: column;
   margin-top: 1.5rem;
   position: relative;
+  font-size: 1.5rem;
   .dropdown-wrapper {
     width: 100%;
     display: flex;
@@ -18,7 +19,7 @@ export const container = css`
     width: 100%;
     position: relative;
     section {
-      margin-left: 1rem;
+      margin-left: 2rem;
       width: 93%;
     }
   }
@@ -34,25 +35,27 @@ export const container = css`
   .username {
     font-size: 1.7rem;
   }
-  .content {
-    wordbreak: break-word;
-    margin: 0.5rem 0 1rem 0;
+  .comment__content {
+    word-break: break-word;
+    line-height: 2rem;
+    padding: 1.5rem 0 2rem 0;
   }
   .reply-button {
     margin-left: 0.5rem;
   }
-  .likers {
+  .comment__likers {
+    margin-top: 0.6rem;
     font-size: 1.2rem;
-    margin-top: 0.5rem;
+    line-height: normal;
     font-weight: bold;
-    color: ${Color.green};
+    color: ${Color.darkGray()};
   }
   @media (max-width: ${mobileMaxWidth}) {
     .likers {
       font-size: 1.7rem;
       margin-top: 0.5rem;
       font-weight: bold;
-      color: ${Color.green};
+      color: ${Color.darkGray()};
     }
   }
 `

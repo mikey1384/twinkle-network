@@ -220,7 +220,7 @@ class Contents extends Component {
               </div>
             </div>
             <Likers
-              className="likers"
+              className="content-panel__likers"
               userId={myId}
               likes={contentLikers}
               onLinkClick={() => this.setState({ userListModalShown: true })}

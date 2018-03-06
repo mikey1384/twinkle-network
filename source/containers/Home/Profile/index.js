@@ -48,7 +48,7 @@ class Profile extends Component {
   render() {
     const { profile: { unavailable, id }, userId } = this.props
     return !unavailable ? (
-      <div style={{ width: '100%', minHeight: '30%', position: 'relative' }}>
+      <div style={{ width: '100%', minHeight: '20%', position: 'relative' }}>
         {!id && <Loading text="Loading Profile..." />}
         {id && (
           <Fragment>

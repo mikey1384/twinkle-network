@@ -21,6 +21,7 @@ export const Left = css`
 
 export const Center = css`
   width: CALC(55% - 6rem);
+  height: 100%;
   margin-left: calc(15% + 4rem);
   @media (max-width: ${mobileMaxWidth}) {
     width: 100%;

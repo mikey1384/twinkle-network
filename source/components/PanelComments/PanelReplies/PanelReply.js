@@ -164,23 +164,27 @@ class PanelReply extends Component {
                 />
               ) : (
                 <div>
-                  <LongText className="content">{reply.content}</LongText>
+                  <LongText className="comment__content">
+                    {reply.content}
+                  </LongText>
                   <div>
-                    <div>
-                      <LikeButton
-                        onClick={this.onLikeClick}
-                        liked={userLikedThis}
-                        small
-                      />
-                      {type !== 'comment' && (
-                        <Button transparent onClick={this.onReplyButtonClick}>
-                          <span className="glyphicon glyphicon-comment" /> Reply
-                        </Button>
-                      )}
-                    </div>
+                    <LikeButton
+                      onClick={this.onLikeClick}
+                      liked={userLikedThis}
+                      small
+                    />
+                    {type !== 'comment' && (
+                      <Button
+                        transparent
+                        style={{ marginLeft: '1rem' }}
+                        onClick={this.onReplyButtonClick}
+                      >
+                        <span className="glyphicon glyphicon-comment" /> Reply
+                      </Button>
+                    )}
                     <small>
                       <Likers
-                        className="likers"
+                        className="comment__likers"
                         userId={userId}
                         likes={reply.likes}
                         onLinkClick={() =>

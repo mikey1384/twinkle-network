@@ -22,9 +22,9 @@ export default class ImageEditModal extends Component {
     const { imageScale } = this.state
     return (
       <Modal onHide={onHide}>
-        <div className="modal-heading">Create Profile Picture</div>
-        <div className="modal-body">
-          <div style={{ textAlign: 'center', paddingBottom: '2em' }}>
+        <header>Create Profile Picture</header>
+        <main>
+          <div style={{ textAlign: 'center', paddingBottom: '2rem' }}>
             {imageUri && (
               <div>
                 <AvatarEditor
@@ -38,20 +38,18 @@ export default class ImageEditModal extends Component {
                   color={[255, 255, 255, 0.6]}
                   scale={imageScale}
                 />
-                <div className="col-xs-6 col-xs-offset-3">
-                  <Slider
-                    className="rc-slider"
-                    defaultValue={50}
-                    onChange={value =>
-                      this.setState({ imageScale: value / 100 + 0.5 })
-                    }
-                  />
-                </div>
+                <Slider
+                  className="rc-slider"
+                  defaultValue={50}
+                  onChange={value =>
+                    this.setState({ imageScale: value / 100 + 0.5 })
+                  }
+                />
               </div>
             )}
           </div>
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           <Button
             primary
             onClick={() =>
@@ -64,7 +62,7 @@ export default class ImageEditModal extends Component {
           <Button transparent onClick={onHide} style={{ marginRight: '1rem' }}>
             Cancel
           </Button>
-        </div>
+        </footer>
       </Modal>
     )
   }

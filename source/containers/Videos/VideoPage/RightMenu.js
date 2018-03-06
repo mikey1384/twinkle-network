@@ -79,9 +79,6 @@ class RightMenu extends Component {
               font-weight: bold;
             }
           }
-          section:last-child {
-            margin-bottom: 0;
-          }
         `}
       >
         {nextVideos.length > 0 && (

@@ -47,8 +47,9 @@ export const container = css`
       }
     }
   }
-  .likers {
-    margin-top: 0.5rem;
+  .content-panel__likers {
+    margin-top: 0.6rem;
+    line-height: normal;
     font-weight: bold;
     color: ${Color.darkGray()};
     font-size: 1.2rem;
