@@ -29,7 +29,7 @@ import { css } from 'emotion'
 class Description extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
+    description: PropTypes.string,
     isCreator: PropTypes.bool.isRequired,
     isStarred: PropTypes.bool,
     likes: PropTypes.array.isRequired,

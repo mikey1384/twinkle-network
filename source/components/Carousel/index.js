@@ -169,7 +169,7 @@ class Carousel extends Component {
               position: 'absolute',
               cursor: 'pointer'
             }}
-            onClick={() => showQuestionsBuilder()}
+            onClick={showQuestionsBuilder}
           >
             Add/Edit Questions
           </a>

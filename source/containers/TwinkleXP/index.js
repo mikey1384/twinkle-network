@@ -16,6 +16,8 @@ export default function TwinkleXP() {
           <div style={{ ...Styles.header, textAlign: 'center' }}>
             About {twinkleXpText}
           </div>
+          <br />
+          <br />
           <div style={Styles.subHeader}>What is it?</div>
           <div style={Styles.section}>
             <div style={Styles.paragraph}>

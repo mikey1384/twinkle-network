@@ -2,6 +2,7 @@ import { Color } from 'constants/css'
 
 const Styles = {
   mainContainer: {
+    lineHeight: '2.7rem',
     background: 'white',
     padding: '1.5rem'
   },
@@ -9,6 +10,7 @@ const Styles = {
     marginTop: '1rem'
   },
   paragraph: {
+    marginTop: '1rem',
     fontSize: '2rem'
   },
   rightMenu: {
@@ -24,6 +26,7 @@ const Styles = {
     fontWeight: 'bold'
   },
   subHeader: {
+    marginTop: '2rem',
     fontSize: '3rem',
     fontWeight: 'bold'
   },

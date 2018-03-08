@@ -28,7 +28,7 @@ export default class QuestionModal extends Component {
     const { answer, answerSubmitted } = this.state
     return (
       <Modal onHide={onHide}>
-        <div className="modal-heading">
+        <header>
           <span
             style={{
               color: Color.green(),
@@ -38,8 +38,8 @@ export default class QuestionModal extends Component {
           >
             Question
           </span>
-        </div>
-        <div className="modal-body">
+        </header>
+        <main>
           <span style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
             {question}
           </span>
@@ -52,8 +52,8 @@ export default class QuestionModal extends Component {
             minRows={4}
             placeholder="Type your answer here..."
           />
-        </div>
-        <div className="modal-footer">
+        </main>
+        <footer>
           <Button
             disabled={answerSubmitted || stringIsEmpty(answer)}
             success={answerSubmitted}
@@ -65,7 +65,7 @@ export default class QuestionModal extends Component {
           <Button transparent onClick={onHide} style={{ marginRight: '1rem' }}>
             Cancel
           </Button>
-        </div>
+        </footer>
       </Modal>
     )
   }
