@@ -22,6 +22,7 @@ import {
   getMouseEvents,
   handleClick
 } from './helpers/interfaceEvents'
+import { css } from 'emotion'
 
 import { easeInOutQuad } from 'tween-functions'
 import PropTypes from 'prop-types'
@@ -45,7 +46,7 @@ class Carousel extends Component {
     className: PropTypes.string,
     clickSafe: PropTypes.bool,
     onFinish: PropTypes.func,
-    onShowAll: PropTypes.func.isRequired,
+    onShowAll: PropTypes.func,
     progressBar: PropTypes.bool,
     showAllButton: PropTypes.bool,
     showQuestionsBuilder: PropTypes.func,
@@ -148,16 +149,20 @@ class Carousel extends Component {
         ? formatChildren.call(this, this.props.children)
         : this.props.children
     const {
+      className,
       showAllButton,
       showQuestionsBuilder,
       onShowAll,
-      onFinish
+      onFinish,
+      progressBar
     } = this.props
     const { slidesToScroll, currentSlide, slideCount } = this.state
     const slideFraction = (currentSlide + 1) / slideCount
     return (
       <div
-        className={['slider', this.props.className || ''].join(' ')}
+        className={`slider ${className} ${css`
+          font-size: 1.5rem;
+        `}`}
         ref={ref => {
           this.Slider = ref
         }}
@@ -174,7 +179,7 @@ class Carousel extends Component {
             Add/Edit Questions
           </a>
         )}
-        {this.props.progressBar && (
+        {progressBar && (
           <div>
             <div
               style={{
@@ -188,7 +193,7 @@ class Carousel extends Component {
                   {
                     label: 'Prev',
                     onClick: previousSlide.bind(this),
-                    buttonClass: 'btn-default',
+                    buttonClass: 'transparent',
                     disabled: currentSlide === 0
                   },
                   {
@@ -197,7 +202,7 @@ class Carousel extends Component {
                       currentSlide + 1 === slideCount
                         ? onFinish
                         : nextSlide.bind(this),
-                    buttonClass: 'btn-default'
+                    buttonClass: 'transparent'
                   }
                 ]}
               />

@@ -29,7 +29,7 @@ class QuestionsBuilder extends Component {
     const { questions } = this.props
     this.setState({
       questions:
-        questions.length !== 0 ? questions : this.newQuestion(questions),
+        questions.length !== 0 ? this.formatQuestions(questions) : this.newQuestion(questions),
       editedQuestionOrder: questions.map(question => question.id)
     })
   }
@@ -62,6 +62,7 @@ class QuestionsBuilder extends Component {
               />
             )}
             {!reorderModeOn &&
+              questions &&
               questions.map((question, index) => {
                 return (
                   <div key={index}>
@@ -366,6 +367,20 @@ class QuestionsBuilder extends Component {
       return false
     }
   }
+
+  formatQuestions = questions =>
+    questions.map((question, index) => ({
+      ...question,
+      id: index,
+      onEdit: false,
+      choices: question.choices.map((choice, index) => ({
+        label: choice,
+        checked: false,
+        id: index
+      })),
+      errorMessage: null,
+      deleted: false
+    }))
 
   newQuestion = questions => [
     {

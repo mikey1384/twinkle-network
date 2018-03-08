@@ -53,6 +53,7 @@ class Stories extends Component {
     questionFeedLike: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     showFeedCommentsAsync: PropTypes.func.isRequired,
+    username: PropTypes.string,
     uploadFeedComment: PropTypes.func.isRequired,
     uploadFeedReply: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
@@ -62,16 +63,9 @@ class Stories extends Component {
   clearingFeeds = false
   scrollHeight = 0
 
-  constructor() {
-    super()
-    this.state = {
-      loadingMore: false,
-      scrollPosition: 0
-    }
-    this.applyFilter = this.applyFilter.bind(this)
-    this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
-    this.renderFilterBar = this.renderFilterBar.bind(this)
-    this.onScroll = this.onScroll.bind(this)
+  state = {
+    loadingMore: false,
+    scrollPosition: 0
   }
 
   async componentDidMount() {
@@ -110,7 +104,8 @@ class Stories extends Component {
       questionFeedLike,
       showFeedCommentsAsync,
       uploadFeedComment,
-      uploadTargetContentComment
+      uploadTargetContentComment,
+      username
     } = this.props
     const { loadingMore } = this.state
 
@@ -133,11 +128,10 @@ class Stories extends Component {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  height: '15rem',
-                  fontSize: '2rem'
+                  height: '15rem'
                 }}
               >
-                <span>Hello there!</span>
+                <h1>{username ? `Hello ${username}, be the first to post something` : 'Hi there!'}</h1>
               </div>
             )}
           {loaded &&
@@ -184,13 +178,13 @@ class Stories extends Component {
     )
   }
 
-  applyFilter(filter) {
+  applyFilter = filter => {
     const { fetchFeeds, selectedFilter, clearFeeds } = this.props
     if (filter === selectedFilter) return
     return clearFeeds().then(() => fetchFeeds(filter))
   }
 
-  loadMoreFeeds() {
+  loadMoreFeeds = () => {
     const { feeds, fetchMoreFeeds, selectedFilter } = this.props
     const { loadingMore } = this.state
     if (!loadingMore) {
@@ -201,7 +195,7 @@ class Stories extends Component {
     }
   }
 
-  onScroll() {
+  onScroll = () => {
     const { chatMode, feeds } = this.props
     if (
       document.getElementById('react-view').scrollHeight > this.scrollHeight
@@ -225,7 +219,7 @@ class Stories extends Component {
     }
   }
 
-  renderFilterBar() {
+  renderFilterBar = () => {
     const { selectedFilter } = this.props
     return (
       <FilterBar bordered>
@@ -276,6 +270,7 @@ export default connect(
     feeds: state.FeedReducer.feeds,
     loaded: state.FeedReducer.loaded,
     userId: state.UserReducer.userId,
+    username: state.UserReducer.username,
     selectedFilter: state.FeedReducer.selectedFilter,
     chatMode: state.ChatReducer.chatMode,
     noFeeds: state.FeedReducer.noFeeds

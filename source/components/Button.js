@@ -107,16 +107,13 @@ export default function Button({
             : buttonColor(
                 disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
               )[colorKey]};
-          ${snow
-            ? `box-shadow: 0 0 3px ${Color.black()};`
-            : ''} color: ${transparent
-              ? Color.black()
-              : !filled && disabled
-                ? buttonColor(textOpacity)[colorKey]
-                : snow ? Color.black() : '#fff'};
+          color: ${disabled && !filled
+            ? buttonColor(textOpacity)[colorKey]
+            : transparent ? Color.black() : snow ? Color.black() : '#fff'};
           border-color: ${buttonColor(
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )[colorKey]};
+          ${snow ? `box-shadow: 0 0 3px ${Color.black()};` : ''};
         }
       `} ${className}`}
       ref={ref => {

@@ -2,7 +2,7 @@ import { css } from 'react-emotion'
 import { mobileMaxWidth } from 'constants/css'
 
 export const appStyle = css`
-  height: CALC(100% - 6.5rem);
+  height: CALC(100% - 7rem);
   width: 100%;
 `
 

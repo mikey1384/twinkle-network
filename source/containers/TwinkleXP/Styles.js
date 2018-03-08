@@ -4,7 +4,8 @@ const Styles = {
   mainContainer: {
     lineHeight: '2.7rem',
     background: 'white',
-    padding: '1.5rem'
+    padding: '1.5rem',
+    marginBottom: '1rem'
   },
   section: {
     marginTop: '1rem'

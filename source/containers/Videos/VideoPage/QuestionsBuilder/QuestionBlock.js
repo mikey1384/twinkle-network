@@ -22,32 +22,28 @@ export default class QuestionBlock extends Component {
     questionIndex: PropTypes.number.isRequired,
     title: PropTypes.string
   }
-  constructor(props) {
-    super()
-    this.state = {
-      editedChoiceTitles: props.choices.map(choice => {
-        return choice.label
-      }),
-      editedQuestionTitle: props.title,
-      choiceIndices: props.choices.map(choice => {
-        return choice.id
-      })
-    }
-    this.onMove = this.onMove.bind(this)
-    this.onDrop = this.onDrop.bind(this)
-    this.onEditChoice = this.onEditChoice.bind(this)
+
+  state = {
+    editedChoiceTitles: [],
+    editedQuestionTitle: '',
+    choiceIndices: []
+  }
+
+  componentWillMount() {
+    const { title, choices } = this.props
+    this.setState({
+      editedChoiceTitles: choices.map(choice => choice.label),
+      editedQuestionTitle: title,
+      choiceIndices: choices.map(choice => choice.id)
+    })
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.choices !== nextProps.choices) {
       this.setState({
         editedQuestionTitle: nextProps.title,
-        choiceIndices: nextProps.choices.map(choice => {
-          return choice.id
-        }),
-        editedChoiceTitles: nextProps.choices.map(choice => {
-          return choice.label
-        })
+        choiceIndices: nextProps.choices.map(choice => choice.id),
+        editedChoiceTitles: nextProps.choices.map(choice => choice.label)
       })
     }
   }
@@ -76,10 +72,9 @@ export default class QuestionBlock extends Component {
     ]
     return (
       <div>
-        <div className="clearfix">
+        <div>
           {!onEdit ? (
             <h4
-              className="pull-left col-sm-10"
               style={{
                 opacity: deleted && '0.2',
                 paddingLeft: '0px',
@@ -99,7 +94,6 @@ export default class QuestionBlock extends Component {
             >
               <Textarea
                 type="text"
-                className="form-control"
                 placeholder="Enter Question..."
                 value={cleanString(editedQuestionTitle)}
                 onChange={event =>
@@ -110,23 +104,20 @@ export default class QuestionBlock extends Component {
           )}
           {!onEdit &&
             !deleted && (
-              <Button
-                className="col-sm-2 btn btn-danger btn-sm"
-                onClick={() => this.props.onRemove(questionIndex)}
-              >
+              <Button danger onClick={() => this.props.onRemove(questionIndex)}>
                 Remove
               </Button>
             )}
           {deleted && (
             <Button
-              className="col-sm-2 btn btn-default btn-sm"
+              transparent
               onClick={() => this.props.onUndoRemove(questionIndex)}
             >
               Undo
             </Button>
           )}
         </div>
-        <div className="list-group" style={{ opacity: deleted && '0.2' }}>
+        <div style={{ opacity: deleted && '0.2' }}>
           {choiceIndices.map(
             (choiceIndex, index) =>
               !onEdit ? (
@@ -156,10 +147,10 @@ export default class QuestionBlock extends Component {
               )
           )}
         </div>
-        <div className="text-center">
+        <div>
           {!onEdit ? (
             <Button
-              className="btn btn-info"
+              info
               onClick={() => this.props.onEditStart(questionIndex)}
               style={{ opacity: deleted && '0.2' }}
               disabled={deleted && true}
@@ -169,13 +160,13 @@ export default class QuestionBlock extends Component {
           ) : (
             <div>
               <Button
-                className="btn btn-default"
+                transparent
                 onClick={() => this.onEditCancel(questionIndex)}
               >
                 Cancel
               </Button>
               <Button
-                className="btn btn-primary"
+                primary
                 style={{ marginLeft: '0.5em' }}
                 onClick={() => this.onEditDone(questionIndex)}
               >
@@ -188,7 +179,7 @@ export default class QuestionBlock extends Component {
     )
   }
 
-  onEditChoice(index, value) {
+  onEditChoice = (index, value) => {
     const newTitles = this.state.editedChoiceTitles
     newTitles[index] = value
     this.setState({
@@ -196,7 +187,7 @@ export default class QuestionBlock extends Component {
     })
   }
 
-  onEditCancel(questionIndex) {
+  onEditCancel = questionIndex => {
     this.setState({
       editedChoiceTitles: this.props.choices.map(choice => {
         return choice.label
@@ -206,7 +197,7 @@ export default class QuestionBlock extends Component {
     this.props.onEditCancel(questionIndex)
   }
 
-  onEditDone(questionIndex) {
+  onEditDone = questionIndex => {
     this.props.onEditDone({
       questionIndex,
       newChoicesArray: this.props.choices.map((choice, index) => ({
@@ -217,7 +208,7 @@ export default class QuestionBlock extends Component {
     })
   }
 
-  onMove({ sourceId, targetId }) {
+  onMove = ({ sourceId, targetId }) => {
     const newIndices = this.state.choiceIndices
     const sourceIndex = newIndices.indexOf(sourceId)
     const targetIndex = newIndices.indexOf(targetId)
@@ -226,7 +217,7 @@ export default class QuestionBlock extends Component {
     this.setState({ choiceIndices: newIndices })
   }
 
-  onDrop() {
+  onDrop = () => {
     const { questionIndex } = this.props
     const { choiceIndices } = this.state
     this.props.onRearrange({ questionIndex, choiceIndices })

@@ -41,7 +41,7 @@ export default class SectionPanel extends Component {
     const { loading } = this.state
     return (
       <div className={sectionPanel} style={style}>
-        <div className="header">
+        <header>
           <div style={{ gridArea: 'title' }}>{title}</div>
           {onSearch && (
             <SearchInput
@@ -59,8 +59,8 @@ export default class SectionPanel extends Component {
           <div style={{ gridArea: 'buttons', justifySelf: 'end' }}>
             {button}
           </div>
-        </div>
-        <div className="body">
+        </header>
+        <main>
           {this.renderEmptyMessage()}
           {children}
           {loadMoreButtonShown &&
@@ -76,7 +76,7 @@ export default class SectionPanel extends Component {
                 </Button>
               </div>
             )}
-        </div>
+        </main>
       </div>
     )
   }
@@ -110,9 +110,14 @@ export default class SectionPanel extends Component {
             style={{
               fontSize: '3rem',
               fontWeight: 'bold',
-              padding: '2rem 0',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              position: 'absolute',
               display: 'flex',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
           >
             {searchQuery

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import YouTube from 'react-youtube'
 import Loading from 'components/Loading'
-import { borderRadius, Color, innerBorderRadius } from 'constants/css'
+import { Color } from 'constants/css'
 import { connect } from 'react-redux'
 import { auth } from 'redux/actions/constants'
 import {
@@ -15,6 +15,7 @@ import request from 'axios'
 import StarMark from 'components/StarMark'
 import { URL } from 'constants/URL'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import ProgressBar from 'components/ProgressBar'
 import { css } from 'emotion'
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
@@ -248,31 +249,32 @@ class VideoPlayer extends Component {
             }
           }}
         >
-          {!minimized && !playing && (
-            <Fragment>
-              <img
-                alt=""
-                src={imageUrl}
-                className={css`
-                  position: absolute;
-                  width: 100%;
-                  height: 100%;
-                  top: 0;
-                  right: 0;
-                  left: 0;
-                  bottom: 0;
-                `}
-              />
-              {isStarred && (
-                <StarMark
-                  style={{
-                    top: '1rem',
-                    left: '1rem'
-                  }}
+          {!minimized &&
+            !playing && (
+              <Fragment>
+                <img
+                  alt=""
+                  src={imageUrl}
+                  className={css`
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    right: 0;
+                    left: 0;
+                    bottom: 0;
+                  `}
                 />
-              )}
-            </Fragment>
-          )}
+                {isStarred && (
+                  <StarMark
+                    style={{
+                      top: '1rem',
+                      left: '1rem'
+                    }}
+                  />
+                )}
+              </Fragment>
+            )}
           {!onEdit &&
             playing && (
               <YouTube
@@ -331,61 +333,19 @@ class VideoPlayer extends Component {
         </div>
         {isStarred &&
           !!userId && (
-            <div
-              className={css`
-                border: 1px solid ${Color.borderGray()};
-                border-radius: ${borderRadius};
-                height: 2.2rem;
-                line-height: 1rem;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                section {
-                  margin-left: 0;
-                  transition: width 0.5s;
-                  border: 1px solid
-                    ${justEarned
-                      ? Color.green()
-                      : xpEarned ? Color.lightBlue() : Color.blue()};
-                  border-top-left-radius: ${innerBorderRadius};
-                  border-bottom-left-radius: ${innerBorderRadius};
-                  border-top-right-radius: ${progress >= 100
-                    ? innerBorderRadius
-                    : 0};
-                  border-bottom-right-radius: ${progress >= 100
-                    ? innerBorderRadius
-                    : 0};
-                }
-              `}
-              style={{ marginTop: '1rem' }}
-            >
-              <section
-                style={{
-                  background: justEarned
-                    ? Color.green()
-                    : xpEarned ? Color.lightBlue() : Color.blue(),
-                  width: `${progress}%`,
-                  height: '100%',
-                  display: 'flex',
-                  opacity: progress > 0 ? 1 : 0,
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <span
-                  style={{
-                    color: '#fff',
-                    fontSize: '1.2rem'
-                  }}
-                >
-                  {justEarned
-                    ? 'Twinkle XP earned!'
-                    : xpEarned
-                      ? 'You have already earned this XP'
-                      : `${progress}%`}
-                </span>
-              </section>
-            </div>
+            <ProgressBar
+              progress={progress}
+              color={
+                justEarned
+                  ? Color.green()
+                  : xpEarned ? Color.lightBlue() : Color.blue()
+              }
+              text={
+                justEarned
+                  ? 'Twinkle XP earned!'
+                  : xpEarned ? 'You have already earned this XP' : ''
+              }
+            />
           )}
       </ErrorBoundary>
     )

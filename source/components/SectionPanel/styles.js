@@ -7,7 +7,7 @@ export const sectionPanel = css`
   background: #fff;
   border-radius: ${borderRadius};
   margin-bottom: 1rem;
-  .header {
+  > header {
     display: grid;
     grid-template-areas: "title search buttons";
     grid-template-columns: "fr fr fr";
@@ -20,7 +20,7 @@ export const sectionPanel = css`
     align-items: center;
     margin-bottom: 1rem;
   }
-  .body {
+  > main {
     position: relative;
     padding: 1rem;
     width: 100%;
