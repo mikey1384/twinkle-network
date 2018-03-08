@@ -108,7 +108,6 @@ class Stories extends Component {
       username
     } = this.props
     const { loadingMore } = this.state
-
     return (
       <div
         ref={ref => {
@@ -118,7 +117,9 @@ class Stories extends Component {
       >
         {this.renderFilterBar()}
         <InputPanel />
-        <div style={{ position: 'relative', minHeight: '10rem' }}>
+        <div
+          style={{ position: 'relative', width: '100%', minHeight: '10rem' }}
+        >
           {!loaded && <Loading text="Loading Feeds..." />}
           {loaded &&
             feeds.length === 0 && (
@@ -131,7 +132,11 @@ class Stories extends Component {
                   height: '15rem'
                 }}
               >
-                <h1>{username ? `Hello ${username}, be the first to post something` : 'Hi there!'}</h1>
+                <h1 style={{ textAlign: 'center' }}>
+                  {username
+                    ? `Hello ${username}, be the first to post something`
+                    : 'Hi there!'}
+                </h1>
               </div>
             )}
           {loaded &&
@@ -140,7 +145,7 @@ class Stories extends Component {
                 {feeds.map(feed => {
                   return (
                     <ContentPanel
-                      key={`${feed.id}`}
+                      key={feed.id}
                       selfLoadingDisabled={this.clearingFeeds}
                       contentObj={feed}
                       methodObj={{
@@ -196,7 +201,7 @@ class Stories extends Component {
   }
 
   onScroll = () => {
-    const { chatMode, feeds } = this.props
+    const { chatMode, feeds, loadMoreButton } = this.props
     if (
       document.getElementById('react-view').scrollHeight > this.scrollHeight
     ) {
@@ -210,7 +215,8 @@ class Stories extends Component {
         () => {
           if (
             this.state.scrollPosition >=
-            this.Container.offsetHeight - window.innerHeight - 500
+              this.Container.offsetHeight - window.innerHeight - 400 &&
+            loadMoreButton
           ) {
             this.loadMoreFeeds()
           }

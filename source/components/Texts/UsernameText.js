@@ -42,7 +42,7 @@ class UsernameText extends Component {
           {user.name || '(Deleted)'}
         </span>
         {menuShown && (
-          <DropdownList>
+          <DropdownList style={{ width: '100%' }}>
             <li onClick={() => window.open(`/users/${user.name}`)}>
               <a
                 href={`/users/${user.name}`}

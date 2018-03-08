@@ -8,6 +8,9 @@ export const container = css`
   border: 1px solid ${Color.borderGray()};
   border-radius: ${borderRadius};
   position: relative;
+  &:last-child {
+    margin-bottom: 0;
+  }
   .heading {
     padding: 0.5rem 1.5rem 1rem 1.5rem;
     display: flex;

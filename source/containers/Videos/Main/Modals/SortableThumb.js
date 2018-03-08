@@ -6,6 +6,7 @@ import { cleanString } from 'helpers/stringHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
 import VideoThumbImage from 'components/VideoThumbImage'
+import { Color } from 'constants/css'
 
 const thumbSource = {
   beginDrag(props) {
@@ -62,7 +63,8 @@ class SortableThumb extends Component {
             opacity: isDragging ? 0.5 : 1,
             width: '16%',
             margin: '0.3%',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            boxShadow: `0 0 5px ${Color.darkGray()}`
           }}
         >
           <div
@@ -87,7 +89,8 @@ class SortableThumb extends Component {
               className="caption"
               style={{
                 height: '8rem',
-                width: '100%'
+                width: '100%',
+                padding: '0 1rem'
               }}
             >
               <div>

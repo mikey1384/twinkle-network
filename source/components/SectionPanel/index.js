@@ -3,8 +3,8 @@ import React, { Component } from 'react'
 import Button from 'components/Button'
 import Loading from 'components/Loading'
 import SearchInput from 'components/Texts/SearchInput'
-import { sectionPanel } from './Styles'
-import { Color } from 'constants/css'
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
+import { css } from 'emotion'
 
 export default class SectionPanel extends Component {
   static propTypes = {
@@ -40,7 +40,43 @@ export default class SectionPanel extends Component {
     } = this.props
     const { loading } = this.state
     return (
-      <div className={sectionPanel} style={style}>
+      <div
+        className={css`
+          border: 1px solid ${Color.borderGray()};
+          width: 100%;
+          background: #fff;
+          border-radius: ${borderRadius};
+          margin-bottom: 1rem;
+          > header {
+            display: grid;
+            width: 100%;
+            grid-template-areas: 'title search buttons';
+            grid-template-columns: auto ${onSearch ? '40%' : 'auto'} auto;
+            background: ${Color.logoBlue()};
+            color: #fff;
+            border-top-left-radius: ${borderRadius};
+            border-top-right-radius: ${borderRadius};
+            padding: 1rem;
+            font-size: 2.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
+          }
+          > main {
+            position: relative;
+            padding: 1rem;
+            width: 100%;
+            min-height: 15rem;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            border-radius: 0;
+            border: 0;
+            > header {
+              border-radius: 0;
+            }
+          }
+        `}
+        style={style}
+      >
         <header>
           <div style={{ gridArea: 'title' }}>{title}</div>
           {onSearch && (

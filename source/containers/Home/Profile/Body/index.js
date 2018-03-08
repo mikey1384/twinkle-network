@@ -294,12 +294,13 @@ class Body extends Component {
             feeds.length === 0 && (
               <div
                 style={{
-                  textAlign: 'center',
-                  fontSize: '2rem',
-                  padding: '2rem'
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '15rem'
                 }}
               >
-                {this.onNoFeed(username)}
+                <h2>{this.onNoFeed(username)}</h2>
               </div>
             )}
         </div>

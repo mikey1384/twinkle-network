@@ -14,6 +14,7 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers'
+import Banner from 'components/Banner'
 import { PanelStyle } from './Styles'
 
 class ContentInput extends Component {
@@ -44,6 +45,11 @@ class ContentInput extends Component {
     return (
       <div className={PanelStyle}>
         <p>Share interesting videos or web links</p>
+        {urlError && (
+          <Banner love style={{ marginBottom: '1rem' }}>
+            {urlError}
+          </Banner>
+        )}
         <Input
           inputRef={ref => {
             this.UrlField = ref
@@ -54,17 +60,6 @@ class ContentInput extends Component {
           placeholder="Copy the URL address of a website or a YouTube video and paste it here"
           type="text"
         />
-        {urlError && (
-          <span
-            className="help-block"
-            style={{
-              color: 'red',
-              marginBottom: '0px'
-            }}
-          >
-            {urlError}
-          </span>
-        )}
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div>
             <small>YouTube Video:&nbsp;&nbsp;&nbsp;</small>

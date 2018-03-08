@@ -216,18 +216,13 @@ class AddPlaylistModal extends Component {
     const currentSection = this.state.section
     switch (currentSection) {
       case 0:
-        return <h4>Add Playlist</h4>
+        return 'Add Playlist'
       case 1:
-        return <h4>Add videos to your playlist</h4>
+        return 'Add videos to your playlist'
       case 2:
-        return (
-          <h4>
-            Click and drag videos into the order that you would like them to
-            appear
-          </h4>
-        )
+        return 'Click and drag videos into the order that you would like them to appear'
       default:
-        return <h4>TBD</h4>
+        return 'Error'
     }
   }
 

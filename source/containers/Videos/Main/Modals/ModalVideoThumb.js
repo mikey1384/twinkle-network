@@ -30,7 +30,8 @@ export default class VideoThumb extends Component {
         style={{
           width: '16%',
           margin: '0.3%',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          boxShadow: `0 0 5px ${selected ? Color.gold() : Color.darkGray()}`
         }}
       >
         <div
@@ -60,7 +61,8 @@ export default class VideoThumb extends Component {
           <div
             style={{
               height: '8rem',
-              width: '100%'
+              width: '100%',
+              padding: '0 1rem'
             }}
           >
             <div>

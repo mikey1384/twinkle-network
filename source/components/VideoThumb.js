@@ -16,6 +16,7 @@ import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import VideoThumbImage from 'components/VideoThumbImage'
+import { Color } from 'constants/css'
 import { css } from 'emotion'
 
 class VideoThumb extends Component {
@@ -67,10 +68,10 @@ class VideoThumb extends Component {
             flex-direction: column;
             align-items: flex-end;
             position: relative;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
+            box-shadow: 0 0 5px ${Color.darkGray()};
             p {
               font-weight: bold;
-              margin-top: 1rem;
             }
           `}
         >
@@ -102,12 +103,15 @@ class VideoThumb extends Component {
           <div
             style={{
               height: '8rem',
-              width: '100%'
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-around',
+              padding: '0 1rem'
             }}
           >
             {onEdit ? (
               <div
-                className="input-group col-xs-12"
                 style={{
                   paddingTop: '0.5rem',
                   paddingBottom: '0.5rem'
@@ -121,11 +125,7 @@ class VideoThumb extends Component {
                 />
               </div>
             ) : (
-              <div
-                style={{
-                  width: '100%'
-                }}
-              >
+              <div style={{ width: '100%' }}>
                 <p
                   ref={ref => {
                     this.thumbLabel = ref
@@ -152,24 +152,20 @@ class VideoThumb extends Component {
                 />
               </div>
             )}
-            {!onEdit && (
-              <small
-                style={{
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden'
-                }}
-              >
-                Added by <UsernameText user={user} />
-              </small>
-            )}
-            {video.numLikes > 0 && (
-              <small style={{ float: 'right' }}>
-                <span className="glyphicon glyphicon-thumbs-up" />&times;{
-                  video.numLikes
-                }
-              </small>
-            )}
+            <div style={{ width: '100%', fontSize: '1.2rem' }}>
+              {!onEdit && (
+                <div>
+                  Added by <UsernameText user={user} />
+                </div>
+              )}
+              {video.numLikes > 0 && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <span className="glyphicon glyphicon-thumbs-up" />&times;{
+                    video.numLikes
+                  }
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {confirmModalShown && (
