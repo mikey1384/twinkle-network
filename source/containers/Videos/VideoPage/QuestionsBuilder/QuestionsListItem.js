@@ -7,20 +7,19 @@ import { Color } from 'constants/css'
 const listItemSource = {
   beginDrag(props) {
     return {
-      id: props.item.id
+      questionId: props.questionId
     }
   },
   isDragging(props, monitor) {
-    return props.item.id === monitor.getItem().id
+    return props.questionId === monitor.getItem().questionId
   }
 }
 
 const listItemTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.item.id
+    const targetId = targetProps.questionId
     const sourceProps = monitor.getItem()
-    const sourceId = sourceProps.id
-
+    const sourceId = sourceProps.questionId
     if (sourceId !== targetId) {
       targetProps.onMove({ sourceId, targetId })
     }
@@ -31,32 +30,41 @@ QuestionsListItem.propTypes = {
   connectDragSource: PropTypes.func,
   connectDropTarget: PropTypes.func,
   isDragging: PropTypes.bool,
-  item: PropTypes.object
+  item: PropTypes.object,
+  questionId: PropTypes.number
 }
 function QuestionsListItem({
   connectDragSource,
   connectDropTarget,
   isDragging,
-  item
+  item,
+  questionId
 }) {
   return connectDragSource(
     connectDropTarget(
       <li
-        className="list-group-item"
         style={{
           opacity: isDragging ? 0 : 1,
-          color: (!item.label || item.deleted) && '#999'
+          color: (!item.title || item.deleted) && '#999',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          cursor: 'ns-resize'
         }}
       >
-        {item.label
-          ? `${item.label} ${item.deleted ? '(removed)' : ''}`
-          : `Untitled Question ${item.id + 1} ${
-              item.deleted ? '(removed)' : ''
-            }`}
-        <span
-          className="glyphicon glyphicon-align-justify pull-right"
-          style={{ color: Color.gray() }}
-        />
+        <div>
+          {item.title
+            ? `${item.title} ${item.deleted ? '(removed)' : ''}`
+            : `Untitled Question ${questionId + 1} ${
+                item.deleted ? '(removed)' : ''
+              }`}
+        </div>
+        <div>
+          <span
+            className="glyphicon glyphicon-align-justify"
+            style={{ color: Color.gray() }}
+          />
+        </div>
       </li>
     )
   )

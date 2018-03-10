@@ -52,20 +52,16 @@ class PlaylistCarousel extends Component {
       playlistModalShown: false,
       numSlides
     }
-    this.onEditTitle = this.onEditTitle.bind(this)
-    this.onDeleteClick = this.onDeleteClick.bind(this)
-    this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
-    this.onEditTitleCancel = this.onEditTitleCancel.bind(this)
-    this.onDeleteConfirm = this.onDeleteConfirm.bind(this)
-    this.onResize = this.onResize.bind(this)
   }
 
   componentDidMount() {
+    this.mounted = true
     addEvent(window, 'resize', this.onResize)
   }
 
   componentWillUnmount() {
     unbindListeners.call(this)
+    this.mounted = false
     function unbindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
         removeEvent(window, 'resize', this.onResize)
@@ -119,11 +115,18 @@ class PlaylistCarousel extends Component {
     ]
 
     return (
-      <div>
+      <div
+        className={css`
+          margin-bottom: 1.5rem;
+          &:last-child {
+            margin-bottom: 0;
+          }
+        `}
+      >
         <div
           className={css`
             position: relative;
-            padding-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
             h1 {
               font-size: 2.5rem;
               line-height: 3rem;
@@ -210,7 +213,7 @@ class PlaylistCarousel extends Component {
     )
   }
 
-  renderThumbs() {
+  renderThumbs = () => {
     const { playlist, clickSafe, id: playlistId } = this.props
     return playlist.map((thumb, index) => {
       return (
@@ -233,29 +236,30 @@ class PlaylistCarousel extends Component {
     })
   }
 
-  onEditTitle() {
+  onEditTitle = () => {
     this.setState({ onEdit: true })
   }
 
-  onEditedTitleSubmit(title) {
+  onEditedTitleSubmit = title => {
     const { editPlaylistTitleAsync, id: playlistId, arrayIndex } = this.props
     editPlaylistTitleAsync({ title, playlistId }, arrayIndex, this)
   }
 
-  onEditTitleCancel() {
+  onEditTitleCancel = () => {
     this.setState({ onEdit: false })
   }
 
-  onDeleteClick() {
+  onDeleteClick = () => {
     this.setState({ deleteConfirmModalShown: true })
   }
 
-  onDeleteConfirm() {
+  onDeleteConfirm = async() => {
     const { deletePlaylistAsync, id } = this.props
-    deletePlaylistAsync(id, this)
+    this.setState({ deleteConfirmModalShown: false })
+    deletePlaylistAsync(id)
   }
 
-  onResize() {
+  onResize = () => {
     if (ExecutionEnvironment.canUseDOM) {
       this.setState({
         numSlides:

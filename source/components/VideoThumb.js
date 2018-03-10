@@ -70,6 +70,8 @@ class VideoThumb extends Component {
             position: relative;
             font-size: 1.5rem;
             box-shadow: 0 0 5px ${Color.darkGray()};
+            background: ${Color.whiteGray()};
+            border-radius: 1px;
             p {
               font-weight: bold;
             }

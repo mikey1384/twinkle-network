@@ -99,26 +99,18 @@ export const changePlaylistVideosAsync = (
       handleError(error, dispatch)
     })
 
-export const deletePlaylist = data => ({
-  type: 'DELETE_PLAYLIST',
-  data
-})
-
-export const deletePlaylistAsync = (playlistId, sender) => dispatch =>
-  request
-    .delete(`${API_URL}?playlistId=${playlistId}`, auth())
-    .then(response => {
-      const { data } = response
-      if (data.success) {
-        dispatch(deletePlaylist(playlistId))
-        sender.setState({ deleteConfirmModalShown: false })
-      }
-      return
+export const deletePlaylistAsync = playlistId => async dispatch => {
+  try {
+    await request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
+    dispatch({
+      type: 'DELETE_PLAYLIST',
+      data: playlistId
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const getPinnedPlaylistsAsync = () => dispatch =>
   request

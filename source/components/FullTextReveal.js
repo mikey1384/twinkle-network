@@ -13,7 +13,7 @@ export default function FullTextReveal({ style, show, text, width = '500px' }) {
     <div
       style={{
         background: '#fff',
-        boxShadow: `0 0 3px ${Color.black()}`,
+        boxShadow: `0 0 1px ${Color.black()}`,
         position: 'absolute',
         zIndex: '10',
         padding: '1rem',

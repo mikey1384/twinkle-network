@@ -4,13 +4,18 @@ import ChoiceListItem from './ChoiceListItem'
 import EditChoiceListItem from './EditChoiceListItem'
 import Textarea from 'components/Texts/Textarea'
 import Button from 'components/Button'
-import { cleanString, processedString } from 'helpers/stringHelpers'
+import { cleanString } from 'helpers/stringHelpers'
+import { borderRadius, innerBorderRadius, Color } from 'constants/css'
+import Banner from 'components/Banner'
+import { css } from 'emotion'
 
 export default class QuestionBlock extends Component {
   static propTypes = {
     choices: PropTypes.array.isRequired,
     deleted: PropTypes.bool.isRequired,
-    inputType: PropTypes.string.isRequired,
+    errorMessage: PropTypes.string,
+    id: PropTypes.number.isRequired,
+    innerRef: PropTypes.func.isRequired,
     onEdit: PropTypes.bool.isRequired,
     onEditCancel: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
@@ -18,50 +23,53 @@ export default class QuestionBlock extends Component {
     onRearrange: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
     onSelectChoice: PropTypes.func.isRequired,
+    hideErrorMsg: PropTypes.func.isRequired,
     onUndoRemove: PropTypes.func.isRequired,
     questionIndex: PropTypes.number.isRequired,
     title: PropTypes.string
   }
 
   state = {
-    editedChoiceTitles: [],
     editedQuestionTitle: '',
-    choiceIndices: []
+    choices: {},
+    choiceIds: []
   }
 
   componentWillMount() {
     const { title, choices } = this.props
     this.setState({
-      editedChoiceTitles: choices.map(choice => choice.label),
       editedQuestionTitle: title,
-      choiceIndices: choices.map(choice => choice.id)
+      choices: choices.reduce((result, choice) => {
+        return { ...result, [choice.id]: choice }
+      }, {}),
+      choiceIds: choices.map(choice => choice.id)
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.choices !== nextProps.choices) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.choices !== this.props.choices) {
       this.setState({
-        editedQuestionTitle: nextProps.title,
-        choiceIndices: nextProps.choices.map(choice => choice.id),
-        editedChoiceTitles: nextProps.choices.map(choice => choice.label)
+        choices: this.props.choices.reduce((result, choice) => {
+          return { ...result, [choice.id]: choice }
+        }, {}),
+        choiceIds: this.props.choices.map(choice => choice.id)
       })
     }
   }
 
   render() {
+    const { choices, choiceIds, editedQuestionTitle } = this.state
     const {
-      editedChoiceTitles,
-      editedQuestionTitle,
-      choiceIndices
-    } = this.state
-    const {
-      inputType,
+      errorMessage,
+      id,
+      innerRef,
       onSelectChoice,
       questionIndex,
+      onRearrange,
       onEdit,
       deleted,
       title,
-      choices
+      hideErrorMsg
     } = this.props
     const choicePlaceHolder = [
       'Choice A',
@@ -71,91 +79,111 @@ export default class QuestionBlock extends Component {
       'Choice E (Optional)'
     ]
     return (
-      <div>
-        <div>
-          {!onEdit ? (
-            <h4
-              style={{
-                opacity: deleted && '0.2',
-                paddingLeft: '0px',
-                color: !title && '#999'
-              }}
-            >
-              <span
-                dangerouslySetInnerHTML={{ __html: title || 'Question Title' }}
-              />
-            </h4>
-          ) : (
-            <form
-              onSubmit={event => event.preventDefault()}
-              style={{
-                marginBottom: '1em'
-              }}
-            >
+      <div
+        className={css`
+          margin-top: ${questionIndex === 0 ? 0 : '2rem'};
+        `}
+      >
+        <Banner
+          danger
+          innerRef={innerRef}
+          style={{
+            width: '100%',
+            display: errorMessage ? 'block' : 'none',
+            marginBottom: '1rem'
+          }}
+        >
+          {errorMessage}
+        </Banner>
+        <div className={this.Styles.content}>
+          <div
+            style={{ width: onEdit ? '100%' : 'auto', position: 'relative' }}
+          >
+            {!onEdit ? (
+              <h2
+                style={{
+                  opacity: deleted && '0.2',
+                  color: !title && '#999'
+                }}
+              >
+                {title || 'Question Title'}
+              </h2>
+            ) : (
               <Textarea
+                autoFocus
                 type="text"
                 placeholder="Enter Question..."
                 value={cleanString(editedQuestionTitle)}
-                onChange={event =>
+                onChange={event => {
+                  hideErrorMsg(id)
                   this.setState({ editedQuestionTitle: event.target.value })
-                }
+                }}
               />
-            </form>
-          )}
-          {!onEdit &&
-            !deleted && (
-              <Button danger onClick={() => this.props.onRemove(questionIndex)}>
-                Remove
+            )}
+          </div>
+          <div>
+            {!onEdit &&
+              !deleted && (
+                <Button love filled onClick={() => this.props.onRemove(id)}>
+                  Remove
+                </Button>
+              )}
+            {deleted && (
+              <Button snow onClick={() => this.props.onUndoRemove(id)}>
+                Undo
               </Button>
             )}
-          {deleted && (
-            <Button
-              transparent
-              onClick={() => this.props.onUndoRemove(questionIndex)}
-            >
-              Undo
-            </Button>
-          )}
+          </div>
         </div>
-        <div style={{ opacity: deleted && '0.2' }}>
-          {choiceIndices.map(
-            (choiceIndex, index) =>
-              !onEdit ? (
-                <ChoiceListItem
-                  key={index}
-                  placeholder={choicePlaceHolder[index]}
-                  questionIndex={questionIndex}
-                  id={choiceIndex}
-                  onSelect={() => onSelectChoice(questionIndex, index)}
-                  label={determineLabel(choices, choiceIndex)}
-                  inputType={inputType}
-                  checked={determineChecked(choices, choiceIndex)}
-                  onMove={this.onMove}
-                  onDrop={this.onDrop}
-                  checkDisabled={deleted}
-                />
-              ) : (
-                <EditChoiceListItem
-                  key={index}
-                  placeholder={choicePlaceHolder[index]}
-                  onSelect={() => onSelectChoice(questionIndex, index)}
-                  checked={determineChecked(choices, choiceIndex)}
-                  index={index}
-                  text={editedChoiceTitles[index]}
-                  onEdit={this.onEditChoice}
-                />
-              )
-          )}
+        <div
+          className={this.Styles.choiceList}
+          style={{ opacity: deleted && '0.2' }}
+        >
+          {choiceIds.map((choiceId, index) => {
+            return onEdit ? (
+              <EditChoiceListItem
+                key={choiceId}
+                checked={choices[choiceId].checked}
+                choiceId={choiceId}
+                onEdit={this.onEditChoice}
+                onSelect={() => this.onSelectChoice(choiceId)}
+                placeholder={choicePlaceHolder[index]}
+                text={choices[choiceId].label}
+              />
+            ) : (
+              <ChoiceListItem
+                key={choiceId}
+                id={choiceId}
+                questionIndex={questionIndex}
+                onDrop={() =>
+                  onRearrange({ questionIndex, choiceIds, choices })
+                }
+                onMove={this.onMove}
+                checked={choices[choiceId].checked}
+                onSelect={() => onSelectChoice({ questionId: id, choiceId })}
+                label={choices[choiceId].label}
+                placeholder={choicePlaceHolder[index]}
+                checkDisabled={deleted}
+              />
+            )
+          })}
         </div>
-        <div>
+        <div
+          className={css`
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+          `}
+        >
           {!onEdit ? (
             <Button
-              info
+              transparent
               onClick={() => this.props.onEditStart(questionIndex)}
-              style={{ opacity: deleted && '0.2' }}
+              style={{ opacity: deleted && '0.2', fontSize: '2rem' }}
               disabled={deleted && true}
             >
-              Edit
+              <span className="glyphicon glyphicon-pencil" />&nbsp;&nbsp;Edit
+              Questions
             </Button>
           ) : (
             <div>
@@ -167,8 +195,8 @@ export default class QuestionBlock extends Component {
               </Button>
               <Button
                 primary
-                style={{ marginLeft: '0.5em' }}
-                onClick={() => this.onEditDone(questionIndex)}
+                style={{ marginLeft: '1rem' }}
+                onClick={this.onEditDone}
               >
                 Done
               </Button>
@@ -179,67 +207,125 @@ export default class QuestionBlock extends Component {
     )
   }
 
-  onEditChoice = (index, value) => {
-    const newTitles = this.state.editedChoiceTitles
-    newTitles[index] = value
-    this.setState({
-      editedChoiceTitles: newTitles
-    })
+  onEditChoice = ({ choiceId, text }) => {
+    const { id, hideErrorMsg } = this.props
+    hideErrorMsg(id)
+    this.setState(state => ({
+      choices: {
+        ...state.choices,
+        [choiceId]: {
+          ...state.choices[choiceId],
+          label: text
+        }
+      }
+    }))
   }
 
   onEditCancel = questionIndex => {
+    const { id, hideErrorMsg } = this.props
+    hideErrorMsg(id)
     this.setState({
-      editedChoiceTitles: this.props.choices.map(choice => {
-        return choice.label
-      }),
+      editedChoiceTitles: this.props.choices.map(choice => choice.label),
       editedQuestionTitle: this.props.title
     })
     this.props.onEditCancel(questionIndex)
   }
 
-  onEditDone = questionIndex => {
-    this.props.onEditDone({
-      questionIndex,
-      newChoicesArray: this.props.choices.map((choice, index) => ({
-        ...choice,
-        label: processedString(this.state.editedChoiceTitles[index])
-      })),
-      newTitle: processedString(this.state.editedQuestionTitle)
-    })
+  onEditDone = () => {
+    const { id, hideErrorMsg, onEditDone } = this.props
+    const { choices, choiceIds, editedQuestionTitle } = this.state
+    hideErrorMsg(id)
+    onEditDone({ id, choices, choiceIds, editedQuestionTitle })
+  }
+
+  onSelectChoice = choiceId => {
+    const { id, hideErrorMsg } = this.props
+    hideErrorMsg(id)
+    this.setState(state => ({
+      choices: this.props.choices.reduce((result, choice) => {
+        return {
+          ...result,
+          [choice.id]: {
+            ...state.choices[choice.id],
+            checked: choice.id === choiceId
+          }
+        }
+      }, {})
+    }))
   }
 
   onMove = ({ sourceId, targetId }) => {
-    const newIndices = this.state.choiceIndices
+    const newIndices = [...this.state.choiceIds]
     const sourceIndex = newIndices.indexOf(sourceId)
     const targetIndex = newIndices.indexOf(targetId)
     newIndices.splice(sourceIndex, 1)
     newIndices.splice(targetIndex, 0, sourceId)
-    this.setState({ choiceIndices: newIndices })
+    this.setState({ choiceIds: newIndices })
   }
 
-  onDrop = () => {
-    const { questionIndex } = this.props
-    const { choiceIndices } = this.state
-    this.props.onRearrange({ questionIndex, choiceIndices })
-  }
-}
-
-function determineLabel(choices, index) {
-  let label = ''
-  for (let i = 0; i < choices.length; i++) {
-    if (choices[i].id === index) {
-      label = choices[i].label
+  determineLabel = (choices, index) => {
+    let label = ''
+    for (let i = 0; i < choices.length; i++) {
+      if (choices[i].id === index) {
+        label = choices[i].label
+      }
     }
+    return label
   }
-  return label
+
+  Styles = {
+    content: css`
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    `,
+    choiceList: css`
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      > nav {
+        display: flex;
+        width: 100%;
+        border: 1px solid ${Color.borderGray()};
+        margin-bottom: -1px;
+        > main {
+          position: relative;
+          padding: 0.5rem;
+          display: flex;
+          align-items: center;
+          width: CALC(100% - 4.3rem);
+          > section {
+            padding: 0.5rem;
+            width: 100%;
+            line-height: 3rem;
+            display: flex;
+          }
+        }
+        > aside {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 4.5rem;
+          background: ${Color.inputBorderGray()};
+        }
+        &:first-child {
+          border-top-left-radius: ${borderRadius};
+          border-top-right-radius: ${borderRadius};
+          > aside {
+            border-top-right-radius: ${innerBorderRadius};
+          }
+        }
+        &:last-child {
+          border-bottom-left-radius: ${borderRadius};
+          border-bottom-right-radius: ${borderRadius};
+          > aside {
+            border-bottom-right-radius: ${innerBorderRadius};
+          }
+        }
+      }
+    `
+  }
 }
 
-function determineChecked(choices, index) {
-  let checked
-  for (let i = 0; i < choices.length; i++) {
-    if (choices[i].id === index) {
-      checked = choices[i].checked
-    }
-  }
-  return checked
-}

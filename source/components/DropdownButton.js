@@ -79,7 +79,7 @@ class DropdownButton extends Component {
     const { menuProps } = this.props
     return menuProps.map((prop, index) => {
       if (prop.separator) {
-        return <hr />
+        return <hr key={index} />
       }
       return (
         <li onClick={() => this.handleMenuClick(prop.onClick)} key={index}>

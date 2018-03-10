@@ -31,12 +31,14 @@ export default class VideoThumb extends Component {
           width: '16%',
           margin: '0.3%',
           cursor: 'pointer',
-          boxShadow: `0 0 5px ${selected ? Color.gold() : Color.darkGray()}`
+          boxShadow: `0 0 5px ${selected ? Color.gold() : Color.darkGray()}`,
+          border: selected && `0.5rem solid ${Color.gold()}`,
+          background: Color.whiteGray()
         }}
+        className="unselectable"
       >
         <div
           style={{
-            border: selected && `0.5rem solid ${Color.gold()}`,
             display: 'flex',
             width: '100%',
             flexDirection: 'column',

@@ -57,6 +57,7 @@ export default class ButtonGroup extends Component {
               }
               onClick={button.onClick}
               disabled={button.disabled}
+              filled={button.filled}
               {...{ [button.buttonClass]: true }}
             >
               {button.label}

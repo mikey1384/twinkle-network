@@ -40,7 +40,7 @@ export function getFrameStyles() {
     overflow: 'hidden',
     height: 'auto',
     margin: this.props.framePadding,
-    padding: 0,
+    padding: '5px',
     transform: 'translate3d(0, 0, 0)',
     WebkitTransform: 'translate3d(0, 0, 0)',
     msTransform: 'translate(0, 0)',

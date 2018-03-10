@@ -26,16 +26,15 @@ class ChatFeeds extends Component {
     return (
       <RoundList style={{ ...style, textAlign: 'center' }}>
         <li>
-          <p
+          <h3
             style={{
               fontWeight: 'bold',
               color: Color.green(),
-              marginBottom: '0px',
-              fontSize: '1.2em'
+              marginBottom: '0px'
             }}
           >
             {content}
-          </p>
+          </h3>
           {this.renderDetails()}
           <Button transparent onClick={() => openChat(2)}>
             <span className="glyphicon glyphicon-comment" />&nbsp;Join
@@ -62,18 +61,16 @@ class ChatFeeds extends Component {
       </Fragment>
     )
     const reloaderString = (
-      <Fragment>
+      <div style={{ marginTop: '0.5rem' }}>
         Brought back by{' '}
         <UsernameText user={{ id: reloadedBy, name: reloaderName }} />
         {reloadTimeStamp ? ` ${timeSince(reloadTimeStamp)}` : ''}
-      </Fragment>
+      </div>
     )
 
     return (
-      <div style={{ paddingBottom: '0.5rem' }}>
-        <div>
-          <small>{userId ? posterString : 'Join the conversation!'}</small>
-        </div>
+      <div style={{ margin: '0.5rem 0 1.5rem 0' }}>
+        <div>{userId ? posterString : 'Join the conversation!'}</div>
         {reloadedBy && reloaderString}
       </div>
     )

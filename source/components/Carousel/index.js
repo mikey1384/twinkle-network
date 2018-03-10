@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import assign from 'object-assign'
 import ExecutionEnvironment from 'exenv'
 import ButtonGroup from 'components/ButtonGroup'
 import NavButton from './NavButton'
@@ -154,7 +153,8 @@ class Carousel extends Component {
       showQuestionsBuilder,
       onShowAll,
       onFinish,
-      progressBar
+      progressBar,
+      style
     } = this.props
     const { slidesToScroll, currentSlide, slideCount } = this.state
     const slideFraction = (currentSlide + 1) / slideCount
@@ -166,7 +166,7 @@ class Carousel extends Component {
         ref={ref => {
           this.Slider = ref
         }}
-        style={assign(getSliderStyles.call(this), this.props.style || {})}
+        style={{ ...getSliderStyles.call(this), ...style }}
       >
         {this.props.userIsUploader && (
           <a

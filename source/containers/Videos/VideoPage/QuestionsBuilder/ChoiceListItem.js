@@ -17,11 +17,8 @@ const ListItemSource = {
       props.questionIndex === monitor.getItem().questionIndex
     )
   },
-  endDrag(props, monitor) {
-    const item = monitor.getItem()
-    if (props.id !== item.id && props.questionIndex === item.questionIndex) {
-      props.onDrop()
-    }
+  endDrag(props) {
+    props.onDrop()
   }
 }
 
@@ -64,35 +61,40 @@ function ChoiceListItem({
 }) {
   return connectDragSource(
     connectDropTarget(
-      <div
-        className="list-group-item container-fluid"
+      <nav
         style={{
           opacity: isDragging ? 0 : 1,
           cursor: !checkDisabled && 'ns-resize'
         }}
       >
-        <span
-          className="glyphicon glyphicon-align-justify pull-left col-sm-1"
-          style={{ paddingLeft: '0px', color: Color.menuGray }}
-        />
-        <span
-          className="col-sm-10"
-          style={{
-            paddingLeft: '0px',
-            color: !label && '#999'
-          }}
-          dangerouslySetInnerHTML={{ __html: label || placeholder }}
-        />
-        <span className="input pull-right">
+        <main>
+          <section>
+            <div style={{ width: '10%' }}>
+              <span
+                className="glyphicon glyphicon-align-justify"
+                style={{ color: Color.menuGray() }}
+              />
+            </div>
+            <div
+              style={{
+                width: '90%',
+                color: !label && '#999'
+              }}
+            >
+              {label || placeholder}
+            </div>
+          </section>
+        </main>
+        <aside>
           <input
-            type={inputType}
+            type="radio"
             onChange={onSelect}
             checked={checked}
             disabled={checkDisabled}
             style={{ cursor: !checkDisabled && 'pointer' }}
           />
-        </span>
-      </div>
+        </aside>
+      </nav>
     )
   )
 }
