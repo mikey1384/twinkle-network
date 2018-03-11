@@ -13,10 +13,6 @@ export const container = css`
   align-items: center;
   width: 100%;
   margin-bottom: 0px;
-  .logo {
-    font-size: 2rem;
-    padding: 1rem;
-  }
   .header-nav {
     display: flex;
     margin-right: 2rem;

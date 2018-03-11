@@ -44,15 +44,9 @@ class LinkPage extends Component {
     submitReply: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      confirmModalShown: false,
-      likersModalShown: false
-    }
-    this.onCommentSubmit = this.onCommentSubmit.bind(this)
-    this.onReplySubmit = this.onReplySubmit.bind(this)
-    this.loadMoreComments = this.loadMoreComments.bind(this)
+  state = {
+    confirmModalShown: false,
+    likersModalShown: false
   }
 
   componentDidMount() {
@@ -111,14 +105,13 @@ class LinkPage extends Component {
     if (!id) return <Loading text="Loading Page" />
     return (
       <div
-        className="col-md-6 col-md-offset-3"
         style={{
           backgroundColor: '#fff',
           paddingBottom: '2rem',
           marginBottom: '2rem'
         }}
       >
-        <div className="container-fluid">
+        <div>
           <Description
             uploaderId={uploader}
             uploaderName={uploaderName}
@@ -185,18 +178,18 @@ class LinkPage extends Component {
     )
   }
 
-  loadMoreComments() {
+  loadMoreComments = () => {
     const { fetchMoreComments, pageProps: { id, comments } } = this.props
     const lastCommentId = comments[comments.length - 1].id
     fetchMoreComments(id, lastCommentId)
   }
 
-  onCommentSubmit(content) {
+  onCommentSubmit = content => {
     const { submitComment, match: { params: { linkId } } } = this.props
     submitComment({ content, linkId })
   }
 
-  onReplySubmit(params) {
+  onReplySubmit = params => {
     const { submitReply } = this.props
     submitReply({
       ...params,

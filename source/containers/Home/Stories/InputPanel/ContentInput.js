@@ -22,21 +22,15 @@ class ContentInput extends Component {
     uploadContent: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      descriptionFieldsShown: false,
-      form: {
-        url: '',
-        checkedVideo: false,
-        title: '',
-        description: ''
-      },
-      urlError: null
-    }
-
-    this.onUrlFieldChange = this.onUrlFieldChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+  state = {
+    descriptionFieldsShown: false,
+    form: {
+      url: '',
+      checkedVideo: false,
+      title: '',
+      description: ''
+    },
+    urlError: null
   }
 
   render() {
@@ -61,9 +55,7 @@ class ContentInput extends Component {
           type="text"
         />
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div>
-            <small>YouTube Video:&nbsp;&nbsp;&nbsp;</small>
-          </div>
+          <small>YouTube Video:&nbsp;&nbsp;</small>
           <div>
             <input
               style={{ height: '2rem' }}
@@ -142,7 +134,7 @@ class ContentInput extends Component {
     )
   }
 
-  onSubmit(event) {
+  onSubmit = event => {
     const { uploadContent } = this.props
     const { form } = this.state
     const { url, checkedVideo } = form
@@ -178,7 +170,7 @@ class ContentInput extends Component {
     document.getElementById('react-view').scrollTop = 0
   }
 
-  onUrlFieldChange(url) {
+  onUrlFieldChange = url => {
     const { form } = this.state
     this.setState({
       form: {

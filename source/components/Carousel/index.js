@@ -204,13 +204,13 @@ class Carousel extends Component {
                     currentSlide + 1 === slideCount
                       ? onFinish
                       : nextSlide.bind(this),
-                  buttonClass: 'transparent'
+                  buttonClass: currentSlide + 1 === slideCount ? 'primary' : 'transparent'
                 }
               ]}
             />
             <ProgressBar
               progress={slideFraction * 100}
-              color={currentSlide + 1 === slideCount ? Color.green() : Color.logoBlue()}
+              color={currentSlide + 1 === slideCount ? Color.blue() : Color.logoBlue()}
               style={{ width: '100%' }}
               text={`${currentSlide + 1}/${slideCount}`}
             />

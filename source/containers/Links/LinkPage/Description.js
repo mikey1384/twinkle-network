@@ -39,11 +39,6 @@ export default class Description extends Component {
       onEdit: false,
       editDoneButtonDisabled: true
     }
-    this.determineEditButtonDoneStatus = this.determineEditButtonDoneStatus.bind(
-      this
-    )
-    this.onEditCancel = this.onEditCancel.bind(this)
-    this.onEditFinish = this.onEditFinish.bind(this)
   }
   render() {
     const {
@@ -86,19 +81,12 @@ export default class Description extends Component {
               ]}
             />
           )}
-        <div
-          className="row page-header text-center"
-          style={{ marginTop: '2.5rem' }}
-        >
+        <div>
           <div>
             {onEdit ? (
-              <form
-                className="col-sm-6 col-sm-offset-3"
-                onSubmit={event => event.preventDefault()}
-              >
+              <form onSubmit={event => event.preventDefault()}>
                 <Input
                   type="text"
-                  className="form-control"
                   placeholder="Enter Title..."
                   value={editedTitle}
                   onChange={text => {
@@ -120,10 +108,7 @@ export default class Description extends Component {
             )}
           </div>
           <div>
-            <small
-              className="col-xs-12"
-              style={{ paddingTop: onEdit && '1em' }}
-            >
+            <small>
               Added by{' '}
               <UsernameText user={{ id: uploaderId, name: uploaderName }} /> ({timeSince(
                 timeStamp
@@ -131,65 +116,48 @@ export default class Description extends Component {
             </small>
           </div>
         </div>
-        <div
-          style={{
-            fontSize: '1.7rem',
-            lineHeight: '3rem',
-            wordBreak: 'break-word'
-          }}
-        >
+        <div>
           {onEdit ? (
-            <div>
-              <form>
-                <Input
-                  className="form-control"
-                  placeholder="Enter URL"
-                  style={{ marginBottom: '1em' }}
-                  value={editedUrl}
-                  onChange={text => {
-                    this.setState({ editedUrl: text }, () => {
-                      this.determineEditButtonDoneStatus()
-                    })
-                  }}
-                />
-                <Textarea
-                  minRows={4}
-                  className="form-control"
-                  placeholder="Enter Description"
-                  value={editedDescription}
-                  onChange={event => {
+            <div style={{ wordBreak: 'break-word' }}>
+              <Input
+                placeholder="Enter URL"
+                style={{ marginBottom: '1em' }}
+                value={editedUrl}
+                onChange={text => {
+                  this.setState({ editedUrl: text }, () => {
                     this.determineEditButtonDoneStatus()
-                    this.setState(
-                      { editedDescription: event.target.value },
-                      () => {
-                        this.determineEditButtonDoneStatus()
-                      }
-                    )
-                  }}
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        editedDescription: addEmoji(event.target.value)
-                      })
-                    }
-                  }}
-                />
-              </form>
-              <div
-                className="row container-fluid text-center"
-                style={{
-                  marginTop: '1em'
+                  })
                 }}
-              >
+              />
+              <Textarea
+                minRows={4}
+                placeholder="Enter Description"
+                value={editedDescription}
+                onChange={event => {
+                  this.determineEditButtonDoneStatus()
+                  this.setState(
+                    { editedDescription: event.target.value },
+                    () => {
+                      this.determineEditButtonDoneStatus()
+                    }
+                  )
+                }}
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    this.setState({
+                      editedDescription: addEmoji(event.target.value)
+                    })
+                  }
+                }}
+              />
+              <div>
                 <Button
-                  className="btn btn-default btn-sm"
                   disabled={editDoneButtonDisabled}
                   onClick={this.onEditFinish}
                 >
                   Done
                 </Button>
                 <Button
-                  className="btn btn-default btn-sm"
                   style={{ marginLeft: '5px' }}
                   onClick={this.onEditCancel}
                 >
@@ -205,7 +173,7 @@ export default class Description extends Component {
     )
   }
 
-  determineEditButtonDoneStatus() {
+  determineEditButtonDoneStatus = () => {
     const urlIsEmpty = stringIsEmpty(this.state.editedUrl)
     const urlIsValid = isValidUrl(this.state.editedUrl)
     const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
@@ -221,7 +189,7 @@ export default class Description extends Component {
     this.setState({ editDoneButtonDisabled })
   }
 
-  onEditCancel() {
+  onEditCancel = () => {
     const { description, title, url } = this.props
     this.setState({
       editedUrl: url,
@@ -232,7 +200,7 @@ export default class Description extends Component {
     })
   }
 
-  onEditFinish() {
+  onEditFinish = () => {
     const { onEditDone, linkId } = this.props
     const { editedTitle, editedDescription, editedUrl } = this.state
     return onEditDone({

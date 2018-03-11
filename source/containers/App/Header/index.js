@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
+import Link from 'components/Link'
 import {
   openSigninModal,
   closeSigninModal,
@@ -29,6 +29,7 @@ import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import { container } from './Styles'
+import { css } from 'emotion'
 
 class Header extends Component {
   static propTypes = {
@@ -57,9 +58,8 @@ class Header extends Component {
 
   state = {
     notificationsMenuShown: false,
-    logoBlue: Color.logoBlue(),
-    logoGreen: Color.logoGreen(),
-    feedLoading: false
+    feedLoading: false,
+    logoHovered: false
   }
 
   componentDidMount() {
@@ -147,8 +147,8 @@ class Header extends Component {
       numChatUnreads,
       turnChatOff
     } = this.props
+    const { logoHovered } = this.state
 
-    const { logoBlue, logoGreen } = this.state
     return (
       <nav
         className={`unselectable ${container} ${chatMode && 'header chat'}`}
@@ -156,19 +156,110 @@ class Header extends Component {
           position: 'fixed'
         }}
       >
-        <div className="desktop logo">
-          <Link
-            style={{
-              cursor: 'pointer',
-              textDecoration: 'none',
-              fontWeight: 'bold'
-            }}
-            to="/"
-            onClick={this.onLogoClick}
+        <div
+          className={`desktop ${css`
+            position: relative;
+            margin-left: 1rem;
+            width: 12rem;
+            height: 2rem;
+            .logo-twin {
+              color: ${logoHovered ? '#fff' : Color.logoBlue()};
+            }
+            .logo-kle {
+              color: ${logoHovered ? '#fff' : Color.logoGreen()};
+            }
+          `}`}
+        >
+          <div
+            className={css`
+              font-size: 2rem;
+              font-weight: bold;
+              line-height: 1;
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              height: 100%;
+              width: 100%;
+              margin: 0;
+              text-decoration: none;
+              color: #fff;
+              &:before,
+              &:after {
+                display: block;
+                content: 'Twinkle';
+                position: absolute;
+                top: 0;
+                left: 0;
+                opacity: 0.8;
+              }
+              &:after {
+                color: #0ff;
+                z-index: -2;
+              }
+              &:before {
+                color: #f0f;
+                z-index: -1;
+              }
+              &:hover {
+                &:before {
+                  animation: glitch-left 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+                    both infinite;
+                }
+                &:after {
+                  animation: glitch-left-2 1s
+                    cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+                }
+              }
+            }
+            @keyframes glitch-left {
+              0% {
+                transform: translate(0);
+              }
+              33% {
+                transform: translate(-5px, 3px);
+              }
+              66% {
+                transform: translate(5px, -3px);
+              }
+              to {
+                transform: translate(0);
+              }
+            }
+            @keyframes glitch-left-2 {
+              0% {
+                transform: translate(0);
+              }
+              33% {
+                transform: translate(-5px, -3px);
+              }
+              66% {
+                transform: translate(5px, 2px);
+              }
+              to {
+                transform: translate(0);
+              }
+            }`}
           >
-            <span style={{ color: logoBlue }}>Twin</span>
-            <span style={{ color: logoGreen }}>kle</span>
-          </Link>
+            <Link
+              style={{
+                cursor: 'pointer',
+                textDecoration: 'none',
+                fontWeight: 'bold'
+              }}
+              to="/"
+              onClick={this.onLogoClick}
+            >
+              <div
+                onMouseEnter={() => this.setState({ logoHovered: true })}
+                onMouseLeave={() => this.setState({ logoHovered: false })}
+              >
+                <span className="logo-twin">Twin</span>
+                <span className="logo-kle">kle</span>
+              </div>
+            </Link>
+          </div>
         </div>
         <div className="main-tabs">
           <div

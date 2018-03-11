@@ -3,6 +3,7 @@ import React from 'react'
 import { withRouter } from 'react-router'
 
 Link.propTypes = {
+  className: PropTypes.string,
   children: PropTypes.node,
   history: PropTypes.object.isRequired,
   onClick: PropTypes.func,
@@ -11,9 +12,9 @@ Link.propTypes = {
   target: PropTypes.string,
   to: PropTypes.string
 }
-function Link({ to, onClick, onClickAsync, children, style, target, history }) {
+function Link({ className, to, onClick, onClickAsync, children, style, target, history }) {
   return (
-    <a style={style} href={to} onClick={onLinkClick}>
+    <a className={className} style={style} href={to} onClick={onLinkClick}>
       {children}
     </a>
   )

@@ -36,7 +36,7 @@ export default function FilterBar({ bordered, children, info, success }) {
         width: 100%;
         align-items: center;
         justify-content: space-around;
-        nav {
+        > nav {
           font-family: sans-serif;
           cursor: pointer;
           display: flex;
@@ -45,39 +45,39 @@ export default function FilterBar({ bordered, children, info, success }) {
           height: 100%;
           width: 100%;
           border-bottom: 1px solid ${Color.borderGray()};
-          a {
+          > a {
             color: ${Color.menuGray()};
             text-decoration: none;
           }
         }
-        nav.active {
+        > nav.active {
           border-bottom: 3px solid ${color[colorKey]};
           font-weight: bold;
-          a {
+          > a {
             color: ${color[colorKey]};
           }
           @media (max-width: ${mobileMaxWidth}) {
             border-bottom: 6px solid ${color[colorKey]};
           }
         }
-        nav:first-child {
+        > nav:first-child {
           ${bordered
             ? 'border-bottom-left-radius: 5px;'
             : ''} @media (max-width: ${mobileMaxWidth}) {
             border-bottom-left-radius: 0;
           }
         }
-        nav:last-child {
+        > nav:last-child {
           ${bordered
             ? 'border-bottom-right-radius: 5px;'
             : ''} @media (max-width: ${mobileMaxWidth}) {
             border-bottom-right-radius: 0;
           }
         }
-        nav:hover {
+        > nav:hover {
           transition: border-bottom 0.5s;
           border-bottom: 3px solid ${color[colorKey]};
-          a {
+          > a {
             color: ${color[colorKey]};
             transition: color 0.5s, font-weight 0.5s;
             font-weight: bold;

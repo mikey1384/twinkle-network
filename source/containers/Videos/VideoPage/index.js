@@ -370,10 +370,18 @@ class VideoPage extends Component {
     this.setState({ resultModalShown: true })
   }
 
-  onSelectChoice = index => {
-    let { userAnswers, currentSlide } = this.state
-    userAnswers[currentSlide] = index
-    this.setState({ userAnswers })
+  onSelectChoice = newAnswer => {
+    let { currentSlide, userAnswers } = this.state
+    if (typeof userAnswers[currentSlide] === 'number') {
+      return this.setState(state => ({
+        userAnswers: state.userAnswers.map((answer, index) => {
+          return index === currentSlide ? newAnswer : answer
+        })
+      }))
+    }
+    this.setState(state => ({
+      userAnswers: state.userAnswers.concat([newAnswer])
+    }))
   }
 
   onDescriptionEditFinish = (params, sender) => {
