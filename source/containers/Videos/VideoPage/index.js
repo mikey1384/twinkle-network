@@ -16,7 +16,7 @@ import Button from 'components/Button'
 import Loading from 'components/Loading'
 import VideoPlayer from 'components/VideoPlayer'
 import NotFound from 'components/NotFound'
-import ChoiceListGroup from './ChoiceListGroup'
+import CheckListGroup from 'components/CheckListGroup'
 import PageTab from './PageTab'
 import Comments from './Comments'
 import Description from './Description'
@@ -205,6 +205,7 @@ class VideoPage extends Component {
                     {!watchTabActive &&
                       questions.length > 0 && (
                         <Carousel
+                          style={{ marginTop: isStarred && '1rem' }}
                           progressBar
                           showQuestionsBuilder={() =>
                             this.setState({ questionsBuilderShown: true })
@@ -338,9 +339,11 @@ class VideoPage extends Component {
               dangerouslySetInnerHTML={{ __html: question.title }}
             />
           </div>
-          <ChoiceListGroup
+          <CheckListGroup
+            inputType="radio"
             listItems={listItems}
             onSelect={this.onSelectChoice}
+            style={{ marginTop: '1.5rem', paddingRight: '1rem' }}
           />
         </div>
       )

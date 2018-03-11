@@ -6,9 +6,10 @@ import { css } from 'emotion'
 ProgressBar.propTypes = {
   progress: PropTypes.number.isRequired,
   color: PropTypes.string,
+  style: PropTypes.object,
   text: PropTypes.string
 }
-export default function ProgressBar({ color = Color.blue(), progress, text }) {
+export default function ProgressBar({ color = Color.blue(), progress, style = {}, text }) {
   return (
     <div
       className={css`
@@ -19,6 +20,7 @@ export default function ProgressBar({ color = Color.blue(), progress, text }) {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        margin-top: 1rem;
         section {
           margin-left: 0;
           transition: width 0.5s;
@@ -31,7 +33,7 @@ export default function ProgressBar({ color = Color.blue(), progress, text }) {
             : 0};
         }
       `}
-      style={{ marginTop: '1rem' }}
+      style={style}
     >
       <section
         style={{

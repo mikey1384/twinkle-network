@@ -22,10 +22,11 @@ import {
   handleClick
 } from './helpers/interfaceEvents'
 import { css } from 'emotion'
-
+import ProgressBar from 'components/ProgressBar'
 import { easeInOutQuad } from 'tween-functions'
 import PropTypes from 'prop-types'
 import requestAnimationFrame from 'raf'
+import { Color } from 'constants/css'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 
 const DEFAULT_STACK_BEHAVIOR = 'ADDITIVE'
@@ -180,43 +181,39 @@ class Carousel extends Component {
           </a>
         )}
         {progressBar && (
-          <div>
-            <div
-              style={{
-                display: 'flex',
-                width: '100%',
-                justifyContent: 'center'
-              }}
-            >
-              <ButtonGroup
-                buttons={[
-                  {
-                    label: 'Prev',
-                    onClick: previousSlide.bind(this),
-                    buttonClass: 'transparent',
-                    disabled: currentSlide === 0
-                  },
-                  {
-                    label: currentSlide + 1 === slideCount ? 'Finish' : 'Next',
-                    onClick:
-                      currentSlide + 1 === slideCount
-                        ? onFinish
-                        : nextSlide.bind(this),
-                    buttonClass: 'transparent'
-                  }
-                ]}
-              />
-            </div>
-            <div className="progress" style={{ marginTop: '2rem' }}>
-              <div
-                className="progress-bar"
-                role="progressbar"
-                aria-valuenow="0"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                style={{ width: `${slideFraction * 100}%` }}
-              >{`${currentSlide + 1}/${slideCount}`}</div>
-            </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <ButtonGroup
+              buttons={[
+                {
+                  label: 'Prev',
+                  onClick: previousSlide.bind(this),
+                  buttonClass: 'transparent',
+                  disabled: currentSlide === 0
+                },
+                {
+                  label: currentSlide + 1 === slideCount ? 'Finish' : 'Next',
+                  onClick:
+                    currentSlide + 1 === slideCount
+                      ? onFinish
+                      : nextSlide.bind(this),
+                  buttonClass: 'transparent'
+                }
+              ]}
+            />
+            <ProgressBar
+              progress={slideFraction * 100}
+              color={currentSlide + 1 === slideCount ? Color.green() : Color.logoBlue()}
+              style={{ width: '100%' }}
+              text={`${currentSlide + 1}/${slideCount}`}
+            />
           </div>
         )}
         <div
