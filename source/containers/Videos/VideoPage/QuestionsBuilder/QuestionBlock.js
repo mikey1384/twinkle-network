@@ -154,6 +154,7 @@ export default class QuestionBlock extends Component {
               <ChoiceListItem
                 key={choiceId}
                 id={choiceId}
+                deleted={deleted}
                 questionIndex={questionIndex}
                 onDrop={() =>
                   onRearrange({ questionIndex, choiceIds, choices })

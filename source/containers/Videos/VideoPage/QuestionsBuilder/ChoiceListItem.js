@@ -40,6 +40,7 @@ const ListItemTarget = {
 ChoiceListItem.propTypes = {
   connectDragSource: PropTypes.func,
   connectDropTarget: PropTypes.func,
+  deleted: PropTypes.bool,
   isDragging: PropTypes.bool,
   inputType: PropTypes.string,
   onSelect: PropTypes.func,
@@ -53,19 +54,23 @@ function ChoiceListItem({
   checkDisabled,
   connectDragSource,
   connectDropTarget,
+  deleted,
   isDragging,
   inputType,
   label,
   onSelect,
   placeholder
 }) {
-  return connectDragSource(
-    connectDropTarget(
+  return deleted ? renderListItem() : connectDragSource(connectDropTarget(renderListItem()))
+
+  function renderListItem() {
+    return (
       <nav
         style={{
           opacity: isDragging ? 0 : 1,
           cursor: !checkDisabled && 'ns-resize'
         }}
+        className="unselectable"
       >
         <main>
           <section>
@@ -96,7 +101,7 @@ function ChoiceListItem({
         </aside>
       </nav>
     )
-  )
+  }
 }
 
 export default DropTarget(ItemTypes.LIST_ITEM, ListItemTarget, connect => ({

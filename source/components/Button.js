@@ -115,7 +115,7 @@ export default function Button({
           )[colorKey]};
           ${snow ? `box-shadow: 0 0 3px ${Color.black()};` : ''};
         }
-      `} ${className}`}
+      `} ${className} unselectable`}
       ref={ref => {
         Button = ref
       }}
