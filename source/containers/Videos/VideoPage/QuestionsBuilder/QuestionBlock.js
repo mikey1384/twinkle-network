@@ -179,7 +179,7 @@ export default class QuestionBlock extends Component {
           {!onEdit ? (
             <Button
               transparent
-              onClick={() => this.props.onEditStart(questionIndex)}
+              onClick={() => this.props.onEditStart(id)}
               style={{ opacity: deleted && '0.2', fontSize: '2rem' }}
               disabled={deleted && true}
             >
@@ -190,7 +190,7 @@ export default class QuestionBlock extends Component {
             <div>
               <Button
                 transparent
-                onClick={() => this.onEditCancel(questionIndex)}
+                onClick={() => this.onEditCancel(id)}
               >
                 Cancel
               </Button>
@@ -300,7 +300,7 @@ export default class QuestionBlock extends Component {
           > section {
             padding: 0.5rem;
             width: 100%;
-            line-height: 3rem;
+            line-height: 1.5;
             display: flex;
           }
         }

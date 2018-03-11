@@ -127,7 +127,7 @@ class PlaylistCarousel extends Component {
           className={css`
             position: relative;
             padding-bottom: 0.5rem;
-            h1 {
+            > h1 {
               font-size: 2.5rem;
               line-height: 3rem;
               font-weight: bold;

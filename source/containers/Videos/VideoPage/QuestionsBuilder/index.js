@@ -34,7 +34,7 @@ class QuestionsBuilder extends Component {
       questions:
         questions.length !== 0
           ? this.formatQuestions(questions)
-          : this.newQuestion(questions),
+          : this.newQuestion(0),
       questionIds:
         questions.length > 0 ? questions.map((question, index) => index) : [0]
     })
@@ -57,6 +57,9 @@ class QuestionsBuilder extends Component {
         >
           <section
             className={this.Styles.leftSection}
+            ref={ref => {
+              this.LeftMenu = ref
+            }}
             style={{
               width: reorderModeOn && '80%'
             }}
@@ -72,12 +75,17 @@ class QuestionsBuilder extends Component {
                 onReorderCancel={() => this.setState({ reorderModeOn: false })}
               />
             ) : questionIds.length > 0 ? (
-              questionIds.map((questionId, index) => {
-                const question = questions[questionId]
-                return (
-                  <div key={index}>
+              <div
+                ref={ref => {
+                  this.QuestionBlocks = ref
+                }}
+              >
+                {questionIds.map((questionId, index) => {
+                  const question = questions[questionId]
+                  return (
                     <QuestionBlock
                       {...question}
+                      key={index}
                       id={Number(questionId)}
                       hideErrorMsg={id =>
                         this.setState(state => ({
@@ -99,23 +107,23 @@ class QuestionsBuilder extends Component {
                       onRearrange={this.onChoicesRearrange}
                       onRemove={this.onRemoveQuestion}
                       onUndoRemove={this.onUndoRemove}
-                      onEditStart={questionIndex => {
+                      onEditStart={questionId => {
                         this.setState(state => ({
                           questions: {
                             ...state.questions,
-                            [questionIndex]: {
-                              ...state.questions[questionIndex],
+                            [questionId]: {
+                              ...state.questions[questionId],
                               onEdit: true
                             }
                           }
                         }))
                       }}
-                      onEditCancel={questionIndex => {
+                      onEditCancel={questionId => {
                         this.setState(state => ({
                           questions: {
                             ...state.questions,
-                            [questionIndex]: {
-                              ...state.questions[questionIndex],
+                            [questionId]: {
+                              ...state.questions[questionId],
                               onEdit: false
                             }
                           }
@@ -123,9 +131,9 @@ class QuestionsBuilder extends Component {
                       }}
                       onEditDone={this.onChoiceEditDone}
                     />
-                  </div>
-                )
-              })
+                  )
+                })}
+              </div>
             ) : null}
           </section>
           {!reorderModeOn && (
@@ -190,20 +198,22 @@ class QuestionsBuilder extends Component {
   }
 
   onAddQuestion = () => {
-    this.setState(state => {
-      let newQuestionId
-      const newQuestionObject = this.newQuestion(state.questions)
-      for (let key in newQuestionObject) {
-        newQuestionId = key
+    this.setState(
+      state => {
+        return {
+          questions: {
+            ...state.questions,
+            ...this.newQuestion(Object.keys(state.questions).length)
+          },
+          questionIds: state.questionIds.concat(Object.keys(state.questions).length)
+        }
+      },
+      () => {
+        setTimeout(() => {
+          this.LeftMenu.scrollTop = this.QuestionBlocks.offsetHeight
+        }, 0)
       }
-      return {
-        questions: {
-          ...state.questions,
-          ...newQuestionObject
-        },
-        questionIds: state.questionIds.concat(Number(newQuestionId))
-      }
-    })
+    )
   }
 
   onRemoveQuestion = questionId => {
@@ -289,9 +299,9 @@ class QuestionsBuilder extends Component {
       questions:
         questions.length !== 0
           ? this.formatQuestions(questions)
-          : this.newQuestion(questions),
+          : this.newQuestion(0),
       questionIds:
-        questions.length > 0 ? questions.map(question => question.id) : [0]
+        questions.length > 0 ? questions.map((question, index) => index) : [0]
     })
   }
 
@@ -299,29 +309,49 @@ class QuestionsBuilder extends Component {
     const { questions, questionIds } = this.state
     const { onSubmit } = this.props
     let errorObj = {
+      questionId: null,
       message: '',
-      questionId: null
+      onEdit: true
+    }
+    const errorDictionary = {
+      notDone: {
+        message: 'Please click the "done" button below',
+        onEdit: true
+      },
+      missingTitle: {
+        message: 'Please enter title',
+        onEdit: true
+      },
+      notEnoughChoices: {
+        message: 'There must be at least 2 choices',
+        onEdit: true
+      },
+      invalidChoice: {
+        message: 'Please mark the correct choice',
+        onEdit: false
+      }
     }
     for (let i = 0; i < questionIds.length; i++) {
       if (!questions[i].deleted) {
         if (errorInQuestion(questions[i])) {
           errorObj = {
-            message: errorInQuestion(questions[i]),
-            questionId: i
+            questionId: i,
+            message: errorDictionary[errorInQuestion(questions[i])].message,
+            onEdit: errorDictionary[errorInQuestion(questions[i])].onEdit
           }
           break
         }
       }
     }
 
-    if (errorObj.message) {
+    if (errorObj.questionId) {
       return this.setState(
         state => ({
           questions: {
             ...state.questions,
             [errorObj.questionId]: {
               ...state.questions[errorObj.questionId],
-              onEdit: true,
+              onEdit: errorObj.onEdit,
               errorMessage: errorObj.message
             }
           }
@@ -338,20 +368,20 @@ class QuestionsBuilder extends Component {
     onSubmit(finishedQuestions)
 
     function errorInQuestion(question) {
-      if (question.onEdit) return 'Please click the "done" button below'
+      if (question.onEdit) return 'notDone'
       if (!question.title || stringIsEmpty(question.title)) {
-        return 'Please enter title'
+        return 'missingTitle'
       }
       const validChoices = question.choices.filter(choice => !!choice.label)
       if (validChoices.length < 2) {
-        return 'There must be at least 2 choices.'
+        return 'notEnoughChoices'
       }
       for (let i = 0; i < validChoices.length; i++) {
         if (validChoices[i].checked) {
           return false
         }
       }
-      return 'Please mark the correct choice.'
+      return 'invalidChoice'
     }
   }
 
@@ -375,8 +405,8 @@ class QuestionsBuilder extends Component {
     return questionsObject
   }
 
-  newQuestion = questions => ({
-    [Object.keys(questions).length]: {
+  newQuestion = questionId => ({
+    [questionId]: {
       title: '',
       onEdit: true,
       choices: [

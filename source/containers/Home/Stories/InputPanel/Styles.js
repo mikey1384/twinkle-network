@@ -7,12 +7,12 @@ export const PanelStyle = css`
   border: 1px solid ${Color.borderGray()};
   margin-bottom: 1rem;
   padding: 1.5rem 2.5rem;
-  small {
+  > small {
     font-size: 1.3rem;
     line-height: 3rem;
     color: ${Color.darkGray()};
   }
-  p {
+  > p {
     font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, arial, verdana;
     color: ${Color.darkGray()};
     margin-bottom: 1rem;
@@ -27,21 +27,21 @@ export const PanelStyle = css`
     border-radius: 0;
     border-left: none;
     border-right: none;
-    p {
+    > p {
       font-size: 2.5rem;
     }
-    small {
+    > small {
       font-size: 1.5rem;
     }
-    input {
+    > input {
       height: 6rem;
       font-size: 2rem;
     }
-    textarea {
+    > textarea {
       font-size: 2rem;
     }
     .button-container {
-      button {
+      > button {
         font-size: 3rem;
       }
     }
