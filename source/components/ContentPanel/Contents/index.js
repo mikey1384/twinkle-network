@@ -239,7 +239,7 @@ class Contents extends Component {
         {commentsShown && (
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}
-            style={{ marginTop: '1rem' }}
+            style={{ padding: '1rem' }}
             clickListenerState={clickListenerState}
             inputTypeLabel={
               type === 'comment'
