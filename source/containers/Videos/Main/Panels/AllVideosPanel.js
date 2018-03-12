@@ -78,7 +78,7 @@ class AllVideosPanel extends Component {
             return (
               <VideoThumb
                 to={`videos/${video.id}`}
-                style={{ width: '22%', height: '25%' }}
+                style={{ width: '22%', height: '25%', marginBottom: '1rem' }}
                 key={video.id}
                 arrayIndex={index}
                 editable={editable}
