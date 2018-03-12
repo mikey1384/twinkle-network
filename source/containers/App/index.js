@@ -149,7 +149,7 @@ class App extends Component {
       updateNoticeShown
     } = this.state
     return (
-      <div className={appStyle}>
+      <div className={appStyle} style={{ height: chatMode && 'CALC(100% - 7rem)' }}>
         {updateNoticeShown && (
           <div
             className={css`

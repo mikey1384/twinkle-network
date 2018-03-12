@@ -17,10 +17,7 @@ export const container = css`
     align-items: center;
     width: 100%;
     height: 10rem;
-    span,
-    a {
-      line-height: 2.5rem;
-    }
+    span
   }
   .body {
     padding: 0 1.5rem 1rem 1.5rem;
@@ -29,7 +26,6 @@ export const container = css`
       padding: 1rem;
       word-break: break-word;
       font-size: 1.6rem;
-      line-height: 2.5rem;
     }
     .bottom-interface {
       display: flex;
@@ -52,7 +48,6 @@ export const container = css`
   }
   .content-panel__likers {
     margin-top: 0.6rem;
-    line-height: normal;
     font-weight: bold;
     color: ${Color.darkGray()};
     font-size: 1.2rem;
