@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { cleanString } from 'helpers/stringHelpers'
-import { Color, mobileMaxWidth } from 'constants/css'
+import { Color } from 'constants/css'
 import Embedly from 'components/Embedly'
 import LongText from 'components/Texts/LongText'
 import VideoPlayer from 'components/VideoPlayer'
 import ContentEditor from './ContentEditor'
-import { css } from 'emotion'
 
 MainContent.propTypes = {
   content: PropTypes.string,
@@ -43,14 +42,7 @@ export default function MainContent({
   type
 }) {
   return (
-    <div
-      className={css`
-        padding: 1rem;
-        @media (max-width: ${mobileMaxWidth}) {
-          ${(type === 'video' || type === 'discussion') ? 'padding: 1rem 0;' : 'padding: 1rem;'}
-        }
-      `}
-    >
+    <div>
       {(type === 'video' || type === 'discussion') && (
         <VideoPlayer
           isStarred={!!(isStarred || rootContentIsStarred)}
