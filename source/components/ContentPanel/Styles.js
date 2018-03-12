@@ -17,10 +17,9 @@ export const container = css`
     align-items: center;
     width: 100%;
     height: 10rem;
-    span
   }
   .body {
-    padding: 0 1.5rem 1rem 1.5rem;
+    padding: 0;
     .content {
       margin-top: 1rem;
       padding: 1rem;
@@ -28,6 +27,7 @@ export const container = css`
       font-size: 1.6rem;
     }
     .bottom-interface {
+      padding: 0 1rem 1rem 1rem;
       display: flex;
       flex-direction: column;
       .buttons-bar {

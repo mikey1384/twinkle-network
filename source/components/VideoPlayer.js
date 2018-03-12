@@ -202,7 +202,7 @@ class VideoPlayer extends Component {
       onEdit,
       videoCode,
       title,
-      style,
+      style = {},
       userId
     } = this.props
     const {
@@ -224,7 +224,7 @@ class VideoPlayer extends Component {
           )
         : 0
     return (
-      <ErrorBoundary>
+      <ErrorBoundary style={style}>
         <div
           className={css`
             display: block;
@@ -234,7 +234,6 @@ class VideoPlayer extends Component {
             position: relative;
           `}
           style={{
-            ...style,
             display: minimized && !playing && 'none',
             width: playing && minimized && '39rem',
             paddingBottom: playing && minimized && '22rem',

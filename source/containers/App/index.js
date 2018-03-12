@@ -24,9 +24,9 @@ import {
   fetchNotifications,
   clearNotifications
 } from 'redux/actions/NotiActions'
-import { appStyle, siteContent } from './Styles'
+import { siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
-import { Color } from 'constants/css'
+import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import Button from 'components/Button'
 
@@ -149,7 +149,15 @@ class App extends Component {
       updateNoticeShown
     } = this.state
     return (
-      <div className={appStyle} style={{ height: chatMode && 'CALC(100% - 7rem)' }}>
+      <div
+        className={css`
+          height: CALC(100% - 7rem);
+          width: 100%;
+          @media (max-width: ${mobileMaxWidth}) {
+            height: ${chatMode ? 'CALC(100% - 8rem)' : 'auto'};
+          }
+        `}
+      >
         {updateNoticeShown && (
           <div
             className={css`

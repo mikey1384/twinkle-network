@@ -1,11 +1,6 @@
 import { css } from 'react-emotion'
 import { mobileMaxWidth } from 'constants/css'
 
-export const appStyle = css`
-  height: auto;
-  width: 100%;
-`
-
 export const siteContent = css`
   margin-top: 7rem;
   height: 100%;
