@@ -69,6 +69,7 @@ class SubjectHeader extends Component {
       <div
         style={{
           display: 'flex',
+          position: 'relative',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}
