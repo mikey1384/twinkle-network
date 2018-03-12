@@ -3,15 +3,19 @@ import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import SearchDropdown from '../SearchDropdown'
 import Input from 'components/Texts/Input'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 class TagInput extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
+    className: PropTypes.string,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     onClickOutSide: PropTypes.func.isRequired,
     searchResults: PropTypes.array.isRequired,
     selectedUsers: PropTypes.array.isRequired,
+    style: PropTypes.object,
     onAddUser: PropTypes.func.isRequired
   }
 
@@ -28,15 +32,39 @@ class TagInput extends Component {
   }
 
   render() {
+    const { className, style } = this.props
     return (
-      <div className="input-group dropdown">
-        <span className="input-group-addon">
+      <div
+        className={`${css`
+          display: flex;
+          align-items: center;
+          height: 4.3rem;
+          position: relative;
+          .addon {
+            border: 1px solid ${Color.inputBorderGray()};
+            align-self: stretch;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+          }
+          .glyphicon {
+            line-height: 4rem;
+            font-size: 1.5rem;
+          }
+          input {
+            height: 100%;
+            border: 1px solid ${Color.inputBorderGray()};
+            border-left: none;
+          }
+        `} ${className}`}
+        style={style}
+      >
+        <div className="addon" style={{ background: Color.borderGray() }}>
           <span className="glyphicon glyphicon-search" />
-        </span>
+        </div>
         <Input
           autoFocus={this.props.autoFocus}
           value={this.props.value}
-          className="form-control"
           placeholder="Search and select people you want to chat with"
           onChange={text => this.props.onChange(text)}
           onKeyDown={this.onKeyDown}

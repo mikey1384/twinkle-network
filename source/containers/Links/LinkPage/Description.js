@@ -58,17 +58,14 @@ export default class Description extends Component {
       editedUrl
     } = this.state
     return (
-      <div>
+      <div style={{ position: 'relative' }}>
         {uploaderId === myId &&
           !onEdit && (
             <DropdownButton
-              style={{
-                top: '1em',
-                right: '1em',
-                position: 'absolute'
-              }}
-              shape="button"
+              snow
               icon="pencil"
+              style={{ position: 'absolute', right: 0 }}
+              direction="left"
               menuProps={[
                 {
                   label: 'Edit',
@@ -81,28 +78,37 @@ export default class Description extends Component {
               ]}
             />
           )}
-        <div>
-          <div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
+          <div
+            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          >
             {onEdit ? (
-              <form onSubmit={event => event.preventDefault()}>
-                <Input
-                  type="text"
-                  placeholder="Enter Title..."
-                  value={editedTitle}
-                  onChange={text => {
-                    this.setState({ editedTitle: text }, () => {
-                      this.determineEditButtonDoneStatus()
+              <Input
+                type="text"
+                style={{ width: '80%' }}
+                placeholder="Enter Title..."
+                value={editedTitle}
+                onChange={text => {
+                  this.setState({ editedTitle: text }, () => {
+                    this.determineEditButtonDoneStatus()
+                  })
+                }}
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    this.setState({
+                      editedTitle: addEmoji(event.target.value)
                     })
-                  }}
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        editedTitle: addEmoji(event.target.value)
-                      })
-                    }
-                  }}
-                />
-              </form>
+                  }
+                }}
+              />
             ) : (
               <h2>{title}</h2>
             )}
@@ -116,9 +122,14 @@ export default class Description extends Component {
             </small>
           </div>
         </div>
-        <div>
+        <div
+          style={{
+            marginTop: '3rem',
+            wordBreak: 'break-word'
+          }}
+        >
           {onEdit ? (
-            <div style={{ wordBreak: 'break-word' }}>
+            <div>
               <Input
                 placeholder="Enter URL"
                 style={{ marginBottom: '1em' }}
@@ -150,18 +161,20 @@ export default class Description extends Component {
                   }
                 }}
               />
-              <div>
+              <div style={{ justifyContent: 'center', display: 'flex' }}>
                 <Button
+                  transparent
+                  style={{ marginRight: '5px' }}
+                  onClick={this.onEditCancel}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  primary
                   disabled={editDoneButtonDisabled}
                   onClick={this.onEditFinish}
                 >
                   Done
-                </Button>
-                <Button
-                  style={{ marginLeft: '5px' }}
-                  onClick={this.onEditCancel}
-                >
-                  Cancel
                 </Button>
               </div>
             </div>

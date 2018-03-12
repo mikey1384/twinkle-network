@@ -128,7 +128,7 @@ class MessagesContainer extends Component {
           }`}
           style={{
             opacity: !!loading && '0.3',
-            top: currentChannelId === 2 ? '7rem' : 0
+            top: currentChannelId === 2 ? '6rem' : 0
           }}
           onScroll={() => {
             const content = this.content
@@ -240,7 +240,7 @@ class MessagesContainer extends Component {
     const { messages } = this.props
     return messages.map((message, index) => {
       let { isNotification } = message
-      let messageStyle = isNotification ? { color: Color.darkGray() } : null
+      let messageStyle = isNotification ? { color: Color.gray() } : null
       return (
         <Message
           key={index}

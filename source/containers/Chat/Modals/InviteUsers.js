@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import Modal from 'components/Modal'
+import Button from 'components/Button'
 import TagPeopleForm from 'components/TagPeopleForm'
 import { connect } from 'react-redux'
 import {
@@ -17,18 +18,11 @@ class InviteUsersModal extends Component {
     onDone: PropTypes.func.isRequired,
     onHide: PropTypes.func.isRequired,
     searchResults: PropTypes.array.isRequired,
-    searchUserToInvite: PropTypes.func.isRequired,
-    style: PropTypes.object
+    searchUserToInvite: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      selectedUsers: []
-    }
-    this.onAddUser = this.onAddUser.bind(this)
-    this.onRemoveUser = this.onRemoveUser.bind(this)
-    this.onDone = this.onDone.bind(this)
+  state = {
+    selectedUsers: []
   }
 
   render() {
@@ -37,7 +31,6 @@ class InviteUsersModal extends Component {
       searchUserToInvite,
       searchResults,
       onHide,
-      style,
       currentChannel
     } = this.props
     const { selectedUsers } = this.state
@@ -45,11 +38,9 @@ class InviteUsersModal extends Component {
       member => member.userId
     )
     return (
-      <Modal show style={style} onHide={onHide} animation={false}>
-        <Modal.Header closeButton>
-          <h4>Invite people to this channel</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={onHide}>
+        <header>Invite people to this channel</header>
+        <main>
           <TagPeopleForm
             searchResults={searchResults}
             filter={result => currentMembersUID.indexOf(result.id) === -1}
@@ -60,22 +51,24 @@ class InviteUsersModal extends Component {
             onRemoveUser={this.onRemoveUser}
             onSubmit={selectedUsers.length > 0 && this.onDone}
           />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHide}>Cancel</Button>
+        </main>
+        <footer>
           <Button
-            bsStyle="primary"
+            primary
             onClick={this.onDone}
             disabled={selectedUsers.length === 0}
           >
             Invite
           </Button>
-        </Modal.Footer>
+          <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
+            Cancel
+          </Button>
+        </footer>
       </Modal>
     )
   }
 
-  onAddUser(user) {
+  onAddUser = user => {
     const { selectedUsers } = this.state
     this.setState({
       selectedUsers: selectedUsers.concat([
@@ -87,7 +80,7 @@ class InviteUsersModal extends Component {
     })
   }
 
-  onRemoveUser(user) {
+  onRemoveUser = user => {
     const { selectedUsers } = this.state
     this.setState({
       selectedUsers: selectedUsers.filter(
@@ -96,7 +89,7 @@ class InviteUsersModal extends Component {
     })
   }
 
-  onDone() {
+  onDone = () => {
     const { inviteUsersToChannel, currentChannel, onDone } = this.props
     const { selectedUsers } = this.state
     inviteUsersToChannel(

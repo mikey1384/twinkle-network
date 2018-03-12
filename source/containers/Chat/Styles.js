@@ -3,13 +3,11 @@ import { css } from 'react-emotion'
 
 export const chatStyle = css`
   width: 100%;
-  height: CALC(100% - 50px);
-  padding-top: 50px;
+  height: 100%;
   display: flex;
   padding-left: 1rem;
-  align-items: top;
-  background-color: #fff;
-  z-index: 1000;
+  font-size: 1.5rem;
+  position: relative;
   @media (max-width: ${mobileMaxWidth}) {
     padding-top: 9rem;
   }
@@ -18,17 +16,29 @@ export const chatStyle = css`
 export const channelContainer = css`
   display: flex;
   flex-direction: column;
-  border: 1px solid #eee;
   margin-top: 1rem;
-  height: CALC(100% + 2rem);
+  height: CALC(100% - 1rem);
   width: 25%;
   position: relative;
+  background: #fff;
+`
+
+export const chatContainer = css`
+  height: CALC(100% - 1rem);
+  margin-top: 1rem;
+  width: CALC(75% - 2rem);
+  margin-left: 1rem;
+  padding: 1rem;
+  position: relative;
+  background: #fff;
 `
 
 export const MsgContainerStyle = {
   container: css`
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: CALC(100% - 5rem);
     position: relative;
   `,
   messagesWrapper: css`
@@ -49,6 +59,7 @@ export const MessageStyle = {
   contentWrapper: css`
     margin-left: 1.3rem;
     width: 92%;
+    position: relative;
     word-break: break-word;
   `,
   usernameText: { fontSize: '1.8rem', lineHeight: '100%' },
@@ -57,13 +68,13 @@ export const MessageStyle = {
   `,
   timeStamp: css`
     font-size: 1rem;
-    color: ${Color.gray};
+    color: ${Color.gray()};
   `,
   relatedConversationsButton: css`
     margin-top: 1rem;
   `,
   subjectPrefix: css`
     font-weight: bold;
-    color: ${Color.green};
+    color: ${Color.green()};
   `
 }

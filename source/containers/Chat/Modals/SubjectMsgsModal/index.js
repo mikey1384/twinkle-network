@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { Color } from 'constants/css'
 import request from 'axios'
@@ -43,11 +43,11 @@ export default class SubjectMsgsModal extends Component {
     const { onHide, subjectTitle } = this.props
     const { messages, loading, loadMoreButtonShown } = this.state
     return (
-      <Modal show onHide={onHide} animation={false}>
-        <Modal.Header closeButton>
-          <h4 style={{ color: Color.green }}>{subjectTitle}</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={onHide}>
+        <header>
+          <span style={{ color: Color.green() }}>{subjectTitle}</span>
+        </header>
+        <main>
           {loadMoreButtonShown && (
             <LoadMoreButton
               onClick={this.onLoadMoreButtonClick}
@@ -56,12 +56,12 @@ export default class SubjectMsgsModal extends Component {
           )}
           {messages.length === 0 && <Loading />}
           {messages.map(message => <Message key={message.id} {...message} />)}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button className="btn btn-default" onClick={onHide}>
+        </main>
+        <footer>
+          <Button transparent onClick={onHide}>
             Close
           </Button>
-        </Modal.Footer>
+        </footer>
       </Modal>
     )
   }

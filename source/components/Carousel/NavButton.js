@@ -14,7 +14,8 @@ export default function NavButton({ disabled, nextSlide, left }) {
     <Button
       className={css`
         position: absolute;
-        ${left ? 'left: -1.5rem;' : 'right: -1.5rem;'} top: 4.5rem;
+        top: 4.5rem;
+        ${left ? 'left: -1.5rem;' : 'right: -1.5rem;'};
       `}
       snow
       onClick={handleClick}

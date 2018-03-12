@@ -70,7 +70,9 @@ class Message extends Component {
             canEdit &&
             !onEdit && (
               <DropdownButton
-                shape="button"
+                snow
+                style={{ position: 'absolute', right: 0 }}
+                direction="left"
                 icon="pencil"
                 opacity={0.8}
                 menuProps={[
@@ -122,7 +124,8 @@ class Message extends Component {
                   numMsgs > 0 && (
                     <div className={MessageStyle.relatedConversationsButton}>
                       <Button
-                        className="btn btn-sm btn-success"
+                        filled
+                        success
                         onClick={() =>
                           this.setState({ subjectMsgsModalShown: true })
                         }

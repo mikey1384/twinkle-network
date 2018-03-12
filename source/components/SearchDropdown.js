@@ -57,6 +57,7 @@ export default class Dropdown extends Component {
           right: 0;
           background: #fff;
           box-shadow: 1px 1px 5px ${Color.black()};
+          top: CALC(4.3rem - 1px);
         `}
         style={style}
       >

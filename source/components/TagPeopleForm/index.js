@@ -45,15 +45,17 @@ export default class TagPeopleForm extends Component {
     const filteredResults = searchResults.filter(filter)
     return (
       <form
+        style={{ width: '70%' }}
         onSubmit={event => {
           event.preventDefault()
           onSubmit && onSubmit()
         }}
       >
-        <div className="form-group">
-          <label>People</label>
+        <div style={{ width: '100%' }}>
+          <h3>People</h3>
           {this.renderTags()}
           <TagInput
+            style={{ marginTop: '1rem' }}
             autoFocus
             value={searchText}
             onChange={this.onUserSearch}
@@ -76,7 +78,7 @@ export default class TagPeopleForm extends Component {
     return selectedUsers.length > 0 ? (
       <div
         style={{
-          marginBottom: '0.5em'
+          margin: '1rem 0'
         }}
       >
         {selectedUsers.map((user, index) => {

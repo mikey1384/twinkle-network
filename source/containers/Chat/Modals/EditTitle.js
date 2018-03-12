@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
+import Button from 'components/Button'
 import Input from 'components/Texts/Input'
 import { edit } from 'constants/placeholders'
 
@@ -22,11 +23,11 @@ export default class editTitleModal extends Component {
     const { onHide, onDone } = this.props
     const { title } = this.state
     return (
-      <Modal show onHide={onHide} animation={false}>
-        <Modal.Header>
-          <h4>Edit Channel Title</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={onHide}>
+        <header>
+          Edit Channel Title
+        </header>
+        <main>
           <form onSubmit={event => this.onSubmit(event, title)}>
             <Input
               autoFocus
@@ -37,13 +38,13 @@ export default class editTitleModal extends Component {
               onChange={text => this.setState({ title: text })}
             />
           </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHide}>Cancel</Button>
-          <Button bsStyle="primary" onClick={() => onDone(title)}>
+        </main>
+        <footer>
+          <Button transparent onClick={onHide}>Cancel</Button>
+          <Button primary onClick={() => onDone(title)}>
             Done
           </Button>
-        </Modal.Footer>
+        </footer>
       </Modal>
     )
   }

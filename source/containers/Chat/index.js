@@ -18,7 +18,9 @@ import FullTextReveal from 'components/FullTextReveal'
 import { socket } from 'constants/io'
 import { queryStringForArray } from 'helpers/apiHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
-import { chatStyle, channelContainer } from './Styles'
+import { chatStyle, chatContainer, channelContainer } from './Styles'
+import { css } from 'emotion'
+import { Color } from 'constants/css'
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -220,7 +222,7 @@ class Chat extends Component {
         )}
         <div className={channelContainer}>
           <div
-            css={`
+            className={css`
               width: 100%;
               padding: 1rem;
               display: grid;
@@ -230,7 +232,7 @@ class Chat extends Component {
             `}
           >
             <div
-              css={`
+              className={css`
                 grid-area: channelDetail;
                 display: grid;
                 grid-template-colums: 15rem fr;
@@ -254,7 +256,6 @@ class Chat extends Component {
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
                   lineHeight: 'normal',
-                  marginBottom: '0px',
                   cursor: 'default',
                   color: !channelName(channels, currentChannel) && '#7c7c7c'
                 }}
@@ -290,12 +291,12 @@ class Chat extends Component {
               )}
             </div>
             <Button
+              transparent
               style={{
                 gridArea: 'newButton',
                 justifySelf: 'right',
                 alignSelf: 'center'
               }}
-              className="btn btn-default btn-sm"
               onClick={this.onNewButtonClick}
             >
               +New
@@ -324,23 +325,17 @@ class Chat extends Component {
             )}
           </div>
         </div>
-        <div
-          style={{
-            height: '100%',
-            width: '75%',
-            padding: '0 1rem',
-            position: 'relative'
-          }}
-        >
+        <div className={chatContainer}>
           {currentChannel.id !== GENERAL_CHAT_ID && (
             <DropdownButton
+              snow
               style={{
                 position: 'absolute',
                 zIndex: 10,
                 top: '1rem',
                 right: '1rem'
               }}
-              shape="button"
+              direction="left"
               icon="menu-hamburger"
               text="Menu"
               menuProps={menuProps}
@@ -354,12 +349,10 @@ class Chat extends Component {
             userId={this.props.userId}
             loadMoreMessages={this.props.loadMoreMessages}
           />
-          <div>
-            <ChatInput
-              currentChannelId={this.props.currentChannel.id}
-              onMessageSubmit={this.onMessageSubmit}
-            />
-          </div>
+          <ChatInput
+            currentChannelId={this.props.currentChannel.id}
+            onMessageSubmit={this.onMessageSubmit}
+          />
         </div>
       </div>
     )
@@ -377,65 +370,82 @@ class Chat extends Component {
       } = channel
       return (
         <div
-          className="media chat-channel-item container-fluid"
+          className={css`
+            &:hover {
+              background: ${Color.wellGray()};
+            }
+          `}
           style={{
             width: '100%',
-            backgroundColor: id === selectedChannelId && '#f7f7f7',
+            backgroundColor: id === selectedChannelId && Color.channelGray(),
             cursor: 'pointer',
-            padding: '1em',
-            marginTop: '0px'
+            padding: '1rem',
+            height: '6.5rem'
           }}
           onClick={() => this.onChannelEnter(id)}
           key={id}
         >
-          <div>
-            <h4
+          <div
+            style={{
+              display: 'flex',
+              height: '100%',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <div
               style={{
-                color: !channelName && '#7c7c7c',
-                marginTop: '0px',
-                marginBottom: '0.2em',
+                display: 'flex',
+                width: '85%',
+                height: '100%',
                 whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                lineHeight: 'normal'
+                flexDirection: 'column',
+                justifyContent: 'space-between'
               }}
             >
-              {channelName || '(Deleted)'}
-            </h4>
-            <span>
-              <span
-                className="pull-left"
+              <div>
+                <h4
+                  style={{
+                    color: !channelName && '#7c7c7c'
+                  }}
+                >
+                  {channelName || '(Deleted)'}
+                </h4>
+              </div>
+              <div
                 style={{
-                  whiteSpace: 'nowrap',
+                  width: '100%',
                   textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  width: '85%',
-                  maxWidth: '20em',
-                  display: 'block'
+                  overflow: 'hidden'
                 }}
               >
-                <span>
-                  {lastMessageSender && lastMessage
-                    ? `${
-                        lastMessageSender.id === userId
-                          ? 'You'
-                          : lastMessageSender.username
-                      }: ${lastMessage}`
-                    : '\u00a0'}
-                </span>
-              </span>
-              {id !== currentChannel.id &&
-                numUnreads > 0 && (
-                  <span className="pull-right">
-                    &nbsp;<span
-                      className="badge"
-                      style={{ backgroundColor: 'red' }}
-                    >
-                      {numUnreads}
-                    </span>
-                  </span>
-                )}
-            </span>
+                {lastMessageSender && lastMessage
+                  ? `${
+                      lastMessageSender.id === userId
+                        ? 'You'
+                        : lastMessageSender.username
+                    }: ${lastMessage}`
+                  : '\u00a0'}
+              </div>
+            </div>
+            {id !== currentChannel.id &&
+              numUnreads > 0 && (
+                <div
+                  style={{
+                    background: Color.pink(),
+                    display: 'flex',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    width: '2rem',
+                    height: '2rem',
+                    borderRadius: '50%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  {numUnreads}
+                </div>
+              )}
           </div>
         </div>
       )

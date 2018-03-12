@@ -10,11 +10,16 @@ Button.propTypes = {
   filled: PropTypes.bool,
   gold: PropTypes.bool,
   love: PropTypes.bool,
+  hoverClass: PropTypes.string,
   info: PropTypes.bool,
   logo: PropTypes.bool,
   onClick: PropTypes.func,
   children: PropTypes.node,
   danger: PropTypes.bool,
+  onHover: PropTypes.bool,
+  onMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  opacity: PropTypes.number,
   primary: PropTypes.bool,
   snow: PropTypes.bool,
   success: PropTypes.bool,
@@ -25,16 +30,21 @@ export default function Button({
   className,
   disabled,
   onClick,
+  onHover,
   children = null,
   logo,
+  hoverClass,
   gold,
   love,
   filled,
   info,
+  opacity,
   primary,
   success,
   warning,
   danger,
+  onMouseEnter = () => {},
+  onMouseLeave = () => {},
   snow,
   style = {},
   transparent
@@ -65,8 +75,8 @@ export default function Button({
   if (danger) colorKey = 'danger'
   if (snow) colorKey = 'snow'
   if (transparent) colorKey = 'transparent'
-
-  const backgroundOpacity = filled ? 1 : 0
+  if (onHover) colorKey = hoverClass
+  const backgroundOpacity = filled ? 1 : opacity || 0
   const backgroundHoverOpacity = transparent ? 0 : 0.9
   const backgroundDisabledOpacity = filled ? 0.2 : 0
   const textOpacity = disabled ? 0.2 : 1
@@ -81,7 +91,7 @@ export default function Button({
         font-size: 1.5rem;
         text-transform: uppercase;
         padding: 1rem;
-        color: ${filled
+        color: ${filled || opacity
           ? '#fff'
           : snow ? Color.black(0.7) : buttonColor(textOpacity)[colorKey]};
         background: ${snow
@@ -124,6 +134,8 @@ export default function Button({
         if (Button !== null) Button.blur()
         if (onClick) onClick(event)
       }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {children}
     </button>

@@ -68,11 +68,6 @@ class SubjectHeader extends Component {
     return (
       <div
         style={{
-          right: 0,
-          left: 0,
-          padding: '1rem 0',
-          position: 'absolute',
-          backgroundColor: '#fff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
@@ -112,8 +107,9 @@ class SubjectHeader extends Component {
                 </div>
                 <div style={{ width: '14%' }}>
                   <Button
-                    style={{ width: '100%' }}
-                    className="btn btn-info"
+                    filled
+                    info
+                    style={{ fontSize: '1.3rem' }}
                     onClick={() => this.setState({ onEdit: true })}
                   >
                     Change Subject

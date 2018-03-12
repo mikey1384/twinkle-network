@@ -9,7 +9,7 @@ Links.propTypes = {
 }
 export default function Links({ match }) {
   return (
-    <div>
+    <div style={{ width: '100%', height: '100%' }}>
       <Route exact path={`${match.url}`} component={Main} />
       <Route path={`${match.url}/:linkId`} component={LinkPage} />
     </div>

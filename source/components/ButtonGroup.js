@@ -55,9 +55,12 @@ export default class ButtonGroup extends Component {
                   }))
                 })
               }
+              opacity={button.opacity}
               onClick={button.onClick}
               disabled={button.disabled}
               filled={button.filled}
+              hoverClass={button.hoverClass}
+              onHover={button.onHover}
               {...{ [button.buttonClass]: true }}
             >
               {button.label}

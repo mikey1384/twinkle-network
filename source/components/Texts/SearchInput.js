@@ -108,7 +108,6 @@ class SearchInput extends Component {
         onItemClick={item => onSelect(item)}
         renderItemLabel={renderItemLabel}
         renderItemUrl={renderItemUrl}
-        style={{ top: 'CALC(4.3rem - 1px)' }}
       />
     ) : null
   }

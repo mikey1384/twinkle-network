@@ -153,7 +153,8 @@ class Header extends Component {
       <nav
         className={`unselectable ${container} ${chatMode && 'header chat'}`}
         style={{
-          position: 'fixed'
+          position: chatMode ? 'relative' : 'fixed',
+          zIndex: 1000
         }}
       >
         <div

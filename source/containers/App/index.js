@@ -149,12 +149,7 @@ class App extends Component {
       updateNoticeShown
     } = this.state
     return (
-      <div
-        className={appStyle}
-        style={{
-          backgroundColor: chatMode && '#fff'
-        }}
-      >
+      <div className={appStyle}>
         {updateNoticeShown && (
           <div
             className={css`
@@ -194,7 +189,6 @@ class App extends Component {
           </div>
         )}
         <Header
-          staticTop={chatMode}
           chatMode={chatMode}
           chatLoading={chatLoading}
           onChatButtonClick={this.onChatButtonClick}

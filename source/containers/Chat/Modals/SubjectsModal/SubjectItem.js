@@ -24,7 +24,7 @@ export default class SubjectItem extends Component {
   constructor() {
     super()
     this.state = {
-      marginBottom: `${marginHeight}em`,
+      marginBottom: `${marginHeight}rem`,
       menuShown: false,
       msgsModalShown: false
     }
@@ -32,7 +32,7 @@ export default class SubjectItem extends Component {
 
   componentDidMount() {
     const numLines = this.subjectTitle.clientHeight / subjectTitleHeight
-    this.setState({ marginBottom: `${numLines * marginHeight}em` })
+    this.setState({ marginBottom: `${numLines * marginHeight}rem` })
   }
 
   render() {
@@ -50,28 +50,28 @@ export default class SubjectItem extends Component {
     let buttons = []
     if (numMsgs > 0) {
       buttons.push({
-        buttonClass: 'btn-info',
-        hoverClass: 'btn-success',
+        buttonClass: 'logo',
+        opacity: 0.5,
         onClick: () => this.setState({ msgsModalShown: true }),
-        label: 'View Conversations'
+        label: 'View Conversations',
+        onHover: false
       })
     }
     if (currentSubjectId !== id) {
       buttons.push({
-        buttonClass: 'btn-info',
-        hoverClass: 'btn-success',
+        buttonClass: 'success',
+        opacity: 0.5,
         onClick: selectSubject,
-        label: 'Select'
+        label: 'Select',
+        onHover: false
       })
     }
     return (
       <div
-        className="media"
         style={{
           minHeight: '50px',
           height: 'auto',
-          width: '100%',
-          marginTop: '0px'
+          width: '100%'
         }}
         onMouseEnter={() => this.setState({ menuShown: true })}
         onMouseLeave={() => this.setState({ menuShown: false })}
@@ -85,12 +85,11 @@ export default class SubjectItem extends Component {
         )}
         {menuShown && (
           <ButtonGroup
-            style={{ position: 'absolute', right: '1.5em' }}
+            style={{ position: 'absolute', right: '1.5rem' }}
             buttons={buttons}
           />
         )}
         <div
-          className="media-body"
           style={{
             width: '100%',
             wordBreak: 'break-word'
@@ -103,21 +102,22 @@ export default class SubjectItem extends Component {
             style={{ marginBottom }}
           >
             {currentSubjectId === id && (
-              <b style={{ fontSize: '1.2em', color: Color.green }}>Current: </b>
+              <b style={{ fontSize: '1.5rem', color: Color.green() }}>
+                Current:{' '}
+              </b>
             )}
             <span
-              className="media-heading"
               style={{
-                fontSize: '1.2em',
+                fontSize: '1.5rem',
                 fontWeight: 'bold'
               }}
               dangerouslySetInnerHTML={{ __html: content }}
             />{' '}
             {numMsgs &&
-              numMsgs > 0 && <b style={{ color: Color.blue }}>({numMsgs})</b>}
-            <div style={{ position: 'absolute' }}>
+              numMsgs > 0 && <b style={{ color: Color.blue() }}>({numMsgs})</b>}
+            <div>
               <UsernameText
-                color={Color.darkGray}
+                color={Color.darkGray()}
                 user={{
                   id: userId,
                   name: username

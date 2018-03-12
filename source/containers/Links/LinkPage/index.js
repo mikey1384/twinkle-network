@@ -23,6 +23,7 @@ import Likers from 'components/Likers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import UserListModal from 'components/Modals/UserListModal'
 import Description from './Description'
+import { css } from 'emotion'
 
 class LinkPage extends Component {
   static propTypes = {
@@ -102,16 +103,23 @@ class LinkPage extends Component {
       if (likers[i].userId === myId) userLikedThis = true
     }
 
-    if (!id) return <Loading text="Loading Page" />
-    return (
+    return id ? (
       <div
-        style={{
-          backgroundColor: '#fff',
-          paddingBottom: '2rem',
-          marginBottom: '2rem'
-        }}
+        className={css`
+          display: flex;
+          justify-content: center;
+          width: 100%;
+          font-size: 1.7rem;
+        `}
       >
-        <div>
+        <div
+          className={css`
+            width: 50%;
+            background-color: #fff;
+            padding: 1rem;
+            margin-bottom: 1rem;
+          `}
+        >
           <Description
             uploaderId={uploader}
             uploaderName={uploaderName}
@@ -126,22 +134,27 @@ class LinkPage extends Component {
           />
           <Embedly
             title={title}
-            style={{ marginTop: '1.5rem' }}
+            style={{ marginTop: '2rem' }}
             id={id}
             url={content}
             {...embedlyProps}
           />
-          <div style={{ paddingTop: '1.5em', textAlign: 'center' }}>
-            <LikeButton onClick={() => likeLink(id)} liked={userLikedThis} />
+          <div style={{ paddingTop: '1.5rem', textAlign: 'center' }}>
+            <LikeButton
+              filled
+              style={{ fontSize: '2rem' }}
+              onClick={() => likeLink(id)}
+              liked={userLikedThis}
+            />
             <Likers
-              style={{ marginTop: '0.5em' }}
+              style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
               likes={likers}
               userId={myId}
               onLinkClick={() => this.setState({ likersModalShown: true })}
             />
           </div>
           <PanelComments
-            style={{ marginTop: '0.5em' }}
+            style={{ marginTop: '1rem' }}
             comments={comments}
             onSubmit={this.onCommentSubmit}
             loadMoreButton={loadMoreCommentsButton}
@@ -174,6 +187,10 @@ class LinkPage extends Component {
             onHide={() => this.setState({ likersModalShown: false })}
           />
         )}
+      </div>
+    ) : (
+      <div style={{ position: 'relative', width: '100%', height: '20%' }}>
+        <Loading text="Loading Page" />
       </div>
     )
   }

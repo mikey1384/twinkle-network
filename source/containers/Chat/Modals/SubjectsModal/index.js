@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal } from 'react-bootstrap'
+import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { connect } from 'react-redux'
 import request from 'axios'
@@ -21,22 +21,18 @@ class SubjectsModal extends Component {
     selectSubject: PropTypes.func
   }
 
-  constructor() {
-    super()
-    this.state = {
-      loaded: false,
-      mySubjects: {
-        subjects: [],
-        loadMoreButton: false,
-        loading: false
-      },
-      allSubjects: {
-        subjects: [],
-        loadMoreButton: false,
-        loading: false
-      }
+  state = {
+    loaded: false,
+    mySubjects: {
+      subjects: [],
+      loadMoreButton: false,
+      loading: false
+    },
+    allSubjects: {
+      subjects: [],
+      loadMoreButton: false,
+      loading: false
     }
-    this.loadMoreSubjects = this.loadMoreSubjects.bind(this)
   }
 
   componentWillMount() {
@@ -57,26 +53,20 @@ class SubjectsModal extends Component {
     const { currentSubjectId, onHide, selectSubject } = this.props
     const { loaded, mySubjects, allSubjects } = this.state
     return (
-      <Modal show onHide={onHide} animation={false}>
-        <Modal.Header closeButton>
-          <h4>View Subjects</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={onHide}>
+        <header>View Subjects</header>
+        <main>
           {!loaded && <Loading />}
           {mySubjects.subjects.length > 0 && (
-            <div style={{ marginTop: '0.5em', marginBottom: '1.5em' }}>
-              <div className="page-header" style={{ marginTop: '0px' }}>
-                <h3
-                  style={{
-                    marginTop: '0px',
-                    marginBottom: '0px',
-                    fontWeight: 'bold',
-                    color: Color.green
-                  }}
-                >
-                  My Subjects
-                </h3>
-              </div>
+            <div style={{ width: '100%' }}>
+              <h3
+                style={{
+                  color: Color.green(),
+                  marginBottom: '1rem'
+                }}
+              >
+                My Subjects
+              </h3>
               {mySubjects.subjects.map(subject => (
                 <SubjectItem
                   key={subject.id}
@@ -87,7 +77,7 @@ class SubjectsModal extends Component {
               ))}
               {mySubjects.loadMoreButton && (
                 <LoadMoreButton
-                  style={{ marginTop: '1em' }}
+                  style={{ marginTop: '1rem' }}
                   loading={mySubjects.loading}
                   onClick={() => this.loadMoreSubjects(true)}
                 />
@@ -95,13 +85,10 @@ class SubjectsModal extends Component {
             </div>
           )}
           {loaded && (
-            <div className="page-header" style={{ marginTop: '0.5em' }}>
+            <div style={{ margin: '1rem 0', width: '100%' }}>
               <h3
                 style={{
-                  marginTop: '0px',
-                  marginBottom: '0px',
-                  fontWeight: 'bold',
-                  color: Color.green
+                  color: Color.green()
                 }}
               >
                 All Subjects
@@ -123,17 +110,17 @@ class SubjectsModal extends Component {
               onClick={() => this.loadMoreSubjects()}
             />
           )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button className="btn btn-default" onClick={onHide}>
+        </main>
+        <footer>
+          <Button transparent onClick={onHide}>
             Close
           </Button>
-        </Modal.Footer>
+        </footer>
       </Modal>
     )
   }
 
-  loadMoreSubjects(mineOnly) {
+  loadMoreSubjects = mineOnly => {
     const { userId } = this.props
     const { mySubjects, allSubjects } = this.state
     const { subjects } = mineOnly ? mySubjects : allSubjects

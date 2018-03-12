@@ -74,7 +74,7 @@ class EditSubjectForm extends Component {
         )}
         <Fragment>
           <form
-            style={{ width: '88%' }}
+            style={{ width: '85%' }}
             onSubmit={event => this.onEditSubmit(event)}
           >
             <Input
@@ -111,10 +111,11 @@ class EditSubjectForm extends Component {
             />
           )}
         </Fragment>
-        <div style={{ width: '11%' }}>
+        <div style={{ width: '14%' }}>
           <Button
-            style={{ width: '100%' }}
-            className="btn btn-success"
+            style={{ width: '100%', fontSize: '1.4rem' }}
+            filled
+            success
             onClick={() => this.setState({ subjectsModalShown: true })}
           >
             View Subjects

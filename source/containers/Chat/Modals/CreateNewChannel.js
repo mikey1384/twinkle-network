@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import Modal from 'components/Modal'
+import Button from 'components/Button'
 import {
   searchUserToInviteAsync,
   clearUserSearchResults
@@ -19,16 +20,9 @@ class CreateNewChannelModal extends Component {
     searchUserToInvite: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      channelName: '',
-      selectedUsers: []
-    }
-    this.onAddUser = this.onAddUser.bind(this)
-    this.onRemoveUser = this.onRemoveUser.bind(this)
-    this.onChannelNameInput = this.onChannelNameInput.bind(this)
-    this.onDone = this.onDone.bind(this)
+  state = {
+    channelName: '',
+    selectedUsers: []
   }
 
   render() {
@@ -41,11 +35,9 @@ class CreateNewChannelModal extends Component {
     } = this.props
     const { channelName, selectedUsers } = this.state
     return (
-      <Modal show onHide={this.props.onHide} animation={false}>
-        <Modal.Header closeButton>
-          <h4>New Chat</h4>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal onHide={this.props.onHide}>
+        <header>New Chat</header>
+        <main>
           <TagPeopleForm
             searchResults={searchResults}
             filter={result => result.id !== userId}
@@ -57,10 +49,10 @@ class CreateNewChannelModal extends Component {
             onRemoveUser={this.onRemoveUser}
           >
             {selectedUsers.length > 1 && (
-              <div className="form-group">
-                <label>Channel name</label>
+              <div style={{ marginTop: '1.5rem' }}>
+                <h3>Channel name</h3>
                 <Input
-                  className="form-control"
+                  style={{ marginTop: '1rem' }}
                   placeholder="Enter channel name"
                   value={channelName}
                   onChange={text => this.onChannelNameInput(text)}
@@ -68,11 +60,10 @@ class CreateNewChannelModal extends Component {
               </div>
             )}
           </TagPeopleForm>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHide}>Cancel</Button>
+        </main>
+        <footer>
           <Button
-            bsStyle="primary"
+            primary
             onClick={this.onDone}
             disabled={
               (selectedUsers.length > 1 && !channelName) ||
@@ -81,12 +72,15 @@ class CreateNewChannelModal extends Component {
           >
             Create
           </Button>
-        </Modal.Footer>
+          <Button style={{ marginRight: '1rem' }} transparent onClick={onHide}>
+            Cancel
+          </Button>
+        </footer>
       </Modal>
     )
   }
 
-  onAddUser(user) {
+  onAddUser = user => {
     const { selectedUsers } = this.state
     this.setState({
       selectedUsers: selectedUsers.concat([
@@ -98,7 +92,7 @@ class CreateNewChannelModal extends Component {
     })
   }
 
-  onRemoveUser(user) {
+  onRemoveUser = user => {
     const { selectedUsers } = this.state
     this.setState({
       selectedUsers: selectedUsers.filter(
@@ -107,11 +101,11 @@ class CreateNewChannelModal extends Component {
     })
   }
 
-  onChannelNameInput(value) {
+  onChannelNameInput = value => {
     this.setState({ channelName: value })
   }
 
-  onDone() {
+  onDone = () => {
     const { userId } = this.props
     const { channelName, selectedUsers } = this.state
     this.props.onDone({ userId, channelName, selectedUsers })
