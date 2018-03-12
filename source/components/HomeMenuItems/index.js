@@ -21,7 +21,7 @@ export default function HomeMenuItems({ history, location, style = {} }) {
         exact
         children={({ match }) => (
           <nav className={match && 'active'} onClick={() => history.push('/')}>
-            <div className="icon" style={{ width: '3rem' }}>
+            <div className="icon">
               <Icon icon="bolt" size="1x" />
             </div>
             <a>Stories</a>
@@ -36,7 +36,7 @@ export default function HomeMenuItems({ history, location, style = {} }) {
             className={match || username ? 'active' : ''}
             onClick={() => history.push('/users')}
           >
-            <div className="icon" style={{ width: '3rem' }}>
+            <div className="icon">
               <Icon icon="users" size="1x" />
             </div>
             <a>People</a>

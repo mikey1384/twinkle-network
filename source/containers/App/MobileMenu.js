@@ -57,7 +57,7 @@ class MobileMenu extends Component {
             height: 100%;
             width: 70%;
             position: relative;
-            background: ${Color.backgroundGray};
+            background: ${Color.backgroundGray()};
             margin-left: ${marginLeft};
             transition: margin-left 0.5s;
             overflow-y: scroll;
@@ -76,7 +76,7 @@ class MobileMenu extends Component {
                 background: #fff;
                 width: 100%;
                 text-align: center;
-                color: ${Color.red};
+                color: ${Color.red()};
                 font-size: 3rem;
                 padding: 1rem;
               `}

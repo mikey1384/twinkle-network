@@ -15,11 +15,12 @@ export default function ChatButton({
   numUnreads = 0,
   ...props
 }) {
+  const newMessages = !chatMode && numUnreads > 0
   return (
     <Button
       {...props}
-      transparent
-      logo={!chatMode && numUnreads > 0}
+      transparent={!newMessages}
+      logo={newMessages}
       onClick={onClick}
       disabled={loading}
     >

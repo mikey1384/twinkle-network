@@ -156,8 +156,8 @@ class PlaylistCarousel extends Component {
             <div>
               <h1 onClick={() => this.setState({ playlistModalShown: true })}>
                 {cleanString(title)}
+                &nbsp;<small>by {uploader}</small>
               </h1>
-              &nbsp;&nbsp;<small>by {uploader}</small>
             </div>
           )}
           {(editable || isAdmin) && (

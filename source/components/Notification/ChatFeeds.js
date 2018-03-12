@@ -29,14 +29,17 @@ class ChatFeeds extends Component {
           <h3
             style={{
               fontWeight: 'bold',
-              color: Color.green(),
+              color: Color.logoBlue(),
               marginBottom: '0px'
             }}
           >
             {content}
           </h3>
           {this.renderDetails()}
-          <Button transparent onClick={() => openChat(2)}>
+          <Button
+            success
+            onClick={() => openChat(2)}
+          >
             <span className="glyphicon glyphicon-comment" />&nbsp;Join
             Conversation
           </Button>

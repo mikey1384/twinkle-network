@@ -28,7 +28,7 @@ export default class Modal extends Component {
     return (
       <div
         className={`${css`
-          z-index: 2000;
+          z-index: 2500;
           position: fixed;
           top: 0;
           right: 0;
@@ -49,7 +49,7 @@ export default class Modal extends Component {
             margin-left: ${marginLeft[widthKey]};
             box-shadow: 3px 4px 5px ${Color.black()};
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             flex-direction: column;
             height: auto;
             .close {
@@ -59,13 +59,13 @@ export default class Modal extends Component {
               align-items: center;
               justify-content: center;
               font-size: 1.5rem;
+              position: absolute;
               top: 1rem;
               right: 1rem;
               border: none;
               width: 1.5rem;
               height: 1.5rem;
               cursor: pointer;
-              position: absolute;
               opacity: 0.5;
               &:hover {
                 opacity: 1;

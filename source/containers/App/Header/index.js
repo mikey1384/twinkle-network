@@ -157,6 +157,9 @@ class Header extends Component {
           zIndex: 1000
         }}
       >
+        {signinModalShown && (
+          <SigninModal show onHide={() => closeSigninModal()} />
+        )}
         <div
           className={`desktop ${css`
             position: relative;
@@ -381,9 +384,6 @@ class Header extends Component {
             )}
           </div>
         </div>
-        {signinModalShown && (
-          <SigninModal show onHide={() => closeSigninModal()} />
-        )}
       </nav>
     )
   }

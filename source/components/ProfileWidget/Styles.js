@@ -39,13 +39,11 @@ export const container = css`
       span {
         color: ${Color.darkGray()};
         font-size: 1rem;
-        line-height: 2rem;
       }
     }
   }
   .details {
     font-size: 1.3rem;
-    line-height: 2rem;
     border: 1px solid ${Color.borderGray()};
     border-bottom-left-radius: ${borderRadius};
     border-bottom-right-radius: ${borderRadius};
@@ -53,7 +51,6 @@ export const container = css`
     padding: 1.5rem;
     .login-message {
       font-size: 2rem;
-      line-height: 3rem;
       color: ${Color.darkGray()};
       font-weight: bold;
     }

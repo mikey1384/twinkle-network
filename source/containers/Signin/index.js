@@ -27,15 +27,9 @@ class Signin extends Component {
     return (
       <Modal show onHide={onHide}>
         <header>
-          {currentPage === 'main' && (
-            <span>{`Welcome to Twinkle. Do you have a Twinkle account?`}</span>
-          )}
-          {currentPage === 'login' && (
-            <span>{`Great! What's your username and password?`}</span>
-          )}
-          {currentPage === 'signUp' && (
-            <span>{`Sure, let's set up your account...`}</span>
-          )}
+          {currentPage === 'main' && `Welcome to Twinkle. Do you have a Twinkle account?`}
+          {currentPage === 'login' && `Great! What's your username and password?`}
+          {currentPage === 'signUp' && `Sure, let's set up your account...`}
         </header>
         <Fragment>
           {currentPage === 'main' && (

@@ -188,6 +188,15 @@ class App extends Component {
             </Button>
           </div>
         )}
+        {mobileMenuShown && (
+          <MobileMenu
+            chatMode={chatMode}
+            location={location}
+            history={history}
+            username={username}
+            onClose={() => this.setState({ mobileMenuShown: false })}
+          />
+        )}
         <Header
           chatMode={chatMode}
           chatLoading={chatLoading}
@@ -212,15 +221,6 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
-        {mobileMenuShown && (
-          <MobileMenu
-            chatMode={chatMode}
-            location={location}
-            history={history}
-            username={username}
-            onClose={() => this.setState({ mobileMenuShown: false })}
-          />
-        )}
         {chatMode &&
           this.props.loggedIn && (
             <Chat

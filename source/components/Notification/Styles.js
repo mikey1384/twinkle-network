@@ -5,10 +5,11 @@ export const container = css`
   padding-top: 1rem;
   padding-bottom: 1rem;
   font-size: 1.5rem;
-  section {
+  > section {
     min-height: 30vh;
   }
-  li, a {
+  > li,
+  > a {
     line-height: 2rem;
   }
   @media (max-width: ${mobileMaxWidth}) {
@@ -16,11 +17,14 @@ export const container = css`
     margin-top: 2rem;
     border-radius: 0;
     font-size: 2.5rem;
-    button {
-      font-size: 2.5rem;
-    }
-    h4 {
+    > button {
       font-size: 3rem;
+    }
+    > h4 {
+      font-size: 3rem;
+    }
+    > section {
+      min-height: 0;
     }
   }
 `

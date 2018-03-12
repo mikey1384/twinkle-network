@@ -9,7 +9,7 @@ export const chatStyle = css`
   font-size: 1.5rem;
   position: relative;
   @media (max-width: ${mobileMaxWidth}) {
-    padding-top: 9rem;
+    height: CALC(100% - 2rem);
   }
 `
 
