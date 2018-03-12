@@ -137,9 +137,7 @@ class SubjectHeader extends Component {
         ) : (
           <Loading
             style={{
-              textAlign: 'center',
-              fontSize: '2em',
-              color: Color.green
+              color: Color.green()
             }}
             text="Loading Subject..."
           />

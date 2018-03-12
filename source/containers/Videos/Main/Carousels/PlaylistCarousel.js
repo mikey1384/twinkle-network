@@ -127,10 +127,7 @@ class PlaylistCarousel extends Component {
           className={css`
             position: relative;
             padding-bottom: 0.5rem;
-            > h1 {
-              font-size: 2.5rem;
-              line-height: 3rem;
-              font-weight: bold;
+            h2 {
               cursor: pointer;
               display: inline;
               color: ${Color.blue()};
@@ -154,10 +151,10 @@ class PlaylistCarousel extends Component {
             />
           ) : (
             <div>
-              <h1 onClick={() => this.setState({ playlistModalShown: true })}>
+              <h2 onClick={() => this.setState({ playlistModalShown: true })}>
                 {cleanString(title)}
                 &nbsp;<small>by {uploader}</small>
-              </h1>
+              </h2>
             </div>
           )}
           {(editable || isAdmin) && (

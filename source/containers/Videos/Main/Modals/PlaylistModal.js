@@ -58,7 +58,7 @@ class PlaylistModal extends Component {
     return (
       <Modal onHide={onHide}>
         <header>
-          <h4>{title}</h4>
+          {title}
         </header>
         <main>
           {videos.length === 0 && <Loading text="Loading..." />}
