@@ -436,7 +436,7 @@ class Chat extends Component {
                     display: 'flex',
                     color: '#fff',
                     fontWeight: 'bold',
-                    width: '2rem',
+                    minWidth: '2rem',
                     height: '2rem',
                     borderRadius: '50%',
                     justifyContent: 'center',

@@ -185,7 +185,7 @@ class MessagesContainer extends Component {
         >
           {newUnseenMessage && (
             <Button
-              className="btn btn-warning"
+              warning
               onClick={() => {
                 this.setState({ newUnseenMessage: false })
                 const content = this.content
