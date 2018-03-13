@@ -16,7 +16,7 @@ export default function Flat({ isLoading, onClick, style }) {
         justifyContent: 'center',
         padding: '0',
         margin: '0',
-        height: '3rem',
+        height: '4rem',
         cursor: isLoading ? 'default' : 'pointer',
         backgroundColor: Color.green(),
         color: '#fff',

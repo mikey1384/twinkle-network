@@ -5,7 +5,7 @@ import {
   loadRightMenuVideos,
   loadMorePlaylistVideos
 } from 'redux/actions/VideoActions'
-import { Link } from 'react-router-dom'
+import Link from 'components/Link'
 import { Color } from 'constants/css'
 import { cleanString } from 'helpers/stringHelpers'
 import { queryStringForArray } from 'helpers/apiHelpers'
@@ -64,6 +64,7 @@ class RightMenu extends Component {
       <ErrorBoundary
         className={css`
           width: CALC(30% - 2rem);
+          font-size: 2rem;
           margin-right: 1rem;
           section {
             padding: 1rem;
@@ -77,6 +78,7 @@ class RightMenu extends Component {
             a {
               font-size: 1.7rem;
               font-weight: bold;
+              line-height: 1.7rem;
             }
           }
         `}
@@ -95,7 +97,7 @@ class RightMenu extends Component {
               <FlatLoadMoreButton
                 isLoading={playlistVideosLoading}
                 onClick={this.loadMorePlaylistVideos}
-                style={{ marginTop: '1.5em' }}
+                style={{ marginTop: '1.5rem' }}
               />
             )}
           </section>
@@ -138,7 +140,6 @@ class RightMenu extends Component {
         key={video.id}
         style={{
           display: 'flex',
-          justifyContent: 'flex-start',
           alignItems: 'flex-start',
           width: '100%',
           marginTop: index !== 0 ? '1rem' : 0
@@ -161,7 +162,8 @@ class RightMenu extends Component {
           style={{
             paddingLeft: '1rem',
             width: '50%',
-            flexDirection: 'column'
+            lineHeight: 1.1,
+            marginTop: '-0.5rem'
           }}
         >
           <Link
@@ -176,7 +178,7 @@ class RightMenu extends Component {
               color: Color.gray(),
               display: 'block',
               fontSize: '1.3rem',
-              lineHeight: '2rem'
+              marginTop: '1rem'
             }}
           >
             Uploaded by {video.username}
