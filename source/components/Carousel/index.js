@@ -251,8 +251,8 @@ class Carousel extends Component {
                 snow
                 style={{
                   position: 'absolute',
-                  top: '4.5rem',
-                  right: '-1.5rem'
+                  top: '7rem',
+                  right: '-0.5rem'
                 }}
                 onClick={onShowAll}
               >
