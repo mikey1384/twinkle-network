@@ -40,6 +40,7 @@ export default class Modal extends Component {
         `} ${className}`}
       >
         <Content
+          eventTypes={['click', 'touchend']}
           className={css`
             position: relative;
             border-radius: ${borderRadius};
