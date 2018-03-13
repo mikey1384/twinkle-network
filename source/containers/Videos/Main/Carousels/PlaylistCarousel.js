@@ -185,7 +185,8 @@ class PlaylistCarousel extends Component {
           progressBar={false}
           slidesToShow={numSlides}
           slidesToScroll={numSlides}
-          cellSpacing={18}
+          cellSpacing={20}
+          slideWidth={0.99}
           dragging={true}
           showAllButton={showAllButton}
           onShowAll={() => this.setState({ playlistModalShown: true })}
