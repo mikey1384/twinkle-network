@@ -93,9 +93,6 @@ export default class LongText extends Component {
         line = ''
       }
       if (numLines === maxLines) {
-        console.log(trimmedText
-          .split('\n')
-          .filter((line, index) => index < 10))
         const finalText = trimmedText
           .split('\n')
           .filter((line, index) => index < 10)
