@@ -160,13 +160,25 @@ class PlaylistCarousel extends Component {
             </div>
           )}
           {(editable || isAdmin) && (
-            <DropdownButton
-              snow
-              style={{ position: 'absolute', right: 0, top: 0 }}
-              direction="left"
-              icon="pencil"
-              menuProps={menuProps}
-            />
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+                display: 'flex',
+                flexDirection: 'row-reverse',
+                alignItems: 'center'
+              }}
+            >
+              <DropdownButton
+                snow
+                direction="left"
+                icon="pencil"
+                menuProps={menuProps}
+              />
+            </div>
           )}
         </div>
         <Carousel
