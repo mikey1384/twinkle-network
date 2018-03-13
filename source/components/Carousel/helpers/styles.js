@@ -70,7 +70,7 @@ export function getSlideStyles() {
     height: 'auto',
     boxSizing: 'border-box',
     MozBoxSizing: 'border-box',
-    marginLeft: this.props.cellSpacing / 2 - 1.5,
+    marginLeft: this.props.cellSpacing / 2,
     marginRight: this.props.cellSpacing / 2,
     marginTop: 'auto',
     marginBottom: 'auto'
