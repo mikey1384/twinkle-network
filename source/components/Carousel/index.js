@@ -252,7 +252,8 @@ class Carousel extends Component {
                 style={{
                   position: 'absolute',
                   top: '7rem',
-                  right: '-0.5rem'
+                  right: '-0.5rem',
+                  opacity: 0.9
                 }}
                 onClick={onShowAll}
               >
