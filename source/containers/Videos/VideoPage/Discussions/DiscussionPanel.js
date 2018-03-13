@@ -28,6 +28,7 @@ import {
   editVideoDiscussion,
   deleteVideoDiscussion
 } from 'redux/actions/VideoActions'
+import { Color } from 'constants/css'
 import { css } from 'emotion'
 
 class DiscussionPanel extends Component {
@@ -118,6 +119,7 @@ class DiscussionPanel extends Component {
               align-items: center;
               p {
                 font-size: 2.5rem;
+                color: ${Color.green()};
                 font-weight: bold;
               }
             `}
