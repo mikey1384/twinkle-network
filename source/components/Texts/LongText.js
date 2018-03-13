@@ -83,19 +83,26 @@ export default class LongText extends Component {
     } ${computedStyle['font-size']} ${computedStyle['font-family']}`
     canvas.font = font
     let line = ''
-    let lines = 0
-    let finalText = ''
+    let numLines = 0
+    let trimmedText = ''
     for (let i = 0; i < originalText.length; i++) {
       line += originalText[i]
       if (canvas.measureText(line).width > maxWidth) {
-        lines++
-        finalText += line
+        numLines++
+        trimmedText += line
         line = ''
       }
-      if (lines === maxLines - 1) {
+      if (numLines === maxLines) {
+        console.log(trimmedText
+          .split('\n')
+          .filter((line, index) => index < 10))
+        const finalText = trimmedText
+          .split('\n')
+          .filter((line, index) => index < 10)
+          .join('\n')
         return this.setState({ text: finalText, more: true })
       }
     }
-    this.setState({ text: finalText + line || line })
+    this.setState({ text: trimmedText + line || line })
   }
 }
