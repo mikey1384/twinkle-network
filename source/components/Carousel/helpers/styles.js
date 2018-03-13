@@ -70,8 +70,8 @@ export function getSlideStyles() {
     height: 'auto',
     boxSizing: 'border-box',
     MozBoxSizing: 'border-box',
-    marginLeft: this.props.cellSpacing / 2,
-    marginRight: this.props.cellSpacing / 2,
+    marginLeft: this.props.cellSpacing / 2 - 1,
+    marginRight: this.props.cellSpacing / 2 - 1,
     marginTop: 'auto',
     marginBottom: 'auto'
   }

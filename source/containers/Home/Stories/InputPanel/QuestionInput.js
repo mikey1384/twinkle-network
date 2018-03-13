@@ -13,8 +13,7 @@ import {
 } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 import { PanelStyle } from './Styles'
-
-const wordLimit = 150
+import { questionWordLimit as wordLimit } from 'constants/defaultValues'
 
 class QuestionInput extends Component {
   static propTypes = {

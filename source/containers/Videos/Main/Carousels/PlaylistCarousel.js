@@ -126,7 +126,9 @@ class PlaylistCarousel extends Component {
         <div
           className={css`
             position: relative;
-            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            padding-bottom: 0.8rem;
             h2 {
               cursor: pointer;
               display: inline;

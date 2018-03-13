@@ -13,6 +13,7 @@ import {
   isValidUrl,
   isValidYoutubeUrl
 } from 'helpers/stringHelpers'
+import { questionWordLimit as wordLimit } from 'constants/defaultValues'
 
 export default class ContentEditor extends Component {
   static propTypes = {
@@ -109,9 +110,11 @@ export default class ContentEditor extends Component {
                 }}
               />
               <small
-                style={{ color: editedContent.length > 100 ? 'red' : null }}
+                style={{
+                  color: editedContent.length > wordLimit ? 'red' : null
+                }}
               >
-                {editedContent.length}/100 Characters
+                {editedContent.length}/{wordLimit} Characters
               </small>
             </Fragment>
           )}
