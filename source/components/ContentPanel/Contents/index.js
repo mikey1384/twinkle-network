@@ -12,8 +12,6 @@ import MainContent from './MainContent'
 import TargetContent from './TargetContent'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
-import { mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
 
 class Contents extends Component {
   static propTypes = {
@@ -96,54 +94,44 @@ class Contents extends Component {
             title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
           />
         )}
-        <div
-          className={css`
-            padding: 1rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              ${type === 'video' || type === 'discussion'
-                ? 'padding: 1rem 0;'
-                : 'padding: 1rem;'};
-            }
-          `}
-        >
-          {type === 'comment' &&
-            attachedVideoShown && (
-              <VideoPlayer
-                autoplay
-                isStarred={!!rootContentIsStarred}
-                title={contentTitle}
-                style={{ marginBottom: '1em' }}
-                hasHqThumb={hasHqThumb}
-                videoId={rootId}
-                videoCode={rootContent}
-              />
-            )}
-          {type === 'comment' &&
-            (commentId || replyId || discussionId) && (
-              <TargetContent
-                contentObj={contentObj}
-                myId={myId}
-                methods={methods.TargetContent}
-              />
-            )}
-          <MainContent
-            contentId={contentId}
-            content={content}
-            contentDescription={contentDescription}
-            contentTitle={contentTitle}
-            hasHqThumb={hasHqThumb}
-            isEditing={isEditing}
-            isStarred={!!isStarred}
-            onEditContent={methods.onContentEdit}
-            onEditDismiss={() => this.setState({ isEditing: false })}
-            rootId={rootId}
-            rootContent={rootContent}
-            rootContentIsStarred={!!rootContentIsStarred}
-            rootType={rootType}
-            urlRelated={{ thumbUrl, actualTitle, actualDescription, siteUrl }}
-            type={type}
-          />
-        </div>
+        {type === 'comment' &&
+          attachedVideoShown && (
+            <VideoPlayer
+              stretch
+              autoplay
+              isStarred={!!rootContentIsStarred}
+              title={contentTitle}
+              style={{ marginBottom: '1em' }}
+              hasHqThumb={hasHqThumb}
+              videoId={rootId}
+              videoCode={rootContent}
+            />
+          )}
+        {type === 'comment' &&
+          (commentId || replyId || discussionId) && (
+            <TargetContent
+              contentObj={contentObj}
+              myId={myId}
+              methods={methods.TargetContent}
+            />
+          )}
+        <MainContent
+          contentId={contentId}
+          content={content}
+          contentDescription={contentDescription}
+          contentTitle={contentTitle}
+          hasHqThumb={hasHqThumb}
+          isEditing={isEditing}
+          isStarred={!!isStarred}
+          onEditContent={methods.onContentEdit}
+          onEditDismiss={() => this.setState({ isEditing: false })}
+          rootId={rootId}
+          rootContent={rootContent}
+          rootContentIsStarred={!!rootContentIsStarred}
+          rootType={rootType}
+          urlRelated={{ thumbUrl, actualTitle, actualDescription, siteUrl }}
+          type={type}
+        />
         {!isEditing && (
           <div className="bottom-interface">
             <div className="buttons-bar">

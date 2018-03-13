@@ -24,6 +24,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import UserListModal from 'components/Modals/UserListModal'
 import Description from './Description'
 import { css } from 'emotion'
+import { mobileMaxWidth } from '../../../constants/css'
 
 class LinkPage extends Component {
   static propTypes = {
@@ -118,6 +119,9 @@ class LinkPage extends Component {
             background-color: #fff;
             padding: 1rem;
             margin-bottom: 1rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
           `}
         >
           <Description

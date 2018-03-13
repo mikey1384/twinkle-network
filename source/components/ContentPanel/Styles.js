@@ -20,9 +20,9 @@ export const container = css`
   }
   .body {
     padding: 0;
-    .content {
-      margin-top: 1rem;
+    .panel__content {
       padding: 1rem;
+      margin-top: 1rem;
       word-break: break-word;
       font-size: 1.6rem;
     }
@@ -31,7 +31,7 @@ export const container = css`
       display: flex;
       flex-direction: column;
       .buttons-bar {
-        margin-top: 1.5rem;
+        margin-top: 1rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -69,25 +69,5 @@ export const container = css`
     border-radius: 0;
     border-left: none;
     border-right: none;
-    .body {
-      font-size: 2rem;
-    }
-    .likers {
-      font-size: 1.7rem;
-    }
-    .question {
-      font-size: 3rem;
-    }
-    header {
-      .title {
-        font-size: 2.5rem;
-      }
-      .timestamp {
-        font-size: 1.5rem;
-      }
-    }
-    button {
-      font-size: 2rem;
-    }
   }
 `

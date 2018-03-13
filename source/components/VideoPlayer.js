@@ -34,6 +34,7 @@ class VideoPlayer extends Component {
     changeUserXP: PropTypes.func,
     isStarred: PropTypes.bool,
     minimized: PropTypes.bool,
+    stretch: PropTypes.bool,
     onEdit: PropTypes.bool,
     pageVisible: PropTypes.bool,
     currentVideoSlot: PropTypes.number,
@@ -199,6 +200,7 @@ class VideoPlayer extends Component {
     const {
       isStarred,
       minimized,
+      stretch,
       onEdit,
       videoCode,
       title,
@@ -334,6 +336,7 @@ class VideoPlayer extends Component {
           !!userId && (
             <ProgressBar
               progress={progress}
+              noBorderRadius={stretch}
               color={
                 justEarned
                   ? Color.green()

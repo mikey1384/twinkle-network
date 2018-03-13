@@ -87,7 +87,8 @@ class Content extends Component {
         className={css`
           word-break: break-word;
           border-radius: ${borderRadius};
-          border: 1px solid ${Color.inputBorderGray()};
+          border-top: 1px solid ${Color.inputBorderGray()};
+          border-bottom: 1px solid ${Color.inputBorderGray()};
           padding: 1.5rem 1.5rem
             ${!contentAvailable || isDiscussion ? '1.5rem' : '1rem'} 1.5rem;
           background: ${Color.whiteGray()};

@@ -42,9 +42,16 @@ class QuestionInput extends Component {
             color: question.length > wordLimit && 'red'
           }}
         />
-        <small style={{ color: question.length > wordLimit ? 'red' : null }}>
-          {question.length}/{wordLimit} Characters
-        </small>
+        <div style={{ marginTop: '1rem' }}>
+          <span
+            style={{
+              fontSize: '1.2rem',
+              color: question.length > wordLimit ? 'red' : Color.darkGray()
+            }}
+          >
+            {question.length}/{wordLimit} Characters
+          </span>
+        </div>
         {descriptionInputShown && (
           <div
             css={`

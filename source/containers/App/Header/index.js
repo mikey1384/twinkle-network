@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import Link from 'components/Link'
 import {
-  openSigninModal,
-  closeSigninModal,
   logout
 } from 'redux/actions/UserActions'
 import {
@@ -18,7 +16,6 @@ import {
   checkVersion,
   notifyChatSubjectChange
 } from 'redux/actions/NotiActions'
-import SigninModal from 'containers/Signin'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
 import Button from 'components/Button'
@@ -36,7 +33,6 @@ class Header extends Component {
     chatLoading: PropTypes.bool,
     chatMode: PropTypes.bool,
     checkVersion: PropTypes.func,
-    closeSigninModal: PropTypes.func,
     getNumberOfUnreadMessages: PropTypes.func,
     increaseNumberOfUnreadMessages: PropTypes.func,
     location: PropTypes.object,
@@ -49,7 +45,7 @@ class Header extends Component {
     openSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
-    signinModalShown: PropTypes.bool,
+    style: PropTypes.object,
     turnChatOff: PropTypes.func,
     userId: PropTypes.number,
     username: PropTypes.string,
@@ -136,15 +132,14 @@ class Header extends Component {
     const {
       chatLoading,
       location: { pathname },
-      signinModalShown,
       loggedIn,
       username,
       chatMode,
       openSigninModal,
-      closeSigninModal,
       onChatButtonClick,
       onMobileMenuOpen,
       numChatUnreads,
+      style = {},
       turnChatOff
     } = this.props
     const { logoHovered } = this.state
@@ -154,12 +149,9 @@ class Header extends Component {
         className={`unselectable ${container} ${chatMode && 'header chat'}`}
         style={{
           position: chatMode ? 'relative' : 'fixed',
-          zIndex: 1000
+          ...style
         }}
       >
-        {signinModalShown && (
-          <SigninModal show onHide={() => closeSigninModal()} />
-        )}
         <div
           className={`desktop ${css`
             position: relative;
@@ -414,14 +406,11 @@ export default connect(
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
-    signinModalShown: state.UserReducer.signinModalShown,
     numChatUnreads: state.ChatReducer.numUnreads,
     chatMode: state.ChatReducer.chatMode,
     versionMatch: state.NotiReducer.versionMatch
   }),
   {
-    openSigninModal,
-    closeSigninModal,
     logout,
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,

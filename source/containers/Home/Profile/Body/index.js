@@ -160,7 +160,7 @@ class Body extends Component {
         ref={ref => {
           this.Container = ref
         }}
-        style={{ height: '100%' }}
+        style={{ height: '100%', marginBottom: '1rem' }}
       >
         <FilterBar bordered>
           <Route

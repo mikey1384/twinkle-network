@@ -11,7 +11,11 @@ import {
   turnChatOff
 } from 'redux/actions/ChatActions'
 import { changePageVisibility } from 'redux/actions/ViewActions'
-import { initSessionAsync } from 'redux/actions/UserActions'
+import {
+  initSessionAsync,
+  openSigninModal,
+  closeSigninModal
+} from 'redux/actions/UserActions'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import Home from 'containers/Home'
 import ContentPage from 'containers/ContentPage'
@@ -29,6 +33,7 @@ import MobileMenu from './MobileMenu'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import Button from 'components/Button'
+import SigninModal from 'containers/Signin'
 
 let visibilityChange
 let hidden
@@ -39,6 +44,7 @@ class App extends Component {
     initSession: PropTypes.func,
     turnChatOff: PropTypes.func,
     chatNumUnreads: PropTypes.number,
+    closeSigninModal: PropTypes.func,
     clearNotifications: PropTypes.func,
     fetchNotifications: PropTypes.func,
     resetChat: PropTypes.func,
@@ -47,6 +53,7 @@ class App extends Component {
     initChat: PropTypes.func,
     changePageVisibility: PropTypes.func,
     history: PropTypes.object,
+    signinModalShown: PropTypes.bool,
     username: PropTypes.string
   }
 
@@ -136,8 +143,10 @@ class App extends Component {
   render() {
     const {
       chatMode,
+      closeSigninModal,
       location,
       history,
+      signinModalShown,
       turnChatOff,
       username,
       resetChat
@@ -158,6 +167,16 @@ class App extends Component {
           }
         `}
       >
+        {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
+        {mobileMenuShown && (
+          <MobileMenu
+            chatMode={chatMode}
+            location={location}
+            history={history}
+            username={username}
+            onClose={() => this.setState({ mobileMenuShown: false })}
+          />
+        )}
         {updateNoticeShown && (
           <div
             className={css`
@@ -195,15 +214,6 @@ class App extends Component {
               Update!
             </Button>
           </div>
-        )}
-        {mobileMenuShown && (
-          <MobileMenu
-            chatMode={chatMode}
-            location={location}
-            history={history}
-            username={username}
-            onClose={() => this.setState({ mobileMenuShown: false })}
-          />
         )}
         <Header
           chatMode={chatMode}
@@ -278,9 +288,12 @@ export default connect(
     loggedIn: state.UserReducer.loggedIn,
     chatMode: state.ChatReducer.chatMode,
     chatNumUnreads: state.ChatReducer.numUnreads,
+    signinModalShown: state.UserReducer.signinModalShown,
     username: state.UserReducer.username
   }),
   {
+    closeSigninModal,
+    openSigninModal,
     initSession: initSessionAsync,
     turnChatOff,
     fetchNotifications,

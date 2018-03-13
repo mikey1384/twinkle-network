@@ -16,13 +16,6 @@ export const container = css`
     margin-bottom: 2rem;
     margin-top: 2rem;
     border-radius: 0;
-    font-size: 2.5rem;
-    > button {
-      font-size: 3rem;
-    }
-    > h4 {
-      font-size: 3rem;
-    }
     > section {
       min-height: 0;
     }

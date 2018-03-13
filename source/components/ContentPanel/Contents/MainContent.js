@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { cleanString } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
@@ -45,6 +45,7 @@ export default function MainContent({
     <div>
       {(type === 'video' || type === 'discussion') && (
         <VideoPlayer
+          stretch
           isStarred={!!(isStarred || rootContentIsStarred)}
           onEdit={isEditing}
           title={contentTitle}
@@ -53,118 +54,124 @@ export default function MainContent({
           videoCode={rootContent}
         />
       )}
-      {!isEditing && (
-        <div
-          className="content"
-          style={{
-            marginTop: type !== 'video' && type !== 'discussion' && 0,
-            marginBottom: type !== 'video' && '1rem'
-          }}
-        >
-          {type === 'comment' && (
-            <div
-              style={{
-                wordBreak: 'break-word'
-              }}
-            >
-              <LongText>{content}</LongText>
-            </div>
-          )}
-          {type === 'question' && (
-            <div className="question">
-              <span style={{ color: Color.green() }}>Question: </span>
-              <span style={{ color: Color.darkGray() }}>
-                {cleanString(content)}
-              </span>
-            </div>
-          )}
-          {(type === 'url' || type === 'question') && (
-            <div
-              style={{
-                wordBreak: 'break-word',
-                marginBottom: '1rem'
-              }}
-            >
-              {contentDescription && contentDescription !== 'No description' ? (
-                <LongText>{contentDescription || ''}</LongText>
-              ) : type === 'url' ? (
-                <div>{contentTitle}</div>
-              ) : null}
-            </div>
-          )}
-          {type === 'discussion' && (
-            <div>
-              <p
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: '2.5rem',
-                  marginBottom: '1.5rem',
-                  color: Color.green()
-                }}
-              >
-                Discuss:
-              </p>
-              <p>{cleanString(contentTitle)}</p>
-            </div>
-          )}
-          {type === 'video' && (
-            <div
-              style={{
-                wordBreak: 'break-word'
-              }}
-            >
-              <LongText>
-                {contentDescription && contentDescription !== 'No description'
-                  ? contentDescription
-                  : contentTitle}
-              </LongText>
-            </div>
-          )}
-          {type === 'discussion' &&
-            contentDescription && (
+      <div
+        className="panel__content"
+        style={{
+          marginTop: type !== 'video' && type !== 'discussion' && 0,
+          marginBottom: type !== 'video' && '1rem'
+        }}
+      >
+        {!isEditing && (
+          <Fragment>
+            {type === 'comment' && (
               <div
                 style={{
                   wordBreak: 'break-word'
                 }}
               >
-                <LongText>{contentDescription}</LongText>
+                <LongText>{content}</LongText>
               </div>
             )}
-        </div>
-      )}
-      {isEditing && (
-        <ContentEditor
-          comment={content}
-          content={content || rootContent}
-          contentId={contentId}
-          description={contentDescription}
-          onDismiss={onEditDismiss}
-          onEditContent={onEditContent}
-          style={{
-            marginTop: (type === 'video' || type === 'discussion') && '1em'
-          }}
-          title={contentTitle}
-          type={type}
-        />
-      )}
-      {type === 'comment' &&
-        rootType === 'url' && (
-          <Embedly
-            title={cleanString(contentTitle)}
-            url={rootContent}
-            id={rootId}
-            {...urlRelated}
+            {type === 'question' && (
+              <div className="question">
+                <span style={{ color: Color.green() }}>Question: </span>
+                <span style={{ color: Color.darkGray() }}>
+                  {cleanString(content)}
+                </span>
+              </div>
+            )}
+            {(type === 'url' || type === 'question') && (
+              <div
+                style={{
+                  wordBreak: 'break-word',
+                  marginBottom: '1rem'
+                }}
+              >
+                {contentDescription &&
+                contentDescription !== 'No description' ? (
+                  <LongText>{contentDescription || ''}</LongText>
+                ) : type === 'url' ? (
+                  <div>{contentTitle}</div>
+                ) : null}
+              </div>
+            )}
+            {type === 'discussion' && (
+              <div>
+                <p
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '2.5rem',
+                    marginBottom: '1rem',
+                    color: Color.green()
+                  }}
+                >
+                  Discuss:
+                </p>
+                <h3>{cleanString(contentTitle)}</h3>
+              </div>
+            )}
+            {type === 'video' && (
+              <div
+                style={{
+                  wordBreak: 'break-word'
+                }}
+              >
+                <LongText>
+                  {contentDescription && contentDescription !== 'No description'
+                    ? contentDescription
+                    : contentTitle}
+                </LongText>
+              </div>
+            )}
+            {type === 'discussion' &&
+              contentDescription && (
+                <div
+                  style={{
+                    wordBreak: 'break-word',
+                    marginTop: '1rem'
+                  }}
+                >
+                  <LongText>{contentDescription}</LongText>
+                </div>
+              )}
+          </Fragment>
+        )}
+        {isEditing && (
+          <ContentEditor
+            comment={content}
+            content={content || rootContent}
+            contentId={contentId}
+            description={contentDescription}
+            onDismiss={onEditDismiss}
+            onEditContent={onEditContent}
+            style={{
+              marginTop: (type === 'video' || type === 'discussion') && '1em'
+            }}
+            title={contentTitle}
+            type={type}
           />
         )}
-      {!isEditing &&
-        type === 'url' && (
-          <Embedly
-            title={cleanString(contentTitle)}
-            url={content}
-            id={rootId}
-            {...urlRelated}
-          />
-        )}
+        {type === 'comment' &&
+          rootType === 'url' && (
+            <Embedly
+              style={{ marginTop: '2rem', marginBottom: '-1rem' }}
+              title={cleanString(contentTitle)}
+              url={rootContent}
+              id={rootId}
+              {...urlRelated}
+            />
+          )}
+        {!isEditing &&
+          type === 'url' && (
+            <Embedly
+              style={{ marginBottom: '-1rem' }}
+              title={cleanString(contentTitle)}
+              url={content}
+              id={rootId}
+              {...urlRelated}
+            />
+          )}
+      </div>
     </div>
   )
 }

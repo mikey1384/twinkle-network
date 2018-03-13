@@ -4,12 +4,21 @@ import { borderRadius, Color, innerBorderRadius } from 'constants/css'
 import { css } from 'emotion'
 
 ProgressBar.propTypes = {
+  noBorderRadius: PropTypes.bool,
   progress: PropTypes.number.isRequired,
   color: PropTypes.string,
+  stretch: PropTypes.bool,
   style: PropTypes.object,
   text: PropTypes.string
 }
-export default function ProgressBar({ color = Color.blue(), progress, style = {}, text }) {
+export default function ProgressBar({
+  color = Color.blue(),
+  noBorderRadius,
+  progress,
+  stretch,
+  style = {},
+  text
+}) {
   return (
     <div
       className={css`
@@ -33,7 +42,12 @@ export default function ProgressBar({ color = Color.blue(), progress, style = {}
             : 0};
         }
       `}
-      style={style}
+      style={{
+        ...style,
+        borderLeft: noBorderRadius && 'none',
+        borderRight: noBorderRadius && 'none',
+        borderRadius: noBorderRadius && 0
+      }}
     >
       <section
         style={{
@@ -43,7 +57,8 @@ export default function ProgressBar({ color = Color.blue(), progress, style = {}
           display: 'flex',
           opacity: progress > 0 ? 1 : 0,
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          borderRadius: noBorderRadius && 0
         }}
       >
         <span

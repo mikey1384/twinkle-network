@@ -45,8 +45,8 @@ class MobileMenu extends Component {
           bottom: 0;
           left: 0;
           right: 0;
-          position: absolute;
-          z-index: 1000;
+          position: fixed;
+          z-index: 2000;
           background: rgba(0, 0, 0, 0.5);
           display: flex;
         `}

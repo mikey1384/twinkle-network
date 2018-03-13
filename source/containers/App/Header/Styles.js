@@ -2,12 +2,12 @@ import { css } from 'react-emotion'
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css'
 
 export const container = css`
+  z-index: 500;
   font-family: Helvetica;
   font-size: 1.5rem;
   background: #fff;
   padding: 0.8rem;
   display: flex;
-  z-index: 100;
   justify-content: space-around;
   box-shadow: 0 3px 3px -3px ${Color.menuGray()};
   align-items: center;
@@ -17,7 +17,7 @@ export const container = css`
     display: flex;
     margin-right: 2rem;
     .chat {
-      color: ${Color.menuGray};
+      color: ${Color.menuGray()};
     }
     a {
       text-decoration: none;
@@ -29,7 +29,8 @@ export const container = css`
       .icon {
         line-height: 1.7rem;
         margin-right: 0.7rem;
-        display: block;
+        display: flex;
+        align-items: center;
       }
     }
     a.active {

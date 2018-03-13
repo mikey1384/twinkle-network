@@ -1,50 +1,101 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Truncate from './Truncate'
-import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers'
+import React, { Component, Fragment } from 'react'
+import { processedStringWithURL } from 'helpers/stringHelpers'
 
 export default class LongText extends Component {
   static propTypes = {
     children: PropTypes.string.isRequired,
     className: PropTypes.string,
-    lines: PropTypes.number,
+    maxLines: PropTypes.number,
     style: PropTypes.object
   }
-  constructor(props) {
-    super()
-    this.state = {
-      lines: props.lines || 10
+
+  state = {
+    text: '',
+    more: false,
+    fullText: false
+  }
+
+  componentDidMount() {
+    this.truncateText(this.props.children)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.children !== this.props.children) {
+      this.truncateText(this.props.children)
     }
-    this.toggleLines = this.toggleLines.bind(this)
   }
 
   render() {
-    const { children, style, className } = this.props
-    const { lines } = this.state
+    const { style, className, children } = this.props
+    const { text, more, fullText } = this.state
     return (
-      <div style={style} className={className}>
-        <Truncate
-          lines={lines}
-          ellipsis={
-            <span>
-              ...{' '}
-              <a style={{ cursor: 'pointer' }} onClick={this.toggleLines}>
-                Read more
-              </a>
-            </span>
-          }
-        >
-          <p
+      <div
+        ref={ref => {
+          this.Container = ref
+        }}
+        style={style}
+        className={className}
+      >
+        {fullText ? (
+          <span
             dangerouslySetInnerHTML={{
-              __html: limitBrs(processedStringWithURL(children))
+              __html: processedStringWithURL(children)
             }}
           />
-        </Truncate>
+        ) : (
+          <Fragment>
+            <p
+              ref={ref => {
+                this.Text = ref
+              }}
+            >
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: processedStringWithURL(text)
+                }}
+              />
+              {more && (
+                <Fragment>
+                  {'... '}
+                  <a
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => this.setState({ fullText: true })}
+                  >
+                    Read More
+                  </a>
+                </Fragment>
+              )}
+            </p>
+          </Fragment>
+        )}
       </div>
     )
   }
 
-  toggleLines() {
-    this.setState({ lines: 0 })
+  truncateText = originalText => {
+    const { maxLines = 10 } = this.props
+    const maxWidth = this.Text.getBoundingClientRect().width
+    const canvas = document.createElement('canvas').getContext('2d')
+    const computedStyle = window.getComputedStyle(this.Container)
+    const font = `${computedStyle['font-weight']} ${
+      computedStyle['font-style']
+    } ${computedStyle['font-size']} ${computedStyle['font-family']}`
+    canvas.font = font
+    let line = ''
+    let lines = 0
+    let finalText = ''
+    for (let i = 0; i < originalText.length; i++) {
+      line += originalText[i]
+      if (canvas.measureText(line).width > maxWidth) {
+        lines++
+        finalText += line
+        line = ''
+      }
+      if (lines === maxLines - 1) {
+        return this.setState({ text: finalText, more: true })
+      }
+    }
+    this.setState({ text: finalText + line || line })
   }
 }

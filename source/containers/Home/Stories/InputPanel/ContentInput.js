@@ -16,6 +16,8 @@ import {
 } from 'helpers/stringHelpers'
 import Banner from 'components/Banner'
 import { PanelStyle } from './Styles'
+import { innerBorderRadius, Color } from 'constants/css'
+import { css } from 'emotion'
 
 class ContentInput extends Component {
   static propTypes = {
@@ -54,23 +56,55 @@ class ContentInput extends Component {
           placeholder="Copy the URL address of a website or a YouTube video and paste it here"
           type="text"
         />
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <small>YouTube Video:&nbsp;&nbsp;</small>
-          <div>
-            <input
-              style={{ height: '2rem' }}
-              onClick={() => {
-                this.setState({
-                  form: {
-                    ...form,
-                    checkedVideo: !form.checkedVideo
-                  },
-                  urlError: null
-                })
-              }}
-              checked={form.checkedVideo}
-              type="checkbox"
-            />
+        <div
+          style={{
+            marginTop: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            postion: 'relative',
+            width: '100%'
+          }}
+        >
+          <span style={{ fontSize: '1.2rem', color: Color.darkGray() }}>
+            YouTube Video:&nbsp;&nbsp;
+          </span>
+          <div
+            onClick={() => {
+              this.setState({
+                form: {
+                  ...form,
+                  checkedVideo: !form.checkedVideo
+                },
+                urlError: null
+              })
+            }}
+            style={{
+              borderRadius: innerBorderRadius,
+              border: `1px solid ${Color.borderGray()}`,
+              width: '2rem',
+              height: '2rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              background: form.checkedVideo
+                ? Color.logoBlue()
+                : Color.wellGray()
+            }}
+          >
+            {form.checkedVideo && (
+              <div
+                className={css`
+                  display: inline-block;
+                  width: 0.6rem;
+                  height: 1rem;
+                  margin-top: 2%;
+                  border: solid #fff;
+                  border-width: 0 3px 3px 0;
+                  transform: rotate(45deg);
+                `}
+              />
+            )}
           </div>
         </div>
         {descriptionFieldsShown && (

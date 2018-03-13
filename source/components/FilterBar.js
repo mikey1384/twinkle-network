@@ -68,11 +68,10 @@ export default function FilterBar({ bordered, children, info, success }) {
           }
         }
         > nav:last-child {
-          ${bordered
-            ? 'border-bottom-right-radius: 5px;'
-            : ''} @media (max-width: ${mobileMaxWidth}) {
+          @media (max-width: ${mobileMaxWidth}) {
             border-bottom-right-radius: 0;
           }
+          ${bordered ? 'border-bottom-right-radius: 5px;' : ''};
         }
         > nav:hover {
           transition: border-bottom 0.5s;
@@ -83,9 +82,8 @@ export default function FilterBar({ bordered, children, info, success }) {
             font-weight: bold;
           }
         }
-        @media (max-width: 991px) {
-          font-size: 2.5vw;
-          height: 8rem;
+        @media (max-width: ${mobileMaxWidth}) {
+          height: 7rem;
           border-radius: 0;
           border-left: none;
           border-right: none;
