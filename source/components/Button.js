@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { css } from 'emotion'
-import { borderRadius, Color } from 'constants/css'
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 
 Button.propTypes = {
   warning: PropTypes.bool,
@@ -124,6 +124,24 @@ export default function Button({
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )[colorKey]};
           ${snow ? `box-shadow: 0 0 3px ${Color.black()};` : ''};
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          &:hover {
+            background: ${snow
+              ? '#fff'
+              : buttonColor(
+                  disabled ? backgroundDisabledOpacity : backgroundOpacity
+                )[colorKey]};
+            color: ${filled || opacity
+              ? '#fff'
+              : snow ? Color.black(0.7) : buttonColor(textOpacity)[colorKey]};
+            border: 1px solid
+              ${snow
+                ? Color.whiteGray()
+                : buttonColor(
+                    disabled ? backgroundDisabledOpacity : backgroundOpacity
+                  )[colorKey]};
+          }
         }
       `} ${className} unselectable`}
       ref={ref => {
