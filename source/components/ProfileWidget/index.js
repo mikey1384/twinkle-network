@@ -77,6 +77,7 @@ function ProfileWidget({
         {!userId && (
           <Button
             success
+            filled
             style={{ marginTop: '1rem' }}
             onClick={openSigninModal}
           >
