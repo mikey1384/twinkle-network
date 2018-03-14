@@ -169,7 +169,7 @@ class MessagesContainer extends Component {
                 >
                   <Button
                     success
-                    style={{ width: '20%', marginTop: '1rem' }}
+                    style={{ marginTop: '1rem' }}
                     onClick={this.onLoadMoreButtonClick}
                   >
                     Load More
