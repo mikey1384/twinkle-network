@@ -73,7 +73,7 @@ class Message extends Component {
               !onEdit && (
                 <DropdownButton
                   snow
-                  style={{ position: 'absolute', right: 0 }}
+                  style={{ position: 'absolute', right: 0, zIndex: 1 }}
                   direction="left"
                   icon="pencil"
                   opacity={0.8}
