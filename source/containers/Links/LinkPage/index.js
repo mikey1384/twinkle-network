@@ -193,9 +193,7 @@ class LinkPage extends Component {
         )}
       </div>
     ) : (
-      <div style={{ position: 'relative', width: '100%', height: '20%' }}>
-        <Loading text="Loading Page" />
-      </div>
+      <Loading text="Loading Page..." />
     )
   }
 

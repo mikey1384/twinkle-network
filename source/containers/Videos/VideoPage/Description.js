@@ -23,7 +23,7 @@ import LikeButton from 'components/LikeButton'
 import StarButton from 'components/StarButton'
 import { starVideo } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
-import { Color } from 'constants/css'
+import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
 class Description extends Component {
@@ -141,7 +141,14 @@ class Description extends Component {
           grid-template-areas: 
             "title title title ${starButtonGrid} likeButton"
             "description description description description description"
-            "description description description description description"
+            "description description description description description";
+          @media (max-width: ${mobileMaxWidth}) {
+            grid-template-columns: 30% 30% 1fr 13% 13%;
+            grid-template-areas: 
+              "title title ${starButtonGrid} likeButton likeButton"
+              "description description description description description"
+              "description description description description description";
+          }
         `}
       >
         <div

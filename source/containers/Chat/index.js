@@ -406,7 +406,10 @@ class Chat extends Component {
               <div>
                 <h4
                   style={{
-                    color: !channelName && '#7c7c7c'
+                    color: !channelName && '#7c7c7c',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    lineHeight: 'normal'
                   }}
                 >
                   {channelName || '(Deleted)'}

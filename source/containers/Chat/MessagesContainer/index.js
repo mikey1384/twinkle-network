@@ -118,7 +118,7 @@ class MessagesContainer extends Component {
     const { deleteModal, newUnseenMessage } = this.state
     return (
       <div className={MsgContainerStyle.container}>
-        {!!loading && <Loading />}
+        {loading && <Loading absolute />}
         <div
           ref={ref => {
             this.messagesContainer = ref

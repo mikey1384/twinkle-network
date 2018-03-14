@@ -122,9 +122,7 @@ class Comments extends Component {
     const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     if (comments.length === 0) {
       return loading ? (
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <Loading />
-        </div>
+        <Loading />
       ) : (
         <div
           style={{

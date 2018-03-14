@@ -256,8 +256,8 @@ class Body extends Component {
             )}
           />
         </FilterBar>
-        <div style={{ position: 'relative', height: '100%' }}>
-          {!loaded && <Loading />}
+        <div>
+          {!loaded && <Loading text="Loading..." />}
           {loaded &&
             feeds.length > 0 && (
               <div>

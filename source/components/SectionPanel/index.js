@@ -78,7 +78,7 @@ export default class SectionPanel extends Component {
         style={style}
       >
         <header>
-          <div style={{ gridArea: 'title' }}>{title}</div>
+          <div style={{ gridArea: 'title', marginRight: '1rem' }}>{title}</div>
           {onSearch && (
             <SearchInput
               style={{
@@ -162,7 +162,7 @@ export default class SectionPanel extends Component {
           </div>
         )
       }
-      return <Loading />
+      return <Loading absolute />
     }
     return null
   }

@@ -20,7 +20,7 @@ import CheckListGroup from 'components/CheckListGroup'
 import PageTab from './PageTab'
 import Comments from './Comments'
 import Description from './Description'
-import RightMenu from './RightMenu'
+import NavMenu from './NavMenu'
 import ResultModal from './Modals/ResultModal'
 import QuestionsBuilder from './QuestionsBuilder'
 import ConfirmModal from 'components/Modals/ConfirmModal'
@@ -30,6 +30,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import CommentInputArea from './CommentInputArea'
 import Discussions from './Discussions'
 import ExecutionEnvironment from 'exenv'
+import { mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
 class VideoPage extends Component {
@@ -145,6 +146,9 @@ class VideoPage extends Component {
           justify-content: space-between;
           width: 100%;
           height: 100%;
+          @media (max-width: ${mobileMaxWidth}) {
+            flex-direction: column;
+          }
         `}
       >
         <div
@@ -152,16 +156,14 @@ class VideoPage extends Component {
             width: CALC(70% - 1rem);
             height: 100%;
             margin-left: 1rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+              margin: 0;
+            }
           `}
         >
           {(videoLoading || videoUnavailable) && (
-            <div
-              className={css`
-                width: 100%;
-                height: 20%;
-                position: relative;
-              `}
-            >
+            <div>
               {videoLoading && <Loading text="Loading Video..." />}
               {videoUnavailable && <NotFound text="Video does not exist" />}
             </div>
@@ -313,7 +315,7 @@ class VideoPage extends Component {
               </div>
             )}
         </div>
-        <RightMenu videoId={videoId} playlistId={playlistId} />
+        <NavMenu videoId={videoId} playlistId={playlistId} />
       </ErrorBoundary>
     )
   }

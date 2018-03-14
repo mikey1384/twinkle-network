@@ -117,9 +117,7 @@ class Stories extends Component {
       >
         {this.renderFilterBar()}
         <InputPanel />
-        <div
-          style={{ position: 'relative', width: '100%', minHeight: '10rem' }}
-        >
+        <div>
           {!loaded && <Loading text="Loading Feeds..." />}
           {loaded &&
             feeds.length === 0 && (

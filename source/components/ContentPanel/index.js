@@ -69,7 +69,7 @@ export default class ContentPanel extends Component {
         className={container}
         style={{ height: !contentObj.uploaderName && '15rem' }}
       >
-        {!contentObj.uploaderName && <Loading />}
+        {!contentObj.uploaderName && <Loading absolute />}
         {contentObj.uploaderName && (
           <Heading
             contentObj={contentObj}

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import YouTube from 'react-youtube'
-import Loading from 'components/Loading'
 import { Color } from 'constants/css'
 import { connect } from 'react-redux'
 import { auth } from 'redux/actions/constants'
@@ -303,19 +302,31 @@ class VideoPlayer extends Component {
               />
             )}
           {!onEdit && !minimized && playing ? (
-            <Loading
+            <div
               className={css`
-                color: ${Color.blue()};
-                font-size: 3em;
                 position: absolute;
-                display: block;
-                height: 5rem;
-                width: 5rem;
-                top: 50%;
-                left: 50%;
-                margin: -2.5rem 0 0 -2.5rem;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                font-size: 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
               `}
-            />
+              style={style}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  color: Color.logoBlue()
+                }}
+              >
+                <span className="glyphicon glyphicon-refresh spinning" />&nbsp;
+              </div>
+            </div>
           ) : !onEdit ? (
             <a
               className={css`

@@ -71,7 +71,9 @@ class SubjectHeader extends Component {
           display: 'flex',
           position: 'relative',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          width: '100%',
+          height: '5rem'
         }}
       >
         {loaded ? (
@@ -136,6 +138,7 @@ class SubjectHeader extends Component {
           </Fragment>
         ) : (
           <Loading
+            absolute
             style={{
               color: Color.green()
             }}

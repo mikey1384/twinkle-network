@@ -30,6 +30,6 @@ export default class Redirect extends Component {
 
   render() {
     const { loaded } = this.state
-    return <div>{loaded ? <NotFound /> : <Loading text="Loading" />}</div>
+    return <div>{loaded ? <NotFound /> : <Loading text="Loading..." />}</div>
   }
 }
