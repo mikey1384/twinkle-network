@@ -9,11 +9,12 @@ import {
 } from 'helpers/stringHelpers'
 import SearchDropdown from 'components/SearchDropdown'
 import Button from 'components/Button'
-import { Color } from 'constants/css'
+import { Color, mobileMaxWidth } from 'constants/css'
 import { timeSince } from 'helpers/timeStampHelpers'
 import SubjectsModal from '../../Modals/SubjectsModal'
 import Input from 'components/Texts/Input'
 import { edit } from 'constants/placeholders'
+import { css } from 'emotion'
 
 class EditSubjectForm extends Component {
   static propTypes = {
@@ -56,11 +57,25 @@ class EditSubjectForm extends Component {
     } = this.props
     return (
       <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between'
-        }}
+        className={css`
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          > form {
+            width: 85%;
+          }
+          > aside {
+            width: 14%;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            > form {
+              width: 69%;
+            }
+            > aside {
+              width: 30%;
+            }
+          }
+        `}
       >
         {subjectsModalShown && (
           <SubjectsModal
@@ -74,7 +89,6 @@ class EditSubjectForm extends Component {
         )}
         <Fragment>
           <form
-            style={{ width: '85%' }}
             onSubmit={event => this.onEditSubmit(event)}
           >
             <Input
@@ -111,7 +125,7 @@ class EditSubjectForm extends Component {
             />
           )}
         </Fragment>
-        <div style={{ width: '14%' }}>
+        <aside>
           <Button
             style={{ width: '100%', fontSize: '1.4rem' }}
             filled
@@ -120,7 +134,7 @@ class EditSubjectForm extends Component {
           >
             View Subjects
           </Button>
-        </div>
+        </aside>
       </div>
     )
   }

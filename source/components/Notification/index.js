@@ -8,7 +8,7 @@ import { defaultChatSubject } from 'constants/defaultValues'
 import { fetchNotifications } from 'redux/actions/NotiActions'
 import ExecutionEnvironment from 'exenv'
 import { container } from './Styles'
-import {css} from 'emotion'
+import { css } from 'emotion'
 
 class Notification extends Component {
   static propTypes = {
@@ -45,13 +45,15 @@ class Notification extends Component {
     } = this.props
     return (
       <div className={`${container} ${className}`} onScroll={this.handleScroll}>
-        <section className="momentum-scroll-enabled">
-          <div className={css`
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-          `}>
+        <section>
+          <div
+            className={css`
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+            `}
+          >
             {children && children}
           </div>
           {loaded && (

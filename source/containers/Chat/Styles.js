@@ -54,6 +54,7 @@ export const MessageStyle = {
     display: flex;
     width: 100%;
     padding: 1rem;
+    position: relative;
   `,
   profilePic: { width: '7%', height: '7%' },
   contentWrapper: css`
@@ -65,6 +66,7 @@ export const MessageStyle = {
   usernameText: { fontSize: '1.8rem', lineHeight: '100%' },
   messageWrapper: css`
     margin-top: 0.5rem;
+    position: relative;
   `,
   timeStamp: css`
     font-size: 1rem;

@@ -3,9 +3,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import Link from 'components/Link'
-import {
-  logout
-} from 'redux/actions/UserActions'
+import { logout } from 'redux/actions/UserActions'
 import {
   getNumberOfUnreadMessagesAsync,
   increaseNumberOfUnreadMessages,
@@ -18,7 +16,6 @@ import {
 } from 'redux/actions/NotiActions'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
-import Button from 'components/Button'
 import { GENERAL_CHAT_ID } from 'constants/database'
 import SearchBox from './SearchBox'
 import HeaderNav from './HeaderNav'
@@ -42,7 +39,6 @@ class Header extends Component {
     numChatUnreads: PropTypes.number,
     onChatButtonClick: PropTypes.func,
     onMobileMenuOpen: PropTypes.func,
-    openSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
     style: PropTypes.object,
@@ -135,7 +131,6 @@ class Header extends Component {
       loggedIn,
       username,
       chatMode,
-      openSigninModal,
       onChatButtonClick,
       onMobileMenuOpen,
       numChatUnreads,
@@ -358,22 +353,14 @@ class Header extends Component {
               justifyContent: 'flex-end'
             }}
           >
-            {loggedIn && (
-              <ChatButton
-                style={{ marginRight: '1rem' }}
-                onClick={onChatButtonClick}
-                chatMode={chatMode}
-                loading={chatLoading}
-                numUnreads={numChatUnreads}
-              />
-            )}
-            {loggedIn ? (
-              <AccountMenu title={username} logout={this.onLogout} />
-            ) : (
-              <Button success onClick={() => openSigninModal()}>
-                Log In | Sign Up
-              </Button>
-            )}
+            <ChatButton
+              style={{ marginRight: '1rem' }}
+              onClick={onChatButtonClick}
+              chatMode={chatMode}
+              loading={chatLoading}
+              numUnreads={numChatUnreads}
+            />
+            {loggedIn && <AccountMenu title={username} logout={this.onLogout} />}
           </div>
         </div>
       </nav>

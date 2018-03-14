@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Button from 'components/Button'
 import { Color } from 'constants/css'
 import Loading from 'components/Loading'
@@ -9,6 +9,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import { connect } from 'react-redux'
 import { deleteMessage } from 'redux/actions/ChatActions'
 import { MsgContainerStyle } from '../Styles'
+import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop
@@ -33,7 +34,12 @@ class MessagesContainer extends Component {
     maxScroll: 0,
     scrollAtBottom: true,
     newUnseenMessage: false,
-    loadMoreButtonLock: false
+    loadMoreButtonLock: false,
+    subjectMsgsModal: {
+      shown: false,
+      subjectId: null,
+      content: ''
+    }
   }
 
   componentDidMount() {
@@ -115,101 +121,115 @@ class MessagesContainer extends Component {
 
   render() {
     const { loadMoreButton, loading, currentChannelId } = this.props
-    const { deleteModal, newUnseenMessage } = this.state
+    const { deleteModal, newUnseenMessage, subjectMsgsModal } = this.state
     return (
-      <div className={MsgContainerStyle.container}>
-        {loading && <Loading absolute />}
-        <div
-          ref={ref => {
-            this.messagesContainer = ref
-          }}
-          className={`momentum-scroll-enabled ${
-            MsgContainerStyle.messagesWrapper
-          }`}
-          style={{
-            opacity: !!loading && '0.3',
-            top: currentChannelId === 2 ? '6rem' : 0
-          }}
-          onScroll={() => {
-            const content = this.content
-            const container = this.messagesContainer
-            if (scrollIsAtTheBottom(content, container)) {
-              this.setState({ newUnseenMessage: false })
-            }
-          }}
-        >
-          <div
-            ref={ref => {
-              this.content = ref
-            }}
-          >
-            {loadMoreButton ? (
-              <div
-                style={{
-                  marginBottom: '1rem',
-                  textAlign: 'center'
-                }}
-              >
-                <Button
-                  success
-                  style={{ width: '20%', marginTop: '1rem' }}
-                  onClick={this.onLoadMoreButtonClick}
-                >
-                  Load More
-                </Button>
-              </div>
-            ) : (
-              <div
-                style={{
-                  height: this.state.fillerHeight + 'px'
-                }}
-              />
-            )}
-            <div
-              ref={ref => {
-                this.messages = ref
-              }}
-            >
-              {this.renderMessages()}
-            </div>
-          </div>
-        </div>
-        {!loading && currentChannelId === 2 && <SubjectHeader />}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '3rem',
-            textAlign: 'center',
-            width: '100%'
-          }}
-        >
-          {newUnseenMessage && (
-            <Button
-              warning
-              onClick={() => {
-                this.setState({ newUnseenMessage: false })
-                const content = this.content
-                const container = this.messagesContainer
-                container.scrollTop = Math.max(
-                  container.offsetHeight,
-                  content.offsetHeight
-                )
-              }}
-            >
-              New Message
-            </Button>
-          )}
-        </div>
-        {deleteModal.shown && (
-          <ConfirmModal
+      <Fragment>
+        {subjectMsgsModal.shown && (
+          <SubjectMsgsModal
+            subjectId={subjectMsgsModal.subjectId}
+            subjectTitle={subjectMsgsModal.content}
             onHide={() =>
-              this.setState({ deleteModal: { shown: false, messageId: null } })
+              this.setState({
+                subjectMsgsModal: { shown: false, subjectId: null, content: '' }
+              })
             }
-            title="Remove Message"
-            onConfirm={this.onDelete}
           />
         )}
-      </div>
+        <div className={MsgContainerStyle.container}>
+          {loading && <Loading absolute />}
+          <div
+            ref={ref => {
+              this.messagesContainer = ref
+            }}
+            className={`${MsgContainerStyle.messagesWrapper}`}
+            style={{
+              opacity: loading && '0.3',
+              top: currentChannelId === 2 ? '6rem' : 0,
+              overflowY: 'scroll'
+            }}
+            onScroll={() => {
+              const content = this.content
+              const container = this.messagesContainer
+              if (scrollIsAtTheBottom(content, container)) {
+                this.setState({ newUnseenMessage: false })
+              }
+            }}
+          >
+            <div
+              ref={ref => {
+                this.content = ref
+              }}
+            >
+              {loadMoreButton ? (
+                <div
+                  style={{
+                    marginBottom: '1rem',
+                    textAlign: 'center'
+                  }}
+                >
+                  <Button
+                    success
+                    style={{ width: '20%', marginTop: '1rem' }}
+                    onClick={this.onLoadMoreButtonClick}
+                  >
+                    Load More
+                  </Button>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    height: this.state.fillerHeight + 'px'
+                  }}
+                />
+              )}
+              <div
+                ref={ref => {
+                  this.messages = ref
+                }}
+              >
+                {this.renderMessages()}
+              </div>
+            </div>
+          </div>
+          {!loading && currentChannelId === 2 && <SubjectHeader />}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '3rem',
+              textAlign: 'center',
+              width: '100%'
+            }}
+          >
+            {newUnseenMessage && (
+              <Button
+                warning
+                onClick={() => {
+                  this.setState({ newUnseenMessage: false })
+                  const content = this.content
+                  const container = this.messagesContainer
+                  container.scrollTop = Math.max(
+                    container.offsetHeight,
+                    content.offsetHeight
+                  )
+                }}
+              >
+                New Message
+              </Button>
+            )}
+          </div>
+          {deleteModal.shown && (
+            <ConfirmModal
+              onHide={() =>
+                this.setState({
+                  deleteModal: { shown: false, messageId: null }
+                })
+              }
+              title="Remove Message"
+              onConfirm={this.onDelete}
+            />
+          )}
+        </div>
+      </Fragment>
     )
   }
 
@@ -256,6 +276,11 @@ class MessagesContainer extends Component {
           index={index}
           style={messageStyle}
           message={message}
+          showSubjectMsgsModal={({ subjectId, content }) =>
+            this.setState({
+              subjectMsgsModal: { shown: true, subjectId, content }
+            })
+          }
         />
       )
     })

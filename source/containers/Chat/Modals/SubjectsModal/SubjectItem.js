@@ -25,7 +25,6 @@ export default class SubjectItem extends Component {
     super()
     this.state = {
       marginBottom: `${marginHeight}rem`,
-      menuShown: false,
       msgsModalShown: false
     }
   }
@@ -46,14 +45,14 @@ export default class SubjectItem extends Component {
       timeStamp,
       numMsgs
     } = this.props
-    const { marginBottom, menuShown, msgsModalShown } = this.state
+    const { marginBottom, msgsModalShown } = this.state
     let buttons = []
     if (numMsgs > 0) {
       buttons.push({
         buttonClass: 'logo',
         opacity: 0.5,
         onClick: () => this.setState({ msgsModalShown: true }),
-        label: 'View Conversations',
+        label: 'View',
         onHover: false
       })
     }
@@ -73,8 +72,6 @@ export default class SubjectItem extends Component {
           height: 'auto',
           width: '100%'
         }}
-        onMouseEnter={() => this.setState({ menuShown: true })}
-        onMouseLeave={() => this.setState({ menuShown: false })}
       >
         {msgsModalShown && (
           <SubjectMsgsModal
@@ -83,12 +80,10 @@ export default class SubjectItem extends Component {
             onHide={() => this.setState({ msgsModalShown: false })}
           />
         )}
-        {menuShown && (
-          <ButtonGroup
-            style={{ position: 'absolute', right: '1.5rem' }}
-            buttons={buttons}
-          />
-        )}
+        <ButtonGroup
+          style={{ position: 'absolute', right: '1.5rem' }}
+          buttons={buttons}
+        />
         <div
           style={{
             width: '100%',

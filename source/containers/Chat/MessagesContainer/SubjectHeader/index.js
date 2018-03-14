@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
 import Button from 'components/Button'
 import { cleanString } from 'helpers/stringHelpers'
 import Loading from 'components/Loading'
@@ -20,6 +19,8 @@ import { timeSince } from 'helpers/timeStampHelpers'
 import EditSubjectForm from './EditSubjectForm'
 import { socket } from 'constants/io'
 import { defaultChatSubject } from 'constants/defaultValues'
+import { Color, mobileMaxWidth } from 'constants/css'
+import { css } from 'emotion'
 
 class SubjectHeader extends Component {
   static propTypes = {
@@ -67,20 +68,34 @@ class SubjectHeader extends Component {
     const subjectTitle = cleanString(content)
     return (
       <div
-        style={{
-          display: 'flex',
-          position: 'relative',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          height: '5rem'
-        }}
+        className={css`
+          display: flex;
+          position: relative;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          height: 5rem;
+          > section {
+            width: 85%;
+          }
+          > aside {
+            width: 14%;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            > section {
+              width: 70%;
+            }
+            > aside {
+              width: 30%;
+            }
+          }
+        `}
       >
         {loaded ? (
           <Fragment>
             {!onEdit && (
               <Fragment>
-                <div style={{ width: '85%' }}>
+                <section>
                   <span
                     style={{
                       cursor: 'default',
@@ -107,8 +122,8 @@ class SubjectHeader extends Component {
                     width="100%"
                   />
                   {this.renderDetails()}
-                </div>
-                <div style={{ width: '14%' }}>
+                </section>
+                <aside>
                   <Button
                     filled
                     info
@@ -117,7 +132,7 @@ class SubjectHeader extends Component {
                   >
                     Change Subject
                   </Button>
-                </div>
+                </aside>
               </Fragment>
             )}
             {onEdit && (
