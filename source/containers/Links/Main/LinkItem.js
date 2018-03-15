@@ -124,7 +124,7 @@ class LinkItem extends Component {
             </Link>
           ) : (
             <Link to={this.to} onClickAsync={this.onLinkClick}>
-              <img src="/img/link.png" style={{ width: '10rem' }} alt="" />
+              <img src="/img/link.png" style={{ width: '7vw', height: '7vw' }} alt="" />
             </Link>
           )}
         </div>
