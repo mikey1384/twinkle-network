@@ -87,6 +87,7 @@ export default class Embedly extends Component {
     return (
       <div
         className={css`
+          width: 100%;
           a {
             color: ${Color.darkGray()};
             position: relative;
@@ -107,6 +108,7 @@ export default class Embedly extends Component {
           className={css`
             display: flex;
             flex-direction: column;
+            width: 100%;
           `}
           target="_blank"
           rel=""
@@ -116,12 +118,13 @@ export default class Embedly extends Component {
             className={css`
               position: relative;
               width: 100%;
+              height: 100%;
             `}
           >
             <img
               className={css`
                 width: 100%;
-                height: 80%;
+                max-height: 70vh;
                 object-fit: scale-down;
               `}
               src={imageUrl || '/img/link.png'}

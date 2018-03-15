@@ -5,7 +5,7 @@ export const contentPage = css`
   width: 100%;
   display: flex;
   justify-content: center;
-  section {
+  > section {
     width: 65%;
     @media (max-width: ${mobileMaxWidth}) {
       width: 100%;
