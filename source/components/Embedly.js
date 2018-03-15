@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import request from 'axios'
 import ExecutionEnvironment from 'exenv'
 import { URL } from 'constants/URL'
-import { borderRadius } from 'constants/css'
+import { css } from 'emotion'
+import { Color } from 'constants/css'
 
 const API_URL = `${URL}/content`
 
@@ -82,78 +83,62 @@ export default class Embedly extends Component {
 
   render() {
     const { imageUrl, fallbackImage, description, title, site } = this.state
-    let aStyle = {
-      color: '#222',
-      textDecoration: 'none',
-      position: 'relative',
-      border: 'solid 1px #E1E8ED',
-      display: 'block',
-      borderRadius,
-      overflow: 'hidden'
-    }
-    let imageStyle = {
-      width: '80px',
-      height: '80px',
-      overflow: 'hidden',
-      position: 'absolute',
-      left: 0,
-      top: 0
-    }
-    let imgStyle = {
-      height: '100%',
-      width: 'auto',
-      transform: 'translateX(-50%)',
-      position: 'relative',
-      left: '50%'
-    }
-    let textStyle = {
-      marginLeft: '85px',
-      minHeight: '80px',
-      padding: '5px',
-      boxSizing: 'border-box'
-    }
-    let titleStyle = {
-      margin: 0,
-      fontSize: '15px',
-      fontWeight: 'bold'
-    }
-    let descStyle = {
-      margin: '5px 0 0',
-      fontSize: '11px'
-    }
-    let providerStyle = {
-      margin: '5px 0 0',
-      fontSize: '11px'
-    }
-
+    const { style, url } = this.props
     return (
-      <div style={this.props.style}>
+      <div
+        className={css`
+          a {
+            color: ${Color.darkGray()};
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+          }
+          h3 {
+            font-size: 1.9rem;
+          }
+          p {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+          }
+        `}
+        style={style}
+      >
         <a
-          className="embedly"
+          className={css`
+            display: flex;
+            flex-direction: column;
+          `}
           target="_blank"
-          rel="noopener noreferrer"
-          href={this.props.url}
-          style={aStyle}
+          rel=""
+          href={url}
         >
-          <div className="embedly__image" style={imageStyle}>
+          <section
+            className={css`
+              position: relative;
+              width: 100%;
+            `}
+          >
             <img
+              className={css`
+                width: 100%;
+                height: 80%;
+                object-fit: scale-down;
+              `}
               src={imageUrl || '/img/link.png'}
               onError={() => this.setState({ imageUrl: fallbackImage })}
               alt={title}
-              style={imgStyle}
             />
-          </div>
-          <div className="embedly__text" style={textStyle}>
-            <p className="embedly__title" style={titleStyle}>
-              {title || this.props.title}
-            </p>
-            <p className="embedly__desc" style={descStyle}>
-              {description}
-            </p>
-            <p className="embedly__provider" style={providerStyle}>
-              {site}
-            </p>
-          </div>
+          </section>
+          <section
+            className={css`
+              width: 100%;
+              margin-top: 1rem;
+            `}
+          >
+            <h3>{title || this.props.title}</h3>
+              <p>{description}</p>
+              <p style={{fontWeight: 'bold'}}>{site}</p>
+          </section>
         </a>
       </div>
     )

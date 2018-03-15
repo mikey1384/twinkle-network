@@ -110,32 +110,17 @@ class LinkItem extends Component {
         <div>
           {imageUrl ? (
             <Link to={this.to} onClickAsync={this.onLinkClick}>
-              <div
+              <img
                 className={css`
                   display: block;
-                  width: 10rem;
-                  height: auto;
-                  over-flow: hidden;
-                  padding-bottom: 100%;
-                  position: relative;
-                  img {
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    bottom: 0;
-                    right: 0;
-                  }
+                  width: 7vw;
+                  height: 7vw;
+                  object-fit: cover;
                 `}
-              >
-                <img
-                  src={imageUrl}
-                  onError={() => this.setState({ imageUrl: fallbackImage })}
-                  alt=""
-                />
-              </div>
+                src={imageUrl}
+                onError={() => this.setState({ imageUrl: fallbackImage })}
+                alt=""
+              />
             </Link>
           ) : (
             <Link to={this.to} onClickAsync={this.onLinkClick}>
