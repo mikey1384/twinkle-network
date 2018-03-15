@@ -157,7 +157,7 @@ class LinkPage extends Component {
             />
           </div>
           <PanelComments
-            style={{ marginTop: '1rem' }}
+            style={{ padding: '1rem' }}
             comments={comments}
             onSubmit={this.onCommentSubmit}
             loadMoreButton={loadMoreCommentsButton}
