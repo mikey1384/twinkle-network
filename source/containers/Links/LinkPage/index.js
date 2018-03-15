@@ -117,7 +117,6 @@ class LinkPage extends Component {
           className={css`
             width: 50%;
             background-color: #fff;
-            padding: 1rem;
             margin-bottom: 1rem;
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;

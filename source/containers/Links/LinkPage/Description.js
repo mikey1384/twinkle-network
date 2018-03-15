@@ -58,13 +58,13 @@ export default class Description extends Component {
       editedUrl
     } = this.state
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
         {uploaderId === myId &&
           !onEdit && (
             <DropdownButton
               snow
               icon="pencil"
-              style={{ position: 'absolute', right: 0 }}
+              style={{ position: 'absolute', top: '1rem', right: '1rem' }}
               direction="left"
               menuProps={[
                 {
