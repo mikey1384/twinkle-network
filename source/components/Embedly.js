@@ -107,6 +107,8 @@ export default class Embedly extends Component {
         <a
           className={css`
             display: flex;
+            justify-content: center;
+            align-items: center;
             flex-direction: column;
             width: 100%;
           `}
