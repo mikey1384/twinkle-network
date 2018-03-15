@@ -4,7 +4,6 @@ import moment from 'moment'
 import UsernameText from 'components/Texts/UsernameText'
 import { Color } from 'constants/css'
 import ButtonGroup from 'components/ButtonGroup'
-import SubjectMsgsModal from '../SubjectMsgsModal'
 
 const marginHeight = 1.1
 const subjectTitleHeight = 24
@@ -18,14 +17,14 @@ export default class SubjectItem extends Component {
     userId: PropTypes.number,
     username: PropTypes.string,
     selectSubject: PropTypes.func,
+    showMsgsModal: PropTypes.func,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   }
 
   constructor() {
     super()
     this.state = {
-      marginBottom: `${marginHeight}rem`,
-      msgsModalShown: false
+      marginBottom: `${marginHeight}rem`
     }
   }
 
@@ -43,15 +42,16 @@ export default class SubjectItem extends Component {
       userId,
       username,
       timeStamp,
-      numMsgs
+      numMsgs,
+      showMsgsModal
     } = this.props
-    const { marginBottom, msgsModalShown } = this.state
+    const { marginBottom } = this.state
     let buttons = []
     if (numMsgs > 0) {
       buttons.push({
         buttonClass: 'logo',
         opacity: 0.5,
-        onClick: () => this.setState({ msgsModalShown: true }),
+        onClick: showMsgsModal,
         label: 'View',
         onHover: false
       })
@@ -73,13 +73,6 @@ export default class SubjectItem extends Component {
           width: '100%'
         }}
       >
-        {msgsModalShown && (
-          <SubjectMsgsModal
-            subjectId={id}
-            subjectTitle={content}
-            onHide={() => this.setState({ msgsModalShown: false })}
-          />
-        )}
         <ButtonGroup
           style={{ position: 'absolute', right: '1.5rem' }}
           buttons={buttons}

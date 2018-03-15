@@ -10,10 +10,11 @@ export default class Modal extends Component {
     children: PropTypes.node,
     onHide: PropTypes.func,
     small: PropTypes.bool,
-    large: PropTypes.bool
+    large: PropTypes.bool,
+    style: PropTypes.object
   }
   render() {
-    const { className, children, onHide, small, large } = this.props
+    const { className, children, onHide, small, large, style } = this.props
     const modalWidth = {
       default: '50%',
       small: '26%',
@@ -36,17 +37,20 @@ export default class Modal extends Component {
           bottom: 0;
         `} ${className}`}
       >
-        <div className={css`
-          position: absolute;
-          z-index: 2500;
-          top: 0;
-          right: 0;
-          left: 0;
-          bottom: 0;
-          background: ${Color.black(0.5)};
-          overflow-y: scroll;
-          padding: 7rem 0;
-        `}>
+        <div
+          className={css`
+            position: absolute;
+            z-index: 2500;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: ${Color.black(0.5)};
+            overflow-y: scroll;
+            padding: 7rem 0;
+          `}
+          style={style}
+        >
           <Content
             eventTypes={['mouseup']}
             className={css`

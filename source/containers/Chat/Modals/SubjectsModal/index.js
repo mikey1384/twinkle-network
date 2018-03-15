@@ -10,6 +10,7 @@ import SubjectItem from './SubjectItem'
 import { Color } from 'constants/css'
 import { queryStringForArray } from 'helpers/apiHelpers'
 import Loading from 'components/Loading'
+import SubjectMsgsModal from '../SubjectMsgsModal'
 
 const API_URL = `${URL}/chat`
 
@@ -32,6 +33,11 @@ class SubjectsModal extends Component {
       subjects: [],
       loadMoreButton: false,
       loading: false
+    },
+    msgsModal: {
+      shown: false,
+      subjectId: null,
+      title: ''
     }
   }
 
@@ -51,12 +57,23 @@ class SubjectsModal extends Component {
 
   render() {
     const { currentSubjectId, onHide, selectSubject } = this.props
-    const { loaded, mySubjects, allSubjects } = this.state
+    const { loaded, mySubjects, allSubjects, msgsModal } = this.state
     return (
-      <Modal onHide={onHide}>
+      <Modal onHide={onHide} style={{ overflow: msgsModal.shown && 'hidden' }}>
         <header>View Subjects</header>
         <main>
           {!loaded && <Loading />}
+          {msgsModal.shown && (
+            <SubjectMsgsModal
+              subjectId={msgsModal.subjectId}
+              subjectTitle={msgsModal.title}
+              onHide={() =>
+                this.setState({
+                  msgsModal: { shown: false, subjectId: null, title: '' }
+                })
+              }
+            />
+          )}
           {mySubjects.subjects.length > 0 && (
             <div style={{ width: '100%' }}>
               <h3
@@ -72,6 +89,15 @@ class SubjectsModal extends Component {
                   key={subject.id}
                   currentSubjectId={currentSubjectId}
                   selectSubject={() => selectSubject(subject.id)}
+                  showMsgsModal={() =>
+                    this.setState({
+                      msgsModal: {
+                        shown: true,
+                        subjectId: subject.id,
+                        title: subject.content
+                      }
+                    })
+                  }
                   {...subject}
                 />
               ))}
@@ -100,6 +126,15 @@ class SubjectsModal extends Component {
               key={subject.id}
               currentSubjectId={currentSubjectId}
               selectSubject={() => selectSubject(subject.id)}
+              showMsgsModal={() =>
+                this.setState({
+                  msgsModal: {
+                    shown: true,
+                    subjectId: subject.id,
+                    title: subject.content
+                  }
+                })
+              }
               {...subject}
             />
           ))}
