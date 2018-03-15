@@ -54,8 +54,8 @@ export default class PanelComments extends Component {
     return (
       <div
         style={{
-          ...style,
-          width: '100%'
+          width: '100%',
+          ...style
         }}
         ref={ref => {
           this.PanelComments = ref

@@ -186,6 +186,7 @@ class Content extends Component {
               </div>
               {replyInputShown && (
                 <InputForm
+                  style={{ marginTop: '1rem' }}
                   clickListenerState={clickListenerState}
                   autoFocus
                   onSubmit={this.onSubmit}
