@@ -180,9 +180,8 @@ class App extends Component {
         {updateNoticeShown && (
           <div
             className={css`
-              position: absolute;
+              position: fixed;
               width: 80%;
-              height: 20rem;
               left: 10%;
               top: 2rem;
               z-index: 2000;
@@ -194,6 +193,10 @@ class App extends Component {
               display: flex;
               flex-direction: column;
               justify-content: center;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100%;
+                left: 0;
+              }
             `}
           >
             <p>

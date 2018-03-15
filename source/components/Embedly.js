@@ -132,7 +132,7 @@ export default class Embedly extends Component {
           <section
             className={css`
               width: 100%;
-              margin-top: 1rem;
+              padding: 1rem;
             `}
           >
             <h3>{title || this.props.title}</h3>

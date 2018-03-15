@@ -151,27 +151,25 @@ export default function MainContent({
             type={type}
           />
         )}
-        {type === 'comment' &&
-          rootType === 'url' && (
-            <Embedly
-              style={{ marginTop: '2rem', marginBottom: '-1rem' }}
-              title={cleanString(contentTitle)}
-              url={rootContent}
-              id={rootId}
-              {...urlRelated}
-            />
-          )}
-        {!isEditing &&
-          type === 'url' && (
-            <Embedly
-              style={{ marginBottom: '-1rem' }}
-              title={cleanString(contentTitle)}
-              url={content}
-              id={rootId}
-              {...urlRelated}
-            />
-          )}
       </div>
+      {!isEditing &&
+        type === 'url' && (
+          <Embedly
+            title={cleanString(contentTitle)}
+            url={content}
+            id={rootId}
+            {...urlRelated}
+          />
+        )}
+      {type === 'comment' &&
+        rootType === 'url' && (
+          <Embedly
+            title={cleanString(contentTitle)}
+            url={rootContent}
+            id={rootId}
+            {...urlRelated}
+          />
+        )}
     </div>
   )
 }
