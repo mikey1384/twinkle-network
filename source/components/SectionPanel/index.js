@@ -85,7 +85,8 @@ export default class SectionPanel extends Component {
                 color: Color.black(),
                 gridArea: 'search',
                 width: '100%',
-                justifySelf: 'center'
+                justifySelf: 'center',
+                zIndex: 0
               }}
               onChange={this.onSearch}
               placeholder={searchPlaceholder}
