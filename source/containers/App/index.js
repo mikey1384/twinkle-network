@@ -234,7 +234,7 @@ class App extends Component {
             className="mobile"
             style={{
               zIndex: 1000,
-              padding: '0 1rem'
+              padding: '1rem 0'
             }}
           />
           <Switch>
