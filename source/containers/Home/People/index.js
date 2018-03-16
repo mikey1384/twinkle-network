@@ -63,6 +63,7 @@ class People extends Component {
         style={{ height: '100%' }}
       >
         <SearchInput
+          style={{ zIndex: 0 }}
           addonColor={Color.gold()}
           placeholder="Search for users"
           onChange={this.onPeopleSearch}
