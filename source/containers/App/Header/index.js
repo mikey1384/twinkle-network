@@ -17,7 +17,7 @@ import {
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
 import { GENERAL_CHAT_ID } from 'constants/database'
-import SearchBox from './SearchBox'
+import SearchBox from '../SearchBox'
 import HeaderNav from './HeaderNav'
 import { Color } from 'constants/css'
 import { socket } from 'constants/io'

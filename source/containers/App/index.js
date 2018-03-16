@@ -34,6 +34,7 @@ import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import Button from 'components/Button'
 import SigninModal from 'containers/Signin'
+import SearchBox from './SearchBox'
 
 let visibilityChange
 let hidden
@@ -229,6 +230,13 @@ class App extends Component {
           onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
         <div className={`${siteContent} ${chatMode && 'hidden'}`}>
+          <SearchBox
+            className="mobile"
+            style={{
+              zIndex: 1000,
+              padding: '1rem'
+            }}
+          />
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />

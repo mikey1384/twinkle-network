@@ -52,6 +52,7 @@ class SearchInput extends Component {
         className={`${css`
           display: flex;
           align-items: center;
+          width: 100%;
           height: 4.3rem;
           position: relative;
           .addon {

@@ -61,7 +61,7 @@ hr {
   width: 100%;
   height: 1px;
   border: 0;
-  background: rgb(231,231,231);
+  background: rgb(231, 231, 231);
 }
 
 #react-view {
@@ -124,7 +124,7 @@ hr {
 @media (max-width: 991px) {
   html,
   body {
-    font-size: 17px;
+    font-size: 16px;
   }
   .header.chat {
     top: 0 !important;
