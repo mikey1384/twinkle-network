@@ -55,6 +55,7 @@ class SearchInput extends Component {
           width: 100%;
           height: 4.3rem;
           position: relative;
+          z-index: 1000;
           .addon {
             border: 1px solid ${addonColor || Color.inputBorderGray()};
             align-self: stretch;
