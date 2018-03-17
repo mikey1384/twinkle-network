@@ -104,7 +104,7 @@ class SubjectHeader extends Component {
                       textOverflow: 'ellipsis',
                       overflow: 'hidden',
                       lineHeight: 'normal',
-                      fontSize: '2.5rem',
+                      fontSize: '2.2rem',
                       fontWeight: 'bold',
                       display: 'block'
                     }}
