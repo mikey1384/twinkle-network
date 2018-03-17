@@ -381,9 +381,13 @@ class VideoPage extends Component {
         })
       }))
     }
-    this.setState(state => ({
-      userAnswers: state.userAnswers.concat([newAnswer])
-    }))
+    this.setState(state => {
+      const newAnswers = [...state.userAnswers]
+      newAnswers[currentSlide] = newAnswer
+      return {
+        userAnswers: newAnswers
+      }
+    })
   }
 
   onDescriptionEditFinish = (params, sender) => {

@@ -227,13 +227,13 @@ class VideoPlayer extends Component {
     return (
       <ErrorBoundary style={style}>
         <div
-          className={css`
+          className={`${css`
             display: block;
             width: 100%;
             height: auto;
             padding-bottom: 56.25%;
             position: relative;
-          `}
+          `}${minimized ? ' desktop' : ''}`}
           style={{
             display: minimized && !playing && 'none',
             width: playing && minimized && '39rem',
