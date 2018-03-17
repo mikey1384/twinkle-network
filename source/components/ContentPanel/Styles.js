@@ -69,5 +69,14 @@ export const container = css`
     border-radius: 0;
     border-left: none;
     border-right: none;
+    .heading {
+      a,
+      span {
+        font-size: 2.0rem;
+      }
+      small {
+        font-size: 1.5rem;
+      }
+    }
   }
 `

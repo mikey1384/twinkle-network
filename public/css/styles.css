@@ -124,7 +124,7 @@ hr {
 @media (max-width: 991px) {
   html,
   body {
-    font-size: 16px;
+    font-size: 18px;
   }
   .header.chat {
     top: 0 !important;
@@ -137,8 +137,3 @@ hr {
   }
 }
 
-@media (min-width: 768px) {
-  .right {
-    width: 30%;
-  }
-}
