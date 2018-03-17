@@ -114,7 +114,7 @@ class SubjectHeader extends Component {
                       this.headerLabel = ref
                     }}
                   >
-                    Subject: {subjectTitle}
+                    {subjectTitle}
                   </span>
                   <FullTextReveal
                     text={subjectTitle}

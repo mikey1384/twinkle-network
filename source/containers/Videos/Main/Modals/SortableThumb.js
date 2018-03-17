@@ -88,7 +88,6 @@ class SortableThumb extends Component {
               />
             </div>
             <div
-              className="caption"
               style={{
                 height: '8rem',
                 width: '100%',
