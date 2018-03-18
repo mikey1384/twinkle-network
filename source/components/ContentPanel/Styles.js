@@ -16,7 +16,7 @@ export const container = css`
     display: flex;
     align-items: center;
     width: 100%;
-    height: 10rem;
+    min-height: 10rem;
   }
   .body {
     padding: 0;
