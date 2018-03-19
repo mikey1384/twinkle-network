@@ -91,7 +91,7 @@ class Content extends Component {
           border-bottom: 1px solid ${Color.inputBorderGray()};
           padding: 1.5rem 1.5rem
             ${!contentAvailable || isDiscussion ? '1.5rem' : '1rem'} 1.5rem;
-          background: ${Color.whiteGray()};
+          background: ${Color.wellGray()};
           margin-bottom: 2rem;
           line-height: 2.3rem;
           .buttons {
