@@ -85,7 +85,7 @@ export default class Heading extends Component {
               <div
                 style={{
                   width: '20%',
-                  height: '100%',
+                  height: '8rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'flex-end'
