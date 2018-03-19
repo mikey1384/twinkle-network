@@ -63,6 +63,13 @@ export const container = css`
           display: none;
         }
       }
+      &:hover {
+        a {
+          span {
+            color: ${Color.menuGray()};
+          }
+        }
+      }
     }
   }
   .main-tabs {
