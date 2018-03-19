@@ -69,6 +69,12 @@ export const container = css`
             color: ${Color.menuGray()};
           }
         }
+        a.active {
+          color: ${Color.black()};
+          span {
+            color: ${Color.black()};
+          }
+        }
       }
     }
   }
