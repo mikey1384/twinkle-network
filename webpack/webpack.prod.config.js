@@ -3,6 +3,7 @@ const webpack = require('webpack')
 
 module.exports = {
   entry: './entry/client.js',
+  mode: 'production',
   resolve: {
     modules: ['node_modules', 'source'],
     extensions: ['.js', '.jsx']

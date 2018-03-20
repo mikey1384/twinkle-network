@@ -10,7 +10,7 @@
     "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./source forever -o content_out.log -e content_err.log start -c \"node --harmony .\" index.js",
     "stop": "sudo forever stop index.js",
     "dev": "NODE_PATH=$NODE_PATH:./source PORT=3000 node --harmony .",
-    "build": "webpack --progress --color -p --config webpack/webpack.prod.config.js --mode production",
+    "build": "webpack --progress --color -p --config webpack/webpack.prod.config.js",
     "test": "node scripts/test.js --env=jsdom",
     "startapi": "sudo NODE_ENV=production forever -o api_out.log -e api_err.log start api",
     "stopapi": "sudo forever stop api",
