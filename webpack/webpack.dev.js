@@ -43,13 +43,7 @@ export default function options(app) {
       ]
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.optimize.UglifyJsPlugin({
-        sourceMap:
-          options.devtool &&
-          (options.devtool.indexOf('sourcemap') >= 0 ||
-            options.devtool.indexOf('source-map') >= 0)
-      })
+      new webpack.HotModuleReplacementPlugin()
     ]
   })
 

@@ -33,13 +33,23 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'main',
+          chunks: 'all'
+        }
+      }
+    }
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({ cache: false }),
     new webpack.optimize.ModuleConcatenationPlugin()
   ]
 }
