@@ -38,8 +38,8 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'main',
+          test: /node_modules/,
+          name: 'vendor',
           chunks: 'all'
         }
       }
