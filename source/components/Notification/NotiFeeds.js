@@ -16,7 +16,7 @@ NotiFeeds.propTypes = {
       discussionTitle: PropTypes.string,
       discussionUploader: PropTypes.number,
       id: PropTypes.number.isRequired,
-      rootCommentUploader: PropTypes.string,
+      rootCommentUploader: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       rootTitle: PropTypes.string.isRequired,
       rootType: PropTypes.string.isRequired,
       rootId: PropTypes.number.isRequired,

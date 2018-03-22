@@ -29,17 +29,49 @@ class SelectPlaylistsToPinModal extends Component {
     selectTabActive: true,
     selectedPlaylists: [],
     searchedPlaylists: [],
-    searchText: ''
+    searchText: '',
+    playlistObjects: {}
   }
 
   componentWillMount() {
-    const { selectedPlaylists } = this.props
-    this.setState({ selectedPlaylists })
+    const { pinnedPlaylists, playlistsToPin, selectedPlaylists } = this.props
+    this.setState({
+      selectedPlaylists,
+      playlistObjects: {
+        ...pinnedPlaylists.reduce(
+          (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+          {}
+        ),
+        ...playlistsToPin.reduce(
+          (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+          {}
+        )
+      }
+    })
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.playlistsToPin !== this.props.playlistsToPin) {
+      this.setState(state => ({
+        playlistObjects: {
+          ...state.playlistObjects,
+          ...this.props.playlistsToPin.reduce(
+            (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+            {}
+          )
+        }
+      }))
+    }
   }
 
   render() {
-    const { searchText, selectedPlaylists, selectTabActive } = this.state
-    const { loadMoreButton, playlistsToPin, pinnedPlaylists } = this.props
+    const {
+      playlistObjects,
+      searchText,
+      selectedPlaylists,
+      selectTabActive
+    } = this.state
+    const { loadMoreButton, playlistsToPin } = this.props
     const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id
     return (
       <Modal onHide={this.props.onHide}>
@@ -107,32 +139,10 @@ class SelectPlaylistsToPinModal extends Component {
                 <CheckListGroup
                   inputType="checkbox"
                   onSelect={this.onDeselect}
-                  listItems={selectedPlaylists.reduce((result, playlistId) => {
-                    let label = ''
-                    for (let i = 0; i < pinnedPlaylists.length; i++) {
-                      if (pinnedPlaylists[i].id === playlistId) {
-                        label = pinnedPlaylists[i].title
-                        return result.concat([
-                          {
-                            label,
-                            checked: true
-                          }
-                        ])
-                      }
-                    }
-                    for (let i = 0; i < playlistsToPin.length; i++) {
-                      if (playlistsToPin[i].id === playlistId) {
-                        label = playlistsToPin[i].title
-                        return result.concat([
-                          {
-                            label,
-                            checked: true
-                          }
-                        ])
-                      }
-                    }
-                    return result
-                  }, [])}
+                  listItems={selectedPlaylists.map(playlistId => ({
+                    label: playlistObjects[playlistId],
+                    checked: true
+                  }))}
                 />
                 {selectedPlaylists.length === 0 && (
                   <div
@@ -179,7 +189,16 @@ class SelectPlaylistsToPinModal extends Component {
     const { data } = await request.get(
       `${URL}/playlist/search/toPin?query=${text}`
     )
-    this.setState({ searchedPlaylists: data })
+    this.setState(state => ({
+      searchedPlaylists: data,
+      playlistObjects: {
+        ...state.playlistObjects,
+        ...data.reduce(
+          (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+          {}
+        )
+      }
+    }))
   }
 
   onSelect = index => {
