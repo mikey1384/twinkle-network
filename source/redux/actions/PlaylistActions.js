@@ -143,19 +143,18 @@ export const changePinnedPlaylists = selectedPlaylists => dispatch =>
       handleError(error, dispatch)
     })
 
-export const openSelectPlaylistsToPinModal = data => ({
-  type: 'SELECT_PL_TO_PIN_OPEN',
-  data
-})
-
-export const openSelectPlaylistsToPinModalAsync = () => dispatch =>
-  request
-    .get(`${API_URL}/list`)
-    .then(response => dispatch(openSelectPlaylistsToPinModal(response.data)))
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+export const openSelectPlaylistsToPinModalAsync = () => async dispatch => {
+  try {
+    const { data } = await request.get(`${API_URL}/list`)
+    return dispatch({
+      type: 'SELECT_PL_TO_PIN_OPEN',
+      data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const loadMorePlaylistList = data => ({
   type: 'LOAD_MORE_PLAYLIST_LIST',

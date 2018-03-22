@@ -103,12 +103,12 @@ class Main extends Component {
     const pinnedPlaylistButtons = playlists.length > 0 ? [
       {
         label: 'Select Playlists',
-        onClick: () => openSelectPlaylistsToPinModal(),
+        onClick: openSelectPlaylistsToPinModal,
         buttonClass: 'snow'
       },
       {
         label: 'Reorder Playlists',
-        onClick: () => openReorderPinnedPlaylistsModal(),
+        onClick: openReorderPinnedPlaylistsModal,
         buttonClass: 'snow'
       }
     ] : []

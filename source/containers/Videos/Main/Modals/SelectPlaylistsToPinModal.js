@@ -33,7 +33,7 @@ class SelectPlaylistsToPinModal extends Component {
     playlistObjects: {}
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { pinnedPlaylists, playlistsToPin, selectedPlaylists } = this.props
     this.setState({
       selectedPlaylists,
