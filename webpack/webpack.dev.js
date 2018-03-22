@@ -3,8 +3,9 @@ import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import prodCfg from './webpack.prod.config.js'
 
-export default function options(app) {
-  const config = Object.assign({}, prodCfg, {
+export default function devConfig(app) {
+  const config = {
+    ...prodCfg,
     devtool: 'cheap-module-eval-source-map',
     mode: 'development',
     entry: ['webpack-hot-middleware/client.js', './entry/client.js'],
@@ -46,7 +47,7 @@ export default function options(app) {
     plugins: [
       new webpack.HotModuleReplacementPlugin()
     ]
-  })
+  }
 
   const compiler = webpack(config)
 
