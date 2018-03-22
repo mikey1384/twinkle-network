@@ -23,30 +23,27 @@ export const clearNotifications = () => ({
   type: 'CLEAR_NOTIFICATIONS'
 })
 
-export const fetchNotifications = () => dispatch => {
-  if (auth().headers.authorization === null) {
-    return request.get(`${API_URL}/chatSubject`).then(response =>
-      dispatch({
+export const fetchNotifications = () => async dispatch => {
+  try {
+    if (auth().headers.authorization === null) {
+      const { data } = await request.get(`${API_URL}/chatSubject`)
+      return dispatch({
         type: 'FETCH_NOTIFICATIONS',
         data: {
           notifications: [],
-          currentChatSubject: response.data
+          currentChatSubject: data
         }
       })
-    )
-  }
-  return request
-    .get(API_URL, auth())
-    .then(response =>
-      dispatch({
-        type: 'FETCH_NOTIFICATIONS',
-        data: response.data
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    }
+    const { data } = await request.get(API_URL, auth())
+    return dispatch({
+      type: 'FETCH_NOTIFICATIONS',
+      data: data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
 }
 
 export const notifyChatSubjectChange = subject => ({

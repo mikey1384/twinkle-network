@@ -9,6 +9,9 @@ import {
 } from 'redux/actions/PlaylistActions'
 import FilterBar from 'components/FilterBar'
 import Banner from 'components/Banner'
+import SearchInput from 'components/Texts/SearchInput'
+import request from 'axios'
+import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
 
 class SelectPlaylistsToPinModal extends Component {
@@ -22,19 +25,20 @@ class SelectPlaylistsToPinModal extends Component {
     selectedPlaylists: PropTypes.array.isRequired
   }
 
-  constructor({ selectedPlaylists }) {
-    super()
-    this.state = {
-      selectedPlaylists: selectedPlaylists,
-      selectTabActive: true
-    }
-    this.onSelect = this.onSelect.bind(this)
-    this.onDeselect = this.onDeselect.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+  state = {
+    selectTabActive: true,
+    selectedPlaylists: [],
+    searchedPlaylists: [],
+    searchText: ''
+  }
+
+  componentWillMount() {
+    const { selectedPlaylists } = this.props
+    this.setState({ selectedPlaylists })
   }
 
   render() {
-    const { selectedPlaylists, selectTabActive } = this.state
+    const { searchText, selectedPlaylists, selectTabActive } = this.state
     const { loadMoreButton, playlistsToPin, pinnedPlaylists } = this.props
     const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id
     return (
@@ -63,15 +67,17 @@ class SelectPlaylistsToPinModal extends Component {
           <div style={{ marginTop: '1rem', width: '100%' }}>
             {selectTabActive && (
               <Fragment>
+                <SearchInput
+                  autoFocus
+                  placeholder="Search for playlists to pin"
+                  value={searchText}
+                  onChange={this.onPlaylistSearchInput}
+                />
                 <CheckListGroup
+                  style={{ marginTop: '1rem' }}
                   inputType="checkbox"
                   onSelect={this.onSelect}
-                  listItems={playlistsToPin.map(playlist => {
-                    return {
-                      label: playlist.title,
-                      checked: selectedPlaylists.indexOf(playlist.id) !== -1
-                    }
-                  })}
+                  listItems={this.renderListItems()}
                 />
                 {loadMoreButton && (
                   <Button
@@ -164,11 +170,19 @@ class SelectPlaylistsToPinModal extends Component {
     )
   }
 
-  loadMorePlaylists(lastPlaylistId) {
+  loadMorePlaylists = lastPlaylistId => {
     this.props.loadMorePlaylist(lastPlaylistId)
   }
 
-  onSelect(index) {
+  onPlaylistSearchInput = async text => {
+    this.setState({ searchText: text })
+    const { data } = await request.get(
+      `${URL}/playlist/search/toPin?query=${text}`
+    )
+    this.setState({ searchedPlaylists: data })
+  }
+
+  onSelect = index => {
     let playlistId = this.props.playlistsToPin[index].id
     let newSelectedPlaylists
     if (this.state.selectedPlaylists.indexOf(playlistId) === -1) {
@@ -181,7 +195,7 @@ class SelectPlaylistsToPinModal extends Component {
     this.setState({ selectedPlaylists: newSelectedPlaylists })
   }
 
-  onDeselect(index) {
+  onDeselect = index => {
     const { selectedPlaylists } = this.state
     let playlistIndex = 0
     const newSelectedPlaylists = selectedPlaylists.filter(playlist => {
@@ -190,10 +204,22 @@ class SelectPlaylistsToPinModal extends Component {
     this.setState({ selectedPlaylists: newSelectedPlaylists })
   }
 
-  onSubmit() {
+  onSubmit = () => {
     const { changePinnedPlaylists, onHide } = this.props
     const { selectedPlaylists } = this.state
     return changePinnedPlaylists(selectedPlaylists).then(() => onHide())
+  }
+
+  renderListItems = () => {
+    const { playlistsToPin } = this.props
+    const { searchText, searchedPlaylists, selectedPlaylists } = this.state
+    const playlists = searchText ? searchedPlaylists : playlistsToPin
+    return playlists.map(playlist => {
+      return {
+        label: playlist.title,
+        checked: selectedPlaylists.indexOf(playlist.id) !== -1
+      }
+    })
   }
 }
 

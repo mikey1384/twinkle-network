@@ -20,14 +20,13 @@ const Styles = {
     marginRight: '1rem',
     marginBottom: '1rem',
     background: 'white',
-    padding: '1.5rem'
+    padding: '1rem 1.5rem'
   },
   header: {
     fontSize: '4rem',
     fontWeight: 'bold'
   },
   subHeader: {
-    marginTop: '2rem',
     fontSize: '3rem',
     fontWeight: 'bold'
   },

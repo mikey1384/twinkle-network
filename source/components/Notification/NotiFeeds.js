@@ -16,7 +16,7 @@ NotiFeeds.propTypes = {
       discussionTitle: PropTypes.string,
       discussionUploader: PropTypes.number,
       id: PropTypes.number.isRequired,
-      rootCommentUploader: PropTypes.number,
+      rootCommentUploader: PropTypes.string,
       rootTitle: PropTypes.string.isRequired,
       rootType: PropTypes.string.isRequired,
       rootId: PropTypes.number.isRequired,
@@ -66,7 +66,6 @@ function renderNotificationMessage(notification, myId) {
     discussionTitle,
     discussionUploader
   } = notification
-
   let action = ''
   let isReplyNotification = commentContent && rootCommentUploader === myId
   let isDiscussionAnswerNotification =
