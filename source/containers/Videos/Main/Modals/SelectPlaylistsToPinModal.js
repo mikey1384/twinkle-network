@@ -183,16 +183,16 @@ class SelectPlaylistsToPinModal extends Component {
   }
 
   onSelect = index => {
-    let playlistId = this.props.playlistsToPin[index].id
-    let newSelectedPlaylists
-    if (this.state.selectedPlaylists.indexOf(playlistId) === -1) {
-      newSelectedPlaylists = [playlistId].concat(this.state.selectedPlaylists)
-    } else {
-      newSelectedPlaylists = this.state.selectedPlaylists.filter(id => {
-        return id !== playlistId
-      })
-    }
-    this.setState({ selectedPlaylists: newSelectedPlaylists })
+    const { searchText, searchedPlaylists } = this.state
+    const { playlistsToPin } = this.props
+    const playlists = searchText ? searchedPlaylists : playlistsToPin
+    let playlistId = playlists[index].id
+    this.setState(state => ({
+      selectedPlaylists:
+        state.selectedPlaylists.indexOf(playlistId) === -1
+          ? [playlistId].concat(state.selectedPlaylists)
+          : state.selectedPlaylists.filter(id => id !== playlistId)
+    }))
   }
 
   onDeselect = index => {
