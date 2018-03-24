@@ -3,7 +3,7 @@ import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css'
 
 export const container = css`
   z-index: 500;
-  font-family: Helvetica;
+  font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial, sans-serif;
   font-size: 1.5rem;
   background: #fff;
   padding: 0.8rem;

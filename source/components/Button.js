@@ -87,7 +87,7 @@ export default function Button({
       className={`${css`
         cursor: ${disabled ? 'default' : 'pointer'};
         overflow: hidden;
-        font-family: 'Helvetica Neue';
+        font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial, sans-serif;
         font-size: 1.5rem;
         text-transform: uppercase;
         padding: 1rem;
