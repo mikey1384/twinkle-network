@@ -50,15 +50,12 @@ export default function PlaylistReducer(state = defaultState, action) {
         action.data.result.pop()
         loadMorePlaylistsToPinButton = true
       }
-      let playlistsToPin = action.data.result.map(item => {
-        return {
-          title: item.title,
-          id: item.id
-        }
-      })
       return {
         ...state,
-        playlistsToPin,
+        playlistsToPin: action.data.result.map(item => ({
+          title: item.title,
+          id: item.id
+        })),
         loadMorePlaylistsToPinButton,
         selectPlaylistsToPinModalShown: true
       }
