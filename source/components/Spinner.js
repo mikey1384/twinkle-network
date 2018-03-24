@@ -6,7 +6,7 @@ export default function Spinner() {
     <div
       className={css`
         display: flex;
-        aling-items: center;
+        align-items: center;
         @keyframes loading-rotator {
           0% {
             transform: rotate(0deg);
