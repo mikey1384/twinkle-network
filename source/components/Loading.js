@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import Spinner from 'components/Spinner'
 import { css } from 'emotion'
 
 Loading.propTypes = {
@@ -41,8 +42,8 @@ export default function Loading({
           fontSize: '2.8rem'
         }}
       >
-        <span className="glyphicon glyphicon-refresh spinning" />&nbsp;
-        {text}
+        <Spinner />
+        {text && <div style={{ marginLeft: '1.5rem' }}>{text}</div>}
       </div>
     </div>
   )

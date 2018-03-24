@@ -15,7 +15,9 @@ import StarMark from 'components/StarMark'
 import { URL } from 'constants/URL'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import ProgressBar from 'components/ProgressBar'
+import Spinner from 'components/Spinner'
 import { css } from 'emotion'
+
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
 const intervalLength = 2000
@@ -316,16 +318,7 @@ class VideoPlayer extends Component {
               `}
               style={style}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  color: Color.logoBlue()
-                }}
-              >
-                <span className="glyphicon glyphicon-refresh spinning" />&nbsp;
-              </div>
+              <Spinner />
             </div>
           ) : !onEdit ? (
             <a
