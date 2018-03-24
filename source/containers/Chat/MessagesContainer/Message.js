@@ -67,28 +67,6 @@ class Message extends Component {
             profilePicId={profilePicId}
           />
           <div className={MessageStyle.contentWrapper}>
-            {!!messageId &&
-              !isReloadedSubject &&
-              canEdit &&
-              !onEdit && (
-                <DropdownButton
-                  snow
-                  style={{ position: 'absolute', right: 0, zIndex: 1 }}
-                  direction="left"
-                  icon="pencil"
-                  opacity={0.8}
-                  menuProps={[
-                    {
-                      label: 'Edit',
-                      onClick: () => this.setState({ onEdit: true })
-                    },
-                    {
-                      label: 'Remove',
-                      onClick: () => onDelete(messageId)
-                    }
-                  ]}
-                />
-              )}
             <div>
               <UsernameText
                 style={MessageStyle.usernameText}
@@ -121,6 +99,28 @@ class Message extends Component {
                       }}
                     />
                   </div>
+                  {!!messageId &&
+                    !isReloadedSubject &&
+                    canEdit &&
+                    !onEdit && (
+                      <DropdownButton
+                        snow
+                        style={{ position: 'absolute', top: 0, right: 0 }}
+                        direction="left"
+                        icon="pencil"
+                        opacity={0.8}
+                        menuProps={[
+                          {
+                            label: 'Edit',
+                            onClick: () => this.setState({ onEdit: true })
+                          },
+                          {
+                            label: 'Remove',
+                            onClick: () => onDelete(messageId)
+                          }
+                        ]}
+                      />
+                    )}
                   {!!isReloadedSubject &&
                     !!numMsgs &&
                     numMsgs > 0 && (
