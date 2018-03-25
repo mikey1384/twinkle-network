@@ -62,7 +62,7 @@ export default function FeedReducer(state = defaultState, action) {
         })
       }
     case 'FETCH_MORE_FEEDS':
-      if (action.data.length > 5) {
+      if (action.data.length > 20) {
         action.data.pop()
         loadMoreButton = true
       }
