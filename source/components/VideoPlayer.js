@@ -22,7 +22,6 @@ const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
 const intervalLength = 2000
 const denominator = 3
-let isMobile
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -69,7 +68,6 @@ class VideoPlayer extends Component {
       videoCode,
       videoId
     } = this.props
-    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     this.mounted = true
 
     if (typeof hasHqThumb !== 'number') {
@@ -106,7 +104,7 @@ class VideoPlayer extends Component {
       }
     }
 
-    if (autoplay || isMobile) {
+    if (autoplay) {
       this.setState({ playing: true })
     }
   }
@@ -412,9 +410,7 @@ class VideoPlayer extends Component {
   }
 
   onVideoReady = event => {
-    if (!isMobile) {
-      event.target.playVideo()
-    }
+    event.target.playVideo()
     this.player = event.target
     this.setState(() => ({
       totalDuration: event.target.getDuration()
