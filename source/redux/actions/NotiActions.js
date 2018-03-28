@@ -1,26 +1,28 @@
 import request from 'axios'
-import { auth, handleError } from './constants'
+import { auth, handleError } from '../constants'
 import { URL } from 'constants/URL'
+import NOTI from '../constants/Noti'
 
 const API_URL = `${URL}/notification`
 const appVersion = '0.0.93'
 
-export const checkVersion = () => dispatch =>
-  request
-    .get(`${API_URL}/version?version=${appVersion}`)
-    .then(response =>
-      dispatch({
-        type: 'CHECK_VERSION',
-        data: response.data
-      })
+export const checkVersion = () => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/version?version=${appVersion}`
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: NOTI.CHECK_VERSION,
+      data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const clearNotifications = () => ({
-  type: 'CLEAR_NOTIFICATIONS'
+  type: NOTI.CLEAR
 })
 
 export const fetchNotifications = () => async dispatch => {
@@ -28,7 +30,7 @@ export const fetchNotifications = () => async dispatch => {
     if (auth().headers.authorization === null) {
       const { data } = await request.get(`${API_URL}/chatSubject`)
       return dispatch({
-        type: 'FETCH_NOTIFICATIONS',
+        type: NOTI.LOAD,
         data: {
           notifications: [],
           currentChatSubject: data
@@ -37,7 +39,7 @@ export const fetchNotifications = () => async dispatch => {
     }
     const { data } = await request.get(API_URL, auth())
     return dispatch({
-      type: 'FETCH_NOTIFICATIONS',
+      type: NOTI.LOAD,
       data: data
     })
   } catch (error) {
@@ -47,6 +49,6 @@ export const fetchNotifications = () => async dispatch => {
 }
 
 export const notifyChatSubjectChange = subject => ({
-  type: 'NOTIFY_CHAT_SUBJECT_CHANGE',
+  type: NOTI.CHAT_SUBJECT_CHANGE,
   subject
 })

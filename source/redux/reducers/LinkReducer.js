@@ -1,3 +1,5 @@
+import LINK from '../constants/Link'
+
 const defaultState = {
   links: [],
   loadMoreLinksButtonShown: false,
@@ -10,12 +12,12 @@ export default function linkReducer(state = defaultState, action) {
   let loadMoreLinksButtonShown = false
   let loadMoreCommentsButton = false
   switch (action.type) {
-    case 'DELETE_LINK':
+    case LINK.DELETE:
       return {
         ...state,
         links: state.links.filter(link => link.id !== action.linkId)
       }
-    case 'DELETE_LINK_COMMENT':
+    case LINK.DELETE_COMMENT:
       return {
         ...state,
         linkPage: {
@@ -37,7 +39,7 @@ export default function linkReducer(state = defaultState, action) {
           )
         }
       }
-    case 'EDIT_LINK_COMMENT':
+    case LINK.EDIT_COMMENT:
       return {
         ...state,
         linkPage: {
@@ -58,7 +60,7 @@ export default function linkReducer(state = defaultState, action) {
           }))
         }
       }
-    case 'EDIT_LINK_TITLE':
+    case LINK.EDIT_TITLE:
       return {
         ...state,
         links: state.links.map(link => ({
@@ -66,7 +68,7 @@ export default function linkReducer(state = defaultState, action) {
           title: action.data.id === link.id ? action.data.title : link.title
         }))
       }
-    case 'LIKE_LINK_COMMENT':
+    case LINK.LIKE_COMMENT:
       return {
         ...state,
         linkPage: {
@@ -87,7 +89,7 @@ export default function linkReducer(state = defaultState, action) {
           })
         }
       }
-    case 'EDIT_LINK_PAGE':
+    case LINK.EDIT_PAGE:
       const {
         editedTitle: title,
         editedDescription: description,
@@ -102,7 +104,7 @@ export default function linkReducer(state = defaultState, action) {
           description
         }
       }
-    case 'FETCH_LINKS':
+    case LINK.LOAD:
       if (action.links.length > 20) {
         loadMoreLinksButtonShown = true
         action.links.pop()
@@ -112,7 +114,7 @@ export default function linkReducer(state = defaultState, action) {
         links: action.links,
         loadMoreLinksButtonShown
       }
-    case 'FETCH_MORE_LINKS':
+    case LINK.LOAD_MORE:
       if (action.links.length > 20) {
         loadMoreLinksButtonShown = true
         action.links.pop()
@@ -122,7 +124,7 @@ export default function linkReducer(state = defaultState, action) {
         links: state.links.concat(action.links),
         loadMoreLinksButtonShown
       }
-    case 'FETCH_LINK_COMMENTS':
+    case LINK.LOAD_COMMENTS:
       if (action.data.comments.length > 20) {
         action.data.comments.pop()
         loadMoreCommentsButton = true
@@ -135,7 +137,7 @@ export default function linkReducer(state = defaultState, action) {
           loadMoreCommentsButton
         }
       }
-    case 'FETCH_MORE_LINK_COMMENTS':
+    case LINK.LOAD_MORE_COMMENTS:
       if (action.data.comments.length > 20) {
         action.data.comments.pop()
         loadMoreCommentsButton = true
@@ -148,7 +150,7 @@ export default function linkReducer(state = defaultState, action) {
           loadMoreCommentsButton
         }
       }
-    case 'FETCH_MORE_LINK_REPLIES':
+    case LINK.LOAD_MORE_REPLIES:
       return {
         ...state,
         linkPage: {
@@ -166,7 +168,7 @@ export default function linkReducer(state = defaultState, action) {
           }))
         }
       }
-    case 'LIKE_LINK':
+    case LINK.LIKE:
       return {
         ...state,
         linkPage: {
@@ -174,7 +176,7 @@ export default function linkReducer(state = defaultState, action) {
           likers: action.likes
         }
       }
-    case 'LOAD_LINK_PAGE':
+    case LINK.LOAD_PAGE:
       return {
         ...state,
         linkPage: {
@@ -182,7 +184,7 @@ export default function linkReducer(state = defaultState, action) {
           ...action.page
         }
       }
-    case 'SUBMIT_LINK_COMMENT':
+    case LINK.UPLOAD_COMMENT:
       return {
         ...state,
         linkPage: {
@@ -190,7 +192,7 @@ export default function linkReducer(state = defaultState, action) {
           comments: [action.comment].concat(state.linkPage.comments)
         }
       }
-    case 'SUBMIT_LINK_REPLY':
+    case LINK.UPLOAD_REPLY:
       return {
         ...state,
         linkPage: {
@@ -205,7 +207,7 @@ export default function linkReducer(state = defaultState, action) {
           }))
         }
       }
-    case 'UPLOAD_LINK':
+    case LINK.UPLOAD:
       return {
         ...state,
         links: [action.linkItem].concat(state.links)

@@ -4,7 +4,7 @@ import ProfilePanel from '../ProfilePanel'
 import Body from './Body'
 import ExecutionEnvironment from 'exenv'
 import { connect } from 'react-redux'
-import { checkValidUsername, unmountProfile } from 'redux/actions/UserActions'
+import { checkValidUsername } from 'redux/actions/UserActions'
 import NotFound from 'components/NotFound'
 import Loading from 'components/Loading'
 import { browserHistory } from 'react-router'
@@ -73,5 +73,5 @@ export default connect(
     profilePicId: state.UserReducer.profilePicId,
     profile: state.UserReducer.profile
   }),
-  { checkValidUsername, unmountProfile }
+  { checkValidUsername }
 )(Profile)

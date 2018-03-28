@@ -6,9 +6,9 @@ import { stringIsEmpty } from 'helpers/stringHelpers'
 import {
   searchChatAsync,
   clearChatSearchResults,
-  enterChannelWithId
+  enterChannelWithId,
+  openNewChatTab
 } from 'redux/actions/ChatActions'
-import { openNewChatTab } from 'redux/actions/ChatActions/actions'
 
 class ChatSearchBox extends Component {
   static propTypes = {

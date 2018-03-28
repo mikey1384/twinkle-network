@@ -1,3 +1,5 @@
+import FEED from '../constants/Feed'
+
 const defaultState = {
   selectedFilter: 'all',
   scrollLocked: false,
@@ -10,21 +12,21 @@ export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false
   let commentsLoadMoreButton = false
   switch (action.type) {
-    case 'CLEAR_FEEDS':
+    case FEED.CLEAR:
       return {
         ...state,
         feeds: [],
         loadMoreButton: false,
         loaded: false
       }
-    case 'FETCH_FEED':
+    case FEED.LOAD_DETAIL:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
           return feed.id === action.data.id ? action.data : feed
         })
       }
-    case 'FETCH_FEEDS':
+    case FEED.LOAD:
       if (action.data.length > 20) {
         action.data.pop()
         loadMoreButton = true
@@ -36,7 +38,7 @@ export default function FeedReducer(state = defaultState, action) {
         loadMoreButton,
         loaded: true
       }
-    case 'FETCH_MORE_FEED_REPLIES':
+    case FEED.LOAD_MORE_REPLIES:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -61,7 +63,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FETCH_MORE_FEEDS':
+    case FEED.LOAD_MORE:
       if (action.data.length > 20) {
         action.data.pop()
         loadMoreButton = true
@@ -72,7 +74,7 @@ export default function FeedReducer(state = defaultState, action) {
         selectedFilter: action.filter || state.selectedFilter,
         loadMoreButton
       }
-    case 'FEED_TARGET_COMMENT_LIKE':
+    case FEED.LIKE_TARGET_COMMENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -91,7 +93,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_COMMENT_DELETE':
+    case FEED.DELETE_COMMENT:
       return {
         ...state,
         feeds: state.feeds.reduce((resultingArray, feed) => {
@@ -136,7 +138,7 @@ export default function FeedReducer(state = defaultState, action) {
           ])
         }, [])
       }
-    case 'FEED_CONTENT_DELETE':
+    case FEED.DELETE_CONTENT:
       return {
         ...state,
         feeds: state.feeds.filter(
@@ -145,7 +147,7 @@ export default function FeedReducer(state = defaultState, action) {
             feed.contentId !== action.contentId
         )
       }
-    case 'FEED_COMMENT_EDIT':
+    case FEED.EDIT_COMMENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -192,7 +194,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_CONTENT_EDIT':
+    case FEED.EDIT_CONTENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -220,7 +222,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_QUESTION_EDIT':
+    case FEED.EDIT_QUESTION:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -246,7 +248,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_DISCUSSION_EDIT':
+    case FEED.EDIT_DISCUSSION:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -271,7 +273,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'FEED_VIDEO_STAR':
+    case FEED.STAR_VIDEO:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -290,7 +292,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'COMMENT_FEED_LIKE':
+    case FEED.LIKE_COMMENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -326,7 +328,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'CONTENT_FEED_LIKE':
+    case FEED.LIKE_CONTENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => ({
@@ -344,7 +346,7 @@ export default function FeedReducer(state = defaultState, action) {
               : feed.rootContentLikers
         }))
       }
-    case 'QUESTION_FEED_LIKE':
+    case FEED.LIKE_QUESTION:
       return {
         ...state,
         feeds: state.feeds.map(feed => ({
@@ -362,7 +364,7 @@ export default function FeedReducer(state = defaultState, action) {
               : feed.rootContentLikers
         }))
       }
-    case 'LOAD_MORE_FEED_COMMENTS':
+    case FEED.LOAD_MORE_COMMENTS:
       if (action.data.childComments.length > 3) {
         action.data.childComments.pop()
         commentsLoadMoreButton = true
@@ -382,7 +384,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'SHOW_FEED_COMMENTS':
+    case FEED.SHOW_COMMENTS:
       if (action.data.childComments.length > 3) {
         action.data.childComments.pop()
         commentsLoadMoreButton = true
@@ -405,14 +407,14 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'UPLOAD_CONTENT':
+    case FEED.UPLOAD_CONTENT:
       return {
         ...state,
         feeds: [{ ...action.data, commentsLoadMoreButton: false }].concat(
           state.feeds
         )
       }
-    case 'UPLOAD_FEED_COMMENT':
+    case FEED.UPLOAD_COMMENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
@@ -426,7 +428,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'UPLOAD_FEED_REPLY':
+    case FEED.UPLOAD_REPLY:
       let { reply } = action.data
       return {
         ...state,
@@ -457,7 +459,7 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case 'UPLOAD_TC_COMMENT':
+    case FEED.UPLOAD_TC_COMMENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => {

@@ -4,7 +4,7 @@ import ContentPanel from 'components/ContentPanel'
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { auth, handleError } from 'redux/actions/constants'
+import { auth, handleError } from 'redux/constants'
 
 class Comment extends Component {
   static propTypes = {

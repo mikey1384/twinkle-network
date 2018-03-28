@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react'
 import YouTube from 'react-youtube'
 import { Color } from 'constants/css'
 import { connect } from 'react-redux'
-import { auth } from 'redux/actions/constants'
+import { auth } from 'redux/constants'
 import {
   addVideoViewAsync,
   fillCurrentVideoSlot,

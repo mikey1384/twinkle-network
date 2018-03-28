@@ -67,9 +67,11 @@ export default class PanelReplies extends Component {
         {comment.loadMoreReplies && (
           <Button
             style={{
-              marginTop: '0.5rem',
+              marginTop: '1rem',
               width: '100%'
             }}
+            filled
+            info
             onClick={this.loadMoreReplies}
           >
             Load More

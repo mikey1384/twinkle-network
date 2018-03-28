@@ -8,10 +8,12 @@ import Input from './Input'
 export default class TitleDescriptionForm extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
+    descriptionMaxChar: PropTypes.number,
     descriptionPlaceholder: PropTypes.string,
     onClose: PropTypes.func,
     onSubmit: PropTypes.func,
     rows: PropTypes.number,
+    titleMaxChar: PropTypes.number,
     titlePlaceholder: PropTypes.string
   }
 
@@ -30,24 +32,40 @@ export default class TitleDescriptionForm extends Component {
       onClose,
       rows,
       titlePlaceholder,
+      titleMaxChar = 300,
+      descriptionMaxChar = 5000,
       descriptionPlaceholder
     } = this.props
     const { title, description } = this.state
     return (
-      <form onSubmit={this.onSubmit}>
+      <div>
         <Input
           autoFocus={autoFocus}
           placeholder={titlePlaceholder}
           type="text"
           value={title}
+          style={{
+            borderColor: title.length > titleMaxChar && 'red',
+            color: title.length > titleMaxChar && 'red'
+          }}
           onChange={text => this.setState({ title: text })}
           onKeyUp={event =>
             this.setState({ title: addEmoji(event.target.value) })
           }
         />
+        {title.length > titleMaxChar && (
+          <small style={{ color: 'red', fontSize: '1.6rem' }}>
+            {`Exceeded title's`} character limit of {titleMaxChar} characters.
+            You can write more in the description field below.
+          </small>
+        )}
         <div style={{ position: 'relative' }}>
           <Textarea
-            style={{ marginTop: '1rem' }}
+            style={{
+              marginTop: '1rem',
+              color: description.length > descriptionMaxChar && 'red',
+              borderColor: description.length > descriptionMaxChar && 'red'
+            }}
             minRows={rows}
             placeholder={descriptionPlaceholder}
             value={description}
@@ -56,6 +74,11 @@ export default class TitleDescriptionForm extends Component {
             }
           />
         </div>
+        {description.length > descriptionMaxChar && (
+          <small style={{ color: 'red', fontSize: '1.6rem' }}>
+            {descriptionMaxChar} character limit exceeded
+          </small>
+        )}
         <div
           style={{
             marginTop: '1rem',
@@ -73,13 +96,18 @@ export default class TitleDescriptionForm extends Component {
           <Button
             primary
             style={{ fontSize: '1.7rem' }}
-            type="submit"
-            disabled={!title || stringIsEmpty(title)}
+            onClick={this.onSubmit}
+            disabled={
+              !title ||
+              stringIsEmpty(title) ||
+              title.length > titleMaxChar ||
+              description.length > descriptionMaxChar
+            }
           >
             Submit
           </Button>
         </div>
-      </form>
+      </div>
     )
   }
 

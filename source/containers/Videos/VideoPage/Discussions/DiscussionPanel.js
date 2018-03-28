@@ -68,12 +68,6 @@ class DiscussionPanel extends Component {
       editedDescription: props.description || '',
       editDoneButtonDisabled: true
     }
-    this.onDelete = this.onDelete.bind(this)
-    this.onEditDone = this.onEditDone.bind(this)
-    this.onExpand = this.onExpand.bind(this)
-    this.onCommentSubmit = this.onCommentSubmit.bind(this)
-    this.onReplySubmit = this.onReplySubmit.bind(this)
-    this.loadMoreComments = this.loadMoreComments.bind(this)
   }
 
   render() {
@@ -287,7 +281,7 @@ class DiscussionPanel extends Component {
     )
   }
 
-  determineEditButtonDoneStatus() {
+  determineEditButtonDoneStatus = () => {
     const { editedTitle, editedDescription } = this.state
     const { title, description } = this.props
     const titleIsEmpty = stringIsEmpty(editedTitle)
@@ -298,43 +292,41 @@ class DiscussionPanel extends Component {
     this.setState({ editDoneButtonDisabled })
   }
 
-  loadMoreComments({ lastCommentId }) {
+  loadMoreComments = ({ lastCommentId }) => {
     const { id, loadMoreComments } = this.props
     loadMoreComments({ lastCommentId, discussionId: id })
   }
 
-  onCommentSubmit(comment) {
+  onCommentSubmit = comment => {
     const { onSubmit, videoId, id, title } = this.props
     onSubmit({ comment, videoId, discussionId: id, discussionTitle: title })
   }
 
-  onDelete() {
+  onDelete = () => {
     const { id, onDiscussionDelete } = this.props
     onDiscussionDelete(id, () => {
       this.setState({ confirmModalShown: false })
     })
   }
 
-  onExpand() {
+  onExpand = () => {
     const { loadComments, id } = this.props
     this.setState({ expanded: true })
     loadComments(id)
   }
 
-  onEditDone() {
+  onEditDone = async() => {
     const { editedTitle, editedDescription } = this.state
     const { id, onDiscussionEditDone } = this.props
-    onDiscussionEditDone(
+    await onDiscussionEditDone(
       id,
       finalizeEmoji(editedTitle),
-      finalizeEmoji(editedDescription),
-      () => {
-        this.setState({
-          onEdit: false,
-          editDoneButtonDisabled: true
-        })
-      }
+      finalizeEmoji(editedDescription)
     )
+    this.setState({
+      onEdit: false,
+      editDoneButtonDisabled: true
+    })
   }
 
   onReplySubmit({ replyContent, comment, replyOfReply, originType }) {

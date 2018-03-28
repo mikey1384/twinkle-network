@@ -1,67 +1,66 @@
 /* global localStorage */
 
 import request from 'axios'
-import { token, auth, handleError } from './constants'
+import { token, auth, handleError } from '../constants'
 import { URL } from 'constants/URL'
+import USER from '../constants/User'
 
 const API_URL = `${URL}/user`
 
-export const checkValidUsername = username => dispatch =>
-  request
-    .get(`${API_URL}/username/check?username=${username}`)
-    .then(response => {
-      const { data } = response
-      if (data.pageNotExists) {
-        return dispatch({
-          type: 'SHOW_USER_NOT_EXISTS'
-        })
-      }
-      dispatch({
-        type: 'SHOW_USER_PROFILE',
-        data: data.user
+export const checkValidUsername = username => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/username/check?username=${username}`
+    )
+    if (data.pageNotExists) {
+      return dispatch({
+        type: USER.NOT_EXIST
       })
+    }
+    dispatch({
+      type: USER.SHOW_PROFILE,
+      data: data.user
     })
-    .catch(error => {
-      dispatch({
-        type: 'SHOW_USER_NOT_EXISTS'
-      })
-      console.error(error.response || error)
-      handleError(error, dispatch)
+  } catch (error) {
+    dispatch({
+      type: USER.NOT_EXIST
     })
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const clearUserSearch = () => ({
-  type: 'CLEAR_USER_SEARCH'
+  type: USER.CLEAR_SEARCH
 })
 
-export const fetchUsers = () => dispatch =>
-  request
-    .get(`${API_URL}/users`)
-    .then(response => {
-      dispatch({
-        type: 'FETCH_USERS',
-        data: response.data
-      })
-      return Promise.resolve()
+export const fetchUsers = () => async dispatch => {
+  try {
+    const { data } = await request.get(`${API_URL}/users`)
+    dispatch({
+      type: USER.LOAD_USERS,
+      data
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const fetchMoreUsers = shownUsersIds => dispatch =>
-  request
-    .get(`${API_URL}/users?${shownUsersIds}`)
-    .then(response => {
-      dispatch({
-        type: 'FETCH_MORE_USERS',
-        data: response.data
-      })
-      return Promise.resolve()
+export const fetchMoreUsers = shownUsersIds => async dispatch => {
+  try {
+    const { data } = await request.get(`${API_URL}/users?${shownUsersIds}`)
+    dispatch({
+      type: USER.LOAD_MORE_USERS,
+      data
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const changeUserXP = params => async dispatch => {
   try {
@@ -72,7 +71,7 @@ export const changeUserXP = params => async dispatch => {
     )
     if (alreadyDone) return
     return dispatch({
-      type: 'CHANGE_USER_XP',
+      type: USER.CHANGE_XP,
       xp
     })
   } catch (error) {
@@ -81,113 +80,110 @@ export const changeUserXP = params => async dispatch => {
   }
 }
 
-export const initSession = data => ({
-  type: 'FETCH_SESSION',
-  data
-})
-
-export const initSessionAsync = pathname => dispatch => {
+export const initSessionAsync = pathname => async dispatch => {
   if (token() === null) {
     return request.post(`${API_URL}/recordAnonTraffic`, { pathname })
   }
-  return request
-    .get(`${API_URL}/session?pathname=${pathname}`, auth())
-    .then(response =>
-      dispatch(initSession({ ...response.data, loggedIn: true }))
+  try {
+    const { data } = await request.get(
+      `${API_URL}/session?pathname=${pathname}`,
+      auth()
     )
-    .catch(() => dispatch(initSession({ loggedIn: false })))
+    dispatch({
+      type: USER.INIT_SESSION,
+      data: { ...data, loggedIn: true }
+    })
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-export const login = data => ({
-  type: 'SIGNIN_LOGIN',
-  data
-})
-
-export const loginAsync = params => dispatch =>
-  request
-    .post(`${API_URL}/login`, params)
-    .then(response => {
-      localStorage.setItem('token', response.data.token)
-      dispatch(login(response.data))
+export const loginAsync = params => async dispatch => {
+  try {
+    const { data } = await request.post(`${API_URL}/login`, params)
+    localStorage.setItem('token', data.token)
+    dispatch({
+      type: USER.LOGIN,
+      data
     })
-    .catch(error => {
-      if (error.response.status === 401) {
-        return Promise.reject('Incorrect username/password combination')
-      }
-      return Promise.reject('There was an error')
-    })
+  } catch (error) {
+    if (error.response.status === 401) {
+      return Promise.reject('Incorrect username/password combination')
+    }
+    return Promise.reject('There was an error')
+  }
+}
 
 export const logout = () => {
   localStorage.removeItem('token')
   return {
-    type: 'SIGNIN_LOGOUT'
+    type: USER.LOGOUT
   }
 }
 
-export const searchUsers = query => dispatch =>
-  request
-    .get(`${API_URL}/users/search?queryString=${query}`)
-    .then(({ data: users }) =>
-      dispatch({
-        type: 'SEARCH_USERS',
-        users
-      })
+export const searchUsers = query => async dispatch => {
+  try {
+    const { data: users } = await request.get(
+      `${API_URL}/users/search?queryString=${query}`
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: USER.SEARCH,
+      users
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const signupAsync = params => dispatch =>
-  request
-    .post(`${API_URL}/signup`, params)
-    .then(response => {
-      if (response.data.token) { localStorage.setItem('token', response.data.token) }
-      dispatch({
-        type: 'SIGNIN_SIGNUP',
-        data: response.data
-      })
+export const signupAsync = params => async dispatch => {
+  try {
+    const { data } = await request.post(`${API_URL}/signup`, params)
+    if (data.token) {
+      localStorage.setItem('token', data.token)
+    }
+    dispatch({
+      type: USER.SIGNUP,
+      data
     })
-    .catch(error => Promise.reject(error.response.data))
+  } catch (error) {
+    Promise.reject(error.response.data)
+  }
+}
 
-export const uploadBio = (params, callback) => dispatch =>
-  request
-    .post(`${API_URL}/bio`, params, auth())
-    .then(response => {
-      dispatch({
-        type: 'UPDATE_BIO',
-        data: response.data
-      })
-      callback()
+export const uploadBio = (params, callback) => async dispatch => {
+  try {
+    const { data } = await request.post(`${API_URL}/bio`, params, auth())
+    dispatch({
+      type: USER.EDIT_BIO,
+      data
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const uploadProfilePic = (image, callback) => dispatch =>
-  request
-    .post(`${API_URL}/picture`, { image }, auth())
-    .then(response => {
-      dispatch({
-        type: 'UPDATE_PROFILE_PICTURE',
-        data: response.data
-      })
-      callback()
+export const uploadProfilePic = (image, callback) => async dispatch => {
+  try {
+    const { data } = await request.post(`${API_URL}/picture`, { image }, auth())
+    dispatch({
+      type: USER.EDIT_PROFILE_PICTURE,
+      data
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const openSigninModal = () => ({
-  type: 'SIGNIN_OPEN'
+  type: USER.OPEN_SIGNIN_MODAL
 })
 
 export const closeSigninModal = () => ({
-  type: 'SIGNIN_CLOSE'
+  type: USER.CLOSE_SIGNIN_MODAL
 })
 
-export const unmountProfile = () => ({
-  type: 'UNMOUNT_PROFILE'
-})

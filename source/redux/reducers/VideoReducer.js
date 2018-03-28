@@ -1,4 +1,5 @@
 import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers'
+import VIDEO from '../constants/Video'
 
 const defaultVideoPageState = {
   videoLoading: true,
@@ -25,14 +26,14 @@ export default function VideoReducer(state = defaultState, action) {
   let allVideosLoaded = false
   let reply
   switch (action.type) {
-    case 'DELETE_VIDEO':
+    case VIDEO.DELETE:
       const newVideoThumbs = state.allVideoThumbs
       newVideoThumbs.splice(action.arrayIndex, 1)
       return {
         ...state,
         allVideoThumbs: newVideoThumbs.concat(action.data)
       }
-    case 'DELETE_VIDEO_COMMENT':
+    case VIDEO.DELETE_COMMENT:
       let newComments = state.videoPage.comments.filter(
         comment => comment.id !== action.data.commentId
       )
@@ -63,7 +64,7 @@ export default function VideoReducer(state = defaultState, action) {
           noComments
         }
       }
-    case 'DELETE_VIDEO_DISCUSSION':
+    case VIDEO.DELETE_DISCUSSION:
       return {
         ...state,
         videoPage: {
@@ -73,7 +74,7 @@ export default function VideoReducer(state = defaultState, action) {
           )
         }
       }
-    case 'EDIT_VIDEO_COMMENT':
+    case VIDEO.EDIT_COMMENT:
       return {
         ...state,
         videoPage: {
@@ -111,7 +112,7 @@ export default function VideoReducer(state = defaultState, action) {
           }))
         }
       }
-    case 'EDIT_VIDEO_DISCUSSION':
+    case VIDEO.EDIT_DISCUSSION:
       return {
         ...state,
         videoPage: {
@@ -139,7 +140,7 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         currentVideoSlot: action.videoId
       }
-    case 'GET_VIDEOS':
+    case VIDEO.LOAD:
       if (action.videos.length > 12) {
         action.videos.pop()
         loadMoreButton = true
@@ -171,7 +172,7 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         addVideoModalShown: true
       }
-    case 'VID_MODAL_CLOSE':
+    case VIDEO.CLOSE_MODAL:
       return {
         ...state,
         addVideoModalShown: false
@@ -508,7 +509,7 @@ export default function VideoReducer(state = defaultState, action) {
           questions: action.data
         }
       }
-    case 'EDIT_VIDEO_PAGE':
+    case VIDEO.EDIT_PAGE:
       const { description } = action.params
       const url = fetchedVideoCodeFromURL(action.params.url)
       return {

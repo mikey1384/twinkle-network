@@ -1,3 +1,5 @@
+import NOTI from '../constants/Noti'
+
 const defaultState = {
   versionMatch: true,
   notifications: [],
@@ -6,22 +8,22 @@ const defaultState = {
 
 export default function NotiReducer(state = defaultState, action) {
   switch (action.type) {
-    case 'CHECK_VERSION':
+    case NOTI.CHECK_VERSION:
       return {
         ...state,
         versionMatch: action.data.match
       }
-    case 'CLEAR_NOTIFICATIONS':
+    case NOTI.CLEAR:
       return {
         ...state,
         notifications: []
       }
-    case 'FETCH_NOTIFICATIONS':
+    case NOTI.LOAD:
       return {
         ...state,
         ...action.data
       }
-    case 'NOTIFY_CHAT_SUBJECT_CHANGE':
+    case NOTI.CHAT_SUBJECT_CHANGE:
       return {
         ...state,
         currentChatSubject: {

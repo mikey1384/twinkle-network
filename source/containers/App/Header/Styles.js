@@ -24,7 +24,7 @@ export const container = css`
       margin-left: 0.5rem;
       color: ${Color.menuGray()};
       span.new {
-        color: ${Color.lightBlue()};
+        color: ${Color.pink()};
       }
       .icon {
         line-height: 1.7rem;

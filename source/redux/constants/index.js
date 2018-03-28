@@ -1,13 +1,15 @@
 /* global localStorage */
-import { logout, openSigninModal } from './UserActions'
+import { logout, openSigninModal } from '../actions/UserActions'
 
 export const token = () =>
   typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+
 export const auth = () => ({
   headers: {
     authorization: token()
   }
 })
+
 export function handleError(error, dispatch) {
   if (error.response) {
     const { status } = error.response
@@ -20,3 +22,5 @@ export function handleError(error, dispatch) {
     }
   }
 }
+
+export { default as Chat } from './Chat'

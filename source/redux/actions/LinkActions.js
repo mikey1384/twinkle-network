@@ -1,224 +1,221 @@
 import request from 'axios'
-import { auth, handleError } from './constants'
+import { auth, handleError } from '../constants'
 import { URL } from 'constants/URL'
 import { push } from 'react-router-redux'
+import LINK from '../constants/Link'
+
 const API_URL = `${URL}/url`
 
-export const likeComment = commentId => dispatch =>
-  request
-    .post(`${API_URL}/comments/like`, { commentId }, auth())
-    .then(response => {
-      const { data } = response
-      if (data.likes) {
-        dispatch({
-          type: 'LIKE_LINK_COMMENT',
-          data: { contentId: commentId, likes: data.likes }
-        })
-      }
-      return
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const deleteComment = commentId => dispatch =>
-  request
-    .delete(`${API_URL}/comments?commentId=${commentId}`, auth())
-    .then(response =>
-      dispatch({
-        type: 'DELETE_LINK_COMMENT',
-        commentId
-      })
+export const likeComment = commentId => async dispatch => {
+  try {
+    const { data } = await request.post(
+      `${API_URL}/comments/like`,
+      { commentId },
+      auth()
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const deleteLink = linkId => dispatch =>
-  request
-    .delete(`${API_URL}/page?linkId=${linkId}`, auth())
-    .then(response =>
+    if (data.likes) {
       dispatch({
-        type: 'DELETE_LINK',
-        linkId
+        type: LINK.LIKE_COMMENT,
+        data: { contentId: commentId, likes: data.likes }
       })
+    }
+    return
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const deleteComment = commentId => async dispatch => {
+  try {
+    await request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
+    dispatch({
+      type: LINK.DELETE_COMMENT,
+      commentId
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const deleteLink = linkId => async dispatch => {
+  try {
+    await request.delete(`${API_URL}/page?linkId=${linkId}`, auth())
+    dispatch({
+      type: LINK.DELETE,
+      linkId
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const deleteLinkFromPage = linkId => async dispatch => {
+  try {
+    await request.delete(`${API_URL}/page?linkId=${linkId}`, auth())
+    dispatch(push('/links'))
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const editComment = params => async dispatch => {
+  try {
+    const { data } = await request.put(`${API_URL}/comments`, params, auth())
+    dispatch({
+      type: LINK.EDIT_COMMENT,
+      ...data
+    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const editLinkPage = params => async dispatch => {
+  try {
+    await request.put(`${API_URL}/page`, params, auth())
+    dispatch({
+      type: LINK.EDIT_PAGE,
+      data: params
+    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const editTitle = params => async dispatch => {
+  try {
+    await request.put(`${API_URL}/title`, params, auth())
+    dispatch({
+      type: LINK.EDIT_TITLE,
+      data: params
+    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const fetchLinks = () => async dispatch => {
+  try {
+    const { data } = await request.get(API_URL)
+    dispatch({
+      type: LINK.LOAD,
+      links: data
+    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const fetchMoreLinks = linkId => async dispatch => {
+  try {
+    const { data } = await request.get(`${API_URL}?linkId=${linkId}`)
+    dispatch({
+      type: LINK.LOAD_MORE,
+      links: data
+    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const fetchComments = linkId => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/comments?rootId=${linkId}&rootType=url`
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: LINK.LOAD_COMMENTS,
+      data
     })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const deleteLinkFromPage = linkId => dispatch =>
-  request
-    .delete(`${API_URL}/page?linkId=${linkId}`, auth())
-    .then(response => {
-      dispatch(push('/links'))
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const editComment = params => dispatch =>
-  request
-    .put(`${API_URL}/comments`, params, auth())
-    .then(({ data }) => {
-      dispatch({
-        type: 'EDIT_LINK_COMMENT',
-        ...data
-      })
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const editLinkPage = params => dispatch =>
-  request
-    .put(`${API_URL}/page`, params, auth())
-    .then(response => {
-      dispatch({
-        type: 'EDIT_LINK_PAGE',
-        data: params
-      })
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const editTitle = params => dispatch =>
-  request
-    .put(`${API_URL}/title`, params, auth())
-    .then(response => {
-      dispatch({
-        type: 'EDIT_LINK_TITLE',
-        data: params
-      })
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const fetchLinks = () => dispatch =>
-  request
-    .get(API_URL)
-    .then(response => {
-      dispatch({
-        type: 'FETCH_LINKS',
-        links: response.data
-      })
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const fetchMoreLinks = linkId => dispatch =>
-  request
-    .get(`${API_URL}?linkId=${linkId}`)
-    .then(response => {
-      dispatch({
-        type: 'FETCH_MORE_LINKS',
-        links: response.data
-      })
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const fetchComments = linkId => dispatch =>
-  request
-    .get(`${API_URL}/comments?rootId=${linkId}&rootType=url`)
-    .then(response => {
-      dispatch({
-        type: 'FETCH_LINK_COMMENTS',
-        data: response.data
-      })
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const fetchMoreComments = (linkId, lastCommentId) => dispatch =>
-  request
-    .get(
+export const fetchMoreComments = (linkId, lastCommentId) => async dispatch => {
+  try {
+    const { data } = await request.get(
       `${API_URL}/comments?rootId=${linkId}&lastCommentId=${lastCommentId}&rootType=url`
     )
-    .then(response =>
-      dispatch({
-        type: 'FETCH_MORE_LINK_COMMENTS',
-        data: response.data
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: LINK.LOAD_MORE_COMMENTS,
+      data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const fetchMoreReplies = (lastReplyId, commentId) => dispatch =>
-  request
-    .get(
+export const fetchMoreReplies = (lastReplyId, commentId) => async dispatch => {
+  try {
+    const { data } = await request.get(
       `${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=url`
     )
-    .then(response =>
-      dispatch({
-        type: 'FETCH_MORE_LINK_REPLIES',
-        data: response.data,
-        commentId
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: LINK.LOAD_MORE_REPLIES,
+      data,
+      commentId
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const likeLink = linkId => dispatch =>
-  request
-    .post(`${API_URL}/like`, { contentId: linkId }, auth())
-    .then(response =>
-      dispatch({
-        type: 'LIKE_LINK',
-        likes: response.data.likes
-      })
+export const likeLink = linkId => async dispatch => {
+  try {
+    const { data } = await request.post(
+      `${API_URL}/like`,
+      { contentId: linkId },
+      auth()
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: LINK.LIKE,
+      likes: data.likes
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const loadLinkPage = linkId => dispatch =>
-  request
-    .get(`${API_URL}/page?linkId=${linkId}`)
-    .then(response => {
-      dispatch({
-        type: 'LOAD_LINK_PAGE',
-        page: response.data
-      })
-      return Promise.resolve()
+export const loadLinkPage = linkId => async dispatch => {
+  try {
+    const { data } = await request.get(`${API_URL}/page?linkId=${linkId}`)
+    dispatch({
+      type: LINK.LOAD_PAGE,
+      page: data
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const submitReply = ({
   replyContent,
   comment,
   parent,
   replyOfReply
-}) => dispatch => {
+}) => async dispatch => {
   const params = {
     content: replyContent,
     rootId: parent.id,
@@ -226,53 +223,59 @@ export const submitReply = ({
     commentId: comment.commentId || comment.id,
     replyId: comment.commentId ? comment.id : null
   }
-  request
-    .post(`${API_URL}/replies`, params, auth())
-    .then(response => {
-      const { data } = response
-      dispatch({
-        type: 'SUBMIT_LINK_REPLY',
-        data: {
-          reply: {
-            ...data,
-            replyOfReply,
-            replies: []
-          },
-          commentId: comment.id
-        }
-      })
+  try {
+    const { data } = await request.post(`${API_URL}/replies`, params, auth())
+    dispatch({
+      type: LINK.UPLOAD_REPLY,
+      data: {
+        reply: {
+          ...data,
+          replyOfReply,
+          replies: []
+        },
+        commentId: comment.id
+      }
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
 }
 
-export const submitComment = ({ content, linkId: rootId }) => dispatch =>
-  request
-    .post(`${API_URL}/comments`, { content, rootId, rootType: 'url' }, auth())
-    .then(response =>
-      dispatch({
-        type: 'SUBMIT_LINK_COMMENT',
-        comment: response.data
-      })
+export const submitComment = ({
+  content,
+  linkId: rootId
+}) => async dispatch => {
+  try {
+    const { data } = await request.post(
+      `${API_URL}/comments`,
+      { content, rootId, rootType: 'url' },
+      auth()
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: LINK.UPLOAD_COMMENT,
+      comment: data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const uploadLink = ({ url, title, description }) => dispatch =>
-  request
-    .post(`${API_URL}`, { url, title, description }, auth())
-    .then(({ data: linkItem }) => {
-      dispatch({
-        type: 'UPLOAD_LINK',
-        linkItem
-      })
-      return Promise.resolve()
+export const uploadLink = ({ url, title, description }) => async dispatch => {
+  try {
+    const { data: linkItem } = await request.post(
+      `${API_URL}`,
+      { url, title, description },
+      auth()
+    )
+    dispatch({
+      type: LINK.UPLOAD,
+      linkItem
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}

@@ -262,28 +262,25 @@ class ProfilePanel extends Component {
     event.target.value = null
   }
 
-  uploadBio = params => {
+  uploadBio = async params => {
     const { profile, uploadBio } = this.props
-    uploadBio({ ...params, profileId: profile.id }, () => {
-      this.setState({
-        bioEditModalShown: false
-      })
+    await uploadBio({ ...params, profileId: profile.id })
+    this.setState({
+      bioEditModalShown: false
     })
   }
 
-  uploadImage = image => {
+  uploadImage = async image => {
     const { uploadProfilePic } = this.props
 
     this.setState({
       processing: true
     })
-
-    uploadProfilePic(image, () => {
-      this.setState({
-        imageUri: null,
-        processing: false,
-        imageEditModalShown: false
-      })
+    await uploadProfilePic(image)
+    this.setState({
+      imageUri: null,
+      processing: false,
+      imageEditModalShown: false
     })
   }
 }

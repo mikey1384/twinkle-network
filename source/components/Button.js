@@ -4,6 +4,7 @@ import { css } from 'emotion'
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 
 Button.propTypes = {
+  alert: PropTypes.bool,
   warning: PropTypes.bool,
   className: PropTypes.string,
   disabled: PropTypes.bool,
@@ -27,6 +28,7 @@ Button.propTypes = {
   transparent: PropTypes.bool
 }
 export default function Button({
+  alert,
   className,
   disabled,
   onClick,
@@ -52,6 +54,7 @@ export default function Button({
   let Button
   const buttonColor = opacity => ({
     default: Color.buttonGray(opacity),
+    alert: Color.logoGreen(opacity),
     info: Color.lightBlue(opacity),
     love: Color.pink(opacity),
     primary: Color.blue(opacity),
@@ -70,6 +73,7 @@ export default function Button({
   if (primary) colorKey = 'primary'
   if (logo) colorKey = 'logo'
   if (success) colorKey = 'success'
+  if (alert) colorKey = 'alert'
   if (warning) colorKey = 'warning'
   if (gold) colorKey = 'gold'
   if (danger) colorKey = 'danger'

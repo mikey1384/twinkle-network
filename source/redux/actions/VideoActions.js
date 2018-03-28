@@ -1,159 +1,150 @@
 import request from 'axios'
 import { push } from 'react-router-redux'
 import { likePlaylistVideo } from './PlaylistActions'
-import { auth, handleError } from './constants'
+import { auth, handleError } from '../constants'
 import { URL } from 'constants/URL'
+import VIDEO from '../constants/Video'
 
 const API_URL = `${URL}/video`
 
-export const getVideos = (videos, initialRun) => ({
-  type: 'GET_VIDEOS',
-  initialRun,
-  videos: videos
-})
-
-export const getInitialVideos = () => dispatch =>
-  request
-    .get(API_URL)
-    .then(response => dispatch(getVideos(response.data, true)))
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+export const getInitialVideos = () => async dispatch => {
+  try {
+    const { data } = await request.get(API_URL)
+    dispatch({
+      type: VIDEO.LOAD,
+      initialRun: true,
+      videos: data
     })
-
-export const addVideoViewAsync = params => dispatch =>
-  request.post(`${API_URL}/view`, params).catch(error => {
+  } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
-  })
+  }
+}
+
+export const addVideoViewAsync = params => dispatch => {
+  try {
+    request.post(`${API_URL}/view`, params)
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const closeAddVideoModal = () => ({
-  type: 'VID_MODAL_CLOSE'
-})
-
-export const deleteVideo = (arrayIndex, data) => ({
-  type: 'DELETE_VIDEO',
-  arrayIndex,
-  data
+  type: VIDEO.CLOSE_MODAL
 })
 
 export const deleteVideoAsync = ({
   videoId,
   arrayIndex,
   lastVideoId
-}) => dispatch =>
-  request
-    .delete(`${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`, auth())
-    .then(response => {
-      const { data } = response
-      if (data.result) {
-        if (!lastVideoId) {
-          dispatch(getInitialVideos())
-          dispatch(push('/videos'))
-        } else {
-          dispatch(deleteVideo(arrayIndex, data.result))
-        }
-      }
-      return
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const deleteVideoComment = data => ({
-  type: 'DELETE_VIDEO_COMMENT',
-  data
-})
-
-export const deleteVideoCommentAsync = commentId => dispatch =>
-  request
-    .delete(`${API_URL}/comments?commentId=${commentId}`, auth())
-    .then(response => {
-      const { data } = response
-      if (data.success) {
-        dispatch(deleteVideoComment({ commentId }))
-      }
-      return
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const deleteVideoDiscussion = (discussionId, callback) => dispatch =>
-  request
-    .delete(`${API_URL}/discussions?discussionId=${discussionId}`, auth())
-    .then(response =>
-      dispatch({
-        type: 'DELETE_VIDEO_DISCUSSION',
-        discussionId
-      })
+}) => async dispatch => {
+  try {
+    const { data } = await request.delete(
+      `${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`,
+      auth()
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const editVideoCommentAsync = params => dispatch =>
-  request
-    .put(`${API_URL}/comments`, params, auth())
-    .then(({ data }) => {
+    if (!lastVideoId) {
+      dispatch(getInitialVideos())
+      dispatch(push('/videos'))
+    } else {
       dispatch({
-        type: 'EDIT_VIDEO_COMMENT',
-        ...data
+        type: VIDEO.DELETE,
+        arrayIndex,
+        data: data.result
       })
-      return Promise.resolve()
+    }
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const deleteVideoCommentAsync = commentId => async dispatch => {
+  try {
+    await request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
+    dispatch({
+      type: VIDEO.DELETE_COMMENT,
+      data: { commentId }
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const deleteVideoDiscussion = (
+  discussionId,
+  callback
+) => async dispatch => {
+  try {
+    await request.delete(
+      `${API_URL}/discussions?discussionId=${discussionId}`,
+      auth()
+    )
+    dispatch({
+      type: VIDEO.DELETE_DISCUSSION,
+      discussionId
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const editVideoCommentAsync = params => async dispatch => {
+  try {
+    const { data } = await request.put(`${API_URL}/comments`, params, auth())
+    dispatch({
+      type: VIDEO.EDIT_COMMENT,
+      ...data
+    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const editVideoDiscussion = (
   discussionId,
   editedTitle,
   editedDescription,
   callback
-) => dispatch =>
-  request
-    .post(
+) => async dispatch => {
+  try {
+    const { data } = await request.post(
       `${API_URL}/discussions/edit`,
       { discussionId, editedTitle, editedDescription },
       auth()
     )
-    .then(response => {
+    dispatch({
+      type: VIDEO.EDIT_DISCUSSION,
+      data,
+      discussionId
+    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const editVideoPageAsync = params => async dispatch => {
+  try {
+    const { data } = await request.post(`${API_URL}/edit/page`, params, auth())
+    if (data.success) {
       dispatch({
-        type: 'EDIT_VIDEO_DISCUSSION',
-        data: response.data,
-        discussionId
+        type: VIDEO.EDIT_PAGE,
+        params
       })
-      callback()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const editVideoPage = params => ({
-  type: 'EDIT_VIDEO_PAGE',
-  params
-})
-
-export const editVideoPageAsync = params => dispatch =>
-  request
-    .post(`${API_URL}/edit/page`, params, auth())
-    .then(response => {
-      const { data } = response
-      if (data.success) {
-        dispatch(editVideoPage(params))
-      }
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    }
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const editVideoTitle = (videoId, data) => ({
   type: 'EDIT_VIDEO_TITLE',
@@ -189,8 +180,12 @@ export const fillCurrentVideoSlot = videoId => ({
 export const getMoreVideos = videoId => dispatch =>
   request
     .get(`${API_URL}?videoId=${videoId}`)
-    .then(response => {
-      dispatch(getVideos(response.data, false))
+    .then(({ data }) => {
+      dispatch({
+        type: VIDEO.LOAD,
+        initialRun: false,
+        videos: data
+      })
       return Promise.resolve()
     })
     .catch(error => {

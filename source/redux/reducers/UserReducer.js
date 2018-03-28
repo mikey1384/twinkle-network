@@ -1,3 +1,5 @@
+import USER from '../constants/User'
+
 const defaultState = {
   isAdmin: false,
   isCreator: false,
@@ -15,26 +17,24 @@ function isAdmin(userType) {
 export default function UserReducer(state = defaultState, action) {
   let loadMoreButton = false
   switch (action.type) {
-    case 'CHANGE_USER_XP':
+    case USER.CHANGE_XP:
       return {
         ...state,
         twinkleXP: action.xp
       }
-    case 'CLEAR_USER_SEARCH':
+    case USER.CLEAR_SEARCH:
       return {
         ...state,
         searchedProfiles: []
       }
-    case 'FETCH_SESSION':
-      return action.data !== undefined && action.data.loggedIn
-        ? {
-            ...state,
-            ...action.data,
-            isAdmin: isAdmin(action.data.userType),
-            isCreator: action.data.userType === 'creator'
-          }
-        : state
-    case 'FETCH_USERS':
+    case USER.INIT_SESSION:
+      return {
+        ...state,
+        ...action.data,
+        isAdmin: isAdmin(action.data.userType),
+        isCreator: action.data.userType === 'creator'
+      }
+    case USER.LOAD_USERS:
       if (action.data.length > 20) {
         action.data.pop()
         loadMoreButton = true
@@ -44,7 +44,7 @@ export default function UserReducer(state = defaultState, action) {
         profiles: action.data,
         loadMoreButton
       }
-    case 'FETCH_MORE_USERS':
+    case USER.LOAD_MORE_USERS:
       if (action.data.length > 5) {
         action.data.pop()
         loadMoreButton = true
@@ -54,26 +54,26 @@ export default function UserReducer(state = defaultState, action) {
         profiles: state.profiles.concat(action.data),
         loadMoreButton
       }
-    case 'SEARCH_USERS':
+    case USER.SEARCH:
       return {
         ...state,
         searchedProfiles: action.users
       }
-    case 'SHOW_USER_NOT_EXISTS':
+    case USER.NOT_EXIST:
       return {
         ...state,
         profile: {
           unavailable: true
         }
       }
-    case 'SHOW_USER_PROFILE':
+    case USER.SHOW_PROFILE:
       return {
         ...state,
         profile: {
           ...action.data
         }
       }
-    case 'SIGNIN_LOGIN':
+    case USER.LOGIN:
       return {
         ...state,
         ...action.data,
@@ -82,14 +82,14 @@ export default function UserReducer(state = defaultState, action) {
         isAdmin: isAdmin(action.data.userType),
         isCreator: action.data.userType === 'creator'
       }
-    case 'SIGNIN_LOGOUT':
+    case USER.LOGOUT:
       return {
         isAdmin: false,
         isCreator: false,
         profile: state.profile,
         profiles: state.profiles
       }
-    case 'SIGNIN_SIGNUP':
+    case USER.SIGNUP:
       return {
         ...state,
         ...action.data,
@@ -98,17 +98,17 @@ export default function UserReducer(state = defaultState, action) {
         loggedIn: true,
         signinModalShown: false
       }
-    case 'SIGNIN_OPEN':
+    case USER.OPEN_SIGNIN_MODAL:
       return {
         ...state,
         signinModalShown: true
       }
-    case 'SIGNIN_CLOSE':
+    case USER.CLOSE_SIGNIN_MODAL:
       return {
         ...state,
         signinModalShown: false
       }
-    case 'UPDATE_BIO':
+    case USER.EDIT_BIO:
       return {
         ...state,
         profile: {
@@ -116,7 +116,7 @@ export default function UserReducer(state = defaultState, action) {
           ...action.data
         }
       }
-    case 'UPDATE_PROFILE_PICTURE':
+    case USER.EDIT_PROFILE_PICTURE:
       return {
         ...state,
         profilePicId: action.data.imageId,
@@ -131,11 +131,6 @@ export default function UserReducer(state = defaultState, action) {
               ? action.data.imageId
               : profile.profilePicId
         }))
-      }
-    case 'UNMOUNT_PROFILE':
-      return {
-        ...state,
-        profile: {}
       }
     default:
       return state

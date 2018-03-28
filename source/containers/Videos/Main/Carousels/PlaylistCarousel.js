@@ -11,10 +11,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import { addEvent } from 'helpers/listenerHelpers'
 import {
   editPlaylistTitleAsync,
-  openChangePlaylistVideosModalAsync,
-  openReorderPlaylistVideosModal,
-  deletePlaylistAsync,
-  resetPlaylistModalState
+  deletePlaylistAsync
 } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
 import { cleanString } from 'helpers/stringHelpers'
@@ -240,9 +237,10 @@ class PlaylistCarousel extends Component {
     this.setState({ onEdit: true })
   }
 
-  onEditedTitleSubmit = title => {
+  onEditedTitleSubmit = async title => {
     const { editPlaylistTitleAsync, id: playlistId, arrayIndex } = this.props
-    editPlaylistTitleAsync({ title, playlistId }, arrayIndex, this)
+    await editPlaylistTitleAsync({ title, playlistId }, arrayIndex)
+    this.setState({ onEdit: false })
   }
 
   onEditTitleCancel = () => {
@@ -276,9 +274,6 @@ export default connect(
   }),
   {
     editPlaylistTitleAsync,
-    openChangePlaylistVideosModalAsync,
-    openReorderPlaylistVideosModal,
-    deletePlaylistAsync,
-    resetPlaylistModalState
+    deletePlaylistAsync
   }
 )(PlaylistCarousel)

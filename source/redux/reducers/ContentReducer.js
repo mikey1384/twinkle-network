@@ -1,15 +1,17 @@
+import CONTENT from '../constants/Content'
+
 const defaultState = {
   searchResult: []
 }
 
 export default function ContentReducer(state = defaultState, action) {
   switch (action.type) {
-    case 'CLEAR_CONTENT_SEARCH_RESULTS':
+    case CONTENT.CLEAR_SEARCH_RESULTS:
       return {
         ...state,
         searchResult: []
       }
-    case 'SEARCH_CONTENT':
+    case CONTENT.SEARCH:
       return {
         ...state,
         searchResult: action.data.result

@@ -1,19 +1,25 @@
 import request from 'axios'
-import { auth, handleError } from '../constants'
-import * as actions from './actions'
 import { GENERAL_CHAT_ID } from 'constants/database'
+import { auth, handleError } from '../constants'
 import { URL } from 'constants/URL'
+import CHAT from '../constants/Chat'
 
 const API_URL = `${URL}/chat`
 
+export const openNewChatTab = (user, partner) => ({
+  type: CHAT.OPEN_NEW_TAB,
+  user,
+  partner
+})
+
 export const changeChatSubject = subject => ({
-  type: 'CHANGE_CHAT_SUBJECT',
+  type: CHAT.CHANGE_SUBJECT,
   subject
 })
 
 export const selectChannel = channelId => dispatch => {
   dispatch({
-    type: 'SELECT_CHANNEL',
+    type: CHAT.SELECT_CHANNEL,
     channelId
   })
   return Promise.resolve()
@@ -26,7 +32,7 @@ export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
     )
     .then(response =>
       dispatch({
-        type: 'ENTER_CHANNEL',
+        type: CHAT.ENTER_CHANNEL,
         data: response.data,
         showOnTop
       })
@@ -38,27 +44,30 @@ export const enterChannelWithId = (channelId, showOnTop) => dispatch => {
 }
 
 export const resetMsgUnreadsOnTabSwitch = () => ({
-  type: 'RESET_MSG_UNREADS_ON_TAB_SWITCH'
+  type: CHAT.RESET_MSG_UNREADS_ON_TAB_SWITCH
 })
 
 export const clearChatSearchResults = () => ({
-  type: 'CLEAR_CHAT_SEARCH_RESULTS'
+  type: CHAT.CLEAR_CHAT_SEARCH_RESULTS
 })
 
 export const clearSubjectSearchResults = () => ({
-  type: 'CLEAR_SUBJECT_SEARCH_RESULTS'
+  type: CHAT.CLEAR_SUBJECT_SEARCH_RESULTS
 })
 
 export const clearUserSearchResults = () => ({
-  type: 'CLEAR_USER_SEARCH_RESULTS'
+  type: CHAT.CLEAR_USER_SEARCH_RESULTS
 })
 
 export const createNewChannelAsync = (params, callback) => dispatch =>
   request
     .post(`${API_URL}/channel`, { params }, auth())
-    .then(response => {
-      dispatch(actions.createNewChannel(response.data))
-      callback(response.data)
+    .then(({ data }) => {
+      dispatch({
+        type: CHAT.CREATE_NEW_CHANNEL,
+        data
+      })
+      callback(data)
     })
     .catch(error => {
       console.error(error.response || error)
@@ -70,7 +79,7 @@ export const deleteMessage = messageId => dispatch =>
     .delete(`${API_URL}/message?messageId=${messageId}`, auth())
     .then(response => {
       dispatch({
-        type: 'DELETE_CHAT_MESSAGE',
+        type: CHAT.DELETE_MESSAGE,
         messageId
       })
       return Promise.resolve()
@@ -80,7 +89,10 @@ export const editChannelTitle = (params, callback) => dispatch =>
   request
     .post(`${API_URL}/title`, params, auth())
     .then(response => {
-      dispatch(actions.applyChangedChannelTitle(params))
+      dispatch({
+        type: CHAT.APPLY_CHANGED_CHANNEL_TITLE,
+        data: params
+      })
       if (callback) callback()
     })
     .catch(error => {
@@ -93,7 +105,7 @@ export const editMessage = ({ editedMessage, messageId }) => dispatch =>
     .put(`${API_URL}/message`, { editedMessage, messageId }, auth())
     .then(response => {
       dispatch({
-        type: 'EDIT_CHAT_MESSAGE',
+        type: CHAT.EDIT_MESSAGE,
         data: { editedMessage, messageId }
       })
       return Promise.resolve()
@@ -104,7 +116,7 @@ export const editMessage = ({ editedMessage, messageId }) => dispatch =>
     })
 
 export const enterEmptyChat = () => ({
-  type: 'ENTER_EMPTY_CHAT'
+  type: CHAT.ENTER_EMPTY_CHAT
 })
 
 export const getNumberOfUnreadMessagesAsync = () => dispatch => {
@@ -113,7 +125,7 @@ export const getNumberOfUnreadMessagesAsync = () => dispatch => {
     .get(`${API_URL}/numUnreads`, auth())
     .then(response => {
       dispatch({
-        type: 'GET_NUM_UNREAD_MSGS',
+        type: CHAT.GET_NUM_UNREAD_MSGS,
         numUnreads: response.data.numUnreads
       })
     })
@@ -127,7 +139,10 @@ export const hideChatAsync = channelId => dispatch =>
   request
     .post(`${API_URL}/hideChat`, { channelId }, auth())
     .then(response => {
-      dispatch(actions.hideChat(channelId))
+      dispatch({
+        type: CHAT.HIDE_CHAT,
+        channelId
+      })
       dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
     })
     .catch(error => {
@@ -136,7 +151,7 @@ export const hideChatAsync = channelId => dispatch =>
     })
 
 export const increaseNumberOfUnreadMessages = () => ({
-  type: 'INCREASE_NUM_UNREAD_MSGS'
+  type: CHAT.INCREASE_NUM_UNREAD_MSGS
 })
 
 export const initChatAsync = channelId => dispatch =>
@@ -144,7 +159,7 @@ export const initChatAsync = channelId => dispatch =>
     .get(`${API_URL}?channelId=${channelId}`, auth())
     .then(response => {
       dispatch({
-        type: 'INIT_CHAT',
+        type: CHAT.INIT,
         data: response.data
       })
       return Promise.resolve()
@@ -163,7 +178,10 @@ export const inviteUsersToChannelAsync = (params, callback) => dispatch =>
         ...params,
         message
       }
-      dispatch(actions.inviteUsersToChannel(data))
+      dispatch({
+        type: CHAT.INVITE_USERS_TO_CHANNEL,
+        data
+      })
       callback(message)
     })
     .catch(error => {
@@ -176,7 +194,7 @@ export const loadChatSubject = () => dispatch =>
     .get(`${API_URL}/chatSubject`)
     .then(response => {
       dispatch({
-        type: 'LOAD_CHAT_SUBJECT',
+        type: CHAT.LOAD_SUBJECT,
         subject: response.data
       })
       return Promise.resolve()
@@ -194,7 +212,7 @@ export const loadMoreChannels = (currentChannelId, channelIds) => dispatch =>
     )
     .then(response => {
       dispatch({
-        type: 'LOAD_MORE_CHANNELS',
+        type: CHAT.LOAD_MORE_CHANNELS,
         data: response.data
       })
       Promise.resolve()
@@ -215,8 +233,11 @@ export const loadMoreMessagesAsync = (
       `${API_URL}/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`,
       auth()
     )
-    .then(response => {
-      dispatch(actions.loadMoreMessages(response.data))
+    .then(({ data }) => {
+      dispatch({
+        type: CHAT.LOAD_MORE_MESSAGES,
+        data
+      })
       callback()
     })
     .catch(error => {
@@ -232,7 +253,10 @@ export const leaveChannelAsync = channelId => dispatch => {
       auth()
     )
     .then(response => {
-      dispatch(actions.leaveChannel(channelId))
+      dispatch({
+        type: CHAT.LEAVE_CHANNEL,
+        channelId
+      })
       dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
     })
     .catch(error => {
@@ -242,7 +266,7 @@ export const leaveChannelAsync = channelId => dispatch => {
 }
 
 export const notifyThatMemberLeftChannel = data => ({
-  type: 'NOTIFY_MEMBER_LEFT',
+  type: CHAT.NOTIFY_MEMBER_LEFT,
   data
 })
 
@@ -269,7 +293,7 @@ export const openDirectMessageChannel = (
     .then(response => fetchChannels(response.data))
     .then(({ currentChannel, channels }) => {
       dispatch({
-        type: 'OPEN_CHAT_FOR_DM',
+        type: CHAT.OPEN_DM,
         user,
         partner,
         channels,
@@ -289,7 +313,7 @@ export const receiveMessage = ({ message, pageVisible }) => dispatch => {
     .post(`${API_URL}/lastRead`, { channelId }, auth())
     .then(response =>
       dispatch({
-        type: 'RECEIVE_MSG',
+        type: CHAT.RECEIVE_MESSAGE,
         pageVisible,
         data: {
           ...message,
@@ -308,14 +332,14 @@ export const receiveMessageOnDifferentChannel = ({
   channel,
   senderIsNotTheUser
 }) => ({
-  type: 'RECEIVE_MSG_ON_DIFFERENT_CHANNEL',
+  type: CHAT.RECEIVE_MSG_ON_DIFF_CHANNEL,
   data: message,
   channel,
   senderIsNotTheUser
 })
 
 export const receiveFirstMsg = ({ data, duplicate, pageVisible }) => ({
-  type: 'RECEIVE_FIRST_MSG',
+  type: CHAT.RECEIVE_FIRST_MSG,
   data,
   duplicate,
   pageVisible
@@ -326,7 +350,7 @@ export const reloadChatSubject = subjectId => dispatch =>
     .put(`${API_URL}/chatSubject/reload`, { subjectId }, auth())
     .then(({ data: { subject, message } }) => {
       dispatch({
-        type: 'RELOAD_CHAT_SUBJECT',
+        type: CHAT.RELOAD_SUBJECT,
         subject,
         message
       })
@@ -339,7 +363,7 @@ export const reloadChatSubject = subjectId => dispatch =>
 
 export const resetChat = () => dispatch => {
   dispatch({
-    type: 'RESET_CHAT'
+    type: CHAT.RESET
   })
   return Promise.resolve()
 }
@@ -349,7 +373,7 @@ export const searchChatAsync = text => dispatch =>
     .get(`${API_URL}/search/chat?text=${text}`, auth())
     .then(({ data }) =>
       dispatch({
-        type: 'SEARCH_CHAT',
+        type: CHAT.SEARCH,
         data
       })
     )
@@ -363,7 +387,7 @@ export const searchChatSubject = text => dispatch =>
     .get(`${API_URL}/search/subject?text=${text}`)
     .then(({ data }) => {
       dispatch({
-        type: 'SEARCH_CHAT_SUBJECT',
+        type: CHAT.SEARCH_SUBJECT,
         data
       })
       return Promise.resolve()
@@ -376,7 +400,12 @@ export const searchChatSubject = text => dispatch =>
 export const searchUserToInviteAsync = text => dispatch =>
   request
     .get(`${API_URL}/search/users?text=${text}`)
-    .then(response => dispatch(actions.searchUserToInvite(response.data)))
+    .then(({ data }) =>
+      dispatch({
+        type: CHAT.SEARCH_USERS_FOR_CHANNEL,
+        data
+      })
+    )
     .catch(error => {
       console.error(error.response || error)
       handleError(error, dispatch)
@@ -391,7 +420,7 @@ export const sendFirstDirectMessage = (params, callback) => dispatch => {
     .post(`${API_URL}/channel/twoPeople`, body, auth())
     .then(response => {
       dispatch({
-        type: 'CREATE_NEW_CHAT',
+        type: CHAT.CREATE_NEW_DM_CHANNEL,
         data: response.data
       })
       return Promise.resolve(response.data)
@@ -408,7 +437,7 @@ export const submitMessageAsync = params => dispatch => {
     timeStamp: Math.floor(Date.now() / 1000)
   }
   dispatch({
-    type: 'SUBMIT_MESSAGE',
+    type: CHAT.SUBMIT_MESSAGE,
     message
   })
   return Promise.resolve(params)
@@ -419,7 +448,7 @@ export const saveMessage = (message, index) => dispatch => {
     .post(API_URL, { message }, auth())
     .then(response => {
       dispatch({
-        type: 'ADD_ID_TO_NEW_MESSAGE',
+        type: CHAT.ADD_ID_TO_NEW_MESSAGE,
         messageIndex: index,
         messageId: response.data.messageId
       })
@@ -432,7 +461,7 @@ export const saveMessage = (message, index) => dispatch => {
 
 export const turnChatOff = () => dispatch => {
   dispatch({
-    type: 'TURN_CHAT_OFF'
+    type: CHAT.CLOSE
   })
   return Promise.resolve()
 }
@@ -442,7 +471,7 @@ export const uploadChatSubject = content => dispatch =>
     .post(`${API_URL}/chatSubject`, { content }, auth())
     .then(response => {
       dispatch({
-        type: 'UPLOAD_CHAT_SUBJECT',
+        type: CHAT.UPLOAD_SUBJECT,
         data: response.data
       })
       return Promise.resolve(response.data.subjectId)
