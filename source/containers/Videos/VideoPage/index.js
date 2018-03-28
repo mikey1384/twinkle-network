@@ -400,8 +400,8 @@ class VideoPage extends Component {
     this.props.deleteVideo({ videoId })
   }
 
-  onQuestionsSubmit = questions => {
-    const { match: { params: { videoId } } } = this.props
+  onQuestionsSubmit = async questions => {
+    const { match: { params: { videoId } }, uploadQuestions } = this.props
     const data = {
       videoId,
       questions: questions.map(question => {
@@ -427,12 +427,11 @@ class VideoPage extends Component {
         }
       })
     }
-    this.props.uploadQuestions(data, () => {
-      this.setState({
-        questionsBuilderShown: false,
-        currentSlide: 0,
-        userAnswers: []
-      })
+    await uploadQuestions(data)
+    this.setState({
+      questionsBuilderShown: false,
+      currentSlide: 0,
+      userAnswers: []
     })
   }
 }

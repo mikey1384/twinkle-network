@@ -152,10 +152,10 @@ export default function Button({
         Button = ref
       }}
       onClick={event => {
-        if (disabled) return
         if (Button !== null) Button.blur()
         if (onClick) onClick(event)
       }}
+      disabled={disabled}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

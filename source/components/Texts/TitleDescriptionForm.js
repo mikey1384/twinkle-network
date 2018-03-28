@@ -17,13 +17,9 @@ export default class TitleDescriptionForm extends Component {
     titlePlaceholder: PropTypes.string
   }
 
-  constructor() {
-    super()
-    this.state = {
-      title: '',
-      description: ''
-    }
-    this.onSubmit = this.onSubmit.bind(this)
+  state = {
+    title: '',
+    description: ''
   }
 
   render() {
@@ -111,7 +107,7 @@ export default class TitleDescriptionForm extends Component {
     )
   }
 
-  onSubmit(event) {
+  onSubmit = event => {
     const { onSubmit } = this.props
     const { title, description } = this.state
     event.preventDefault()

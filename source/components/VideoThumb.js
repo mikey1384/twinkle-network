@@ -194,10 +194,11 @@ class VideoThumb extends Component {
     this.setState({ onEdit: true })
   }
 
-  onEditedTitleSubmit = title => {
+  onEditedTitleSubmit = async title => {
     const { video, editVideoTitle } = this.props
     const videoId = video.id
-    editVideoTitle({ title, videoId }, this)
+    await editVideoTitle({ title, videoId })
+    this.setState({ onEdit: false })
   }
 
   onEditTitleCancel = () => {

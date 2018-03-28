@@ -146,284 +146,295 @@ export const editVideoPageAsync = params => async dispatch => {
   }
 }
 
-export const editVideoTitle = (videoId, data) => ({
-  type: 'EDIT_VIDEO_TITLE',
-  videoId,
-  data
-})
-
-export const editVideoTitleAsync = (params, sender) => dispatch =>
-  request
-    .post(`${API_URL}/edit/title`, params, auth())
-    .then(response => {
-      const { data } = response
-      if (data.result) {
-        dispatch(editVideoTitle(params.videoId, data.result))
-        sender.setState({ onEdit: false })
-      }
-      return
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+export const editVideoTitleAsync = params => async dispatch => {
+  try {
+    const { data } = await request.post(`${API_URL}/edit/title`, params, auth())
+    if (data.result) {
+      dispatch({
+        type: VIDEO.EDIT_TITLE,
+        videoId: params.videoId,
+        data: data.result
+      })
+    }
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const emptyCurrentVideoSlot = () => ({
-  type: 'EMPTY_CURRENT_VIDEO_SLOT'
+  type: VIDEO.EMPTY_CURRENT_VIDEO_SLOT
 })
 
 export const fillCurrentVideoSlot = videoId => ({
-  type: 'FILL_CURRENT_VIDEO_SLOT',
+  type: VIDEO.FILL_CURRENT_VIDEO_SLOT,
   videoId
 })
 
-export const getMoreVideos = videoId => dispatch =>
-  request
-    .get(`${API_URL}?videoId=${videoId}`)
-    .then(({ data }) => {
-      dispatch({
-        type: VIDEO.LOAD,
-        initialRun: false,
-        videos: data
-      })
-      return Promise.resolve()
+export const getMoreVideos = videoId => async dispatch => {
+  try {
+    const { data } = await request.get(`${API_URL}?videoId=${videoId}`)
+    dispatch({
+      type: VIDEO.LOAD,
+      initialRun: false,
+      videos: data
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const likeVideoAsync = videoId => dispatch =>
-  request
-    .post(`${API_URL}/like`, { contentId: videoId }, auth())
-    .then(response => {
-      const { data } = response
-      if (data.likes) {
-        dispatch({
-          type: 'VIDEO_LIKE',
-          data: data.likes,
-          videoId
-        })
-        dispatch(likePlaylistVideo(data.likes, videoId))
-      }
-      return
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const likeVideoComment = commentId => dispatch =>
-  request
-    .post(`${API_URL}/comments/like`, { commentId }, auth())
-    .then(response =>
-      dispatch({
-        type: 'VIDEO_COMMENT_LIKE',
-        data: { ...response.data, commentId }
-      })
+export const likeVideoAsync = videoId => async dispatch => {
+  try {
+    const { data } = await request.post(
+      `${API_URL}/like`,
+      { contentId: videoId },
+      auth()
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.LIKE,
+      data: data.likes,
+      videoId
     })
+    dispatch(likePlaylistVideo(data.likes, videoId))
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const loadMoreCommentsAsync = ({ videoId, lastCommentId }) => dispatch =>
-  request
-    .get(
+export const likeVideoComment = commentId => async dispatch => {
+  try {
+    const { data } = await request.post(
+      `${API_URL}/comments/like`,
+      { commentId },
+      auth()
+    )
+    dispatch({
+      type: VIDEO.LIKE_COMMENT,
+      data: { ...data, commentId }
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const loadMoreCommentsAsync = ({
+  videoId,
+  lastCommentId
+}) => async dispatch => {
+  try {
+    const { data } = await request.get(
       `${API_URL}/comments?rootId=${videoId}&lastCommentId=${lastCommentId}&rootType=video`
     )
-    .then(response =>
-      dispatch({
-        type: 'LOAD_MORE_COMMENTS',
-        data: response.data
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.LOAD_MORE_COMMENTS,
+      data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const loadMoreReplies = (lastReplyId, commentId, type) => dispatch =>
-  request
-    .get(
+export const loadMoreReplies = (
+  lastReplyId,
+  commentId,
+  type
+) => async dispatch => {
+  try {
+    const { data } = await request.get(
       `${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=video`
     )
-    .then(response =>
-      dispatch({
-        type: 'LOAD_MORE_REPLIES',
-        data: response.data,
-        commentId,
-        commentType: type
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.LOAD_MORE_REPLIES,
+      data,
+      commentId,
+      commentType: type
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const loadMoreDiscussionComments = ({
   lastCommentId,
   discussionId
-}) => dispatch =>
-  request
-    .get(
+}) => async dispatch => {
+  try {
+    const { data } = await request.get(
       `${API_URL}/discussions/comments?discussionId=${discussionId}&lastCommentId=${lastCommentId}`
     )
-    .then(response =>
-      dispatch({
-        type: 'LOAD_MORE_VIDEO_DISCUSSION_COMMENTS',
-        data: response.data,
-        discussionId
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.LOAD_MORE_DISCUSSION_COMMENTS,
+      data,
+      discussionId
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const loadMoreDiscussions = (videoId, lastDiscussionId) => dispatch =>
-  request
-    .get(
+export const loadMoreDiscussions = (
+  videoId,
+  lastDiscussionId
+) => async dispatch => {
+  try {
+    const { data } = await request.get(
       `${API_URL}/discussions?videoId=${videoId}&lastDiscussionId=${lastDiscussionId}`
     )
-    .then(response =>
-      dispatch({
-        type: 'LOAD_MORE_VIDEO_DISCUSSIONS',
-        data: response.data
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.LOAD_MORE_DISCUSSIONS,
+      data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
 export const loadMorePlaylistVideos = (
   videoId,
   playlistId,
   shownVideos
-) => dispatch =>
-  request
-    .get(
+) => async dispatch => {
+  try {
+    const {
+      data: { playlistVideos, playlistVideosLoadMoreShown }
+    } = await request.get(
       `${API_URL}/more/playlistVideos?videoId=${videoId}&playlistId=${playlistId}&${shownVideos}`
     )
-    .then(({ data: { playlistVideos, playlistVideosLoadMoreShown } }) => {
-      dispatch({
-        type: 'LOAD_MORE_RIGHT_MENU_PL_VIDEOS',
-        playlistVideos,
-        playlistVideosLoadMoreShown
-      })
-      Promise.resolve()
+    dispatch({
+      type: VIDEO.LOAD_MORE_RIGHT_MENU_PL_VIDS,
+      playlistVideos,
+      playlistVideosLoadMoreShown
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
-export const loadRightMenuVideos = (videoId, playlistId) => dispatch => {
-  const type = playlistId ? 'playlist' : 'video'
-  return request
-    .get(
-      `${URL}/${type}/rightMenu?videoId=${videoId}${
+export const loadRightMenuVideos = (videoId, playlistId) => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${URL}/${
+        playlistId ? 'playlist' : 'video'
+      }/rightMenu?videoId=${videoId}${
         playlistId ? `&playlistId=${playlistId}` : ''
       }`
     )
-    .then(response =>
-      dispatch({
-        type: 'LOAD_RIGHT_MENU_VIDEOS',
-        data: response.data
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.LOAD_RIGHT_MENU_VIDS,
+      data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
 }
 
-export const loadVideoCommentsAsync = videoId => dispatch =>
-  request
-    .get(`${API_URL}/comments?rootId=${videoId}&rootType=video`)
-    .then(response => {
-      dispatch({
-        type: 'LOAD_VIDEO_COMMENTS',
-        data: response.data
-      })
-      return Promise.resolve()
-    })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const loadVideoDiscussions = videoId => dispatch =>
-  request
-    .get(`${API_URL}/discussions?videoId=${videoId}`)
-    .then(response =>
-      dispatch({
-        type: 'LOAD_VIDEO_DISCUSSIONS',
-        data: response.data
-      })
+export const loadVideoCommentsAsync = videoId => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/comments?rootId=${videoId}&rootType=video`
     )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.LOAD_COMMENTS,
+      data
     })
-
-export const loadVideoDiscussionComments = discussionId => dispatch =>
-  request
-    .get(`${API_URL}/discussions/comments?discussionId=${discussionId}`)
-    .then(response =>
-      dispatch({
-        type: 'LOAD_VIDEO_DISCUSSION_COMMENTS',
-        discussionId,
-        data: response.data
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
-
-export const loadVideoPage = data => ({
-  type: 'LOAD_VIDEO_PAGE',
-  data
-})
-
-export const loadVideoPageAsync = (videoId, fromClientSide) => dispatch => {
-  if (isNaN(videoId)) return dispatch({ type: 'VIDEO_PAGE_UNAVAILABLE' })
-  if (!fromClientSide) dispatch({ type: 'VIDEO_PAGE_LOADING_SHOW' })
-  return request
-    .get(`${API_URL}/page?videoId=${videoId}`)
-    .then(response => {
-      dispatch(loadVideoPage(response.data))
-      dispatch(loadVideoDiscussions(videoId))
-      return Promise.resolve()
-    })
-    .catch(error => {
-      dispatch({ type: 'VIDEO_PAGE_UNAVAILABLE' })
-      console.error(error.response || error)
-      handleError(error, dispatch)
-    })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
 }
 
-export const loadVideoPageFromClientSideAsync = videoId => dispatch =>
-  dispatch(loadVideoPageAsync(videoId, true)).then(() => Promise.resolve())
+export const loadVideoDiscussions = videoId => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/discussions?videoId=${videoId}`
+    )
+    dispatch({
+      type: VIDEO.LOAD_DISCUSSIONS,
+      data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const loadVideoDiscussionComments = discussionId => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/discussions/comments?discussionId=${discussionId}`
+    )
+    dispatch({
+      type: VIDEO.LOAD_DISCUSSION_COMMENTS,
+      discussionId,
+      data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const loadVideoPageAsync = (
+  videoId,
+  fromClientSide
+) => async dispatch => {
+  if (isNaN(videoId)) return dispatch({ type: VIDEO.PAGE_UNAVAILABLE })
+  try {
+    const { data } = await request.get(`${API_URL}/page?videoId=${videoId}`)
+    dispatch({
+      type: VIDEO.LOAD_PAGE,
+      data
+    })
+    dispatch(loadVideoDiscussions(videoId))
+    return Promise.resolve()
+  } catch (error) {
+    dispatch({ type: VIDEO.PAGE_UNAVAILABLE })
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const loadVideoPageFromClientSideAsync = videoId => async dispatch => {
+  try {
+    await dispatch(loadVideoPageAsync(videoId, true))
+    Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const openAddVideoModal = () => ({
-  type: 'VID_MODAL_OPEN'
+  type: VIDEO.OPEN_MODAL
 })
 
 export const resetVideoPage = () => ({
-  type: 'RESET_VIDEO_PAGE'
+  type: VIDEO.RESET_PAGE
 })
 
 export const resetVideoState = () => ({
-  type: 'RESET_VID_STATE'
+  type: VIDEO.RESET
 })
 
 export const starVideo = videoId => async dispatch => {
   try {
     const { data } = await request.put(`${API_URL}/star`, { videoId }, auth())
     return dispatch({
-      type: 'VIDEO_STAR',
+      type: VIDEO.STAR,
       videoId,
       isStarred: data
     })
@@ -433,39 +444,32 @@ export const starVideo = videoId => async dispatch => {
   }
 }
 
-export const uploadQuestions = data => ({
-  type: 'UPLOAD_QUESTIONS',
-  data
-})
-
-export const uploadQuestionsAsync = (params, callback) => dispatch =>
-  request
-    .post(`${API_URL}/questions`, params, auth())
-    .then(response => {
-      const { data } = response
-      if (data.success) {
-        const questions = params.questions.map(question => {
-          return {
-            title: question.title,
-            choices: [
-              question.choice1,
-              question.choice2,
-              question.choice3,
-              question.choice4,
-              question.choice5
-            ],
-            correctChoice: question.correctChoice
-          }
-        })
-        dispatch(uploadQuestions(questions))
-        callback()
+export const uploadQuestionsAsync = params => async dispatch => {
+  try {
+    await request.post(`${API_URL}/questions`, params, auth())
+    const questions = params.questions.map(question => {
+      return {
+        title: question.title,
+        choices: [
+          question.choice1,
+          question.choice2,
+          question.choice3,
+          question.choice4,
+          question.choice5
+        ],
+        correctChoice: question.correctChoice
       }
-      return
     })
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+    dispatch({
+      type: VIDEO.ADD_QUESTIONS,
+      data: questions
     })
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
 
 export const uploadVideo = data => ({
   type: 'UPLOAD_VIDEO',

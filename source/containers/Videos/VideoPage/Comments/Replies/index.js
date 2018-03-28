@@ -70,6 +70,8 @@ export default class Replies extends Component {
       >
         {comment.loadMoreReplies && (
           <Button
+            filled
+            info
             style={{
               width: '100%',
               marginBottom: replies.length !== 0 && '1.5rem'

@@ -205,7 +205,9 @@ class QuestionsBuilder extends Component {
             ...state.questions,
             ...this.newQuestion(Object.keys(state.questions).length)
           },
-          questionIds: state.questionIds.concat(Object.keys(state.questions).length)
+          questionIds: state.questionIds.concat(
+            Object.keys(state.questions).length
+          )
         }
       },
       () => {
@@ -343,8 +345,7 @@ class QuestionsBuilder extends Component {
         }
       }
     }
-
-    if (errorObj.questionId) {
+    if (typeof errorObj.questionId === 'number') {
       return this.setState(
         state => ({
           questions: {

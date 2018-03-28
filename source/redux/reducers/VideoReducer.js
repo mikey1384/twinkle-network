@@ -130,12 +130,12 @@ export default function VideoReducer(state = defaultState, action) {
           }))
         }
       }
-    case 'EMPTY_CURRENT_VIDEO_SLOT':
+    case VIDEO.EMPTY_CURRENT_VIDEO_SLOT:
       return {
         ...state,
         currentVideoSlot: null
       }
-    case 'FILL_CURRENT_VIDEO_SLOT':
+    case VIDEO.FILL_CURRENT_VIDEO_SLOT:
       return {
         ...state,
         currentVideoSlot: action.videoId
@@ -157,17 +157,15 @@ export default function VideoReducer(state = defaultState, action) {
         loadMoreButton,
         allVideosLoaded
       }
-    case 'EDIT_VIDEO_TITLE':
+    case VIDEO.EDIT_TITLE:
       return {
         ...state,
-        allVideoThumbs: state.allVideoThumbs.map(thumb => {
-          if (thumb.id === action.videoId) {
-            thumb.title = action.data
-          }
-          return thumb
-        })
+        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
+          ...thumb,
+          title: thumb.id === action.videoId ? action.data : thumb.title
+        }))
       }
-    case 'VID_MODAL_OPEN':
+    case VIDEO.OPEN_MODAL:
       return {
         ...state,
         addVideoModalShown: true
@@ -177,7 +175,7 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         addVideoModalShown: false
       }
-    case 'LOAD_MORE_COMMENTS':
+    case VIDEO.LOAD_MORE_COMMENTS:
       loadMoreCommentsButton = false
       if (action.data.comments.length > 20) {
         action.data.comments.pop()
@@ -192,7 +190,7 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreCommentsButton
         }
       }
-    case 'LOAD_MORE_REPLIES':
+    case VIDEO.LOAD_MORE_REPLIES:
       return {
         ...state,
         videoPage: {
@@ -234,7 +232,7 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       }
-    case 'LOAD_MORE_VIDEO_DISCUSSIONS':
+    case VIDEO.LOAD_MORE_DISCUSSIONS:
       loadMoreDiscussionsButton = false
       if (action.data.length > 3) {
         action.data.pop()
@@ -248,7 +246,7 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreDiscussionsButton
         }
       }
-    case 'LOAD_MORE_VIDEO_DISCUSSION_COMMENTS':
+    case VIDEO.LOAD_MORE_DISCUSSION_COMMENTS:
       loadMoreDiscussionCommentsButton = false
       if (action.data.length > 3) {
         action.data.pop()
@@ -270,7 +268,7 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       }
-    case 'LOAD_RIGHT_MENU_VIDEOS':
+    case VIDEO.LOAD_RIGHT_MENU_VIDS:
       return {
         ...state,
         videoPage: {
@@ -278,7 +276,7 @@ export default function VideoReducer(state = defaultState, action) {
           ...action.data
         }
       }
-    case 'LOAD_MORE_RIGHT_MENU_PL_VIDEOS':
+    case VIDEO.LOAD_MORE_RIGHT_MENU_PL_VIDS:
       return {
         ...state,
         videoPage: {
@@ -289,7 +287,7 @@ export default function VideoReducer(state = defaultState, action) {
           playlistVideosLoadMoreShown: action.playlistVideosLoadMoreShown
         }
       }
-    case 'LOAD_VIDEO_DISCUSSION_COMMENTS':
+    case VIDEO.LOAD_DISCUSSION_COMMENTS:
       loadMoreDiscussionCommentsButton = false
       if (action.data.length > 3) {
         action.data.pop()
@@ -311,7 +309,7 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       }
-    case 'LOAD_VIDEO_PAGE':
+    case VIDEO.LOAD_PAGE:
       return {
         ...state,
         videoPage: {
@@ -321,7 +319,7 @@ export default function VideoReducer(state = defaultState, action) {
           comments: []
         }
       }
-    case 'LOAD_VIDEO_COMMENTS':
+    case VIDEO.LOAD_COMMENTS:
       loadMoreCommentsButton = false
       if (action.data.comments.length > 20) {
         action.data.comments.pop()
@@ -335,7 +333,7 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreCommentsButton
         }
       }
-    case 'LOAD_VIDEO_DISCUSSIONS':
+    case VIDEO.LOAD_DISCUSSIONS:
       loadMoreDiscussionsButton = false
       if (action.data.length > 3) {
         action.data.pop()
@@ -427,7 +425,7 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       }
-    case 'VIDEO_COMMENT_LIKE':
+    case VIDEO.LIKE_COMMENT:
       return {
         ...state,
         videoPage: {
@@ -475,7 +473,7 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       }
-    case 'VIDEO_LIKE':
+    case VIDEO.LIKE:
       return {
         ...state,
         videoPage: {
@@ -488,7 +486,7 @@ export default function VideoReducer(state = defaultState, action) {
             thumb.id === action.videoId ? action.data.length : thumb.numLikes
         }))
       }
-    case 'VIDEO_STAR':
+    case VIDEO.STAR:
       return {
         ...state,
         videoPage: {
@@ -501,7 +499,7 @@ export default function VideoReducer(state = defaultState, action) {
             thumb.id === action.videoId ? action.isStarred : thumb.isStarred
         }))
       }
-    case 'UPLOAD_QUESTIONS':
+    case VIDEO.ADD_QUESTIONS:
       return {
         ...state,
         videoPage: {
@@ -531,16 +529,14 @@ export default function VideoReducer(state = defaultState, action) {
           content: url
         }
       }
-    case 'RESET_VIDEO_PAGE':
+    case VIDEO.RESET_PAGE:
       return {
         ...state,
         videoPage: defaultVideoPageState
       }
-    case 'RESET_VID_STATE':
-      return {
-        ...defaultState
-      }
-    case 'VIDEO_PAGE_UNAVAILABLE':
+    case VIDEO.RESET:
+      return defaultState
+    case VIDEO.PAGE_UNAVAILABLE:
       return {
         ...state,
         videoPage: {
