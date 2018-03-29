@@ -76,7 +76,30 @@ class Body extends Component {
     const { match, location, clearFeeds } = this.props
     this.mounted = true
     addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
-    return clearFeeds().then(() => {
+    clearFeeds()
+    switch (location.pathname) {
+      case match.url:
+        return this.changeTab('all')
+      case `${match.url}/questions`:
+        return this.changeTab('question')
+      case `${match.url}/comments`:
+        return this.changeTab('comment')
+      case `${match.url}/videos`:
+        return this.changeTab('video')
+      case `${match.url}/links`:
+        return this.changeTab('url')
+      case `${match.url}/discussions`:
+        return this.changeTab('discussion')
+      default:
+        break
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { match, location, clearFeeds } = this.props
+
+    if (prevProps.location !== this.props.location) {
+      clearFeeds()
       switch (location.pathname) {
         case match.url:
           return this.changeTab('all')
@@ -93,31 +116,6 @@ class Body extends Component {
         default:
           break
       }
-    })
-  }
-
-  componentDidUpdate(prevProps) {
-    const { match, location, clearFeeds } = this.props
-
-    if (prevProps.location !== this.props.location) {
-      return clearFeeds().then(() => {
-        switch (location.pathname) {
-          case match.url:
-            return this.changeTab('all')
-          case `${match.url}/questions`:
-            return this.changeTab('question')
-          case `${match.url}/comments`:
-            return this.changeTab('comment')
-          case `${match.url}/videos`:
-            return this.changeTab('video')
-          case `${match.url}/links`:
-            return this.changeTab('url')
-          case `${match.url}/discussions`:
-            return this.changeTab('discussion')
-          default:
-            break
-        }
-      })
     }
   }
 
@@ -170,7 +168,10 @@ class Body extends Component {
               <nav
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
-                onClick={() => clearFeeds().then(() => history.push(route.url))}
+                onClick={() => {
+                  clearFeeds()
+                  history.push(route.url)
+                }}
               >
                 <a>All</a>
               </nav>
@@ -183,11 +184,10 @@ class Body extends Component {
               <nav
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
-                onClick={() =>
-                  clearFeeds().then(() =>
-                    history.push(`${route.url}/questions`)
-                  )
-                }
+                onClick={() => {
+                  clearFeeds()
+                  history.push(`${route.url}/questions`)
+                }}
               >
                 <a>Questions</a>
               </nav>
@@ -200,9 +200,10 @@ class Body extends Component {
               <nav
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
-                onClick={() =>
-                  clearFeeds().then(() => history.push(`${route.url}/comments`))
-                }
+                onClick={() => {
+                  clearFeeds()
+                  history.push(`${route.url}/comments`)
+                }}
               >
                 <a>Comments</a>
               </nav>
@@ -215,9 +216,10 @@ class Body extends Component {
               <nav
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
-                onClick={() =>
-                  clearFeeds().then(() => history.push(`${route.url}/videos`))
-                }
+                onClick={() => {
+                  clearFeeds()
+                  history.push(`${route.url}/videos`)
+                }}
               >
                 <a>Videos</a>
               </nav>
@@ -230,9 +232,10 @@ class Body extends Component {
               <nav
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
-                onClick={() =>
-                  clearFeeds().then(() => history.push(`${route.url}/links`))
-                }
+                onClick={() => {
+                  clearFeeds()
+                  history.push(`${route.url}/links`)
+                }}
               >
                 <a>Links</a>
               </nav>
@@ -245,11 +248,10 @@ class Body extends Component {
               <nav
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
-                onClick={() =>
-                  clearFeeds().then(() =>
-                    history.push(`${route.url}/discussions`)
-                  )
-                }
+                onClick={() => {
+                  clearFeeds()
+                  history.push(`${route.url}/discussions`)
+                }}
               >
                 <a>Discussions</a>
               </nav>
