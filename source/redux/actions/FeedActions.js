@@ -6,12 +6,9 @@ import FEED from '../constants/Feed'
 
 const API_URL = `${URL}/feed`
 
-export const clearFeeds = () => dispatch => {
-  dispatch({
-    type: FEED.CLEAR
-  })
-  return Promise.resolve()
-}
+export const clearFeeds = () => ({
+  type: FEED.CLEAR
+})
 
 export const commentFeedLike = commentId => async dispatch => {
   try {
@@ -20,13 +17,10 @@ export const commentFeedLike = commentId => async dispatch => {
       { commentId },
       auth()
     )
-    if (data.likes) {
-      dispatch({
-        type: FEED.LIKE_COMMENT,
-        data: { contentId: commentId, likes: data.likes }
-      })
-    }
-    return
+    dispatch({
+      type: FEED.LIKE_COMMENT,
+      data: { contentId: commentId, likes: data.likes }
+    })
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
@@ -40,13 +34,10 @@ export const contentFeedLike = (contentId, rootType) => async dispatch => {
       { contentId },
       auth()
     )
-    if (data.likes) {
-      dispatch({
-        type: FEED.LIKE_CONTENT,
-        data: { contentId, rootType, likes: data.likes }
-      })
-    }
-    return
+    dispatch({
+      type: FEED.LIKE_CONTENT,
+      data: { contentId, rootType, likes: data.likes }
+    })
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
@@ -283,13 +274,10 @@ export const likeTargetComment = contentId => async dispatch => {
       { commentId: contentId },
       auth()
     )
-    if (data.likes) {
-      dispatch({
-        type: FEED.LIKE_TARGET_COMMENT,
-        data: { contentId, likes: data.likes }
-      })
-    }
-    return
+    dispatch({
+      type: FEED.LIKE_TARGET_COMMENT,
+      data: { contentId, likes: data.likes }
+    })
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)

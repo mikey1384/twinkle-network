@@ -299,9 +299,9 @@ class QuestionsBuilder extends Component {
     const { questions } = this.props
     this.setState({
       questions:
-        questions.length !== 0
-          ? this.formatQuestions(questions)
-          : this.newQuestion(0),
+        questions.length === 0
+          ? this.newQuestion(0)
+          : this.formatQuestions(questions),
       questionIds:
         questions.length > 0 ? questions.map((question, index) => index) : [0]
     })
@@ -366,6 +366,7 @@ class QuestionsBuilder extends Component {
     const finishedQuestions = questionIds
       .filter(questionId => !questions[questionId].deleted)
       .map(questionId => questions[questionId])
+
     onSubmit(finishedQuestions)
 
     function errorInQuestion(question) {

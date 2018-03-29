@@ -24,15 +24,15 @@ export default class editTitleModal extends Component {
     const { title } = this.state
     return (
       <Modal onHide={onHide}>
-        <header>
-          Edit Channel Title
-        </header>
+        <header>Edit Channel Title</header>
         <main>
-          <form onSubmit={event => this.onSubmit(event, title)}>
+          <form
+            style={{ width: '50%' }}
+            onSubmit={event => this.onSubmit(event, title)}
+          >
             <Input
               autoFocus
               type="text"
-              className="form-control"
               placeholder={edit.title}
               value={title}
               onChange={text => this.setState({ title: text })}
@@ -40,9 +40,11 @@ export default class editTitleModal extends Component {
           </form>
         </main>
         <footer>
-          <Button transparent onClick={onHide}>Cancel</Button>
           <Button primary onClick={() => onDone(title)}>
             Done
+          </Button>
+          <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
+            Cancel
           </Button>
         </footer>
       </Modal>

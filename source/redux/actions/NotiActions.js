@@ -40,7 +40,7 @@ export const fetchNotifications = () => async dispatch => {
     const { data } = await request.get(API_URL, auth())
     return dispatch({
       type: NOTI.LOAD,
-      data: data
+      data
     })
   } catch (error) {
     console.error(error.response || error)

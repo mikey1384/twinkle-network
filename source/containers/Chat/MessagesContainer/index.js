@@ -121,7 +121,7 @@ class MessagesContainer extends Component {
 
   render() {
     const { loadMoreButton, loading, currentChannelId } = this.props
-    const { deleteModal, newUnseenMessage, subjectMsgsModal } = this.state
+    const { deleteModal, loadMoreButtonLock, newUnseenMessage, subjectMsgsModal } = this.state
     return (
       <Fragment>
         {subjectMsgsModal.shown && (
@@ -168,8 +168,10 @@ class MessagesContainer extends Component {
                   }}
                 >
                   <Button
+                    filled
                     success
                     style={{ marginTop: '1rem' }}
+                    disabled={loadMoreButtonLock}
                     onClick={this.onLoadMoreButtonClick}
                   >
                     Load More
@@ -244,16 +246,15 @@ class MessagesContainer extends Component {
     }
   }
 
-  onLoadMoreButtonClick = () => {
+  onLoadMoreButtonClick = async() => {
     const messageId = this.props.messages[0].id
     const channelId = this.props.messages[0].channelId
     const { userId, loadMoreMessages } = this.props
     const { loadMoreButtonLock } = this.state
     if (!loadMoreButtonLock) {
       this.setState({ loadMoreButtonLock: true })
-      loadMoreMessages(userId, messageId, channelId, () => {
-        this.setState({ loadMoreButtonLock: false })
-      })
+      await loadMoreMessages(userId, messageId, channelId)
+      this.setState({ loadMoreButtonLock: false })
     }
   }
 

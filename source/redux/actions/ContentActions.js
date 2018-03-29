@@ -9,16 +9,15 @@ export const clearSearchResults = () => ({
   type: CONTENT.CLEAR_SEARCH_RESULTS
 })
 
-export const searchContent = text => dispatch =>
-  request
-    .get(`${API_URL}/search?query=${text}`)
-    .then(response =>
-      dispatch({
-        type: CONTENT.SEARCH,
-        data: response.data
-      })
-    )
-    .catch(error => {
-      console.error(error.response || error)
-      handleError(error, dispatch)
+export const searchContent = text => async dispatch => {
+  try {
+    const { data } = await request.get(`${API_URL}/search?query=${text}`)
+    dispatch({
+      type: CONTENT.SEARCH,
+      data
     })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}

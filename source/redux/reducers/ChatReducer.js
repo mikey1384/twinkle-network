@@ -581,7 +581,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         chatMode: false
       }
-    case CHAT.UPLOAD_SUBJECT:
+    case CHAT.NEW_SUBJECT:
       return {
         ...state,
         subject: action.data.subject,

@@ -89,15 +89,14 @@ class InviteUsersModal extends Component {
     })
   }
 
-  onDone = () => {
+  onDone = async() => {
     const { inviteUsersToChannel, currentChannel, onDone } = this.props
     const { selectedUsers } = this.state
-    inviteUsersToChannel(
-      { selectedUsers, channelId: currentChannel.id },
-      message => {
-        onDone(selectedUsers.map(user => user.userId), message)
-      }
-    )
+    const message = await inviteUsersToChannel({
+      selectedUsers,
+      channelId: currentChannel.id
+    })
+    onDone(selectedUsers.map(user => user.userId), message)
   }
 }
 

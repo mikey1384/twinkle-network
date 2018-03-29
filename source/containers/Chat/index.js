@@ -558,7 +558,7 @@ class Chat extends Component {
     enterChannelWithId(id)
   }
 
-  onCreateNewChannel = params => {
+  onCreateNewChannel = async params => {
     const {
       createNewChannel,
       username,
@@ -572,14 +572,13 @@ class Chat extends Component {
       )
     }
 
-    createNewChannel(params, data => {
-      const users = params.selectedUsers.map(user => {
-        return user.userId
-      })
-      socket.emit('join_chat_channel', data.message.channelId)
-      socket.emit('send_group_chat_invitation', users, data)
-      this.setState({ createNewChannelModalShown: false })
+    const data = await createNewChannel(params)
+    const users = params.selectedUsers.map(user => {
+      return user.userId
     })
+    socket.emit('join_chat_channel', data.message.channelId)
+    socket.emit('send_group_chat_invitation', users, data)
+    this.setState({ createNewChannelModalShown: false })
   }
 
   onReceiveMessage = (message, channel) => {
@@ -662,11 +661,10 @@ class Chat extends Component {
     this.setState({ inviteUsersModalShown: false })
   }
 
-  onEditTitleDone = title => {
+  onEditTitleDone = async title => {
     const { editChannelTitle, currentChannel } = this.props
-    editChannelTitle({ title, channelId: currentChannel.id }, () => {
-      this.setState({ editTitleModalShown: false })
-    })
+    await editChannelTitle({ title, channelId: currentChannel.id })
+    this.setState({ editTitleModalShown: false })
   }
 
   onHideChat = () => {

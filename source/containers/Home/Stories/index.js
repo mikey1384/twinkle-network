@@ -73,7 +73,7 @@ class Stories extends Component {
     addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
-      await clearFeeds()
+      clearFeeds()
       this.clearingFeeds = false
       fetchFeeds()
     }
@@ -184,7 +184,8 @@ class Stories extends Component {
   applyFilter = filter => {
     const { fetchFeeds, selectedFilter, clearFeeds } = this.props
     if (filter === selectedFilter) return
-    return clearFeeds().then(() => fetchFeeds(filter))
+    clearFeeds()
+    fetchFeeds(filter)
   }
 
   loadMoreFeeds = () => {

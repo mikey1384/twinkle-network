@@ -347,7 +347,7 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreDiscussionsButton
         }
       }
-    case 'UPLOAD_VIDEO':
+    case VIDEO.UPLOAD:
       const newState = action.data.concat(state.allVideoThumbs)
       if (action.data.length > 0 && !state.allVideosLoaded) {
         newState.pop()
@@ -357,7 +357,7 @@ export default function VideoReducer(state = defaultState, action) {
         allVideoThumbs: newState,
         addVideoModalShown: false
       }
-    case 'UPLOAD_VIDEO_COMMENT':
+    case VIDEO.UPLOAD_COMMENT:
       return {
         ...state,
         videoPage: {
@@ -365,7 +365,7 @@ export default function VideoReducer(state = defaultState, action) {
           comments: [action.comment].concat(state.videoPage.comments)
         }
       }
-    case 'UPLOAD_VIDEO_DISCUSSION':
+    case VIDEO.UPLOAD_DISCUSSION:
       return {
         ...state,
         videoPage: {
@@ -373,7 +373,7 @@ export default function VideoReducer(state = defaultState, action) {
           discussions: [action.data].concat(state.videoPage.discussions)
         }
       }
-    case 'UPLOAD_VIDEO_DISCUSSION_COMMENT':
+    case VIDEO.UPLOAD_DISCUSSION_COMMENT:
       return {
         ...state,
         videoPage: {
@@ -391,7 +391,7 @@ export default function VideoReducer(state = defaultState, action) {
           noComments: false
         }
       }
-    case 'UPLOAD_VIDEO_REPLY':
+    case VIDEO.UPLOAD_REPLY:
       reply = {
         ...action.data,
         ...action.replyType
