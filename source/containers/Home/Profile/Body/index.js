@@ -60,16 +60,9 @@ class Body extends Component {
     myId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      currentTab: 'all',
-      loading: false
-    }
-    this.changeTab = this.changeTab.bind(this)
-    this.onNoFeed = this.onNoFeed.bind(this)
-    this.onScroll = this.onScroll.bind(this)
-    this.loadMoreFeeds = this.loadMoreFeeds.bind(this)
+  state = {
+    currentTab: 'all',
+    loading: false
   }
 
   componentDidMount() {
@@ -317,7 +310,7 @@ class Body extends Component {
     )
   }
 
-  changeTab(tabName) {
+  changeTab = tabName => {
     const { match: { params: { username } }, fetchUserFeeds } = this.props
     if (this.mounted) {
       this.setState({ currentTab: tabName })
@@ -325,7 +318,7 @@ class Body extends Component {
     fetchUserFeeds(username, tabName)
   }
 
-  loadMoreFeeds() {
+  loadMoreFeeds = () => {
     const {
       match: { params: { username } },
       fetchMoreUserFeeds,
@@ -343,7 +336,7 @@ class Body extends Component {
     }
   }
 
-  onNoFeed(username) {
+  onNoFeed = username => {
     const { currentTab } = this.state
     switch (currentTab) {
       case 'all':
@@ -361,7 +354,7 @@ class Body extends Component {
     }
   }
 
-  onScroll() {
+  onScroll = () => {
     let { chatMode, feeds } = this.props
     const scrollPosition = document.getElementById('react-view').scrollTop
     if (!chatMode && feeds.length > 0) {

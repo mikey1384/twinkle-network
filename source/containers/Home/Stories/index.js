@@ -20,6 +20,7 @@ import {
   uploadFeedReply,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
+import { resetNumNewPosts } from 'redux/actions/NotiActions'
 import InputPanel from './InputPanel'
 import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
@@ -28,6 +29,7 @@ import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { feedContentEdit } from '../../../redux/actions/FeedActions'
 import FilterBar from 'components/FilterBar'
+import Banner from 'components/Banner'
 
 class Stories extends Component {
   static propTypes = {
@@ -50,7 +52,9 @@ class Stories extends Component {
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedCommentsAsync: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
+    numNewPosts: PropTypes.number.isRequired,
     questionFeedLike: PropTypes.func.isRequired,
+    resetNumNewPosts: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     showFeedCommentsAsync: PropTypes.func.isRequired,
     username: PropTypes.string,
@@ -69,7 +73,13 @@ class Stories extends Component {
   }
 
   async componentDidMount() {
-    let { history, clearFeeds, fetchFeeds, loaded } = this.props
+    let {
+      history,
+      clearFeeds,
+      fetchFeeds,
+      loaded,
+      resetNumNewPosts
+    } = this.props
     addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
@@ -77,6 +87,7 @@ class Stories extends Component {
       this.clearingFeeds = false
       fetchFeeds()
     }
+    resetNumNewPosts()
   }
 
   componentWillUnmount() {
@@ -97,6 +108,7 @@ class Stories extends Component {
       likeTargetComment,
       loadMoreButton,
       loadMoreFeedReplies,
+      numNewPosts,
       uploadFeedReply,
       userId,
       loaded,
@@ -140,6 +152,15 @@ class Stories extends Component {
           {loaded &&
             feeds.length > 0 && (
               <Fragment>
+                {numNewPosts > 0 && (
+                  <Banner
+                    info
+                    onClick={this.refreshFeeds}
+                    style={{ marginBottom: '1rem' }}
+                  >
+                    See {numNewPosts} new Post{numNewPosts > 1 ? 's' : ''}
+                  </Banner>
+                )}
                 {feeds.map(feed => {
                   return (
                     <ContentPanel
@@ -224,6 +245,15 @@ class Stories extends Component {
     }
   }
 
+  refreshFeeds = () => {
+    const { resetNumNewPosts, clearFeeds, fetchFeeds } = this.props
+    resetNumNewPosts()
+    this.clearingFeeds = true
+    clearFeeds()
+    this.clearingFeeds = false
+    fetchFeeds()
+  }
+
   renderFilterBar = () => {
     const { selectedFilter } = this.props
     return (
@@ -274,6 +304,7 @@ export default connect(
     loadMoreButton: state.FeedReducer.loadMoreButton,
     feeds: state.FeedReducer.feeds,
     loaded: state.FeedReducer.loaded,
+    numNewPosts: state.NotiReducer.numNewPosts,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     selectedFilter: state.FeedReducer.selectedFilter,
@@ -296,6 +327,7 @@ export default connect(
     loadMoreFeedReplies,
     clearFeeds,
     questionFeedLike,
+    resetNumNewPosts,
     showFeedCommentsAsync,
     uploadFeedComment,
     uploadFeedReply,

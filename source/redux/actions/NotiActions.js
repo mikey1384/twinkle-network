@@ -48,7 +48,15 @@ export const fetchNotifications = () => async dispatch => {
   }
 }
 
+export const increaseNumNewPosts = () => ({
+  type: NOTI.INCREASE_NUM_NEW_POSTS
+})
+
 export const notifyChatSubjectChange = subject => ({
   type: NOTI.CHAT_SUBJECT_CHANGE,
   subject
+})
+
+export const resetNumNewPosts = () => ({
+  type: NOTI.RESET_NUM_NEW_POSTS
 })

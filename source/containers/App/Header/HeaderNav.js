@@ -6,6 +6,7 @@ import Icon from 'components/Icon'
 export default class HeaderNav extends Component {
   static propTypes = {
     active: PropTypes.bool,
+    alert: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.node,
     imgLabel: PropTypes.string,
@@ -18,6 +19,7 @@ export default class HeaderNav extends Component {
   render() {
     const {
       active,
+      alert,
       className,
       to,
       children,
@@ -34,25 +36,25 @@ export default class HeaderNav extends Component {
           <div className={`${className} header-nav`}>
             {to ? (
               <Link
-                className={to && match && 'active'}
+                className={(to && match) ? 'active ' : ''}
                 style={{ display: 'flex' }}
                 to={to}
               >
-                <span className="icon">
+                <span className={`icon ${alert ? 'new' : ''}`}>
                   <Icon icon={isHome ? 'home' : imgLabel} />
                 </span>
-                <span className="nav-label">{children}</span>
+                <span className={`nav-label ${alert ? 'new' : ''}`}>{children}</span>
               </Link>
             ) : (
               <a
-                className={active && 'active'}
+                className={active ? 'active ' : ''}
                 style={{ display: 'flex', cursor: 'pointer' }}
                 onClick={onClick}
               >
                 <span
-                  className={`glyphicon glyphicon-${imgLabel} mobile-no-hover`}
+                  className={`glyphicon glyphicon-${imgLabel} mobile-no-hover ${alert ? 'new' : ''}`}
                 />
-                <span className="nav-label">{children}</span>
+                <span className={`nav-label ${alert ? 'new' : ''}`}>{children}</span>
               </a>
             )}
           </div>

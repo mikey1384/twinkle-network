@@ -12,7 +12,8 @@ import {
 } from 'redux/actions/ChatActions'
 import {
   checkVersion,
-  notifyChatSubjectChange
+  notifyChatSubjectChange,
+  increaseNumNewPosts
 } from 'redux/actions/NotiActions'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
@@ -31,12 +32,14 @@ class Header extends Component {
     chatMode: PropTypes.bool,
     checkVersion: PropTypes.func,
     getNumberOfUnreadMessages: PropTypes.func,
+    increaseNumNewPosts: PropTypes.func,
     increaseNumberOfUnreadMessages: PropTypes.func,
     location: PropTypes.object,
     loggedIn: PropTypes.bool,
     logout: PropTypes.func,
     notifyChatSubjectChange: PropTypes.func,
     numChatUnreads: PropTypes.number,
+    numNewPosts: PropTypes.number,
     onChatButtonClick: PropTypes.func,
     onMobileMenuOpen: PropTypes.func,
     resetChat: PropTypes.func,
@@ -57,6 +60,7 @@ class Header extends Component {
   componentDidMount() {
     const {
       turnChatOff,
+      increaseNumNewPosts,
       increaseNumberOfUnreadMessages,
       checkVersion
     } = this.props
@@ -87,6 +91,7 @@ class Header extends Component {
       turnChatOff()
     })
     socket.on('subject_change', this.onSubjectChange)
+    socket.on('new_story_post', increaseNumNewPosts)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -134,11 +139,11 @@ class Header extends Component {
       onChatButtonClick,
       onMobileMenuOpen,
       numChatUnreads,
+      numNewPosts,
       style = {},
       turnChatOff
     } = this.props
     const { logoHovered } = this.state
-
     return (
       <nav
         className={`unselectable ${container} ${chatMode && 'header chat'}`}
@@ -254,7 +259,6 @@ class Header extends Component {
         </div>
         <div className="main-tabs">
           <div
-            className="nav navbar-nav"
             style={{
               display: 'flex',
               justifyContent: 'space-around',
@@ -275,6 +279,7 @@ class Header extends Component {
                   isHome
                   className={chatLoading ? 'desktop' : ''}
                   imgLabel="home"
+                  alert={numNewPosts > 0}
                   isUsername={
                     pathname.split('/')[1] !== 'videos' &&
                     ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) ===
@@ -304,8 +309,8 @@ class Header extends Component {
                 >
                   <a>
                     <span
-                      className={`glyphicon glyphicon-comment mobile-no-hover ${numChatUnreads >
-                        0 && 'new'}`}
+                      className="glyphicon glyphicon-comment mobile-no-hover"
+                      style={{ color: numChatUnreads > 0 && Color.pink() }}
                     />
                   </a>
                 </div>
@@ -360,7 +365,9 @@ class Header extends Component {
               loading={chatLoading}
               numUnreads={numChatUnreads}
             />
-            {loggedIn && <AccountMenu title={username} logout={this.onLogout} />}
+            {loggedIn && (
+              <AccountMenu title={username} logout={this.onLogout} />
+            )}
           </div>
         </div>
       </nav>
@@ -393,6 +400,7 @@ export default connect(
     userType: state.UserReducer.userType,
     isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
+    numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,
     chatMode: state.ChatReducer.chatMode,
     versionMatch: state.NotiReducer.versionMatch
@@ -401,6 +409,7 @@ export default connect(
     logout,
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
+    increaseNumNewPosts,
     increaseNumberOfUnreadMessages,
     notifyChatSubjectChange,
     checkVersion,

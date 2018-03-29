@@ -45,6 +45,7 @@ class App extends Component {
     initSession: PropTypes.func,
     turnChatOff: PropTypes.func,
     chatNumUnreads: PropTypes.number,
+    numNewPosts: PropTypes.number,
     closeSigninModal: PropTypes.func,
     clearNotifications: PropTypes.func,
     fetchNotifications: PropTypes.func,
@@ -86,6 +87,7 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     const {
       chatNumUnreads,
+      numNewPosts,
       history,
       location,
       loggedIn,
@@ -94,6 +96,7 @@ class App extends Component {
     } = this.props
 
     const { navScrollPositions } = this.state
+    const newNotiNum = numNewPosts + chatNumUnreads
 
     if (prevProps.loggedIn !== loggedIn) {
       if (loggedIn) {
@@ -122,17 +125,16 @@ class App extends Component {
       }
     }
 
-    if (this.props.chatNumUnreads !== prevProps.chatNumUnreads) {
-      let title = `${
-        chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
-      }Twinkle`
+    if (
+      this.props.numNewPosts !== prevProps.numNewPosts ||
+      this.props.chatNumUnreads !== prevProps.chatNumUnreads
+    ) {
+      let title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
       document.title = title
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
-      let title = `${
-        chatNumUnreads > 0 ? '(' + chatNumUnreads + ') ' : ''
-      }Twinkle`
+      let title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
       document.title = title
     }
   }
@@ -297,6 +299,7 @@ class App extends Component {
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
+    numNewPosts: state.NotiReducer.numNewPosts,
     chatMode: state.ChatReducer.chatMode,
     chatNumUnreads: state.ChatReducer.numUnreads,
     signinModalShown: state.UserReducer.signinModalShown,

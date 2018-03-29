@@ -159,27 +159,28 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreMessages = true
       }
       action.data.messages.reverse()
+      const selectedChannel = action.data.channel
       return {
         ...state,
-        subject: action.data.channel.id === 2 ? state.subject : {},
-        selectedChannelId: action.data.channel.id,
-        currentChannel: action.data.channel,
-        channels: state.channels.reduce((resultingArray, channel, index) => {
-          if (channel.id === action.data.channel.id) {
+        subject: selectedChannel.id === 2 ? state.subject : {},
+        selectedChannelId: selectedChannel.id,
+        currentChannel: selectedChannel,
+        channels: state.channels.reduce((prev, channel, index) => {
+          if (channel.id === selectedChannel.id) {
             originalNumUnreads = channel.numUnreads
           }
           if (action.showOnTop && index === state.channels.length - 1) {
-            return [action.data.channel].concat(
-              resultingArray.filter(
-                channel => channel.id !== action.data.channel.id
+            return [selectedChannel].concat(
+              prev.filter(
+                channel => channel.id !== selectedChannel.id
               )
             )
           }
-          return resultingArray.concat([
+          return prev.concat([
             {
               ...channel,
               numUnreads:
-                channel.id === action.data.channel.id ? 0 : channel.numUnreads
+                channel.id === selectedChannel.id ? 0 : channel.numUnreads
             }
           ])
         }, []),
