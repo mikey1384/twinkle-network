@@ -1,4 +1,4 @@
-# Twinkle Website
+# Twinkle Network
 
 ## About this project:
 
