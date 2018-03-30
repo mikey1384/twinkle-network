@@ -34,17 +34,8 @@ If you are interested in helping me achieving this mission, please join us at ht
 4. Install nodemon `sudo npm install -g nodemon`
 5. Install forever `sudo npm install -g forever`
 
-If you want to run development version, run:
+finally, run:
 ```shell
 npm run dev
 ```
 
----
-If you want to run production version, run:
-```shell
-npm run build
-```
-then,
-```shell
-npm run start
-```
