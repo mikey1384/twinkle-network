@@ -26,7 +26,7 @@ There's no fixed long-term direction for this website other than the above missi
 
 If you are interested in helping me achieving this mission, please join us at https://www.twinkle.network
 
-## Running Without Docker:
+## Setup:
 0. Ensure that Node 9+ is installed
 1. git clone https://github.com/mikey1384/twin-kle.git [your directory name]
 2. Run `npm install` or at the directory where you cloned the git repository.
