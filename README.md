@@ -38,4 +38,6 @@ finally, run:
 ```shell
 npm run dev
 ```
+then access it via http://localhost:3000
+
 
