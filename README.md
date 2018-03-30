@@ -31,8 +31,8 @@ If you are interested in helping me achieving this mission, please join us at ht
 1. git clone https://github.com/mikey1384/twin-kle.git [your directory name]
 2. Run `npm install` or at the directory where you cloned the git repository.
 3. Inside /source/constants there is a file titled "rename this to URL.js" rename it to URL.js
-4. Install nodemon `npm install -g nodemon`
-5. Install forever `npm install -g forever`
+4. Install nodemon `sudo npm install -g nodemon`
+5. Install forever `sudo npm install -g forever`
 
 If you want to run development version, run:
 ```shell
