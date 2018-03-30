@@ -39,5 +39,3 @@ finally, run:
 npm run dev
 ```
 then access it via http://localhost:3000
-
-
