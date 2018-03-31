@@ -111,7 +111,7 @@ class SelectPlaylistsToPinModal extends Component {
                   onSelect={this.onSelect}
                   listItems={this.renderListItems()}
                 />
-                {loadMoreButton && (
+                {loadMoreButton && !searchText && (
                   <Button
                     style={{ marginTop: '2rem', width: '100%' }}
                     transparent
