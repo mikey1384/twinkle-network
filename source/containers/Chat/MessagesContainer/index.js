@@ -204,6 +204,7 @@ class MessagesContainer extends Component {
           >
             {newUnseenMessage && (
               <Button
+                filled
                 warning
                 onClick={() => {
                   this.setState({ newUnseenMessage: false })
