@@ -43,20 +43,18 @@ class Comments extends Component {
     loadVideoComments(videoId).then(() => this.setState({ loading: false }))
   }
 
-  async componentWillReceiveProps(nextProps) {
-    const { loadVideoComments, videoId } = this.props
-    if (videoId !== nextProps.videoId) {
-      this.setState({ loading: true })
-      await loadVideoComments(nextProps.videoId)
-      this.setState({ loading: false })
-    }
-  }
-
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
+    const { comments, loadVideoComments, videoId } = this.props
     const { deleteListenerToggle } = this.state
-    if (prevProps.comments.length > this.props.comments.length) {
-      if (this.props.comments.length === 0) return
+    if (prevProps.comments.length > comments.length) {
+      if (comments.length === 0) return
       this.setState({ deleteListenerToggle: !deleteListenerToggle })
+    }
+
+    if (prevProps.videoId !== videoId) {
+      this.setState({ loading: true })
+      await loadVideoComments(videoId)
+      return { loading: false }
     }
   }
 

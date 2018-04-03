@@ -54,7 +54,8 @@ class LinkItem extends Component {
     this.onLinkClick = this.onLinkClick.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    this.mounted = true
     const { link: { content, id, siteUrl } } = this.props
     if (ExecutionEnvironment.canUseDOM && content && !siteUrl) {
       return request
@@ -72,10 +73,6 @@ class LinkItem extends Component {
         })
         .catch(error => console.error(error.response || error))
     }
-  }
-
-  componentDidMount() {
-    this.mounted = true
   }
 
   componentWillUnmount() {

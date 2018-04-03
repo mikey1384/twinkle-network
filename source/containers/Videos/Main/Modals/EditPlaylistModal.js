@@ -35,7 +35,7 @@ class EditPlaylistModal extends Component {
     searchText: ''
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { modalType, playlistId } = this.props
     return Promise.all([
       request.get(

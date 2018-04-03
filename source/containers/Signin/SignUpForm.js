@@ -13,20 +13,13 @@ export default class SignUpForm extends Component {
     showLoginForm: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.onSubmit = this.onSubmit.bind(this)
-  }
-
-  componentWillMount() {
-    this.setState({
-      username: '',
-      password: '',
-      firstname: '',
-      lastname: '',
-      email: '',
-      errorMessage: ''
-    })
+  state = {
+    username: '',
+    password: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+    errorMessage: ''
   }
 
   render() {
@@ -193,7 +186,7 @@ export default class SignUpForm extends Component {
     )
   }
 
-  onSubmit() {
+  onSubmit = () => {
     const { signupAsync } = this.props
     const { username, password, firstname, lastname, email } = this.state
     if (!isValidUsername(username)) {

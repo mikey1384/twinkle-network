@@ -28,7 +28,7 @@ class QuestionsBuilder extends Component {
 
   Questions = []
 
-  componentWillMount() {
+  componentDidMount() {
     const { questions } = this.props
     this.setState({
       questions:

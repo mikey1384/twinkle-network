@@ -15,7 +15,7 @@ import {
   setDimensions,
   setExternalData
 } from './helpers/styles'
-import { goToSlide, nextSlide, previousSlide } from './helpers/actions'
+import { nextSlide, previousSlide } from './helpers/actions'
 import {
   getTouchEvents,
   getMouseEvents,
@@ -96,11 +96,8 @@ class Carousel extends Component {
     this.onReadyStateChange = this.onReadyStateChange.bind(this)
   }
 
-  componentWillMount() {
-    setInitialDimensions.call(this)
-  }
-
   componentDidMount() {
+    setInitialDimensions.call(this)
     setDimensions.call(this)
     bindListeners.call(this)
     setExternalData.call(this)
@@ -113,18 +110,13 @@ class Carousel extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.clickSafe !== nextProps.clickSafe) return
-    this.setState({
-      slideCount: nextProps.children.length
-    })
-
-    if (nextProps.slideIndex !== this.state.currentSlide) {
-      goToSlide.call(this, nextProps.slideIndex)
+  componentDidUpdate(prevProps, slideIndex) {
+    if (prevProps.clickSafe !== this.props.clickSafe) return
+    if (prevProps.children.length !== this.props.children.length) {
+      this.setState({
+        slideCount: this.props.children.length
+      })
     }
-  }
-
-  componentDidUpdate(prevProps) {
     if (!this.props.chatMode && prevProps.chatMode !== this.props.chatMode) {
       setTimeout(setDimensions.bind(this), 0)
     }
@@ -204,13 +196,18 @@ class Carousel extends Component {
                     currentSlide + 1 === slideCount
                       ? onFinish
                       : nextSlide.bind(this),
-                  buttonClass: currentSlide + 1 === slideCount ? 'primary' : 'transparent'
+                  buttonClass:
+                    currentSlide + 1 === slideCount ? 'primary' : 'transparent'
                 }
               ]}
             />
             <ProgressBar
               progress={slideFraction * 100}
-              color={currentSlide + 1 === slideCount ? Color.blue() : Color.logoBlue()}
+              color={
+                currentSlide + 1 === slideCount
+                  ? Color.blue()
+                  : Color.logoBlue()
+              }
               style={{ width: '100%' }}
               text={`${currentSlide + 1}/${slideCount}`}
             />

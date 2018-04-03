@@ -36,7 +36,7 @@ class AddPlaylistModal extends Component {
     searchText: ''
   }
 
-  componentWillMount() {
+  componentDidMount() {
     return request
       .get(`${URL}/video?numberToLoad=18`)
       .then(({ data: allVideos }) => {

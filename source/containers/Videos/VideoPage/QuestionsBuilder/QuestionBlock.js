@@ -35,7 +35,7 @@ export default class QuestionBlock extends Component {
     choiceIds: []
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { title, choices } = this.props
     this.setState({
       editedQuestionTitle: title,

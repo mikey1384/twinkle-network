@@ -24,7 +24,7 @@ class VideoThumbImage extends Component {
 
   mounted = false
 
-  componentWillMount() {
+  componentDidMount() {
     const { userId, isStarred } = this.props
     this.mounted = true
     if (isStarred && userId) {
@@ -33,20 +33,18 @@ class VideoThumbImage extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { videoId, isStarred } = this.props
-    if (prevProps.videoId !== videoId) {
-      if (!isStarred) return this.setState(() => ({ xpEarned: false }))
-      this.checkXpStatus()
+    const { videoId, isStarred, userId } = this.props
+    const isNewVideo = prevProps.videoId !== videoId
+    const isDifferentUser = userId && userId !== prevProps.userId
+    const isUnstarred = prevProps.isStarred && !isStarred
+    const isLoggedOut = prevProps.userId && !userId
+    if (isStarred) {
+      if (isNewVideo || isDifferentUser) {
+        this.checkXpStatus()
+      }
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { userId, isStarred } = this.props
-    if (isStarred && nextProps.userId && nextProps.userId !== userId) {
-      this.checkXpStatus()
-    }
-    if (userId && !nextProps.userId) {
-      this.setState(() => ({ xpEarned: false }))
+    if (isUnstarred || isLoggedOut) {
+      this.setState({ xpEarned: false })
     }
   }
 
@@ -84,9 +82,7 @@ class VideoThumbImage extends Component {
             borderBottom: !!xpEarned && `0.8rem solid ${Color.lightBlue}`
           }}
         />
-        {isStarred && (
-          <StarMark style={{ top: 1, left: 1 }} size={2} />
-        )}
+        {isStarred && <StarMark style={{ top: 1, left: 1 }} size={2} />}
       </div>
     )
   }

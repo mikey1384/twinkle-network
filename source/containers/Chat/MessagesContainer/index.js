@@ -32,7 +32,6 @@ class MessagesContainer extends Component {
     },
     fillerHeight: 20,
     maxScroll: 0,
-    scrollAtBottom: true,
     newUnseenMessage: false,
     loadMoreButtonLock: false,
     subjectMsgsModal: {
@@ -56,13 +55,11 @@ class MessagesContainer extends Component {
     setTimeout(() => this.setScrollToBottom(), 300)
   }
 
-  componentWillReceiveProps() {
-    this.setState({
-      scrollAtBottom: scrollIsAtTheBottom(this.content, this.messagesContainer)
-    })
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    return scrollIsAtTheBottom(this.content, this.messagesContainer)
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState, scrollAtBottom) {
     const { messages, userId } = this.props
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId
@@ -96,7 +93,7 @@ class MessagesContainer extends Component {
     }
     if (newMessageArrived) {
       const messageSenderId = messages[messages.length - 1].userId
-      if (messageSenderId !== userId && !this.state.scrollAtBottom) {
+      if (messageSenderId !== userId && !scrollAtBottom) {
         this.setState({ newUnseenMessage: true })
       } else {
         this.setState({
@@ -121,7 +118,12 @@ class MessagesContainer extends Component {
 
   render() {
     const { loadMoreButton, loading, currentChannelId } = this.props
-    const { deleteModal, loadMoreButtonLock, newUnseenMessage, subjectMsgsModal } = this.state
+    const {
+      deleteModal,
+      loadMoreButtonLock,
+      newUnseenMessage,
+      subjectMsgsModal
+    } = this.state
     return (
       <Fragment>
         {subjectMsgsModal.shown && (

@@ -30,7 +30,7 @@ class Message extends Component {
     confirmModalShown: false
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { message, myId, saveMessage, index } = this.props
     if (!message.id && message.userId === myId && !message.isSubject) {
       saveMessage({ ...message, content: message.content }, index)

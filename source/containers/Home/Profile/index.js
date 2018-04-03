@@ -18,7 +18,7 @@ class Profile extends Component {
     username: PropTypes.string
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { checkValidUsername, match } = this.props
     const { username } = match.params
     if (ExecutionEnvironment.canUseDOM) checkValidUsername(username)

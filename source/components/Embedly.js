@@ -31,7 +31,8 @@ export default class Embedly extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    this.mounted = true
     const { id, siteUrl, url } = this.props
     if (ExecutionEnvironment.canUseDOM && url && !siteUrl) {
       return request
@@ -49,10 +50,6 @@ export default class Embedly extends Component {
         })
         .catch(error => console.error(error.response || error))
     }
-  }
-
-  componentDidMount() {
-    this.mounted = true
   }
 
   componentDidUpdate(prevProps) {

@@ -41,7 +41,7 @@ class SubjectsModal extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { userId } = this.props
     return request
       .get(`${API_URL}/chatSubject/modal?userId=${userId}`)

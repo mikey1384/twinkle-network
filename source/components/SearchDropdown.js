@@ -17,21 +17,21 @@ export default class Dropdown extends Component {
     style: PropTypes.object
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { startingIndex = 0 } = this.props
+  componentDidUpdate(prevProps) {
+    const { indexToHighlight, startingIndex = 0, searchResults, onUpdate } = this.props
     let searchResultsChanged = false
-    if (this.props.searchResults.length !== nextProps.searchResults.length) {
+    if (prevProps.searchResults.length !== searchResults.length) {
       searchResultsChanged = true
     } else {
-      for (let i = 0; i < nextProps.searchResults.length; i++) {
-        if (nextProps.searchResults[i] !== this.props.searchResults[i]) {
+      for (let i = 0; i < searchResults.length; i++) {
+        if (searchResults[i] !== prevProps.searchResults[i]) {
           searchResultsChanged = true
         }
       }
     }
 
-    if (searchResultsChanged && nextProps.indexToHighlight > startingIndex) {
-      this.props.onUpdate()
+    if (searchResultsChanged && indexToHighlight > startingIndex) {
+      onUpdate()
     }
   }
 

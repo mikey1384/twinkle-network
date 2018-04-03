@@ -29,7 +29,6 @@ import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import CommentInputArea from './CommentInputArea'
 import Discussions from './Discussions'
-import ExecutionEnvironment from 'exenv'
 import { mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
@@ -80,13 +79,11 @@ class VideoPage extends Component {
     if (history.action === 'POP') loadVideoPage(params.videoId)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     const { loadVideoPage, match: { params } } = this.props
-    if (
-      ExecutionEnvironment.canUseDOM &&
-      nextProps.match.params.videoId !== params.videoId
-    ) {
-      this.setState({
+    if (prevProps.match.params.videoId !== params.videoId) {
+      loadVideoPage(params.videoId)
+      return this.setState({
         watchTabActive: true,
         currentSlide: 0,
         userAnswers: [],
@@ -96,7 +93,6 @@ class VideoPage extends Component {
         onEdit: false,
         questionsBuilderShown: false
       })
-      loadVideoPage(nextProps.match.params.videoId)
     }
   }
 

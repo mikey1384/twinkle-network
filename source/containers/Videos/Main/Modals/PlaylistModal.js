@@ -34,7 +34,7 @@ class PlaylistModal extends Component {
     this.onLoadMoreVideos = this.onLoadMoreVideos.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { playlistId } = this.props
     request
       .get(`${API_URL}/playlist?playlistId=${playlistId}`)

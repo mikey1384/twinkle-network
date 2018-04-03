@@ -109,48 +109,16 @@ class VideoPlayer extends Component {
     }
   }
 
-  async componentWillReceiveProps(nextProps) {
-    const { isStarred, userId, videoCode, videoId } = this.props
-    if (userId && !nextProps.userId) {
-      this.setState(state => ({
-        ...state,
-        timeWatched: 0,
-        xpEarned: false,
-        justEarned: false
-      }))
-    }
-
-    if (videoCode !== nextProps.videoCode) {
-      const newImageName = nextProps.hasHqThumb ? 'maxresdefault' : 'mqdefault'
-      this.setState({
-        imageUrl: `https://img.youtube.com/vi/${
-          nextProps.videoCode
-        }/${newImageName}.jpg`
-      })
-    }
-
-    if (isStarred && nextProps.userId && userId !== nextProps.userId) {
-      try {
-        const { data: { xpEarned } } = await request.get(
-          `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
-          auth()
-        )
-        if (xpEarned && this.mounted) {
-          this.setState(() => ({ xpEarned: !!xpEarned }))
-        }
-      } catch (error) {
-        console.error(error.response || error)
-      }
-    }
-  }
-
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const {
       onEdit,
       chatMode,
       currentVideoSlot,
+      hasHqThumb,
       isStarred,
       pageVisible,
+      userId,
+      videoCode,
       videoId
     } = this.props
     const { playing, xpEarned, justEarned } = this.state
@@ -163,6 +131,36 @@ class VideoPlayer extends Component {
       currentVideoSlot !== prevProps.currentVideoSlot &&
       currentVideoSlot !== Number(videoId)
     const alreadyEarned = xpEarned || justEarned
+
+    if (prevProps.userId && !userId) {
+      this.setState(state => ({
+        ...state,
+        timeWatched: 0,
+        xpEarned: false,
+        justEarned: false
+      }))
+    }
+
+    if (prevProps.videoCode !== videoCode) {
+      const newImageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      this.setState({
+        imageUrl: `https://img.youtube.com/vi/${videoCode}/${newImageName}.jpg`
+      })
+    }
+
+    if (isStarred && userId && userId !== prevProps.userId) {
+      try {
+        const { data: { xpEarned } } = await request.get(
+          `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
+          auth()
+        )
+        if (xpEarned && this.mounted) {
+          this.setState(() => ({ xpEarned: !!xpEarned }))
+        }
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
 
     if (playing && userWatchingMultipleVideo) {
       this.onVideoStop()

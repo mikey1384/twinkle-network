@@ -63,22 +63,22 @@ class Description extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.title !== this.props.title) {
-      this.setState({
-        editedTitle: cleanString(nextProps.title),
+  componentDidUpdate(prevProps) {
+    if (prevProps.title !== this.props.title) {
+      return this.setState({
+        editedTitle: cleanString(this.props.title),
         onEdit: false
       })
     }
-    if (nextProps.description !== this.props.description) {
-      this.setState({
-        editedDescription: nextProps.description,
+    if (prevProps.description !== this.props.description) {
+      return this.setState({
+        editedDescription: this.props.description,
         onEdit: false
       })
     }
-    if (nextProps.content !== this.props.content) {
-      this.setState({
-        editedUrl: `https://www.youtube.com/watch?v=${nextProps.content}`,
+    if (prevProps.content !== this.props.content) {
+      return this.setState({
+        editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
         onEdit: false
       })
     }

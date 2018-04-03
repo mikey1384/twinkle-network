@@ -19,17 +19,13 @@ export default class SubjectMsgsModal extends Component {
     subjectTitle: PropTypes.string
   }
 
-  constructor() {
-    super()
-    this.state = {
-      loading: false,
-      loadMoreButtonShown: false,
-      messages: []
-    }
-    this.onLoadMoreButtonClick = this.onLoadMoreButtonClick.bind(this)
+  state = {
+    loading: false,
+    loadMoreButtonShown: false,
+    messages: []
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { subjectId } = this.props
     return request
       .get(`${API_URL}/chatSubject/messages?subjectId=${subjectId}`)
@@ -66,7 +62,7 @@ export default class SubjectMsgsModal extends Component {
     )
   }
 
-  onLoadMoreButtonClick() {
+  onLoadMoreButtonClick = () => {
     const { subjectId } = this.props
     const { messages } = this.state
     this.setState({ loading: true })

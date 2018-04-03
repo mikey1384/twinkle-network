@@ -17,7 +17,7 @@ export default class QuestionsListGroup extends Component {
     questionIds: []
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       questionIds: this.props.questionIds
     })

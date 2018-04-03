@@ -94,33 +94,31 @@ class Header extends Component {
     socket.on('new_story_post', increaseNumNewPosts)
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { getNumberOfUnreadMessages, showUpdateNotice } = this.props
-    if (nextProps.userId && !this.props.userId) {
+  componentDidUpdate(prevProps) {
+    const {
+      chatMode,
+      userId,
+      username,
+      getNumberOfUnreadMessages,
+      showUpdateNotice,
+      versionMatch
+    } = this.props
+    if (userId && !prevProps.userId) {
       socket.connect()
-      socket.emit('bind_uid_to_socket', nextProps.userId, nextProps.username)
+      socket.emit('bind_uid_to_socket', userId, username)
     }
-    if (!nextProps.userId && this.props.userId) {
+    if (!userId && prevProps.userId) {
       socket.disconnect()
     }
-    if (nextProps.userId && nextProps.userId !== this.props.userId) {
+    if (userId && userId !== prevProps.userId) {
       getNumberOfUnreadMessages()
     }
-    if (
-      nextProps.userId &&
-      nextProps.chatMode !== this.props.chatMode &&
-      nextProps.chatMode === false
-    ) {
+    if (userId && chatMode !== prevProps.chatMode && chatMode === false) {
       getNumberOfUnreadMessages()
     }
-    if (nextProps.versionMatch !== this.props.versionMatch) {
-      showUpdateNotice(nextProps.versionMatch)
+    if (versionMatch !== prevProps.versionMatch) {
+      showUpdateNotice(versionMatch)
     }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { userId } = this.props
-
     if (userId !== prevProps.userId) {
       if (prevProps.userId !== null) {
         socket.emit('leave_my_notification_channel', prevProps.userId)
