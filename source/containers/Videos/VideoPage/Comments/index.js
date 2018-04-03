@@ -54,7 +54,7 @@ class Comments extends Component {
     if (prevProps.videoId !== videoId) {
       this.setState({ loading: true })
       await loadVideoComments(videoId)
-      return { loading: false }
+      this.setState({ loading: false })
     }
   }
 
