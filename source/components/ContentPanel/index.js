@@ -26,7 +26,7 @@ export default class ContentPanel extends Component {
     const { feedLoaded } = this.state
     if (!feedLoaded && !selfLoadingDisabled) {
       this.setState({ feedLoaded: true })
-      methodObj.onFetchContent(contentObj)
+      methodObj.loadContent(contentObj)
     }
   }
 
@@ -35,31 +35,31 @@ export default class ContentPanel extends Component {
     const { attachedVideoShown } = this.state
     const methods = {
       Heading: {
-        onUploadAnswer: methodObj.onCommentSubmit,
-        onLikeClick: methodObj.onLikeContent
+        onUploadAnswer: methodObj.uploadComment,
+        onLikeClick: methodObj.likeContent
       },
       Contents: {
         commentActions: {
-          onDelete: methodObj.onDeleteComment,
-          onLikeClick: methodObj.onLikeComment,
-          onEditDone: methodObj.onEditComment,
-          onReplySubmit: methodObj.onReplySubmit,
-          onLoadMoreReplies: methodObj.onLoadMoreReplies
+          onDelete: methodObj.deleteComment,
+          onLikeClick: methodObj.likeComment,
+          onEditDone: methodObj.editComment,
+          onReplySubmit: methodObj.uploadReply,
+          onLoadMoreReplies: methodObj.loadMoreReplies
         },
-        feedVideoStar: methodObj.onVideoStar,
-        loadMoreComments: methodObj.onLoadMoreComments,
-        onCommentSubmit: methodObj.onCommentSubmit,
-        onContentDelete: methodObj.onDeleteContent,
-        onContentEdit: methodObj.onEditContent,
-        onLikeCommentClick: methodObj.onLikeComment,
-        onLikeQuestionClick: methodObj.onLikeQuestion,
-        onLikeContentClick: methodObj.onLikeContent,
-        showFeedComments: methodObj.onShowComments,
+        feedVideoStar: methodObj.starVideo,
+        loadMoreComments: methodObj.loadMoreComments,
+        onCommentSubmit: methodObj.uploadComment,
+        onContentDelete: methodObj.deleteContent,
+        onContentEdit: methodObj.editContent,
+        onLikeCommentClick: methodObj.likeComment,
+        onLikeQuestionClick: methodObj.likeQuestion,
+        onLikeContentClick: methodObj.likeContent,
+        showFeedComments: methodObj.showComments,
         TargetContent: {
-          onDeleteComment: methodObj.onDeleteComment,
-          onEditComment: methodObj.onEditComment,
-          onLikeClick: methodObj.onLikeTargetComment,
-          uploadComment: methodObj.onTargetCommentSubmit
+          onDeleteComment: methodObj.deleteComment,
+          onEditComment: methodObj.editComment,
+          onLikeClick: methodObj.likeTargetComment,
+          uploadComment: methodObj.uploadTargetComment
         }
       }
     }

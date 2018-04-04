@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
 import SectionPanel from 'components/SectionPanel'
-import { queryStringForArray } from 'helpers/apiHelpers'
+import { queryStringForArray } from 'helpers/stringHelpers'
 import { getMorePlaylistsAsync } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
 

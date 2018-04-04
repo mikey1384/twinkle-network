@@ -8,7 +8,7 @@ import { URL } from 'constants/URL'
 import LoadMoreButton from 'components/LoadMoreButton'
 import SubjectItem from './SubjectItem'
 import { Color } from 'constants/css'
-import { queryStringForArray } from 'helpers/apiHelpers'
+import { queryStringForArray } from 'helpers/stringHelpers'
 import Loading from 'components/Loading'
 import SubjectMsgsModal from '../SubjectMsgsModal'
 

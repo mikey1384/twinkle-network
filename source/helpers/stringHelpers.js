@@ -230,4 +230,10 @@ export function fetchedVideoCodeFromURL(url) {
   return videoCode
 }
 
+export function queryStringForArray(array, originVar, destinationVar) {
+  return `${array
+    .map(elem => `${destinationVar}[]=${elem[originVar]}`)
+    .join('&')}`
+}
+
 /* eslint-enable no-useless-escape */

@@ -263,22 +263,22 @@ class Body extends Component {
                       contentObj={feed}
                       userId={myId}
                       methodObj={{
-                        onFetchContent: fetchFeed,
-                        onCommentSubmit: uploadFeedComment,
-                        onReplySubmit: uploadFeedReply,
-                        onTargetCommentSubmit: uploadTargetContentComment,
-                        onLikeContent: contentFeedLike,
-                        onLikeComment: commentFeedLike,
-                        onLikeTargetComment: likeTargetComment,
-                        onLikeQuestion: questionFeedLike,
-                        onDeleteContent: feedContentDelete,
-                        onEditContent: feedContentEdit,
-                        onDeleteComment: feedCommentDelete,
-                        onEditComment: feedCommentEdit,
-                        onLoadMoreComments: loadMoreFeedCommentsAsync,
-                        onLoadMoreReplies: loadMoreFeedReplies,
-                        onShowComments: showFeedCommentsAsync,
-                        onVideoStar: feedVideoStar
+                        deleteComment: feedCommentDelete,
+                        deleteContent: feedContentDelete,
+                        editComment: feedCommentEdit,
+                        editContent: feedContentEdit,
+                        likeComment: commentFeedLike,
+                        likeContent: contentFeedLike,
+                        likeQuestion: questionFeedLike,
+                        likeTargetComment: likeTargetComment,
+                        loadContent: fetchFeed,
+                        loadMoreComments: loadMoreFeedCommentsAsync,
+                        loadMoreReplies: loadMoreFeedReplies,
+                        showComments: showFeedCommentsAsync,
+                        starVideo: feedVideoStar,
+                        uploadComment: uploadFeedComment,
+                        uploadReply: uploadFeedReply,
+                        uploadTargetComment: uploadTargetContentComment
                       }}
                     />
                   )

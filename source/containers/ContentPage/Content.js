@@ -55,20 +55,20 @@ class Comment extends Component {
         selfLoadingDisabled
         contentObj={contentObj}
         methodObj={{
-          onCommentSubmit: this.onCommentSubmit,
-          onReplySubmit: this.onReplySubmit,
-          onTargetCommentSubmit: this.onTargetCommentSubmit,
-          onLikeContent: this.onLikeContent,
-          onLikeComment: this.onLikeComment,
-          onLikeTargetComment: this.onLikeTargetComment,
-          onLikeQuestion: this.onLikeQuestion,
-          onDeleteContent: this.onDeleteContent,
-          onEditContent: this.onEditContent,
-          onDeleteComment: this.onDeleteComment,
-          onEditComment: this.onEditComment,
-          onLoadMoreComments: this.onLoadMoreComments,
-          onLoadMoreReplies: this.onLoadMoreReplies,
-          onShowComments: this.onShowComments
+          deleteComment: this.onDeleteComment,
+          deleteContent: this.onDeleteContent,
+          editComment: this.onEditComment,
+          editContent: this.onEditContent,
+          likeComment: this.onLikeComment,
+          likeContent: this.onLikeContent,
+          likeQuestion: this.onLikeQuestion,
+          likeTargetComment: this.onLikeTargetComment,
+          loadMoreComments: this.onLoadMoreComments,
+          loadMoreReplies: this.onLoadMoreReplies,
+          showComments: this.onShowComments,
+          uploadComment: this.onCommentSubmit,
+          uploadReply: this.onReplySubmit,
+          uploadTargetComment: this.onTargetCommentSubmit
         }}
         userId={userId}
       />

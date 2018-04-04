@@ -12,8 +12,7 @@ import ProfilePanel from '../ProfilePanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import { queryStringForArray } from 'helpers/apiHelpers'
-import { stringIsEmpty } from 'helpers/stringHelpers'
+import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 
 class People extends Component {

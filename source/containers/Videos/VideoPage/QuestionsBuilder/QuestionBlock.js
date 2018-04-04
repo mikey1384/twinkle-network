@@ -39,8 +39,8 @@ export default class QuestionBlock extends Component {
     const { title, choices } = this.props
     this.setState({
       editedQuestionTitle: title,
-      choices: choices.reduce((result, choice) => {
-        return { ...result, [choice.id]: choice }
+      choices: choices.reduce((prev, choice) => {
+        return { ...prev, [choice.id]: choice }
       }, {}),
       choiceIds: choices.map(choice => choice.id)
     })
@@ -49,8 +49,8 @@ export default class QuestionBlock extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.choices !== this.props.choices) {
       this.setState({
-        choices: this.props.choices.reduce((result, choice) => {
-          return { ...result, [choice.id]: choice }
+        choices: this.props.choices.reduce((prev, choice) => {
+          return { ...prev, [choice.id]: choice }
         }, {}),
         choiceIds: this.props.choices.map(choice => choice.id)
       })
@@ -243,9 +243,9 @@ export default class QuestionBlock extends Component {
     const { id, hideErrorMsg } = this.props
     hideErrorMsg(id)
     this.setState(state => ({
-      choices: this.props.choices.reduce((result, choice) => {
+      choices: this.props.choices.reduce((prev, choice) => {
         return {
-          ...result,
+          ...prev,
           [choice.id]: {
             ...state.choices[choice.id],
             checked: choice.id === choiceId

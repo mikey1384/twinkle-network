@@ -168,22 +168,22 @@ class Stories extends Component {
                       selfLoadingDisabled={this.clearingFeeds}
                       contentObj={feed}
                       methodObj={{
-                        onFetchContent: fetchFeed,
-                        onCommentSubmit: uploadFeedComment,
-                        onReplySubmit: uploadFeedReply,
-                        onTargetCommentSubmit: uploadTargetContentComment,
-                        onLikeContent: contentFeedLike,
-                        onLikeComment: commentFeedLike,
-                        onLikeTargetComment: likeTargetComment,
-                        onLikeQuestion: questionFeedLike,
-                        onEditContent: feedContentEdit,
-                        onDeleteContent: feedContentDelete,
-                        onDeleteComment: feedCommentDelete,
-                        onEditComment: feedCommentEdit,
-                        onLoadMoreComments: loadMoreFeedCommentsAsync,
-                        onLoadMoreReplies: loadMoreFeedReplies,
-                        onShowComments: showFeedCommentsAsync,
-                        onVideoStar: feedVideoStar
+                        deleteComment: feedCommentDelete,
+                        deleteContent: feedContentDelete,
+                        editComment: feedCommentEdit,
+                        editContent: feedContentEdit,
+                        likeComment: commentFeedLike,
+                        likeContent: contentFeedLike,
+                        likeQuestion: questionFeedLike,
+                        likeTargetComment: likeTargetComment,
+                        loadContent: fetchFeed,
+                        loadMoreComments: loadMoreFeedCommentsAsync,
+                        loadMoreReplies: loadMoreFeedReplies,
+                        showComments: showFeedCommentsAsync,
+                        starVideo: feedVideoStar,
+                        uploadComment: uploadFeedComment,
+                        uploadReply: uploadFeedReply,
+                        uploadTargetComment: uploadTargetContentComment
                       }}
                       userId={userId}
                     />

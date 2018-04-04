@@ -8,7 +8,7 @@ import { URL } from 'constants/URL'
 import Message from './Message'
 import Loading from 'components/Loading'
 import LoadMoreButton from 'components/LoadMoreButton'
-import { queryStringForArray } from 'helpers/apiHelpers'
+import { queryStringForArray } from 'helpers/stringHelpers'
 
 const API_URL = `${URL}/chat`
 
