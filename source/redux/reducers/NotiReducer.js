@@ -4,6 +4,7 @@ const defaultState = {
   versionMatch: true,
   notifications: [],
   currentChatSubject: {},
+  numNewNotis: 0,
   numNewPosts: 0
 }
 
@@ -27,6 +28,11 @@ export default function NotiReducer(state = defaultState, action) {
         ...state,
         notifications: []
       }
+    case NOTI.INCREASE_NUM_NEW_NOTIS:
+      return {
+        ...state,
+        numNewNotis: state.numNewNotis + 1
+      }
     case NOTI.INCREASE_NUM_NEW_POSTS:
       return {
         ...state,
@@ -35,7 +41,8 @@ export default function NotiReducer(state = defaultState, action) {
     case NOTI.LOAD:
       return {
         ...state,
-        ...action.data
+        ...action.data,
+        numNewNotis: 0
       }
     case NOTI.RESET_NUM_NEW_POSTS:
       return {

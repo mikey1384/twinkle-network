@@ -158,7 +158,7 @@ class Stories extends Component {
                     onClick={this.refreshFeeds}
                     style={{ marginBottom: '1rem' }}
                   >
-                    See {numNewPosts} new Post{numNewPosts > 1 ? 's' : ''}
+                    Click to See {numNewPosts} new Post{numNewPosts > 1 ? 's' : ''}
                   </Banner>
                 )}
                 {feeds.map(feed => {

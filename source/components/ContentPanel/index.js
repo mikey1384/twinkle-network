@@ -13,12 +13,9 @@ export default class ContentPanel extends Component {
     userId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      attachedVideoShown: false,
-      feedLoaded: false
-    }
+  state = {
+    attachedVideoShown: false,
+    feedLoaded: false
   }
 
   componentDidMount() {

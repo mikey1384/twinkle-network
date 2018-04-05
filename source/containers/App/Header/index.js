@@ -13,7 +13,8 @@ import {
 import {
   checkVersion,
   notifyChatSubjectChange,
-  increaseNumNewPosts
+  increaseNumNewPosts,
+  increaseNumNewNotis
 } from 'redux/actions/NotiActions'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
@@ -33,6 +34,7 @@ class Header extends Component {
     checkVersion: PropTypes.func,
     getNumberOfUnreadMessages: PropTypes.func,
     increaseNumNewPosts: PropTypes.func,
+    increaseNumNewNotis: PropTypes.func,
     increaseNumberOfUnreadMessages: PropTypes.func,
     location: PropTypes.object,
     loggedIn: PropTypes.bool,
@@ -61,6 +63,7 @@ class Header extends Component {
     const {
       turnChatOff,
       increaseNumNewPosts,
+      increaseNumNewNotis,
       increaseNumberOfUnreadMessages,
       checkVersion
     } = this.props
@@ -92,6 +95,7 @@ class Header extends Component {
     })
     socket.on('subject_change', this.onSubjectChange)
     socket.on('new_story_post', increaseNumNewPosts)
+    socket.on('new_notification', increaseNumNewNotis)
   }
 
   componentDidUpdate(prevProps) {
@@ -408,6 +412,7 @@ export default connect(
     turnChatOff,
     getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
     increaseNumNewPosts,
+    increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
     notifyChatSubjectChange,
     checkVersion,

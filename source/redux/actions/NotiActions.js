@@ -4,7 +4,7 @@ import { URL } from 'constants/URL'
 import NOTI from '../constants/Noti'
 
 const API_URL = `${URL}/notification`
-const appVersion = '0.0.95'
+const appVersion = '0.0.96'
 
 export const checkVersion = () => async dispatch => {
   try {
@@ -47,6 +47,10 @@ export const fetchNotifications = () => async dispatch => {
     handleError(error, dispatch)
   }
 }
+
+export const increaseNumNewNotis = () => ({
+  type: NOTI.INCREASE_NUM_NEW_NOTIS
+})
 
 export const increaseNumNewPosts = () => ({
   type: NOTI.INCREASE_NUM_NEW_POSTS
