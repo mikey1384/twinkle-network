@@ -1,4 +1,5 @@
 # Twinkle Network
+https://www.twinkle.network
 
 ## About this project:
 
@@ -22,9 +23,7 @@ My ultimate goal for this website is to help children all around the world to:
 
 And to fill their minds with wonder.
 
-There's no fixed long-term direction for this website other than the above missions. For the past one year since I started this project, all I focused on doing was to listen to my students and my fellow teachers' feedbacks and implementing what they wanted for this website. Now, my kids want to connect with people outside my their country, South Korea, and my primary focus at this point is to make that possible.
-
-If you are interested in helping me achieving this mission, please join us at https://www.twinkle.network
+I've recently made the API source code private due to security concerns, so if you are interested in accessing it, please contact me at mikey1384@gmail.com
 
 ## Setup:
 0. Ensure that Node 9+ is installed
