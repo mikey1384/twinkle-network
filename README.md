@@ -23,7 +23,7 @@ My ultimate goal for this website is to help children all around the world to:
 
 And to fill their minds with wonder.
 
-I've recently made the API source code private due to security concerns, if you are interested in helping me build this project, please contact me at mikey1384@gmail.com
+I've recently made the API source code private due to security concerns. If you are interested in helping me build this project, please contact me at mikey1384@gmail.com
 
 ## Setup:
 0. Ensure that Node 9+ is installed
