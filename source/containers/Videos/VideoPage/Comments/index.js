@@ -5,12 +5,12 @@ import { connect } from 'react-redux'
 import Button from 'components/Button'
 import Loading from 'components/Loading'
 import {
-  editVideoCommentAsync,
-  deleteVideoCommentAsync,
+  editVideoComment,
+  deleteVideoComment,
   likeVideoComment,
-  uploadVideoReplyAsync,
-  loadMoreCommentsAsync,
-  loadVideoCommentsAsync,
+  uploadVideoReply,
+  loadMoreComments,
+  loadVideoComments,
   loadMoreReplies
 } from 'redux/actions/VideoActions'
 import { css } from 'emotion'
@@ -164,11 +164,11 @@ class Comments extends Component {
 }
 
 export default connect(null, {
-  onEditDone: editVideoCommentAsync,
-  onDelete: deleteVideoCommentAsync,
+  onEditDone: editVideoComment,
+  onDelete: deleteVideoComment,
   onLikeClick: likeVideoComment,
-  onReplySubmit: uploadVideoReplyAsync,
-  loadMoreComments: loadMoreCommentsAsync,
-  loadVideoComments: loadVideoCommentsAsync,
+  onReplySubmit: uploadVideoReply,
+  loadMoreComments,
+  loadVideoComments,
   loadMoreReplies
 })(Comments)

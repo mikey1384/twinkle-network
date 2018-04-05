@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions'
+import { loadVideoPageFromClientSide } from 'redux/actions/VideoActions'
 import { loadLinkPage } from 'redux/actions/LinkActions'
 import Link from 'components/Link'
 import { Color } from 'constants/css'
@@ -67,6 +67,6 @@ function onLinkClick({ id, type, actions: { loadLinkPage, loadVideoPage } }) {
 }
 
 export default connect(null, {
-  loadVideoPage: loadVideoPageFromClientSideAsync,
+  loadVideoPage: loadVideoPageFromClientSide,
   loadLinkPage
 })(ContentLink)

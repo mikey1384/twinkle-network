@@ -4,9 +4,9 @@ import DropdownButton from './DropdownButton'
 import EditTitleForm from './Texts/EditTitleForm'
 import ConfirmModal from './Modals/ConfirmModal'
 import {
-  loadVideoPageFromClientSideAsync,
-  editVideoTitleAsync,
-  deleteVideoAsync
+  loadVideoPageFromClientSide,
+  editVideoTitle,
+  deleteVideo
 } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
 import UsernameText from './Texts/UsernameText'
@@ -227,7 +227,7 @@ class VideoThumb extends Component {
 }
 
 export default connect(state => ({ userId: state.UserReducer.userId }), {
-  loadVideoPage: loadVideoPageFromClientSideAsync,
-  editVideoTitle: editVideoTitleAsync,
-  deleteVideo: deleteVideoAsync
+  loadVideoPage: loadVideoPageFromClientSide,
+  editVideoTitle,
+  deleteVideo
 })(VideoThumb)

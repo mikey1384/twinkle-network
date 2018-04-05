@@ -5,7 +5,7 @@ import { Color } from 'constants/css'
 import { connect } from 'react-redux'
 import { auth } from 'redux/constants'
 import {
-  addVideoViewAsync,
+  addVideoView,
   fillCurrentVideoSlot,
   emptyCurrentVideoSlot
 } from 'redux/actions/VideoActions'
@@ -487,7 +487,7 @@ export default connect(
     currentVideoSlot: state.VideoReducer.currentVideoSlot
   }),
   {
-    addVideoView: addVideoViewAsync,
+    addVideoView,
     changeUserXP,
     fillCurrentVideoSlot,
     emptyCurrentVideoSlot

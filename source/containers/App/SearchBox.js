@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import SearchInput from 'components/Texts/SearchInput'
 import { stringIsEmpty, cleanString } from 'helpers/stringHelpers'
-import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions'
+import { loadVideoPageFromClientSide } from 'redux/actions/VideoActions'
 import { loadLinkPage } from 'redux/actions/LinkActions'
 import { clearSearchResults, searchContent } from 'redux/actions/ContentActions'
 import { Color } from 'constants/css'
@@ -123,7 +123,7 @@ export default connect(
   }),
   {
     searchContent,
-    loadVideoPage: loadVideoPageFromClientSideAsync,
+    loadVideoPage: loadVideoPageFromClientSide,
     loadLinkPage,
     clearSearchResults
   }

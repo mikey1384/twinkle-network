@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Textarea from 'components/Texts/Textarea'
 import Modal from 'components/Modal'
 import Button from 'components/Button'
-import { uploadVideoAsync } from 'redux/actions/VideoActions'
+import { uploadVideo } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
 import Input from 'components/Texts/Input'
 import {
@@ -19,18 +19,13 @@ class AddVideoModal extends Component {
     uploadVideo: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      urlError: null,
-      form: {
-        url: '',
-        title: '',
-        description: ''
-      }
+  state = {
+    urlError: null,
+    form: {
+      url: '',
+      title: '',
+      description: ''
     }
-    this.onSubmit = this.onSubmit.bind(this)
-    this.onUrlFieldChange = this.onUrlFieldChange.bind(this)
   }
 
   render() {
@@ -126,7 +121,7 @@ class AddVideoModal extends Component {
     )
   }
 
-  onSubmit(event) {
+  onSubmit = event => {
     const { uploadVideo } = this.props
     const { form: { url, title, description } } = this.state
 
@@ -143,7 +138,7 @@ class AddVideoModal extends Component {
     })
   }
 
-  onUrlFieldChange(text) {
+  onUrlFieldChange = text => {
     const { form } = this.state
     this.setState({
       form: { ...form, url: text },
@@ -152,4 +147,4 @@ class AddVideoModal extends Component {
   }
 }
 
-export default connect(null, { uploadVideo: uploadVideoAsync })(AddVideoModal)
+export default connect(null, { uploadVideo })(AddVideoModal)

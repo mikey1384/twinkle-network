@@ -21,7 +21,7 @@ export const getInitialVideos = () => async dispatch => {
   }
 }
 
-export const addVideoViewAsync = params => dispatch => {
+export const addVideoView = params => dispatch => {
   try {
     request.post(`${API_URL}/view`, params)
   } catch (error) {
@@ -34,7 +34,7 @@ export const closeAddVideoModal = () => ({
   type: VIDEO.CLOSE_MODAL
 })
 
-export const deleteVideoAsync = ({
+export const deleteVideo = ({
   videoId,
   arrayIndex,
   lastVideoId
@@ -60,7 +60,7 @@ export const deleteVideoAsync = ({
   }
 }
 
-export const deleteVideoCommentAsync = commentId => async dispatch => {
+export const deleteVideoComment = commentId => async dispatch => {
   try {
     await request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
     dispatch({
@@ -92,7 +92,7 @@ export const deleteVideoDiscussion = (
   }
 }
 
-export const editVideoCommentAsync = params => async dispatch => {
+export const editVideoComment = params => async dispatch => {
   try {
     const { data } = await request.put(`${API_URL}/comments`, params, auth())
     dispatch({
@@ -130,7 +130,7 @@ export const editVideoDiscussion = (
   }
 }
 
-export const editVideoPageAsync = params => async dispatch => {
+export const editVideoPage = params => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/edit/page`, params, auth())
     if (data.success) {
@@ -146,7 +146,7 @@ export const editVideoPageAsync = params => async dispatch => {
   }
 }
 
-export const editVideoTitleAsync = params => async dispatch => {
+export const editVideoTitle = params => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/edit/title`, params, auth())
     if (data.result) {
@@ -187,7 +187,7 @@ export const getMoreVideos = videoId => async dispatch => {
   }
 }
 
-export const likeVideoAsync = videoId => async dispatch => {
+export const likeVideo = videoId => async dispatch => {
   try {
     const { data } = await request.post(
       `${API_URL}/like`,
@@ -223,7 +223,7 @@ export const likeVideoComment = commentId => async dispatch => {
   }
 }
 
-export const loadMoreCommentsAsync = ({
+export const loadMoreComments = ({
   videoId,
   lastCommentId
 }) => async dispatch => {
@@ -341,7 +341,7 @@ export const loadRightMenuVideos = (videoId, playlistId) => async dispatch => {
   }
 }
 
-export const loadVideoCommentsAsync = videoId => async dispatch => {
+export const loadVideoComments = videoId => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}/comments?rootId=${videoId}&rootType=video`
@@ -388,10 +388,7 @@ export const loadVideoDiscussionComments = discussionId => async dispatch => {
   }
 }
 
-export const loadVideoPageAsync = (
-  videoId,
-  fromClientSide
-) => async dispatch => {
+export const loadVideoPage = (videoId, fromClientSide) => async dispatch => {
   if (isNaN(videoId)) return dispatch({ type: VIDEO.PAGE_UNAVAILABLE })
   try {
     const { data } = await request.get(`${API_URL}/page?videoId=${videoId}`)
@@ -408,9 +405,9 @@ export const loadVideoPageAsync = (
   }
 }
 
-export const loadVideoPageFromClientSideAsync = videoId => async dispatch => {
+export const loadVideoPageFromClientSide = videoId => async dispatch => {
   try {
-    await dispatch(loadVideoPageAsync(videoId, true))
+    await dispatch(loadVideoPage(videoId, true))
     Promise.resolve()
   } catch (error) {
     console.error(error.response || error)
@@ -444,7 +441,7 @@ export const starVideo = videoId => async dispatch => {
   }
 }
 
-export const uploadQuestionsAsync = params => async dispatch => {
+export const uploadQuestions = params => async dispatch => {
   try {
     await request.post(`${API_URL}/questions`, params, auth())
     const questions = params.questions.map(question => {
@@ -471,7 +468,7 @@ export const uploadQuestionsAsync = params => async dispatch => {
   }
 }
 
-export const uploadVideoAsync = params => async dispatch => {
+export const uploadVideo = params => async dispatch => {
   try {
     const { data } = await request.post(API_URL, params, auth())
     dispatch({
@@ -484,7 +481,7 @@ export const uploadVideoAsync = params => async dispatch => {
   }
 }
 
-export const uploadVideoCommentAsync = (comment, videoId) => async dispatch => {
+export const uploadVideoComment = (comment, videoId) => async dispatch => {
   try {
     const { data } = await request.post(
       `${API_URL}/comments`,
@@ -583,7 +580,7 @@ export const uploadVideoDiscussionReply = ({
   }
 }
 
-export const uploadVideoReplyAsync = ({
+export const uploadVideoReply = ({
   reply,
   commentId,
   videoId: rootId,

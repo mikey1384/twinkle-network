@@ -6,13 +6,13 @@ import Chat from '../Chat'
 import Header from './Header'
 import { connect } from 'react-redux'
 import {
-  initChatAsync,
+  initChat,
   resetChat,
   turnChatOff
 } from 'redux/actions/ChatActions'
 import { changePageVisibility } from 'redux/actions/ViewActions'
 import {
-  initSessionAsync,
+  initSession,
   openSigninModal,
   closeSigninModal
 } from 'redux/actions/UserActions'
@@ -312,11 +312,11 @@ export default connect(
   {
     closeSigninModal,
     openSigninModal,
-    initSession: initSessionAsync,
+    initSession,
     turnChatOff,
     fetchNotifications,
     clearNotifications,
-    initChat: initChatAsync,
+    initChat,
     resetChat,
     changePageVisibility
   }

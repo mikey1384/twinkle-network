@@ -6,8 +6,8 @@ import VideoPage from './VideoPage'
 import { connect } from 'react-redux'
 import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions'
 import {
-  getPlaylistsAsync,
-  getPinnedPlaylistsAsync,
+  getPlaylists,
+  getPinnedPlaylists,
   resetPlaylistState
 } from 'redux/actions/PlaylistActions'
 
@@ -46,8 +46,8 @@ class Videos extends Component {
 }
 
 export default connect(null, {
-  getPlaylists: getPlaylistsAsync,
-  getPinnedPlaylists: getPinnedPlaylistsAsync,
+  getPlaylists,
+  getPinnedPlaylists,
   getInitialVideos,
   resetPlaylistState,
   resetVideoState

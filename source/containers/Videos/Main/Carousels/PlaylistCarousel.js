@@ -10,8 +10,8 @@ import PlaylistModal from '../Modals/PlaylistModal'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { addEvent } from 'helpers/listenerHelpers'
 import {
-  editPlaylistTitleAsync,
-  deletePlaylistAsync
+  editPlaylistTitle,
+  deletePlaylist
 } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
 import { cleanString } from 'helpers/stringHelpers'
@@ -22,9 +22,9 @@ class PlaylistCarousel extends Component {
   static propTypes = {
     arrayIndex: PropTypes.number.isRequired,
     clickSafe: PropTypes.bool.isRequired,
-    deletePlaylistAsync: PropTypes.func.isRequired,
+    deletePlaylist: PropTypes.func.isRequired,
     editable: PropTypes.bool,
-    editPlaylistTitleAsync: PropTypes.func.isRequired,
+    editPlaylistTitle: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
     isAdmin: PropTypes.bool,
     playlist: PropTypes.array.isRequired,
@@ -238,8 +238,8 @@ class PlaylistCarousel extends Component {
   }
 
   onEditedTitleSubmit = async title => {
-    const { editPlaylistTitleAsync, id: playlistId, arrayIndex } = this.props
-    await editPlaylistTitleAsync({ title, playlistId }, arrayIndex)
+    const { editPlaylistTitle, id: playlistId, arrayIndex } = this.props
+    await editPlaylistTitle({ title, playlistId }, arrayIndex)
     this.setState({ onEdit: false })
   }
 
@@ -252,9 +252,9 @@ class PlaylistCarousel extends Component {
   }
 
   onDeleteConfirm = async() => {
-    const { deletePlaylistAsync, id } = this.props
+    const { deletePlaylist, id } = this.props
     this.setState({ deleteConfirmModalShown: false })
-    deletePlaylistAsync(id)
+    deletePlaylist(id)
   }
 
   onResize = () => {
@@ -273,7 +273,7 @@ export default connect(
     isAdmin: state.UserReducer.isAdmin
   }),
   {
-    editPlaylistTitleAsync,
-    deletePlaylistAsync
+    editPlaylistTitle,
+    deletePlaylist
   }
 )(PlaylistCarousel)

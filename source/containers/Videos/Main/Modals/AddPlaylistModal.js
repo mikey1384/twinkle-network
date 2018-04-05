@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Textarea from 'components/Texts/Textarea'
 import Modal from 'components/Modal'
 import Button from 'components/Button'
-import { uploadPlaylistAsync } from 'redux/actions/PlaylistActions'
+import { uploadPlaylist } from 'redux/actions/PlaylistActions'
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 import { connect } from 'react-redux'
 import SortableThumb from './SortableThumb'
@@ -290,6 +290,6 @@ class AddPlaylistModal extends Component {
   }
 }
 
-export default connect(null, { uploadPlaylist: uploadPlaylistAsync })(
+export default connect(null, { uploadPlaylist })(
   DragDropContext(HTML5Backend)(AddPlaylistModal)
 )

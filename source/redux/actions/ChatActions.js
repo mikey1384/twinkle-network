@@ -54,7 +54,7 @@ export const clearUserSearchResults = () => ({
   type: CHAT.CLEAR_USER_SEARCH_RESULTS
 })
 
-export const createNewChannelAsync = (params, callback) => async dispatch => {
+export const createNewChannel = (params, callback) => async dispatch => {
   try {
     const { data } = await request.post(
       `${API_URL}/channel`,
@@ -122,7 +122,7 @@ export const enterEmptyChat = () => ({
   type: CHAT.ENTER_EMPTY_CHAT
 })
 
-export const getNumberOfUnreadMessagesAsync = () => async dispatch => {
+export const getNumberOfUnreadMessages = () => async dispatch => {
   if (auth() === null) return
   try {
     const { data } = await request.get(`${API_URL}/numUnreads`, auth())
@@ -136,7 +136,7 @@ export const getNumberOfUnreadMessagesAsync = () => async dispatch => {
   }
 }
 
-export const hideChatAsync = channelId => async dispatch => {
+export const hideChat = channelId => async dispatch => {
   try {
     await request.post(`${API_URL}/hideChat`, { channelId }, auth())
     dispatch({
@@ -154,7 +154,7 @@ export const increaseNumberOfUnreadMessages = () => ({
   type: CHAT.INCREASE_NUM_UNREAD_MSGS
 })
 
-export const initChatAsync = channelId => async dispatch => {
+export const initChat = channelId => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}?channelId=${channelId}`,
@@ -171,10 +171,7 @@ export const initChatAsync = channelId => async dispatch => {
   }
 }
 
-export const inviteUsersToChannelAsync = (
-  params,
-  callback
-) => async dispatch => {
+export const inviteUsersToChannel = (params, callback) => async dispatch => {
   try {
     const { data: { message } } = await request.post(
       `${API_URL}/invite`,
@@ -229,7 +226,7 @@ export const loadMoreChannels = (
   }
 }
 
-export const loadMoreMessagesAsync = (
+export const loadMoreMessages = (
   userId,
   messageId,
   channelId,
@@ -251,7 +248,7 @@ export const loadMoreMessagesAsync = (
   }
 }
 
-export const leaveChannelAsync = channelId => async dispatch => {
+export const leaveChannel = channelId => async dispatch => {
   const timeStamp = Math.floor(Date.now() / 1000)
   try {
     await request.delete(
@@ -372,7 +369,7 @@ export const resetChat = () => dispatch => {
   return Promise.resolve()
 }
 
-export const searchChatAsync = text => async dispatch => {
+export const searchChat = text => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}/search/chat?text=${text}`,
@@ -402,7 +399,7 @@ export const searchChatSubject = text => async dispatch => {
   }
 }
 
-export const searchUserToInviteAsync = text => async dispatch => {
+export const searchUserToInvite = text => async dispatch => {
   try {
     const { data } = await request.get(`${API_URL}/search/users?text=${text}`)
     dispatch({

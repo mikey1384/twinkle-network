@@ -15,8 +15,8 @@ import {
 } from 'redux/actions/VideoActions'
 import {
   openReorderPinnedPlaylistsModal,
-  openSelectPlaylistsToPinModalAsync,
-  getVideosForModalAsync,
+  openSelectPlaylistsToPinModal,
+  getVideosForModal,
   closeReorderPinnedPlaylistsModal,
   closeSelectPlaylistsToPinModal
 } from 'redux/actions/PlaylistActions'
@@ -246,8 +246,8 @@ export default connect(
       state.PlaylistReducer.reorderPinnedPlaylistsModalShown
   }),
   {
-    openSelectPlaylistsToPinModal: openSelectPlaylistsToPinModalAsync,
-    getVideosForModal: getVideosForModalAsync,
+    openSelectPlaylistsToPinModal,
+    getVideosForModal,
     closeReorderPinnedPlaylistsModal,
     closeSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,

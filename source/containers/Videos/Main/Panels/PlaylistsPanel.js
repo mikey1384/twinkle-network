@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
 import SectionPanel from 'components/SectionPanel'
 import { queryStringForArray } from 'helpers/stringHelpers'
-import { getMorePlaylistsAsync } from 'redux/actions/PlaylistActions'
+import { getMorePlaylists } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
 
 class PlaylistsPanel extends Component {
@@ -12,7 +12,7 @@ class PlaylistsPanel extends Component {
     buttonGroup: PropTypes.func,
     buttonGroupShown: PropTypes.bool,
     isSearching: PropTypes.bool,
-    getMorePlaylistsAsync: PropTypes.func.isRequired,
+    getMorePlaylists: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool,
     location: PropTypes.object.isRequired,
@@ -68,13 +68,13 @@ class PlaylistsPanel extends Component {
   }
 
   loadMorePlaylists = () => {
-    const { playlists, getMorePlaylistsAsync } = this.props
-    return getMorePlaylistsAsync(
+    const { playlists, getMorePlaylists } = this.props
+    return getMorePlaylists(
       queryStringForArray(playlists, 'id', 'shownPlaylists')
     )
   }
 }
 
-export default connect(null, { getMorePlaylistsAsync })(
+export default connect(null, { getMorePlaylists })(
   withRouter(PlaylistsPanel)
 )

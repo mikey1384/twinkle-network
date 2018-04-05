@@ -5,7 +5,7 @@ import { withRouter } from 'react-router'
 import Link from 'components/Link'
 import { logout } from 'redux/actions/UserActions'
 import {
-  getNumberOfUnreadMessagesAsync,
+  getNumberOfUnreadMessages,
   increaseNumberOfUnreadMessages,
   turnChatOff,
   resetChat
@@ -410,7 +410,7 @@ export default connect(
   {
     logout,
     turnChatOff,
-    getNumberOfUnreadMessages: getNumberOfUnreadMessagesAsync,
+    getNumberOfUnreadMessages,
     increaseNumNewPosts,
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,

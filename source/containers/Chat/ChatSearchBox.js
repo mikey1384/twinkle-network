@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import SearchInput from 'components/Texts/SearchInput'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import {
-  searchChatAsync,
+  searchChat,
   clearChatSearchResults,
   enterChannelWithId,
   openNewChatTab
@@ -95,7 +95,7 @@ export default connect(
     username: state.UserReducer.username
   }),
   {
-    searchChat: searchChatAsync,
+    searchChat,
     clearSearchResults: clearChatSearchResults,
     enterChannelWithId,
     openNewChatTab

@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Modal from 'components/Modal'
 import Button from 'components/Button'
 import {
-  searchUserToInviteAsync,
+  searchUserToInvite,
   clearUserSearchResults
 } from 'redux/actions/ChatActions'
 import { connect } from 'react-redux'
@@ -118,6 +118,6 @@ export default connect(
   }),
   {
     clearSearchResults: clearUserSearchResults,
-    searchUserToInvite: searchUserToInviteAsync
+    searchUserToInvite
   }
 )(CreateNewChannelModal)

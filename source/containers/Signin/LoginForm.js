@@ -7,7 +7,7 @@ import Banner from 'components/Banner'
 
 export default class LoginForm extends Component {
   static propTypes = {
-    loginAsync: PropTypes.func.isRequired,
+    login: PropTypes.func.isRequired,
     showSignUpForm: PropTypes.func.isRequired
   }
 
@@ -102,9 +102,9 @@ export default class LoginForm extends Component {
   }
 
   onSubmit() {
-    const { loginAsync } = this.props
+    const { login } = this.props
     const { username, password } = this.state
-    return loginAsync({ username, password }).catch(error =>
+    return login({ username, password }).catch(error =>
       this.setState({ errorMessage: error })
     )
   }

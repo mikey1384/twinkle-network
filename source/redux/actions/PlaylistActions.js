@@ -5,7 +5,7 @@ import PLAYLIST from '../constants/Playlist'
 
 const API_URL = `${URL}/playlist`
 
-export const getPlaylistsAsync = () => async dispatch => {
+export const getPlaylists = () => async dispatch => {
   try {
     const { data } = await request.get(API_URL)
     dispatch({
@@ -18,7 +18,7 @@ export const getPlaylistsAsync = () => async dispatch => {
   }
 }
 
-export const getMorePlaylistsAsync = shownPlaylistsIds => async dispatch => {
+export const getMorePlaylists = shownPlaylistsIds => async dispatch => {
   try {
     const { data } = await request.get(`${API_URL}?${shownPlaylistsIds}`)
     dispatch({
@@ -32,7 +32,7 @@ export const getMorePlaylistsAsync = shownPlaylistsIds => async dispatch => {
   }
 }
 
-export const uploadPlaylistAsync = params => async dispatch => {
+export const uploadPlaylist = params => async dispatch => {
   try {
     const { data: { result } } = await request.post(API_URL, params, auth())
     if (result) {
@@ -48,7 +48,7 @@ export const uploadPlaylistAsync = params => async dispatch => {
   }
 }
 
-export const editPlaylistTitleAsync = (
+export const editPlaylistTitle = (
   params,
   arrayNumber,
   sender
@@ -70,7 +70,7 @@ export const editPlaylistTitleAsync = (
   }
 }
 
-export const changePlaylistVideosAsync = (
+export const changePlaylistVideos = (
   playlistId,
   selectedVideos
 ) => async dispatch => {
@@ -92,7 +92,7 @@ export const changePlaylistVideosAsync = (
   }
 }
 
-export const deletePlaylistAsync = playlistId => async dispatch => {
+export const deletePlaylist = playlistId => async dispatch => {
   try {
     await request.delete(`${API_URL}?playlistId=${playlistId}`, auth())
     dispatch({
@@ -105,7 +105,7 @@ export const deletePlaylistAsync = playlistId => async dispatch => {
   }
 }
 
-export const getPinnedPlaylistsAsync = () => async dispatch => {
+export const getPinnedPlaylists = () => async dispatch => {
   try {
     const { data } = await request.get(`${API_URL}/pinned`)
     dispatch({
@@ -138,7 +138,7 @@ export const changePinnedPlaylists = selectedPlaylists => async dispatch => {
   }
 }
 
-export const openSelectPlaylistsToPinModalAsync = () => async dispatch => {
+export const openSelectPlaylistsToPinModal = () => async dispatch => {
   try {
     const { data } = await request.get(`${API_URL}/list`)
     return dispatch({
@@ -151,7 +151,7 @@ export const openSelectPlaylistsToPinModalAsync = () => async dispatch => {
   }
 }
 
-export const loadMorePlaylistListAsync = playlistId => async dispatch => {
+export const loadMorePlaylistList = playlistId => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}/list?playlistId=${playlistId}`

@@ -2,14 +2,14 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  editVideoPageAsync,
-  deleteVideoAsync,
-  uploadQuestionsAsync,
-  likeVideoAsync,
+  editVideoPage,
+  deleteVideo,
+  uploadQuestions,
+  likeVideo,
   resetVideoPage,
-  loadVideoPageAsync,
+  loadVideoPage,
   loadMoreDiscussions,
-  uploadVideoCommentAsync
+  uploadVideoComment
 } from 'redux/actions/VideoActions'
 import Carousel from 'components/Carousel'
 import Button from 'components/Button'
@@ -441,13 +441,13 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   {
-    editVideoPage: editVideoPageAsync,
-    deleteVideo: deleteVideoAsync,
-    uploadQuestions: uploadQuestionsAsync,
-    likeVideo: likeVideoAsync,
+    editVideoPage,
+    deleteVideo,
+    uploadQuestions,
+    likeVideo,
     loadMoreDiscussions,
     resetVideoPage,
-    uploadComment: uploadVideoCommentAsync,
-    loadVideoPage: loadVideoPageAsync
+    uploadComment: uploadVideoComment,
+    loadVideoPage
   }
 )(VideoPage)

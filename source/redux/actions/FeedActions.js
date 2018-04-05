@@ -196,7 +196,7 @@ export const fetchFeed = feed => async dispatch => {
   }
 }
 
-export const fetchFeedsAsync = (filter = 'all') => async dispatch => {
+export const fetchFeeds = (filter = 'all') => async dispatch => {
   try {
     const { data } = await request.get(`${API_URL}?filter=${filter}`)
     dispatch({
@@ -211,7 +211,7 @@ export const fetchFeedsAsync = (filter = 'all') => async dispatch => {
   }
 }
 
-export const fetchMoreFeedsAsync = (
+export const fetchMoreFeeds = (
   lastFeedId,
   filter = 'all'
 ) => async dispatch => {
@@ -284,7 +284,7 @@ export const likeTargetComment = contentId => async dispatch => {
   }
 }
 
-export const loadMoreFeedCommentsAsync = ({
+export const loadMoreFeedComments = ({
   lastCommentId,
   type,
   contentId,
@@ -330,7 +330,7 @@ export const loadMoreFeedReplies = (
   }
 }
 
-export const showFeedCommentsAsync = ({
+export const showFeedComments = ({
   rootType,
   type,
   contentId,
@@ -350,7 +350,7 @@ export const showFeedCommentsAsync = ({
   }
 }
 
-export const uploadContentAsync = form => async dispatch => {
+export const uploadContent = form => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/content`, form, auth())
     return dispatch({

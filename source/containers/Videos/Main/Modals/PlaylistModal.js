@@ -9,7 +9,7 @@ import { cleanString, queryStringForArray } from 'helpers/stringHelpers'
 import Link from 'components/Link'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { loadVideoPageFromClientSideAsync } from 'redux/actions/VideoActions'
+import { loadVideoPageFromClientSide } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
 import VideoThumbImage from 'components/VideoThumbImage'
 
@@ -147,5 +147,5 @@ class PlaylistModal extends Component {
 }
 
 export default connect(null, {
-  loadVideoPage: loadVideoPageFromClientSideAsync
+  loadVideoPage: loadVideoPageFromClientSide
 })(PlaylistModal)

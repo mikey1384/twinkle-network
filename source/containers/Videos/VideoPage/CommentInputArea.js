@@ -5,7 +5,7 @@ import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm'
 import Button from 'components/Button'
 import { connect } from 'react-redux'
 import {
-  uploadVideoCommentAsync,
+  uploadVideoComment,
   uploadVideoDiscussion
 } from 'redux/actions/VideoActions'
 import FilterBar from 'components/FilterBar'
@@ -111,6 +111,6 @@ class CommentInputArea extends Component {
 }
 
 export default connect(null, {
-  uploadComment: uploadVideoCommentAsync,
+  uploadComment: uploadVideoComment,
   uploadDiscussion: uploadVideoDiscussion
 })(CommentInputArea)

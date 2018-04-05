@@ -5,13 +5,13 @@ import UsernameText from 'components/Texts/UsernameText'
 import Button from 'components/Button'
 import { timeSince } from 'helpers/timeStampHelpers'
 import { connect } from 'react-redux'
-import { initChatAsync } from 'redux/actions/ChatActions'
+import { initChat } from 'redux/actions/ChatActions'
 import RoundList from 'components/RoundList'
 
 class ChatFeeds extends Component {
   static propTypes = {
     content: PropTypes.string,
-    openChat: PropTypes.func.isRequired,
+    initChat: PropTypes.func.isRequired,
     reloadedBy: PropTypes.number,
     reloaderName: PropTypes.string,
     reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -22,7 +22,7 @@ class ChatFeeds extends Component {
   }
 
   render() {
-    const { content, openChat, style = {} } = this.props
+    const { content, initChat, style = {} } = this.props
     return (
       <RoundList style={{ ...style, textAlign: 'center' }}>
         <li>
@@ -38,7 +38,7 @@ class ChatFeeds extends Component {
           {this.renderDetails()}
           <Button
             success
-            onClick={() => openChat(2)}
+            onClick={() => initChat(2)}
           >
             <span className="glyphicon glyphicon-comment" />&nbsp;Join
             Conversation
@@ -81,5 +81,5 @@ class ChatFeeds extends Component {
 }
 
 export default connect(null, {
-  openChat: initChatAsync
+  initChat
 })(ChatFeeds)

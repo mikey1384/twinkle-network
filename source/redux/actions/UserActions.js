@@ -80,7 +80,7 @@ export const changeUserXP = params => async dispatch => {
   }
 }
 
-export const initSessionAsync = pathname => async dispatch => {
+export const initSession = pathname => async dispatch => {
   if (token() === null) {
     return request.post(`${API_URL}/recordAnonTraffic`, { pathname })
   }
@@ -98,7 +98,7 @@ export const initSessionAsync = pathname => async dispatch => {
   }
 }
 
-export const loginAsync = params => async dispatch => {
+export const login = params => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/login`, params)
     localStorage.setItem('token', data.token)
@@ -136,7 +136,7 @@ export const searchUsers = query => async dispatch => {
   }
 }
 
-export const signupAsync = params => async dispatch => {
+export const signup = params => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/signup`, params)
     if (data.token) {

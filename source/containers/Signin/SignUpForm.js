@@ -9,7 +9,7 @@ import Banner from 'components/Banner'
 
 export default class SignUpForm extends Component {
   static propTypes = {
-    signupAsync: PropTypes.func.isRequired,
+    signup: PropTypes.func.isRequired,
     showLoginForm: PropTypes.func.isRequired
   }
 
@@ -187,7 +187,7 @@ export default class SignUpForm extends Component {
   }
 
   onSubmit = () => {
-    const { signupAsync } = this.props
+    const { signup } = this.props
     const { username, password, firstname, lastname, email } = this.state
     if (!isValidUsername(username)) {
       return this.setState({ errorMessage: 'That is not a valid username' })
@@ -206,7 +206,7 @@ export default class SignUpForm extends Component {
     if (email && !isValidEmailAddress(email)) {
       return this.setState({ errorMessage: 'That email address is invalid' })
     }
-    return signupAsync({
+    return signup({
       username,
       password,
       firstname,

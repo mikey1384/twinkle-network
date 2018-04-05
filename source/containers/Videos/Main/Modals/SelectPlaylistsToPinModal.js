@@ -4,7 +4,7 @@ import Modal from 'components/Modal'
 import Button from 'components/Button'
 import CheckListGroup from 'components/CheckListGroup'
 import {
-  loadMorePlaylistListAsync,
+  loadMorePlaylistList,
   changePinnedPlaylists
 } from 'redux/actions/PlaylistActions'
 import FilterBar from 'components/FilterBar'
@@ -243,6 +243,6 @@ class SelectPlaylistsToPinModal extends Component {
 }
 
 export default connect(null, {
-  loadMorePlaylist: loadMorePlaylistListAsync,
-  changePinnedPlaylists: changePinnedPlaylists
+  loadMorePlaylist: loadMorePlaylistList,
+  changePinnedPlaylists
 })(SelectPlaylistsToPinModal)

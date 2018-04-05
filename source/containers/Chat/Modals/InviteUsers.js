@@ -6,8 +6,8 @@ import TagPeopleForm from 'components/TagPeopleForm'
 import { connect } from 'react-redux'
 import {
   clearUserSearchResults,
-  searchUserToInviteAsync,
-  inviteUsersToChannelAsync
+  searchUserToInvite,
+  inviteUsersToChannel
 } from 'redux/actions/ChatActions'
 
 class InviteUsersModal extends Component {
@@ -106,7 +106,7 @@ export default connect(
   }),
   {
     clearSearchResults: clearUserSearchResults,
-    searchUserToInvite: searchUserToInviteAsync,
-    inviteUsersToChannel: inviteUsersToChannelAsync
+    searchUserToInvite,
+    inviteUsersToChannel
   }
 )(InviteUsersModal)

@@ -17,8 +17,8 @@ import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import Input from 'components/Texts/Input'
 import {
-  deleteVideoCommentAsync,
-  editVideoCommentAsync,
+  deleteVideoComment,
+  editVideoComment,
   loadVideoDiscussionComments,
   loadMoreDiscussionComments,
   uploadVideoDiscussionComment,
@@ -347,8 +347,8 @@ export default connect(
     myId: state.UserReducer.userId
   }),
   {
-    onDelete: deleteVideoCommentAsync,
-    onEditDone: editVideoCommentAsync,
+    onDelete: deleteVideoComment,
+    onEditDone: editVideoComment,
     loadComments: loadVideoDiscussionComments,
     loadMoreComments: loadMoreDiscussionComments,
     onSubmit: uploadVideoDiscussionComment,

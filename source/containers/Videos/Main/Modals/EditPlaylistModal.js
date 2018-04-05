@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { connect } from 'react-redux'
-import { changePlaylistVideosAsync } from 'redux/actions/PlaylistActions'
+import { changePlaylistVideos } from 'redux/actions/PlaylistActions'
 import Loading from 'components/Loading'
 import SelectVideosForm from './SelectVideosForm'
 import SortableThumb from './SortableThumb'
@@ -237,5 +237,5 @@ class EditPlaylistModal extends Component {
 }
 
 export default connect(null, {
-  changePlaylistVideos: changePlaylistVideosAsync
+  changePlaylistVideos
 })(DragDropContext(HTML5Backend)(EditPlaylistModal))
