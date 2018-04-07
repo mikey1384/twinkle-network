@@ -16,8 +16,10 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
+    canDelete: PropTypes.bool.isRequired,
+    canEdit: PropTypes.bool.isRequired,
     contentObj: PropTypes.object.isRequired,
-    isCreator: PropTypes.bool.isRequired,
+    canStar: PropTypes.bool.isRequired,
     methods: PropTypes.object.isRequired,
     myId: PropTypes.number
   }
@@ -66,8 +68,10 @@ class Contents extends Component {
         actualDescription,
         siteUrl
       },
+      canDelete,
+      canEdit,
+      canStar,
       contentObj,
-      isCreator,
       methods,
       myId,
       attachedVideoShown
@@ -84,7 +88,24 @@ class Contents extends Component {
     for (let i = 0; i < contentLikers.length; i++) {
       if (contentLikers[i].userId === myId) userLikedThis = true
     }
-    const canEdit = myId === uploaderId || isCreator
+
+    const userIsUploader = myId === uploaderId
+    const userCanEditThis = canEdit || canDelete
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ isEditing: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => this.setState({ confirmModalShown: true })
+      })
+    }
+
     return (
       <div>
         {confirmModalShown && (
@@ -172,7 +193,7 @@ class Contents extends Component {
                       : ''}
                   </Button>
                 )}
-                {canEdit && (
+                {editButtonShown && (
                   <DropdownButton
                     transparent
                     direction="right"
@@ -180,17 +201,7 @@ class Contents extends Component {
                     style={{ marginLeft: '0.5rem', display: 'inline-block' }}
                     size={type !== 'discussion' ? 'sm' : null}
                     text="Edit"
-                    menuProps={[
-                      {
-                        label: 'Edit',
-                        onClick: () => this.setState({ isEditing: true })
-                      },
-                      {
-                        label: 'Remove',
-                        onClick: () =>
-                          this.setState({ confirmModalShown: true })
-                      }
-                    ]}
+                    menuProps={editMenuItems}
                   />
                 )}
               </div>
@@ -206,7 +217,7 @@ class Contents extends Component {
                       {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
                     </div>
                   )}
-                {isCreator &&
+                {canStar &&
                   type === 'video' && (
                     <StarButton
                       isStarred={!!isStarred}
@@ -331,6 +342,8 @@ class Contents extends Component {
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
-  Contents
-)
+export default connect(state => ({
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit,
+  canStar: state.UserReducer.canStar
+}))(Contents)
