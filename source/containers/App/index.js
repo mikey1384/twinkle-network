@@ -79,10 +79,9 @@ class App extends Component {
     initSession(location.pathname)
     addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
+    window.ga('send', 'pageview', location.pathname)
     history.listen(location => {
-      if (window.ga) {
-        window.ga('send', 'pageview', location.pathname)
-      }
+      window.ga('send', 'pageview', location.pathname)
     })
   }
 
