@@ -13,7 +13,7 @@ const types = {
   OPEN_SIGNIN_MODAL: 'OPEN_SIGNIN_MODAL',
   SEARCH: 'SEARCH',
   SHOW_PROFILE: 'SHOW_PROFILE',
-  SIGN_UP: 'SIGNUP'
+  SIGNUP: 'SIGNUP'
 }
 
 for (let key in types) {

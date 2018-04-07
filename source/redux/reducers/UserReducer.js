@@ -1,6 +1,10 @@
 import USER from '../constants/User'
 
 const defaultState = {
+  authLevel: 0,
+  canDelete: false,
+  canEdit: false,
+  canStar: false,
   isAdmin: false,
   isCreator: false,
   profile: {},
@@ -93,8 +97,6 @@ export default function UserReducer(state = defaultState, action) {
       return {
         ...state,
         ...action.data,
-        isAdmin: isAdmin(action.data.userType),
-        isCreator: action.data.userType === 'creator',
         loggedIn: true,
         signinModalShown: false
       }

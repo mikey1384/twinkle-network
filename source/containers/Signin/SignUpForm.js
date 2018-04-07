@@ -165,7 +165,7 @@ export default class SignUpForm extends Component {
         <footer>
           <Button
             primary
-            disabled={submitDisabled}
+            disabled={!!submitDisabled}
             onClick={this.onSubmit}
             style={{ fontSize: '2.5rem' }}
           >
@@ -186,7 +186,7 @@ export default class SignUpForm extends Component {
     )
   }
 
-  onSubmit = () => {
+  onSubmit = async() => {
     const { signup } = this.props
     const { username, password, firstname, lastname, email } = this.state
     if (!isValidUsername(username)) {
@@ -206,13 +206,18 @@ export default class SignUpForm extends Component {
     if (email && !isValidEmailAddress(email)) {
       return this.setState({ errorMessage: 'That email address is invalid' })
     }
-    return signup({
-      username,
-      password,
-      firstname,
-      lastname,
-      email
-    }).catch(error => this.setState({ errorMessage: error }))
+    try {
+      signup({
+        username,
+        password,
+        firstname,
+        lastname,
+        email
+      })
+    } catch (error) {
+      console.log(error)
+      this.setState({ errorMessage: error })
+    }
   }
 }
 

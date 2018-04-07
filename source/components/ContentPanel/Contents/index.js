@@ -16,10 +16,11 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 class Contents extends Component {
   static propTypes = {
     attachedVideoShown: PropTypes.bool,
-    canDelete: PropTypes.bool.isRequired,
-    canEdit: PropTypes.bool.isRequired,
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     contentObj: PropTypes.object.isRequired,
-    canStar: PropTypes.bool.isRequired,
+    canStar: PropTypes.bool,
     methods: PropTypes.object.isRequired,
     myId: PropTypes.number
   }
@@ -66,8 +67,10 @@ class Contents extends Component {
         thumbUrl,
         actualTitle,
         actualDescription,
-        siteUrl
+        siteUrl,
+        uploaderAuthLevel
       },
+      authLevel,
       canDelete,
       canEdit,
       canStar,
@@ -90,7 +93,7 @@ class Contents extends Component {
     }
 
     const userIsUploader = myId === uploaderId
-    const userCanEditThis = canEdit || canDelete
+    const userCanEditThis = (canEdit || canDelete) && authLevel > uploaderAuthLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -343,6 +346,7 @@ class Contents extends Component {
 }
 
 export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
   canDelete: state.UserReducer.canDelete,
   canEdit: state.UserReducer.canEdit,
   canStar: state.UserReducer.canStar
