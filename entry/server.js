@@ -21,22 +21,33 @@ app.use(express.static(path.join(__dirname, '../public')))
 app.use((req, res) => {
   res.end(
     (function() {
-      const ReactView = renderStylesToString(renderToString(
-        <Provider store={store}>
-          <StaticRouter context={{}} location={req.url}>
-            <App />
-          </StaticRouter>
-        </Provider>
-      ))
+      const ReactView = renderStylesToString(
+        renderToString(
+          <Provider store={store}>
+            <StaticRouter context={{}} location={req.url}>
+              <App />
+            </StaticRouter>
+          </Provider>
+        )
+      )
       return `<!DOCTYPE html>
       <html>
         <head>
-         <meta charset="utf-8">
-         <title>Twinkle</title>
-         <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
-         <link rel="stylesheet" href="/css/glyphicon.css">
-         <link rel="stylesheet" href="/css/slider.css">
-         <link rel="stylesheet" href="/css/styles.css">
+          <meta charset="utf-8">
+          <title>Twinkle</title>
+          <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+          <link rel="stylesheet" href="/css/glyphicon.css">
+          <link rel="stylesheet" href="/css/slider.css">
+          <link rel="stylesheet" href="/css/styles.css">
+          <!-- Global site tag (gtag.js) - Google Analytics -->
+          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117103049-1"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-117103049-1');
+          </script>
         </head>
         <body>
           <div id="react-view">${ReactView}</div>
