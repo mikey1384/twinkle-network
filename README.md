@@ -31,7 +31,6 @@ I've recently made the API source code private due to security concerns. If you 
 2. Run `npm install` at the directory where you cloned the git repository.
 3. Inside /source/constants there is a file titled "rename this to URL.js" rename it to URL.js
 4. Install nodemon `sudo npm install -g nodemon`
-5. Install forever `sudo npm install -g forever`
 
 finally, run:
 ```shell

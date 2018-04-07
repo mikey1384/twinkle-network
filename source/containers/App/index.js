@@ -5,11 +5,7 @@ import { Switch, Route } from 'react-router-dom'
 import Chat from '../Chat'
 import Header from './Header'
 import { connect } from 'react-redux'
-import {
-  initChat,
-  resetChat,
-  turnChatOff
-} from 'redux/actions/ChatActions'
+import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions'
 import { changePageVisibility } from 'redux/actions/ViewActions'
 import {
   initSession,
@@ -69,7 +65,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { initSession, location } = this.props
+    const { initSession, location, history } = this.props
     if (typeof document.hidden !== 'undefined') {
       hidden = 'hidden'
       visibilityChange = 'visibilitychange'
@@ -83,6 +79,10 @@ class App extends Component {
     initSession(location.pathname)
     addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
+    window.ga('send', 'pageview', location.pathname)
+    history.listen(location => {
+      window.ga('send', 'pageview', location.pathname)
+    })
   }
 
   componentDidUpdate(prevProps) {
