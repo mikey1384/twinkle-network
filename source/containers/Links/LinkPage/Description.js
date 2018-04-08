@@ -74,7 +74,7 @@ export default class Description extends Component {
                 },
                 {
                   label: 'Delete',
-                  onClick: () => onDelete()
+                  onClick: onDelete
                 }
               ]}
             />
