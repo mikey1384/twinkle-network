@@ -21,6 +21,7 @@ import { Color } from 'constants/css'
 class PlaylistCarousel extends Component {
   static propTypes = {
     arrayIndex: PropTypes.number.isRequired,
+    canEdit: PropTypes.bool,
     canEditPlaylists: PropTypes.bool,
     clickSafe: PropTypes.bool.isRequired,
     deletePlaylist: PropTypes.func.isRequired,
@@ -88,7 +89,7 @@ class PlaylistCarousel extends Component {
       playlistModalShown,
       numSlides
     } = this.state
-    const { canEditPlaylists, title, uploader, userIsUploader, id, showAllButton } = this.props
+    const { canEdit, canEditPlaylists, title, uploader, userIsUploader, id, showAllButton } = this.props
     const menuProps = [
       {
         label: 'Edit Title',
@@ -156,7 +157,7 @@ class PlaylistCarousel extends Component {
               </h2>
             </div>
           )}
-          {(userIsUploader || canEditPlaylists) && (
+          {(userIsUploader || canEditPlaylists || canEdit) && (
             <DropdownButton
               snow
               style={{ position: 'absolute', right: 0 }}
@@ -267,6 +268,7 @@ class PlaylistCarousel extends Component {
 
 export default connect(
   state => ({
+    canEdit: state.UserReducer.canEdit,
     canEditPlaylists: state.UserReducer.canEditPlaylists,
     clickSafe: state.PlaylistReducer.clickSafe
   }),
