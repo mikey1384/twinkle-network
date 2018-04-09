@@ -28,9 +28,12 @@ import { css } from 'emotion'
 
 class Description extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
+    canStar: PropTypes.bool,
     content: PropTypes.string.isRequired,
     description: PropTypes.string,
-    isCreator: PropTypes.bool.isRequired,
     isStarred: PropTypes.bool,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
@@ -42,6 +45,7 @@ class Description extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
+    uploaderAuthLevel: PropTypes.number.isRequired,
     uploaderId: PropTypes.number.isRequired,
     uploaderName: PropTypes.string.isRequired,
     userId: PropTypes.number,
@@ -50,54 +54,39 @@ class Description extends Component {
     videoViews: PropTypes.string.isRequired
   }
 
-  constructor(props) {
-    super()
-    this.state = {
-      onEdit: false,
-      onTitleHover: false,
-      editedTitle: cleanString(props.title),
-      editedUrl: `https://www.youtube.com/watch?v=${props.content}`,
-      editedDescription: props.description,
-      editDoneButtonDisabled: true,
-      userListModalShown: false
+  state = {
+    onEdit: false,
+    onTitleHover: false,
+    editDoneButtonDisabled: true,
+    userListModalShown: false
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    return {
+      editedTitle: cleanString(nextProps.title),
+      editedUrl: `https://www.youtube.com/watch?v=${nextProps.content}`,
+      editedDescription: nextProps.description
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.title !== this.props.title) {
+    if (
+      prevProps.title !== this.props.title ||
+      prevProps.description !== this.props.description ||
+      prevProps.content !== this.props.content
+    ) {
       return this.setState({
-        editedTitle: cleanString(this.props.title),
-        onEdit: false
-      })
-    }
-    if (prevProps.description !== this.props.description) {
-      return this.setState({
-        editedDescription: this.props.description,
-        onEdit: false
-      })
-    }
-    if (prevProps.content !== this.props.content) {
-      return this.setState({
-        editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
         onEdit: false
       })
     }
   }
 
   render() {
-    const menuProps = [
-      {
-        label: 'Edit',
-        onClick: this.onEditStart
-      },
-      {
-        label: 'Delete',
-        onClick: () => this.props.onDelete()
-      }
-    ]
-
     const {
-      isCreator,
+      authLevel,
+      canDelete,
+      canEdit,
+      canStar,
       isStarred,
       uploaderId,
       userId,
@@ -107,6 +96,7 @@ class Description extends Component {
       likes,
       starVideo,
       timeStamp,
+      uploaderAuthLevel,
       videoId,
       videoViews
     } = this.props
@@ -119,9 +109,25 @@ class Description extends Component {
       userListModalShown,
       onTitleHover
     } = this.state
-    editedDescription =
-      editedDescription === 'No description' ? '' : this.state.editedDescription
-    const starButtonGrid = isCreator ? 'starButton' : 'likeButton'
+    const userIsUploader = uploaderId === userId
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: this.onEditStart
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Delete',
+        onClick: () => this.props.onDelete()
+      })
+    }
+
+    const starButtonGrid = canStar ? 'starButton' : 'likeButton'
     return (
       <div
         className={css`
@@ -314,7 +320,7 @@ class Description extends Component {
               </LongText>
             </div>
           )}
-          {(uploaderId === userId || isCreator) &&
+          {editButtonShown &&
             !onEdit && (
               <DropdownButton
                 snow
@@ -325,11 +331,11 @@ class Description extends Component {
                 stretch
                 icon="pencil"
                 text="Edit or Delete This Video"
-                menuProps={menuProps}
+                menuProps={editMenuItems}
               />
             )}
         </div>
-        {isCreator && (
+        {canStar && (
           <StarButton
             style={{
               gridArea: 'starButton',
@@ -457,6 +463,14 @@ class Description extends Component {
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }), {
-  starVideo
-})(Description)
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar
+  }),
+  {
+    starVideo
+  }
+)(Description)

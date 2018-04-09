@@ -37,14 +37,14 @@ class VideoPage extends Component {
     content: PropTypes.string,
     deleteVideo: PropTypes.func.isRequired,
     description: PropTypes.string,
-    discussions: PropTypes.array.isRequired,
+    discussions: PropTypes.array,
     editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
     history: PropTypes.object.isRequired,
     isStarred: PropTypes.bool,
     likes: PropTypes.array,
     likeVideo: PropTypes.func.isRequired,
-    loadMoreDiscussionsButton: PropTypes.bool.isRequired,
+    loadMoreDiscussionsButton: PropTypes.bool,
     loadVideoPage: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
@@ -53,6 +53,7 @@ class VideoPage extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     uploadComment: PropTypes.func,
+    uploaderAuthLevel: PropTypes.number,
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
     uploadQuestions: PropTypes.func.isRequired,
@@ -106,6 +107,7 @@ class VideoPage extends Component {
       hasHqThumb,
       isStarred,
       loadMoreDiscussionsButton,
+      uploaderAuthLevel,
       uploaderId,
       uploaderName,
       description,
@@ -258,6 +260,7 @@ class VideoPage extends Component {
                   timeStamp={timeStamp}
                   uploaderName={uploaderName}
                   description={description}
+                  uploaderAuthLevel={uploaderAuthLevel}
                   uploaderId={uploaderId}
                   userId={userId}
                   onEditStart={() => this.setState({ onEdit: true })}

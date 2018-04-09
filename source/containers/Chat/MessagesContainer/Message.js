@@ -13,6 +13,9 @@ import { MessageStyle } from '../Styles'
 
 class Message extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     message: PropTypes.object,
     style: PropTypes.object,
     myId: PropTypes.number,
@@ -20,7 +23,6 @@ class Message extends Component {
     onEditDone: PropTypes.func,
     saveMessage: PropTypes.func,
     showSubjectMsgsModal: PropTypes.func,
-    isCreator: PropTypes.bool,
     index: PropTypes.number
   }
 
@@ -39,6 +41,9 @@ class Message extends Component {
 
   render() {
     const {
+      authLevel,
+      canDelete,
+      canEdit,
       message: {
         id: messageId,
         userId,
@@ -48,15 +53,30 @@ class Message extends Component {
         content,
         subjectId,
         isReloadedSubject,
-        numMsgs
+        numMsgs,
+        uploaderAuthLevel
       },
-      isCreator,
       onDelete,
       style,
       showSubjectMsgsModal,
       myId
     } = this.props
-    const canEdit = myId === userId || isCreator
+    const userIsUploader = myId === userId
+    const userCanEditThis = (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => onDelete(messageId)
+      })
+    }
     const { onEdit } = this.state
     return (
       <Fragment>
@@ -101,7 +121,7 @@ class Message extends Component {
                   </div>
                   {!!messageId &&
                     !isReloadedSubject &&
-                    canEdit &&
+                    editButtonShown &&
                     !onEdit && (
                       <DropdownButton
                         snow
@@ -109,16 +129,7 @@ class Message extends Component {
                         direction="left"
                         icon="pencil"
                         opacity={0.8}
-                        menuProps={[
-                          {
-                            label: 'Edit',
-                            onClick: () => this.setState({ onEdit: true })
-                          },
-                          {
-                            label: 'Remove',
-                            onClick: () => onDelete(messageId)
-                          }
-                        ]}
+                        menuProps={editMenuItems}
                       />
                     )}
                   {!!isReloadedSubject &&
@@ -171,8 +182,10 @@ class Message extends Component {
 
 export default connect(
   state => ({
-    myId: state.UserReducer.userId,
-    isCreator: state.UserReducer.isCreator
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    myId: state.UserReducer.userId
   }),
   {
     onEditDone: editMessage,
