@@ -40,16 +40,10 @@ class Content extends Component {
     username: PropTypes.string
   }
 
-  constructor() {
-    super()
-    this.state = {
-      userListModalShown: false,
-      clickListenerState: false,
-      replyInputShown: false
-    }
-    this.onLikeClick = this.onLikeClick.bind(this)
-    this.onReplyClick = this.onReplyClick.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+  state = {
+    userListModalShown: false,
+    clickListenerState: false,
+    replyInputShown: false
   }
 
   render() {
@@ -255,18 +249,18 @@ class Content extends Component {
     )
   }
 
-  onLikeClick() {
+  onLikeClick = () => {
     const { replyId, commentId, methods } = this.props
     methods.onLikeClick(replyId || commentId)
   }
 
-  onReplyClick() {
+  onReplyClick = () => {
     const { replyInputShown, clickListenerState } = this.state
     if (!replyInputShown) return this.setState({ replyInputShown: true })
     this.setState({ clickListenerState: !clickListenerState })
   }
 
-  onSubmit(content) {
+  onSubmit = content => {
     const {
       replyId = null,
       commentId,
