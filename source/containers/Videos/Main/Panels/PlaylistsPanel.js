@@ -52,13 +52,12 @@ class PlaylistsPanel extends Component {
         searchQuery={searchQuery}
       >
         {playlists.map((playlist, index) => {
-          const editable = userId === playlist.uploaderId
           return (
             <PlaylistCarousel
+              {...playlist}
               key={index}
               arrayIndex={index}
-              {...playlist}
-              editable={editable}
+              userIsUploader={userId === playlist.uploaderId}
               showAllButton={playlist.showAllButton}
             />
           )
@@ -75,6 +74,4 @@ class PlaylistsPanel extends Component {
   }
 }
 
-export default connect(null, { getMorePlaylists })(
-  withRouter(PlaylistsPanel)
-)
+export default connect(null, { getMorePlaylists })(withRouter(PlaylistsPanel))

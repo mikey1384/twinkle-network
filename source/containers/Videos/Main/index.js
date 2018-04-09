@@ -28,10 +28,10 @@ import { main } from './Styles'
 class Main extends Component {
   static propTypes = {
     addVideoModalShown: PropTypes.bool.isRequired,
+    canPinPlaylists: PropTypes.bool,
     closeAddVideoModal: PropTypes.func.isRequired,
     closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
-    isAdmin: PropTypes.bool.isRequired,
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
     loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
     openAddVideoModal: PropTypes.func.isRequired,
@@ -58,7 +58,7 @@ class Main extends Component {
 
   render() {
     const {
-      isAdmin,
+      canPinPlaylists,
       userId,
 
       playlists: allPlaylists,
@@ -117,7 +117,7 @@ class Main extends Component {
         <div className="left">
           <PlaylistsPanel
             key={'pinnedPlaylists'}
-            buttonGroupShown={isAdmin}
+            buttonGroupShown={!!canPinPlaylists}
             buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
             title="Featured Playlists"
             userId={userId}
@@ -138,7 +138,6 @@ class Main extends Component {
           />
           <AllVideosPanel
             key={'allvideos'}
-            isAdmin={isAdmin}
             title="All Videos"
             userId={userId}
             onAddVideoClick={() => openAddVideoModal()}
@@ -222,8 +221,8 @@ class Main extends Component {
 
 export default connect(
   state => ({
+    canPinPlaylists: state.UserReducer.canPinPlaylists,
     userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
 
     playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,

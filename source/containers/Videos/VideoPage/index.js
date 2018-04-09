@@ -440,7 +440,6 @@ export default connect(
     ...state.VideoReducer.videoPage,
     isStarred: !!state.VideoReducer.videoPage.isStarred,
     userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId
   }),
   {

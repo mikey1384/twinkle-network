@@ -5,17 +5,13 @@ const defaultState = {
   canDelete: false,
   canEdit: false,
   canStar: false,
-  isAdmin: false,
+  canEditPlaylists: false,
+  canPinPlaylists: false,
   isCreator: false,
   profile: {},
   profiles: [],
   searchedProfiles: [],
   loadMoreButton: false
-}
-
-function isAdmin(userType) {
-  const admin = ['manager', 'creator']
-  return admin.indexOf(userType) !== -1
 }
 
 export default function UserReducer(state = defaultState, action) {
@@ -35,7 +31,6 @@ export default function UserReducer(state = defaultState, action) {
       return {
         ...state,
         ...action.data,
-        isAdmin: isAdmin(action.data.userType),
         isCreator: action.data.userType === 'creator'
       }
     case USER.LOAD_USERS:
@@ -83,12 +78,10 @@ export default function UserReducer(state = defaultState, action) {
         ...action.data,
         loggedIn: true,
         signinModalShown: false,
-        isAdmin: isAdmin(action.data.userType),
         isCreator: action.data.userType === 'creator'
       }
     case USER.LOGOUT:
       return {
-        isAdmin: false,
         isCreator: false,
         profile: state.profile,
         profiles: state.profiles

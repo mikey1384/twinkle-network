@@ -30,16 +30,19 @@ export default class Description extends Component {
     url: PropTypes.string.isRequired
   }
 
-  constructor(props) {
-    super()
-    this.state = {
-      editedUrl: props.url,
-      editedTitle: cleanString(props.title),
-      editedDescription: props.description,
-      onEdit: false,
-      editDoneButtonDisabled: true
+  state = {
+    onEdit: false,
+    editDoneButtonDisabled: true
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    return {
+      editedTitle: cleanString(nextProps.title),
+      editedUrl: `https://www.youtube.com/watch?v=${nextProps.content}`,
+      editedDescription: nextProps.description
     }
   }
+
   render() {
     const {
       uploaderId,

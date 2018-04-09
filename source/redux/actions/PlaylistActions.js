@@ -54,7 +54,7 @@ export const editPlaylistTitle = (
   sender
 ) => async dispatch => {
   try {
-    const { data } = await request.post(`${API_URL}/edit/title`, params, auth())
+    const { data } = await request.put(`${API_URL}/title`, params, auth())
     if (data.result) {
       dispatch({
         type: PLAYLIST.EDIT_TITLE,
@@ -75,8 +75,8 @@ export const changePlaylistVideos = (
   selectedVideos
 ) => async dispatch => {
   try {
-    const { data } = await request.post(
-      `${API_URL}/edit/videos`,
+    const { data } = await request.put(
+      `${API_URL}/videos`,
       { playlistId, selectedVideos },
       auth()
     )

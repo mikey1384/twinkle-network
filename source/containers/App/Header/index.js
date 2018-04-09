@@ -400,7 +400,6 @@ export default connect(
     loggedIn: state.UserReducer.loggedIn,
     username: state.UserReducer.username,
     userType: state.UserReducer.userType,
-    isAdmin: state.UserReducer.isAdmin,
     userId: state.UserReducer.userId,
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,

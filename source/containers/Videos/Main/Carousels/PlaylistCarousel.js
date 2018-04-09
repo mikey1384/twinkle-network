@@ -21,25 +21,25 @@ import { Color } from 'constants/css'
 class PlaylistCarousel extends Component {
   static propTypes = {
     arrayIndex: PropTypes.number.isRequired,
+    canEditPlaylists: PropTypes.bool,
     clickSafe: PropTypes.bool.isRequired,
     deletePlaylist: PropTypes.func.isRequired,
-    editable: PropTypes.bool,
+    userIsUploader: PropTypes.bool,
     editPlaylistTitle: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
-    isAdmin: PropTypes.bool,
     playlist: PropTypes.array.isRequired,
     showAllButton: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
     uploader: PropTypes.string.isRequired
   }
 
+  defaultNumSlides = 5
+
   constructor() {
     super()
-    this.defaultNumSlides = 5
     let numSlides = this.defaultNumSlides
-    if (ExecutionEnvironment.canUseDOM) {
-      numSlides =
-        document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides
+    if (ExecutionEnvironment.canUseDOM && document.documentElement.clientWidth < 768) {
+      numSlides = 3
     }
     this.state = {
       onEdit: false,
@@ -88,7 +88,7 @@ class PlaylistCarousel extends Component {
       playlistModalShown,
       numSlides
     } = this.state
-    const { title, uploader, editable, isAdmin, id, showAllButton } = this.props
+    const { canEditPlaylists, title, uploader, userIsUploader, id, showAllButton } = this.props
     const menuProps = [
       {
         label: 'Edit Title',
@@ -156,7 +156,7 @@ class PlaylistCarousel extends Component {
               </h2>
             </div>
           )}
-          {(editable || isAdmin) && (
+          {(userIsUploader || canEditPlaylists) && (
             <DropdownButton
               snow
               style={{ position: 'absolute', right: 0 }}
@@ -258,19 +258,17 @@ class PlaylistCarousel extends Component {
   }
 
   onResize = () => {
-    if (ExecutionEnvironment.canUseDOM) {
       this.setState({
         numSlides:
           document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides
       })
-    }
   }
 }
 
 export default connect(
   state => ({
-    clickSafe: state.PlaylistReducer.clickSafe,
-    isAdmin: state.UserReducer.isAdmin
+    canEditPlaylists: state.UserReducer.canEditPlaylists,
+    clickSafe: state.PlaylistReducer.clickSafe
   }),
   {
     editPlaylistTitle,
