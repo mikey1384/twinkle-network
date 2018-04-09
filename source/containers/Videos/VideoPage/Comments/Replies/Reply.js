@@ -14,9 +14,13 @@ import ReplyInputArea from './ReplyInputArea'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
+import { connect } from 'react-redux'
 
-export default class Reply extends Component {
+class Reply extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     commentId: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
     deleteCallback: PropTypes.func.isRequired,
@@ -38,25 +42,18 @@ export default class Reply extends Component {
     targetUserName: PropTypes.string,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
+    uploaderAuthLevel: PropTypes.number.isRequired,
     userId: PropTypes.number.isRequired,
-    userIsOwner: PropTypes.bool,
     username: PropTypes.string.isRequired,
     videoId: PropTypes.number.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      onEdit: false,
-      replyInputShown: false,
-      userListModalShown: false,
-      confirmModalShown: false,
-      clickListenerState: false
-    }
-    this.onLikeClick = this.onLikeClick.bind(this)
-    this.onDelete = this.onDelete.bind(this)
-    this.onReplySubmit = this.onReplySubmit.bind(this)
-    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
+  state = {
+    onEdit: false,
+    replyInputShown: false,
+    userListModalShown: false,
+    confirmModalShown: false,
+    clickListenerState: false
   }
 
   componentDidMount() {
@@ -74,19 +71,22 @@ export default class Reply extends Component {
 
   render() {
     const {
+      authLevel,
+      canDelete,
+      canEdit,
       id,
       index,
       username,
       timeStamp,
       content,
-      userIsOwner,
       onEditDone,
       likes,
       userId,
       profilePicId,
       myId,
       targetUserName,
-      targetUserId
+      targetUserId,
+      uploaderAuthLevel
     } = this.props
     const {
       onEdit,
@@ -95,6 +95,23 @@ export default class Reply extends Component {
       confirmModalShown,
       clickListenerState
     } = this.state
+    const userIsUploader = userId === myId
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => this.setState({ confirmModalShown: true })
+      })
+    }
     let userLikedThis = false
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId === myId) userLikedThis = true
@@ -217,7 +234,7 @@ export default class Reply extends Component {
               clickListenerState={clickListenerState}
             />
           )}
-          {userIsOwner &&
+          {editButtonShown &&
             !onEdit && (
               <DropdownButton
                 snow
@@ -228,16 +245,7 @@ export default class Reply extends Component {
                   position: 'absolute',
                   right: 0
                 }}
-                menuProps={[
-                  {
-                    label: 'Edit',
-                    onClick: () => this.setState({ onEdit: true })
-                  },
-                  {
-                    label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
-                  }
-                ]}
+                menuProps={editMenuItems}
               />
             )}
         </div>
@@ -260,18 +268,18 @@ export default class Reply extends Component {
     )
   }
 
-  onLikeClick() {
+  onLikeClick = () => {
     const replyId = this.props.id
     this.props.onLikeClick(replyId)
   }
 
-  onDelete() {
+  onDelete = () => {
     const { id, deleteCallback, index, isFirstReply } = this.props
     deleteCallback(index, isFirstReply)
     this.props.onDelete(id)
   }
 
-  onReplyButtonClick() {
+  onReplyButtonClick = () => {
     const { replyInputShown, clickListenerState } = this.state
     if (!replyInputShown) {
       return this.setState({ replyInputShown: true })
@@ -279,7 +287,7 @@ export default class Reply extends Component {
     this.setState({ clickListenerState: !clickListenerState })
   }
 
-  onReplySubmit(reply) {
+  onReplySubmit = reply => {
     const { onReplySubmit, commentId, videoId, id } = this.props
     this.setState({ replyInputShown: false })
     onReplySubmit({
@@ -291,3 +299,9 @@ export default class Reply extends Component {
     })
   }
 }
+
+export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit
+}))(Reply)

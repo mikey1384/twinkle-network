@@ -20,6 +20,9 @@ import { connect } from 'react-redux'
 
 class Comment extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     comment: PropTypes.shape({
       content: PropTypes.string.isRequired,
       discussionTitle: PropTypes.string,
@@ -28,6 +31,7 @@ class Comment extends Component {
       replies: PropTypes.array.isRequired,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
+      uploaderAuthLevel: PropTypes.number.isRequired,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }).isRequired,
@@ -35,7 +39,6 @@ class Comment extends Component {
     deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
     index: PropTypes.number.isRequired,
-    isCreator: PropTypes.bool,
     lastDeletedCommentIndex: PropTypes.number,
     marginTop: PropTypes.bool,
     onDelete: PropTypes.func.isRequired,
@@ -47,20 +50,12 @@ class Comment extends Component {
     videoId: PropTypes.number.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      replyInputShown: false,
-      onEdit: false,
-      userListModalShown: false,
-      clickListenerState: false,
-      confirmModalShown: false
-    }
-    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
-    this.onReplySubmit = this.onReplySubmit.bind(this)
-    this.onDelete = this.onDelete.bind(this)
-    this.onEditDone = this.onEditDone.bind(this)
-    this.onLikeClick = this.onLikeClick.bind(this)
+  state = {
+    replyInputShown: false,
+    onEdit: false,
+    userListModalShown: false,
+    clickListenerState: false,
+    confirmModalShown: false
   }
 
   componentDidUpdate(prevProps) {
@@ -80,15 +75,34 @@ class Comment extends Component {
       confirmModalShown
     } = this.state
     const {
+      authLevel,
+      canDelete,
+      canEdit,
       comment,
-      isCreator,
+      comment: { uploaderAuthLevel },
       userId,
       commentId,
       videoId,
       onEditDone,
       onLoadMoreReplies
     } = this.props
-    const userIsOwner = comment.userId === userId || isCreator
+    const userIsUploader = comment.userId === userId
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => this.setState({ confirmModalShown: true })
+      })
+    }
     let userLikedThis = false
     for (let i = 0; i < comment.likes.length; i++) {
       if (comment.likes[i].userId === userId) userLikedThis = true
@@ -193,7 +207,6 @@ class Comment extends Component {
             </div>
           )}
           <Replies
-            isCreator={isCreator}
             onLoadMoreReplies={onLoadMoreReplies}
             userId={userId}
             comment={comment}
@@ -212,7 +225,7 @@ class Comment extends Component {
               onSubmit={this.onReplySubmit}
             />
           )}
-          {userIsOwner &&
+          {editButtonShown &&
             !onEdit && (
               <DropdownButton
                 snow
@@ -223,16 +236,7 @@ class Comment extends Component {
                   position: 'absolute',
                   right: 0
                 }}
-                menuProps={[
-                  {
-                    label: 'Edit',
-                    onClick: () => this.setState({ onEdit: true })
-                  },
-                  {
-                    label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
-                  }
-                ]}
+                menuProps={editMenuItems}
               />
             )}
         </div>
@@ -255,25 +259,25 @@ class Comment extends Component {
     )
   }
 
-  onDelete() {
+  onDelete = () => {
     const { deleteCallback, onDelete, index, commentId } = this.props
     deleteCallback(index)
     onDelete(commentId)
   }
 
-  onEditDone(editedComment) {
+  onEditDone = editedComment => {
     const { commentId, onEditDone } = this.props
     return onEditDone({ editedComment, commentId }).then(() =>
       this.setState({ onEdit: false })
     )
   }
 
-  onLikeClick() {
+  onLikeClick = () => {
     const { commentId } = this.props
     this.props.onLikeClick(commentId)
   }
 
-  onReplyButtonClick() {
+  onReplyButtonClick = () => {
     const { replyInputShown, clickListenerState } = this.state
     if (!replyInputShown) {
       return this.setState({ replyInputShown: true })
@@ -281,12 +285,14 @@ class Comment extends Component {
     this.setState({ clickListenerState: !clickListenerState })
   }
 
-  onReplySubmit(reply) {
+  onReplySubmit = reply => {
     const { commentId, videoId } = this.props
     this.props.onReplySubmit({ reply, commentId, videoId })
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
-  Comment
-)
+export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit
+}))(Comment)

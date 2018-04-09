@@ -18,6 +18,9 @@ import { connect } from 'react-redux'
 
 class PanelReply extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
@@ -41,28 +44,20 @@ class PanelReply extends Component {
       targetUserName: PropTypes.string,
       timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
+      uploaderAuthLevel: PropTypes.number.isRequired,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }),
     type: PropTypes.string,
-    userId: PropTypes.number,
-    isCreator: PropTypes.bool
+    userId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      onEdit: false,
-      replyInputShown: false,
-      userListModalShown: false,
-      confirmModalShown: false,
-      clickListenerState: false
-    }
-    this.onEditDone = this.onEditDone.bind(this)
-    this.onLikeClick = this.onLikeClick.bind(this)
-    this.onDelete = this.onDelete.bind(this)
-    this.onReplySubmit = this.onReplySubmit.bind(this)
-    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
+  state = {
+    onEdit: false,
+    replyInputShown: false,
+    userListModalShown: false,
+    confirmModalShown: false,
+    clickListenerState: false
   }
 
   componentDidMount() {
@@ -81,7 +76,16 @@ class PanelReply extends Component {
   }
 
   render() {
-    const { comment, isCreator, reply, userId, type } = this.props
+    const {
+      comment,
+      authLevel,
+      canDelete,
+      canEdit,
+      reply,
+      reply: { uploaderAuthLevel },
+      userId,
+      type
+    } = this.props
     const {
       onEdit,
       userListModalShown,
@@ -89,11 +93,27 @@ class PanelReply extends Component {
       confirmModalShown,
       clickListenerState
     } = this.state
+    const userIsUploader = reply.userId === userId
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => this.setState({ confirmModalShown: true })
+      })
+    }
     let userLikedThis = false
     for (let i = 0; i < reply.likes.length; i++) {
       if (reply.likes[i].userId === userId) userLikedThis = true
     }
-    const canEdit = reply.userId === userId || isCreator
     return (
       <div
         className={container}
@@ -107,7 +127,7 @@ class PanelReply extends Component {
             userId={reply.userId}
             profilePicId={reply.profilePicId}
           />
-          {canEdit &&
+          {editButtonShown &&
             !onEdit && (
               <div className="dropdown-wrapper">
                 <DropdownButton
@@ -223,25 +243,25 @@ class PanelReply extends Component {
     )
   }
 
-  onEditDone(editedReply) {
+  onEditDone = editedReply => {
     const { onEditDone, reply } = this.props
     return onEditDone({ editedComment: editedReply, commentId: reply.id }).then(
       () => this.setState({ onEdit: false })
     )
   }
 
-  onLikeClick() {
+  onLikeClick = () => {
     const { onLikeClick, reply } = this.props
     onLikeClick(reply.id)
   }
 
-  onDelete() {
+  onDelete = () => {
     const { deleteCallback, index, onDelete, reply } = this.props
     deleteCallback(index)
     onDelete(reply.id)
   }
 
-  onReplyButtonClick() {
+  onReplyButtonClick = () => {
     const { replyInputShown, clickListenerState } = this.state
     if (!replyInputShown) {
       return this.setState({ replyInputShown: true })
@@ -249,12 +269,14 @@ class PanelReply extends Component {
     this.setState({ clickListenerState: !clickListenerState })
   }
 
-  onReplySubmit(replyContent) {
+  onReplySubmit = replyContent => {
     const { parent, reply, onReplySubmit } = this.props
     onReplySubmit({ replyContent, reply, parent })
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
-  PanelReply
-)
+export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit
+}))(PanelReply)

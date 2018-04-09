@@ -314,22 +314,22 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          videoLoading: false,
           ...action.data,
+          videoLoading: false,
           comments: []
         }
       }
     case VIDEO.LOAD_COMMENTS:
       loadMoreCommentsButton = false
-      if (action.data.comments.length > 20) {
-        action.data.comments.pop()
+      if (action.data.length > 20) {
+        action.data.pop()
         loadMoreCommentsButton = true
       }
       return {
         ...state,
         videoPage: {
           ...state.videoPage,
-          ...action.data,
+          comments: action.data,
           loadMoreCommentsButton
         }
       }

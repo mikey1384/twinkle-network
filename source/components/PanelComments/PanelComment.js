@@ -19,6 +19,9 @@ import { connect } from 'react-redux'
 
 class PanelComment extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     comment: PropTypes.shape({
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
@@ -30,13 +33,13 @@ class PanelComment extends Component {
       targetUserId: PropTypes.number,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
+      uploaderAuthLevel: PropTypes.number.isRequired,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }).isRequired,
     deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
     index: PropTypes.number,
-    isCreator: PropTypes.bool,
     isFirstComment: PropTypes.bool,
     lastDeletedCommentIndex: PropTypes.number,
     onDelete: PropTypes.func.isRequired,
@@ -49,20 +52,12 @@ class PanelComment extends Component {
     userId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      replyInputShown: false,
-      onEdit: false,
-      userListModalShown: false,
-      clickListenerState: false,
-      confirmModalShown: false
-    }
-    this.onReplyButtonClick = this.onReplyButtonClick.bind(this)
-    this.onReplySubmit = this.onReplySubmit.bind(this)
-    this.onEditDone = this.onEditDone.bind(this)
-    this.onLikeClick = this.onLikeClick.bind(this)
-    this.onDelete = this.onDelete.bind(this)
+  state = {
+    replyInputShown: false,
+    onEdit: false,
+    userListModalShown: false,
+    clickListenerState: false,
+    confirmModalShown: false
   }
 
   componentDidUpdate(prevProps) {
@@ -82,19 +77,36 @@ class PanelComment extends Component {
       confirmModalShown
     } = this.state
     const {
+      authLevel,
+      canDelete,
+      canEdit,
       comment,
-      comment: { replies = [], likes = [] },
+      comment: { replies = [], likes = [], uploaderAuthLevel },
       userId,
       parent,
       type,
       onEditDone,
-      isCreator,
       onLikeClick,
       onDelete,
       onReplySubmit,
       onLoadMoreReplies
     } = this.props
-    const canEdit = comment.userId === userId || isCreator
+    const userIsUploader = comment.userId === userId
+    const userCanEditThis = (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => this.setState({ confirmModalShown: true })
+      })
+    }
     let userLikedThis = false
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId === userId) userLikedThis = true
@@ -113,7 +125,7 @@ class PanelComment extends Component {
             userId={comment.userId}
             profilePicId={comment.profilePicId}
           />
-          {canEdit &&
+          {editButtonShown &&
             !onEdit && (
               <div className="dropdown-wrapper">
                 <DropdownButton
@@ -121,16 +133,7 @@ class PanelComment extends Component {
                   direction="left"
                   icon="pencil"
                   opacity={0.8}
-                  menuProps={[
-                    {
-                      label: 'Edit',
-                      onClick: () => this.setState({ onEdit: true })
-                    },
-                    {
-                      label: 'Remove',
-                      onClick: () => this.setState({ confirmModalShown: true })
-                    }
-                  ]}
+                  menuProps={editMenuItems}
                 />
               </div>
             )}
@@ -241,30 +244,30 @@ class PanelComment extends Component {
     )
   }
 
-  onEditDone(editedComment) {
+  onEditDone = editedComment => {
     const { onEditDone, comment } = this.props
     onEditDone({ editedComment, commentId: comment.id }).then(() =>
       this.setState({ onEdit: false })
     )
   }
 
-  onLikeClick() {
+  onLikeClick = () => {
     const { comment } = this.props
     this.props.onLikeClick(comment.id)
   }
 
-  onReplyButtonClick() {
+  onReplyButtonClick = () => {
     const { clickListenerState, replyInputShown } = this.state
     if (!replyInputShown) return this.setState({ replyInputShown: true })
     this.setState({ clickListenerState: !clickListenerState })
   }
 
-  onReplySubmit(replyContent) {
+  onReplySubmit = replyContent => {
     const { parent, comment, onReplySubmit } = this.props
     onReplySubmit({ replyContent, comment, parent })
   }
 
-  onDelete() {
+  onDelete = () => {
     const {
       comment,
       onDelete,
@@ -277,6 +280,8 @@ class PanelComment extends Component {
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }))(
-  PanelComment
-)
+export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit
+}))(PanelComment)
