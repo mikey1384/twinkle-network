@@ -82,9 +82,16 @@ export default function UserReducer(state = defaultState, action) {
       }
     case USER.LOGOUT:
       return {
+        authLevel: 0,
+        canDelete: false,
+        canEdit: false,
+        canStar: false,
+        canEditPlaylists: false,
+        canPinPlaylists: false,
         isCreator: false,
         profile: state.profile,
-        profiles: state.profiles
+        profiles: state.profiles,
+        searchedProfiles: state.searchedProfiles
       }
     case USER.SIGNUP:
       return {
