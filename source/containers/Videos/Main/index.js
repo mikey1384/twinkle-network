@@ -199,7 +199,7 @@ class Main extends Component {
   onSearchPlaylist = text => {
     clearTimeout(this.timer)
     this.setState({ playlistSearchQuery: text, isSearching: true })
-    this.timer = setTimeout(() => this.searchPlaylist(text), 300)
+    this.timer = setTimeout(() => this.searchPlaylist(text), 500)
   }
 
   renderPlaylistButton = buttonsArray => {
@@ -207,7 +207,6 @@ class Main extends Component {
   }
 
   searchPlaylist = async text => {
-    this.setState({ isSearching: false })
     try {
       const { data: searchedPlaylists } = await request.get(
         `${URL}/playlist/search/playlist?query=${text}`

@@ -30,6 +30,7 @@ export default class SectionPanel extends Component {
   render() {
     const {
       title,
+      isSearching,
       button,
       children,
       loadMoreButtonShown,
@@ -99,7 +100,11 @@ export default class SectionPanel extends Component {
         </header>
         <main>
           {this.renderEmptyMessage()}
-          {children}
+          {searchQuery && isSearching ? (
+            <div className={this.statusMsg}>Searching...</div>
+          ) : (
+            children
+          )}
           {loadMoreButtonShown &&
             !searchQuery && (
               <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -143,20 +148,7 @@ export default class SectionPanel extends Component {
     if (isEmpty) {
       if (loaded) {
         return (
-          <div
-            style={{
-              fontSize: '3rem',
-              fontWeight: 'bold',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              position: 'absolute',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
+          <div className={this.statusMsg}>
             {searchQuery
               ? isSearching ? 'Searching...' : 'No Results'
               : emptyMessage}
@@ -167,4 +159,17 @@ export default class SectionPanel extends Component {
     }
     return null
   }
+
+  statusMsg = css`
+    font-size: 3rem;
+    font-weight: bold;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `
 }
