@@ -101,7 +101,10 @@ export default function linkReducer(state = defaultState, action) {
         links: state.links.map(link => ({
           ...link,
           title: action.data.id === state.linkPage.id ? title : link.title,
-          content: action.data.id === state.linkPage.id ? processedURL(content) : link.content
+          content:
+            action.data.id === state.linkPage.id
+              ? processedURL(content)
+              : link.content
         })),
         linkPage: {
           ...state.linkPage,
@@ -139,7 +142,7 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         linkPage: {
           ...state.linkPage,
-          ...action.data,
+          comments: action.data,
           loadMoreCommentsButton
         }
       }

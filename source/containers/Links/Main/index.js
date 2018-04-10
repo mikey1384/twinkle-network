@@ -24,7 +24,6 @@ class Main extends Component {
       addLinkModalShown: false,
       loaded: !!props.links.length
     }
-    this.loadMoreLinks = this.loadMoreLinks.bind(this)
   }
 
   componentDidMount() {
@@ -78,7 +77,7 @@ class Main extends Component {
     )
   }
 
-  loadMoreLinks() {
+  loadMoreLinks = () => {
     const { fetchMoreLinks, links } = this.props
     const lastId = links[links.length - 1].id
     return fetchMoreLinks(lastId)
