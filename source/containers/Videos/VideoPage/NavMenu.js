@@ -96,7 +96,7 @@ class NavMenu extends Component {
           </section>
         )}
         {playlistVideos.length > 0 && (
-          <section>
+          <section style={{ wordBreak: 'break-word' }}>
             <p>{cleanString(playlistTitle)}</p>
             {this.renderVideos(playlistVideos)}
             {playlistVideosLoadMoreShown && (
