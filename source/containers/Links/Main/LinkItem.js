@@ -246,7 +246,8 @@ class LinkItem extends Component {
   onImageLoadError = () => {
     const { link: { thumbUrl } } = this.props
     this.setState(state => ({
-      imageUrl: state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
+      imageUrl:
+        !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
     }))
   }
 
