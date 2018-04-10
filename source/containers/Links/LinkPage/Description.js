@@ -38,7 +38,7 @@ export default class Description extends Component {
   static getDerivedStateFromProps(nextProps) {
     return {
       editedTitle: cleanString(nextProps.title),
-      editedUrl: `https://www.youtube.com/watch?v=${nextProps.content}`,
+      editedUrl: nextProps.content,
       editedDescription: nextProps.description
     }
   }

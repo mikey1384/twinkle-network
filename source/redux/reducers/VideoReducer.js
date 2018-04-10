@@ -24,7 +24,6 @@ export default function VideoReducer(state = defaultState, action) {
   let loadMoreDiscussionsButton = false
   let loadMoreDiscussionCommentsButton = false
   let allVideosLoaded = false
-  let reply
   switch (action.type) {
     case VIDEO.DELETE:
       const newVideoThumbs = state.allVideoThumbs
@@ -391,10 +390,6 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case VIDEO.UPLOAD_REPLY:
-      reply = {
-        ...action.data,
-        ...action.replyType
-      }
       return {
         ...state,
         videoPage: {
@@ -407,7 +402,10 @@ export default function VideoReducer(state = defaultState, action) {
                   ...comment,
                   replies:
                     comment.id === action.data.commentId
-                      ? comment.replies.concat(reply)
+                      ? comment.replies.concat({
+                        ...action.data,
+                        ...action.replyType
+                      })
                       : comment.replies
                 }
               })
@@ -418,7 +416,10 @@ export default function VideoReducer(state = defaultState, action) {
               ...comment,
               replies:
                 comment.id === action.data.commentId
-                  ? comment.replies.concat(reply)
+                  ? comment.replies.concat({
+                    ...action.data,
+                    ...action.replyType
+                  })
                   : comment.replies
             }
           })

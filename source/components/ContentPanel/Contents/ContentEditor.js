@@ -31,7 +31,6 @@ export default class ContentEditor extends Component {
   constructor({ comment, description, title, type, content }) {
     super()
     this.state = {
-      buttonDisabled: false,
       editedContent: content || '',
       editedComment: comment || '',
       editedDescription: description || '',
@@ -41,13 +40,11 @@ export default class ContentEditor extends Component {
           ? `https://www.youtube.com/watch?v=${content}`
           : content
     }
-    this.onSubmit = this.onSubmit.bind(this)
   }
 
   render() {
     const { onDismiss, style, type } = this.props
     const {
-      buttonDisabled,
       editedComment,
       editedContent,
       editedDescription,
@@ -69,12 +66,8 @@ export default class ContentEditor extends Component {
             <Input
               autoFocus
               onChange={text => {
-                const buttonDisabled =
-                  (type === 'video' && !isValidYoutubeUrl(text)) ||
-                  (type === 'url' && !isValidUrl(text))
                 this.setState({
-                  editedUrl: text,
-                  buttonDisabled
+                  editedUrl: text
                 })
               }}
               placeholder={edit[type]}
@@ -89,8 +82,7 @@ export default class ContentEditor extends Component {
                 onChange={text => this.setState({ editedTitle: text })}
                 onKeyUp={event =>
                   this.setState({
-                    editedTitle: addEmoji(event.target.value),
-                    buttonDisabled: stringIsEmpty(event.target.value)
+                    editedTitle: addEmoji(event.target.value)
                   })
                 }
                 placeholder={edit.title}
@@ -104,8 +96,7 @@ export default class ContentEditor extends Component {
                 value={editedContent}
                 onChange={text => {
                   this.setState(() => ({
-                    editedContent: text,
-                    buttonDisabled: text.length > 100 || stringIsEmpty(text)
+                    editedContent: text
                   }))
                 }}
               />
@@ -127,11 +118,7 @@ export default class ContentEditor extends Component {
                 this.setState(state => ({
                   [type === 'comment'
                     ? 'editedComment'
-                    : 'editedDescription']: value,
-                  buttonDisabled:
-                    type === 'comment'
-                      ? stringIsEmpty(value)
-                      : state.buttonDisabled
+                    : 'editedDescription']: value
                 }))
               }}
               placeholder={edit[type === 'comment' ? 'comment' : 'description']}
@@ -145,7 +132,11 @@ export default class ContentEditor extends Component {
               flexDirection: 'row-reverse'
             }}
           >
-            <Button primary type="submit" disabled={buttonDisabled}>
+            <Button
+              primary
+              type="submit"
+              disabled={this.determineButtonDisabled()}
+            >
               Done
             </Button>
             <Button
@@ -161,7 +152,61 @@ export default class ContentEditor extends Component {
     )
   }
 
-  onSubmit(event) {
+  determineButtonDisabled = () => {
+    const {
+      editedComment,
+      editedContent,
+      editedDescription,
+      editedUrl,
+      editedTitle
+    } = this.state
+    const { comment, content, description, title, type } = this.props
+    const contentUrl =
+      type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content
+    const isValid =
+      type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl)
+
+    switch (type) {
+      case 'video':
+      case 'url':
+        if (
+          stringIsEmpty(editedUrl) ||
+          stringIsEmpty(editedTitle) ||
+          !isValid
+        ) {
+          return true
+        }
+        if (
+          editedUrl === contentUrl &&
+          editedTitle === title &&
+          editedDescription === description
+        ) {
+          return true
+        }
+        return false
+      case 'comment':
+        if (stringIsEmpty(editedComment) || editedComment === comment) {
+          return true
+        }
+        return false
+      case 'question':
+        if (
+          stringIsEmpty(editedContent) ||
+          editedContent === content ||
+          editedContent.length > wordLimit
+        ) {
+          return true
+        }
+        return false
+      case 'discussion':
+        if (stringIsEmpty(editedTitle) || editedTitle === title) return true
+        return false
+      default:
+        return true
+    }
+  }
+
+  onSubmit = event => {
     event.preventDefault()
     const { contentId, onDismiss, onEditContent, type } = this.props
     const {

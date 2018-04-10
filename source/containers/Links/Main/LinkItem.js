@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
-import request from 'axios'
-import ExecutionEnvironment from 'exenv'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import UserListModal from 'components/Modals/UserListModal'
@@ -11,12 +9,9 @@ import { connect } from 'react-redux'
 import DropdownButton from 'components/DropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import { cleanString } from 'helpers/stringHelpers'
-import { URL } from 'constants/URL'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
-
-const API_URL = `${URL}/content`
 
 class LinkItem extends Component {
   static propTypes = {
@@ -38,56 +33,37 @@ class LinkItem extends Component {
     userId: PropTypes.number
   }
 
-  constructor({ link: { id, thumbUrl } }) {
+  apiUrl = 'https://api.embed.rocks/api'
+  fallbackImage = '/img/link.png'
+
+  constructor({ link: { thumbUrl } }) {
     super()
     this.state = {
       confirmModalShown: false,
-      imageUrl: thumbUrl ? thumbUrl.replace('http://', 'https://') : '',
-      fallbackImage: thumbUrl,
+      imageUrl: thumbUrl
+        ? thumbUrl.replace('http://', 'https://')
+        : '/img/link.png',
       userListModalShown: false,
       onEdit: false
     }
-    this.apiUrl = 'https://api.embed.rocks/api'
-    this.to = `/links/${id}`
-    this.onDelete = this.onDelete.bind(this)
-    this.onEditedTitleSubmit = this.onEditedTitleSubmit.bind(this)
-    this.onLinkClick = this.onLinkClick.bind(this)
-  }
-
-  componentDidMount() {
-    this.mounted = true
-    const { link: { content, id, siteUrl } } = this.props
-    if (ExecutionEnvironment.canUseDOM && content && !siteUrl) {
-      return request
-        .put(`${API_URL}/embed`, { url: content, linkId: id })
-        .then(({ data: { image, title, description, site } }) => {
-          if (this.mounted) {
-            this.setState({
-              imageUrl: image.url.replace('http://', 'https://'),
-              fallbackImage: image.url,
-              title,
-              description,
-              site
-            })
-          }
-        })
-        .catch(error => console.error(error.response || error))
-    }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false
   }
 
   render() {
     const {
-      link: { title, timeStamp, uploaderName, uploader, likers, numComments },
+      link: {
+        id,
+        title,
+        timeStamp,
+        uploaderName,
+        uploader,
+        likers,
+        numComments
+      },
       userId
     } = this.props
     const {
       confirmModalShown,
       imageUrl,
-      fallbackImage,
       userListModalShown,
       onEdit
     } = this.state
@@ -105,25 +81,19 @@ class LinkItem extends Component {
         `}
       >
         <div>
-          {imageUrl ? (
-            <Link to={this.to} onClickAsync={this.onLinkClick}>
-              <img
-                className={css`
-                  display: block;
-                  width: 7vw;
-                  height: 7vw;
-                  object-fit: cover;
-                `}
-                src={imageUrl}
-                onError={() => this.setState({ imageUrl: fallbackImage })}
-                alt=""
-              />
-            </Link>
-          ) : (
-            <Link to={this.to} onClickAsync={this.onLinkClick}>
-              <img src="/img/link.png" style={{ width: '7vw', height: '7vw' }} alt="" />
-            </Link>
-          )}
+          <Link to={`/links/${id}`} onClickAsync={this.onLinkClick}>
+            <img
+              className={css`
+                display: block;
+                width: 7vw;
+                height: 7vw;
+                object-fit: cover;
+              `}
+              src={imageUrl}
+              onError={this.onImageLoadError}
+              alt=""
+            />
+          </Link>
         </div>
         <section>
           <div
@@ -145,7 +115,7 @@ class LinkItem extends Component {
                 `}
               >
                 {!onEdit && (
-                  <Link to={this.to} onClickAsync={this.onLinkClick}>
+                  <Link to={`/links/${id}`} onClickAsync={this.onLinkClick}>
                     {cleanString(title)}
                   </Link>
                 )}
@@ -235,19 +205,26 @@ class LinkItem extends Component {
     )
   }
 
-  onDelete() {
+  onDelete = () => {
     const { link, deleteLink } = this.props
     deleteLink(link.id)
   }
 
-  onEditedTitleSubmit(text) {
+  onEditedTitleSubmit = text => {
     const { editTitle, link: { id } } = this.props
     return editTitle({ title: text, id }).then(() =>
       this.setState({ onEdit: false })
     )
   }
 
-  onLinkClick() {
+  onImageLoadError = () => {
+    const { link: { thumbUrl } } = this.props
+    this.setState(state => ({
+      imageUrl: state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
+    }))
+  }
+
+  onLinkClick = () => {
     const { loadLinkPage, link: { id } } = this.props
     return loadLinkPage(id)
   }

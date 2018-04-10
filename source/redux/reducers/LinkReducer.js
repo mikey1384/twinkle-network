@@ -1,4 +1,5 @@
 import LINK from '../constants/Link'
+import { processedURL } from 'helpers/stringHelpers'
 
 const defaultState = {
   links: [],
@@ -99,7 +100,7 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         linkPage: {
           ...state.linkPage,
-          content,
+          content: processedURL(content),
           title,
           description
         }
@@ -125,8 +126,8 @@ export default function linkReducer(state = defaultState, action) {
         loadMoreLinksButtonShown
       }
     case LINK.LOAD_COMMENTS:
-      if (action.data.comments.length > 20) {
-        action.data.comments.pop()
+      if (action.data.length > 20) {
+        action.data.pop()
         loadMoreCommentsButton = true
       }
       return {

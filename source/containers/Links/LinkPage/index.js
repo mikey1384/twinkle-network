@@ -124,6 +124,7 @@ class LinkPage extends Component {
           `}
         >
           <Description
+            content={content}
             uploaderId={uploader}
             uploaderName={uploaderName}
             timeStamp={timeStamp}

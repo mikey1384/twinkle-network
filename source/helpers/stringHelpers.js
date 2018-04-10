@@ -180,6 +180,13 @@ export function processedStringWithURL(string) {
   return newString
 }
 
+export function processedURL(url) {
+  if (url.indexOf('://') === -1) {
+    url = 'http://' + url
+  }
+  return url
+}
+
 export function stringIsEmpty(string) {
   var checkedString = string
     ? string.replace(/\s/g, '').replace(/\r?\n/g, '')

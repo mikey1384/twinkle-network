@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import request from 'axios'
-import ExecutionEnvironment from 'exenv'
 import { URL } from 'constants/URL'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
@@ -10,8 +9,6 @@ const API_URL = `${URL}/content`
 
 export default class Embedly extends Component {
   static propTypes = {
-    actualTitle: PropTypes.string,
-    actualDescription: PropTypes.string,
     id: PropTypes.number.isRequired,
     siteUrl: PropTypes.string,
     style: PropTypes.object,
@@ -20,57 +17,63 @@ export default class Embedly extends Component {
     url: PropTypes.string.isRequired
   }
 
-  constructor({ actualTitle, actualDescription, siteUrl, thumbUrl }) {
+  fallbackImage = '/img/link.png'
+
+  constructor({ thumbUrl, actualTitle, actualDescription, siteUrl }) {
     super()
     this.state = {
-      imageUrl: thumbUrl ? thumbUrl.replace('http://', 'https://') : '',
-      fallbackImage: thumbUrl,
+      imageUrl: thumbUrl
+        ? thumbUrl.replace('http://', 'https://')
+        : '/img/link.png',
       title: actualTitle,
       description: actualDescription,
       site: siteUrl
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.mounted = true
     const { id, siteUrl, url } = this.props
-    if (ExecutionEnvironment.canUseDOM && url && !siteUrl) {
-      return request
-        .put(`${API_URL}/embed`, { url, linkId: id })
-        .then(({ data: { image, title, description, site } }) => {
-          if (this.mounted) {
-            this.setState({
-              imageUrl: image.url.replace('http://', 'https://'),
-              fallbackImage: image.url,
-              title,
-              description,
-              site
-            })
-          }
-        })
-        .catch(error => console.error(error.response || error))
+    if (url && !siteUrl) {
+      try {
+        const { data: { image, title, description, site } } = await request.put(
+          `${API_URL}/embed`,
+          { url, linkId: id }
+        )
+        if (this.mounted) {
+          this.setState({
+            imageUrl: image.url.replace('http://', 'https://'),
+            title,
+            description,
+            site
+          })
+        }
+      } catch (error) {
+        console.error(error.response || error)
+      }
     }
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const { id, url } = this.props
     if (prevProps.url !== url) {
-      this.setState({}, () => {
-        return request
-          .put(`${API_URL}/embed`, { url, linkId: id })
-          .then(({ data: { image, title, description, site } }) => {
-            if (this.mounted) {
-              this.setState({
-                imageUrl: image.url.replace('http://', 'https://'),
-                fallbackImage: image.url,
-                title,
-                description,
-                site
-              })
-            }
+      try {
+        const { data: { image, title, description, site } } = await request.put(
+          `${API_URL}/embed`,
+          { url, linkId: id }
+        )
+        if (this.mounted) {
+          this.setState({
+            imageUrl: image.url.replace('http://', 'https://'),
+            fallbackImage: image.url,
+            title,
+            description,
+            site
           })
-          .catch(error => console.error(error))
-      })
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 
@@ -79,7 +82,7 @@ export default class Embedly extends Component {
   }
 
   render() {
-    const { imageUrl, fallbackImage, description, title, site } = this.state
+    const { imageUrl, description, title, site } = this.state
     const { style, url } = this.props
     return (
       <div
@@ -126,8 +129,8 @@ export default class Embedly extends Component {
                 max-height: 70vh;
                 object-fit: scale-down;
               `}
-              src={imageUrl || '/img/link.png'}
-              onError={() => this.setState({ imageUrl: fallbackImage })}
+              src={imageUrl}
+              onError={this.onImageLoadError}
               alt={title}
             />
           </section>
@@ -138,11 +141,19 @@ export default class Embedly extends Component {
             `}
           >
             <h3>{title || this.props.title}</h3>
-              <p>{description}</p>
-              <p style={{fontWeight: 'bold'}}>{site}</p>
+            <p>{description}</p>
+            <p style={{ fontWeight: 'bold' }}>{site}</p>
           </section>
         </a>
       </div>
     )
+  }
+
+  onImageLoadError = () => {
+    const { thumbUrl } = this.props
+    this.setState(state => ({
+      imageUrl:
+        !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
+    }))
   }
 }

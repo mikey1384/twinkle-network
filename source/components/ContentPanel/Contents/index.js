@@ -27,6 +27,7 @@ class Contents extends Component {
 
   state = {
     autoFocusWhenCommentShown: false,
+    edited: false,
     isEditing: false,
     userListModalShown: false,
     clickListenerState: false,
@@ -37,6 +38,9 @@ class Contents extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.contentObj.contentId !== this.props.contentObj.contentId) {
       this.setState({ commentsShown: false })
+    }
+    if (prevProps.contentObj.content !== this.props.contentObj.content) {
+      this.setState({ edited: true })
     }
   }
 
@@ -81,6 +85,7 @@ class Contents extends Component {
     } = this.props
     const {
       autoFocusWhenCommentShown,
+      edited,
       userListModalShown,
       clickListenerState,
       confirmModalShown,
@@ -93,7 +98,8 @@ class Contents extends Component {
     }
 
     const userIsUploader = myId === uploaderId
-    const userCanEditThis = (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -153,7 +159,9 @@ class Contents extends Component {
           rootContent={rootContent}
           rootContentIsStarred={!!rootContentIsStarred}
           rootType={rootType}
-          urlRelated={{ thumbUrl, actualTitle, actualDescription, siteUrl }}
+          urlRelated={
+            edited ? {} : { thumbUrl, actualTitle, actualDescription, siteUrl }
+          }
           type={type}
         />
         {!isEditing && (
