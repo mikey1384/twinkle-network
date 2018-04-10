@@ -169,6 +169,7 @@ class NavMenu extends Component {
             paddingLeft: '1rem',
             width: '50%',
             lineHeight: 1.1,
+            wordBreak: 'break-word',
             marginTop: '-0.5rem'
           }}
         >
