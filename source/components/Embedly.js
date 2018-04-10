@@ -65,7 +65,6 @@ export default class Embedly extends Component {
         if (this.mounted) {
           this.setState({
             imageUrl: image.url.replace('http://', 'https://'),
-            fallbackImage: image.url,
             title,
             description,
             site

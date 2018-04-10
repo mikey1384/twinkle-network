@@ -98,6 +98,11 @@ export default function linkReducer(state = defaultState, action) {
       } = action.data
       return {
         ...state,
+        links: state.links.map(link => ({
+          ...link,
+          title: action.data.id === state.linkPage.id ? title : link.title,
+          content: action.data.id === state.linkPage.id ? processedURL(content) : link.content
+        })),
         linkPage: {
           ...state.linkPage,
           content: processedURL(content),

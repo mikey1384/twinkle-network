@@ -12,6 +12,9 @@ import { cleanString } from 'helpers/stringHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
+import request from 'axios'
+import { URL } from 'constants/URL'
+const API_URL = `${URL}/content`
 
 class LinkItem extends Component {
   static propTypes = {
@@ -45,6 +48,30 @@ class LinkItem extends Component {
         : '/img/link.png',
       userListModalShown: false,
       onEdit: false
+    }
+  }
+
+  componentDidMount() {
+    this.mounted = true
+  }
+
+  async componentDidUpdate(prevProps) {
+    const { link: { content, id } } = this.props
+    if (prevProps.link.content !== content) {
+      try {
+        const { data: { image } } = await request.put(`${API_URL}/embed`, {
+          url: content,
+          linkId: id
+        })
+        if (this.mounted) {
+          console.log(image.url)
+          this.setState({
+            imageUrl: image.url.replace('http://', 'https://')
+          })
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 
