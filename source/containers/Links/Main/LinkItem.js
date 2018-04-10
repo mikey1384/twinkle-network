@@ -64,7 +64,6 @@ class LinkItem extends Component {
           linkId: id
         })
         if (this.mounted) {
-          console.log(image.url)
           this.setState({
             imageUrl: image.url.replace('http://', 'https://')
           })
