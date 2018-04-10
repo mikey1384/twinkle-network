@@ -23,21 +23,17 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         linkPage: {
           ...state.linkPage,
-          comments: state.linkPage.comments.reduce(
-            (resultingArray, comment) => {
-              if (comment.id === action.commentId) return resultingArray
-              return resultingArray.concat([
-                {
-                  ...comment,
-                  replies: comment.replies.reduce((resultingArray, reply) => {
-                    if (reply.id === action.commentId) return resultingArray
-                    return resultingArray.concat([reply])
-                  }, [])
-                }
-              ])
-            },
-            []
-          )
+          comments: state.linkPage.comments.reduce((prev, comment) => {
+            if (comment.id === action.commentId) return prev
+            return prev.concat([
+              {
+                ...comment,
+                replies: comment.replies.filter(
+                  reply => reply.id !== action.commentId
+                )
+              }
+            ])
+          }, [])
         }
       }
     case LINK.EDIT_COMMENT:

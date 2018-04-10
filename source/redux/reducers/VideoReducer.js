@@ -402,10 +402,12 @@ export default function VideoReducer(state = defaultState, action) {
                   ...comment,
                   replies:
                     comment.id === action.data.commentId
-                      ? comment.replies.concat({
-                        ...action.data,
-                        ...action.replyType
-                      })
+                      ? comment.replies.concat([
+                          {
+                            ...action.data,
+                            ...action.replyType
+                          }
+                        ])
                       : comment.replies
                 }
               })
@@ -416,10 +418,12 @@ export default function VideoReducer(state = defaultState, action) {
               ...comment,
               replies:
                 comment.id === action.data.commentId
-                  ? comment.replies.concat({
-                    ...action.data,
-                    ...action.replyType
-                  })
+                  ? comment.replies.concat([
+                      {
+                        ...action.data,
+                        ...action.replyType
+                      }
+                    ])
                   : comment.replies
             }
           })

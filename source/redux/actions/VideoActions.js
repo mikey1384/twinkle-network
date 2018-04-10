@@ -588,7 +588,7 @@ export const uploadVideoReply = ({
   replyOfReply
 }) => async dispatch => {
   try {
-    const { data } = request.post(
+    const { data } = await request.post(
       `${API_URL}/replies`,
       {
         content: reply,
