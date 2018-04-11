@@ -23,9 +23,9 @@ import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import Button from 'components/Button'
 import SearchBox from './SearchBox'
-import loadable from 'loadable-components'
 import Loading from 'components/Loading'
 import SigninModal from 'containers/Signin'
+import loadable from 'loadable-components'
 const Home = loadable(() => import('containers/Home'), {
   LoadingComponent: Loading
 })

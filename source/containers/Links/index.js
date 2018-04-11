@@ -1,8 +1,14 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Route } from 'react-router-dom'
-import LinkPage from './LinkPage'
-import Main from './Main'
+import Loading from 'components/Loading'
+import loadable from 'loadable-components'
+const LinkPage = loadable(() => import('./LinkPage'), {
+  LoadingComponent: Loading
+})
+const Main = loadable(() => import('./Main'), {
+  LoadingComponent: Loading
+})
 
 Links.propTypes = {
   match: PropTypes.object.isRequired

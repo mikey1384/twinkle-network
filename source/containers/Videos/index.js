@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
-import Main from './Main'
-import VideoPage from './VideoPage'
 import { connect } from 'react-redux'
 import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions'
 import {
@@ -10,6 +8,14 @@ import {
   getPinnedPlaylists,
   resetPlaylistState
 } from 'redux/actions/PlaylistActions'
+import Loading from 'components/Loading'
+import loadable from 'loadable-components'
+const Main = loadable(() => import('./Main'), {
+  LoadingComponent: Loading
+})
+const VideoPage = loadable(() => import('./VideoPage'), {
+  LoadingComponent: Loading
+})
 
 class Videos extends Component {
   static propTypes = {

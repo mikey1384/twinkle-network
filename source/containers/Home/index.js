@@ -2,15 +2,23 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
-import Profile from './Profile'
-import People from './People'
-import Stories from './Stories'
 import Notification from 'components/Notification'
 import ProfileWidget from 'components/ProfileWidget'
 import HomeMenuItems from 'components/HomeMenuItems'
 import { borderRadius, Color } from 'constants/css'
 import { container, Left, Center, Right } from './Styles'
 import { css } from 'react-emotion'
+import Loading from 'components/Loading'
+import loadable from 'loadable-components'
+const Profile = loadable(() => import('./Profile'), {
+  LoadingComponent: Loading
+})
+const People = loadable(() => import('./People'), {
+  LoadingComponent: Loading
+})
+const Stories = loadable(() => import('./Stories'), {
+  LoadingComponent: Loading
+})
 
 class Home extends Component {
   static propTypes = {
