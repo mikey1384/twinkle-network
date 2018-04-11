@@ -26,12 +26,25 @@ import { css } from 'emotion'
 import Button from 'components/Button'
 import SearchBox from './SearchBox'
 import loadable from 'loadable-components'
-const Chat = loadable(() => import('containers/Chat'))
-const Home = loadable(() => import('containers/Home'))
-const Videos = loadable(() => import('containers/Videos'))
-const ContentPage = loadable(() => import('containers/ContentPage'))
-const Links = loadable(() => import('containers/Links'))
-const SigninModal = loadable(() => import('containers/Signin'))
+import Loading from 'components/Loading'
+const Chat = loadable(() => import('containers/Chat'), {
+  LoadingComponent: Loading
+})
+const Home = loadable(() => import('containers/Home'), {
+  LoadingComponent: Loading
+})
+const Videos = loadable(() => import('containers/Videos'), {
+  LoadingComponent: Loading
+})
+const ContentPage = loadable(() => import('containers/ContentPage'), {
+  LoadingComponent: Loading
+})
+const Links = loadable(() => import('containers/Links'), {
+  LoadingComponent: Loading
+})
+const SigninModal = loadable(() => import('containers/Signin'), {
+  LoadingComponent: Loading
+})
 
 let visibilityChange
 let hidden
