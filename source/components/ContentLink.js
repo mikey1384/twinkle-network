@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { connect } from 'react-redux'
-import { loadVideoPageFromClientSide } from 'redux/actions/VideoActions'
-import { loadLinkPage } from 'redux/actions/LinkActions'
-import Link from 'components/Link'
+import { Link } from 'react-router-dom'
 import { Color } from 'constants/css'
 
 ContentLink.propTypes = {
@@ -14,7 +11,7 @@ ContentLink.propTypes = {
   style: PropTypes.object,
   type: PropTypes.string
 }
-function ContentLink({ style, content: { id, title }, type, ...actions }) {
+export default function ContentLink({ style, content: { id, title }, type, ...actions }) {
   let destination = ''
   switch (type) {
     case 'url':
@@ -44,7 +41,6 @@ function ContentLink({ style, content: { id, title }, type, ...actions }) {
         ...style
       }}
       to={`/${destination}/${id}`}
-      onClickAsync={() => onLinkClick({ id, type, actions })}
     >
       {title}
     </Link>
@@ -54,19 +50,3 @@ function ContentLink({ style, content: { id, title }, type, ...actions }) {
     </span>
   )
 }
-
-function onLinkClick({ id, type, actions: { loadLinkPage, loadVideoPage } }) {
-  switch (type) {
-    case 'url':
-      return loadLinkPage(id)
-    case 'video':
-      return loadVideoPage(id)
-    default:
-      return Promise.resolve()
-  }
-}
-
-export default connect(null, {
-  loadVideoPage: loadVideoPageFromClientSide,
-  loadLinkPage
-})(ContentLink)

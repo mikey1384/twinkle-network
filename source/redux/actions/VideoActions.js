@@ -405,16 +405,6 @@ export const loadVideoPage = (videoId, fromClientSide) => async dispatch => {
   }
 }
 
-export const loadVideoPageFromClientSide = videoId => async dispatch => {
-  try {
-    await dispatch(loadVideoPage(videoId, true))
-    Promise.resolve()
-  } catch (error) {
-    console.error(error.response || error)
-    handleError(error, dispatch)
-  }
-}
-
 export const openAddVideoModal = () => ({
   type: VIDEO.OPEN_MODAL
 })

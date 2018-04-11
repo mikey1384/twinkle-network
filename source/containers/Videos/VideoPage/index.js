@@ -76,8 +76,8 @@ class VideoPage extends Component {
   }
 
   componentDidMount() {
-    const { history, match: { params }, loadVideoPage } = this.props
-    if (history.action === 'POP') loadVideoPage(params.videoId)
+    const { match: { params }, loadVideoPage } = this.props
+    loadVideoPage(params.videoId)
   }
 
   componentDidUpdate(prevProps) {

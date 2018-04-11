@@ -4,7 +4,6 @@ import DropdownButton from './DropdownButton'
 import EditTitleForm from './Texts/EditTitleForm'
 import ConfirmModal from './Modals/ConfirmModal'
 import {
-  loadVideoPageFromClientSide,
   editVideoTitle,
   deleteVideo
 } from 'redux/actions/VideoActions'
@@ -27,7 +26,6 @@ class VideoThumb extends Component {
     editable: PropTypes.bool,
     editVideoTitle: PropTypes.func,
     lastVideoId: PropTypes.number,
-    loadVideoPage: PropTypes.func,
     style: PropTypes.object,
     to: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
@@ -182,12 +180,8 @@ class VideoThumb extends Component {
   }
 
   onLinkClick = () => {
-    const { video, clickSafe } = this.props
-    if (!clickSafe) {
-      return this.props.loadVideoPage(video.id)
-    } else {
-      return Promise.resolve(true)
-    }
+    const { clickSafe } = this.props
+    return Promise.resolve(clickSafe)
   }
 
   onEditTitle = () => {
@@ -227,7 +221,6 @@ class VideoThumb extends Component {
 }
 
 export default connect(state => ({ userId: state.UserReducer.userId }), {
-  loadVideoPage: loadVideoPageFromClientSide,
   editVideoTitle,
   deleteVideo
 })(VideoThumb)
