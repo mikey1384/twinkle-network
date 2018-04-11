@@ -28,13 +28,8 @@ class NavMenu extends Component {
       .isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      playlistVideosLoading: false
-    }
-    this.loadMorePlaylistVideos = this.loadMorePlaylistVideos.bind(this)
-    this.renderVideos = this.renderVideos.bind(this)
+  state = {
+    playlistVideosLoading: false
   }
 
   componentDidMount() {
@@ -124,7 +119,7 @@ class NavMenu extends Component {
     )
   }
 
-  loadMorePlaylistVideos() {
+  loadMorePlaylistVideos = async() => {
     const {
       loadMorePlaylistVideos,
       playlistId,
@@ -132,14 +127,15 @@ class NavMenu extends Component {
       videoId
     } = this.props
     this.setState({ playlistVideosLoading: true })
-    return loadMorePlaylistVideos(
+    await loadMorePlaylistVideos(
       videoId,
       playlistId,
       queryStringForArray(playlistVideos, 'videoId', 'shownVideos')
-    ).then(() => this.setState({ playlistVideosLoading: false }))
+    )
+    this.setState({ playlistVideosLoading: false })
   }
 
-  renderVideos(videos) {
+  renderVideos = videos => {
     const { playlistId } = this.props
     return videos.map((video, index) => (
       <div

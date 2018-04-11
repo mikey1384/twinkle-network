@@ -18,6 +18,9 @@ const API_URL = `${URL}/content`
 
 class LinkItem extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     deleteLink: PropTypes.func.isRequired,
     editTitle: PropTypes.func.isRequired,
     link: PropTypes.shape({
@@ -51,8 +54,24 @@ class LinkItem extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.mounted = true
+    const { link: { id, content, siteUrl } } = this.props
+    if (content && !siteUrl) {
+      try {
+        const { data: { image } } = await request.put(`${API_URL}/embed`, {
+          url: content,
+          linkId: id
+        })
+        if (this.mounted) {
+          this.setState({
+            imageUrl: image.url.replace('http://', 'https://')
+          })
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
   }
 
   async componentDidUpdate(prevProps) {
@@ -83,8 +102,12 @@ class LinkItem extends Component {
         uploaderName,
         uploader,
         likers,
-        numComments
+        numComments,
+        uploaderAuthLevel
       },
+      authLevel,
+      canEdit,
+      canDelete,
       userId
     } = this.props
     const {
@@ -93,6 +116,24 @@ class LinkItem extends Component {
       userListModalShown,
       onEdit
     } = this.state
+    const userIsUploader = userId === uploader
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => this.setState({ confirmModalShown: true })
+      })
+    }
+
     return (
       <nav
         className={css`
@@ -193,21 +234,12 @@ class LinkItem extends Component {
           </div>
           <div>
             {!onEdit &&
-              userId === uploader && (
+              editButtonShown && (
                 <DropdownButton
                   snow
                   direction="left"
                   icon="pencil"
-                  menuProps={[
-                    {
-                      label: 'Edit',
-                      onClick: () => this.setState({ onEdit: true })
-                    },
-                    {
-                      label: 'Remove',
-                      onClick: () => this.setState({ confirmModalShown: true })
-                    }
-                  ]}
+                  menuProps={editMenuItems}
                 />
               )}
           </div>
@@ -259,6 +291,9 @@ class LinkItem extends Component {
 
 export default connect(
   state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
     userId: state.UserReducer.userId
   }),
   { loadLinkPage, deleteLink, editTitle }

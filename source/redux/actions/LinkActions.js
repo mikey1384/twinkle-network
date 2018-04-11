@@ -41,7 +41,7 @@ export const deleteComment = commentId => async dispatch => {
 
 export const deleteLink = linkId => async dispatch => {
   try {
-    await request.delete(`${API_URL}/page?linkId=${linkId}`, auth())
+    await request.delete(`${API_URL}?linkId=${linkId}`, auth())
     dispatch({
       type: LINK.DELETE,
       linkId
