@@ -2,7 +2,6 @@ import 'regenerator-runtime/runtime'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import Chat from '../Chat'
 import Header from './Header'
 import { connect } from 'react-redux'
 import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions'
@@ -13,10 +12,6 @@ import {
   closeSigninModal
 } from 'redux/actions/UserActions'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import Home from 'containers/Home'
-import ContentPage from 'containers/ContentPage'
-import Videos from 'containers/Videos'
-import Links from 'containers/Links'
 import TwinkleXP from 'containers/TwinkleXP'
 import Redirect from 'containers/Redirect'
 import { recordUserAction } from 'helpers/userDataHelpers'
@@ -29,8 +24,14 @@ import MobileMenu from './MobileMenu'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import Button from 'components/Button'
-import SigninModal from 'containers/Signin'
 import SearchBox from './SearchBox'
+import loadable from 'loadable-components'
+const Chat = loadable(() => import('containers/Chat'))
+const Home = loadable(() => import('containers/Home'))
+const Videos = loadable(() => import('containers/Videos'))
+const ContentPage = loadable(() => import('containers/ContentPage'))
+const Links = loadable(() => import('containers/Links'))
+const SigninModal = loadable(() => import('containers/Signin'))
 
 let visibilityChange
 let hidden

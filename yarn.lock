@@ -688,6 +688,13 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-dynamic-import-webpack@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-webpack/-/babel-plugin-dynamic-import-webpack-1.0.2.tgz#cb83435833e073f1600c0188a95edacfdc07c256"
+  dependencies:
+    babel-plugin-syntax-dynamic-import "^6.18.0"
+    babel-template "^6.26.0"
+
 babel-plugin-emotion@^9.0.0, babel-plugin-emotion@^9.1.0:
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-emotion/-/babel-plugin-emotion-9.1.0.tgz#d0b7598168980f4fbc7b72fd86c49904b613fe79"
@@ -5103,6 +5110,13 @@ load-json-file@^4.0.0:
 load-script@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/load-script/-/load-script-1.0.0.tgz#0491939e0bee5643ee494a7e3da3d2bac70c6ca4"
+
+loadable-components@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/loadable-components/-/loadable-components-1.3.0.tgz#232edc7432488d5d45a6c02baa7880d2047ec78b"
+  dependencies:
+    babel-plugin-syntax-dynamic-import "^6.18.0"
+    hoist-non-react-statics "^2.5.0"
 
 loader-fs-cache@^1.0.0:
   version "1.0.1"
