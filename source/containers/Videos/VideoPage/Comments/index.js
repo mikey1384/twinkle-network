@@ -70,7 +70,7 @@ class Comments extends Component {
         className={css`
           padding: 1rem 0;
           background: #fff;
-          font-size: 1.5rem;
+          font-size: 1.7rem;
           margin-top: 1rem;
         `}
       >
@@ -128,8 +128,7 @@ class Comments extends Component {
             justifyContent: 'center',
             alignItems: 'center',
             width: '100%',
-            height: '4rem',
-            fontSize: '2rem'
+            height: '4rem'
           }}
         >
           There are no comments, yet.
