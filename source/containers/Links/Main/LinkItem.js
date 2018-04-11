@@ -3,8 +3,8 @@ import React, { Component, Fragment } from 'react'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import UserListModal from 'components/Modals/UserListModal'
-import Link from 'components/Link'
-import { loadLinkPage, editTitle, deleteLink } from 'redux/actions/LinkActions'
+import {Link} from 'react-router-dom'
+import { editTitle, deleteLink } from 'redux/actions/LinkActions'
 import { connect } from 'react-redux'
 import DropdownButton from 'components/DropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
@@ -35,7 +35,6 @@ class LinkItem extends Component {
       numComments: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired
     }).isRequired,
-    loadLinkPage: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
 
@@ -182,7 +181,7 @@ class LinkItem extends Component {
                 `}
               >
                 {!onEdit && (
-                  <Link to={`/links/${id}`} onClickAsync={this.onLinkClick}>
+                  <Link to={`/links/${id}`}>
                     {cleanString(title)}
                   </Link>
                 )}
@@ -282,11 +281,6 @@ class LinkItem extends Component {
         !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
     }))
   }
-
-  onLinkClick = () => {
-    const { loadLinkPage, link: { id } } = this.props
-    return loadLinkPage(id)
-  }
 }
 
 export default connect(
@@ -296,5 +290,5 @@ export default connect(
     canEdit: state.UserReducer.canEdit,
     userId: state.UserReducer.userId
   }),
-  { loadLinkPage, deleteLink, editTitle }
+  { deleteLink, editTitle }
 )(LinkItem)
