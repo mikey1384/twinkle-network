@@ -8,12 +8,22 @@ class Content extends Component {
     className: PropTypes.string,
     children: PropTypes.node
   }
+
+  state = {
+    innerClicked: false
+  }
+
   handleClickOutside = event => {
+    if (this.state.innerClicked) return this.setState({ innerClicked: false })
     this.props.onHide()
   }
   render() {
     return (
-      <div className={this.props.className}>
+      <div
+        onMouseDown={() => this.setState({ innerClicked: true })}
+        onMouseUp={() => this.setState({ innerClicked: false })}
+        className={this.props.className}
+      >
         <button className="close" onClick={this.props.onHide}>
           <span className="glyphicon glyphicon-remove" />
         </button>
