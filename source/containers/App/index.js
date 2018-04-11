@@ -12,8 +12,6 @@ import {
   closeSigninModal
 } from 'redux/actions/UserActions'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import TwinkleXP from 'containers/TwinkleXP'
-import Redirect from 'containers/Redirect'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import {
   fetchNotifications,
@@ -28,21 +26,25 @@ import SearchBox from './SearchBox'
 import loadable from 'loadable-components'
 import Loading from 'components/Loading'
 import SigninModal from 'containers/Signin'
-const Chat = loadable(() => import('containers/Chat'), {
-  LoadingComponent: Loading
-})
 const Home = loadable(() => import('containers/Home'), {
   LoadingComponent: Loading
 })
 const Videos = loadable(() => import('containers/Videos'), {
   LoadingComponent: Loading
 })
-const ContentPage = loadable(() => import('containers/ContentPage'), {
-  LoadingComponent: Loading
-})
 const Links = loadable(() => import('containers/Links'), {
   LoadingComponent: Loading
 })
+const Chat = loadable(() => import('containers/Chat'), {
+  LoadingComponent: Loading
+})
+const ContentPage = loadable(() => import('containers/ContentPage'), {
+  LoadingComponent: Loading
+})
+const TwinkleXP = loadable(() => import('containers/TwinkleXP'), {
+  LoadingComponent: Loading
+})
+import Redirect from 'containers/Redirect'
 
 let visibilityChange
 let hidden
