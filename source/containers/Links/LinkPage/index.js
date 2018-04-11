@@ -83,6 +83,7 @@ class LinkPage extends Component {
         description,
         timeStamp,
         uploader,
+        uploaderAuthLevel,
         uploaderName,
         comments = [],
         likers = [],
@@ -125,6 +126,7 @@ class LinkPage extends Component {
         >
           <Description
             content={content}
+            uploaderAuthLevel={uploaderAuthLevel}
             uploaderId={uploader}
             uploaderName={uploaderName}
             timeStamp={timeStamp}

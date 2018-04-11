@@ -14,9 +14,13 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers'
+import { connect } from 'react-redux'
 
-export default class Description extends Component {
+class Description extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     description: PropTypes.string,
     linkId: PropTypes.number.isRequired,
     myId: PropTypes.number,
@@ -25,6 +29,7 @@ export default class Description extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
+    uploaderAuthLevel: PropTypes.number,
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
     url: PropTypes.string.isRequired
@@ -45,10 +50,14 @@ export default class Description extends Component {
 
   render() {
     const {
+      authLevel,
+      canDelete,
+      canEdit,
       uploaderId,
       myId,
       title,
       description,
+      uploaderAuthLevel,
       uploaderName,
       timeStamp,
       onDelete
@@ -60,9 +69,26 @@ export default class Description extends Component {
       editDoneButtonDisabled,
       editedUrl
     } = this.state
+    const userIsUploader = uploaderId === myId
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonShown = userIsUploader || userCanEditThis
+    const editMenuItems = []
+    if (userIsUploader || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      })
+    }
+    if (userIsUploader || canDelete) {
+      editMenuItems.push({
+        label: 'Delete',
+        onClick: onDelete
+      })
+    }
     return (
       <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
-        {uploaderId === myId &&
+        {editButtonShown &&
           !onEdit && (
             <DropdownButton
               snow
@@ -70,16 +96,7 @@ export default class Description extends Component {
               icon="pencil"
               style={{ position: 'absolute', top: '1rem', right: '1rem' }}
               direction="left"
-              menuProps={[
-                {
-                  label: 'Edit',
-                  onClick: () => this.setState({ onEdit: true })
-                },
-                {
-                  label: 'Delete',
-                  onClick: onDelete
-                }
-              ]}
+              menuProps={editMenuItems}
             />
           )}
         <div
@@ -228,3 +245,9 @@ export default class Description extends Component {
     }).then(() => this.setState({ onEdit: false }))
   }
 }
+
+export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit
+}))(Description)

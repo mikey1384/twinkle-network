@@ -54,7 +54,7 @@ export const deleteLink = linkId => async dispatch => {
 
 export const deleteLinkFromPage = linkId => async dispatch => {
   try {
-    await request.delete(`${API_URL}/page?linkId=${linkId}`, auth())
+    await request.delete(`${API_URL}/?linkId=${linkId}`, auth())
     dispatch(push('/links'))
   } catch (error) {
     console.error(error.response || error)

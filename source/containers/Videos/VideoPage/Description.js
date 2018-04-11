@@ -94,6 +94,7 @@ class Description extends Component {
       title,
       description,
       likes,
+      onDelete,
       starVideo,
       timeStamp,
       uploaderAuthLevel,
@@ -123,7 +124,7 @@ class Description extends Component {
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Delete',
-        onClick: () => this.props.onDelete()
+        onClick: onDelete
       })
     }
 
