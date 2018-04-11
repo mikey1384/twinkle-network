@@ -210,6 +210,10 @@ export const loadLinkPage = linkId => async dispatch => {
   }
 }
 
+export const resetPage = () => ({
+  type: LINK.RESET_PAGE
+})
+
 export const submitReply = ({
   replyContent,
   comment,

@@ -14,6 +14,7 @@ import {
   fetchMoreReplies,
   likeComment,
   likeLink,
+  resetPage,
   submitComment,
   submitReply
 } from 'redux/actions/LinkActions'
@@ -42,6 +43,7 @@ class LinkPage extends Component {
     match: PropTypes.object.isRequired,
     myId: PropTypes.number,
     pageProps: PropTypes.object.isRequired,
+    resetPage: PropTypes.func.isRequired,
     submitComment: PropTypes.func.isRequired,
     submitReply: PropTypes.func.isRequired
   }
@@ -72,6 +74,10 @@ class LinkPage extends Component {
       fetchComments(linkId)
       loadLinkPage(linkId)
     }
+  }
+  componentWillUnmount() {
+    const { resetPage } = this.props
+    resetPage()
   }
 
   render() {
@@ -235,6 +241,7 @@ export default connect(
     fetchMoreReplies,
     likeComment,
     likeLink,
+    resetPage,
     submitComment,
     submitReply
   }

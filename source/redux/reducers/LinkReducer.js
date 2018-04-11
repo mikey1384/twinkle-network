@@ -217,6 +217,13 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         links: [action.linkItem].concat(state.links)
       }
+    case LINK.RESET_PAGE:
+      return {
+        ...state,
+        linkPage: {
+          comments: []
+        }
+      }
     default:
       return state
   }
