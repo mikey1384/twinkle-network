@@ -6,18 +6,15 @@ import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import { Color } from 'constants/css'
 import { cleanString, queryStringForArray } from 'helpers/stringHelpers'
-import Link from 'components/Link'
+import { Link } from 'react-router-dom'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { loadVideoPageFromClientSide } from 'redux/actions/VideoActions'
-import { connect } from 'react-redux'
 import VideoThumbImage from 'components/VideoThumbImage'
 
 const API_URL = `${URL}/playlist`
 
-class PlaylistModal extends Component {
+export default class PlaylistModal extends Component {
   static propTypes = {
-    loadVideoPage: PropTypes.func.isRequired,
     onHide: PropTypes.func.isRequired,
     playlistId: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired
@@ -52,13 +49,11 @@ class PlaylistModal extends Component {
   }
 
   render() {
-    const { loadVideoPage, onHide, playlistId, title } = this.props
+    const { onHide, playlistId, title } = this.props
     const { videos, loading, loadMoreButtonShown } = this.state
     return (
       <Modal onHide={onHide}>
-        <header>
-          {title}
-        </header>
+        <header>{title}</header>
         <main>
           {videos.length === 0 && <Loading text="Loading..." />}
           {videos.map((video, index) => (
@@ -73,10 +68,7 @@ class PlaylistModal extends Component {
               }}
             >
               <div style={{ width: '35%' }}>
-                <Link
-                  to={`/videos/${video.id}?playlist=${playlistId}`}
-                  onClickAsync={() => loadVideoPage(video.id)}
-                >
+                <Link to={`/videos/${video.id}?playlist=${playlistId}`}>
                   <VideoThumbImage
                     isStarred={!!video.isStarred}
                     videoId={video.id}
@@ -87,10 +79,7 @@ class PlaylistModal extends Component {
                 </Link>
               </div>
               <div style={{ width: '60%' }}>
-                <Link
-                  to={`/videos/${video.id}?playlist=${playlistId}`}
-                  onClickAsync={() => loadVideoPage(video.id)}
-                >
+                <Link to={`/videos/${video.id}?playlist=${playlistId}`}>
                   <p style={{ fontSize: '1.2em' }} className="media-heading">
                     {cleanString(video.title)}
                   </p>
@@ -145,7 +134,3 @@ class PlaylistModal extends Component {
       .catch(error => console.error(error.response || error))
   }
 }
-
-export default connect(null, {
-  loadVideoPage: loadVideoPageFromClientSide
-})(PlaylistModal)
