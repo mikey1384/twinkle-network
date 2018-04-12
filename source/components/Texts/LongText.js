@@ -87,7 +87,7 @@ export default class LongText extends Component {
     let trimmedText = ''
     for (let i = 0; i < originalText.length; i++) {
       line += originalText[i]
-      if (canvas.measureText(line).width > maxWidth) {
+      if (originalText[i] === '\n' || canvas.measureText(line).width > maxWidth) {
         numLines++
         trimmedText += line
         line = ''
