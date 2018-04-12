@@ -16,14 +16,15 @@ export default function CommentPage({ match }) {
         width: 100%;
         display: flex;
         justify-content: center;
+        margin-bottom: 1rem;
       `}
-      style={{ marginBottom: '1rem' }}
     >
       <section
         className={css`
           width: 65%;
           @media (max-width: ${mobileMaxWidth}) {
             width: 100%;
+            min-height: 100vh;
           }
         `}
       >

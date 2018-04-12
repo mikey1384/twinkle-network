@@ -224,7 +224,7 @@ export default class Heading extends Component {
                   `}
                 >
                   {!!isStarred && (
-                    <StarMark style={{ top: 1, left: 1 }} size={2} />
+                    <StarMark style={{ top: 1, left: 1 }} size={2.5} />
                   )}
                   <span />
                   <a

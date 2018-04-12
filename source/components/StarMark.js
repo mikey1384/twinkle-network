@@ -5,13 +5,13 @@ StarMark.propTypes = {
   size: PropTypes.number,
   style: PropTypes.object
 }
-export default function StarMark({ style, size = 4 }) {
+export default function StarMark({ style, size = 6 }) {
   return (
     <img
       style={{
         ...style,
-        width: `${size}vw`,
-        height: `${size}vw`,
+        width: `${size}rem`,
+        height: `${size}rem`,
         position: 'absolute'
       }}
       src={'/img/star.png'}
