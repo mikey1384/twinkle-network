@@ -19,7 +19,7 @@ export function turnStringIntoQuestion(string) {
 }
 
 export function limitBrs(string) {
-  return string.replace(/(<br ?\/?>){4,}/gi, '<br><br><br>')
+  return string.replace(/(<br ?\/?>){11,}/gi, '<br><br><br><br><br><br><br><br><br><br>')
 }
 
 export function addTwoLetterEmoji(string) {

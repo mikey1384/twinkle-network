@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
-import { processedStringWithURL } from 'helpers/stringHelpers'
+import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers'
 
 export default class LongText extends Component {
   static propTypes = {
@@ -40,7 +40,7 @@ export default class LongText extends Component {
         {fullText ? (
           <span
             dangerouslySetInnerHTML={{
-              __html: processedStringWithURL(children)
+              __html: limitBrs(processedStringWithURL(children))
             }}
           />
         ) : (
@@ -52,7 +52,7 @@ export default class LongText extends Component {
             >
               <span
                 dangerouslySetInnerHTML={{
-                  __html: processedStringWithURL(text)
+                  __html: limitBrs(processedStringWithURL(text))
                 }}
               />
               {more && (
