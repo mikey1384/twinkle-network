@@ -16,7 +16,7 @@ import {
 import { connect } from 'react-redux'
 import { cleanString } from 'helpers/stringHelpers'
 import { css } from 'emotion'
-import { Color, mobileMaxWidth } from 'constants/css'
+import { Color } from 'constants/css'
 
 class PlaylistCarousel extends Component {
   static propTypes = {
@@ -41,7 +41,7 @@ class PlaylistCarousel extends Component {
     let numSlides = this.defaultNumSlides
     if (
       ExecutionEnvironment.canUseDOM &&
-      document.documentElement.clientWidth < mobileMaxWidth
+      document.documentElement.clientWidth <= 991
     ) {
       numSlides = 3
     }
@@ -272,7 +272,7 @@ class PlaylistCarousel extends Component {
   onResize = () => {
     this.setState({
       numSlides:
-        document.documentElement.clientWidth < 768 ? 3 : this.defaultNumSlides
+        document.documentElement.clientWidth <= 991 ? 3 : this.defaultNumSlides
     })
   }
 }
