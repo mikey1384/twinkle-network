@@ -20,14 +20,10 @@ export default class PlaylistModal extends Component {
     title: PropTypes.string.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      videos: [],
-      loadMoreButtonShown: false,
-      loading: false
-    }
-    this.onLoadMoreVideos = this.onLoadMoreVideos.bind(this)
+  state = {
+    videos: [],
+    loadMoreButtonShown: false,
+    loading: false
   }
 
   componentDidMount() {
@@ -107,7 +103,7 @@ export default class PlaylistModal extends Component {
     )
   }
 
-  onLoadMoreVideos() {
+  onLoadMoreVideos = () => {
     const { playlistId } = this.props
     const { videos } = this.state
     this.setState({ loading: true })
