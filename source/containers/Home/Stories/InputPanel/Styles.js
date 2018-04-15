@@ -7,6 +7,10 @@ export const PanelStyle = css`
   border: 1px solid ${Color.borderGray()};
   margin-bottom: 1rem;
   padding: 1.5rem 2rem;
+  small {
+    font-size: 1.3rem;
+    line-height: 2.5rem;
+  }
   > p {
     font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, arial, verdana;
     color: ${Color.darkGray()};

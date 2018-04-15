@@ -13,7 +13,7 @@ import {
   isValidUrl,
   isValidYoutubeUrl
 } from 'helpers/stringHelpers'
-import { questionWordLimit as wordLimit } from 'constants/defaultValues'
+import { wordLimit } from 'constants/defaultValues'
 
 export default class ContentEditor extends Component {
   static propTypes = {
@@ -63,49 +63,44 @@ export default class ContentEditor extends Component {
       >
         <form onSubmit={this.onSubmit}>
           {(type === 'video' || type === 'url') && (
-            <Input
-              autoFocus
-              onChange={text => {
-                this.setState({
-                  editedUrl: text
-                })
-              }}
-              placeholder={edit[type]}
-              value={editedUrl}
-              style={{ marginBottom: '1rem' }}
-            />
-          )}
-          {type !== 'comment' &&
-            type !== 'question' && (
+            <Fragment>
               <Input
-                autoFocus={type === 'discussion'}
-                onChange={text => this.setState({ editedTitle: text })}
+                autoFocus
+                className={css`
+                  margin-bottom: 1rem;
+                `}
+                onChange={text => {
+                  this.setState({
+                    editedUrl: text
+                  })
+                }}
+                placeholder={edit[type]}
+                value={editedUrl}
+                style={this.urlExceedsCharLimit(type)}
+              />
+              {this.urlExceedsCharLimit(type) && (
+                <small style={{ color: 'red' }}>
+                  {this.renderUrlCharLimit(type)}
+                </small>
+              )}
+            </Fragment>
+          )}
+          {type !== 'comment' && (
+            <Fragment>
+              <Input
+                autoFocus
+                onChange={text => this.onInputChange({ type, text })}
                 onKeyUp={event =>
                   this.setState({
                     editedTitle: addEmoji(event.target.value)
                   })
                 }
-                placeholder={edit.title}
-                value={editedTitle}
+                placeholder={edit[type === 'question' ? 'question' : 'title']}
+                value={type === 'question' ? editedContent : editedTitle}
+                style={this.titleExceedsCharLimit(type)}
               />
-            )}
-          {type === 'question' && (
-            <Fragment>
-              <Input
-                placeholder={edit['question']}
-                value={editedContent}
-                onChange={text => {
-                  this.setState(() => ({
-                    editedContent: text
-                  }))
-                }}
-              />
-              <small
-                style={{
-                  color: editedContent.length > wordLimit ? 'red' : null
-                }}
-              >
-                {editedContent.length}/{wordLimit} Characters
+              <small style={this.titleExceedsCharLimit(type)}>
+                {this.renderTitleCharLimit(type)}
               </small>
             </Fragment>
           )}
@@ -123,7 +118,13 @@ export default class ContentEditor extends Component {
               }}
               placeholder={edit[type === 'comment' ? 'comment' : 'description']}
               value={type === 'comment' ? editedComment : editedDescription}
+              style={this.descriptionExceedsCharLimit(type)}
             />
+            {this.descriptionExceedsCharLimit(type) && (
+              <small style={{ color: 'red' }}>
+                {this.renderDescriptionCharLimit(type)}
+              </small>
+            )}
           </div>
           <div
             style={{
@@ -165,6 +166,9 @@ export default class ContentEditor extends Component {
       type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content
     const isValid =
       type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl)
+    if (this.titleExceedsCharLimit(type)) return true
+    if (this.descriptionExceedsCharLimit(type)) return true
+    if ((type === 'vidoe' || type === 'url') && this.urlExceedsCharLimit(type)) { return true }
 
     switch (type) {
       case 'video':
@@ -190,20 +194,24 @@ export default class ContentEditor extends Component {
         }
         return false
       case 'question':
-        if (
-          stringIsEmpty(editedContent) ||
-          editedContent === content ||
-          editedContent.length > wordLimit
-        ) {
+        if (stringIsEmpty(editedContent) || editedContent === content) {
           return true
         }
         return false
       case 'discussion':
-        if (stringIsEmpty(editedTitle) || editedTitle === title) return true
+        if (stringIsEmpty(editedTitle) || editedTitle === title) {
+          return true
+        }
         return false
       default:
         return true
     }
+  }
+
+  onInputChange = ({ text, type }) => {
+    this.setState({
+      [type === 'question' ? 'editedContent' : 'editedTitle']: text
+    })
   }
 
   onSubmit = event => {
@@ -223,5 +231,56 @@ export default class ContentEditor extends Component {
       editedTitle: finalizeEmoji(editedTitle)
     }
     onEditContent({ ...post, contentId, type }).then(() => onDismiss())
+  }
+
+  descriptionExceedsCharLimit = type => {
+    const { editedComment, editedDescription } = this.state
+    const text = type === 'comment' ? editedComment : editedDescription
+    return text.length >
+      (type === 'comment' ? wordLimit.comment : wordLimit[type].description)
+      ? {
+          color: 'red',
+          borderColor: 'red'
+      } : null
+  }
+
+  titleExceedsCharLimit = type => {
+    const { editedContent, editedTitle } = this.state
+    const text = type === 'question' ? editedContent : editedTitle
+    return text.length > wordLimit[type].title
+      ? {
+          color: 'red',
+          borderColor: 'red'
+        }
+      : null
+  }
+
+  urlExceedsCharLimit = type => {
+    const { editedUrl } = this.state
+    return editedUrl.length > wordLimit[type].url
+      ? {
+          color: 'red',
+          borderColor: 'red'
+        }
+      : null
+  }
+
+  renderDescriptionCharLimit = type => {
+    const { editedComment, editedDescription } = this.state
+    const text = type === 'comment' ? editedComment : editedDescription
+    return `${text.length}/${
+      type === 'comment' ? wordLimit.comment : wordLimit[type].description
+    } Characters`
+  }
+
+  renderTitleCharLimit = type => {
+    const { editedContent, editedTitle } = this.state
+    const text = type === 'question' ? editedContent : editedTitle
+    return `${text.length}/${wordLimit[type].title} Characters`
+  }
+
+  renderUrlCharLimit = type => {
+    const { editedUrl } = this.state
+    return `${editedUrl.length}/${wordLimit[type].url} Characters`
   }
 }

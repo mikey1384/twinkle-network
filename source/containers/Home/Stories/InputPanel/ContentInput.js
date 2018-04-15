@@ -17,6 +17,7 @@ import {
 import Banner from 'components/Banner'
 import { PanelStyle } from './Styles'
 import { innerBorderRadius, Color } from 'constants/css'
+import { wordLimit } from 'constants/defaultValues'
 import { css } from 'emotion'
 
 class ContentInput extends Component {
@@ -37,7 +38,6 @@ class ContentInput extends Component {
 
   render() {
     const { form, urlError, descriptionFieldsShown } = this.state
-    const { url, title } = form
     return (
       <div className={PanelStyle}>
         <p>Share interesting videos or web links</p>
@@ -50,7 +50,7 @@ class ContentInput extends Component {
           inputRef={ref => {
             this.UrlField = ref
           }}
-          style={{ borderColor: !!urlError && 'red' }}
+          style={this.errorInUrlField()}
           value={form.url}
           onChange={this.onUrlFieldChange}
           placeholder="Copy the URL address of a website or a YouTube video and paste it here"
@@ -126,10 +126,15 @@ class ContentInput extends Component {
                     })
                   }
                 }}
+                style={this.titleExceedsCharLimit()}
                 type="text"
               />
+              {this.titleExceedsCharLimit() && (
+                <small style={{ color: 'red' }}>
+                  {this.renderTitleCharLimit()}
+                </small>
+              )}
               <Textarea
-                style={{ marginTop: '1rem' }}
                 value={form.description}
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
@@ -148,7 +153,16 @@ class ContentInput extends Component {
                     })
                   }
                 }}
+                style={{
+                  marginTop: '1rem',
+                  ...(this.descriptionExceedsCharLimit() || {})
+                }}
               />
+              {this.descriptionExceedsCharLimit() && (
+                <small style={{ color: 'red' }}>
+                  {this.renderDescriptionCharLimit()}
+                </small>
+              )}
             </div>
             <div className="button-container">
               <Button
@@ -156,7 +170,7 @@ class ContentInput extends Component {
                 filled
                 success
                 style={{ marginTop: '1rem' }}
-                disabled={stringIsEmpty(url) || stringIsEmpty(title)}
+                disabled={this.buttonDisabled()}
                 onClick={this.onSubmit}
               >
                 Share!
@@ -166,6 +180,29 @@ class ContentInput extends Component {
         )}
       </div>
     )
+  }
+
+  buttonDisabled = () => {
+    const { form: { url, title } } = this.state
+    let result = false
+    if (stringIsEmpty(url) || stringIsEmpty(title)) return true
+    if (this.errorInUrlField()) result = true
+    if (this.titleExceedsCharLimit()) result = true
+    if (this.descriptionExceedsCharLimit()) result = true
+    return result
+  }
+
+  errorInUrlField = () => {
+    const { form: { checkedVideo, url }, urlError } = this.state
+    const errorStyle = { borderColor: 'red', color: 'red' }
+    let result = null
+    if (urlError) return errorStyle
+    if (checkedVideo) {
+      if (url.length > wordLimit.video.url) result = errorStyle
+    } else {
+      if (url.length > wordLimit.url.url) result = errorStyle
+    }
+    return result
   }
 
   onSubmit = event => {
@@ -215,6 +252,40 @@ class ContentInput extends Component {
       urlError: null,
       descriptionFieldsShown: true
     })
+  }
+
+  renderDescriptionCharLimit = () => {
+    const { form: { checkedVideo, description } } = this.state
+    const type = checkedVideo ? 'video' : 'url'
+    return `${description.length}/${wordLimit[type].description} Characters`
+  }
+
+  renderTitleCharLimit = () => {
+    const { form: { checkedVideo, title } } = this.state
+    const type = checkedVideo ? 'video' : 'url'
+    return `${title.length}/${wordLimit[type].title} Characters`
+  }
+
+  descriptionExceedsCharLimit = () => {
+    const { form: { checkedVideo, description } } = this.state
+    const type = checkedVideo ? 'video' : 'url'
+    return description.length > wordLimit[type].description
+      ? {
+          color: 'red',
+          borderColor: 'red'
+        }
+      : null
+  }
+
+  titleExceedsCharLimit = () => {
+    const { form: { checkedVideo, title } } = this.state
+    const type = checkedVideo ? 'video' : 'url'
+    return title.length > wordLimit[type].title
+      ? {
+          color: 'red',
+          borderColor: 'red'
+        }
+      : null
   }
 }
 
