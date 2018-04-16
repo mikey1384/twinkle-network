@@ -1,5 +1,5 @@
 export const defaultChatSubject = 'Introduce yourself!'
-export const wordLimit = {
+export const charLimit = {
   chat: {
     subject: 200,
     message: 5000
@@ -27,7 +27,7 @@ export const wordLimit = {
     url: 1000
   },
   video: {
-    title: 500,
+    title: 200,
     description: 10000,
     url: 300
   }

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import UsernameText from 'components/Texts/UsernameText'
 import DropdownButton from 'components/DropdownButton'
 import { timeSince } from 'helpers/timeStampHelpers'
@@ -9,12 +9,15 @@ import Textarea from 'components/Texts/Textarea'
 import Input from 'components/Texts/Input'
 import {
   cleanString,
+  exceedsCharLimit,
   isValidUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji
+  finalizeEmoji,
+  renderCharLimit
 } from 'helpers/stringHelpers'
 import { connect } from 'react-redux'
+import { css } from 'emotion'
 
 class Description extends Component {
   static propTypes = {
@@ -35,16 +38,13 @@ class Description extends Component {
     url: PropTypes.string.isRequired
   }
 
-  state = {
-    onEdit: false,
-    editDoneButtonDisabled: true
-  }
-
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      editedTitle: cleanString(nextProps.title),
-      editedUrl: nextProps.content,
-      editedDescription: nextProps.description
+  constructor({ title, content, description }) {
+    super()
+    this.state = {
+      editedTitle: cleanString(title),
+      editedUrl: content,
+      editedDescription: description,
+      onEdit: false
     }
   }
 
@@ -62,13 +62,7 @@ class Description extends Component {
       timeStamp,
       onDelete
     } = this.props
-    const {
-      onEdit,
-      editedTitle,
-      editedDescription,
-      editDoneButtonDisabled,
-      editedUrl
-    } = this.state
+    const { onEdit, editedTitle, editedDescription, editedUrl } = this.state
     const userIsUploader = uploaderId === myId
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploaderAuthLevel
@@ -109,27 +103,44 @@ class Description extends Component {
           }}
         >
           <div
-            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'column'
+            }}
           >
             {onEdit ? (
-              <Input
-                type="text"
-                style={{ width: '80%' }}
-                placeholder="Enter Title..."
-                value={editedTitle}
-                onChange={text => {
-                  this.setState({ editedTitle: text }, () => {
-                    this.determineEditButtonDoneStatus()
-                  })
-                }}
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    this.setState({
-                      editedTitle: addEmoji(event.target.value)
-                    })
-                  }
-                }}
-              />
+              <Fragment>
+                <Input
+                  type="text"
+                  className={css`
+                    width: 80%;
+                  `}
+                  style={this.titleExceedsCharLimit()}
+                  placeholder="Enter Title..."
+                  value={editedTitle}
+                  onChange={text => {
+                    this.setState({ editedTitle: text })
+                  }}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({
+                        editedTitle: addEmoji(event.target.value)
+                      })
+                    }
+                  }}
+                />
+                {this.titleExceedsCharLimit() && (
+                  <small style={{ color: 'red' }}>
+                    {renderCharLimit({
+                      contentType: 'url',
+                      inputType: 'title',
+                      text: editedTitle
+                    })}
+                  </small>
+                )}
+              </Fragment>
             ) : (
               <h2>{title}</h2>
             )}
@@ -153,12 +164,13 @@ class Description extends Component {
             <div>
               <Input
                 placeholder="Enter URL"
-                style={{ marginBottom: '1em' }}
+                className={css`
+                  margin-bottom: '1rem';
+                `}
+                style={this.urlExceedsCharLimit()}
                 value={editedUrl}
                 onChange={text => {
-                  this.setState({ editedUrl: text }, () => {
-                    this.determineEditButtonDoneStatus()
-                  })
+                  this.setState({ editedUrl: text })
                 }}
               />
               <Textarea
@@ -166,13 +178,7 @@ class Description extends Component {
                 placeholder="Enter Description"
                 value={editedDescription}
                 onChange={event => {
-                  this.determineEditButtonDoneStatus()
-                  this.setState(
-                    { editedDescription: event.target.value },
-                    () => {
-                      this.determineEditButtonDoneStatus()
-                    }
-                  )
+                  this.setState({ editedDescription: event.target.value })
                 }}
                 onKeyUp={event => {
                   if (event.key === ' ') {
@@ -181,18 +187,31 @@ class Description extends Component {
                     })
                   }
                 }}
+                style={{
+                  marginTop: '1rem',
+                  ...(this.descriptionExceedsCharLimit() || {})
+                }}
               />
+              {this.descriptionExceedsCharLimit() && (
+                <small style={{ color: 'red' }}>
+                  {renderCharLimit({
+                    contentType: 'url',
+                    inputType: 'description',
+                    text: editedDescription
+                  })}
+                </small>
+              )}
               <div style={{ justifyContent: 'center', display: 'flex' }}>
                 <Button
                   transparent
-                  style={{ marginRight: '5px' }}
+                  style={{ marginRight: '1rem' }}
                   onClick={this.onEditCancel}
                 >
                   Cancel
                 </Button>
                 <Button
                   primary
-                  disabled={editDoneButtonDisabled}
+                  disabled={this.determineEditButtonDoneStatus()}
                   onClick={this.onEditFinish}
                 >
                   Done
@@ -215,12 +234,14 @@ class Description extends Component {
     const urlChanged = this.state.editedUrl !== this.props.url
     const descriptionChanged =
       this.state.editedDescription !== this.props.description
-    const editDoneButtonDisabled =
-      !urlIsValid ||
-      urlIsEmpty ||
-      titleIsEmpty ||
-      (!titleChanged && !descriptionChanged && !urlChanged)
-    this.setState({ editDoneButtonDisabled })
+    if (!urlIsValid) return true
+    if (urlIsEmpty) return true
+    if (titleIsEmpty) return true
+    if (!titleChanged && !descriptionChanged && !urlChanged) return true
+    if (this.titleExceedsCharLimit()) return true
+    if (this.descriptionExceedsCharLimit()) return true
+    if (this.urlExceedsCharLimit()) return true
+    return false
   }
 
   onEditCancel = () => {
@@ -243,6 +264,30 @@ class Description extends Component {
       editedDescription: finalizeEmoji(editedDescription),
       linkId
     }).then(() => this.setState({ onEdit: false }))
+  }
+
+  descriptionExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'url',
+      inputType: 'description',
+      text: this.state.editedDescription
+    })
+  }
+
+  titleExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'url',
+      inputType: 'title',
+      text: this.state.editedTitle
+    })
+  }
+
+  urlExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'url',
+      inputType: 'url',
+      text: this.state.editedUrl
+    })
   }
 }
 

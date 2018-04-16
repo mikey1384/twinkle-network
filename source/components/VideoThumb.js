@@ -17,6 +17,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import VideoThumbImage from 'components/VideoThumbImage'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
+import {charLimit} from 'constants/defaultValues'
 
 class VideoThumb extends Component {
   static propTypes = {
@@ -119,6 +120,7 @@ class VideoThumb extends Component {
               >
                 <EditTitleForm
                   autoFocus
+                  maxLength={charLimit.video.title}
                   title={video.title}
                   onEditSubmit={this.onEditedTitleSubmit}
                   onClickOutSide={this.onEditTitleCancel}

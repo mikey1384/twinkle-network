@@ -7,10 +7,12 @@ import { uploadVideo } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
 import Input from 'components/Texts/Input'
 import {
+  exceedsCharLimit,
   isValidYoutubeUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji
+  finalizeEmoji,
+  renderCharLimit
 } from 'helpers/stringHelpers'
 
 class AddVideoModal extends Component {
@@ -30,8 +32,17 @@ class AddVideoModal extends Component {
 
   render() {
     const { onHide } = this.props
-    const { urlError, form } = this.state
-    const { url, title } = form
+    const { urlError, form, form: { title, description } } = this.state
+    const titleExceedsCharLimit = exceedsCharLimit({
+      inputType: 'title',
+      contentType: 'video',
+      text: title
+    })
+    const descriptionExceedsCharLimit = exceedsCharLimit({
+      inputType: 'description',
+      contentType: 'video',
+      text: description
+    })
     return (
       <Modal onHide={onHide}>
         <header>Add Videos</header>
@@ -42,12 +53,11 @@ class AddVideoModal extends Component {
                 ref={ref => {
                   this.UrlField = ref
                 }}
-                style={{ borderColor: !!urlError && 'red' }}
                 value={form.url}
                 onChange={this.onUrlFieldChange}
-                className="form-control"
                 placeholder="Paste video's YouTube url here"
                 type="text"
+                style={this.urlHasError()}
               />
               {urlError && (
                 <span
@@ -62,26 +72,34 @@ class AddVideoModal extends Component {
               )}
             </section>
             <section style={{ marginTop: '1rem' }}>
-              <div style={{ display: 'inline' }}>
-                <Input
-                  value={form.title}
-                  onChange={text =>
-                    this.setState({ form: { ...form, title: text } })
+              <Input
+                value={form.title}
+                onChange={text =>
+                  this.setState({ form: { ...form, title: text } })
+                }
+                placeholder="Enter Title"
+                type="text"
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    this.setState({
+                      form: {
+                        ...form,
+                        title: addEmoji(event.target.value)
+                      }
+                    })
                   }
-                  placeholder="Enter Title"
-                  type="text"
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        form: {
-                          ...form,
-                          title: addEmoji(event.target.value)
-                        }
-                      })
-                    }
-                  }}
-                />
-              </div>
+                }}
+                style={titleExceedsCharLimit}
+              />
+              {titleExceedsCharLimit && (
+                <small style={{ color: 'red' }}>
+                  {renderCharLimit({
+                    contentType: 'video',
+                    inputType: 'title',
+                    text: title
+                  })}
+                </small>
+              )}
             </section>
             <section style={{ marginTop: '1rem', position: 'relative' }}>
               <Textarea
@@ -103,7 +121,17 @@ class AddVideoModal extends Component {
                     })
                   }
                 }}
+                style={descriptionExceedsCharLimit}
               />
+              {descriptionExceedsCharLimit && (
+                <small style={{ color: 'red' }}>
+                  {renderCharLimit({
+                    contentType: 'video',
+                    inputType: 'description',
+                    text: description
+                  })}
+                </small>
+              )}
             </section>
           </form>
         </main>
@@ -112,9 +140,12 @@ class AddVideoModal extends Component {
             primary
             type="submit"
             onClick={this.onSubmit}
-            disabled={!url || !title || stringIsEmpty(title)}
+            disabled={this.submitDisabled()}
           >
             Add
+          </Button>
+          <Button style={{ marginRight: '1rem' }} transparent onClick={onHide}>
+            Cancel
           </Button>
         </footer>
       </Modal>
@@ -143,6 +174,32 @@ class AddVideoModal extends Component {
     this.setState({
       form: { ...form, url: text },
       urlError: null
+    })
+  }
+
+  submitDisabled = () => {
+    const { form: { url, description, title } } = this.state
+    if (stringIsEmpty(url) || stringIsEmpty(title)) return true
+    if (this.urlHasError()) return true
+    if (
+      exceedsCharLimit({
+        inputType: 'description',
+        contentType: 'video',
+        text: description
+      })
+    ) {
+      return true
+    }
+    return false
+  }
+
+  urlHasError = () => {
+    const { form: { url }, urlError } = this.state
+    if (urlError) return { color: 'red', borderColor: 'red' }
+    return exceedsCharLimit({
+      contentType: 'video',
+      inputType: 'url',
+      text: url
     })
   }
 }

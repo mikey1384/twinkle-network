@@ -4,7 +4,13 @@ import Textarea from 'components/Texts/Textarea'
 import Modal from 'components/Modal'
 import Button from 'components/Button'
 import { uploadPlaylist } from 'redux/actions/PlaylistActions'
-import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
+import {
+  exceedsCharLimit,
+  stringIsEmpty,
+  addEmoji,
+  finalizeEmoji,
+  renderCharLimit
+} from 'helpers/stringHelpers'
 import { connect } from 'react-redux'
 import SortableThumb from './SortableThumb'
 import { DragDropContext } from 'react-dnd'
@@ -36,21 +42,23 @@ class AddPlaylistModal extends Component {
     searchText: ''
   }
 
-  componentDidMount() {
-    return request
-      .get(`${URL}/video?numberToLoad=18`)
-      .then(({ data: allVideos }) => {
-        let loadMoreButtonShown = false
-        if (allVideos.length > 18) {
-          allVideos.pop()
-          loadMoreButtonShown = true
-        }
-        this.setState({
-          allVideos,
-          loadMoreButtonShown
-        })
+  async componentDidMount() {
+    try {
+      const { data: allVideos } = await request.get(
+        `${URL}/video?numberToLoad=18`
+      )
+      let loadMoreButtonShown = false
+      if (allVideos.length > 18) {
+        allVideos.pop()
+        loadMoreButtonShown = true
+      }
+      this.setState({
+        allVideos,
+        loadMoreButtonShown
       })
-      .catch(error => console.error(error.response || error))
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 
   render() {
@@ -66,6 +74,16 @@ class AddPlaylistModal extends Component {
       selectedVideos,
       searchText
     } = this.state
+    const titleExceedsCharLimit = exceedsCharLimit({
+      contentType: 'playlist',
+      inputType: 'title',
+      text: title
+    })
+    const descriptionExceedsCharLimit = exceedsCharLimit({
+      contentType: 'playlist',
+      inputType: 'description',
+      text: description
+    })
     return (
       <Modal
         onHide={onHide}
@@ -87,7 +105,6 @@ class AddPlaylistModal extends Component {
             >
               <section>
                 <Input
-                  className="form-control"
                   placeholder="Enter Playlist Title"
                   value={title}
                   onChange={text => this.setState({ title: text })}
@@ -96,7 +113,17 @@ class AddPlaylistModal extends Component {
                       this.setState({ title: addEmoji(event.target.value) })
                     }
                   }}
+                  style={titleExceedsCharLimit}
                 />
+                {titleExceedsCharLimit && (
+                  <small style={{ color: 'red', fontSize: '1.3rem' }}>
+                    {renderCharLimit({
+                      contentType: 'playlist',
+                      inputType: 'title',
+                      text: title
+                    })}
+                  </small>
+                )}
               </section>
               <section style={{ marginTop: '1.5rem' }}>
                 <Textarea
@@ -114,7 +141,17 @@ class AddPlaylistModal extends Component {
                       })
                     }
                   }}
+                  style={descriptionExceedsCharLimit}
                 />
+                {descriptionExceedsCharLimit && (
+                  <small style={{ color: 'red', fontSize: '1.3rem' }}>
+                    {renderCharLimit({
+                      contentType: 'playlist',
+                      inputType: 'description',
+                      text: description
+                    })}
+                  </small>
+                )}
               </section>
             </form>
           )}
@@ -186,7 +223,10 @@ class AddPlaylistModal extends Component {
               primary
               type="submit"
               disabled={
-                (section === 0 && stringIsEmpty(title)) ||
+                (section === 0 &&
+                  (stringIsEmpty(title) ||
+                    titleExceedsCharLimit ||
+                    descriptionExceedsCharLimit)) ||
                 (section === 1 && this.state.selectedVideos.length < 2)
               }
               onClick={this.handleNext}

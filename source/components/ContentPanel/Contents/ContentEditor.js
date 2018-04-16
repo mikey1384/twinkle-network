@@ -7,13 +7,14 @@ import { edit } from 'constants/placeholders'
 import { css } from 'emotion'
 import {
   addEmoji,
+  exceedsCharLimit,
   finalizeEmoji,
   stringIsEmpty,
   turnStringIntoQuestion,
   isValidUrl,
-  isValidYoutubeUrl
+  isValidYoutubeUrl,
+  renderCharLimit
 } from 'helpers/stringHelpers'
-import { wordLimit } from 'constants/defaultValues'
 
 export default class ContentEditor extends Component {
   static propTypes = {
@@ -168,7 +169,12 @@ export default class ContentEditor extends Component {
       type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl)
     if (this.titleExceedsCharLimit(type)) return true
     if (this.descriptionExceedsCharLimit(type)) return true
-    if ((type === 'vidoe' || type === 'url') && this.urlExceedsCharLimit(type)) { return true }
+    if (
+      (type === 'vidoe' || type === 'url') &&
+      this.urlExceedsCharLimit(type)
+    ) {
+      return true
+    }
 
     switch (type) {
       case 'video':
@@ -235,52 +241,55 @@ export default class ContentEditor extends Component {
 
   descriptionExceedsCharLimit = type => {
     const { editedComment, editedDescription } = this.state
-    const text = type === 'comment' ? editedComment : editedDescription
-    return text.length >
-      (type === 'comment' ? wordLimit.comment : wordLimit[type].description)
-      ? {
-          color: 'red',
-          borderColor: 'red'
-      } : null
+    return exceedsCharLimit({
+      contentType: type,
+      inputType: 'description',
+      text: type === 'comment' ? editedComment : editedDescription
+    })
   }
 
   titleExceedsCharLimit = type => {
     const { editedContent, editedTitle } = this.state
-    const text = type === 'question' ? editedContent : editedTitle
-    return text.length > wordLimit[type].title
-      ? {
-          color: 'red',
-          borderColor: 'red'
-        }
-      : null
+    return exceedsCharLimit({
+      contentType: type,
+      inputType: 'title',
+      text: type === 'question' ? editedContent : editedTitle
+    })
   }
 
   urlExceedsCharLimit = type => {
     const { editedUrl } = this.state
-    return editedUrl.length > wordLimit[type].url
-      ? {
-          color: 'red',
-          borderColor: 'red'
-        }
-      : null
+    return exceedsCharLimit({
+      contentType: type,
+      inputType: 'url',
+      text: editedUrl
+    })
   }
 
   renderDescriptionCharLimit = type => {
     const { editedComment, editedDescription } = this.state
-    const text = type === 'comment' ? editedComment : editedDescription
-    return `${text.length}/${
-      type === 'comment' ? wordLimit.comment : wordLimit[type].description
-    } Characters`
+    return renderCharLimit({
+      inputType: 'description',
+      contentType: type,
+      text: type === 'comment' ? editedComment : editedDescription
+    })
   }
 
   renderTitleCharLimit = type => {
     const { editedContent, editedTitle } = this.state
-    const text = type === 'question' ? editedContent : editedTitle
-    return `${text.length}/${wordLimit[type].title} Characters`
+    return renderCharLimit({
+      inputType: 'title',
+      contentType: type,
+      text: type === 'question' ? editedContent : editedTitle
+    })
   }
 
   renderUrlCharLimit = type => {
     const { editedUrl } = this.state
-    return `${editedUrl.length}/${wordLimit[type].url} Characters`
+    return renderCharLimit({
+      inputType: 'url',
+      contentType: type,
+      text: editedUrl
+    })
   }
 }

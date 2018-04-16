@@ -9,6 +9,7 @@ import {
   uploadVideoDiscussion
 } from 'redux/actions/VideoActions'
 import FilterBar from 'components/FilterBar'
+import { charLimit } from 'constants/defaultValues'
 import { css } from 'emotion'
 
 class CommentInputArea extends Component {
@@ -78,6 +79,8 @@ class CommentInputArea extends Component {
                   }
                   onClose={() => this.setState({ discussionFormShown: false })}
                   rows={4}
+                  titleMaxChar={charLimit.discussion.title}
+                  descriptionMaxChar={charLimit.discussion.description}
                   titlePlaceholder="Enter discussion topic..."
                   descriptionPlaceholder="Enter details... (Optional)"
                 />

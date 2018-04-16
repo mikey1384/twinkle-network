@@ -17,6 +17,7 @@ import { connect } from 'react-redux'
 import { cleanString } from 'helpers/stringHelpers'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
+import { charLimit } from 'constants/defaultValues'
 
 class PlaylistCarousel extends Component {
   static propTypes = {
@@ -148,13 +149,14 @@ class PlaylistCarousel extends Component {
             }
             small {
               font-size: 1.5rem;
-              color: ${Color.gray()};
+              color: ${Color.darkGray()};
             }
           `}
         >
           {onEdit ? (
             <EditTitleForm
               autoFocus
+              maxLength={charLimit.playlist.title}
               style={{ width: '90%' }}
               title={title}
               onEditSubmit={this.onEditedTitleSubmit}

@@ -71,7 +71,7 @@ export default class TitleDescriptionForm extends Component {
           />
         </div>
         {description.length > descriptionMaxChar && (
-          <small style={{ color: 'red', fontSize: '1.6rem' }}>
+          <small style={{ color: 'red', fontSize: '1.3rem' }}>
             {descriptionMaxChar} character limit exceeded
           </small>
         )}

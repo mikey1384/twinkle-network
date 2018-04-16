@@ -12,10 +12,12 @@ import { textIsOverflown } from 'helpers/domHelpers'
 import Input from 'components/Texts/Input'
 import {
   cleanString,
+  exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
-  isValidYoutubeUrl
+  isValidYoutubeUrl,
+  renderCharLimit
 } from 'helpers/stringHelpers'
 import { edit } from 'constants/placeholders'
 import Likers from 'components/Likers'
@@ -54,18 +56,15 @@ class Description extends Component {
     videoViews: PropTypes.string.isRequired
   }
 
-  state = {
-    onEdit: false,
-    onTitleHover: false,
-    editDoneButtonDisabled: true,
-    userListModalShown: false
-  }
-
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      editedTitle: cleanString(nextProps.title),
-      editedUrl: `https://www.youtube.com/watch?v=${nextProps.content}`,
-      editedDescription: nextProps.description
+  constructor({ title, content, description }) {
+    super()
+    this.state = {
+      onEdit: false,
+      onTitleHover: false,
+      userListModalShown: false,
+      editedTitle: cleanString(title),
+      editedUrl: `https://www.youtube.com/watch?v=${content}`,
+      editedDescription: description
     }
   }
 
@@ -106,7 +105,6 @@ class Description extends Component {
       editedTitle,
       editedUrl,
       editedDescription,
-      editDoneButtonDisabled,
       userListModalShown,
       onTitleHover
     } = this.state
@@ -127,7 +125,6 @@ class Description extends Component {
         onClick: onDelete
       })
     }
-
     const starButtonGrid = canStar ? 'starButton' : 'likeButton'
     return (
       <div
@@ -172,20 +169,19 @@ class Description extends Component {
                 placeholder={edit.video}
                 value={editedUrl}
                 onChange={text => {
-                  this.setState({ editedUrl: text }, () => {
-                    this.determineEditButtonDoneStatus()
-                  })
+                  this.setState({ editedUrl: text })
                 }}
+                style={this.urlExceedsCharLimit()}
               />
               <Input
-                style={{ marginTop: '1rem' }}
+                className={css`
+                  margin-top: 1rem;
+                `}
                 type="text"
                 placeholder={edit.title}
                 value={editedTitle}
                 onChange={text => {
-                  this.setState({ editedTitle: text }, () => {
-                    this.determineEditButtonDoneStatus()
-                  })
+                  this.setState({ editedTitle: text })
                 }}
                 onKeyUp={event => {
                   if (event.key === ' ') {
@@ -194,7 +190,17 @@ class Description extends Component {
                     })
                   }
                 }}
+                style={this.titleExceedsCharLimit()}
               />
+              {this.titleExceedsCharLimit() && (
+                <small style={{ color: 'red' }}>
+                  {renderCharLimit({
+                    contentType: 'video',
+                    inputType: 'title',
+                    text: editedTitle
+                  })}
+                </small>
+              )}
             </div>
           ) : (
             <div style={{ position: 'relative' }}>
@@ -269,13 +275,7 @@ class Description extends Component {
                 placeholder={edit.description}
                 value={editedDescription}
                 onChange={event => {
-                  this.determineEditButtonDoneStatus()
-                  this.setState(
-                    { editedDescription: event.target.value },
-                    () => {
-                      this.determineEditButtonDoneStatus()
-                    }
-                  )
+                  this.setState({ editedDescription: event.target.value })
                 }}
                 onKeyUp={event => {
                   if (event.key === ' ') {
@@ -284,7 +284,17 @@ class Description extends Component {
                     })
                   }
                 }}
+                style={this.descriptionExceedsCharLimit()}
               />
+              {this.descriptionExceedsCharLimit() && (
+                <small style={{ color: 'red' }}>
+                  {renderCharLimit({
+                    contentType: 'video',
+                    inputType: 'description',
+                    text: editedDescription
+                  })}
+                </small>
+              )}
               <div
                 style={{
                   display: 'flex',
@@ -301,7 +311,7 @@ class Description extends Component {
                 </Button>
                 <Button
                   primary
-                  disabled={editDoneButtonDisabled}
+                  disabled={this.determineEditButtonDoneStatus()}
                   onClick={this.onEditFinish}
                   style={{ fontSize: '1.7rem' }}
                 >
@@ -403,19 +413,22 @@ class Description extends Component {
   }
 
   determineEditButtonDoneStatus = () => {
-    const urlIsInvalid = !isValidYoutubeUrl(this.state.editedUrl)
-    const titleIsEmpty = stringIsEmpty(this.state.editedTitle)
-    const titleChanged = this.state.editedTitle !== this.props.title
+    const {editedTitle, editedDescription, editedUrl} = this.state
+    const urlIsInvalid = !isValidYoutubeUrl(editedUrl)
+    const titleIsEmpty = stringIsEmpty(editedTitle)
+    const titleChanged = editedTitle !== this.props.title
     const urlChanged =
-      this.state.editedUrl !==
+      editedUrl !==
       `https://www.youtube.com/watch?v=${this.props.content}`
     const descriptionChanged =
-      this.state.editedDescription !== this.props.description
-    const editDoneButtonDisabled =
-      urlIsInvalid ||
-      titleIsEmpty ||
-      (!titleChanged && !descriptionChanged && !urlChanged)
-    this.setState({ editDoneButtonDisabled })
+      editedDescription !== this.props.description
+    if (urlIsInvalid) return true
+    if (titleIsEmpty) return true
+    if (!titleChanged && !descriptionChanged && !urlChanged) return true
+    if (this.urlExceedsCharLimit()) return true
+    if (this.titleExceedsCharLimit()) return true
+    if (this.descriptionExceedsCharLimit()) return true
+    return false
   }
 
   onEditCancel = () => {
@@ -461,6 +474,30 @@ class Description extends Component {
   onVideoLikeClick = () => {
     const { videoId } = this.props
     this.props.likeVideo(videoId)
+  }
+
+  descriptionExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'video',
+      inputType: 'description',
+      text: this.state.editedDescription
+    })
+  }
+
+  titleExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'video',
+      inputType: 'title',
+      text: this.state.editedTitle
+    })
+  }
+
+  urlExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'video',
+      inputType: 'url',
+      text: this.state.editedUrl
+    })
   }
 }
 

@@ -1,3 +1,5 @@
+import { charLimit } from 'constants/defaultValues'
+
 /* eslint-disable no-useless-escape */
 
 export function cleanString(string) {
@@ -10,6 +12,27 @@ export function cleanString(string) {
     : ''
 }
 
+export function exceedsCharLimit({ inputType, contentType, text }) {
+  const limit =
+    contentType === 'comment'
+      ? charLimit.comment
+      : charLimit[contentType][inputType]
+  return text.length > limit
+    ? {
+        color: 'red',
+        borderColor: 'red'
+      }
+    : null
+}
+
+export function renderCharLimit({ inputType, contentType, text }) {
+  const limit =
+    contentType === 'comment'
+      ? charLimit.comment
+      : charLimit[contentType][inputType]
+  return `${text.length}/${limit} Characters`
+}
+
 export function turnStringIntoQuestion(string) {
   const toDelete = ['?', ' ']
   while (toDelete.indexOf(string.charAt(string.length - 1)) !== -1) {
@@ -19,7 +42,10 @@ export function turnStringIntoQuestion(string) {
 }
 
 export function limitBrs(string) {
-  return string.replace(/(<br ?\/?>){11,}/gi, '<br><br><br><br><br><br><br><br><br><br>')
+  return string.replace(
+    /(<br ?\/?>){11,}/gi,
+    '<br><br><br><br><br><br><br><br><br><br>'
+  )
 }
 
 export function addTwoLetterEmoji(string) {

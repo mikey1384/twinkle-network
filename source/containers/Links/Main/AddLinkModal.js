@@ -7,11 +7,14 @@ import { uploadLink } from 'redux/actions/LinkActions'
 import { connect } from 'react-redux'
 import Input from 'components/Texts/Input'
 import Banner from 'components/Banner'
+import { css } from 'emotion'
 import {
+  exceedsCharLimit,
   isValidUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji
+  finalizeEmoji,
+  renderCharLimit
 } from 'helpers/stringHelpers'
 
 class AddLinkModal extends Component {
@@ -20,24 +23,18 @@ class AddLinkModal extends Component {
     uploadLink: PropTypes.func
   }
 
-  constructor() {
-    super()
-    this.state = {
-      urlError: null,
-      form: {
-        url: '',
-        title: '',
-        description: ''
-      }
+  state = {
+    urlError: null,
+    form: {
+      url: '',
+      title: '',
+      description: ''
     }
-    this.onSubmit = this.onSubmit.bind(this)
-    this.onUrlFieldChange = this.onUrlFieldChange.bind(this)
   }
 
   render() {
     const { onHide } = this.props
     const { urlError, form } = this.state
-    const { url, title } = form
     return (
       <Modal onHide={onHide}>
         <header>Add Links</header>
@@ -51,14 +48,16 @@ class AddLinkModal extends Component {
             ref={ref => {
               this.UrlField = ref
             }}
-            style={{ borderColor: !!urlError && 'red' }}
+            style={this.urlHasError()}
             value={form.url}
             onChange={this.onUrlFieldChange}
             placeholder="Paste the Link's Internet Address (URL) here"
             type="text"
           />
           <Input
-            style={{ marginTop: '1rem' }}
+            className={css`
+              margin-top: 1rem;
+            `}
             value={form.title}
             onChange={text => this.setState({ form: { ...form, title: text } })}
             placeholder="Enter Title"
@@ -73,9 +72,22 @@ class AddLinkModal extends Component {
                 })
               }
             }}
+            style={this.titleExceedsCharLimit()}
           />
+          {this.titleExceedsCharLimit() && (
+            <small style={{ color: 'red', width: '100%' }}>
+              {renderCharLimit({
+                contentType: 'url',
+                inputType: 'title',
+                text: form.title
+              })}
+            </small>
+          )}
           <Textarea
-            style={{ marginTop: '1rem' }}
+            style={{
+              marginTop: '1rem',
+              ...(this.descriptionExceedsCharLimit() || {})
+            }}
             value={form.description}
             minRows={4}
             placeholder="Enter Description (Optional, you don't need to write this)"
@@ -95,22 +107,34 @@ class AddLinkModal extends Component {
               }
             }}
           />
+          {this.descriptionExceedsCharLimit() && (
+            <small style={{ color: 'red', width: '100%' }}>
+              {renderCharLimit({
+                contentType: 'url',
+                inputType: 'description',
+                text: form.description
+              })}
+            </small>
+          )}
         </main>
         <footer>
           <Button
             primary
             type="submit"
             onClick={this.onSubmit}
-            disabled={!url || !title || stringIsEmpty(title)}
+            disabled={this.submitDisabled()}
           >
             Add
+          </Button>
+          <Button onClick={onHide} transparent style={{ marginRight: '1rem' }}>
+            Cancel
           </Button>
         </footer>
       </Modal>
     )
   }
 
-  onSubmit(event) {
+  onSubmit = event => {
     const { uploadLink, onHide } = this.props
     const { form: { url, title, description } } = this.state
 
@@ -127,11 +151,55 @@ class AddLinkModal extends Component {
     }).then(() => onHide())
   }
 
-  onUrlFieldChange(text) {
+  onUrlFieldChange = text => {
     const { form } = this.state
     this.setState({
       form: { ...form, url: text },
       urlError: null
+    })
+  }
+
+  submitDisabled = () => {
+    const { form: { url, title } } = this.state
+    if (stringIsEmpty(url)) return true
+    if (stringIsEmpty(title)) return true
+    if (this.urlHasError()) return true
+    if (this.titleExceedsCharLimit()) return true
+    if (this.descriptionExceedsCharLimit()) return true
+    return false
+  }
+
+  urlHasError = () => {
+    if (this.state.urlError) {
+      return {
+        color: 'red',
+        borderColor: 'red'
+      }
+    }
+    return this.urlExceedsCharLimit()
+  }
+
+  descriptionExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'url',
+      inputType: 'description',
+      text: this.state.form.description
+    })
+  }
+
+  titleExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'url',
+      inputType: 'title',
+      text: this.state.form.title
+    })
+  }
+
+  urlExceedsCharLimit = () => {
+    return exceedsCharLimit({
+      contentType: 'url',
+      inputType: 'url',
+      text: this.state.form.url
     })
   }
 }

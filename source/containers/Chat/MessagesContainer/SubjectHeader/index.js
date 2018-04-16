@@ -18,7 +18,7 @@ import UsernameText from 'components/Texts/UsernameText'
 import { timeSince } from 'helpers/timeStampHelpers'
 import EditSubjectForm from './EditSubjectForm'
 import { socket } from 'constants/io'
-import { defaultChatSubject } from 'constants/defaultValues'
+import { charLimit, defaultChatSubject } from 'constants/defaultValues'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
@@ -138,6 +138,7 @@ class SubjectHeader extends Component {
             {onEdit && (
               <EditSubjectForm
                 autoFocus
+                maxLength={charLimit.chat.subject}
                 currentSubjectId={subjectId}
                 title={subjectTitle}
                 onEditSubmit={this.onSubjectSubmit}

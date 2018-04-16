@@ -22,7 +22,7 @@ export default function CommentInputArea({
       <InputForm
         clickListenerState={clickListenerState}
         autoFocus={autoFocus}
-        onSubmit={text => onSubmit(text)}
+        onSubmit={onSubmit}
         rows={4}
         placeholder={`Type your ${inputTypeLabel} here...`}
       />

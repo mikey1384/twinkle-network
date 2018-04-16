@@ -8,16 +8,17 @@ import { loadVideoPageFromClientSide } from 'redux/actions/VideoActions'
 import Input from 'components/Texts/Input'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import {
+  exceedsCharLimit,
   isValidUrl,
   isValidYoutubeUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji
+  finalizeEmoji,
+  renderCharLimit
 } from 'helpers/stringHelpers'
 import Banner from 'components/Banner'
 import { PanelStyle } from './Styles'
 import { innerBorderRadius, Color } from 'constants/css'
-import { wordLimit } from 'constants/defaultValues'
 import { css } from 'emotion'
 
 class ContentInput extends Component {
@@ -194,15 +195,12 @@ class ContentInput extends Component {
 
   errorInUrlField = () => {
     const { form: { checkedVideo, url }, urlError } = this.state
-    const errorStyle = { borderColor: 'red', color: 'red' }
-    let result = null
-    if (urlError) return errorStyle
-    if (checkedVideo) {
-      if (url.length > wordLimit.video.url) result = errorStyle
-    } else {
-      if (url.length > wordLimit.url.url) result = errorStyle
-    }
-    return result
+    if (urlError) return { borderColor: 'red', color: 'red' }
+    return exceedsCharLimit({
+      inputType: 'url',
+      contentType: checkedVideo ? 'video' : 'url',
+      text: url
+    })
   }
 
   onSubmit = event => {
@@ -256,36 +254,38 @@ class ContentInput extends Component {
 
   renderDescriptionCharLimit = () => {
     const { form: { checkedVideo, description } } = this.state
-    const type = checkedVideo ? 'video' : 'url'
-    return `${description.length}/${wordLimit[type].description} Characters`
+    return renderCharLimit({
+      inputType: 'description',
+      contentType: checkedVideo ? 'video' : 'url',
+      text: description
+    })
   }
 
   renderTitleCharLimit = () => {
     const { form: { checkedVideo, title } } = this.state
-    const type = checkedVideo ? 'video' : 'url'
-    return `${title.length}/${wordLimit[type].title} Characters`
+    return renderCharLimit({
+      inputType: 'title',
+      contentType: checkedVideo ? 'video' : 'url',
+      text: title
+    })
   }
 
   descriptionExceedsCharLimit = () => {
     const { form: { checkedVideo, description } } = this.state
-    const type = checkedVideo ? 'video' : 'url'
-    return description.length > wordLimit[type].description
-      ? {
-          color: 'red',
-          borderColor: 'red'
-        }
-      : null
+    return exceedsCharLimit({
+      inputType: 'description',
+      contentType: checkedVideo ? 'video' : 'url',
+      text: description
+    })
   }
 
   titleExceedsCharLimit = () => {
     const { form: { checkedVideo, title } } = this.state
-    const type = checkedVideo ? 'video' : 'url'
-    return title.length > wordLimit[type].title
-      ? {
-          color: 'red',
-          borderColor: 'red'
-        }
-      : null
+    return exceedsCharLimit({
+      inputType: 'title',
+      contentType: checkedVideo ? 'video' : 'url',
+      text: title
+    })
   }
 }
 

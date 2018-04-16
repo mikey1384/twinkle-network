@@ -7,13 +7,15 @@ import Input from 'components/Texts/Input'
 import Textarea from 'components/Texts/Textarea'
 import {
   addEmoji,
+  exceedsCharLimit,
   stringIsEmpty,
   finalizeEmoji,
+  renderCharLimit,
   turnStringIntoQuestion
 } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 import { PanelStyle } from './Styles'
-import { questionWordLimit as wordLimit } from 'constants/defaultValues'
+import { charLimit } from 'constants/defaultValues'
 
 class QuestionInput extends Component {
   static propTypes = {
@@ -28,6 +30,11 @@ class QuestionInput extends Component {
 
   render() {
     const { description, descriptionInputShown, question } = this.state
+    const descriptionExceedsCharLimit = exceedsCharLimit({
+      contentType: 'question',
+      inputType: 'description',
+      text: description
+    })
     return (
       <div className={PanelStyle}>
         <p>
@@ -38,18 +45,27 @@ class QuestionInput extends Component {
           placeholder="Ask a question (and feel free to answer your own questions)"
           value={question}
           onChange={this.onInputChange}
-          style={{
-            color: question.length > wordLimit && 'red'
-          }}
+          style={exceedsCharLimit({
+            inputType: 'title',
+            contentType: 'question',
+            text: question
+          })}
         />
         <div style={{ marginTop: '1rem' }}>
           <span
             style={{
               fontSize: '1.2rem',
-              color: question.length > wordLimit ? 'red' : Color.darkGray()
+              color:
+                question.length > charLimit.question.title
+                  ? 'red'
+                  : Color.darkGray()
             }}
           >
-            {question.length}/{wordLimit} Characters
+            {renderCharLimit({
+              inputType: 'title',
+              contentType: 'question',
+              text: question
+            })}
           </span>
         </div>
         {descriptionInputShown && (
@@ -62,7 +78,7 @@ class QuestionInput extends Component {
               type="text"
               style={{
                 marginTop: '1rem',
-                color: question.length > wordLimit && 'red'
+                ...(descriptionExceedsCharLimit || null)
               }}
               value={description}
               minRows={4}
@@ -81,13 +97,22 @@ class QuestionInput extends Component {
                 }
               }}
             />
+            {descriptionExceedsCharLimit && (
+              <small style={{ color: 'red' }}>
+                {renderCharLimit({
+                  contentType: 'question',
+                  inputType: 'description',
+                  text: description
+                })}
+              </small>
+            )}
             <div className="button-container">
               <Button
                 filled
                 success
                 type="submit"
                 style={{ marginTop: '1rem' }}
-                disabled={question.length > wordLimit}
+                disabled={this.buttonDisabled()}
                 onClick={this.onSubmit}
               >
                 Ask!
@@ -97,6 +122,13 @@ class QuestionInput extends Component {
         )}
       </div>
     )
+  }
+
+  buttonDisabled = () => {
+    const { question, description } = this.state
+    if (question.length > charLimit.question.title) return true
+    if (description.length > charLimit.question.description) return true
+    return false
   }
 
   onInputChange = text => {
@@ -110,7 +142,9 @@ class QuestionInput extends Component {
     const { uploadQuestion } = this.props
     const { question, description } = this.state
     event.preventDefault()
-    if (stringIsEmpty(question) || question.length > wordLimit) return
+    if (stringIsEmpty(question) || question.length > charLimit.question.title) {
+      return
+    }
     await uploadQuestion({
       question: turnStringIntoQuestion(question),
       description: finalizeEmoji(description)
