@@ -12,6 +12,7 @@ import MainContent from './MainContent'
 import TargetContent from './TargetContent'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
+import XPRewardInterface from 'components/XPRewardInterface'
 
 class Contents extends Component {
   static propTypes = {
@@ -27,12 +28,15 @@ class Contents extends Component {
 
   state = {
     autoFocusWhenCommentShown: false,
+    rewardExplanation: '',
     edited: false,
     isEditing: false,
     userListModalShown: false,
     clickListenerState: false,
     commentsShown: false,
-    confirmModalShown: false
+    confirmModalShown: false,
+    twoStarSelected: false,
+    xpRewardInterfaceShown: false
   }
 
   componentDidUpdate(prevProps) {
@@ -90,7 +94,8 @@ class Contents extends Component {
       clickListenerState,
       confirmModalShown,
       commentsShown,
-      isEditing
+      isEditing,
+      xpRewardInterfaceShown
     } = this.state
     let userLikedThis = false
     for (let i = 0; i < contentLikers.length; i++) {
@@ -236,6 +241,20 @@ class Contents extends Component {
                       style={{ marginLeft: '1rem' }}
                     />
                   )}
+                {type === 'comment' &&
+                  canStar &&
+                  userCanEditThis &&
+                  !userIsUploader && (
+                    <Button
+                      love
+                      disabled={xpRewardInterfaceShown}
+                      onClick={() =>
+                        this.setState({ xpRewardInterfaceShown: true })
+                      }
+                    >
+                      <span className="glyphicon glyphicon-star" /> Reward Stars
+                    </Button>
+                  )}
               </div>
             </div>
             <Likers
@@ -246,6 +265,7 @@ class Contents extends Component {
             />
           </div>
         )}
+        {xpRewardInterfaceShown && <XPRewardInterface />}
         {commentsShown && (
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}

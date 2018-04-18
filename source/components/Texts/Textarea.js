@@ -5,14 +5,15 @@ import { css } from 'emotion'
 import TextareaAutosize from 'react-textarea-autosize'
 
 Textarea.propTypes = {
+  className: PropTypes.string,
   innerRef: PropTypes.func
 }
-export default function Textarea({ innerRef, ...props }) {
+export default function Textarea({ className, innerRef, ...props }) {
   return (
     <TextareaAutosize
       {...props}
       ref={innerRef}
-      className={css`
+      className={`${className} ${css`
         width: 100%;
         line-height: 2.5rem;
         position: relative;
@@ -30,7 +31,7 @@ export default function Textarea({ innerRef, ...props }) {
         ::placeholder {
           color: ${Color.gray()};
         }
-      `}
+      `}`}
     />
   )
 }

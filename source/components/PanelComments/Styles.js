@@ -50,6 +50,19 @@ export const container = css`
     font-weight: bold;
     color: ${Color.darkGray()};
   }
+  .comment__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .buttons__left {
+    display: flex;
+  }
+  .buttons__right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
   @media (max-width: ${mobileMaxWidth}) {
     .likers {
       font-size: 1.7rem;

@@ -92,7 +92,8 @@ class PanelComment extends Component {
       onLoadMoreReplies
     } = this.props
     const userIsUploader = comment.userId === userId
-    const userCanEditThis = (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -176,28 +177,36 @@ class PanelComment extends Component {
                   <LongText className="comment__content">
                     {comment.content}
                   </LongText>
-                  <div>
-                    <LikeButton
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                    />
-                    <Button
-                      transparent
-                      style={{ marginLeft: '1rem' }}
-                      onClick={this.onReplyButtonClick}
-                    >
-                      <span className="glyphicon glyphicon-comment" /> Reply
-                    </Button>
-                    <small>
-                      <Likers
-                        className="comment__likers"
-                        userId={userId}
-                        likes={comment.likes}
-                        onLinkClick={() =>
-                          this.setState({ userListModalShown: true })
-                        }
+                  <div className="comment__buttons">
+                    <div className="buttons__left">
+                      <LikeButton
+                        onClick={this.onLikeClick}
+                        liked={userLikedThis}
                       />
-                    </small>
+                      <Button
+                        transparent
+                        style={{ marginLeft: '1rem' }}
+                        onClick={this.onReplyButtonClick}
+                      >
+                        <span className="glyphicon glyphicon-comment" /> Reply
+                      </Button>
+                      <small>
+                        <Likers
+                          className="comment__likers"
+                          userId={userId}
+                          likes={comment.likes}
+                          onLinkClick={() =>
+                            this.setState({ userListModalShown: true })
+                          }
+                        />
+                      </small>
+                    </div>
+                    <div className="buttons__right">
+                      <Button love onClick={() => console.log('clicked')}>
+                        <span className="glyphicon glyphicon-star" />
+                        &nbsp;Reward Stars
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}

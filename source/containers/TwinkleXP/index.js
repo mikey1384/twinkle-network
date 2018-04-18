@@ -61,14 +61,14 @@ export default function TwinkleXP() {
             <br />
             <div style={Styles.paragraph}>
               {
-                'Next year you will also be awarded XP for participating in discussions, answering questions, and posting great comments both on the main section and on General Chat channel.'
+                'Next year you will also be rewarded XP for participating in discussions, answering questions, and posting great comments both on the main section and on General Chat channel.'
               }
             </div>
             <br />
             <div style={Styles.subHeader}>Anything else?</div>
             <div style={Styles.paragraph}>
               {`
-                Currently, Andrew teacher, Miguel teacher and I (Mikey) are discussing the possibility of awarding students with high `}
+                Currently, Andrew teacher, Miguel teacher and I (Mikey) are discussing the possibility of rewarding students with high `}
               {twinkleXpText}
               {` various prizes like iPads, computer accessories, books, and lego products. So in the meantime, watch those starred videos and gather as much XP as possible! Who knows, you might actually win an iPad.
               `}

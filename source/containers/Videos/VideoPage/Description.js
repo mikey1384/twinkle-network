@@ -433,13 +433,11 @@ class Description extends Component {
 
   onEditCancel = () => {
     const { description } = this.props
-    const editedDescription =
-      description === 'No description' ? '' : description
     this.props.onEditCancel()
     this.setState({
       editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
       editedTitle: cleanString(this.props.title),
-      editedDescription,
+      editedDescription: description,
       onEdit: false,
       editDoneButtonDisabled: true
     })
