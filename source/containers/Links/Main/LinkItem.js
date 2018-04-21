@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import UserListModal from 'components/Modals/UserListModal'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { editTitle, deleteLink } from 'redux/actions/LinkActions'
 import { connect } from 'react-redux'
 import DropdownButton from 'components/DropdownButton'
@@ -147,7 +147,7 @@ class LinkItem extends Component {
         `}
       >
         <div>
-          <Link to={`/links/${id}`} onClickAsync={this.onLinkClick}>
+          <Link to={`/links/${id}`}>
             <img
               className={css`
                 display: block;
@@ -181,9 +181,7 @@ class LinkItem extends Component {
                 `}
               >
                 {!onEdit && (
-                  <Link to={`/links/${id}`}>
-                    {cleanString(title)}
-                  </Link>
+                  <Link to={`/links/${id}`}>{cleanString(title)}</Link>
                 )}
                 {onEdit && (
                   <EditTitleForm
