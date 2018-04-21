@@ -14,7 +14,7 @@ export default function Textarea({ innerRef, ...props }) {
       ref={innerRef}
       className={css`
         width: 100%;
-        line-height: 2.5rem;
+        line-height: 1.5;
         position: relative;
         font-size: 1.6rem;
         padding: 1rem;
