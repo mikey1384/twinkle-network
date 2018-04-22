@@ -72,15 +72,16 @@ export default function PlaylistReducer(state = defaultState, action) {
         action.data.result.pop()
         loadMorePlaylistsToPinButton = true
       }
-      let morePlaylistsToPin = action.data.result.map(item => {
-        return {
-          title: item.title,
-          id: item.id
-        }
-      })
       return {
         ...state,
-        playlistsToPin: state.playlistsToPin.concat(morePlaylistsToPin),
+        playlistsToPin: state.playlistsToPin.concat(
+          action.data.result.map(item => {
+            return {
+              title: item.title,
+              id: item.id
+            }
+          })
+        ),
         loadMorePlaylistsToPinButton
       }
     case PLAYLIST.CHANGE_PINNED:
@@ -99,11 +100,10 @@ export default function PlaylistReducer(state = defaultState, action) {
         reorderPinnedPlaylistsModalShown: false
       }
     case PLAYLIST.UPLOAD:
-      let loadMoreButtonDisplayed = state.loadMoreButton
       return {
         ...state,
         allPlaylists: [action.data].concat(state.allPlaylists),
-        loadMoreButton: loadMoreButtonDisplayed,
+        loadMoreButton: state.loadMoreButton,
         addPlaylistModalShown: false
       }
     case PLAYLIST.EDIT_TITLE:
