@@ -91,7 +91,13 @@ class NavMenu extends Component {
           </section>
         )}
         {playlistVideos.length > 0 && (
-          <section style={{ wordBreak: 'break-word' }}>
+          <section
+            style={{
+              whiteSpace: 'pre-wrap',
+              overflowWrap: 'break-word',
+              wordBreak: 'break-word'
+            }}
+          >
             <p>{cleanString(playlistTitle)}</p>
             {this.renderVideos(playlistVideos)}
             {playlistVideosLoadMoreShown && (
@@ -165,6 +171,8 @@ class NavMenu extends Component {
             paddingLeft: '1rem',
             width: '50%',
             lineHeight: 1.1,
+            whiteSpace: 'pre-wrap',
+            overflowWrap: 'break-word',
             wordBreak: 'break-word',
             marginTop: '-0.5rem'
           }}

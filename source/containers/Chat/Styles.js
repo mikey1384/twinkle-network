@@ -61,6 +61,8 @@ export const MessageStyle = {
     margin-left: 1.3rem;
     width: 92%;
     position: relative;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
     word-break: break-word;
   `,
   usernameText: { fontSize: '1.8rem', lineHeight: '100%' },

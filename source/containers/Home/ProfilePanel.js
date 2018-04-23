@@ -99,6 +99,8 @@ class ProfilePanel extends Component {
           {!noProfile && (
             <ul
               style={{
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'break-word',
                 wordBreak: 'break-word',
                 paddingLeft: '2rem'
               }}

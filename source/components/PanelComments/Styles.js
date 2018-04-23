@@ -36,6 +36,8 @@ export const container = css`
     font-size: 1.7rem;
   }
   .comment__content {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
     word-break: break-word;
     line-height: 2rem;
     padding: 1.5rem 0 2rem 0;

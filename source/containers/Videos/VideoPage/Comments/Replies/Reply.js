@@ -180,7 +180,9 @@ class Reply extends Component {
                       width: '100%',
                       margin: '1rem 0 2rem 0',
                       paddingBottom: '1rem',
-                      wordWrap: 'break-word'
+                      whiteSpace: 'pre-wrap',
+                      overflowWrap: 'break-word',
+                      wordBreak: 'break-word'
                     }}
                   >
                     {content}

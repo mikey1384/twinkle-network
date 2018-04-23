@@ -23,6 +23,8 @@ export const container = css`
     .panel__content {
       padding: 1rem;
       margin-top: 1rem;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
       word-break: break-word;
       font-size: 1.6rem;
     }
@@ -55,6 +57,8 @@ export const container = css`
   .question {
     font-size: 2rem;
     font-weight: bold;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
     word-break: break-word;
     margin-bottom: 1.5rem;
   }

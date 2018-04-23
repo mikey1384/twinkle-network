@@ -63,7 +63,14 @@ class NotiFeeds extends Component {
           {notifications.length > 0 &&
             notifications.map(notification => {
               return (
-                <li style={{ wordBreak: 'break-word' }} key={notification.id}>
+                <li
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    overflowWrap: 'break-word',
+                    wordBreak: 'break-word'
+                  }}
+                  key={notification.id}
+                >
                   {renderNotificationMessage(notification, myId)}
                   <small style={{ color: Color.gray() }}>
                     {timeSince(notification.timeStamp)}
@@ -128,7 +135,9 @@ function renderNotificationMessage(notification, myId) {
   const target = `your ${
     isReplyNotification
       ? 'comment'
-      : isDiscussionAnswerNotification ? 'discussion topic' : rootType
+      : isDiscussionAnswerNotification
+        ? 'discussion topic'
+        : rootType
   }: `
   let contentTitle = isReplyNotification
     ? commentContent
@@ -142,7 +151,9 @@ function renderNotificationMessage(notification, myId) {
       ? contentId
       : type === 'discussion'
         ? contentId
-        : isDiscussionAnswerNotification ? discussionId : rootId
+        : isDiscussionAnswerNotification
+          ? discussionId
+          : rootId
   }
   return (
     <div>
@@ -168,7 +179,9 @@ function renderNotificationMessage(notification, myId) {
     const title =
       type === 'comment'
         ? 'commented on'
-        : type === 'reply' ? 'replied to' : 'answered'
+        : type === 'reply'
+          ? 'replied to'
+          : 'answered'
     return (
       <ContentLink
         style={{ color: Color.green() }}
