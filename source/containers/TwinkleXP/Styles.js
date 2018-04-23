@@ -15,7 +15,7 @@ const Styles = {
     fontSize: '2rem'
   },
   rightMenu: {
-    width: '100%',
+    width: '40%',
     fontSize: '1.5rem',
     marginRight: '1rem',
     marginBottom: '1rem',

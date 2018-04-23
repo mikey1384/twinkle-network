@@ -33,8 +33,8 @@ function ProfileWidget({
           <div className="profile-pic">
             <ProfilePic
               style={{
-                width: '90%',
-                height: '90%',
+                width: '8rem',
+                height: '8rem',
                 cursor: userId ? 'pointer' : 'default'
               }}
               userId={userId}

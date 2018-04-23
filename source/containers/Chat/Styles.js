@@ -56,7 +56,7 @@ export const MessageStyle = {
     padding: 1rem;
     position: relative;
   `,
-  profilePic: { width: '7%', height: '7%' },
+  profilePic: { width: '7rem', height: '7rem' },
   contentWrapper: css`
     margin-left: 1.3rem;
     width: 92%;

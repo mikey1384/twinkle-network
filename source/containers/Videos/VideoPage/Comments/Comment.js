@@ -121,7 +121,7 @@ class Comment extends Component {
       >
         <div style={{ width: '10%', height: '10%' }}>
           <ProfilePic
-            style={{ width: '80%', height: '80%' }}
+            style={{ width: '8rem', height: '8rem' }}
             userId={comment.userId}
             profilePicId={comment.profilePicId}
           />

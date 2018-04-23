@@ -10,7 +10,7 @@ export const container = css`
 `
 
 export const Left = css`
-  position: absolute;
+  position: fixed;
   left: 1rem;
   display: block;
   width: CALC(15% + 2rem);

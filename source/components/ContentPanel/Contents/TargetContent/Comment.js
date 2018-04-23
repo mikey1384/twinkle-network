@@ -74,7 +74,7 @@ export default class Comment extends Component {
         )}
         <div style={{ display: 'flex', width: '100%' }}>
           <ProfilePic
-            style={{ width: '7%', height: '7%' }}
+            style={{ width: '5rem', height: '5rem' }}
             userId={userId}
             profilePicId={profilePicId}
           />
@@ -100,7 +100,7 @@ export default class Comment extends Component {
                 rows={2}
               />
             ) : (
-              <div className="container-fluid" style={{ paddingLeft: '0px' }}>
+              <div style={{ paddingLeft: '0px' }}>
                 <LongText
                   style={{
                     whiteSpace: 'pre-wrap',

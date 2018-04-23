@@ -129,13 +129,11 @@ class Reply extends Component {
           position: 'relative'
         }}
       >
-        <div style={{ width: '10%', height: '10%' }}>
-          <ProfilePic
-            style={{ width: '80%', height: '80%' }}
-            userId={userId}
-            profilePicId={profilePicId}
-          />
-        </div>
+        <ProfilePic
+          style={{ width: '8rem', height: '8rem', marginRight: '2rem' }}
+          userId={userId}
+          profilePicId={profilePicId}
+        />
         <div style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>
           <div>
             <UsernameText

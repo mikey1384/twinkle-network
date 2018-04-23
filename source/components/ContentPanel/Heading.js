@@ -56,7 +56,7 @@ export default class Heading extends Component {
     return (
       <header className="heading">
         <ProfilePic
-          style={{ width: '8%', height: '8%' }}
+          style={{ width: '6rem', height: '6rem' }}
           userId={uploader.id}
           profilePicId={uploaderPicId}
         />

@@ -26,7 +26,7 @@ function LeaderBoardItem({ myId, user }) {
     >
       <img
         alt="thumbnail"
-        style={{ width: '20%', height: '20%', borderRadius: '50%' }}
+        style={{ width: '8rem', height: '8rem', borderRadius: '50%' }}
         src={profileUrl}
       />
       <div
