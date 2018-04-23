@@ -8399,7 +8399,7 @@ yeoman-generator@^2.0.3:
     through2 "^2.0.0"
     yeoman-environment "^2.0.5"
 
-youtube-player@^5.2.0, youtube-player@^5.4.0:
+youtube-player@^5.4.0, youtube-player@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/youtube-player/-/youtube-player-5.5.0.tgz#95f058534f9544586185551d0d2d33f381f6587a"
   dependencies:
