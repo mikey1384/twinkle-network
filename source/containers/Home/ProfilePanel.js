@@ -58,7 +58,7 @@ class ProfilePanel extends Component {
       <div className={profilePanel}>
         <div style={{ width: '33%', height: '33%', display: 'flex' }}>
           <ProfilePic
-            style={{ width: '87%', height: '87%' }}
+            style={{ width: '20rem', height: '20rem' }}
             userId={profile.id}
             profilePicId={profile.profilePicId}
           />
@@ -99,6 +99,8 @@ class ProfilePanel extends Component {
           {!noProfile && (
             <ul
               style={{
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'break-word',
                 wordBreak: 'break-word',
                 paddingLeft: '2rem'
               }}

@@ -20,8 +20,8 @@ export const container = css`
     width: 100%;
     align-items: center;
     justify-content: flex-start;
-    padding: 5%;
     .profile-pic {
+      margin: 1rem;
       width: 40%;
       display: flex;
       justify-content: center;

@@ -13,6 +13,7 @@ export default function ProfilePic({ userId, profilePicId, style, ...props }) {
       {...props}
       style={{
         ...style,
+        display: 'block',
         position: 'relative',
         paddingBottom: style.width
       }}
@@ -20,6 +21,7 @@ export default function ProfilePic({ userId, profilePicId, style, ...props }) {
       <img
         alt="Thumbnail"
         style={{
+          display: 'block',
           position: 'absolute',
           width: '100%',
           height: '100%',

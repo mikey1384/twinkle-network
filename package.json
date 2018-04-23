@@ -52,8 +52,7 @@
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
     "tween-functions": "^1.2.0",
-    "webpack": "^4.6.0",
-    "youtube-player": "^5.2.0"
+    "webpack": "^4.6.0"
   },
   "devDependencies": {
     "babel": "^6.3.13",

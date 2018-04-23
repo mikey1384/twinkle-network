@@ -157,6 +157,8 @@ class Description extends Component {
         <div
           style={{
             marginTop: '3rem',
+            whiteSpace: 'pre-wrap',
+            overflowWrap: 'break-word',
             wordBreak: 'break-word'
           }}
         >

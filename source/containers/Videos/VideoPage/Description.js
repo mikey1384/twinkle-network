@@ -218,6 +218,8 @@ class Description extends Component {
               >
                 <span
                   style={{
+                    whiteSpace: 'pre-wrap',
+                    overflowWrap: 'break-word',
                     wordBreak: 'break-word',
                     fontSize: '3rem',
                     fontWeight: 'bold'
@@ -323,6 +325,8 @@ class Description extends Component {
             <div style={{ padding: '0 1rem', gridArea: 'content' }}>
               <LongText
                 style={{
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
                   wordBreak: 'break-word',
                   lineHeight: '2.3rem'
                 }}
@@ -413,15 +417,13 @@ class Description extends Component {
   }
 
   determineEditButtonDoneStatus = () => {
-    const {editedTitle, editedDescription, editedUrl} = this.state
+    const { editedTitle, editedDescription, editedUrl } = this.state
     const urlIsInvalid = !isValidYoutubeUrl(editedUrl)
     const titleIsEmpty = stringIsEmpty(editedTitle)
     const titleChanged = editedTitle !== this.props.title
     const urlChanged =
-      editedUrl !==
-      `https://www.youtube.com/watch?v=${this.props.content}`
-    const descriptionChanged =
-      editedDescription !== this.props.description
+      editedUrl !== `https://www.youtube.com/watch?v=${this.props.content}`
+    const descriptionChanged = editedDescription !== this.props.description
     if (urlIsInvalid) return true
     if (titleIsEmpty) return true
     if (!titleChanged && !descriptionChanged && !urlChanged) return true

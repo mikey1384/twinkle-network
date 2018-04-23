@@ -129,13 +129,11 @@ class Reply extends Component {
           position: 'relative'
         }}
       >
-        <div style={{ width: '10%', height: '10%' }}>
-          <ProfilePic
-            style={{ width: '80%', height: '80%' }}
-            userId={userId}
-            profilePicId={profilePicId}
-          />
-        </div>
+        <ProfilePic
+          style={{ width: '8rem', height: '8rem', marginRight: '2rem' }}
+          userId={userId}
+          profilePicId={profilePicId}
+        />
         <div style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>
           <div>
             <UsernameText
@@ -180,7 +178,9 @@ class Reply extends Component {
                       width: '100%',
                       margin: '1rem 0 2rem 0',
                       paddingBottom: '1rem',
-                      wordWrap: 'break-word'
+                      whiteSpace: 'pre-wrap',
+                      overflowWrap: 'break-word',
+                      wordBreak: 'break-word'
                     }}
                   >
                     {content}

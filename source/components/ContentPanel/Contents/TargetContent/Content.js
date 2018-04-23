@@ -79,6 +79,8 @@ class Content extends Component {
     return (
       <div
         className={css`
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
           word-break: break-word;
           border-radius: ${borderRadius};
           border-top: 1px solid ${Color.inputBorderGray()};

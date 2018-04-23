@@ -123,7 +123,7 @@ class PanelReply extends Component {
       >
         <div className="content-wrapper">
           <ProfilePic
-            style={{ height: '7%', width: '7%' }}
+            style={{ height: '5rem', width: '5rem' }}
             userId={reply.userId}
             profilePicId={reply.profilePicId}
           />

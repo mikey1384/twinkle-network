@@ -56,11 +56,13 @@ export const MessageStyle = {
     padding: 1rem;
     position: relative;
   `,
-  profilePic: { width: '7%', height: '7%' },
+  profilePic: { width: '7rem', height: '7rem' },
   contentWrapper: css`
     margin-left: 1.3rem;
     width: 92%;
     position: relative;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
     word-break: break-word;
   `,
   usernameText: { fontSize: '1.8rem', lineHeight: '100%' },

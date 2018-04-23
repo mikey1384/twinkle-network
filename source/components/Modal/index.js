@@ -47,7 +47,6 @@ export default class Modal extends Component {
             bottom: 0;
             background: ${Color.black(0.5)};
             overflow-y: scroll;
-            padding: 7rem 0;
           `}
           style={style}
         >
@@ -59,6 +58,8 @@ export default class Modal extends Component {
               background: #fff;
               width: ${modalWidth[widthKey]};
               min-height: 30vh;
+              margin-top: 7rem;
+              margin-bottom: 7rem;
               margin-left: ${marginLeft[widthKey]};
               box-shadow: 3px 4px 5px ${Color.black()};
               display: flex;

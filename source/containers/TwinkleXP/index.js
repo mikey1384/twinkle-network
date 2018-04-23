@@ -9,6 +9,7 @@ export default function TwinkleXP() {
     <div
       className={css`
         display: flex;
+        width: 100%;
       `}
     >
       <div style={{ marginRight: '1rem', marginLeft: '1rem' }}>

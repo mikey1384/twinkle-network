@@ -80,6 +80,8 @@ export default class SubjectItem extends Component {
         <div
           style={{
             width: '100%',
+            whiteSpace: 'pre-wrap',
+            overflowWrap: 'break-word',
             wordBreak: 'break-word'
           }}
         >

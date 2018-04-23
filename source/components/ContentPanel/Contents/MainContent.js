@@ -66,6 +66,8 @@ export default function MainContent({
             {type === 'comment' && (
               <div
                 style={{
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
                   wordBreak: 'break-word'
                 }}
               >
@@ -83,6 +85,8 @@ export default function MainContent({
             {(type === 'url' || type === 'question') && (
               <div
                 style={{
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
                   wordBreak: 'break-word',
                   marginBottom: '1rem'
                 }}
@@ -96,7 +100,13 @@ export default function MainContent({
               </div>
             )}
             {type === 'discussion' && (
-              <div>
+              <div
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word'
+                }}
+              >
                 <p
                   style={{
                     fontWeight: 'bold',
@@ -113,6 +123,8 @@ export default function MainContent({
             {type === 'video' && (
               <div
                 style={{
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
                   wordBreak: 'break-word'
                 }}
               >
@@ -127,6 +139,8 @@ export default function MainContent({
               contentDescription && (
                 <div
                   style={{
+                    whiteSpace: 'pre-wrap',
+                    overflowWrap: 'break-word',
                     wordBreak: 'break-word',
                     marginTop: '1rem'
                   }}
