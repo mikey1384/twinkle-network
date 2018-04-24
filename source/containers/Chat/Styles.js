@@ -53,7 +53,7 @@ export const MessageStyle = {
   container: css`
     display: flex;
     width: 100%;
-    padding: 1rem;
+    padding: 1rem 0;
     position: relative;
   `,
   profilePic: css`
