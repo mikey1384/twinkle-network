@@ -16,12 +16,14 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
 import { container } from './Styles'
 import { connect } from 'react-redux'
+import XPRewardInterface from 'components/XPRewardInterface'
 
 class PanelComment extends Component {
   static propTypes = {
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
+    canStar: PropTypes.bool,
     comment: PropTypes.shape({
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
@@ -57,7 +59,8 @@ class PanelComment extends Component {
     onEdit: false,
     userListModalShown: false,
     clickListenerState: false,
-    confirmModalShown: false
+    confirmModalShown: false,
+    xpRewardInterfaceShown: false
   }
 
   componentDidUpdate(prevProps) {
@@ -74,12 +77,14 @@ class PanelComment extends Component {
       onEdit,
       userListModalShown,
       clickListenerState,
-      confirmModalShown
+      confirmModalShown,
+      xpRewardInterfaceShown
     } = this.state
     const {
       authLevel,
       canDelete,
       canEdit,
+      canStar,
       comment,
       comment: { replies = [], likes = [], uploaderAuthLevel },
       userId,
@@ -203,15 +208,26 @@ class PanelComment extends Component {
                       </small>
                     </div>
                     <div className="buttons__right">
-                      <Button love onClick={() => console.log('clicked')}>
-                        <span className="glyphicon glyphicon-star" />
-                        &nbsp;Reward Stars
-                      </Button>
+                      {canStar &&
+                        userCanEditThis &&
+                        !userIsUploader && (
+                          <Button
+                            love
+                            onClick={() =>
+                              this.setState({ xpRewardInterfaceShown: true })
+                            }
+                            disabled={xpRewardInterfaceShown}
+                          >
+                            <span className="glyphicon glyphicon-star" />
+                            &nbsp;Reward Stars
+                          </Button>
+                        )}
                     </div>
                   </div>
                 </div>
               )}
             </div>
+            {xpRewardInterfaceShown && <XPRewardInterface />}
             {replies.length > 0 && (
               <PanelReplies
                 userId={userId}
@@ -293,5 +309,6 @@ class PanelComment extends Component {
 export default connect(state => ({
   authLevel: state.UserReducer.authLevel,
   canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit
+  canEdit: state.UserReducer.canEdit,
+  canStar: state.UserReducer.canStar
 }))(PanelComment)

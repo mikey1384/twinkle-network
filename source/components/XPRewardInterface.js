@@ -25,7 +25,7 @@ export default class XPRewardInterface extends Component {
           color: ${Color.pink()};
         `}
       >
-        <section style={{ display: 'flex' }}>
+        <section style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           <Button
             love
             style={{ display: 'flex' }}
@@ -37,7 +37,7 @@ export default class XPRewardInterface extends Component {
           </Button>
           <Button
             gold
-            style={{ display: 'flex', marginLeft: '1rem' }}
+            style={{ display: 'flex', marginTop: '1rem' }}
             filled={twoStarSelected}
             onClick={() => this.setState({ twoStarSelected: true })}
           >
