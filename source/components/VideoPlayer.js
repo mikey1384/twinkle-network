@@ -195,6 +195,7 @@ class VideoPlayer extends Component {
 
   componentWillUnmount() {
     this.onVideoStop()
+    this.Player = undefined
     this.mounted = false
   }
 
@@ -289,8 +290,11 @@ class VideoPlayer extends Component {
                 width="100%"
                 height="100%"
                 url={`https://www.youtube.com/watch?v=${videoCode}`}
-                playing
+                playing={playing}
                 controls
+                config={{
+                  youtube: { preload: true }
+                }}
                 onReady={this.onVideoReady}
                 onPlay={this.onVideoPlay}
                 onPause={this.onVideoStop}

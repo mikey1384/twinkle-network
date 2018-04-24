@@ -63,27 +63,41 @@ class VideoPage extends Component {
     videoViews: PropTypes.string
   }
 
-  state = {
-    watchTabActive: true,
-    currentSlide: 0,
-    userAnswers: [],
-    resultModalShown: false,
-    editModalShown: false,
-    confirmModalShown: false,
-    onEdit: false,
-    questionsBuilderShown: false,
-    discussionTabActive: true
+  constructor({
+    match: {
+      params: { videoId }
+    }
+  }) {
+    super()
+    this.state = {
+      watchTabActive: true,
+      currentSlide: 0,
+      userAnswers: [],
+      resultModalShown: false,
+      editModalShown: false,
+      confirmModalShown: false,
+      onEdit: false,
+      questionsBuilderShown: false,
+      discussionTabActive: true,
+      videoId
+    }
   }
 
   componentDidMount() {
-    const { match: { params }, loadVideoPage } = this.props
+    const {
+      match: { params },
+      loadVideoPage
+    } = this.props
     loadVideoPage(params.videoId)
   }
 
-  componentDidUpdate(prevProps) {
-    const { loadVideoPage, match: { params } } = this.props
+  async componentDidUpdate(prevProps) {
+    const {
+      loadVideoPage,
+      match: { params }
+    } = this.props
     if (prevProps.match.params.videoId !== params.videoId) {
-      loadVideoPage(params.videoId)
+      await loadVideoPage(params.videoId)
       return this.setState({
         watchTabActive: true,
         currentSlide: 0,
@@ -92,7 +106,8 @@ class VideoPage extends Component {
         editModalShown: false,
         confirmModalShown: false,
         onEdit: false,
-        questionsBuilderShown: false
+        questionsBuilderShown: false,
+        videoId: params.videoId
       })
     }
   }
@@ -122,8 +137,7 @@ class VideoPage extends Component {
       likes = [],
       location: { search },
       uploadComment,
-      videoViews,
-      match: { params: { videoId } }
+      videoViews
     } = this.props
     const {
       discussionTabActive,
@@ -132,7 +146,8 @@ class VideoPage extends Component {
       resultModalShown,
       confirmModalShown,
       currentSlide,
-      onEdit
+      onEdit,
+      videoId
     } = this.state
 
     const { playlist: playlistId } = queryString.parse(search)
@@ -395,12 +410,21 @@ class VideoPage extends Component {
   }
 
   onVideoDelete = () => {
-    const { match: { params: { videoId } } } = this.props
+    const {
+      match: {
+        params: { videoId }
+      }
+    } = this.props
     this.props.deleteVideo({ videoId })
   }
 
   onQuestionsSubmit = async questions => {
-    const { match: { params: { videoId } }, uploadQuestions } = this.props
+    const {
+      match: {
+        params: { videoId }
+      },
+      uploadQuestions
+    } = this.props
     const data = {
       videoId,
       questions: questions.map(question => {
