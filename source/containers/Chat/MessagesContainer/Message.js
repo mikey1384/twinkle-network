@@ -82,7 +82,7 @@ class Message extends Component {
       <Fragment>
         <div className={MessageStyle.container}>
           <ProfilePic
-            style={MessageStyle.profilePic}
+            className={MessageStyle.profilePic}
             userId={userId}
             profilePicId={profilePicId}
           />

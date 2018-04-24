@@ -25,7 +25,7 @@ export default function Message({
   return (
     <div className={MessageStyle.container}>
       <ProfilePic
-        style={MessageStyle.profilePic}
+        className={MessageStyle.profilePic}
         userId={userId}
         profilePicId={profilePicId}
       />

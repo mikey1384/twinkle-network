@@ -14,8 +14,7 @@ export default function ProfilePic({ userId, profilePicId, style, ...props }) {
       style={{
         ...style,
         display: 'block',
-        position: 'relative',
-        paddingBottom: style.width
+        position: 'relative'
       }}
     >
       <img

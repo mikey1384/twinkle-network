@@ -119,14 +119,12 @@ class Comment extends Component {
           this.Comment = ref
         }}
       >
-        <div style={{ width: '10%', height: '10%' }}>
-          <ProfilePic
-            style={{ width: '8rem', height: '8rem' }}
-            userId={comment.userId}
-            profilePicId={comment.profilePicId}
-          />
-        </div>
-        <div style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>
+        <ProfilePic
+          style={{ width: '8rem', height: '8rem', marginRight: '2rem' }}
+          userId={comment.userId}
+          profilePicId={comment.profilePicId}
+        />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div>
             <UsernameText
               user={{
