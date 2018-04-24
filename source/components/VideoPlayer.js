@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
-import YouTube from 'react-youtube'
+import ReactPlayer from 'react-player'
 import { Color } from 'constants/css'
 import { connect } from 'react-redux'
 import { auth } from 'redux/constants'
@@ -39,7 +39,6 @@ class VideoPlayer extends Component {
     pageVisible: PropTypes.bool,
     currentVideoSlot: PropTypes.number,
     style: PropTypes.object,
-    title: PropTypes.string.isRequired,
     userId: PropTypes.number,
     videoCode: PropTypes.string.isRequired,
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -47,7 +46,7 @@ class VideoPlayer extends Component {
   }
 
   interval = null
-  player = null
+  Player = null
   rewardingXP = false
 
   state = {
@@ -72,10 +71,12 @@ class VideoPlayer extends Component {
 
     if (typeof hasHqThumb !== 'number') {
       try {
-        const { data: { payload } } = await request.put(
-          `${CONTENT_URL}/videoThumb`,
-          { videoCode, videoId }
-        )
+        const {
+          data: { payload }
+        } = await request.put(`${CONTENT_URL}/videoThumb`, {
+          videoCode,
+          videoId
+        })
         if (this.mounted) {
           this.setState({
             imageUrl:
@@ -94,7 +95,9 @@ class VideoPlayer extends Component {
 
     if (isStarred && userId) {
       try {
-        const { data: { xpEarned } } = await request.get(
+        const {
+          data: { xpEarned }
+        } = await request.get(
           `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
           auth()
         )
@@ -150,7 +153,9 @@ class VideoPlayer extends Component {
 
     if (isStarred && userId && userId !== prevProps.userId) {
       try {
-        const { data: { xpEarned } } = await request.get(
+        const {
+          data: { xpEarned }
+        } = await request.get(
           `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
           auth()
         )
@@ -164,7 +169,7 @@ class VideoPlayer extends Component {
 
     if (playing && userWatchingMultipleVideo) {
       this.onVideoStop()
-      if (this.player) this.player.pauseVideo()
+      if (this.Player) this.Player.getInternalPlayer().pauseVideo()
     }
 
     if (
@@ -174,7 +179,7 @@ class VideoPlayer extends Component {
       !alreadyEarned
     ) {
       this.onVideoStop()
-      if (this.player) this.player.pauseVideo()
+      if (this.Player) this.Player.getInternalPlayer().pauseVideo()
     }
 
     if (
@@ -184,12 +189,13 @@ class VideoPlayer extends Component {
       !alreadyEarned
     ) {
       this.onVideoStop()
-      if (this.player) this.player.pauseVideo()
+      if (this.Player) this.Player.getInternalPlayer().pauseVideo()
     }
   }
 
   componentWillUnmount() {
     this.onVideoStop()
+    this.Player = undefined
     this.mounted = false
   }
 
@@ -200,7 +206,6 @@ class VideoPlayer extends Component {
       stretch,
       onEdit,
       videoCode,
-      title,
       style = {},
       userId
     } = this.props
@@ -226,16 +231,13 @@ class VideoPlayer extends Component {
       <ErrorBoundary style={style}>
         <div
           className={`${css`
-            display: block;
-            width: 100%;
-            height: auto;
-            padding-bottom: 56.25%;
             position: relative;
+            padding-top: 56.25%;
           `}${minimized ? ' desktop' : ''}`}
           style={{
             display: minimized && !playing && 'none',
             width: playing && minimized && '39rem',
-            paddingBottom: playing && minimized && '22rem',
+            paddingTop: playing && minimized && '22rem',
             position: playing && minimized && 'absolute',
             bottom: playing && minimized && '1rem',
             right: playing && minimized && '1rem',
@@ -275,28 +277,28 @@ class VideoPlayer extends Component {
             )}
           {!onEdit &&
             playing && (
-              <YouTube
+              <ReactPlayer
+                ref={ref => {
+                  this.Player = ref
+                }}
                 className={css`
                   position: absolute;
-                  width: 100%;
-                  height: 100%;
                   top: 0;
                   left: 0;
-                  bottom: 0;
-                  right: 0;
                   z-index: 1;
                 `}
-                opts={{ title }}
-                videoId={videoCode}
-                onReady={this.onVideoReady}
-                onStateChange={e => {
-                  if (e.data === 1) {
-                    this.onVideoPlay(e)
-                  } else {
-                    this.onVideoStop()
-                  }
+                width="100%"
+                height="100%"
+                url={`https://www.youtube.com/watch?v=${videoCode}`}
+                playing={playing}
+                controls
+                config={{
+                  youtube: { preload: true }
                 }}
-                onEnd={this.onVideoStop}
+                onReady={this.onVideoReady}
+                onPlay={this.onVideoPlay}
+                onPause={this.onVideoStop}
+                onEnded={this.onVideoStop}
               />
             )}
           {!onEdit && !minimized && playing ? (
@@ -340,12 +342,16 @@ class VideoPlayer extends Component {
               color={
                 justEarned
                   ? Color.green()
-                  : xpEarned ? Color.lightBlue() : Color.blue()
+                  : xpEarned
+                    ? Color.lightBlue()
+                    : Color.blue()
               }
               text={
                 justEarned
                   ? 'Twinkle XP earned!'
-                  : xpEarned ? 'You have already earned this XP' : ''
+                  : xpEarned
+                    ? 'You have already earned this XP'
+                    : ''
               }
             />
           )}
@@ -353,7 +359,13 @@ class VideoPlayer extends Component {
     )
   }
 
-  onVideoPlay = event => {
+  onVideoReady = () => {
+    this.setState(() => ({
+      totalDuration: this.Player.getDuration()
+    }))
+  }
+
+  onVideoPlay = () => {
     const {
       currentVideoSlot,
       isStarred,
@@ -363,7 +375,7 @@ class VideoPlayer extends Component {
       fillCurrentVideoSlot
     } = this.props
     const { justEarned, xpEarned } = this.state
-    const time = event.target.getCurrentTime()
+    const time = this.Player.getCurrentTime()
     if (Math.floor(time) === 0) {
       addVideoView({ videoId, userId })
     }
@@ -407,23 +419,15 @@ class VideoPlayer extends Component {
     }
   }
 
-  onVideoReady = event => {
-    event.target.playVideo()
-    this.player = event.target
-    this.setState(() => ({
-      totalDuration: event.target.getDuration()
-    }))
-  }
-
   increaseProgress = async() => {
     const { justEarned, xpEarned, timeWatched, totalDuration } = this.state
     const { changeUserXP, isStarred, videoId } = this.props
-    if (isStarred && !xpEarned && !justEarned && this.player) {
-      if (this.player.isMuted()) {
-        this.player.unMute()
+    if (isStarred && !xpEarned && !justEarned && this.Player) {
+      if (this.Player.getInternalPlayer().isMuted()) {
+        this.Player.getInternalPlayer().unMute()
       }
-      if (this.player.getVolume() < 30) {
-        this.player.setVolume(30)
+      if (this.Player.getInternalPlayer().getVolume() < 30) {
+        this.Player.getInternalPlayer().setVolume(30)
       }
     }
     if (
@@ -470,7 +474,7 @@ class VideoPlayer extends Component {
         )
         if (success) return
         if (currentlyWatchingAnotherVideo) {
-          if (this.player) this.player.pauseVideo()
+          if (this.Player) this.Player.getInternalPlayer().pauseVideo()
         }
       } catch (error) {
         console.error(error.response || error)
