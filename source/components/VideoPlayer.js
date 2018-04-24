@@ -237,7 +237,7 @@ class VideoPlayer extends Component {
           style={{
             display: minimized && !playing && 'none',
             width: playing && minimized && '39rem',
-            paddingBottom: playing && minimized && '22rem',
+            paddingTop: playing && minimized && '22rem',
             position: playing && minimized && 'absolute',
             bottom: playing && minimized && '1rem',
             right: playing && minimized && '1rem',

@@ -6,7 +6,7 @@ import ButtonGroup from 'components/ButtonGroup'
 import Button from 'components/Button'
 import QuestionsListGroup from './QuestionsListGroup'
 import { stringIsEmpty } from 'helpers/stringHelpers'
-import YouTube from 'react-youtube'
+import ReactPlayer from 'react-player'
 import { css } from 'emotion'
 import HTML5Backend from 'react-dnd-html5-touch-backend'
 import { DragDropContext } from 'react-dnd'
@@ -139,12 +139,10 @@ class QuestionsBuilder extends Component {
           {!reorderModeOn && (
             <section className={this.Styles.rightSection}>
               <div className={this.Styles.videoContainer}>
-                <div className={this.Styles.videoWrapper}>
-                  <YouTube
-                    className={this.Styles.YouTube}
-                    videoId={videoCode}
-                  />
-                </div>
+                <ReactPlayer
+                  url={`https://www.youtube.com/watch?v=${videoCode}`}
+                  controls
+                />
                 <div className={this.Styles.videoInterface}>
                   <ButtonGroup
                     buttons={[
@@ -444,14 +442,10 @@ class QuestionsBuilder extends Component {
   })
 
   Styles = {
-    YouTube: css`
+    Player: css`
       position: absolute;
-      width: 100%;
-      height: 100%;
       top: 0;
       left: 0;
-      bottom: 0;
-      right: 0;
       z-index: 1;
     `,
     leftSection: css`
@@ -479,11 +473,6 @@ class QuestionsBuilder extends Component {
     videoInterface: css`
       padding: 0 3rem;
       margin-top: 2rem;
-    `,
-    videoWrapper: css`
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%;
     `
   }
 }
