@@ -63,7 +63,6 @@ class ProfilePanel extends Component {
         />
         <div
           style={{
-            width: '70%',
             display: 'flex',
             flexDirection: 'column'
           }}

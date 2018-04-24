@@ -125,7 +125,7 @@ class Description extends Component {
         onClick: onDelete
       })
     }
-    const starButtonGrid = canStar ? 'starButton' : 'likeButton'
+    const starButtonGrid = canStar ? 'starButton' : 'title'
     return (
       <div
         className={css`
@@ -147,7 +147,7 @@ class Description extends Component {
             "description description description description description"
             "description description description description description";
           @media (max-width: ${mobileMaxWidth}) {
-            grid-template-columns: 30% 30% 1fr 13% 13%;
+            grid-template-columns: 30% 30% 1fr 12% 12%;
             grid-template-areas: 
               "title title ${starButtonGrid} likeButton likeButton"
               "description description description description description"

@@ -18,9 +18,14 @@ export const container = css`
     display: flex;
     width: 100%;
     position: relative;
+    aside {
+      width: 7rem;
+      justify-content: center;
+      display: flex;
+    }
     section {
-      margin-left: 2rem;
-      width: 93%;
+      width: 100%;
+      margin-left: 1rem;
     }
   }
   .timestamp {

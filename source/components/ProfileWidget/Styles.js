@@ -10,6 +10,7 @@ export const container = css`
     text-decoration: none;
   }
   .heading {
+    padding: 1rem;
     border: 1px solid ${Color.borderGray};
     border-bottom: none;
     border-radius: ${borderRadius};
@@ -20,12 +21,6 @@ export const container = css`
     width: 100%;
     align-items: center;
     justify-content: flex-start;
-    .profile-pic {
-      margin: 1rem;
-      width: 40%;
-      display: flex;
-      justify-content: center;
-    }
     .names {
       width: 60%;
       text-align: center;
@@ -41,6 +36,10 @@ export const container = css`
         font-size: 1rem;
       }
     }
+  }
+  .widget__profile-pic {
+    width: 8rem;
+    height: 8rem;
   }
   .details {
     font-size: 1.3rem;
@@ -59,16 +58,13 @@ export const container = css`
     border-radius: 0;
     .heading {
       flex-direction: column;
-      .profile-pic {
-        width: 17%;
-      }
       .names {
         text-align: center;
         a {
-          font-size: 6rem;
+          font-size: 4rem;
         }
         span {
-          font-size: 2.5rem;
+          font-size: 1.5rem;
         }
         width: 100%;
       }

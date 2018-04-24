@@ -20,15 +20,9 @@ export const container = css`
       width: 3rem;
     }
     a {
+      margin-left: 1rem;
       color: #7c7c7c;
       text-decoration: none;
-      img {
-        width: 4rem;
-        height: 4rem;
-      }
-    }
-    a:nth-child(2) {
-      margin-left: 1rem;
     }
   }
   > nav:hover {
@@ -46,22 +40,16 @@ export const container = css`
     }
   }
   @media (max-width: ${mobileMaxWidth}) {
-    font-size: 5rem;
-    padding: 2rem 0;
+    font-size: 3rem;
+    padding: 1rem 0;
     background: #fff;
     > nav {
-      padding: 2rem 0;
+      padding: 1rem 0;
       justify-content: center;
       .icon {
         width: 10rem;
         text-align: center;
         margin-left: -3rem;
-      }
-      > a {
-        > img {
-          width: 8rem;
-          height: 8rem;
-        }
       }
     }
   }

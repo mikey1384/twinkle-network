@@ -50,7 +50,6 @@ class Notification extends Component {
             className={css`
               display: flex;
               flex-direction: column;
-              justify-content: center;
               align-items: center;
             `}
           >
@@ -59,7 +58,7 @@ class Notification extends Component {
           {loaded && (
             <ChatFeeds
               content={content}
-              style={{ marginTop: !!children && '1rem' }}
+              style={{ marginTop: children ? '1rem' : '0' }}
               {...subject}
             />
           )}

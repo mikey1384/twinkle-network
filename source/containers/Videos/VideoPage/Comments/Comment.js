@@ -112,6 +112,7 @@ class Comment extends Component {
         style={{
           width: '100%',
           display: 'flex',
+          justifyContent: 'flex-start',
           marginTop: this.props.marginTop && '2rem',
           position: 'relative'
         }}
@@ -119,12 +120,23 @@ class Comment extends Component {
           this.Comment = ref
         }}
       >
-        <ProfilePic
-          style={{ width: '8rem', height: '8rem', marginRight: '2rem' }}
-          userId={comment.userId}
-          profilePicId={comment.profilePicId}
-        />
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div
+          style={{ width: '10rem', display: 'flex', justifyContent: 'center' }}
+        >
+          <ProfilePic
+            style={{ width: '8rem', height: '8rem' }}
+            userId={comment.userId}
+            profilePicId={comment.profilePicId}
+          />
+        </div>
+        <div
+          style={{
+            marginLeft: '1.5rem',
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'column'
+          }}
+        >
           <div>
             <UsernameText
               user={{
@@ -145,7 +157,7 @@ class Comment extends Component {
               onEditDone={this.onEditDone}
             />
           ) : (
-            <div style={{ width: '100%' }}>
+            <div>
               {comment.discussionTitle && (
                 <div
                   style={{

@@ -61,7 +61,10 @@ class PanelReply extends Component {
   }
 
   componentDidMount() {
-    const { reply: { replyOfReply, originType }, type } = this.props
+    const {
+      reply: { replyOfReply, originType },
+      type
+    } = this.props
     if (replyOfReply && type === originType) {
       scrollElementToCenter(this.PanelReply)
     }
@@ -122,11 +125,13 @@ class PanelReply extends Component {
         }}
       >
         <div className="content-wrapper">
-          <ProfilePic
-            style={{ height: '5rem', width: '5rem' }}
-            userId={reply.userId}
-            profilePicId={reply.profilePicId}
-          />
+          <aside>
+            <ProfilePic
+              style={{ height: '5rem', width: '5rem' }}
+              userId={reply.userId}
+              profilePicId={reply.profilePicId}
+            />
+          </aside>
           {editButtonShown &&
             !onEdit && (
               <div className="dropdown-wrapper">
