@@ -41,6 +41,7 @@
     "react-dom": "^16.3.2",
     "react-emotion": "^9.1.2",
     "react-onclickoutside": "^6.6.2",
+    "react-player": "^1.5.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
