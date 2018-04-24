@@ -56,13 +56,16 @@ class ProfilePanel extends Component {
     const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow
     return (
       <div className={profilePanel}>
-        <ProfilePic
-          style={{ width: '18rem', height: '18rem', marginRight: '2rem' }}
-          userId={profile.id}
-          profilePicId={profile.profilePicId}
-        />
+        <div style={{ width: '20rem' }}>
+          <ProfilePic
+            style={{ width: '18rem', height: '18rem' }}
+            userId={profile.id}
+            profilePicId={profile.profilePicId}
+          />
+        </div>
         <div
           style={{
+            marginLeft: '2rem',
             display: 'flex',
             flexDirection: 'column'
           }}
