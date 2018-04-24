@@ -291,6 +291,7 @@ class VideoPlayer extends Component {
                 url={`https://www.youtube.com/watch?v=${videoCode}`}
                 playing
                 controls
+                onReady={this.onVideoReady}
                 onPlay={this.onVideoPlay}
                 onPause={this.onVideoStop}
                 onEnded={this.onVideoStop}
@@ -352,6 +353,12 @@ class VideoPlayer extends Component {
           )}
       </ErrorBoundary>
     )
+  }
+
+  onVideoReady = () => {
+    this.setState(() => ({
+      totalDuration: this.Player.getDuration()
+    }))
   }
 
   onVideoPlay = () => {
