@@ -30,20 +30,17 @@ function ProfileWidget({
     <div className={container}>
       {username && (
         <div className="heading">
-          <div className="profile-pic">
-            <ProfilePic
-              style={{
-                width: '8rem',
-                height: '8rem',
-                cursor: userId ? 'pointer' : 'default'
-              }}
-              userId={userId}
-              profilePicId={profilePicId}
-              onClick={() => {
-                if (userId) history.push(`/users/${username}`)
-              }}
-            />
-          </div>
+          <ProfilePic
+            className="widget__profile-pic"
+            style={{
+              cursor: userId ? 'pointer' : 'default'
+            }}
+            userId={userId}
+            profilePicId={profilePicId}
+            onClick={() => {
+              if (userId) history.push(`/users/${username}`)
+            }}
+          />
           <div className="names">
             <Link to={`/users/${username}`}>{username}</Link>
             {realName && (

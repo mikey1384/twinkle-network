@@ -67,7 +67,7 @@ class MobileMenu extends Component {
           <HomeMenuItems
             history={history}
             location={location}
-            style={{ marginTop: '2rem' }}
+            style={{ marginTop: '1rem' }}
           />
           <Notification />
           {username && (

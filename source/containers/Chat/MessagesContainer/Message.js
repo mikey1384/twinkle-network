@@ -82,7 +82,7 @@ class Message extends Component {
       <Fragment>
         <div className={MessageStyle.container}>
           <ProfilePic
-            style={MessageStyle.profilePic}
+            className={MessageStyle.profilePic}
             userId={userId}
             profilePicId={profilePicId}
           />
@@ -125,7 +125,7 @@ class Message extends Component {
                     !onEdit && (
                       <DropdownButton
                         snow
-                        style={{ position: 'absolute', top: 0, right: 0 }}
+                        style={{ position: 'absolute', top: 0, right: '5px' }}
                         direction="left"
                         icon="pencil"
                         opacity={0.8}

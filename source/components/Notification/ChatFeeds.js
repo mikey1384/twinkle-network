@@ -24,22 +24,19 @@ class ChatFeeds extends Component {
   render() {
     const { content, initChat, style = {} } = this.props
     return (
-      <RoundList style={{ ...style, textAlign: 'center' }}>
+      <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
         <li>
-          <h3
+          <p
             style={{
               fontWeight: 'bold',
               color: Color.logoBlue(),
-              marginBottom: '0px'
+              fontSize: '2rem'
             }}
           >
             {content}
-          </h3>
+          </p>
           {this.renderDetails()}
-          <Button
-            success
-            onClick={() => initChat(2)}
-          >
+          <Button success onClick={() => initChat(2)}>
             <span className="glyphicon glyphicon-comment" />&nbsp;Join
             Conversation
           </Button>

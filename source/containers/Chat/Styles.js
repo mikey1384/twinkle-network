@@ -53,10 +53,17 @@ export const MessageStyle = {
   container: css`
     display: flex;
     width: 100%;
-    padding: 1rem;
+    padding: 1rem 0;
     position: relative;
   `,
-  profilePic: { width: '7rem', height: '7rem' },
+  profilePic: css`
+    width: 7rem;
+    height: 7rem;
+    @media (max-width: ${mobileMaxWidth}) {
+      width: 5rem;
+      height: 5rem;
+    }
+  `,
   contentWrapper: css`
     margin-left: 1.3rem;
     width: 92%;

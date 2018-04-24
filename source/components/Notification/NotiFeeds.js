@@ -48,7 +48,7 @@ class NotiFeeds extends Component {
     } = this.props
     return (
       <div style={style}>
-        <RoundList>
+        <RoundList style={{ marginTop: '0' }}>
           {numNewNotis > 0 && (
             <Banner
               love

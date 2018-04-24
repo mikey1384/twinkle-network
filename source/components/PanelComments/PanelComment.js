@@ -120,12 +120,13 @@ class PanelComment extends Component {
         }}
       >
         <div className="content-wrapper">
-          <ProfilePic
-            className="profile-pic"
-            style={{ height: '5rem', width: '5rem' }}
-            userId={comment.userId}
-            profilePicId={comment.profilePicId}
-          />
+          <aside>
+            <ProfilePic
+              style={{ height: '5rem', width: '5rem' }}
+              userId={comment.userId}
+              profilePicId={comment.profilePicId}
+            />
+          </aside>
           {editButtonShown &&
             !onEdit && (
               <div className="dropdown-wrapper">
