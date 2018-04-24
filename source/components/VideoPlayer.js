@@ -46,6 +46,7 @@ class VideoPlayer extends Component {
   }
 
   interval = null
+  isMobile = false
   Player = null
   rewardingXP = false
 
@@ -68,7 +69,7 @@ class VideoPlayer extends Component {
       videoId
     } = this.props
     this.mounted = true
-
+    this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     if (typeof hasHqThumb !== 'number') {
       try {
         const {
@@ -107,7 +108,7 @@ class VideoPlayer extends Component {
       }
     }
 
-    if (autoplay) {
+    if (autoplay || this.isMobile) {
       this.setState({ playing: true })
     }
   }
