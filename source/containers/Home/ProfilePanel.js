@@ -67,7 +67,8 @@ class ProfilePanel extends Component {
           style={{
             marginLeft: '2rem',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            position: 'relative'
           }}
         >
           <div>
@@ -138,8 +139,8 @@ class ProfilePanel extends Component {
                 style={{
                   position: 'absolute',
                   top: 0,
+                  left: 0,
                   right: 0,
-                  left: '34%',
                   bottom: 0,
                   display: 'flex',
                   alignItems: 'center',
