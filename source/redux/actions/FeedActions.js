@@ -6,6 +6,11 @@ import FEED from '../constants/Feed'
 
 const API_URL = `${URL}/feed`
 
+export const attachStar = data => ({
+  type: FEED.ATTACH_STAR,
+  data
+})
+
 export const clearFeeds = () => ({
   type: FEED.CLEAR
 })

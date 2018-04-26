@@ -12,6 +12,23 @@ export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false
   let commentsLoadMoreButton = false
   switch (action.type) {
+    case FEED.ATTACH_STAR:
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          const contentMatches =
+            action.data.contentType === feed.type &&
+            action.data.contentId === feed.contentId
+          return {
+            ...feed,
+            stars: contentMatches
+              ? feed.stars
+                ? feed.stars.concat(action.data)
+                : [action.data]
+              : feed.stars || []
+          }
+        })
+      }
     case FEED.CLEAR:
       return {
         ...state,

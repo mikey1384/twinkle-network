@@ -1,11 +1,21 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Textarea from 'components/Texts/Textarea'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
 import { exceedsCharLimit, stringIsEmpty } from 'helpers/stringHelpers'
 import Button from 'components/Button'
+import request from 'axios'
+import { auth } from 'redux/constants'
+import { URL } from 'constants/URL'
 
 export default class XPRewardInterface extends Component {
+  static propTypes = {
+    contentType: PropTypes.string.isRequired,
+    contentId: PropTypes.number.isRequired,
+    uploaderId: PropTypes.number.isRequired
+  }
+
   state = {
     rewardExplanation: '',
     twoStarSelected: false
@@ -25,7 +35,9 @@ export default class XPRewardInterface extends Component {
           color: ${Color.pink()};
         `}
       >
-        <section style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <section
+          style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+        >
           <Button
             logo
             style={{ display: 'flex' }}
@@ -80,12 +92,33 @@ export default class XPRewardInterface extends Component {
                 text: rewardExplanation
               })
             }
-            onClick={() => console.log('submit success')}
+            onClick={this.onRewardSubmit}
           >
             Confirm
           </Button>
         </section>
       </div>
     )
+  }
+
+  onRewardSubmit = async() => {
+    const { rewardExplanation, twoStarSelected } = this.state
+    const { contentType, contentId, onRewardSubmit, uploaderId } = this.props
+    try {
+      const { data } = await request.post(
+        `${URL}/user/reward`,
+        {
+          rewardExplanation,
+          twoStarSelected,
+          contentType,
+          contentId,
+          uploaderId
+        },
+        auth()
+      )
+      onRewardSubmit(data)
+    } catch (error) {
+      console.error({ error })
+    }
   }
 }

@@ -14,9 +14,11 @@ import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import XPRewardInterface from 'components/XPRewardInterface'
 import RewardStatus from 'components/RewardStatus'
+import { attachStar } from 'redux/actions/FeedActions'
 
 class Contents extends Component {
   static propTypes = {
+    attachStar: PropTypes.func.isRequired,
     attachedVideoShown: PropTypes.bool,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
@@ -87,6 +89,7 @@ class Contents extends Component {
       contentObj,
       methods,
       myId,
+      attachStar,
       attachedVideoShown
     } = this.props
     const {
@@ -271,7 +274,14 @@ class Contents extends Component {
             />
           </div>
         )}
-        {xpRewardInterfaceShown && <XPRewardInterface />}
+        {xpRewardInterfaceShown && (
+          <XPRewardInterface
+            contentType={type}
+            contentId={contentId}
+            uploaderId={uploaderId}
+            onRewardSubmit={attachStar}
+          />
+        )}
         {commentsShown && (
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}
@@ -387,9 +397,12 @@ class Contents extends Component {
   }
 }
 
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit,
-  canStar: state.UserReducer.canStar
-}))(Contents)
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar
+  }),
+  { attachStar }
+)(Contents)
