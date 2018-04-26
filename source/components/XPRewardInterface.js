@@ -27,7 +27,7 @@ export default class XPRewardInterface extends Component {
       >
         <section style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           <Button
-            love
+            logo
             style={{ display: 'flex' }}
             filled={!twoStarSelected}
             onClick={() => this.setState({ twoStarSelected: false })}
@@ -56,9 +56,9 @@ export default class XPRewardInterface extends Component {
           onChange={event =>
             this.setState({ rewardExplanation: event.target.value })
           }
-          placeholder="Write a note explaining why you are rewarding XP for this comment"
+          placeholder="Write a note explaining why you are rewarding XP for this comment (required)"
           style={exceedsCharLimit({
-            contentType: 'comment',
+            contentType: 'rewardComment',
             text: rewardExplanation
           })}
         />
@@ -76,7 +76,7 @@ export default class XPRewardInterface extends Component {
             disabled={
               stringIsEmpty(rewardExplanation) ||
               exceedsCharLimit({
-                contentType: 'comment',
+                contentType: 'rewardComment',
                 text: rewardExplanation
               })
             }

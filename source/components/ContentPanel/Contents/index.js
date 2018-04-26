@@ -13,10 +13,7 @@ import TargetContent from './TargetContent'
 import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import XPRewardInterface from 'components/XPRewardInterface'
-import ProfilePic from 'components/ProfilePic'
-import UsernameText from 'components/Texts/UsernameText'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
+import RewardStatus from 'components/RewardStatus'
 
 class Contents extends Component {
   static propTypes = {
@@ -80,7 +77,8 @@ class Contents extends Component {
         actualTitle,
         actualDescription,
         siteUrl,
-        uploaderAuthLevel
+        uploaderAuthLevel,
+        stars
       },
       authLevel,
       canDelete,
@@ -173,57 +171,7 @@ class Contents extends Component {
           }
           type={type}
         />
-        {type === 'comment' && (
-          <Fragment>
-            <div
-              className={css`
-                font-size: 2rem;
-                padding: 1rem;
-                color: #fff;
-                background: ${Color.logoBlue()};
-              `}
-            >
-              <span className="glyphicon glyphicon-star" />
-              <span className="glyphicon glyphicon-star" />
-              &nbsp; This comment received 2 Stars (200XP)
-            </div>
-            <div
-              className={css`
-                padding: 1rem;
-                display: flex;
-                align-items: center;
-              `}
-            >
-              <div
-                className={css`
-                  width: 6rem;
-                `}
-              >
-                <ProfilePic
-                  userId={5}
-                  profilePicId={1}
-                  style={{ width: '5rem', height: '5rem' }}
-                />
-              </div>
-              <div
-                className={css`
-                  font-size: 1.5rem;
-                `}
-              >
-                <p>
-                  <UsernameText
-                    user={{
-                      id: 5,
-                      name: 'admin'
-                    }}
-                    userId={myId}
-                  />
-                </p>
-                Wow this is an amazing comment!
-              </div>
-            </div>
-          </Fragment>
-        )}
+        {type === 'comment' && <RewardStatus stars={stars} />}
         {!isEditing && (
           <div className="bottom-interface">
             <div className="buttons-bar">

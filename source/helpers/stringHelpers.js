@@ -14,8 +14,8 @@ export function cleanString(string) {
 
 export function exceedsCharLimit({ inputType, contentType, text }) {
   const limit =
-    contentType === 'comment'
-      ? charLimit.comment
+    contentType === 'comment' || contentType === 'rewardComment'
+      ? charLimit[contentType]
       : charLimit[contentType][inputType]
   return text.length > limit
     ? {
@@ -27,8 +27,8 @@ export function exceedsCharLimit({ inputType, contentType, text }) {
 
 export function renderCharLimit({ inputType, contentType, text }) {
   const limit =
-    contentType === 'comment'
-      ? charLimit.comment
+    contentType === 'comment' || contentType === 'rewardComment'
+      ? charLimit[contentType]
       : charLimit[contentType][inputType]
   return `${text.length}/${limit} Characters`
 }

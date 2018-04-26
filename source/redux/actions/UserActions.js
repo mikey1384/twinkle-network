@@ -147,6 +147,7 @@ export const signup = params => async dispatch => {
       data
     })
   } catch (error) {
+    console.log(error)
     return Promise.reject(error.response.data)
   }
 }
