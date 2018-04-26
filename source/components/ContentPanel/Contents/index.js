@@ -107,6 +107,7 @@ class Contents extends Component {
     const userIsUploader = myId === uploaderId
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const userCanStarThis = canStar && authLevel > uploaderAuthLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -248,7 +249,7 @@ class Contents extends Component {
                   )}
                 {type === 'comment' &&
                   canStar &&
-                  userCanEditThis &&
+                  userCanStarThis &&
                   !userIsUploader && (
                     <Button
                       love
