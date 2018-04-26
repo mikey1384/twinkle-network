@@ -207,7 +207,7 @@ export default class SignUpForm extends Component {
       return this.setState({ errorMessage: 'That email address is invalid' })
     }
     try {
-      signup({
+      await signup({
         username,
         password,
         firstname,
@@ -215,7 +215,6 @@ export default class SignUpForm extends Component {
         email
       })
     } catch (error) {
-      console.log(error)
       this.setState({ errorMessage: error })
     }
   }
