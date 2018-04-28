@@ -64,6 +64,8 @@ export const container = css`
   }
   .title {
     font-size: 1.7rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .timestamp {
     font-size: 1rem;
@@ -76,7 +78,7 @@ export const container = css`
     .heading {
       a,
       span {
-        font-size: 2.0rem;
+        font-size: 2rem;
       }
       small {
         font-size: 1.5rem;

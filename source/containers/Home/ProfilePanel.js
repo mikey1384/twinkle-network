@@ -68,23 +68,26 @@ class ProfilePanel extends Component {
             marginLeft: '2rem',
             display: 'flex',
             flexDirection: 'column',
-            position: 'relative'
+            position: 'relative',
+            width: 'CALC(100% - 18rem)'
           }}
         >
-          <div>
-            <span
-              style={{
-                fontSize: '3.5rem',
-                fontWeight: 'bold',
-                color: Color.darkGray()
-              }}
-            >
-              {profile.username}
-            </span>{' '}
-            <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
-              profile.realName
-            })`}</span>
-          </div>
+          <span
+            style={{
+              fontSize: '3.5rem',
+              fontWeight: 'bold',
+              color: Color.darkGray(),
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              lineHeight: 'normal'
+            }}
+          >
+            {profile.username}
+          </span>{' '}
+          <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
+            profile.realName
+          })`}</span>
           {userId !== profile.id &&
             !!profile.online && (
               <p

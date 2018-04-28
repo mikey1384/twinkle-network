@@ -73,7 +73,8 @@ class People extends Component {
             marginTop: '1rem',
             marginBottom: '1rem',
             position: 'relative',
-            minHeight: '30%'
+            minHeight: '30%',
+            width: '100%'
           }}
         >
           {!loaded && <Loading text="Loading Users..." />}
