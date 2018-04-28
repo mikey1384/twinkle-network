@@ -8,12 +8,15 @@ import Button from 'components/Button'
 import request from 'axios'
 import { auth } from 'redux/constants'
 import { URL } from 'constants/URL'
+import { connect } from 'react-redux'
 
-export default class XPRewardInterface extends Component {
+class XPRewardInterface extends Component {
   static propTypes = {
     contentType: PropTypes.string.isRequired,
     contentId: PropTypes.number.isRequired,
-    uploaderId: PropTypes.number.isRequired
+    stars: PropTypes.array,
+    uploaderId: PropTypes.number.isRequired,
+    userId: PropTypes.number.isRequired
   }
 
   state = {
@@ -23,6 +26,18 @@ export default class XPRewardInterface extends Component {
 
   render() {
     const { rewardExplanation, twoStarSelected } = this.state
+    const { stars = [], userId } = this.props
+    const totalStars =
+      stars.length > 0
+        ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)
+        : 0
+    const prevRewardedStars = stars.reduce((prev, star) => {
+      if (star.rewarderId === userId) {
+        return prev + star.rewardAmount
+      }
+      return prev
+    }, 0)
+    const canRewardTwoStars = 5 - totalStars >= 2 && prevRewardedStars === 0
     return (
       <div
         className={css`
@@ -45,18 +60,20 @@ export default class XPRewardInterface extends Component {
             onClick={() => this.setState({ twoStarSelected: false })}
           >
             <span className="glyphicon glyphicon-star" />
-            &nbsp;Reward a star (Great - 200 XP)
+            &nbsp;Reward a star{canRewardTwoStars ? ' (Great - 200 XP)' : ''}
           </Button>
-          <Button
-            gold
-            style={{ display: 'flex', marginTop: '1rem' }}
-            filled={twoStarSelected}
-            onClick={() => this.setState({ twoStarSelected: true })}
-          >
-            <span className="glyphicon glyphicon-star" />
-            <span className="glyphicon glyphicon-star" />
-            &nbsp;Reward 2 stars (Excellent - 400 XP)
-          </Button>
+          {canRewardTwoStars && (
+            <Button
+              gold
+              style={{ display: 'flex', marginTop: '1rem' }}
+              filled={twoStarSelected}
+              onClick={() => this.setState({ twoStarSelected: true })}
+            >
+              <span className="glyphicon glyphicon-star" />
+              <span className="glyphicon glyphicon-star" />
+              &nbsp;Reward 2 stars (Excellent - 400 XP)
+            </Button>
+          )}
         </section>
         <Textarea
           autoFocus
@@ -122,3 +139,7 @@ export default class XPRewardInterface extends Component {
     }
   }
 }
+
+export default connect(state => ({
+  userId: state.UserReducer.userId
+}))(XPRewardInterface)

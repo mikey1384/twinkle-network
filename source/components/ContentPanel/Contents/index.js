@@ -256,12 +256,13 @@ class Contents extends Component {
                   !userIsUploader && (
                     <Button
                       love
-                      disabled={xpRewardInterfaceShown}
+                      disabled={this.determineXpButtonDisabled()}
                       onClick={() =>
                         this.setState({ xpRewardInterfaceShown: true })
                       }
                     >
-                      <span className="glyphicon glyphicon-star" /> Reward Stars
+                      <span className="glyphicon glyphicon-star" />{' '}
+                      {this.renderXpButtonLabel()}
                     </Button>
                   )}
               </div>
@@ -279,7 +280,11 @@ class Contents extends Component {
             contentType={type}
             contentId={contentId}
             uploaderId={uploaderId}
-            onRewardSubmit={attachStar}
+            stars={stars}
+            onRewardSubmit={data => {
+              this.setState({ xpRewardInterfaceShown: false })
+              attachStar(data)
+            }}
           />
         )}
         {commentsShown && (
@@ -323,6 +328,44 @@ class Contents extends Component {
         )}
       </div>
     )
+  }
+
+  determineXpButtonDisabled = () => {
+    const {
+      contentObj: { stars },
+      myId
+    } = this.props
+    const { xpRewardInterfaceShown } = this.state
+    let result = false
+    if (xpRewardInterfaceShown) result = true
+    const numPrevStars = stars.reduce((prev, star) => {
+      if (star.rewarderId === myId) {
+        return prev + star.rewardAmount
+      }
+      return prev
+    }, 0)
+    if (numPrevStars >= 2) result = true
+    return result
+  }
+
+  renderXpButtonLabel = () => {
+    const {
+      contentObj: { stars },
+      myId
+    } = this.props
+    const numTotalStars = stars.reduce(
+      (prev, star) => prev + star.rewardAmount,
+      0
+    )
+    if (numTotalStars >= 5) return 'Max Stars Reached'
+    const numPrevStars = stars.reduce((prev, star) => {
+      if (star.rewarderId === myId) {
+        return prev + star.rewardAmount
+      }
+      return prev
+    }, 0)
+    if (numPrevStars >= 2) return 'You rewarded 2 out of 2 Stars'
+    return 'Reward Stars'
   }
 
   loadMoreComments = async({ lastCommentId, type, rootType, contentId }) => {
