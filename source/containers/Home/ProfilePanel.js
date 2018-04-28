@@ -84,7 +84,7 @@ class ProfilePanel extends Component {
             }}
           >
             {profile.username}
-          </span>{' '}
+          </span>
           <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
             profile.realName
           })`}</span>
