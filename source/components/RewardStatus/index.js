@@ -29,7 +29,7 @@ class RewardStatus extends Component {
             font-size: 2rem;
             padding: 1rem;
             color: #fff;
-            background: ${totalStars === 5 ? Color.gold() : Color.logoBlue()};
+            background: ${totalStars === 5 ? Color.gold() : Color.orange()};
           `}
         >
           {starMarks}

@@ -3,6 +3,7 @@ import NOTI from '../constants/Noti'
 const defaultState = {
   versionMatch: true,
   notifications: [],
+  rewards: [],
   currentChatSubject: {},
   numNewNotis: 0,
   numNewPosts: 0
@@ -26,7 +27,8 @@ export default function NotiReducer(state = defaultState, action) {
     case NOTI.CLEAR:
       return {
         ...state,
-        notifications: []
+        notifications: [],
+        rewards: []
       }
     case NOTI.INCREASE_NUM_NEW_NOTIS:
       return {

@@ -33,6 +33,7 @@ export const fetchNotifications = () => async dispatch => {
         type: NOTI.LOAD,
         data: {
           notifications: [],
+          rewards: [],
           currentChatSubject: data
         }
       })

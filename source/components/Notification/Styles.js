@@ -1,5 +1,5 @@
 import { css } from 'emotion'
-import { mobileMaxWidth } from 'constants/css'
+import { Color, mobileMaxWidth } from 'constants/css'
 
 export const container = css`
   padding-top: 1rem;
@@ -10,5 +10,14 @@ export const container = css`
     > section {
       min-height: 0;
     }
+  }
+`
+
+export const notiFeedListItem = css`
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  > small {
+    color: ${Color.gray()};
   }
 `

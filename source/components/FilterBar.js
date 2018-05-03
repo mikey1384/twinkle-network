@@ -7,9 +7,16 @@ FilterBar.propTypes = {
   children: PropTypes.node,
   bordered: PropTypes.bool,
   info: PropTypes.bool,
-  success: PropTypes.bool
+  success: PropTypes.bool,
+  style: PropTypes.object
 }
-export default function FilterBar({ bordered, children, info, success }) {
+export default function FilterBar({
+  bordered,
+  children,
+  info,
+  style,
+  success
+}) {
   const color = {
     default: Color.blue(),
     success: Color.green(),
@@ -20,18 +27,21 @@ export default function FilterBar({ bordered, children, info, success }) {
   if (success) colorKey = 'success'
   return (
     <div
+      style={style}
       className={css`
         background: #fff;
         height: 6rem;
         margin-bottom: 1rem;
-        ${bordered
-          ? `
+        ${
+          bordered
+            ? `
         border-top: 1px solid ${Color.borderGray()};
         border-left: 1px solid ${Color.borderGray()};
         border-right: 1px solid ${Color.borderGray()};
         border-radius: ${borderRadius};
         `
-          : ''} display: flex;
+            : ''
+        } display: flex;
         font-size: 1.7rem;
         width: 100%;
         align-items: center;
@@ -61,9 +71,9 @@ export default function FilterBar({ bordered, children, info, success }) {
           }
         }
         > nav:first-child {
-          ${bordered
-            ? 'border-bottom-left-radius: 5px;'
-            : ''} @media (max-width: ${mobileMaxWidth}) {
+          ${
+            bordered ? 'border-bottom-left-radius: 5px;' : ''
+          } @media (max-width: ${mobileMaxWidth}) {
             border-bottom-left-radius: 0;
           }
         }

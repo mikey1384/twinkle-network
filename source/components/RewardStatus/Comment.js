@@ -45,7 +45,7 @@ export default function Comment({ myId, star }) {
           <span
             style={{
               fontWeight: 'bold',
-              color: star.rewardAmount === 2 ? Color.gold() : Color.logoBlue()
+              color: star.rewardAmount === 2 ? Color.gold() : Color.orange()
             }}
           >
             rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount} Star{star.rewardAmount >

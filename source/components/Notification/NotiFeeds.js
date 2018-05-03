@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { timeSince } from 'helpers/timeStampHelpers'
 import { Color } from 'constants/css'
@@ -8,12 +8,14 @@ import RoundList from 'components/RoundList'
 import Banner from 'components/Banner'
 import { fetchNotifications } from 'redux/actions/NotiActions'
 import { connect } from 'react-redux'
+import { notiFeedListItem } from './Styles'
 
 class NotiFeeds extends Component {
   static propTypes = {
     fetchNotifications: PropTypes.func.isRequired,
     myId: PropTypes.number,
     numNewNotis: PropTypes.number,
+    notiTabActive: PropTypes.bool,
     notifications: PropTypes.arrayOf(
       PropTypes.shape({
         contentId: PropTypes.number,
@@ -22,6 +24,7 @@ class NotiFeeds extends Component {
         discussionTitle: PropTypes.string,
         discussionUploader: PropTypes.number,
         id: PropTypes.number.isRequired,
+        reward: PropTypes.object,
         rootCommentUploader: PropTypes.oneOfType([
           PropTypes.number,
           PropTypes.string
@@ -35,15 +38,18 @@ class NotiFeeds extends Component {
         username: PropTypes.string.isRequired
       })
     ).isRequired,
+    rewards: PropTypes.array,
+    selectNotiTab: PropTypes.func.isRequired,
     style: PropTypes.object
   }
 
   render() {
     const {
       myId,
-      fetchNotifications,
+      notiTabActive,
       notifications,
       numNewNotis,
+      rewards,
       style
     } = this.props
     return (
@@ -53,7 +59,7 @@ class NotiFeeds extends Component {
             <Banner
               love
               style={{ marginBottom: '1rem' }}
-              onClick={fetchNotifications}
+              onClick={this.onBannerClick}
             >
               Click to See {numNewNotis} New Notification{numNewNotis > 1
                 ? 's'
@@ -61,16 +67,10 @@ class NotiFeeds extends Component {
             </Banner>
           )}
           {notifications.length > 0 &&
+            notiTabActive &&
             notifications.map(notification => {
               return (
-                <li
-                  style={{
-                    whiteSpace: 'pre-wrap',
-                    overflowWrap: 'break-word',
-                    wordBreak: 'break-word'
-                  }}
-                  key={notification.id}
-                >
+                <li className={notiFeedListItem} key={notification.id}>
                   {renderNotificationMessage(notification, myId)}
                   <small style={{ color: Color.gray() }}>
                     {timeSince(notification.timeStamp)}
@@ -78,9 +78,36 @@ class NotiFeeds extends Component {
                 </li>
               )
             })}
+          {rewards.length > 0 &&
+            !notiTabActive &&
+            rewards.map(
+              ({
+                id,
+                contentType,
+                rewardAmount,
+                rewardType,
+                rewarderUsername,
+                timeStamp
+              }) => (
+                <li className={notiFeedListItem} key={id}>
+                  <p>
+                    {rewarderUsername} rewarded you{' '}
+                    {rewardAmount === 1 ? 'a' : rewardAmount} {rewardType}
+                    {rewardAmount > 1 ? 's' : ''} for your {contentType}
+                  </p>
+                  <small>{timeSince(timeStamp)}</small>
+                </li>
+              )
+            )}
         </RoundList>
       </div>
     )
+  }
+
+  onBannerClick = () => {
+    const { selectNotiTab, fetchNotifications } = this.props
+    selectNotiTab()
+    fetchNotifications()
   }
 }
 
@@ -96,6 +123,7 @@ function renderNotificationMessage(notification, myId) {
     contentId,
     discussionId,
     type,
+    reward,
     rootType,
     rootTitle,
     rootId,
@@ -116,6 +144,24 @@ function renderNotificationMessage(notification, myId) {
     action = returnCommentActionText('comment')
   } else {
     switch (type) {
+      case 'reward':
+        action = (
+          <Fragment>
+            <span
+              style={{
+                fontWeight: 'bold',
+                color: reward.rewardAmount > 1 ? Color.gold() : Color.orange()
+              }}
+            >
+              rewarded you{' '}
+              {reward.rewardAmount === 1 ? 'a' : reward.rewardAmount}{' '}
+              {reward.rewardType}
+              {reward.rewardAmount > 1 ? 's' : ''}
+            </span>{' '}
+            for
+          </Fragment>
+        )
+        break
       case 'like':
         action = 'likes'
         break
