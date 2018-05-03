@@ -122,7 +122,9 @@ class Body extends Component {
       commentFeedLike,
       contentFeedLike,
       match: route,
-      match: { params: { username } },
+      match: {
+        params: { username }
+      },
       history,
       likeTargetComment,
       loadMoreFeedReplies,
@@ -311,7 +313,12 @@ class Body extends Component {
   }
 
   changeTab = tabName => {
-    const { match: { params: { username } }, fetchUserFeeds } = this.props
+    const {
+      match: {
+        params: { username }
+      },
+      fetchUserFeeds
+    } = this.props
     if (this.mounted) {
       this.setState({ currentTab: tabName })
     }
@@ -320,7 +327,9 @@ class Body extends Component {
 
   loadMoreFeeds = () => {
     const {
-      match: { params: { username } },
+      match: {
+        params: { username }
+      },
       fetchMoreUserFeeds,
       feeds
     } = this.props

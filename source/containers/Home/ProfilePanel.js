@@ -140,11 +140,7 @@ class ProfilePanel extends Component {
             ) : (
               <div
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
+                  height: '6rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'flex-start'
@@ -172,9 +168,7 @@ class ProfilePanel extends Component {
             userId !== profile.id && (
               <div
                 style={{
-                  marginTop: !noProfile && '1rem',
-                  position: noProfile && 'absolute',
-                  bottom: noProfile && '2rem'
+                  marginTop: noProfile ? '2rem' : '1rem'
                 }}
               >
                 <Button
