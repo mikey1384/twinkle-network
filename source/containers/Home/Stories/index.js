@@ -30,6 +30,7 @@ import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { feedContentEdit } from '../../../redux/actions/FeedActions'
 import FilterBar from 'components/FilterBar'
 import Banner from 'components/Banner'
+import { queryStringForArray } from 'helpers/stringHelpers'
 
 class Stories extends Component {
   static propTypes = {
@@ -158,7 +159,9 @@ class Stories extends Component {
                     onClick={this.refreshFeeds}
                     style={{ marginBottom: '1rem' }}
                   >
-                    Click to See {numNewPosts} new Post{numNewPosts > 1 ? 's' : ''}
+                    Click to See {numNewPosts} new Post{numNewPosts > 1
+                      ? 's'
+                      : ''}
                   </Banner>
                 )}
                 {feeds.map(feed => {
@@ -209,14 +212,20 @@ class Stories extends Component {
     fetchFeeds(filter)
   }
 
-  loadMoreFeeds = () => {
+  loadMoreFeeds = async() => {
     const { feeds, fetchMoreFeeds, selectedFilter } = this.props
     const { loadingMore } = this.state
     if (!loadingMore) {
       this.setState({ loadingMore: true })
-      fetchMoreFeeds(feeds[feeds.length - 1].id, selectedFilter).then(() =>
+      try {
+        await fetchMoreFeeds({
+          shownFeeds: queryStringForArray(feeds, 'id', 'shownFeeds'),
+          filter: selectedFilter
+        })
         this.setState({ loadingMore: false })
-      )
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 

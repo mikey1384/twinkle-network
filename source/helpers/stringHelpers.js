@@ -2,6 +2,20 @@ import { charLimit } from 'constants/defaultValues'
 
 /* eslint-disable no-useless-escape */
 
+export function addCommasToNumber(number) {
+  const numArray = `${number}`.split('')
+  let result = ''
+  numArray.reverse()
+  for (let i = 0; i < numArray.length; i++) {
+    if (i % 3 === 0 && i !== 0) {
+      result = numArray[i] + ',' + result
+    } else {
+      result = numArray[i] + result
+    }
+  }
+  return result
+}
+
 export function cleanString(string) {
   return string
     ? string

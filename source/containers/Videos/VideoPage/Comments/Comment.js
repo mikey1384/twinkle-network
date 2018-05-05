@@ -31,7 +31,7 @@ class Comment extends Component {
       replies: PropTypes.array.isRequired,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
-      uploaderAuthLevel: PropTypes.number.isRequired,
+      uploaderAuthLevel: PropTypes.number,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }).isRequired,

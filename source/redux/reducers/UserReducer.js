@@ -20,7 +20,8 @@ export default function UserReducer(state = defaultState, action) {
     case USER.CHANGE_XP:
       return {
         ...state,
-        twinkleXP: action.xp
+        twinkleXP: action.xp,
+        rank: action.rank
       }
     case USER.CLEAR_SEARCH:
       return {

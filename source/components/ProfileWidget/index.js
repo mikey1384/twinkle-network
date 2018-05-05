@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import { Color } from 'constants/css'
 import Button from 'components/Button'
+import { addCommasToNumber } from 'helpers/stringHelpers'
 import { openSigninModal } from 'redux/actions/UserActions'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -55,7 +56,7 @@ function ProfileWidget({
         {userId && (
           <div>
             <div style={{ fontWeight: 'bold' }}>
-              <span>{twinkleXP || 0}</span>
+              <span>{twinkleXP ? addCommasToNumber(twinkleXP) : 0}</span>
               &nbsp;<span style={{ color: Color.logoBlue() }}>Twin</span>
               <span style={{ color: Color.logoGreen() }}>kle</span>
               &nbsp;<span style={{ color: Color.gold() }}>XP</span>

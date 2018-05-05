@@ -27,6 +27,7 @@ import Loading from 'components/Loading'
 import ContentPanel from 'components/ContentPanel'
 import LoadMoreButton from 'components/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
+import { queryStringForArray } from 'helpers/stringHelpers'
 import FilterBar from 'components/FilterBar'
 
 class Body extends Component {
@@ -303,7 +304,7 @@ class Body extends Component {
         </div>
         {loadMoreButton && (
           <LoadMoreButton
-            style={{ marginBottom: '1rem' }}
+            style={{ marginTop: '1rem', marginBottom: '1rem' }}
             onClick={this.loadMoreFeeds}
             loading={loading}
           />
@@ -322,10 +323,10 @@ class Body extends Component {
     if (this.mounted) {
       this.setState({ currentTab: tabName })
     }
-    fetchUserFeeds(username, tabName)
+    fetchUserFeeds({ username, type: tabName })
   }
 
-  loadMoreFeeds = () => {
+  loadMoreFeeds = async() => {
     const {
       match: {
         params: { username }
@@ -337,11 +338,16 @@ class Body extends Component {
 
     if (!loading) {
       this.setState({ loading: true })
-      return fetchMoreUserFeeds(
-        username,
-        currentTab,
-        feeds[feeds.length - 1].id
-      ).then(() => this.setState({ loading: false }))
+      try {
+        await fetchMoreUserFeeds({
+          username,
+          type: currentTab,
+          shownFeeds: queryStringForArray(feeds, 'id', 'shownFeeds')
+        })
+        this.setState({ loading: false })
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 

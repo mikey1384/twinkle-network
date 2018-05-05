@@ -9,20 +9,26 @@ Banner.propTypes = {
   innerRef: PropTypes.func,
   info: PropTypes.bool,
   logo: PropTypes.bool,
+  gold: PropTypes.bool,
   primary: PropTypes.bool,
   style: PropTypes.object,
   love: PropTypes.bool,
+  success: PropTypes.bool,
+  warning: PropTypes.bool,
   onClick: PropTypes.func
 }
 export default function Banner({
   children,
   danger,
+  gold,
   info,
   innerRef,
   logo,
   onClick,
   primary,
   love,
+  success,
+  warning,
   style = {}
 }) {
   const backgroundColor = {
@@ -31,6 +37,9 @@ export default function Banner({
     logo: Color.logoBlue(),
     love: Color.pink(),
     info: Color.lightBlue(),
+    gold: Color.gold(),
+    success: Color.green(),
+    warning: Color.orange(),
     default: Color.lightGray()
   }
   let colorKey = 'default'
@@ -39,6 +48,9 @@ export default function Banner({
   if (love) colorKey = 'love'
   if (logo) colorKey = 'logo'
   if (info) colorKey = 'info'
+  if (gold) colorKey = 'gold'
+  if (warning) colorKey = 'warning'
+  if (success) colorKey = 'success'
   return (
     <div
       ref={innerRef}

@@ -44,7 +44,7 @@ class PanelReply extends Component {
       targetUserName: PropTypes.string,
       timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
-      uploaderAuthLevel: PropTypes.number.isRequired,
+      uploaderAuthLevel: PropTypes.number,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }),

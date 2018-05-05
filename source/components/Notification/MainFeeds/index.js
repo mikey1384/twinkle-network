@@ -6,16 +6,29 @@ import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
 import RoundList from 'components/RoundList'
 import Banner from 'components/Banner'
-import { fetchNotifications } from 'redux/actions/NotiActions'
+import {
+  clearRewards,
+  fetchNotifications,
+  loadMoreNotifications,
+  loadMoreRewards
+} from 'redux/actions/NotiActions'
+import { changeUserXP } from 'redux/actions/UserActions'
 import { connect } from 'react-redux'
-import { notiFeedListItem } from './Styles'
+import LeaderBoardTab from './LeaderBoardTab'
+import { addCommasToNumber } from 'helpers/stringHelpers'
+import { notiFeedListItem } from '../Styles'
+import { rewardValue } from 'constants/defaultValues'
 
-class NotiFeeds extends Component {
+class MainFeeds extends Component {
   static propTypes = {
+    changeUserXP: PropTypes.func.isRequired,
     fetchNotifications: PropTypes.func.isRequired,
+    loadMore: PropTypes.object.isRequired,
+    loadMoreNotifications: PropTypes.func.isRequired,
+    loadMoreRewards: PropTypes.func.isRequired,
     myId: PropTypes.number,
     numNewNotis: PropTypes.number,
-    notiTabActive: PropTypes.bool,
+    activeTab: PropTypes.string,
     notifications: PropTypes.arrayOf(
       PropTypes.shape({
         contentId: PropTypes.number,
@@ -40,18 +53,28 @@ class NotiFeeds extends Component {
     ).isRequired,
     rewards: PropTypes.array,
     selectNotiTab: PropTypes.func.isRequired,
-    style: PropTypes.object
+    style: PropTypes.object,
+    totalRewardAmount: PropTypes.number,
+    twinkleXP: PropTypes.number
+  }
+
+  state = {
+    originalTotalReward: 0,
+    originalTwinkleXP: 0
   }
 
   render() {
     const {
       myId,
-      notiTabActive,
+      loadMore,
+      activeTab,
       notifications,
       numNewNotis,
       rewards,
-      style
+      style,
+      totalRewardAmount
     } = this.props
+    const { originalTotalReward, originalTwinkleXP } = this.state
     return (
       <div style={style}>
         <RoundList style={{ marginTop: '0' }}>
@@ -59,15 +82,45 @@ class NotiFeeds extends Component {
             <Banner
               love
               style={{ marginBottom: '1rem' }}
-              onClick={this.onBannerClick}
+              onClick={this.onNewNotiAlertClick}
             >
               Click to See {numNewNotis} New Notification{numNewNotis > 1
                 ? 's'
                 : ''}
             </Banner>
           )}
-          {notifications.length > 0 &&
-            notiTabActive &&
+          {activeTab === 'reward' && (
+            <Banner
+              love={totalRewardAmount > 0}
+              success={totalRewardAmount === 0}
+              style={{ marginBottom: '1rem' }}
+              onClick={totalRewardAmount > 0 ? this.onCollectReward : null}
+            >
+              {totalRewardAmount > 0 && (
+                <Fragment>
+                  <p>Click to collect all your rewards</p>
+                  <p>
+                    ({totalRewardAmount} stars x {rewardValue.star} XP/star ={' '}
+                    {addCommasToNumber(totalRewardAmount * rewardValue.star)}{' '}
+                    XP)
+                  </p>
+                </Fragment>
+              )}
+              {totalRewardAmount === 0 && (
+                <Fragment>
+                  <p>{originalTotalReward * rewardValue.star} XP Collected!</p>
+                  <p>
+                    Your XP went up from {addCommasToNumber(originalTwinkleXP)}{' '}
+                    to{' '}
+                    {addCommasToNumber(
+                      originalTwinkleXP + originalTotalReward * rewardValue.star
+                    )}
+                  </p>
+                </Fragment>
+              )}
+            </Banner>
+          )}
+          {activeTab === 'notification' &&
             notifications.map(notification => {
               return (
                 <li className={notiFeedListItem} key={notification.id}>
@@ -78,45 +131,118 @@ class NotiFeeds extends Component {
                 </li>
               )
             })}
-          {rewards.length > 0 &&
-            !notiTabActive &&
+          {activeTab === 'leaderboard' && <LeaderBoardTab myId={myId} />}
+          {activeTab === 'reward' &&
             rewards.map(
               ({
                 id,
+                contentId,
                 contentType,
                 rewardAmount,
                 rewardType,
+                rewarderId,
                 rewarderUsername,
                 timeStamp
               }) => (
                 <li className={notiFeedListItem} key={id}>
-                  <p>
-                    {rewarderUsername} rewarded you{' '}
-                    {rewardAmount === 1 ? 'a' : rewardAmount} {rewardType}
-                    {rewardAmount > 1 ? 's' : ''} for your {contentType}
-                  </p>
+                  <div>
+                    <UsernameText
+                      user={{ id: rewarderId, name: rewarderUsername }}
+                      color={Color.blue()}
+                    />{' '}
+                    <span
+                      style={{
+                        color: rewardAmount > 1 ? Color.gold() : Color.orange(),
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      rewarded you {rewardAmount === 1 ? 'a' : rewardAmount}{' '}
+                      {rewardType}
+                      {rewardAmount > 1 ? 's' : ''}
+                    </span>{' '}
+                    for your{' '}
+                    <ContentLink
+                      style={{ color: Color.green() }}
+                      content={{ id: contentId, title: contentType }}
+                      type={contentType}
+                    />
+                  </div>
                   <small>{timeSince(timeStamp)}</small>
                 </li>
               )
             )}
         </RoundList>
+        {((activeTab === 'notification' && loadMore.notifications) ||
+          (activeTab === 'reward' && loadMore.rewards)) && (
+          <Banner
+            logo
+            style={{
+              marginTop: '1rem',
+              fontSize: '1.7rem',
+              padding: '1rem'
+            }}
+            onClick={this.onLoadMore}
+          >
+            Load More
+          </Banner>
+        )}
       </div>
     )
   }
 
-  onBannerClick = () => {
+  onCollectReward = async() => {
+    const {
+      changeUserXP,
+      clearRewards,
+      totalRewardAmount,
+      twinkleXP
+    } = this.props
+    this.setState({
+      originalTotalReward: totalRewardAmount,
+      originalTwinkleXP: twinkleXP
+    })
+    await changeUserXP({
+      action: 'collect'
+    })
+    clearRewards()
+  }
+
+  onNewNotiAlertClick = () => {
     const { selectNotiTab, fetchNotifications } = this.props
     selectNotiTab()
     fetchNotifications()
+  }
+
+  onLoadMore = () => {
+    const {
+      notifications,
+      rewards,
+      loadMoreNotifications,
+      loadMoreRewards,
+      activeTab
+    } = this.props
+    if (activeTab === 'notification') {
+      loadMoreNotifications(notifications[notifications.length - 1].id)
+    } else {
+      loadMoreRewards(rewards[rewards.length - 1].id)
+    }
   }
 }
 
 export default connect(
   state => ({
-    numNewNotis: state.NotiReducer.numNewNotis
+    numNewNotis: state.NotiReducer.numNewNotis,
+    totalRewardAmount: state.NotiReducer.totalRewardAmount,
+    twinkleXP: state.UserReducer.twinkleXP
   }),
-  { fetchNotifications }
-)(NotiFeeds)
+  {
+    changeUserXP,
+    clearRewards,
+    fetchNotifications,
+    loadMoreNotifications,
+    loadMoreRewards
+  }
+)(MainFeeds)
 
 function renderNotificationMessage(notification, myId) {
   const {
@@ -135,7 +261,8 @@ function renderNotificationMessage(notification, myId) {
     discussionUploader
   } = notification
   let action = ''
-  let isReplyNotification = commentContent && rootCommentUploader === myId
+  let isReplyNotification =
+    commentContent && Number(rootCommentUploader) === myId
   let isDiscussionAnswerNotification =
     discussionTitle && discussionUploader === myId
   if (isReplyNotification) {

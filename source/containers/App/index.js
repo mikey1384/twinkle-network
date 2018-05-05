@@ -13,10 +13,6 @@ import {
 } from 'redux/actions/UserActions'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { recordUserAction } from 'helpers/userDataHelpers'
-import {
-  fetchNotifications,
-  clearNotifications
-} from 'redux/actions/NotiActions'
 import { siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
 import { Color, mobileMaxWidth } from 'constants/css'
@@ -58,8 +54,6 @@ class App extends Component {
     numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
     closeSigninModal: PropTypes.func,
-    clearNotifications: PropTypes.func,
-    fetchNotifications: PropTypes.func,
     resetChat: PropTypes.func,
     loggedIn: PropTypes.bool,
     location: PropTypes.object,
@@ -106,21 +100,11 @@ class App extends Component {
       numNewPosts,
       history,
       location,
-      loggedIn,
-      fetchNotifications,
-      clearNotifications
+      loggedIn
     } = this.props
 
     const { navScrollPositions } = this.state
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads
-
-    if (prevProps.loggedIn !== loggedIn) {
-      if (loggedIn) {
-        fetchNotifications()
-      } else {
-        clearNotifications()
-      }
-    }
 
     if (location !== prevProps.location) {
       if (history.action === 'PUSH') {
@@ -328,8 +312,6 @@ export default connect(
     openSigninModal,
     initSession,
     turnChatOff,
-    fetchNotifications,
-    clearNotifications,
     initChat,
     resetChat,
     changePageVisibility

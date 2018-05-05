@@ -1,4 +1,7 @@
 export const defaultChatSubject = 'Introduce yourself!'
+export const rewardValue = {
+  star: 200
+}
 export const charLimit = {
   chat: {
     subject: 200,

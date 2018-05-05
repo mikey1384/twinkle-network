@@ -27,6 +27,7 @@ class XPRewardInterface extends Component {
   render() {
     const { rewardExplanation, twoStarSelected } = this.state
     const { stars = [], userId } = this.props
+    if (!userId) return null
     const totalStars =
       stars.length > 0
         ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)

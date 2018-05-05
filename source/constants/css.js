@@ -7,6 +7,7 @@ export const Color = {
   buttonGray: (opacity = 1) => `rgba(137,137,137,${opacity})`,
   gray: (opacity = 1) => `rgba(153,153,153,${opacity})`,
   menuGray: (opacity = 1) => `rgba(185,185,185,${opacity})`,
+  silver: (opacity = 1) => `rgba(190,190,190,${opacity})`,
   lightGray: (opacity = 1) => `rgba(207,207,207,${opacity})`,
   inputBorderGray: (opacity = 1) => `rgba(231,231,231,${opacity})`,
   borderGray: (opacity = 1) => `rgba(238,238,238,${opacity})`,
@@ -21,7 +22,8 @@ export const Color = {
   green: (opacity = 1) => `rgba(40,182,44,${opacity})`,
   orange: (opacity = 1) => `rgba(240,173,78,${opacity})`,
   gold: (opacity = 1) => `rgba(255,210,0,${opacity})`,
-  pink: (opacity = 1) => `rgba(250,128,157,${opacity})`,
+  pink: (opacity = 1) => `rgba(260,128,167,${opacity})`,
+  rose: (opacity = 1) => `rgba(250,128,157,${opacity})`,
   red: (opacity = 1) => `rgba(255,65,54,${opacity})`,
   white: (opacity = 1) => `rgba(255,255,255,${opacity})`
 }

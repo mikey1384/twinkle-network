@@ -2,13 +2,18 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import NotiFeeds from './NotiFeeds'
+import MainFeeds from './MainFeeds'
 import ChatFeeds from './ChatFeeds'
 import { defaultChatSubject } from 'constants/defaultValues'
-import { fetchNotifications } from 'redux/actions/NotiActions'
+import {
+  clearNotifications,
+  fetchNotifications
+} from 'redux/actions/NotiActions'
 import ExecutionEnvironment from 'exenv'
 import { container } from './Styles'
 import FilterBar from 'components/FilterBar'
+import { borderRadius, Color } from 'constants/css'
+import { addCommasToNumber } from 'helpers/stringHelpers'
 import { css } from 'emotion'
 
 class Notification extends Component {
@@ -16,23 +21,61 @@ class Notification extends Component {
     chatMode: PropTypes.bool.isRequired,
     children: PropTypes.node,
     className: PropTypes.string,
+    clearNotifications: PropTypes.func.isRequired,
     currentChatSubject: PropTypes.object,
     fetchNotifications: PropTypes.func.isRequired,
+    loadMore: PropTypes.object,
     myId: PropTypes.number,
     notifications: PropTypes.array.isRequired,
+    rank: PropTypes.number,
     rewards: PropTypes.array.isRequired,
     style: PropTypes.object,
-    position: PropTypes.string
+    position: PropTypes.string,
+    twinkleXP: PropTypes.number
   }
 
-  state = {
-    notiTabActive: true
+  constructor({ rewards }) {
+    super()
+    this.state = {
+      activeTab: 'leaderboard',
+      rewardTabShown: false
+    }
   }
 
-  componentDidMount() {
+  async componentDidUpdate(prevProps) {
+    const { clearNotifications, fetchNotifications } = this.props
+    if (prevProps.myId !== this.props.myId) {
+      if (!this.props.myId) {
+        this.setState({ activeTab: 'leaderboard' })
+        clearNotifications()
+      } else {
+        await fetchNotifications()
+        this.setState({
+          activeTab:
+            this.props.rewards.length > 0
+              ? 'reward'
+              : this.props.notifications.length > 0
+                ? 'notification'
+                : 'leaderboard',
+          rewardTabShown: this.props.rewards.length > 0
+        })
+      }
+    }
+  }
+
+  async componentDidMount() {
     const { fetchNotifications } = this.props
     addEvent(window, 'mousemove', this.onMouseMove)
-    fetchNotifications()
+    await fetchNotifications()
+    this.setState({
+      activeTab:
+        this.props.rewards.length > 0
+          ? 'reward'
+          : this.props.notifications.length > 0
+            ? 'notification'
+            : 'leaderboard',
+      rewardTabShown: this.props.rewards.length > 0
+    })
   }
 
   componentWillUnmount() {
@@ -48,9 +91,20 @@ class Notification extends Component {
       className,
       currentChatSubject: { content = defaultChatSubject, loaded, ...subject },
       children,
-      rewards
+      loadMore,
+      rank,
+      rewards,
+      twinkleXP
     } = this.props
-    const { notiTabActive } = this.state
+    const rankedColor =
+      rank === 1
+        ? Color.gold()
+        : rank === 2
+          ? Color.borderGray()
+          : rank === 3
+            ? Color.orange()
+            : undefined
+    const { activeTab, rewardTabShown } = this.state
     return (
       <div className={`${container} ${className}`} onScroll={this.handleScroll}>
         <section>
@@ -70,30 +124,108 @@ class Notification extends Component {
               {...subject}
             />
           )}
-          <FilterBar bordered style={{ marginTop: '1rem' }}>
-            <nav
-              className={notiTabActive ? 'active' : undefined}
-              onClick={() => this.setState({ notiTabActive: true })}
-            >
-              <a>Notifications</a>
-            </nav>
-            <nav
-              className={!notiTabActive ? 'active' : undefined}
-              onClick={() => this.setState({ notiTabActive: false })}
-            >
-              <a>Rewards</a>
-            </nav>
-          </FilterBar>
+          <div
+            style={{
+              marginTop: '1rem',
+              background: myId
+                ? rank > 0 && rank < 4 && Color.black(1 - (rank - 1) / 10)
+                : Color.logoBlue()
+            }}
+            className={css`
+              width: 100%;
+              margin-bottom: 0px;
+              text-align: center;
+              padding: 1rem;
+              background: #fff;
+              border: 1px solid #eeeeee;
+              border-radius: ${borderRadius};
+              p {
+                font-weight: bold;
+                margin-bottom: 0px;
+              }
+              a {
+                font-size: 1.5rem;
+                font-weight: bold;
+              }
+            `}
+          >
+            {myId ? (
+              <p>
+                <span
+                  style={{
+                    color:
+                      rank === 1
+                        ? Color.gold()
+                        : rankedColor || Color.logoGreen(),
+                    fontSize: '3rem'
+                  }}
+                >
+                  {twinkleXP ? addCommasToNumber(twinkleXP) : 0}
+                </span>{' '}
+                <span
+                  style={{
+                    color: rankedColor || Color.gold(),
+                    fontSize: '3rem'
+                  }}
+                >
+                  XP
+                </span>&nbsp;&nbsp;
+                <span
+                  style={{
+                    color:
+                      rankedColor ||
+                      (rank > 0 && rank <= 10
+                        ? Color.pink()
+                        : Color.buttonGray()),
+                    fontSize: '2rem'
+                  }}
+                >
+                  {rank ? `Rank #${rank}` : 'Unranked'}
+                </span>
+              </p>
+            ) : (
+              <p style={{ fontSize: '2.5rem', color: '#fff' }}>Leaderboard</p>
+            )}
+          </div>
           {notifications.length > 0 && (
-            <NotiFeeds
-              notiTabActive={notiTabActive}
-              notifications={notifications}
-              rewards={rewards}
-              selectNotiTab={() => this.setState({ notiTabActive: true })}
-              myId={myId}
-              style={{ marginTop: loaded && '1rem' }}
-            />
+            <FilterBar
+              bordered
+              style={{
+                marginTop: '1rem',
+                fontSize: '1.6rem'
+              }}
+            >
+              <nav
+                className={activeTab === 'notification' ? 'active' : undefined}
+                onClick={() => this.setState({ activeTab: 'notification' })}
+              >
+                <a>Notifications</a>
+              </nav>
+              <nav
+                className={activeTab === 'leaderboard' ? 'active' : undefined}
+                onClick={() => this.setState({ activeTab: 'leaderboard' })}
+              >
+                <a>Leaderboard</a>
+              </nav>
+              {rewardTabShown && (
+                <nav
+                  className={activeTab === 'reward' ? 'active' : undefined}
+                  onClick={() => this.setState({ activeTab: 'reward' })}
+                >
+                  <a>Rewards</a>
+                </nav>
+              )}
+            </FilterBar>
           )}
+          <MainFeeds
+            loadMore={loadMore}
+            activeTab={activeTab}
+            notifications={notifications}
+            rewards={rewards}
+            selectNotiTab={() => this.setState({ notiTabActive: true })}
+            myId={myId}
+            style={{ marginTop: loaded && '1rem' }}
+          />
         </section>
       </div>
     )
@@ -104,9 +236,12 @@ export default connect(
   state => ({
     chatMode: state.ChatReducer.chatMode,
     myId: state.UserReducer.userId,
+    loadMore: state.NotiReducer.loadMore,
     notifications: state.NotiReducer.notifications,
+    rank: state.UserReducer.rank,
     rewards: state.NotiReducer.rewards,
+    twinkleXP: state.UserReducer.twinkleXP,
     currentChatSubject: state.NotiReducer.currentChatSubject
   }),
-  { fetchNotifications }
+  { clearNotifications, fetchNotifications }
 )(Notification)

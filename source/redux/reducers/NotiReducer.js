@@ -5,8 +5,13 @@ const defaultState = {
   notifications: [],
   rewards: [],
   currentChatSubject: {},
+  loadMore: {
+    notifications: false,
+    rewards: false
+  },
   numNewNotis: 0,
-  numNewPosts: 0
+  numNewPosts: 0,
+  totalRewardAmount: 0
 }
 
 export default function NotiReducer(state = defaultState, action) {
@@ -28,7 +33,22 @@ export default function NotiReducer(state = defaultState, action) {
       return {
         ...state,
         notifications: [],
-        rewards: []
+        rewards: [],
+        totalRewardAmount: 0,
+        loadMore: {
+          notifications: false,
+          rewards: false
+        }
+      }
+    case NOTI.CLEAR_REWARDS:
+      return {
+        ...state,
+        rewards: [],
+        totalRewardAmount: 0,
+        loadMore: {
+          ...state.loadMore,
+          rewards: false
+        }
       }
     case NOTI.INCREASE_NUM_NEW_NOTIS:
       return {
@@ -45,6 +65,24 @@ export default function NotiReducer(state = defaultState, action) {
         ...state,
         ...action.data,
         numNewNotis: 0
+      }
+    case NOTI.LOAD_MORE:
+      return {
+        ...state,
+        notifications: state.notifications.concat(action.data.notifications),
+        loadMore: {
+          ...state.loadMore,
+          notifications: action.data.loadMore
+        }
+      }
+    case NOTI.LOAD_MORE_REWARDS:
+      return {
+        ...state,
+        rewards: state.rewards.concat(action.data.rewards),
+        loadMore: {
+          ...state.loadMore,
+          rewards: action.data.loadMore
+        }
       }
     case NOTI.RESET_NUM_NEW_POSTS:
       return {

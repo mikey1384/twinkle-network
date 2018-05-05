@@ -21,6 +21,10 @@ export const checkVersion = () => async dispatch => {
   }
 }
 
+export const clearRewards = () => ({
+  type: NOTI.CLEAR_REWARDS
+})
+
 export const clearNotifications = () => ({
   type: NOTI.CLEAR
 })
@@ -29,18 +33,53 @@ export const fetchNotifications = () => async dispatch => {
   try {
     if (auth().headers.authorization === null) {
       const { data } = await request.get(`${API_URL}/chatSubject`)
-      return dispatch({
+      dispatch({
         type: NOTI.LOAD,
         data: {
           notifications: [],
           rewards: [],
+          totalRewardAmount: 0,
           currentChatSubject: data
         }
       })
+    } else {
+      const { data } = await request.get(API_URL, auth())
+      dispatch({
+        type: NOTI.LOAD,
+        data
+      })
     }
-    const { data } = await request.get(API_URL, auth())
+    return Promise.resolve()
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const loadMoreNotifications = lastId => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/more?lastId=${lastId}`,
+      auth()
+    )
     return dispatch({
-      type: NOTI.LOAD,
+      type: NOTI.LOAD_MORE,
+      data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
+export const loadMoreRewards = lastId => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/more/rewards?lastId=${lastId}`,
+      auth()
+    )
+    return dispatch({
+      type: NOTI.LOAD_MORE_REWARDS,
       data
     })
   } catch (error) {

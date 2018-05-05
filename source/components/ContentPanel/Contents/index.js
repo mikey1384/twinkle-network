@@ -49,6 +49,9 @@ class Contents extends Component {
     if (prevProps.contentObj.content !== this.props.contentObj.content) {
       this.setState({ edited: true })
     }
+    if (prevProps.myId !== this.props.myId) {
+      this.setState({ xpRewardInterfaceShown: false })
+    }
   }
 
   render() {
@@ -336,16 +339,20 @@ class Contents extends Component {
       myId
     } = this.props
     const { xpRewardInterfaceShown } = this.state
-    let result = false
-    if (xpRewardInterfaceShown) result = true
+    if (xpRewardInterfaceShown) return true
+    const numTotalStars = stars.reduce(
+      (prev, star) => prev + star.rewardAmount,
+      0
+    )
+    if (numTotalStars >= 5) return true
     const numPrevStars = stars.reduce((prev, star) => {
       if (star.rewarderId === myId) {
         return prev + star.rewardAmount
       }
       return prev
     }, 0)
-    if (numPrevStars >= 2) result = true
-    return result
+    if (numPrevStars >= 2) return true
+    return false
   }
 
   renderXpButtonLabel = () => {

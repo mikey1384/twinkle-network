@@ -35,7 +35,7 @@ class PanelComment extends Component {
       targetUserId: PropTypes.number,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
-      uploaderAuthLevel: PropTypes.number.isRequired,
+      uploaderAuthLevel: PropTypes.number,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }).isRequired,
@@ -185,17 +185,19 @@ class PanelComment extends Component {
                   </LongText>
                   <div className="comment__buttons">
                     <div className="buttons__left">
-                      <LikeButton
-                        onClick={this.onLikeClick}
-                        liked={userLikedThis}
-                      />
-                      <Button
-                        transparent
-                        style={{ marginLeft: '1rem' }}
-                        onClick={this.onReplyButtonClick}
-                      >
-                        <span className="glyphicon glyphicon-comment" /> Reply
-                      </Button>
+                      <div>
+                        <LikeButton
+                          onClick={this.onLikeClick}
+                          liked={userLikedThis}
+                        />
+                        <Button
+                          transparent
+                          style={{ marginLeft: '1rem' }}
+                          onClick={this.onReplyButtonClick}
+                        >
+                          <span className="glyphicon glyphicon-comment" /> Reply
+                        </Button>
+                      </div>
                       <small>
                         <Likers
                           className="comment__likers"

@@ -51,7 +51,9 @@ export const contentFeedLike = (contentId, rootType) => async dispatch => {
 
 export const questionFeedLike = contentId => async dispatch => {
   try {
-    const { data: { likes } } = await request.post(
+    const {
+      data: { likes }
+    } = await request.post(
       `${URL}/content/question/like`,
       { contentId },
       auth()
@@ -216,13 +218,13 @@ export const fetchFeeds = (filter = 'all') => async dispatch => {
   }
 }
 
-export const fetchMoreFeeds = (
-  lastFeedId,
+export const fetchMoreFeeds = ({
+  shownFeeds,
   filter = 'all'
-) => async dispatch => {
+}) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${API_URL}?lastFeedId=${lastFeedId}&filter=${filter}`
+      `${API_URL}?filter=${filter}${shownFeeds ? `&${shownFeeds}` : ''}`
     )
     dispatch({
       type: FEED.LOAD_MORE,
@@ -236,7 +238,7 @@ export const fetchMoreFeeds = (
   }
 }
 
-export const fetchUserFeeds = (username, type) => async dispatch => {
+export const fetchUserFeeds = ({ username, type }) => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}/user/?username=${username}&type=${type}`
@@ -252,14 +254,16 @@ export const fetchUserFeeds = (username, type) => async dispatch => {
   }
 }
 
-export const fetchMoreUserFeeds = (
+export const fetchMoreUserFeeds = ({
   username,
   type,
-  lastId
-) => async dispatch => {
+  shownFeeds
+}) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${API_URL}/user/?username=${username}&type=${type}&lastId=${lastId}`
+      `${API_URL}/user/?username=${username}&type=${type}${
+        shownFeeds ? `&${shownFeeds}` : ''
+      }`
     )
     dispatch({
       type: FEED.LOAD_MORE,

@@ -25,15 +25,9 @@ export default class PanelReplies extends Component {
     userId: PropTypes.number
   }
 
-  constructor() {
-    super()
-    this.state = {
-      lastDeletedCommentIndex: null,
-      deleteListenerToggle: false
-    }
-    this.deleteCallback = this.deleteCallback.bind(this)
-    this.loadMoreReplies = this.loadMoreReplies.bind(this)
-    this.onReplyOfReplySubmit = this.onReplyOfReplySubmit.bind(this)
+  state = {
+    lastDeletedCommentIndex: null,
+    deleteListenerToggle: false
   }
 
   componentDidUpdate(prevProps) {
@@ -101,17 +95,17 @@ export default class PanelReplies extends Component {
     )
   }
 
-  deleteCallback(index) {
+  deleteCallback = index => {
     this.setState({ lastDeletedCommentIndex: index })
   }
 
-  loadMoreReplies() {
+  loadMoreReplies = () => {
     const { comment, replies, onLoadMoreReplies, parent } = this.props
     const lastReplyId = replies[0] ? replies[0].id : '0'
     onLoadMoreReplies(lastReplyId, comment.id, parent)
   }
 
-  onReplyOfReplySubmit({ replyContent, reply, parent }) {
+  onReplyOfReplySubmit = ({ replyContent, reply, parent }) => {
     const { onReplySubmit, type } = this.props
     onReplySubmit({
       replyContent,

@@ -64,15 +64,14 @@ export const fetchMoreUsers = shownUsersIds => async dispatch => {
 
 export const changeUserXP = params => async dispatch => {
   try {
-    const { data: { xp, alreadyDone } } = await request.post(
-      `${API_URL}/xp`,
-      params,
-      auth()
-    )
+    const {
+      data: { xp, alreadyDone, rank }
+    } = await request.post(`${API_URL}/xp`, params, auth())
     if (alreadyDone) return
     return dispatch({
       type: USER.CHANGE_XP,
-      xp
+      xp,
+      rank
     })
   } catch (error) {
     console.error(error.response || error)
@@ -187,4 +186,3 @@ export const openSigninModal = () => ({
 export const closeSigninModal = () => ({
   type: USER.CLOSE_SIGNIN_MODAL
 })
-

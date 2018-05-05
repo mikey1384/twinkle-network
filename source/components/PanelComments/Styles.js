@@ -64,6 +64,7 @@ export const container = css`
   }
   .buttons__left {
     display: flex;
+    flex-direction: column;
   }
   .buttons__right {
     display: flex;
