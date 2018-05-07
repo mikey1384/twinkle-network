@@ -21,6 +21,7 @@ Button.propTypes = {
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
   opacity: PropTypes.number,
+  peace: PropTypes.bool,
   primary: PropTypes.bool,
   snow: PropTypes.bool,
   success: PropTypes.bool,
@@ -43,6 +44,7 @@ export default function Button({
   opacity,
   primary,
   success,
+  peace,
   warning,
   danger,
   onMouseEnter = () => {},
@@ -64,6 +66,7 @@ export default function Button({
     gold: Color.gold(opacity),
     danger: Color.red(opacity),
     snow: Color.white(opacity),
+    peace: Color.logoGreen(opacity),
     transparent: Color.buttonGray(opacity)
   })
 
@@ -78,6 +81,7 @@ export default function Button({
   if (gold) colorKey = 'gold'
   if (danger) colorKey = 'danger'
   if (snow) colorKey = 'snow'
+  if (peace) colorKey = 'peace'
   if (transparent) colorKey = 'transparent'
   if (onHover) colorKey = hoverClass
   const backgroundOpacity = filled ? 1 : opacity || 0

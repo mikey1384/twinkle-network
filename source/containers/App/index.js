@@ -37,9 +37,6 @@ const Chat = loadable(() => import('containers/Chat'), {
 const ContentPage = loadable(() => import('containers/ContentPage'), {
   LoadingComponent: Loading
 })
-const TwinkleXP = loadable(() => import('containers/TwinkleXP'), {
-  LoadingComponent: Loading
-})
 import Redirect from 'containers/Redirect'
 
 let visibilityChange
@@ -248,7 +245,6 @@ class App extends Component {
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
             <Route path="/users" component={Home} />
-            <Route path="/twinklexp" component={TwinkleXP} />
             <Route path="/users/:username" component={Home} />
             <Route path="/:username" component={Redirect} />
           </Switch>

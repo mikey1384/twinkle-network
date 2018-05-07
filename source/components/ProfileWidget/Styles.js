@@ -6,6 +6,7 @@ export const container = css`
   border: none;
   flex-direction: column;
   width: 100%;
+  z-index: 1000;
   a {
     text-decoration: none;
   }
