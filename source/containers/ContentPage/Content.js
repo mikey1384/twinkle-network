@@ -93,7 +93,7 @@ class Comment extends Component {
         stars: state.contentObj.stars
           ? state.contentObj.stars.concat(data)
           : [data],
-        childComments: state.contentObj.childComments.map(comment => {
+        childComments: (state.contentObj.childComments || []).map(comment => {
           return {
             ...comment,
             stars:
