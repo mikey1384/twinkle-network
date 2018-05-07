@@ -14,11 +14,10 @@ import DropdownButton from 'components/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import XPRewardInterface from 'components/XPRewardInterface'
 import RewardStatus from 'components/RewardStatus'
-import { attachStar } from 'redux/actions/FeedActions'
+import { determineXpButtonDisabled } from 'helpers/domHelpers'
 
 class Contents extends Component {
   static propTypes = {
-    attachStar: PropTypes.func.isRequired,
     attachedVideoShown: PropTypes.bool,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
@@ -92,7 +91,6 @@ class Contents extends Component {
       contentObj,
       methods,
       myId,
-      attachStar,
       attachedVideoShown
     } = this.props
     const {
@@ -178,7 +176,9 @@ class Contents extends Component {
           }
           type={type}
         />
-        {type === 'comment' && <RewardStatus stars={stars} />}
+        {type === 'comment' && (
+          <RewardStatus style={{ marginTop: '1.5rem' }} stars={stars} />
+        )}
         {!isEditing && (
           <div className="bottom-interface">
             <div className="buttons-bar">
@@ -265,7 +265,7 @@ class Contents extends Component {
                       }
                     >
                       <span className="glyphicon glyphicon-star" />{' '}
-                      {this.renderXpButtonLabel()}
+                      {this.determineXpButtonDisabled() || 'Reward Stars'}
                     </Button>
                   )}
               </div>
@@ -286,7 +286,7 @@ class Contents extends Component {
             stars={stars}
             onRewardSubmit={data => {
               this.setState({ xpRewardInterfaceShown: false })
-              attachStar(data)
+              methods.attachStar(data)
             }}
           />
         )}
@@ -339,40 +339,7 @@ class Contents extends Component {
       myId
     } = this.props
     const { xpRewardInterfaceShown } = this.state
-    if (xpRewardInterfaceShown) return true
-    const numTotalStars = stars.reduce(
-      (prev, star) => prev + star.rewardAmount,
-      0
-    )
-    if (numTotalStars >= 5) return true
-    const numPrevStars = stars.reduce((prev, star) => {
-      if (star.rewarderId === myId) {
-        return prev + star.rewardAmount
-      }
-      return prev
-    }, 0)
-    if (numPrevStars >= 2) return true
-    return false
-  }
-
-  renderXpButtonLabel = () => {
-    const {
-      contentObj: { stars },
-      myId
-    } = this.props
-    const numTotalStars = stars.reduce(
-      (prev, star) => prev + star.rewardAmount,
-      0
-    )
-    if (numTotalStars >= 5) return 'Max Stars Reached'
-    const numPrevStars = stars.reduce((prev, star) => {
-      if (star.rewarderId === myId) {
-        return prev + star.rewardAmount
-      }
-      return prev
-    }, 0)
-    if (numPrevStars >= 2) return 'You rewarded 2 out of 2 Stars'
-    return 'Reward Stars'
+    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
   }
 
   loadMoreComments = async({ lastCommentId, type, rootType, contentId }) => {
@@ -447,12 +414,9 @@ class Contents extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar
-  }),
-  { attachStar }
-)(Contents)
+export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit,
+  canStar: state.UserReducer.canStar
+}))(Contents)

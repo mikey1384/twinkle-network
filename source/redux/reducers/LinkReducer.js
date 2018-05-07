@@ -13,6 +13,27 @@ export default function linkReducer(state = defaultState, action) {
   let loadMoreLinksButtonShown = false
   let loadMoreCommentsButton = false
   switch (action.type) {
+    case LINK.ATTACH_STAR:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          comments: state.linkPage.comments.map(comment => ({
+            ...comment,
+            stars:
+              comment.id === action.data.contentId
+                ? (comment.stars || []).concat(action.data)
+                : comment.stars || [],
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              stars:
+                reply.id === action.data.contentId
+                  ? (reply.stars || []).concat(action.data)
+                  : reply.stars || []
+            }))
+          }))
+        }
+      }
     case LINK.DELETE:
       return {
         ...state,

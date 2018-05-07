@@ -11,16 +11,24 @@ import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import ReplyInputArea from './ReplyInputArea'
-import { scrollElementToCenter } from 'helpers/domHelpers'
+import {
+  determineXpButtonDisabled,
+  scrollElementToCenter
+} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
+import RewardStatus from 'components/RewardStatus'
+import { attachStar } from 'redux/actions/VideoActions'
+import XPRewardInterface from 'components/XPRewardInterface'
 import { connect } from 'react-redux'
 
 class Reply extends Component {
   static propTypes = {
+    attachStar: PropTypes.func,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
+    canStar: PropTypes.bool,
     commentId: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
     deleteCallback: PropTypes.func.isRequired,
@@ -38,6 +46,7 @@ class Reply extends Component {
     onLikeClick: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     profilePicId: PropTypes.number,
+    stars: PropTypes.array,
     targetUserId: PropTypes.number,
     targetUserName: PropTypes.string,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -53,7 +62,8 @@ class Reply extends Component {
     replyInputShown: false,
     userListModalShown: false,
     confirmModalShown: false,
-    clickListenerState: false
+    clickListenerState: false,
+    xpRewardInterfaceShown: false
   }
 
   componentDidMount() {
@@ -72,8 +82,10 @@ class Reply extends Component {
   render() {
     const {
       authLevel,
+      attachStar,
       canDelete,
       canEdit,
+      canStar,
       id,
       index,
       username,
@@ -84,6 +96,7 @@ class Reply extends Component {
       userId,
       profilePicId,
       myId,
+      stars = [],
       targetUserName,
       targetUserId,
       uploaderAuthLevel
@@ -93,7 +106,8 @@ class Reply extends Component {
       userListModalShown,
       replyInputShown,
       confirmModalShown,
-      clickListenerState
+      clickListenerState,
+      xpRewardInterfaceShown
     } = this.state
     const userIsUploader = userId === myId
     const userCanEditThis =
@@ -196,47 +210,88 @@ class Reply extends Component {
                   >
                     {content}
                   </LongText>
+                  <RewardStatus stars={stars} />
                   <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column'
-                    }}
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
                     <div
                       style={{
-                        display: 'flex'
+                        display: 'flex',
+                        flexDirection: 'column'
                       }}
                     >
-                      <LikeButton
-                        onClick={this.onLikeClick}
-                        liked={userLikedThis}
-                      />
-                      <Button
-                        transparent
-                        style={{ marginLeft: '1rem' }}
-                        onClick={this.onReplyButtonClick}
+                      <div
+                        style={{
+                          display: 'flex'
+                        }}
                       >
-                        <span className="glyphicon glyphicon-comment" /> Reply
-                      </Button>
+                        <LikeButton
+                          onClick={this.onLikeClick}
+                          liked={userLikedThis}
+                        />
+                        <Button
+                          transparent
+                          style={{ marginLeft: '1rem' }}
+                          onClick={this.onReplyButtonClick}
+                        >
+                          <span className="glyphicon glyphicon-comment" /> Reply
+                        </Button>
+                      </div>
+                      <Likers
+                        style={{
+                          fontSize: '1.2rem',
+                          marginTop: '0.5rem',
+                          fontWeight: 'bold',
+                          color: Color.darkGray()
+                        }}
+                        userId={myId}
+                        likes={likes}
+                        onLinkClick={() =>
+                          this.setState({ userListModalShown: true })
+                        }
+                      />
                     </div>
-                    <Likers
-                      style={{
-                        fontSize: '1.2rem',
-                        marginTop: '0.5rem',
-                        fontWeight: 'bold',
-                        color: Color.darkGray()
-                      }}
-                      userId={myId}
-                      likes={likes}
-                      onLinkClick={() =>
-                        this.setState({ userListModalShown: true })
-                      }
-                    />
+                    <div>
+                      {canStar &&
+                        userCanEditThis &&
+                        !userIsUploader && (
+                          <Button
+                            love
+                            onClick={() =>
+                              this.setState({ xpRewardInterfaceShown: true })
+                            }
+                            disabled={determineXpButtonDisabled({
+                              myId,
+                              xpRewardInterfaceShown,
+                              stars
+                            })}
+                          >
+                            <span className="glyphicon glyphicon-star" />
+                            &nbsp;{determineXpButtonDisabled({
+                              myId,
+                              xpRewardInterfaceShown,
+                              stars
+                            }) || 'Reward Stars'}
+                          </Button>
+                        )}
+                    </div>
                   </div>
                 </div>
               )}
             </Fragment>
           </div>
+          {xpRewardInterfaceShown && (
+            <XPRewardInterface
+              stars={stars}
+              contentType="comment"
+              contentId={id}
+              uploaderId={userId}
+              onRewardSubmit={data => {
+                this.setState({ xpRewardInterfaceShown: false })
+                attachStar(data)
+              }}
+            />
+          )}
           {replyInputShown && (
             <ReplyInputArea
               style={{ marginTop: '1rem' }}
@@ -310,8 +365,12 @@ class Reply extends Component {
   }
 }
 
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit
-}))(Reply)
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar
+  }),
+  { attachStar }
+)(Reply)

@@ -7,7 +7,7 @@ Button.propTypes = {
   alert: PropTypes.bool,
   warning: PropTypes.bool,
   className: PropTypes.string,
-  disabled: PropTypes.bool,
+  disabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   filled: PropTypes.bool,
   gold: PropTypes.bool,
   love: PropTypes.bool,
@@ -91,13 +91,16 @@ export default function Button({
       className={`${css`
         cursor: ${disabled ? 'default' : 'pointer'};
         overflow: hidden;
-        font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial, sans-serif;
+        font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial,
+          sans-serif;
         font-size: 1.5rem;
         text-transform: uppercase;
         padding: 1rem;
         color: ${filled || opacity
           ? '#fff'
-          : snow ? Color.black(0.7) : buttonColor(textOpacity)[colorKey]};
+          : snow
+            ? Color.black(0.7)
+            : buttonColor(textOpacity)[colorKey]};
         background: ${snow
           ? '#fff'
           : buttonColor(
@@ -123,7 +126,11 @@ export default function Button({
               )[colorKey]};
           color: ${disabled && !filled
             ? buttonColor(textOpacity)[colorKey]
-            : transparent ? Color.black() : snow ? Color.black() : '#fff'};
+            : transparent
+              ? Color.black()
+              : snow
+                ? Color.black()
+                : '#fff'};
           border-color: ${buttonColor(
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )[colorKey]};
@@ -138,7 +145,9 @@ export default function Button({
                 )[colorKey]};
             color: ${filled || opacity
               ? '#fff'
-              : snow ? Color.black(0.7) : buttonColor(textOpacity)[colorKey]};
+              : snow
+                ? Color.black(0.7)
+                : buttonColor(textOpacity)[colorKey]};
             border: 1px solid
               ${snow
                 ? Color.whiteGray()

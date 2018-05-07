@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Loading from 'components/Loading'
 import Embedly from 'components/Embedly'
 import {
+  attachStar,
   loadLinkPage,
   deleteComment,
   deleteLinkFromPage,
@@ -29,6 +30,7 @@ import { mobileMaxWidth } from '../../../constants/css'
 
 class LinkPage extends Component {
   static propTypes = {
+    attachStar: PropTypes.func.isRequired,
     deleteComment: PropTypes.func.isRequired,
     deleteLinkFromPage: PropTypes.func.isRequired,
     editComment: PropTypes.func.isRequired,
@@ -55,7 +57,9 @@ class LinkPage extends Component {
 
   componentDidMount() {
     const {
-      match: { params: { linkId } },
+      match: {
+        params: { linkId }
+      },
       loadLinkPage,
       fetchComments
     } = this.props
@@ -68,7 +72,9 @@ class LinkPage extends Component {
       location,
       loadLinkPage,
       fetchComments,
-      match: { params: { linkId } }
+      match: {
+        params: { linkId }
+      }
     } = this.props
     if (prevProps.location.pathname !== location.pathname) {
       fetchComments(linkId)
@@ -96,6 +102,7 @@ class LinkPage extends Component {
         loadMoreCommentsButton = false,
         ...embedlyProps
       },
+      attachStar,
       deleteComment,
       editComment,
       editLinkPage,
@@ -175,6 +182,7 @@ class LinkPage extends Component {
             parent={{ type: 'url', id }}
             userId={myId}
             commentActions={{
+              attachStar,
               onDelete: deleteComment,
               onLikeClick: likeComment,
               onEditDone: editComment,
@@ -207,13 +215,21 @@ class LinkPage extends Component {
   }
 
   loadMoreComments = () => {
-    const { fetchMoreComments, pageProps: { id, comments } } = this.props
+    const {
+      fetchMoreComments,
+      pageProps: { id, comments }
+    } = this.props
     const lastCommentId = comments[comments.length - 1].id
     fetchMoreComments(id, lastCommentId)
   }
 
   onCommentSubmit = content => {
-    const { submitComment, match: { params: { linkId } } } = this.props
+    const {
+      submitComment,
+      match: {
+        params: { linkId }
+      }
+    } = this.props
     submitComment({ content, linkId })
   }
 
@@ -232,6 +248,7 @@ export default connect(
     myId: state.UserReducer.userId
   }),
   {
+    attachStar,
     loadLinkPage,
     deleteComment,
     deleteLinkFromPage,

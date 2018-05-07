@@ -37,12 +37,14 @@ export default class ContentPanel extends Component {
       },
       Contents: {
         commentActions: {
+          attachStar: methodObj.attachStar,
           onDelete: methodObj.deleteComment,
           onLikeClick: methodObj.likeComment,
           onEditDone: methodObj.editComment,
           onReplySubmit: methodObj.uploadReply,
           onLoadMoreReplies: methodObj.loadMoreReplies
         },
+        attachStar: methodObj.attachStar,
         feedVideoStar: methodObj.starVideo,
         loadMoreComments: methodObj.loadMoreComments,
         onCommentSubmit: methodObj.uploadComment,

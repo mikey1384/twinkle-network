@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router'
 import {
+  attachStar,
   commentFeedLike,
   contentFeedLike,
   feedCommentDelete,
@@ -32,6 +33,7 @@ import FilterBar from 'components/FilterBar'
 
 class Body extends Component {
   static propTypes = {
+    attachStar: PropTypes.func.isRequired,
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
     commentFeedLike: PropTypes.func.isRequired,
@@ -120,6 +122,7 @@ class Body extends Component {
 
   render() {
     const {
+      attachStar,
       commentFeedLike,
       contentFeedLike,
       match: route,
@@ -266,6 +269,7 @@ class Body extends Component {
                       contentObj={feed}
                       userId={myId}
                       methodObj={{
+                        attachStar,
                         deleteComment: feedCommentDelete,
                         deleteContent: feedContentDelete,
                         editComment: feedCommentEdit,
@@ -394,6 +398,7 @@ export default connect(
     homeComponentConnected: state.FeedReducer.homeComponentConnected
   }),
   {
+    attachStar,
     contentFeedLike,
     fetchFeed,
     fetchUserFeeds,

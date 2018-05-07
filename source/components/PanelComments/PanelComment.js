@@ -11,15 +11,20 @@ import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
-import { scrollElementToCenter } from 'helpers/domHelpers'
+import {
+  determineXpButtonDisabled,
+  scrollElementToCenter
+} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
 import { container } from './Styles'
 import { connect } from 'react-redux'
+import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
 
 class PanelComment extends Component {
   static propTypes = {
+    attachStar: PropTypes.func,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -31,6 +36,7 @@ class PanelComment extends Component {
       profilePicId: PropTypes.number,
       replies: PropTypes.array,
       replyId: PropTypes.number,
+      stars: PropTypes.array,
       targetUserName: PropTypes.string,
       targetUserId: PropTypes.number,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
@@ -81,12 +87,13 @@ class PanelComment extends Component {
       xpRewardInterfaceShown
     } = this.state
     const {
+      attachStar,
       authLevel,
       canDelete,
       canEdit,
       canStar,
       comment,
-      comment: { replies = [], likes = [], uploaderAuthLevel },
+      comment: { replies = [], likes = [], stars = [], uploaderAuthLevel },
       userId,
       parent,
       type,
@@ -183,6 +190,7 @@ class PanelComment extends Component {
                   <LongText className="comment__content">
                     {comment.content}
                   </LongText>
+                  <RewardStatus style={{ fontSize: '1.4rem' }} stars={stars} />
                   <div className="comment__buttons">
                     <div className="buttons__left">
                       <div>
@@ -218,10 +226,18 @@ class PanelComment extends Component {
                             onClick={() =>
                               this.setState({ xpRewardInterfaceShown: true })
                             }
-                            disabled={xpRewardInterfaceShown}
+                            disabled={determineXpButtonDisabled({
+                              myId: userId,
+                              xpRewardInterfaceShown,
+                              stars
+                            })}
                           >
                             <span className="glyphicon glyphicon-star" />
-                            &nbsp;Reward Stars
+                            &nbsp;{determineXpButtonDisabled({
+                              myId: userId,
+                              xpRewardInterfaceShown,
+                              stars
+                            }) || 'Reward Stars'}
                           </Button>
                         )}
                     </div>
@@ -229,7 +245,18 @@ class PanelComment extends Component {
                 </div>
               )}
             </div>
-            {xpRewardInterfaceShown && <XPRewardInterface />}
+            {xpRewardInterfaceShown && (
+              <XPRewardInterface
+                stars={stars}
+                contentType="comment"
+                contentId={comment.id}
+                uploaderId={comment.userId}
+                onRewardSubmit={data => {
+                  this.setState({ xpRewardInterfaceShown: false })
+                  attachStar(data)
+                }}
+              />
+            )}
             {replies.length > 0 && (
               <PanelReplies
                 userId={userId}
@@ -237,6 +264,7 @@ class PanelComment extends Component {
                 comment={comment}
                 parent={parent}
                 type={type}
+                attachStar={attachStar}
                 onDelete={onDelete}
                 onLoadMoreReplies={onLoadMoreReplies}
                 onLikeClick={onLikeClick}

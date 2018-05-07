@@ -31,7 +31,7 @@ export default function Comment({ myId, star }) {
       </div>
       <div
         className={css`
-          font-size: 1.5rem;
+          font-size: 1.4rem;
         `}
       >
         <div>

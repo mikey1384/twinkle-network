@@ -18,7 +18,12 @@ class Comment extends Component {
   }
 
   async componentDidMount() {
-    const { match, match: { params: { contentId } } } = this.props
+    const {
+      match,
+      match: {
+        params: { contentId }
+      }
+    } = this.props
     try {
       const { data } = await request.get(
         `${URL}/content/${match.url
@@ -32,7 +37,12 @@ class Comment extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    const { match, match: { params: { contentId } } } = this.props
+    const {
+      match,
+      match: {
+        params: { contentId }
+      }
+    } = this.props
     if (prevProps.match.params.contentId !== contentId) {
       try {
         const { data } = await request.get(
@@ -55,6 +65,7 @@ class Comment extends Component {
         selfLoadingDisabled
         contentObj={contentObj}
         methodObj={{
+          attachStar: this.attachStar,
           deleteComment: this.onDeleteComment,
           deleteContent: this.onDeleteContent,
           editComment: this.onEditComment,
@@ -73,6 +84,33 @@ class Comment extends Component {
         userId={userId}
       />
     )
+  }
+
+  attachStar = data => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        stars: state.contentObj.stars
+          ? state.contentObj.stars.concat(data)
+          : [data],
+        childComments: state.contentObj.childComments.map(comment => {
+          return {
+            ...comment,
+            stars:
+              comment.id === data.contentId
+                ? (comment.stars || []).concat(data)
+                : comment.stars || [],
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              stars:
+                reply.id === data.contentId
+                  ? (reply.stars || []).concat(data)
+                  : reply.stars || []
+            }))
+          }
+        })
+      }
+    }))
   }
 
   onCommentSubmit = async(comment, parent) => {
@@ -202,11 +240,9 @@ class Comment extends Component {
   onEditComment = async params => {
     const { handleError } = this.props
     try {
-      const { data: { editedComment, commentId } } = await request.put(
-        `${URL}/content/comments`,
-        params,
-        auth()
-      )
+      const {
+        data: { editedComment, commentId }
+      } = await request.put(`${URL}/content/comments`, params, auth())
       this.setState(state => {
         const comments = state.contentObj.childComments.map(comment => ({
           ...comment,
@@ -266,7 +302,9 @@ class Comment extends Component {
   onLikeComment = async commentId => {
     const { handleError } = this.props
     try {
-      const { data: { likes } } = await request.post(
+      const {
+        data: { likes }
+      } = await request.post(
         `${URL}/content/comment/like`,
         {
           commentId
@@ -299,7 +337,9 @@ class Comment extends Component {
   onLikeTargetComment = async commentId => {
     const { handleError } = this.props
     try {
-      const { data: { likes } } = await request.post(
+      const {
+        data: { likes }
+      } = await request.post(
         `${URL}/content/comment/like`,
         { commentId },
         auth()
@@ -319,7 +359,9 @@ class Comment extends Component {
   onLikeContent = async(contentId, contentType) => {
     const { handleError } = this.props
     try {
-      const { data: { likes } } = await request.post(
+      const {
+        data: { likes }
+      } = await request.post(
         `${URL}/${contentType}/like`,
         { contentId },
         auth()
@@ -339,7 +381,9 @@ class Comment extends Component {
   onLikeQuestion = async contentId => {
     const { handleError } = this.props
     try {
-      const { data: { likes } } = await request.post(
+      const {
+        data: { likes }
+      } = await request.post(
         `${URL}/content/question/like`,
         {
           contentId
@@ -390,7 +434,9 @@ class Comment extends Component {
 
   onLoadMoreReplies = async(lastReplyId, commentId, parent) => {
     try {
-      const { data: { replies, loadMoreReplies } } = await request.get(
+      const {
+        data: { replies, loadMoreReplies }
+      } = await request.get(
         `${URL}/content/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${
           parent.rootType
         }`

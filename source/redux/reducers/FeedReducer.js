@@ -16,16 +16,31 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
+          const isComment = action.data.contentType === 'comment'
           const contentMatches =
             action.data.contentType === feed.type &&
             action.data.contentId === feed.contentId
           return {
             ...feed,
             stars: contentMatches
-              ? feed.stars
-                ? feed.stars.concat(action.data)
-                : [action.data]
-              : feed.stars || []
+              ? (feed.stars || []).concat(action.data)
+              : feed.stars || [],
+            childComments: feed.childComments.map(comment => {
+              return {
+                ...comment,
+                stars:
+                  isComment && comment.id === action.data.contentId
+                    ? (comment.stars || []).concat(action.data)
+                    : comment.stars || [],
+                replies: comment.replies.map(reply => ({
+                  ...reply,
+                  stars:
+                    isComment && reply.id === action.data.contentId
+                      ? (reply.stars || []).concat(action.data)
+                      : reply.stars || []
+                }))
+              }
+            })
           }
         })
       }
@@ -39,9 +54,9 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.LOAD_DETAIL:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
-          return feed.id === action.data.id ? action.data : feed
-        })
+        feeds: state.feeds.map(
+          feed => (feed.id === action.data.id ? action.data : feed)
+        )
       }
     case FEED.LOAD:
       if (action.data.length > 20) {
@@ -113,15 +128,15 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.DELETE_COMMENT:
       return {
         ...state,
-        feeds: state.feeds.reduce((resultingArray, feed) => {
+        feeds: state.feeds.reduce((prev, feed) => {
           if (
             feed.contentId === action.commentId ||
             feed.commentId === action.commentId ||
             feed.replyId === action.commentId
           ) {
-            return resultingArray
+            return prev
           }
-          return resultingArray.concat([
+          return prev.concat([
             {
               ...feed,
               targetContentComments: feed.targetContentComments
@@ -129,28 +144,22 @@ export default function FeedReducer(state = defaultState, action) {
                     comment => comment.id !== action.commentId
                   )
                 : [],
-              childComments: feed.childComments.reduce(
-                (resultingArray, childComment) => {
-                  if (childComment.id === action.commentId) {
-                    return resultingArray
+              childComments: feed.childComments.reduce((prev, childComment) => {
+                if (childComment.id === action.commentId) {
+                  return prev
+                }
+                return prev.concat([
+                  {
+                    ...childComment,
+                    replies: childComment.replies.reduce((prev, reply) => {
+                      if (reply.id === action.commentId) {
+                        return prev
+                      }
+                      return prev.concat([reply])
+                    }, [])
                   }
-                  return resultingArray.concat([
-                    {
-                      ...childComment,
-                      replies: childComment.replies.reduce(
-                        (resultingArray, reply) => {
-                          if (reply.id === action.commentId) {
-                            return resultingArray
-                          }
-                          return resultingArray.concat([reply])
-                        },
-                        []
-                      )
-                    }
-                  ])
-                },
-                []
-              )
+                ])
+              }, [])
             }
           ])
         }, [])

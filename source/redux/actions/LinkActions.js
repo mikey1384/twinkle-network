@@ -6,6 +6,11 @@ import LINK from '../constants/Link'
 
 const API_URL = `${URL}/url`
 
+export const attachStar = data => ({
+  type: LINK.ATTACH_STAR,
+  data
+})
+
 export const likeComment = commentId => async dispatch => {
   try {
     const { data } = await request.post(

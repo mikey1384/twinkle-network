@@ -10,17 +10,24 @@ import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
 import ReplyInputArea from './ReplyInputArea'
-import { scrollElementToCenter } from 'helpers/domHelpers'
+import {
+  scrollElementToCenter,
+  determineXpButtonDisabled
+} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
 import { container } from '../Styles'
 import { connect } from 'react-redux'
+import RewardStatus from 'components/RewardStatus'
+import XPRewardInterface from 'components/XPRewardInterface'
 
 class PanelReply extends Component {
   static propTypes = {
+    attachStar: PropTypes.func,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
+    canStar: PropTypes.bool,
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
@@ -57,7 +64,8 @@ class PanelReply extends Component {
     replyInputShown: false,
     userListModalShown: false,
     confirmModalShown: false,
-    clickListenerState: false
+    clickListenerState: false,
+    xpRewardInterfaceShown: false
   }
 
   componentDidMount() {
@@ -80,12 +88,14 @@ class PanelReply extends Component {
 
   render() {
     const {
+      attachStar,
       comment,
       authLevel,
       canDelete,
       canEdit,
+      canStar,
       reply,
-      reply: { uploaderAuthLevel },
+      reply: { uploaderAuthLevel, stars = [] },
       userId,
       type
     } = this.props
@@ -94,7 +104,8 @@ class PanelReply extends Component {
       userListModalShown,
       replyInputShown,
       confirmModalShown,
-      clickListenerState
+      clickListenerState,
+      xpRewardInterfaceShown
     } = this.state
     const userIsUploader = reply.userId === userId
     const userCanEditThis =
@@ -192,35 +203,77 @@ class PanelReply extends Component {
                   <LongText className="comment__content">
                     {reply.content}
                   </LongText>
-                  <div>
-                    <LikeButton
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                      small
-                    />
-                    {type !== 'comment' && (
-                      <Button
-                        transparent
-                        style={{ marginLeft: '1rem' }}
-                        onClick={this.onReplyButtonClick}
-                      >
-                        <span className="glyphicon glyphicon-comment" /> Reply
-                      </Button>
-                    )}
-                    <small>
-                      <Likers
-                        className="comment__likers"
-                        userId={userId}
-                        likes={reply.likes}
-                        onLinkClick={() =>
-                          this.setState({ userListModalShown: true })
-                        }
-                      />
-                    </small>
+                  <RewardStatus style={{ fontSize: '1.4rem' }} stars={stars} />
+                  <div className="comment__buttons">
+                    <div className="buttons__left">
+                      <div>
+                        <LikeButton
+                          onClick={this.onLikeClick}
+                          liked={userLikedThis}
+                          small
+                        />
+                        {type !== 'comment' && (
+                          <Button
+                            transparent
+                            style={{ marginLeft: '1rem' }}
+                            onClick={this.onReplyButtonClick}
+                          >
+                            <span className="glyphicon glyphicon-comment" />{' '}
+                            Reply
+                          </Button>
+                        )}
+                      </div>
+                      <small>
+                        <Likers
+                          className="comment__likers"
+                          userId={userId}
+                          likes={reply.likes}
+                          onLinkClick={() =>
+                            this.setState({ userListModalShown: true })
+                          }
+                        />
+                      </small>
+                    </div>
+                    <div className="buttons__right">
+                      {canStar &&
+                        userCanEditThis &&
+                        !userIsUploader && (
+                          <Button
+                            love
+                            onClick={() =>
+                              this.setState({ xpRewardInterfaceShown: true })
+                            }
+                            disabled={determineXpButtonDisabled({
+                              myId: userId,
+                              xpRewardInterfaceShown,
+                              stars
+                            })}
+                          >
+                            <span className="glyphicon glyphicon-star" />
+                            &nbsp;{determineXpButtonDisabled({
+                              myId: userId,
+                              xpRewardInterfaceShown,
+                              stars
+                            }) || 'Reward Stars'}
+                          </Button>
+                        )}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
+            {xpRewardInterfaceShown && (
+              <XPRewardInterface
+                stars={stars}
+                contentType="comment"
+                contentId={reply.id}
+                uploaderId={reply.userId}
+                onRewardSubmit={data => {
+                  this.setState({ xpRewardInterfaceShown: false })
+                  attachStar(data)
+                }}
+              />
+            )}
             {replyInputShown && (
               <ReplyInputArea
                 onSubmit={this.onReplySubmit}
@@ -283,5 +336,6 @@ class PanelReply extends Component {
 export default connect(state => ({
   authLevel: state.UserReducer.authLevel,
   canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit
+  canEdit: state.UserReducer.canEdit,
+  canStar: state.UserReducer.canStar
 }))(PanelReply)

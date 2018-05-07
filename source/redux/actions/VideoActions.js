@@ -7,6 +7,11 @@ import VIDEO from '../constants/Video'
 
 const API_URL = `${URL}/video`
 
+export const attachStar = data => ({
+  type: VIDEO.ATTACH_STAR,
+  data
+})
+
 export const getInitialVideos = () => async dispatch => {
   try {
     const { data } = await request.get(API_URL)

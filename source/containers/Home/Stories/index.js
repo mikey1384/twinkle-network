@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import {
+  attachStar,
   commentFeedLike,
   contentFeedLike,
   feedCommentDelete,
@@ -34,6 +35,7 @@ import { queryStringForArray } from 'helpers/stringHelpers'
 
 class Stories extends Component {
   static propTypes = {
+    attachStar: PropTypes.func.isRequired,
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
@@ -97,6 +99,7 @@ class Stories extends Component {
 
   render() {
     const {
+      attachStar,
       contentFeedLike,
       commentFeedLike,
       feeds,
@@ -171,6 +174,7 @@ class Stories extends Component {
                       selfLoadingDisabled={this.clearingFeeds}
                       contentObj={feed}
                       methodObj={{
+                        attachStar,
                         deleteComment: feedCommentDelete,
                         deleteContent: feedContentDelete,
                         editComment: feedCommentEdit,
@@ -321,6 +325,7 @@ export default connect(
     noFeeds: state.FeedReducer.noFeeds
   }),
   {
+    attachStar,
     contentFeedLike,
     commentFeedLike,
     fetchMoreFeeds,

@@ -6,6 +6,7 @@ import Button from 'components/Button'
 
 export default class PanelReplies extends Component {
   static propTypes = {
+    attachStar: PropTypes.func,
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }).isRequired,
@@ -42,6 +43,7 @@ export default class PanelReplies extends Component {
 
   render() {
     const {
+      attachStar,
       type,
       replies = [],
       userId,
@@ -81,6 +83,7 @@ export default class PanelReplies extends Component {
               comment={comment}
               reply={reply}
               userId={userId}
+              attachStar={attachStar}
               onDelete={onDelete}
               onLikeClick={onLikeClick}
               onEditDone={onEditDone}

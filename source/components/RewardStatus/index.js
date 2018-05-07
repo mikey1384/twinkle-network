@@ -8,11 +8,12 @@ import Comment from './Comment'
 class RewardStatus extends Component {
   static propTypes = {
     userId: PropTypes.number,
-    stars: PropTypes.array
+    stars: PropTypes.array,
+    style: PropTypes.object
   }
 
   render() {
-    const { stars, userId } = this.props
+    const { stars, userId, style } = this.props
     if (!stars || stars.length === 0) return null
     const totalStars = stars.reduce(
       (prev, star) => (prev += star.rewardAmount),
@@ -25,11 +26,12 @@ class RewardStatus extends Component {
     return (
       <Fragment>
         <div
+          style={style}
           className={css`
-            font-size: 2rem;
+            font-size: 1.6rem;
             padding: 1rem;
             color: #fff;
-            background: ${totalStars === 5 ? Color.gold() : Color.orange()};
+            background: ${totalStars === 5 ? Color.gold() : Color.logoBlue()};
           `}
         >
           {starMarks}

@@ -14,6 +14,7 @@ import { container } from './Styles'
 import FilterBar from 'components/FilterBar'
 import { borderRadius, Color } from 'constants/css'
 import { addCommasToNumber } from 'helpers/stringHelpers'
+import { socket } from 'constants/io'
 import { css } from 'emotion'
 
 class Notification extends Component {
@@ -42,6 +43,22 @@ class Notification extends Component {
     }
   }
 
+  async componentDidMount() {
+    const { fetchNotifications } = this.props
+    addEvent(window, 'mousemove', this.onMouseMove)
+    socket.on('new_reward', this.notifyNewReward)
+    await fetchNotifications()
+    this.setState({
+      activeTab:
+        this.props.rewards.length > 0
+          ? 'reward'
+          : this.props.notifications.length > 0
+            ? 'notification'
+            : 'leaderboard',
+      rewardTabShown: this.props.rewards.length > 0
+    })
+  }
+
   async componentDidUpdate(prevProps) {
     const { clearNotifications, fetchNotifications } = this.props
     if (prevProps.myId !== this.props.myId) {
@@ -63,25 +80,11 @@ class Notification extends Component {
     }
   }
 
-  async componentDidMount() {
-    const { fetchNotifications } = this.props
-    addEvent(window, 'mousemove', this.onMouseMove)
-    await fetchNotifications()
-    this.setState({
-      activeTab:
-        this.props.rewards.length > 0
-          ? 'reward'
-          : this.props.notifications.length > 0
-            ? 'notification'
-            : 'leaderboard',
-      rewardTabShown: this.props.rewards.length > 0
-    })
-  }
-
   componentWillUnmount() {
     if (ExecutionEnvironment.canUseDOM) {
       removeEvent(window, 'mousemove', this.onMouseMove)
     }
+    socket.removeListener('new_reward', this.notifyNewReward)
   }
 
   render() {
@@ -229,6 +232,15 @@ class Notification extends Component {
         </section>
       </div>
     )
+  }
+
+  notifyNewReward = async() => {
+    const { fetchNotifications } = this.props
+    await fetchNotifications()
+    this.setState({
+      rewardTabShown: true,
+      activeTab: 'reward'
+    })
   }
 }
 

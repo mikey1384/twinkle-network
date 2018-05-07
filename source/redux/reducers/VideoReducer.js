@@ -25,6 +25,44 @@ export default function VideoReducer(state = defaultState, action) {
   let loadMoreDiscussionCommentsButton = false
   let allVideosLoaded = false
   switch (action.type) {
+    case VIDEO.ATTACH_STAR:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          discussions: state.videoPage.discussions.map(discussion => ({
+            ...discussion,
+            comments: discussion.comments.map(comment => ({
+              ...comment,
+              stars:
+                comment.id === action.data.contentId
+                  ? (comment.stars || []).concat(action.data)
+                  : comment.stars || [],
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                stars:
+                  reply.id === action.data.contentId
+                    ? (reply.stars || []).concat(action.data)
+                    : reply.stars || []
+              }))
+            }))
+          })),
+          comments: state.videoPage.comments.map(comment => ({
+            ...comment,
+            stars:
+              comment.id === action.data.contentId
+                ? (comment.stars || []).concat(action.data)
+                : comment.stars || [],
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              stars:
+                reply.id === action.data.contentId
+                  ? (reply.stars || []).concat(action.data)
+                  : reply.stars || []
+            }))
+          }))
+        }
+      }
     case VIDEO.DELETE:
       const newVideoThumbs = state.allVideoThumbs
       newVideoThumbs.splice(action.arrayIndex, 1)
@@ -376,15 +414,13 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
-          discussions: state.videoPage.discussions.map(discussion => {
-            if (discussion.id === action.data.discussionId) {
-              return {
-                ...discussion,
-                comments: [action.data].concat(discussion.comments)
-              }
-            }
-            return discussion
-          }),
+          discussions: state.videoPage.discussions.map(discussion => ({
+            ...discussion,
+            comments:
+              discussion.id === action.data.discussionId
+                ? [action.data].concat(discussion.comments)
+                : discussion.comments
+          })),
           comments: [action.data].concat(state.videoPage.comments),
           noComments: false
         }

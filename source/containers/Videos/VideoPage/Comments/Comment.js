@@ -12,23 +12,32 @@ import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/LikeButton'
-import { scrollElementToCenter } from 'helpers/domHelpers'
+import {
+  determineXpButtonDisabled,
+  scrollElementToCenter
+} from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
 import { connect } from 'react-redux'
+import RewardStatus from 'components/RewardStatus'
+import { attachStar } from 'redux/actions/VideoActions'
+import XPRewardInterface from 'components/XPRewardInterface'
 
 class Comment extends Component {
   static propTypes = {
+    attachStar: PropTypes.func,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
+    canStar: PropTypes.bool,
     comment: PropTypes.shape({
       content: PropTypes.string.isRequired,
       discussionTitle: PropTypes.string,
       likes: PropTypes.array.isRequired,
       profilePicId: PropTypes.number,
       replies: PropTypes.array.isRequired,
+      stars: PropTypes.array,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
       uploaderAuthLevel: PropTypes.number,
@@ -55,7 +64,8 @@ class Comment extends Component {
     onEdit: false,
     userListModalShown: false,
     clickListenerState: false,
-    confirmModalShown: false
+    confirmModalShown: false,
+    xpRewardInterfaceShown: false
   }
 
   componentDidUpdate(prevProps) {
@@ -72,14 +82,17 @@ class Comment extends Component {
       onEdit,
       userListModalShown,
       clickListenerState,
-      confirmModalShown
+      confirmModalShown,
+      xpRewardInterfaceShown
     } = this.state
     const {
+      attachStar,
       authLevel,
       canDelete,
       canEdit,
+      canStar,
       comment,
-      comment: { uploaderAuthLevel },
+      comment: { stars = [], uploaderAuthLevel },
       userId,
       commentId,
       videoId,
@@ -180,42 +193,81 @@ class Comment extends Component {
               >
                 {comment.content}
               </LongText>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}
-              >
-                <div style={{ display: 'flex' }}>
-                  <LikeButton
-                    onClick={this.onLikeClick}
-                    liked={userLikedThis}
-                  />
-                  <Button
-                    transparent
-                    style={{ marginLeft: '1rem' }}
-                    onClick={this.onReplyButtonClick}
-                  >
-                    <span className="glyphicon glyphicon-comment" /> Reply
-                  </Button>
+              <RewardStatus stars={stars} />
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}
+                >
+                  <div style={{ display: 'flex' }}>
+                    <LikeButton
+                      onClick={this.onLikeClick}
+                      liked={userLikedThis}
+                    />
+                    <Button
+                      transparent
+                      style={{ marginLeft: '1rem' }}
+                      onClick={this.onReplyButtonClick}
+                    >
+                      <span className="glyphicon glyphicon-comment" /> Reply
+                    </Button>
+                  </div>
+                  <div>
+                    <Likers
+                      style={{
+                        fontSize: '1.2rem',
+                        marginTop: '0.5rem',
+                        fontWeight: 'bold',
+                        color: Color.darkGray()
+                      }}
+                      userId={userId}
+                      likes={comment.likes}
+                      onLinkClick={() =>
+                        this.setState({ userListModalShown: true })
+                      }
+                    />
+                  </div>
                 </div>
                 <div>
-                  <Likers
-                    style={{
-                      fontSize: '1.2rem',
-                      marginTop: '0.5rem',
-                      fontWeight: 'bold',
-                      color: Color.darkGray()
-                    }}
-                    userId={userId}
-                    likes={comment.likes}
-                    onLinkClick={() =>
-                      this.setState({ userListModalShown: true })
-                    }
-                  />
+                  {canStar &&
+                    userCanEditThis &&
+                    !userIsUploader && (
+                      <Button
+                        love
+                        onClick={() =>
+                          this.setState({ xpRewardInterfaceShown: true })
+                        }
+                        disabled={determineXpButtonDisabled({
+                          myId: userId,
+                          xpRewardInterfaceShown,
+                          stars
+                        })}
+                      >
+                        <span className="glyphicon glyphicon-star" />
+                        &nbsp;{determineXpButtonDisabled({
+                          myId: userId,
+                          xpRewardInterfaceShown,
+                          stars
+                        }) || 'Reward Stars'}
+                      </Button>
+                    )}
                 </div>
               </div>
             </div>
+          )}
+          {xpRewardInterfaceShown && (
+            <XPRewardInterface
+              stars={stars}
+              contentType="comment"
+              contentId={comment.id}
+              uploaderId={comment.userId}
+              onRewardSubmit={data => {
+                this.setState({ xpRewardInterfaceShown: false })
+                attachStar(data)
+              }}
+            />
           )}
           <Replies
             onLoadMoreReplies={onLoadMoreReplies}
@@ -302,8 +354,14 @@ class Comment extends Component {
   }
 }
 
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit
-}))(Comment)
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar
+  }),
+  {
+    attachStar
+  }
+)(Comment)

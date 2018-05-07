@@ -17,6 +17,7 @@ import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import Input from 'components/Texts/Input'
 import {
+  attachStar,
   deleteVideoComment,
   editVideoComment,
   loadVideoDiscussionComments,
@@ -33,6 +34,7 @@ import { css } from 'emotion'
 
 class DiscussionPanel extends Component {
   static propTypes = {
+    attachStar: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     description: PropTypes.string,
     id: PropTypes.number.isRequired,
@@ -72,6 +74,7 @@ class DiscussionPanel extends Component {
 
   render() {
     const {
+      attachStar,
       id,
       title,
       description,
@@ -227,6 +230,7 @@ class DiscussionPanel extends Component {
                   loadMoreComments={this.loadMoreComments}
                   parent={{ type: 'discussion', id }}
                   commentActions={{
+                    attachStar,
                     onDelete,
                     onLikeClick,
                     onEditDone,
@@ -329,7 +333,7 @@ class DiscussionPanel extends Component {
     })
   }
 
-  onReplySubmit({ replyContent, comment, replyOfReply, originType }) {
+  onReplySubmit = ({ replyContent, comment, replyOfReply, originType }) => {
     const { onReplySubmit, videoId, id } = this.props
     onReplySubmit({
       discussionId: id,
@@ -347,6 +351,7 @@ export default connect(
     myId: state.UserReducer.userId
   }),
   {
+    attachStar,
     onDelete: deleteVideoComment,
     onEditDone: editVideoComment,
     loadComments: loadVideoDiscussionComments,

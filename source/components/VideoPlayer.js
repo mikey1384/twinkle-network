@@ -21,7 +21,7 @@ import { css } from 'emotion'
 const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
 const intervalLength = 2000
-const denominator = 3
+const denominator = 4
 
 class VideoPlayer extends Component {
   static propTypes = {
