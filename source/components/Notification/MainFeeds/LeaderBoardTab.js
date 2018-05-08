@@ -18,13 +18,22 @@ export default class LeaderBoardTab extends Component {
     users: []
   }
 
+  mounted = false
+
   async componentDidMount() {
+    this.mounted = true
     try {
       const { data: users } = await request.get(`${API_URL}/leaderBoard`)
-      this.setState(() => ({ users }))
+      if (this.mounted) {
+        this.setState(() => ({ users }))
+      }
     } catch (error) {
       console.error(error.response || error)
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
   }
 
   render() {

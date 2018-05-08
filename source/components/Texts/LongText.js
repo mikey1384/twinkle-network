@@ -10,6 +10,8 @@ export default class LongText extends Component {
     style: PropTypes.object
   }
 
+  mounted = false
+
   state = {
     text: '',
     more: false,
@@ -17,13 +19,23 @@ export default class LongText extends Component {
   }
 
   componentDidMount() {
-    this.truncateText(this.props.children || '')
+    this.mounted = true
+    this.truncateText(this.props.children)
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.children !== this.props.children) {
+    if (prevProps.children !== this.props.children && this.mounted) {
+      this.setState({
+        text: '',
+        more: false,
+        fullText: false
+      })
       this.truncateText(this.props.children)
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
   }
 
   render() {
@@ -37,19 +49,19 @@ export default class LongText extends Component {
         style={style}
         className={className}
       >
-        {fullText ? (
-          <span
-            dangerouslySetInnerHTML={{
-              __html: limitBrs(processedStringWithURL(children))
-            }}
-          />
-        ) : (
-          <Fragment>
-            <p
-              ref={ref => {
-                this.Text = ref
+        <p
+          ref={ref => {
+            this.Text = ref
+          }}
+        >
+          {fullText ? (
+            <span
+              dangerouslySetInnerHTML={{
+                __html: limitBrs(processedStringWithURL(children))
               }}
-            >
+            />
+          ) : (
+            <Fragment>
               <span
                 dangerouslySetInnerHTML={{
                   __html: limitBrs(processedStringWithURL(text))
@@ -66,9 +78,9 @@ export default class LongText extends Component {
                   </a>
                 </Fragment>
               )}
-            </p>
-          </Fragment>
-        )}
+            </Fragment>
+          )}
+        </p>
       </div>
     )
   }
