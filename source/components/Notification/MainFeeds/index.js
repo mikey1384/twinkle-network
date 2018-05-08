@@ -84,7 +84,7 @@ class MainFeeds extends Component {
               style={{ marginBottom: '1rem' }}
               onClick={this.onNewNotiAlertClick}
             >
-              Click to See {numNewNotis} New Notification{numNewNotis > 1
+              Tap to See {numNewNotis} New Notification{numNewNotis > 1
                 ? 's'
                 : ''}
             </Banner>
@@ -98,7 +98,7 @@ class MainFeeds extends Component {
             >
               {totalRewardAmount > 0 && (
                 <Fragment>
-                  <p>Click to collect all your rewards</p>
+                  <p>Tap to collect all your rewards</p>
                   <p>
                     ({totalRewardAmount} stars x {rewardValue.star} XP/star ={' '}
                     {addCommasToNumber(totalRewardAmount * rewardValue.star)}{' '}
