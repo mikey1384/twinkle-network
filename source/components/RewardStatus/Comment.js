@@ -16,7 +16,7 @@ export default function Comment({ myId, star }) {
       className={css`
         padding: 1rem;
         display: flex;
-        align-items: center;
+        align-items: space-between;
       `}
     >
       <div
@@ -32,10 +32,12 @@ export default function Comment({ myId, star }) {
       </div>
       <div
         className={css`
+          width: 100%;
+          margin-left: 0.5rem;
           font-size: 1.4rem;
         `}
       >
-        <div>
+        <div style={{ width: '100%' }}>
           <UsernameText
             user={{
               id: star.rewarderId,

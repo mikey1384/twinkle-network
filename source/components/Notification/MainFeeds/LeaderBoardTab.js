@@ -70,7 +70,7 @@ export default class LeaderBoardTab extends Component {
                     fontWeight: 'bold',
                     fontSize: '2rem',
                     width: '3rem',
-                    marginRight: '0.5rem',
+                    marginRight: '1rem',
                     textAlign: 'center',
                     color:
                       rankColor ||
