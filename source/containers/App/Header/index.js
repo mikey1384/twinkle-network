@@ -318,7 +318,7 @@ class Header extends Component {
                   <a>
                     <span
                       className="glyphicon glyphicon-comment mobile-no-hover"
-                      style={{ color: numNewNotis > 0 && Color.pink() }}
+                      style={{ color: numChatUnreads > 0 && Color.pink() }}
                     />
                   </a>
                 </div>
