@@ -4,6 +4,7 @@ import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
+import LongText from 'components/Texts/LongText'
 
 Comment.propTypes = {
   myId: PropTypes.number,
@@ -54,7 +55,7 @@ export default function Comment({ myId, star }) {
               : ''}
           </span>
         </div>
-        {star.rewardComment}
+        <LongText>{star.rewardComment}</LongText>
       </div>
     </div>
   )
