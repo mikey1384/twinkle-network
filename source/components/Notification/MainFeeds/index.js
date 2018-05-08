@@ -249,7 +249,7 @@ function renderNotificationMessage(notification, myId) {
     contentId,
     discussionId,
     type,
-    reward,
+    reward = {},
     rootType,
     rootTitle,
     rootId,

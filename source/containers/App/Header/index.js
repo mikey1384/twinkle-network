@@ -41,12 +41,14 @@ class Header extends Component {
     logout: PropTypes.func,
     notifyChatSubjectChange: PropTypes.func,
     numChatUnreads: PropTypes.number,
+    numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
     onChatButtonClick: PropTypes.func,
     onMobileMenuOpen: PropTypes.func,
     resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
     style: PropTypes.object,
+    totalRewardAmount: PropTypes.number,
     turnChatOff: PropTypes.func,
     userId: PropTypes.number,
     username: PropTypes.string,
@@ -141,8 +143,10 @@ class Header extends Component {
       onChatButtonClick,
       onMobileMenuOpen,
       numChatUnreads,
+      numNewNotis,
       numNewPosts,
       style = {},
+      totalRewardAmount,
       turnChatOff
     } = this.props
     const { logoHovered } = this.state
@@ -271,6 +275,8 @@ class Header extends Component {
               <Fragment>
                 <HeaderNav
                   className={chatLoading ? 'hidden' : 'mobile'}
+                  alert={numNewNotis > 0 || totalRewardAmount > 0}
+                  alertColor={Color.pink()}
                   imgLabel="user"
                   onClick={onMobileMenuOpen}
                 >
@@ -312,7 +318,7 @@ class Header extends Component {
                   <a>
                     <span
                       className="glyphicon glyphicon-comment mobile-no-hover"
-                      style={{ color: numChatUnreads > 0 && Color.pink() }}
+                      style={{ color: numNewNotis > 0 && Color.pink() }}
                     />
                   </a>
                 </div>
@@ -401,9 +407,11 @@ export default connect(
     username: state.UserReducer.username,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId,
+    numNewNotis: state.NotiReducer.numNewNotis,
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,
     chatMode: state.ChatReducer.chatMode,
+    totalRewardAmount: state.NotiReducer.totalRewardAmount,
     versionMatch: state.NotiReducer.versionMatch
   }),
   {

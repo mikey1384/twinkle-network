@@ -58,7 +58,7 @@ export const container = css`
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;
     .heading {
-      flex-direction: column;
+      justify-content: center;
       .names {
         text-align: center;
         a {
@@ -67,7 +67,7 @@ export const container = css`
         span {
           font-size: 1.5rem;
         }
-        width: 100%;
+        width: 50%;
       }
     }
     .details {

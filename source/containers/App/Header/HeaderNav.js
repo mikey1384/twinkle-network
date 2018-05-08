@@ -2,11 +2,14 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Link, Route } from 'react-router-dom'
 import Icon from 'components/Icon'
+import { Color } from 'constants/css'
+import { css } from 'emotion'
 
 export default class HeaderNav extends Component {
   static propTypes = {
     active: PropTypes.bool,
     alert: PropTypes.bool,
+    alertColor: PropTypes.string,
     className: PropTypes.string,
     children: PropTypes.node,
     imgLabel: PropTypes.string,
@@ -36,14 +39,18 @@ export default class HeaderNav extends Component {
           <div className={`${className} header-nav`}>
             {to ? (
               <Link
-                className={(to && match) ? 'active ' : ''}
+                className={to && match ? 'active ' : ''}
                 style={{ display: 'flex' }}
                 to={to}
               >
-                <span className={`icon ${alert ? 'new' : ''}`}>
+                <span className={`icon ${alert ? this.styles().alert : ''}`}>
                   <Icon icon={isHome ? 'home' : imgLabel} />
                 </span>
-                <span className={`nav-label ${alert ? 'new' : ''}`}>{children}</span>
+                <span
+                  className={`nav-label ${alert ? this.styles().alert : ''}`}
+                >
+                  {children}
+                </span>
               </Link>
             ) : (
               <a
@@ -52,14 +59,32 @@ export default class HeaderNav extends Component {
                 onClick={onClick}
               >
                 <span
-                  className={`glyphicon glyphicon-${imgLabel} mobile-no-hover ${alert ? 'new' : ''}`}
+                  className={`glyphicon glyphicon-${imgLabel} mobile-no-hover ${
+                    alert ? this.styles().alert : ''
+                  }`}
                 />
-                <span className={`nav-label ${alert ? 'new' : ''}`}>{children}</span>
+                <span
+                  className={`nav-label ${alert ? this.styles().alert : ''}`}
+                >
+                  {children}
+                </span>
               </a>
             )}
           </div>
         )}
       />
     )
+  }
+
+  styles = () => {
+    const { alertColor } = this.props
+    return {
+      alert: css`
+        color: ${alertColor || Color.lightBlue()};
+        &:hover {
+          color: ${alertColor || Color.lightBlue()}!important;
+        }
+      `
+    }
   }
 }

@@ -23,9 +23,6 @@ export const container = css`
       text-decoration: none;
       margin-left: 0.5rem;
       color: ${Color.menuGray()};
-      span.new {
-        color: ${Color.lightBlue()};
-      }
       .icon {
         line-height: 1.7rem;
         margin-right: 0.7rem;
@@ -44,9 +41,6 @@ export const container = css`
       a {
         span {
           color: ${Color.black()};
-        }
-        span.new {
-          color: ${Color.lightBlue()}!important;
         }
       }
     }
