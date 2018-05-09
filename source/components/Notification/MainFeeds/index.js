@@ -6,6 +6,7 @@ import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
 import RoundList from 'components/RoundList'
 import Banner from 'components/Banner'
+import Button from 'components/Button'
 import {
   clearRewards,
   fetchNotifications,
@@ -59,6 +60,7 @@ class MainFeeds extends Component {
   }
 
   state = {
+    loading: false,
     originalTotalReward: 0,
     originalTwinkleXP: 0
   }
@@ -74,6 +76,7 @@ class MainFeeds extends Component {
       style,
       totalRewardAmount
     } = this.props
+    const { loading } = this.state
     const { originalTotalReward, originalTwinkleXP } = this.state
     return (
       <div style={style}>
@@ -174,17 +177,18 @@ class MainFeeds extends Component {
         </RoundList>
         {((activeTab === 'notification' && loadMore.notifications) ||
           (activeTab === 'reward' && loadMore.rewards)) && (
-          <Banner
+          <Button
             logo
+            filled
             style={{
               marginTop: '1rem',
-              fontSize: '1.7rem',
-              padding: '1rem'
+              width: '100%'
             }}
+            disabled={loading}
             onClick={this.onLoadMore}
           >
             Load More
-          </Banner>
+          </Button>
         )}
       </div>
     )
@@ -213,7 +217,7 @@ class MainFeeds extends Component {
     fetchNotifications()
   }
 
-  onLoadMore = () => {
+  onLoadMore = async() => {
     const {
       notifications,
       rewards,
@@ -221,11 +225,13 @@ class MainFeeds extends Component {
       loadMoreRewards,
       activeTab
     } = this.props
+    this.setState({ loading: true })
     if (activeTab === 'notification') {
-      loadMoreNotifications(notifications[notifications.length - 1].id)
+      await loadMoreNotifications(notifications[notifications.length - 1].id)
     } else {
-      loadMoreRewards(rewards[rewards.length - 1].id)
+      await loadMoreRewards(rewards[rewards.length - 1].id)
     }
+    this.setState({ loading: false })
   }
 }
 

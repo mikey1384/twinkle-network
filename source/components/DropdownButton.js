@@ -9,7 +9,12 @@ class DropdownButton extends Component {
     icon: PropTypes.string,
     direction: PropTypes.string,
     listStyle: PropTypes.object,
-    menuProps: PropTypes.array.isRequired,
+    menuProps: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string,
+        onClick: PropTypes.func
+      })
+    ),
     noBorderRadius: PropTypes.bool,
     opacity: PropTypes.number,
     stretch: PropTypes.bool,

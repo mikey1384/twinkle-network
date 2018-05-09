@@ -62,10 +62,11 @@ export const loadMoreNotifications = lastId => async dispatch => {
       `${API_URL}/more?lastId=${lastId}`,
       auth()
     )
-    return dispatch({
+    dispatch({
       type: NOTI.LOAD_MORE,
       data
     })
+    return Promise.resolve()
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
@@ -78,10 +79,11 @@ export const loadMoreRewards = lastId => async dispatch => {
       `${API_URL}/more/rewards?lastId=${lastId}`,
       auth()
     )
-    return dispatch({
+    dispatch({
       type: NOTI.LOAD_MORE_REWARDS,
       data
     })
+    return Promise.resolve()
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
