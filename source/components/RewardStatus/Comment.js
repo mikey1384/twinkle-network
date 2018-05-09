@@ -5,7 +5,6 @@ import UsernameText from 'components/Texts/UsernameText'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
-import DropdownButton from 'components/DropdownButton'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 
 Comment.propTypes = {
@@ -64,13 +63,6 @@ export default function Comment({ myId, star }) {
             </div>
             <LongText>{star.rewardComment}</LongText>
           </div>
-          <DropdownButton
-            snow
-            direction="left"
-            menuProps={[
-              { label: 'Edit', onClick: () => console.log('clicked') }
-            ]}
-          />
         </div>
       </div>
     </ErrorBoundary>
