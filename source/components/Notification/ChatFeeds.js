@@ -25,7 +25,13 @@ class ChatFeeds extends Component {
     const { content, initChat, style = {} } = this.props
     return (
       <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
-        <li>
+        <li
+          style={{
+            whiteSpace: 'pre-wrap',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word'
+          }}
+        >
           <p
             style={{
               fontWeight: 'bold',
