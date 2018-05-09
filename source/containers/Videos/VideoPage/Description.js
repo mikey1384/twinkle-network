@@ -75,7 +75,10 @@ class Description extends Component {
       prevProps.content !== this.props.content
     ) {
       return this.setState({
-        onEdit: false
+        onEdit: false,
+        editedTitle: cleanString(this.props.title),
+        editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
+        editedDescription: this.props.description
       })
     }
   }
