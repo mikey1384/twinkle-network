@@ -5,6 +5,7 @@ import Button from 'components/Button'
 import SortableListGroup from 'components/SortableListGroup'
 import { connect } from 'react-redux'
 import { changePinnedPlaylists } from 'redux/actions/PlaylistActions'
+import { isEqual } from 'lodash'
 
 class ReorderPinnedPlaylistsModal extends Component {
   static propTypes = {
@@ -35,7 +36,6 @@ class ReorderPinnedPlaylistsModal extends Component {
       }
       return result
     }, [])
-
     return (
       <Modal onHide={this.props.onHide}>
         <header>Reorder Pinned Playlists</header>
@@ -43,7 +43,14 @@ class ReorderPinnedPlaylistsModal extends Component {
           <SortableListGroup listItems={listItems} onMove={this.onMove} />
         </main>
         <footer>
-          <Button primary onClick={this.onSubmit}>
+          <Button
+            disabled={isEqual(
+              playlistIds,
+              playlists.map(playlist => playlist.id)
+            )}
+            primary
+            onClick={this.onSubmit}
+          >
             Done
           </Button>
           <Button

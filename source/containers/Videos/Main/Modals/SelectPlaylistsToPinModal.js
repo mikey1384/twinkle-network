@@ -13,6 +13,7 @@ import SearchInput from 'components/Texts/SearchInput'
 import request from 'axios'
 import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
+import { isEqual } from 'lodash'
 
 class SelectPlaylistsToPinModal extends Component {
   static propTypes = {
@@ -111,15 +112,16 @@ class SelectPlaylistsToPinModal extends Component {
                   onSelect={this.onSelect}
                   listItems={this.renderListItems()}
                 />
-                {loadMoreButton && !searchText && (
-                  <Button
-                    style={{ marginTop: '2rem', width: '100%' }}
-                    transparent
-                    onClick={() => this.loadMorePlaylists(lastPlaylistId)}
-                  >
-                    Load More
-                  </Button>
-                )}
+                {loadMoreButton &&
+                  !searchText && (
+                    <Button
+                      style={{ marginTop: '2rem', width: '100%' }}
+                      transparent
+                      onClick={() => this.loadMorePlaylists(lastPlaylistId)}
+                    >
+                      Load More
+                    </Button>
+                  )}
                 {playlistsToPin.length === 0 && (
                   <div
                     style={{
@@ -164,7 +166,10 @@ class SelectPlaylistsToPinModal extends Component {
           <Button
             primary
             onClick={this.onSubmit}
-            disabled={selectedPlaylists.length > 5}
+            disabled={
+              isEqual(selectedPlaylists, this.props.selectedPlaylists) ||
+              selectedPlaylists.length > 5
+            }
           >
             Done
           </Button>
