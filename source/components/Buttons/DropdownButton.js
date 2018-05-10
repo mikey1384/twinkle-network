@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
-import Button from './Button'
+import Button from 'components/Button'
 import DropdownList from 'components/DropdownList'
 
 class DropdownButton extends Component {

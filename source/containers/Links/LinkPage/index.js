@@ -20,7 +20,7 @@ import {
   submitReply
 } from 'redux/actions/LinkActions'
 import PanelComments from 'components/PanelComments'
-import LikeButton from 'components/LikeButton'
+import LikeButton from 'components/Buttons/LikeButton'
 import Likers from 'components/Likers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import UserListModal from 'components/Modals/UserListModal'

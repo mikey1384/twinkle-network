@@ -4,7 +4,7 @@ import Button from 'components/Button'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
 import PanelComments from 'components/PanelComments'
-import DropdownButton from 'components/DropdownButton'
+import DropdownButton from 'components/Buttons/DropdownButton'
 import { connect } from 'react-redux'
 import {
   cleanString,

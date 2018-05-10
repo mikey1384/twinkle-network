@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { timeSince } from 'helpers/timeStampHelpers'
-import DropdownButton from 'components/DropdownButton'
+import DropdownButton from 'components/Buttons/DropdownButton'
 import EditTextArea from 'components/Texts/EditTextArea'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
 import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
-import LikeButton from 'components/LikeButton'
+import LikeButton from 'components/Buttons/LikeButton'
 import ReplyInputArea from './ReplyInputArea'
 import {
   scrollElementToCenter,

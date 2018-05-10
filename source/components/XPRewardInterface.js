@@ -21,11 +21,12 @@ class XPRewardInterface extends Component {
 
   state = {
     rewardExplanation: '',
-    twoStarSelected: false
+    twoStarSelected: false,
+    rewarding: false
   }
 
   render() {
-    const { rewardExplanation, twoStarSelected } = this.state
+    const { rewarding, rewardExplanation, twoStarSelected } = this.state
     const { stars = [], userId } = this.props
     if (!userId) return null
     const totalStars =
@@ -101,14 +102,15 @@ class XPRewardInterface extends Component {
           }}
         >
           <Button
-            primary
+            love
             filled
             disabled={
               stringIsEmpty(rewardExplanation) ||
               exceedsCharLimit({
                 contentType: 'rewardComment',
                 text: rewardExplanation
-              })
+              }) ||
+              rewarding
             }
             onClick={this.onRewardSubmit}
           >
@@ -123,6 +125,7 @@ class XPRewardInterface extends Component {
     const { rewardExplanation, twoStarSelected } = this.state
     const { contentType, contentId, onRewardSubmit, uploaderId } = this.props
     try {
+      this.setState({ rewarding: true })
       const { data } = await request.post(
         `${URL}/user/reward`,
         {

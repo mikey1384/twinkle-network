@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { timeSince } from 'helpers/timeStampHelpers'
 import { cleanString } from 'helpers/stringHelpers'
-import DropdownButton from 'components/DropdownButton'
+import DropdownButton from 'components/Buttons/DropdownButton'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
 import ReplyInputArea from './Replies/ReplyInputArea'
@@ -11,7 +11,7 @@ import EditTextArea from 'components/Texts/EditTextArea'
 import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
-import LikeButton from 'components/LikeButton'
+import LikeButton from 'components/Buttons/LikeButton'
 import {
   determineXpButtonDisabled,
   scrollElementToCenter

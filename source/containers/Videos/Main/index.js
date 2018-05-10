@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal'
 import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal'
 import Button from 'components/Button'
-import ButtonGroup from 'components/ButtonGroup'
+import ButtonGroup from 'components/Buttons/ButtonGroup'
 import AddVideoModal from './Modals/AddVideoModal'
 import AllVideosPanel from './Panels/AllVideosPanel'
 import PlaylistsPanel from './Panels/PlaylistsPanel'
@@ -100,18 +100,21 @@ class Main extends Component {
         buttonClass: 'snow'
       }
     ]
-    const pinnedPlaylistButtons = playlists.length > 0 ? [
-      {
-        label: 'Select Playlists',
-        onClick: openSelectPlaylistsToPinModal,
-        buttonClass: 'snow'
-      },
-      {
-        label: 'Reorder Playlists',
-        onClick: openReorderPinnedPlaylistsModal,
-        buttonClass: 'snow'
-      }
-    ] : []
+    const pinnedPlaylistButtons =
+      playlists.length > 0
+        ? [
+            {
+              label: 'Select Playlists',
+              onClick: openSelectPlaylistsToPinModal,
+              buttonClass: 'snow'
+            },
+            {
+              label: 'Reorder Playlists',
+              onClick: openReorderPinnedPlaylistsModal,
+              buttonClass: 'snow'
+            }
+          ]
+        : []
     return (
       <div className={main}>
         <div className="left">

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import UsernameText from 'components/Texts/UsernameText'
 import { Color } from 'constants/css'
-import ButtonGroup from 'components/ButtonGroup'
+import ButtonGroup from 'components/Buttons/ButtonGroup'
 
 const marginHeight = 1.1
 const subjectTitleHeight = 24

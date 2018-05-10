@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import DropdownButton from 'components/DropdownButton'
+import DropdownButton from 'components/Buttons/DropdownButton'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
 import EditTextArea from 'components/Texts/EditTextArea'

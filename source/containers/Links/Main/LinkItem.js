@@ -6,7 +6,7 @@ import UserListModal from 'components/Modals/UserListModal'
 import { Link } from 'react-router-dom'
 import { editTitle, deleteLink } from 'redux/actions/LinkActions'
 import { connect } from 'react-redux'
-import DropdownButton from 'components/DropdownButton'
+import DropdownButton from 'components/Buttons/DropdownButton'
 import EditTitleForm from 'components/Texts/EditTitleForm'
 import { cleanString } from 'helpers/stringHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
@@ -55,10 +55,14 @@ class LinkItem extends Component {
 
   async componentDidMount() {
     this.mounted = true
-    const { link: { id, content, siteUrl } } = this.props
+    const {
+      link: { id, content, siteUrl }
+    } = this.props
     if (content && !siteUrl) {
       try {
-        const { data: { image } } = await request.put(`${API_URL}/embed`, {
+        const {
+          data: { image }
+        } = await request.put(`${API_URL}/embed`, {
           url: content,
           linkId: id
         })
@@ -74,10 +78,14 @@ class LinkItem extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    const { link: { content, id } } = this.props
+    const {
+      link: { content, id }
+    } = this.props
     if (prevProps.link.content !== content) {
       try {
-        const { data: { image } } = await request.put(`${API_URL}/embed`, {
+        const {
+          data: { image }
+        } = await request.put(`${API_URL}/embed`, {
           url: content,
           linkId: id
         })
@@ -266,14 +274,19 @@ class LinkItem extends Component {
   }
 
   onEditedTitleSubmit = text => {
-    const { editTitle, link: { id } } = this.props
+    const {
+      editTitle,
+      link: { id }
+    } = this.props
     return editTitle({ title: text, id }).then(() =>
       this.setState({ onEdit: false })
     )
   }
 
   onImageLoadError = () => {
-    const { link: { thumbUrl } } = this.props
+    const {
+      link: { thumbUrl }
+    } = this.props
     this.setState(state => ({
       imageUrl:
         !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl

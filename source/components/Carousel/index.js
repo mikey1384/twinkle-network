@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ExecutionEnvironment from 'exenv'
-import ButtonGroup from 'components/ButtonGroup'
+import ButtonGroup from 'components/Buttons/ButtonGroup'
 import NavButton from './NavButton'
 import Button from 'components/Button'
 import { connect } from 'react-redux'

@@ -211,10 +211,10 @@ class MainFeeds extends Component {
     clearRewards()
   }
 
-  onNewNotiAlertClick = () => {
+  onNewNotiAlertClick = async() => {
     const { selectNotiTab, fetchNotifications } = this.props
+    await fetchNotifications()
     selectNotiTab()
-    fetchNotifications()
   }
 
   onLoadMore = async() => {

@@ -200,12 +200,18 @@ export default class ContentEditor extends Component {
         }
         return false
       case 'question':
-        if (stringIsEmpty(editedContent) || editedContent === content) {
+        if (
+          stringIsEmpty(editedContent) ||
+          (editedContent === content && editedDescription === description)
+        ) {
           return true
         }
         return false
       case 'discussion':
-        if (stringIsEmpty(editedTitle) || editedTitle === title) {
+        if (
+          stringIsEmpty(editedTitle) ||
+          (editedTitle === title && editedDescription === description)
+        ) {
           return true
         }
         return false

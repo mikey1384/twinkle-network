@@ -4,7 +4,7 @@ import moment from 'moment'
 import ProfilePic from 'components/ProfilePic'
 import UsernameText from 'components/Texts/UsernameText'
 import { connect } from 'react-redux'
-import DropdownButton from 'components/DropdownButton'
+import DropdownButton from 'components/Buttons/DropdownButton'
 import { processedStringWithURL } from 'helpers/stringHelpers'
 import EditTextArea from 'components/Texts/EditTextArea'
 import { editMessage, saveMessage } from 'redux/actions/ChatActions'
@@ -62,7 +62,8 @@ class Message extends Component {
       myId
     } = this.props
     const userIsUploader = myId === userId
-    const userCanEditThis = (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -164,7 +165,9 @@ class Message extends Component {
   }
 
   renderPrefix = () => {
-    const { message: { isSubject, isReloadedSubject } } = this.props
+    const {
+      message: { isSubject, isReloadedSubject }
+    } = this.props
     let prefix = ''
     if (isSubject) {
       prefix = <span className={MessageStyle.subjectPrefix}>Subject: </span>

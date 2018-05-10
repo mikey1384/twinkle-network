@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import UsernameText from 'components/Texts/UsernameText'
-import DropdownButton from 'components/DropdownButton'
+import DropdownButton from 'components/Buttons/DropdownButton'
 import { timeSince } from 'helpers/timeStampHelpers'
 import LongText from 'components/Texts/LongText'
 import Button from 'components/Button'

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import UsernameText from 'components/Texts/UsernameText'
 import Button from 'components/Button'
-import LikeButton from 'components/LikeButton'
+import LikeButton from 'components/Buttons/LikeButton'
 import Likers from 'components/Likers'
 import { connect } from 'react-redux'
 import UserListModal from 'components/Modals/UserListModal'
@@ -139,7 +139,9 @@ class Content extends Component {
                         title: `${
                           replyId
                             ? 'replied'
-                            : rootType === 'question' ? 'answered' : 'commented'
+                            : rootType === 'question'
+                              ? 'answered'
+                              : 'commented'
                         }:`
                       }}
                       type="comment"
