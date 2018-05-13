@@ -177,7 +177,7 @@ class App extends Component {
     return (
       <div
         className={css`
-          height: CALC(100% - 7rem);
+          height: CALC(100% - 6rem);
           width: 100%;
           @media (max-width: ${mobileMaxWidth}) {
             height: ${chatMode ? 'CALC(100% - 8rem)' : 'auto'};

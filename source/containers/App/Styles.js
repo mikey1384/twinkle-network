@@ -7,6 +7,7 @@ export const siteContent = css`
   height: 100%;
   @media (max-width: ${mobileMaxWidth}) {
     margin-top: 0;
+    padding-top: 0;
     padding-bottom: 9rem;
   }
 `
