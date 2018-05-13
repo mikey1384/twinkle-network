@@ -39,18 +39,16 @@ export default class HeaderNav extends Component {
           <div className={`${className} header-nav`}>
             {to ? (
               <Link
-                className={to && match ? 'active ' : ''}
+                className={`${to && match ? 'active ' : ''} ${
+                  alert ? this.styles().alert : ''
+                }`}
                 style={{ display: 'flex' }}
                 to={to}
               >
-                <span className={`icon ${alert ? this.styles().alert : ''}`}>
+                <span className="icon">
                   <Icon icon={isHome ? 'home' : imgLabel} />
                 </span>
-                <span
-                  className={`nav-label ${alert ? this.styles().alert : ''}`}
-                >
-                  {children}
-                </span>
+                <span className="nav-label">{children}</span>
               </Link>
             ) : (
               <a
@@ -80,8 +78,7 @@ export default class HeaderNav extends Component {
     const { alertColor } = this.props
     return {
       alert: css`
-        color: ${alertColor || Color.lightBlue()};
-        &:hover {
+        span {
           color: ${alertColor || Color.lightBlue()}!important;
         }
       `
