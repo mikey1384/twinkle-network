@@ -280,6 +280,8 @@ class MessagesContainer extends Component {
           index={index}
           style={messageStyle}
           message={message}
+          isLastMsg={index === messages.length - 1}
+          setScrollToBottom={this.setScrollToBottom.bind(this)}
           showSubjectMsgsModal={({ subjectId, content }) =>
             this.setState({
               subjectMsgsModal: { shown: true, subjectId, content }

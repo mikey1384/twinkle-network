@@ -41,26 +41,21 @@ class People extends Component {
 
   componentDidMount() {
     const { fetchUsers } = this.props
-    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
+    addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     return fetchUsers().then(() => this.setState({ loaded: true }))
   }
 
   componentWillUnmount() {
     const { clearUserSearch } = this.props
     clearUserSearch()
-    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
+    removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
   }
 
   render() {
     const { loadMoreButton, userId, profiles, searchedProfiles } = this.props
     const { loading, loaded, searching, searchText } = this.state
     return (
-      <div
-        ref={ref => {
-          this.Container = ref
-        }}
-        style={{ height: '100%' }}
-      >
+      <div style={{ height: '100%' }}>
         <SearchInput
           style={{ zIndex: 0 }}
           addonColor={Color.gold()}
@@ -133,18 +128,16 @@ class People extends Component {
 
   onScroll = () => {
     const { chatMode, profiles } = this.props
-    if (
-      document.getElementById('react-view').scrollHeight > this.scrollHeight
-    ) {
-      this.scrollHeight = document.getElementById('react-view').scrollHeight
+    if (document.getElementById('App').scrollHeight > this.scrollHeight) {
+      this.scrollHeight = document.getElementById('App').scrollHeight
     }
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
       this.setState(
-        { scrollPosition: document.getElementById('react-view').scrollTop },
+        { scrollPosition: document.getElementById('App').scrollTop },
         () => {
           if (
-            this.state.scrollPosition >=
-            this.Container.offsetHeight - window.innerHeight - 500
+            this.state.scrollPosition >
+            this.scrollHeight - window.innerHeight - 1000
           ) {
             this.loadMoreProfiles()
           }

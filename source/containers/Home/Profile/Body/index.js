@@ -71,7 +71,7 @@ class Body extends Component {
   componentDidMount() {
     const { match, location, clearFeeds } = this.props
     this.mounted = true
-    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
+    addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     clearFeeds()
     switch (location.pathname) {
       case match.url:
@@ -117,7 +117,7 @@ class Body extends Component {
 
   componentWillUnmount() {
     this.mounted = false
-    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
+    removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
   }
 
   render() {
@@ -375,7 +375,7 @@ class Body extends Component {
 
   onScroll = () => {
     let { chatMode, feeds } = this.props
-    const scrollPosition = document.getElementById('react-view').scrollTop
+    const scrollPosition = document.getElementById('App').scrollTop
     if (!chatMode && feeds.length > 0) {
       this.setState({ scrollPosition })
       if (

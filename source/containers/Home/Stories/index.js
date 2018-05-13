@@ -83,7 +83,7 @@ class Stories extends Component {
       loaded,
       resetNumNewPosts
     } = this.props
-    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
+    addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
       clearFeeds()
@@ -94,7 +94,7 @@ class Stories extends Component {
   }
 
   componentWillUnmount() {
-    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
+    removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
   }
 
   render() {
@@ -235,15 +235,13 @@ class Stories extends Component {
 
   onScroll = () => {
     const { chatMode, feeds, loadMoreButton } = this.props
-    if (
-      document.getElementById('react-view').scrollHeight > this.scrollHeight
-    ) {
-      this.scrollHeight = document.getElementById('react-view').scrollHeight
+    if (document.getElementById('App').scrollHeight > this.scrollHeight) {
+      this.scrollHeight = document.getElementById('App').scrollHeight
     }
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
       this.setState(
         {
-          scrollPosition: document.getElementById('react-view').scrollTop
+          scrollPosition: document.getElementById('App').scrollTop
         },
         () => {
           if (
