@@ -9,6 +9,7 @@ class DropdownButton extends Component {
     icon: PropTypes.string,
     direction: PropTypes.string,
     onButtonClick: PropTypes.func,
+    onOutsideClick: PropTypes.func,
     listStyle: PropTypes.object,
     menuProps: PropTypes.arrayOf(
       PropTypes.shape({
@@ -24,8 +25,11 @@ class DropdownButton extends Component {
   }
 
   handleClickOutside = event => {
-    const { onButtonClick } = this.props
-    if (typeof onButtonClick === 'function') onButtonClick(true)
+    const { onOutsideClick } = this.props
+    const { menuDisplayed } = this.state
+    if (menuDisplayed && typeof onOutsideClick === 'function') {
+      onOutsideClick()
+    }
     this.setState({ menuDisplayed: false })
   }
 

@@ -147,8 +147,13 @@ class Message extends Component {
                             {
                               editPadding: !menuDisplayed && isLastMsg
                             },
-                            () => setScrollToBottom()
+                            () => (isLastMsg ? setScrollToBottom() : {})
                           )
+                        }}
+                        onOutsideClick={() => {
+                          this.setState({
+                            editPadding: false
+                          })
                         }}
                         menuProps={editMenuItems}
                       />
