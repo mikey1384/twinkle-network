@@ -184,7 +184,9 @@ class ContentInput extends Component {
   }
 
   buttonDisabled = () => {
-    const { form: { url, title } } = this.state
+    const {
+      form: { url, title }
+    } = this.state
     let result = false
     if (stringIsEmpty(url) || stringIsEmpty(title)) return true
     if (this.errorInUrlField()) result = true
@@ -194,7 +196,10 @@ class ContentInput extends Component {
   }
 
   errorInUrlField = () => {
-    const { form: { checkedVideo, url }, urlError } = this.state
+    const {
+      form: { checkedVideo, url },
+      urlError
+    } = this.state
     if (urlError) return { borderColor: 'red', color: 'red' }
     return exceedsCharLimit({
       inputType: 'url',
@@ -236,7 +241,7 @@ class ContentInput extends Component {
       title: finalizeEmoji(form.title),
       description: finalizeEmoji(form.description)
     })
-    document.getElementById('react-view').scrollTop = 0
+    document.getElementById('App').scrollTop = 0
   }
 
   onUrlFieldChange = url => {
@@ -253,7 +258,9 @@ class ContentInput extends Component {
   }
 
   renderDescriptionCharLimit = () => {
-    const { form: { checkedVideo, description } } = this.state
+    const {
+      form: { checkedVideo, description }
+    } = this.state
     return renderCharLimit({
       inputType: 'description',
       contentType: checkedVideo ? 'video' : 'url',
@@ -262,7 +269,9 @@ class ContentInput extends Component {
   }
 
   renderTitleCharLimit = () => {
-    const { form: { checkedVideo, title } } = this.state
+    const {
+      form: { checkedVideo, title }
+    } = this.state
     return renderCharLimit({
       inputType: 'title',
       contentType: checkedVideo ? 'video' : 'url',
@@ -271,7 +280,9 @@ class ContentInput extends Component {
   }
 
   descriptionExceedsCharLimit = () => {
-    const { form: { checkedVideo, description } } = this.state
+    const {
+      form: { checkedVideo, description }
+    } = this.state
     return exceedsCharLimit({
       inputType: 'description',
       contentType: checkedVideo ? 'video' : 'url',
@@ -280,7 +291,9 @@ class ContentInput extends Component {
   }
 
   titleExceedsCharLimit = () => {
-    const { form: { checkedVideo, title } } = this.state
+    const {
+      form: { checkedVideo, title }
+    } = this.state
     return exceedsCharLimit({
       inputType: 'title',
       contentType: checkedVideo ? 'video' : 'url',

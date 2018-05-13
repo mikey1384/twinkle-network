@@ -22,6 +22,7 @@ const CONTENT_URL = `${URL}/content`
 const VIDEO_URL = `${URL}/video`
 const intervalLength = 2000
 const denominator = 4
+const requiredDurationCap = 150
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -218,7 +219,10 @@ class VideoPlayer extends Component {
       xpEarned,
       justEarned
     } = this.state
-    const requiredViewDuration = totalDuration / denominator
+    const requiredViewDuration = Math.min(
+      totalDuration / denominator,
+      requiredDurationCap
+    )
     const progress = xpEarned
       ? 100
       : requiredViewDuration > 0
@@ -362,7 +366,7 @@ class VideoPlayer extends Component {
 
   onVideoReady = () => {
     this.setState(() => ({
-      totalDuration: this.Player.getDuration()
+      totalDuration: this.Player.getInternalPlayer().getDuration()
     }))
   }
 
@@ -437,7 +441,8 @@ class VideoPlayer extends Component {
     }
     if (
       isStarred &&
-      timeWatched >= totalDuration / denominator &&
+      timeWatched >=
+        Math.min(totalDuration / denominator, requiredDurationCap) &&
       !this.rewardingXP
     ) {
       this.rewardingXP = true

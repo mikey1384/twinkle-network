@@ -11,7 +11,7 @@ import {
   openSigninModal,
   closeSigninModal
 } from 'redux/actions/UserActions'
-import { addEvent, removeEvent } from 'helpers/listenerHelpers'
+import { addEvent } from 'helpers/listenerHelpers'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import { siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
@@ -82,7 +82,7 @@ class App extends Component {
       visibilityChange = 'webkitvisibilitychange'
     }
     initSession(location.pathname)
-    addEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
+    addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
     window.ga('send', 'pageview', location.pathname)
     history.listen(location => {
@@ -90,7 +90,22 @@ class App extends Component {
     })
   }
 
-  componentDidUpdate(prevProps) {
+  getSnapshotBeforeUpdate(prevProps) {
+    if (!prevProps.chatMode && this.props.chatMode) {
+      return { scrollPosition: document.getElementById('App').scrollTop }
+    }
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      return {
+        navScrollPosition: {
+          [prevProps.location.pathname]: document.getElementById('App')
+            .scrollTop
+        }
+      }
+    }
+    return {}
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
     const {
       chatNumUnreads,
       numNewNotis,
@@ -99,26 +114,31 @@ class App extends Component {
       location,
       loggedIn
     } = this.props
-
     const { navScrollPositions } = this.state
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads
+
+    if (snapshot.scrollPosition) {
+      this.setState({ scrollPosition: snapshot.scrollPosition })
+    }
+
+    if (snapshot.navScrollPosition) {
+      this.setState(state => ({
+        navScrollPositions: {
+          ...state.navScrollPositions,
+          ...snapshot.navScrollPosition
+        }
+      }))
+    }
 
     if (location !== prevProps.location) {
       if (history.action === 'PUSH') {
         if (loggedIn) {
           recordUserAction({ action: 'navigation', target: location.pathname })
         }
-        document.getElementById('react-view').scrollTop = 0
-        const navScrollPosition = { [location.key]: 0 }
-        this.setState(state => ({
-          navScrollPositions: {
-            ...state.navScrollPositions,
-            ...navScrollPosition
-          }
-        }))
+        document.getElementById('App').scrollTop = 0
       } else {
-        document.getElementById('react-view').scrollTop =
-          navScrollPositions[location.key]
+        document.getElementById('App').scrollTop =
+          navScrollPositions[location.pathname]
       }
     }
 
@@ -135,10 +155,6 @@ class App extends Component {
       let title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
       document.title = title
     }
-  }
-
-  componentWillUnmount() {
-    removeEvent(document.getElementById('react-view'), 'scroll', this.onScroll)
   }
 
   render() {
@@ -161,7 +177,7 @@ class App extends Component {
     return (
       <div
         className={css`
-          height: CALC(100% - 7rem);
+          height: CALC(100% - 6rem);
           width: 100%;
           @media (max-width: ${mobileMaxWidth}) {
             height: ${chatMode ? 'CALC(100% - 8rem)' : 'auto'};
@@ -229,7 +245,7 @@ class App extends Component {
           }
           onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
-        <div className={`${siteContent} ${chatMode && 'hidden'}`}>
+        <div id="App" className={`${siteContent} ${chatMode && 'hidden'}`}>
           <SearchBox
             className="mobile"
             style={{
@@ -254,9 +270,7 @@ class App extends Component {
             <Chat
               onUnmount={() =>
                 resetChat().then(() => {
-                  document.getElementById(
-                    'react-view'
-                  ).scrollTop = scrollPosition
+                  document.getElementById('App').scrollTop = scrollPosition
                   turnChatOff()
                 })
               }
@@ -277,19 +291,6 @@ class App extends Component {
     return (chatMode ? turnChatOff() : initChat()).then(() =>
       this.setState({ chatLoading: false })
     )
-  }
-
-  onScroll = event => {
-    const { chatMode, location } = this.props
-    if (!chatMode) {
-      this.setState(state => ({
-        scrollPosition: document.getElementById('react-view').scrollTop,
-        navScrollPositions: {
-          ...state.navScrollPositions,
-          [location.key]: document.getElementById('react-view').scrollTop
-        }
-      }))
-    }
   }
 }
 

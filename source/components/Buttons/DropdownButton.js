@@ -8,6 +8,8 @@ class DropdownButton extends Component {
   static propTypes = {
     icon: PropTypes.string,
     direction: PropTypes.string,
+    onButtonClick: PropTypes.func,
+    onOutsideClick: PropTypes.func,
     listStyle: PropTypes.object,
     menuProps: PropTypes.arrayOf(
       PropTypes.shape({
@@ -23,6 +25,11 @@ class DropdownButton extends Component {
   }
 
   handleClickOutside = event => {
+    const { onOutsideClick } = this.props
+    const { menuDisplayed } = this.state
+    if (menuDisplayed && typeof onOutsideClick === 'function') {
+      onOutsideClick()
+    }
     this.setState({ menuDisplayed: false })
   }
 
@@ -59,7 +66,7 @@ class DropdownButton extends Component {
             margin: noBorderRadius && 0,
             width: stretch && '100%'
           }}
-          onClick={() => this.setState({ menuDisplayed: !menuDisplayed })}
+          onClick={this.onClick}
         >
           <span className={`glyphicon glyphicon-${icon}`} />
           {text && <span>&nbsp;&nbsp;</span>}
@@ -78,6 +85,13 @@ class DropdownButton extends Component {
         )}
       </div>
     )
+  }
+
+  onClick = () => {
+    const { menuDisplayed } = this.state
+    const { onButtonClick } = this.props
+    if (typeof onButtonClick === 'function') onButtonClick(menuDisplayed)
+    this.setState({ menuDisplayed: !menuDisplayed })
   }
 
   renderMenu = () => {

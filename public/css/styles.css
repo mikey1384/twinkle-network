@@ -66,6 +66,9 @@ hr {
 
 #react-view {
   height: 100%;
+}
+
+#App {
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
@@ -136,4 +139,3 @@ hr {
     display: none !important;
   }
 }
-

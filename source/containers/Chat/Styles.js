@@ -21,6 +21,7 @@ export const channelContainer = css`
   width: 25%;
   position: relative;
   background: #fff;
+  -webkit-overflow-scrolling: touch;
 `
 
 export const chatContainer = css`
@@ -40,6 +41,7 @@ export const MsgContainerStyle = {
     width: 100%;
     height: CALC(100% - 5rem);
     position: relative;
+    -webkit-overflow-scrolling: touch;
   `,
   messagesWrapper: css`
     position: absolute;

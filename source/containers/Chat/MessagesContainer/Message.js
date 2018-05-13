@@ -23,7 +23,9 @@ class Message extends Component {
     onEditDone: PropTypes.func,
     saveMessage: PropTypes.func,
     showSubjectMsgsModal: PropTypes.func,
-    index: PropTypes.number
+    index: PropTypes.number,
+    isLastMsg: PropTypes.bool,
+    setScrollToBottom: PropTypes.func
   }
 
   state = {
@@ -56,11 +58,14 @@ class Message extends Component {
         numMsgs,
         uploaderAuthLevel
       },
+      isLastMsg,
       onDelete,
       style,
       showSubjectMsgsModal,
-      myId
+      myId,
+      setScrollToBottom
     } = this.props
+    const { editPadding } = this.state
     const userIsUploader = myId === userId
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploaderAuthLevel
@@ -69,7 +74,12 @@ class Message extends Component {
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
-        onClick: () => this.setState({ onEdit: true })
+        onClick: () =>
+          this.setState({ onEdit: true, editPadding: false }, () => {
+            if (isLastMsg) {
+              setTimeout(() => setScrollToBottom(), 0)
+            }
+          })
       })
     }
     if (userIsUploader || canDelete) {
@@ -106,7 +116,9 @@ class Message extends Component {
                   autoFocus
                   rows={2}
                   text={content}
-                  onCancel={() => this.setState({ onEdit: false })}
+                  onCancel={() =>
+                    this.setState({ onEdit: false, editPadding: false })
+                  }
                   onEditDone={this.onEditDone}
                 />
               ) : (
@@ -130,6 +142,19 @@ class Message extends Component {
                         direction="left"
                         icon="pencil"
                         opacity={0.8}
+                        onButtonClick={menuDisplayed => {
+                          this.setState(
+                            {
+                              editPadding: !menuDisplayed && isLastMsg
+                            },
+                            () => (isLastMsg ? setScrollToBottom() : null)
+                          )
+                        }}
+                        onOutsideClick={() => {
+                          this.setState({
+                            editPadding: false
+                          })
+                        }}
                         menuProps={editMenuItems}
                       />
                     )}
@@ -150,6 +175,7 @@ class Message extends Component {
                     )}
                 </div>
               )}
+              {editPadding && <div style={{ height: '10rem' }} />}
             </div>
           </div>
         </div>
@@ -160,7 +186,7 @@ class Message extends Component {
   onEditDone = editedMessage => {
     const { onEditDone, message } = this.props
     onEditDone({ editedMessage, messageId: message.id }).then(() =>
-      this.setState({ onEdit: false })
+      this.setState({ onEdit: false, editPadding: false })
     )
   }
 
