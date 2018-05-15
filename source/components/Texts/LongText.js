@@ -87,7 +87,7 @@ export default class LongText extends Component {
 
   truncateText = originalText => {
     const { maxLines = 10 } = this.props
-    const maxWidth = this.Text.getBoundingClientRect().width
+    const maxWidth = this.Text.clientWidth
     const canvas = document.createElement('canvas').getContext('2d')
     const computedStyle = window.getComputedStyle(this.Container)
     const font = `${computedStyle['font-weight']} ${
@@ -107,12 +107,17 @@ export default class LongText extends Component {
         trimmedText += line
         line = ''
       }
-      if (numLines === maxLines) {
-        const finalText = trimmedText
-          .split('\n')
-          .filter((line, index) => index < 10)
-          .join('\n')
-        return this.setState({ text: finalText, more: true })
+      if (numLines === maxLines && originalText.length - 1 > i) {
+        const remainingText = originalText.slice(i + 1)
+        let more = true
+        if (
+          remainingText[0] !== '\n' &&
+          canvas.measureText(remainingText).width < maxWidth
+        ) {
+          trimmedText += remainingText
+          more = false
+        }
+        return this.setState({ text: trimmedText, more })
       }
     }
     this.setState({ text: trimmedText + line || line })
