@@ -55,6 +55,7 @@ class PanelComment extends Component {
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
+    onRewardCommentEdit: PropTypes.func.isRequired,
     parent: PropTypes.object,
     type: PropTypes.string,
     userId: PropTypes.number
@@ -101,6 +102,7 @@ class PanelComment extends Component {
       onLikeClick,
       onDelete,
       onReplySubmit,
+      onRewardCommentEdit,
       onLoadMoreReplies
     } = this.props
     const userIsUploader = comment.userId === userId
@@ -190,7 +192,11 @@ class PanelComment extends Component {
                   <LongText className="comment__content">
                     {comment.content}
                   </LongText>
-                  <RewardStatus style={{ fontSize: '1.4rem' }} stars={stars} />
+                  <RewardStatus
+                    onCommentEdit={onRewardCommentEdit}
+                    style={{ fontSize: '1.4rem' }}
+                    stars={stars}
+                  />
                   <div className="comment__buttons">
                     <div className="buttons__left">
                       <div>
@@ -270,6 +276,7 @@ class PanelComment extends Component {
                 onLikeClick={onLikeClick}
                 onEditDone={onEditDone}
                 onReplySubmit={onReplySubmit}
+                onRewardCommentEdit={onRewardCommentEdit}
               />
             )}
             {replyInputShown && (

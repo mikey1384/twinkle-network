@@ -18,7 +18,7 @@ import {
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
 import RewardStatus from 'components/RewardStatus'
-import { attachStar } from 'redux/actions/VideoActions'
+import { attachStar, editRewardComment } from 'redux/actions/VideoActions'
 import XPRewardInterface from 'components/XPRewardInterface'
 import { connect } from 'react-redux'
 
@@ -33,6 +33,7 @@ class Reply extends Component {
     content: PropTypes.string.isRequired,
     deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool.isRequired,
+    editRewardComment: PropTypes.func.isRequired,
     forDiscussionPanel: PropTypes.bool,
     id: PropTypes.number.isRequired,
     index: PropTypes.number.isRequired,
@@ -86,6 +87,7 @@ class Reply extends Component {
       canDelete,
       canEdit,
       canStar,
+      editRewardComment,
       id,
       index,
       username,
@@ -210,7 +212,10 @@ class Reply extends Component {
                   >
                     {content}
                   </LongText>
-                  <RewardStatus stars={stars} />
+                  <RewardStatus
+                    onCommentEdit={editRewardComment}
+                    stars={stars}
+                  />
                   <div
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
@@ -372,5 +377,5 @@ export default connect(
     canEdit: state.UserReducer.canEdit,
     canStar: state.UserReducer.canStar
   }),
-  { attachStar }
+  { attachStar, editRewardComment }
 )(Reply)

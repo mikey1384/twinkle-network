@@ -81,6 +81,12 @@ export const editComment = params => async dispatch => {
   }
 }
 
+export const editRewardComment = ({ id, text }) => ({
+  type: LINK.EDIT_REWARD_COMMENT,
+  id,
+  text
+})
+
 export const editLinkPage = params => async dispatch => {
   try {
     await request.put(`${API_URL}/page`, params, auth())

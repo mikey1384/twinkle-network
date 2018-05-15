@@ -15,6 +15,7 @@ export default class PanelReplies extends Component {
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
+    onRewardCommentEdit: PropTypes.func.isRequired,
     parent: PropTypes.object.isRequired,
     replies: PropTypes.arrayOf(
       PropTypes.shape({
@@ -48,6 +49,7 @@ export default class PanelReplies extends Component {
       replies = [],
       userId,
       onEditDone,
+      onRewardCommentEdit,
       onLikeClick,
       onDelete,
       comment,
@@ -88,6 +90,7 @@ export default class PanelReplies extends Component {
               onLikeClick={onLikeClick}
               onEditDone={onEditDone}
               onReplySubmit={this.onReplyOfReplySubmit}
+              onRewardCommentEdit={onRewardCommentEdit}
               deleteCallback={this.deleteCallback}
               lastDeletedCommentIndex={lastDeletedCommentIndex}
               deleteListenerToggle={deleteListenerToggle}

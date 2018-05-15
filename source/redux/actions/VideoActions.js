@@ -111,6 +111,12 @@ export const editVideoComment = params => async dispatch => {
   }
 }
 
+export const editRewardComment = ({id, text}) => ({
+  type: VIDEO.EDIT_REWARD_COMMENT,
+  id,
+  text
+})
+
 export const editVideoDiscussion = (
   discussionId,
   editedTitle,

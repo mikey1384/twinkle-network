@@ -78,6 +78,33 @@ export default function linkReducer(state = defaultState, action) {
           }))
         }
       }
+    case LINK.EDIT_REWARD_COMMENT:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          comments: state.linkPage.comments.map(comment => ({
+            ...comment,
+            stars: comment.stars
+              ? comment.stars.map(star => ({
+                  ...star,
+                  rewardComment:
+                    star.id === action.id ? action.text : star.rewardComment
+                }))
+              : [],
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              stars: reply.stars
+                ? reply.stars.map(star => ({
+                    ...star,
+                    rewardComment:
+                      star.id === action.id ? action.text : star.rewardComment
+                  }))
+                : []
+            }))
+          }))
+        }
+      }
     case LINK.EDIT_TITLE:
       return {
         ...state,

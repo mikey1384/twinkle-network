@@ -8,12 +8,13 @@ import Comment from './Comment'
 class RewardStatus extends Component {
   static propTypes = {
     userId: PropTypes.number,
+    onCommentEdit: PropTypes.func,
     stars: PropTypes.array,
     style: PropTypes.object
   }
 
   render() {
-    const { stars, userId, style } = this.props
+    const { onCommentEdit, stars, userId, style } = this.props
     if (!stars || stars.length === 0) return null
     const totalStars = stars.reduce(
       (prev, star) => (prev += star.rewardAmount),
@@ -41,7 +42,14 @@ class RewardStatus extends Component {
             ? totalStars
             : 'a'} Star{totalStars > 1 ? 's' : ''} ({totalStars * 200}XP)
         </div>
-        {stars.map(star => <Comment key={star.id} star={star} myId={userId} />)}
+        {stars.map(star => (
+          <Comment
+            key={star.id}
+            star={star}
+            myId={userId}
+            onEditDone={onCommentEdit}
+          />
+        ))}
       </Fragment>
     )
   }

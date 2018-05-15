@@ -70,6 +70,7 @@ class Comment extends Component {
           deleteContent: this.onDeleteContent,
           editComment: this.onEditComment,
           editContent: this.onEditContent,
+          editRewardComment: this.onEditRewardComment,
           likeComment: this.onLikeComment,
           likeContent: this.onLikeContent,
           likeQuestion: this.onLikeQuestion,
@@ -90,9 +91,13 @@ class Comment extends Component {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        stars: state.contentObj.stars
-          ? state.contentObj.stars.concat(data)
-          : [data],
+        stars:
+          data.contentId === state.contentObj.contentId &&
+          data.contentType === state.contentObj.type
+            ? state.contentObj.stars
+              ? state.contentObj.stars.concat(data)
+              : [data]
+            : state.contentObj.stars || [],
         childComments: (state.contentObj.childComments || []).map(comment => {
           return {
             ...comment,
@@ -253,10 +258,13 @@ class Comment extends Component {
             ...state.contentObj,
             childComments: comments.map(comment => ({
               ...comment,
-              replies: comment.replies.map(reply => ({
-                ...reply,
-                content: reply.id === commentId ? editedComment : reply.content
-              }))
+              replies: comment.replies
+                ? comment.replies.map(reply => ({
+                    ...reply,
+                    content:
+                      reply.id === commentId ? editedComment : reply.content
+                  }))
+                : []
             }))
           }
         }
@@ -265,6 +273,40 @@ class Comment extends Component {
       console.error(error.response || error)
       handleError(error)
     }
+  }
+
+  onEditRewardComment = async({ id, text }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        stars: state.contentObj.stars
+          ? state.contentObj.stars.map(star => ({
+              ...star,
+              rewardComment: star.id === id ? text : star.rewardComment
+            }))
+          : [],
+        childComments: state.contentObj.childComments
+          ? state.contentObj.childComments.map(comment => ({
+              ...comment,
+              stars: comment.stars
+                ? comment.stars.map(star => ({
+                    ...star,
+                    rewardComment: star.id === id ? text : star.rewardComment
+                  }))
+                : [],
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                stars: reply.stars
+                  ? reply.stars.map(star => ({
+                      ...star,
+                      rewardComment: star.id === id ? text : star.rewardComment
+                    }))
+                  : []
+              }))
+            }))
+          : []
+      }
+    }))
   }
 
   onDeleteContent = async({ contentId, type }) => {

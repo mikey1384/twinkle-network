@@ -248,6 +248,42 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
+    case FEED.EDIT_REWARD_COMMENT:
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          return {
+            ...feed,
+            stars: feed.stars
+              ? feed.stars.map(star => ({
+                  ...star,
+                  rewardComment:
+                    star.id === action.id ? action.text : star.rewardComment
+                }))
+              : [],
+            childComments: feed.childComments.map(comment => ({
+              ...comment,
+              stars: comment.stars
+                ? comment.stars.map(star => ({
+                    ...star,
+                    rewardComment:
+                      star.id === action.id ? action.text : star.rewardComment
+                  }))
+                : [],
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                stars: reply.stars
+                  ? reply.stars.map(star => ({
+                      ...star,
+                      rewardComment:
+                        star.id === action.id ? action.text : star.rewardComment
+                    }))
+                  : []
+              }))
+            }))
+          }
+        })
+      }
     case FEED.EDIT_QUESTION:
       return {
         ...state,

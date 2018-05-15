@@ -163,6 +163,12 @@ export const feedContentEdit = params => async dispatch => {
   }
 }
 
+export const feedRewardCommentEdit = ({ id, text }) => ({
+  type: FEED.EDIT_REWARD_COMMENT,
+  id,
+  text
+})
+
 export const feedVideoStar = videoId => async dispatch => {
   try {
     const { data } = await request.put(`${URL}/video/star`, { videoId }, auth())

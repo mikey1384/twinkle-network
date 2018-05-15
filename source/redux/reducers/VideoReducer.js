@@ -149,6 +149,56 @@ export default function VideoReducer(state = defaultState, action) {
           }))
         }
       }
+    case VIDEO.EDIT_REWARD_COMMENT:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          discussions: state.videoPage.discussions.map(discussion => ({
+            ...discussion,
+            comments: discussion.comments.map(comment => ({
+              ...comment,
+              stars: comment.stars
+                ? comment.stars.map(star => ({
+                    ...star,
+                    rewardComment:
+                      star.id === action.id ? action.text : star.rewardComment
+                  }))
+                : [],
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                stars: reply.stars
+                  ? reply.stars.map(star => ({
+                      ...star,
+                      rewardComment:
+                        star.id === action.id ? action.text : star.rewardComment
+                    }))
+                  : []
+              }))
+            }))
+          })),
+          comments: state.videoPage.comments.map(comment => ({
+            ...comment,
+            stars: comment.stars
+              ? comment.stars.map(star => ({
+                  ...star,
+                  rewardComment:
+                    star.id === action.id ? action.text : star.rewardComment
+                }))
+              : [],
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              stars: reply.stars
+                ? reply.stars.map(star => ({
+                    ...star,
+                    rewardComment:
+                      star.id === action.id ? action.text : star.rewardComment
+                  }))
+                : []
+            }))
+          }))
+        }
+      }
     case VIDEO.EDIT_DISCUSSION:
       return {
         ...state,

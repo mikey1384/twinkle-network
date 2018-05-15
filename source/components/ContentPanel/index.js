@@ -42,7 +42,8 @@ export default class ContentPanel extends Component {
           onLikeClick: methodObj.likeComment,
           onEditDone: methodObj.editComment,
           onReplySubmit: methodObj.uploadReply,
-          onLoadMoreReplies: methodObj.loadMoreReplies
+          onLoadMoreReplies: methodObj.loadMoreReplies,
+          onRewardCommentEdit: methodObj.editRewardComment
         },
         attachStar: methodObj.attachStar,
         feedVideoStar: methodObj.starVideo,
@@ -50,6 +51,7 @@ export default class ContentPanel extends Component {
         onCommentSubmit: methodObj.uploadComment,
         onContentDelete: methodObj.deleteContent,
         onContentEdit: methodObj.editContent,
+        onRewardCommentEdit: methodObj.editRewardComment,
         onLikeCommentClick: methodObj.likeComment,
         onLikeQuestionClick: methodObj.likeQuestion,
         onLikeContentClick: methodObj.likeContent,

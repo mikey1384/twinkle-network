@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import Textarea from 'components/Texts/Textarea'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
-import { exceedsCharLimit, stringIsEmpty } from 'helpers/stringHelpers'
+import {
+  addEmoji,
+  exceedsCharLimit,
+  finalizeEmoji,
+  stringIsEmpty
+} from 'helpers/stringHelpers'
 import Button from 'components/Button'
 import request from 'axios'
 import { auth } from 'redux/constants'
@@ -85,7 +90,7 @@ class XPRewardInterface extends Component {
           minRows={3}
           value={rewardExplanation}
           onChange={event =>
-            this.setState({ rewardExplanation: event.target.value })
+            this.setState({ rewardExplanation: addEmoji(event.target.value) })
           }
           placeholder="Write a note explaining why you are rewarding XP for this comment (required)"
           style={exceedsCharLimit({
@@ -129,7 +134,7 @@ class XPRewardInterface extends Component {
       const { data } = await request.post(
         `${URL}/user/reward`,
         {
-          rewardExplanation,
+          rewardExplanation: finalizeEmoji(rewardExplanation),
           twoStarSelected,
           contentType,
           contentId,

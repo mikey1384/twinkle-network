@@ -19,6 +19,7 @@ import Input from 'components/Texts/Input'
 import {
   attachStar,
   deleteVideoComment,
+  editRewardComment,
   editVideoComment,
   loadVideoDiscussionComments,
   loadMoreDiscussionComments,
@@ -37,6 +38,7 @@ class DiscussionPanel extends Component {
     attachStar: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     description: PropTypes.string,
+    editRewardComment: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
     loadComments: PropTypes.func.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
@@ -78,6 +80,7 @@ class DiscussionPanel extends Component {
       id,
       title,
       description,
+      editRewardComment,
       username,
       userId,
       timeStamp,
@@ -235,7 +238,8 @@ class DiscussionPanel extends Component {
                     onLikeClick,
                     onEditDone,
                     onReplySubmit: this.onReplySubmit,
-                    onLoadMoreReplies
+                    onLoadMoreReplies,
+                    onRewardCommentEdit: editRewardComment
                   }}
                 />
               ) : (
@@ -352,6 +356,7 @@ export default connect(
   }),
   {
     attachStar,
+    editRewardComment,
     onDelete: deleteVideoComment,
     onEditDone: editVideoComment,
     loadComments: loadVideoDiscussionComments,

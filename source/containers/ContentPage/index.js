@@ -6,10 +6,10 @@ import Content from './Content'
 import { css } from 'emotion'
 import { mobileMaxWidth } from 'constants/css'
 
-CommentPage.propTypes = {
+ContentPage.propTypes = {
   match: PropTypes.object.isRequired
 }
-export default function CommentPage({ match }) {
+export default function ContentPage({ match }) {
   return (
     <div
       className={css`

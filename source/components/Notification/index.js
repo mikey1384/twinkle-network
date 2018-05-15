@@ -123,13 +123,16 @@ class Notification extends Component {
           {loaded && (
             <ChatFeeds
               content={content}
-              style={{ marginTop: children ? '1rem' : '0' }}
+              style={{
+                marginTop: children ? '1rem' : '0',
+                marginBottom: '1rem'
+              }}
               {...subject}
             />
           )}
           <div
             style={{
-              marginTop: '1rem',
+              marginBottom: '1rem',
               background: myId
                 ? rank > 0 && rank < 4 && Color.black(1 - (rank - 1) / 10)
                 : Color.logoBlue()

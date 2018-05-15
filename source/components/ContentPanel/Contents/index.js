@@ -177,7 +177,11 @@ class Contents extends Component {
           type={type}
         />
         {type === 'comment' && (
-          <RewardStatus style={{ marginTop: '1.5rem' }} stars={stars} />
+          <RewardStatus
+            onCommentEdit={methods.onRewardCommentEdit}
+            style={{ marginTop: '1.5rem' }}
+            stars={stars}
+          />
         )}
         {!isEditing && (
           <div className="bottom-interface">

@@ -37,6 +37,7 @@ class PanelReply extends Component {
     index: PropTypes.number,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
+    onRewardCommentEdit: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.object,
@@ -94,6 +95,7 @@ class PanelReply extends Component {
       canDelete,
       canEdit,
       canStar,
+      onRewardCommentEdit,
       reply,
       reply: { uploaderAuthLevel, stars = [] },
       userId,
@@ -203,7 +205,11 @@ class PanelReply extends Component {
                   <LongText className="comment__content">
                     {reply.content}
                   </LongText>
-                  <RewardStatus style={{ fontSize: '1.4rem' }} stars={stars} />
+                  <RewardStatus
+                    onCommentEdit={onRewardCommentEdit}
+                    style={{ fontSize: '1.4rem' }}
+                    stars={stars}
+                  />
                   <div className="comment__buttons">
                     <div className="buttons__left">
                       <div>

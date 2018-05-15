@@ -10,6 +10,7 @@ import {
   deleteLinkFromPage,
   editComment,
   editLinkPage,
+  editRewardComment,
   fetchComments,
   fetchMoreComments,
   fetchMoreReplies,
@@ -35,6 +36,7 @@ class LinkPage extends Component {
     deleteLinkFromPage: PropTypes.func.isRequired,
     editComment: PropTypes.func.isRequired,
     editLinkPage: PropTypes.func.isRequired,
+    editRewardComment: PropTypes.func.isRequired,
     fetchComments: PropTypes.func.isRequired,
     fetchMoreComments: PropTypes.func.isRequired,
     fetchMoreReplies: PropTypes.func.isRequired,
@@ -106,6 +108,7 @@ class LinkPage extends Component {
       deleteComment,
       editComment,
       editLinkPage,
+      editRewardComment,
       fetchMoreReplies,
       likeComment,
       likeLink,
@@ -187,7 +190,8 @@ class LinkPage extends Component {
               onLikeClick: likeComment,
               onEditDone: editComment,
               onReplySubmit: this.onReplySubmit,
-              onLoadMoreReplies: fetchMoreReplies
+              onLoadMoreReplies: fetchMoreReplies,
+              onRewardCommentEdit: editRewardComment
             }}
             loadMoreComments={this.loadMoreComments}
           />
@@ -254,6 +258,7 @@ export default connect(
     deleteLinkFromPage,
     editComment,
     editLinkPage,
+    editRewardComment,
     fetchComments,
     fetchMoreComments,
     fetchMoreReplies,

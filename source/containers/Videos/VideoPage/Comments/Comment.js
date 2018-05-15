@@ -21,7 +21,7 @@ import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
 import { connect } from 'react-redux'
 import RewardStatus from 'components/RewardStatus'
-import { attachStar } from 'redux/actions/VideoActions'
+import { attachStar, editRewardComment } from 'redux/actions/VideoActions'
 import XPRewardInterface from 'components/XPRewardInterface'
 
 class Comment extends Component {
@@ -47,6 +47,7 @@ class Comment extends Component {
     commentId: PropTypes.number.isRequired,
     deleteCallback: PropTypes.func.isRequired,
     deleteListenerToggle: PropTypes.bool,
+    editRewardComment: PropTypes.func.isRequired,
     index: PropTypes.number.isRequired,
     lastDeletedCommentIndex: PropTypes.number,
     marginTop: PropTypes.bool,
@@ -93,6 +94,7 @@ class Comment extends Component {
       canStar,
       comment,
       comment: { stars = [], uploaderAuthLevel },
+      editRewardComment,
       userId,
       commentId,
       videoId,
@@ -193,7 +195,7 @@ class Comment extends Component {
               >
                 {comment.content}
               </LongText>
-              <RewardStatus stars={stars} />
+              <RewardStatus onCommentEdit={editRewardComment} stars={stars} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div
                   style={{
@@ -362,6 +364,7 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   {
-    attachStar
+    attachStar,
+    editRewardComment
   }
 )(Comment)
