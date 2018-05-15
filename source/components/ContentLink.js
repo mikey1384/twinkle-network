@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Color } from 'constants/css'
+import { removeLineBreaks } from 'helpers/stringHelpers'
 
 ContentLink.propTypes = {
   content: PropTypes.shape({
@@ -11,7 +12,12 @@ ContentLink.propTypes = {
   style: PropTypes.object,
   type: PropTypes.string
 }
-export default function ContentLink({ style, content: { id, title }, type, ...actions }) {
+export default function ContentLink({
+  style,
+  content: { id, title },
+  type,
+  ...actions
+}) {
   let destination = ''
   switch (type) {
     case 'url':
@@ -42,7 +48,7 @@ export default function ContentLink({ style, content: { id, title }, type, ...ac
       }}
       to={`/${destination}/${id}`}
     >
-      {title}
+      {removeLineBreaks(title)}
     </Link>
   ) : (
     <span style={{ fontWeight: 'bold', color: Color.darkGray() }}>
