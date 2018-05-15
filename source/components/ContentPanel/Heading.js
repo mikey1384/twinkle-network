@@ -119,7 +119,12 @@ export default class Heading extends Component {
       rootContent,
       uploader
     } = this.props
-    const contentLabel = rootType === 'url' ? 'link' : rootType
+    const contentLabel =
+      rootType === 'url'
+        ? 'link'
+        : rootType === 'question'
+          ? 'a question'
+          : rootType
     switch (type) {
       case 'video':
         return (

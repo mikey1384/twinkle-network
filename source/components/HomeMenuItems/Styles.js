@@ -11,7 +11,6 @@ export const container = css`
     padding: 1.5rem;
     cursor: pointer;
     display: flex;
-    padding-left: 2rem;
     align-items: center;
     color: #7c7c7c;
     .icon {
@@ -19,10 +18,18 @@ export const container = css`
       margin-right: 1rem;
       width: 3rem;
     }
-    a {
-      margin-left: 1rem;
+    justify-content: center;
+    > a {
+      padding-left: 1rem;
+      text-align: center;
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
       color: #7c7c7c;
       text-decoration: none;
+    }
+    .homemenu__label {
+      margin-left: 2rem;
     }
   }
   > nav:hover {
@@ -44,12 +51,12 @@ export const container = css`
     padding: 1rem 0;
     background: #fff;
     > nav {
-      padding: 1rem 0;
-      justify-content: center;
-      .icon {
-        width: 10rem;
-        text-align: center;
-        margin-left: -3rem;
+      a {
+        justify-content: center;
+        padding: 0;
+      }
+      .homemenu__label {
+        margin-left: 10%;
       }
     }
   }

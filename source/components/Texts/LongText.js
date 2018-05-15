@@ -107,7 +107,7 @@ export default class LongText extends Component {
         trimmedText += line
         line = ''
       }
-      if (numLines === maxLines && originalText.length - 1 > i) {
+      if (numLines === maxLines && i < originalText.length - 1) {
         const remainingText = originalText.slice(i + 1)
         let more = true
         if (
