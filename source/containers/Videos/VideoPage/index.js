@@ -149,7 +149,6 @@ class VideoPage extends Component {
       onEdit,
       videoId
     } = this.state
-
     const { playlist: playlistId } = queryString.parse(search)
 
     return (

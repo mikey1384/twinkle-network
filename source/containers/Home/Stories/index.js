@@ -277,37 +277,37 @@ class Stories extends Component {
           className={selectedFilter === 'all' ? 'active' : ''}
           onClick={() => this.applyFilter('all')}
         >
-          <a>All</a>
+          All
         </nav>
         <nav
           className={selectedFilter === 'question' ? 'active' : ''}
           onClick={() => this.applyFilter('question')}
         >
-          <a>Questions</a>
+          Questions
         </nav>
         <nav
           className={selectedFilter === 'discussion' ? 'active' : ''}
           onClick={() => this.applyFilter('discussion')}
         >
-          <a>Discussions</a>
+          Discussions
         </nav>
         <nav
           className={selectedFilter === 'video' ? 'active' : ''}
           onClick={() => this.applyFilter('video')}
         >
-          <a>Videos</a>
+          Videos
         </nav>
         <nav
           className={selectedFilter === 'url' ? 'active' : ''}
           onClick={() => this.applyFilter('url')}
         >
-          <a>Links</a>
+          Links
         </nav>
         <nav
           className={selectedFilter === 'comment' ? 'active' : ''}
           onClick={() => this.applyFilter('comment')}
         >
-          <a>Comments</a>
+          Comments
         </nav>
       </FilterBar>
     )

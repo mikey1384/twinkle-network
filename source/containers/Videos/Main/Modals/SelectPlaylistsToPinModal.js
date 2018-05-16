@@ -87,14 +87,14 @@ class SelectPlaylistsToPinModal extends Component {
               onClick={() => this.setState({ selectTabActive: true })}
               style={{ cursor: 'pointer' }}
             >
-              <a>Select</a>
+              Select
             </nav>
             <nav
               className={selectTabActive ? '' : 'active'}
               onClick={() => this.setState({ selectTabActive: false })}
               style={{ cursor: 'pointer' }}
             >
-              <a>Selected</a>
+              Selected
             </nav>
           </FilterBar>
           <div style={{ marginTop: '1rem', width: '100%' }}>

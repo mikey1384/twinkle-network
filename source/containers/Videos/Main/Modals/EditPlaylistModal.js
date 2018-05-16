@@ -79,22 +79,20 @@ class EditPlaylistModal extends Component {
           {modalType === 'change' ? 'Change Playlist Videos' : 'Reorder Videos'}
         </header>
         <main>
-          <FilterBar style={{ marginBottom: '2rem' }}>
+          <FilterBar style={{ marginBottom: '2rem', fontWeight: 'bold' }}>
             <nav
               className={mainTabActive ? 'active' : ''}
               onClick={() => this.setState({ mainTabActive: true })}
               style={{ cursor: 'pointer' }}
             >
-              <a style={{ fontWeight: 'bold' }}>
-                {modalType === 'change' ? 'Add Videos' : 'Reorder Videos'}
-              </a>
+              {modalType === 'change' ? 'Add Videos' : 'Reorder Videos'}
             </nav>
             <nav
               className={mainTabActive ? '' : 'active'}
               onClick={() => this.setState({ mainTabActive: false })}
               style={{ cursor: 'pointer' }}
             >
-              <a style={{ fontWeight: 'bold' }}>Remove Videos</a>
+              Remove Videos
             </nav>
           </FilterBar>
           {mainTabActive &&

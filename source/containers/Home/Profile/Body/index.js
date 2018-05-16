@@ -252,7 +252,7 @@ class Body extends Component {
                   history.push(`${route.url}/discussions`)
                 }}
               >
-                <a>Discussions</a>
+                Discussions
               </nav>
             )}
           />

@@ -17,13 +17,13 @@ export default function PageTab({
   return (
     <FilterBar>
       <nav className={watchTabActive ? 'active' : ''} onClick={onWatchTabClick}>
-        <a>Video</a>
+        Video
       </nav>
       <nav
         className={watchTabActive ? '' : 'active'}
         onClick={onQuestionTabClick}
       >
-        <a>Questions {questions.length > 0 && `(${questions.length})`}</a>
+        Questions {questions.length > 0 && `(${questions.length})`}
       </nav>
     </FilterBar>
   )

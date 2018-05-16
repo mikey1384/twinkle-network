@@ -53,7 +53,7 @@ class CommentInputArea extends Component {
             style={{ cursor: 'pointer' }}
             onClick={() => onDiscussionTabClick(true)}
           >
-            <a>Discuss</a>
+            Discuss
           </nav>
           <nav
             className={!discussionTabActive ? 'active' : ''}
@@ -65,7 +65,7 @@ class CommentInputArea extends Component {
               })
             }}
           >
-            <a>Comment on this video</a>
+            Comment on this video
           </nav>
         </FilterBar>
         <div style={{ marginTop: '2rem' }}>

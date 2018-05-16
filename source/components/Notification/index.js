@@ -97,6 +97,7 @@ class Notification extends Component {
       loadMore,
       rank,
       rewards,
+      style,
       twinkleXP
     } = this.props
     const rankedColor =
@@ -109,7 +110,11 @@ class Notification extends Component {
             : undefined
     const { activeTab, rewardTabShown } = this.state
     return (
-      <div className={`${container} ${className}`} onScroll={this.handleScroll}>
+      <div
+        style={style}
+        className={`${container} ${className}`}
+        onScroll={this.handleScroll}
+      >
         <section>
           <div
             className={css`
@@ -159,10 +164,7 @@ class Notification extends Component {
               <p>
                 <span
                   style={{
-                    color:
-                      rank === 1
-                        ? Color.gold()
-                        : rankedColor || Color.logoGreen(),
+                    color: rankedColor || Color.logoGreen(),
                     fontSize: '3rem'
                   }}
                 >
@@ -205,20 +207,20 @@ class Notification extends Component {
                 className={activeTab === 'notification' ? 'active' : undefined}
                 onClick={() => this.setState({ activeTab: 'notification' })}
               >
-                <a>Notifications</a>
+                Notifications
               </nav>
               <nav
                 className={activeTab === 'leaderboard' ? 'active' : undefined}
                 onClick={() => this.setState({ activeTab: 'leaderboard' })}
               >
-                <a>Leaderboard</a>
+                Leaderboard
               </nav>
               {rewardTabShown && (
                 <nav
                   className={activeTab === 'reward' ? 'active' : undefined}
                   onClick={() => this.setState({ activeTab: 'reward' })}
                 >
-                  <a>Rewards</a>
+                  Rewards
                 </nav>
               )}
             </FilterBar>
