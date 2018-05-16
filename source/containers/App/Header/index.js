@@ -154,10 +154,10 @@ class Header extends Component {
     const { logoHovered } = this.state
     return (
       <nav
-        className={`unselectable ${container} ${chatMode && 'header chat'}`}
+        className={`unselectable ${container} ${chatMode &&
+          'header chat'} ${!mobileNavbarShown && 'desktop'}`}
         style={{
           position: chatMode ? 'relative' : 'fixed',
-          display: !mobileNavbarShown && 'none',
           ...style
         }}
       >
