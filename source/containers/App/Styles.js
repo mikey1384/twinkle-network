@@ -8,6 +8,6 @@ export const siteContent = css`
   @media (max-width: ${mobileMaxWidth}) {
     margin-top: 0;
     padding-top: 0;
-    padding-bottom: 8rem;
+    padding-bottom: 9rem;
   }
 `
