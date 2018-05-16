@@ -1,7 +1,8 @@
 import VIEW from '../constants/View'
 
 const defaultState = {
-  pageVisible: true
+  pageVisible: true,
+  mobileNavbarShown: true
 }
 
 export default function ViewReducer(state = defaultState, action) {
@@ -10,6 +11,16 @@ export default function ViewReducer(state = defaultState, action) {
       return {
         ...state,
         pageVisible: action.visible
+      }
+    case VIEW.HIDE_MOBILE_NAVBAR:
+      return {
+        ...state,
+        mobileNavbarShown: false
+      }
+    case VIEW.SHOW_MOBILE_NAVBAR:
+      return {
+        ...state,
+        mobileNavbarShown: true
       }
     default:
       return state

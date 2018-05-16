@@ -39,6 +39,7 @@ class Header extends Component {
     location: PropTypes.object,
     loggedIn: PropTypes.bool,
     logout: PropTypes.func,
+    mobileNavbarShown: PropTypes.bool,
     notifyChatSubjectChange: PropTypes.func,
     numChatUnreads: PropTypes.number,
     numNewNotis: PropTypes.number,
@@ -142,6 +143,7 @@ class Header extends Component {
       chatMode,
       onChatButtonClick,
       onMobileMenuOpen,
+      mobileNavbarShown,
       numChatUnreads,
       numNewNotis,
       numNewPosts,
@@ -155,6 +157,7 @@ class Header extends Component {
         className={`unselectable ${container} ${chatMode && 'header chat'}`}
         style={{
           position: chatMode ? 'relative' : 'fixed',
+          display: !mobileNavbarShown && 'none',
           ...style
         }}
       >
@@ -284,6 +287,7 @@ class Header extends Component {
                 </HeaderNav>
                 <HeaderNav
                   to="/"
+                  onClick={() => window.scrollTo(0, 0)}
                   isHome
                   className={chatLoading ? 'desktop' : ''}
                   imgLabel="home"
@@ -407,6 +411,7 @@ export default connect(
     username: state.UserReducer.username,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId,
+    mobileNavbarShown: state.ViewReducer.mobileNavbarShown,
     numNewNotis: state.NotiReducer.numNewNotis,
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,

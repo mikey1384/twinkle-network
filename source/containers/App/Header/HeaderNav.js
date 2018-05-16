@@ -29,7 +29,7 @@ export default class HeaderNav extends Component {
       imgLabel,
       isHome,
       isUsername,
-      onClick
+      onClick = () => {}
     } = this.props
     return (
       <Route
@@ -44,6 +44,7 @@ export default class HeaderNav extends Component {
                 }`}
                 style={{ display: 'flex' }}
                 to={to}
+                onClick={onClick}
               >
                 <span className="icon">
                   <Icon icon={isHome ? 'home' : imgLabel} />

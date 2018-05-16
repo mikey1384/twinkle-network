@@ -8,3 +8,11 @@ export const changePageVisibility = visible => dispatch => {
     visible
   })
 }
+
+export const hideMobileNavbar = () => ({
+  type: VIEW.HIDE_MOBILE_NAVBAR
+})
+
+export const showMobileNavbar = () => ({
+  type: VIEW.SHOW_MOBILE_NAVBAR
+})

@@ -2,17 +2,32 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { css } from 'emotion'
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
+import { hideMobileNavbar, showMobileNavbar } from 'redux/actions/ViewActions'
 import Content from './Content'
+import { connect } from 'react-redux'
 
-export default class Modal extends Component {
+class Modal extends Component {
   static propTypes = {
     className: PropTypes.string,
     children: PropTypes.node,
+    hideMobileNavbar: PropTypes.func.isRequired,
+    showMobileNavbar: PropTypes.func.isRequired,
     onHide: PropTypes.func,
     small: PropTypes.bool,
     large: PropTypes.bool,
     style: PropTypes.object
   }
+
+  componentDidMount() {
+    const { hideMobileNavbar } = this.props
+    hideMobileNavbar()
+  }
+
+  componentWillUnmount() {
+    const { showMobileNavbar } = this.props
+    showMobileNavbar()
+  }
+
   render() {
     const { className, children, onHide, small, large, style } = this.props
     const modalWidth = {
@@ -45,6 +60,7 @@ export default class Modal extends Component {
             right: 0;
             left: 0;
             bottom: 0;
+            padding-bottom: 7rem;
             background: ${Color.black(0.5)};
             overflow-y: scroll;
           `}
@@ -58,8 +74,7 @@ export default class Modal extends Component {
               background: #fff;
               width: ${modalWidth[widthKey]};
               min-height: 30vh;
-              margin-top: 7rem;
-              margin-bottom: 7rem;
+              top: 3rem;
               margin-left: ${marginLeft[widthKey]};
               box-shadow: 3px 4px 5px ${Color.black()};
               display: flex;
@@ -125,3 +140,5 @@ export default class Modal extends Component {
     )
   }
 }
+
+export default connect(null, { hideMobileNavbar, showMobileNavbar })(Modal)
