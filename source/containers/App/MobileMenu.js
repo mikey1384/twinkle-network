@@ -5,7 +5,9 @@ import ProfileWidget from 'components/ProfileWidget'
 import { Color } from 'constants/css'
 import Notification from 'components/Notification'
 import { connect } from 'react-redux'
-import { logout } from 'redux/actions/UserActions'
+import { logout, uploadProfilePic } from 'redux/actions/UserActions'
+import AlertModal from 'components/Modals/AlertModal'
+import ImageEditModal from 'components/Modals/ImageEditModal'
 
 class MobileMenu extends Component {
   static propTypes = {
@@ -13,12 +15,17 @@ class MobileMenu extends Component {
     location: PropTypes.object,
     logout: PropTypes.func.isRequired,
     history: PropTypes.object,
+    uploadProfilePic: PropTypes.func,
     username: PropTypes.string,
     onClose: PropTypes.func.isRequired
   }
 
   state = {
-    marginLeft: '-100%'
+    alertModalShown: false,
+    imageEditModalShown: false,
+    imageUri: null,
+    marginLeft: '-100%',
+    processing: false
   }
   componentDidMount() {
     this.setState({ marginLeft: 0 })
@@ -36,7 +43,13 @@ class MobileMenu extends Component {
 
   render() {
     const { location, history, logout, username, onClose } = this.props
-    const { marginLeft } = this.state
+    const {
+      alertModalShown,
+      imageEditModalShown,
+      imageUri,
+      marginLeft,
+      processing
+    } = this.state
     return (
       <div
         className="mobile"
@@ -63,7 +76,16 @@ class MobileMenu extends Component {
             overflow-y: scroll;
           `}
         >
-          <ProfileWidget history={history} />
+          <ProfileWidget
+            history={history}
+            showAlert={() => this.setState({ alertModalShown: true })}
+            loadImage={upload =>
+              this.setState({
+                imageEditModalShown: true,
+                imageUri: upload.target.result
+              })
+            }
+          />
           <HomeMenuItems
             history={history}
             location={location}
@@ -99,9 +121,43 @@ class MobileMenu extends Component {
             }}
           />
         </div>
+        {imageEditModalShown && (
+          <ImageEditModal
+            imageUri={imageUri}
+            onHide={() =>
+              this.setState({
+                imageUri: null,
+                imageEditModalShown: false,
+                processing: false
+              })
+            }
+            processing={processing}
+            onConfirm={this.uploadImage}
+          />
+        )}
+        {alertModalShown && (
+          <AlertModal
+            title="Image is too large (limit: 5mb)"
+            content="Please select a smaller image"
+            onHide={() => this.setState({ alertModalShown: false })}
+          />
+        )}
       </div>
     )
   }
+
+  uploadImage = async image => {
+    const { uploadProfilePic } = this.props
+    this.setState({
+      processing: true
+    })
+    await uploadProfilePic(image)
+    this.setState({
+      imageUri: null,
+      processing: false,
+      imageEditModalShown: false
+    })
+  }
 }
 
-export default connect(null, { logout })(MobileMenu)
+export default connect(null, { logout, uploadProfilePic })(MobileMenu)
