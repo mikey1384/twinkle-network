@@ -95,8 +95,10 @@ export default function FilterBar({
         }
         > nav:hover {
           transition: border-bottom 0.5s;
+          color: ${color[colorKey]};
           border-bottom: 3px solid ${color[colorKey]};
           &.alert {
+            color: ${Color.pink()}!important;
             border-bottom: 3px solid ${Color.pink()}!important;
           }
           > a {
