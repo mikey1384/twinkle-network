@@ -9,6 +9,7 @@ import EditTextArea from 'components/Texts/EditTextArea'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import request from 'axios'
+import { timeSince } from 'helpers/timeStampHelpers'
 import { auth } from 'redux/constants'
 import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
@@ -95,6 +96,9 @@ class Comment extends Component {
                 >
                   rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}
                   Star{star.rewardAmount > 1 ? 's' : ''}
+                </span>{' '}
+                <span style={{ fontSize: '1rem', color: Color.gray() }}>
+                  ({timeSince(star.timeStamp)})
                 </span>
               </div>
               <div style={{ width: '100%' }}>

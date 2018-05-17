@@ -304,6 +304,12 @@ class Comment extends Component {
                   : []
               }))
             }))
+          : [],
+        targetCommentStars: state.contentObj.targetCommentStars
+          ? state.contentObj.targetCommentStars.map(star => ({
+              ...star,
+              rewardComment: star.id === id ? text : star.rewardComment
+            }))
           : []
       }
     }))

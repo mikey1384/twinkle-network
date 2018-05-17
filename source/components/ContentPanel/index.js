@@ -60,6 +60,7 @@ export default class ContentPanel extends Component {
           onDeleteComment: methodObj.deleteComment,
           onEditComment: methodObj.editComment,
           onLikeClick: methodObj.likeTargetComment,
+          onRewardCommentEdit: methodObj.editRewardComment,
           uploadComment: methodObj.uploadTargetComment
         }
       }

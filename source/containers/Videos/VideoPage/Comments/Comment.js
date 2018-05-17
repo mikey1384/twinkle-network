@@ -195,7 +195,6 @@ class Comment extends Component {
               >
                 {comment.content}
               </LongText>
-              <RewardStatus onCommentEdit={editRewardComment} stars={stars} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div
                   style={{
@@ -271,6 +270,11 @@ class Comment extends Component {
               }}
             />
           )}
+          <RewardStatus
+            onCommentEdit={editRewardComment}
+            stars={stars}
+            style={{ marginTop: '0.5rem' }}
+          />
           <Replies
             onLoadMoreReplies={onLoadMoreReplies}
             userId={userId}

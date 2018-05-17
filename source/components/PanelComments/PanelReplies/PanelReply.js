@@ -205,11 +205,6 @@ class PanelReply extends Component {
                   <LongText className="comment__content">
                     {reply.content}
                   </LongText>
-                  <RewardStatus
-                    onCommentEdit={onRewardCommentEdit}
-                    style={{ fontSize: '1.4rem' }}
-                    stars={stars}
-                  />
                   <div className="comment__buttons">
                     <div className="buttons__left">
                       <div>
@@ -280,6 +275,11 @@ class PanelReply extends Component {
                 }}
               />
             )}
+            <RewardStatus
+              onCommentEdit={onRewardCommentEdit}
+              style={{ fontSize: '1.4rem', marginTop: '0.5rem' }}
+              stars={stars}
+            />
             {replyInputShown && (
               <ReplyInputArea
                 onSubmit={this.onReplySubmit}

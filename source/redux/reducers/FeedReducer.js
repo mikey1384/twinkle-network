@@ -20,6 +20,10 @@ export default function FeedReducer(state = defaultState, action) {
           const contentMatches =
             action.data.contentType === feed.type &&
             action.data.contentId === feed.contentId
+          const targetCommentMatches =
+            (feed.type === 'comment' &&
+              action.data.contentId === feed.replyId) ||
+            action.data.contentId === feed.commentId
           return {
             ...feed,
             stars: contentMatches
@@ -40,7 +44,10 @@ export default function FeedReducer(state = defaultState, action) {
                       : reply.stars || []
                 }))
               }
-            })
+            }),
+            targetCommentStars: targetCommentMatches
+              ? (feed.targetCommentStars || []).concat(action.data)
+              : feed.targetCommentStars
           }
         })
       }
@@ -280,7 +287,14 @@ export default function FeedReducer(state = defaultState, action) {
                     }))
                   : []
               }))
-            }))
+            })),
+            targetCommentStars: feed.targetCommentStars
+              ? feed.targetCommentStars.map(star => ({
+                  ...star,
+                  rewardComment:
+                    star.id === action.id ? action.text : star.rewardComment
+                }))
+              : []
           }
         })
       }

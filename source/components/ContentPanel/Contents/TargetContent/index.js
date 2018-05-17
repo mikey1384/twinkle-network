@@ -25,6 +25,7 @@ export default function TargetContent({
     rootId,
     rootType,
     targetComment,
+    targetCommentStars,
     targetCommentTimeStamp,
     targetCommentUploaderId,
     targetCommentUploaderName,
@@ -37,77 +38,59 @@ export default function TargetContent({
     timeStamp
   }
 }) {
+  const replyToReply = {
+    replyId,
+    content: targetReply,
+    contentAvailable: !!targetReply,
+    timeStamp: targetReplyTimeStamp,
+    uploader: {
+      name: targetReplyUploaderName,
+      id: targetReplyUploaderId
+    }
+  }
+  const replyToComment = {
+    content: targetComment,
+    contentAvailable: !!targetComment,
+    timeStamp: targetCommentTimeStamp,
+    uploader: {
+      name: targetCommentUploaderName,
+      id: targetCommentUploaderId
+    }
+  }
+  const discussion = {
+    content: discussionDescription,
+    contentAvailable: !!discussionTitle,
+    isDiscussion: true,
+    timeStamp: discussionTimeStamp,
+    title: cleanString(discussionTitle),
+    uploader: {
+      name: discussionUploaderName,
+      id: discussionUploaderId
+    }
+  }
+  const content = {
+    commentId,
+    comments: targetContentComments,
+    discussionId,
+    likes: targetContentLikers,
+    methods,
+    myId,
+    rootContent,
+    rootId,
+    rootType,
+    stars: targetCommentStars,
+    panelId: id,
+    ...(replyId
+      ? replyToReply
+      : commentId
+        ? replyToComment
+        : discussionId
+          ? discussion
+          : {})
+  }
   return (
-    <div
-      css={`
-        font-size: 1.5rem;
-      `}
-    >
-      {replyId && (
-        <Content
-          commentId={commentId}
-          comments={targetContentComments}
-          content={targetReply}
-          contentAvailable={!!targetReply}
-          discussionId={discussionId}
-          likes={targetContentLikers}
-          methods={methods}
-          myId={myId}
-          panelId={id}
-          replyId={replyId}
-          rootId={rootId}
-          rootContent={rootContent}
-          rootType={rootType}
-          timeStamp={targetReplyTimeStamp}
-          uploader={{
-            name: targetReplyUploaderName,
-            id: targetReplyUploaderId
-          }}
-        />
-      )}
-      {commentId &&
-        !replyId && (
-          <Content
-            commentId={commentId}
-            comments={targetContentComments}
-            content={targetComment}
-            contentAvailable={!!targetComment}
-            discussionId={discussionId}
-            likes={targetContentLikers}
-            myId={myId}
-            methods={methods}
-            panelId={id}
-            rootId={rootId}
-            rootContent={rootContent}
-            rootType={rootType}
-            timeStamp={targetCommentTimeStamp}
-            uploader={{
-              name: targetCommentUploaderName,
-              id: targetCommentUploaderId
-            }}
-          />
-        )}
-      {!replyId &&
-        !commentId &&
-        discussionId && (
-          <Content
-            comments={targetContentComments}
-            content={discussionDescription}
-            contentAvailable={!!discussionTitle}
-            discussionId={discussionId}
-            methods={methods}
-            isDiscussion
-            panelId={id}
-            rootId={rootId}
-            rootType={rootType}
-            timeStamp={discussionTimeStamp}
-            title={cleanString(discussionTitle)}
-            uploader={{
-              name: discussionUploaderName,
-              id: discussionUploaderId
-            }}
-          />
-        )}
+    <div style={{ fontSize: '1.5rem' }}>
+      <Content {...content} />
     </div>
   )
 }

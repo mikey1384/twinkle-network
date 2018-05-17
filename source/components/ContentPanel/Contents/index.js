@@ -176,13 +176,6 @@ class Contents extends Component {
           }
           type={type}
         />
-        {type === 'comment' && (
-          <RewardStatus
-            onCommentEdit={methods.onRewardCommentEdit}
-            style={{ marginTop: '1.5rem' }}
-            stars={stars}
-          />
-        )}
         {!isEditing && (
           <div className="bottom-interface">
             <div className="buttons-bar">
@@ -292,6 +285,12 @@ class Contents extends Component {
               this.setState({ xpRewardInterfaceShown: false })
               methods.attachStar(data)
             }}
+          />
+        )}
+        {type === 'comment' && (
+          <RewardStatus
+            onCommentEdit={methods.onRewardCommentEdit}
+            stars={stars}
           />
         )}
         {commentsShown && (

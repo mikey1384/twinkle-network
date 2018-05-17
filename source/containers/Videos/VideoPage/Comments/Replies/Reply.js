@@ -212,10 +212,6 @@ class Reply extends Component {
                   >
                     {content}
                   </LongText>
-                  <RewardStatus
-                    onCommentEdit={editRewardComment}
-                    stars={stars}
-                  />
                   <div
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
@@ -297,6 +293,11 @@ class Reply extends Component {
               }}
             />
           )}
+          <RewardStatus
+            style={{ marginTop: '0.5rem' }}
+            onCommentEdit={editRewardComment}
+            stars={stars}
+          />
           {replyInputShown && (
             <ReplyInputArea
               style={{ marginTop: '1rem' }}
