@@ -46,7 +46,10 @@ class Profile extends Component {
   }
 
   render() {
-    const { profile: { unavailable, id }, userId } = this.props
+    const {
+      profile: { unavailable, id },
+      userId
+    } = this.props
     return !unavailable ? (
       <div>
         {!id && <Loading text="Loading Profile..." />}
@@ -70,7 +73,6 @@ export default connect(
   state => ({
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
     profile: state.UserReducer.profile
   }),
   { checkValidUsername }

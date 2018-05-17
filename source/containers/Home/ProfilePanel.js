@@ -285,8 +285,14 @@ class ProfilePanel extends Component {
   }
 }
 
-export default connect(state => ({ isCreator: state.UserReducer.isCreator }), {
-  uploadProfilePic,
-  uploadBio,
-  openDirectMessageChannel
-})(withRouter(ProfilePanel))
+export default connect(
+  state => ({
+    isCreator: state.UserReducer.isCreator,
+    userId: state.UserReducer.userId
+  }),
+  {
+    uploadProfilePic,
+    uploadBio,
+    openDirectMessageChannel
+  }
+)(withRouter(ProfilePanel))

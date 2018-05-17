@@ -125,7 +125,10 @@ export default function UserReducer(state = defaultState, action) {
         profilePicId: action.data.imageId,
         profile: {
           ...state.profile,
-          profilePicId: action.data.imageId
+          profilePicId:
+            state.profile.id === action.data.userId
+              ? action.data.imageId
+              : state.profile.profilePicId
         },
         profiles: state.profiles.map(profile => ({
           ...profile,

@@ -111,7 +111,6 @@ export default connect(
   state => ({
     realName: state.UserReducer.realName,
     username: state.UserReducer.username,
-    userId: state.UserReducer.userId,
     profilePicId: state.UserReducer.profilePicId
   }),
   { uploadProfilePic }

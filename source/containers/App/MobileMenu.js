@@ -160,4 +160,9 @@ class MobileMenu extends Component {
   }
 }
 
-export default connect(null, { logout, uploadProfilePic })(MobileMenu)
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId
+  }),
+  { logout, uploadProfilePic }
+)(MobileMenu)

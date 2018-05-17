@@ -165,7 +165,7 @@ export const uploadBio = (params, callback) => async dispatch => {
   }
 }
 
-export const uploadProfilePic = (image, callback) => async dispatch => {
+export const uploadProfilePic = image => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/picture`, { image }, auth())
     dispatch({
