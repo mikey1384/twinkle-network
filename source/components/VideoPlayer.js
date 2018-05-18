@@ -171,7 +171,11 @@ class VideoPlayer extends Component {
 
     if (started && userWatchingMultipleVideo) {
       this.onVideoStop()
-      if (this.Player) this.Player.getInternalPlayer().pauseVideo()
+      if (this.Player) {
+        if (this.Player.getInternalPlayer()) {
+          this.Player.getInternalPlayer().pauseVideo()
+        }
+      }
     }
 
     if (
@@ -181,7 +185,11 @@ class VideoPlayer extends Component {
       !alreadyEarned
     ) {
       this.onVideoStop()
-      if (this.Player) this.Player.getInternalPlayer().pauseVideo()
+      if (this.Player) {
+        if (this.Player.getInternalPlayer()) {
+          this.Player.getInternalPlayer().pauseVideo()
+        }
+      }
     }
 
     if (
@@ -191,7 +199,11 @@ class VideoPlayer extends Component {
       !alreadyEarned
     ) {
       this.onVideoStop()
-      if (this.Player) this.Player.getInternalPlayer().pauseVideo()
+      if (this.Player) {
+        if (this.Player.getInternalPlayer()) {
+          this.Player.getInternalPlayer().pauseVideo()
+        }
+      }
     }
   }
 
@@ -365,9 +377,11 @@ class VideoPlayer extends Component {
   }
 
   onVideoReady = () => {
-    this.setState(() => ({
-      totalDuration: this.Player.getInternalPlayer().getDuration()
-    }))
+    if (this.Player.getInternalPlayer()) {
+      this.setState(() => ({
+        totalDuration: this.Player.getInternalPlayer().getDuration()
+      }))
+    }
   }
 
   onVideoPlay = () => {
@@ -432,11 +446,13 @@ class VideoPlayer extends Component {
     const { justEarned, xpEarned, timeWatched, totalDuration } = this.state
     const { changeUserXP, isStarred, videoId } = this.props
     if (isStarred && !xpEarned && !justEarned && this.Player) {
-      if (this.Player.getInternalPlayer().isMuted()) {
-        this.Player.getInternalPlayer().unMute()
-      }
-      if (this.Player.getInternalPlayer().getVolume() < 30) {
-        this.Player.getInternalPlayer().setVolume(30)
+      if (this.Player.getInternalPlayer()) {
+        if (this.Player.getInternalPlayer().isMuted()) {
+          this.Player.getInternalPlayer().unMute()
+        }
+        if (this.Player.getInternalPlayer().getVolume() < 30) {
+          this.Player.getInternalPlayer().setVolume(30)
+        }
       }
     }
     if (
@@ -484,7 +500,11 @@ class VideoPlayer extends Component {
         )
         if (success) return
         if (currentlyWatchingAnotherVideo) {
-          if (this.Player) this.Player.getInternalPlayer().pauseVideo()
+          if (this.Player) {
+            if (this.Player.getInternalPlayer()) {
+              this.Player.getInternalPlayer().pauseVideo()
+            }
+          }
         }
       } catch (error) {
         console.error(error.response || error)
