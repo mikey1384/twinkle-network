@@ -63,6 +63,7 @@ class Modal extends Component {
             padding-bottom: 7rem;
             background: ${Color.black(0.5)};
             overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
           `}
           style={style}
         >
