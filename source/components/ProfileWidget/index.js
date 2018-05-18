@@ -62,7 +62,7 @@ class ProfileWidget extends Component {
                 transparent
                 onClick={() => history.push(`/users/${username}`)}
               >
-                View Profile
+                My Profile
               </Button>
               <Button transparent onClick={() => this.fileInput.click()}>
                 Change Picture
