@@ -224,6 +224,21 @@ export const fetchFeeds = (filter = 'all') => async dispatch => {
   }
 }
 
+export const fetchNewFeeds = ({ latestTS, shownFeeds }) => async dispatch => {
+  try {
+    const { data } = await request.get(
+      `${API_URL}/new?latestTS=${latestTS}&${shownFeeds}`
+    )
+    dispatch({
+      type: FEED.LOAD_NEW,
+      data
+    })
+  } catch (error) {
+    console.error(error.response || error)
+    handleError(error, dispatch)
+  }
+}
+
 export const fetchMoreFeeds = ({
   shownFeeds,
   filter = 'all'

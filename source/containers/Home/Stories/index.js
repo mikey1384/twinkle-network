@@ -10,6 +10,7 @@ import {
   feedRewardCommentEdit,
   feedVideoStar,
   fetchMoreFeeds,
+  fetchNewFeeds,
   fetchFeeds,
   fetchFeed,
   likeTargetComment,
@@ -51,6 +52,7 @@ class Stories extends Component {
     fetchFeed: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
+    fetchNewFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     likeTargetComment: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
@@ -162,7 +164,7 @@ class Stories extends Component {
                 {numNewPosts > 0 && (
                   <Banner
                     info
-                    onClick={this.refreshFeeds}
+                    onClick={this.fetchNewFeeds}
                     style={{ marginBottom: '1rem' }}
                   >
                     Click to See {numNewPosts} new Post{numNewPosts > 1
@@ -260,13 +262,23 @@ class Stories extends Component {
     }
   }
 
-  refreshFeeds = () => {
-    const { resetNumNewPosts, clearFeeds, fetchFeeds } = this.props
-    resetNumNewPosts()
-    this.clearingFeeds = true
-    clearFeeds()
-    this.clearingFeeds = false
-    fetchFeeds()
+  fetchNewFeeds = async() => {
+    const { feeds, resetNumNewPosts, fetchNewFeeds } = this.props
+    const { loadingMore } = this.state
+    if (!loadingMore) {
+      this.setState({ loadingMore: true })
+      resetNumNewPosts()
+      const latestTS = feeds[0].lastInteraction
+      await fetchNewFeeds({
+        latestTS,
+        shownFeeds: queryStringForArray(
+          feeds.filter(feed => feed.lastInteraction >= latestTS),
+          'id',
+          'shownFeeds'
+        )
+      })
+      this.setState({ loadingMore: false })
+    }
   }
 
   renderFilterBar = () => {
@@ -333,6 +345,7 @@ export default connect(
     fetchMoreFeeds,
     fetchFeed,
     fetchFeeds,
+    fetchNewFeeds,
     feedCommentDelete,
     feedContentDelete,
     feedContentEdit,

@@ -113,6 +113,11 @@ export default function FeedReducer(state = defaultState, action) {
         selectedFilter: action.filter || state.selectedFilter,
         loadMoreButton
       }
+    case FEED.LOAD_NEW:
+      return {
+        ...state,
+        feeds: action.data.concat(state.feeds)
+      }
     case FEED.LIKE_TARGET_COMMENT:
       return {
         ...state,
