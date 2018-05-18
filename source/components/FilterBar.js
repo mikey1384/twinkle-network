@@ -50,6 +50,7 @@ export default function FilterBar({
         justify-content: space-around;
         > nav {
           font-family: sans-serif;
+          font-weight: bold;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -68,7 +69,6 @@ export default function FilterBar({
         }
         > nav.active {
           border-bottom: 3px solid ${color[colorKey]};
-          font-weight: bold;
           color: ${color[colorKey]};
           > a {
             color: ${color[colorKey]};
