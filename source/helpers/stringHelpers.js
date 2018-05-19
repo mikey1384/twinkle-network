@@ -63,7 +63,7 @@ export function limitBrs(string) {
 }
 
 export function removeLineBreaks(string) {
-  return string.replace(/\n/gi, '')
+  return string.replace(/\n/gi, ' ').replace(/ {2,}/gi, ' ')
 }
 
 export function addTwoLetterEmoji(string) {
