@@ -4,6 +4,7 @@ import Loading from 'components/Loading'
 import request from 'axios'
 import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
+import { addCommasToNumber } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 import { URL } from 'constants/URL'
 
@@ -97,7 +98,7 @@ export default class LeaderBoardTab extends Component {
               </div>
               <div style={{ fontWeight: 'bold' }}>
                 <span style={{ color: Color.logoGreen() }}>
-                  {user.twinkleXP || 0}
+                  {addCommasToNumber(user.twinkleXP || 0)}
                 </span>{' '}
                 <span style={{ color: Color.gold() }}>XP</span>
               </div>
