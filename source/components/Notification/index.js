@@ -28,9 +28,11 @@ class Notification extends Component {
     loadMore: PropTypes.object,
     myId: PropTypes.number,
     notifications: PropTypes.array.isRequired,
+    numNewNotis: PropTypes.number,
     rank: PropTypes.number,
     rewards: PropTypes.array.isRequired,
     style: PropTypes.object,
+    totalRewardAmount: PropTypes.number,
     position: PropTypes.string,
     twinkleXP: PropTypes.number
   }
@@ -95,9 +97,11 @@ class Notification extends Component {
       currentChatSubject: { content = defaultChatSubject, loaded, ...subject },
       children,
       loadMore,
+      numNewNotis,
       rank,
       rewards,
       style,
+      totalRewardAmount,
       twinkleXP
     } = this.props
     const rankedColor =
@@ -204,7 +208,8 @@ class Notification extends Component {
               }}
             >
               <nav
-                className={activeTab === 'notification' ? 'active' : undefined}
+                className={`${activeTab === 'notification' &&
+                  'active'} ${numNewNotis > 0 && 'alert'}`}
                 onClick={() => this.setState({ activeTab: 'notification' })}
               >
                 Notifications
@@ -217,7 +222,8 @@ class Notification extends Component {
               </nav>
               {rewardTabShown && (
                 <nav
-                  className={activeTab === 'reward' ? 'active' : undefined}
+                  className={`${activeTab === 'reward' &&
+                    'active'} ${totalRewardAmount > 0 && 'alert'}`}
                   onClick={() => this.setState({ activeTab: 'reward' })}
                 >
                   Rewards
@@ -255,8 +261,10 @@ export default connect(
     myId: state.UserReducer.userId,
     loadMore: state.NotiReducer.loadMore,
     notifications: state.NotiReducer.notifications,
+    numNewNotis: state.NotiReducer.numNewNotis,
     rank: state.UserReducer.rank,
     rewards: state.NotiReducer.rewards,
+    totalRewardAmount: state.NotiReducer.totalRewardAmount,
     twinkleXP: state.UserReducer.twinkleXP,
     currentChatSubject: state.NotiReducer.currentChatSubject
   }),
