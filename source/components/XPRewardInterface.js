@@ -92,7 +92,7 @@ class XPRewardInterface extends Component {
           onChange={event =>
             this.setState({ rewardExplanation: addEmoji(event.target.value) })
           }
-          placeholder="Write a note explaining why you are rewarding XP for this comment (required)"
+          placeholder="Let the recipient know why you are rewarding XP for this comment (required)"
           style={exceedsCharLimit({
             contentType: 'rewardComment',
             text: rewardExplanation

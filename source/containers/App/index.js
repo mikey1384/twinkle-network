@@ -268,12 +268,11 @@ class App extends Component {
         {chatMode &&
           this.props.loggedIn && (
             <Chat
-              onUnmount={() =>
-                resetChat().then(() => {
-                  document.getElementById('App').scrollTop = scrollPosition
-                  turnChatOff()
-                })
-              }
+              onUnmount={async() => {
+                await resetChat()
+                document.getElementById('App').scrollTop = scrollPosition
+                turnChatOff()
+              }}
             />
           )}
       </div>
@@ -285,12 +284,11 @@ class App extends Component {
     changePageVisibility(!document[hidden])
   }
 
-  onChatButtonClick = () => {
+  onChatButtonClick = async() => {
     const { initChat, chatMode, turnChatOff } = this.props
     this.setState({ chatLoading: true })
-    return (chatMode ? turnChatOff() : initChat()).then(() =>
-      this.setState({ chatLoading: false })
-    )
+    await (chatMode ? turnChatOff() : initChat())
+    this.setState({ chatLoading: false })
   }
 }
 

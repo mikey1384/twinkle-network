@@ -79,7 +79,7 @@ class ProfileWidget extends Component {
               style={{ marginTop: '1rem' }}
               onClick={openSigninModal}
             >
-              Log In | Sign Up
+              {"It's super easy"}
             </Button>
           )}
           <input

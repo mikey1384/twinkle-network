@@ -1,13 +1,18 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import Button from 'components/Button'
 import DropdownButton from 'components/Buttons/DropdownButton'
+import { openSigninModal } from 'redux/actions/UserActions'
+import { connect } from 'react-redux'
 
 AccountMenu.propTypes = {
+  loggedIn: PropTypes.bool,
   logout: PropTypes.func.isRequired,
+  openSigninModal: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired
 }
-export default function AccountMenu({ title, logout, ...props }) {
-  return (
+function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
+  return loggedIn ? (
     <DropdownButton
       {...props}
       transparent
@@ -23,5 +28,16 @@ export default function AccountMenu({ title, logout, ...props }) {
         }
       ]}
     />
+  ) : (
+    <Button
+      onClick={openSigninModal}
+      style={{ marginLeft: '1rem' }}
+      success
+      filled
+    >
+      Log In | Sign Up
+    </Button>
   )
 }
+
+export default connect(null, { openSigninModal })(AccountMenu)

@@ -377,9 +377,11 @@ class Header extends Component {
               loading={chatLoading}
               numUnreads={numChatUnreads}
             />
-            {loggedIn && (
-              <AccountMenu title={username} logout={this.onLogout} />
-            )}
+            <AccountMenu
+              loggedIn={loggedIn}
+              logout={this.onLogout}
+              title={username}
+            />
           </div>
         </div>
       </nav>
