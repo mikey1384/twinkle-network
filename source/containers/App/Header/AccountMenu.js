@@ -9,7 +9,7 @@ AccountMenu.propTypes = {
   loggedIn: PropTypes.bool,
   logout: PropTypes.func.isRequired,
   openSigninModal: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string
 }
 function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
   return loggedIn ? (
@@ -24,7 +24,7 @@ function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
       menuProps={[
         {
           label: 'Log out',
-          onClick: () => logout()
+          onClick: logout
         }
       ]}
     />

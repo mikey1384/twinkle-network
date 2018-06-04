@@ -112,7 +112,7 @@ export default class Embedly extends Component {
             width: 100%;
           `}
           target="_blank"
-          rel=""
+          rel="noopener noreferrer"
           href={url}
         >
           <section
