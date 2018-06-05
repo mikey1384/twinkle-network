@@ -69,9 +69,7 @@ export default function UserReducer(state = defaultState, action) {
     case USER.SHOW_PROFILE:
       return {
         ...state,
-        profile: {
-          ...action.data
-        }
+        profile: action.data
       }
     case USER.LOGIN:
       return {

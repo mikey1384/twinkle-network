@@ -110,7 +110,7 @@ class Notification extends Component {
         : rank === 2
           ? Color.borderGray()
           : rank === 3
-            ? Color.orange()
+            ? '#fff'
             : undefined
     const { activeTab, rewardTabShown } = this.state
     return (
@@ -143,7 +143,12 @@ class Notification extends Component {
             style={{
               marginBottom: '1rem',
               background: myId
-                ? rank > 0 && rank < 4 && Color.black(1 - (rank - 1) / 10)
+                ? rank > 0 &&
+                  (rank < 3
+                    ? Color.black(1 - (rank - 1) / 10)
+                    : rank === 3
+                      ? Color.orange()
+                      : null)
                 : Color.logoBlue()
             }}
             className={css`

@@ -52,7 +52,7 @@ export default class LeaderBoardTab extends Component {
             rank === 1
               ? Color.gold()
               : rank === 2
-                ? Color.silver()
+                ? Color.lightGray()
                 : rank === 3
                   ? Color.orange()
                   : undefined

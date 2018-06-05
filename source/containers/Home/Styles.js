@@ -1,5 +1,5 @@
 import { css } from 'react-emotion'
-import { borderRadius, mobileMaxWidth } from 'constants/css'
+import { mobileMaxWidth } from 'constants/css'
 
 export const container = css`
   width: 100%;
@@ -39,23 +39,5 @@ export const Right = css`
   position: absolute;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
-  }
-`
-
-export const profilePanel = css`
-  border: #e7e7e7 1px solid;
-  display: flex;
-  width: 100%;
-  background: #fff;
-  margin-bottom: 1rem;
-  padding: 2rem;
-  border-radius: ${borderRadius};
-  line-height: 2.3rem;
-  font-size: 1.5rem;
-  position: relative;
-  @media (max-width: ${mobileMaxWidth}) {
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
   }
 `
