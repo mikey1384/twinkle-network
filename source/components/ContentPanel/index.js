@@ -21,7 +21,7 @@ export default class ContentPanel extends Component {
   componentDidMount() {
     const { methodObj, contentObj, selfLoadingDisabled } = this.props
     const { feedLoaded } = this.state
-    if (!feedLoaded && !selfLoadingDisabled) {
+    if (!feedLoaded && !selfLoadingDisabled && !contentObj.newPost) {
       this.setState({ feedLoaded: true })
       methodObj.loadContent(contentObj)
     }

@@ -36,10 +36,9 @@ export default class Embedly extends Component {
     const { id, siteUrl, url } = this.props
     if (url && !siteUrl) {
       try {
-        const { data: { image, title, description, site } } = await request.put(
-          `${API_URL}/embed`,
-          { url, linkId: id }
-        )
+        const {
+          data: { image, title, description, site }
+        } = await request.put(`${API_URL}/embed`, { url, linkId: id })
         if (this.mounted) {
           this.setState({
             imageUrl: image.url.replace('http://', 'https://'),
@@ -58,10 +57,9 @@ export default class Embedly extends Component {
     const { id, url } = this.props
     if (prevProps.url !== url) {
       try {
-        const { data: { image, title, description, site } } = await request.put(
-          `${API_URL}/embed`,
-          { url, linkId: id }
-        )
+        const {
+          data: { image, title, description, site }
+        } = await request.put(`${API_URL}/embed`, { url, linkId: id })
         if (this.mounted) {
           this.setState({
             imageUrl: image.url.replace('http://', 'https://'),
