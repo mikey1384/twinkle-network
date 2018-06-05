@@ -346,7 +346,15 @@ class ProfilePanel extends Component {
               >
                 {addCommasToNumber(profile.twinkleXP)}
               </span>{' '}
-              <span style={{ color: rankColor || Color.gold() }}>XP</span>
+              <span
+                style={{
+                  color:
+                    rankColor ||
+                    (profile.rank <= 10 ? Color.gold() : Color.buttonGray())
+                }}
+              >
+                XP
+              </span>
             </span>
           </div>
         )}
