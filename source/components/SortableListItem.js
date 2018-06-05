@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { Component } from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
 import { cleanString } from 'helpers/stringHelpers'
@@ -28,39 +28,42 @@ const listItemTarget = {
   }
 }
 
-SortableListItem.propTypes = {
-  connectDragSource: PropTypes.func,
-  connectDropTarget: PropTypes.func,
-  index: PropTypes.number,
-  isDragging: PropTypes.bool,
-  item: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    label: PropTypes.string.isRequired
-  }).isRequired
-}
-function SortableListItem({
-  connectDragSource,
-  connectDropTarget,
-  isDragging,
-  index,
-  item
-}) {
-  return connectDragSource(
-    connectDropTarget(
-      <nav
-        style={{
-          opacity: isDragging ? 0 : 1,
-          borderTop: index === 0 && `1px solid ${Color.borderGray()}`
-        }}
-      >
-        <section>{cleanString(item.label)}</section>
-        <span
-          className="glyphicon glyphicon-align-justify"
-          style={{ color: Color.menuGray() }}
-        />
-      </nav>
+class SortableListItem extends Component {
+  static propTypes = {
+    connectDragSource: PropTypes.func,
+    connectDropTarget: PropTypes.func,
+    index: PropTypes.number,
+    isDragging: PropTypes.bool,
+    item: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired
+    }).isRequired
+  }
+  render() {
+    const {
+      connectDragSource,
+      connectDropTarget,
+      isDragging,
+      index,
+      item
+    } = this.props
+    return connectDragSource(
+      connectDropTarget(
+        <nav
+          style={{
+            opacity: isDragging ? 0 : 1,
+            borderTop: index === 0 && `1px solid ${Color.borderGray()}`
+          }}
+        >
+          <section>{cleanString(item.label)}</section>
+          <span
+            className="glyphicon glyphicon-align-justify"
+            style={{ color: Color.menuGray() }}
+          />
+        </nav>
+      )
     )
-  )
+  }
 }
 
 export default DragSource(

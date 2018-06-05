@@ -224,10 +224,14 @@ export const fetchFeeds = (filter = 'all') => async dispatch => {
   }
 }
 
-export const fetchNewFeeds = ({ latestTS, shownFeeds }) => async dispatch => {
+export const fetchNewFeeds = ({
+  latestTS,
+  shownFeeds,
+  userId
+}) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${API_URL}/new?latestTS=${latestTS}&${shownFeeds}`
+      `${API_URL}/new?latestTS=${latestTS}&userId=${userId}&${shownFeeds}`
     )
     dispatch({
       type: FEED.LOAD_NEW,

@@ -117,15 +117,17 @@ class SortableThumb extends Component {
                   text={cleanString(video.title)}
                 />
               </div>
-              <small
+              <p
                 style={{
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  fontSize: '1.3rem',
+                  lineHeight: 2
                 }}
               >
                 {video.uploaderName}
-              </small>
+              </p>
             </div>
           </div>
         </div>

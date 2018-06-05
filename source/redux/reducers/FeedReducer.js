@@ -58,13 +58,6 @@ export default function FeedReducer(state = defaultState, action) {
         loadMoreButton: false,
         loaded: false
       }
-    case FEED.LOAD_DETAIL:
-      return {
-        ...state,
-        feeds: state.feeds.map(
-          feed => (feed.id === action.data.id ? action.data : feed)
-        )
-      }
     case FEED.LOAD:
       if (action.data.length > 20) {
         action.data.pop()
@@ -76,6 +69,13 @@ export default function FeedReducer(state = defaultState, action) {
         selectedFilter: action.filter || state.selectedFilter,
         loadMoreButton,
         loaded: true
+      }
+    case FEED.LOAD_DETAIL:
+      return {
+        ...state,
+        feeds: state.feeds.map(
+          feed => (feed.id === action.data.id ? action.data : feed)
+        )
       }
     case FEED.LOAD_MORE_REPLIES:
       return {

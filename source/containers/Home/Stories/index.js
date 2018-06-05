@@ -263,14 +263,16 @@ class Stories extends Component {
   }
 
   fetchNewFeeds = async() => {
-    const { feeds, resetNumNewPosts, fetchNewFeeds } = this.props
+    const { feeds, resetNumNewPosts, fetchNewFeeds, userId } = this.props
     const { loadingMore } = this.state
     if (!loadingMore) {
       this.setState({ loadingMore: true })
       resetNumNewPosts()
-      const latestTS = feeds[0].lastInteraction
+      const filteredFeeds = feeds.filter(feed => feed.uploaderId !== userId)
+      const latestTS = filteredFeeds[0].lastInteraction
       await fetchNewFeeds({
         latestTS,
+        userId,
         shownFeeds: queryStringForArray(
           feeds.filter(feed => feed.lastInteraction >= latestTS),
           'id',
