@@ -313,7 +313,7 @@ class ProfilePanel extends Component {
                     (profile.rank <= 10 ? Color.logoBlue() : Color.buttonGray())
                 }}
               >
-                Ranked
+                Rank
               </span>{' '}
               <span
                 style={{
