@@ -305,6 +305,8 @@ class ProfilePanel extends Component {
               };
               @media (max-width: ${mobileMaxWidth}) {
                 border-radius: 0;
+                border-left: none;
+                border-right: none;
               }
             `}
           >
