@@ -10,6 +10,7 @@ import DropdownButton from 'components/Buttons/DropdownButton'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import request from 'axios'
 import { timeSince } from 'helpers/timeStampHelpers'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import { auth } from 'redux/constants'
 import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
@@ -75,11 +76,18 @@ class Comment extends Component {
             <div
               style={{
                 width: '100%',
+                height: '100%',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                justifyContent:
+                  stringIsEmpty(star.rewardComment) && !onEdit && 'center'
               }}
             >
-              <div style={{ width: '100%' }}>
+              <div
+                style={{
+                  width: '100%'
+                }}
+              >
                 <UsernameText
                   user={{
                     id: star.rewarderId,
@@ -101,10 +109,15 @@ class Comment extends Component {
                   ({timeSince(star.timeStamp)})
                 </span>
               </div>
-              <div style={{ width: '100%' }}>
+              <div
+                style={{
+                  width: '100%'
+                }}
+              >
                 {!onEdit && <LongText>{star.rewardComment}</LongText>}
                 {onEdit && (
                   <EditTextArea
+                    allowEmptyText
                     autoFocus
                     rows={3}
                     text={star.rewardComment}

@@ -12,6 +12,7 @@ import {
 
 export default class EditTextArea extends Component {
   static propTypes = {
+    allowEmptyText: PropTypes.bool,
     autoFocus: PropTypes.bool,
     marginTop: PropTypes.string,
     onCancel: PropTypes.func.isRequired,
@@ -31,6 +32,7 @@ export default class EditTextArea extends Component {
   render() {
     const { editedText } = this.state
     const {
+      allowEmptyText,
       autoFocus = false,
       placeholder = 'Enter text',
       rows = 4,
@@ -73,7 +75,10 @@ export default class EditTextArea extends Component {
           <Button
             primary
             onClick={this.onSubmit}
-            disabled={stringIsEmpty(editedText) || commentExceedsCharLimit}
+            disabled={
+              (!allowEmptyText && stringIsEmpty(editedText)) ||
+              commentExceedsCharLimit
+            }
           >
             Done
           </Button>

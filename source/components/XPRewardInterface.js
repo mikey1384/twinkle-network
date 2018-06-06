@@ -6,8 +6,7 @@ import { css } from 'emotion'
 import {
   addEmoji,
   exceedsCharLimit,
-  finalizeEmoji,
-  stringIsEmpty
+  finalizeEmoji
 } from 'helpers/stringHelpers'
 import Button from 'components/Button'
 import request from 'axios'
@@ -92,7 +91,7 @@ class XPRewardInterface extends Component {
           onChange={event =>
             this.setState({ rewardExplanation: addEmoji(event.target.value) })
           }
-          placeholder="Let the recipient know why you are rewarding XP for this comment (required)"
+          placeholder="Let the recipient know why you are rewarding XP for this comment (optional)"
           style={exceedsCharLimit({
             contentType: 'rewardComment',
             text: rewardExplanation
@@ -110,12 +109,10 @@ class XPRewardInterface extends Component {
             love
             filled
             disabled={
-              stringIsEmpty(rewardExplanation) ||
               exceedsCharLimit({
                 contentType: 'rewardComment',
                 text: rewardExplanation
-              }) ||
-              rewarding
+              }) || rewarding
             }
             onClick={this.onRewardSubmit}
           >
