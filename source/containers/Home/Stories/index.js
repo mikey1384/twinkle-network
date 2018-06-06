@@ -294,16 +294,10 @@ class Stories extends Component {
           All
         </nav>
         <nav
-          className={selectedFilter === 'question' ? 'active' : ''}
-          onClick={() => this.applyFilter('question')}
+          className={selectedFilter === 'post' ? 'active' : ''}
+          onClick={() => this.applyFilter('post')}
         >
-          Questions
-        </nav>
-        <nav
-          className={selectedFilter === 'discussion' ? 'active' : ''}
-          onClick={() => this.applyFilter('discussion')}
-        >
-          Discussions
+          Posts
         </nav>
         <nav
           className={selectedFilter === 'video' ? 'active' : ''}
