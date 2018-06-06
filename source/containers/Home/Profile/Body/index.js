@@ -78,16 +78,14 @@ class Body extends Component {
     switch (location.pathname) {
       case match.url:
         return this.changeTab('all')
-      case `${match.url}/questions`:
-        return this.changeTab('question')
+      case `${match.url}/posts`:
+        return this.changeTab('post')
       case `${match.url}/comments`:
         return this.changeTab('comment')
       case `${match.url}/videos`:
         return this.changeTab('video')
       case `${match.url}/links`:
         return this.changeTab('url')
-      case `${match.url}/discussions`:
-        return this.changeTab('discussion')
       default:
         break
     }
@@ -101,16 +99,14 @@ class Body extends Component {
       switch (location.pathname) {
         case match.url:
           return this.changeTab('all')
-        case `${match.url}/questions`:
-          return this.changeTab('question')
+        case `${match.url}/posts`:
+          return this.changeTab('post')
         case `${match.url}/comments`:
           return this.changeTab('comment')
         case `${match.url}/videos`:
           return this.changeTab('video')
         case `${match.url}/links`:
           return this.changeTab('url')
-        case `${match.url}/discussions`:
-          return this.changeTab('discussion')
         default:
           break
       }
@@ -181,17 +177,17 @@ class Body extends Component {
           />
           <Route
             exact
-            path={`${route.url}/questions`}
+            path={`${route.url}/posts`}
             children={({ match }) => (
               <nav
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   clearFeeds()
-                  history.push(`${route.url}/questions`)
+                  history.push(`${route.url}/posts`)
                 }}
               >
-                <a>Questions</a>
+                <a>Posts</a>
               </nav>
             )}
           />
@@ -240,22 +236,6 @@ class Body extends Component {
                 }}
               >
                 <a>Links</a>
-              </nav>
-            )}
-          />
-          <Route
-            exact
-            path={`${route.url}/discussions`}
-            children={({ match }) => (
-              <nav
-                className={match ? 'active' : ''}
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  clearFeeds()
-                  history.push(`${route.url}/discussions`)
-                }}
-              >
-                Discussions
               </nav>
             )}
           />
@@ -364,16 +344,14 @@ class Body extends Component {
     switch (currentTab) {
       case 'all':
         return `${username} has not posted anything, yet`
-      case 'question':
-        return `${username} has not posted a question, yet`
+      case 'post':
+        return `${username} has not posted a post, yet`
       case 'comment':
         return `${username} has not posted a comment, yet`
       case 'url':
         return `${username} has not posted a link, yet`
       case 'video':
         return `${username} has not posted a video, yet`
-      case 'discussion':
-        return `${username} has not posted a discussion, yet`
     }
   }
 
