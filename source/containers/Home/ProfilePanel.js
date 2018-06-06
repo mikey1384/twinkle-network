@@ -75,11 +75,6 @@ class ProfilePanel extends Component {
           line-height: 2.3rem;
           font-size: 1.5rem;
           position: relative;
-          @media (max-width: ${mobileMaxWidth}) {
-            border-radius: 0;
-            border-left: none;
-            border-right: none;
-          }
         `}
       >
         <div
@@ -100,6 +95,11 @@ class ProfilePanel extends Component {
               !profile.twinkleXP
                 ? `border-bottom-right-radius: ${borderRadius};`
                 : ''
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              border-radius: 0;
+              border-left: none;
+              border-right: none;
             }
           `}
         >
@@ -303,6 +303,9 @@ class ProfilePanel extends Component {
                     ? Color.orange()
                     : Color.whiteGray()
               };
+              @media (max-width: ${mobileMaxWidth}) {
+                border-radius: 0;
+              }
             `}
           >
             <span>
