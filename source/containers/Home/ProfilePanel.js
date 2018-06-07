@@ -108,7 +108,7 @@ class ProfilePanel extends Component {
               style={{ width: '18rem', height: '18rem' }}
               userId={profile.id}
               profilePicId={profile.profilePicId}
-              online={userId !== profile.id && !!profile.online}
+              online={!!profile.online}
             />
           </div>
           <div
