@@ -42,8 +42,8 @@ export default function ProfilePic({
         online && (
           <div
             style={{
-              top: '75%',
-              left: '75%',
+              top: '74%',
+              left: '70%',
               background: '#fff',
               position: 'absolute',
               border: '3px solid #fff',
