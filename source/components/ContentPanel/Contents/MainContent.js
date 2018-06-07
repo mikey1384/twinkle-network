@@ -178,6 +178,7 @@ export default function MainContent({
       {type === 'comment' &&
         rootType === 'url' && (
           <Embedly
+            small
             title={cleanString(contentTitle)}
             url={rootContent}
             id={rootId}

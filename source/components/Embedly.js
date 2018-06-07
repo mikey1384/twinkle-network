@@ -9,6 +9,7 @@ const API_URL = `${URL}/content`
 
 export default class Embedly extends Component {
   static propTypes = {
+    small: PropTypes.bool,
     id: PropTypes.number.isRequired,
     siteUrl: PropTypes.string,
     style: PropTypes.object,
@@ -80,7 +81,7 @@ export default class Embedly extends Component {
 
   render() {
     const { imageUrl, description, title, site } = this.state
-    const { style, url } = this.props
+    const { small, style, url } = this.props
     return (
       <div
         className={css`
@@ -106,8 +107,8 @@ export default class Embedly extends Component {
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             width: 100%;
+            ${!small ? 'flex-direction: column;' : ''};
           `}
           target="_blank"
           rel="noopener noreferrer"
@@ -116,14 +117,14 @@ export default class Embedly extends Component {
           <section
             className={css`
               position: relative;
-              width: 100%;
-              height: 100%;
+              width: ${small ? '40%' : '100%'};
+              height: ${small ? '40%' : '100%'};
             `}
           >
             <img
               className={css`
                 width: 100%;
-                max-height: 70vh;
+                max-height: ${small ? '30vh' : '70vh'};
                 object-fit: scale-down;
               `}
               src={imageUrl}
@@ -135,6 +136,7 @@ export default class Embedly extends Component {
             className={css`
               width: 100%;
               padding: 1rem;
+              ${small ? 'margin-left: 1rem;' : ''};
             `}
           >
             <h3>{title || this.props.title}</h3>
