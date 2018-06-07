@@ -108,6 +108,7 @@ class ProfilePanel extends Component {
               style={{ width: '18rem', height: '18rem' }}
               userId={profile.id}
               profilePicId={profile.profilePicId}
+              online={userId !== profile.id && !!profile.online}
             />
           </div>
           <div
@@ -135,18 +136,6 @@ class ProfilePanel extends Component {
             <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
               profile.realName
             })`}</span>
-            {userId !== profile.id &&
-              !!profile.online && (
-                <p
-                  style={{
-                    color: Color.green(),
-                    fontSize: '1.5rem',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  (online)
-                </p>
-              )}
             {!noProfile && (
               <ul
                 style={{
