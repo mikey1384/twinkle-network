@@ -47,9 +47,7 @@ export default class BioEditModal extends Component {
         `}
       >
         <header>Edit Your Bio</header>
-        <main
-          style={{ width: '100%', justifyContent: 'flex-start' }}
-        >
+        <main style={{ width: '100%', justifyContent: 'flex-start' }}>
           <div>
             <label>
               <strong>
@@ -69,7 +67,7 @@ export default class BioEditModal extends Component {
             }/${maxChar} characters)`}</small>
             <p>
               {
-                "If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student which english academy do you go to? (For example, LexKim) What's your teacher's name? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want "
+                "If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student which english academy do you go to? What's your teacher's name? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want "
               }
             </p>
           </div>

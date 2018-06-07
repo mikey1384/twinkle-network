@@ -6,7 +6,8 @@ import { css } from 'emotion'
 import {
   addEmoji,
   exceedsCharLimit,
-  finalizeEmoji
+  finalizeEmoji,
+  stringIsEmpty
 } from 'helpers/stringHelpers'
 import Button from 'components/Button'
 import request from 'axios'
@@ -131,7 +132,9 @@ class XPRewardInterface extends Component {
       const { data } = await request.post(
         `${URL}/user/reward`,
         {
-          rewardExplanation: finalizeEmoji(rewardExplanation),
+          rewardExplanation: finalizeEmoji(
+            stringIsEmpty(rewardExplanation) ? '' : rewardExplanation
+          ),
           twoStarSelected,
           contentType,
           contentId,

@@ -232,7 +232,7 @@ export function processedURL(url) {
 }
 
 export function stringIsEmpty(string) {
-  var checkedString = string
+  const checkedString = string
     ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
     : ''
   return checkedString === ''
