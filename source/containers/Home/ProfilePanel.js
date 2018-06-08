@@ -1,28 +1,42 @@
 /* global FileReader */
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import ImageEditModal from 'components/Modals/ImageEditModal'
 import BioEditModal from './Modals/BioEditModal'
-import { uploadProfilePic, uploadBio } from 'redux/actions/UserActions'
+import {
+  updateStatusMsg,
+  uploadProfilePic,
+  uploadBio
+} from 'redux/actions/UserActions'
 import { openDirectMessageChannel } from 'redux/actions/ChatActions'
 import AlertModal from 'components/Modals/AlertModal'
 import { connect } from 'react-redux'
 import {
   addCommasToNumber,
-  processedStringWithURL
+  processedStringWithURL,
+  addEmoji,
+  exceedsCharLimit,
+  finalizeEmoji,
+  renderCharLimit,
+  renderText
 } from 'helpers/stringHelpers'
 import { withRouter } from 'react-router'
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
+import Textarea from 'components/Texts/Textarea'
+import request from 'axios'
+import { URL } from 'constants/URL'
+import { auth } from 'redux/constants'
 
 class ProfilePanel extends Component {
   static propTypes = {
     expandable: PropTypes.bool,
     history: PropTypes.object,
     isCreator: PropTypes.bool,
+    updateStatusMsg: PropTypes.func,
     openDirectMessageChannel: PropTypes.func,
     profile: PropTypes.object,
     userId: PropTypes.number,
@@ -31,6 +45,8 @@ class ProfilePanel extends Component {
   }
 
   state = {
+    editedStatusMsg: '',
+    editedStatusColor: '',
     imageUri: null,
     processing: false,
     imageEditModalShown: false,
@@ -44,6 +60,8 @@ class ProfilePanel extends Component {
       imageEditModalShown,
       bioEditModalShown,
       alertModalShown,
+      editedStatusMsg,
+      editedStatusColor,
       processing
     } = this.state
     const {
@@ -65,6 +83,11 @@ class ProfilePanel extends Component {
           : profile.rank === 3
             ? '#fff'
             : undefined
+    const highlightEffects = {
+      border: `5px solid #fff`,
+      boxShadow: `0 0 5px #fff`
+    }
+    const statusColor = editedStatusColor || profile.statusColor || 'logoBlue'
     return (
       <div
         className={css`
@@ -137,6 +160,151 @@ class ProfilePanel extends Component {
             <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
               profile.realName
             })`}</span>
+            {userId === profile.id && (
+              <Fragment>
+                <Textarea
+                  autoFocus
+                  className={css`
+                    margin-top: 1rem;
+                  `}
+                  minRows={1}
+                  value={editedStatusMsg}
+                  onChange={event => {
+                    this.setState({
+                      editedStatusMsg: addEmoji(renderText(event.target.value)),
+                      ...(!event.target.value ? { editedStatusColor: '' } : {})
+                    })
+                  }}
+                  placeholder={`Enter a ${
+                    profile.statusMsg ? 'new' : ''
+                  } status message`}
+                  style={exceedsCharLimit({
+                    contentType: 'statusMsg',
+                    text: editedStatusMsg
+                  })}
+                />
+                <p style={{ fontSize: '1.3rem' }}>
+                  {renderCharLimit({
+                    contentType: 'statusMsg',
+                    text: editedStatusMsg
+                  })}
+                </p>
+                {editedStatusMsg && (
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        width: '80%'
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '3rem',
+                          height: '3rem',
+                          marginLeft: '1rem',
+                          borderRadius: '50%',
+                          background: Color.pink(),
+                          cursor: 'pointer',
+                          ...(statusColor !== 'pink' ? highlightEffects : {})
+                        }}
+                        onClick={() =>
+                          this.setState({ editedStatusColor: 'pink' })
+                        }
+                      />
+                      <div
+                        style={{
+                          width: '3rem',
+                          height: '3rem',
+                          marginLeft: '1rem',
+                          borderRadius: '50%',
+                          cursor: 'pointer',
+                          background: Color.ivory(),
+                          ...(statusColor !== 'ivory' ? highlightEffects : {})
+                        }}
+                        onClick={() =>
+                          this.setState({ editedStatusColor: 'ivory' })
+                        }
+                      />
+                      <div
+                        style={{
+                          width: '3rem',
+                          height: '3rem',
+                          marginLeft: '1rem',
+                          borderRadius: '50%',
+                          cursor: 'pointer',
+                          background: Color.logoGreen(),
+                          ...(statusColor !== 'logoGreen'
+                            ? highlightEffects
+                            : {})
+                        }}
+                        onClick={() =>
+                          this.setState({ editedStatusColor: 'logoGreen' })
+                        }
+                      />
+                      <div
+                        style={{
+                          width: '3rem',
+                          height: '3rem',
+                          marginLeft: '1rem',
+                          borderRadius: '50%',
+                          cursor: 'pointer',
+                          background: Color.logoBlue(),
+                          ...(statusColor !== 'logoBlue'
+                            ? highlightEffects
+                            : {})
+                        }}
+                        onClick={() =>
+                          this.setState({ editedStatusColor: 'logoBlue' })
+                        }
+                      />
+                      <div
+                        style={{
+                          width: '3rem',
+                          height: '3rem',
+                          marginLeft: '1rem',
+                          borderRadius: '50%',
+                          cursor: 'pointer',
+                          background: Color.menuGray(),
+                          ...(statusColor !== 'menuGray'
+                            ? highlightEffects
+                            : {})
+                        }}
+                        onClick={() =>
+                          this.setState({ editedStatusColor: 'menuGray' })
+                        }
+                      />
+                    </div>
+                    <Button
+                      primary
+                      filled
+                      style={{ marginLeft: '2rem' }}
+                      onClick={this.onStatusMsgSubmit}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                )}
+              </Fragment>
+            )}
+            {(profile.statusMsg || editedStatusMsg) && (
+              <div
+                style={{
+                  background: Color[statusColor](),
+                  color: statusColor === 'ivory' ? Color.black() : '#fff',
+                  fontSize: '1.7rem',
+                  padding: '1rem',
+                  marginTop: '1rem',
+                  boxShadow: `0 5px 5px ${Color.lightGray()}`
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: processedStringWithURL(
+                    editedStatusMsg || profile.statusMsg
+                  )
+                }}
+              />
+            )}
             {!noProfile && (
               <ul
                 style={{
@@ -361,6 +529,23 @@ class ProfilePanel extends Component {
     this.fileInput.click()
   }
 
+  onStatusMsgSubmit = async() => {
+    const { updateStatusMsg, profile } = this.props
+    const { editedStatusMsg, editedStatusColor } = this.state
+    const statusMsg = finalizeEmoji(editedStatusMsg)
+    const statusColor = editedStatusColor || profile.statusColor
+    const { data } = await request.post(
+      `${URL}/user/statusMsg`,
+      {
+        statusMsg,
+        statusColor
+      },
+      auth()
+    )
+    this.setState({ editedStatusColor: '', editedStatusMsg: '' })
+    updateStatusMsg(data)
+  }
+
   handlePicture = event => {
     const reader = new FileReader()
     const maxSize = 5000
@@ -408,6 +593,7 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   {
+    updateStatusMsg,
     uploadProfilePic,
     uploadBio,
     openDirectMessageChannel

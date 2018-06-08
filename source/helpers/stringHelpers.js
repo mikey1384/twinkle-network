@@ -28,7 +28,9 @@ export function cleanString(string) {
 
 export function exceedsCharLimit({ inputType, contentType, text }) {
   const limit =
-    contentType === 'comment' || contentType === 'rewardComment'
+    contentType === 'comment' ||
+    contentType === 'rewardComment' ||
+    contentType === 'statusMsg'
       ? charLimit[contentType]
       : charLimit[contentType][inputType]
   return text.length > limit
@@ -41,7 +43,9 @@ export function exceedsCharLimit({ inputType, contentType, text }) {
 
 export function renderCharLimit({ inputType, contentType, text }) {
   const limit =
-    contentType === 'comment' || contentType === 'rewardComment'
+    contentType === 'comment' ||
+    contentType === 'rewardComment' ||
+    contentType === 'statusMsg'
       ? charLimit[contentType]
       : charLimit[contentType][inputType]
   return `${text.length}/${limit} Characters`
@@ -60,6 +64,27 @@ export function limitBrs(string) {
     /(<br ?\/?>){11,}/gi,
     '<br><br><br><br><br><br><br><br><br><br>'
   )
+}
+
+export function renderText(text) {
+  let newText = text
+  while (
+    newText !== '' &&
+    (newText[0] === ' ' ||
+      (newText[newText.length - 1] === ' ' &&
+        newText[newText.length - 2] === ' '))
+  ) {
+    if (newText[0] === ' ') {
+      newText = newText.substring(1)
+    }
+    if (
+      newText[newText.length - 1] === ' ' &&
+      newText[newText.length - 2] === ' '
+    ) {
+      newText = newText.slice(0, -1)
+    }
+  }
+  return newText
 }
 
 export function removeLineBreaks(string) {

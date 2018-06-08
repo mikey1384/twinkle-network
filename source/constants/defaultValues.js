@@ -25,6 +25,7 @@ export const charLimit = {
     description: 5000
   },
   rewardComment: 5000,
+  statusMsg: 500,
   url: {
     title: 300,
     description: 20000,

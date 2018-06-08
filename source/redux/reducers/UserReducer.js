@@ -114,8 +114,12 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         profile: {
           ...state.profile,
-          ...action.data
-        }
+          ...action.bio
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId ? action.bio : {})
+        }))
       }
     case USER.EDIT_PROFILE_PICTURE:
       return {
@@ -134,6 +138,21 @@ export default function UserReducer(state = defaultState, action) {
             profile.id === action.data.userId
               ? action.data.imageId
               : profile.profilePicId
+        }))
+      }
+    case USER.EDIT_STATUS_MSG:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          statusMsg: action.statusMsg,
+          statusColor: action.statusColor
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId
+            ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
+            : {})
         }))
       }
     default:

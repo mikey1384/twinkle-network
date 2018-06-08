@@ -151,12 +151,20 @@ export const signup = params => async dispatch => {
   }
 }
 
+export const updateStatusMsg = ({ statusColor, statusMsg, userId }) => ({
+  type: USER.EDIT_STATUS_MSG,
+  statusColor,
+  statusMsg,
+  userId
+})
+
 export const uploadBio = (params, callback) => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/bio`, params, auth())
     dispatch({
       type: USER.EDIT_BIO,
-      data
+      bio: data.bio,
+      userId: data.userId
     })
     return Promise.resolve()
   } catch (error) {
