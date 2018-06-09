@@ -163,7 +163,6 @@ class ProfilePanel extends Component {
             {userId === profile.id && (
               <Fragment>
                 <Textarea
-                  autoFocus
                   className={css`
                     margin-top: 1rem;
                   `}
