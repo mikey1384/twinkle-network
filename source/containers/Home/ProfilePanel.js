@@ -84,7 +84,7 @@ class ProfilePanel extends Component {
             ? '#fff'
             : undefined
     const highlightEffects = {
-      border: `5px solid #fff`,
+      border: `0.5rem solid #fff`,
       boxShadow: `0 0 5px #fff`
     }
     const statusColor = editedStatusColor || profile.statusColor || 'logoBlue'
@@ -165,6 +165,9 @@ class ProfilePanel extends Component {
                 <Textarea
                   className={css`
                     margin-top: 1rem;
+                    ${profile.statusMsg
+                      ? ''
+                      : `box-shadow: ${`0 0 1rem ${Color.logoBlue()}`}; border: 1px solid ${Color.logoBlue()}`};
                   `}
                   minRows={1}
                   value={editedStatusMsg}
@@ -175,8 +178,8 @@ class ProfilePanel extends Component {
                     })
                   }}
                   placeholder={`Enter a ${
-                    profile.statusMsg ? 'new' : ''
-                  } status message`}
+                    profile.statusMsg ? 'new ' : ''
+                  }status message`}
                   style={exceedsCharLimit({
                     contentType: 'statusMsg',
                     text: editedStatusMsg
@@ -289,14 +292,21 @@ class ProfilePanel extends Component {
             )}
             {(profile.statusMsg || editedStatusMsg) && (
               <div
-                style={{
-                  background: Color[statusColor](),
-                  color: statusColor === 'ivory' ? Color.black() : '#fff',
-                  fontSize: '1.7rem',
-                  padding: '1rem',
-                  marginTop: '1rem',
-                  boxShadow: `0 5px 5px ${Color.lightGray()}`
-                }}
+                className={css`
+                  background: ${Color[statusColor]()};
+                  color: ${statusColor === 'ivory' ? Color.black() : '#fff'};
+                  font-size: 1.7rem;
+                  padding: 1rem;
+                  margin-top: 1rem;
+                  box-shadow: 0 5px 5px ${Color.lightGray()};
+                  > a {
+                    color: ${statusColor === 'ivory'
+                      ? Color.blue()
+                      : statusColor === 'logoGreen'
+                        ? Color.ivory()
+                        : Color.gold()};
+                  }
+                `}
                 dangerouslySetInnerHTML={{
                   __html: processedStringWithURL(
                     editedStatusMsg || profile.statusMsg
@@ -339,8 +349,16 @@ class ProfilePanel extends Component {
             {noProfile &&
               (userId === profile.id ? (
                 <div style={{ padding: '4rem 1rem 3rem 1rem' }}>
-                  **Add your bio so that your Twinkle friends can know you
-                  better
+                  <a
+                    style={{
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      fontSize: '2rem'
+                    }}
+                    onClick={() => this.setState({ bioEditModalShown: true })}
+                  >
+                    Introduce yourself!
+                  </a>
                 </div>
               ) : (
                 <div
