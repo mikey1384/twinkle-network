@@ -299,6 +299,8 @@ class ProfilePanel extends Component {
                   padding: 1rem;
                   margin-top: 1rem;
                   box-shadow: 0 5px 5px ${Color.lightGray()};
+                  overflow-wrap: break-word;
+                  word-break: break-word;
                   > a {
                     color: ${statusColor === 'ivory'
                       ? Color.blue()
