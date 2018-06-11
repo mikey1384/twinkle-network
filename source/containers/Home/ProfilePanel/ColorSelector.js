@@ -17,7 +17,7 @@ export default function ColorSelector({ setColor, statusColor }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        width: '50%'
+        width: '60%'
       }}
     >
       <div

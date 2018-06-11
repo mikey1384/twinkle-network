@@ -53,18 +53,28 @@ export default function StatusInput({
         })}
       </p>
       {editedStatusMsg && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            width: '100%'
+          }}
+        >
           <ColorSelector setColor={setColor} statusColor={statusColor} />
-          <Button snow onClick={onCancel} style={{ marginLeft: '2rem' }}>
+          <Button
+            snow
+            onClick={onCancel}
+            style={{ marginLeft: '2rem', fontSize: '1rem' }}
+          >
             Cancel
           </Button>
           <Button
             primary
             filled
-            style={{ marginLeft: '1rem' }}
+            style={{ marginLeft: '1rem', fontSize: '1rem' }}
             onClick={onStatusSubmit}
           >
-            Submit
+            Enter
           </Button>
         </div>
       )}
