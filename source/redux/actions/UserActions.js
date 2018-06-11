@@ -120,6 +120,11 @@ export const logout = () => {
   }
 }
 
+export const removeStatusMsg = userId => ({
+  type: USER.DELETE_STATUS_MSG,
+  userId
+})
+
 export const searchUsers = query => async dispatch => {
   try {
     const { data: users } = await request.get(

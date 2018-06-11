@@ -109,6 +109,21 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         signinModalShown: false
       }
+    case USER.DELETE_STATUS_MSG:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          statusMsg: '',
+          statusColor: ''
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId
+            ? { statusMsg: '', statusColor: '' }
+            : {})
+        }))
+      }
     case USER.EDIT_BIO:
       return {
         ...state,
