@@ -171,11 +171,10 @@ export default function ChatReducer(state = defaultState, action) {
           }
           if (action.showOnTop && index === state.channels.length - 1) {
             return [selectedChannel].concat(
-              prev.filter(
-                channel => channel.id !== selectedChannel.id
-              )
+              prev.concat(channel.id === selectedChannel.id ? [] : [channel])
             )
           }
+          if (action.showOnTop && selectedChannel.id === channel.id) return prev
           return prev.concat([
             {
               ...channel,
