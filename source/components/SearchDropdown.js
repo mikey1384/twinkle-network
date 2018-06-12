@@ -18,7 +18,12 @@ export default class Dropdown extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { indexToHighlight, startingIndex = 0, searchResults, onUpdate } = this.props
+    const {
+      indexToHighlight,
+      startingIndex = 0,
+      searchResults,
+      onUpdate
+    } = this.props
     let searchResultsChanged = false
     if (prevProps.searchResults.length !== searchResults.length) {
       searchResultsChanged = true
@@ -88,15 +93,18 @@ export default class Dropdown extends Component {
             return (
               <nav
                 key={index}
-                style={itemStyle}
+                style={{
+                  width: '100%',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  ...itemStyle
+                }}
                 onClick={() => onItemClick(item)}
               >
                 <a
                   {...href}
                   style={{
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
                     lineHeight: 'normal'
                   }}
                   onClick={e => e.preventDefault()}
