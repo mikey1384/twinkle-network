@@ -50,7 +50,6 @@ export default class PanelComments extends Component {
     if (
       inputAtBottom &&
       commentSubmitted &&
-      prevProps.comments &&
       comments.length > prevProps.comments.length &&
       (prevProps.comments.length === 0 ||
         comments[comments.length - 1].id >
@@ -59,6 +58,13 @@ export default class PanelComments extends Component {
       this.setState({ commentSubmitted: false })
       scrollElementToCenter(this.Comments[comments[comments.length - 1].id])
     }
+    if (
+      prevProps.comments.length === 0 &&
+      comments.length > 0 &&
+      !commentSubmitted
+    ) {
+      scrollElementToCenter(this.CommentInputArea)
+    }
   }
 
   render() {
@@ -66,7 +72,7 @@ export default class PanelComments extends Component {
       onSubmit,
       autoFocus,
       loadMoreButton,
-      comments,
+      comments = [],
       inputAreaInnerRef,
       inputTypeLabel,
       parent,
@@ -137,6 +143,7 @@ export default class PanelComments extends Component {
         {inputAtBottom && (
           <CommentInputArea
             autoFocus={autoFocus}
+            InputFormRef={ref => (this.CommentInputArea = ref)}
             innerRef={inputAreaInnerRef}
             style={{ marginTop: '1rem' }}
             inputTypeLabel={inputTypeLabel}
