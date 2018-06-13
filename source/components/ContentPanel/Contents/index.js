@@ -405,7 +405,7 @@ class Contents extends Component {
     const { commentsShown } = this.state
     const isReply = !!commentId
     if (!commentsShown) {
-      this.setState({ commentsShown: true })
+      this.setState({ commentsShown: true, autoFocusWhenCommentShown: true })
       await methods.showFeedComments({
         rootType,
         type,
@@ -415,7 +415,6 @@ class Contents extends Component {
       })
       this.setState({ commentsLoaded: true })
     }
-    this.CommentInputArea.focus()
   }
 
   onLikeClick = async() => {
