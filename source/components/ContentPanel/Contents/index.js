@@ -207,6 +207,7 @@ class Contents extends Component {
                 contentLikers.length > 0 &&
                 !(type === 'comment' && stars.length > 0) &&
                 !commentsShown &&
+                !xpRewardInterfaceShown &&
                 '1rem'
             }}
           >
