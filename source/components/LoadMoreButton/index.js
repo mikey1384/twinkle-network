@@ -16,7 +16,7 @@ export default function LoadMoreButton({ onClick, loading, style }) {
       `}
       style={style}
     >
-      <Button disabled={loading} success filled onClick={onClick}>
+      <Button disabled={loading} info filled onClick={onClick}>
         {loading ? 'Loading' : 'Load More'}
         {loading && (
           <span>

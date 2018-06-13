@@ -251,6 +251,7 @@ class Body extends Component {
                       key={`${feed.type}${feed.id}`}
                       contentObj={feed}
                       userId={myId}
+                      inputAtBottom={feed.type === 'comment'}
                       methodObj={{
                         attachStar,
                         deleteComment: feedCommentDelete,

@@ -8,13 +8,20 @@ import Comment from './Comment'
 class RewardStatus extends Component {
   static propTypes = {
     userId: PropTypes.number,
+    noMarginForEditButton: PropTypes.bool,
     onCommentEdit: PropTypes.func,
     stars: PropTypes.array,
     style: PropTypes.object
   }
 
   render() {
-    const { onCommentEdit, stars, userId, style } = this.props
+    const {
+      noMarginForEditButton,
+      onCommentEdit,
+      stars,
+      userId,
+      style
+    } = this.props
     if (!stars || stars.length === 0) return null
     const totalStars = stars.reduce(
       (prev, star) => (prev += star.rewardAmount),
@@ -34,7 +41,7 @@ class RewardStatus extends Component {
             color: #fff;
             background: ${totalStars === 5
               ? Color.gold()
-              : Color.logoBlue(0.6 + 0.1 * totalStars)};
+              : Color.blue(0.6 + 0.1 * totalStars)};
           `}
         >
           {starMarks}
@@ -44,6 +51,7 @@ class RewardStatus extends Component {
         </div>
         {stars.map(star => (
           <Comment
+            noMarginForEditButton={noMarginForEditButton}
             key={star.id}
             star={star}
             myId={userId}

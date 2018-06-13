@@ -72,6 +72,7 @@ export const deleteVideoComment = commentId => async dispatch => {
       type: VIDEO.DELETE_COMMENT,
       data: { commentId }
     })
+    return Promise.resolve()
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
@@ -111,7 +112,7 @@ export const editVideoComment = params => async dispatch => {
   }
 }
 
-export const editRewardComment = ({id, text}) => ({
+export const editRewardComment = ({ id, text }) => ({
   type: VIDEO.EDIT_REWARD_COMMENT,
   id,
   text

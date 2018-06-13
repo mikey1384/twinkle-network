@@ -1,5 +1,16 @@
 export function scrollElementToCenter(element) {
-  document.body.scrollTo(0, element.offsetTop - document.body.innerHeight / 2)
+  if (!element) return
+  let offsetTop = 0
+  addAllOffsetTop(element)
+  document.getElementById('App').scrollTop =
+    offsetTop -
+    (document.getElementById('App').clientHeight - element.clientHeight) / 2
+  function addAllOffsetTop(element) {
+    offsetTop += element.offsetTop
+    if (element.offsetParent) {
+      addAllOffsetTop(element.offsetParent)
+    }
+  }
 }
 
 export function textIsOverflown(element) {

@@ -18,12 +18,14 @@ import { determineXpButtonDisabled } from 'helpers/domHelpers'
 
 class Contents extends Component {
   static propTypes = {
+    autoShowComments: PropTypes.bool,
     attachedVideoShown: PropTypes.bool,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
     contentObj: PropTypes.object.isRequired,
     canStar: PropTypes.bool,
+    inputAtBottom: PropTypes.bool,
     methods: PropTypes.object.isRequired,
     myId: PropTypes.number
   }
@@ -34,11 +36,28 @@ class Contents extends Component {
     edited: false,
     isEditing: false,
     userListModalShown: false,
-    clickListenerState: false,
     commentsShown: false,
     confirmModalShown: false,
     twoStarSelected: false,
     xpRewardInterfaceShown: false
+  }
+
+  componentDidMount() {
+    const {
+      autoShowComments,
+      contentObj: { rootType, type, contentId, isReply },
+      methods
+    } = this.props
+    if (autoShowComments) {
+      this.setState({ commentsShown: true })
+      return methods.showFeedComments({
+        rootType,
+        type,
+        contentId,
+        commentLength: 0,
+        isReply
+      })
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -89,6 +108,7 @@ class Contents extends Component {
       canEdit,
       canStar,
       contentObj,
+      inputAtBottom,
       methods,
       myId,
       attachedVideoShown
@@ -97,7 +117,6 @@ class Contents extends Component {
       autoFocusWhenCommentShown,
       edited,
       userListModalShown,
-      clickListenerState,
       confirmModalShown,
       commentsShown,
       isEditing,
@@ -289,6 +308,7 @@ class Contents extends Component {
         )}
         {type === 'comment' && (
           <RewardStatus
+            style={{ marginTop: '0.5rem' }}
             onCommentEdit={methods.onRewardCommentEdit}
             stars={stars}
           />
@@ -296,8 +316,11 @@ class Contents extends Component {
         {commentsShown && (
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}
-            style={{ padding: '1rem' }}
-            clickListenerState={clickListenerState}
+            inputAreaInnerRef={ref => {
+              this.CommentInputArea = ref
+            }}
+            inputAtBottom={inputAtBottom}
+            style={{ padding: '1rem', paddingTop: 0, marginTop: '0.5rem' }}
             inputTypeLabel={
               type === 'comment'
                 ? 'reply'
@@ -364,7 +387,7 @@ class Contents extends Component {
       contentObj: { type, rootType, contentId, commentId },
       methods
     } = this.props
-    const { clickListenerState, commentsShown } = this.state
+    const { commentsShown } = this.state
     const isReply = !!commentId
     if (!commentsShown) {
       this.setState({ commentsShown: true, autoFocusWhenCommentShown: true })
@@ -376,7 +399,7 @@ class Contents extends Component {
         isReply
       })
     }
-    this.setState({ clickListenerState: !clickListenerState })
+    this.CommentInputArea.focus()
   }
 
   onLikeClick = () => {

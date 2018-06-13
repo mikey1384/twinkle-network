@@ -188,7 +188,7 @@ class Content extends Component {
                 </div>
                 <RewardStatus
                   onCommentEdit={methods.onRewardCommentEdit}
-                  style={{ marginTop: '1.5rem' }}
+                  style={{ marginTop: likes.length > 0 ? '0.5rem' : '1rem' }}
                   stars={stars}
                 />
                 {replyInputShown && (

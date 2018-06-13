@@ -22,6 +22,7 @@ class Comment extends Component {
     authLevel: PropTypes.number,
     canEdit: PropTypes.bool,
     myId: PropTypes.number,
+    noMarginForEditButton: PropTypes.bool,
     onEditDone: PropTypes.func,
     star: PropTypes.object.isRequired
   }
@@ -31,7 +32,7 @@ class Comment extends Component {
   }
 
   render() {
-    const { authLevel, canEdit, myId, star } = this.props
+    const { authLevel, canEdit, myId, noMarginForEditButton, star } = this.props
     const { onEdit } = this.state
     const userIsUploader = star.rewarderId === myId
     const userCanEditThis = canEdit && authLevel > star.rewarderAuthLevel
@@ -48,7 +49,7 @@ class Comment extends Component {
         <div
           className={css`
             padding: 1rem;
-            display: flex;
+            ${noMarginForEditButton ? `padding-right: 0;` : ''} display: flex;
             align-items: space-between;
           `}
         >

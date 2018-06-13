@@ -29,7 +29,7 @@ export const container = css`
       font-size: 1.6rem;
     }
     .bottom-interface {
-      padding: 0 1rem 1rem 1rem;
+      padding: 0 1rem 0 1rem;
       display: flex;
       flex-direction: column;
       .buttons-bar {

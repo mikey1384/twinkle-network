@@ -7,7 +7,9 @@ import { container } from './Styles'
 
 export default class ContentPanel extends Component {
   static propTypes = {
+    autoShowComments: PropTypes.bool,
     contentObj: PropTypes.object.isRequired,
+    inputAtBottom: PropTypes.bool,
     methodObj: PropTypes.object.isRequired,
     selfLoadingDisabled: PropTypes.bool,
     userId: PropTypes.number
@@ -28,7 +30,13 @@ export default class ContentPanel extends Component {
   }
 
   render() {
-    const { contentObj, methodObj, userId } = this.props
+    const {
+      autoShowComments,
+      contentObj,
+      inputAtBottom,
+      methodObj,
+      userId
+    } = this.props
     const { attachedVideoShown } = this.state
     const methods = {
       Heading: {
@@ -113,7 +121,9 @@ export default class ContentPanel extends Component {
         <div className="body">
           {contentObj.uploaderName && (
             <Contents
+              autoShowComments={autoShowComments}
               contentObj={contentObj}
+              inputAtBottom={inputAtBottom}
               methods={methods.Contents}
               attachedVideoShown={attachedVideoShown}
               myId={userId}

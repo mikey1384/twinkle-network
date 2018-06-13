@@ -9,14 +9,13 @@ import {
   finalizeEmoji,
   renderCharLimit
 } from 'helpers/stringHelpers'
-import { scrollElementToCenter } from 'helpers/domHelpers'
 import { css } from 'emotion'
 
 export default class InputForm extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
-    clickListenerState: PropTypes.bool,
     formGroupStyle: PropTypes.object,
+    innerRef: PropTypes.func,
     onSubmit: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
     rows: PropTypes.number,
@@ -28,21 +27,10 @@ export default class InputForm extends Component {
     text: ''
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.clickListenerState !== this.props.clickListenerState) {
-      let nodes = this.InputArea.childNodes
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].tagName === 'TEXTAREA') {
-          nodes[i].focus()
-          scrollElementToCenter(nodes[i])
-        }
-      }
-    }
-  }
-
   render() {
     const { text } = this.state
     const {
+      innerRef,
       placeholder,
       rows,
       autoFocus,
@@ -61,12 +49,10 @@ export default class InputForm extends Component {
             position: 'relative',
             ...formGroupStyle
           }}
-          ref={ref => {
-            this.InputArea = ref
-          }}
         >
           <Textarea
             autoFocus={autoFocus}
+            innerRef={innerRef}
             style={{
               fontSize: '1.7rem',
               ...(commentExceedsCharLimit || {})
@@ -86,22 +72,24 @@ export default class InputForm extends Component {
             </small>
           )}
         </div>
-        <div
-          className={css`
-            display: flex;
-            flex-direction: row-reverse;
-          `}
-        >
-          <Button
-            style={{ marginTop: '1rem' }}
-            filled
-            success
-            disabled={stringIsEmpty(text) || commentExceedsCharLimit}
-            onClick={this.onSubmit}
+        {!stringIsEmpty(text) && (
+          <div
+            className={css`
+              display: flex;
+              flex-direction: row-reverse;
+            `}
           >
-            Click This Button to Submit!
-          </Button>
-        </div>
+            <Button
+              style={{ marginTop: '1rem' }}
+              filled
+              success
+              disabled={commentExceedsCharLimit}
+              onClick={this.onSubmit}
+            >
+              Click This Button to Submit!
+            </Button>
+          </div>
+        )}
       </div>
     )
   }

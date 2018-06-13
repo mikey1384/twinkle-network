@@ -445,29 +445,12 @@ export default function FeedReducer(state = defaultState, action) {
               : feed.rootContentLikers
         }))
       }
-    case FEED.LOAD_MORE_COMMENTS:
+    case FEED.LOAD_COMMENTS:
+      if (action.data.type === 'comment') action.data.childComments.reverse()
       if (action.data.childComments.length > 3) {
-        action.data.childComments.pop()
-        commentsLoadMoreButton = true
-      }
-      return {
-        ...state,
-        feeds: state.feeds.map(feed => {
-          let match =
-            feed.type === action.data.type &&
-            feed.contentId === action.data.contentId
-          return {
-            ...feed,
-            commentsLoadMoreButton,
-            childComments: match
-              ? feed.childComments.concat(action.data.childComments)
-              : feed.childComments
-          }
-        })
-      }
-    case FEED.SHOW_COMMENTS:
-      if (action.data.childComments.length > 3) {
-        action.data.childComments.pop()
+        action.data.type === 'comment'
+          ? action.data.childComments.shift()
+          : action.data.childComments.pop()
         commentsLoadMoreButton = true
       }
       return {
@@ -485,6 +468,31 @@ export default function FeedReducer(state = defaultState, action) {
               ? action.data.childComments
               : feed.childComments,
             isReply: match ? action.data.isReply : feed.isReply
+          }
+        })
+      }
+    case FEED.LOAD_MORE_COMMENTS:
+      if (action.data.type === 'comment') action.data.childComments.reverse()
+      if (action.data.childComments.length > 3) {
+        action.data.type === 'comment'
+          ? action.data.childComments.shift()
+          : action.data.childComments.pop()
+        commentsLoadMoreButton = true
+      }
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          let match =
+            feed.type === action.data.type &&
+            feed.contentId === action.data.contentId
+          return {
+            ...feed,
+            commentsLoadMoreButton,
+            childComments: match
+              ? action.data.type === 'comment'
+                ? action.data.childComments.concat(feed.childComments)
+                : feed.childComments.concat(action.data.childComments)
+              : feed.childComments
           }
         })
       }
@@ -519,7 +527,7 @@ export default function FeedReducer(state = defaultState, action) {
             feed.type === 'comment' &&
             feed.contentId === action.data.contentId
           let comments = match
-            ? [reply].concat(feed.childComments)
+            ? feed.childComments.concat([reply])
             : feed.childComments
           return {
             ...feed,

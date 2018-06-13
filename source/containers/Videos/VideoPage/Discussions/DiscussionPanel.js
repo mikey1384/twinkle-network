@@ -252,7 +252,8 @@ class DiscussionPanel extends Component {
                   }}
                 >
                   <Button
-                    transparent
+                    filled
+                    success
                     style={{ fontSize: '2rem' }}
                     onClick={this.onExpand}
                   >

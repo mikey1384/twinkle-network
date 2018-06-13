@@ -10,10 +10,7 @@ import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
 import LikeButton from 'components/Buttons/LikeButton'
 import ReplyInputArea from './ReplyInputArea'
-import {
-  scrollElementToCenter,
-  determineXpButtonDisabled
-} from 'helpers/domHelpers'
+import { determineXpButtonDisabled } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
 import { container } from '../Styles'
@@ -31,10 +28,7 @@ class PanelReply extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
-    deleteCallback: PropTypes.func.isRequired,
-    deleteListenerToggle: PropTypes.bool,
-    lastDeletedCommentIndex: PropTypes.number,
-    index: PropTypes.number,
+    innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
@@ -62,29 +56,9 @@ class PanelReply extends Component {
 
   state = {
     onEdit: false,
-    replyInputShown: false,
     userListModalShown: false,
     confirmModalShown: false,
-    clickListenerState: false,
     xpRewardInterfaceShown: false
-  }
-
-  componentDidMount() {
-    const {
-      reply: { replyOfReply, originType },
-      type
-    } = this.props
-    if (replyOfReply && type === originType) {
-      scrollElementToCenter(this.PanelReply)
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
-      if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
-        scrollElementToCenter(this.PanelReply)
-      }
-    }
   }
 
   render() {
@@ -95,6 +69,7 @@ class PanelReply extends Component {
       canDelete,
       canEdit,
       canStar,
+      innerRef = () => {},
       onRewardCommentEdit,
       reply,
       reply: { uploaderAuthLevel, stars = [] },
@@ -104,7 +79,6 @@ class PanelReply extends Component {
     const {
       onEdit,
       userListModalShown,
-      replyInputShown,
       confirmModalShown,
       clickListenerState,
       xpRewardInterfaceShown
@@ -131,12 +105,7 @@ class PanelReply extends Component {
       if (reply.likes[i].userId === userId) userLikedThis = true
     }
     return (
-      <div
-        className={container}
-        ref={ref => {
-          this.PanelReply = ref
-        }}
-      >
+      <div className={container} ref={innerRef}>
         <div className="content-wrapper">
           <aside>
             <ProfilePic
@@ -276,16 +245,19 @@ class PanelReply extends Component {
               />
             )}
             <RewardStatus
+              noMarginForEditButton
               onCommentEdit={onRewardCommentEdit}
               style={{ fontSize: '1.4rem', marginTop: '0.5rem' }}
               stars={stars}
             />
-            {replyInputShown && (
-              <ReplyInputArea
-                onSubmit={this.onReplySubmit}
-                clickListenerState={clickListenerState}
-              />
-            )}
+            <ReplyInputArea
+              innerRef={ref => {
+                this.ReplyInputArea = ref
+              }}
+              style={{ marginTop: '0.5rem' }}
+              onSubmit={this.onReplySubmit}
+              clickListenerState={clickListenerState}
+            />
           </section>
         </div>
         {userListModalShown && (
@@ -320,17 +292,12 @@ class PanelReply extends Component {
   }
 
   onDelete = () => {
-    const { deleteCallback, index, onDelete, reply } = this.props
-    deleteCallback(index)
+    const { onDelete, reply } = this.props
     onDelete(reply.id)
   }
 
   onReplyButtonClick = () => {
-    const { replyInputShown, clickListenerState } = this.state
-    if (!replyInputShown) {
-      return this.setState({ replyInputShown: true })
-    }
-    this.setState({ clickListenerState: !clickListenerState })
+    this.ReplyInputArea.focus()
   }
 
   onReplySubmit = replyContent => {

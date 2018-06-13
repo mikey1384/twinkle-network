@@ -177,6 +177,7 @@ class Stories extends Component {
                     <ContentPanel
                       key={feed.id}
                       selfLoadingDisabled={this.clearingFeeds}
+                      inputAtBottom={feed.type === 'comment'}
                       contentObj={feed}
                       methodObj={{
                         attachStar,

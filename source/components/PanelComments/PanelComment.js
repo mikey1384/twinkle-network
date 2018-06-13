@@ -45,11 +45,7 @@ class PanelComment extends Component {
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     }).isRequired,
-    deleteCallback: PropTypes.func.isRequired,
-    deleteListenerToggle: PropTypes.bool,
-    index: PropTypes.number,
-    isFirstComment: PropTypes.bool,
-    lastDeletedCommentIndex: PropTypes.number,
+    innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
@@ -61,29 +57,35 @@ class PanelComment extends Component {
     userId: PropTypes.number
   }
 
+  Replies = {}
+
   state = {
-    replyInputShown: false,
     onEdit: false,
+    replying: false,
     userListModalShown: false,
-    clickListenerState: false,
     confirmModalShown: false,
     xpRewardInterfaceShown: false
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
-      if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
-        scrollElementToCenter(this.PanelComment)
-      }
+    const {
+      comment: { replies = [] }
+    } = this.props
+    const { replying } = this.state
+    if (
+      replying &&
+      prevProps.comment.replies &&
+      replies.length > prevProps.comment.replies.length
+    ) {
+      this.setState({ replying: false })
+      scrollElementToCenter(this.Replies[replies[replies.length - 1].id])
     }
   }
 
   render() {
     const {
-      replyInputShown,
       onEdit,
       userListModalShown,
-      clickListenerState,
       confirmModalShown,
       xpRewardInterfaceShown
     } = this.state
@@ -95,6 +97,7 @@ class PanelComment extends Component {
       canStar,
       comment,
       comment: { replies = [], likes = [], stars = [], uploaderAuthLevel },
+      innerRef,
       userId,
       parent,
       type,
@@ -131,6 +134,7 @@ class PanelComment extends Component {
         className={container}
         ref={ref => {
           this.PanelComment = ref
+          innerRef(ref)
         }}
       >
         <div className="content-wrapper">
@@ -259,33 +263,35 @@ class PanelComment extends Component {
               />
             )}
             <RewardStatus
+              noMarginForEditButton
               onCommentEdit={onRewardCommentEdit}
               style={{ fontSize: '1.4rem', marginTop: '0.5rem' }}
               stars={stars}
             />
-            {replies.length > 0 && (
-              <PanelReplies
-                userId={userId}
-                replies={replies}
-                comment={comment}
-                parent={parent}
-                type={type}
-                attachStar={attachStar}
-                onDelete={onDelete}
-                onLoadMoreReplies={onLoadMoreReplies}
-                onLikeClick={onLikeClick}
-                onEditDone={onEditDone}
-                onReplySubmit={onReplySubmit}
-                onRewardCommentEdit={onRewardCommentEdit}
-              />
-            )}
-            {replyInputShown && (
-              <ReplyInputArea
-                clickListenerState={clickListenerState}
-                onSubmit={this.onReplySubmit}
-                numReplies={replies.length}
-              />
-            )}
+            <ReplyInputArea
+              innerRef={ref => {
+                this.ReplyInputArea = ref
+              }}
+              style={{ marginTop: '0.5rem' }}
+              onSubmit={this.onReplySubmit}
+              numReplies={replies.length}
+            />
+            <PanelReplies
+              innerRef={({ ref, replyId }) => (this.Replies[replyId] = ref)}
+              Replies={this.Replies}
+              userId={userId}
+              replies={replies}
+              comment={comment}
+              parent={parent}
+              type={type}
+              attachStar={attachStar}
+              onDelete={onDelete}
+              onLoadMoreReplies={onLoadMoreReplies}
+              onLikeClick={onLikeClick}
+              onEditDone={onEditDone}
+              onReplySubmit={onReplySubmit}
+              onRewardCommentEdit={onRewardCommentEdit}
+            />
           </section>
         </div>
         {userListModalShown && (
@@ -320,25 +326,17 @@ class PanelComment extends Component {
   }
 
   onReplyButtonClick = () => {
-    const { clickListenerState, replyInputShown } = this.state
-    if (!replyInputShown) return this.setState({ replyInputShown: true })
-    this.setState({ clickListenerState: !clickListenerState })
+    this.ReplyInputArea.focus()
   }
 
   onReplySubmit = replyContent => {
     const { parent, comment, onReplySubmit } = this.props
+    this.setState({ replying: true })
     onReplySubmit({ replyContent, comment, parent })
   }
 
   onDelete = () => {
-    const {
-      comment,
-      onDelete,
-      index,
-      deleteCallback,
-      isFirstComment
-    } = this.props
-    deleteCallback(index, isFirstComment)
+    const { comment, onDelete } = this.props
     onDelete(comment.id)
   }
 }

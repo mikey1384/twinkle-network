@@ -126,7 +126,7 @@ class SubjectHeader extends Component {
                 <aside>
                   <Button
                     filled
-                    info
+                    logo
                     style={{ fontSize: '1.3rem' }}
                     onClick={() => this.setState({ onEdit: true })}
                   >

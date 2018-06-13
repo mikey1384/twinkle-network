@@ -10,6 +10,7 @@ export default class PanelReplies extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }).isRequired,
+    innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
@@ -23,43 +24,59 @@ export default class PanelReplies extends Component {
         userId: PropTypes.number.isRequired
       })
     ).isRequired,
+    Replies: PropTypes.object,
     type: PropTypes.string,
     userId: PropTypes.number
   }
 
   state = {
-    lastDeletedCommentIndex: null,
-    deleteListenerToggle: false
+    deleting: false,
+    replying: false
   }
 
   componentDidUpdate(prevProps) {
-    const { deleteListenerToggle } = this.state
-    const length = this.props.replies.length
-
-    if (length < prevProps.replies.length) {
-      if (length === 0) return scrollElementToCenter(this.PanelReplies)
-      this.setState({ deleteListenerToggle: !deleteListenerToggle })
+    const { deleting, replying } = this.state
+    const { replies, Replies } = this.props
+    if (replies.length < prevProps.replies.length) {
+      if (deleting) {
+        this.setState({ deleting: false })
+        if (replies.length === 0) {
+          return scrollElementToCenter(this.ReplyContainer)
+        }
+        if (
+          replies[replies.length - 1].id !==
+          prevProps.replies[prevProps.replies.length - 1].id
+        ) {
+          scrollElementToCenter(Replies[replies[replies.length - 1].id])
+        }
+      }
+    }
+    if (replies.length > prevProps.replies.length) {
+      if (replying) {
+        this.setState({ replying: false })
+        scrollElementToCenter(Replies[replies[replies.length - 1].id])
+      }
     }
   }
 
   render() {
     const {
       attachStar,
+      innerRef,
       type,
-      replies = [],
+      replies,
       userId,
       onEditDone,
       onRewardCommentEdit,
       onLikeClick,
-      onDelete,
       comment,
       parent
     } = this.props
-    const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
+    const { lastDeletedCommentIndex } = this.state
     return (
       <div
         ref={ref => {
-          this.PanelReplies = ref
+          this.ReplyContainer = ref
         }}
       >
         {comment.loadMoreReplies && (
@@ -79,6 +96,7 @@ export default class PanelReplies extends Component {
           return (
             <PanelReply
               index={index}
+              innerRef={ref => innerRef({ ref, replyId: reply.id })}
               key={reply.id}
               type={type}
               parent={parent}
@@ -86,23 +104,17 @@ export default class PanelReplies extends Component {
               reply={reply}
               userId={userId}
               attachStar={attachStar}
-              onDelete={onDelete}
+              onDelete={this.onDelete}
               onLikeClick={onLikeClick}
               onEditDone={onEditDone}
               onReplySubmit={this.onReplyOfReplySubmit}
               onRewardCommentEdit={onRewardCommentEdit}
-              deleteCallback={this.deleteCallback}
               lastDeletedCommentIndex={lastDeletedCommentIndex}
-              deleteListenerToggle={deleteListenerToggle}
             />
           )
         })}
       </div>
     )
-  }
-
-  deleteCallback = index => {
-    this.setState({ lastDeletedCommentIndex: index })
   }
 
   loadMoreReplies = () => {
@@ -111,8 +123,15 @@ export default class PanelReplies extends Component {
     onLoadMoreReplies(lastReplyId, comment.id, parent)
   }
 
+  onDelete = replyId => {
+    const { onDelete } = this.props
+    this.setState({ deleting: true })
+    onDelete(replyId)
+  }
+
   onReplyOfReplySubmit = ({ replyContent, reply, parent }) => {
     const { onReplySubmit, type } = this.props
+    this.setState({ replying: true })
     onReplySubmit({
       replyContent,
       parent,

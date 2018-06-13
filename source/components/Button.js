@@ -14,6 +14,7 @@ Button.propTypes = {
   hoverClass: PropTypes.string,
   info: PropTypes.bool,
   logo: PropTypes.bool,
+  logoGreen: PropTypes.bool,
   onClick: PropTypes.func,
   children: PropTypes.node,
   danger: PropTypes.bool,
@@ -41,6 +42,7 @@ export default function Button({
   love,
   filled,
   info,
+  logoGreen,
   opacity,
   primary,
   success,
@@ -61,6 +63,7 @@ export default function Button({
     love: Color.pink(opacity),
     primary: Color.blue(opacity),
     logo: Color.logoBlue(opacity),
+    logoGreen: Color.logoGreen(opacity),
     success: Color.green(opacity),
     warning: Color.orange(opacity),
     gold: Color.gold(opacity),
@@ -75,6 +78,7 @@ export default function Button({
   if (love) colorKey = 'love'
   if (primary) colorKey = 'primary'
   if (logo) colorKey = 'logo'
+  if (logoGreen) colorKey = 'logoGreen'
   if (success) colorKey = 'success'
   if (alert) colorKey = 'alert'
   if (warning) colorKey = 'warning'

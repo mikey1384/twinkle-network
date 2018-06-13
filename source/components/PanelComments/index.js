@@ -8,9 +8,10 @@ import { scrollElementToCenter } from 'helpers/domHelpers'
 export default class PanelComments extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
-    clickListenerState: PropTypes.bool,
     commentActions: PropTypes.object.isRequired,
     comments: PropTypes.array.isRequired,
+    inputAreaInnerRef: PropTypes.func,
+    inputAtBottom: PropTypes.bool,
     inputTypeLabel: PropTypes.string,
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
@@ -26,16 +27,37 @@ export default class PanelComments extends Component {
 
   state = {
     isLoading: false,
-    lastDeletedCommentIndex: null,
-    deleteListenerToggle: false,
-    deletedFirstComment: false
+    commentSubmitted: false,
+    lastDeletedCommentIndex: null
   }
 
+  Comments = {}
+
   componentDidUpdate(prevProps) {
-    const { deleteListenerToggle, deletedFirstComment } = this.state
-    if (prevProps.comments.length > this.props.comments.length) {
-      if (deletedFirstComment) return scrollElementToCenter(this.PanelComments)
-      this.setState({ deleteListenerToggle: !deleteListenerToggle })
+    const { commentSubmitted } = this.state
+    const { comments, inputAtBottom } = this.props
+    if (prevProps.comments.length > comments.length) {
+      if (comments.length === 0) {
+        return scrollElementToCenter(this.PanelComments)
+      }
+      if (
+        comments[comments.length - 1].id !==
+        prevProps.comments[prevProps.comments.length - 1].id
+      ) {
+        scrollElementToCenter(this.Comments[comments[comments.length - 1].id])
+      }
+    }
+    if (
+      inputAtBottom &&
+      commentSubmitted &&
+      prevProps.comments &&
+      comments.length > prevProps.comments.length &&
+      (prevProps.comments.length === 0 ||
+        comments[comments.length - 1].id >
+          prevProps.comments[prevProps.comments.length - 1].id)
+    ) {
+      this.setState({ commentSubmitted: false })
+      scrollElementToCenter(this.Comments[comments[comments.length - 1].id])
     }
   }
 
@@ -45,10 +67,11 @@ export default class PanelComments extends Component {
       autoFocus,
       loadMoreButton,
       comments,
+      inputAreaInnerRef,
       inputTypeLabel,
       parent,
       style,
-      clickListenerState
+      inputAtBottom
     } = this.props
     const { isLoading } = this.state
     return (
@@ -61,35 +84,67 @@ export default class PanelComments extends Component {
           this.PanelComments = ref
         }}
       >
-        <CommentInputArea
-          autoFocus={autoFocus}
-          clickListenerState={clickListenerState}
-          inputTypeLabel={inputTypeLabel}
-          onSubmit={comment => onSubmit(comment, parent)}
-        />
+        {!inputAtBottom && (
+          <CommentInputArea
+            autoFocus={autoFocus}
+            innerRef={inputAreaInnerRef}
+            inputTypeLabel={inputTypeLabel}
+            onSubmit={comment => {
+              this.setState({ commentSubmitted: true })
+              onSubmit(comment, parent)
+            }}
+          />
+        )}
         {comments.length > 0 && (
           <div style={{ width: '100%' }}>
-            {this.renderComments()}
-            {loadMoreButton && (
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '1rem'
-                }}
-              >
+            {inputAtBottom &&
+              loadMoreButton && (
                 <Button
-                  success
                   filled
+                  info
                   disabled={isLoading}
                   onClick={this.loadMoreComments}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '1rem'
+                  }}
                 >
                   Load More
                 </Button>
-              </div>
-            )}
+              )}
+            {this.renderComments()}
+            {!inputAtBottom &&
+              loadMoreButton && (
+                <Button
+                  filled
+                  info
+                  disabled={isLoading}
+                  onClick={this.loadMoreComments}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '1rem'
+                  }}
+                >
+                  Load More
+                </Button>
+              )}
           </div>
+        )}
+        {inputAtBottom && (
+          <CommentInputArea
+            autoFocus={autoFocus}
+            innerRef={inputAreaInnerRef}
+            style={{ marginTop: '1rem' }}
+            inputTypeLabel={inputTypeLabel}
+            onSubmit={comment => {
+              this.setState({ commentSubmitted: true })
+              onSubmit(comment, parent)
+            }}
+          />
         )}
       </div>
     )
@@ -102,6 +157,9 @@ export default class PanelComments extends Component {
       <PanelComment
         {...commentActions}
         index={index}
+        innerRef={ref => {
+          this.Comments[comment.id] = ref
+        }}
         type={type}
         parent={parent}
         comment={comment}
@@ -124,11 +182,13 @@ export default class PanelComments extends Component {
 
   loadMoreComments = () => {
     const { isLoading } = this.state
+    const { inputAtBottom } = this.props
     if (!isLoading) {
       const { comments, parent, loadMoreComments } = this.props
       this.setState({ isLoading: true }, async() => {
-        const lastCommentId = comments[comments.length - 1]
-          ? comments[comments.length - 1].id
+        const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1
+        const lastCommentId = comments[lastCommentLocation]
+          ? comments[lastCommentLocation].id
           : 0
         try {
           await loadMoreComments({

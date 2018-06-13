@@ -38,6 +38,7 @@ export const deleteComment = commentId => async dispatch => {
       type: LINK.DELETE_COMMENT,
       commentId
     })
+    return Promise.resolve()
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)

@@ -75,6 +75,7 @@ export const feedCommentDelete = commentId => async dispatch => {
       type: FEED.DELETE_COMMENT,
       commentId
     })
+    return Promise.resolve()
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
@@ -375,8 +376,8 @@ export const showFeedComments = ({
       `${API_URL}/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}`
     )
     dispatch({
-      type: FEED.SHOW_COMMENTS,
-      data: { type, contentId, childComments: data }
+      type: FEED.LOAD_COMMENTS,
+      data: { isReply, type, contentId, childComments: data }
     })
   } catch (error) {
     console.error(error.response || error)

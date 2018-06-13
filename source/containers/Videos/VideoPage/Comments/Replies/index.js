@@ -1,75 +1,76 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Reply from './Reply'
-import { scrollElementToCenter } from 'helpers/domHelpers'
 import Button from 'components/Button'
+import { scrollElementToCenter } from 'helpers/domHelpers'
 
 export default class Replies extends Component {
   static propTypes = {
     comment: PropTypes.object.isRequired,
     commentId: PropTypes.number.isRequired,
+    innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     replies: PropTypes.array.isRequired,
+    Replies: PropTypes.object,
     userId: PropTypes.number,
     videoId: PropTypes.number.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      lastDeletedCommentIndex: null,
-      deleteListenerToggle: false,
-      deletedFirstReply: false
-    }
-    this.deleteCallback = this.deleteCallback.bind(this)
-    this.loadMoreReplies = this.loadMoreReplies.bind(this)
+  state = {
+    deleting: false
   }
 
   componentDidUpdate(prevProps) {
-    const length = this.props.replies.length
-    const { deleteListenerToggle, deletedFirstReply } = this.state
-    if (length < prevProps.replies.length) {
-      if (length === 0) {
-        if (deletedFirstReply) return scrollElementToCenter(this.Replies)
-        return
+    const { deleting } = this.state
+    const { replies, Replies } = this.props
+    if (replies.length < prevProps.replies.length) {
+      if (deleting) {
+        this.setState({ deleting: false })
+        if (replies.length === 0) {
+          return scrollElementToCenter(this.ReplyContainer)
+        }
+        if (
+          replies[replies.length - 1].id !==
+          prevProps.replies[prevProps.replies.length - 1].id
+        ) {
+          scrollElementToCenter(Replies[replies[replies.length - 1].id])
+        }
       }
-      this.setState({ deleteListenerToggle: !deleteListenerToggle })
     }
   }
 
   render() {
     const {
       comment,
+      innerRef,
       replies,
       userId,
       onEditDone,
       onLikeClick,
-      onDelete,
       onReplySubmit,
       commentId,
       videoId
     } = this.props
-    const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
     return (
       <div
         style={{
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          marginTop: '1rem'
+          marginTop: replies.length > 0 && '1rem'
         }}
         ref={ref => {
-          this.Replies = ref
+          this.ReplyContainer = ref
         }}
       >
         {comment.loadMoreReplies && (
           <Button
             filled
-            info
+            logo
             style={{
               width: '100%',
               marginBottom: replies.length !== 0 && '1.5rem'
@@ -83,18 +84,16 @@ export default class Replies extends Component {
           return (
             <Reply
               {...reply}
+              innerRef={ref => innerRef({ ref, replyId: reply.id })}
               index={index}
               commentId={commentId}
               videoId={videoId}
               onReplySubmit={onReplySubmit}
               onEditDone={onEditDone}
               onLikeClick={onLikeClick}
-              onDelete={onDelete}
+              onDelete={this.onDelete}
               myId={userId}
               key={reply.id}
-              deleteCallback={this.deleteCallback}
-              lastDeletedCommentIndex={lastDeletedCommentIndex}
-              deleteListenerToggle={deleteListenerToggle}
               isFirstReply={index === 0}
             />
           )
@@ -103,16 +102,15 @@ export default class Replies extends Component {
     )
   }
 
-  deleteCallback(index, isFirstReply) {
-    this.setState({
-      lastDeletedCommentIndex: index,
-      deletedFirstReply: isFirstReply
-    })
-  }
-
-  loadMoreReplies() {
+  loadMoreReplies = () => {
     const { comment, replies, onLoadMoreReplies } = this.props
     const lastReplyId = replies[0] ? replies[0].id : '0'
     onLoadMoreReplies(lastReplyId, comment.id, 'default')
+  }
+
+  onDelete = replyId => {
+    const { onDelete } = this.props
+    this.setState({ deleting: true })
+    onDelete(replyId)
   }
 }

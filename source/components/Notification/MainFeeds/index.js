@@ -178,7 +178,7 @@ class MainFeeds extends Component {
         {((activeTab === 'notification' && loadMore.notifications) ||
           (activeTab === 'reward' && loadMore.rewards)) && (
           <Button
-            logo
+            info
             filled
             style={{
               marginTop: '1rem',

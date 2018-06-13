@@ -86,7 +86,7 @@ export default function VideoReducer(state = defaultState, action) {
                 .filter(comment => comment.id !== action.data.commentId)
                 .map(comment => ({
                   ...comment,
-                  replies: comment.replies.filter(
+                  replies: (comment.replies || []).filter(
                     reply => reply.id !== action.data.commentId
                   )
                 }))
@@ -94,7 +94,7 @@ export default function VideoReducer(state = defaultState, action) {
           }),
           comments: newComments.map(comment => ({
             ...comment,
-            replies: comment.replies.filter(
+            replies: (comment.replies || []).filter(
               reply => reply.id !== action.data.commentId
             )
           })),

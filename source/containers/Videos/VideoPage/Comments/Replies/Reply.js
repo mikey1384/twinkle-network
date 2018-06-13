@@ -31,14 +31,11 @@ class Reply extends Component {
     canStar: PropTypes.bool,
     commentId: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
-    deleteCallback: PropTypes.func.isRequired,
-    deleteListenerToggle: PropTypes.bool.isRequired,
     editRewardComment: PropTypes.func.isRequired,
     forDiscussionPanel: PropTypes.bool,
     id: PropTypes.number.isRequired,
     index: PropTypes.number.isRequired,
-    isFirstReply: PropTypes.bool,
-    lastDeletedCommentIndex: PropTypes.number,
+    innerRef: PropTypes.func.isRequired,
     likes: PropTypes.array.isRequired,
     myId: PropTypes.number,
     replyOfReply: PropTypes.bool,
@@ -60,24 +57,14 @@ class Reply extends Component {
 
   state = {
     onEdit: false,
-    replyInputShown: false,
     userListModalShown: false,
     confirmModalShown: false,
-    clickListenerState: false,
     xpRewardInterfaceShown: false
   }
 
   componentDidMount() {
     const { replyOfReply, forDiscussionPanel } = this.props
     if (replyOfReply && !forDiscussionPanel) scrollElementToCenter(this.Reply)
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.deleteListenerToggle !== this.props.deleteListenerToggle) {
-      if (this.props.lastDeletedCommentIndex - 1 === this.props.index) {
-        scrollElementToCenter(this.Reply)
-      }
-    }
   }
 
   render() {
@@ -90,6 +77,7 @@ class Reply extends Component {
       editRewardComment,
       id,
       index,
+      innerRef,
       username,
       timeStamp,
       content,
@@ -106,9 +94,7 @@ class Reply extends Component {
     const {
       onEdit,
       userListModalShown,
-      replyInputShown,
       confirmModalShown,
-      clickListenerState,
       xpRewardInterfaceShown
     } = this.state
     const userIsUploader = userId === myId
@@ -137,6 +123,7 @@ class Reply extends Component {
         key={id}
         ref={ref => {
           this.Reply = ref
+          innerRef(ref)
         }}
         style={{
           width: '100%',
@@ -294,17 +281,16 @@ class Reply extends Component {
             />
           )}
           <RewardStatus
+            noMarginForEditButton
             style={{ marginTop: '0.5rem' }}
             onCommentEdit={editRewardComment}
             stars={stars}
           />
-          {replyInputShown && (
-            <ReplyInputArea
-              style={{ marginTop: '1rem' }}
-              onSubmit={this.onReplySubmit}
-              clickListenerState={clickListenerState}
-            />
-          )}
+          <ReplyInputArea
+            style={{ marginTop: '1rem' }}
+            innerRef={ref => (this.ReplyInputArea = ref)}
+            onSubmit={this.onReplySubmit}
+          />
           {editButtonShown &&
             !onEdit && (
               <DropdownButton
@@ -345,17 +331,12 @@ class Reply extends Component {
   }
 
   onDelete = () => {
-    const { id, deleteCallback, index, isFirstReply } = this.props
-    deleteCallback(index, isFirstReply)
+    const { id } = this.props
     this.props.onDelete(id)
   }
 
   onReplyButtonClick = () => {
-    const { replyInputShown, clickListenerState } = this.state
-    if (!replyInputShown) {
-      return this.setState({ replyInputShown: true })
-    }
-    this.setState({ clickListenerState: !clickListenerState })
+    this.ReplyInputArea.focus()
   }
 
   onReplySubmit = reply => {

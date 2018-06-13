@@ -171,7 +171,7 @@ class MessagesContainer extends Component {
                 >
                   <Button
                     filled
-                    success
+                    info
                     style={{ marginTop: '1rem' }}
                     disabled={loadMoreButtonLock}
                     onClick={this.onLoadMoreButtonClick}
@@ -293,4 +293,7 @@ class MessagesContainer extends Component {
   }
 }
 
-export default connect(null, { deleteMessage })(MessagesContainer)
+export default connect(
+  null,
+  { deleteMessage }
+)(MessagesContainer)

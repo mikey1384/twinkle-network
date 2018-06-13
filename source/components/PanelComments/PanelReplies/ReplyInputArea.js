@@ -3,18 +3,24 @@ import React from 'react'
 import InputForm from 'components/Texts/InputForm'
 
 ReplyInputArea.propTypes = {
+  innerRef: PropTypes.func,
   onSubmit: PropTypes.func.isRequired,
-  clickListenerState: PropTypes.bool
+  rows: PropTypes.number,
+  style: PropTypes.object
 }
-export default function ReplyInputArea({ onSubmit, clickListenerState }) {
+export default function ReplyInputArea({
+  innerRef,
+  onSubmit,
+  style,
+  rows = 1
+}) {
   return (
-    <div style={{ marginTop: '1rem' }}>
+    <div style={style}>
       <InputForm
-        autoFocus
-        clickListenerState={clickListenerState}
+        innerRef={innerRef}
         onSubmit={text => onSubmit(text)}
-        rows={4}
-        placeholder="Post your reply..."
+        rows={rows}
+        placeholder="Enter your reply..."
       />
     </div>
   )

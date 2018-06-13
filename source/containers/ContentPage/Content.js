@@ -62,7 +62,10 @@ class Comment extends Component {
     const { contentObj } = this.state
     return (
       <ContentPanel
+        key={contentObj.contentId}
         selfLoadingDisabled
+        autoShowComments
+        inputAtBottom={contentObj.type === 'comment'}
         contentObj={contentObj}
         methodObj={{
           attachStar: this.attachStar,
@@ -160,7 +163,10 @@ class Comment extends Component {
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          childComments: [data].concat(state.contentObj.childComments)
+          childComments:
+            contentType === 'comment'
+              ? state.contentObj.childComments.concat([data])
+              : [data].concat(state.contentObj.childComments)
         }
       }))
     } catch (error) {
@@ -223,7 +229,7 @@ class Comment extends Component {
         auth()
       )
       this.setState(state => {
-        const comments = state.contentObj.childComments.filter(
+        const comments = (state.contentObj.childComments || []).filter(
           comment => comment.id !== commentId
         )
         return {
@@ -231,7 +237,9 @@ class Comment extends Component {
             ...state.contentObj,
             childComments: comments.map(comment => ({
               ...comment,
-              replies: comment.replies.filter(reply => reply.id !== commentId)
+              replies: (comment.replies || []).filter(
+                reply => reply.id !== commentId
+              )
             }))
           }
         }
@@ -464,14 +472,18 @@ class Comment extends Component {
         `
       )
       let commentsLoadMoreButton = false
+      if (type === 'comment') data.reverse()
       if (data.length > 3) {
-        data.pop()
+        type === 'comment' ? data.shift() : data.pop()
         commentsLoadMoreButton = true
       }
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          childComments: state.contentObj.childComments.concat(data),
+          childComments:
+            type === 'comment'
+              ? data.concat(state.contentObj.childComments)
+              : state.contentObj.childComments.concat(data),
           commentsLoadMoreButton
         }
       }))
@@ -517,8 +529,9 @@ class Comment extends Component {
         `${URL}/content/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}`
       )
       let commentsLoadMoreButton = false
+      if (type === 'comment') data.reverse()
       if (data.length > 3) {
-        data.pop()
+        type === 'comment' ? data.shift() : data.pop()
         commentsLoadMoreButton = true
       }
       this.setState(state => ({
