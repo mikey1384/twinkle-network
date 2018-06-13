@@ -10,6 +10,7 @@ export default class PanelComments extends Component {
     autoFocus: PropTypes.bool,
     autoShowComments: PropTypes.bool,
     commentActions: PropTypes.object.isRequired,
+    commentsLoaded: PropTypes.bool,
     comments: PropTypes.array.isRequired,
     inputAreaInnerRef: PropTypes.func,
     inputAtBottom: PropTypes.bool,
@@ -36,7 +37,12 @@ export default class PanelComments extends Component {
 
   componentDidUpdate(prevProps) {
     const { commentSubmitted } = this.state
-    const { autoShowComments, comments, inputAtBottom } = this.props
+    const {
+      autoShowComments,
+      comments,
+      commentsLoaded,
+      inputAtBottom
+    } = this.props
     if (prevProps.comments.length > comments.length) {
       if (comments.length === 0) {
         return scrollElementToCenter(this.PanelComments)
@@ -61,8 +67,8 @@ export default class PanelComments extends Component {
     }
     if (
       !autoShowComments &&
-      prevProps.comments.length === 0 &&
-      comments.length > 0 &&
+      !prevProps.commentsLoaded &&
+      commentsLoaded &&
       !commentSubmitted
     ) {
       scrollElementToCenter(this.CommentInputArea)
@@ -95,6 +101,7 @@ export default class PanelComments extends Component {
         {!inputAtBottom && (
           <CommentInputArea
             autoFocus={autoFocus}
+            InputFormRef={ref => (this.CommentInputArea = ref)}
             innerRef={inputAreaInnerRef}
             inputTypeLabel={inputTypeLabel}
             onSubmit={comment => {

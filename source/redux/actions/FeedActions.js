@@ -379,6 +379,7 @@ export const showFeedComments = ({
       type: FEED.LOAD_COMMENTS,
       data: { isReply, type, contentId, childComments: data }
     })
+    return Promise.resolve()
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)

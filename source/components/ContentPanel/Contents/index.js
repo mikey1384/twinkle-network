@@ -36,13 +36,14 @@ class Contents extends Component {
     edited: false,
     isEditing: false,
     userListModalShown: false,
+    commentsLoaded: false,
     commentsShown: false,
     confirmModalShown: false,
     twoStarSelected: false,
     xpRewardInterfaceShown: false
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       autoShowComments,
       contentObj: { rootType, type, contentId, isReply },
@@ -50,13 +51,14 @@ class Contents extends Component {
     } = this.props
     if (autoShowComments) {
       this.setState({ commentsShown: true })
-      return methods.showFeedComments({
+      await methods.showFeedComments({
         rootType,
         type,
         contentId,
         commentLength: 0,
         isReply
       })
+      this.setState({ commentsLoaded: true })
     }
   }
 
@@ -119,6 +121,7 @@ class Contents extends Component {
       edited,
       userListModalShown,
       confirmModalShown,
+      commentsLoaded,
       commentsShown,
       isEditing,
       xpRewardInterfaceShown
@@ -327,6 +330,7 @@ class Contents extends Component {
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}
             autoShowComments={autoShowComments}
+            commentsLoaded={commentsLoaded}
             inputAreaInnerRef={ref => {
               this.CommentInputArea = ref
             }}
@@ -393,7 +397,7 @@ class Contents extends Component {
     })
   }
 
-  onCommentButtonClick = () => {
+  onCommentButtonClick = async() => {
     const {
       contentObj: { type, rootType, contentId, commentId },
       methods
@@ -401,19 +405,20 @@ class Contents extends Component {
     const { commentsShown } = this.state
     const isReply = !!commentId
     if (!commentsShown) {
-      this.setState({ commentsShown: true, autoFocusWhenCommentShown: true })
-      return methods.showFeedComments({
+      this.setState({ commentsShown: true })
+      await methods.showFeedComments({
         rootType,
         type,
         contentId,
         commentLength: 0,
         isReply
       })
+      this.setState({ commentsLoaded: true })
     }
     this.CommentInputArea.focus()
   }
 
-  onLikeClick = () => {
+  onLikeClick = async() => {
     const {
       contentObj: { contentId, type, rootType, commentId },
       methods
