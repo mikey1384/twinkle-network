@@ -415,6 +415,7 @@ class Contents extends Component {
       })
       this.setState({ commentsLoaded: true })
     }
+    this.CommentInputArea.focus()
   }
 
   onLikeClick = async() => {
