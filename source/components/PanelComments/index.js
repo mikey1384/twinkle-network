@@ -95,6 +95,7 @@ export default class PanelComments extends Component {
         {!inputAtBottom && (
           <CommentInputArea
             autoFocus={autoFocus}
+            InputFormRef={ref => (this.CommentInputArea = ref)}
             innerRef={inputAreaInnerRef}
             inputTypeLabel={inputTypeLabel}
             onSubmit={comment => {
