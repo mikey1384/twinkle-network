@@ -8,6 +8,7 @@ import { scrollElementToCenter } from 'helpers/domHelpers'
 export default class PanelComments extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
+    autoShowComments: PropTypes.bool,
     commentActions: PropTypes.object.isRequired,
     comments: PropTypes.array.isRequired,
     inputAreaInnerRef: PropTypes.func,
@@ -35,7 +36,7 @@ export default class PanelComments extends Component {
 
   componentDidUpdate(prevProps) {
     const { commentSubmitted } = this.state
-    const { comments, inputAtBottom } = this.props
+    const { autoShowComments, comments, inputAtBottom } = this.props
     if (prevProps.comments.length > comments.length) {
       if (comments.length === 0) {
         return scrollElementToCenter(this.PanelComments)
@@ -59,6 +60,7 @@ export default class PanelComments extends Component {
       scrollElementToCenter(this.Comments[comments[comments.length - 1].id])
     }
     if (
+      !autoShowComments &&
       prevProps.comments.length === 0 &&
       comments.length > 0 &&
       !commentSubmitted

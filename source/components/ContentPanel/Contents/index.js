@@ -103,6 +103,7 @@ class Contents extends Component {
         uploaderAuthLevel,
         stars
       },
+      autoShowComments,
       authLevel,
       canDelete,
       canEdit,
@@ -316,6 +317,7 @@ class Contents extends Component {
         {commentsShown && (
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}
+            autoShowComments={autoShowComments}
             inputAreaInnerRef={ref => {
               this.CommentInputArea = ref
             }}
