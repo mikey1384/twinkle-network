@@ -197,7 +197,16 @@ class Contents extends Component {
           type={type}
         />
         {!isEditing && (
-          <div className="bottom-interface">
+          <div
+            className="bottom-interface"
+            style={{
+              marginBottom:
+                contentLikers.length > 0 &&
+                !(type === 'comment' && stars.length > 0) &&
+                !commentsShown &&
+                '1rem'
+            }}
+          >
             <div className="buttons-bar">
               <div className="left">
                 {type !== 'discussion' && (
