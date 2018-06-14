@@ -18,7 +18,7 @@ import FullTextReveal from 'components/FullTextReveal'
 import { socket } from 'constants/io'
 import { queryStringForArray } from 'helpers/stringHelpers'
 import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
-import { chatStyle, chatContainer, channelContainer } from './Styles'
+import { chatStyle, channelContainer } from './Styles'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
 
@@ -72,7 +72,8 @@ class Chat extends Component {
     editTitleModalShown: false,
     onTitleHover: false,
     listScrollPosition: 0,
-    channelsLoading: false
+    channelsLoading: false,
+    textAreaHeight: 0
   }
 
   componentDidMount() {
@@ -162,7 +163,8 @@ class Chat extends Component {
       editTitleModalShown,
       onTitleHover,
       currentChannelOnlineMembers,
-      channelsLoading
+      channelsLoading,
+      textAreaHeight
     } = this.state
 
     let menuProps = currentChannel.twoPeople
@@ -325,7 +327,17 @@ class Chat extends Component {
             )}
           </div>
         </div>
-        <div className={chatContainer}>
+        <div
+          className={css`
+            height: CALC(100% - 1rem);
+            margin-top: 1rem;
+            width: CALC(75% - 2rem);
+            margin-left: 1rem;
+            padding: 1rem;
+            position: relative;
+            background: #fff;
+          `}
+        >
           {currentChannel.id !== GENERAL_CHAT_ID && (
             <DropdownButton
               snow
@@ -342,6 +354,16 @@ class Chat extends Component {
             />
           )}
           <MessagesContainer
+            className={css`
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              height: CALC(
+                100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
+              );
+              position: relative;
+              -webkit-overflow-scrolling: touch;
+            `}
             loading={loading}
             currentChannelId={this.props.currentChannel.id}
             loadMoreButton={this.props.loadMoreButton}
@@ -352,6 +374,11 @@ class Chat extends Component {
           <ChatInput
             currentChannelId={this.props.currentChannel.id}
             onMessageSubmit={this.onMessageSubmit}
+            onKeyDown={height => {
+              if (height !== this.state.textAreaHeight) {
+                this.setState({ textAreaHeight: height > 46 ? height : 0 })
+              }
+            }}
           />
         </div>
       </div>

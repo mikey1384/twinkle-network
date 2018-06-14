@@ -24,33 +24,6 @@ export const channelContainer = css`
   -webkit-overflow-scrolling: touch;
 `
 
-export const chatContainer = css`
-  height: CALC(100% - 1rem);
-  margin-top: 1rem;
-  width: CALC(75% - 2rem);
-  margin-left: 1rem;
-  padding: 1rem;
-  position: relative;
-  background: #fff;
-`
-
-export const MsgContainerStyle = {
-  container: css`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: CALC(100% - 5rem);
-    position: relative;
-    -webkit-overflow-scrolling: touch;
-  `,
-  messagesWrapper: css`
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  `
-}
-
 export const MessageStyle = {
   container: css`
     display: flex;

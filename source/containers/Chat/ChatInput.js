@@ -6,18 +6,15 @@ import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
 export default class ChatInput extends Component {
   static propTypes = {
     currentChannelId: PropTypes.number.isRequired,
+    onKeyDown: PropTypes.func.isRequired,
     onMessageSubmit: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      message: ''
-    }
-    this.onMessageSubmit = this.onMessageSubmit.bind(this)
+  state = {
+    message: ''
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.currentChannelId !== this.props.currentChannelId) {
       this.setState({ message: '' })
       this.Textarea.focus()
@@ -32,7 +29,7 @@ export default class ChatInput extends Component {
         }}
         minRows={1}
         placeholder="Type a message..."
-        onKeyDown={this.onMessageSubmit}
+        onKeyDown={this.onKeyDown}
         value={this.state.message}
         onChange={event => this.setState({ message: event.target.value })}
         onKeyUp={event => {
@@ -45,10 +42,13 @@ export default class ChatInput extends Component {
     )
   }
 
-  onMessageSubmit(event) {
+  onKeyDown = event => {
     const shiftKeyPressed = event.shiftKey
     const enterKeyPressed = event.keyCode === 13
+    const { onKeyDown } = this.props
     const { message } = this.state
+
+    setTimeout(() => onKeyDown(this.Textarea.clientHeight), 100)
 
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault()

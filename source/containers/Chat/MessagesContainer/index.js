@@ -8,8 +8,8 @@ import SubjectHeader from './SubjectHeader'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import { connect } from 'react-redux'
 import { deleteMessage } from 'redux/actions/ChatActions'
-import { MsgContainerStyle } from '../Styles'
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal'
+import { css } from 'emotion'
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop
@@ -17,6 +17,7 @@ const scrollIsAtTheBottom = (content, container) => {
 
 class MessagesContainer extends Component {
   static propTypes = {
+    className: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
     currentChannelId: PropTypes.number.isRequired,
     loadMoreButton: PropTypes.bool,
@@ -117,7 +118,7 @@ class MessagesContainer extends Component {
   }
 
   render() {
-    const { loadMoreButton, loading, currentChannelId } = this.props
+    const { className, loadMoreButton, loading, currentChannelId } = this.props
     const {
       deleteModal,
       loadMoreButtonLock,
@@ -137,13 +138,18 @@ class MessagesContainer extends Component {
             }
           />
         )}
-        <div className={MsgContainerStyle.container}>
+        <div className={className}>
           {loading && <Loading absolute />}
           <div
             ref={ref => {
               this.messagesContainer = ref
             }}
-            className={`${MsgContainerStyle.messagesWrapper}`}
+            className={css`
+              position: absolute;
+              left: 0;
+              right: 0;
+              bottom: 0;
+            `}
             style={{
               opacity: loading && '0.3',
               top: currentChannelId === 2 ? '6rem' : 0,
