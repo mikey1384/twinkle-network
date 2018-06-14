@@ -21,6 +21,7 @@ import { container } from './Styles'
 import { connect } from 'react-redux'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
+import { Link } from 'react-router-dom'
 
 class PanelComment extends Component {
   static propTypes = {
@@ -167,7 +168,9 @@ class PanelComment extends Component {
                 }}
               />{' '}
               <small className="timestamp">
-                &nbsp;{timeSince(comment.timeStamp)}
+                <Link to={`/comments/${comment.id}`}>
+                  commented {timeSince(comment.timeStamp)}
+                </Link>
               </small>
             </div>
             <div>

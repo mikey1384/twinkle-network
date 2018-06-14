@@ -23,6 +23,8 @@ import { connect } from 'react-redux'
 import RewardStatus from 'components/RewardStatus'
 import { attachStar, editRewardComment } from 'redux/actions/VideoActions'
 import XPRewardInterface from 'components/XPRewardInterface'
+import { Link } from 'react-router-dom'
+import { css } from 'emotion'
 
 class Comment extends Component {
   static propTypes = {
@@ -162,8 +164,17 @@ class Comment extends Component {
               }}
               style={{ fontSize: '2.5rem' }}
             />{' '}
-            <small style={{ color: Color.gray() }}>
-              &nbsp;{timeSince(comment.timeStamp)}
+            <small
+              className={css`
+                color: ${Color.gray()};
+                > a {
+                  color: ${Color.gray()};
+                }
+              `}
+            >
+              <Link to={`/comments/${comment.id}`}>
+                commented {timeSince(comment.timeStamp)}
+              </Link>
             </small>
           </div>
           {onEdit ? (

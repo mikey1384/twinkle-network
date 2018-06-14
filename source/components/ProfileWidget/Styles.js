@@ -1,7 +1,7 @@
 import { css } from 'react-emotion'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
+import { borderRadius, mobileMaxWidth } from 'constants/css'
 
-export const container = css`
+export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
   display: flex;
   border: none;
   flex-direction: column;
@@ -12,13 +12,13 @@ export const container = css`
   }
   .heading {
     padding: 1rem;
-    border: 1px solid ${Color.borderGray};
+    border: 1px solid ${borderGray};
     border-bottom: none;
     border-radius: ${borderRadius};
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     display: flex;
-    background: ${Color.headingGray()};
+    background: ${headingGray};
     width: 100%;
     align-items: center;
     justify-content: flex-start;
@@ -28,12 +28,12 @@ export const container = css`
       overflow: hidden;
       text-overflow: ellipsis;
       a {
-        color: ${Color.blue()};
+        color: ${blue};
         font-weight: bold;
         font-size: 2rem;
       }
       span {
-        color: ${Color.darkGray()};
+        color: ${darkGray};
         font-size: 1rem;
       }
     }
@@ -44,14 +44,14 @@ export const container = css`
   }
   .details {
     font-size: 1.3rem;
-    border: 1px solid ${Color.borderGray()};
+    border: 1px solid ${borderGray};
     border-bottom-left-radius: ${borderRadius};
     border-bottom-right-radius: ${borderRadius};
     background: #fff;
     padding: 1.5rem;
     .login-message {
       font-size: 2rem;
-      color: ${Color.darkGray()};
+      color: ${darkGray};
       font-weight: bold;
     }
   }

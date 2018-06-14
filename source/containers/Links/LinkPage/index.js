@@ -16,7 +16,6 @@ import {
   fetchMoreReplies,
   likeComment,
   likeLink,
-  resetPage,
   submitComment,
   submitReply
 } from 'redux/actions/LinkActions'
@@ -27,7 +26,8 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import UserListModal from 'components/Modals/UserListModal'
 import Description from './Description'
 import { css } from 'emotion'
-import { mobileMaxWidth } from '../../../constants/css'
+import { mobileMaxWidth } from 'constants/css'
+import NotFound from 'components/NotFound'
 
 class LinkPage extends Component {
   static propTypes = {
@@ -47,17 +47,17 @@ class LinkPage extends Component {
     match: PropTypes.object.isRequired,
     myId: PropTypes.number,
     pageProps: PropTypes.object.isRequired,
-    resetPage: PropTypes.func.isRequired,
     submitComment: PropTypes.func.isRequired,
     submitReply: PropTypes.func.isRequired
   }
 
   state = {
     confirmModalShown: false,
-    likersModalShown: false
+    likersModalShown: false,
+    notFound: false
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       match: {
         params: { linkId }
@@ -65,8 +65,17 @@ class LinkPage extends Component {
       loadLinkPage,
       fetchComments
     } = this.props
+    try {
+      await loadLinkPage(linkId)
+    } catch (error) {
+      if (error.response) {
+        const { data = {} } = error.response
+        if (data.notFound) {
+          this.setState({ notFound: true })
+        }
+      }
+    }
     fetchComments(linkId)
-    loadLinkPage(linkId)
   }
 
   componentDidUpdate(prevProps) {
@@ -82,10 +91,6 @@ class LinkPage extends Component {
       fetchComments(linkId)
       loadLinkPage(linkId)
     }
-  }
-  componentWillUnmount() {
-    const { resetPage } = this.props
-    resetPage()
   }
 
   render() {
@@ -115,7 +120,7 @@ class LinkPage extends Component {
       deleteLinkFromPage,
       myId
     } = this.props
-    const { confirmModalShown, likersModalShown } = this.state
+    const { confirmModalShown, likersModalShown, notFound } = this.state
     let userLikedThis = false
     for (let i = 0; i < likers.length; i++) {
       if (likers[i].userId === myId) userLikedThis = true
@@ -142,6 +147,7 @@ class LinkPage extends Component {
           `}
         >
           <Description
+            key={'description' + id}
             content={content}
             uploaderAuthLevel={uploaderAuthLevel}
             uploaderId={uploader}
@@ -156,6 +162,7 @@ class LinkPage extends Component {
             onEditDone={params => editLinkPage(params)}
           />
           <Embedly
+            key={'link' + id}
             title={title}
             style={{ marginTop: '2rem' }}
             id={id}
@@ -164,12 +171,14 @@ class LinkPage extends Component {
           />
           <div style={{ paddingTop: '1.5rem', textAlign: 'center' }}>
             <LikeButton
+              key={'like' + id}
               filled
               style={{ fontSize: '2rem' }}
               onClick={() => likeLink(id)}
               liked={userLikedThis}
             />
             <Likers
+              key={'likers' + id}
               style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
               likes={likers}
               userId={myId}
@@ -177,6 +186,7 @@ class LinkPage extends Component {
             />
           </div>
           <PanelComments
+            key={'comments' + id}
             style={{ padding: '1rem' }}
             comments={comments}
             onSubmit={this.onCommentSubmit}
@@ -198,6 +208,7 @@ class LinkPage extends Component {
         </div>
         {confirmModalShown && (
           <ConfirmModal
+            key={'confirm' + id}
             title="Remove Link"
             onConfirm={() => deleteLinkFromPage(id)}
             onHide={() => this.setState({ confirmModalShown: false })}
@@ -205,6 +216,7 @@ class LinkPage extends Component {
         )}
         {likersModalShown && (
           <UserListModal
+            key={'userlist' + id}
             users={likers}
             userId={myId}
             title="People who liked this"
@@ -213,6 +225,8 @@ class LinkPage extends Component {
           />
         )}
       </div>
+    ) : notFound ? (
+      <NotFound />
     ) : (
       <Loading text="Loading Page..." />
     )
@@ -264,7 +278,6 @@ export default connect(
     fetchMoreReplies,
     likeComment,
     likeLink,
-    resetPage,
     submitComment,
     submitReply
   }

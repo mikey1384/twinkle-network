@@ -219,6 +219,7 @@ export const loadLinkPage = linkId => async dispatch => {
   } catch (error) {
     console.error(error.response || error)
     handleError(error, dispatch)
+    return Promise.reject(error)
   }
 }
 

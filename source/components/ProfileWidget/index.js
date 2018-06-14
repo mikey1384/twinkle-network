@@ -8,6 +8,7 @@ import { openSigninModal } from 'redux/actions/UserActions'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { container } from './Styles'
+import { Color } from 'constants/css'
 
 class ProfileWidget extends Component {
   static propTypes = {
@@ -31,7 +32,14 @@ class ProfileWidget extends Component {
       realName
     } = this.props
     return (
-      <div className={container}>
+      <div
+        className={container({
+          headingGray: Color.headingGray(),
+          borderGray: Color.borderGray(),
+          blue: Color.blue(),
+          darkGray: Color.darkGray()
+        })}
+      >
         {username && (
           <div className="heading">
             <ProfilePic

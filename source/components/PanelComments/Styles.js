@@ -9,9 +9,7 @@ export const container = css`
   position: relative;
   font-size: 1.5rem;
   .dropdown-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: row-reverse;
+    right: 0;
     position: absolute;
   }
   .content-wrapper {
@@ -30,6 +28,9 @@ export const container = css`
   }
   .timestamp {
     color: ${Color.gray()};
+    > a {
+      color: ${Color.gray()};
+    }
   }
   .to {
     color: ${Color.blue()};

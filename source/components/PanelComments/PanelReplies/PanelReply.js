@@ -17,6 +17,7 @@ import { container } from '../Styles'
 import { connect } from 'react-redux'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
+import { Link } from 'react-router-dom'
 
 class PanelReply extends Component {
   static propTypes = {
@@ -145,7 +146,9 @@ class PanelReply extends Component {
                 }}
               />{' '}
               <small className="timestamp">
-                &nbsp;{timeSince(reply.timeStamp)}
+                <Link to={`/comments/${reply.id}`}>
+                  replied {timeSince(reply.timeStamp)}
+                </Link>
               </small>
             </div>
             <div>
