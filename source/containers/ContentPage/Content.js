@@ -116,7 +116,13 @@ class Comment extends Component {
                   : reply.stars || []
             }))
           }
-        })
+        }),
+        targetCommentStars:
+          (state.contentObj.type === 'comment' &&
+            data.contentId === state.contentObj.replyId) ||
+          data.contentId === state.contentObj.commentId
+            ? (state.contentObj.targetCommentStars || []).concat(data)
+            : state.contentObj.targetCommentStars
       }
     }))
   }

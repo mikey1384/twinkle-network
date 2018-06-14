@@ -52,7 +52,6 @@ class XPRewardInterface extends Component {
           flex-direction: column;
           padding: 1rem;
           font-size: 1.6rem;
-          background: #fff;
           align-items: center;
           color: ${Color.pink()};
         `}

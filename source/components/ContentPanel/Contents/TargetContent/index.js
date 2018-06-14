@@ -17,6 +17,7 @@ export default function TargetContent({
     discussionDescription,
     discussionTimeStamp,
     discussionTitle,
+    discussionUploaderAuth,
     discussionUploaderId,
     discussionUploaderName,
     id,
@@ -27,34 +28,40 @@ export default function TargetContent({
     targetComment,
     targetCommentStars,
     targetCommentTimeStamp,
+    targetCommentUploaderAuth,
     targetCommentUploaderId,
     targetCommentUploaderName,
     targetContentComments = [],
     targetContentLikers,
     targetReply,
     targetReplyTimeStamp,
+    targetReplyUploaderAuth,
     targetReplyUploaderName,
     targetReplyUploaderId,
     timeStamp
   }
 }) {
   const replyToReply = {
+    type: 'comment',
     replyId,
     content: targetReply,
     contentAvailable: !!targetReply,
     timeStamp: targetReplyTimeStamp,
     uploader: {
       name: targetReplyUploaderName,
-      id: targetReplyUploaderId
+      id: targetReplyUploaderId,
+      authLevel: targetReplyUploaderAuth
     }
   }
   const replyToComment = {
+    type: 'comment',
     content: targetComment,
     contentAvailable: !!targetComment,
     timeStamp: targetCommentTimeStamp,
     uploader: {
       name: targetCommentUploaderName,
-      id: targetCommentUploaderId
+      id: targetCommentUploaderId,
+      authLevel: targetCommentUploaderAuth
     }
   }
   const discussion = {
@@ -65,7 +72,8 @@ export default function TargetContent({
     title: cleanString(discussionTitle),
     uploader: {
       name: discussionUploaderName,
-      id: discussionUploaderId
+      id: discussionUploaderId,
+      authLevel: discussionUploaderAuth
     }
   }
   const content = {

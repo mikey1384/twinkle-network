@@ -65,6 +65,7 @@ export default class ContentPanel extends Component {
         onLikeContentClick: methodObj.likeContent,
         showFeedComments: methodObj.showComments,
         TargetContent: {
+          attachStar: methodObj.attachStar,
           onDeleteComment: methodObj.deleteComment,
           onEditComment: methodObj.editComment,
           onLikeClick: methodObj.likeTargetComment,

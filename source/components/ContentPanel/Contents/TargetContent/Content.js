@@ -13,10 +13,14 @@ import LongText from 'components/Texts/LongText'
 import ContentLink from 'components/ContentLink'
 import { timeSince } from 'helpers/timeStampHelpers'
 import RewardStatus from 'components/RewardStatus'
+import XPRewardInterface from 'components/XPRewardInterface'
+import { determineXpButtonDisabled } from 'helpers/domHelpers'
 import { css } from 'emotion'
 
 class Content extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canStar: PropTypes.bool,
     comments: PropTypes.array,
     commentId: PropTypes.number,
     content: PropTypes.string,
@@ -35,6 +39,7 @@ class Content extends Component {
     stars: PropTypes.array,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
+    type: PropTypes.string,
     uploader: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
@@ -45,11 +50,14 @@ class Content extends Component {
   state = {
     userListModalShown: false,
     clickListenerState: false,
-    replyInputShown: false
+    replyInputShown: false,
+    xpRewardInterfaceShown: false
   }
 
   render() {
     const {
+      authLevel,
+      canStar,
       commentId,
       discussionId,
       uploader,
@@ -68,17 +76,21 @@ class Content extends Component {
       rootId,
       replyId,
       stars,
+      type,
       methods
     } = this.props
     const {
       userListModalShown,
       replyInputShown,
-      clickListenerState
+      clickListenerState,
+      xpRewardInterfaceShown
     } = this.state
     let userLikedThis = false
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId === myId) userLikedThis = true
     }
+    const userIsUploader = myId === uploader.id
+    const userCanStarThis = canStar && authLevel > uploader.authLevel
     return (
       <div
         className={css`
@@ -94,6 +106,9 @@ class Content extends Component {
           line-height: 2.3rem;
           .buttons {
             margin-top: 2rem;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
           }
           .detail-block {
             display: flex;
@@ -163,32 +178,68 @@ class Content extends Component {
                     </LongText>
                   </div>
                   <div className="buttons">
-                    <LikeButton
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                      small
-                    />
-                    <Button
-                      style={{ marginLeft: '1rem' }}
-                      transparent
-                      onClick={this.onReplyClick}
-                    >
-                      <span className="glyphicon glyphicon-comment" />&nbsp;
-                      Reply
-                    </Button>
-                    <Likers
-                      className="content-panel__likers"
-                      userId={myId}
-                      likes={likes}
-                      onLinkClick={() =>
-                        this.setState({ userListModalShown: true })
-                      }
-                    />
+                    <div>
+                      <LikeButton
+                        onClick={this.onLikeClick}
+                        liked={userLikedThis}
+                        small
+                      />
+                      <Button
+                        style={{ marginLeft: '1rem' }}
+                        transparent
+                        onClick={this.onReplyClick}
+                      >
+                        <span className="glyphicon glyphicon-comment" />&nbsp;
+                        Reply
+                      </Button>
+                      <Likers
+                        className="content-panel__likers"
+                        userId={myId}
+                        likes={likes}
+                        onLinkClick={() =>
+                          this.setState({ userListModalShown: true })
+                        }
+                      />
+                    </div>
+                    <div>
+                      {type === 'comment' &&
+                        canStar &&
+                        userCanStarThis &&
+                        !userIsUploader && (
+                          <Button
+                            love
+                            disabled={this.determineXpButtonDisabled()}
+                            onClick={() =>
+                              this.setState({ xpRewardInterfaceShown: true })
+                            }
+                          >
+                            <span className="glyphicon glyphicon-star" />{' '}
+                            {this.determineXpButtonDisabled() || 'Reward Stars'}
+                          </Button>
+                        )}
+                    </div>
                   </div>
                 </div>
+                {xpRewardInterfaceShown && (
+                  <XPRewardInterface
+                    contentType={'comment'}
+                    contentId={replyId || commentId}
+                    uploaderId={uploader.id}
+                    stars={stars}
+                    onRewardSubmit={data => {
+                      this.setState({ xpRewardInterfaceShown: false })
+                      methods.attachStar(data)
+                    }}
+                  />
+                )}
                 <RewardStatus
                   onCommentEdit={methods.onRewardCommentEdit}
-                  style={{ marginTop: likes.length > 0 ? '0.5rem' : '1rem' }}
+                  style={{
+                    marginTop:
+                      likes.length > 0 || xpRewardInterfaceShown
+                        ? '0.5rem'
+                        : '1rem'
+                  }}
                   stars={stars}
                 />
                 {replyInputShown && (
@@ -263,6 +314,12 @@ class Content extends Component {
     )
   }
 
+  determineXpButtonDisabled = () => {
+    const { stars, myId } = this.props
+    const { xpRewardInterfaceShown } = this.state
+    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
+  }
+
   onLikeClick = () => {
     const { replyId, commentId, methods } = this.props
     methods.onLikeClick(replyId || commentId)
@@ -292,6 +349,8 @@ class Content extends Component {
 }
 
 export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canStar: state.UserReducer.canStar,
   username: state.UserReducer.username,
   profilePicId: state.UserReducer.profilePicId
 }))(Content)
