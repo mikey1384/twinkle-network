@@ -28,6 +28,7 @@ import { css } from 'emotion'
 import request from 'axios'
 import { URL } from 'constants/URL'
 import { auth } from 'redux/constants'
+import { timeSince } from 'helpers/timeStampHelpers'
 import StatusInput from './StatusInput'
 import RankBar from './RankBar'
 
@@ -148,9 +149,9 @@ class ProfilePanel extends Component {
             >
               {profile.username}
             </span>
-            <span style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
+            <p style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
               profile.realName
-            })`}</span>
+            })`}</p>
             {userId === profile.id && (
               <StatusInput
                 innerRef={ref => {
@@ -328,6 +329,20 @@ class ProfilePanel extends Component {
                   >
                     Message
                   </Button>
+                </div>
+              )}
+            {profile.lastActive &&
+              !profile.online &&
+              profile.id !== userId && (
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    height: '1rem',
+                    fontSize: '1.5rem',
+                    color: Color.gray()
+                  }}
+                >
+                  <p>last active {timeSince(profile.lastActive)}</p>
                 </div>
               )}
           </div>
