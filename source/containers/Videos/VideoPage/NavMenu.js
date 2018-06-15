@@ -78,9 +78,11 @@ class NavMenu extends Component {
       nextVideos = [],
       relatedVideos = [],
       otherVideos = [],
+      playlistId,
       playlistVideos = [],
       playlistTitle,
-      playlistVideosLoadMoreShown
+      playlistVideosLoadMoreShown,
+      videoId
     } = this.props
     const { rewardsExist, videoTabActive } = this.state
     const { playlistVideosLoading } = this.state
@@ -133,42 +135,44 @@ class NavMenu extends Component {
         {videoTabActive && (
           <Fragment>
             {nextVideos.length > 0 && (
-              <section>
+              <section key={videoId + 'up next'}>
                 <p>Up Next</p>
                 {this.renderVideos({ videos: nextVideos })}
               </section>
             )}
-            {playlistVideos.length > 0 && (
-              <section
-                style={{
-                  whiteSpace: 'pre-wrap',
-                  overflowWrap: 'break-word',
-                  wordBreak: 'break-word'
-                }}
-              >
-                <p>{cleanString(playlistTitle)}</p>
-                {this.renderVideos({
-                  videos: playlistVideos,
-                  arePlaylistVideos: true
-                })}
-                {playlistVideosLoadMoreShown && (
-                  <FlatLoadMoreButton
-                    isLoading={playlistVideosLoading}
-                    onClick={this.loadMorePlaylistVideos}
-                    style={{ marginTop: '1.5rem' }}
-                  />
-                )}
-              </section>
-            )}
+            {playlistId &&
+              playlistVideos.length > 0 && (
+                <section
+                  key={videoId + 'playlist videos'}
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    overflowWrap: 'break-word',
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  <p>{cleanString(playlistTitle)}</p>
+                  {this.renderVideos({
+                    videos: playlistVideos,
+                    arePlaylistVideos: true
+                  })}
+                  {playlistVideosLoadMoreShown && (
+                    <FlatLoadMoreButton
+                      isLoading={playlistVideosLoading}
+                      onClick={this.loadMorePlaylistVideos}
+                      style={{ marginTop: '1.5rem' }}
+                    />
+                  )}
+                </section>
+              )}
             {relatedVideos.length > 0 && (
-              <section>
+              <section key={videoId + 'related videos'}>
                 <p>Related Videos</p>
                 {this.renderVideos({ videos: relatedVideos })}
               </section>
             )}
             {otherVideos.length > 0 && (
-              <section>
-                <p>Recent Videos</p>
+              <section key={videoId + 'new videos'}>
+                <p>New Videos</p>
                 {this.renderVideos({ videos: otherVideos })}
               </section>
             )}
