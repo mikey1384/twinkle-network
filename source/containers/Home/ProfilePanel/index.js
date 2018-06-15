@@ -342,7 +342,7 @@ class ProfilePanel extends Component {
                     color: Color.gray()
                   }}
                 >
-                  <p>last active {timeSince(profile.lastActive)}</p>
+                  <p>last online {timeSince(profile.lastActive)}</p>
                 </div>
               )}
           </div>
