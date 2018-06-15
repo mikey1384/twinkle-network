@@ -135,7 +135,7 @@ class NavMenu extends Component {
             {nextVideos.length > 0 && (
               <section>
                 <p>Up Next</p>
-                {this.renderVideos(nextVideos)}
+                {this.renderVideos({ videos: nextVideos })}
               </section>
             )}
             {playlistVideos.length > 0 && (
@@ -147,7 +147,10 @@ class NavMenu extends Component {
                 }}
               >
                 <p>{cleanString(playlistTitle)}</p>
-                {this.renderVideos(playlistVideos)}
+                {this.renderVideos({
+                  videos: playlistVideos,
+                  arePlaylistVideos: true
+                })}
                 {playlistVideosLoadMoreShown && (
                   <FlatLoadMoreButton
                     isLoading={playlistVideosLoading}
@@ -160,13 +163,13 @@ class NavMenu extends Component {
             {relatedVideos.length > 0 && (
               <section>
                 <p>Related Videos</p>
-                {this.renderVideos(relatedVideos)}
+                {this.renderVideos({ videos: relatedVideos })}
               </section>
             )}
             {otherVideos.length > 0 && (
               <section>
                 <p>Recent Videos</p>
-                {this.renderVideos(otherVideos)}
+                {this.renderVideos({ videos: otherVideos })}
               </section>
             )}
           </Fragment>
@@ -196,7 +199,7 @@ class NavMenu extends Component {
     this.setState({ rewardsExist: true })
   }
 
-  renderVideos = videos => {
+  renderVideos = ({ videos, arePlaylistVideos }) => {
     const { playlistId } = this.props
     return videos.map((video, index) => (
       <div
@@ -211,7 +214,7 @@ class NavMenu extends Component {
         <div style={{ width: '50%' }}>
           <Link
             to={`/videos/${video.videoId}${
-              playlistId ? `?playlist=${playlistId}` : ''
+              arePlaylistVideos ? `?playlist=${playlistId}` : ''
             }`}
           >
             <VideoThumbImage
@@ -234,7 +237,7 @@ class NavMenu extends Component {
         >
           <Link
             to={`/videos/${video.videoId}${
-              playlistId ? `?playlist=${playlistId}` : ''
+              arePlaylistVideos ? `?playlist=${playlistId}` : ''
             }`}
           >
             {cleanString(video.title)}
