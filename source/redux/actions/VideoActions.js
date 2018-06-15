@@ -125,8 +125,8 @@ export const editVideoDiscussion = (
   callback
 ) => async dispatch => {
   try {
-    const { data } = await request.post(
-      `${API_URL}/discussions/edit`,
+    const { data } = await request.put(
+      `${API_URL}/discussions`,
       { discussionId, editedTitle, editedDescription },
       auth()
     )

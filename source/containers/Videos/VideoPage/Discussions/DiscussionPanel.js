@@ -36,6 +36,9 @@ import { css } from 'emotion'
 class DiscussionPanel extends Component {
   static propTypes = {
     attachStar: PropTypes.func.isRequired,
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     comments: PropTypes.array.isRequired,
     description: PropTypes.string,
     editRewardComment: PropTypes.func.isRequired,
@@ -58,6 +61,7 @@ class DiscussionPanel extends Component {
     title: PropTypes.string.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string.isRequired,
+    uploaderAuthLevel: PropTypes.number.isRequired,
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired
   }
@@ -77,10 +81,14 @@ class DiscussionPanel extends Component {
   render() {
     const {
       attachStar,
+      authLevel,
+      canDelete,
+      canEdit,
       id,
       title,
       description,
       editRewardComment,
+      uploaderAuthLevel,
       username,
       userId,
       timeStamp,
@@ -101,7 +109,10 @@ class DiscussionPanel extends Component {
       editedDescription,
       editDoneButtonDisabled
     } = this.state
-    const userIsOwner = myId === userId
+    const userIsUploader = myId === userId
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+    const editButtonEnabled = userIsUploader || userCanEditThis
     return (
       <div
         className={css`
@@ -125,7 +136,7 @@ class DiscussionPanel extends Component {
             `}
           >
             {!onEdit && <p>{cleanString(title)}</p>}
-            {userIsOwner &&
+            {editButtonEnabled &&
               !onEdit && (
                 <DropdownButton
                   snow
@@ -353,7 +364,10 @@ class DiscussionPanel extends Component {
 
 export default connect(
   state => ({
-    myId: state.UserReducer.userId
+    myId: state.UserReducer.userId,
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit
   }),
   {
     attachStar,
