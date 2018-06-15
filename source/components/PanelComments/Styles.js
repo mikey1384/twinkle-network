@@ -52,9 +52,9 @@ export const container = css`
     margin-left: 0.5rem;
   }
   .comment__likers {
-    margin-top: 0.6rem;
+    margin-top: 0.5rem;
     font-size: 1.2rem;
-    line-height: normal;
+    line-height: 1.5;
     font-weight: bold;
     color: ${Color.darkGray()};
   }
@@ -62,15 +62,20 @@ export const container = css`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
   }
   .buttons__left {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 50%;
   }
   .buttons__right {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    width: 50%;
   }
   @media (max-width: ${mobileMaxWidth}) {
     .likers {

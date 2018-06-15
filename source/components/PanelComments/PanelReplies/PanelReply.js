@@ -179,33 +179,20 @@ class PanelReply extends Component {
                   </LongText>
                   <div className="comment__buttons">
                     <div className="buttons__left">
-                      <div>
-                        <LikeButton
-                          onClick={this.onLikeClick}
-                          liked={userLikedThis}
-                          small
-                        />
-                        {type !== 'comment' && (
-                          <Button
-                            transparent
-                            style={{ marginLeft: '1rem' }}
-                            onClick={this.onReplyButtonClick}
-                          >
-                            <span className="glyphicon glyphicon-comment" />{' '}
-                            Reply
-                          </Button>
-                        )}
-                      </div>
-                      <small>
-                        <Likers
-                          className="comment__likers"
-                          userId={userId}
-                          likes={reply.likes}
-                          onLinkClick={() =>
-                            this.setState({ userListModalShown: true })
-                          }
-                        />
-                      </small>
+                      <LikeButton
+                        onClick={this.onLikeClick}
+                        liked={userLikedThis}
+                        small
+                      />
+                      {type !== 'comment' && (
+                        <Button
+                          transparent
+                          style={{ marginLeft: '1rem' }}
+                          onClick={this.onReplyButtonClick}
+                        >
+                          <span className="glyphicon glyphicon-comment" /> Reply
+                        </Button>
+                      )}
                     </div>
                     <div className="buttons__right">
                       {canStar &&
@@ -232,6 +219,16 @@ class PanelReply extends Component {
                         )}
                     </div>
                   </div>
+                  <small>
+                    <Likers
+                      className="comment__likers"
+                      userId={userId}
+                      likes={reply.likes}
+                      onLinkClick={() =>
+                        this.setState({ userListModalShown: true })
+                      }
+                    />
+                  </small>
                 </div>
               )}
             </div>
@@ -250,14 +247,20 @@ class PanelReply extends Component {
             <RewardStatus
               noMarginForEditButton
               onCommentEdit={onRewardCommentEdit}
-              style={{ fontSize: '1.4rem', marginTop: '0.5rem' }}
+              style={{
+                fontSize: '1.4rem',
+                marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
+              }}
               stars={stars}
             />
             <ReplyInputArea
               innerRef={ref => {
                 this.ReplyInputArea = ref
               }}
-              style={{ marginTop: '0.5rem' }}
+              style={{
+                marginTop:
+                  stars.length > 0 || reply.likes.length > 0 ? '0.5rem' : '1rem'
+              }}
               onSubmit={this.onReplySubmit}
               clickListenerState={clickListenerState}
             />
