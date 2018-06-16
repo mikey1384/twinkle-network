@@ -52,6 +52,9 @@ export default class ContentEditor extends Component {
       editedTitle,
       editedUrl
     } = this.state
+    const urlError =
+      !stringIsEmpty(editedUrl) &&
+      !(type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl))
     return (
       <div
         style={style}
@@ -64,12 +67,14 @@ export default class ContentEditor extends Component {
       >
         <form onSubmit={this.onSubmit}>
           {(type === 'video' || type === 'url') && (
-            <Fragment>
+            <div
+              className={css`
+                margin-bottom: 1rem;
+              `}
+            >
               <Input
                 autoFocus
-                className={css`
-                  margin-bottom: 1rem;
-                `}
+                hasError={urlError}
                 onChange={text => {
                   this.setState({
                     editedUrl: text
@@ -79,12 +84,14 @@ export default class ContentEditor extends Component {
                 value={editedUrl}
                 style={this.urlExceedsCharLimit(type)}
               />
-              {this.urlExceedsCharLimit(type) && (
-                <small style={{ color: 'red' }}>
-                  {this.renderUrlCharLimit(type)}
+              {(this.urlExceedsCharLimit(type) || urlError) && (
+                <small style={{ color: 'red', lineHeight: 0.5 }}>
+                  {this.urlExceedsCharLimit(type)
+                    ? this.renderUrlCharLimit(type)
+                    : 'Please check the url'}
                 </small>
               )}
-            </Fragment>
+            </div>
           )}
           {type !== 'comment' && (
             <Fragment>

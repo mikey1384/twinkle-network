@@ -7,11 +7,12 @@ import { renderText } from 'helpers/stringHelpers'
 export default class Input extends Component {
   static propTypes = {
     className: PropTypes.string,
+    hasError: PropTypes.bool,
     inputRef: PropTypes.func,
     onChange: PropTypes.func.isRequired
   }
   render() {
-    const { className, inputRef, onChange, ...props } = this.props
+    const { className, hasError, inputRef, onChange, ...props } = this.props
     return (
       <input
         {...props}
@@ -30,6 +31,7 @@ export default class Input extends Component {
           ::placeholder {
             color: ${Color.gray()};
           }
+          ${hasError ? 'color: red; border: 1px solid red;' : ''}
         `} ${className}`}
         ref={inputRef}
         onChange={event => onChange(renderText(event.target.value))}
