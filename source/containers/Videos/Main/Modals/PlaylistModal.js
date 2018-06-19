@@ -76,7 +76,13 @@ export default class PlaylistModal extends Component {
               </div>
               <div style={{ width: '60%' }}>
                 <Link to={`/videos/${video.id}?playlist=${playlistId}`}>
-                  <p style={{ fontSize: '1.2em' }} className="media-heading">
+                  <p
+                    style={{
+                      fontSize: '1.9rem',
+                      fontWeight: 'bold',
+                      lineHeight: 1.5
+                    }}
+                  >
                     {cleanString(video.title)}
                   </p>
                 </Link>
