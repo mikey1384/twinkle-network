@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { cleanString } from 'helpers/stringHelpers'
+import { cleanString, stringIsEmpty } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 import Embedly from 'components/Embedly'
 import LongText from 'components/Texts/LongText'
 import VideoPlayer from 'components/VideoPlayer'
-import ContentEditor from './ContentEditor'
+import ContentEditor from '../ContentEditor'
 
-MainContent.propTypes = {
+Content.propTypes = {
   content: PropTypes.string,
   contentDescription: PropTypes.string,
   contentId: PropTypes.number.isRequired,
@@ -24,7 +24,7 @@ MainContent.propTypes = {
   urlRelated: PropTypes.object,
   type: PropTypes.string.isRequired
 }
-export default function MainContent({
+export default function Content({
   content,
   contentDescription,
   contentId,
@@ -42,7 +42,7 @@ export default function MainContent({
   type
 }) {
   return (
-    <div>
+    <Fragment>
       {(type === 'video' || type === 'discussion') && (
         <VideoPlayer
           stretch
@@ -52,13 +52,18 @@ export default function MainContent({
           hasHqThumb={hasHqThumb}
           videoId={rootId}
           videoCode={rootContent}
+          style={{ paddingBottom: '0.5rem' }}
         />
       )}
       <div
-        className="panel__content"
         style={{
-          marginTop: type !== 'video' && type !== 'discussion' && 0,
-          marginBottom: type !== 'video' && '1rem'
+          marginTop: type !== 'question' && '1rem',
+          marginBottom: type !== 'video' && '1rem',
+          padding: '1rem',
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+          wordBrea: 'break-word',
+          fontSize: '1.6rem'
         }}
       >
         {!isEditing && (
@@ -82,23 +87,6 @@ export default function MainContent({
                 </span>
               </div>
             )}
-            {(type === 'url' || type === 'question') && (
-              <div
-                style={{
-                  whiteSpace: 'pre-wrap',
-                  overflowWrap: 'break-word',
-                  wordBreak: 'break-word',
-                  marginBottom: '1rem'
-                }}
-              >
-                {contentDescription &&
-                contentDescription !== 'No description' ? (
-                  <LongText>{contentDescription || ''}</LongText>
-                ) : type === 'url' ? (
-                  <div>{contentTitle}</div>
-                ) : null}
-              </div>
-            )}
             {type === 'discussion' && (
               <div
                 style={{
@@ -120,34 +108,23 @@ export default function MainContent({
                 <h3>{cleanString(contentTitle)}</h3>
               </div>
             )}
-            {type === 'video' && (
-              <div
-                style={{
-                  whiteSpace: 'pre-wrap',
-                  overflowWrap: 'break-word',
-                  wordBreak: 'break-word'
-                }}
-              >
-                <LongText>
-                  {contentDescription && contentDescription !== 'No description'
-                    ? contentDescription
-                    : contentTitle}
-                </LongText>
-              </div>
-            )}
-            {type === 'discussion' &&
-              contentDescription && (
-                <div
-                  style={{
-                    whiteSpace: 'pre-wrap',
-                    overflowWrap: 'break-word',
-                    wordBreak: 'break-word',
-                    marginTop: '1rem'
-                  }}
-                >
-                  <LongText>{contentDescription}</LongText>
-                </div>
-              )}
+            <div
+              style={{
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'break-word',
+                wordBreak: 'break-word',
+                marginBottom:
+                  type === 'url' || type === 'question' ? '1rem' : '0.5rem'
+              }}
+            >
+              <LongText>
+                {!stringIsEmpty(contentDescription)
+                  ? contentDescription
+                  : type === 'video' || type === 'url'
+                    ? contentTitle
+                    : ''}
+              </LongText>
+            </div>
           </Fragment>
         )}
         {isEditing && (
@@ -159,7 +136,7 @@ export default function MainContent({
             onDismiss={onEditDismiss}
             onEditContent={onEditContent}
             style={{
-              marginTop: (type === 'video' || type === 'discussion') && '1em'
+              marginTop: (type === 'video' || type === 'discussion') && '1rem'
             }}
             title={contentTitle}
             type={type}
@@ -185,6 +162,6 @@ export default function MainContent({
             {...urlRelated}
           />
         )}
-    </div>
+    </Fragment>
   )
 }

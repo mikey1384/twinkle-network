@@ -196,6 +196,7 @@ export const fetchFeed = feed => async dispatch => {
     )
     dispatch({
       type: FEED.LOAD_DETAIL,
+      id: feed.id,
       data: {
         ...data,
         childComments: [],

@@ -12,7 +12,7 @@ export const container = css`
     margin-bottom: 0;
   }
   .heading {
-    padding: 0.5rem 1.5rem 1rem 1.5rem;
+    padding: 0 1.5rem;
     display: flex;
     align-items: center;
     width: 100%;
@@ -20,14 +20,6 @@ export const container = css`
   }
   .body {
     padding: 0;
-    .panel__content {
-      padding: 1rem;
-      margin-top: 1rem;
-      white-space: pre-wrap;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      font-size: 1.6rem;
-    }
     .bottom-interface {
       padding: 0 1rem 0 1rem;
       display: flex;
