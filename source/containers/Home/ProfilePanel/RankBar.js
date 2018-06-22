@@ -89,6 +89,12 @@ export default function RankBar({ profile }) {
         >
           XP
         </span>
+        {!!profile.xpThisMonth && (
+          <span style={{ fontSize: '1.7rem' }}>
+            {' '}
+            (↑{addCommasToNumber(profile.xpThisMonth)} this month)
+          </span>
+        )}
       </span>
     </div>
   )
