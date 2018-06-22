@@ -90,7 +90,14 @@ export default function RankBar({ profile }) {
           XP
         </span>
         {!!profile.xpThisMonth && (
-          <span style={{ fontSize: '1.7rem' }}>
+          <span
+            style={{
+              fontSize: '1.7rem',
+              color:
+                rankColor ||
+                (profile.xpThisMonth > 1000 ? Color.pink() : Color.buttonGray())
+            }}
+          >
             {' '}
             (↑{addCommasToNumber(profile.xpThisMonth)} this month)
           </span>
