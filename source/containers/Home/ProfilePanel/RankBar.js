@@ -95,7 +95,9 @@ export default function RankBar({ profile }) {
               fontSize: '1.7rem',
               color:
                 rankColor ||
-                (profile.xpThisMonth > 1000 ? Color.pink() : Color.buttonGray())
+                (profile.xpThisMonth >= 1000
+                  ? Color.pink()
+                  : Color.buttonGray())
             }}
           >
             {' '}
