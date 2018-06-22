@@ -23,10 +23,7 @@ class RewardStatus extends Component {
       style
     } = this.props
     if (!stars || stars.length === 0) return null
-    const totalStars = stars.reduce(
-      (prev, star) => (prev += star.rewardAmount),
-      0
-    )
+    const totalStars = stars.reduce((prev, star) => prev + star.rewardAmount, 0)
     let starMarks = []
     for (let i = 0; i < totalStars; i++) {
       starMarks.push(<span key={i} className="glyphicon glyphicon-star" />)
