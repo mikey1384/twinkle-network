@@ -51,7 +51,7 @@ export const container = css`
   .reply-button {
     margin-left: 0.5rem;
   }
-  .comment__likers {
+  .comment__likes {
     margin-top: 0.5rem;
     font-size: 1.2rem;
     line-height: 1.5;
@@ -78,7 +78,7 @@ export const container = css`
     width: 50%;
   }
   @media (max-width: ${mobileMaxWidth}) {
-    .likers {
+    .likes {
       font-size: 1.7rem;
       margin-top: 0.5rem;
       font-weight: bold;

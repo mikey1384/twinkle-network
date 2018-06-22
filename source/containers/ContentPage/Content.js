@@ -376,7 +376,7 @@ class Comment extends Component {
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          contentLikers:
+          likes:
             state.contentObj.contentId === commentId
               ? likes
               : state.contentObj.contentLikers,
@@ -431,7 +431,7 @@ class Comment extends Component {
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          rootContentLikers: likes
+          likes: likes
         }
       }))
     } catch (error) {

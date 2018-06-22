@@ -239,7 +239,7 @@ class PanelComment extends Component {
                     </div>
                   </div>
                   <Likers
-                    className="comment__likers"
+                    className="comment__likes"
                     userId={userId}
                     likes={comment.likes}
                     onLinkClick={() =>

@@ -76,34 +76,13 @@ export default class ContentPanel extends Component {
     }
 
     return (
-      <div
-        className={container}
-        style={{ height: !contentObj.uploaderName && '15rem' }}
-      >
-        {!contentObj.uploaderName && <Loading absolute />}
-        {contentObj.uploaderName && (
+      <div className={container} style={{ height: !contentObj.id && '15rem' }}>
+        {!contentObj.id && <Loading absolute />}
+        {contentObj.id && (
           <Heading
             contentObj={contentObj}
             methods={methods.Heading}
             myId={userId}
-            targetCommentUploader={
-              contentObj.targetCommentUploaderName && {
-                name: contentObj.targetCommentUploaderName,
-                id: contentObj.targetCommentUploaderId
-              }
-            }
-            targetReplyUploader={
-              contentObj.targetReplyUploaderName && {
-                name: contentObj.targetReplyUploaderName,
-                id: contentObj.targetReplyUploaderId
-              }
-            }
-            rootContent={{
-              id: contentObj.rootId,
-              title: contentObj.rootContentTitle,
-              content: contentObj.rootContent,
-              isStarred: contentObj.rootContentIsStarred
-            }}
             action={
               contentObj.commentId
                 ? 'replied to'
@@ -111,16 +90,12 @@ export default class ContentPanel extends Component {
                   ? 'answered'
                   : 'commented on'
             }
-            uploader={{
-              name: contentObj.uploaderName,
-              id: contentObj.uploaderId
-            }}
             onPlayVideoClick={() => this.setState({ attachedVideoShown: true })}
             attachedVideoShown={attachedVideoShown}
           />
         )}
         <div className="body">
-          {contentObj.uploaderName && (
+          {contentObj.id && (
             <Contents
               autoShowComments={autoShowComments}
               contentObj={contentObj}

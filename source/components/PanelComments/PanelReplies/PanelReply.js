@@ -221,7 +221,7 @@ class PanelReply extends Component {
                   </div>
                   <small>
                     <Likers
-                      className="comment__likers"
+                      className="comment__likes"
                       userId={userId}
                       likes={reply.likes}
                       onLinkClick={() =>

@@ -55,7 +55,7 @@ class LinkPage extends Component {
 
   state = {
     confirmModalShown: false,
-    likersModalShown: false,
+    likesModalShown: false,
     notFound: false
   }
 
@@ -112,7 +112,7 @@ class LinkPage extends Component {
         uploaderAuthLevel,
         uploaderName,
         comments = [],
-        likers = [],
+        likes = [],
         loadMoreCommentsButton = false,
         ...embedlyProps
       },
@@ -127,10 +127,10 @@ class LinkPage extends Component {
       deleteLinkFromPage,
       myId
     } = this.props
-    const { confirmModalShown, likersModalShown, notFound } = this.state
+    const { confirmModalShown, likesModalShown, notFound } = this.state
     let userLikedThis = false
-    for (let i = 0; i < likers.length; i++) {
-      if (likers[i].userId === myId) userLikedThis = true
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i].userId === myId) userLikedThis = true
     }
 
     return id ? (
@@ -185,11 +185,11 @@ class LinkPage extends Component {
               liked={userLikedThis}
             />
             <Likers
-              key={'likers' + id}
+              key={'likes' + id}
               style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
-              likes={likers}
+              likes={likes}
               userId={myId}
-              onLinkClick={() => this.setState({ likersModalShown: true })}
+              onLinkClick={() => this.setState({ likesModalShown: true })}
             />
           </div>
           <PanelComments
@@ -221,14 +221,14 @@ class LinkPage extends Component {
             onHide={() => this.setState({ confirmModalShown: false })}
           />
         )}
-        {likersModalShown && (
+        {likesModalShown && (
           <UserListModal
             key={'userlist' + id}
-            users={likers}
+            users={likes}
             userId={myId}
             title="People who liked this"
             description="(You)"
-            onHide={() => this.setState({ likersModalShown: false })}
+            onHide={() => this.setState({ likesModalShown: false })}
           />
         )}
       </div>

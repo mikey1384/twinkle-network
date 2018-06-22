@@ -92,7 +92,7 @@ class Comment extends Component {
                 <UsernameText
                   user={{
                     id: star.rewarderId,
-                    name: star.rewarderUsername
+                    username: star.rewarderUsername
                   }}
                   userId={myId}
                 />{' '}

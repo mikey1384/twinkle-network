@@ -27,7 +27,8 @@ class Contents extends Component {
     canStar: PropTypes.bool,
     inputAtBottom: PropTypes.bool,
     methods: PropTypes.object.isRequired,
-    myId: PropTypes.number
+    myId: PropTypes.number,
+    type: PropTypes.string
   }
 
   state = {
@@ -63,7 +64,10 @@ class Contents extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.contentObj.contentId !== this.props.contentObj.contentId) {
+    if (
+      prevProps.contentObj.id !== this.props.contentObj.id ||
+      prevProps.type !== this.props.type
+    ) {
       this.setState({ commentsShown: false })
     }
     if (prevProps.contentObj.content !== this.props.contentObj.content) {
@@ -76,41 +80,36 @@ class Contents extends Component {
 
   render() {
     const {
+      contentObj,
       contentObj: {
-        uploaderId,
-        content,
-        contentLikers = [],
+        actualDescription,
+        actualTitle,
         contentId,
-        type,
+        numChildComments,
         discussionId,
-        hasHqThumb,
-        isStarred,
-        videoViews,
-        numChildComments = 0,
-        numChildReplies = 0,
         replyId,
+        title,
         commentId,
         childComments = [],
         commentsLoadMoreButton = false,
+        isStarred,
+        likes,
         rootId,
         rootType,
-        contentTitle,
-        contentDescription,
-        rootContent,
-        rootContentIsStarred,
-        thumbUrl,
-        actualTitle,
-        actualDescription,
         siteUrl,
-        uploaderAuthLevel,
-        stars
+        stars,
+        rootObj,
+        targetObj,
+        thumbUrl,
+        type,
+        uploader,
+        views
       },
       autoShowComments,
       authLevel,
       canDelete,
       canEdit,
       canStar,
-      contentObj,
       inputAtBottom,
       methods,
       myId,
@@ -127,14 +126,14 @@ class Contents extends Component {
       xpRewardInterfaceShown
     } = this.state
     let userLikedThis = false
-    for (let i = 0; i < contentLikers.length; i++) {
-      if (contentLikers[i].userId === myId) userLikedThis = true
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i].userId === myId) userLikedThis = true
     }
 
-    const userIsUploader = myId === uploaderId
+    const userIsUploader = myId === uploader.id
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel
-    const userCanStarThis = canStar && authLevel > uploaderAuthLevel
+      (canEdit || canDelete) && authLevel > uploader.authLevel
+    const userCanStarThis = canStar && authLevel > uploader.authLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -164,47 +163,47 @@ class Contents extends Component {
             <VideoPlayer
               stretch
               autoplay
-              isStarred={!!rootContentIsStarred}
-              title={contentTitle}
-              style={{ marginBottom: '1em' }}
-              hasHqThumb={hasHqThumb}
+              isStarred={!!rootObj.isStarred}
+              title={rootObj.title}
+              style={{ marginBottom: '1rem' }}
+              hasHqThumb={rootObj.hasHqThumb}
               videoId={rootId}
-              videoCode={rootContent}
+              videoCode={rootObj.content}
             />
           )}
         {type === 'comment' &&
           (commentId || replyId || discussionId) && (
             <TargetContent
-              contentObj={contentObj}
+              contentAvailable={!!targetObj.type}
+              targetObj={targetObj}
+              rootObj={rootObj}
               myId={myId}
               methods={methods.TargetContent}
+              rootId={rootId}
+              rootType={rootType}
+              panelId={contentId}
             />
           )}
         <MainContent
           contentId={contentId}
-          content={content}
-          contentDescription={contentDescription}
-          contentTitle={contentTitle}
-          hasHqThumb={hasHqThumb}
+          contentObj={contentObj}
+          type={type}
+          contentTitle={title || rootObj.title}
           isEditing={isEditing}
-          isStarred={!!isStarred}
           onEditContent={methods.onContentEdit}
           onEditDismiss={() => this.setState({ isEditing: false })}
-          rootId={rootId}
-          rootContent={rootContent}
-          rootContentIsStarred={!!rootContentIsStarred}
+          rootObj={rootObj}
           rootType={rootType}
           urlRelated={
             edited ? {} : { thumbUrl, actualTitle, actualDescription, siteUrl }
           }
-          type={type}
         />
         {!isEditing && (
           <div
             className="bottom-interface"
             style={{
               marginBottom:
-                contentLikers.length > 0 &&
+                likes.length > 0 &&
                 !(type === 'comment' && stars.length > 0) &&
                 !commentsShown &&
                 !xpRewardInterfaceShown &&
@@ -235,9 +234,7 @@ class Contents extends Component {
                           : 'Reply'}&nbsp;
                       {numChildComments > 0 && !commentsShown
                         ? `(${numChildComments})`
-                        : numChildReplies > 0 && !commentsShown
-                          ? `(${numChildReplies})`
-                          : ''}
+                        : ''}
                     </Button>
                   </Fragment>
                 )}
@@ -264,7 +261,7 @@ class Contents extends Component {
                 )}
               </div>
               <div className="right">
-                {videoViews > 10 &&
+                {views > 10 &&
                   type === 'video' && (
                     <div
                       style={{
@@ -272,7 +269,7 @@ class Contents extends Component {
                         fontSize: '2rem'
                       }}
                     >
-                      {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+                      {views} view{`${views > 1 ? 's' : ''}`}
                     </div>
                   )}
                 {canStar &&
@@ -301,9 +298,9 @@ class Contents extends Component {
               </div>
             </div>
             <Likers
-              className="content-panel__likers"
+              className="content-panel__likes"
               userId={myId}
-              likes={contentLikers}
+              likes={likes}
               onLinkClick={() => this.setState({ userListModalShown: true })}
             />
           </div>
@@ -312,7 +309,7 @@ class Contents extends Component {
           <XPRewardInterface
             contentType={type}
             contentId={contentId}
-            uploaderId={uploaderId}
+            uploaderId={uploader.id}
             stars={stars}
             onRewardSubmit={data => {
               this.setState({ xpRewardInterfaceShown: false })
@@ -367,7 +364,7 @@ class Contents extends Component {
           <UserListModal
             onHide={() => this.setState({ userListModalShown: false })}
             title={`People who liked this ${type}`}
-            users={contentLikers}
+            users={likes}
             description="(You)"
           />
         )}

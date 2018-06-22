@@ -53,7 +53,7 @@ export default function Likers({
                 color={Color.blue()}
                 user={{
                   id: otherLikes[0].userId,
-                  name: otherLikes[0].username
+                  username: otherLikes[0].username
                 }}
               />{' '}
               like {`this${target ? ' ' + target : ''}.`}
@@ -79,11 +79,8 @@ export default function Likers({
       if (totalLikes === 1) {
         return (
           <div>
-            <UsernameText
-              color={Color.blue()}
-              user={{ id: likes[0].userId, name: likes[0].username }}
-            />{' '}
-            likes {`this${target ? ' ' + target : ''}.`}
+            <UsernameText color={Color.blue()} user={likes[0]} /> likes{' '}
+            {`this${target ? ' ' + target : ''}.`}
           </div>
         )
       } else {

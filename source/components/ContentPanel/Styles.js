@@ -40,7 +40,7 @@ export const container = css`
       }
     }
   }
-  .content-panel__likers {
+  .content-panel__likes {
     margin-top: 0.6rem;
     font-weight: bold;
     color: ${Color.darkGray()};

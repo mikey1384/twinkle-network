@@ -226,7 +226,7 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         linkPage: {
           ...state.linkPage,
-          likers: action.likes
+          likes: action.likes
         }
       }
     case LINK.LOAD_PAGE:
