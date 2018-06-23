@@ -154,7 +154,7 @@ export default class PanelComments extends Component {
             autoFocus={autoFocus}
             InputFormRef={ref => (this.CommentInputArea = ref)}
             innerRef={inputAreaInnerRef}
-            style={{ marginTop: '1rem' }}
+            style={{ marginTop: comments.length > 0 ? '1rem' : 0 }}
             inputTypeLabel={inputTypeLabel}
             onSubmit={comment => {
               this.setState({ commentSubmitted: true })

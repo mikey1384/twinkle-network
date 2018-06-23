@@ -206,10 +206,10 @@ class Contents extends Component {
             style={{
               marginBottom:
                 contentLikers.length > 0 &&
-                !(type === 'comment' && stars.length > 0) &&
+                !(stars.length > 0) &&
                 !commentsShown &&
                 !xpRewardInterfaceShown &&
-                '1rem'
+                '0.5rem'
             }}
           >
             <div className="buttons-bar">
@@ -280,33 +280,41 @@ class Contents extends Component {
                   )}
               </div>
               <div className="right">
-                {videoViews > 10 &&
-                  type === 'video' && (
-                    <div
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: '2rem'
-                      }}
-                    >
-                      {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
-                    </div>
-                  )}
                 {canStar &&
                   type === 'video' && (
                     <StarButton
                       isStarred={!!isStarred}
                       onClick={this.onStarButtonClick}
-                      style={{ marginLeft: '1rem' }}
                     />
                   )}
               </div>
             </div>
-            <Likers
-              className="content-panel__likers"
-              userId={myId}
-              likes={contentLikers}
-              onLinkClick={() => this.setState({ userListModalShown: true })}
-            />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '0.5rem'
+              }}
+            >
+              <Likers
+                className="content-panel__likers"
+                userId={myId}
+                likes={contentLikers}
+                onLinkClick={() => this.setState({ userListModalShown: true })}
+              />
+              {videoViews > 10 &&
+                type === 'video' && (
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '1.7rem'
+                    }}
+                  >
+                    {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+                  </div>
+                )}
+            </div>
           </div>
         )}
         {xpRewardInterfaceShown && (
@@ -322,7 +330,6 @@ class Contents extends Component {
           />
         )}
         <RewardStatus
-          style={{ marginTop: '0.5rem' }}
           contentType={type}
           onCommentEdit={methods.onRewardCommentEdit}
           stars={stars}
@@ -337,7 +344,7 @@ class Contents extends Component {
               this.CommentInputArea = ref
             }}
             inputAtBottom={inputAtBottom}
-            style={{ padding: '1rem', paddingTop: 0, marginTop: '0.5rem' }}
+            style={{ padding: '1rem', paddingTop: 0 }}
             inputTypeLabel={
               type === 'comment'
                 ? 'reply'

@@ -34,7 +34,7 @@ export const container = css`
         }
         .right {
           display: flex;
-          justify-content: flex-end;
+          justify-content: flex-start;
           align-items: center;
         }
       }
