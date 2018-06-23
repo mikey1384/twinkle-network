@@ -32,7 +32,7 @@ class XPRewardInterface extends Component {
 
   render() {
     const { rewarding, rewardExplanation, twoStarSelected } = this.state
-    const { stars = [], userId } = this.props
+    const { contentType, stars = [], userId } = this.props
     if (!userId) return null
     const totalStars =
       stars.length > 0
@@ -91,7 +91,9 @@ class XPRewardInterface extends Component {
           onChange={event =>
             this.setState({ rewardExplanation: addEmoji(event.target.value) })
           }
-          placeholder="Let the recipient know why you are rewarding XP for this comment (optional)"
+          placeholder={`Let the recipient know why you are rewarding XP for this ${
+            contentType === 'url' ? 'link' : contentType
+          } (optional)`}
           style={exceedsCharLimit({
             contentType: 'rewardComment',
             text: rewardExplanation

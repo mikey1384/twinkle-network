@@ -227,6 +227,29 @@ class Comment extends Component {
                     >
                       <span className="glyphicon glyphicon-comment" /> Reply
                     </Button>
+                    {canStar &&
+                      userCanEditThis &&
+                      !userIsUploader && (
+                        <Button
+                          love
+                          style={{ marginLeft: '1rem' }}
+                          onClick={() =>
+                            this.setState({ xpRewardInterfaceShown: true })
+                          }
+                          disabled={determineXpButtonDisabled({
+                            myId: userId,
+                            xpRewardInterfaceShown,
+                            stars
+                          })}
+                        >
+                          <span className="glyphicon glyphicon-star" />
+                          &nbsp;{determineXpButtonDisabled({
+                            myId: userId,
+                            xpRewardInterfaceShown,
+                            stars
+                          }) || 'Reward'}
+                        </Button>
+                      )}
                   </div>
                   <div>
                     <Likers
@@ -243,30 +266,6 @@ class Comment extends Component {
                       }
                     />
                   </div>
-                </div>
-                <div>
-                  {canStar &&
-                    userCanEditThis &&
-                    !userIsUploader && (
-                      <Button
-                        love
-                        onClick={() =>
-                          this.setState({ xpRewardInterfaceShown: true })
-                        }
-                        disabled={determineXpButtonDisabled({
-                          myId: userId,
-                          xpRewardInterfaceShown,
-                          stars
-                        })}
-                      >
-                        <span className="glyphicon glyphicon-star" />
-                        &nbsp;{determineXpButtonDisabled({
-                          myId: userId,
-                          xpRewardInterfaceShown,
-                          stars
-                        }) || 'Reward Stars'}
-                      </Button>
-                    )}
                 </div>
               </div>
             </div>
@@ -288,6 +287,7 @@ class Comment extends Component {
             onCommentEdit={editRewardComment}
             stars={stars}
             style={{ marginTop: '0.5rem' }}
+            uploaderName={comment.username}
           />
           <ReplyInputArea
             style={{ marginTop: '0.5rem' }}

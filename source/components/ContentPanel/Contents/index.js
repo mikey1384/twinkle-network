@@ -204,10 +204,10 @@ class Contents extends Component {
             style={{
               marginBottom:
                 likes.length > 0 &&
-                !(type === 'comment' && stars.length > 0) &&
+                !(stars.length > 0) &&
                 !commentsShown &&
                 !xpRewardInterfaceShown &&
-                '1rem'
+                '0.5rem'
             }}
           >
             <div className="buttons-bar">
@@ -259,50 +259,58 @@ class Contents extends Component {
                     menuProps={editMenuItems}
                   />
                 )}
-              </div>
-              <div className="right">
-                {views > 10 &&
-                  type === 'video' && (
-                    <div
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: '2rem'
-                      }}
-                    >
-                      {views} view{`${views > 1 ? 's' : ''}`}
-                    </div>
-                  )}
                 {canStar &&
-                  type === 'video' && (
-                    <StarButton
-                      isStarred={!!isStarred}
-                      onClick={this.onStarButtonClick}
-                      style={{ marginLeft: '1rem' }}
-                    />
-                  )}
-                {type === 'comment' &&
-                  canStar &&
                   userCanStarThis &&
                   !userIsUploader && (
                     <Button
                       love
                       disabled={this.determineXpButtonDisabled()}
+                      style={{ marginLeft: '1rem' }}
                       onClick={() =>
                         this.setState({ xpRewardInterfaceShown: true })
                       }
                     >
                       <span className="glyphicon glyphicon-star" />{' '}
-                      {this.determineXpButtonDisabled() || 'Reward Stars'}
+                      {this.determineXpButtonDisabled() || 'Reward'}
                     </Button>
                   )}
               </div>
+              <div className="right">
+                {canStar &&
+                  type === 'video' && (
+                    <StarButton
+                      isStarred={!!isStarred}
+                      onClick={this.onStarButtonClick}
+                    />
+                  )}
+              </div>
             </div>
-            <Likers
-              className="content-panel__likes"
-              userId={myId}
-              likes={likes}
-              onLinkClick={() => this.setState({ userListModalShown: true })}
-            />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '0.5rem'
+              }}
+            >
+              <Likers
+                className="content-panel__likers"
+                userId={myId}
+                likes={likes}
+                onLinkClick={() => this.setState({ userListModalShown: true })}
+              />
+              {views > 10 &&
+                type === 'video' && (
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '1.7rem'
+                    }}
+                  >
+                    {views} view{`${views > 1 ? 's' : ''}`}
+                  </div>
+                )}
+            </div>
           </div>
         )}
         {xpRewardInterfaceShown && (
@@ -317,13 +325,12 @@ class Contents extends Component {
             }}
           />
         )}
-        {type === 'comment' && (
-          <RewardStatus
-            style={{ marginTop: '0.5rem' }}
-            onCommentEdit={methods.onRewardCommentEdit}
-            stars={stars}
-          />
-        )}
+        <RewardStatus
+          contentType={type}
+          onCommentEdit={methods.onRewardCommentEdit}
+          stars={stars}
+          uploaderName={uploader.username}
+        />
         {commentsShown && (
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}
@@ -333,7 +340,7 @@ class Contents extends Component {
               this.CommentInputArea = ref
             }}
             inputAtBottom={inputAtBottom}
-            style={{ padding: '1rem', paddingTop: 0, marginTop: '0.5rem' }}
+            style={{ padding: '1rem', paddingTop: 0 }}
             inputTypeLabel={
               type === 'comment'
                 ? 'reply'
