@@ -34,6 +34,7 @@ import { feedContentEdit } from '../../../redux/actions/FeedActions'
 import FilterBar from 'components/FilterBar'
 import Banner from 'components/Banner'
 import { queryStringForArray } from 'helpers/stringHelpers'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 
 class Stories extends Component {
   static propTypes = {
@@ -130,89 +131,91 @@ class Stories extends Component {
     } = this.props
     const { loadingMore } = this.state
     return (
-      <div
-        ref={ref => {
-          this.Container = ref
-        }}
-        style={{ position: 'relative', paddingBottom: '1rem' }}
-      >
-        {this.renderFilterBar()}
-        <InputPanel />
-        <div>
-          {!loaded && <Loading text="Loading Feeds..." />}
-          {loaded &&
-            feeds.length === 0 && (
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '15rem'
-                }}
-              >
-                <h1 style={{ textAlign: 'center' }}>
-                  {username
-                    ? `Hello ${username}, be the first to post something`
-                    : 'Hi there!'}
-                </h1>
-              </div>
-            )}
-          {loaded &&
-            feeds.length > 0 && (
-              <Fragment>
-                {numNewPosts > 0 && (
-                  <Banner
-                    info
-                    onClick={this.fetchNewFeeds}
-                    style={{ marginBottom: '1rem' }}
-                  >
-                    Click to See {numNewPosts} new Post{numNewPosts > 1
-                      ? 's'
-                      : ''}
-                  </Banner>
-                )}
-                {feeds.map(feed => {
-                  return (
-                    <ContentPanel
-                      key={feed.id}
-                      selfLoadingDisabled={this.clearingFeeds}
-                      inputAtBottom={feed.type === 'comment'}
-                      contentObj={feed}
-                      methodObj={{
-                        attachStar,
-                        deleteComment: feedCommentDelete,
-                        deleteContent: feedContentDelete,
-                        editComment: feedCommentEdit,
-                        editContent: feedContentEdit,
-                        editRewardComment: feedRewardCommentEdit,
-                        likeComment: commentFeedLike,
-                        likeContent: contentFeedLike,
-                        likeQuestion: questionFeedLike,
-                        likeTargetComment: likeTargetComment,
-                        loadContent: fetchFeed,
-                        loadMoreComments: loadMoreFeedComments,
-                        loadMoreReplies: loadMoreFeedReplies,
-                        showComments: showFeedComments,
-                        starVideo: feedVideoStar,
-                        uploadComment: uploadFeedComment,
-                        uploadReply: uploadFeedReply,
-                        uploadTargetComment: uploadTargetContentComment
-                      }}
-                      userId={userId}
+      <ErrorBoundary>
+        <div
+          ref={ref => {
+            this.Container = ref
+          }}
+          style={{ position: 'relative', paddingBottom: '1rem' }}
+        >
+          {this.renderFilterBar()}
+          <InputPanel />
+          <div>
+            {!loaded && <Loading text="Loading Feeds..." />}
+            {loaded &&
+              feeds.length === 0 && (
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '15rem'
+                  }}
+                >
+                  <h1 style={{ textAlign: 'center' }}>
+                    {username
+                      ? `Hello ${username}, be the first to post something`
+                      : 'Hi there!'}
+                  </h1>
+                </div>
+              )}
+            {loaded &&
+              feeds.length > 0 && (
+                <Fragment>
+                  {numNewPosts > 0 && (
+                    <Banner
+                      info
+                      onClick={this.fetchNewFeeds}
+                      style={{ marginBottom: '1rem' }}
+                    >
+                      Click to See {numNewPosts} new Post{numNewPosts > 1
+                        ? 's'
+                        : ''}
+                    </Banner>
+                  )}
+                  {feeds.map(feed => {
+                    return (
+                      <ContentPanel
+                        key={feed.id}
+                        selfLoadingDisabled={this.clearingFeeds}
+                        inputAtBottom={feed.type === 'comment'}
+                        contentObj={feed}
+                        methodObj={{
+                          attachStar,
+                          deleteComment: feedCommentDelete,
+                          deleteContent: feedContentDelete,
+                          editComment: feedCommentEdit,
+                          editContent: feedContentEdit,
+                          editRewardComment: feedRewardCommentEdit,
+                          likeComment: commentFeedLike,
+                          likeContent: contentFeedLike,
+                          likeQuestion: questionFeedLike,
+                          likeTargetComment: likeTargetComment,
+                          loadContent: fetchFeed,
+                          loadMoreComments: loadMoreFeedComments,
+                          loadMoreReplies: loadMoreFeedReplies,
+                          showComments: showFeedComments,
+                          starVideo: feedVideoStar,
+                          uploadComment: uploadFeedComment,
+                          uploadReply: uploadFeedReply,
+                          uploadTargetComment: uploadTargetContentComment
+                        }}
+                        userId={userId}
+                      />
+                    )
+                  })}
+                  {loadMoreButton && (
+                    <LoadMoreButton
+                      onClick={this.loadMoreFeeds}
+                      loading={loadingMore}
                     />
-                  )
-                })}
-                {loadMoreButton && (
-                  <LoadMoreButton
-                    onClick={this.loadMoreFeeds}
-                    loading={loadingMore}
-                  />
-                )}
-              </Fragment>
-            )}
+                  )}
+                </Fragment>
+              )}
+          </div>
         </div>
-      </div>
+      </ErrorBoundary>
     )
   }
 

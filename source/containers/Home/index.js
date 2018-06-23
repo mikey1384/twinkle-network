@@ -10,6 +10,7 @@ import Loading from 'components/Loading'
 import ImageEditModal from 'components/Modals/ImageEditModal'
 import AlertModal from 'components/Modals/AlertModal'
 import { uploadProfilePic } from 'redux/actions/UserActions'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import loadable from 'loadable-components'
 const Profile = loadable(() => import('./Profile'), {
   LoadingComponent: Loading
@@ -44,52 +45,54 @@ class Home extends Component {
       processing
     } = this.state
     return (
-      <div className={container}>
-        <div className={Left}>
-          <ProfileWidget
-            history={history}
-            showAlert={() => this.setState({ alertModalShown: true })}
-            loadImage={upload =>
-              this.setState({
-                imageEditModalShown: true,
-                imageUri: upload.target.result
-              })
-            }
-          />
-          <HomeMenuItems
-            style={{ marginTop: '1rem' }}
-            history={history}
-            location={location}
-          />
+      <ErrorBoundary>
+        <div className={container}>
+          <div className={Left}>
+            <ProfileWidget
+              history={history}
+              showAlert={() => this.setState({ alertModalShown: true })}
+              loadImage={upload =>
+                this.setState({
+                  imageEditModalShown: true,
+                  imageUri: upload.target.result
+                })
+              }
+            />
+            <HomeMenuItems
+              style={{ marginTop: '1rem' }}
+              history={history}
+              location={location}
+            />
+          </div>
+          <div className={Center}>
+            <Route exact path="/" component={Stories} />
+            <Route path="/users/:username" component={Profile} />
+            <Route exact path="/users" component={People} />
+          </div>
+          <Notification className={Right} />
+          {imageEditModalShown && (
+            <ImageEditModal
+              imageUri={imageUri}
+              onHide={() =>
+                this.setState({
+                  imageUri: null,
+                  imageEditModalShown: false,
+                  processing: false
+                })
+              }
+              processing={processing}
+              onConfirm={this.uploadImage}
+            />
+          )}
+          {alertModalShown && (
+            <AlertModal
+              title="Image is too large (limit: 5mb)"
+              content="Please select a smaller image"
+              onHide={() => this.setState({ alertModalShown: false })}
+            />
+          )}
         </div>
-        <div className={Center}>
-          <Route exact path="/" component={Stories} />
-          <Route path="/users/:username" component={Profile} />
-          <Route exact path="/users" component={People} />
-        </div>
-        <Notification className={Right} />
-        {imageEditModalShown && (
-          <ImageEditModal
-            imageUri={imageUri}
-            onHide={() =>
-              this.setState({
-                imageUri: null,
-                imageEditModalShown: false,
-                processing: false
-              })
-            }
-            processing={processing}
-            onConfirm={this.uploadImage}
-          />
-        )}
-        {alertModalShown && (
-          <AlertModal
-            title="Image is too large (limit: 5mb)"
-            content="Please select a smaller image"
-            onHide={() => this.setState({ alertModalShown: false })}
-          />
-        )}
-      </div>
+      </ErrorBoundary>
     )
   }
 
