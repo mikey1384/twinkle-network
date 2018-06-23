@@ -39,7 +39,6 @@ class Content extends Component {
     stars: PropTypes.array,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
-    type: PropTypes.string,
     uploader: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
@@ -76,7 +75,6 @@ class Content extends Component {
       rootId,
       replyId,
       stars,
-      type,
       methods
     } = this.props
     const {
@@ -192,23 +190,13 @@ class Content extends Component {
                         <span className="glyphicon glyphicon-comment" />&nbsp;
                         Reply
                       </Button>
-                      <Likers
-                        className="content-panel__likers"
-                        userId={myId}
-                        likes={likes}
-                        onLinkClick={() =>
-                          this.setState({ userListModalShown: true })
-                        }
-                      />
-                    </div>
-                    <div>
-                      {type === 'comment' &&
-                        canStar &&
+                      {canStar &&
                         userCanStarThis &&
                         !userIsUploader && (
                           <Button
                             love
                             disabled={this.determineXpButtonDisabled()}
+                            style={{ marginLeft: '1rem' }}
                             onClick={() =>
                               this.setState({ xpRewardInterfaceShown: true })
                             }
@@ -217,6 +205,14 @@ class Content extends Component {
                             {this.determineXpButtonDisabled() || 'Reward Stars'}
                           </Button>
                         )}
+                      <Likers
+                        className="content-panel__likers"
+                        userId={myId}
+                        likes={likes}
+                        onLinkClick={() =>
+                          this.setState({ userListModalShown: true })
+                        }
+                      />
                     </div>
                   </div>
                 </div>

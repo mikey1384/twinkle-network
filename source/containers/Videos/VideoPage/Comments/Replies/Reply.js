@@ -233,6 +233,29 @@ class Reply extends Component {
                         >
                           <span className="glyphicon glyphicon-comment" /> Reply
                         </Button>
+                        {canStar &&
+                          userCanEditThis &&
+                          !userIsUploader && (
+                            <Button
+                              love
+                              style={{ marginLeft: '1rem' }}
+                              onClick={() =>
+                                this.setState({ xpRewardInterfaceShown: true })
+                              }
+                              disabled={determineXpButtonDisabled({
+                                myId,
+                                xpRewardInterfaceShown,
+                                stars
+                              })}
+                            >
+                              <span className="glyphicon glyphicon-star" />
+                              &nbsp;{determineXpButtonDisabled({
+                                myId,
+                                xpRewardInterfaceShown,
+                                stars
+                              }) || 'Reward Stars'}
+                            </Button>
+                          )}
                       </div>
                       <Likers
                         style={{
@@ -247,30 +270,6 @@ class Reply extends Component {
                           this.setState({ userListModalShown: true })
                         }
                       />
-                    </div>
-                    <div>
-                      {canStar &&
-                        userCanEditThis &&
-                        !userIsUploader && (
-                          <Button
-                            love
-                            onClick={() =>
-                              this.setState({ xpRewardInterfaceShown: true })
-                            }
-                            disabled={determineXpButtonDisabled({
-                              myId,
-                              xpRewardInterfaceShown,
-                              stars
-                            })}
-                          >
-                            <span className="glyphicon glyphicon-star" />
-                            &nbsp;{determineXpButtonDisabled({
-                              myId,
-                              xpRewardInterfaceShown,
-                              stars
-                            }) || 'Reward Stars'}
-                          </Button>
-                        )}
                     </div>
                   </div>
                 </div>

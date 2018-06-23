@@ -61,21 +61,8 @@ export const container = css`
   .comment__buttons {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .buttons__left {
-    display: flex;
-    align-items: center;
     justify-content: flex-start;
-    width: 50%;
-  }
-  .buttons__right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    width: 50%;
+    width: 100%;
   }
   @media (max-width: ${mobileMaxWidth}) {
     .likers {

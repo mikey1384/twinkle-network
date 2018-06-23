@@ -200,43 +200,40 @@ class PanelComment extends Component {
                     {comment.content}
                   </LongText>
                   <div className="comment__buttons">
-                    <div className="buttons__left">
-                      <LikeButton
-                        onClick={this.onLikeClick}
-                        liked={userLikedThis}
-                      />
-                      <Button
-                        transparent
-                        style={{ marginLeft: '1rem' }}
-                        onClick={this.onReplyButtonClick}
-                      >
-                        <span className="glyphicon glyphicon-comment" /> Reply
-                      </Button>
-                    </div>
-                    <div className="buttons__right">
-                      {canStar &&
-                        userCanEditThis &&
-                        !userIsUploader && (
-                          <Button
-                            love
-                            onClick={() =>
-                              this.setState({ xpRewardInterfaceShown: true })
-                            }
-                            disabled={determineXpButtonDisabled({
-                              myId: userId,
-                              xpRewardInterfaceShown,
-                              stars
-                            })}
-                          >
-                            <span className="glyphicon glyphicon-star" />
-                            &nbsp;{determineXpButtonDisabled({
-                              myId: userId,
-                              xpRewardInterfaceShown,
-                              stars
-                            }) || 'Reward Stars'}
-                          </Button>
-                        )}
-                    </div>
+                    <LikeButton
+                      onClick={this.onLikeClick}
+                      liked={userLikedThis}
+                    />
+                    <Button
+                      transparent
+                      style={{ marginLeft: '1rem' }}
+                      onClick={this.onReplyButtonClick}
+                    >
+                      <span className="glyphicon glyphicon-comment" /> Reply
+                    </Button>
+                    {canStar &&
+                      userCanEditThis &&
+                      !userIsUploader && (
+                        <Button
+                          love
+                          style={{ marginLeft: '1rem' }}
+                          onClick={() =>
+                            this.setState({ xpRewardInterfaceShown: true })
+                          }
+                          disabled={determineXpButtonDisabled({
+                            myId: userId,
+                            xpRewardInterfaceShown,
+                            stars
+                          })}
+                        >
+                          <span className="glyphicon glyphicon-star" />
+                          &nbsp;{determineXpButtonDisabled({
+                            myId: userId,
+                            xpRewardInterfaceShown,
+                            stars
+                          }) || 'Reward Stars'}
+                        </Button>
+                      )}
                   </div>
                   <Likers
                     className="comment__likers"

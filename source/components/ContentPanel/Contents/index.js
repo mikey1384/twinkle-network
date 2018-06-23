@@ -262,6 +262,21 @@ class Contents extends Component {
                     menuProps={editMenuItems}
                   />
                 )}
+                {canStar &&
+                  userCanStarThis &&
+                  !userIsUploader && (
+                    <Button
+                      love
+                      disabled={this.determineXpButtonDisabled()}
+                      style={{ marginLeft: '1rem' }}
+                      onClick={() =>
+                        this.setState({ xpRewardInterfaceShown: true })
+                      }
+                    >
+                      <span className="glyphicon glyphicon-star" />{' '}
+                      {this.determineXpButtonDisabled() || 'Reward Stars'}
+                    </Button>
+                  )}
               </div>
               <div className="right">
                 {videoViews > 10 &&
@@ -282,21 +297,6 @@ class Contents extends Component {
                       onClick={this.onStarButtonClick}
                       style={{ marginLeft: '1rem' }}
                     />
-                  )}
-                {type === 'comment' &&
-                  canStar &&
-                  userCanStarThis &&
-                  !userIsUploader && (
-                    <Button
-                      love
-                      disabled={this.determineXpButtonDisabled()}
-                      onClick={() =>
-                        this.setState({ xpRewardInterfaceShown: true })
-                      }
-                    >
-                      <span className="glyphicon glyphicon-star" />{' '}
-                      {this.determineXpButtonDisabled() || 'Reward Stars'}
-                    </Button>
                   )}
               </div>
             </div>
