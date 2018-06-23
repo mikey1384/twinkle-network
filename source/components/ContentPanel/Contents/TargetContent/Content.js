@@ -206,7 +206,7 @@ class Content extends Component {
                           </Button>
                         )}
                       <Likers
-                        className="content-panel__likers"
+                        className="content-panel__likes"
                         userId={myId}
                         likes={likes}
                         onLinkClick={() =>

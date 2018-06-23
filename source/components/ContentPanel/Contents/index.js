@@ -290,11 +290,12 @@ class Contents extends Component {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                marginTop: '0.5rem',
                 marginBottom: '0.5rem'
               }}
             >
               <Likers
-                className="content-panel__likers"
+                className="content-panel__likes"
                 userId={myId}
                 likes={likes}
                 onLinkClick={() => this.setState({ userListModalShown: true })}
