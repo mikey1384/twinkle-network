@@ -41,7 +41,6 @@ export const container = css`
     }
   }
   .content-panel__likers {
-    margin-top: 0.6rem;
     font-weight: bold;
     color: ${Color.darkGray()};
     font-size: 1.2rem;
