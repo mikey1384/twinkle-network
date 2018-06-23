@@ -237,6 +237,7 @@ class Content extends Component {
                         : '1rem'
                   }}
                   stars={stars}
+                  uploaderName={uploader.name}
                 />
                 {replyInputShown && (
                   <InputForm

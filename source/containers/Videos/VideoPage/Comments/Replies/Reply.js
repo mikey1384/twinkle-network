@@ -293,6 +293,7 @@ class Reply extends Component {
             style={{ marginTop: '0.5rem' }}
             onCommentEdit={editRewardComment}
             stars={stars}
+            uploaderName={username}
           />
           <ReplyInputArea
             style={{ marginTop: '1rem' }}

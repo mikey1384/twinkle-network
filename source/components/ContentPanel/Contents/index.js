@@ -102,6 +102,7 @@ class Contents extends Component {
         actualTitle,
         actualDescription,
         siteUrl,
+        uploaderName,
         uploaderAuthLevel,
         stars
       },
@@ -320,13 +321,13 @@ class Contents extends Component {
             }}
           />
         )}
-        {type === 'comment' && (
-          <RewardStatus
-            style={{ marginTop: '0.5rem' }}
-            onCommentEdit={methods.onRewardCommentEdit}
-            stars={stars}
-          />
-        )}
+        <RewardStatus
+          style={{ marginTop: '0.5rem' }}
+          contentType={type}
+          onCommentEdit={methods.onRewardCommentEdit}
+          stars={stars}
+          uploaderName={uploaderName}
+        />
         {commentsShown && (
           <PanelComments
             autoFocus={autoFocusWhenCommentShown}

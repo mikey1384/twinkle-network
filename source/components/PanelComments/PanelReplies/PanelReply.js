@@ -249,6 +249,7 @@ class PanelReply extends Component {
                 marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
               stars={stars}
+              uploaderName={reply.username}
             />
             <ReplyInputArea
               innerRef={ref => {

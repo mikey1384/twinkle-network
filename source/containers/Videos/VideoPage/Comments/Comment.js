@@ -287,6 +287,7 @@ class Comment extends Component {
             onCommentEdit={editRewardComment}
             stars={stars}
             style={{ marginTop: '0.5rem' }}
+            uploaderName={comment.username}
           />
           <ReplyInputArea
             style={{ marginTop: '0.5rem' }}

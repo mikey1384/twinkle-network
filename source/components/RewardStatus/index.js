@@ -7,19 +7,23 @@ import Comment from './Comment'
 
 class RewardStatus extends Component {
   static propTypes = {
+    contentType: PropTypes.string,
     userId: PropTypes.number,
     noMarginForEditButton: PropTypes.bool,
     onCommentEdit: PropTypes.func,
     stars: PropTypes.array,
-    style: PropTypes.object
+    style: PropTypes.object,
+    uploaderName: PropTypes.string
   }
 
   render() {
     const {
+      contentType = 'comment',
       noMarginForEditButton,
       onCommentEdit,
       stars,
       userId,
+      uploaderName,
       style
     } = this.props
     if (!stars || stars.length === 0) return null
@@ -42,9 +46,9 @@ class RewardStatus extends Component {
           `}
         >
           {starMarks}
-          &nbsp; This comment received {totalStars > 1
-            ? totalStars
-            : 'a'} Star{totalStars > 1 ? 's' : ''} ({totalStars * 200}XP)
+          &nbsp; {uploaderName} received {totalStars > 1 ? totalStars : 'a'}{' '}
+          Star{totalStars > 1 ? 's' : ''} ({totalStars * 200}XP) for this{' '}
+          {contentType === 'url' ? 'link' : contentType}
         </div>
         {stars.map(star => (
           <Comment

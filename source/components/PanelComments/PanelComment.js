@@ -266,6 +266,7 @@ class PanelComment extends Component {
                 marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
               }}
               stars={stars}
+              uploaderName={comment.username}
             />
             <ReplyInputArea
               innerRef={ref => {
