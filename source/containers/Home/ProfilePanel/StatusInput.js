@@ -71,6 +71,10 @@ export default function StatusInput({
           <Button
             primary
             filled
+            disabled={exceedsCharLimit({
+              contentType: 'statusMsg',
+              text: editedStatusMsg
+            })}
             style={{ marginLeft: '1rem', fontSize: '1rem' }}
             onClick={onStatusSubmit}
           >
