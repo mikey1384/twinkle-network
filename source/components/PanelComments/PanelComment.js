@@ -231,7 +231,7 @@ class PanelComment extends Component {
                             myId: userId,
                             xpRewardInterfaceShown,
                             stars
-                          }) || 'Reward Stars'}
+                          }) || 'Reward'}
                         </Button>
                       )}
                   </div>

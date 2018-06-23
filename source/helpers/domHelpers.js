@@ -25,7 +25,7 @@ export function determineXpButtonDisabled({
   myId,
   xpRewardInterfaceShown
 }) {
-  if (xpRewardInterfaceShown) return 'Reward Stars'
+  if (xpRewardInterfaceShown) return 'Reward'
   const numTotalStars = stars.reduce(
     (prev, star) => prev + star.rewardAmount,
     0

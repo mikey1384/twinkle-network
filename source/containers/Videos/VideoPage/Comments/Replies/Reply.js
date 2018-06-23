@@ -253,7 +253,7 @@ class Reply extends Component {
                                 myId,
                                 xpRewardInterfaceShown,
                                 stars
-                              }) || 'Reward Stars'}
+                              }) || 'Reward'}
                             </Button>
                           )}
                       </div>

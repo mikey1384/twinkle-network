@@ -202,7 +202,7 @@ class Content extends Component {
                             }
                           >
                             <span className="glyphicon glyphicon-star" />{' '}
-                            {this.determineXpButtonDisabled() || 'Reward Stars'}
+                            {this.determineXpButtonDisabled() || 'Reward'}
                           </Button>
                         )}
                       <Likers
