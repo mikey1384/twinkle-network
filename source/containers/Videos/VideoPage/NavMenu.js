@@ -137,7 +137,10 @@ class NavMenu extends Component {
             {nextVideos.length > 0 && (
               <section key={videoId + 'up next'}>
                 <p>Up Next</p>
-                {this.renderVideos({ videos: nextVideos })}
+                {this.renderVideos({
+                  videos: nextVideos,
+                  arePlaylistVideos: playlistId && playlistVideos.length > 0
+                })}
               </section>
             )}
             {playlistId &&
