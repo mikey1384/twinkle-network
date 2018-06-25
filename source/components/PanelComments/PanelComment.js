@@ -163,7 +163,7 @@ class PanelComment extends Component {
               <UsernameText
                 className="username"
                 user={{
-                  name: comment.username,
+                  username: comment.username,
                   id: comment.userId
                 }}
               />{' '}
@@ -181,7 +181,7 @@ class PanelComment extends Component {
                     to:{' '}
                     <UsernameText
                       user={{
-                        name: comment.targetUserName,
+                        username: comment.targetUserName,
                         id: comment.targetUserId
                       }}
                     />

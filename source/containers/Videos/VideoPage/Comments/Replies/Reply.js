@@ -154,7 +154,7 @@ class Reply extends Component {
           <div>
             <UsernameText
               user={{
-                name: username,
+                username,
                 id: userId
               }}
               style={{ fontSize: '2rem' }}
@@ -177,7 +177,7 @@ class Reply extends Component {
               <span style={{ color: Color.blue }}>
                 to:{' '}
                 <UsernameText
-                  user={{ name: targetUserName, id: targetUserId }}
+                  user={{ username: targetUserName, id: targetUserId }}
                   style={{ fontSize: '1.5rem' }}
                 />
               </span>

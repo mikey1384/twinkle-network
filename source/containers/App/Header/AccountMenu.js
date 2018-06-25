@@ -35,7 +35,7 @@ function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
       success
       filled
     >
-      Sign In
+      Log In
     </Button>
   )
 }

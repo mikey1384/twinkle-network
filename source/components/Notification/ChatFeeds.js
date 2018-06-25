@@ -62,14 +62,14 @@ class ChatFeeds extends Component {
     } = this.props
     const posterString = (
       <Fragment>
-        Started by <UsernameText user={{ id: userId, name: username }} />
+        Started by <UsernameText user={{ id: userId, username }} />
         {timeStamp ? ` ${timeSince(timeStamp)}` : ''}
       </Fragment>
     )
     const reloaderString = (
       <div style={{ marginTop: '0.5rem' }}>
         Brought back by{' '}
-        <UsernameText user={{ id: reloadedBy, name: reloaderName }} />
+        <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
         {reloadTimeStamp ? ` ${timeSince(reloadTimeStamp)}` : ''}
       </div>
     )
@@ -83,6 +83,9 @@ class ChatFeeds extends Component {
   }
 }
 
-export default connect(null, {
-  initChat
-})(ChatFeeds)
+export default connect(
+  null,
+  {
+    initChat
+  }
+)(ChatFeeds)

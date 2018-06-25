@@ -91,7 +91,7 @@ export default class LeaderBoardTab extends Component {
                       rankColor ||
                       (rank <= 10 ? Color.logoBlue() : Color.buttonGray())
                     }
-                    user={{ ...user, name: user.username }}
+                    user={{ ...user, username: user.username }}
                     userId={myId}
                   />
                 </div>

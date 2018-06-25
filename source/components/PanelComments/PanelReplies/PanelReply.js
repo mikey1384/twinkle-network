@@ -141,7 +141,7 @@ class PanelReply extends Component {
               <UsernameText
                 className="username"
                 user={{
-                  name: reply.username,
+                  username: reply.username,
                   id: reply.userId
                 }}
               />{' '}
@@ -159,7 +159,7 @@ class PanelReply extends Component {
                     to:{' '}
                     <UsernameText
                       user={{
-                        name: reply.targetUserName,
+                        username: reply.targetUserName,
                         id: reply.targetUserId
                       }}
                     />

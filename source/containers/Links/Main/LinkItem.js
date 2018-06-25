@@ -209,7 +209,7 @@ class LinkItem extends Component {
                 `}
               >
                 Uploaded {`${timeSince(timeStamp)} `}by{' '}
-                <UsernameText user={{ name: uploaderName, id: uploader }} />
+                <UsernameText user={{ username: uploaderName, id: uploader }} />
               </div>
             </div>
             <div

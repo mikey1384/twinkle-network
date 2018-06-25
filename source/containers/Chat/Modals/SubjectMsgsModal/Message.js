@@ -35,7 +35,7 @@ export default function Message({
             style={MessageStyle.usernameText}
             user={{
               id: userId,
-              name: username
+              username: username
             }}
           />{' '}
           <span className={MessageStyle.timeStamp}>

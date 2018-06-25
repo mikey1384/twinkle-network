@@ -159,7 +159,7 @@ class Comment extends Component {
           <div>
             <UsernameText
               user={{
-                name: comment.username,
+                username: comment.username,
                 id: comment.userId
               }}
               style={{ fontSize: '2.5rem' }}

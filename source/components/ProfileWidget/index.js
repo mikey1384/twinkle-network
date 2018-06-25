@@ -78,7 +78,7 @@ class ProfileWidget extends Component {
             </div>
           )}
           {!userId && (
-            <div className="login-message">Log in to access all features!</div>
+            <div className="login-message">Log in to access all features</div>
           )}
           {!userId && (
             <Button
@@ -87,7 +87,7 @@ class ProfileWidget extends Component {
               style={{ marginTop: '1rem' }}
               onClick={openSigninModal}
             >
-              {"It's super easy"}
+              Tap here!
             </Button>
           )}
           <input
