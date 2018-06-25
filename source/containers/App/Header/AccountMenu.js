@@ -35,9 +35,12 @@ function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
       success
       filled
     >
-      Log In | Sign Up
+      Sign In
     </Button>
   )
 }
 
-export default connect(null, { openSigninModal })(AccountMenu)
+export default connect(
+  null,
+  { openSigninModal }
+)(AccountMenu)
