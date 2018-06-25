@@ -98,7 +98,7 @@ class Contents extends Component {
         rootId,
         rootType,
         siteUrl,
-        stars,
+        stars = [],
         rootObj,
         targetObj,
         thumbUrl,
