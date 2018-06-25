@@ -104,7 +104,7 @@ class Contents extends Component {
         siteUrl,
         uploaderName,
         uploaderAuthLevel,
-        stars
+        stars = []
       },
       autoShowComments,
       authLevel,
