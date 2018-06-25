@@ -26,6 +26,7 @@ export default class Heading extends Component {
       rootObj: PropTypes.object,
       rootId: PropTypes.number,
       rootType: PropTypes.string,
+      targetObj: PropTypes.object,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
       type: PropTypes.string,
@@ -185,8 +186,7 @@ export default class Heading extends Component {
       methods,
       onPlayVideoClick
     } = this.props
-    const userLikedVideo =
-      likes.map(like => like.userId).indexOf(myId) !== -1
+    const userLikedVideo = likes.map(like => like.userId).indexOf(myId) !== -1
     if (!content) return null
     if (rootType === 'video') {
       return (
@@ -258,12 +258,15 @@ export default class Heading extends Component {
 
   renderTargetAction = () => {
     const {
-      contentObj: { commentId, replyId, target }
+      contentObj: { commentId, replyId, targetObj }
     } = this.props
-    if (target) {
+    if (targetObj.type === 'comment' || targetObj.type === 'reply') {
       return (
         <span>
-          <UsernameText user={target.uploader} color={Color.blue()} />
+          <UsernameText
+            user={targetObj.comment.uploader}
+            color={Color.blue()}
+          />
           {"'s "}
           <ContentLink
             content={{

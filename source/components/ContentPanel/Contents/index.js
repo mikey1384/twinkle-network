@@ -14,6 +14,7 @@ import DropdownButton from 'components/Buttons/DropdownButton'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import XPRewardInterface from 'components/XPRewardInterface'
 import RewardStatus from 'components/RewardStatus'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import { determineXpButtonDisabled } from 'helpers/domHelpers'
 
 class Contents extends Component {
@@ -148,235 +149,240 @@ class Contents extends Component {
         onClick: () => this.setState({ confirmModalShown: true })
       })
     }
-
     return (
-      <div>
-        {confirmModalShown && (
-          <ConfirmModal
-            onConfirm={() => methods.onContentDelete({ type, contentId })}
-            onHide={() => this.setState({ confirmModalShown: false })}
-            title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+      <ErrorBoundary>
+        <div>
+          {confirmModalShown && (
+            <ConfirmModal
+              onConfirm={() => methods.onContentDelete({ type, contentId })}
+              onHide={() => this.setState({ confirmModalShown: false })}
+              title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+            />
+          )}
+          {type === 'comment' &&
+            attachedVideoShown && (
+              <VideoPlayer
+                stretch
+                autoplay
+                isStarred={!!rootObj.isStarred}
+                title={rootObj.title}
+                style={{ marginBottom: '1rem' }}
+                hasHqThumb={rootObj.hasHqThumb}
+                videoId={rootId}
+                videoCode={rootObj.content}
+              />
+            )}
+          {type === 'comment' &&
+            (commentId || replyId || discussionId) && (
+              <TargetContent
+                contentAvailable={!!targetObj.type}
+                targetObj={targetObj}
+                rootObj={rootObj}
+                myId={myId}
+                methods={methods.TargetContent}
+                rootId={rootId}
+                rootType={rootType}
+                panelId={contentId}
+              />
+            )}
+          <MainContent
+            contentId={contentId}
+            contentObj={contentObj}
+            type={type}
+            contentTitle={title || rootObj.title}
+            isEditing={isEditing}
+            onEditContent={methods.onContentEdit}
+            onEditDismiss={() => this.setState({ isEditing: false })}
+            rootObj={rootObj}
+            rootType={rootType}
+            urlRelated={
+              edited
+                ? {}
+                : { thumbUrl, actualTitle, actualDescription, siteUrl }
+            }
           />
-        )}
-        {type === 'comment' &&
-          attachedVideoShown && (
-            <VideoPlayer
-              stretch
-              autoplay
-              isStarred={!!rootObj.isStarred}
-              title={rootObj.title}
-              style={{ marginBottom: '1rem' }}
-              hasHqThumb={rootObj.hasHqThumb}
-              videoId={rootId}
-              videoCode={rootObj.content}
-            />
-          )}
-        {type === 'comment' &&
-          (commentId || replyId || discussionId) && (
-            <TargetContent
-              contentAvailable={!!targetObj.type}
-              targetObj={targetObj}
-              rootObj={rootObj}
-              myId={myId}
-              methods={methods.TargetContent}
-              rootId={rootId}
-              rootType={rootType}
-              panelId={contentId}
-            />
-          )}
-        <MainContent
-          contentId={contentId}
-          contentObj={contentObj}
-          type={type}
-          contentTitle={title || rootObj.title}
-          isEditing={isEditing}
-          onEditContent={methods.onContentEdit}
-          onEditDismiss={() => this.setState({ isEditing: false })}
-          rootObj={rootObj}
-          rootType={rootType}
-          urlRelated={
-            edited ? {} : { thumbUrl, actualTitle, actualDescription, siteUrl }
-          }
-        />
-        {!isEditing && (
-          <div
-            className="bottom-interface"
-            style={{
-              marginBottom:
-                likes.length > 0 &&
-                !(stars.length > 0) &&
-                !commentsShown &&
-                !xpRewardInterfaceShown &&
-                '0.5rem'
-            }}
-          >
-            <div className="buttons-bar">
-              <div className="left">
-                {type !== 'discussion' && (
-                  <Fragment>
-                    <LikeButton
-                      key="likeButton"
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                      small
-                    />
-                    <Button
-                      transparent
-                      key="commentButton"
-                      style={{ marginLeft: '1rem' }}
-                      onClick={this.onCommentButtonClick}
-                    >
-                      <span className="glyphicon glyphicon-comment" />&nbsp;
-                      {type === 'video' || type === 'url'
-                        ? 'Comment'
-                        : type === 'question'
-                          ? 'Answer'
-                          : 'Reply'}&nbsp;
-                      {numChildComments > 0 && !commentsShown
-                        ? `(${numChildComments})`
-                        : ''}
-                    </Button>
-                  </Fragment>
-                )}
-                {type === 'discussion' && (
-                  <Button transparent onClick={this.onCommentButtonClick}>
-                    <span className="glyphicon glyphicon-comment" />&nbsp;
-                    Answer{!!numChildComments &&
-                    numChildComments > 0 &&
-                    !commentsShown
-                      ? ` (${numChildComments})`
-                      : ''}
-                  </Button>
-                )}
-                {editButtonShown && (
-                  <DropdownButton
-                    transparent
-                    direction="right"
-                    shape="button"
-                    style={{ marginLeft: '0.5rem', display: 'inline-block' }}
-                    size={type !== 'discussion' ? 'sm' : null}
-                    text="Edit"
-                    menuProps={editMenuItems}
-                  />
-                )}
-                {canStar &&
-                  userCanStarThis &&
-                  !userIsUploader && (
-                    <Button
-                      love
-                      disabled={this.determineXpButtonDisabled()}
-                      style={{ marginLeft: '1rem' }}
-                      onClick={() =>
-                        this.setState({ xpRewardInterfaceShown: true })
-                      }
-                    >
-                      <span className="glyphicon glyphicon-star" />{' '}
-                      {this.determineXpButtonDisabled() || 'Reward'}
-                    </Button>
-                  )}
-              </div>
-              <div className="right">
-                {canStar &&
-                  type === 'video' && (
-                    <StarButton
-                      isStarred={!!isStarred}
-                      onClick={this.onStarButtonClick}
-                    />
-                  )}
-              </div>
-            </div>
+          {!isEditing && (
             <div
+              className="bottom-interface"
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginTop: '0.5rem',
-                marginBottom: '0.5rem'
+                marginBottom:
+                  likes.length > 0 &&
+                  !(stars.length > 0) &&
+                  !commentsShown &&
+                  !xpRewardInterfaceShown &&
+                  '0.5rem'
               }}
             >
-              <Likers
-                className="content-panel__likes"
-                userId={myId}
-                likes={likes}
-                onLinkClick={() => this.setState({ userListModalShown: true })}
-              />
-              {views > 10 &&
-                type === 'video' && (
-                  <div
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: '1.7rem'
-                    }}
-                  >
-                    {views} view{`${views > 1 ? 's' : ''}`}
-                  </div>
-                )}
+              <div className="buttons-bar">
+                <div className="left">
+                  {type !== 'discussion' && (
+                    <Fragment>
+                      <LikeButton
+                        key="likeButton"
+                        onClick={this.onLikeClick}
+                        liked={userLikedThis}
+                        small
+                      />
+                      <Button
+                        transparent
+                        key="commentButton"
+                        style={{ marginLeft: '1rem' }}
+                        onClick={this.onCommentButtonClick}
+                      >
+                        <span className="glyphicon glyphicon-comment" />&nbsp;
+                        {type === 'video' || type === 'url'
+                          ? 'Comment'
+                          : type === 'question'
+                            ? 'Answer'
+                            : 'Reply'}&nbsp;
+                        {numChildComments > 0 && !commentsShown
+                          ? `(${numChildComments})`
+                          : ''}
+                      </Button>
+                    </Fragment>
+                  )}
+                  {type === 'discussion' && (
+                    <Button transparent onClick={this.onCommentButtonClick}>
+                      <span className="glyphicon glyphicon-comment" />&nbsp;
+                      Answer{!!numChildComments &&
+                      numChildComments > 0 &&
+                      !commentsShown
+                        ? ` (${numChildComments})`
+                        : ''}
+                    </Button>
+                  )}
+                  {editButtonShown && (
+                    <DropdownButton
+                      transparent
+                      direction="right"
+                      shape="button"
+                      style={{ marginLeft: '0.5rem', display: 'inline-block' }}
+                      size={type !== 'discussion' ? 'sm' : null}
+                      text="Edit"
+                      menuProps={editMenuItems}
+                    />
+                  )}
+                  {canStar &&
+                    userCanStarThis &&
+                    !userIsUploader && (
+                      <Button
+                        love
+                        disabled={this.determineXpButtonDisabled()}
+                        style={{ marginLeft: '1rem' }}
+                        onClick={() =>
+                          this.setState({ xpRewardInterfaceShown: true })
+                        }
+                      >
+                        <span className="glyphicon glyphicon-star" />{' '}
+                        {this.determineXpButtonDisabled() || 'Reward'}
+                      </Button>
+                    )}
+                </div>
+                <div className="right">
+                  {canStar &&
+                    type === 'video' && (
+                      <StarButton
+                        isStarred={!!isStarred}
+                        onClick={this.onStarButtonClick}
+                      />
+                    )}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginTop: '0.5rem',
+                  marginBottom: '0.5rem'
+                }}
+              >
+                <Likers
+                  className="content-panel__likes"
+                  userId={myId}
+                  likes={likes}
+                  onLinkClick={() =>
+                    this.setState({ userListModalShown: true })
+                  }
+                />
+                {views > 10 &&
+                  type === 'video' && (
+                    <div
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: '1.7rem'
+                      }}
+                    >
+                      {views} view{`${views > 1 ? 's' : ''}`}
+                    </div>
+                  )}
+              </div>
             </div>
-          </div>
-        )}
-        {xpRewardInterfaceShown && (
-          <XPRewardInterface
+          )}
+          {xpRewardInterfaceShown && (
+            <XPRewardInterface
+              contentType={type}
+              contentId={contentId}
+              uploaderId={uploader.id}
+              stars={stars}
+              onRewardSubmit={data => {
+                this.setState({ xpRewardInterfaceShown: false })
+                methods.attachStar(data)
+              }}
+            />
+          )}
+          <RewardStatus
             contentType={type}
-            contentId={contentId}
-            uploaderId={uploader.id}
+            onCommentEdit={methods.onRewardCommentEdit}
             stars={stars}
-            onRewardSubmit={data => {
-              this.setState({ xpRewardInterfaceShown: false })
-              methods.attachStar(data)
-            }}
+            uploaderName={uploader.username}
           />
-        )}
-        <RewardStatus
-          contentType={type}
-          onCommentEdit={methods.onRewardCommentEdit}
-          stars={stars}
-          uploaderName={uploader.username}
-        />
-        {commentsShown && (
-          <PanelComments
-            autoFocus={autoFocusWhenCommentShown}
-            autoShowComments={autoShowComments}
-            commentsLoaded={commentsLoaded}
-            inputAreaInnerRef={ref => {
-              this.CommentInputArea = ref
-            }}
-            inputAtBottom={inputAtBottom}
-            style={{ padding: '1rem', paddingTop: 0 }}
-            inputTypeLabel={
-              type === 'comment'
-                ? 'reply'
-                : type === 'question'
-                  ? 'answer'
-                  : 'comment'
-            }
-            comments={childComments}
-            loadMoreButton={commentsLoadMoreButton}
-            userId={myId}
-            loadMoreComments={this.loadMoreComments}
-            contentId={contentId}
-            type={type}
-            parent={{
-              id: contentId,
-              type,
-              rootId,
-              rootType,
-              discussionId,
-              commentId,
-              replyId
-            }}
-            onSubmit={methods.onCommentSubmit}
-            commentActions={methods.commentActions}
-          />
-        )}
-        {userListModalShown && (
-          <UserListModal
-            onHide={() => this.setState({ userListModalShown: false })}
-            title={`People who liked this ${type}`}
-            users={likes}
-            description="(You)"
-          />
-        )}
-      </div>
+          {commentsShown && (
+            <PanelComments
+              autoFocus={autoFocusWhenCommentShown}
+              autoShowComments={autoShowComments}
+              commentsLoaded={commentsLoaded}
+              inputAreaInnerRef={ref => {
+                this.CommentInputArea = ref
+              }}
+              inputAtBottom={inputAtBottom}
+              style={{ padding: '1rem', paddingTop: 0 }}
+              inputTypeLabel={
+                type === 'comment'
+                  ? 'reply'
+                  : type === 'question'
+                    ? 'answer'
+                    : 'comment'
+              }
+              comments={childComments}
+              loadMoreButton={commentsLoadMoreButton}
+              userId={myId}
+              loadMoreComments={this.loadMoreComments}
+              contentId={contentId}
+              type={type}
+              parent={{
+                id: contentId,
+                type,
+                rootId,
+                rootType,
+                discussionId,
+                commentId,
+                replyId
+              }}
+              onSubmit={methods.onCommentSubmit}
+              commentActions={methods.commentActions}
+            />
+          )}
+          {userListModalShown && (
+            <UserListModal
+              onHide={() => this.setState({ userListModalShown: false })}
+              title={`People who liked this ${type}`}
+              users={likes}
+              description="(You)"
+            />
+          )}
+        </div>
+      </ErrorBoundary>
     )
   }
 

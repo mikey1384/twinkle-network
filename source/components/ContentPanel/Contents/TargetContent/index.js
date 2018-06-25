@@ -14,6 +14,7 @@ import ContentLink from 'components/ContentLink'
 import { timeSince } from 'helpers/timeStampHelpers'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import { determineXpButtonDisabled } from 'helpers/domHelpers'
 import { css } from 'emotion'
 
@@ -28,7 +29,6 @@ class TargetContent extends Component {
     profilePicId: PropTypes.number,
     rootObj: PropTypes.object,
     rootType: PropTypes.string.isRequired,
-    stars: PropTypes.array,
     targetObj: PropTypes.object,
     username: PropTypes.string
   }
@@ -70,7 +70,7 @@ class TargetContent extends Component {
       userCanStarThis = canStar && authLevel > comment.uploader.authLevel
     }
     return (
-      <div
+      <ErrorBoundary
         className={css`
           font-size: 1.5rem;
           white-space: pre-wrap;
@@ -133,7 +133,7 @@ class TargetContent extends Component {
                 </div>
               </div>
             )}
-            {type === 'comment' && (
+            {(type === 'comment' || type === 'reply') && (
               <div>
                 {rootType === 'question' && (
                   <div style={{ padding: '0.5rem 1rem 1.5rem 1rem' }}>
@@ -189,7 +189,7 @@ class TargetContent extends Component {
                       {comment.content}
                     </LongText>
                   </div>
-                  <div className="buttons">
+                  <ErrorBoundary className="buttons">
                     <div>
                       <LikeButton
                         onClick={this.onLikeClick}
@@ -229,7 +229,7 @@ class TargetContent extends Component {
                           </Button>
                         )}
                     </div>
-                  </div>
+                  </ErrorBoundary>
                 </div>
                 {xpRewardInterfaceShown && (
                   <XPRewardInterface
@@ -294,13 +294,18 @@ class TargetContent extends Component {
             <span>Content removed / no longer available</span>
           </div>
         )}
-      </div>
+      </ErrorBoundary>
     )
   }
 
   determineXpButtonDisabled = () => {
-    const { stars, myId } = this.props
+    const {
+      targetObj: { type, comment, discussion },
+      myId
+    } = this.props
     const { xpRewardInterfaceShown } = this.state
+    const stars =
+      type === 'comment' || type === 'reply' ? comment.stars : discussion.stars
     return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
   }
 
