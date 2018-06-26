@@ -265,6 +265,7 @@ class Contents extends Component {
                 )}
                 {canStar &&
                   userCanStarThis &&
+                  (type !== 'discussion' && type !== 'question') &&
                   !userIsUploader && (
                     <Button
                       love
