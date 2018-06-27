@@ -141,6 +141,7 @@ class Notification extends Component {
           )}
           <div
             style={{
+              marginTop: children ? '1rem' : '0',
               marginBottom: '1rem',
               background: myId
                 ? rank > 0 &&
