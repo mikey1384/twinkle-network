@@ -238,17 +238,44 @@ class Contents extends Component {
                         {numChildComments > 0 && !commentsShown
                           ? `(${numChildComments})`
                           : ''}
-                      </Button>
-                    </Fragment>
-                  )}
-                  {type === 'discussion' && (
-                    <Button transparent onClick={this.onCommentButtonClick}>
-                      <span className="glyphicon glyphicon-comment" />&nbsp;
-                      Answer{!!numChildComments &&
-                      numChildComments > 0 &&
-                      !commentsShown
-                        ? ` (${numChildComments})`
-                        : ''}
+                    </Button>
+                  </Fragment>
+                )}
+                {type === 'discussion' && (
+                  <Button transparent onClick={this.onCommentButtonClick}>
+                    <span className="glyphicon glyphicon-comment" />&nbsp;
+                    Answer{!!numChildComments &&
+                    numChildComments > 0 &&
+                    !commentsShown
+                      ? ` (${numChildComments})`
+                      : ''}
+                  </Button>
+                )}
+                {editButtonShown && (
+                  <DropdownButton
+                    transparent
+                    direction="right"
+                    shape="button"
+                    style={{ marginLeft: '0.5rem', display: 'inline-block' }}
+                    size={type !== 'discussion' ? 'sm' : null}
+                    text="Edit"
+                    menuProps={editMenuItems}
+                  />
+                )}
+                {canStar &&
+                  userCanStarThis &&
+                  (type !== 'discussion' && type !== 'question') &&
+                  !userIsUploader && (
+                    <Button
+                      love
+                      disabled={this.determineXpButtonDisabled()}
+                      style={{ marginLeft: '1rem' }}
+                      onClick={() =>
+                        this.setState({ xpRewardInterfaceShown: true })
+                      }
+                    >
+                      <span className="glyphicon glyphicon-star" />{' '}
+                      {this.determineXpButtonDisabled() || 'Reward'}
                     </Button>
                   )}
                   {editButtonShown && (
