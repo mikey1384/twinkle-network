@@ -243,7 +243,7 @@ class Description extends Component {
           {!onEdit && (
             <div style={{ marginTop: '0.5rem' }}>
               Added by{' '}
-              <UsernameText user={{ name: uploaderName, id: uploaderId }} />{' '}
+              <UsernameText user={{ username: uploaderName, id: uploaderId }} />{' '}
               <span>{`${timeStamp ? timeSince(timeStamp) : ''}`}</span>
             </div>
           )}

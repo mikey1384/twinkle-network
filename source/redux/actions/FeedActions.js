@@ -192,11 +192,11 @@ export const fetchFeed = feed => async dispatch => {
   query = query.join('').slice(0, -1)
   try {
     const { data } = await request.get(
-      `${API_URL}/feed?${processedQueryString(query)}`
+      `${URL}/content/feed?${processedQueryString(query)}`
     )
     dispatch({
       type: FEED.LOAD_DETAIL,
-      id: feed.id,
+      id: feed.feedId,
       data: {
         ...data,
         childComments: [],

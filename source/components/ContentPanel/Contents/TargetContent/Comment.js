@@ -83,7 +83,7 @@ export default class Comment extends Component {
               <UsernameText
                 style={{ fontSize: '1.7rem' }}
                 user={{
-                  name: username,
+                  username,
                   id: userId
                 }}
               />{' '}

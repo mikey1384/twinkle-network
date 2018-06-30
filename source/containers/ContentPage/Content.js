@@ -30,7 +30,7 @@ class Comment extends Component {
           .split('/')[1]
           .slice(0, -1)}?contentId=${contentId}`
       )
-      this.setState({ contentObj: data })
+      this.setState({ contentObj: { ...data, loaded: true } })
     } catch (error) {
       console.error(error)
     }
@@ -50,7 +50,7 @@ class Comment extends Component {
             .split('/')[1]
             .slice(0, -1)}?contentId=${contentId}`
         )
-        this.setState({ contentObj: data })
+        this.setState({ contentObj: { ...data, loaded: true } })
       } catch (error) {
         console.error(error)
       }
@@ -409,7 +409,13 @@ class Comment extends Component {
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          targetContentLikers: likes
+          targetObj: {
+            ...state.contentObj.targetObj,
+            comment: {
+              ...state.contentObj.targetObj.comment,
+              likes
+            }
+          }
         }
       }))
     } catch (error) {
@@ -455,7 +461,7 @@ class Comment extends Component {
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          contentLikers: likes
+          likes
         }
       }))
     } catch (error) {
@@ -564,9 +570,15 @@ class Comment extends Component {
       this.setState(state => ({
         contentObj: {
           ...state.contentObj,
-          targetContentComments: [data].concat(
-            state.contentObj.targetContentComments || []
-          )
+          targetObj: {
+            ...state.contentObj.targetObj,
+            comment: {
+              ...state.contentObj.targetObj.comment,
+              comments: [data].concat(
+                state.contentObj.targetObj.comment.comments || []
+              )
+            }
+          }
         }
       }))
     } catch (error) {

@@ -74,11 +74,13 @@ export default class ContentPanel extends Component {
         }
       }
     }
-
     return (
-      <div className={container} style={{ height: !contentObj.id && '15rem' }}>
-        {!contentObj.id && <Loading absolute />}
-        {contentObj.id && (
+      <div
+        className={container}
+        style={{ height: !contentObj.loaded && '15rem' }}
+      >
+        {!contentObj.loaded && <Loading absolute />}
+        {contentObj.loaded && (
           <Heading
             contentObj={contentObj}
             methods={methods.Heading}
@@ -95,7 +97,7 @@ export default class ContentPanel extends Component {
           />
         )}
         <div className="body">
-          {contentObj.id && (
+          {contentObj.loaded && (
             <Contents
               autoShowComments={autoShowComments}
               contentObj={contentObj}

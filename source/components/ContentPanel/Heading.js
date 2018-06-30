@@ -42,7 +42,14 @@ export default class Heading extends Component {
 
   render() {
     const {
-      contentObj: { uploader, rootObj, rootType, rootId, timeStamp, type },
+      contentObj: {
+        uploader = {},
+        rootObj = {},
+        rootType,
+        rootId,
+        timeStamp,
+        type
+      },
       methods
     } = this.props
     const { questionModalShown } = this.state
@@ -107,7 +114,8 @@ export default class Heading extends Component {
 
   renderHeading = () => {
     const {
-      contentObj: { id, rootObj, type, uploader, rootType },
+      contentObj,
+      contentObj: { id, rootObj = {}, type, uploader = {}, rootType },
       action
     } = this.props
     const contentLabel =
@@ -121,7 +129,7 @@ export default class Heading extends Component {
         return (
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> uploaded a
-            video: <ContentLink content={rootObj} type={rootType} />{' '}
+            video: <ContentLink content={contentObj} type={rootType} />{' '}
           </Fragment>
         )
       case 'comment':
@@ -142,7 +150,7 @@ export default class Heading extends Component {
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> shared a
             link:&nbsp;
-            <ContentLink content={rootObj} type={rootType} />{' '}
+            <ContentLink content={contentObj} type={rootType} />{' '}
           </Fragment>
         )
       case 'question':
@@ -177,7 +185,7 @@ export default class Heading extends Component {
   renderCornerButton = () => {
     const {
       contentObj: {
-        rootObj: { content, likes, isStarred },
+        rootObj: { content, likes = [], isStarred } = {},
         rootId,
         rootType
       },
@@ -258,7 +266,7 @@ export default class Heading extends Component {
 
   renderTargetAction = () => {
     const {
-      contentObj: { commentId, replyId, targetObj }
+      contentObj: { commentId, replyId, targetObj = {} }
     } = this.props
     if (targetObj.type === 'comment' || targetObj.type === 'reply') {
       return (

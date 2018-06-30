@@ -71,7 +71,7 @@ class VideoPlayer extends Component {
     } = this.props
     this.mounted = true
 
-    if (typeof hasHqThumb !== 'number') {
+    if (videoCode && typeof hasHqThumb !== 'number') {
       try {
         const {
           data: { payload }
@@ -239,8 +239,7 @@ class VideoPlayer extends Component {
       ? 100
       : requiredViewDuration > 0
         ? Math.floor(
-            Math.min(timeWatched, requiredViewDuration) *
-              100 /
+            (Math.min(timeWatched, requiredViewDuration) * 100) /
               requiredViewDuration
           )
         : 0

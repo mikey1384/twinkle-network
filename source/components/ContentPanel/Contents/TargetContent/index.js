@@ -45,7 +45,12 @@ class TargetContent extends Component {
       authLevel,
       canStar,
       rootObj,
-      targetObj: { comments = [], discussion, comment, type },
+      targetObj: {
+        discussion,
+        comment,
+        comment: { comments = [], stars = [] } = {},
+        type
+      },
       contentAvailable,
       methods,
       myId,
@@ -79,7 +84,9 @@ class TargetContent extends Component {
           border-radius: ${borderRadius};
           border-top: 1px solid ${Color.inputBorderGray()};
           border-bottom: 1px solid ${Color.inputBorderGray()};
-          padding: 1rem 0;
+          padding-top: 1rem;
+          padding-right: 0;
+          padding-left: 0;
           background: ${Color.wellGray()};
           margin-bottom: 2rem;
           line-height: 2.3rem;
@@ -102,6 +109,15 @@ class TargetContent extends Component {
             font-size: 1.2rem;
           }
         `}
+        style={{
+          paddingBottom:
+            stars &&
+            stars.length > 0 &&
+            !replyInputShown &&
+            !xpRewardInterfaceShown
+              ? 0
+              : '1rem'
+        }}
       >
         {contentAvailable ? (
           <div>
@@ -264,7 +280,7 @@ class TargetContent extends Component {
                   />
                 )}
                 {comments.length > 0 && (
-                  <div>
+                  <div style={{ padding: '0 1rem' }}>
                     {comments.map(comment => (
                       <Comment
                         key={comment.id}
@@ -327,7 +343,7 @@ class TargetContent extends Component {
     const {
       rootType,
       rootObj,
-      targetObj: { comment, discussion },
+      targetObj: { comment = {}, discussion = {} },
       methods,
       panelId
     } = this.props

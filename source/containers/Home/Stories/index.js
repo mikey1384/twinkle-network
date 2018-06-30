@@ -177,7 +177,7 @@ class Stories extends Component {
                   {feeds.map(feed => {
                     return (
                       <ContentPanel
-                        key={feed.id}
+                        key={feed.feedId}
                         selfLoadingDisabled={this.clearingFeeds}
                         inputAtBottom={feed.type === 'comment'}
                         contentObj={feed}

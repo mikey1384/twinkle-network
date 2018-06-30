@@ -93,7 +93,9 @@ export default function MainContent({
                   >
                     Discuss:
                   </p>
-                  <h3>{cleanString(contentObj.title)}</h3>
+                  <h3 style={{ marginBottom: '1rem' }}>
+                    {cleanString(contentObj.title)}
+                  </h3>
                 </div>
               )}
               <div
