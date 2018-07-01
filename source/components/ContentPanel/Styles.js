@@ -57,6 +57,9 @@ export const container = css`
     font-size: 1.7rem;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .timestamp {
     font-size: 1rem;
