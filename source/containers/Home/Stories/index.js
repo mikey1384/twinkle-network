@@ -233,7 +233,7 @@ class Stories extends Component {
       this.setState({ loadingMore: true })
       try {
         await fetchMoreFeeds({
-          shownFeeds: queryStringForArray(feeds, 'id', 'shownFeeds'),
+          shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds'),
           filter: selectedFilter
         })
         this.setState({ loadingMore: false })

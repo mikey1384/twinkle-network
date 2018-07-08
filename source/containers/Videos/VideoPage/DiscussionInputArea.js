@@ -1,0 +1,71 @@
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm'
+import Button from 'components/Button'
+import { connect } from 'react-redux'
+import { uploadVideoDiscussion } from 'redux/actions/VideoActions'
+import { charLimit } from 'constants/defaultValues'
+import { css } from 'emotion'
+
+class DiscussionInputArea extends Component {
+  static propTypes = {
+    uploadDiscussion: PropTypes.func.isRequired,
+    videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired
+  }
+
+  state = {
+    discussionFormShown: false
+  }
+
+  render() {
+    const { videoId, uploadDiscussion } = this.props
+    const { discussionFormShown } = this.state
+    return (
+      <div
+        className={css`
+          background: #fff;
+          font-size: 1.5rem;
+          margin-top: 1rem;
+        `}
+      >
+        <div style={{ padding: '1rem' }}>
+          {discussionFormShown ? (
+            <TitleDescriptionForm
+              autoFocus
+              onSubmit={(title, description) => {
+                uploadDiscussion(title, description, videoId)
+                this.setState({ discussionFormShown: false })
+              }}
+              onClose={() => this.setState({ discussionFormShown: false })}
+              rows={4}
+              titleMaxChar={charLimit.discussion.title}
+              descriptionMaxChar={charLimit.discussion.description}
+              titlePlaceholder="Enter discussion topic..."
+              descriptionPlaceholder="Enter details... (Optional)"
+            />
+          ) : (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                logo
+                filled
+                style={{ fontSize: '2rem' }}
+                onClick={() => this.setState({ discussionFormShown: true })}
+              >
+                <span className="glyphicon glyphicon-comment" /> Start a New
+                Discussion
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+}
+
+export default connect(
+  null,
+  {
+    uploadDiscussion: uploadVideoDiscussion
+  }
+)(DiscussionInputArea)

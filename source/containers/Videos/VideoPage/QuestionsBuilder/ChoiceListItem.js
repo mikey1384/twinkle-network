@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { Component } from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
 import { Color } from 'constants/css'
@@ -37,33 +37,35 @@ const ListItemTarget = {
   }
 }
 
-ChoiceListItem.propTypes = {
-  connectDragSource: PropTypes.func,
-  connectDropTarget: PropTypes.func,
-  deleted: PropTypes.bool,
-  isDragging: PropTypes.bool,
-  inputType: PropTypes.string,
-  onSelect: PropTypes.func,
-  checked: PropTypes.bool,
-  checkDisabled: PropTypes.bool,
-  label: PropTypes.string,
-  placeholder: PropTypes.string
-}
-function ChoiceListItem({
-  checked,
-  checkDisabled,
-  connectDragSource,
-  connectDropTarget,
-  deleted,
-  isDragging,
-  inputType,
-  label,
-  onSelect,
-  placeholder
-}) {
-  return deleted ? renderListItem() : connectDragSource(connectDropTarget(renderListItem()))
+class ChoiceListItem extends Component {
+  static propTypes = {
+    connectDragSource: PropTypes.func,
+    connectDropTarget: PropTypes.func,
+    deleted: PropTypes.bool,
+    isDragging: PropTypes.bool,
+    onSelect: PropTypes.func,
+    checked: PropTypes.bool,
+    checkDisabled: PropTypes.bool,
+    label: PropTypes.string,
+    placeholder: PropTypes.string
+  }
 
-  function renderListItem() {
+  render() {
+    const { deleted, connectDragSource, connectDropTarget } = this.props
+    return deleted
+      ? this.renderListItem()
+      : connectDragSource(connectDropTarget(this.renderListItem()))
+  }
+
+  renderListItem = () => {
+    const {
+      checked,
+      checkDisabled,
+      isDragging,
+      label,
+      onSelect,
+      placeholder
+    } = this.props
     return (
       <nav
         style={{

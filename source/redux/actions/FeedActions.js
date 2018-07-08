@@ -1,5 +1,5 @@
 import request from 'axios'
-import { auth, handleError } from '../constants'
+import { auth, handleError } from 'helpers/apiHelpers'
 import { URL } from 'constants/URL'
 import { processedQueryString } from 'helpers/stringHelpers'
 import FEED from '../constants/Feed'
@@ -27,7 +27,6 @@ export const commentFeedLike = commentId => async dispatch => {
       data: { contentId: commentId, likes: data.likes }
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -44,7 +43,6 @@ export const contentFeedLike = (contentId, rootType) => async dispatch => {
       data: { contentId, rootType, likes: data.likes }
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -59,11 +57,10 @@ export const questionFeedLike = contentId => async dispatch => {
       auth()
     )
     dispatch({
-      type: FEED.LIKE_QUESTION,
-      data: { contentId, likes }
+      type: FEED.LIKE_CONTENT,
+      data: { rootType: 'question', contentId, likes }
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -77,7 +74,6 @@ export const feedCommentDelete = commentId => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -100,7 +96,6 @@ export const feedContentDelete = ({ type, contentId }) => async dispatch => {
       contentId
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -114,7 +109,6 @@ export const feedCommentEdit = params => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -159,7 +153,6 @@ export const feedContentEdit = params => async dispatch => {
     }
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -179,7 +172,6 @@ export const feedVideoStar = videoId => async dispatch => {
       isStarred: data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -206,7 +198,6 @@ export const fetchFeed = feed => async dispatch => {
       }
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -221,7 +212,6 @@ export const fetchFeeds = (filter = 'all') => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -240,7 +230,6 @@ export const fetchNewFeeds = ({
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -260,7 +249,6 @@ export const fetchMoreFeeds = ({
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -276,7 +264,6 @@ export const fetchUserFeeds = ({ username, type }) => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -298,7 +285,6 @@ export const fetchMoreUserFeeds = ({
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -311,11 +297,10 @@ export const likeTargetComment = contentId => async dispatch => {
       auth()
     )
     dispatch({
-      type: FEED.LIKE_TARGET_COMMENT,
+      type: FEED.LIKE_COMMENT,
       data: { contentId, likes: data.likes }
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -337,7 +322,6 @@ export const loadMoreFeedComments = ({
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -361,7 +345,6 @@ export const loadMoreFeedReplies = (
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -382,7 +365,6 @@ export const showFeedComments = ({
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -395,7 +377,6 @@ export const uploadContent = form => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -408,79 +389,27 @@ export const uploadQuestion = question => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
 
 export const uploadFeedComment = (comment, parent) => async dispatch => {
-  const contentType = parent.type
-  let commentType
-  let params
-  switch (contentType) {
-    case 'comment':
-      params = {
-        content: comment,
-        rootId: parent.rootId,
-        rootType: parent.rootType,
-        discussionId: parent.discussionId,
-        commentId: parent.commentId || parent.id,
-        replyId: parent.commentId ? parent.id : null
-      }
-      commentType = 'replies'
-      break
-    case 'url':
-      params = { content: comment, rootId: parent.id, rootType: 'url' }
-      commentType = 'comments'
-      break
-    case 'question':
-      params = { content: comment, rootId: parent.id, rootType: 'question' }
-      commentType = 'comments'
-      break
-    case 'video':
-      params = { content: comment, rootId: parent.id, rootType: 'video' }
-      commentType = 'comments'
-      break
-    case 'discussion':
-      params = {
-        content: comment,
-        rootId: parent.rootId,
-        rootType: parent.rootType,
-        discussionId: parent.id
-      }
-      commentType = 'comments'
-      break
-    default:
-      return console.error('Invalid content type')
-  }
-
+  console.log(comment, parent)
   try {
     const { data } = await request.post(
-      `${API_URL}/${commentType}`,
-      params,
+      `${API_URL}/comments`,
+      { comment, parent },
       auth()
     )
-    const action =
-      contentType === 'comment'
-        ? {
-            type: FEED.UPLOAD_REPLY,
-            data: {
-              reply: { ...data, replies: [] },
-              type: parent.type,
-              contentId: parent.id
-            }
-          }
-        : {
-            type: FEED.UPLOAD_COMMENT,
-            data: {
-              ...data,
-              type: parent.type,
-              contentId: parent.id
-            }
-          }
-    dispatch(action)
+    dispatch({
+      type: FEED.UPLOAD_COMMENT,
+      data: {
+        ...data,
+        type: parent.type,
+        contentId: parent.id
+      }
+    })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -489,7 +418,6 @@ export const uploadFeedReply = ({
   replyContent,
   comment,
   parent,
-  replyOfReply,
   originType
 }) => async dispatch => {
   const params = {
@@ -506,10 +434,9 @@ export const uploadFeedReply = ({
       type: FEED.UPLOAD_REPLY,
       data: {
         type: parent.type,
-        contentId: parent.type === 'comment' ? comment.id : parent.id,
+        contentId: parent.id,
         reply: {
           ...data,
-          replyOfReply,
           originType,
           replies: []
         },
@@ -517,7 +444,6 @@ export const uploadFeedReply = ({
       }
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -538,7 +464,6 @@ export const uploadTargetContentComment = (
       panelId
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }

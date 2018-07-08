@@ -19,11 +19,7 @@ export default function FeedReducer(state = defaultState, action) {
           const isComment = action.data.contentType === 'comment'
           const contentMatches =
             action.data.contentType === feed.type &&
-            action.data.contentId === feed.contentId
-          const targetCommentMatches =
-            (feed.type === 'comment' &&
-              action.data.contentId === feed.replyId) ||
-            action.data.contentId === feed.commentId
+            action.data.contentId === feed.id
           return {
             ...feed,
             stars: contentMatches
@@ -45,9 +41,26 @@ export default function FeedReducer(state = defaultState, action) {
                 }))
               }
             }),
-            targetCommentStars: targetCommentMatches
-              ? (feed.targetCommentStars || []).concat(action.data)
-              : feed.targetCommentStars
+            targetObj: feed.targetObj
+              ? {
+                  ...feed.targetObj,
+                  [action.data.contentType]: feed.targetObj[
+                    action.data.contentType
+                  ]
+                    ? {
+                        ...feed.targetObj[action.data.contentType],
+                        stars:
+                          action.data.contentId ===
+                          feed.targetObj[action.data.contentType].id
+                            ? (
+                                feed.targetObj[action.data.contentType].stars ||
+                                []
+                              ).concat(action.data)
+                            : feed.targetObj[action.data.contentType].stars
+                      }
+                    : undefined
+                }
+              : undefined
           }
         })
       }
@@ -57,6 +70,71 @@ export default function FeedReducer(state = defaultState, action) {
         feeds: [],
         loadMoreButton: false,
         loaded: false
+      }
+    case FEED.LIKE_COMMENT:
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => {
+          let feedTypeIsComment = feed.type === 'comment'
+          let feedContentMatches = feed.contentId === action.data.contentId
+          return {
+            ...feed,
+            likes:
+              feedTypeIsComment && feedContentMatches
+                ? action.data.likes
+                : feed.likes,
+            targetObj: feed.targetObj
+              ? {
+                  ...feed.targetObj,
+                  comment: feed.targetObj.comment
+                    ? {
+                        ...feed.targetObj.comment,
+                        likes:
+                          feed.targetObj.comment.id === action.data.contentId
+                            ? action.data.likes
+                            : feed.targetObj.comment.likes
+                      }
+                    : undefined
+                }
+              : undefined,
+            childComments: feed.childComments.map(childComment => {
+              let matches = childComment.id === action.data.contentId
+              return {
+                ...childComment,
+                likes: matches ? action.data.likes : childComment.likes,
+                replies: childComment.replies.map(reply => {
+                  let matches = reply.id === action.data.contentId
+                  return {
+                    ...reply,
+                    likes: matches ? action.data.likes : reply.likes
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+    case FEED.LIKE_CONTENT:
+      return {
+        ...state,
+        feeds: state.feeds.map(feed => ({
+          ...feed,
+          likes:
+            feed.type === action.data.rootType &&
+            feed.id === action.data.contentId
+              ? action.data.likes
+              : feed.likes,
+          rootObj: feed.rootObj
+            ? {
+                ...feed.rootObj,
+                likes:
+                  feed.rootType === action.data.rootType &&
+                  feed.rootId === action.data.contentId
+                    ? action.data.likes
+                    : feed.rootObj.likes
+              }
+            : undefined
+        }))
       }
     case FEED.LOAD:
       if (action.data.length > 20) {
@@ -119,44 +197,36 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: action.data.concat(state.feeds)
       }
-    case FEED.LIKE_TARGET_COMMENT:
-      return {
-        ...state,
-        feeds: state.feeds.map(feed => {
-          let contentMatches = feed.contentId === action.data.contentId
-          let targetContentMatches =
-            (!feed.replyId && feed.commentId === action.data.contentId) ||
-            feed.replyId === action.data.contentId
-          return {
-            ...feed,
-            contentLikers: contentMatches
-              ? action.data.likes
-              : feed.contentLikers,
-            targetContentLikers: targetContentMatches
-              ? action.data.likes
-              : feed.targetContentLikers
-          }
-        })
-      }
     case FEED.DELETE_COMMENT:
       return {
         ...state,
         feeds: state.feeds.reduce((prev, feed) => {
           if (
-            feed.contentId === action.commentId ||
-            feed.commentId === action.commentId ||
-            feed.replyId === action.commentId
+            feed.type === 'comment' &&
+            (feed.contentId === action.commentId ||
+              feed.commentId === action.commentId ||
+              feed.replyId === action.commentId)
           ) {
             return prev
           }
           return prev.concat([
             {
               ...feed,
-              targetContentComments: feed.targetContentComments
-                ? feed.targetContentComments.filter(
-                    comment => comment.id !== action.commentId
-                  )
-                : [],
+              targetObj: feed.targetObj
+                ? {
+                    ...feed.targetObj,
+                    comment: feed.targetObj.comment
+                      ? {
+                          ...feed.targetObj.comment,
+                          comments: feed.targetObj.comment.comments
+                            ? feed.targetObj.comment.comments.filter(
+                                comment => comment.id !== action.commentId
+                              )
+                            : []
+                        }
+                      : undefined
+                  }
+                : undefined,
               childComments: feed.childComments.reduce((prev, childComment) => {
                 if (childComment.id === action.commentId) {
                   return prev
@@ -374,78 +444,6 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case FEED.LIKE_COMMENT:
-      return {
-        ...state,
-        feeds: state.feeds.map(feed => {
-          let feedTypeIsComment = feed.type === 'comment'
-          let feedContentMatches = feed.contentId === action.data.contentId
-          let targetContentMatches =
-            (!feed.replyId && feed.commentId === action.data.contentId) ||
-            feed.replyId === action.data.contentId
-          return {
-            ...feed,
-            contentLikers:
-              feedTypeIsComment && feedContentMatches
-                ? action.data.likes
-                : feed.contentLikers,
-            targetContentLikers:
-              feedTypeIsComment && targetContentMatches
-                ? action.data.likes
-                : feed.targetContentLikers,
-            childComments: feed.childComments.map(childComment => {
-              let matches = childComment.id === action.data.contentId
-              return {
-                ...childComment,
-                likes: matches ? action.data.likes : childComment.likes,
-                replies: childComment.replies.map(reply => {
-                  let matches = reply.id === action.data.contentId
-                  return {
-                    ...reply,
-                    likes: matches ? action.data.likes : reply.likes
-                  }
-                })
-              }
-            })
-          }
-        })
-      }
-    case FEED.LIKE_CONTENT:
-      return {
-        ...state,
-        feeds: state.feeds.map(feed => ({
-          ...feed,
-          contentLikers:
-            feed.rootType === action.data.rootType &&
-            feed.contentId === action.data.contentId
-              ? action.data.likes
-              : feed.contentLikers,
-          rootContentLikers:
-            feed.type === 'comment' &&
-            feed.rootType === action.data.rootType &&
-            feed.rootId === action.data.contentId
-              ? action.data.likes
-              : feed.rootContentLikers
-        }))
-      }
-    case FEED.LIKE_QUESTION:
-      return {
-        ...state,
-        feeds: state.feeds.map(feed => ({
-          ...feed,
-          contentLikers:
-            feed.rootType === 'question' &&
-            feed.contentId === action.data.contentId
-              ? action.data.likes
-              : feed.contentLikers,
-          rootContentLikers:
-            feed.type === 'comment' &&
-            feed.rootType === 'question' &&
-            feed.rootId === action.data.contentId
-              ? action.data.likes
-              : feed.rootContentLikers
-        }))
-      }
     case FEED.LOAD_COMMENTS:
       if (action.data.type === 'comment') action.data.childComments.reverse()
       if (action.data.childComments.length > 3) {
@@ -518,49 +516,24 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
-    case FEED.UPLOAD_REPLY:
-      let { reply } = action.data
-      return {
-        ...state,
-        feeds: state.feeds.map(feed => {
-          let match =
-            feed.type === action.data.type &&
-            feed.type === 'comment' &&
-            feed.contentId === action.data.contentId
-          let comments = match
-            ? feed.childComments.concat([reply])
-            : feed.childComments
-          return {
-            ...feed,
-            childComments: comments.map(childComment => {
-              return {
-                ...childComment,
-                replies:
-                  (feed.type === 'comment' &&
-                    childComment.id === action.data.contentId) ||
-                  (feed.type !== 'comment' &&
-                    childComment.id === action.data.commentId) ||
-                  (feed.type !== 'comment' &&
-                    childComment.id === action.data.reply.commentId)
-                    ? childComment.replies.concat([reply])
-                    : childComment.replies
-              }
-            })
-          }
-        })
-      }
     case FEED.UPLOAD_TC_COMMENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          let comments = []
-          if (feed.id === action.panelId) {
-            let prevComments = feed.targetContentComments || []
-            comments = [action.data].concat(prevComments)
-          }
           return {
             ...feed,
-            targetContentComments: comments
+            targetObj:
+              feed.feedId === action.panelId
+                ? {
+                    ...feed.targetObj,
+                    comment: {
+                      ...feed.targetObj.comment,
+                      comments: [action.data].concat(
+                        feed.targetObj.comment.comments || []
+                      )
+                    }
+                  }
+                : feed.targetObj
           }
         })
       }

@@ -4,7 +4,7 @@ import ContentPanel from 'components/ContentPanel'
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { auth, handleError } from 'redux/constants'
+import { auth, handleError } from 'helpers/apiHelpers'
 
 class Comment extends Component {
   static propTypes = {
@@ -82,7 +82,6 @@ class Comment extends Component {
           loadMoreReplies: this.onLoadMoreReplies,
           showComments: this.onShowComments,
           uploadComment: this.onCommentSubmit,
-          uploadReply: this.onReplySubmit,
           uploadTargetComment: this.onTargetCommentSubmit
         }}
         userId={userId}
@@ -176,53 +175,6 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
-      console.error(error.response || error)
-      handleError(error)
-    }
-  }
-
-  onReplySubmit = async({
-    replyContent,
-    parent,
-    comment,
-    replyOfReply,
-    originType
-  }) => {
-    const { handleError } = this.props
-    const params = {
-      content: replyContent,
-      rootId: parent.rootId,
-      rootType: parent.rootType,
-      discussionId: parent.discussionId,
-      commentId: comment.commentId || comment.id,
-      replyId: comment.commentId ? comment.id : null
-    }
-    try {
-      const { data } = await request.post(
-        `${URL}/content/replies`,
-        params,
-        auth()
-      )
-      const reply = {
-        ...data,
-        replyOfReply,
-        originType
-      }
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          childComments: state.contentObj.childComments.map(childComment => ({
-            ...childComment,
-            replies:
-              childComment.id === comment.id ||
-              childComment.id === reply.commentId
-                ? (childComment.replies || []).concat(reply)
-                : childComment.replies
-          }))
-        }
-      }))
-    } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -251,7 +203,6 @@ class Comment extends Component {
         }
       })
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -284,7 +235,6 @@ class Comment extends Component {
         }
       })
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -338,7 +288,6 @@ class Comment extends Component {
       )
       history.push('/')
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -356,7 +305,6 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -391,7 +339,6 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -419,7 +366,6 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -441,7 +387,6 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -465,7 +410,6 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }
@@ -582,7 +526,6 @@ class Comment extends Component {
         }
       }))
     } catch (error) {
-      console.error(error.response || error)
       handleError(error)
     }
   }

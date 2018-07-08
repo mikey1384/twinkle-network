@@ -49,7 +49,7 @@ export default class ContentPanel extends Component {
           onDelete: methodObj.deleteComment,
           onLikeClick: methodObj.likeComment,
           onEditDone: methodObj.editComment,
-          onReplySubmit: methodObj.uploadReply,
+          onReplySubmit: methodObj.uploadComment,
           onLoadMoreReplies: methodObj.loadMoreReplies,
           onRewardCommentEdit: methodObj.editRewardComment
         },
@@ -87,7 +87,9 @@ export default class ContentPanel extends Component {
             myId={userId}
             action={
               contentObj.commentId
-                ? 'replied to'
+                ? contentObj.targetObj.comment.notFound
+                  ? 'replied on'
+                  : 'replied to'
                 : contentObj.rootType === 'question'
                   ? 'answered'
                   : 'commented on'

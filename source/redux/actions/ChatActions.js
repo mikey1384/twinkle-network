@@ -1,6 +1,6 @@
 import request from 'axios'
 import { GENERAL_CHAT_ID } from 'constants/database'
-import { auth, handleError } from '../constants'
+import { auth, handleError } from 'helpers/apiHelpers'
 import { URL } from 'constants/URL'
 import CHAT from '../constants/Chat'
 
@@ -33,7 +33,6 @@ export const enterChannelWithId = (channelId, showOnTop) => async dispatch => {
       showOnTop
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -67,7 +66,6 @@ export const createNewChannel = (params, callback) => async dispatch => {
     })
     return Promise.resolve(data)
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -81,7 +79,6 @@ export const deleteMessage = messageId => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -95,7 +92,6 @@ export const editChannelTitle = (params, callback) => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -113,7 +109,6 @@ export const editMessage = ({ editedMessage, messageId }) => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -131,7 +126,6 @@ export const getNumberOfUnreadMessages = () => async dispatch => {
       numUnreads: data.numUnreads
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -145,7 +139,6 @@ export const hideChat = channelId => async dispatch => {
     })
     dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -166,18 +159,15 @@ export const initChat = channelId => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
 
 export const inviteUsersToChannel = (params, callback) => async dispatch => {
   try {
-    const { data: { message } } = await request.post(
-      `${API_URL}/invite`,
-      params,
-      auth()
-    )
+    const {
+      data: { message }
+    } = await request.post(`${API_URL}/invite`, params, auth())
     dispatch({
       type: CHAT.INVITE_USERS_TO_CHANNEL,
       data: {
@@ -187,7 +177,6 @@ export const inviteUsersToChannel = (params, callback) => async dispatch => {
     })
     return Promise.resolve(message)
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -201,7 +190,6 @@ export const loadChatSubject = () => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -221,7 +209,6 @@ export const loadMoreChannels = (
     })
     Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -243,7 +230,6 @@ export const loadMoreMessages = (
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -261,7 +247,6 @@ export const leaveChannel = channelId => async dispatch => {
     })
     dispatch(enterChannelWithId(GENERAL_CHAT_ID, true))
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -291,7 +276,6 @@ export const openDirectMessageChannel = (
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 
@@ -320,7 +304,6 @@ export const receiveMessage = ({ message, pageVisible }) => async dispatch => {
       }
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -345,7 +328,9 @@ export const receiveFirstMsg = ({ data, duplicate, pageVisible }) => ({
 
 export const reloadChatSubject = subjectId => async dispatch => {
   try {
-    const { data: { subject, message } } = await request.put(
+    const {
+      data: { subject, message }
+    } = await request.put(
       `${API_URL}/chatSubject/reload`,
       { subjectId },
       auth()
@@ -357,7 +342,6 @@ export const reloadChatSubject = subjectId => async dispatch => {
     })
     return Promise.resolve({ subject, message })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -380,7 +364,6 @@ export const searchChat = text => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -394,7 +377,6 @@ export const searchChatSubject = text => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -407,7 +389,6 @@ export const searchUserToInvite = text => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -429,7 +410,6 @@ export const sendFirstDirectMessage = (params, callback) => async dispatch => {
     })
     return Promise.resolve(data)
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -455,7 +435,6 @@ export const saveMessage = (message, index) => async dispatch => {
       messageId: data.messageId
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -480,7 +459,6 @@ export const uploadChatSubject = content => async dispatch => {
     })
     return Promise.resolve(data.subjectId)
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }

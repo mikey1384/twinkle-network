@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import PanelReply from './PanelReply'
+import Reply from './Reply'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import Button from 'components/Button'
+import { URL } from 'constants/URL'
+import request from 'axios'
 
-export default class PanelReplies extends Component {
+const API_URL = `${URL}/content`
+
+export default class Replies extends Component {
   static propTypes = {
     attachStar: PropTypes.func,
     comment: PropTypes.shape({
@@ -25,7 +29,6 @@ export default class PanelReplies extends Component {
       })
     ).isRequired,
     Replies: PropTypes.object,
-    type: PropTypes.string,
     userId: PropTypes.number
   }
 
@@ -63,22 +66,18 @@ export default class PanelReplies extends Component {
     const {
       attachStar,
       innerRef,
-      type,
       replies,
       userId,
+      onDelete,
       onEditDone,
       onRewardCommentEdit,
       onLikeClick,
+      onReplySubmit,
       comment,
       parent
     } = this.props
-    const { lastDeletedCommentIndex } = this.state
     return (
-      <div
-        ref={ref => {
-          this.ReplyContainer = ref
-        }}
-      >
+      <div ref={ref => (this.ReplyContainer = ref)}>
         {comment.loadMoreReplies && (
           <Button
             style={{
@@ -94,22 +93,20 @@ export default class PanelReplies extends Component {
         )}
         {replies.map((reply, index) => {
           return (
-            <PanelReply
+            <Reply
               index={index}
               innerRef={ref => innerRef({ ref, replyId: reply.id })}
               key={reply.id}
-              type={type}
               parent={parent}
               comment={comment}
               reply={reply}
               userId={userId}
               attachStar={attachStar}
-              onDelete={this.onDelete}
+              onDelete={onDelete}
               onLikeClick={onLikeClick}
               onEditDone={onEditDone}
-              onReplySubmit={this.onReplyOfReplySubmit}
+              onReplySubmit={onReplySubmit}
               onRewardCommentEdit={onRewardCommentEdit}
-              lastDeletedCommentIndex={lastDeletedCommentIndex}
             />
           )
         })}
@@ -117,27 +114,16 @@ export default class PanelReplies extends Component {
     )
   }
 
-  loadMoreReplies = () => {
-    const { comment, replies, onLoadMoreReplies, parent } = this.props
-    const lastReplyId = replies[0] ? replies[0].id : '0'
-    onLoadMoreReplies(lastReplyId, comment.id, parent)
-  }
-
-  onDelete = replyId => {
-    const { onDelete } = this.props
-    this.setState({ deleting: true })
-    onDelete(replyId)
-  }
-
-  onReplyOfReplySubmit = ({ replyContent, reply, parent }) => {
-    const { onReplySubmit, type } = this.props
-    this.setState({ replying: true })
-    onReplySubmit({
-      replyContent,
-      parent,
-      comment: reply,
-      replyOfReply: true,
-      originType: type
-    })
+  loadMoreReplies = async() => {
+    const { comment, onLoadMoreReplies, replies } = this.props
+    try {
+      const lastReplyId = replies[0] ? replies[0].id : '0'
+      const { data } = await request.get(
+        `${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${comment.id}`
+      )
+      onLoadMoreReplies(data)
+    } catch (error) {
+      console.error(error.response, error)
+    }
   }
 }

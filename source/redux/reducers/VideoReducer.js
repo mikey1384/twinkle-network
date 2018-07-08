@@ -71,10 +71,6 @@ export default function VideoReducer(state = defaultState, action) {
         allVideoThumbs: newVideoThumbs.concat(action.data)
       }
     case VIDEO.DELETE_COMMENT:
-      let newComments = state.videoPage.comments.filter(
-        comment => comment.id !== action.data.commentId
-      )
-      let noComments = newComments.length === 0
       return {
         ...state,
         videoPage: {
@@ -82,23 +78,27 @@ export default function VideoReducer(state = defaultState, action) {
           discussions: state.videoPage.discussions.map(discussion => {
             return {
               ...discussion,
-              comments: discussion.comments
-                .filter(comment => comment.id !== action.data.commentId)
+              comments: (discussion.comments || [])
+                .filter(comment => comment.id !== action.commentId)
                 .map(comment => ({
                   ...comment,
                   replies: (comment.replies || []).filter(
-                    reply => reply.id !== action.data.commentId
+                    reply => reply.id !== action.commentId
                   )
                 }))
             }
           }),
-          comments: newComments.map(comment => ({
-            ...comment,
-            replies: (comment.replies || []).filter(
-              reply => reply.id !== action.data.commentId
-            )
-          })),
-          noComments
+          comments: state.videoPage.comments.reduce((prev, comment) => {
+            if (comment.id === action.commentId) return prev
+            return prev.concat([
+              {
+                ...comment,
+                replies: comment.replies.filter(
+                  reply => reply.id !== action.commentId
+                )
+              }
+            ])
+          }, [])
         }
       }
     case VIDEO.DELETE_DISCUSSION:
@@ -276,6 +276,31 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreCommentsButton
         }
       }
+    case VIDEO.LOAD_MORE_DISCUSSION_REPLIES:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          discussions: state.videoPage.discussions.map(discussion => {
+            return {
+              ...discussion,
+              comments: discussion.comments.map(comment => {
+                return {
+                  ...comment,
+                  replies:
+                    comment.id === action.commentId
+                      ? action.replies.concat(comment.replies)
+                      : comment.replies,
+                  loadMoreReplies:
+                    comment.id === action.commentId
+                      ? action.loadMoreReplies
+                      : comment.loadMoreReplies
+                }
+              })
+            }
+          })
+        }
+      }
     case VIDEO.LOAD_MORE_REPLIES:
       return {
         ...state,
@@ -285,35 +310,13 @@ export default function VideoReducer(state = defaultState, action) {
             return {
               ...comment,
               replies:
-                action.commentType === 'default' &&
                 comment.id === action.commentId
-                  ? action.data.replies.concat(comment.replies)
+                  ? action.replies.concat(comment.replies)
                   : comment.replies,
               loadMoreReplies:
-                action.commentType === 'default' &&
                 comment.id === action.commentId
-                  ? action.data.loadMoreReplies
+                  ? action.loadMoreReplies
                   : comment.loadMoreReplies
-            }
-          }),
-          discussions: state.videoPage.discussions.map(discussion => {
-            return {
-              ...discussion,
-              comments: discussion.comments.map(comment => {
-                return {
-                  ...comment,
-                  replies:
-                    action.commentType !== 'default' &&
-                    comment.id === action.commentId
-                      ? action.data.replies.concat(comment.replies)
-                      : comment.replies,
-                  loadMoreReplies:
-                    action.commentType !== 'default' &&
-                    comment.id === action.commentId
-                      ? action.data.loadMoreReplies
-                      : comment.loadMoreReplies
-                }
-              })
             }
           })
         }
@@ -448,6 +451,13 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
+          discussions: state.videoPage.discussions.map(discussion => ({
+            ...discussion,
+            comments:
+              discussion.id === action.comment.discussionId
+                ? [action.comment].concat(discussion.comments)
+                : discussion.comments
+          })),
           comments: [action.comment].concat(state.videoPage.comments)
         }
       }
@@ -457,22 +467,6 @@ export default function VideoReducer(state = defaultState, action) {
         videoPage: {
           ...state.videoPage,
           discussions: [action.data].concat(state.videoPage.discussions)
-        }
-      }
-    case VIDEO.UPLOAD_DISCUSSION_COMMENT:
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          discussions: state.videoPage.discussions.map(discussion => ({
-            ...discussion,
-            comments:
-              discussion.id === action.data.discussionId
-                ? [action.data].concat(discussion.comments)
-                : discussion.comments
-          })),
-          comments: [action.data].concat(state.videoPage.comments),
-          noComments: false
         }
       }
     case VIDEO.UPLOAD_REPLY:
@@ -487,13 +481,9 @@ export default function VideoReducer(state = defaultState, action) {
                 return {
                   ...comment,
                   replies:
-                    comment.id === action.data.commentId
-                      ? comment.replies.concat([
-                          {
-                            ...action.data,
-                            ...action.replyType
-                          }
-                        ])
+                    comment.id === action.reply.commentId ||
+                    comment.id === action.reply.replyId
+                      ? comment.replies.concat([action.reply])
                       : comment.replies
                 }
               })
@@ -503,13 +493,9 @@ export default function VideoReducer(state = defaultState, action) {
             return {
               ...comment,
               replies:
-                comment.id === action.data.commentId
-                  ? comment.replies.concat([
-                      {
-                        ...action.data,
-                        ...action.replyType
-                      }
-                    ])
+                comment.id === action.reply.commentId ||
+                comment.id === action.reply.replyId
+                  ? comment.replies.concat([action.reply])
                   : comment.replies
             }
           })
@@ -609,7 +595,7 @@ export default function VideoReducer(state = defaultState, action) {
               thumb.id === action.params.videoId
                 ? action.params.title
                 : thumb.title,
-            content: thumb.id === action.params.videoId ? url : thumb.url
+            content: thumb.id === action.params.videoId ? url : thumb.content
           }
         }),
         videoPage: {

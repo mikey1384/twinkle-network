@@ -17,10 +17,10 @@ import {
   likeComment,
   likeLink,
   resetPage,
-  submitComment,
-  submitReply
+  uploadComment,
+  uploadReply
 } from 'redux/actions/LinkActions'
-import PanelComments from 'components/PanelComments'
+import Comments from 'components/Comments'
 import LikeButton from 'components/Buttons/LikeButton'
 import Likers from 'components/Likers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
@@ -49,8 +49,8 @@ class LinkPage extends Component {
     myId: PropTypes.number,
     pageProps: PropTypes.object.isRequired,
     resetPage: PropTypes.func.isRequired,
-    submitComment: PropTypes.func.isRequired,
-    submitReply: PropTypes.func.isRequired
+    uploadComment: PropTypes.func.isRequired,
+    uploadReply: PropTypes.func.isRequired
   }
 
   state = {
@@ -124,8 +124,11 @@ class LinkPage extends Component {
       fetchMoreReplies,
       likeComment,
       likeLink,
+      fetchMoreComments,
       deleteLinkFromPage,
-      myId
+      myId,
+      uploadComment,
+      uploadReply
     } = this.props
     const { confirmModalShown, likesModalShown, notFound } = this.state
     let userLikedThis = false
@@ -192,11 +195,12 @@ class LinkPage extends Component {
               onLinkClick={() => this.setState({ likesModalShown: true })}
             />
           </div>
-          <PanelComments
+          <Comments
             key={'comments' + id}
             style={{ padding: '1rem' }}
             comments={comments}
-            onSubmit={this.onCommentSubmit}
+            onCommentSubmit={uploadComment}
+            onReplySubmit={uploadReply}
             loadMoreButton={loadMoreCommentsButton}
             inputTypeLabel="comment"
             parent={{ type: 'url', id }}
@@ -206,11 +210,10 @@ class LinkPage extends Component {
               onDelete: deleteComment,
               onLikeClick: likeComment,
               onEditDone: editComment,
-              onReplySubmit: this.onReplySubmit,
               onLoadMoreReplies: fetchMoreReplies,
               onRewardCommentEdit: editRewardComment
             }}
-            loadMoreComments={this.loadMoreComments}
+            loadMoreComments={fetchMoreComments}
           />
         </div>
         {confirmModalShown && (
@@ -238,33 +241,6 @@ class LinkPage extends Component {
       <Loading text="Loading Page..." />
     )
   }
-
-  loadMoreComments = () => {
-    const {
-      fetchMoreComments,
-      pageProps: { id, comments }
-    } = this.props
-    const lastCommentId = comments[comments.length - 1].id
-    fetchMoreComments(id, lastCommentId)
-  }
-
-  onCommentSubmit = content => {
-    const {
-      submitComment,
-      match: {
-        params: { linkId }
-      }
-    } = this.props
-    submitComment({ content, linkId })
-  }
-
-  onReplySubmit = params => {
-    const { submitReply } = this.props
-    submitReply({
-      ...params,
-      replyOfReply: true
-    })
-  }
 }
 
 export default connect(
@@ -286,7 +262,7 @@ export default connect(
     likeComment,
     likeLink,
     resetPage,
-    submitComment,
-    submitReply
+    uploadComment,
+    uploadReply
   }
 )(LinkPage)

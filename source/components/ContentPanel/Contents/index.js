@@ -7,7 +7,7 @@ import Likers from 'components/Likers'
 import { connect } from 'react-redux'
 import UserListModal from 'components/Modals/UserListModal'
 import VideoPlayer from 'components/VideoPlayer'
-import PanelComments from 'components/PanelComments'
+import Comments from 'components/Comments'
 import MainContent from './MainContent'
 import TargetContent from './TargetContent'
 import DropdownButton from 'components/Buttons/DropdownButton'
@@ -86,6 +86,7 @@ class Contents extends Component {
         actualDescription,
         actualTitle,
         contentId,
+        feedId,
         numChildComments,
         discussionId,
         replyId,
@@ -175,14 +176,13 @@ class Contents extends Component {
           {type === 'comment' &&
             (commentId || replyId || discussionId) && (
               <TargetContent
-                contentAvailable={!!targetObj.type}
                 targetObj={targetObj}
                 rootObj={rootObj}
                 myId={myId}
                 methods={methods.TargetContent}
                 rootId={rootId}
                 rootType={rootType}
-                panelId={contentId}
+                panelId={feedId}
               />
             )}
           <MainContent
@@ -339,7 +339,7 @@ class Contents extends Component {
             uploaderName={uploader.username}
           />
           {commentsShown && (
-            <PanelComments
+            <Comments
               autoFocus={autoFocusWhenCommentShown}
               autoShowComments={autoShowComments}
               commentsLoaded={commentsLoaded}
@@ -361,16 +361,9 @@ class Contents extends Component {
               loadMoreComments={this.loadMoreComments}
               contentId={contentId}
               type={type}
-              parent={{
-                id: contentId,
-                type,
-                rootId,
-                rootType,
-                discussionId,
-                commentId,
-                replyId
-              }}
-              onSubmit={methods.onCommentSubmit}
+              parent={contentObj}
+              onCommentSubmit={methods.onCommentSubmit}
+              onReplySubmit={methods.onReplySubmit}
               commentActions={methods.commentActions}
             />
           )}

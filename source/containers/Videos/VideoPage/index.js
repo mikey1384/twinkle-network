@@ -2,14 +2,23 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
+  attachStar,
+  editVideoComment,
   editVideoPage,
   deleteVideo,
+  deleteVideoComment,
+  editRewardComment,
   uploadQuestions,
   likeVideo,
+  likeVideoComment,
   resetVideoPage,
+  loadVideoComments,
   loadVideoPage,
+  loadMoreComments,
   loadMoreDiscussions,
-  uploadVideoComment
+  loadMoreReplies,
+  uploadComment,
+  uploadReply
 } from 'redux/actions/VideoActions'
 import Carousel from 'components/Carousel'
 import Button from 'components/Button'
@@ -18,7 +27,7 @@ import VideoPlayer from 'components/VideoPlayer'
 import NotFound from 'components/NotFound'
 import CheckListGroup from 'components/CheckListGroup'
 import PageTab from './PageTab'
-import Comments from './Comments'
+import Comments from 'components/Comments'
 import Description from './Description'
 import NavMenu from './NavMenu'
 import ResultModal from './Modals/ResultModal'
@@ -27,25 +36,34 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import CommentInputArea from './CommentInputArea'
+import DiscussionInputArea from './DiscussionInputArea'
 import Discussions from './Discussions'
-import { mobileMaxWidth } from 'constants/css'
+import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
 class VideoPage extends Component {
   static propTypes = {
+    attachStar: PropTypes.func.isRequired,
+    comments: PropTypes.array,
     content: PropTypes.string,
     deleteVideo: PropTypes.func.isRequired,
+    deleteVideoComment: PropTypes.func.isRequired,
     description: PropTypes.string,
     discussions: PropTypes.array,
+    editRewardComment: PropTypes.func.isRequired,
+    editVideoComment: PropTypes.func.isRequired,
     editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
-    history: PropTypes.object.isRequired,
     isStarred: PropTypes.bool,
     likes: PropTypes.array,
     likeVideo: PropTypes.func.isRequired,
+    likeVideoComment: PropTypes.func.isRequired,
+    loadMoreComments: PropTypes.func.isRequired,
+    loadMoreCommentsButton: PropTypes.bool,
     loadMoreDiscussionsButton: PropTypes.bool,
+    loadMoreReplies: PropTypes.func.isRequired,
     loadVideoPage: PropTypes.func.isRequired,
+    loadVideoComments: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     questions: PropTypes.array,
@@ -53,6 +71,7 @@ class VideoPage extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     uploadComment: PropTypes.func,
+    uploadReply: PropTypes.func,
     uploaderAuthLevel: PropTypes.number,
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
@@ -78,7 +97,6 @@ class VideoPage extends Component {
       confirmModalShown: false,
       onEdit: false,
       questionsBuilderShown: false,
-      discussionTabActive: true,
       videoId
     }
   }
@@ -86,9 +104,11 @@ class VideoPage extends Component {
   componentDidMount() {
     const {
       match: { params },
+      loadVideoComments,
       loadVideoPage
     } = this.props
     loadVideoPage(params.videoId)
+    loadVideoComments(params.videoId)
   }
 
   async componentDidUpdate(prevProps) {
@@ -118,15 +138,24 @@ class VideoPage extends Component {
 
   render() {
     const {
+      attachStar,
+      comments,
       discussions,
+      deleteVideoComment,
+      editVideoComment,
+      editRewardComment,
+      loadMoreCommentsButton,
       hasHqThumb,
       isStarred,
       loadMoreDiscussionsButton,
+      loadMoreReplies,
       uploaderAuthLevel,
       uploaderId,
       uploaderName,
       description,
       likeVideo,
+      likeVideoComment,
+      loadMoreComments,
       userId,
       videoUnavailable,
       videoLoading,
@@ -137,10 +166,10 @@ class VideoPage extends Component {
       likes = [],
       location: { search },
       uploadComment,
+      uploadReply,
       videoViews
     } = this.props
     const {
-      discussionTabActive,
       watchTabActive,
       questionsBuilderShown,
       resultModalShown,
@@ -283,23 +312,54 @@ class VideoPage extends Component {
                   onDelete={() => this.setState({ confirmModalShown: true })}
                   videoViews={videoViews}
                 />
-                <CommentInputArea
+                <DiscussionInputArea videoId={videoId} />
+                <Discussions
+                  loadMoreDiscussionsButton={loadMoreDiscussionsButton}
+                  discussions={discussions}
+                  loadMoreDiscussions={loadMoreDiscussions}
+                  uploadComment={uploadComment}
                   videoId={videoId}
-                  onDiscussionTabClick={status =>
-                    this.setState({ discussionTabActive: status })
-                  }
-                  discussionTabActive={discussionTabActive}
                 />
-                {discussionTabActive && (
-                  <Discussions
-                    loadMoreDiscussionsButton={loadMoreDiscussionsButton}
-                    discussions={discussions}
-                    loadMoreDiscussions={loadMoreDiscussions}
-                    uploadComment={uploadComment}
-                    videoId={videoId}
+                <div
+                  style={{
+                    background: '#fff',
+                    padding: '1rem'
+                  }}
+                >
+                  <p
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '2.5rem',
+                      color: Color.darkGray()
+                    }}
+                  >
+                    Comment on this video
+                  </p>
+                  <Comments
+                    autoShowComments={true}
+                    inputAreaInnerRef={ref => {
+                      this.CommentInputArea = ref
+                    }}
+                    style={{ paddingTop: '1rem' }}
+                    inputTypeLabel={'comment'}
+                    comments={comments}
+                    loadMoreButton={loadMoreCommentsButton}
+                    userId={userId}
+                    loadMoreComments={loadMoreComments}
+                    contentId={videoId}
+                    parent={{ type: 'video', id: Number(videoId) }}
+                    onCommentSubmit={uploadComment}
+                    onReplySubmit={uploadReply}
+                    commentActions={{
+                      attachStar,
+                      onDelete: deleteVideoComment,
+                      onLikeClick: likeVideoComment,
+                      onEditDone: editVideoComment,
+                      onLoadMoreReplies: loadMoreReplies,
+                      onRewardCommentEdit: editRewardComment
+                    }}
                   />
-                )}
-                <Comments {...this.props} />
+                </div>
                 {resultModalShown && (
                   <ResultModal
                     onHide={() => this.setState({ resultModalShown: false })}
@@ -466,13 +526,22 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   {
+    attachStar,
+    editVideoComment,
     editVideoPage,
+    editRewardComment,
     deleteVideo,
+    deleteVideoComment,
     uploadQuestions,
     likeVideo,
+    likeVideoComment,
+    loadMoreComments,
     loadMoreDiscussions,
+    loadMoreReplies,
+    loadVideoComments,
     resetVideoPage,
-    uploadComment: uploadVideoComment,
+    uploadComment,
+    uploadReply,
     loadVideoPage
   }
 )(VideoPage)

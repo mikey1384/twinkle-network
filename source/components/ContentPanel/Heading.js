@@ -140,7 +140,7 @@ export default class Heading extends Component {
               content={{ id, title: action }}
               type={type}
               style={{ color: Color.green() }}
-            />{' '}
+            />
             {this.renderTargetAction()} {contentLabel}:{' '}
             <ContentLink content={rootObj} type={rootType} />{' '}
           </Fragment>
@@ -268,9 +268,10 @@ export default class Heading extends Component {
     const {
       contentObj: { commentId, replyId, targetObj = {} }
     } = this.props
-    if (targetObj.type === 'comment' || targetObj.type === 'reply') {
+    if (targetObj.comment && !targetObj.comment.notFound) {
       return (
         <span>
+          {' '}
           <UsernameText
             user={targetObj.comment.uploader}
             color={Color.blue()}

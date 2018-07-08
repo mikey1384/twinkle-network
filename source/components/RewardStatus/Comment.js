@@ -11,7 +11,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import request from 'axios'
 import { timeSince } from 'helpers/timeStampHelpers'
 import { stringIsEmpty } from 'helpers/stringHelpers'
-import { auth } from 'redux/constants'
+import { auth, handleError } from 'helpers/apiHelpers'
 import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
 
@@ -21,6 +21,7 @@ class Comment extends Component {
   static propTypes = {
     authLevel: PropTypes.number,
     canEdit: PropTypes.bool,
+    handleError: PropTypes.func.isRequired,
     myId: PropTypes.number,
     noMarginForEditButton: PropTypes.bool,
     onEditDone: PropTypes.func,
@@ -143,7 +144,7 @@ class Comment extends Component {
   }
 
   onEditDone = async editedComment => {
-    const { onEditDone = () => {}, star } = this.props
+    const { handleError, onEditDone = () => {}, star } = this.props
     try {
       const {
         data: { success }
@@ -157,12 +158,17 @@ class Comment extends Component {
       }
       this.setState({ onEdit: false })
     } catch (error) {
-      console.error(error.response || error)
+      handleError(error)
     }
   }
 }
 
-export default connect(state => ({
-  canEdit: state.UserReducer.canEdit,
-  authLevel: state.UserReducer.authLevel
-}))(Comment)
+export default connect(
+  state => ({
+    canEdit: state.UserReducer.canEdit,
+    authLevel: state.UserReducer.authLevel
+  }),
+  dispatch => ({
+    handleError: error => handleError(error, dispatch)
+  })
+)(Comment)

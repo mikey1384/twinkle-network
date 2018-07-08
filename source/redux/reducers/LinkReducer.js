@@ -119,15 +119,19 @@ export default function linkReducer(state = defaultState, action) {
         linkPage: {
           ...state.linkPage,
           comments: state.linkPage.comments.map(comment => {
-            let matches = comment.id === action.data.contentId
             return {
               ...comment,
-              likes: matches ? action.data.likes : comment.likes,
+              likes:
+                comment.id === action.data.commentId
+                  ? action.data.likes
+                  : comment.likes,
               replies: comment.replies.map(reply => {
-                let matches = reply.id === action.data.contentId
                 return {
                   ...reply,
-                  likes: matches ? action.data.likes : reply.likes
+                  likes:
+                    reply.id === action.data.commentId
+                      ? action.data.likes
+                      : reply.likes
                 }
               })
             }
@@ -191,15 +195,15 @@ export default function linkReducer(state = defaultState, action) {
         }
       }
     case LINK.LOAD_MORE_COMMENTS:
-      if (action.data.comments.length > 20) {
-        action.data.comments.pop()
+      if (action.data.length > 20) {
+        action.data.pop()
         loadMoreCommentsButton = true
       }
       return {
         ...state,
         linkPage: {
           ...state.linkPage,
-          comments: state.linkPage.comments.concat(action.data.comments),
+          comments: state.linkPage.comments.concat(action.data),
           loadMoreCommentsButton
         }
       }
@@ -212,11 +216,11 @@ export default function linkReducer(state = defaultState, action) {
             ...comment,
             replies:
               comment.id === action.commentId
-                ? action.data.replies.concat(comment.replies)
+                ? action.replies.concat(comment.replies)
                 : comment.replies,
             loadMoreReplies:
               comment.id === action.commentId
-                ? action.data.loadMoreReplies
+                ? action.loadMoreReplies
                 : comment.loadMoreReplies
           }))
         }
@@ -253,9 +257,9 @@ export default function linkReducer(state = defaultState, action) {
           comments: state.linkPage.comments.map(comment => ({
             ...comment,
             replies:
-              comment.id === action.data.commentId ||
-              comment.id === action.data.reply.commentId
-                ? comment.replies.concat([action.data.reply])
+              comment.id === action.reply.replyId ||
+              comment.id === action.reply.commentId
+                ? comment.replies.concat([action.reply])
                 : comment.replies
           }))
         }

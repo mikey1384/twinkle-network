@@ -248,7 +248,7 @@ class Body extends Component {
                 {feeds.map(feed => {
                   return (
                     <ContentPanel
-                      key={`${feed.type}${feed.id}`}
+                      key={feed.feedId}
                       contentObj={feed}
                       userId={myId}
                       inputAtBottom={feed.type === 'comment'}
@@ -331,7 +331,7 @@ class Body extends Component {
         await fetchMoreUserFeeds({
           username,
           type: currentTab,
-          shownFeeds: queryStringForArray(feeds, 'id', 'shownFeeds')
+          shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds')
         })
         this.setState({ loading: false })
       } catch (error) {

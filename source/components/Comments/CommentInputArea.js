@@ -29,7 +29,7 @@ export default class CommentInputArea extends Component {
           innerRef={innerRef}
           clickListenerState={clickListenerState}
           autoFocus={autoFocus}
-          onSubmit={onSubmit}
+          onSubmit={text => onSubmit({ content: text })}
           rows={4}
           placeholder={`Enter your ${inputTypeLabel} here...`}
         />

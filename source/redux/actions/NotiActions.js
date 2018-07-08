@@ -1,5 +1,5 @@
 import request from 'axios'
-import { auth, handleError } from '../constants'
+import { auth, handleError } from 'helpers/apiHelpers'
 import { URL } from 'constants/URL'
 import NOTI from '../constants/Noti'
 
@@ -16,7 +16,6 @@ export const checkVersion = () => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -51,7 +50,6 @@ export const fetchNotifications = () => async dispatch => {
     }
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -68,7 +66,6 @@ export const loadMoreNotifications = lastId => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -85,7 +82,6 @@ export const loadMoreRewards = lastId => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }

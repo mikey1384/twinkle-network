@@ -1,7 +1,7 @@
 /* global localStorage */
 
 import request from 'axios'
-import { token, auth, handleError } from '../constants'
+import { token, auth, handleError } from 'helpers/apiHelpers'
 import { URL } from 'constants/URL'
 import USER from '../constants/User'
 
@@ -25,7 +25,6 @@ export const checkValidUsername = username => async dispatch => {
     dispatch({
       type: USER.NOT_EXIST
     })
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -43,7 +42,6 @@ export const fetchUsers = () => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -57,7 +55,6 @@ export const fetchMoreUsers = shownUsersIds => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -74,7 +71,6 @@ export const changeUserXP = params => async dispatch => {
       rank
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -93,7 +89,7 @@ export const initSession = pathname => async dispatch => {
       data: { ...data, loggedIn: true }
     })
   } catch (error) {
-    console.error(error)
+    console.error(error.response || error)
   }
 }
 
@@ -135,7 +131,6 @@ export const searchUsers = query => async dispatch => {
       users
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -151,7 +146,7 @@ export const signup = params => async dispatch => {
       data
     })
   } catch (error) {
-    console.log(error)
+    console.error(error.response || error)
     return Promise.reject(error.response.data)
   }
 }
@@ -173,7 +168,6 @@ export const uploadBio = (params, callback) => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -187,7 +181,6 @@ export const uploadProfilePic = image => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }

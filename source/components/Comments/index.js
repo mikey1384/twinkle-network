@@ -1,36 +1,42 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import CommentInputArea from './CommentInputArea'
-import PanelComment from './PanelComment'
+import Comment from './Comment'
 import Button from 'components/Button'
 import { scrollElementToCenter } from 'helpers/domHelpers'
+import request from 'axios'
+import { URL } from 'constants/URL'
+import { auth, handleError } from 'helpers/apiHelpers'
+import { connect } from 'react-redux'
 
-export default class PanelComments extends Component {
+const API_URL = `${URL}/content`
+
+class Comments extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
     autoShowComments: PropTypes.bool,
     commentActions: PropTypes.object.isRequired,
     commentsLoaded: PropTypes.bool,
     comments: PropTypes.array.isRequired,
+    handleError: PropTypes.func.isRequired,
     inputAreaInnerRef: PropTypes.func,
     inputAtBottom: PropTypes.bool,
     inputTypeLabel: PropTypes.string,
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    onCommentSubmit: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.shape({
       id: PropTypes.number.isRequired,
       type: PropTypes.string.isRequired
     }).isRequired,
     style: PropTypes.object,
-    type: PropTypes.string,
     userId: PropTypes.number
   }
 
   state = {
     isLoading: false,
-    commentSubmitted: false,
-    lastDeletedCommentIndex: null
+    commentSubmitted: false
   }
 
   Comments = {}
@@ -45,7 +51,7 @@ export default class PanelComments extends Component {
     } = this.props
     if (prevProps.comments.length > comments.length) {
       if (comments.length === 0) {
-        return scrollElementToCenter(this.PanelComments)
+        return scrollElementToCenter(this.Container)
       }
       if (
         comments[comments.length - 1].id !==
@@ -66,6 +72,17 @@ export default class PanelComments extends Component {
       scrollElementToCenter(this.Comments[comments[comments.length - 1].id])
     }
     if (
+      !inputAtBottom &&
+      commentSubmitted &&
+      comments.length > prevProps.comments.length &&
+      (prevProps.comments.length === 0 ||
+        comments[0].id > prevProps.comments[0].id)
+    ) {
+      this.setState({ commentSubmitted: false })
+      scrollElementToCenter(this.Comments[comments[0].id])
+    }
+
+    if (
       !autoShowComments &&
       !prevProps.commentsLoaded &&
       commentsLoaded &&
@@ -77,13 +94,11 @@ export default class PanelComments extends Component {
 
   render() {
     const {
-      onSubmit,
       autoFocus,
       loadMoreButton,
       comments = [],
       inputAreaInnerRef,
       inputTypeLabel,
-      parent,
       style,
       inputAtBottom
     } = this.props
@@ -95,7 +110,7 @@ export default class PanelComments extends Component {
           ...style
         }}
         ref={ref => {
-          this.PanelComments = ref
+          this.Container = ref
         }}
       >
         {!inputAtBottom && (
@@ -104,10 +119,7 @@ export default class PanelComments extends Component {
             InputFormRef={ref => (this.CommentInputArea = ref)}
             innerRef={inputAreaInnerRef}
             inputTypeLabel={inputTypeLabel}
-            onSubmit={comment => {
-              this.setState({ commentSubmitted: true })
-              onSubmit(comment, parent)
-            }}
+            onSubmit={this.onCommentSubmit}
           />
         )}
         {comments.length > 0 && (
@@ -156,68 +168,88 @@ export default class PanelComments extends Component {
             innerRef={inputAreaInnerRef}
             style={{ marginTop: comments.length > 0 ? '1rem' : 0 }}
             inputTypeLabel={inputTypeLabel}
-            onSubmit={comment => {
-              this.setState({ commentSubmitted: true })
-              onSubmit(comment, parent)
-            }}
+            onSubmit={this.onCommentSubmit}
           />
         )}
       </div>
     )
   }
 
+  onCommentSubmit = async({ content, rootCommentId, targetCommentId }) => {
+    const { handleError, onCommentSubmit, onReplySubmit, parent } = this.props
+    this.setState({ commentSubmitted: true })
+    try {
+      const { data } = await request.post(
+        `${API_URL}/comments`,
+        { content, parent, rootCommentId, targetCommentId },
+        auth()
+      )
+      targetCommentId ? onReplySubmit(data) : onCommentSubmit(data)
+    } catch (error) {
+      handleError(error)
+    }
+  }
+
   renderComments = () => {
-    const { comments, userId, parent, commentActions, type } = this.props
-    const { lastDeletedCommentIndex, deleteListenerToggle } = this.state
+    const { comments, userId, parent, commentActions } = this.props
     return comments.map((comment, index) => (
-      <PanelComment
+      <Comment
         {...commentActions}
+        onDelete={this.onDelete}
         index={index}
         innerRef={ref => {
           this.Comments[comment.id] = ref
         }}
-        type={type}
+        onReplySubmit={this.onCommentSubmit}
         parent={parent}
         comment={comment}
-        isFirstComment={index === 0}
         key={comment.id}
         userId={userId}
-        deleteCallback={this.deleteCallback}
-        lastDeletedCommentIndex={lastDeletedCommentIndex}
-        deleteListenerToggle={deleteListenerToggle}
       />
     ))
   }
 
-  deleteCallback = (index, isFirstComment) => {
-    this.setState({
-      lastDeletedCommentIndex: index,
-      deletedFirstComment: isFirstComment
-    })
-  }
-
-  loadMoreComments = () => {
+  loadMoreComments = async() => {
     const { isLoading } = this.state
     const { inputAtBottom } = this.props
     if (!isLoading) {
       const { comments, parent, loadMoreComments } = this.props
-      this.setState({ isLoading: true }, async() => {
-        const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1
-        const lastCommentId = comments[lastCommentLocation]
-          ? comments[lastCommentLocation].id
-          : 0
-        try {
-          await loadMoreComments({
-            lastCommentId,
-            type: parent.type,
-            contentId: parent.id,
-            rootType: parent.type
-          })
-          this.setState({ isLoading: false })
-        } catch (error) {
-          console.error(error)
-        }
-      })
+      this.setState({ isLoading: true })
+      const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1
+      const lastCommentId = comments[lastCommentLocation]
+        ? comments[lastCommentLocation].id
+        : 0
+      try {
+        const { data } = await request.get(
+          `${API_URL}/comments?lastCommentId=${lastCommentId}&type=${
+            parent.type
+          }&contentId=${parent.id}&rootType=${parent.type}`
+        )
+        loadMoreComments(data)
+        this.setState({ isLoading: false })
+      } catch (error) {
+        console.error(error.response || error)
+      }
+    }
+  }
+
+  onDelete = async commentId => {
+    const {
+      commentActions: { onDelete },
+      handleError
+    } = this.props
+    try {
+      await request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
+      onDelete(commentId)
+    } catch (error) {
+      handleError(error)
     }
   }
 }
+
+export default connect(
+  null,
+  dispatch => ({
+    handleError: error => handleError(error, dispatch)
+  })
+)(Comments)

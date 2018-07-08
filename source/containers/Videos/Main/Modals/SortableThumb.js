@@ -39,12 +39,8 @@ class SortableThumb extends Component {
     video: PropTypes.object.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      onTitleHover: false
-    }
-    this.onMouseOver = this.onMouseOver.bind(this)
+  state = {
+    onTitleHover: false
   }
 
   render() {
@@ -135,7 +131,7 @@ class SortableThumb extends Component {
     )
   }
 
-  onMouseOver() {
+  onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
       this.setState({ onTitleHover: true })
     }

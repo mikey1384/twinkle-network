@@ -22,7 +22,6 @@ class TargetContent extends Component {
   static propTypes = {
     authLevel: PropTypes.number,
     canStar: PropTypes.bool,
-    contentAvailable: PropTypes.bool,
     methods: PropTypes.object,
     myId: PropTypes.number,
     panelId: PropTypes.number,
@@ -51,7 +50,6 @@ class TargetContent extends Component {
         comment: { comments = [], stars = [] } = {},
         type
       },
-      contentAvailable,
       methods,
       myId,
       profilePicId,
@@ -67,12 +65,13 @@ class TargetContent extends Component {
     let userLikedThis = false
     let userIsUploader
     let userCanStarThis
-    if (type === 'comment') {
+    if (comment && !comment.notFound) {
       for (let i = 0; i < comment.likes.length; i++) {
         if (comment.likes[i].userId === myId) userLikedThis = true
       }
-      myId === comment.uploader.id
-      userCanStarThis = canStar && authLevel > comment.uploader.authLevel
+      userIsUploader = myId === comment.uploader.id
+      userCanStarThis =
+        !userIsUploader && canStar && authLevel > comment.uploader.authLevel
     }
     return (
       <ErrorBoundary
@@ -119,197 +118,213 @@ class TargetContent extends Component {
               : '1rem'
         }}
       >
-        {contentAvailable ? (
+        {
           <div>
-            {discussion && (
-              <div style={{ padding: '0.5rem 1.5rem' }}>
-                <div className="detail-block">
-                  <ContentLink
-                    content={{ id: discussion.id, title: 'Discuss: ' }}
-                    type="discussion"
-                    style={{ color: Color.green() }}
-                  />
+            {discussion &&
+              (discussion.notFound ? (
+                <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                  <span>Discussion removed / no longer available</span>
+                </div>
+              ) : (
+                <div style={{ padding: '0.5rem 1rem' }}>
+                  <div className="detail-block">
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: type !== 'discussion' ? 'row' : 'column'
+                      }}
+                    >
+                      <ContentLink
+                        content={{ id: discussion.id, title: 'Discuss: ' }}
+                        type="discussion"
+                        style={{ color: Color.green() }}
+                      />
+                      <span className="root-content">{discussion.title}</span>
+                    </div>
+                    <div>
+                      <UsernameText user={discussion.uploader} />&nbsp;<span className="timestamp">
+                        ({timeSince(discussion.timeStamp)})
+                      </span>
+                    </div>
+                  </div>
                   <div>
-                    <UsernameText user={discussion.uploader} />&nbsp;<span className="timestamp">
-                      ({timeSince(discussion.timeStamp)})
-                    </span>
+                    {discussion.description &&
+                      type === 'discussion' && (
+                        <LongText
+                          className={css`
+                            margin-top: 1rem;
+                          `}
+                        >
+                          {discussion.description}
+                        </LongText>
+                      )}
                   </div>
                 </div>
+              ))}
+            {comment &&
+              (comment.notFound ? (
+                <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                  <span>Comment removed / no longer available</span>
+                </div>
+              ) : (
                 <div>
-                  <span className="root-content">{discussion.title}</span>
-                  {discussion.description && (
-                    <LongText
+                  {rootType === 'question' && (
+                    <div style={{ padding: '0.5rem 1rem 1.5rem 1rem' }}>
+                      <ContentLink
+                        style={{ color: Color.green() }}
+                        content={{ id: rootObj.id, title: 'Question: ' }}
+                        type="question"
+                      />
+                      <span className="root-content">{rootObj.content}</span>
+                    </div>
+                  )}
+                  <div style={{ padding: '0 1rem' }}>
+                    <div
                       className={css`
-                        margin-top: 1rem;
+                        display: flex;
+                        flex-direction: column;
                       `}
                     >
-                      {discussion.description}
-                    </LongText>
-                  )}
-                </div>
-              </div>
-            )}
-            {(type === 'comment' || type === 'reply') && (
-              <div>
-                {rootType === 'question' && (
-                  <div style={{ padding: '0.5rem 1rem 1.5rem 1rem' }}>
-                    <ContentLink
-                      style={{ color: Color.green() }}
-                      content={{ id: rootObj.id, title: 'Question: ' }}
-                      type="question"
-                    />
-                    <span className="root-content">{rootObj.content}</span>
-                  </div>
-                )}
-                <div style={{ padding: '0 1rem' }}>
-                  <div
-                    className={css`
-                      display: flex;
-                      flex-direction: column;
-                    `}
-                  >
-                    <div className="detail-block">
+                      <div className="detail-block">
+                        <div>
+                          <UsernameText
+                            user={comment.uploader}
+                            color={Color.blue()}
+                          />{' '}
+                          <ContentLink
+                            content={{
+                              id: comment.id,
+                              title: `${
+                                type === 'reply'
+                                  ? 'replied'
+                                  : type === 'comment'
+                                    ? 'commented'
+                                    : type === 'discussion'
+                                      ? 'responded'
+                                      : 'answered'
+                              }:`
+                            }}
+                            type="comment"
+                            style={{ color: Color.green() }}
+                          />
+                        </div>
+                        <div>
+                          <span className="timestamp">
+                            ({timeSince(comment.timeStamp)})
+                          </span>
+                        </div>
+                      </div>
+                      <LongText
+                        className={css`
+                          margin-top: 1rem;
+                        `}
+                      >
+                        {comment.content}
+                      </LongText>
+                    </div>
+                    <ErrorBoundary className="buttons">
                       <div>
-                        <UsernameText
-                          user={comment.uploader}
-                          color={Color.blue()}
-                        />{' '}
-                        <ContentLink
-                          content={{
-                            id: comment.id,
-                            title: `${
-                              type === 'reply'
-                                ? 'replied'
-                                : type === 'comment'
-                                  ? 'commented'
-                                  : type === 'discussion'
-                                    ? 'responded'
-                                    : 'answered'
-                            }:`
-                          }}
-                          type="comment"
-                          style={{ color: Color.green() }}
+                        <LikeButton
+                          onClick={this.onLikeClick}
+                          liked={userLikedThis}
+                          small
+                        />
+                        <Button
+                          style={{ marginLeft: '1rem' }}
+                          transparent
+                          onClick={this.onReplyClick}
+                        >
+                          <span className="glyphicon glyphicon-comment" />&nbsp;
+                          Reply
+                        </Button>
+                        <Likers
+                          className="content-panel__likes"
+                          userId={myId}
+                          likes={comment.likes}
+                          onLinkClick={() =>
+                            this.setState({ userListModalShown: true })
+                          }
                         />
                       </div>
                       <div>
-                        <span className="timestamp">
-                          ({timeSince(comment.timeStamp)})
-                        </span>
+                        {canStar &&
+                          userCanStarThis && (
+                            <Button
+                              love
+                              disabled={this.determineXpButtonDisabled()}
+                              onClick={() =>
+                                this.setState({ xpRewardInterfaceShown: true })
+                              }
+                            >
+                              <span className="glyphicon glyphicon-star" />{' '}
+                              {this.determineXpButtonDisabled() ||
+                                'Reward Stars'}
+                            </Button>
+                          )}
                       </div>
-                    </div>
-                    <LongText
-                      className={css`
-                        margin-top: 1rem;
-                      `}
-                    >
-                      {comment.content}
-                    </LongText>
+                    </ErrorBoundary>
                   </div>
-                  <ErrorBoundary className="buttons">
-                    <div>
-                      <LikeButton
-                        onClick={this.onLikeClick}
-                        liked={userLikedThis}
-                        small
-                      />
-                      <Button
-                        style={{ marginLeft: '1rem' }}
-                        transparent
-                        onClick={this.onReplyClick}
-                      >
-                        <span className="glyphicon glyphicon-comment" />&nbsp;
-                        Reply
-                      </Button>
-                      <Likers
-                        className="content-panel__likes"
-                        userId={myId}
-                        likes={comment.likes}
-                        onLinkClick={() =>
-                          this.setState({ userListModalShown: true })
-                        }
-                      />
-                    </div>
-                    <div>
-                      {canStar &&
-                        userCanStarThis &&
-                        !userIsUploader && (
-                          <Button
-                            love
-                            disabled={this.determineXpButtonDisabled()}
-                            onClick={() =>
-                              this.setState({ xpRewardInterfaceShown: true })
-                            }
-                          >
-                            <span className="glyphicon glyphicon-star" />{' '}
-                            {this.determineXpButtonDisabled() || 'Reward Stars'}
-                          </Button>
-                        )}
-                    </div>
-                  </ErrorBoundary>
-                </div>
-                {xpRewardInterfaceShown && (
-                  <XPRewardInterface
-                    contentType={'comment'}
-                    contentId={comment.id}
-                    uploaderId={comment.uploader.id}
-                    stars={comment.stars}
-                    onRewardSubmit={data => {
-                      this.setState({ xpRewardInterfaceShown: false })
-                      methods.attachStar(data)
+                  {xpRewardInterfaceShown && (
+                    <XPRewardInterface
+                      contentType={'comment'}
+                      contentId={comment.id}
+                      uploaderId={comment.uploader.id}
+                      stars={comment.stars}
+                      onRewardSubmit={data => {
+                        this.setState({ xpRewardInterfaceShown: false })
+                        methods.attachStar(data)
+                      }}
+                    />
+                  )}
+                  <RewardStatus
+                    onCommentEdit={methods.onRewardCommentEdit}
+                    style={{
+                      marginTop:
+                        comment.likes.length > 0 || xpRewardInterfaceShown
+                          ? '0.5rem'
+                          : '1rem'
                     }}
+                    stars={comment.stars}
                   />
-                )}
-                <RewardStatus
-                  onCommentEdit={methods.onRewardCommentEdit}
-                  style={{
-                    marginTop:
-                      comment.likes.length > 0 || xpRewardInterfaceShown
-                        ? '0.5rem'
-                        : '1rem'
-                  }}
-                  stars={comment.stars}
-                />
-                {replyInputShown && (
-                  <InputForm
-                    style={{ marginTop: '1rem', padding: '0 1rem' }}
-                    clickListenerState={clickListenerState}
-                    autoFocus
-                    onSubmit={this.onSubmit}
-                    rows={4}
-                    placeholder={`Write a reply...`}
-                  />
-                )}
-                {comments.length > 0 && (
-                  <div style={{ padding: '0 1rem' }}>
-                    {comments.map(comment => (
-                      <Comment
-                        key={comment.id}
-                        comment={comment}
-                        username={username}
-                        userId={myId}
-                        profilePicId={profilePicId}
-                        onDelete={methods.onDeleteComment}
-                        onEditDone={methods.onEditComment}
-                      />
-                    ))}
-                  </div>
-                )}
-                {userListModalShown && (
-                  <UserListModal
-                    onHide={() => this.setState({ userListModalShown: false })}
-                    title="People who liked this comment"
-                    users={comment.likes}
-                    description="(You)"
-                  />
-                )}
-              </div>
-            )}
+                  {replyInputShown && (
+                    <InputForm
+                      style={{ marginTop: '1rem', padding: '0 1rem' }}
+                      clickListenerState={clickListenerState}
+                      autoFocus
+                      onSubmit={this.onSubmit}
+                      rows={4}
+                      placeholder={`Write a reply...`}
+                    />
+                  )}
+                  {comments.length > 0 && (
+                    <div style={{ padding: '0 1rem' }}>
+                      {comments.map(comment => (
+                        <Comment
+                          key={comment.id}
+                          comment={comment}
+                          username={username}
+                          userId={myId}
+                          profilePicId={profilePicId}
+                          onDelete={methods.onDeleteComment}
+                          onEditDone={methods.onEditComment}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  {userListModalShown && (
+                    <UserListModal
+                      onHide={() =>
+                        this.setState({ userListModalShown: false })
+                      }
+                      title="People who liked this comment"
+                      users={comment.likes}
+                      description="(You)"
+                    />
+                  )}
+                </div>
+              ))}
           </div>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <span>Content removed / no longer available</span>
-          </div>
-        )}
+        }
       </ErrorBoundary>
     )
   }

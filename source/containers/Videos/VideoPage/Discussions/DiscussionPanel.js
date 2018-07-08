@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Button from 'components/Button'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
-import PanelComments from 'components/PanelComments'
+import Comments from 'components/Comments'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import { connect } from 'react-redux'
 import {
@@ -23,12 +23,13 @@ import {
   editVideoComment,
   loadVideoDiscussionComments,
   loadMoreDiscussionComments,
-  uploadVideoDiscussionComment,
+  uploadComment,
   uploadVideoDiscussionReply,
   likeVideoComment,
-  loadMoreReplies,
+  loadMoreDiscussionReplies,
   editVideoDiscussion,
-  deleteVideoDiscussion
+  deleteVideoDiscussion,
+  uploadReply
 } from 'redux/actions/VideoActions'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
@@ -54,16 +55,15 @@ class DiscussionPanel extends Component {
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string.isRequired,
+    uploadComment: PropTypes.func.isRequired,
     uploaderAuthLevel: PropTypes.number.isRequired,
-    videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-      .isRequired
+    uploadReply: PropTypes.func.isRequired,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -99,7 +99,10 @@ class DiscussionPanel extends Component {
       onLikeClick,
       onDelete,
       onEditDone,
-      onLoadMoreReplies
+      onLoadMoreReplies,
+      uploadComment,
+      uploadReply,
+      videoId
     } = this.props
     const {
       expanded,
@@ -232,23 +235,27 @@ class DiscussionPanel extends Component {
           {!onEdit && (
             <div style={{ marginTop: '1rem' }}>
               {expanded ? (
-                <PanelComments
+                <Comments
                   autoFocus
                   inputTypeLabel={'answer'}
                   type="videoDiscussionPanel"
                   comments={comments}
                   loadMoreButton={loadMoreDiscussionCommentsButton}
                   userId={myId}
-                  onSubmit={this.onCommentSubmit}
+                  onCommentSubmit={uploadComment}
+                  onReplySubmit={uploadReply}
                   contentId={id}
                   loadMoreComments={this.loadMoreComments}
-                  parent={{ type: 'discussion', id }}
+                  parent={{
+                    type: 'discussion',
+                    id,
+                    rootObj: { type: 'video', id: videoId }
+                  }}
                   commentActions={{
                     attachStar,
                     onDelete,
                     onLikeClick,
                     onEditDone,
-                    onReplySubmit: this.onReplySubmit,
                     onLoadMoreReplies,
                     onRewardCommentEdit: editRewardComment
                   }}
@@ -283,7 +290,7 @@ class DiscussionPanel extends Component {
           <strong>
             <UsernameText
               user={{
-                name: username,
+                username,
                 id: userId
               }}
             />
@@ -317,11 +324,6 @@ class DiscussionPanel extends Component {
     loadMoreComments({ lastCommentId, discussionId: id })
   }
 
-  onCommentSubmit = comment => {
-    const { onSubmit, videoId, id, title } = this.props
-    onSubmit({ comment, videoId, discussionId: id, discussionTitle: title })
-  }
-
   onDelete = () => {
     const { id, onDiscussionDelete } = this.props
     onDiscussionDelete(id, () => {
@@ -348,18 +350,6 @@ class DiscussionPanel extends Component {
       editDoneButtonDisabled: true
     })
   }
-
-  onReplySubmit = ({ replyContent, comment, replyOfReply, originType }) => {
-    const { onReplySubmit, videoId, id } = this.props
-    onReplySubmit({
-      discussionId: id,
-      replyContent,
-      comment,
-      videoId,
-      replyOfReply,
-      originType
-    })
-  }
 }
 
 export default connect(
@@ -376,11 +366,12 @@ export default connect(
     onEditDone: editVideoComment,
     loadComments: loadVideoDiscussionComments,
     loadMoreComments: loadMoreDiscussionComments,
-    onSubmit: uploadVideoDiscussionComment,
     onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoDiscussionReply,
-    onLoadMoreReplies: loadMoreReplies,
+    onLoadMoreReplies: loadMoreDiscussionReplies,
     onDiscussionEditDone: editVideoDiscussion,
-    onDiscussionDelete: deleteVideoDiscussion
+    onDiscussionDelete: deleteVideoDiscussion,
+    uploadComment,
+    uploadReply
   }
 )(DiscussionPanel)

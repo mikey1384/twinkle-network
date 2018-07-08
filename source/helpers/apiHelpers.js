@@ -1,5 +1,5 @@
 /* global localStorage */
-import { logout, openSigninModal } from '../actions/UserActions'
+import { logout, openSigninModal } from 'redux/actions/UserActions'
 
 export const token = () =>
   typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
@@ -21,6 +21,5 @@ export function handleError(error, dispatch) {
       window.location.reload()
     }
   }
+  console.error(error.response || error)
 }
-
-export { default as Chat } from './Chat'
