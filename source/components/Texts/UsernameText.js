@@ -12,7 +12,7 @@ class UsernameText extends Component {
     color: PropTypes.string,
     style: PropTypes.object,
     openDirectMessageChannel: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object,
     userId: PropTypes.number,
     username: PropTypes.string
   }
@@ -22,7 +22,7 @@ class UsernameText extends Component {
   }
 
   render() {
-    const { user, userId, color, className, style = {} } = this.props
+    const { user = {}, userId, color, className, style = {} } = this.props
     const { menuShown } = this.state
     return (
       <div

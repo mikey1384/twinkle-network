@@ -1,7 +1,7 @@
 import request from 'axios'
 import { push } from 'react-router-redux'
 import { likePlaylistVideo } from './PlaylistActions'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import VIDEO from '../constants/Video'
 
@@ -212,30 +212,18 @@ export const loadMoreDiscussionReplies = ({
   replies
 })
 
-export const loadMoreReplies = ({ commentId, loadMoreReplies, replies }) => ({
+export const loadMoreReplies = ({ commentId, loadMoreButton, replies }) => ({
   type: VIDEO.LOAD_MORE_REPLIES,
   commentId,
-  loadMoreReplies,
+  loadMoreButton,
   replies
 })
 
-export const loadMoreDiscussionComments = ({
-  lastCommentId,
+export const loadMoreDiscussionComments = (data, discussionId) => ({
+  type: VIDEO.LOAD_MORE_DISCUSSION_COMMENTS,
+  data,
   discussionId
-}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/discussions/comments?discussionId=${discussionId}&lastCommentId=${lastCommentId}`
-    )
-    dispatch({
-      type: VIDEO.LOAD_MORE_DISCUSSION_COMMENTS,
-      data,
-      discussionId
-    })
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
+})
 
 export const loadMoreDiscussions = (
   videoId,

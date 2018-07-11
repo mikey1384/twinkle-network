@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import withContext from 'components/Wrappers/withContext'
+import Context from '../Context'
 import { timeSince } from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import EditTextArea from 'components/Texts/EditTextArea'
@@ -19,14 +22,13 @@ import XPRewardInterface from 'components/XPRewardInterface'
 import { Link } from 'react-router-dom'
 import { URL } from 'constants/URL'
 import request from 'axios'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
 
 const API_URL = `${URL}/content`
 
 class Reply extends Component {
   static propTypes = {
-    attachStar: PropTypes.func,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -36,11 +38,12 @@ class Reply extends Component {
     }),
     handleError: PropTypes.func,
     innerRef: PropTypes.func,
+    onAttachStar: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
+    onReply: PropTypes.func.isRequired,
     reply: PropTypes.shape({
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
@@ -65,15 +68,16 @@ class Reply extends Component {
 
   render() {
     const {
-      attachStar,
       comment,
       authLevel,
       canDelete,
       canEdit,
       canStar,
       innerRef = () => {},
+      onAttachStar,
+      onDelete,
       onRewardCommentEdit,
-      onReplySubmit,
+      onReply,
       reply,
       reply: { likes = [], stars = [], uploader },
       userId
@@ -147,18 +151,15 @@ class Reply extends Component {
               </small>
             </div>
             <div>
-              {reply.targetUserId &&
+              {((reply.targetObj || {}).comment || {}).uploader &&
                 !!reply.replyId &&
                 reply.replyId !== comment.id && (
-                  <span className="to">
-                    to:{' '}
-                    <UsernameText
-                      user={{
-                        username: reply.targetUserName,
-                        id: reply.targetUserId
-                      }}
-                    />
-                  </span>
+                  <ErrorBoundary>
+                    <span className="to">
+                      to:{' '}
+                      <UsernameText user={reply.targetObj.comment.uploader} />
+                    </span>
+                  </ErrorBoundary>
                 )}
               {onEdit ? (
                 <EditTextArea
@@ -230,7 +231,7 @@ class Reply extends Component {
                 uploaderId={uploader.id}
                 onRewardSubmit={data => {
                   this.setState({ xpRewardInterfaceShown: false })
-                  attachStar(data)
+                  onAttachStar(data)
                 }}
               />
             )}
@@ -252,7 +253,7 @@ class Reply extends Component {
                 marginTop:
                   stars.length > 0 || reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
-              onSubmit={onReplySubmit}
+              onSubmit={onReply}
               clickListenerState={clickListenerState}
               rootCommentId={reply.commentId}
               targetCommentId={reply.id}
@@ -271,16 +272,11 @@ class Reply extends Component {
           <ConfirmModal
             onHide={() => this.setState({ confirmModalShown: false })}
             title="Remove Reply"
-            onConfirm={this.onDelete}
+            onConfirm={() => onDelete(reply.id)}
           />
         )}
       </div>
     )
-  }
-
-  onDelete = () => {
-    const { onDelete, reply } = this.props
-    onDelete(reply.id)
   }
 
   onEditDone = async editedReply => {
@@ -314,9 +310,7 @@ class Reply extends Component {
     }
   }
 
-  onReplyButtonClick = () => {
-    this.ReplyInputArea.focus()
-  }
+  onReplyButtonClick = () => this.ReplyInputArea.focus()
 }
 
 export default connect(
@@ -329,4 +323,4 @@ export default connect(
   dispatch => ({
     handleError: error => handleError(error, dispatch)
   })
-)(Reply)
+)(withContext({ Component: Reply, Context }))

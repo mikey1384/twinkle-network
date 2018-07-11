@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import Context from '../Context'
+import withContext from 'components/Wrappers/withContext'
 import Reply from './Reply'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import Button from 'components/Button'
@@ -8,19 +10,15 @@ import request from 'axios'
 
 const API_URL = `${URL}/content`
 
-export default class Replies extends Component {
+class Replies extends Component {
   static propTypes = {
-    attachStar: PropTypes.func,
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }).isRequired,
     innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
-    onEditDone: PropTypes.func.isRequired,
-    onLikeClick: PropTypes.func.isRequired,
-    onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
-    onRewardCommentEdit: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
     parent: PropTypes.object.isRequired,
     replies: PropTypes.arrayOf(
       PropTypes.shape({
@@ -63,22 +61,10 @@ export default class Replies extends Component {
   }
 
   render() {
-    const {
-      attachStar,
-      innerRef,
-      replies,
-      userId,
-      onDelete,
-      onEditDone,
-      onRewardCommentEdit,
-      onLikeClick,
-      onReplySubmit,
-      comment,
-      parent
-    } = this.props
+    const { innerRef, replies, userId, comment, parent } = this.props
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
-        {comment.loadMoreReplies && (
+        {comment.loadMoreButton && (
           <Button
             style={{
               marginTop: '1rem',
@@ -101,12 +87,8 @@ export default class Replies extends Component {
               comment={comment}
               reply={reply}
               userId={userId}
-              attachStar={attachStar}
-              onDelete={onDelete}
-              onLikeClick={onLikeClick}
-              onEditDone={onEditDone}
-              onReplySubmit={onReplySubmit}
-              onRewardCommentEdit={onRewardCommentEdit}
+              onDelete={this.onDelete}
+              onReply={this.onReplySubmit}
             />
           )
         })}
@@ -126,4 +108,18 @@ export default class Replies extends Component {
       console.error(error.response, error)
     }
   }
+
+  onDelete = replyId => {
+    const { onDelete } = this.props
+    this.setState({ deleting: true })
+    onDelete(replyId)
+  }
+
+  onReplySubmit = params => {
+    const { onReplySubmit } = this.props
+    this.setState({ replying: true })
+    onReplySubmit(params)
+  }
 }
+
+export default withContext({ Component: Replies, Context })

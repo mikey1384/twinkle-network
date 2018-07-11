@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import withContext from 'components/Wrappers/withContext'
+import Context from './Context'
 import { timeSince } from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import Likers from 'components/Likers'
@@ -23,14 +25,15 @@ import XPRewardInterface from 'components/XPRewardInterface'
 import { Link } from 'react-router-dom'
 import { URL } from 'constants/URL'
 import request from 'axios'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
+import DiscussionTopicLink from './DiscussionTopicLink'
 
 const API_URL = `${URL}/content`
 
 class Comment extends Component {
   static propTypes = {
-    attachStar: PropTypes.func,
+    onAttachStar: PropTypes.func.isRequired,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -43,6 +46,7 @@ class Comment extends Component {
       replies: PropTypes.array,
       replyId: PropTypes.number,
       stars: PropTypes.array,
+      targetObj: PropTypes.object,
       targetUserName: PropTypes.string,
       targetUserId: PropTypes.number,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
@@ -51,12 +55,12 @@ class Comment extends Component {
     }).isRequired,
     handleError: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
-    onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
-    onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.object,
     userId: PropTypes.number
   }
@@ -94,21 +98,25 @@ class Comment extends Component {
       xpRewardInterfaceShown
     } = this.state
     const {
-      attachStar,
       authLevel,
       canDelete,
       canEdit,
       canStar,
       comment,
-      comment: { replies = [], likes = [], stars = [], uploader },
+      comment: {
+        replies = [],
+        targetObj = {},
+        likes = [],
+        stars = [],
+        uploader
+      },
       innerRef,
-      userId,
-      parent,
-      onEditDone,
-      onLikeClick,
+      onAttachStar,
+      onLoadMoreReplies,
       onDelete,
       onRewardCommentEdit,
-      onLoadMoreReplies
+      userId,
+      parent
     } = this.props
     const userIsUploader = uploader.id === userId
     const userCanEditThis =
@@ -191,6 +199,11 @@ class Comment extends Component {
                 />
               ) : (
                 <div>
+                  {parent.type !== 'discussion' &&
+                    targetObj &&
+                    targetObj.discussion && (
+                      <DiscussionTopicLink discussion={targetObj.discussion} />
+                    )}
                   <LongText className="comment__content">
                     {comment.content}
                   </LongText>
@@ -249,7 +262,7 @@ class Comment extends Component {
                 uploaderId={uploader.id}
                 onRewardSubmit={data => {
                   this.setState({ xpRewardInterfaceShown: false })
-                  attachStar(data)
+                  onAttachStar(data)
                 }}
               />
             )}
@@ -283,13 +296,8 @@ class Comment extends Component {
               replies={replies}
               comment={comment}
               parent={parent}
-              attachStar={attachStar}
-              onDelete={onDelete}
               onLoadMoreReplies={onLoadMoreReplies}
-              onLikeClick={onLikeClick}
-              onEditDone={onEditDone}
               onReplySubmit={this.onReplySubmit}
-              onRewardCommentEdit={onRewardCommentEdit}
             />
           </section>
         </div>
@@ -305,16 +313,11 @@ class Comment extends Component {
           <ConfirmModal
             onHide={() => this.setState({ confirmModalShown: false })}
             title="Remove Comment"
-            onConfirm={this.onDelete}
+            onConfirm={() => onDelete(comment.id)}
           />
         )}
       </div>
     )
-  }
-
-  onDelete = () => {
-    const { comment, onDelete } = this.props
-    onDelete(comment.id)
   }
 
   onEditDone = async editedComment => {
@@ -369,4 +372,4 @@ export default connect(
   dispatch => ({
     handleError: error => handleError(error, dispatch)
   })
-)(Comment)
+)(withContext({ Component: Comment, Context }))

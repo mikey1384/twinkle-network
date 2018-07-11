@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
+import Context from './Context'
+import withContext from 'components/Wrappers/withContext'
 import ContentLink from 'components/ContentLink'
 import { timeSince } from 'helpers/timeStampHelpers'
 import LikeButton from 'components/Buttons/LikeButton'
@@ -11,13 +13,11 @@ import StarMark from 'components/StarMark'
 import UsernameText from 'components/Texts/UsernameText'
 import { css } from 'emotion'
 
-export default class Heading extends Component {
+class Heading extends Component {
   static propTypes = {
     action: PropTypes.string,
-    methods: PropTypes.shape({
-      onUploadAnswer: PropTypes.func.isRequired,
-      onLikeClick: PropTypes.func.isRequired
-    }),
+    onCommentSubmit: PropTypes.func.isRequired,
+    onLikeQuestion: PropTypes.func.isRequired,
     attachedVideoShown: PropTypes.bool,
     contentObj: PropTypes.shape({
       id: PropTypes.number,
@@ -50,7 +50,7 @@ export default class Heading extends Component {
         timeStamp,
         type
       },
-      methods
+      onCommentSubmit
     } = this.props
     const { questionModalShown } = this.state
     return (
@@ -99,7 +99,7 @@ export default class Heading extends Component {
           <QuestionModal
             onHide={() => this.setState({ questionModalShown: false })}
             question={root.content}
-            uploadAnswer={methods.onUploadAnswer}
+            uploadAnswer={onCommentSubmit}
             parent={{
               id: rootObj.id,
               type: rootType,
@@ -191,7 +191,7 @@ export default class Heading extends Component {
       },
       attachedVideoShown,
       myId,
-      methods,
+      onLikeQuestion,
       onPlayVideoClick
     } = this.props
     const userLikedVideo = likes.map(like => like.userId).indexOf(myId) !== -1
@@ -203,7 +203,7 @@ export default class Heading extends Component {
             <LikeButton
               small
               liked={userLikedVideo}
-              onClick={() => methods.onLikeClick(rootId, rootType)}
+              onClick={() => onLikeQuestion(rootId, rootType)}
             />
           ) : (
             content && (
@@ -292,3 +292,5 @@ export default class Heading extends Component {
     return null
   }
 }
+
+export default withContext({ Component: Heading, Context })

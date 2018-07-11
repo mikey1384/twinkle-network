@@ -196,24 +196,23 @@ class LinkPage extends Component {
             />
           </div>
           <Comments
-            key={'comments' + id}
-            style={{ padding: '1rem' }}
+            autoShowComments
             comments={comments}
-            onCommentSubmit={uploadComment}
-            onReplySubmit={uploadReply}
-            loadMoreButton={loadMoreCommentsButton}
             inputTypeLabel="comment"
-            parent={{ type: 'url', id }}
-            userId={myId}
-            commentActions={{
-              attachStar,
-              onDelete: deleteComment,
-              onLikeClick: likeComment,
-              onEditDone: editComment,
-              onLoadMoreReplies: fetchMoreReplies,
-              onRewardCommentEdit: editRewardComment
-            }}
+            key={'comments' + id}
+            loadMoreButton={loadMoreCommentsButton}
             loadMoreComments={fetchMoreComments}
+            onAttachStar={attachStar}
+            onCommentSubmit={uploadComment}
+            onDelete={deleteComment}
+            onEditDone={editComment}
+            onLikeClick={likeComment}
+            onLoadMoreReplies={fetchMoreReplies}
+            onReplySubmit={uploadReply}
+            onRewardCommentEdit={editRewardComment}
+            parent={{ type: 'url', id }}
+            style={{ padding: '1rem' }}
+            userId={myId}
           />
         </div>
         {confirmModalShown && (

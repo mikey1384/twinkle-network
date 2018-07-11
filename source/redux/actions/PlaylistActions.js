@@ -1,5 +1,5 @@
 import request from 'axios'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import PLAYLIST from '../constants/Playlist'
 

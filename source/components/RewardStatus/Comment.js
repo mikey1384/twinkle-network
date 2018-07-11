@@ -11,7 +11,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import request from 'axios'
 import { timeSince } from 'helpers/timeStampHelpers'
 import { stringIsEmpty } from 'helpers/stringHelpers'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
 

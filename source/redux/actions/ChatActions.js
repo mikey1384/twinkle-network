@@ -1,6 +1,6 @@
 import request from 'axios'
 import { GENERAL_CHAT_ID } from 'constants/database'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import CHAT from '../constants/Chat'
 

@@ -169,11 +169,12 @@ class DiscussionPanel extends Component {
                 type="text"
                 placeholder="Enter Title..."
                 value={editedTitle}
-                onChange={text => {
-                  this.setState({ editedTitle: text }, () => {
-                    this.determineEditButtonDoneStatus()
-                  })
-                }}
+                onChange={text =>
+                  this.setState(
+                    { editedTitle: text },
+                    this.determineEditButtonDoneStatus
+                  )
+                }
                 onKeyUp={event =>
                   this.setState({ editedTitle: addEmoji(event.target.value) })
                 }
@@ -190,9 +191,7 @@ class DiscussionPanel extends Component {
                 onChange={event =>
                   this.setState(
                     { editedDescription: event.target.value },
-                    () => {
-                      this.determineEditButtonDoneStatus()
-                    }
+                    this.determineEditButtonDoneStatus
                   )
                 }
               />
@@ -242,22 +241,20 @@ class DiscussionPanel extends Component {
                   comments={comments}
                   loadMoreButton={loadMoreDiscussionCommentsButton}
                   userId={myId}
+                  onAttachStar={attachStar}
                   onCommentSubmit={uploadComment}
+                  onDelete={onDelete}
+                  onEditDone={onEditDone}
+                  onLikeClick={onLikeClick}
+                  onLoadMoreReplies={onLoadMoreReplies}
                   onReplySubmit={uploadReply}
+                  onRewardCommentEdit={editRewardComment}
                   contentId={id}
                   loadMoreComments={this.loadMoreComments}
                   parent={{
                     type: 'discussion',
                     id,
                     rootObj: { type: 'video', id: videoId }
-                  }}
-                  commentActions={{
-                    attachStar,
-                    onDelete,
-                    onLikeClick,
-                    onEditDone,
-                    onLoadMoreReplies,
-                    onRewardCommentEdit: editRewardComment
                   }}
                 />
               ) : (
@@ -319,9 +316,9 @@ class DiscussionPanel extends Component {
     this.setState({ editDoneButtonDisabled })
   }
 
-  loadMoreComments = ({ lastCommentId }) => {
+  loadMoreComments = data => {
     const { id, loadMoreComments } = this.props
-    loadMoreComments({ lastCommentId, discussionId: id })
+    loadMoreComments(data, id)
   }
 
   onDelete = () => {

@@ -1,5 +1,5 @@
 import request from 'axios'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import { push } from 'react-router-redux'
 import LINK from '../constants/Link'
@@ -125,10 +125,10 @@ export const fetchMoreComments = data => ({
   data
 })
 
-export const fetchMoreReplies = ({ commentId, loadMoreReplies, replies }) => ({
+export const fetchMoreReplies = ({ commentId, loadMoreButton, replies }) => ({
   type: LINK.LOAD_MORE_REPLIES,
   commentId,
-  loadMoreReplies,
+  loadMoreButton,
   replies
 })
 

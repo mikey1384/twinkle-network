@@ -1,5 +1,5 @@
 import request from 'axios'
-import { handleError } from 'helpers/apiHelpers'
+import { handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import CONTENT from '../constants/Content'
 

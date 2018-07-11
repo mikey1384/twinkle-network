@@ -218,10 +218,10 @@ export default function linkReducer(state = defaultState, action) {
               comment.id === action.commentId
                 ? action.replies.concat(comment.replies)
                 : comment.replies,
-            loadMoreReplies:
+            loadMoreButton:
               comment.id === action.commentId
-                ? action.loadMoreReplies
-                : comment.loadMoreReplies
+                ? action.loadMoreButton
+                : comment.loadMoreButton
           }))
         }
       }

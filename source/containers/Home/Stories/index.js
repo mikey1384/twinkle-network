@@ -181,6 +181,7 @@ class Stories extends Component {
                         selfLoadingDisabled={this.clearingFeeds}
                         inputAtBottom={feed.type === 'comment'}
                         contentObj={feed}
+                        onLoadContent={fetchFeed}
                         methodObj={{
                           attachStar,
                           deleteComment: feedCommentDelete,
@@ -192,7 +193,6 @@ class Stories extends Component {
                           likeContent: contentFeedLike,
                           likeQuestion: questionFeedLike,
                           likeTargetComment: likeTargetComment,
-                          loadContent: fetchFeed,
                           loadMoreComments: loadMoreFeedComments,
                           loadMoreReplies: loadMoreFeedReplies,
                           showComments: showFeedComments,

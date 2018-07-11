@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react'
 import ReactPlayer from 'react-player'
 import { Color } from 'constants/css'
 import { connect } from 'react-redux'
-import { auth } from 'helpers/apiHelpers'
+import { auth } from 'helpers/requestHelpers'
 import {
   addVideoView,
   fillCurrentVideoSlot,

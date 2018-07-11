@@ -4,7 +4,7 @@ import ContentPanel from 'components/ContentPanel'
 import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { auth, handleError } from 'helpers/apiHelpers'
+import { auth, handleError } from 'helpers/requestHelpers'
 
 class Comment extends Component {
   static propTypes = {
@@ -67,29 +67,27 @@ class Comment extends Component {
         autoShowComments
         inputAtBottom={contentObj.type === 'comment'}
         contentObj={contentObj}
-        methodObj={{
-          attachStar: this.attachStar,
-          deleteComment: this.onDeleteComment,
-          deleteContent: this.onDeleteContent,
-          editComment: this.onEditComment,
-          editContent: this.onEditContent,
-          editRewardComment: this.onEditRewardComment,
-          likeComment: this.onLikeComment,
-          likeContent: this.onLikeContent,
-          likeQuestion: this.onLikeQuestion,
-          likeTargetComment: this.onLikeTargetComment,
-          loadMoreComments: this.onLoadMoreComments,
-          loadMoreReplies: this.onLoadMoreReplies,
-          showComments: this.onShowComments,
-          uploadComment: this.onCommentSubmit,
-          uploadTargetComment: this.onTargetCommentSubmit
-        }}
         userId={userId}
+        onAttachStar={this.onAttachStar}
+        onCommentSubmit={this.onCommentSubmit}
+        onDeleteComment={this.onDeleteComment}
+        onDeleteContent={this.onDeleteContent}
+        onEditComment={this.onEditComment}
+        onEditContent={this.onEditContent}
+        onEditRewardComment={this.onEditRewardComment}
+        onLikeComment={this.onLikeComment}
+        onLikeTargetComment={this.onLikeTargetComment}
+        onLikeContent={this.onLikeContent}
+        onLikeQuestion={this.onLikeQuestion}
+        onLoadMoreComments={this.onLoadMoreComments}
+        onLoadMoreReplies={this.onLoadMoreReplies}
+        onShowComments={this.onShowComments}
+        onTargetCommentSubmit={this.onTargetCommentSubmit}
       />
     )
   }
 
-  attachStar = data => {
+  onAttachStar = data => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
@@ -309,38 +307,24 @@ class Comment extends Component {
     }
   }
 
-  onLikeComment = async commentId => {
-    const { handleError } = this.props
-    try {
-      const {
-        data: { likes }
-      } = await request.post(
-        `${URL}/content/comment/like`,
-        {
-          commentId
-        },
-        auth()
-      )
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          likes:
-            state.contentObj.contentId === commentId
-              ? likes
-              : state.contentObj.contentLikers,
-          childComments: state.contentObj.childComments.map(comment => ({
-            ...comment,
-            likes: comment.id === commentId ? likes : comment.likes,
-            replies: comment.replies.map(reply => ({
-              ...reply,
-              likes: reply.id === commentId ? likes : reply.likes
-            }))
+  onLikeComment = ({ commentId, likes }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        likes:
+          state.contentObj.contentId === commentId
+            ? likes
+            : state.contentObj.contentLikers,
+        childComments: state.contentObj.childComments.map(comment => ({
+          ...comment,
+          likes: comment.id === commentId ? likes : comment.likes,
+          replies: comment.replies.map(reply => ({
+            ...reply,
+            likes: reply.id === commentId ? likes : reply.likes
           }))
-        }
-      }))
-    } catch (error) {
-      handleError(error)
-    }
+        }))
+      }
+    }))
   }
 
   onLikeTargetComment = async commentId => {

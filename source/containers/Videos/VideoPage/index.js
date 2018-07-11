@@ -336,28 +336,25 @@ class VideoPage extends Component {
                     Comment on this video
                   </p>
                   <Comments
-                    autoShowComments={true}
+                    autoShowComments
+                    comments={comments}
                     inputAreaInnerRef={ref => {
                       this.CommentInputArea = ref
                     }}
-                    style={{ paddingTop: '1rem' }}
                     inputTypeLabel={'comment'}
-                    comments={comments}
                     loadMoreButton={loadMoreCommentsButton}
-                    userId={userId}
                     loadMoreComments={loadMoreComments}
-                    contentId={videoId}
-                    parent={{ type: 'video', id: Number(videoId) }}
+                    onAttachStar={attachStar}
                     onCommentSubmit={uploadComment}
+                    onDelete={deleteVideoComment}
+                    onEditDone={editVideoComment}
+                    onLikeClick={likeVideoComment}
+                    onLoadMoreReplies={loadMoreReplies}
                     onReplySubmit={uploadReply}
-                    commentActions={{
-                      attachStar,
-                      onDelete: deleteVideoComment,
-                      onLikeClick: likeVideoComment,
-                      onEditDone: editVideoComment,
-                      onLoadMoreReplies: loadMoreReplies,
-                      onRewardCommentEdit: editRewardComment
-                    }}
+                    onRewardCommentEdit={editRewardComment}
+                    parent={{ type: 'video', id: Number(videoId) }}
+                    style={{ paddingTop: '1rem' }}
+                    userId={userId}
                   />
                 </div>
                 {resultModalShown && (
