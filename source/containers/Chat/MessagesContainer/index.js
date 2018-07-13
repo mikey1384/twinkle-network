@@ -47,10 +47,8 @@ class MessagesContainer extends Component {
     this.setState(
       {
         fillerHeight:
-          ((this.messagesContainer || {}).offsetHeight || 0) >
-          ((this.Messages || {}).offsetHeight || 0)
-            ? ((this.messagesContainer || {}).offsetHeight || 0) -
-              ((this.Messages || {}).offsetHeight || 0)
+          this.messagesContainer.offsetHeight > this.messages.offsetHeight
+            ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
             : 0
       },
       () => this.setScrollToBottom()
@@ -78,10 +76,8 @@ class MessagesContainer extends Component {
     if (switchedChannel) {
       this.setState({
         fillerHeight:
-          ((this.messagesContainer || {}).offsetHeight || 0) >
-          ((this.Messages || {}).offsetHeight || 0)
-            ? ((this.messagesContainer || {}).offsetHeight || 0) -
-              ((this.Messages || {}).offsetHeight || 0)
+          this.messagesContainer.offsetHeight > this.messages.offsetHeight
+            ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
             : 0
       })
       this.setScrollToBottom()
@@ -90,8 +86,8 @@ class MessagesContainer extends Component {
     if (messageDeleted) {
       this.setState({
         fillerHeight:
-          this.messagesContainer.offsetHeight > this.Messages.offsetHeight
-            ? this.messagesContainer.offsetHeight - this.Messages.offsetHeight
+          this.messagesContainer.offsetHeight > this.messages.offsetHeight
+            ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
             : 0
       })
       return
@@ -103,8 +99,8 @@ class MessagesContainer extends Component {
       } else {
         this.setState({
           fillerHeight:
-            this.messagesContainer.offsetHeight > this.Messages.offsetHeight
-              ? this.messagesContainer.offsetHeight - this.Messages.offsetHeight
+            this.messagesContainer.offsetHeight > this.messages.offsetHeight
+              ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
               : 0
         })
         this.setScrollToBottom()
@@ -115,8 +111,8 @@ class MessagesContainer extends Component {
   setScrollToBottom() {
     this.messagesContainer.scrollTop = Math.max(
       this.state.maxScroll,
-      (this.messagesContainer || {}).offsetHeight || 0,
-      this.state.fillerHeight + ((this.messages || {}).offsetHeight || 0)
+      this.messagesContainer.offsetHeight,
+      this.state.fillerHeight + this.messages.offsetHeight
     )
     this.setState({ maxScroll: this.messagesContainer.scrollTop })
   }
@@ -198,7 +194,7 @@ class MessagesContainer extends Component {
               )}
               <div
                 ref={ref => {
-                  this.Messages = ref
+                  this.messages = ref
                 }}
               >
                 {this.renderMessages()}
