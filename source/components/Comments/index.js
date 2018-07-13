@@ -7,7 +7,12 @@ import Button from 'components/Button'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { auth, handleError, loadComments } from 'helpers/requestHelpers'
+import {
+  auth,
+  handleError,
+  loadComments,
+  uploadComment
+} from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
 
 const API_URL = `${URL}/content`
@@ -189,33 +194,27 @@ class Comments extends Component {
   }
 
   onCommentSubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { handleError, onCommentSubmit, parent } = this.props
+    const { onCommentSubmit, parent } = this.props
     this.setState({ commentSubmitted: true })
-    try {
-      const { data } = await request.post(
-        `${API_URL}/comments`,
-        { content, parent, rootCommentId, targetCommentId },
-        auth()
-      )
-      onCommentSubmit(data)
-    } catch (error) {
-      handleError(error)
-    }
+    const data = await uploadComment({
+      content,
+      parent,
+      rootCommentId,
+      targetCommentId
+    })
+    onCommentSubmit(data)
   }
 
   onReplySubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { handleError, onReplySubmit, parent } = this.props
+    const { onReplySubmit, parent } = this.props
     this.setState({ commentSubmitted: true })
-    try {
-      const { data } = await request.post(
-        `${API_URL}/comments`,
-        { content, parent, rootCommentId, targetCommentId },
-        auth()
-      )
-      onReplySubmit(data)
-    } catch (error) {
-      handleError(error)
-    }
+    const data = await uploadComment({
+      content,
+      parent,
+      rootCommentId,
+      targetCommentId
+    })
+    onReplySubmit(data)
   }
 
   loadMoreComments = async() => {

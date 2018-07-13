@@ -65,3 +65,21 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
     console.error(error.response || error)
   }
 }
+
+export const uploadComment = async({
+  content,
+  parent,
+  rootCommentId,
+  targetCommentId
+}) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/content/comments`,
+      { content, parent, rootCommentId, targetCommentId },
+      auth()
+    )
+    return Promise.resolve(data)
+  } catch (error) {
+    handleError(error)
+  }
+}
