@@ -12,12 +12,14 @@ import QuestionModal from './QuestionModal'
 import StarMark from 'components/StarMark'
 import UsernameText from 'components/Texts/UsernameText'
 import { css } from 'emotion'
+import { connect } from 'react-redux'
+import { likeContent, handleError } from 'helpers/requestHelpers'
 
 class Heading extends Component {
   static propTypes = {
     action: PropTypes.string,
     onCommentSubmit: PropTypes.func.isRequired,
-    onLikeQuestion: PropTypes.func.isRequired,
+    onLikeContent: PropTypes.func.isRequired,
     attachedVideoShown: PropTypes.bool,
     contentObj: PropTypes.shape({
       id: PropTypes.number,
@@ -64,7 +66,6 @@ class Heading extends Component {
           style={{
             width: '90%',
             height: '100%',
-            marginLeft: '2%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -186,12 +187,10 @@ class Heading extends Component {
     const {
       contentObj: {
         rootObj: { content, likes = [], isStarred } = {},
-        rootId,
         rootType
       },
       attachedVideoShown,
       myId,
-      onLikeQuestion,
       onPlayVideoClick
     } = this.props
     const userLikedVideo = likes.map(like => like.userId).indexOf(myId) !== -1
@@ -203,7 +202,7 @@ class Heading extends Component {
             <LikeButton
               small
               liked={userLikedVideo}
-              onClick={() => onLikeQuestion(rootId, rootType)}
+              onClick={this.onLikeClick}
             />
           ) : (
             content && (
@@ -291,6 +290,20 @@ class Heading extends Component {
     }
     return null
   }
+
+  onLikeClick = async() => {
+    const {
+      contentObj: { rootId, rootType },
+      onLikeContent
+    } = this.props
+    const likes = await likeContent({ id: rootId, type: rootType, handleError })
+    onLikeContent({ likes, contentId: rootId, type: rootType })
+  }
 }
 
-export default withContext({ Component: Heading, Context })
+export default connect(
+  null,
+  dispatch => ({
+    handleError: error => handleError(error, dispatch)
+  })
+)(withContext({ Component: Heading, Context }))

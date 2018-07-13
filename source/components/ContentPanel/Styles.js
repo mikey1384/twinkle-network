@@ -12,11 +12,12 @@ export const container = css`
     margin-bottom: 0;
   }
   .heading {
-    padding: 0 1.5rem;
+    padding: 0 1rem;
     display: flex;
     align-items: center;
     width: 100%;
     min-height: 10rem;
+    justify-content: space-between;
   }
   .body {
     padding: 0;
@@ -44,6 +45,7 @@ export const container = css`
     font-weight: bold;
     color: ${Color.darkGray()};
     font-size: 1.2rem;
+    line-height: 1;
   }
   .question {
     font-size: 2rem;

@@ -18,6 +18,13 @@ import XPRewardInterface from 'components/XPRewardInterface'
 import RewardStatus from 'components/RewardStatus'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import { determineXpButtonDisabled } from 'helpers/domHelpers'
+import {
+  deleteContent,
+  editContent,
+  handleError,
+  likeContent,
+  loadComments
+} from 'helpers/requestHelpers'
 
 class Body extends Component {
   static propTypes = {
@@ -28,6 +35,8 @@ class Body extends Component {
     canEdit: PropTypes.bool,
     contentObj: PropTypes.object.isRequired,
     canStar: PropTypes.bool,
+    commentsLoadLimit: PropTypes.number,
+    handleError: PropTypes.func.isRequired,
     inputAtBottom: PropTypes.bool,
     myId: PropTypes.number,
     type: PropTypes.string,
@@ -38,11 +47,10 @@ class Body extends Component {
     onEditComment: PropTypes.func.isRequired,
     onEditContent: PropTypes.func.isRequired,
     onEditRewardComment: PropTypes.func.isRequired,
-    onLikeComment: PropTypes.func.isRequired,
     onLikeContent: PropTypes.func.isRequired,
-    onLikeQuestion: PropTypes.func.isRequired,
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
     onShowComments: PropTypes.func.isRequired,
     onStarVideo: PropTypes.func
   }
@@ -53,7 +61,6 @@ class Body extends Component {
     edited: false,
     isEditing: false,
     userListModalShown: false,
-    commentsLoaded: false,
     commentsShown: false,
     confirmModalShown: false,
     twoStarSelected: false,
@@ -64,18 +71,17 @@ class Body extends Component {
     const {
       autoShowComments,
       onShowComments,
-      contentObj: { rootType, type, contentId, isReply }
+      commentsLoadLimit,
+      contentObj: { type, contentId }
     } = this.props
     if (autoShowComments) {
-      this.setState({ commentsShown: true })
-      await onShowComments({
-        rootType,
-        type,
-        contentId,
-        commentLength: 0,
-        isReply
+      const data = await loadComments({
+        type: type,
+        id: contentId,
+        limit: commentsLoadLimit
       })
-      this.setState({ commentsLoaded: true })
+      onShowComments(data)
+      this.setState({ commentsShown: true })
     }
   }
 
@@ -127,25 +133,25 @@ class Body extends Component {
       canDelete,
       canEdit,
       canStar,
+      commentsLoadLimit,
       inputAtBottom,
       myId,
       attachedVideoShown,
       onAttachStar,
       onCommentSubmit,
       onDeleteComment,
-      onDeleteContent,
       onEditComment,
-      onEditContent,
       onEditRewardComment,
-      onLikeComment,
-      onLoadMoreReplies
+      onLikeContent,
+      onLoadMoreComments,
+      onLoadMoreReplies,
+      onReplySubmit
     } = this.props
     const {
       autoFocusWhenCommentShown,
       edited,
       userListModalShown,
       confirmModalShown,
-      commentsLoaded,
       commentsShown,
       isEditing,
       xpRewardInterfaceShown
@@ -178,7 +184,7 @@ class Body extends Component {
         <div>
           {confirmModalShown && (
             <ConfirmModal
-              onConfirm={() => onDeleteContent({ type, contentId })}
+              onConfirm={this.onDeleteContent}
               onHide={() => this.setState({ confirmModalShown: false })}
               title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
             />
@@ -213,7 +219,7 @@ class Body extends Component {
             type={type}
             contentTitle={title || rootObj.title}
             isEditing={isEditing}
-            onEditContent={onEditContent}
+            onEditContent={this.onEditContent}
             onEditDismiss={() => this.setState({ isEditing: false })}
             rootObj={rootObj}
             rootType={rootType}
@@ -360,39 +366,38 @@ class Body extends Component {
             stars={stars}
             uploaderName={uploader.username}
           />
-          {commentsShown && (
-            <Comments
-              autoFocus={autoFocusWhenCommentShown}
-              autoShowComments={autoShowComments}
-              comments={childComments}
-              commentsLoaded={commentsLoaded}
-              contentId={contentId}
-              inputAreaInnerRef={ref => {
-                this.CommentInputArea = ref
-              }}
-              inputAtBottom={inputAtBottom}
-              loadMoreButton={commentsLoadMoreButton}
-              loadMoreComments={this.loadMoreComments}
-              inputTypeLabel={
-                type === 'comment'
-                  ? 'reply'
-                  : type === 'question'
-                    ? 'answer'
-                    : 'comment'
-              }
-              onAttachStar={onAttachStar}
-              onCommentSubmit={onCommentSubmit}
-              onDelete={onDeleteComment}
-              onEditDone={onEditComment}
-              onLikeClick={onLikeComment}
-              onLoadMoreReplies={onLoadMoreReplies}
-              onReplySubmit={onCommentSubmit}
-              onRewardCommentEdit={onEditRewardComment}
-              parent={contentObj}
-              style={{ padding: '1rem', paddingTop: 0 }}
-              userId={myId}
-            />
-          )}
+          <Comments
+            autoFocus={autoFocusWhenCommentShown}
+            autoShowComments={autoShowComments}
+            comments={childComments}
+            commentsLoadLimit={commentsLoadLimit}
+            commentsShown={commentsShown}
+            contentId={contentId}
+            inputAreaInnerRef={ref => (this.CommentInputArea = ref)}
+            inputAtBottom={inputAtBottom}
+            loadMoreButton={commentsLoadMoreButton}
+            loadMoreComments={onLoadMoreComments}
+            inputTypeLabel={
+              type === 'comment'
+                ? 'reply'
+                : type === 'question'
+                  ? 'answer'
+                  : 'comment'
+            }
+            onAttachStar={onAttachStar}
+            onCommentSubmit={onCommentSubmit}
+            onDelete={onDeleteComment}
+            onEditDone={onEditComment}
+            onLikeClick={({ commentId, likes }) =>
+              onLikeContent({ likes, contentId: commentId, type: 'comment' })
+            }
+            onLoadMoreReplies={onLoadMoreReplies}
+            onReplySubmit={onReplySubmit}
+            onRewardCommentEdit={onEditRewardComment}
+            parent={contentObj}
+            style={{ padding: '1rem', paddingTop: 0 }}
+            userId={myId}
+          />
           {userListModalShown && (
             <UserListModal
               onHide={() => this.setState({ userListModalShown: false })}
@@ -415,70 +420,49 @@ class Body extends Component {
     return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
   }
 
-  loadMoreComments = async({ lastCommentId, type, rootType, contentId }) => {
-    const {
-      contentObj: { commentId },
-      onLoadMoreComments
-    } = this.props
-    await onLoadMoreComments({
-      lastCommentId,
-      type,
-      contentId,
-      isReply: !!commentId,
-      rootType
-    })
-  }
-
-  onCommentButtonClick = async() => {
-    const {
-      contentObj: { type, rootType, contentId, commentId },
-      onShowComments
-    } = this.props
+  onCommentButtonClick = async data => {
+    const { onShowComments } = this.props
     const { commentsShown } = this.state
-    const isReply = !!commentId
     if (!commentsShown) {
-      this.setState({ commentsShown: true, autoFocusWhenCommentShown: true })
-      await onShowComments({
-        rootType,
-        type,
-        contentId,
-        commentLength: 0,
-        isReply
-      })
-      this.setState({ commentsLoaded: true })
+      this.setState({ autoFocusWhenCommentShown: true })
+      await onShowComments(data)
+      this.setState({ commentsShown: true })
     }
     this.CommentInputArea.focus()
   }
 
+  onDeleteContent = async() => {
+    const {
+      contentObj: { type, id },
+      handleError,
+      onDeleteContent
+    } = this.props
+    await deleteContent({ type, id, handleError })
+    onDeleteContent()
+  }
+
+  onEditContent = async params => {
+    const { onEditContent } = this.props
+    const data = await editContent({ params, handleError })
+    onEditContent(data)
+  }
+
   onLikeClick = async() => {
     const {
-      contentObj: { contentId, type, rootType, commentId },
-      onLikeComment,
-      onLikeQuestion,
+      contentObj: { contentId, type, rootType },
       onShowComments,
       onLikeContent
     } = this.props
     const { commentsShown } = this.state
-    const isReply = !!commentId
-    switch (type) {
-      case 'comment':
-        onLikeComment(contentId)
-        break
-      case 'question':
-        onLikeQuestion(contentId)
-        break
-      default:
-        onLikeContent(contentId, rootType)
-    }
+    const likes = await likeContent({ id: contentId, type, handleError })
+    onLikeContent({ likes, type, contentId })
     if (!commentsShown) {
-      this.setState({ commentsShown: true })
       onShowComments({
         rootType,
         type,
-        contentId,
-        commentLength: 0,
-        isReply
+        contentId
       })
+      this.setState({ commentsShown: true })
     }
   }
 
@@ -491,9 +475,14 @@ class Body extends Component {
   }
 }
 
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit,
-  canStar: state.UserReducer.canStar
-}))(withContext({ Component: Body, Context }))
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar
+  }),
+  dispatch => ({
+    handleError: error => handleError(error, dispatch)
+  })
+)(withContext({ Component: Body, Context }))

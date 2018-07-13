@@ -20,9 +20,7 @@ const defaultState = {
 
 export default function VideoReducer(state = defaultState, action) {
   let loadMoreButton = false
-  let loadMoreCommentsButton = false
   let loadMoreDiscussionsButton = false
-  let loadMoreDiscussionCommentsButton = false
   let allVideosLoaded = false
   switch (action.type) {
     case VIDEO.ATTACH_STAR:
@@ -262,20 +260,6 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         addVideoModalShown: false
       }
-    case VIDEO.LOAD_MORE_COMMENTS:
-      loadMoreCommentsButton = false
-      if (action.data.length > 20) {
-        action.data.pop()
-        loadMoreCommentsButton = true
-      }
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          comments: state.videoPage.comments.concat(action.data),
-          loadMoreCommentsButton
-        }
-      }
     case VIDEO.LOAD_MORE_DISCUSSION_REPLIES:
       return {
         ...state,
@@ -336,11 +320,6 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case VIDEO.LOAD_MORE_DISCUSSION_COMMENTS:
-      loadMoreDiscussionCommentsButton = false
-      if (action.data.length > 3) {
-        action.data.pop()
-        loadMoreDiscussionCommentsButton = true
-      }
       return {
         ...state,
         videoPage: {
@@ -349,8 +328,8 @@ export default function VideoReducer(state = defaultState, action) {
             if (discussion.id === action.discussionId) {
               return {
                 ...discussion,
-                comments: discussion.comments.concat(action.data),
-                loadMoreDiscussionCommentsButton
+                comments: discussion.comments.concat(action.comments),
+                loadMoreDiscussionCommentsButton: action.loadMoreButton
               }
             }
             return discussion
@@ -377,11 +356,6 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case VIDEO.LOAD_DISCUSSION_COMMENTS:
-      loadMoreDiscussionCommentsButton = false
-      if (action.data.length > 3) {
-        action.data.pop()
-        loadMoreDiscussionCommentsButton = true
-      }
       return {
         ...state,
         videoPage: {
@@ -390,8 +364,8 @@ export default function VideoReducer(state = defaultState, action) {
             if (discussion.id === action.discussionId) {
               return {
                 ...discussion,
-                comments: action.data,
-                loadMoreDiscussionCommentsButton
+                comments: action.comments,
+                loadMoreDiscussionCommentsButton: action.loadMoreButton
               }
             }
             return discussion
@@ -409,17 +383,21 @@ export default function VideoReducer(state = defaultState, action) {
         }
       }
     case VIDEO.LOAD_COMMENTS:
-      loadMoreCommentsButton = false
-      if (action.data.length > 20) {
-        action.data.pop()
-        loadMoreCommentsButton = true
-      }
       return {
         ...state,
         videoPage: {
           ...state.videoPage,
-          comments: action.data,
-          loadMoreCommentsButton
+          comments: action.comments,
+          loadMoreCommentsButton: action.loadMoreButton
+        }
+      }
+    case VIDEO.LOAD_MORE_COMMENTS:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          comments: state.videoPage.comments.concat(action.comments),
+          loadMoreCommentsButton: action.loadMoreButton
         }
       }
     case VIDEO.LOAD_DISCUSSIONS:

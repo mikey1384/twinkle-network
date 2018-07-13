@@ -40,6 +40,7 @@ import DiscussionInputArea from './DiscussionInputArea'
 import Discussions from './Discussions'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
+import { loadComments } from 'helpers/requestHelpers'
 
 class VideoPage extends Component {
   static propTypes = {
@@ -101,14 +102,15 @@ class VideoPage extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       match: { params },
       loadVideoComments,
       loadVideoPage
     } = this.props
     loadVideoPage(params.videoId)
-    loadVideoComments(params.videoId)
+    const data = await loadComments({ id: params.videoId, type: 'video' })
+    loadVideoComments(data)
   }
 
   async componentDidUpdate(prevProps) {

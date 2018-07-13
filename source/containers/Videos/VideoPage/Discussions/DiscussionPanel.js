@@ -31,6 +31,7 @@ import {
   deleteVideoDiscussion,
   uploadReply
 } from 'redux/actions/VideoActions'
+import { loadComments } from 'helpers/requestHelpers'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
 
@@ -44,7 +45,7 @@ class DiscussionPanel extends Component {
     description: PropTypes.string,
     editRewardComment: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
-    loadComments: PropTypes.func.isRequired,
+    loadVideoDiscussionComments: PropTypes.func.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
     loadMoreDiscussionCommentsButton: PropTypes.bool.isRequired,
     myId: PropTypes.number,
@@ -236,6 +237,8 @@ class DiscussionPanel extends Component {
               {expanded ? (
                 <Comments
                   autoFocus
+                  commentsLoadLimit={10}
+                  commentsShown={expanded}
                   inputTypeLabel={'answer'}
                   type="videoDiscussionPanel"
                   comments={comments}
@@ -252,9 +255,11 @@ class DiscussionPanel extends Component {
                   contentId={id}
                   loadMoreComments={this.loadMoreComments}
                   parent={{
-                    type: 'discussion',
                     id,
-                    rootObj: { type: 'video', id: videoId }
+                    rootId: videoId,
+                    rootType: 'video',
+                    type: 'discussion',
+                    rootObj: true
                   }}
                 />
               ) : (
@@ -318,7 +323,7 @@ class DiscussionPanel extends Component {
 
   loadMoreComments = data => {
     const { id, loadMoreComments } = this.props
-    loadMoreComments(data, id)
+    loadMoreComments({ data, discussionId: id })
   }
 
   onDelete = () => {
@@ -328,10 +333,15 @@ class DiscussionPanel extends Component {
     })
   }
 
-  onExpand = () => {
-    const { loadComments, id } = this.props
+  onExpand = async() => {
+    const { loadVideoDiscussionComments, id } = this.props
     this.setState({ expanded: true })
-    loadComments(id)
+    try {
+      const data = await loadComments({ type: 'discussion', id, limit: 10 })
+      loadVideoDiscussionComments({ data, discussionId: id })
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 
   onEditDone = async() => {
@@ -361,7 +371,7 @@ export default connect(
     editRewardComment,
     onDelete: deleteVideoComment,
     onEditDone: editVideoComment,
-    loadComments: loadVideoDiscussionComments,
+    loadVideoDiscussionComments,
     loadMoreComments: loadMoreDiscussionComments,
     onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoDiscussionReply,

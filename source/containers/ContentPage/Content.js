@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import ContentPanel from 'components/ContentPanel'
 import { connect } from 'react-redux'
 import request from 'axios'
+import Loading from 'components/Loading'
+import NotFound from 'components/NotFound'
 import { URL } from 'constants/URL'
 import { auth, handleError } from 'helpers/requestHelpers'
 
@@ -30,7 +32,7 @@ class Comment extends Component {
           .split('/')[1]
           .slice(0, -1)}?contentId=${contentId}`
       )
-      this.setState({ contentObj: { ...data, loaded: true } })
+      this.setState({ contentObj: { ...data, loaded: true }, loaded: true })
     } catch (error) {
       console.error(error)
     }
@@ -59,31 +61,36 @@ class Comment extends Component {
 
   render() {
     const { userId } = this.props
-    const { contentObj } = this.state
-    return (
-      <ContentPanel
-        key={contentObj.contentId}
-        selfLoadingDisabled
-        autoShowComments
-        inputAtBottom={contentObj.type === 'comment'}
-        contentObj={contentObj}
-        userId={userId}
-        onAttachStar={this.onAttachStar}
-        onCommentSubmit={this.onCommentSubmit}
-        onDeleteComment={this.onDeleteComment}
-        onDeleteContent={this.onDeleteContent}
-        onEditComment={this.onEditComment}
-        onEditContent={this.onEditContent}
-        onEditRewardComment={this.onEditRewardComment}
-        onLikeComment={this.onLikeComment}
-        onLikeTargetComment={this.onLikeTargetComment}
-        onLikeContent={this.onLikeContent}
-        onLikeQuestion={this.onLikeQuestion}
-        onLoadMoreComments={this.onLoadMoreComments}
-        onLoadMoreReplies={this.onLoadMoreReplies}
-        onShowComments={this.onShowComments}
-        onTargetCommentSubmit={this.onTargetCommentSubmit}
-      />
+    const { contentObj, loaded } = this.state
+    return loaded ? (
+      contentObj.id ? (
+        <ContentPanel
+          key={contentObj.contentId}
+          selfLoadingDisabled
+          autoShowComments
+          inputAtBottom={contentObj.type === 'comment'}
+          commentsLoadLimit={5}
+          contentObj={contentObj}
+          userId={userId}
+          onAttachStar={this.onAttachStar}
+          onCommentSubmit={this.onCommentSubmit}
+          onDeleteComment={this.onDeleteComment}
+          onDeleteContent={this.onDeleteContent}
+          onEditComment={this.onEditComment}
+          onEditContent={this.onEditContent}
+          onEditRewardComment={this.onEditRewardComment}
+          onLikeContent={this.onLikeContent}
+          onLoadMoreComments={this.onLoadMoreComments}
+          onLoadMoreReplies={this.onLoadMoreReplies}
+          onReplySubmit={this.onReplySubmit}
+          onShowComments={this.onShowComments}
+          onTargetCommentSubmit={this.onTargetCommentSubmit}
+        />
+      ) : (
+        <NotFound />
+      )
+    ) : (
+      <Loading />
     )
   }
 
@@ -124,120 +131,91 @@ class Comment extends Component {
     }))
   }
 
-  onCommentSubmit = async(comment, parent) => {
-    const { handleError } = this.props
-    const contentType = parent.type
-    let commentType
-    let params
-    switch (contentType) {
-      case 'comment':
-        params = {
-          content: comment,
-          rootId: parent.rootId,
-          rootType: parent.rootType,
-          discussionId: parent.discussionId,
-          commentId: parent.commentId || parent.id,
-          replyId: parent.commentId ? parent.id : null
-        }
-        commentType = 'replies'
-        break
-      case 'question':
-        params = { content: comment, rootId: parent.id, rootType: 'question' }
-        commentType = 'comments'
-        break
-      case 'discussion':
-        params = {
-          content: comment,
-          rootId: parent.rootId,
-          rootType: parent.rootType,
-          discussionId: parent.id
-        }
-        commentType = 'comments'
-        break
-      default:
-        return console.error('Invalid content type')
-    }
-    try {
-      const { data } = await request.post(
-        `${URL}/content/${commentType}`,
-        params,
-        auth()
+  onCommentSubmit = data => {
+    const {
+      contentObj: { type }
+    } = this.state
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        childComments:
+          type === 'comment'
+            ? (state.contentObj.childComments || []).concat([data])
+            : [data].concat(state.contentObj.childComments)
+      }
+    }))
+  }
+
+  onReplySubmit = data => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        childComments: state.contentObj.childComments.map(comment => {
+          let match = false
+          let commentId = data.replyId || data.commentId
+          if (comment.id === commentId) {
+            match = true
+          } else {
+            for (let reply of comment.replies || []) {
+              if (reply.id === commentId) {
+                match = true
+                break
+              }
+            }
+          }
+          return {
+            ...comment,
+            replies: match ? comment.replies.concat([data]) : comment.replies
+          }
+        })
+      }
+    }))
+  }
+
+  onDeleteComment = commentId => {
+    this.setState(state => {
+      const comments = (state.contentObj.childComments || []).filter(
+        comment => comment.id !== commentId
       )
-      this.setState(state => ({
+      return {
         contentObj: {
           ...state.contentObj,
-          childComments:
-            contentType === 'comment'
-              ? state.contentObj.childComments.concat([data])
-              : [data].concat(state.contentObj.childComments)
+          childComments: comments.map(comment => ({
+            ...comment,
+            replies: (comment.replies || []).filter(
+              reply => reply.id !== commentId
+            )
+          }))
         }
+      }
+    })
+  }
+
+  onEditComment = ({ editedComment, commentId }) => {
+    this.setState(state => {
+      const comments = state.contentObj.childComments.map(comment => ({
+        ...comment,
+        content: comment.id === commentId ? editedComment : comment.content
       }))
-    } catch (error) {
-      handleError(error)
-    }
-  }
-
-  onDeleteComment = async commentId => {
-    const { handleError } = this.props
-    try {
-      await request.delete(
-        `${URL}/content/comments?commentId=${commentId}`,
-        auth()
-      )
-      this.setState(state => {
-        const comments = (state.contentObj.childComments || []).filter(
-          comment => comment.id !== commentId
-        )
-        return {
-          contentObj: {
-            ...state.contentObj,
-            childComments: comments.map(comment => ({
-              ...comment,
-              replies: (comment.replies || []).filter(
-                reply => reply.id !== commentId
-              )
-            }))
-          }
+      return {
+        contentObj: {
+          ...state.contentObj,
+          childComments: comments.map(comment => ({
+            ...comment,
+            replies: comment.replies
+              ? comment.replies.map(reply => ({
+                  ...reply,
+                  content:
+                    reply.id === commentId ? editedComment : reply.content
+                }))
+              : []
+          }))
         }
-      })
-    } catch (error) {
-      handleError(error)
-    }
+      }
+    })
   }
 
-  onEditComment = async params => {
-    const { handleError } = this.props
-    try {
-      const {
-        data: { editedComment, commentId }
-      } = await request.put(`${URL}/content/comments`, params, auth())
-      this.setState(state => {
-        const comments = state.contentObj.childComments.map(comment => ({
-          ...comment,
-          content: comment.id === commentId ? editedComment : comment.content
-        }))
-        return {
-          contentObj: {
-            ...state.contentObj,
-            childComments: comments.map(comment => ({
-              ...comment,
-              replies: comment.replies
-                ? comment.replies.map(reply => ({
-                    ...reply,
-                    content:
-                      reply.id === commentId ? editedComment : reply.content
-                  }))
-                : []
-            }))
-          }
-        }
-      })
-    } catch (error) {
-      handleError(error)
-    }
-  }
-
-  onEditRewardComment = async({ id, text }) => {
+  onEditRewardComment = ({ id, text }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
@@ -277,214 +255,105 @@ class Comment extends Component {
     }))
   }
 
-  onDeleteContent = async({ contentId, type }) => {
-    const { handleError, history } = this.props
-    try {
-      await request.delete(
-        `${URL}/content?contentId=${contentId}&type=${type}`,
-        auth()
-      )
-      history.push('/')
-    } catch (error) {
-      handleError(error)
-    }
+  onDeleteContent = () => {
+    const { history } = this.props
+    history.push('/')
   }
 
-  onEditContent = async params => {
-    const { handleError } = this.props
-    try {
-      const { data } = await request.put(`${URL}/content`, params, auth())
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          ...data,
-          contentTitle: data.title,
-          contentDescription: data.description
-        }
-      }))
-    } catch (error) {
-      handleError(error)
-    }
+  onEditContent = async data => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        ...data,
+        contentTitle: data.title,
+        contentDescription: data.description
+      }
+    }))
   }
 
-  onLikeComment = ({ commentId, likes }) => {
+  onLikeContent = ({ likes, type, contentId }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
         likes:
-          state.contentObj.contentId === commentId
+          state.contentObj.id === contentId && state.contentObj.type === type
             ? likes
-            : state.contentObj.contentLikers,
+            : state.contentObj.likes,
+        childComments:
+          type === 'comment'
+            ? state.contentObj.childComments.map(comment => ({
+                ...comment,
+                likes: comment.id === contentId ? likes : comment.likes,
+                replies: comment.replies.map(reply => ({
+                  ...reply,
+                  likes: reply.id === contentId ? likes : reply.likes
+                }))
+              }))
+            : state.contentObj.childComments,
+        rootObj: {
+          ...state.contentObj.rootObj,
+          likes:
+            state.contentObj.rootId === contentId &&
+            state.contentObj.rootType === type
+              ? likes
+              : state.contentObj.rootObj.likes
+        },
+        targetObj: {
+          ...state.contentObj.targetObj,
+          [type]: state.contentObj.targetObj[type]
+            ? {
+                ...state.contentObj.targetObj[type],
+                likes:
+                  state.contentObj.targetObj[type].id === contentId
+                    ? likes
+                    : state.contentObj.targetObj[type].likes
+              }
+            : undefined
+        }
+      }
+    }))
+  }
+
+  onLoadMoreComments = async({ comments, loadMoreButton }) => {
+    const { type } = this.props
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        childComments:
+          type === 'comment'
+            ? state.contentObj.childComments.concat(comments)
+            : comments.concat(state.contentObj.childComments),
+        commentsLoadMoreButton: loadMoreButton
+      }
+    }))
+  }
+
+  onLoadMoreReplies = ({ commentId, replies, loadMoreButton }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
         childComments: state.contentObj.childComments.map(comment => ({
           ...comment,
-          likes: comment.id === commentId ? likes : comment.likes,
-          replies: comment.replies.map(reply => ({
-            ...reply,
-            likes: reply.id === commentId ? likes : reply.likes
-          }))
+          replies:
+            comment.id === commentId
+              ? replies.concat(comment.replies)
+              : comment.replies,
+          loadMoreButton:
+            comment.id === commentId ? loadMoreButton : comment.loadMoreButton
         }))
       }
     }))
   }
 
-  onLikeTargetComment = async commentId => {
-    const { handleError } = this.props
-    try {
-      const {
-        data: { likes }
-      } = await request.post(
-        `${URL}/content/comment/like`,
-        { commentId },
-        auth()
-      )
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          targetObj: {
-            ...state.contentObj.targetObj,
-            comment: {
-              ...state.contentObj.targetObj.comment,
-              likes
-            }
-          }
-        }
-      }))
-    } catch (error) {
-      handleError(error)
-    }
-  }
-
-  onLikeContent = async(contentId, contentType) => {
-    const { handleError } = this.props
-    try {
-      const {
-        data: { likes }
-      } = await request.post(
-        `${URL}/${contentType}/like`,
-        { contentId },
-        auth()
-      )
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          likes: likes
-        }
-      }))
-    } catch (error) {
-      handleError(error)
-    }
-  }
-
-  onLikeQuestion = async contentId => {
-    const { handleError } = this.props
-    try {
-      const {
-        data: { likes }
-      } = await request.post(
-        `${URL}/content/question/like`,
-        {
-          contentId
-        },
-        auth()
-      )
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          likes
-        }
-      }))
-    } catch (error) {
-      handleError(error)
-    }
-  }
-
-  onLoadMoreComments = async({
-    contentId,
-    isReply,
-    rootType,
-    type,
-    lastCommentId
-  }) => {
-    try {
-      const { data } = await request.get(
-        `
-          ${URL}/content/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}&lastCommentId=${lastCommentId}
-        `
-      )
-      let commentsLoadMoreButton = false
-      if (type === 'comment') data.reverse()
-      if (data.length > 3) {
-        type === 'comment' ? data.shift() : data.pop()
-        commentsLoadMoreButton = true
+  onShowComments = ({ comments, loadMoreButton }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        childComments: comments,
+        commentsLoadMoreButton: loadMoreButton
       }
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          childComments:
-            type === 'comment'
-              ? data.concat(state.contentObj.childComments)
-              : state.contentObj.childComments.concat(data),
-          commentsLoadMoreButton
-        }
-      }))
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  onLoadMoreReplies = async(lastReplyId, commentId, parent) => {
-    try {
-      const {
-        data: { replies, loadMoreReplies }
-      } = await request.get(
-        `${URL}/content/replies?lastReplyId=${lastReplyId}&commentId=${commentId}&rootType=${
-          parent.rootType
-        }`
-      )
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          childComments: state.contentObj.childComments.map(comment => ({
-            ...comment,
-            replies:
-              comment.id === commentId
-                ? replies.concat(comment.replies)
-                : comment.replies,
-            loadMoreReplies:
-              comment.id === commentId
-                ? loadMoreReplies
-                : comment.loadMoreReplies
-          }))
-        }
-      }))
-      return Promise.resolve()
-    } catch (error) {
-      console.error(error.response || error)
-    }
-  }
-
-  onShowComments = async({ contentId, isReply, rootType, type }) => {
-    try {
-      const { data } = await request.get(
-        `${URL}/content/comments?rootType=${rootType}&type=${type}&contentId=${contentId}&isReply=${isReply}`
-      )
-      let commentsLoadMoreButton = false
-      if (type === 'comment') data.reverse()
-      if (data.length > 3) {
-        type === 'comment' ? data.shift() : data.pop()
-        commentsLoadMoreButton = true
-      }
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          childComments: data,
-          commentsLoadMoreButton
-        }
-      }))
-      return Promise.resolve()
-    } catch (error) {
-      console.error(error)
-    }
+    }))
+    return Promise.resolve()
   }
 
   onTargetCommentSubmit = async params => {

@@ -200,6 +200,7 @@ class Comment extends Component {
               ) : (
                 <div>
                   {parent.type !== 'discussion' &&
+                    !parent.discussionId &&
                     targetObj &&
                     targetObj.discussion && (
                       <DiscussionTopicLink discussion={targetObj.discussion} />

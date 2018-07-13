@@ -18,6 +18,7 @@ import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import { determineXpButtonDisabled } from 'helpers/domHelpers'
+import { handleError, likeContent } from 'helpers/requestHelpers'
 import { css } from 'emotion'
 
 class TargetContent extends Component {
@@ -29,7 +30,7 @@ class TargetContent extends Component {
     onDeleteComment: PropTypes.func.isRequired,
     onEditComment: PropTypes.func.isRequired,
     onEditRewardComment: PropTypes.func.isRequired,
-    onLikeTargetComment: PropTypes.func.isRequired,
+    onLikeContent: PropTypes.func.isRequired,
     onTargetCommentSubmit: PropTypes.func.isRequired,
     panelId: PropTypes.number,
     profilePicId: PropTypes.number,
@@ -41,7 +42,6 @@ class TargetContent extends Component {
 
   state = {
     userListModalShown: false,
-    clickListenerState: false,
     replyInputShown: false,
     xpRewardInterfaceShown: false
   }
@@ -69,7 +69,6 @@ class TargetContent extends Component {
     const {
       userListModalShown,
       replyInputShown,
-      clickListenerState,
       xpRewardInterfaceShown
     } = this.state
     let userLikedThis = false
@@ -234,19 +233,26 @@ class TargetContent extends Component {
                     </div>
                     <ErrorBoundary className="buttons">
                       <div>
-                        <LikeButton
-                          onClick={this.onLikeClick}
-                          liked={userLikedThis}
-                          small
-                        />
-                        <Button
-                          style={{ marginLeft: '1rem' }}
-                          transparent
-                          onClick={this.onReplyClick}
+                        <div
+                          style={{
+                            marginBottom:
+                              comment.likes.length > 0 ? '0.5rem' : 0
+                          }}
                         >
-                          <span className="glyphicon glyphicon-comment" />&nbsp;
-                          Reply
-                        </Button>
+                          <LikeButton
+                            onClick={this.onLikeClick}
+                            liked={userLikedThis}
+                            small
+                          />
+                          <Button
+                            style={{ marginLeft: '1rem' }}
+                            transparent
+                            onClick={this.onReplyClick}
+                          >
+                            <span className="glyphicon glyphicon-comment" />&nbsp;
+                            Reply
+                          </Button>
+                        </div>
                         <Likers
                           className="content-panel__likes"
                           userId={myId}
@@ -298,8 +304,11 @@ class TargetContent extends Component {
                   />
                   {replyInputShown && (
                     <InputForm
-                      style={{ marginTop: '1rem', padding: '0 1rem' }}
-                      clickListenerState={clickListenerState}
+                      innerRef={ref => (this.InputForm = ref)}
+                      style={{
+                        marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem',
+                        padding: '0 1rem'
+                      }}
                       autoFocus
                       onSubmit={this.onSubmit}
                       rows={4}
@@ -350,18 +359,23 @@ class TargetContent extends Component {
     return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
   }
 
-  onLikeClick = () => {
+  onLikeClick = async() => {
     const {
       targetObj: { comment },
-      onLikeTargetComment
+      onLikeContent
     } = this.props
-    onLikeTargetComment(comment.id)
+    const likes = await likeContent({
+      id: comment.id,
+      type: 'comment',
+      handleError
+    })
+    onLikeContent({ likes, type: 'comment', contentId: comment.id })
   }
 
   onReplyClick = () => {
-    const { replyInputShown, clickListenerState } = this.state
+    const { replyInputShown } = this.state
     if (!replyInputShown) return this.setState({ replyInputShown: true })
-    this.setState({ clickListenerState: !clickListenerState })
+    this.InputForm.focus()
   }
 
   onSubmit = content => {
@@ -386,9 +400,14 @@ class TargetContent extends Component {
   }
 }
 
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canStar: state.UserReducer.canStar,
-  username: state.UserReducer.username,
-  profilePicId: state.UserReducer.profilePicId
-}))(withContext({ Component: TargetContent, Context }))
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canStar: state.UserReducer.canStar,
+    username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId
+  }),
+  dispatch => ({
+    handleError: error => handleError(error, dispatch)
+  })
+)(withContext({ Component: TargetContent, Context }))

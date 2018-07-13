@@ -29,6 +29,7 @@ import Description from './Description'
 import { css } from 'emotion'
 import { mobileMaxWidth } from 'constants/css'
 import NotFound from 'components/NotFound'
+import { loadComments } from 'helpers/requestHelpers'
 
 class LinkPage extends Component {
   static propTypes = {
@@ -69,6 +70,11 @@ class LinkPage extends Component {
     } = this.props
     try {
       await loadLinkPage(linkId)
+      const data = await loadComments({
+        id: linkId,
+        type: 'url'
+      })
+      fetchComments(data)
     } catch (error) {
       if (error.response) {
         const { data = {} } = error.response
@@ -76,11 +82,11 @@ class LinkPage extends Component {
           this.setState({ notFound: true })
         }
       }
+      console.error(error.response || error)
     }
-    fetchComments(linkId)
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const {
       location,
       loadLinkPage,
@@ -90,8 +96,22 @@ class LinkPage extends Component {
       }
     } = this.props
     if (prevProps.location.pathname !== location.pathname) {
-      fetchComments(linkId)
-      loadLinkPage(linkId)
+      try {
+        await loadLinkPage(linkId)
+        const data = await loadComments({
+          id: linkId,
+          type: 'url'
+        })
+        fetchComments(data)
+      } catch (error) {
+        if (error.response) {
+          const { data = {} } = error.response
+          if (data.notFound) {
+            this.setState({ notFound: true })
+          }
+        }
+        console.error(error.response || error)
+      }
     }
   }
 

@@ -7,7 +7,7 @@ import Button from 'components/Button'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import { auth, handleError } from 'helpers/requestHelpers'
+import { auth, handleError, loadComments } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
 
 const API_URL = `${URL}/content`
@@ -16,8 +16,9 @@ class Comments extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
     autoShowComments: PropTypes.bool,
-    commentsLoaded: PropTypes.bool,
+    commentsShown: PropTypes.bool,
     comments: PropTypes.array.isRequired,
+    commentsLoadLimit: PropTypes.number,
     handleError: PropTypes.func.isRequired,
     inputAreaInnerRef: PropTypes.func,
     inputAtBottom: PropTypes.bool,
@@ -52,7 +53,7 @@ class Comments extends Component {
     const {
       autoShowComments,
       comments,
-      commentsLoaded,
+      commentsShown,
       inputAtBottom
     } = this.props
     if (prevProps.comments.length > comments.length) {
@@ -90,9 +91,9 @@ class Comments extends Component {
 
     if (
       !autoShowComments &&
-      !prevProps.commentsLoaded &&
-      commentsLoaded &&
-      !commentSubmitted
+      !prevProps.commentsShown &&
+      !commentSubmitted &&
+      commentsShown
     ) {
       scrollElementToCenter(this.CommentInputArea)
     }
@@ -104,7 +105,7 @@ class Comments extends Component {
       autoShowComments,
       loadMoreButton,
       comments = [],
-      commentsLoaded,
+      commentsShown,
       inputAreaInnerRef,
       inputTypeLabel,
       style,
@@ -126,7 +127,7 @@ class Comments extends Component {
           onLikeClick,
           onLoadMoreReplies,
           onRewardCommentEdit,
-          onReplySubmit: this.onCommentSubmit
+          onReplySubmit: this.onReplySubmit
         }}
       >
         <div
@@ -148,7 +149,7 @@ class Comments extends Component {
             />
           )}
           {comments.length > 0 &&
-            (autoShowComments || commentsLoaded) && (
+            (autoShowComments || commentsShown) && (
               <div style={{ width: '100%' }}>
                 {inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
                 {comments.map((comment, index) => (
@@ -176,6 +177,10 @@ class Comments extends Component {
               style={{ marginTop: comments.length > 0 ? '1rem' : 0 }}
               inputTypeLabel={inputTypeLabel}
               onSubmit={this.onCommentSubmit}
+              rootCommentId={
+                parent.type === 'comment' ? parent.commentId : null
+              }
+              targetCommentId={parent.type === 'comment' ? parent.id : null}
             />
           )}
         </div>
@@ -184,7 +189,7 @@ class Comments extends Component {
   }
 
   onCommentSubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { handleError, onCommentSubmit, onReplySubmit, parent } = this.props
+    const { handleError, onCommentSubmit, parent } = this.props
     this.setState({ commentSubmitted: true })
     try {
       const { data } = await request.post(
@@ -192,7 +197,22 @@ class Comments extends Component {
         { content, parent, rootCommentId, targetCommentId },
         auth()
       )
-      targetCommentId ? onReplySubmit(data) : onCommentSubmit(data)
+      onCommentSubmit(data)
+    } catch (error) {
+      handleError(error)
+    }
+  }
+
+  onReplySubmit = async({ content, rootCommentId, targetCommentId }) => {
+    const { handleError, onReplySubmit, parent } = this.props
+    this.setState({ commentSubmitted: true })
+    try {
+      const { data } = await request.post(
+        `${API_URL}/comments`,
+        { content, parent, rootCommentId, targetCommentId },
+        auth()
+      )
+      onReplySubmit(data)
     } catch (error) {
       handleError(error)
     }
@@ -200,7 +220,7 @@ class Comments extends Component {
 
   loadMoreComments = async() => {
     const { isLoading } = this.state
-    const { inputAtBottom } = this.props
+    const { commentsLoadLimit, inputAtBottom } = this.props
     if (!isLoading) {
       const { comments, parent, loadMoreComments } = this.props
       this.setState({ isLoading: true })
@@ -209,11 +229,12 @@ class Comments extends Component {
         ? comments[lastCommentLocation].id
         : 0
       try {
-        const { data } = await request.get(
-          `${API_URL}/comments?lastCommentId=${lastCommentId}&type=${
-            parent.type
-          }&contentId=${parent.id}&rootType=${parent.type}`
-        )
+        const data = await loadComments({
+          id: parent.id,
+          type: parent.type,
+          lastCommentId,
+          limit: commentsLoadLimit
+        })
         loadMoreComments(data)
         this.setState({ isLoading: false })
       } catch (error) {
@@ -234,6 +255,7 @@ class Comments extends Component {
 
   renderLoadMoreButton = () => {
     const { isLoading } = this.state
+    const { inputAtBottom } = this.props
     return (
       <Button
         filled
@@ -244,7 +266,7 @@ class Comments extends Component {
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
-          marginTop: '1rem'
+          marginTop: inputAtBottom ? 0 : '1rem'
         }}
       >
         Load More

@@ -11,6 +11,7 @@ import { container } from './Styles'
 class ContentPanel extends Component {
   static propTypes = {
     autoShowComments: PropTypes.bool,
+    commentsLoadLimit: PropTypes.number,
     contentObj: PropTypes.object.isRequired,
     inputAtBottom: PropTypes.bool,
     selfLoadingDisabled: PropTypes.bool,
@@ -22,13 +23,11 @@ class ContentPanel extends Component {
     onEditComment: PropTypes.func.isRequired,
     onEditContent: PropTypes.func.isRequired,
     onEditRewardComment: PropTypes.func.isRequired,
-    onLikeComment: PropTypes.func.isRequired,
-    onLikeTargetComment: PropTypes.func.isRequired,
     onLikeContent: PropTypes.func.isRequired,
-    onLikeQuestion: PropTypes.func.isRequired,
     onLoadContent: PropTypes.func,
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
     onShowComments: PropTypes.func.isRequired,
     onStarVideo: PropTypes.func,
     onTargetCommentSubmit: PropTypes.func.isRequired
@@ -51,6 +50,7 @@ class ContentPanel extends Component {
   render() {
     const {
       autoShowComments,
+      commentsLoadLimit,
       contentObj,
       inputAtBottom,
       onAttachStar,
@@ -60,12 +60,10 @@ class ContentPanel extends Component {
       onEditComment,
       onEditContent,
       onEditRewardComment,
-      onLikeComment,
-      onLikeTargetComment,
       onLikeContent,
-      onLikeQuestion,
       onLoadMoreComments,
       onLoadMoreReplies,
+      onReplySubmit,
       onShowComments,
       onStarVideo,
       onTargetCommentSubmit,
@@ -75,6 +73,7 @@ class ContentPanel extends Component {
     return (
       <Context.Provider
         value={{
+          commentsLoadLimit,
           onAttachStar,
           onCommentSubmit,
           onDeleteComment,
@@ -82,12 +81,10 @@ class ContentPanel extends Component {
           onEditComment,
           onEditContent,
           onEditRewardComment,
-          onLikeComment,
-          onLikeTargetComment,
           onLikeContent,
-          onLikeQuestion,
           onLoadMoreComments,
           onLoadMoreReplies,
+          onReplySubmit,
           onShowComments,
           onStarVideo,
           onTargetCommentSubmit

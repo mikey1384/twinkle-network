@@ -13,14 +13,9 @@ export default class QuestionModal extends Component {
     question: PropTypes.string.isRequired
   }
 
-  constructor() {
-    super()
-    this.state = {
-      answer: '',
-      answerSubmitted: false
-    }
-    this.handleKeyUp = this.handleKeyUp.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+  state = {
+    answer: '',
+    answerSubmitted: false
   }
 
   render() {
@@ -70,13 +65,13 @@ export default class QuestionModal extends Component {
     )
   }
 
-  handleKeyUp(event) {
+  handleKeyUp = event => {
     if (event.key === ' ') {
       this.setState({ answer: addEmoji(event.target.value) })
     }
   }
 
-  async onSubmit() {
+  onSubmit = async() => {
     const { onHide, parent, uploadAnswer } = this.props
     const { answer } = this.state
     await uploadAnswer(finalizeEmoji(answer), parent)

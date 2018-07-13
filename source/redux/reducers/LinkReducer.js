@@ -11,7 +11,6 @@ const defaultState = {
 
 export default function linkReducer(state = defaultState, action) {
   let loadMoreLinksButtonShown = false
-  let loadMoreCommentsButton = false
   switch (action.type) {
     case LINK.ATTACH_STAR:
       return {
@@ -182,29 +181,21 @@ export default function linkReducer(state = defaultState, action) {
         loadMoreLinksButtonShown
       }
     case LINK.LOAD_COMMENTS:
-      if (action.data.length > 20) {
-        action.data.pop()
-        loadMoreCommentsButton = true
-      }
       return {
         ...state,
         linkPage: {
           ...state.linkPage,
-          comments: action.data,
-          loadMoreCommentsButton
+          comments: action.comments,
+          loadMoreCommentsButton: action.loadMoreButton
         }
       }
     case LINK.LOAD_MORE_COMMENTS:
-      if (action.data.length > 20) {
-        action.data.pop()
-        loadMoreCommentsButton = true
-      }
       return {
         ...state,
         linkPage: {
           ...state.linkPage,
-          comments: state.linkPage.comments.concat(action.data),
-          loadMoreCommentsButton
+          comments: state.linkPage.comments.concat(action.comments),
+          loadMoreCommentsButton: action.loadMoreButton
         }
       }
     case LINK.LOAD_MORE_REPLIES:

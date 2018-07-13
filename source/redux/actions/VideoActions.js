@@ -198,17 +198,17 @@ export const likeVideoComment = ({ commentId, likes }) => ({
 
 export const loadMoreComments = data => ({
   type: VIDEO.LOAD_MORE_COMMENTS,
-  data
+  ...data
 })
 
 export const loadMoreDiscussionReplies = ({
   commentId,
-  loadMoreReplies,
+  loadMoreButton,
   replies
 }) => ({
   type: VIDEO.LOAD_MORE_DISCUSSION_REPLIES,
   commentId,
-  loadMoreReplies,
+  loadMoreButton,
   replies
 })
 
@@ -219,10 +219,10 @@ export const loadMoreReplies = ({ commentId, loadMoreButton, replies }) => ({
   replies
 })
 
-export const loadMoreDiscussionComments = (data, discussionId) => ({
+export const loadMoreDiscussionComments = ({ data, discussionId }) => ({
   type: VIDEO.LOAD_MORE_DISCUSSION_COMMENTS,
-  data,
-  discussionId
+  discussionId,
+  ...data
 })
 
 export const loadMoreDiscussions = (
@@ -282,20 +282,10 @@ export const loadRightMenuVideos = (videoId, playlistId) => async dispatch => {
   }
 }
 
-export const loadVideoComments = videoId => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/comments?rootId=${videoId}&rootType=video`
-    )
-    dispatch({
-      type: VIDEO.LOAD_COMMENTS,
-      data
-    })
-    return Promise.resolve()
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
+export const loadVideoComments = data => ({
+  type: VIDEO.LOAD_COMMENTS,
+  ...data
+})
 
 export const loadVideoDiscussions = videoId => async dispatch => {
   try {
@@ -311,20 +301,11 @@ export const loadVideoDiscussions = videoId => async dispatch => {
   }
 }
 
-export const loadVideoDiscussionComments = discussionId => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/discussions/comments?discussionId=${discussionId}`
-    )
-    dispatch({
-      type: VIDEO.LOAD_DISCUSSION_COMMENTS,
-      discussionId,
-      data
-    })
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
+export const loadVideoDiscussionComments = ({ data, discussionId }) => ({
+  type: VIDEO.LOAD_DISCUSSION_COMMENTS,
+  discussionId,
+  ...data
+})
 
 export const loadVideoPage = (videoId, fromClientSide) => async dispatch => {
   if (isNaN(videoId)) return dispatch({ type: VIDEO.PAGE_UNAVAILABLE })

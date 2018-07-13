@@ -67,7 +67,7 @@ class Replies extends Component {
         {comment.loadMoreButton && (
           <Button
             style={{
-              marginTop: '1rem',
+              marginTop: '0.5rem',
               width: '100%'
             }}
             filled

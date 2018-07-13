@@ -105,24 +105,14 @@ export const fetchMoreLinks = linkId => async dispatch => {
   }
 }
 
-export const fetchComments = linkId => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/comments?rootId=${linkId}&rootType=url`
-    )
-    dispatch({
-      type: LINK.LOAD_COMMENTS,
-      data
-    })
-    return Promise.resolve()
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
+export const fetchComments = data => ({
+  type: LINK.LOAD_COMMENTS,
+  ...data
+})
 
 export const fetchMoreComments = data => ({
   type: LINK.LOAD_MORE_COMMENTS,
-  data
+  ...data
 })
 
 export const fetchMoreReplies = ({ commentId, loadMoreButton, replies }) => ({
