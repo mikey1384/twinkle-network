@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import {
   attachStar,
-  commentFeedLike,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -13,7 +12,6 @@ import {
   fetchNewFeeds,
   fetchFeeds,
   fetchFeed,
-  likeTargetComment,
   loadMoreFeedReplies,
   loadMoreFeedComments,
   clearFeeds,
@@ -42,7 +40,6 @@ class Stories extends Component {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
-    commentFeedLike: PropTypes.func.isRequired,
     feeds: PropTypes.array.isRequired,
     feedCommentDelete: PropTypes.func.isRequired,
     feedContentDelete: PropTypes.func.isRequired,
@@ -55,13 +52,11 @@ class Stories extends Component {
     fetchMoreFeeds: PropTypes.func.isRequired,
     fetchNewFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    likeTargetComment: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
     numNewPosts: PropTypes.number.isRequired,
-    questionFeedLike: PropTypes.func.isRequired,
     resetNumNewPosts: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     showFeedComments: PropTypes.func.isRequired,
@@ -106,7 +101,6 @@ class Stories extends Component {
     const {
       attachStar,
       contentFeedLike,
-      commentFeedLike,
       feeds,
       feedCommentDelete,
       feedCommentEdit,
@@ -115,7 +109,6 @@ class Stories extends Component {
       feedVideoStar,
       feedRewardCommentEdit,
       fetchFeed,
-      likeTargetComment,
       loadMoreButton,
       loadMoreFeedReplies,
       numNewPosts,
@@ -123,7 +116,6 @@ class Stories extends Component {
       userId,
       loaded,
       loadMoreFeedComments,
-      questionFeedLike,
       showFeedComments,
       uploadFeedComment,
       uploadTargetContentComment,
@@ -182,25 +174,27 @@ class Stories extends Component {
                         inputAtBottom={feed.type === 'comment'}
                         contentObj={feed}
                         onLoadContent={fetchFeed}
-                        methodObj={{
-                          attachStar,
-                          deleteComment: feedCommentDelete,
-                          deleteContent: feedContentDelete,
-                          editComment: feedCommentEdit,
-                          editContent: feedContentEdit,
-                          editRewardComment: feedRewardCommentEdit,
-                          likeComment: commentFeedLike,
-                          likeContent: contentFeedLike,
-                          likeQuestion: questionFeedLike,
-                          likeTargetComment: likeTargetComment,
-                          loadMoreComments: loadMoreFeedComments,
-                          loadMoreReplies: loadMoreFeedReplies,
-                          showComments: showFeedComments,
-                          starVideo: feedVideoStar,
-                          uploadComment: uploadFeedComment,
-                          uploadReply: uploadFeedReply,
-                          uploadTargetComment: uploadTargetContentComment
-                        }}
+                        commentsLoadLimit={5}
+                        onAttachStar={attachStar}
+                        onCommentSubmit={data =>
+                          uploadFeedComment({
+                            data,
+                            type: feed.type,
+                            contentId: feed.contentId
+                          })
+                        }
+                        onDeleteComment={feedCommentDelete}
+                        onDeleteContent={feedContentDelete}
+                        onEditComment={feedCommentEdit}
+                        onEditContent={feedContentEdit}
+                        onEditRewardComment={feedRewardCommentEdit}
+                        onLikeContent={contentFeedLike}
+                        onLoadMoreComments={loadMoreFeedComments}
+                        onLoadMoreReplies={loadMoreFeedReplies}
+                        onReplySubmit={uploadFeedReply}
+                        onStarVideo={feedVideoStar}
+                        onShowComments={showFeedComments}
+                        onTargetCommentSubmit={uploadTargetContentComment}
                         userId={userId}
                       />
                     )
@@ -341,7 +335,6 @@ export default connect(
   {
     attachStar,
     contentFeedLike,
-    commentFeedLike,
     fetchMoreFeeds,
     fetchFeed,
     fetchFeeds,
@@ -352,7 +345,6 @@ export default connect(
     feedCommentEdit,
     feedRewardCommentEdit,
     feedVideoStar,
-    likeTargetComment,
     loadMoreFeedComments,
     loadMoreFeedReplies,
     clearFeeds,

@@ -7,12 +7,7 @@ import Button from 'components/Button'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import request from 'axios'
 import { URL } from 'constants/URL'
-import {
-  auth,
-  handleError,
-  loadComments,
-  uploadComment
-} from 'helpers/requestHelpers'
+import { auth, loadComments, uploadComment } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
 
 const API_URL = `${URL}/content`
@@ -24,7 +19,7 @@ class Comments extends Component {
     commentsShown: PropTypes.bool,
     comments: PropTypes.array.isRequired,
     commentsLoadLimit: PropTypes.number,
-    handleError: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     inputAreaInnerRef: PropTypes.func,
     inputAtBottom: PropTypes.bool,
     inputTypeLabel: PropTypes.string,
@@ -56,6 +51,7 @@ class Comments extends Component {
   componentDidUpdate(prevProps) {
     const { commentSubmitted } = this.state
     const {
+      autoFocus,
       autoShowComments,
       comments,
       commentsShown,
@@ -98,6 +94,7 @@ class Comments extends Component {
       !autoShowComments &&
       !prevProps.commentsShown &&
       !commentSubmitted &&
+      autoFocus &&
       commentsShown
     ) {
       scrollElementToCenter(this.CommentInputArea)
@@ -144,15 +141,16 @@ class Comments extends Component {
             this.Container = ref
           }}
         >
-          {!inputAtBottom && (
-            <CommentInputArea
-              autoFocus={autoFocus}
-              InputFormRef={ref => (this.CommentInputArea = ref)}
-              innerRef={inputAreaInnerRef}
-              inputTypeLabel={inputTypeLabel}
-              onSubmit={this.onCommentSubmit}
-            />
-          )}
+          {!inputAtBottom &&
+            commentsShown && (
+              <CommentInputArea
+                autoFocus={autoFocus}
+                InputFormRef={ref => (this.CommentInputArea = ref)}
+                innerRef={inputAreaInnerRef}
+                inputTypeLabel={inputTypeLabel}
+                onSubmit={this.onCommentSubmit}
+              />
+            )}
           {comments.length > 0 &&
             (autoShowComments || commentsShown) && (
               <div style={{ width: '100%' }}>
@@ -174,45 +172,48 @@ class Comments extends Component {
                   this.renderLoadMoreButton()}
               </div>
             )}
-          {inputAtBottom && (
-            <CommentInputArea
-              autoFocus={autoFocus}
-              InputFormRef={ref => (this.CommentInputArea = ref)}
-              innerRef={inputAreaInnerRef}
-              style={{ marginTop: comments.length > 0 ? '1rem' : 0 }}
-              inputTypeLabel={inputTypeLabel}
-              onSubmit={this.onCommentSubmit}
-              rootCommentId={
-                parent.type === 'comment' ? parent.commentId : null
-              }
-              targetCommentId={parent.type === 'comment' ? parent.id : null}
-            />
-          )}
+          {inputAtBottom &&
+            commentsShown && (
+              <CommentInputArea
+                autoFocus={autoFocus}
+                InputFormRef={ref => (this.CommentInputArea = ref)}
+                innerRef={inputAreaInnerRef}
+                style={{ marginTop: comments.length > 0 ? '1rem' : 0 }}
+                inputTypeLabel={inputTypeLabel}
+                onSubmit={this.onCommentSubmit}
+                rootCommentId={
+                  parent.type === 'comment' ? parent.commentId : null
+                }
+                targetCommentId={parent.type === 'comment' ? parent.id : null}
+              />
+            )}
         </div>
       </Context.Provider>
     )
   }
 
   onCommentSubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { onCommentSubmit, parent } = this.props
+    const { dispatch, onCommentSubmit, parent } = this.props
     this.setState({ commentSubmitted: true })
     const data = await uploadComment({
       content,
       parent,
       rootCommentId,
-      targetCommentId
+      targetCommentId,
+      dispatch
     })
     onCommentSubmit(data)
   }
 
   onReplySubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { onReplySubmit, parent } = this.props
+    const { dispatch, onReplySubmit, parent } = this.props
     this.setState({ commentSubmitted: true })
     const data = await uploadComment({
       content,
       parent,
       rootCommentId,
-      targetCommentId
+      targetCommentId,
+      dispatch
     })
     onReplySubmit(data)
   }
@@ -276,7 +277,5 @@ class Comments extends Component {
 
 export default connect(
   null,
-  dispatch => ({
-    handleError: error => handleError(error, dispatch)
-  })
+  dispatch => ({ dispatch })
 )(Comments)

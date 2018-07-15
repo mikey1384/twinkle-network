@@ -37,7 +37,11 @@ export default function MainContent({
             isStarred={!!(contentObj.isStarred || rootObj.isStarred)}
             onEdit={isEditing}
             title={contentObj.title || rootObj.title}
-            hasHqThumb={contentObj.hasHqThumb || rootObj.hasHqThumb}
+            hasHqThumb={
+              typeof contentObj.hasHqThumb === 'number'
+                ? contentObj.hasHqThumb
+                : rootObj.hasHqThumb
+            }
             videoId={contentObj.rootId}
             videoCode={type === 'video' ? contentObj.content : rootObj.content}
             style={{ paddingBottom: '0.5rem' }}

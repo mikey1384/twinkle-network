@@ -122,21 +122,10 @@ export const fetchMoreReplies = ({ commentId, loadMoreButton, replies }) => ({
   replies
 })
 
-export const likeLink = linkId => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${API_URL}/like`,
-      { contentId: linkId },
-      auth()
-    )
-    dispatch({
-      type: LINK.LIKE,
-      likes: data.likes
-    })
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
+export const likeLink = likes => ({
+  type: LINK.LIKE,
+  likes
+})
 
 export const loadLinkPage = linkId => async dispatch => {
   try {

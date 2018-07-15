@@ -6,7 +6,6 @@ import request from 'axios'
 import Loading from 'components/Loading'
 import NotFound from 'components/NotFound'
 import { URL } from 'constants/URL'
-import { auth, handleError } from 'helpers/requestHelpers'
 
 class Comment extends Component {
   static propTypes = {
@@ -180,6 +179,19 @@ class Comment extends Component {
       return {
         contentObj: {
           ...state.contentObj,
+          targetObj: {
+            ...state.contentObj.targetObj,
+            comment: state.contentObj.targetObj.comment
+              ? {
+                  ...state.contentObj.targetObj.comment,
+                  comments: state.contentObj.targetObj.comment.comments
+                    ? state.contentObj.targetObj.comment.comments.filter(
+                        comment => comment.id !== commentId
+                      )
+                    : []
+                }
+              : undefined
+          },
           childComments: comments.map(comment => ({
             ...comment,
             replies: (comment.replies || []).filter(
@@ -314,15 +326,17 @@ class Comment extends Component {
     }))
   }
 
-  onLoadMoreComments = async({ comments, loadMoreButton }) => {
-    const { type } = this.props
+  onLoadMoreComments = async({ data: { comments, loadMoreButton } }) => {
+    const {
+      contentObj: { type }
+    } = this.state
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
         childComments:
           type === 'comment'
-            ? state.contentObj.childComments.concat(comments)
-            : comments.concat(state.contentObj.childComments),
+            ? comments.concat(state.contentObj.childComments)
+            : state.contentObj.childComments.concat(comments),
         commentsLoadMoreButton: loadMoreButton
       }
     }))
@@ -356,39 +370,24 @@ class Comment extends Component {
     return Promise.resolve()
   }
 
-  onTargetCommentSubmit = async params => {
-    const { handleError } = this.props
-    try {
-      const { data } = await request.post(
-        `${URL}/content/targetContentComment`,
-        params,
-        auth()
-      )
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          targetObj: {
-            ...state.contentObj.targetObj,
-            comment: {
-              ...state.contentObj.targetObj.comment,
-              comments: [data].concat(
-                state.contentObj.targetObj.comment.comments || []
-              )
-            }
+  onTargetCommentSubmit = data => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        targetObj: {
+          ...state.contentObj.targetObj,
+          comment: {
+            ...state.contentObj.targetObj.comment,
+            comments: [data].concat(
+              state.contentObj.targetObj.comment.comments || []
+            )
           }
         }
-      }))
-    } catch (error) {
-      handleError(error)
-    }
+      }
+    }))
   }
 }
 
-export default connect(
-  state => ({
-    userId: state.UserReducer.userId
-  }),
-  dispatch => ({
-    handleError: error => handleError(error, dispatch)
-  })
-)(Comment)
+export default connect(state => ({
+  userId: state.UserReducer.userId
+}))(Comment)

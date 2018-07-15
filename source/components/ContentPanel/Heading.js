@@ -13,7 +13,6 @@ import StarMark from 'components/StarMark'
 import UsernameText from 'components/Texts/UsernameText'
 import { css } from 'emotion'
 import { connect } from 'react-redux'
-import { likeContent, handleError } from 'helpers/requestHelpers'
 
 class Heading extends Component {
   static propTypes = {
@@ -68,7 +67,8 @@ class Heading extends Component {
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            marginLeft: '1rem'
           }}
         >
           <div
@@ -186,6 +186,7 @@ class Heading extends Component {
   renderCornerButton = () => {
     const {
       contentObj: {
+        rootId,
         rootObj: { content, likes = [], isStarred } = {},
         rootType
       },
@@ -200,6 +201,8 @@ class Heading extends Component {
         <Fragment>
           {attachedVideoShown ? (
             <LikeButton
+              contentType="video"
+              contentId={rootId}
               small
               liked={userLikedVideo}
               onClick={this.onLikeClick}
@@ -291,19 +294,16 @@ class Heading extends Component {
     return null
   }
 
-  onLikeClick = async() => {
+  onLikeClick = likes => {
     const {
       contentObj: { rootId, rootType },
       onLikeContent
     } = this.props
-    const likes = await likeContent({ id: rootId, type: rootType, handleError })
     onLikeContent({ likes, contentId: rootId, type: rootType })
   }
 }
 
 export default connect(
   null,
-  dispatch => ({
-    handleError: error => handleError(error, dispatch)
-  })
+  dispatch => ({ dispatch })
 )(withContext({ Component: Heading, Context }))

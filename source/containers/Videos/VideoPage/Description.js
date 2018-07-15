@@ -90,6 +90,7 @@ class Description extends Component {
       canEdit,
       canStar,
       isStarred,
+      likeVideo,
       uploaderId,
       userId,
       uploaderName,
@@ -373,12 +374,14 @@ class Description extends Component {
           }}
         >
           <LikeButton
+            contentType="video"
+            contentId={Number(videoId)}
             filled
             style={{
               fontSize: '2.5rem',
               width: '100%'
             }}
-            onClick={this.onVideoLikeClick}
+            onClick={likeVideo}
             liked={(likes => {
               let liked = false
               if (likes) {
@@ -472,11 +475,6 @@ class Description extends Component {
     if (textIsOverflown(this.thumbLabel)) {
       this.setState({ onTitleHover: true })
     }
-  }
-
-  onVideoLikeClick = () => {
-    const { videoId } = this.props
-    this.props.likeVideo(videoId)
   }
 
   descriptionExceedsCharLimit = () => {

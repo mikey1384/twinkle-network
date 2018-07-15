@@ -173,22 +173,13 @@ export const getMoreVideos = videoId => async dispatch => {
   }
 }
 
-export const likeVideo = videoId => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${API_URL}/like`,
-      { contentId: videoId },
-      auth()
-    )
-    dispatch({
-      type: VIDEO.LIKE,
-      data: data.likes,
-      videoId
-    })
-    dispatch(likePlaylistVideo(data.likes, videoId))
-  } catch (error) {
-    handleError(error, dispatch)
-  }
+export const likeVideo = (likes, videoId) => async dispatch => {
+  dispatch({
+    type: VIDEO.LIKE,
+    data: likes,
+    videoId
+  })
+  dispatch(likePlaylistVideo(likes, videoId))
 }
 
 export const likeVideoComment = ({ commentId, likes }) => ({

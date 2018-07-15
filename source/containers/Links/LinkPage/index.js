@@ -204,7 +204,9 @@ class LinkPage extends Component {
               key={'like' + id}
               filled
               style={{ fontSize: '2rem' }}
-              onClick={() => likeLink(id)}
+              contentType="url"
+              contentId={id}
+              onClick={likes => likeLink(likes)}
               liked={userLikedThis}
             />
             <Likers

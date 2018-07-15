@@ -18,13 +18,14 @@ import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import { determineXpButtonDisabled } from 'helpers/domHelpers'
-import { handleError, likeContent } from 'helpers/requestHelpers'
+import { uploadComment } from 'helpers/requestHelpers'
 import { css } from 'emotion'
 
 class TargetContent extends Component {
   static propTypes = {
     authLevel: PropTypes.number,
     canStar: PropTypes.bool,
+    dispatch: PropTypes.func.isRequired,
     myId: PropTypes.number,
     onAttachStar: PropTypes.func.isRequired,
     onDeleteComment: PropTypes.func.isRequired,
@@ -32,7 +33,6 @@ class TargetContent extends Component {
     onEditRewardComment: PropTypes.func.isRequired,
     onLikeContent: PropTypes.func.isRequired,
     onTargetCommentSubmit: PropTypes.func.isRequired,
-    panelId: PropTypes.number,
     profilePicId: PropTypes.number,
     rootObj: PropTypes.object,
     rootType: PropTypes.string.isRequired,
@@ -240,6 +240,8 @@ class TargetContent extends Component {
                           }}
                         >
                           <LikeButton
+                            contentType="comment"
+                            contentId={comment.id}
                             onClick={this.onLikeClick}
                             liked={userLikedThis}
                             small
@@ -359,16 +361,11 @@ class TargetContent extends Component {
     return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
   }
 
-  onLikeClick = async() => {
+  onLikeClick = likes => {
     const {
       targetObj: { comment },
       onLikeContent
     } = this.props
-    const likes = await likeContent({
-      id: comment.id,
-      type: 'comment',
-      handleError
-    })
     onLikeContent({ likes, type: 'comment', contentId: comment.id })
   }
 
@@ -378,25 +375,25 @@ class TargetContent extends Component {
     this.InputForm.focus()
   }
 
-  onSubmit = content => {
+  onSubmit = async content => {
     const {
+      dispatch,
       rootType,
       rootObj,
-      targetObj: { comment = {}, discussion = {} },
-      onTargetCommentSubmit,
-      panelId
+      targetObj: { comment = {} },
+      onTargetCommentSubmit
     } = this.props
-    onTargetCommentSubmit(
-      {
-        rootId: rootObj.id,
-        rootType,
-        replyId: comment.id,
-        commentId: comment.id,
-        discussionId: discussion.id,
-        content
+    const data = await uploadComment({
+      content,
+      parent: {
+        type: rootType,
+        id: rootObj.id
       },
-      panelId
-    )
+      rootCommentId: comment.commentId,
+      targetCommentId: comment.id,
+      dispatch
+    })
+    onTargetCommentSubmit(data)
   }
 }
 
@@ -407,7 +404,5 @@ export default connect(
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId
   }),
-  dispatch => ({
-    handleError: error => handleError(error, dispatch)
-  })
+  dispatch => ({ dispatch })
 )(withContext({ Component: TargetContent, Context }))

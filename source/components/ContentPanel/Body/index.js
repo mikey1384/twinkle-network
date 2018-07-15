@@ -21,8 +21,6 @@ import { determineXpButtonDisabled } from 'helpers/domHelpers'
 import {
   deleteContent,
   editContent,
-  handleError,
-  likeContent,
   loadComments
 } from 'helpers/requestHelpers'
 
@@ -36,7 +34,7 @@ class Body extends Component {
     contentObj: PropTypes.object.isRequired,
     canStar: PropTypes.bool,
     commentsLoadLimit: PropTypes.number,
-    handleError: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     inputAtBottom: PropTypes.bool,
     myId: PropTypes.number,
     type: PropTypes.string,
@@ -160,7 +158,6 @@ class Body extends Component {
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId === myId) userLikedThis = true
     }
-
     const userIsUploader = myId === uploader.id
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploader.authLevel
@@ -226,7 +223,13 @@ class Body extends Component {
             urlRelated={
               edited
                 ? {}
-                : { thumbUrl, actualTitle, actualDescription, siteUrl }
+                : {
+                    thumbUrl: thumbUrl || rootObj.thumbUrl,
+                    actualTitle: actualTitle || rootObj.actualTitle,
+                    actualDescription:
+                      actualDescription || rootObj.actualDescription,
+                    siteUrl: siteUrl || rootObj.siteUrl
+                  }
             }
           />
           {!isEditing && (
@@ -246,6 +249,8 @@ class Body extends Component {
                   {type !== 'discussion' && (
                     <Fragment>
                       <LikeButton
+                        contentType={type}
+                        contentId={contentId}
                         key="likeButton"
                         onClick={this.onLikeClick}
                         liked={userLikedThis}
@@ -376,7 +381,9 @@ class Body extends Component {
             inputAreaInnerRef={ref => (this.CommentInputArea = ref)}
             inputAtBottom={inputAtBottom}
             loadMoreButton={commentsLoadMoreButton}
-            loadMoreComments={onLoadMoreComments}
+            loadMoreComments={data =>
+              onLoadMoreComments({ data, contentType: type, feedId })
+            }
             inputTypeLabel={
               type === 'comment'
                 ? 'reply'
@@ -391,11 +398,14 @@ class Body extends Component {
             onLikeClick={({ commentId, likes }) =>
               onLikeContent({ likes, contentId: commentId, type: 'comment' })
             }
-            onLoadMoreReplies={onLoadMoreReplies}
+            onLoadMoreReplies={data => onLoadMoreReplies(data, feedId)}
             onReplySubmit={onReplySubmit}
             onRewardCommentEdit={onEditRewardComment}
             parent={contentObj}
-            style={{ padding: '1rem', paddingTop: 0 }}
+            style={{
+              padding: '0 1rem',
+              paddingBottom: commentsShown ? '0.5rem' : 0
+            }}
             userId={myId}
           />
           {userListModalShown && (
@@ -421,11 +431,20 @@ class Body extends Component {
   }
 
   onCommentButtonClick = async data => {
-    const { onShowComments } = this.props
+    const {
+      commentsLoadLimit,
+      onShowComments,
+      contentObj: { type, contentId, feedId }
+    } = this.props
     const { commentsShown } = this.state
     if (!commentsShown) {
       this.setState({ autoFocusWhenCommentShown: true })
-      await onShowComments(data)
+      const data = await loadComments({
+        type,
+        id: contentId,
+        limit: commentsLoadLimit
+      })
+      onShowComments(data, feedId)
       this.setState({ commentsShown: true })
     }
     this.CommentInputArea.focus()
@@ -434,34 +453,35 @@ class Body extends Component {
   onDeleteContent = async() => {
     const {
       contentObj: { type, id },
-      handleError,
+      dispatch,
       onDeleteContent
     } = this.props
-    await deleteContent({ type, id, handleError })
+    await deleteContent({ type, id, dispatch })
     onDeleteContent()
   }
 
   onEditContent = async params => {
-    const { onEditContent } = this.props
-    const data = await editContent({ params, handleError })
+    const { dispatch, onEditContent } = this.props
+    const data = await editContent({ params, dispatch })
     onEditContent(data)
   }
 
-  onLikeClick = async() => {
+  onLikeClick = async likes => {
     const {
-      contentObj: { contentId, type, rootType },
-      onShowComments,
-      onLikeContent
+      commentsLoadLimit,
+      contentObj: { type, contentId, feedId },
+      onLikeContent,
+      onShowComments
     } = this.props
     const { commentsShown } = this.state
-    const likes = await likeContent({ id: contentId, type, handleError })
     onLikeContent({ likes, type, contentId })
     if (!commentsShown) {
-      onShowComments({
-        rootType,
+      const data = await loadComments({
         type,
-        contentId
+        id: contentId,
+        limit: commentsLoadLimit
       })
+      onShowComments(data, feedId)
       this.setState({ commentsShown: true })
     }
   }
@@ -482,7 +502,5 @@ export default connect(
     canEdit: state.UserReducer.canEdit,
     canStar: state.UserReducer.canStar
   }),
-  dispatch => ({
-    handleError: error => handleError(error, dispatch)
-  })
+  dispatch => ({ dispatch })
 )(withContext({ Component: Body, Context }))

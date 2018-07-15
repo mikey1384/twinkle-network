@@ -20,12 +20,8 @@ import { container } from '../Styles'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
 import { Link } from 'react-router-dom'
-import { URL } from 'constants/URL'
-import request from 'axios'
-import { auth, handleError } from 'helpers/requestHelpers'
+import { editContent } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
-
-const API_URL = `${URL}/content`
 
 class Reply extends Component {
   static propTypes = {
@@ -36,7 +32,7 @@ class Reply extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
-    handleError: PropTypes.func,
+    dispatch: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
     onAttachStar: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
@@ -175,6 +171,8 @@ class Reply extends Component {
                   </LongText>
                   <div className="comment__buttons">
                     <LikeButton
+                      contentId={reply.id}
+                      contentType="comment"
                       onClick={this.onLikeClick}
                       liked={userLikedThis}
                       small
@@ -280,34 +278,22 @@ class Reply extends Component {
   }
 
   onEditDone = async editedReply => {
-    const { handleError, onEditDone, reply } = this.props
-    try {
-      const { data } = await request.put(
-        `${API_URL}/comments`,
-        { editedComment: editedReply, commentId: reply.id },
-        auth()
-      )
-      onEditDone(data)
-      this.setState({ onEdit: false })
-    } catch (error) {
-      handleError(error)
-    }
+    const { dispatch, onEditDone, reply } = this.props
+    await editContent({
+      params: {
+        editedComment: editedReply,
+        contentId: reply.id,
+        type: 'comment'
+      },
+      dispatch
+    })
+    onEditDone({ editedComment: editedReply, commentId: reply.id })
+    this.setState({ onEdit: false })
   }
 
-  onLikeClick = async() => {
-    const { handleError, onLikeClick, reply } = this.props
-    try {
-      const {
-        data: { likes = [] }
-      } = await request.post(
-        `${API_URL}/comment/like`,
-        { commentId: reply.id },
-        auth()
-      )
-      onLikeClick({ commentId: reply.id, likes })
-    } catch (error) {
-      handleError(error)
-    }
+  onLikeClick = likes => {
+    const { reply, onLikeClick } = this.props
+    onLikeClick({ commentId: reply.id, likes })
   }
 
   onReplyButtonClick = () => this.ReplyInputArea.focus()
@@ -320,7 +306,5 @@ export default connect(
     canEdit: state.UserReducer.canEdit,
     canStar: state.UserReducer.canStar
   }),
-  dispatch => ({
-    handleError: error => handleError(error, dispatch)
-  })
+  dispatch => ({ dispatch })
 )(withContext({ Component: Reply, Context }))

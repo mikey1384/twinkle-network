@@ -7,6 +7,8 @@ import Heading from './Heading'
 import Body from './Body'
 import Loading from 'components/Loading'
 import { container } from './Styles'
+import request from 'axios'
+import { URL } from 'constants/URL'
 
 class ContentPanel extends Component {
   static propTypes = {
@@ -38,12 +40,19 @@ class ContentPanel extends Component {
     feedLoaded: false
   }
 
-  componentDidMount() {
-    const { contentObj, onLoadContent, selfLoadingDisabled } = this.props
+  async componentDidMount() {
+    const {
+      contentObj: { contentId, feedId, newPost, type },
+      onLoadContent,
+      selfLoadingDisabled
+    } = this.props
     const { feedLoaded } = this.state
-    if (!feedLoaded && !selfLoadingDisabled && !contentObj.newPost) {
+    if (!feedLoaded && !selfLoadingDisabled && !newPost) {
       this.setState({ feedLoaded: true })
-      onLoadContent()
+      const { data } = await request.get(
+        `${URL}/content/feed?contentId=${contentId}&type=${type}`
+      )
+      onLoadContent({ data, feedId })
     }
   }
 

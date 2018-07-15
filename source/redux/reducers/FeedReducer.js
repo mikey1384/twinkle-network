@@ -10,7 +10,6 @@ const defaultState = {
 
 export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false
-  let commentsLoadMoreButton = false
   switch (action.type) {
     case FEED.ATTACH_STAR:
       return {
@@ -71,64 +70,20 @@ export default function FeedReducer(state = defaultState, action) {
         loadMoreButton: false,
         loaded: false
       }
-    case FEED.LIKE_COMMENT:
-      return {
-        ...state,
-        feeds: state.feeds.map(feed => {
-          let feedTypeIsComment = feed.type === 'comment'
-          let feedContentMatches = feed.contentId === action.data.contentId
-          return {
-            ...feed,
-            likes:
-              feedTypeIsComment && feedContentMatches
-                ? action.data.likes
-                : feed.likes,
-            targetObj: feed.targetObj
-              ? {
-                  ...feed.targetObj,
-                  comment: feed.targetObj.comment
-                    ? {
-                        ...feed.targetObj.comment,
-                        likes:
-                          feed.targetObj.comment.id === action.data.contentId
-                            ? action.data.likes
-                            : feed.targetObj.comment.likes
-                      }
-                    : undefined
-                }
-              : undefined,
-            childComments: feed.childComments.map(childComment => {
-              let matches = childComment.id === action.data.contentId
-              return {
-                ...childComment,
-                likes: matches ? action.data.likes : childComment.likes,
-                replies: childComment.replies.map(reply => {
-                  let matches = reply.id === action.data.contentId
-                  return {
-                    ...reply,
-                    likes: matches ? action.data.likes : reply.likes
-                  }
-                })
-              }
-            })
-          }
-        })
-      }
     case FEED.LIKE_CONTENT:
       return {
         ...state,
         feeds: state.feeds.map(feed => ({
           ...feed,
           likes:
-            feed.type === action.data.rootType &&
-            feed.id === action.data.contentId
+            feed.type === action.data.type && feed.id === action.data.contentId
               ? action.data.likes
               : feed.likes,
           rootObj: feed.rootObj
             ? {
                 ...feed.rootObj,
                 likes:
-                  feed.rootType === action.data.rootType &&
+                  feed.rootType === action.data.type &&
                   feed.rootId === action.data.contentId
                     ? action.data.likes
                     : feed.rootObj.likes
@@ -153,32 +108,27 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         feeds: state.feeds.map(
           feed =>
-            feed.feedId === action.id ? { ...feed, ...action.data } : feed
+            feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
         )
       }
     case FEED.LOAD_MORE_REPLIES:
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          return {
-            ...feed,
-            childComments:
-              feed.type === action.contentType
-                ? feed.childComments.map(comment => {
-                    return {
-                      ...comment,
-                      replies:
-                        comment.id === action.commentId
-                          ? action.data.replies.concat(comment.replies)
-                          : comment.replies,
-                      loadMoreReplies:
-                        comment.id === action.commentId
-                          ? action.data.loadMoreReplies
-                          : comment.loadMoreReplies
-                    }
-                  })
-                : feed.childComments
-          }
+          return feed.feedId === action.feedId
+            ? {
+                ...feed,
+                childComments: feed.childComments.map(comment => {
+                  return comment.id === action.data.commentId
+                    ? {
+                        ...comment,
+                        replies: action.data.replies.concat(comment.replies),
+                        loadMoreButton: action.data.loadMoreButton
+                      }
+                    : comment
+                })
+              }
+            : feed
         })
       }
     case FEED.LOAD_MORE:
@@ -445,54 +395,34 @@ export default function FeedReducer(state = defaultState, action) {
         })
       }
     case FEED.LOAD_COMMENTS:
-      if (action.data.type === 'comment') action.data.childComments.reverse()
-      if (action.data.childComments.length > 3) {
-        action.data.type === 'comment'
-          ? action.data.childComments.shift()
-          : action.data.childComments.pop()
-        commentsLoadMoreButton = true
-      }
+      if (action.data.comments.length === 0) return state
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          let match =
-            feed.type === action.data.type &&
-            feed.contentId === action.data.contentId
-          return {
-            ...feed,
-            commentsLoadMoreButton: match
-              ? commentsLoadMoreButton
-              : feed.commentsLoadMoreButton,
-            childComments: match
-              ? action.data.childComments
-              : feed.childComments,
-            isReply: match ? action.data.isReply : feed.isReply
-          }
+          return feed.feedId === action.feedId
+            ? {
+                ...feed,
+                commentsLoadMoreButton: action.data.loadMoreButton,
+                childComments: action.data.comments
+              }
+            : feed
         })
       }
     case FEED.LOAD_MORE_COMMENTS:
-      if (action.data.type === 'comment') action.data.childComments.reverse()
-      if (action.data.childComments.length > 3) {
-        action.data.type === 'comment'
-          ? action.data.childComments.shift()
-          : action.data.childComments.pop()
-        commentsLoadMoreButton = true
-      }
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          let match =
-            feed.type === action.data.type &&
-            feed.contentId === action.data.contentId
-          return {
-            ...feed,
-            commentsLoadMoreButton,
-            childComments: match
-              ? action.data.type === 'comment'
-                ? action.data.childComments.concat(feed.childComments)
-                : feed.childComments.concat(action.data.childComments)
-              : feed.childComments
-          }
+          let match = feed.feedId === action.feedId
+          return match
+            ? {
+                ...feed,
+                commentsLoadMoreButton: action.data.loadMoreButton,
+                childComments:
+                  action.contentType === 'comment'
+                    ? action.data.comments.concat(feed.childComments)
+                    : feed.childComments.concat(action.data.comments)
+              }
+            : feed
         })
       }
     case FEED.UPLOAD_CONTENT:
@@ -506,14 +436,18 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         feeds: state.feeds.map(feed => {
-          return {
-            ...feed,
-            childComments:
-              feed.type === action.data.type &&
-              feed.contentId === action.data.contentId
-                ? [action.data].concat(feed.childComments)
-                : feed.childComments
-          }
+          const match =
+            feed.type === action.contentType &&
+            feed.contentId === action.contentId
+          return match
+            ? {
+                ...feed,
+                childComments:
+                  action.contentType === 'comment'
+                    ? (feed.childComments || []).concat([action.comment])
+                    : [action.comment].concat(feed.childComments || [])
+              }
+            : feed
         })
       }
     case FEED.UPLOAD_TC_COMMENT:

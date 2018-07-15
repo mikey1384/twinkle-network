@@ -26,32 +26,55 @@ export function handleError(error, dispatch) {
   console.error(error.response || error)
 }
 
-export const deleteContent = async({ id, type, handleError }) => {
+export const deleteContent = async({ id, type, dispatch }) => {
   try {
     await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth())
     return Promise.resolve()
   } catch (error) {
-    handleError(error)
+    handleError(error, dispatch)
   }
 }
 
-export const editContent = async({ params, handleError }) => {
+export const editContent = async({
+  params: {
+    contentId,
+    editedComment,
+    editedContent,
+    editedDescription,
+    editedTitle,
+    editedUrl,
+    type
+  },
+  dispatch
+}) => {
   try {
-    const { data } = await request.put(`${URL}/content`, params, auth())
+    const { data } = await request.put(
+      `${URL}/content`,
+      {
+        contentId,
+        editedComment,
+        editedContent,
+        editedDescription,
+        editedTitle,
+        editedUrl,
+        type
+      },
+      auth()
+    )
     return Promise.resolve(data)
   } catch (error) {
-    handleError(error)
+    handleError(error, dispatch)
   }
 }
 
-export const likeContent = async({ id, type, handleError }) => {
+export const likeContent = async({ id, type, dispatch }) => {
   try {
     const {
       data: { likes }
     } = await request.post(`${URL}/content/like`, { id, type }, auth())
     return Promise.resolve(likes)
   } catch (error) {
-    handleError(error)
+    handleError(error, dispatch)
   }
 }
 
@@ -70,7 +93,8 @@ export const uploadComment = async({
   content,
   parent,
   rootCommentId,
-  targetCommentId
+  targetCommentId,
+  dispatch
 }) => {
   try {
     const { data } = await request.post(
@@ -80,6 +104,6 @@ export const uploadComment = async({
     )
     return Promise.resolve(data)
   } catch (error) {
-    handleError(error)
+    handleError(error, dispatch)
   }
 }
