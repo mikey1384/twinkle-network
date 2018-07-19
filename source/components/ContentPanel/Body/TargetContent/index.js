@@ -200,10 +200,10 @@ class TargetContent extends Component {
                 )}
                 <div style={{ padding: '0 1rem' }}>
                   <div
-                    className={css`
-                      display: flex;
-                      flex-direction: column;
-                    `}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
                   >
                     <div className="detail-block">
                       <div>
@@ -234,11 +234,7 @@ class TargetContent extends Component {
                         </span>
                       </div>
                     </div>
-                    <LongText
-                      className={css`
-                        margin-top: 1rem;
-                      `}
-                    >
+                    <LongText style={{ marginTop: '1rem' }}>
                       {comment.content}
                     </LongText>
                   </div>
