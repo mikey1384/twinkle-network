@@ -66,7 +66,10 @@ export const fetchFeed = ({ data, feedId }) => ({
   data
 })
 
-export const fetchFeeds = ({ filter, username } = {}) => async dispatch => {
+export const fetchFeeds = ({
+  filter = 'all',
+  username
+} = {}) => async dispatch => {
   try {
     const { data } = await request.get(
       `${URL}/content/feeds?filter=${filter}&username=${username}`
