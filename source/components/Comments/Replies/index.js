@@ -8,8 +8,6 @@ import Button from 'components/Button'
 import { URL } from 'constants/URL'
 import request from 'axios'
 
-const API_URL = `${URL}/content`
-
 class Replies extends Component {
   static propTypes = {
     comment: PropTypes.shape({
@@ -99,9 +97,11 @@ class Replies extends Component {
   loadMoreReplies = async() => {
     const { comment, onLoadMoreReplies, replies } = this.props
     try {
-      const lastReplyId = replies[0] ? replies[0].id : '0'
+      const lastReplyId = replies[0] ? replies[0].id : 'undefined'
       const { data } = await request.get(
-        `${API_URL}/replies?lastReplyId=${lastReplyId}&commentId=${comment.id}`
+        `${URL}/content/replies?lastReplyId=${lastReplyId}&commentId=${
+          comment.id
+        }`
       )
       onLoadMoreReplies(data)
     } catch (error) {

@@ -16,7 +16,6 @@ class ContentPanel extends Component {
     commentsLoadLimit: PropTypes.number,
     contentObj: PropTypes.object.isRequired,
     inputAtBottom: PropTypes.bool,
-    selfLoadingDisabled: PropTypes.bool,
     userId: PropTypes.number,
     onAttachStar: PropTypes.func.isRequired,
     onCommentSubmit: PropTypes.func.isRequired,
@@ -43,14 +42,13 @@ class ContentPanel extends Component {
   async componentDidMount() {
     const {
       contentObj: { contentId, feedId, newPost, type },
-      onLoadContent,
-      selfLoadingDisabled
+      onLoadContent
     } = this.props
     const { feedLoaded } = this.state
-    if (!feedLoaded && !selfLoadingDisabled && !newPost) {
+    if (!feedLoaded && !newPost) {
       this.setState({ feedLoaded: true })
       const { data } = await request.get(
-        `${URL}/content/feed?contentId=${contentId}&type=${type}`
+        `${URL}/content?contentId=${contentId}&type=${type}`
       )
       onLoadContent({ data, feedId })
     }

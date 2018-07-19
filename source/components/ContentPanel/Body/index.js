@@ -207,7 +207,7 @@ class Body extends Component {
                 myId={myId}
                 rootId={rootId}
                 rootType={rootType}
-                panelId={feedId}
+                feedId={feedId}
               />
             )}
           <MainContent
@@ -457,13 +457,17 @@ class Body extends Component {
       onDeleteContent
     } = this.props
     await deleteContent({ type, id, dispatch })
-    onDeleteContent()
+    onDeleteContent({ type, contentId: id })
   }
 
   onEditContent = async params => {
-    const { dispatch, onEditContent } = this.props
+    const {
+      dispatch,
+      onEditContent,
+      contentObj: { type, contentId }
+    } = this.props
     const data = await editContent({ params, dispatch })
-    onEditContent(data)
+    onEditContent({ data, contentType: type, contentId })
   }
 
   onLikeClick = async likes => {

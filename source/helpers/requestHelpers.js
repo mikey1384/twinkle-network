@@ -89,6 +89,17 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 }
 
+export const loadNewFeeds = async({ lastInteraction }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/newFeeds?lastInteraction=${lastInteraction}`
+    )
+    return Promise.resolve(data)
+  } catch (error) {
+    console.error(error.response || error)
+  }
+}
+
 export const uploadComment = async({
   content,
   parent,

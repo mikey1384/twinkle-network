@@ -5,6 +5,7 @@ import {
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
+  feedContentEdit,
   feedContentDelete,
   feedRewardCommentEdit,
   feedVideoStar,
@@ -18,7 +19,6 @@ import {
   questionFeedLike,
   showFeedComments,
   uploadFeedComment,
-  uploadFeedReply,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import { resetNumNewPosts } from 'redux/actions/NotiActions'
@@ -28,11 +28,11 @@ import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import { feedContentEdit } from '../../../redux/actions/FeedActions'
 import FilterBar from 'components/FilterBar'
 import Banner from 'components/Banner'
 import { queryStringForArray } from 'helpers/stringHelpers'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import { loadNewFeeds } from 'helpers/requestHelpers'
 
 class Stories extends Component {
   static propTypes = {
@@ -62,7 +62,6 @@ class Stories extends Component {
     showFeedComments: PropTypes.func.isRequired,
     username: PropTypes.string,
     uploadFeedComment: PropTypes.func.isRequired,
-    uploadFeedReply: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
@@ -112,12 +111,10 @@ class Stories extends Component {
       loadMoreButton,
       loadMoreFeedReplies,
       numNewPosts,
-      uploadFeedReply,
       userId,
       loaded,
       loadMoreFeedComments,
       showFeedComments,
-      uploadFeedComment,
       uploadTargetContentComment,
       username
     } = this.props
@@ -170,18 +167,13 @@ class Stories extends Component {
                     return (
                       <ContentPanel
                         key={feed.feedId}
-                        selfLoadingDisabled={this.clearingFeeds}
-                        inputAtBottom={feed.type === 'comment'}
-                        contentObj={feed}
-                        onLoadContent={fetchFeed}
                         commentsLoadLimit={5}
+                        contentObj={feed}
+                        inputAtBottom={feed.type === 'comment'}
+                        onLoadContent={fetchFeed}
                         onAttachStar={attachStar}
                         onCommentSubmit={data =>
-                          uploadFeedComment({
-                            data,
-                            type: feed.type,
-                            contentId: feed.contentId
-                          })
+                          this.uploadFeedComment({ feed, data })
                         }
                         onDeleteComment={feedCommentDelete}
                         onDeleteContent={feedContentDelete}
@@ -191,10 +183,13 @@ class Stories extends Component {
                         onLikeContent={contentFeedLike}
                         onLoadMoreComments={loadMoreFeedComments}
                         onLoadMoreReplies={loadMoreFeedReplies}
-                        onReplySubmit={uploadFeedReply}
+                        onReplySubmit={data =>
+                          this.uploadFeedComment({ feed, data })
+                        }
                         onStarVideo={feedVideoStar}
                         onShowComments={showFeedComments}
                         onTargetCommentSubmit={uploadTargetContentComment}
+                        selfLoadingDisabled={this.clearingFeeds}
                         userId={userId}
                       />
                     )
@@ -217,7 +212,7 @@ class Stories extends Component {
     const { fetchFeeds, selectedFilter, clearFeeds } = this.props
     if (filter === selectedFilter) return
     clearFeeds()
-    fetchFeeds(filter)
+    fetchFeeds({ filter })
   }
 
   loadMoreFeeds = async() => {
@@ -261,22 +256,15 @@ class Stories extends Component {
   }
 
   fetchNewFeeds = async() => {
-    const { feeds, resetNumNewPosts, fetchNewFeeds, userId } = this.props
+    const { feeds = [], resetNumNewPosts, fetchNewFeeds } = this.props
     const { loadingMore } = this.state
     if (!loadingMore) {
       this.setState({ loadingMore: true })
       resetNumNewPosts()
-      const filteredFeeds = feeds.filter(feed => feed.uploaderId !== userId)
-      const latestTS = filteredFeeds[0].lastInteraction
-      await fetchNewFeeds({
-        latestTS,
-        userId,
-        shownFeeds: queryStringForArray(
-          feeds.filter(feed => feed.lastInteraction >= latestTS),
-          'id',
-          'shownFeeds'
-        )
+      const data = await loadNewFeeds({
+        lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0
       })
+      fetchNewFeeds(data)
       this.setState({ loadingMore: false })
     }
   }
@@ -318,6 +306,15 @@ class Stories extends Component {
       </FilterBar>
     )
   }
+
+  uploadFeedComment = ({ feed, data }) => {
+    const { uploadFeedComment } = this.props
+    uploadFeedComment({
+      data,
+      type: feed.type,
+      contentId: feed.contentId
+    })
+  }
 }
 
 export default connect(
@@ -352,7 +349,6 @@ export default connect(
     resetNumNewPosts,
     showFeedComments,
     uploadFeedComment,
-    uploadFeedReply,
     uploadTargetContentComment
   }
 )(Stories)

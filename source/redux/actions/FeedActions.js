@@ -3,8 +3,6 @@ import { auth, handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import FEED from '../constants/Feed'
 
-const API_URL = `${URL}/feed`
-
 export const attachStar = data => ({
   type: FEED.ATTACH_STAR,
   data
@@ -30,18 +28,17 @@ export const feedContentDelete = ({ type, contentId }) => ({
   contentId
 })
 
-export const feedCommentEdit = data => ({
+export const feedCommentEdit = ({ editedComment, commentId }) => ({
   type: FEED.EDIT_COMMENT,
-  ...data
+  commentId,
+  editedComment
 })
 
-export const feedContentEdit = (data, params) => ({
+export const feedContentEdit = ({ data, contentType, contentId }) => ({
   type: FEED.EDIT_CONTENT,
-  contentType: params.type,
-  contentId: params.contentId,
-  editedTitle: data.title,
-  editedDescription: data.description,
-  editedUrl: data.content
+  data,
+  contentType,
+  contentId
 })
 
 export const feedRewardCommentEdit = ({ id, text }) => ({
@@ -69,9 +66,11 @@ export const fetchFeed = ({ data, feedId }) => ({
   data
 })
 
-export const fetchFeeds = (filter = 'all') => async dispatch => {
+export const fetchFeeds = ({ filter, username } = {}) => async dispatch => {
   try {
-    const { data } = await request.get(`${API_URL}?filter=${filter}`)
+    const { data } = await request.get(
+      `${URL}/content/feeds?filter=${filter}&username=${username}`
+    )
     dispatch({
       type: FEED.LOAD,
       data,
@@ -83,72 +82,26 @@ export const fetchFeeds = (filter = 'all') => async dispatch => {
   }
 }
 
-export const fetchNewFeeds = ({
-  latestTS,
-  shownFeeds,
-  userId
-}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/new?latestTS=${latestTS}&userId=${userId}&${shownFeeds}`
-    )
-    dispatch({
-      type: FEED.LOAD_NEW,
-      data
-    })
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
+export const fetchNewFeeds = data => ({
+  type: FEED.LOAD_NEW,
+  data
+})
 
 export const fetchMoreFeeds = ({
   shownFeeds,
-  filter = 'all'
+  filter,
+  username
 }) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${API_URL}?filter=${filter}${shownFeeds ? `&${shownFeeds}` : ''}`
-    )
-    dispatch({
-      type: FEED.LOAD_MORE,
-      data,
-      filter
-    })
-    return Promise.resolve()
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
-
-export const fetchUserFeeds = ({ username, type }) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/user/?username=${username}&type=${type}`
-    )
-    dispatch({
-      type: FEED.LOAD,
-      data
-    })
-    return Promise.resolve()
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
-
-export const fetchMoreUserFeeds = ({
-  username,
-  type,
-  shownFeeds
-}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/user/?username=${username}&type=${type}${
+      `${URL}/content/feeds?filter=${filter}&username=${username}${
         shownFeeds ? `&${shownFeeds}` : ''
       }`
     )
     dispatch({
       type: FEED.LOAD_MORE,
-      data
+      data,
+      filter
     })
     return Promise.resolve()
   } catch (error) {
@@ -175,21 +128,9 @@ export const showFeedComments = (data, feedId) => ({
   feedId
 })
 
-export const uploadContent = form => async dispatch => {
+export const uploadContent = params => async dispatch => {
   try {
-    const { data } = await request.post(`${API_URL}/content`, form, auth())
-    return dispatch({
-      type: FEED.UPLOAD_CONTENT,
-      data
-    })
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}
-
-export const uploadQuestion = question => async dispatch => {
-  try {
-    const { data } = await request.post(`${API_URL}/question`, question, auth())
+    const { data } = await request.post(`${URL}/content`, params, auth())
     return dispatch({
       type: FEED.UPLOAD_CONTENT,
       data
@@ -206,27 +147,8 @@ export const uploadFeedComment = ({ data, type, contentId }) => ({
   contentId
 })
 
-export const uploadFeedReply = data => ({
-  type: FEED.UPLOAD_REPLY,
-  data
+export const uploadTargetContentComment = (data, feedId) => ({
+  type: FEED.UPLOAD_TC_COMMENT,
+  data,
+  feedId
 })
-
-export const uploadTargetContentComment = (
-  params,
-  panelId
-) => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${API_URL}/targetContentComment`,
-      params,
-      auth()
-    )
-    dispatch({
-      type: FEED.UPLOAD_TC_COMMENT,
-      data,
-      panelId
-    })
-  } catch (error) {
-    handleError(error, dispatch)
-  }
-}

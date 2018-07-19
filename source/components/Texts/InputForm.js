@@ -80,7 +80,7 @@ export default class InputForm extends Component {
             `}
           >
             <Button
-              style={{ marginTop: '1rem' }}
+              style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
               filled
               success
               disabled={commentExceedsCharLimit}

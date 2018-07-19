@@ -42,7 +42,7 @@ export default function MainContent({
                 ? contentObj.hasHqThumb
                 : rootObj.hasHqThumb
             }
-            videoId={contentObj.rootId}
+            videoId={type === 'video' ? contentObj.id : contentObj.rootId}
             videoCode={type === 'video' ? contentObj.content : rootObj.content}
             style={{ paddingBottom: '0.5rem' }}
           />
@@ -142,7 +142,7 @@ export default function MainContent({
             <Embedly
               title={cleanString(contentObj.title)}
               url={contentObj.content}
-              id={contentObj.rootId}
+              id={contentObj.contentId}
               {...urlRelated}
             />
           )}

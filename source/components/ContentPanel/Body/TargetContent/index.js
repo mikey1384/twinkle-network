@@ -26,6 +26,7 @@ class TargetContent extends Component {
     authLevel: PropTypes.number,
     canStar: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
+    feedId: PropTypes.number,
     myId: PropTypes.number,
     onAttachStar: PropTypes.func.isRequired,
     onDeleteComment: PropTypes.func.isRequired,
@@ -378,6 +379,7 @@ class TargetContent extends Component {
   onSubmit = async content => {
     const {
       dispatch,
+      feedId,
       rootType,
       rootObj,
       targetObj: { comment = {} },
@@ -393,7 +395,7 @@ class TargetContent extends Component {
       targetCommentId: comment.id,
       dispatch
     })
-    onTargetCommentSubmit(data)
+    onTargetCommentSubmit(data, feedId)
   }
 }
 

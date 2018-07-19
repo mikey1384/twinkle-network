@@ -130,7 +130,7 @@ class Heading extends Component {
         return (
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> uploaded a
-            video: <ContentLink content={contentObj} type={rootType} />{' '}
+            video: <ContentLink content={contentObj} type={type} />{' '}
           </Fragment>
         )
       case 'comment':
@@ -151,7 +151,7 @@ class Heading extends Component {
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> shared a
             link:&nbsp;
-            <ContentLink content={contentObj} type={rootType} />{' '}
+            <ContentLink content={contentObj} type={type} />{' '}
           </Fragment>
         )
       case 'question':

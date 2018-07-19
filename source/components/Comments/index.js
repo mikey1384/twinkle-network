@@ -5,12 +5,12 @@ import CommentInputArea from './CommentInputArea'
 import Comment from './Comment'
 import Button from 'components/Button'
 import { scrollElementToCenter } from 'helpers/domHelpers'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import { auth, loadComments, uploadComment } from 'helpers/requestHelpers'
+import {
+  deleteContent,
+  loadComments,
+  uploadComment
+} from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
-
-const API_URL = `${URL}/content`
 
 class Comments extends Component {
   static propTypes = {
@@ -100,16 +100,12 @@ class Comments extends Component {
       scrollElementToCenter(this.CommentInputArea)
     }
   }
-
   render() {
     const {
-      autoFocus,
       autoShowComments,
       loadMoreButton,
       comments = [],
       commentsShown,
-      inputAreaInnerRef,
-      inputTypeLabel,
       style,
       inputAtBottom,
       onAttachStar,
@@ -142,51 +138,31 @@ class Comments extends Component {
           }}
         >
           {!inputAtBottom &&
-            commentsShown && (
-              <CommentInputArea
-                autoFocus={autoFocus}
-                InputFormRef={ref => (this.CommentInputArea = ref)}
-                innerRef={inputAreaInnerRef}
-                inputTypeLabel={inputTypeLabel}
-                onSubmit={this.onCommentSubmit}
-              />
-            )}
-          {comments.length > 0 &&
-            (autoShowComments || commentsShown) && (
-              <div style={{ width: '100%' }}>
-                {inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
-                {comments.map((comment, index) => (
-                  <Comment
-                    index={index}
-                    innerRef={ref => {
-                      this.Comments[comment.id] = ref
-                    }}
-                    parent={parent}
-                    comment={comment}
-                    key={comment.id}
-                    userId={userId}
-                  />
-                ))}
-                {!inputAtBottom &&
-                  loadMoreButton &&
-                  this.renderLoadMoreButton()}
-              </div>
-            )}
+            (commentsShown || autoShowComments) &&
+            this.renderInputArea()}
+          {(autoShowComments || commentsShown) && (
+            <div style={{ width: '100%' }}>
+              {inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
+              {comments.map((comment, index) => (
+                <Comment
+                  index={index}
+                  innerRef={ref => {
+                    this.Comments[comment.id] = ref
+                  }}
+                  parent={parent}
+                  comment={comment}
+                  key={comment.id}
+                  userId={userId}
+                />
+              ))}
+              {!inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
+            </div>
+          )}
           {inputAtBottom &&
-            commentsShown && (
-              <CommentInputArea
-                autoFocus={autoFocus}
-                InputFormRef={ref => (this.CommentInputArea = ref)}
-                innerRef={inputAreaInnerRef}
-                style={{ marginTop: comments.length > 0 ? '1rem' : 0 }}
-                inputTypeLabel={inputTypeLabel}
-                onSubmit={this.onCommentSubmit}
-                rootCommentId={
-                  parent.type === 'comment' ? parent.commentId : null
-                }
-                targetCommentId={parent.type === 'comment' ? parent.id : null}
-              />
-            )}
+            (commentsShown || autoShowComments) &&
+            this.renderInputArea({
+              marginTop: comments.length > 0 ? '1rem' : 0
+            })}
         </div>
       </Context.Provider>
     )
@@ -227,7 +203,7 @@ class Comments extends Component {
       const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1
       const lastCommentId = comments[lastCommentLocation]
         ? comments[lastCommentLocation].id
-        : 0
+        : 'undefined'
       try {
         const data = await loadComments({
           id: parent.id,
@@ -244,13 +220,25 @@ class Comments extends Component {
   }
 
   onDelete = async commentId => {
-    const { onDelete, handleError } = this.props
-    try {
-      await request.delete(`${API_URL}/comments?commentId=${commentId}`, auth())
-      onDelete(commentId)
-    } catch (error) {
-      handleError(error)
-    }
+    const { dispatch, onDelete } = this.props
+    await deleteContent({ id: commentId, type: 'comment', dispatch })
+    onDelete(commentId)
+  }
+
+  renderInputArea = style => {
+    const { autoFocus, inputAreaInnerRef, inputTypeLabel, parent } = this.props
+    return (
+      <CommentInputArea
+        autoFocus={autoFocus}
+        InputFormRef={ref => (this.CommentInputArea = ref)}
+        innerRef={inputAreaInnerRef}
+        style={style}
+        inputTypeLabel={inputTypeLabel}
+        onSubmit={this.onCommentSubmit}
+        rootCommentId={parent.type === 'comment' ? parent.commentId : null}
+        targetCommentId={parent.type === 'comment' ? parent.id : null}
+      />
+    )
   }
 
   renderLoadMoreButton = () => {

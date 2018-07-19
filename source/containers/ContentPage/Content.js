@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ContentPanel from 'components/ContentPanel'
+import NotFound from 'components/NotFound'
+import Loading from 'components/Loading'
 import { connect } from 'react-redux'
 import request from 'axios'
-import Loading from 'components/Loading'
-import NotFound from 'components/NotFound'
 import { URL } from 'constants/URL'
 
 class Comment extends Component {
@@ -15,57 +15,82 @@ class Comment extends Component {
   }
 
   state = {
-    contentObj: {}
+    contentObj: {},
+    loaded: false,
+    exists: false
   }
 
   async componentDidMount() {
     const {
-      match,
       match: {
-        params: { contentId }
+        params: { contentId },
+        url
       }
     } = this.props
+    const type = url.split('/')[1].slice(0, -1)
     try {
-      const { data } = await request.get(
-        `${URL}/content/${match.url
-          .split('/')[1]
-          .slice(0, -1)}?contentId=${contentId}`
+      const {
+        data: { exists }
+      } = await request.get(
+        `${URL}/content/check?contentId=${contentId}&type=${type}`
       )
-      this.setState({ contentObj: { ...data, loaded: true }, loaded: true })
+      this.setState({
+        loaded: true,
+        exists,
+        contentObj: {
+          contentId,
+          type
+        }
+      })
     } catch (error) {
       console.error(error)
+      this.setState({
+        loaded: true,
+        exists: false
+      })
     }
   }
 
   async componentDidUpdate(prevProps) {
     const {
-      match,
       match: {
-        params: { contentId }
+        params: { contentId },
+        url
       }
     } = this.props
-    if (prevProps.match.params.contentId !== contentId) {
+    if (url !== prevProps.match.url) {
+      const type = url.split('/')[1].slice(0, -1)
       try {
-        const { data } = await request.get(
-          `${URL}/content/${match.url
-            .split('/')[1]
-            .slice(0, -1)}?contentId=${contentId}`
+        const {
+          data: { exists }
+        } = await request.get(
+          `${URL}/content/check?contentId=${contentId}&type=${type}`
         )
-        this.setState({ contentObj: { ...data, loaded: true } })
+        this.setState({
+          loaded: true,
+          exists,
+          contentObj: {
+            contentId,
+            type
+          }
+        })
       } catch (error) {
         console.error(error)
+        this.setState({
+          loaded: true,
+          exists: false
+        })
       }
     }
   }
 
   render() {
     const { userId } = this.props
-    const { contentObj, loaded } = this.state
+    const { contentObj, loaded, exists } = this.state
     return loaded ? (
-      contentObj.id ? (
+      exists ? (
         <ContentPanel
-          key={contentObj.contentId}
-          selfLoadingDisabled
+          key={contentObj.type + contentObj.contentId}
           autoShowComments
           inputAtBottom={contentObj.type === 'comment'}
           commentsLoadLimit={5}
@@ -79,6 +104,7 @@ class Comment extends Component {
           onEditContent={this.onEditContent}
           onEditRewardComment={this.onEditRewardComment}
           onLikeContent={this.onLikeContent}
+          onLoadContent={this.onLoadContent}
           onLoadMoreComments={this.onLoadMoreComments}
           onLoadMoreReplies={this.onLoadMoreReplies}
           onReplySubmit={this.onReplySubmit}
@@ -108,24 +134,35 @@ class Comment extends Component {
           return {
             ...comment,
             stars:
-              comment.id === data.contentId
+              comment.id === data.contentId && data.contentType === 'comment'
                 ? (comment.stars || []).concat(data)
                 : comment.stars || [],
             replies: comment.replies.map(reply => ({
               ...reply,
               stars:
-                reply.id === data.contentId
+                reply.id === data.contentId && data.contentType === 'comment'
                   ? (reply.stars || []).concat(data)
                   : reply.stars || []
             }))
           }
         }),
-        targetCommentStars:
-          (state.contentObj.type === 'comment' &&
-            data.contentId === state.contentObj.replyId) ||
-          data.contentId === state.contentObj.commentId
-            ? (state.contentObj.targetCommentStars || []).concat(data)
-            : state.contentObj.targetCommentStars
+        targetObj: state.contentObj.targetObj
+          ? {
+              ...state.contentObj.targetObj,
+              comment: state.contentObj.targetObj.comment
+                ? {
+                    ...state.contentObj.targetObj.comment,
+                    stars:
+                      state.contentObj.targetObj.comment.id ===
+                        data.contentId && data.contentType === 'comment'
+                        ? (
+                            state.contentObj.targetObj.comment.stars || []
+                          ).concat(data)
+                        : state.contentObj.targetObj.comment.stars
+                  }
+                : undefined
+            }
+          : undefined
       }
     }))
   }
@@ -215,13 +252,38 @@ class Comment extends Component {
           childComments: comments.map(comment => ({
             ...comment,
             replies: comment.replies
-              ? comment.replies.map(reply => ({
-                  ...reply,
-                  content:
-                    reply.id === commentId ? editedComment : reply.content
-                }))
+              ? comment.replies.map(
+                  reply =>
+                    reply.id === commentId
+                      ? {
+                          ...reply,
+                          content: editedComment
+                        }
+                      : reply
+                )
               : []
-          }))
+          })),
+          targetObj: state.contentObj.targetObj
+            ? {
+                ...state.contentObj.targetObj,
+                comment: state.contentObj.targetObj.comment
+                  ? {
+                      ...state.contentObj.targetObj.comment,
+                      comments: (
+                        state.contentObj.targetObj.comment.comments || []
+                      ).map(
+                        comment =>
+                          comment.id === commentId
+                            ? {
+                                ...comment,
+                                content: editedComment
+                              }
+                            : comment
+                      )
+                    }
+                  : undefined
+              }
+            : undefined
         }
       }
     })
@@ -257,12 +319,23 @@ class Comment extends Component {
               }))
             }))
           : [],
-        targetCommentStars: state.contentObj.targetCommentStars
-          ? state.contentObj.targetCommentStars.map(star => ({
-              ...star,
-              rewardComment: star.id === id ? text : star.rewardComment
-            }))
-          : []
+        targetObj: state.contentObj.targetObj
+          ? {
+              ...state.contentObj.targetObj,
+              comment: state.contentObj.targetObj.comment
+                ? {
+                    ...state.contentObj.targetObj.comment,
+                    stars: state.contentObj.targetObj.comment.stars
+                      ? state.contentObj.targetObj.comment.stars.map(star => ({
+                          ...star,
+                          rewardComment:
+                            star.id === id ? text : star.rewardComment
+                        }))
+                      : []
+                  }
+                : undefined
+            }
+          : undefined
       }
     }))
   }
@@ -272,13 +345,11 @@ class Comment extends Component {
     history.push('/')
   }
 
-  onEditContent = async data => {
+  onEditContent = async({ data }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        ...data,
-        contentTitle: data.title,
-        contentDescription: data.description
+        ...data
       }
     }))
   }
@@ -302,28 +373,36 @@ class Comment extends Component {
                 }))
               }))
             : state.contentObj.childComments,
-        rootObj: {
-          ...state.contentObj.rootObj,
-          likes:
-            state.contentObj.rootId === contentId &&
-            state.contentObj.rootType === type
-              ? likes
-              : state.contentObj.rootObj.likes
-        },
-        targetObj: {
-          ...state.contentObj.targetObj,
-          [type]: state.contentObj.targetObj[type]
-            ? {
-                ...state.contentObj.targetObj[type],
-                likes:
-                  state.contentObj.targetObj[type].id === contentId
-                    ? likes
-                    : state.contentObj.targetObj[type].likes
-              }
-            : undefined
-        }
+        rootObj: state.contentObj.rootObj
+          ? {
+              ...state.contentObj.rootObj,
+              likes:
+                state.contentObj.rootId === contentId &&
+                state.contentObj.rootType === type
+                  ? likes
+                  : state.contentObj.rootObj.likes
+            }
+          : undefined,
+        targetObj: state.contentObj.targetObj
+          ? {
+              ...state.contentObj.targetObj,
+              [type]: state.contentObj.targetObj[type]
+                ? {
+                    ...state.contentObj.targetObj[type],
+                    likes:
+                      state.contentObj.targetObj[type].id === contentId
+                        ? likes
+                        : state.contentObj.targetObj[type].likes
+                  }
+                : undefined
+            }
+          : undefined
       }
     }))
+  }
+
+  onLoadContent = async({ data }) => {
+    this.setState(state => ({ contentObj: { ...state.contentObj, ...data } }))
   }
 
   onLoadMoreComments = async({ data: { comments, loadMoreButton } }) => {

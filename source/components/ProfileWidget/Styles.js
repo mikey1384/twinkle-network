@@ -23,7 +23,7 @@ export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
     align-items: center;
     justify-content: flex-start;
     .names {
-      width: 60%;
+      width: CALC(100% - 8rem);
       text-align: center;
       overflow: hidden;
       text-overflow: ellipsis;
