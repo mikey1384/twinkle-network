@@ -110,7 +110,7 @@ export default class SubjectItem extends Component {
                 color={Color.darkGray()}
                 user={{
                   id: userId,
-                  name: username
+                  username: username
                 }}
               />{' '}
               <small>{moment.unix(timeStamp).format('LLL')}</small>

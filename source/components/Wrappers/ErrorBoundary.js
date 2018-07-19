@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Color } from 'constants/css'
 
@@ -35,6 +35,10 @@ export default class ErrorBoundary extends Component {
         </div>
       )
     }
-    return <div {...props}>{children}</div>
+    return props ? (
+      <div {...props}>{children}</div>
+    ) : (
+      <Fragment>{children}</Fragment>
+    )
   }
 }

@@ -38,8 +38,8 @@ class Profile extends Component {
     if (
       match.params.username === 'undefined' &&
       !prevProps.userId &&
-      !!userId &&
-      !!unavailable
+      userId &&
+      unavailable
     ) {
       browserHistory.push(`/${this.props.username}`)
     }
@@ -62,8 +62,8 @@ class Profile extends Component {
       </div>
     ) : (
       <NotFound
-        title={!userId && 'For Registered Users Only'}
-        text={!userId && 'Please Log In or Sign Up'}
+        title={!userId ? 'For Registered Users Only' : ''}
+        text={!userId ? 'Please Log In or Sign Up' : ''}
       />
     )
   }

@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import DiscussionPanel from './DiscussionPanel'
-import InputForm from 'components/Texts/InputForm'
-import { Color } from 'constants/css'
 import Button from 'components/Button'
 import { css } from 'emotion'
 
@@ -25,7 +23,7 @@ export default function Discussions({
   return (
     <div
       className={css`
-        margin-top: 1rem;
+        margin: 1rem 0;
       `}
       style={style}
     >
@@ -33,7 +31,7 @@ export default function Discussions({
         discussions.map(discussion => (
           <DiscussionPanel
             key={discussion.id}
-            videoId={videoId}
+            videoId={Number(videoId)}
             {...discussion}
           />
         ))}
@@ -46,32 +44,6 @@ export default function Discussions({
         >
           Load More
         </Button>
-      )}
-      {(!discussions || discussions.length === 0) && (
-        <div
-          style={{
-            marginTop: '1rem',
-            padding: '1rem',
-            marginBottom: '-1rem',
-            background: '#fff'
-          }}
-        >
-          <span
-            style={{
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-              color: Color.darkGray()
-            }}
-          >
-            Comment on this video
-          </span>
-          <InputForm
-            style={{ marginTop: '1rem' }}
-            onSubmit={text => uploadComment(text, videoId)}
-            rows={4}
-            placeholder="Write your comment here..."
-          />
-        </div>
       )}
     </div>
   )

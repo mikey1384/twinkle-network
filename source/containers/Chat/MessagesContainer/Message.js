@@ -103,7 +103,7 @@ class Message extends Component {
                 style={MessageStyle.usernameText}
                 user={{
                   id: userId,
-                  name: username
+                  username: username
                 }}
               />{' '}
               <span className={MessageStyle.timeStamp}>

@@ -1,18 +1,37 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import Context from './Context'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import withContext from 'components/Wrappers/withContext'
 import Heading from './Heading'
-import Contents from './Contents'
+import Body from './Body'
 import Loading from 'components/Loading'
 import { container } from './Styles'
+import request from 'axios'
+import { URL } from 'constants/URL'
 
-export default class ContentPanel extends Component {
+class ContentPanel extends Component {
   static propTypes = {
     autoShowComments: PropTypes.bool,
+    commentsLoadLimit: PropTypes.number,
     contentObj: PropTypes.object.isRequired,
     inputAtBottom: PropTypes.bool,
-    methodObj: PropTypes.object.isRequired,
-    selfLoadingDisabled: PropTypes.bool,
-    userId: PropTypes.number
+    userId: PropTypes.number,
+    onAttachStar: PropTypes.func.isRequired,
+    onCommentSubmit: PropTypes.func.isRequired,
+    onDeleteComment: PropTypes.func.isRequired,
+    onDeleteContent: PropTypes.func.isRequired,
+    onEditComment: PropTypes.func.isRequired,
+    onEditContent: PropTypes.func.isRequired,
+    onEditRewardComment: PropTypes.func.isRequired,
+    onLikeContent: PropTypes.func.isRequired,
+    onLoadContent: PropTypes.func,
+    onLoadMoreComments: PropTypes.func.isRequired,
+    onLoadMoreReplies: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
+    onShowComments: PropTypes.func.isRequired,
+    onStarVideo: PropTypes.func,
+    onTargetCommentSubmit: PropTypes.func.isRequired
   }
 
   state = {
@@ -20,118 +39,105 @@ export default class ContentPanel extends Component {
     feedLoaded: false
   }
 
-  componentDidMount() {
-    const { methodObj, contentObj, selfLoadingDisabled } = this.props
+  async componentDidMount() {
+    const {
+      contentObj: { contentId, feedId, newPost, type },
+      onLoadContent
+    } = this.props
     const { feedLoaded } = this.state
-    if (!feedLoaded && !selfLoadingDisabled && !contentObj.newPost) {
+    if (!feedLoaded && !newPost) {
       this.setState({ feedLoaded: true })
-      methodObj.loadContent(contentObj)
+      const { data } = await request.get(
+        `${URL}/content?contentId=${contentId}&type=${type}`
+      )
+      onLoadContent({ data, feedId })
     }
   }
 
   render() {
     const {
       autoShowComments,
+      commentsLoadLimit,
       contentObj,
       inputAtBottom,
-      methodObj,
+      onAttachStar,
+      onCommentSubmit,
+      onDeleteComment,
+      onDeleteContent,
+      onEditComment,
+      onEditContent,
+      onEditRewardComment,
+      onLikeContent,
+      onLoadMoreComments,
+      onLoadMoreReplies,
+      onReplySubmit,
+      onShowComments,
+      onStarVideo,
+      onTargetCommentSubmit,
       userId
     } = this.props
     const { attachedVideoShown } = this.state
-    const methods = {
-      Heading: {
-        onUploadAnswer: methodObj.uploadComment,
-        onLikeClick: methodObj.likeContent
-      },
-      Contents: {
-        commentActions: {
-          attachStar: methodObj.attachStar,
-          onDelete: methodObj.deleteComment,
-          onLikeClick: methodObj.likeComment,
-          onEditDone: methodObj.editComment,
-          onReplySubmit: methodObj.uploadReply,
-          onLoadMoreReplies: methodObj.loadMoreReplies,
-          onRewardCommentEdit: methodObj.editRewardComment
-        },
-        attachStar: methodObj.attachStar,
-        feedVideoStar: methodObj.starVideo,
-        loadMoreComments: methodObj.loadMoreComments,
-        onCommentSubmit: methodObj.uploadComment,
-        onContentDelete: methodObj.deleteContent,
-        onContentEdit: methodObj.editContent,
-        onRewardCommentEdit: methodObj.editRewardComment,
-        onLikeCommentClick: methodObj.likeComment,
-        onLikeQuestionClick: methodObj.likeQuestion,
-        onLikeContentClick: methodObj.likeContent,
-        showFeedComments: methodObj.showComments,
-        TargetContent: {
-          attachStar: methodObj.attachStar,
-          onDeleteComment: methodObj.deleteComment,
-          onEditComment: methodObj.editComment,
-          onLikeClick: methodObj.likeTargetComment,
-          onRewardCommentEdit: methodObj.editRewardComment,
-          uploadComment: methodObj.uploadTargetComment
-        }
-      }
-    }
-
     return (
-      <div
-        className={container}
-        style={{ height: !contentObj.uploaderName && '15rem' }}
+      <Context.Provider
+        value={{
+          commentsLoadLimit,
+          onAttachStar,
+          onCommentSubmit,
+          onDeleteComment,
+          onDeleteContent,
+          onEditComment,
+          onEditContent,
+          onEditRewardComment,
+          onLikeContent,
+          onLoadMoreComments,
+          onLoadMoreReplies,
+          onReplySubmit,
+          onShowComments,
+          onStarVideo,
+          onTargetCommentSubmit
+        }}
       >
-        {!contentObj.uploaderName && <Loading absolute />}
-        {contentObj.uploaderName && (
-          <Heading
-            contentObj={contentObj}
-            methods={methods.Heading}
-            myId={userId}
-            targetCommentUploader={
-              contentObj.targetCommentUploaderName && {
-                name: contentObj.targetCommentUploaderName,
-                id: contentObj.targetCommentUploaderId
-              }
-            }
-            targetReplyUploader={
-              contentObj.targetReplyUploaderName && {
-                name: contentObj.targetReplyUploaderName,
-                id: contentObj.targetReplyUploaderId
-              }
-            }
-            rootContent={{
-              id: contentObj.rootId,
-              title: contentObj.rootContentTitle,
-              content: contentObj.rootContent,
-              isStarred: contentObj.rootContentIsStarred
-            }}
-            action={
-              contentObj.commentId
-                ? 'replied to'
-                : contentObj.rootType === 'question'
-                  ? 'answered'
-                  : 'commented on'
-            }
-            uploader={{
-              name: contentObj.uploaderName,
-              id: contentObj.uploaderId
-            }}
-            onPlayVideoClick={() => this.setState({ attachedVideoShown: true })}
-            attachedVideoShown={attachedVideoShown}
-          />
-        )}
-        <div className="body">
-          {contentObj.uploaderName && (
-            <Contents
-              autoShowComments={autoShowComments}
+        <div
+          className={container}
+          style={{ height: !contentObj.loaded && '15rem' }}
+        >
+          {!contentObj.loaded && <Loading absolute />}
+          {contentObj.loaded && (
+            <Heading
               contentObj={contentObj}
-              inputAtBottom={inputAtBottom}
-              methods={methods.Contents}
-              attachedVideoShown={attachedVideoShown}
               myId={userId}
+              action={
+                contentObj.commentId
+                  ? contentObj.targetObj.comment.notFound
+                    ? 'replied on'
+                    : 'replied to'
+                  : contentObj.rootType === 'question'
+                    ? 'answered'
+                    : 'commented on'
+              }
+              onPlayVideoClick={() =>
+                this.setState({ attachedVideoShown: true })
+              }
+              attachedVideoShown={attachedVideoShown}
             />
           )}
+          <ErrorBoundary>
+            <div className="body">
+              {contentObj.loaded && (
+                <Body
+                  autoShowComments={autoShowComments}
+                  contentObj={contentObj}
+                  inputAtBottom={inputAtBottom}
+                  attachedVideoShown={attachedVideoShown}
+                  myId={userId}
+                />
+              )}
+            </div>
+          </ErrorBoundary>
         </div>
-      </div>
+      </Context.Provider>
     )
   }
 }
+
+export default withContext({ Component: ContentPanel, Context })

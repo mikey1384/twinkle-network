@@ -150,7 +150,7 @@ class MainFeeds extends Component {
                 <li className={notiFeedListItem} key={id}>
                   <div>
                     <UsernameText
-                      user={{ id: rewarderId, name: rewarderUsername }}
+                      user={{ id: rewarderId, username: rewarderUsername }}
                       color={Color.blue()}
                     />{' '}
                     <span
@@ -337,7 +337,7 @@ function renderNotificationMessage(notification, myId) {
   return (
     <div>
       <UsernameText
-        user={{ id: userId, name: username }}
+        user={{ id: userId, username: username }}
         color={Color.blue()}
       />
       &nbsp;{action} {target}

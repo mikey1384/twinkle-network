@@ -241,7 +241,7 @@ class PlaylistCarousel extends Component {
             uploaderName: thumb.video_uploader,
             numLikes: thumb.numLikes
           }}
-          user={{ name: thumb.video_uploader, id: thumb.video_uploader_id }}
+          user={{ username: thumb.video_uploader, id: thumb.video_uploader_id }}
         />
       )
     })

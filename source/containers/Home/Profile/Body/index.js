@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Route } from 'react-router'
 import {
   attachStar,
-  commentFeedLike,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -11,16 +10,13 @@ import {
   feedRewardCommentEdit,
   feedVideoStar,
   fetchFeed,
-  fetchUserFeeds,
-  fetchMoreUserFeeds,
-  likeTargetComment,
+  fetchFeeds,
+  fetchMoreFeeds,
   clearFeeds,
   loadMoreFeedComments,
   loadMoreFeedReplies,
-  questionFeedLike,
   showFeedComments,
   uploadFeedComment,
-  uploadFeedReply,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import { connect } from 'react-redux'
@@ -34,34 +30,30 @@ import FilterBar from 'components/FilterBar'
 
 class Body extends Component {
   static propTypes = {
-    attachStar: PropTypes.func.isRequired,
     chatMode: PropTypes.bool,
-    clearFeeds: PropTypes.func.isRequired,
-    commentFeedLike: PropTypes.func.isRequired,
-    contentFeedLike: PropTypes.func.isRequired,
     feeds: PropTypes.array,
+    attachStar: PropTypes.func.isRequired,
+    contentFeedLike: PropTypes.func.isRequired,
+    fetchFeed: PropTypes.func.isRequired,
+    fetchFeeds: PropTypes.func.isRequired,
+    fetchMoreFeeds: PropTypes.func.isRequired,
+    clearFeeds: PropTypes.func.isRequired,
     feedCommentDelete: PropTypes.func.isRequired,
-    feedCommentEdit: PropTypes.func.isRequired,
     feedContentDelete: PropTypes.func.isRequired,
+    feedCommentEdit: PropTypes.func.isRequired,
     feedContentEdit: PropTypes.func.isRequired,
     feedRewardCommentEdit: PropTypes.func.isRequired,
     feedVideoStar: PropTypes.func.isRequired,
-    fetchFeed: PropTypes.func.isRequired,
-    fetchMoreUserFeeds: PropTypes.func.isRequired,
-    fetchUserFeeds: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    likeTargetComment: PropTypes.func.isRequired,
-    loaded: PropTypes.bool.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
-    loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    questionFeedLike: PropTypes.func.isRequired,
     showFeedComments: PropTypes.func.isRequired,
     uploadFeedComment: PropTypes.func.isRequired,
-    uploadFeedReply: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    loadMoreButton: PropTypes.bool.isRequired,
+    location: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
     myId: PropTypes.number
   }
 
@@ -71,45 +63,18 @@ class Body extends Component {
   }
 
   componentDidMount() {
-    const { match, location, clearFeeds } = this.props
+    const { clearFeeds } = this.props
     this.mounted = true
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     clearFeeds()
-    switch (location.pathname) {
-      case match.url:
-        return this.changeTab('all')
-      case `${match.url}/posts`:
-        return this.changeTab('post')
-      case `${match.url}/comments`:
-        return this.changeTab('comment')
-      case `${match.url}/videos`:
-        return this.changeTab('video')
-      case `${match.url}/links`:
-        return this.changeTab('url')
-      default:
-        break
-    }
+    this.loadContent()
   }
 
   componentDidUpdate(prevProps) {
-    const { match, location, clearFeeds } = this.props
-
+    const { clearFeeds } = this.props
     if (prevProps.location !== this.props.location) {
       clearFeeds()
-      switch (location.pathname) {
-        case match.url:
-          return this.changeTab('all')
-        case `${match.url}/posts`:
-          return this.changeTab('post')
-        case `${match.url}/comments`:
-          return this.changeTab('comment')
-        case `${match.url}/videos`:
-          return this.changeTab('video')
-        case `${match.url}/links`:
-          return this.changeTab('url')
-        default:
-          break
-      }
+      this.loadContent()
     }
   }
 
@@ -120,33 +85,28 @@ class Body extends Component {
 
   render() {
     const {
-      attachStar,
-      commentFeedLike,
-      contentFeedLike,
       match: route,
       match: {
         params: { username }
       },
       history,
-      likeTargetComment,
-      loadMoreFeedReplies,
       feeds,
-      feedCommentDelete,
-      feedCommentEdit,
-      feedContentDelete,
-      feedContentEdit,
-      feedRewardCommentEdit,
-      feedVideoStar,
-      fetchFeed,
-      loadMoreFeedComments,
       myId,
       loaded,
       loadMoreButton,
+      attachStar,
+      contentFeedLike,
+      fetchFeed,
       clearFeeds,
-      questionFeedLike,
+      feedCommentDelete,
+      feedContentDelete,
+      feedCommentEdit,
+      feedContentEdit,
+      feedRewardCommentEdit,
+      feedVideoStar,
+      loadMoreFeedComments,
+      loadMoreFeedReplies,
       showFeedComments,
-      uploadFeedComment,
-      uploadFeedReply,
       uploadTargetContentComment
     } = this.props
     const { loading } = this.state
@@ -248,30 +208,30 @@ class Body extends Component {
                 {feeds.map(feed => {
                   return (
                     <ContentPanel
-                      key={`${feed.type}${feed.id}`}
+                      key={feed.feedId}
+                      commentsLoadLimit={5}
                       contentObj={feed}
-                      userId={myId}
                       inputAtBottom={feed.type === 'comment'}
-                      methodObj={{
-                        attachStar,
-                        deleteComment: feedCommentDelete,
-                        deleteContent: feedContentDelete,
-                        editComment: feedCommentEdit,
-                        editContent: feedContentEdit,
-                        editRewardComment: feedRewardCommentEdit,
-                        likeComment: commentFeedLike,
-                        likeContent: contentFeedLike,
-                        likeQuestion: questionFeedLike,
-                        likeTargetComment: likeTargetComment,
-                        loadContent: fetchFeed,
-                        loadMoreComments: loadMoreFeedComments,
-                        loadMoreReplies: loadMoreFeedReplies,
-                        showComments: showFeedComments,
-                        starVideo: feedVideoStar,
-                        uploadComment: uploadFeedComment,
-                        uploadReply: uploadFeedReply,
-                        uploadTargetComment: uploadTargetContentComment
-                      }}
+                      onLoadContent={fetchFeed}
+                      onAttachStar={attachStar}
+                      onCommentSubmit={data =>
+                        this.uploadFeedComment({ feed, data })
+                      }
+                      onDeleteComment={feedCommentDelete}
+                      onDeleteContent={feedContentDelete}
+                      onEditComment={feedCommentEdit}
+                      onEditContent={feedContentEdit}
+                      onEditRewardComment={feedRewardCommentEdit}
+                      onLikeContent={contentFeedLike}
+                      onLoadMoreComments={loadMoreFeedComments}
+                      onLoadMoreReplies={loadMoreFeedReplies}
+                      onReplySubmit={data =>
+                        this.uploadFeedComment({ feed, data })
+                      }
+                      onStarVideo={feedVideoStar}
+                      onShowComments={showFeedComments}
+                      onTargetCommentSubmit={uploadTargetContentComment}
+                      userId={myId}
                     />
                   )
                 })}
@@ -302,17 +262,35 @@ class Body extends Component {
     )
   }
 
-  changeTab = tabName => {
+  loadContent = () => {
+    const { match, location } = this.props
+    switch (location.pathname) {
+      case match.url:
+        return this.loadTab('all')
+      case `${match.url}/posts`:
+        return this.loadTab('post')
+      case `${match.url}/comments`:
+        return this.loadTab('comment')
+      case `${match.url}/videos`:
+        return this.loadTab('video')
+      case `${match.url}/links`:
+        return this.loadTab('url')
+      default:
+        break
+    }
+  }
+
+  loadTab = tabName => {
     const {
       match: {
         params: { username }
       },
-      fetchUserFeeds
+      fetchFeeds
     } = this.props
     if (this.mounted) {
       this.setState({ currentTab: tabName })
     }
-    fetchUserFeeds({ username, type: tabName })
+    fetchFeeds({ username, filter: tabName })
   }
 
   loadMoreFeeds = async() => {
@@ -320,7 +298,7 @@ class Body extends Component {
       match: {
         params: { username }
       },
-      fetchMoreUserFeeds,
+      fetchMoreFeeds,
       feeds
     } = this.props
     const { currentTab, loading } = this.state
@@ -328,10 +306,10 @@ class Body extends Component {
     if (!loading) {
       this.setState({ loading: true })
       try {
-        await fetchMoreUserFeeds({
-          username,
-          type: currentTab,
-          shownFeeds: queryStringForArray(feeds, 'id', 'shownFeeds')
+        await fetchMoreFeeds({
+          shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds'),
+          filter: currentTab,
+          username
         })
         this.setState({ loading: false })
       } catch (error) {
@@ -369,6 +347,15 @@ class Body extends Component {
       }
     }
   }
+
+  uploadFeedComment = ({ feed, data }) => {
+    const { uploadFeedComment } = this.props
+    uploadFeedComment({
+      data,
+      type: feed.type,
+      contentId: feed.contentId
+    })
+  }
 }
 
 export default connect(
@@ -384,23 +371,19 @@ export default connect(
     attachStar,
     contentFeedLike,
     fetchFeed,
-    fetchUserFeeds,
-    fetchMoreUserFeeds,
+    fetchFeeds,
+    fetchMoreFeeds,
     clearFeeds,
-    commentFeedLike,
     feedCommentDelete,
     feedContentDelete,
     feedCommentEdit,
     feedContentEdit,
     feedRewardCommentEdit,
     feedVideoStar,
-    likeTargetComment,
     loadMoreFeedComments,
     loadMoreFeedReplies,
-    questionFeedLike,
     showFeedComments,
     uploadFeedComment,
-    uploadFeedReply,
     uploadTargetContentComment
   }
 )(Body)

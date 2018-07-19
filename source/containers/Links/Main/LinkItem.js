@@ -31,7 +31,7 @@ class LinkItem extends Component {
         .isRequired,
       uploaderName: PropTypes.string.isRequired,
       uploader: PropTypes.number.isRequired,
-      likers: PropTypes.array.isRequired,
+      likes: PropTypes.array.isRequired,
       numComments: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired
     }).isRequired,
@@ -108,7 +108,7 @@ class LinkItem extends Component {
         timeStamp,
         uploaderName,
         uploader,
-        likers,
+        likes,
         numComments,
         uploaderAuthLevel
       },
@@ -209,7 +209,7 @@ class LinkItem extends Component {
                 `}
               >
                 Uploaded {`${timeSince(timeStamp)} `}by{' '}
-                <UsernameText user={{ name: uploaderName, id: uploader }} />
+                <UsernameText user={{ username: uploaderName, id: uploader }} />
               </div>
             </div>
             <div
@@ -220,13 +220,13 @@ class LinkItem extends Component {
                 margin-bottom: 0.5rem;
               `}
             >
-              {likers.length > 0 && (
+              {likes.length > 0 && (
                 <Fragment>
                   <span
                     style={{ cursor: 'pointer' }}
                     onClick={() => this.setState({ userListModalShown: true })}
                   >
-                    {`${likers.length}`} like{likers.length > 1 ? 's' : ''}
+                    {`${likes.length}`} like{likes.length > 1 ? 's' : ''}
                   </span>&nbsp;&nbsp;
                 </Fragment>
               )}
@@ -258,7 +258,7 @@ class LinkItem extends Component {
         )}
         {userListModalShown && (
           <UserListModal
-            users={likers}
+            users={likes}
             description="(You)"
             onHide={() => this.setState({ userListModalShown: false })}
             title="People who liked this link"

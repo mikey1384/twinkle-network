@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { uploadQuestion } from 'redux/actions/FeedActions'
+import { uploadContent } from 'redux/actions/FeedActions'
 import Button from 'components/Button'
 import Input from 'components/Texts/Input'
 import Textarea from 'components/Texts/Textarea'
@@ -19,7 +19,7 @@ import { charLimit } from 'constants/defaultValues'
 
 class QuestionInput extends Component {
   static propTypes = {
-    uploadQuestion: PropTypes.func.isRequired
+    uploadContent: PropTypes.func.isRequired
   }
 
   state = {
@@ -139,14 +139,14 @@ class QuestionInput extends Component {
   }
 
   onSubmit = async event => {
-    const { uploadQuestion } = this.props
+    const { uploadContent } = this.props
     const { question, description } = this.state
     event.preventDefault()
     if (stringIsEmpty(question) || question.length > charLimit.question.title) {
       return
     }
-    await uploadQuestion({
-      question: turnStringIntoQuestion(question),
+    await uploadContent({
+      title: turnStringIntoQuestion(question),
       description: finalizeEmoji(description)
     })
     this.setState({
@@ -157,4 +157,7 @@ class QuestionInput extends Component {
   }
 }
 
-export default connect(null, { uploadQuestion })(QuestionInput)
+export default connect(
+  null,
+  { uploadContent }
+)(QuestionInput)

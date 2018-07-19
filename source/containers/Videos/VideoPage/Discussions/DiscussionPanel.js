@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Button from 'components/Button'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UsernameText from 'components/Texts/UsernameText'
-import PanelComments from 'components/PanelComments'
+import Comments from 'components/Comments'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import { connect } from 'react-redux'
 import {
@@ -23,13 +23,15 @@ import {
   editVideoComment,
   loadVideoDiscussionComments,
   loadMoreDiscussionComments,
-  uploadVideoDiscussionComment,
+  uploadComment,
   uploadVideoDiscussionReply,
   likeVideoComment,
-  loadMoreReplies,
+  loadMoreDiscussionReplies,
   editVideoDiscussion,
-  deleteVideoDiscussion
+  deleteVideoDiscussion,
+  uploadReply
 } from 'redux/actions/VideoActions'
+import { loadComments } from 'helpers/requestHelpers'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
 
@@ -43,7 +45,7 @@ class DiscussionPanel extends Component {
     description: PropTypes.string,
     editRewardComment: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
-    loadComments: PropTypes.func.isRequired,
+    loadVideoDiscussionComments: PropTypes.func.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
     loadMoreDiscussionCommentsButton: PropTypes.bool.isRequired,
     myId: PropTypes.number,
@@ -54,16 +56,15 @@ class DiscussionPanel extends Component {
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string.isRequired,
+    uploadComment: PropTypes.func.isRequired,
     uploaderAuthLevel: PropTypes.number.isRequired,
-    videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-      .isRequired
+    uploadReply: PropTypes.func.isRequired,
+    videoId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -99,7 +100,10 @@ class DiscussionPanel extends Component {
       onLikeClick,
       onDelete,
       onEditDone,
-      onLoadMoreReplies
+      onLoadMoreReplies,
+      uploadComment,
+      uploadReply,
+      videoId
     } = this.props
     const {
       expanded,
@@ -166,11 +170,12 @@ class DiscussionPanel extends Component {
                 type="text"
                 placeholder="Enter Title..."
                 value={editedTitle}
-                onChange={text => {
-                  this.setState({ editedTitle: text }, () => {
-                    this.determineEditButtonDoneStatus()
-                  })
-                }}
+                onChange={text =>
+                  this.setState(
+                    { editedTitle: text },
+                    this.determineEditButtonDoneStatus
+                  )
+                }
                 onKeyUp={event =>
                   this.setState({ editedTitle: addEmoji(event.target.value) })
                 }
@@ -187,9 +192,7 @@ class DiscussionPanel extends Component {
                 onChange={event =>
                   this.setState(
                     { editedDescription: event.target.value },
-                    () => {
-                      this.determineEditButtonDoneStatus()
-                    }
+                    this.determineEditButtonDoneStatus
                   )
                 }
               />
@@ -232,25 +235,31 @@ class DiscussionPanel extends Component {
           {!onEdit && (
             <div style={{ marginTop: '1rem' }}>
               {expanded ? (
-                <PanelComments
+                <Comments
                   autoFocus
+                  commentsLoadLimit={10}
+                  commentsShown={expanded}
                   inputTypeLabel={'answer'}
                   type="videoDiscussionPanel"
                   comments={comments}
                   loadMoreButton={loadMoreDiscussionCommentsButton}
                   userId={myId}
-                  onSubmit={this.onCommentSubmit}
+                  onAttachStar={attachStar}
+                  onCommentSubmit={uploadComment}
+                  onDelete={onDelete}
+                  onEditDone={onEditDone}
+                  onLikeClick={onLikeClick}
+                  onLoadMoreReplies={onLoadMoreReplies}
+                  onReplySubmit={uploadReply}
+                  onRewardCommentEdit={editRewardComment}
                   contentId={id}
                   loadMoreComments={this.loadMoreComments}
-                  parent={{ type: 'discussion', id }}
-                  commentActions={{
-                    attachStar,
-                    onDelete,
-                    onLikeClick,
-                    onEditDone,
-                    onReplySubmit: this.onReplySubmit,
-                    onLoadMoreReplies,
-                    onRewardCommentEdit: editRewardComment
+                  parent={{
+                    id,
+                    rootId: videoId,
+                    rootType: 'video',
+                    type: 'discussion',
+                    rootObj: true
                   }}
                 />
               ) : (
@@ -283,7 +292,7 @@ class DiscussionPanel extends Component {
           <strong>
             <UsernameText
               user={{
-                name: username,
+                username,
                 id: userId
               }}
             />
@@ -312,14 +321,9 @@ class DiscussionPanel extends Component {
     this.setState({ editDoneButtonDisabled })
   }
 
-  loadMoreComments = ({ lastCommentId }) => {
+  loadMoreComments = data => {
     const { id, loadMoreComments } = this.props
-    loadMoreComments({ lastCommentId, discussionId: id })
-  }
-
-  onCommentSubmit = comment => {
-    const { onSubmit, videoId, id, title } = this.props
-    onSubmit({ comment, videoId, discussionId: id, discussionTitle: title })
+    loadMoreComments({ data, discussionId: id })
   }
 
   onDelete = () => {
@@ -329,10 +333,15 @@ class DiscussionPanel extends Component {
     })
   }
 
-  onExpand = () => {
-    const { loadComments, id } = this.props
+  onExpand = async() => {
+    const { loadVideoDiscussionComments, id } = this.props
     this.setState({ expanded: true })
-    loadComments(id)
+    try {
+      const data = await loadComments({ type: 'discussion', id, limit: 10 })
+      loadVideoDiscussionComments({ data, discussionId: id })
+    } catch (error) {
+      console.error(error.response || error)
+    }
   }
 
   onEditDone = async() => {
@@ -346,18 +355,6 @@ class DiscussionPanel extends Component {
     this.setState({
       onEdit: false,
       editDoneButtonDisabled: true
-    })
-  }
-
-  onReplySubmit = ({ replyContent, comment, replyOfReply, originType }) => {
-    const { onReplySubmit, videoId, id } = this.props
-    onReplySubmit({
-      discussionId: id,
-      replyContent,
-      comment,
-      videoId,
-      replyOfReply,
-      originType
     })
   }
 }
@@ -374,13 +371,14 @@ export default connect(
     editRewardComment,
     onDelete: deleteVideoComment,
     onEditDone: editVideoComment,
-    loadComments: loadVideoDiscussionComments,
+    loadVideoDiscussionComments,
     loadMoreComments: loadMoreDiscussionComments,
-    onSubmit: uploadVideoDiscussionComment,
     onLikeClick: likeVideoComment,
     onReplySubmit: uploadVideoDiscussionReply,
-    onLoadMoreReplies: loadMoreReplies,
+    onLoadMoreReplies: loadMoreDiscussionReplies,
     onDiscussionEditDone: editVideoDiscussion,
-    onDiscussionDelete: deleteVideoDiscussion
+    onDiscussionDelete: deleteVideoDiscussion,
+    uploadComment,
+    uploadReply
   }
 )(DiscussionPanel)

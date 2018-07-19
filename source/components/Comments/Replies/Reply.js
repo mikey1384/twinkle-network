@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import withContext from 'components/Wrappers/withContext'
+import Context from '../Context'
 import { timeSince } from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import EditTextArea from 'components/Texts/EditTextArea'
@@ -14,14 +17,14 @@ import { determineXpButtonDisabled } from 'helpers/domHelpers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
 import { container } from '../Styles'
-import { connect } from 'react-redux'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
 import { Link } from 'react-router-dom'
+import { editContent } from 'helpers/requestHelpers'
+import { connect } from 'react-redux'
 
-class PanelReply extends Component {
+class Reply extends Component {
   static propTypes = {
-    attachStar: PropTypes.func,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -29,29 +32,26 @@ class PanelReply extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
+    dispatch: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
+    onAttachStar: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
-    parent: PropTypes.object,
+    onReply: PropTypes.func.isRequired,
     reply: PropTypes.shape({
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
       likes: PropTypes.array,
       originType: PropTypes.string,
       profilePicId: PropTypes.number,
-      replyOfReply: PropTypes.bool,
       targetUserId: PropTypes.number,
       targetUserName: PropTypes.string,
       timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
-      uploaderAuthLevel: PropTypes.number,
-      userId: PropTypes.number.isRequired,
-      username: PropTypes.string.isRequired
+      uploader: PropTypes.object.isRequired
     }),
-    type: PropTypes.string,
     userId: PropTypes.number
   }
 
@@ -64,18 +64,19 @@ class PanelReply extends Component {
 
   render() {
     const {
-      attachStar,
       comment,
       authLevel,
       canDelete,
       canEdit,
       canStar,
       innerRef = () => {},
+      onAttachStar,
+      onDelete,
       onRewardCommentEdit,
+      onReply,
       reply,
-      reply: { uploaderAuthLevel, stars = [] },
-      userId,
-      type
+      reply: { likes = [], stars = [], uploader },
+      userId
     } = this.props
     const {
       onEdit,
@@ -84,9 +85,9 @@ class PanelReply extends Component {
       clickListenerState,
       xpRewardInterfaceShown
     } = this.state
-    const userIsUploader = reply.userId === userId
+    const userIsUploader = userId === uploader.id
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+      (canEdit || canDelete) && authLevel > uploader.authLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -102,8 +103,8 @@ class PanelReply extends Component {
       })
     }
     let userLikedThis = false
-    for (let i = 0; i < reply.likes.length; i++) {
-      if (reply.likes[i].userId === userId) userLikedThis = true
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i].userId === userId) userLikedThis = true
     }
     return (
       <div className={container} ref={innerRef}>
@@ -111,8 +112,8 @@ class PanelReply extends Component {
           <aside>
             <ProfilePic
               style={{ height: '5rem', width: '5rem' }}
-              userId={reply.userId}
-              profilePicId={reply.profilePicId}
+              userId={uploader.id}
+              profilePicId={uploader.profilePicId}
             />
           </aside>
           {editButtonShown &&
@@ -138,13 +139,7 @@ class PanelReply extends Component {
             )}
           <section>
             <div>
-              <UsernameText
-                className="username"
-                user={{
-                  name: reply.username,
-                  id: reply.userId
-                }}
-              />{' '}
+              <UsernameText className="username" user={uploader} />{' '}
               <small className="timestamp">
                 <Link to={`/comments/${reply.id}`}>
                   replied {timeSince(reply.timeStamp)}
@@ -152,18 +147,15 @@ class PanelReply extends Component {
               </small>
             </div>
             <div>
-              {reply.targetUserId &&
+              {((reply.targetObj || {}).comment || {}).uploader &&
                 !!reply.replyId &&
                 reply.replyId !== comment.id && (
-                  <span className="to">
-                    to:{' '}
-                    <UsernameText
-                      user={{
-                        name: reply.targetUserName,
-                        id: reply.targetUserId
-                      }}
-                    />
-                  </span>
+                  <ErrorBoundary>
+                    <span className="to">
+                      to:{' '}
+                      <UsernameText user={reply.targetObj.comment.uploader} />
+                    </span>
+                  </ErrorBoundary>
                 )}
               {onEdit ? (
                 <EditTextArea
@@ -179,19 +171,19 @@ class PanelReply extends Component {
                   </LongText>
                   <div className="comment__buttons">
                     <LikeButton
+                      contentId={reply.id}
+                      contentType="comment"
                       onClick={this.onLikeClick}
                       liked={userLikedThis}
                       small
                     />
-                    {type !== 'comment' && (
-                      <Button
-                        transparent
-                        style={{ marginLeft: '1rem' }}
-                        onClick={this.onReplyButtonClick}
-                      >
-                        <span className="glyphicon glyphicon-comment" /> Reply
-                      </Button>
-                    )}
+                    <Button
+                      transparent
+                      style={{ marginLeft: '1rem' }}
+                      onClick={this.onReplyButtonClick}
+                    >
+                      <span className="glyphicon glyphicon-comment" /> Reply
+                    </Button>
                     {canStar &&
                       userCanEditThis &&
                       !userIsUploader && (
@@ -218,7 +210,7 @@ class PanelReply extends Component {
                   </div>
                   <small>
                     <Likers
-                      className="comment__likers"
+                      className="comment__likes"
                       userId={userId}
                       likes={reply.likes}
                       onLinkClick={() =>
@@ -234,10 +226,10 @@ class PanelReply extends Component {
                 stars={stars}
                 contentType="comment"
                 contentId={reply.id}
-                uploaderId={reply.userId}
+                uploaderId={uploader.id}
                 onRewardSubmit={data => {
                   this.setState({ xpRewardInterfaceShown: false })
-                  attachStar(data)
+                  onAttachStar(data)
                 }}
               />
             )}
@@ -249,7 +241,7 @@ class PanelReply extends Component {
                 marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
               stars={stars}
-              uploaderName={reply.username}
+              uploaderName={uploader.username}
             />
             <ReplyInputArea
               innerRef={ref => {
@@ -259,8 +251,10 @@ class PanelReply extends Component {
                 marginTop:
                   stars.length > 0 || reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
-              onSubmit={this.onReplySubmit}
+              onSubmit={onReply}
               clickListenerState={clickListenerState}
+              rootCommentId={reply.commentId}
+              targetCommentId={reply.id}
             />
           </section>
         </div>
@@ -276,43 +270,41 @@ class PanelReply extends Component {
           <ConfirmModal
             onHide={() => this.setState({ confirmModalShown: false })}
             title="Remove Reply"
-            onConfirm={this.onDelete}
+            onConfirm={() => onDelete(reply.id)}
           />
         )}
       </div>
     )
   }
 
-  onEditDone = editedReply => {
-    const { onEditDone, reply } = this.props
-    return onEditDone({ editedComment: editedReply, commentId: reply.id }).then(
-      () => this.setState({ onEdit: false })
-    )
+  onEditDone = async editedReply => {
+    const { dispatch, onEditDone, reply } = this.props
+    await editContent({
+      params: {
+        editedComment: editedReply,
+        contentId: reply.id,
+        type: 'comment'
+      },
+      dispatch
+    })
+    onEditDone({ editedComment: editedReply, commentId: reply.id })
+    this.setState({ onEdit: false })
   }
 
-  onLikeClick = () => {
-    const { onLikeClick, reply } = this.props
-    onLikeClick(reply.id)
+  onLikeClick = likes => {
+    const { reply, onLikeClick } = this.props
+    onLikeClick({ commentId: reply.id, likes })
   }
 
-  onDelete = () => {
-    const { onDelete, reply } = this.props
-    onDelete(reply.id)
-  }
-
-  onReplyButtonClick = () => {
-    this.ReplyInputArea.focus()
-  }
-
-  onReplySubmit = replyContent => {
-    const { parent, reply, onReplySubmit } = this.props
-    onReplySubmit({ replyContent, reply, parent })
-  }
+  onReplyButtonClick = () => this.ReplyInputArea.focus()
 }
 
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit,
-  canStar: state.UserReducer.canStar
-}))(PanelReply)
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar
+  }),
+  dispatch => ({ dispatch })
+)(withContext({ Component: Reply, Context }))

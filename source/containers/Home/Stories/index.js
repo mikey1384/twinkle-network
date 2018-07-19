@@ -2,10 +2,10 @@ import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import {
   attachStar,
-  commentFeedLike,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
+  feedContentEdit,
   feedContentDelete,
   feedRewardCommentEdit,
   feedVideoStar,
@@ -13,14 +13,12 @@ import {
   fetchNewFeeds,
   fetchFeeds,
   fetchFeed,
-  likeTargetComment,
   loadMoreFeedReplies,
   loadMoreFeedComments,
   clearFeeds,
   questionFeedLike,
   showFeedComments,
   uploadFeedComment,
-  uploadFeedReply,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
 import { resetNumNewPosts } from 'redux/actions/NotiActions'
@@ -30,10 +28,11 @@ import LoadMoreButton from 'components/LoadMoreButton'
 import Loading from 'components/Loading'
 import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import { feedContentEdit } from '../../../redux/actions/FeedActions'
 import FilterBar from 'components/FilterBar'
 import Banner from 'components/Banner'
 import { queryStringForArray } from 'helpers/stringHelpers'
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import { loadNewFeeds } from 'helpers/requestHelpers'
 
 class Stories extends Component {
   static propTypes = {
@@ -41,7 +40,6 @@ class Stories extends Component {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
-    commentFeedLike: PropTypes.func.isRequired,
     feeds: PropTypes.array.isRequired,
     feedCommentDelete: PropTypes.func.isRequired,
     feedContentDelete: PropTypes.func.isRequired,
@@ -54,19 +52,16 @@ class Stories extends Component {
     fetchMoreFeeds: PropTypes.func.isRequired,
     fetchNewFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    likeTargetComment: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
     numNewPosts: PropTypes.number.isRequired,
-    questionFeedLike: PropTypes.func.isRequired,
     resetNumNewPosts: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     showFeedComments: PropTypes.func.isRequired,
     username: PropTypes.string,
     uploadFeedComment: PropTypes.func.isRequired,
-    uploadFeedReply: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
@@ -105,7 +100,6 @@ class Stories extends Component {
     const {
       attachStar,
       contentFeedLike,
-      commentFeedLike,
       feeds,
       feedCommentDelete,
       feedCommentEdit,
@@ -114,105 +108,103 @@ class Stories extends Component {
       feedVideoStar,
       feedRewardCommentEdit,
       fetchFeed,
-      likeTargetComment,
       loadMoreButton,
       loadMoreFeedReplies,
       numNewPosts,
-      uploadFeedReply,
       userId,
       loaded,
       loadMoreFeedComments,
-      questionFeedLike,
       showFeedComments,
-      uploadFeedComment,
       uploadTargetContentComment,
       username
     } = this.props
     const { loadingMore } = this.state
     return (
-      <div
-        ref={ref => {
-          this.Container = ref
-        }}
-        style={{ position: 'relative', paddingBottom: '1rem' }}
-      >
-        {this.renderFilterBar()}
-        <InputPanel />
-        <div>
-          {!loaded && <Loading text="Loading Feeds..." />}
-          {loaded &&
-            feeds.length === 0 && (
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '15rem'
-                }}
-              >
-                <h1 style={{ textAlign: 'center' }}>
-                  {username
-                    ? `Hello ${username}, be the first to post something`
-                    : 'Hi there!'}
-                </h1>
-              </div>
-            )}
-          {loaded &&
-            feeds.length > 0 && (
-              <Fragment>
-                {numNewPosts > 0 && (
-                  <Banner
-                    info
-                    onClick={this.fetchNewFeeds}
-                    style={{ marginBottom: '1rem' }}
-                  >
-                    Click to See {numNewPosts} new Post{numNewPosts > 1
-                      ? 's'
-                      : ''}
-                  </Banner>
-                )}
-                {feeds.map(feed => {
-                  return (
-                    <ContentPanel
-                      key={feed.id}
-                      selfLoadingDisabled={this.clearingFeeds}
-                      inputAtBottom={feed.type === 'comment'}
-                      contentObj={feed}
-                      methodObj={{
-                        attachStar,
-                        deleteComment: feedCommentDelete,
-                        deleteContent: feedContentDelete,
-                        editComment: feedCommentEdit,
-                        editContent: feedContentEdit,
-                        editRewardComment: feedRewardCommentEdit,
-                        likeComment: commentFeedLike,
-                        likeContent: contentFeedLike,
-                        likeQuestion: questionFeedLike,
-                        likeTargetComment: likeTargetComment,
-                        loadContent: fetchFeed,
-                        loadMoreComments: loadMoreFeedComments,
-                        loadMoreReplies: loadMoreFeedReplies,
-                        showComments: showFeedComments,
-                        starVideo: feedVideoStar,
-                        uploadComment: uploadFeedComment,
-                        uploadReply: uploadFeedReply,
-                        uploadTargetComment: uploadTargetContentComment
-                      }}
-                      userId={userId}
+      <ErrorBoundary>
+        <div
+          ref={ref => {
+            this.Container = ref
+          }}
+          style={{ position: 'relative', paddingBottom: '1rem' }}
+        >
+          {this.renderFilterBar()}
+          <InputPanel />
+          <div>
+            {!loaded && <Loading text="Loading Feeds..." />}
+            {loaded &&
+              feeds.length === 0 && (
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '15rem'
+                  }}
+                >
+                  <h1 style={{ textAlign: 'center' }}>
+                    {username
+                      ? `Hello ${username}, be the first to post something`
+                      : 'Hi there!'}
+                  </h1>
+                </div>
+              )}
+            {loaded &&
+              feeds.length > 0 && (
+                <Fragment>
+                  {numNewPosts > 0 && (
+                    <Banner
+                      info
+                      onClick={this.fetchNewFeeds}
+                      style={{ marginBottom: '1rem' }}
+                    >
+                      Click to See {numNewPosts} new Post{numNewPosts > 1
+                        ? 's'
+                        : ''}
+                    </Banner>
+                  )}
+                  {feeds.map(feed => {
+                    return (
+                      <ContentPanel
+                        key={feed.feedId}
+                        commentsLoadLimit={5}
+                        contentObj={feed}
+                        inputAtBottom={feed.type === 'comment'}
+                        onLoadContent={fetchFeed}
+                        onAttachStar={attachStar}
+                        onCommentSubmit={data =>
+                          this.uploadFeedComment({ feed, data })
+                        }
+                        onDeleteComment={feedCommentDelete}
+                        onDeleteContent={feedContentDelete}
+                        onEditComment={feedCommentEdit}
+                        onEditContent={feedContentEdit}
+                        onEditRewardComment={feedRewardCommentEdit}
+                        onLikeContent={contentFeedLike}
+                        onLoadMoreComments={loadMoreFeedComments}
+                        onLoadMoreReplies={loadMoreFeedReplies}
+                        onReplySubmit={data =>
+                          this.uploadFeedComment({ feed, data })
+                        }
+                        onStarVideo={feedVideoStar}
+                        onShowComments={showFeedComments}
+                        onTargetCommentSubmit={uploadTargetContentComment}
+                        selfLoadingDisabled={this.clearingFeeds}
+                        userId={userId}
+                      />
+                    )
+                  })}
+                  {loadMoreButton && (
+                    <LoadMoreButton
+                      onClick={this.loadMoreFeeds}
+                      loading={loadingMore}
                     />
-                  )
-                })}
-                {loadMoreButton && (
-                  <LoadMoreButton
-                    onClick={this.loadMoreFeeds}
-                    loading={loadingMore}
-                  />
-                )}
-              </Fragment>
-            )}
+                  )}
+                </Fragment>
+              )}
+          </div>
         </div>
-      </div>
+      </ErrorBoundary>
     )
   }
 
@@ -220,7 +212,7 @@ class Stories extends Component {
     const { fetchFeeds, selectedFilter, clearFeeds } = this.props
     if (filter === selectedFilter) return
     clearFeeds()
-    fetchFeeds(filter)
+    fetchFeeds({ filter })
   }
 
   loadMoreFeeds = async() => {
@@ -230,7 +222,7 @@ class Stories extends Component {
       this.setState({ loadingMore: true })
       try {
         await fetchMoreFeeds({
-          shownFeeds: queryStringForArray(feeds, 'id', 'shownFeeds'),
+          shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds'),
           filter: selectedFilter
         })
         this.setState({ loadingMore: false })
@@ -264,22 +256,15 @@ class Stories extends Component {
   }
 
   fetchNewFeeds = async() => {
-    const { feeds, resetNumNewPosts, fetchNewFeeds, userId } = this.props
+    const { feeds = [], resetNumNewPosts, fetchNewFeeds } = this.props
     const { loadingMore } = this.state
     if (!loadingMore) {
       this.setState({ loadingMore: true })
       resetNumNewPosts()
-      const filteredFeeds = feeds.filter(feed => feed.uploaderId !== userId)
-      const latestTS = filteredFeeds[0].lastInteraction
-      await fetchNewFeeds({
-        latestTS,
-        userId,
-        shownFeeds: queryStringForArray(
-          feeds.filter(feed => feed.lastInteraction >= latestTS),
-          'id',
-          'shownFeeds'
-        )
+      const data = await loadNewFeeds({
+        lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0
       })
+      fetchNewFeeds(data)
       this.setState({ loadingMore: false })
     }
   }
@@ -321,6 +306,15 @@ class Stories extends Component {
       </FilterBar>
     )
   }
+
+  uploadFeedComment = ({ feed, data }) => {
+    const { uploadFeedComment } = this.props
+    uploadFeedComment({
+      data,
+      type: feed.type,
+      contentId: feed.contentId
+    })
+  }
 }
 
 export default connect(
@@ -338,7 +332,6 @@ export default connect(
   {
     attachStar,
     contentFeedLike,
-    commentFeedLike,
     fetchMoreFeeds,
     fetchFeed,
     fetchFeeds,
@@ -349,7 +342,6 @@ export default connect(
     feedCommentEdit,
     feedRewardCommentEdit,
     feedVideoStar,
-    likeTargetComment,
     loadMoreFeedComments,
     loadMoreFeedReplies,
     clearFeeds,
@@ -357,7 +349,6 @@ export default connect(
     resetNumNewPosts,
     showFeedComments,
     uploadFeedComment,
-    uploadFeedReply,
     uploadTargetContentComment
   }
 )(Stories)

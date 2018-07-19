@@ -67,18 +67,23 @@ class ProfileWidget extends Component {
           {userId && (
             <div>
               <Button
+                style={{ width: '100%' }}
                 transparent
                 onClick={() => history.push(`/users/${username}`)}
               >
-                My Profile
+                View Profile
               </Button>
-              <Button transparent onClick={() => this.fileInput.click()}>
+              <Button
+                style={{ width: '100%' }}
+                transparent
+                onClick={() => this.fileInput.click()}
+              >
                 Change Picture
               </Button>
             </div>
           )}
           {!userId && (
-            <div className="login-message">Log in to access all features!</div>
+            <div className="login-message">Log in to access all features</div>
           )}
           {!userId && (
             <Button
@@ -87,7 +92,7 @@ class ProfileWidget extends Component {
               style={{ marginTop: '1rem' }}
               onClick={openSigninModal}
             >
-              {"It's super easy"}
+              Tap here!
             </Button>
           )}
           <input

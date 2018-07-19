@@ -11,7 +11,7 @@ import {
 } from 'helpers/stringHelpers'
 import Button from 'components/Button'
 import request from 'axios'
-import { auth } from 'redux/constants'
+import { auth } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
 

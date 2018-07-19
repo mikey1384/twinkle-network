@@ -1,5 +1,5 @@
 import request from 'axios'
-import { auth, handleError } from '../constants'
+import { auth, handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import PLAYLIST from '../constants/Playlist'
 
@@ -13,7 +13,6 @@ export const getPlaylists = () => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -27,14 +26,15 @@ export const getMorePlaylists = shownPlaylistsIds => async dispatch => {
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
 
 export const uploadPlaylist = params => async dispatch => {
   try {
-    const { data: { result } } = await request.post(API_URL, params, auth())
+    const {
+      data: { result }
+    } = await request.post(API_URL, params, auth())
     if (result) {
       dispatch({
         type: PLAYLIST.UPLOAD,
@@ -43,7 +43,6 @@ export const uploadPlaylist = params => async dispatch => {
     }
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -65,7 +64,6 @@ export const editPlaylistTitle = (
     }
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -87,7 +85,6 @@ export const changePlaylistVideos = (
     })
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -100,7 +97,6 @@ export const deletePlaylist = playlistId => async dispatch => {
       data: playlistId
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -113,18 +109,15 @@ export const getPinnedPlaylists = () => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
 
 export const changePinnedPlaylists = selectedPlaylists => async dispatch => {
   try {
-    const { data: { playlists } } = await request.post(
-      `${API_URL}/pinned`,
-      { selectedPlaylists },
-      auth()
-    )
+    const {
+      data: { playlists }
+    } = await request.post(`${API_URL}/pinned`, { selectedPlaylists }, auth())
     if (playlists) {
       dispatch({
         type: PLAYLIST.CHANGE_PINNED,
@@ -133,7 +126,6 @@ export const changePinnedPlaylists = selectedPlaylists => async dispatch => {
     }
     return Promise.resolve()
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -146,7 +138,6 @@ export const openSelectPlaylistsToPinModal = () => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }
@@ -161,7 +152,6 @@ export const loadMorePlaylistList = playlistId => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }

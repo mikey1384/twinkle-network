@@ -148,9 +148,8 @@ class Description extends Component {
           <div>
             <small>
               Added by{' '}
-              <UsernameText user={{ id: uploaderId, name: uploaderName }} /> ({timeSince(
-                timeStamp
-              )})
+              <UsernameText user={{ id: uploaderId, username: uploaderName }} />{' '}
+              ({timeSince(timeStamp)})
             </small>
           </div>
         </div>

@@ -83,7 +83,7 @@ class AllVideosPanel extends Component {
                 arrayIndex={index}
                 editable={editable}
                 video={video}
-                user={{ name: video.uploaderName, id: video.uploaderId }}
+                user={{ username: video.uploaderName, id: video.uploaderId }}
                 lastVideoId={last(videos) ? last(videos).id : 0}
               />
             )

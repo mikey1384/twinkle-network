@@ -1,5 +1,5 @@
 import request from 'axios'
-import { handleError } from '../constants'
+import { handleError } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import CONTENT from '../constants/Content'
 
@@ -17,7 +17,6 @@ export const searchContent = text => async dispatch => {
       data
     })
   } catch (error) {
-    console.error(error.response || error)
     handleError(error, dispatch)
   }
 }

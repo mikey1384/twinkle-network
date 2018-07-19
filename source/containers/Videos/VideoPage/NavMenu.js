@@ -5,7 +5,10 @@ import {
   loadRightMenuVideos,
   loadMorePlaylistVideos
 } from 'redux/actions/VideoActions'
-import { fetchNotifications } from 'redux/actions/NotiActions'
+import {
+  clearNotifications,
+  fetchNotifications
+} from 'redux/actions/NotiActions'
 import Link from 'components/Link'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { cleanString, queryStringForArray } from 'helpers/stringHelpers'
@@ -29,7 +32,8 @@ class NavMenu extends Component {
     playlistVideos: PropTypes.array,
     playlistVideosLoadMoreShown: PropTypes.bool,
     relatedVideos: PropTypes.array,
-    rewards: PropTypes.array,
+    totalRewardAmount: PropTypes.number,
+    userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
       .isRequired
   }
@@ -52,19 +56,28 @@ class NavMenu extends Component {
     socket.on('new_reward', this.notifyNewReward)
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const {
+      clearNotifications,
+      fetchNotifications,
       loadRightMenuVideos,
       nextVideos,
       videoId,
       playlistId,
-      rewards
+      totalRewardAmount
     } = this.props
     if (!nextVideos || (videoId && prevProps.videoId !== videoId)) {
       loadRightMenuVideos(videoId, playlistId)
     }
-    if (prevProps.rewards.length !== rewards.length) {
-      this.setState({ rewardsExist: rewards.length > 0 })
+    if (prevProps.totalRewardAmount !== totalRewardAmount) {
+      this.setState({ rewardsExist: totalRewardAmount > 0 })
+    }
+    if (prevProps.userId !== this.props.userId) {
+      if (!this.props.userId) {
+        clearNotifications()
+      } else {
+        fetchNotifications()
+      }
     }
   }
 
@@ -202,8 +215,9 @@ class NavMenu extends Component {
     this.setState({ playlistVideosLoading: false })
   }
 
-  notifyNewReward = () => {
-    this.setState({ rewardsExist: true })
+  notifyNewReward = async() => {
+    const { fetchNotifications } = this.props
+    fetchNotifications()
   }
 
   renderVideos = ({ videos, arePlaylistVideos }) => {
@@ -275,9 +289,11 @@ export default connect(
     playlistVideosLoadMoreShown:
       state.VideoReducer.videoPage.playlistVideosLoadMoreShown,
     playlistTitle: state.VideoReducer.videoPage.playlistTitle,
-    rewards: state.NotiReducer.rewards
+    totalRewardAmount: state.NotiReducer.totalRewardAmount,
+    userId: state.UserReducer.userId
   }),
   {
+    clearNotifications,
     loadMorePlaylistVideos,
     loadRightMenuVideos,
     fetchNotifications

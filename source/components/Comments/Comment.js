@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import withContext from 'components/Wrappers/withContext'
+import Context from './Context'
 import { timeSince } from 'helpers/timeStampHelpers'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import Likers from 'components/Likers'
 import UserListModal from 'components/Modals/UserListModal'
-import PanelReplies from './PanelReplies'
-import ReplyInputArea from './PanelReplies/ReplyInputArea'
+import Replies from './Replies'
+import ReplyInputArea from './Replies/ReplyInputArea'
 import EditTextArea from 'components/Texts/EditTextArea'
 import UsernameText from 'components/Texts/UsernameText'
 import ProfilePic from 'components/ProfilePic'
@@ -18,14 +20,16 @@ import {
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import LongText from 'components/Texts/LongText'
 import { container } from './Styles'
-import { connect } from 'react-redux'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
 import { Link } from 'react-router-dom'
+import { editContent } from 'helpers/requestHelpers'
+import { connect } from 'react-redux'
+import DiscussionTopicLink from './DiscussionTopicLink'
 
-class PanelComment extends Component {
+class Comment extends Component {
   static propTypes = {
-    attachStar: PropTypes.func,
+    onAttachStar: PropTypes.func.isRequired,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -38,23 +42,22 @@ class PanelComment extends Component {
       replies: PropTypes.array,
       replyId: PropTypes.number,
       stars: PropTypes.array,
+      targetObj: PropTypes.object,
       targetUserName: PropTypes.string,
       targetUserId: PropTypes.number,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
-      uploaderAuthLevel: PropTypes.number,
-      userId: PropTypes.number.isRequired,
-      username: PropTypes.string.isRequired
+      uploader: PropTypes.object.isRequired
     }).isRequired,
+    dispatch: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
-    onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
-    onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
+    onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.object,
-    type: PropTypes.string,
     userId: PropTypes.number
   }
 
@@ -91,27 +94,29 @@ class PanelComment extends Component {
       xpRewardInterfaceShown
     } = this.state
     const {
-      attachStar,
       authLevel,
       canDelete,
       canEdit,
       canStar,
       comment,
-      comment: { replies = [], likes = [], stars = [], uploaderAuthLevel },
+      comment: {
+        replies = [],
+        targetObj = {},
+        likes = [],
+        stars = [],
+        uploader
+      },
       innerRef,
-      userId,
-      parent,
-      type,
-      onEditDone,
-      onLikeClick,
+      onAttachStar,
+      onLoadMoreReplies,
       onDelete,
-      onReplySubmit,
       onRewardCommentEdit,
-      onLoadMoreReplies
+      userId,
+      parent
     } = this.props
-    const userIsUploader = comment.userId === userId
+    const userIsUploader = uploader.id === userId
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel
+      (canEdit || canDelete) && authLevel > uploader.authLevel
     const editButtonShown = userIsUploader || userCanEditThis
     const editMenuItems = []
     if (userIsUploader || canEdit) {
@@ -134,7 +139,7 @@ class PanelComment extends Component {
       <div
         className={container}
         ref={ref => {
-          this.PanelComment = ref
+          this.Comment = ref
           innerRef(ref)
         }}
       >
@@ -142,8 +147,8 @@ class PanelComment extends Component {
           <aside>
             <ProfilePic
               style={{ height: '5rem', width: '5rem' }}
-              userId={comment.userId}
-              profilePicId={comment.profilePicId}
+              userId={uploader.id}
+              profilePicId={uploader.profilePicId}
             />
           </aside>
           {editButtonShown &&
@@ -160,13 +165,7 @@ class PanelComment extends Component {
             )}
           <section>
             <div>
-              <UsernameText
-                className="username"
-                user={{
-                  name: comment.username,
-                  id: comment.userId
-                }}
-              />{' '}
+              <UsernameText className="username" user={uploader} />{' '}
               <small className="timestamp">
                 <Link to={`/comments/${comment.id}`}>
                   commented {timeSince(comment.timeStamp)}
@@ -181,7 +180,7 @@ class PanelComment extends Component {
                     to:{' '}
                     <UsernameText
                       user={{
-                        name: comment.targetUserName,
+                        username: comment.targetUserName,
                         id: comment.targetUserId
                       }}
                     />
@@ -196,11 +195,19 @@ class PanelComment extends Component {
                 />
               ) : (
                 <div>
+                  {parent.type !== 'discussion' &&
+                    !parent.discussionId &&
+                    targetObj &&
+                    targetObj.discussion && (
+                      <DiscussionTopicLink discussion={targetObj.discussion} />
+                    )}
                   <LongText className="comment__content">
                     {comment.content}
                   </LongText>
                   <div className="comment__buttons">
                     <LikeButton
+                      contentType="comment"
+                      contentId={comment.id}
                       onClick={this.onLikeClick}
                       liked={userLikedThis}
                     />
@@ -236,7 +243,7 @@ class PanelComment extends Component {
                       )}
                   </div>
                   <Likers
-                    className="comment__likers"
+                    className="comment__likes"
                     userId={userId}
                     likes={comment.likes}
                     onLinkClick={() =>
@@ -251,10 +258,10 @@ class PanelComment extends Component {
                 stars={stars}
                 contentType="comment"
                 contentId={comment.id}
-                uploaderId={comment.userId}
+                uploaderId={uploader.id}
                 onRewardSubmit={data => {
                   this.setState({ xpRewardInterfaceShown: false })
-                  attachStar(data)
+                  onAttachStar(data)
                 }}
               />
             )}
@@ -266,12 +273,10 @@ class PanelComment extends Component {
                 marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
               }}
               stars={stars}
-              uploaderName={comment.username}
+              uploaderName={uploader.username}
             />
             <ReplyInputArea
-              innerRef={ref => {
-                this.ReplyInputArea = ref
-              }}
+              innerRef={ref => (this.ReplyInputArea = ref)}
               style={{
                 marginTop:
                   stars.length > 0 || comment.likes.length > 0
@@ -280,22 +285,18 @@ class PanelComment extends Component {
               }}
               onSubmit={this.onReplySubmit}
               numReplies={replies.length}
+              rootCommentId={comment.commentId}
+              targetCommentId={comment.id}
             />
-            <PanelReplies
+            <Replies
               innerRef={({ ref, replyId }) => (this.Replies[replyId] = ref)}
               Replies={this.Replies}
               userId={userId}
               replies={replies}
               comment={comment}
               parent={parent}
-              type={type}
-              attachStar={attachStar}
-              onDelete={onDelete}
               onLoadMoreReplies={onLoadMoreReplies}
-              onLikeClick={onLikeClick}
-              onEditDone={onEditDone}
-              onReplySubmit={onReplySubmit}
-              onRewardCommentEdit={onRewardCommentEdit}
+              onReplySubmit={this.onReplySubmit}
             />
           </section>
         </div>
@@ -311,44 +312,45 @@ class PanelComment extends Component {
           <ConfirmModal
             onHide={() => this.setState({ confirmModalShown: false })}
             title="Remove Comment"
-            onConfirm={this.onDelete}
+            onConfirm={() => onDelete(comment.id)}
           />
         )}
       </div>
     )
   }
 
-  onEditDone = editedComment => {
-    const { onEditDone, comment } = this.props
-    onEditDone({ editedComment, commentId: comment.id }).then(() =>
-      this.setState({ onEdit: false })
-    )
+  onEditDone = async editedComment => {
+    const { dispatch, comment, onEditDone } = this.props
+    await editContent({
+      params: { editedComment, contentId: comment.id, type: 'comment' },
+      dispatch
+    })
+    onEditDone({ editedComment, commentId: comment.id })
+    this.setState({ onEdit: false })
   }
 
-  onLikeClick = () => {
-    const { comment } = this.props
-    this.props.onLikeClick(comment.id)
+  onLikeClick = likes => {
+    const { comment, onLikeClick } = this.props
+    onLikeClick({ commentId: comment.id, likes })
   }
 
   onReplyButtonClick = () => {
     this.ReplyInputArea.focus()
   }
 
-  onReplySubmit = replyContent => {
-    const { parent, comment, onReplySubmit } = this.props
+  onReplySubmit = reply => {
+    const { onReplySubmit } = this.props
     this.setState({ replying: true })
-    onReplySubmit({ replyContent, comment, parent })
-  }
-
-  onDelete = () => {
-    const { comment, onDelete } = this.props
-    onDelete(comment.id)
+    onReplySubmit(reply)
   }
 }
 
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit,
-  canStar: state.UserReducer.canStar
-}))(PanelComment)
+export default connect(
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar
+  }),
+  dispatch => ({ dispatch })
+)(withContext({ Component: Comment, Context }))

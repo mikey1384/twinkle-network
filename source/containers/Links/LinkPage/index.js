@@ -17,10 +17,10 @@ import {
   likeComment,
   likeLink,
   resetPage,
-  submitComment,
-  submitReply
+  uploadComment,
+  uploadReply
 } from 'redux/actions/LinkActions'
-import PanelComments from 'components/PanelComments'
+import Comments from 'components/Comments'
 import LikeButton from 'components/Buttons/LikeButton'
 import Likers from 'components/Likers'
 import ConfirmModal from 'components/Modals/ConfirmModal'
@@ -29,6 +29,7 @@ import Description from './Description'
 import { css } from 'emotion'
 import { mobileMaxWidth } from 'constants/css'
 import NotFound from 'components/NotFound'
+import { loadComments } from 'helpers/requestHelpers'
 
 class LinkPage extends Component {
   static propTypes = {
@@ -49,13 +50,13 @@ class LinkPage extends Component {
     myId: PropTypes.number,
     pageProps: PropTypes.object.isRequired,
     resetPage: PropTypes.func.isRequired,
-    submitComment: PropTypes.func.isRequired,
-    submitReply: PropTypes.func.isRequired
+    uploadComment: PropTypes.func.isRequired,
+    uploadReply: PropTypes.func.isRequired
   }
 
   state = {
     confirmModalShown: false,
-    likersModalShown: false,
+    likesModalShown: false,
     notFound: false
   }
 
@@ -69,6 +70,11 @@ class LinkPage extends Component {
     } = this.props
     try {
       await loadLinkPage(linkId)
+      const data = await loadComments({
+        id: linkId,
+        type: 'url'
+      })
+      fetchComments(data)
     } catch (error) {
       if (error.response) {
         const { data = {} } = error.response
@@ -76,11 +82,11 @@ class LinkPage extends Component {
           this.setState({ notFound: true })
         }
       }
+      console.error(error.response || error)
     }
-    fetchComments(linkId)
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const {
       location,
       loadLinkPage,
@@ -90,8 +96,22 @@ class LinkPage extends Component {
       }
     } = this.props
     if (prevProps.location.pathname !== location.pathname) {
-      fetchComments(linkId)
-      loadLinkPage(linkId)
+      try {
+        await loadLinkPage(linkId)
+        const data = await loadComments({
+          id: linkId,
+          type: 'url'
+        })
+        fetchComments(data)
+      } catch (error) {
+        if (error.response) {
+          const { data = {} } = error.response
+          if (data.notFound) {
+            this.setState({ notFound: true })
+          }
+        }
+        console.error(error.response || error)
+      }
     }
   }
 
@@ -112,7 +132,7 @@ class LinkPage extends Component {
         uploaderAuthLevel,
         uploaderName,
         comments = [],
-        likers = [],
+        likes = [],
         loadMoreCommentsButton = false,
         ...embedlyProps
       },
@@ -124,13 +144,16 @@ class LinkPage extends Component {
       fetchMoreReplies,
       likeComment,
       likeLink,
+      fetchMoreComments,
       deleteLinkFromPage,
-      myId
+      myId,
+      uploadComment,
+      uploadReply
     } = this.props
-    const { confirmModalShown, likersModalShown, notFound } = this.state
+    const { confirmModalShown, likesModalShown, notFound } = this.state
     let userLikedThis = false
-    for (let i = 0; i < likers.length; i++) {
-      if (likers[i].userId === myId) userLikedThis = true
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i].userId === myId) userLikedThis = true
     }
 
     return id ? (
@@ -181,36 +204,37 @@ class LinkPage extends Component {
               key={'like' + id}
               filled
               style={{ fontSize: '2rem' }}
-              onClick={() => likeLink(id)}
+              contentType="url"
+              contentId={id}
+              onClick={likes => likeLink(likes)}
               liked={userLikedThis}
             />
             <Likers
-              key={'likers' + id}
+              key={'likes' + id}
               style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
-              likes={likers}
+              likes={likes}
               userId={myId}
-              onLinkClick={() => this.setState({ likersModalShown: true })}
+              onLinkClick={() => this.setState({ likesModalShown: true })}
             />
           </div>
-          <PanelComments
-            key={'comments' + id}
-            style={{ padding: '1rem' }}
+          <Comments
+            autoShowComments
             comments={comments}
-            onSubmit={this.onCommentSubmit}
-            loadMoreButton={loadMoreCommentsButton}
             inputTypeLabel="comment"
+            key={'comments' + id}
+            loadMoreButton={loadMoreCommentsButton}
+            loadMoreComments={fetchMoreComments}
+            onAttachStar={attachStar}
+            onCommentSubmit={uploadComment}
+            onDelete={deleteComment}
+            onEditDone={editComment}
+            onLikeClick={likeComment}
+            onLoadMoreReplies={fetchMoreReplies}
+            onReplySubmit={uploadReply}
+            onRewardCommentEdit={editRewardComment}
             parent={{ type: 'url', id }}
+            style={{ padding: '1rem' }}
             userId={myId}
-            commentActions={{
-              attachStar,
-              onDelete: deleteComment,
-              onLikeClick: likeComment,
-              onEditDone: editComment,
-              onReplySubmit: this.onReplySubmit,
-              onLoadMoreReplies: fetchMoreReplies,
-              onRewardCommentEdit: editRewardComment
-            }}
-            loadMoreComments={this.loadMoreComments}
           />
         </div>
         {confirmModalShown && (
@@ -221,14 +245,14 @@ class LinkPage extends Component {
             onHide={() => this.setState({ confirmModalShown: false })}
           />
         )}
-        {likersModalShown && (
+        {likesModalShown && (
           <UserListModal
             key={'userlist' + id}
-            users={likers}
+            users={likes}
             userId={myId}
             title="People who liked this"
             description="(You)"
-            onHide={() => this.setState({ likersModalShown: false })}
+            onHide={() => this.setState({ likesModalShown: false })}
           />
         )}
       </div>
@@ -237,33 +261,6 @@ class LinkPage extends Component {
     ) : (
       <Loading text="Loading Page..." />
     )
-  }
-
-  loadMoreComments = () => {
-    const {
-      fetchMoreComments,
-      pageProps: { id, comments }
-    } = this.props
-    const lastCommentId = comments[comments.length - 1].id
-    fetchMoreComments(id, lastCommentId)
-  }
-
-  onCommentSubmit = content => {
-    const {
-      submitComment,
-      match: {
-        params: { linkId }
-      }
-    } = this.props
-    submitComment({ content, linkId })
-  }
-
-  onReplySubmit = params => {
-    const { submitReply } = this.props
-    submitReply({
-      ...params,
-      replyOfReply: true
-    })
   }
 }
 
@@ -286,7 +283,7 @@ export default connect(
     likeComment,
     likeLink,
     resetPage,
-    submitComment,
-    submitReply
+    uploadComment,
+    uploadReply
   }
 )(LinkPage)

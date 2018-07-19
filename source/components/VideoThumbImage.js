@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import StarMark from 'components/StarMark'
 import { URL } from 'constants/URL'
-import { auth } from 'redux/constants'
+import { auth } from 'helpers/requestHelpers'
 import request from 'axios'
 import { connect } from 'react-redux'
 import { Color } from 'constants/css'
@@ -93,10 +93,9 @@ class VideoThumbImage extends Component {
     const authExists = !!authorization.headers.authorization
     if (authExists) {
       try {
-        const { data: { xpEarned } } = await request.get(
-          `${API_URL}/xpEarned?videoId=${videoId}`,
-          auth()
-        )
+        const {
+          data: { xpEarned }
+        } = await request.get(`${API_URL}/xpEarned?videoId=${videoId}`, auth())
         if (this.mounted) this.setState(() => ({ xpEarned }))
       } catch (error) {
         console.error(error.response || error)

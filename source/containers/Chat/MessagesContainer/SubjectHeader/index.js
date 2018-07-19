@@ -200,7 +200,7 @@ class SubjectHeader extends Component {
         username,
         reloadedBy: null,
         reloaderName: null,
-        uploader: { id: userId, name: username },
+        uploader: { id: userId, username },
         content,
         timeStamp
       }

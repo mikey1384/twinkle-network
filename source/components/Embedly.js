@@ -56,7 +56,7 @@ export default class Embedly extends Component {
 
   async componentDidUpdate(prevProps) {
     const { id, url } = this.props
-    if (prevProps.url !== url) {
+    if (url && prevProps.url !== url) {
       try {
         const {
           data: { image, title, description, site }

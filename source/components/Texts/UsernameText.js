@@ -12,7 +12,7 @@ class UsernameText extends Component {
     color: PropTypes.string,
     style: PropTypes.object,
     openDirectMessageChannel: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object,
     userId: PropTypes.number,
     username: PropTypes.string
   }
@@ -22,7 +22,7 @@ class UsernameText extends Component {
   }
 
   render() {
-    const { user, userId, color, className, style = {} } = this.props
+    const { user = {}, userId, color, className, style = {} } = this.props
     const { menuShown } = this.state
     return (
       <div
@@ -34,18 +34,20 @@ class UsernameText extends Component {
           style={{
             cursor: 'pointer',
             fontWeight: 'bold',
-            color: user.name ? color || Color.darkGray() : Color.lightGray(),
+            color: user.username
+              ? color || Color.darkGray()
+              : Color.lightGray(),
             ...style
           }}
           onMouseEnter={this.onMouseEnter}
         >
-          {user.name || '(Deleted)'}
+          {user.username || '(Deleted)'}
         </span>
         {menuShown && (
           <DropdownList style={{ width: '100%' }}>
-            <li onClick={() => window.open(`/users/${user.name}`)}>
+            <li onClick={() => window.open(`/users/${user.username}`)}>
               <a
-                href={`/users/${user.name}`}
+                href={`/users/${user.username}`}
                 style={{ color: Color.darkGray() }}
                 onClick={e => e.preventDefault()}
               >
@@ -65,7 +67,7 @@ class UsernameText extends Component {
 
   onMouseEnter = () => {
     const { user } = this.props
-    if (user.name) this.setState({ menuShown: true })
+    if (user.username) this.setState({ menuShown: true })
   }
 
   onLinkClick = () => {
@@ -80,7 +82,7 @@ class UsernameText extends Component {
     if (user.id !== userId) {
       openDirectMessageChannel(
         { userId, username },
-        { userId: user.id, username: user.name },
+        { userId: user.id, username: user.username },
         chatMode
       )
     }

@@ -256,6 +256,12 @@ export function processedURL(url) {
   return url
 }
 
+export function queryStringForArray(array, originVar, destinationVar) {
+  return `${array
+    .map(elem => `${destinationVar}[]=${elem[originVar]}`)
+    .join('&')}`
+}
+
 export function stringIsEmpty(string) {
   const checkedString = string
     ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
@@ -304,12 +310,6 @@ export function fetchedVideoCodeFromURL(url) {
     videoCode = trimmedUrl.split('&')[0].split('?')[0]
   }
   return videoCode
-}
-
-export function queryStringForArray(array, originVar, destinationVar) {
-  return `${array
-    .map(elem => `${destinationVar}[]=${elem[originVar]}`)
-    .join('&')}`
 }
 
 /* eslint-enable no-useless-escape */

@@ -142,6 +142,7 @@ class QuestionsBuilder extends Component {
                 <ReactPlayer
                   url={`https://www.youtube.com/watch?v=${videoCode}`}
                   controls
+                  width="100%"
                 />
                 <div className={this.Styles.videoInterface}>
                   <ButtonGroup

@@ -14,7 +14,7 @@ ContentLink.propTypes = {
 }
 export default function ContentLink({
   style,
-  content: { id, title },
+  content: { id, content, title },
   type,
   ...actions
 }) {
@@ -38,7 +38,7 @@ export default function ContentLink({
     default:
       break
   }
-
+  title = title || content
   return title ? (
     <Link
       style={{

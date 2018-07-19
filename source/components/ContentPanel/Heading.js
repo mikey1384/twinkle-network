@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
+import Context from './Context'
+import withContext from 'components/Wrappers/withContext'
 import ContentLink from 'components/ContentLink'
 import { timeSince } from 'helpers/timeStampHelpers'
 import LikeButton from 'components/Buttons/LikeButton'
@@ -10,35 +12,29 @@ import QuestionModal from './QuestionModal'
 import StarMark from 'components/StarMark'
 import UsernameText from 'components/Texts/UsernameText'
 import { css } from 'emotion'
+import { connect } from 'react-redux'
 
-export default class Heading extends Component {
+class Heading extends Component {
   static propTypes = {
     action: PropTypes.string,
-    methods: PropTypes.shape({
-      onUploadAnswer: PropTypes.func.isRequired,
-      onLikeClick: PropTypes.func.isRequired
-    }),
+    onCommentSubmit: PropTypes.func.isRequired,
+    onLikeContent: PropTypes.func.isRequired,
     attachedVideoShown: PropTypes.bool,
     contentObj: PropTypes.shape({
-      contentId: PropTypes.number,
+      id: PropTypes.number,
       commentId: PropTypes.number,
       replyId: PropTypes.number,
-      rootContentLikers: PropTypes.array,
+      rootObj: PropTypes.object,
       rootId: PropTypes.number,
       rootType: PropTypes.string,
+      targetObj: PropTypes.object,
       timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
-      type: PropTypes.string.isRequired,
-      uploaderPicId: PropTypes.number
+      type: PropTypes.string,
+      uploader: PropTypes.object
     }).isRequired,
     myId: PropTypes.number,
-    onPlayVideoClick: PropTypes.func,
-    rootContent: PropTypes.shape({
-      content: PropTypes.string
-    }).isRequired,
-    targetReplyUploader: PropTypes.object,
-    targetCommentUploader: PropTypes.object,
-    uploader: PropTypes.object
+    onPlayVideoClick: PropTypes.func
   }
 
   state = {
@@ -47,10 +43,15 @@ export default class Heading extends Component {
 
   render() {
     const {
-      contentObj: { type, uploaderPicId, rootType, rootId, timeStamp },
-      uploader,
-      rootContent,
-      methods
+      contentObj: {
+        uploader = {},
+        rootObj = {},
+        rootType,
+        rootId,
+        timeStamp,
+        type
+      },
+      onCommentSubmit
     } = this.props
     const { questionModalShown } = this.state
     return (
@@ -58,16 +59,16 @@ export default class Heading extends Component {
         <ProfilePic
           style={{ width: '6rem', height: '6rem' }}
           userId={uploader.id}
-          profilePicId={uploaderPicId}
+          profilePicId={uploader.profilePicId}
         />
         <div
           style={{
             width: '90%',
             height: '100%',
-            marginLeft: '2%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            marginLeft: '1rem'
           }}
         >
           <div
@@ -98,11 +99,11 @@ export default class Heading extends Component {
         {questionModalShown && (
           <QuestionModal
             onHide={() => this.setState({ questionModalShown: false })}
-            question={rootContent.content}
-            uploadAnswer={methods.onUploadAnswer}
+            question={root.content}
+            uploadAnswer={onCommentSubmit}
             parent={{
-              id: rootId,
-              type: 'question',
+              id: rootObj.id,
+              type: rootType,
               rootId,
               rootType
             }}
@@ -114,10 +115,9 @@ export default class Heading extends Component {
 
   renderHeading = () => {
     const {
-      contentObj: { contentId, type, rootType },
-      action,
-      rootContent,
-      uploader
+      contentObj,
+      contentObj: { id, rootObj = {}, type, uploader = {}, rootType },
+      action
     } = this.props
     const contentLabel =
       rootType === 'url'
@@ -130,7 +130,7 @@ export default class Heading extends Component {
         return (
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> uploaded a
-            video: <ContentLink content={rootContent} type={rootType} />{' '}
+            video: <ContentLink content={contentObj} type={type} />{' '}
           </Fragment>
         )
       case 'comment':
@@ -138,12 +138,12 @@ export default class Heading extends Component {
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} />{' '}
             <ContentLink
-              content={{ id: contentId, title: action }}
+              content={{ id, title: action }}
               type={type}
               style={{ color: Color.green() }}
-            />{' '}
+            />
             {this.renderTargetAction()} {contentLabel}:{' '}
-            <ContentLink content={rootContent} type={rootType} />{' '}
+            <ContentLink content={rootObj} type={rootType} />{' '}
           </Fragment>
         )
       case 'url':
@@ -151,7 +151,7 @@ export default class Heading extends Component {
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> shared a
             link:&nbsp;
-            <ContentLink content={rootContent} type={rootType} />{' '}
+            <ContentLink content={contentObj} type={type} />{' '}
           </Fragment>
         )
       case 'question':
@@ -159,7 +159,7 @@ export default class Heading extends Component {
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> asked a{' '}
             <ContentLink
-              content={{ id: contentId, title: 'question' }}
+              content={{ id, title: 'question' }}
               type={type}
               style={{ color: Color.green() }}
             />{' '}
@@ -170,12 +170,12 @@ export default class Heading extends Component {
           <Fragment>
             <UsernameText user={uploader} color={Color.blue()} /> started a{' '}
             <ContentLink
-              content={{ id: contentId, title: 'discussion' }}
+              content={{ id, title: 'discussion' }}
               type={type}
               style={{ color: Color.green() }}
             />
             &nbsp;on {contentLabel}:{' '}
-            <ContentLink content={rootContent} type={rootType} />
+            <ContentLink content={rootObj} type={rootType} />
           </Fragment>
         )
       default:
@@ -185,24 +185,27 @@ export default class Heading extends Component {
 
   renderCornerButton = () => {
     const {
-      contentObj: { rootContentLikers = [], rootId, rootType },
-      rootContent: { content, isStarred },
+      contentObj: {
+        rootId,
+        rootObj: { content, likes = [], isStarred } = {},
+        rootType
+      },
       attachedVideoShown,
       myId,
-      methods,
       onPlayVideoClick
     } = this.props
-    const userLikedVideo =
-      rootContentLikers.map(liker => liker.userId).indexOf(myId) !== -1
+    const userLikedVideo = likes.map(like => like.userId).indexOf(myId) !== -1
     if (!content) return null
     if (rootType === 'video') {
       return (
         <Fragment>
           {attachedVideoShown ? (
             <LikeButton
+              contentType="video"
+              contentId={rootId}
               small
               liked={userLikedVideo}
-              onClick={() => methods.onLikeClick(rootId, rootType)}
+              onClick={this.onLikeClick}
             />
           ) : (
             content && (
@@ -265,30 +268,22 @@ export default class Heading extends Component {
 
   renderTargetAction = () => {
     const {
-      contentObj: { commentId, replyId },
-      targetReplyUploader,
-      targetCommentUploader
+      contentObj: { commentId, replyId, targetObj = {} }
     } = this.props
-    if (targetReplyUploader) {
+    if (targetObj.comment && !targetObj.comment.notFound) {
       return (
         <span>
-          <UsernameText user={targetReplyUploader} color={Color.blue()} />
-          {"'s "}
-          <ContentLink
-            content={{ id: replyId, title: 'reply ' }}
-            type="comment"
-            style={{ color: Color.green() }}
+          {' '}
+          <UsernameText
+            user={targetObj.comment.uploader}
+            color={Color.blue()}
           />
-          {'on'}
-        </span>
-      )
-    } else if (targetCommentUploader) {
-      return (
-        <span>
-          <UsernameText user={targetCommentUploader} color={Color.blue()} />
           {"'s "}
           <ContentLink
-            content={{ id: commentId, title: 'comment ' }}
+            content={{
+              id: replyId || commentId,
+              title: replyId ? 'reply ' : 'comment '
+            }}
             type="comment"
             style={{ color: Color.green() }}
           />
@@ -298,4 +293,17 @@ export default class Heading extends Component {
     }
     return null
   }
+
+  onLikeClick = likes => {
+    const {
+      contentObj: { rootId, rootType },
+      onLikeContent
+    } = this.props
+    onLikeContent({ likes, contentId: rootId, type: rootType })
+  }
 }
+
+export default connect(
+  null,
+  dispatch => ({ dispatch })
+)(withContext({ Component: Heading, Context }))
