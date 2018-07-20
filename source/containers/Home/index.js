@@ -111,10 +111,6 @@ class Home extends Component {
 }
 
 export default connect(
-  state => ({
-    realName: state.UserReducer.realName,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId
-  }),
+  null,
   { uploadProfilePic }
 )(Home)
