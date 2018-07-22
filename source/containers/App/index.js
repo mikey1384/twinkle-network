@@ -12,6 +12,7 @@ import {
   closeSigninModal
 } from 'redux/actions/UserActions'
 import { addEvent } from 'helpers/listenerHelpers'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import { siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
@@ -37,6 +38,9 @@ const Chat = loadable(() => import('containers/Chat'), {
 const ContentPage = loadable(() => import('containers/ContentPage'), {
   LoadingComponent: Loading
 })
+const SearchPage = loadable(() => import('containers/SearchPage'), {
+  LoadingComponent: Loading
+})
 import Redirect from 'containers/Redirect'
 
 let visibilityChange
@@ -57,6 +61,7 @@ class App extends Component {
     initChat: PropTypes.func,
     changePageVisibility: PropTypes.func,
     history: PropTypes.object,
+    searchText: PropTypes.string,
     signinModalShown: PropTypes.bool,
     username: PropTypes.string
   }
@@ -164,6 +169,7 @@ class App extends Component {
       location,
       history,
       signinModalShown,
+      searchText,
       turnChatOff,
       username,
       resetChat
@@ -174,6 +180,7 @@ class App extends Component {
       scrollPosition,
       updateNoticeShown
     } = this.state
+    const searchMode = !stringIsEmpty(searchText)
     return (
       <div
         className={css`
@@ -245,7 +252,10 @@ class App extends Component {
           }
           onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
-        <div id="App" className={`${siteContent} ${chatMode && 'hidden'}`}>
+        <div
+          id="App"
+          className={`${siteContent} ${chatMode || (searchMode && 'hidden')}`}
+        >
           <SearchBox
             className="mobile"
             style={{
@@ -265,6 +275,7 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
+        {searchMode && <SearchPage searchText={searchText} />}
         {chatMode &&
           this.props.loggedIn && (
             <Chat
@@ -299,6 +310,7 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     chatMode: state.ChatReducer.chatMode,
     chatNumUnreads: state.ChatReducer.numUnreads,
+    searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
     username: state.UserReducer.username
   }),
