@@ -2,27 +2,26 @@ import { css } from 'react-emotion'
 import { mobileMaxWidth } from 'constants/css'
 
 export const container = css`
-  width: 100%;
   height: 100%;
-  @media (max-width: 991px) {
+  @media (max-width: ${mobileMaxWidth}) {
     display: flex;
   }
 `
 
 export const Left = css`
-  position: fixed;
-  left: 1rem;
+  width: CALC(20vw - 1rem);
+  left: 5vw;
   display: block;
-  width: CALC(15% + 2rem);
+  position: fixed;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
   }
 `
 
 export const Center = css`
-  width: CALC(55% - 6rem);
+  width: 42vw;
   height: 100%;
-  margin-left: calc(15% + 4rem);
+  margin-left: 25vw;
   @media (max-width: ${mobileMaxWidth}) {
     width: 100%;
     margin-left: 0;
@@ -30,13 +29,13 @@ export const Center = css`
 `
 
 export const Right = css`
-  width: 30%;
+  width: CALC(28vw - 1rem);
+  right: 5vw;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  right: 1rem;
   top: 6rem;
   max-height: CALC(100% - 6rem);
-  position: absolute;
+  position: fixed;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
   }
