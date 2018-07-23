@@ -9,7 +9,7 @@ export const container = css`
 `
 
 export const Left = css`
-  width: CALC(20vw - 1rem);
+  width: CALC(18vw - 1rem);
   left: 5vw;
   display: block;
   position: fixed;
@@ -19,9 +19,9 @@ export const Left = css`
 `
 
 export const Center = css`
-  width: 42vw;
+  width: 45vw;
   height: 100%;
-  margin-left: 25vw;
+  margin-left: 23vw;
   @media (max-width: ${mobileMaxWidth}) {
     width: 100%;
     margin-left: 0;
@@ -29,7 +29,7 @@ export const Center = css`
 `
 
 export const Right = css`
-  width: CALC(28vw - 1rem);
+  width: CALC(27vw - 1rem);
   right: 5vw;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
