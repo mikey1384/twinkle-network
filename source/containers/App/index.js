@@ -1,4 +1,4 @@
-import 'regenerator-runtime/runtime'
+import 'regenerator-runtime/runtime' // for async await
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'

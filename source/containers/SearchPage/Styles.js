@@ -4,6 +4,9 @@ import { mobileMaxWidth } from 'constants/css'
 export const searchPage = css`
   margin-top: 6rem;
   padding-top: 1rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
   height: 100%;
   @media (max-width: ${mobileMaxWidth}) {
     margin-top: 0;
