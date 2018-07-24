@@ -181,7 +181,6 @@ class VideoPage extends Component {
       videoId
     } = this.state
     const { playlist: playlistId } = queryString.parse(search)
-
     return (
       <ErrorBoundary
         className={css`
