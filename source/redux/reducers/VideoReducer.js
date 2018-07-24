@@ -378,8 +378,7 @@ export default function VideoReducer(state = defaultState, action) {
         videoPage: {
           ...state.videoPage,
           ...action.data,
-          videoLoading: false,
-          comments: []
+          videoLoading: false
         }
       }
     case VIDEO.LOAD_COMMENTS:
