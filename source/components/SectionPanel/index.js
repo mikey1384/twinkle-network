@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Button from 'components/Button'
 import Loading from 'components/Loading'
 import SearchInput from 'components/Texts/SearchInput'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
@@ -30,9 +31,7 @@ export default class SectionPanel extends Component {
   render() {
     const {
       title,
-      isSearching,
       button,
-      children,
       loadMoreButtonShown,
       onSearch,
       searchPlaceholder,
@@ -99,25 +98,19 @@ export default class SectionPanel extends Component {
           </div>
         </header>
         <main>
-          {this.renderEmptyMessage()}
-          {searchQuery && isSearching ? (
-            <div className={this.statusMsg}>Searching...</div>
-          ) : (
-            children
+          {this.renderContent()}
+          {loadMoreButtonShown && (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                transparent
+                disabled={loading}
+                onClick={this.onLoadMore}
+                style={{ fontSize: '2rem' }}
+              >
+                Load More
+              </Button>
+            </div>
           )}
-          {loadMoreButtonShown &&
-            !searchQuery && (
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  transparent
-                  disabled={loading}
-                  onClick={this.onLoadMore}
-                  style={{ fontSize: '2rem' }}
-                >
-                  Load More
-                </Button>
-              </div>
-            )}
         </main>
       </div>
     )
@@ -137,27 +130,30 @@ export default class SectionPanel extends Component {
     }
   }
 
-  renderEmptyMessage = () => {
+  renderContent = () => {
     const {
+      children,
       emptyMessage,
       isEmpty,
       isSearching,
       loaded,
       searchQuery
     } = this.props
-    if (isEmpty) {
-      if (loaded) {
-        return (
-          <div className={this.statusMsg}>
-            {searchQuery
-              ? isSearching ? 'Searching...' : 'No Results'
+    return loaded ? (
+      (!stringIsEmpty(searchQuery) && isSearching) || isEmpty ? (
+        <div className={this.statusMsg}>
+          {searchQuery && isSearching
+            ? 'Searching...'
+            : searchQuery
+              ? 'No Results'
               : emptyMessage}
-          </div>
-        )
-      }
-      return <Loading absolute />
-    }
-    return null
+        </div>
+      ) : (
+        children
+      )
+    ) : (
+      <Loading />
+    )
   }
 
   statusMsg = css`

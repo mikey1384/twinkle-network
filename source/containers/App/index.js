@@ -12,7 +12,6 @@ import {
   closeSigninModal
 } from 'redux/actions/UserActions'
 import { addEvent } from 'helpers/listenerHelpers'
-import { stringIsEmpty } from 'helpers/stringHelpers'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import { siteContent } from './Styles'
 import MobileMenu from './MobileMenu'
@@ -49,20 +48,21 @@ let hidden
 class App extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    initSession: PropTypes.func,
-    turnChatOff: PropTypes.func,
+    changePageVisibility: PropTypes.func,
     chatNumUnreads: PropTypes.number,
+    closeSigninModal: PropTypes.func,
+    history: PropTypes.object,
+    initChat: PropTypes.func,
+    initSession: PropTypes.func,
+    location: PropTypes.object,
+    loggedIn: PropTypes.bool,
     numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
-    closeSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
-    loggedIn: PropTypes.bool,
-    location: PropTypes.object,
-    initChat: PropTypes.func,
-    changePageVisibility: PropTypes.func,
-    history: PropTypes.object,
+    searchMode: PropTypes.bool,
     searchText: PropTypes.string,
     signinModalShown: PropTypes.bool,
+    turnChatOff: PropTypes.func,
     username: PropTypes.string
   }
 
@@ -168,6 +168,7 @@ class App extends Component {
       closeSigninModal,
       location,
       history,
+      searchMode,
       signinModalShown,
       searchText,
       turnChatOff,
@@ -180,7 +181,6 @@ class App extends Component {
       scrollPosition,
       updateNoticeShown
     } = this.state
-    const searchMode = !stringIsEmpty(searchText)
     return (
       <div
         className={css`
@@ -254,7 +254,7 @@ class App extends Component {
         />
         <div
           id="App"
-          className={`${siteContent} ${chatMode || (searchMode && 'hidden')}`}
+          className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
         >
           <SearchBox
             className="mobile"
@@ -275,7 +275,12 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
-        {searchMode && <SearchPage searchText={searchText} />}
+        {searchMode && (
+          <SearchPage
+            className={chatMode ? 'hidden' : ''}
+            searchText={searchText}
+          />
+        )}
         {chatMode &&
           this.props.loggedIn && (
             <Chat
@@ -310,6 +315,7 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     chatMode: state.ChatReducer.chatMode,
     chatNumUnreads: state.ChatReducer.numUnreads,
+    searchMode: state.SearchReducer.searchMode,
     searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
     username: state.UserReducer.username

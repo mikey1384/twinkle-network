@@ -16,6 +16,7 @@ import {
   increaseNumNewPosts,
   increaseNumNewNotis
 } from 'redux/actions/NotiActions'
+import { closeSearch } from 'redux/actions/SearchActions'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
 import { GENERAL_CHAT_ID } from 'constants/database'
@@ -45,6 +46,7 @@ class Header extends Component {
     numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
     onChatButtonClick: PropTypes.func,
+    closeSearch: PropTypes.func.isRequired,
     onMobileMenuOpen: PropTypes.func,
     resetChat: PropTypes.func,
     showUpdateNotice: PropTypes.func,
@@ -147,6 +149,7 @@ class Header extends Component {
       numChatUnreads,
       numNewNotis,
       numNewPosts,
+      closeSearch,
       style = {},
       totalRewardAmount,
       turnChatOff
@@ -154,8 +157,9 @@ class Header extends Component {
     const { logoHovered } = this.state
     return (
       <nav
-        className={`unselectable ${container} ${chatMode &&
-          'header chat'} ${!mobileNavbarShown && 'desktop'}`}
+        className={`unselectable ${container} ${chatMode && 'header chat'} ${
+          mobileNavbarShown ? '' : 'desktop'
+        }`}
         style={{
           position: chatMode ? 'relative' : 'fixed',
           ...style
@@ -287,7 +291,10 @@ class Header extends Component {
                 </HeaderNav>
                 <HeaderNav
                   to="/"
-                  onClick={() => window.scrollTo(0, 0)}
+                  onClick={() => {
+                    closeSearch()
+                    window.scrollTo(0, 0)
+                  }}
                   isHome
                   className={chatLoading ? 'desktop' : ''}
                   imgLabel="home"
@@ -303,6 +310,7 @@ class Header extends Component {
                 </HeaderNav>
                 <HeaderNav
                   to="/videos"
+                  onClick={closeSearch}
                   className={chatLoading ? 'desktop' : ''}
                   imgLabel="film"
                 >
@@ -310,6 +318,7 @@ class Header extends Component {
                 </HeaderNav>
                 <HeaderNav
                   to="/links"
+                  onClick={closeSearch}
                   className={chatLoading ? 'desktop' : ''}
                   imgLabel="book"
                 >
@@ -422,14 +431,15 @@ export default connect(
     versionMatch: state.NotiReducer.versionMatch
   }),
   {
-    logout,
-    turnChatOff,
+    checkVersion,
     getNumberOfUnreadMessages,
     increaseNumNewPosts,
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
+    logout,
     notifyChatSubjectChange,
-    checkVersion,
-    resetChat
+    closeSearch,
+    resetChat,
+    turnChatOff
   }
 )(withRouter(Header))

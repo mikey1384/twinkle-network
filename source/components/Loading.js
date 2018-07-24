@@ -28,10 +28,10 @@ export default function Loading({
       `
     : css`
         width: 100%;
-        height: 12rem;
+        height: 20rem;
       `
   return (
-    <div className={loadingStyle} style={style}>
+    <div className={`${loadingStyle} ${className}`} style={style}>
       <div
         style={{
           display: 'flex',

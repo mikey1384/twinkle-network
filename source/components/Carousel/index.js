@@ -48,6 +48,7 @@ class Carousel extends Component {
     onFinish: PropTypes.func,
     onShowAll: PropTypes.func,
     progressBar: PropTypes.bool,
+    searchMode: PropTypes.bool,
     showAllButton: PropTypes.bool,
     showQuestionsBuilder: PropTypes.func,
     slideIndex: PropTypes.number.isRequired,
@@ -90,10 +91,6 @@ class Carousel extends Component {
       slideWidth: 0,
       top: 0
     }
-    this.rafCb = this.rafCb.bind(this)
-    this.getTweeningValue = this.getTweeningValue.bind(this)
-    this.onResize = this.onResize.bind(this)
-    this.onReadyStateChange = this.onReadyStateChange.bind(this)
   }
 
   componentDidMount() {
@@ -111,13 +108,18 @@ class Carousel extends Component {
   }
 
   componentDidUpdate(prevProps, slideIndex) {
+    const { chatMode, searchMode } = this.props
     if (prevProps.clickSafe !== this.props.clickSafe) return
     if (prevProps.children.length !== this.props.children.length) {
       this.setState({
         slideCount: this.props.children.length
       })
     }
-    if (!this.props.chatMode && prevProps.chatMode !== this.props.chatMode) {
+    if (
+      !chatMode &&
+      !searchMode &&
+      (prevProps.chatMode !== chatMode || prevProps.searchMode !== searchMode)
+    ) {
       setTimeout(setDimensions.bind(this), 0)
     }
   }
@@ -272,7 +274,7 @@ class Carousel extends Component {
     )
   }
 
-  tweenState(
+  tweenState = (
     path,
     {
       easing,
@@ -283,7 +285,7 @@ class Carousel extends Component {
       onEnd,
       stackBehavior: configSB
     }
-  ) {
+  ) => {
     this.setState(prevState => {
       let stateName
       // see comment below on pash hash
@@ -330,7 +332,7 @@ class Carousel extends Component {
     })
   }
 
-  getTweeningValue(path) {
+  getTweeningValue = path => {
     const state = this.state
 
     let tweeningValue
@@ -380,7 +382,7 @@ class Carousel extends Component {
     return tweeningValue
   }
 
-  rafCb() {
+  rafCb = () => {
     const state = this.state
     if (state.tweenQueue.length === 0) {
       return
@@ -412,13 +414,13 @@ class Carousel extends Component {
     this.rafID = requestAnimationFrame(this.rafCb)
   }
 
-  onResize() {
-    if (!this.props.chatMode) {
+  onResize = () => {
+    if (!this.props.chatMode && !this.props.searchMode) {
       setDimensions.call(this)
     }
   }
 
-  onReadyStateChange() {
+  onReadyStateChange = () => {
     setDimensions.call(this)
   }
 }
@@ -426,6 +428,7 @@ class Carousel extends Component {
 export default connect(
   state => ({
     chatMode: state.ChatReducer.chatMode,
+    searchMode: state.SearchReducer.searchMode,
     clickSafe: state.PlaylistReducer.clickSafe
   }),
   { clickSafeOn, clickSafeOff }

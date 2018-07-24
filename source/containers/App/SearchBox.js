@@ -3,32 +3,34 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import SearchInput from 'components/Texts/SearchInput'
-import { onChangeInput } from 'redux/actions/SearchActions'
+import { changeSearch, initSearch } from 'redux/actions/SearchActions'
 
 class SearchBox extends Component {
   static propTypes = {
     className: PropTypes.string,
-    onChangeInput: PropTypes.func.isRequired,
+    changeSearch: PropTypes.func.isRequired,
+    initSearch: PropTypes.func.isRequired,
     searchText: PropTypes.string.isRequired,
     style: PropTypes.object
   }
 
   render() {
-    const { className, searchText, style } = this.props
+    const { className, initSearch, searchText, style } = this.props
     return (
       <div className={className} style={style}>
         <SearchInput
-          placeholder="Search for Videos and Links"
+          placeholder="Search"
           onChange={this.onContentSearch}
           value={searchText}
+          onFocus={initSearch}
         />
       </div>
     )
   }
 
   onContentSearch = text => {
-    const { onChangeInput } = this.props
-    onChangeInput(text)
+    const { changeSearch } = this.props
+    changeSearch(text)
   }
 }
 
@@ -37,6 +39,7 @@ export default connect(
     searchText: state.SearchReducer.searchText
   }),
   {
-    onChangeInput
+    changeSearch,
+    initSearch
   }
 )(withRouter(SearchBox))

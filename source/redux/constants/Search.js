@@ -1,5 +1,7 @@
 const types = {
-  CHANGE_INPUT: 'CHANGE_INPUT'
+  CHANGE_INPUT: 'CHANGE_INPUT',
+  CLOSE: 'CLOSE',
+  INIT: 'INIT'
 }
 
 for (let key in types) {
