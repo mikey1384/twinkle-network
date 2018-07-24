@@ -108,7 +108,7 @@ class VideoPage extends Component {
       loadVideoComments,
       loadVideoPage
     } = this.props
-    loadVideoPage(params.videoId)
+    await loadVideoPage(params.videoId)
     const data = await loadComments({ id: params.videoId, type: 'video' })
     loadVideoComments(data)
   }
@@ -116,10 +116,13 @@ class VideoPage extends Component {
   async componentDidUpdate(prevProps) {
     const {
       loadVideoPage,
+      loadVideoComments,
       match: { params }
     } = this.props
     if (prevProps.match.params.videoId !== params.videoId) {
       await loadVideoPage(params.videoId)
+      const data = await loadComments({ id: params.videoId, type: 'video' })
+      loadVideoComments(data)
       return this.setState({
         watchTabActive: true,
         currentSlide: 0,
