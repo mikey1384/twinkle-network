@@ -11,6 +11,7 @@ class SearchInput extends Component {
     addonColor: PropTypes.string,
     autoFocus: PropTypes.bool,
     className: PropTypes.string,
+    innerRef: PropTypes.func,
     onChange: PropTypes.func.isRequired,
     onClear: PropTypes.func,
     onClickOutSide: PropTypes.func,
@@ -41,6 +42,7 @@ class SearchInput extends Component {
       addonColor,
       autoFocus,
       className,
+      innerRef,
       onChange,
       placeholder,
       onFocus,
@@ -83,6 +85,7 @@ class SearchInput extends Component {
         </div>
         <Input
           autoFocus={autoFocus}
+          inputRef={innerRef ? ref => innerRef(ref) : () => {}}
           onFocus={onFocus && onFocus}
           placeholder={placeholder}
           value={value}

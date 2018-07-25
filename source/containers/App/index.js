@@ -243,6 +243,7 @@ class App extends Component {
           </div>
         )}
         <Header
+          searchBoxRef={ref => (this.SearchBox = ref)}
           chatMode={chatMode}
           chatLoading={chatLoading}
           onChatButtonClick={this.onChatButtonClick}
@@ -279,6 +280,7 @@ class App extends Component {
           <SearchPage
             className={chatMode ? 'hidden' : ''}
             searchText={searchText}
+            focusSearchBox={() => this.SearchBox.focus()}
           />
         )}
         {chatMode &&

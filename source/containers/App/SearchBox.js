@@ -10,16 +10,18 @@ class SearchBox extends Component {
     className: PropTypes.string,
     changeSearch: PropTypes.func.isRequired,
     initSearch: PropTypes.func.isRequired,
+    innerRef: PropTypes.func,
     searchText: PropTypes.string.isRequired,
     style: PropTypes.object
   }
 
   render() {
-    const { className, initSearch, searchText, style } = this.props
+    const { className, initSearch, innerRef, searchText, style } = this.props
     return (
       <div className={className} style={style}>
         <SearchInput
-          placeholder="Search"
+          innerRef={innerRef ? ref => innerRef(ref) : () => {}}
+          placeholder="Search Videos, Links, Users, and More"
           onChange={this.onContentSearch}
           value={searchText}
           onFocus={initSearch}

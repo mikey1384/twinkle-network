@@ -46,6 +46,7 @@ class Header extends Component {
     numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
     onChatButtonClick: PropTypes.func,
+    searchBoxRef: PropTypes.func,
     closeSearch: PropTypes.func.isRequired,
     onMobileMenuOpen: PropTypes.func,
     resetChat: PropTypes.func,
@@ -145,6 +146,7 @@ class Header extends Component {
       chatMode,
       onChatButtonClick,
       onMobileMenuOpen,
+      searchBoxRef,
       mobileNavbarShown,
       numChatUnreads,
       numNewNotis,
@@ -370,7 +372,12 @@ class Header extends Component {
           }}
         >
           <div style={{ display: 'flex', width: '65%' }}>
-            {!chatMode && <SearchBox style={{ width: '100%' }} />}
+            {!chatMode && (
+              <SearchBox
+                innerRef={ref => searchBoxRef(ref)}
+                style={{ width: '100%' }}
+              />
+            )}
           </div>
           <div
             style={{

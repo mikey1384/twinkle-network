@@ -16,6 +16,7 @@ class SearchPage extends Component {
     className: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     closeSearch: PropTypes.func.isRequired,
+    focusSearchBox: PropTypes.func.isRequired,
     searchFilter: PropTypes.string,
     searchText: PropTypes.string.isRequired,
     userId: PropTypes.number
@@ -44,6 +45,21 @@ class SearchPage extends Component {
             width: '80%'
           }}
         >
+          <div style={{ textAlign: 'center' }}>
+            <p
+              style={{
+                cursor: 'pointer',
+                color: Color.darkGray(),
+                fontSize: '1.7rem',
+                lineHeight: 1,
+                textDecoration: 'underline',
+                fontWeight: 'bold'
+              }}
+              onClick={closeSearch}
+            >
+              Tap Here to Go Back
+            </p>
+          </div>
           <div
             style={{
               fontSize: '3rem',
@@ -71,18 +87,16 @@ class SearchPage extends Component {
             applyFilter={this.applyFilter}
             selectedFilter={selectedFilter}
           />
-          {stringIsEmpty(searchText) ? (
-            <Instructions onClose={closeSearch} />
-          ) : (
-            <div />
-          )}
+          {stringIsEmpty(searchText) ? <Instructions /> : <div />}
         </div>
       </div>
     )
   }
 
   applyFilter = filter => {
+    const { focusSearchBox } = this.props
     this.setState({ selectedFilter: filter })
+    focusSearchBox()
   }
 
   renderHelperText = () => {
@@ -94,13 +108,19 @@ class SearchPage extends Component {
 
   setDefaultSearchFilter = async() => {
     const { selectedFilter } = this.state
-    const { dispatch, searchFilter, updateDefaultSearchFilter } = this.props
-    if (selectedFilter === searchFilter) return
+    const {
+      dispatch,
+      focusSearchBox,
+      searchFilter,
+      updateDefaultSearchFilter
+    } = this.props
+    if (selectedFilter === searchFilter) return focusSearchBox()
     await setDefaultSearchFilter({
       filter: selectedFilter,
       dispatch
     })
     updateDefaultSearchFilter(selectedFilter)
+    focusSearchBox()
   }
 }
 
