@@ -42,7 +42,7 @@ export default class LeaderBoardTab extends Component {
     const { users } = this.state
     return (
       <Fragment>
-        {users.length === 0 && <Loading />}
+        {users.length === 0 && <Loading relative />}
         {users.map(user => {
           const rank = !user.twinkleXP
             ? undefined

@@ -152,7 +152,7 @@ export default class SectionPanel extends Component {
         children
       )
     ) : (
-      <Loading />
+      <Loading relative />
     )
   }
 

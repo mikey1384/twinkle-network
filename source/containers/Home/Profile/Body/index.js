@@ -201,7 +201,7 @@ class Body extends Component {
           />
         </FilterBar>
         <div>
-          {!loaded && <Loading text="Loading..." />}
+          {!loaded && <Loading relative text="Loading..." />}
           {loaded &&
             feeds.length > 0 && (
               <div>

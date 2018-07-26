@@ -4,6 +4,7 @@ import { searchPage } from './Styles'
 import TopFilter from './TopFilter'
 import Instructions from './Instructions'
 import Checkbox from 'components/Checkbox'
+import Results from './Results'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { setDefaultSearchFilter } from 'helpers/requestHelpers'
 import { Color } from 'constants/css'
@@ -87,7 +88,11 @@ class SearchPage extends Component {
             applyFilter={this.applyFilter}
             selectedFilter={selectedFilter}
           />
-          {stringIsEmpty(searchText) ? <Instructions /> : <div />}
+          {stringIsEmpty(searchText) ? (
+            <Instructions />
+          ) : (
+            <Results searchText={searchText} filter={selectedFilter} />
+          )}
         </div>
       </div>
     )

@@ -259,7 +259,7 @@ class LinkPage extends Component {
     ) : notFound ? (
       <NotFound />
     ) : (
-      <Loading text="Loading Page..." />
+      <Loading relative text="Loading Page..." />
     )
   }
 }

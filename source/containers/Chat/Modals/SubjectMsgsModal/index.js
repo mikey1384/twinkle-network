@@ -50,7 +50,7 @@ export default class SubjectMsgsModal extends Component {
               loading={loading}
             />
           )}
-          {messages.length === 0 && <Loading />}
+          {messages.length === 0 && <Loading relative />}
           {messages.map(message => <Message key={message.id} {...message} />)}
         </main>
         <footer>

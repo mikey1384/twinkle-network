@@ -108,7 +108,7 @@ class EditPlaylistModal extends Component {
                 onChange={this.onVideoSearchInput}
               />
             )}
-          {!loaded && <Loading />}
+          {!loaded && <Loading relative />}
           {mainTabActive &&
             modalType === 'change' && (
               <SelectVideosForm
@@ -234,6 +234,9 @@ class EditPlaylistModal extends Component {
   }
 }
 
-export default connect(null, {
-  changePlaylistVideos
-})(DragDropContext(HTML5Backend)(EditPlaylistModal))
+export default connect(
+  null,
+  {
+    changePlaylistVideos
+  }
+)(DragDropContext(HTML5Backend)(EditPlaylistModal))

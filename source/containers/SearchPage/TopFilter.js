@@ -17,28 +17,22 @@ export default function TopFilter({ applyFilter, selectedFilter, style }) {
         Videos
       </nav>
       <nav
-        className={selectedFilter === 'user' ? 'active' : ''}
-        onClick={() => applyFilter('user')}
+        className={selectedFilter === 'question' ? 'active' : ''}
+        onClick={() => applyFilter('question')}
       >
-        Users
+        Questions
+      </nav>
+      <nav
+        className={selectedFilter === 'discussion' ? 'active' : ''}
+        onClick={() => applyFilter('discussion')}
+      >
+        Discussions
       </nav>
       <nav
         className={selectedFilter === 'url' ? 'active' : ''}
         onClick={() => applyFilter('url')}
       >
         Links
-      </nav>
-      <nav
-        className={selectedFilter === 'post' ? 'active' : ''}
-        onClick={() => applyFilter('post')}
-      >
-        Posts
-      </nav>
-      <nav
-        className={selectedFilter === 'comment' ? 'active' : ''}
-        onClick={() => applyFilter('comment')}
-      >
-        Comments
       </nav>
     </FilterBar>
   )

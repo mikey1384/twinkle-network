@@ -154,7 +154,6 @@ class SubjectHeader extends Component {
           </Fragment>
         ) : (
           <Loading
-            absolute
             style={{
               color: Color.green()
             }}

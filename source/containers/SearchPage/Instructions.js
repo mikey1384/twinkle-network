@@ -19,7 +19,7 @@ export default class Instructions extends Component {
           }}
         >
           <p>
-            {`You can search for almost any content posted on this website.
+            {`You can search for contents posted on this website.
             Type in keywords and use the filter bar above to narrow down your
             search results by content types (videos, users, links, posts, comments)`}
           </p>

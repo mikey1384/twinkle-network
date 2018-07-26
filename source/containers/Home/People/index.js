@@ -72,7 +72,7 @@ class People extends Component {
             width: '100%'
           }}
         >
-          {!loaded && <Loading text="Loading Users..." />}
+          {!loaded && <Loading relative text="Loading Users..." />}
           {loaded &&
             !searching &&
             profiles.map(profile => (

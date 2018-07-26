@@ -139,7 +139,7 @@ class MessagesContainer extends Component {
           />
         )}
         <div className={className}>
-          {loading && <Loading absolute />}
+          {loading && <Loading />}
           <div
             ref={ref => {
               this.messagesContainer = ref
