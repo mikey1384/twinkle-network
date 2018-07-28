@@ -277,11 +277,15 @@ class App extends Component {
           </Switch>
         </div>
         {searchMode && (
-          <SearchPage
+          <div
             className={chatMode ? 'hidden' : ''}
-            searchText={searchText}
-            focusSearchBox={() => this.SearchBox.focus()}
-          />
+            style={{ marginTop: '6rem' }}
+          >
+            <SearchPage
+              searchText={searchText}
+              focusSearchBox={() => this.SearchBox.focus()}
+            />
+          </div>
         )}
         {chatMode &&
           this.props.loggedIn && (

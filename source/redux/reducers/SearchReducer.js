@@ -1,12 +1,19 @@
 import SEARCH from '../constants/Search'
 
 const defaultState = {
+  results: [],
   searchMode: false,
-  searchText: ''
+  searchText: '',
+  selectedFilter: ''
 }
 
 export default function SearchReducer(state = defaultState, action) {
   switch (action.type) {
+    case SEARCH.CHANGE_FILTER:
+      return {
+        ...state,
+        selectedFilter: action.filter
+      }
     case SEARCH.CHANGE_INPUT:
       return {
         ...state,
@@ -21,6 +28,11 @@ export default function SearchReducer(state = defaultState, action) {
       return {
         ...state,
         searchMode: true
+      }
+    case SEARCH.SET_RESULTS:
+      return {
+        ...state,
+        results: action.results
       }
     default:
       return state

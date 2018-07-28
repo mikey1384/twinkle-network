@@ -67,6 +67,7 @@ class ContentInput extends Component {
               urlError: null
             })
           }}
+          style={{ marginTop: '1rem' }}
           checked={form.checkedVideo}
         />
         {descriptionFieldsShown && (

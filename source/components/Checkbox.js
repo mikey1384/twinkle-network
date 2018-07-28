@@ -6,17 +6,18 @@ import { css } from 'emotion'
 Checkbox.propTypes = {
   checked: PropTypes.bool,
   label: PropTypes.string,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  style: PropTypes.object
 }
-export default function Checkbox({ checked, label, onClick }) {
+export default function Checkbox({ checked, label, onClick, style }) {
   return (
     <div
       style={{
-        marginTop: '1rem',
         display: 'flex',
         alignItems: 'center',
         postion: 'relative',
-        width: '100%'
+        width: '100%',
+        ...style
       }}
     >
       {label && (

@@ -52,7 +52,7 @@ class Profile extends Component {
     } = this.props
     return !unavailable ? (
       <div>
-        {!id && <Loading relative text="Loading Profile..." />}
+        {!id && <Loading text="Loading Profile..." />}
         {id && (
           <Fragment>
             <ProfilePanel {...this.props} />

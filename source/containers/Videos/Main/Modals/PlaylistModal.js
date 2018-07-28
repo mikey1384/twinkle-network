@@ -51,7 +51,7 @@ export default class PlaylistModal extends Component {
       <Modal onHide={onHide}>
         <header>{title}</header>
         <main>
-          {videos.length === 0 && <Loading relative text="Loading..." />}
+          {videos.length === 0 && <Loading text="Loading..." />}
           {videos.map((video, index) => (
             <div
               key={video.id}

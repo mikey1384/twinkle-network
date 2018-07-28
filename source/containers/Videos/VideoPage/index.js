@@ -209,7 +209,7 @@ class VideoPage extends Component {
         >
           {(videoLoading || videoUnavailable) && (
             <div>
-              {videoLoading && <Loading relative text="Loading Video..." />}
+              {videoLoading && <Loading text="Loading Video..." />}
               {videoUnavailable && <NotFound text="Video does not exist" />}
             </div>
           )}

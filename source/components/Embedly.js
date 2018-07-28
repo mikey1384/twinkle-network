@@ -117,15 +117,15 @@ export default class Embedly extends Component {
           <section
             className={css`
               position: relative;
-              width: ${small ? '40%' : '100%'};
-              height: ${small ? '40%' : '100%'};
+              width: ${small ? '20rem' : '100%'};
+              height: ${small ? '15rem' : '100%'};
             `}
           >
             <img
               className={css`
                 width: 100%;
-                max-height: ${small ? '30vh' : '70vh'};
-                object-fit: scale-down;
+                height: ${small ? '100%' : '40rem'};
+                object-fit: ${small ? 'cover' : 'scale-down'};
               `}
               src={imageUrl}
               onError={this.onImageLoadError}

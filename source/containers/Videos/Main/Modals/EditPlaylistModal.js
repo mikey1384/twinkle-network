@@ -108,7 +108,7 @@ class EditPlaylistModal extends Component {
                 onChange={this.onVideoSearchInput}
               />
             )}
-          {!loaded && <Loading relative />}
+          {!loaded && <Loading />}
           {mainTabActive &&
             modalType === 'change' && (
               <SelectVideosForm

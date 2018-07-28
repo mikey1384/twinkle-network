@@ -115,7 +115,7 @@ class Comment extends Component {
         <NotFound />
       )
     ) : (
-      <Loading relative />
+      <Loading />
     )
   }
 

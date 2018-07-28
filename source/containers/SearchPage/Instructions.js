@@ -1,10 +1,18 @@
 import React, { Component } from 'react'
 import { Color } from 'constants/css'
+import CloseText from './CloseText'
 
 export default class Instructions extends Component {
   render() {
     return (
-      <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          alignItems: 'center'
+        }}
+      >
         <div
           style={{
             height: '50vh',
@@ -24,6 +32,7 @@ export default class Instructions extends Component {
             search results by content types (videos, users, links, posts, comments)`}
           </p>
         </div>
+        <CloseText />
       </div>
     )
   }

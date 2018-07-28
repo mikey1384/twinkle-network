@@ -15,23 +15,14 @@ export default function Loading({
   text = '',
   style = {}
 }) {
-  const loadingStyle = relative
-    ? css`
-        width: 100%;
-        height: 17rem;
-      `
-    : css`
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
   return (
-    <div className={`${loadingStyle} ${className}`} style={style}>
+    <div
+      className={`${css`
+        width: 100%;
+        height: 15rem;
+      `} ${className}`}
+      style={style}
+    >
       <div
         style={{
           display: 'flex',
