@@ -96,9 +96,6 @@ class App extends Component {
   }
 
   getSnapshotBeforeUpdate(prevProps) {
-    if (!prevProps.chatMode && this.props.chatMode) {
-      return { scrollPosition: document.getElementById('App').scrollTop }
-    }
     if (prevProps.location.pathname !== this.props.location.pathname) {
       return {
         navScrollPosition: {
@@ -121,10 +118,6 @@ class App extends Component {
     } = this.props
     const { navScrollPositions } = this.state
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads
-
-    if (snapshot.scrollPosition) {
-      this.setState({ scrollPosition: snapshot.scrollPosition })
-    }
 
     if (snapshot.navScrollPosition) {
       this.setState(state => ({
@@ -175,12 +168,7 @@ class App extends Component {
       username,
       resetChat
     } = this.props
-    const {
-      chatLoading,
-      mobileMenuShown,
-      scrollPosition,
-      updateNoticeShown
-    } = this.state
+    const { chatLoading, mobileMenuShown, updateNoticeShown } = this.state
     return (
       <div
         className={css`
@@ -292,7 +280,6 @@ class App extends Component {
             <Chat
               onUnmount={async() => {
                 await resetChat()
-                document.getElementById('App').scrollTop = scrollPosition
                 turnChatOff()
               }}
             />
@@ -321,6 +308,7 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     chatMode: state.ChatReducer.chatMode,
     chatNumUnreads: state.ChatReducer.numUnreads,
+    scrollPosition: state.ViewReducer.scrollPositions.app,
     searchMode: state.SearchReducer.searchMode,
     searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,

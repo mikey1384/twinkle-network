@@ -116,7 +116,7 @@ hr {
   user-select: none;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1025px) {
   html,
   body {
     overflow: hidden;
@@ -124,7 +124,7 @@ hr {
   }
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1024px) {
   html,
   body {
     font-size: 17px;
