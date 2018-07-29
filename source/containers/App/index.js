@@ -72,7 +72,10 @@ class App extends Component {
     navScrollPositions: {}
   }
 
-  body = document ? document.scrollingElement || document.documentElement : {}
+  body =
+    typeof document !== 'undefined'
+      ? document.scrollingElement || document.documentElement
+      : {}
 
   componentDidMount() {
     const { initSession, location, history } = this.props
