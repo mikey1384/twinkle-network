@@ -62,9 +62,15 @@ class Body extends Component {
     loading: false
   }
 
+  body =
+    typeof document !== 'undefined'
+      ? document.scrollingElement || document.documentElement
+      : {}
+
   componentDidMount() {
     const { clearFeeds } = this.props
     this.mounted = true
+    addEvent(this.body, 'scroll', this.onScroll)
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     clearFeeds()
     this.loadContent()
@@ -336,12 +342,18 @@ class Body extends Component {
 
   onScroll = () => {
     let { chatMode, feeds } = this.props
-    const scrollPosition = document.getElementById('App').scrollTop
     if (!chatMode && feeds.length > 0) {
-      this.setState({ scrollPosition })
+      this.setState({
+        scrollPosition: {
+          desktop: document.getElementById('App').scrollTop,
+          mobile: this.body.scrollTop
+        }
+      })
       if (
-        this.state.scrollPosition >=
-        this.Container.offsetHeight - window.innerHeight - 500
+        this.state.scrollPosition.desktop >=
+          this.Container.offsetHeight - window.innerHeight - 500 ||
+        this.state.scrollPosition.mobile >=
+          this.Container.offsetHeight - window.innerHeight - 500
       ) {
         this.loadMoreFeeds()
       }

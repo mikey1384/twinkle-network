@@ -262,7 +262,8 @@ class Stories extends Component {
       this.setState({ loadingMore: true })
       resetNumNewPosts()
       const data = await loadNewFeeds({
-        lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0
+        lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
+        shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds')
       })
       fetchNewFeeds(data)
       this.setState({ loadingMore: false })

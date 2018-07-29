@@ -216,19 +216,21 @@ class Comment extends Component {
       return {
         contentObj: {
           ...state.contentObj,
-          targetObj: {
-            ...state.contentObj.targetObj,
-            comment: state.contentObj.targetObj.comment
-              ? {
-                  ...state.contentObj.targetObj.comment,
-                  comments: state.contentObj.targetObj.comment.comments
-                    ? state.contentObj.targetObj.comment.comments.filter(
-                        comment => comment.id !== commentId
-                      )
-                    : []
-                }
-              : undefined
-          },
+          targetObj: state.contentObj.targetObj
+            ? {
+                ...state.contentObj.targetObj,
+                comment: state.contentObj.targetObj.comment
+                  ? {
+                      ...state.contentObj.targetObj.comment,
+                      comments: state.contentObj.targetObj.comment.comments
+                        ? state.contentObj.targetObj.comment.comments.filter(
+                            comment => comment.id !== commentId
+                          )
+                        : []
+                    }
+                  : undefined
+              }
+            : undefined,
           childComments: comments.map(comment => ({
             ...comment,
             replies: (comment.replies || []).filter(

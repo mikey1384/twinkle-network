@@ -74,7 +74,7 @@ export default class QuestionModal extends Component {
   onSubmit = async() => {
     const { onHide, parent, uploadAnswer } = this.props
     const { answer } = this.state
-    await uploadAnswer(finalizeEmoji(answer), parent)
+    await uploadAnswer({ content: finalizeEmoji(answer), parent })
     this.setState({ answerSubmitted: true })
     setTimeout(() => onHide(), 1000)
   }

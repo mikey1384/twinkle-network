@@ -1,7 +1,11 @@
 export function scrollElementToCenter(element) {
   if (!element) return
   let offsetTop = 0
+  const body = document
+    ? document.scrollingElement || document.documentElement
+    : {}
   addAllOffsetTop(element)
+  body.scrollTop = offsetTop - (body.clientHeight - element.clientHeight) / 2
   document.getElementById('App').scrollTop =
     offsetTop -
     (document.getElementById('App').clientHeight - element.clientHeight) / 2

@@ -89,10 +89,12 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 }
 
-export const loadNewFeeds = async({ lastInteraction }) => {
+export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
   try {
     const { data } = await request.get(
-      `${URL}/content/newFeeds?lastInteraction=${lastInteraction}`
+      `${URL}/content/newFeeds?lastInteraction=${lastInteraction}${
+        shownFeeds ? `&${shownFeeds}` : ''
+      }`
     )
     return Promise.resolve(data)
   } catch (error) {

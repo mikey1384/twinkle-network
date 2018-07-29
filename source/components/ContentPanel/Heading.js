@@ -11,6 +11,7 @@ import Button from 'components/Button'
 import QuestionModal from './QuestionModal'
 import StarMark from 'components/StarMark'
 import UsernameText from 'components/Texts/UsernameText'
+import { uploadComment } from 'helpers/requestHelpers'
 import { css } from 'emotion'
 import { connect } from 'react-redux'
 
@@ -50,8 +51,7 @@ class Heading extends Component {
         rootId,
         timeStamp,
         type
-      },
-      onCommentSubmit
+      }
     } = this.props
     const { questionModalShown } = this.state
     return (
@@ -99,8 +99,8 @@ class Heading extends Component {
         {questionModalShown && (
           <QuestionModal
             onHide={() => this.setState({ questionModalShown: false })}
-            question={root.content}
-            uploadAnswer={onCommentSubmit}
+            question={rootObj.content}
+            uploadAnswer={this.onAnswerUpload}
             parent={{
               id: rootObj.id,
               type: rootType,
@@ -181,6 +181,16 @@ class Heading extends Component {
       default:
         return <span>Error</span>
     }
+  }
+
+  onAnswerUpload = async({ content, parent }) => {
+    const { dispatch, onCommentSubmit } = this.props
+    const data = await uploadComment({
+      content,
+      parent,
+      dispatch
+    })
+    onCommentSubmit(data)
   }
 
   renderCornerButton = () => {
