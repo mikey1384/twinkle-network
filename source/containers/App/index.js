@@ -63,11 +63,16 @@ class App extends Component {
 
   state = {
     chatLoading: false,
-    scrollPosition: 0,
+    scrollPosition: {
+      desktop: 0,
+      mobile: 0
+    },
     updateNoticeShown: false,
     mobileMenuShown: false,
     navScrollPositions: {}
   }
+
+  body = document.scrollingElement || document.documentElement
 
   componentDidMount() {
     const { initSession, location, history } = this.props
@@ -92,7 +97,12 @@ class App extends Component {
 
   getSnapshotBeforeUpdate(prevProps) {
     if (!prevProps.chatMode && this.props.chatMode) {
-      return { scrollPosition: document.getElementById('App').scrollTop }
+      return {
+        scrollPosition: {
+          desktop: document.getElementById('App').scrollTop,
+          mobile: this.body.scrollTop
+        }
+      }
     }
     if (prevProps.location.pathname !== this.props.location.pathname) {
       return {
@@ -270,7 +280,9 @@ class App extends Component {
             <Chat
               onUnmount={async() => {
                 await resetChat()
-                document.getElementById('App').scrollTop = scrollPosition
+                document.getElementById('App').scrollTop =
+                  scrollPosition.desktop
+                this.body.scrollTop = scrollPosition.mobile
                 turnChatOff()
               }}
             />
