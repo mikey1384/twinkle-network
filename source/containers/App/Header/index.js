@@ -247,7 +247,7 @@ class Header extends Component {
                     searchMode ? 'active' : ''
                   }`}
                 >
-                  <Icon icon="search" />
+                  {searchMode ? <Icon icon="times" /> : <Icon icon="search" />}
                 </a>
               </div>
               <HeaderNav
