@@ -27,8 +27,8 @@ class SearchPage extends Component {
   }
 
   componentDidMount() {
-    const { selectedFilter, searchFilter = 'video', changeFilter } = this.props
-    if (!selectedFilter) changeFilter(searchFilter)
+    const { selectedFilter, searchFilter, changeFilter } = this.props
+    if (!selectedFilter) changeFilter(searchFilter || 'video')
   }
 
   render() {
