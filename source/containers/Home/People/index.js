@@ -29,6 +29,11 @@ class People extends Component {
     userId: PropTypes.number
   }
 
+  body =
+    typeof document !== 'undefined'
+      ? document.scrollingElement || document.documentElement
+      : {}
+
   scrollHeight = 0
 
   timer = null
@@ -42,6 +47,7 @@ class People extends Component {
 
   componentDidMount() {
     const { fetchUsers } = this.props
+    addEvent(window, 'scroll', this.onScroll)
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     return fetchUsers().then(() => this.setState({ loaded: true }))
   }
@@ -49,6 +55,7 @@ class People extends Component {
   componentWillUnmount() {
     const { clearUserSearch } = this.props
     clearUserSearch()
+    removeEvent(window, 'scroll', this.onScroll)
     removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
   }
 
@@ -135,17 +142,28 @@ class People extends Component {
   }
 
   onScroll = () => {
-    const { chatMode, profiles } = this.props
+    const { chatMode, loadMoreButton, profiles } = this.props
     if (document.getElementById('App').scrollHeight > this.scrollHeight) {
-      this.scrollHeight = document.getElementById('App').scrollHeight
+      this.scrollHeight = this.scrollHeight = Math.max(
+        document.getElementById('App').scrollHeight,
+        this.body.scrollHeight
+      )
     }
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
       this.setState(
-        { scrollPosition: document.getElementById('App').scrollTop },
+        {
+          scrollPosition: {
+            desktop: document.getElementById('App').scrollTop,
+            mobile: this.body.scrollTop
+          }
+        },
         () => {
           if (
-            this.state.scrollPosition >
-            this.scrollHeight - window.innerHeight - 1000
+            (this.state.scrollPosition.desktop >=
+              this.Container.offsetHeight - window.innerHeight - 400 ||
+              this.state.scrollPosition.mobile >=
+                this.Container.offsetHeight - window.innerHeight - 400) &&
+            loadMoreButton
           ) {
             this.loadMoreProfiles()
           }

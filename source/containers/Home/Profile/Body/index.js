@@ -344,7 +344,7 @@ class Body extends Component {
   }
 
   onScroll = () => {
-    let { chatMode, feeds } = this.props
+    let { chatMode, feeds, loadMoreButton } = this.props
     if (!chatMode && feeds.length > 0) {
       this.setState({
         scrollPosition: {
@@ -353,10 +353,11 @@ class Body extends Component {
         }
       })
       if (
-        this.state.scrollPosition.desktop >=
+        (this.state.scrollPosition.desktop >=
           this.Container.offsetHeight - window.innerHeight - 500 ||
-        this.state.scrollPosition.mobile >=
-          this.Container.offsetHeight - window.innerHeight - 500
+          this.state.scrollPosition.mobile >=
+            this.Container.offsetHeight - window.innerHeight - 500) &&
+        loadMoreButton
       ) {
         this.loadMoreFeeds()
       }
