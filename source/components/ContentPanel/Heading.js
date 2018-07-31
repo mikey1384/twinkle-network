@@ -191,7 +191,7 @@ class Heading extends Component {
       parent,
       dispatch
     })
-    onCommentSubmit(data)
+    if (data) onCommentSubmit(data)
   }
 
   renderCornerButton = () => {

@@ -79,7 +79,7 @@ class Body extends Component {
         id: contentId,
         limit: commentsLoadLimit
       })
-      onShowComments(data)
+      if (data) onShowComments(data)
       this.setState({ commentsShown: true })
     }
   }
@@ -454,7 +454,7 @@ class Body extends Component {
         id: contentId,
         limit: commentsLoadLimit
       })
-      onShowComments(data, feedId)
+      if (data) onShowComments(data, feedId)
       this.setState({ commentsShown: true })
     }
     this.CommentInputArea.focus()
@@ -477,7 +477,7 @@ class Body extends Component {
       contentObj: { type, contentId }
     } = this.props
     const data = await editContent({ params, dispatch })
-    onEditContent({ data, contentType: type, contentId })
+    if (data) onEditContent({ data, contentType: type, contentId })
   }
 
   onLikeClick = async likes => {
@@ -495,7 +495,7 @@ class Body extends Component {
         id: contentId,
         limit: commentsLoadLimit
       })
-      onShowComments(data, feedId)
+      if (data) onShowComments(data, feedId)
       this.setState({ commentsShown: true })
     }
   }

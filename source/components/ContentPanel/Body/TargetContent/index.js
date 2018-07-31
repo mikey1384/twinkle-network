@@ -400,7 +400,7 @@ class TargetContent extends Component {
       targetCommentId: comment.id,
       dispatch
     })
-    onTargetCommentSubmit(data, feedId)
+    if (data) onTargetCommentSubmit(data, feedId)
   }
 }
 

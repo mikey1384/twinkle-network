@@ -42,6 +42,7 @@ class Comments extends Component {
   }
 
   state = {
+    deleting: false,
     isLoading: false,
     commentSubmitted: false
   }
@@ -49,7 +50,7 @@ class Comments extends Component {
   Comments = {}
 
   componentDidUpdate(prevProps) {
-    const { commentSubmitted } = this.state
+    const { commentSubmitted, deleting } = this.state
     const {
       autoFocus,
       autoShowComments,
@@ -57,7 +58,8 @@ class Comments extends Component {
       commentsShown,
       inputAtBottom
     } = this.props
-    if (prevProps.comments.length > comments.length) {
+    if (prevProps.comments.length > comments.length && deleting) {
+      this.setState({ deleting: false })
       if (comments.length === 0) {
         return scrollElementToCenter(this.Container)
       }
@@ -178,7 +180,7 @@ class Comments extends Component {
       targetCommentId,
       dispatch
     })
-    onCommentSubmit(data)
+    if (data) onCommentSubmit(data)
   }
 
   onReplySubmit = async({ content, rootCommentId, targetCommentId }) => {
@@ -191,7 +193,7 @@ class Comments extends Component {
       targetCommentId,
       dispatch
     })
-    onReplySubmit(data)
+    if (data) onReplySubmit(data)
   }
 
   loadMoreComments = async() => {
@@ -211,7 +213,7 @@ class Comments extends Component {
           lastCommentId,
           limit: commentsLoadLimit
         })
-        loadMoreComments(data)
+        if (data) loadMoreComments(data)
         this.setState({ isLoading: false })
       } catch (error) {
         console.error(error.response || error)
@@ -221,6 +223,7 @@ class Comments extends Component {
 
   onDelete = async commentId => {
     const { dispatch, onDelete } = this.props
+    this.setState({ deleting: true })
     await deleteContent({ id: commentId, type: 'comment', dispatch })
     onDelete(commentId)
   }

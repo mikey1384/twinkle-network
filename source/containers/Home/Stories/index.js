@@ -281,7 +281,7 @@ class Stories extends Component {
         lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
         shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds')
       })
-      fetchNewFeeds(data)
+      if (data) fetchNewFeeds(data)
       this.setState({ loadingMore: false })
     }
   }

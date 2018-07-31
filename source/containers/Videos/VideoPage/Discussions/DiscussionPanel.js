@@ -340,7 +340,7 @@ class DiscussionPanel extends Component {
     this.setState({ expanded: true })
     try {
       const data = await loadComments({ type: 'discussion', id, limit: 10 })
-      loadVideoDiscussionComments({ data, discussionId: id })
+      if (data) loadVideoDiscussionComments({ data, discussionId: id })
     } catch (error) {
       console.error(error.response || error)
     }

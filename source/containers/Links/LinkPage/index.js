@@ -74,7 +74,7 @@ class LinkPage extends Component {
         id: linkId,
         type: 'url'
       })
-      fetchComments(data)
+      if (data) fetchComments(data)
     } catch (error) {
       if (error.response) {
         const { data = {} } = error.response
@@ -102,7 +102,7 @@ class LinkPage extends Component {
           id: linkId,
           type: 'url'
         })
-        fetchComments(data)
+        if (data) fetchComments(data)
       } catch (error) {
         if (error.response) {
           const { data = {} } = error.response

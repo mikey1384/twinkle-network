@@ -111,7 +111,7 @@ class Results extends Component {
   searchContent = async({ filter, searchText }) => {
     const { dispatch, setResults } = this.props
     const data = await searchContent({ filter, searchText, dispatch })
-    setResults(data)
+    if (data) setResults(data)
     this.setState({ searching: false })
   }
 }
