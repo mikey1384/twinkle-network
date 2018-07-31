@@ -19,7 +19,6 @@ class SearchPage extends Component {
     dispatch: PropTypes.func.isRequired,
     changeFilter: PropTypes.func.isRequired,
     closeSearch: PropTypes.func.isRequired,
-    focusSearchBox: PropTypes.func.isRequired,
     searchFilter: PropTypes.string,
     searchText: PropTypes.string.isRequired,
     selectedFilter: PropTypes.string.isRequired,
@@ -97,9 +96,8 @@ class SearchPage extends Component {
   }
 
   applyFilter = filter => {
-    const { changeFilter, focusSearchBox } = this.props
+    const { changeFilter } = this.props
     changeFilter(filter)
-    focusSearchBox()
   }
 
   renderHelperText = () => {
@@ -112,18 +110,16 @@ class SearchPage extends Component {
   setDefaultSearchFilter = async() => {
     const {
       dispatch,
-      focusSearchBox,
       searchFilter,
       selectedFilter,
       updateDefaultSearchFilter
     } = this.props
-    if (selectedFilter === searchFilter) return focusSearchBox()
+    if (selectedFilter === searchFilter) return
     await setDefaultSearchFilter({
       filter: selectedFilter,
       dispatch
     })
     updateDefaultSearchFilter(selectedFilter)
-    focusSearchBox()
   }
 }
 
