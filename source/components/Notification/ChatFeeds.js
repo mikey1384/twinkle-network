@@ -7,6 +7,7 @@ import { timeSince } from 'helpers/timeStampHelpers'
 import { connect } from 'react-redux'
 import { initChat } from 'redux/actions/ChatActions'
 import RoundList from 'components/RoundList'
+import Icon from 'components/Icon'
 
 class ChatFeeds extends Component {
   static propTypes = {
@@ -29,7 +30,10 @@ class ChatFeeds extends Component {
           style={{
             whiteSpace: 'pre-wrap',
             overflowWrap: 'break-word',
-            wordBreak: 'break-word'
+            wordBreak: 'break-word',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
           }}
         >
           <p
@@ -43,8 +47,8 @@ class ChatFeeds extends Component {
           </p>
           {this.renderDetails()}
           <Button success onClick={() => initChat(2)}>
-            <span className="glyphicon glyphicon-comment" />&nbsp;Join
-            Conversation
+            <Icon icon="comments" />
+            <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
           </Button>
         </li>
       </RoundList>

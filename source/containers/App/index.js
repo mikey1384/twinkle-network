@@ -18,7 +18,6 @@ import MobileMenu from './MobileMenu'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import Button from 'components/Button'
-import SearchBox from './SearchBox'
 import Loading from 'components/Loading'
 import SigninModal from 'containers/Signin'
 import loadable from 'loadable-components'
@@ -68,10 +67,7 @@ class App extends Component {
 
   state = {
     chatLoading: false,
-    scrollPosition: {
-      desktop: 0,
-      mobile: 0
-    },
+    scrollPosition: 0,
     updateNoticeShown: false,
     mobileMenuShown: false,
     navScrollPositions: {}
@@ -105,10 +101,7 @@ class App extends Component {
   getSnapshotBeforeUpdate(prevProps) {
     if (!prevProps.chatMode && this.props.chatMode) {
       return {
-        scrollPosition: {
-          desktop: document.getElementById('App').scrollTop,
-          mobile: this.body.scrollTop
-        }
+        scrollPosition: this.body.scrollTop
       }
     }
     if (prevProps.location.pathname !== this.props.location.pathname) {
@@ -140,6 +133,12 @@ class App extends Component {
           ...state.navScrollPositions,
           ...snapshot.navScrollPosition
         }
+      }))
+    }
+
+    if (snapshot.scrollPosition) {
+      this.setState(state => ({
+        scrollPosition: snapshot.scrollPosition
       }))
     }
 
@@ -265,13 +264,6 @@ class App extends Component {
           id="App"
           className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
         >
-          <SearchBox
-            className="mobile"
-            style={{
-              zIndex: 1000,
-              padding: '1rem 0'
-            }}
-          />
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />
@@ -300,9 +292,7 @@ class App extends Component {
             <Chat
               onUnmount={async() => {
                 await resetChat()
-                document.getElementById('App').scrollTop =
-                  scrollPosition.desktop
-                this.body.scrollTop = scrollPosition.mobile
+                this.body.scrollTop = scrollPosition
                 turnChatOff()
               }}
             />

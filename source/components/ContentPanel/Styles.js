@@ -20,6 +20,7 @@ export const container = css`
     justify-content: space-between;
   }
   .body {
+    font-size: 1.6rem;
     padding: 0;
     .bottom-interface {
       padding: 0 1rem 0 1rem;
@@ -71,13 +72,19 @@ export const container = css`
     border-radius: 0;
     border-left: none;
     border-right: none;
+    .body {
+      font-size: 1.8rem;
+    }
     .heading {
-      a,
-      span {
-        font-size: 2rem;
+      > a,
+      > span {
+        font-size: 1.7rem;
       }
-      small {
-        font-size: 1.5rem;
+      > small {
+        font-size: 1.2rem;
+      }
+      > button {
+        font-size: 1.2rem;
       }
     }
   }

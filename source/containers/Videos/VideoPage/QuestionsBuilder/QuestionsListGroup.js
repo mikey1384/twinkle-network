@@ -45,7 +45,7 @@ export default class QuestionsListGroup extends Component {
             />
           ))}
         </RoundList>
-        <div style={{ marginTop: '2rem' }}>
+        <div style={{ marginTop: '2rem', display: 'flex' }}>
           <Button
             transparent
             style={{ marginRight: '1rem' }}
@@ -81,4 +81,3 @@ export default class QuestionsListGroup extends Component {
     onReorderCancel()
   }
 }
-

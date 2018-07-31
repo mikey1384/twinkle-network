@@ -5,6 +5,7 @@ import onClickOutside from 'react-onclickoutside'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
 import Input from './Input'
+import Icon from 'components/Icon'
 
 class SearchInput extends Component {
   static propTypes = {
@@ -64,9 +65,6 @@ class SearchInput extends Component {
             padding: 0 1rem;
             display: flex;
             align-items: center;
-          }
-          .glyphicon {
-            line-height: 4rem;
             font-size: 1.5rem;
           }
           input {
@@ -81,7 +79,7 @@ class SearchInput extends Component {
           className="addon"
           style={{ backgroundColor: addonColor || Color.borderGray() }}
         >
-          <span className="glyphicon glyphicon-search" />
+          <Icon icon="search" />
         </div>
         <Input
           autoFocus={autoFocus}

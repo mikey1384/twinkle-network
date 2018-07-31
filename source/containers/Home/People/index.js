@@ -9,11 +9,12 @@ import {
   searchUsers
 } from 'redux/actions/UserActions'
 import ProfilePanel from '../ProfilePanel'
-import LoadMoreButton from 'components/LoadMoreButton'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 import Loading from 'components/Loading'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers'
-import { Color } from 'constants/css'
+import { css } from 'emotion'
+import { Color, mobileMaxWidth } from 'constants/css'
 
 class People extends Component {
   static propTypes = {
@@ -57,6 +58,11 @@ class People extends Component {
     return (
       <div style={{ height: '100%' }}>
         <SearchInput
+          className={css`
+            @media (max-width: ${mobileMaxWidth}) {
+              margin-top: 1rem;
+            }
+          `}
           style={{ zIndex: 0 }}
           addonColor={Color.gold()}
           placeholder="Search for users"

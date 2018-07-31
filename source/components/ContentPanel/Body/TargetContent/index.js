@@ -17,6 +17,7 @@ import { timeSince } from 'helpers/timeStampHelpers'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import Icon from 'components/Icon'
 import { determineXpButtonDisabled } from 'helpers/domHelpers'
 import { uploadComment } from 'helpers/requestHelpers'
 import { css } from 'emotion'
@@ -242,6 +243,7 @@ class TargetContent extends Component {
                     <div>
                       <div
                         style={{
+                          display: 'flex',
                           marginBottom: comment.likes.length > 0 ? '0.5rem' : 0
                         }}
                       >
@@ -257,8 +259,8 @@ class TargetContent extends Component {
                           transparent
                           onClick={this.onReplyClick}
                         >
-                          <span className="glyphicon glyphicon-comment" />&nbsp;
-                          Reply
+                          <Icon icon="comment-alt" />
+                          <span style={{ marginLeft: '0.7rem' }}>Reply</span>
                         </Button>
                       </div>
                       <Likers
@@ -280,8 +282,10 @@ class TargetContent extends Component {
                               this.setState({ xpRewardInterfaceShown: true })
                             }
                           >
-                            <span className="glyphicon glyphicon-star" />{' '}
-                            {this.determineXpButtonDisabled() || 'Reward Stars'}
+                            <Icon icon="star" />
+                            <span style={{ marginLeft: '0.7rem' }}>
+                              {this.determineXpButtonDisabled() || 'Reward'}
+                            </span>
                           </Button>
                         )}
                     </div>

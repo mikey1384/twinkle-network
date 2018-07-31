@@ -175,7 +175,6 @@ class PlaylistCarousel extends Component {
               snow
               style={{ position: 'absolute', right: 0 }}
               direction="left"
-              icon="pencil"
               menuProps={menuProps}
             />
           )}

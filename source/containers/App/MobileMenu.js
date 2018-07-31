@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { logout, uploadProfilePic } from 'redux/actions/UserActions'
 import AlertModal from 'components/Modals/AlertModal'
 import ImageEditModal from 'components/Modals/ImageEditModal'
+import Icon from 'components/Icon'
 
 class MobileMenu extends Component {
   static propTypes = {
@@ -109,8 +110,8 @@ class MobileMenu extends Component {
           )}
         </div>
         <div style={{ width: '30%', position: 'relative' }} onClick={onClose}>
-          <span
-            className="glyphicon glyphicon-remove"
+          <Icon
+            icon="times"
             style={{
               color: '#fff',
               position: 'absolute',

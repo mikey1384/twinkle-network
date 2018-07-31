@@ -3,20 +3,20 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import SearchInput from 'components/Texts/SearchInput'
-import { changeSearch, initSearch } from 'redux/actions/SearchActions'
+import { changeSearch } from 'redux/actions/SearchActions'
 
 class SearchBox extends Component {
   static propTypes = {
     className: PropTypes.string,
     changeSearch: PropTypes.func.isRequired,
-    initSearch: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
     searchText: PropTypes.string.isRequired,
     style: PropTypes.object
   }
 
   render() {
-    const { className, initSearch, innerRef, searchText, style } = this.props
+    const { className, onFocus, innerRef, searchText, style } = this.props
     return (
       <div className={className} style={style}>
         <SearchInput
@@ -24,7 +24,7 @@ class SearchBox extends Component {
           placeholder="Search Videos, Questions, Links, and More"
           onChange={this.onContentSearch}
           value={searchText}
-          onFocus={initSearch}
+          onFocus={onFocus}
         />
       </div>
     )
@@ -41,7 +41,6 @@ export default connect(
     searchText: state.SearchReducer.searchText
   }),
   {
-    changeSearch,
-    initSearch
+    changeSearch
   }
 )(withRouter(SearchBox))

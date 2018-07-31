@@ -233,7 +233,7 @@ export default class ContentEditor extends Component {
     })
   }
 
-  onSubmit = event => {
+  onSubmit = async event => {
     event.preventDefault()
     const { contentId, onDismiss, onEditContent, type } = this.props
     const {
@@ -249,7 +249,8 @@ export default class ContentEditor extends Component {
       editedDescription: finalizeEmoji(editedDescription),
       editedTitle: finalizeEmoji(editedTitle)
     }
-    onEditContent({ ...post, contentId, type }).then(() => onDismiss())
+    await onEditContent({ ...post, contentId, type })
+    onDismiss()
   }
 
   descriptionExceedsCharLimit = type => {

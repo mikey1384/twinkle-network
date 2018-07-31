@@ -199,7 +199,15 @@ class LinkPage extends Component {
             url={content}
             {...embedlyProps}
           />
-          <div style={{ paddingTop: '1.5rem', textAlign: 'center' }}>
+          <div
+            style={{
+              paddingTop: '1.5rem',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
             <LikeButton
               key={'like' + id}
               filled

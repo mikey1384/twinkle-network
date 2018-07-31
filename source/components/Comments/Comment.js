@@ -26,6 +26,7 @@ import { Link } from 'react-router-dom'
 import { editContent } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
 import DiscussionTopicLink from './DiscussionTopicLink'
+import Icon from 'components/Icon'
 
 class Comment extends Component {
   static propTypes = {
@@ -157,7 +158,6 @@ class Comment extends Component {
                 <DropdownButton
                   snow
                   direction="left"
-                  icon="pencil"
                   opacity={0.8}
                   menuProps={editMenuItems}
                 />
@@ -216,14 +216,15 @@ class Comment extends Component {
                       style={{ marginLeft: '1rem' }}
                       onClick={this.onReplyButtonClick}
                     >
-                      <span className="glyphicon glyphicon-comment" /> Reply
+                      <Icon icon="comment-alt" />
+                      <span style={{ marginLeft: '1rem' }}>Reply</span>
                     </Button>
                     {canStar &&
                       userCanEditThis &&
                       !userIsUploader && (
                         <Button
                           love
-                          style={{ marginLeft: '1rem' }}
+                          style={{ marginLeft: '0.7rem' }}
                           onClick={() =>
                             this.setState({ xpRewardInterfaceShown: true })
                           }
@@ -233,12 +234,14 @@ class Comment extends Component {
                             stars
                           })}
                         >
-                          <span className="glyphicon glyphicon-star" />
-                          &nbsp;{determineXpButtonDisabled({
-                            myId: userId,
-                            xpRewardInterfaceShown,
-                            stars
-                          }) || 'Reward'}
+                          <Icon icon="star" />
+                          <span style={{ marginLeft: '0.7rem' }}>
+                            {determineXpButtonDisabled({
+                              myId: userId,
+                              xpRewardInterfaceShown,
+                              stars
+                            }) || 'Reward'}
+                          </span>
                         </Button>
                       )}
                   </div>

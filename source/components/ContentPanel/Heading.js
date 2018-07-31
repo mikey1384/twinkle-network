@@ -11,6 +11,7 @@ import Button from 'components/Button'
 import QuestionModal from './QuestionModal'
 import StarMark from 'components/StarMark'
 import UsernameText from 'components/Texts/UsernameText'
+import Icon from 'components/Icon'
 import { uploadComment } from 'helpers/requestHelpers'
 import { css } from 'emotion'
 import { connect } from 'react-redux'
@@ -270,7 +271,8 @@ class Heading extends Component {
           success
           onClick={() => this.setState({ questionModalShown: true })}
         >
-          <span className="glyphicon glyphicon-comment" />&nbsp;Answer
+          <Icon icon="comment" />
+          <span style={{ marginLeft: '0.7rem' }}>Answer</span>
         </Button>
       )
     }

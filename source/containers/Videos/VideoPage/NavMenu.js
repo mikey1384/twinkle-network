@@ -12,7 +12,7 @@ import {
 import Link from 'components/Link'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { cleanString, queryStringForArray } from 'helpers/stringHelpers'
-import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import VideoThumbImage from 'components/VideoThumbImage'
 import FilterBar from 'components/FilterBar'
@@ -172,10 +172,12 @@ class NavMenu extends Component {
                     arePlaylistVideos: true
                   })}
                   {playlistVideosLoadMoreShown && (
-                    <FlatLoadMoreButton
-                      isLoading={playlistVideosLoading}
+                    <LoadMoreButton
+                      loading={playlistVideosLoading}
                       onClick={this.loadMorePlaylistVideos}
-                      style={{ marginTop: '1.5rem' }}
+                      success
+                      filled
+                      style={{ marginTop: '1.5rem', width: '100%' }}
                     />
                   )}
                 </section>

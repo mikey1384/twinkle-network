@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm'
 import Button from 'components/Button'
+import Icon from 'components/Icon'
 import { connect } from 'react-redux'
 import { uploadVideoDiscussion } from 'redux/actions/VideoActions'
 import { charLimit } from 'constants/defaultValues'
@@ -52,8 +53,10 @@ class DiscussionInputArea extends Component {
                 style={{ fontSize: '2rem' }}
                 onClick={() => this.setState({ discussionFormShown: true })}
               >
-                <span className="glyphicon glyphicon-comment" /> Start a New
-                Discussion
+                <Icon icon="comment-alt" />
+                <span style={{ marginLeft: '1rem' }}>
+                  Start a New Discussion
+                </span>
               </Button>
             </div>
           )}

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
+import Icon from 'components/Icon'
 import { cleanString } from 'helpers/stringHelpers'
 import { Color } from 'constants/css'
 
@@ -52,14 +53,12 @@ class SortableListItem extends Component {
         <nav
           style={{
             opacity: isDragging ? 0 : 1,
-            borderTop: index === 0 && `1px solid ${Color.borderGray()}`
+            borderTop: index === 0 && `1px solid ${Color.borderGray()}`,
+            color: Color.menuGray()
           }}
         >
           <section>{cleanString(item.label)}</section>
-          <span
-            className="glyphicon glyphicon-align-justify"
-            style={{ color: Color.menuGray() }}
-          />
+          <Icon icon="align-justify" />
         </nav>
       )
     )

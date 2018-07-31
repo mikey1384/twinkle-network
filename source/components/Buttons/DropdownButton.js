@@ -3,10 +3,12 @@ import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import Button from 'components/Button'
 import DropdownList from 'components/DropdownList'
+import Icon from 'components/Icon'
 
 class DropdownButton extends Component {
   static propTypes = {
     icon: PropTypes.string,
+    iconSize: PropTypes.string,
     direction: PropTypes.string,
     onButtonClick: PropTypes.func,
     onOutsideClick: PropTypes.func,
@@ -43,7 +45,8 @@ class DropdownButton extends Component {
       direction,
       opacity = 1,
       style,
-      icon = 'pencil',
+      icon = 'pencil-alt',
+      iconSize = '1x',
       listStyle = {},
       noBorderRadius,
       text = '',
@@ -61,6 +64,8 @@ class DropdownButton extends Component {
         <Button
           {...props}
           style={{
+            display: 'flex',
+            alignItems: 'center',
             borderRadius: noBorderRadius && 0,
             border: noBorderRadius && 0,
             margin: noBorderRadius && 0,
@@ -68,7 +73,7 @@ class DropdownButton extends Component {
           }}
           onClick={this.onClick}
         >
-          <span className={`glyphicon glyphicon-${icon}`} />
+          <Icon icon={icon} size={iconSize} />
           {text && <span>&nbsp;&nbsp;</span>}
           <span>{text}</span>
         </Button>

@@ -13,6 +13,7 @@ export const container = css`
   align-items: center;
   width: 100%;
   margin-bottom: 0px;
+
   .header-nav {
     display: flex;
     margin-right: 2rem;
@@ -49,10 +50,6 @@ export const container = css`
       justify-content: center;
       font-size: 4rem;
       a {
-        .glyphicon {
-          margin-top: 0;
-          margin-right: 0;
-        }
         .nav-label {
           display: none;
         }
@@ -72,6 +69,7 @@ export const container = css`
       }
     }
   }
+
   .main-tabs {
     padding: 0 2rem;
     display: flex;
@@ -82,6 +80,7 @@ export const container = css`
       width: 100%;
     }
   }
+
   @media (min-width: ${desktopMinWidth}) {
     top: 0;
   }

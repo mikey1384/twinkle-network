@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import Icon from 'components/Icon'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
 import { Color } from 'constants/css'
@@ -60,10 +61,7 @@ function QuestionsListItem({
               }`}
         </div>
         <div>
-          <span
-            className="glyphicon glyphicon-align-justify"
-            style={{ color: Color.gray() }}
-          />
+          <Icon icon="align-justify" style={{ color: Color.gray() }} />
         </div>
       </li>
     )

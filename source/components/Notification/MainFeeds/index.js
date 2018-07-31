@@ -6,7 +6,7 @@ import ContentLink from 'components/ContentLink'
 import UsernameText from 'components/Texts/UsernameText'
 import RoundList from 'components/RoundList'
 import Banner from 'components/Banner'
-import Button from 'components/Button'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 import {
   clearRewards,
   fetchNotifications,
@@ -177,18 +177,14 @@ class MainFeeds extends Component {
         </RoundList>
         {((activeTab === 'notification' && loadMore.notifications) ||
           (activeTab === 'reward' && loadMore.rewards)) && (
-          <Button
+          <LoadMoreButton
+            loading={loading}
+            style={{ marginTop: '1rem' }}
             info
             filled
-            style={{
-              marginTop: '1rem',
-              width: '100%'
-            }}
-            disabled={loading}
+            stretch
             onClick={this.onLoadMore}
-          >
-            Load More
-          </Button>
+          />
         )}
       </div>
     )

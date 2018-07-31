@@ -20,7 +20,8 @@ function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
       direction="left"
       text={title}
       shape="button"
-      icon="triangle-bottom"
+      icon="caret-down"
+      iconSize="lg"
       menuProps={[
         {
           label: 'Log out',

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Button from 'components/Button'
+import Icon from 'components/Icon'
 import { likeContent } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
 
@@ -41,10 +42,12 @@ function LikeButton({
         onClick(likes, contentId)
       }}
     >
-      <span className="glyphicon glyphicon-thumbs-up" />{' '}
-      {liked
-        ? `${targetLabel ? targetLabel + ' ' : ''}Liked!`
-        : `Like${targetLabel ? ' ' + targetLabel : ''}`}
+      <Icon icon="thumbs-up" />
+      <span style={{ marginLeft: '0.7rem' }}>
+        {liked
+          ? `${targetLabel ? targetLabel + ' ' : ''}Liked!`
+          : `Like${targetLabel ? ' ' + targetLabel : ''}`}
+      </span>
     </Button>
   )
 }

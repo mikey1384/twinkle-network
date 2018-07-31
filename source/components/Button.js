@@ -9,6 +9,7 @@ Button.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   filled: PropTypes.bool,
+  stretch: PropTypes.bool,
   gold: PropTypes.bool,
   love: PropTypes.bool,
   hoverClass: PropTypes.string,
@@ -45,6 +46,7 @@ export default function Button({
   logoGreen,
   opacity,
   primary,
+  stretch,
   success,
   peace,
   warning,
@@ -95,14 +97,18 @@ export default function Button({
 
   return (
     <button
-      style={style}
+      style={{ ...style, ...(stretch ? { width: '100%' } : {}) }}
       className={`${css`
         cursor: ${disabled ? 'default' : 'pointer'};
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
         font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial,
           sans-serif;
-        font-size: 1.5rem;
         text-transform: uppercase;
+        font-weight: bold;
+        font-size: 1.5rem;
         padding: 1rem;
         color: ${filled || opacity
           ? '#fff'
@@ -114,7 +120,6 @@ export default function Button({
           : buttonColor(
               disabled ? backgroundDisabledOpacity : backgroundOpacity
             )[colorKey]};
-        font-weight: bold;
         border: 1px solid
           ${snow
             ? Color.whiteGray()
@@ -145,6 +150,7 @@ export default function Button({
           ${snow ? `box-shadow: 0 0 3px ${Color.black()};` : ''};
         }
         @media (max-width: ${mobileMaxWidth}) {
+          font-size: 1.3rem;
           &:hover {
             background: ${snow
               ? '#fff'
@@ -163,6 +169,7 @@ export default function Button({
                     disabled ? backgroundDisabledOpacity : backgroundOpacity
                   )[colorKey]};
           }
+          ${stretch ? 'border-radius: 0;' : ''};
         }
       `} ${className} unselectable`}
       ref={ref => {

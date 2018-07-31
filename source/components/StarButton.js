@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from 'components/Button'
+import Icon from 'components/Icon'
 
 StarButton.propTypes = {
   isStarred: PropTypes.bool,
@@ -9,12 +10,8 @@ StarButton.propTypes = {
 export default function StarButton({ isStarred, onClick, ...props }) {
   return (
     <div {...props}>
-      <Button
-        love
-        filled={isStarred}
-        onClick={onClick}
-      >
-        <span className="glyphicon glyphicon-star" />
+      <Button love filled={isStarred} onClick={onClick}>
+        <Icon icon="star" />
       </Button>
     </div>
   )

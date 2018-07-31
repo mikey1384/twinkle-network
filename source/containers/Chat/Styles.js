@@ -17,7 +17,7 @@ export const channelContainer = css`
   display: flex;
   flex-direction: column;
   margin-top: 1rem;
-  height: CALC(100% - 1rem);
+  height: CALC(100% - 2rem);
   width: 25%;
   position: relative;
   background: #fff;

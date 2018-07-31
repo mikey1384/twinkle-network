@@ -16,9 +16,10 @@ import {
   increaseNumNewPosts,
   increaseNumNewNotis
 } from 'redux/actions/NotiActions'
-import { closeSearch } from 'redux/actions/SearchActions'
+import { closeSearch, initSearch } from 'redux/actions/SearchActions'
 import AccountMenu from './AccountMenu'
 import ChatButton from './ChatButton'
+import Icon from 'components/Icon'
 import { GENERAL_CHAT_ID } from 'constants/database'
 import SearchBox from '../SearchBox'
 import HeaderNav from './HeaderNav'
@@ -37,6 +38,7 @@ class Header extends Component {
     increaseNumNewPosts: PropTypes.func,
     increaseNumNewNotis: PropTypes.func,
     increaseNumberOfUnreadMessages: PropTypes.func,
+    initSearch: PropTypes.func,
     location: PropTypes.object,
     loggedIn: PropTypes.bool,
     logout: PropTypes.func,
@@ -144,6 +146,7 @@ class Header extends Component {
       loggedIn,
       username,
       chatMode,
+      initSearch,
       onChatButtonClick,
       onMobileMenuOpen,
       searchBoxRef,
@@ -159,7 +162,7 @@ class Header extends Component {
     const { logoHovered } = this.state
     return (
       <nav
-        className={`unselectable ${container} ${chatMode && 'header chat'} ${
+        className={`unselectable ${container} ${
           mobileNavbarShown ? '' : 'desktop'
         }`}
         style={{
@@ -276,6 +279,7 @@ class Header extends Component {
           <div
             style={{
               display: 'flex',
+              alignItems: 'center',
               justifyContent: 'space-around',
               width: '100%'
             }}
@@ -291,6 +295,14 @@ class Header extends Component {
                 >
                   Menu
                 </HeaderNav>
+                <div
+                  className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
+                  onClick={initSearch}
+                >
+                  <a className="icon mobile-no-hover">
+                    <Icon icon="search" />
+                  </a>
+                </div>
                 <HeaderNav
                   to="/"
                   onClick={() => {
@@ -330,11 +342,11 @@ class Header extends Component {
                   className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
                   onClick={onChatButtonClick}
                 >
-                  <a>
-                    <span
-                      className="glyphicon glyphicon-comment mobile-no-hover"
-                      style={{ color: numChatUnreads > 0 && Color.pink() }}
-                    />
+                  <a
+                    style={{ color: numChatUnreads > 0 && Color.pink() }}
+                    className="icon mobile-no-hover"
+                  >
+                    <Icon icon="comments" />
                   </a>
                 </div>
                 <div
@@ -350,13 +362,8 @@ class Header extends Component {
                 style={{ display: 'flex', alignItems: 'center' }}
                 onClick={turnChatOff}
               >
-                <div>
-                  <span
-                    style={{ marginTop: '1.5rem' }}
-                    className="glyphicon glyphicon-remove"
-                  />
-                </div>
-                <div style={{ marginLeft: '1rem' }}>Tap to close chat</div>
+                <Icon icon="times" />
+                <div style={{ marginLeft: '1.5rem' }}>Tap to close chat</div>
               </div>
             )}
           </div>
@@ -375,6 +382,7 @@ class Header extends Component {
             {!chatMode && (
               <SearchBox
                 innerRef={ref => searchBoxRef(ref)}
+                onFocus={initSearch}
                 style={{ width: '100%' }}
               />
             )}
@@ -443,6 +451,7 @@ export default connect(
     increaseNumNewPosts,
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
+    initSearch,
     logout,
     notifyChatSubjectChange,
     closeSearch,

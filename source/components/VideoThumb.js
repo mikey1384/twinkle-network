@@ -12,6 +12,7 @@ import FullTextReveal from 'components/FullTextReveal'
 import { textIsOverflown } from 'helpers/domHelpers'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import VideoThumbImage from 'components/VideoThumbImage'
+import Icon from 'components/Icon'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
 import { charLimit } from 'constants/defaultValues'
@@ -81,7 +82,6 @@ class VideoThumb extends Component {
               }}
               direction="left"
               snow
-              icon="pencil"
               noBorderRadius
               menuProps={menuProps}
             />
@@ -159,9 +159,7 @@ class VideoThumb extends Component {
               )}
               {video.numLikes > 0 && (
                 <div style={{ marginTop: '0.5rem' }}>
-                  <span className="glyphicon glyphicon-thumbs-up" />&times;{
-                    video.numLikes
-                  }
+                  <Icon icon="thumbs-up" />&nbsp;&times;&nbsp;{video.numLikes}
                 </div>
               )}
             </div>
@@ -219,7 +217,10 @@ class VideoThumb extends Component {
   }
 }
 
-export default connect(state => ({ userId: state.UserReducer.userId }), {
-  editVideoTitle,
-  deleteVideo
-})(VideoThumb)
+export default connect(
+  state => ({ userId: state.UserReducer.userId }),
+  {
+    editVideoTitle,
+    deleteVideo
+  }
+)(VideoThumb)

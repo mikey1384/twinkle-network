@@ -87,7 +87,6 @@ class Description extends Component {
             <DropdownButton
               snow
               opacity={0.8}
-              icon="pencil"
               style={{ position: 'absolute', top: '1rem', right: '1rem' }}
               direction="left"
               menuProps={editMenuItems}
