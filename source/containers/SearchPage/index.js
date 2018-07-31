@@ -46,6 +46,7 @@ class SearchPage extends Component {
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;
               margin: 0 1rem 0 1rem;
+              padding-bottom: 15rem;
             }
           `}
         >
