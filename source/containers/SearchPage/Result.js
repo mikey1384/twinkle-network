@@ -53,7 +53,8 @@ export default function Result({ closeSearch, type, result }) {
         <div
           style={{
             width: type !== 'question' && type !== 'url' ? '75%' : '100%',
-            padding: '1rem'
+            padding: '1rem',
+            ...(type === 'url' ? { paddingTop: '0.5rem' } : {})
           }}
         >
           {type === 'video' && (
@@ -152,12 +153,23 @@ export default function Result({ closeSearch, type, result }) {
             </div>
           )}
           {type === 'url' && (
-            <Embedly
-              small
-              title={cleanString(result.title)}
-              url={result.content}
-              {...result}
-            />
+            <div>
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '1.5rem'
+                }}
+              >
+                {cleanString(result.title)}
+              </span>
+              <Embedly
+                small
+                style={{ marginTop: '0.5rem' }}
+                title={cleanString(result.title)}
+                url={result.content}
+                {...result}
+              />
+            </div>
           )}
         </div>
       </div>
