@@ -46,6 +46,8 @@ export default class SubjectMsgsModal extends Component {
         <main>
           {loadMoreButtonShown && (
             <LoadMoreButton
+              filled
+              info
               onClick={this.onLoadMoreButtonClick}
               loading={loading}
             />

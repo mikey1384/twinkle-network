@@ -103,6 +103,8 @@ class SubjectsModal extends Component {
               ))}
               {mySubjects.loadMoreButton && (
                 <LoadMoreButton
+                  filled
+                  info
                   style={{ marginTop: '1rem' }}
                   loading={mySubjects.loading}
                   onClick={() => this.loadMoreSubjects(true)}
