@@ -160,9 +160,9 @@ class People extends Component {
         () => {
           if (
             (this.state.scrollPosition.desktop >=
-              this.Container.offsetHeight - window.innerHeight - 400 ||
+              this.scrollHeight - window.innerHeight - 1000 ||
               this.state.scrollPosition.mobile >=
-                this.Container.offsetHeight - window.innerHeight - 400) &&
+                this.scrollHeight - window.innerHeight - 1000) &&
             loadMoreButton
           ) {
             this.loadMoreProfiles()
