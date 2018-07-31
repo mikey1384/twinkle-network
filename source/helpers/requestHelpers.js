@@ -102,6 +102,30 @@ export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
   }
 }
 
+export const searchContent = async({ filter, searchText, dispatch }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/search?filter=${filter}&searchText=${searchText}`
+    )
+    return Promise.resolve(data)
+  } catch (error) {
+    handleError(error, dispatch)
+  }
+}
+
+export const setDefaultSearchFilter = async({ filter, dispatch }) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/user/searchFilter`,
+      { filter },
+      auth()
+    )
+    return Promise.resolve(data)
+  } catch (error) {
+    handleError(error, dispatch)
+  }
+}
+
 export const uploadComment = async({
   content,
   parent,

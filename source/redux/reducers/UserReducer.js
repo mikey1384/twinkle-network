@@ -170,6 +170,11 @@ export default function UserReducer(state = defaultState, action) {
             : {})
         }))
       }
+    case USER.SET_DEFAULT_FILTER:
+      return {
+        ...state,
+        searchFilter: action.filter
+      }
     default:
       return state
   }

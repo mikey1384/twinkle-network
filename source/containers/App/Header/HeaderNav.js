@@ -57,11 +57,13 @@ export default class HeaderNav extends Component {
                 style={{ display: 'flex', cursor: 'pointer' }}
                 onClick={onClick}
               >
-                <span
-                  className={`glyphicon glyphicon-${imgLabel} mobile-no-hover ${
+                <div
+                  className={`mobile-no-hover ${
                     alert ? this.styles().alert : ''
                   }`}
-                />
+                >
+                  <Icon icon={imgLabel} />
+                </div>
                 <span
                   className={`nav-label ${alert ? this.styles().alert : ''}`}
                 >
@@ -80,7 +82,7 @@ export default class HeaderNav extends Component {
     return {
       alert: css`
         span {
-          color: ${alertColor || Color.lightBlue()}!important;
+          color: ${alertColor || Color.gold()}!important;
         }
       `
     }

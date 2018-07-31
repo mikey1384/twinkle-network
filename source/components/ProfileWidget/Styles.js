@@ -48,7 +48,7 @@ export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
     border-bottom-left-radius: ${borderRadius};
     border-bottom-right-radius: ${borderRadius};
     background: #fff;
-    padding: 1.5rem;
+    padding: 1rem;
     .login-message {
       font-size: 2rem;
       color: ${darkGray};

@@ -5,12 +5,14 @@ import onClickOutside from 'react-onclickoutside'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
 import Input from './Input'
+import Icon from 'components/Icon'
 
 class SearchInput extends Component {
   static propTypes = {
     addonColor: PropTypes.string,
     autoFocus: PropTypes.bool,
     className: PropTypes.string,
+    innerRef: PropTypes.func,
     onChange: PropTypes.func.isRequired,
     onClear: PropTypes.func,
     onClickOutSide: PropTypes.func,
@@ -41,6 +43,7 @@ class SearchInput extends Component {
       addonColor,
       autoFocus,
       className,
+      innerRef,
       onChange,
       placeholder,
       onFocus,
@@ -62,9 +65,6 @@ class SearchInput extends Component {
             padding: 0 1rem;
             display: flex;
             align-items: center;
-          }
-          .glyphicon {
-            line-height: 4rem;
             font-size: 1.5rem;
           }
           input {
@@ -79,10 +79,11 @@ class SearchInput extends Component {
           className="addon"
           style={{ backgroundColor: addonColor || Color.borderGray() }}
         >
-          <span className="glyphicon glyphicon-search" />
+          <Icon icon="search" />
         </div>
         <Input
           autoFocus={autoFocus}
+          inputRef={innerRef ? ref => innerRef(ref) : () => {}}
           onFocus={onFocus && onFocus}
           placeholder={placeholder}
           value={value}

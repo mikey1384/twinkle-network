@@ -37,7 +37,6 @@ app.use((req, res) => {
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
           <title>Twinkle</title>
           <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
-          <link rel="stylesheet" href="/css/glyphicon.css">
           <link rel="stylesheet" href="/css/slider.css">
           <link rel="stylesheet" href="/css/styles.css">
           <script>  

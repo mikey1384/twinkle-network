@@ -53,7 +53,6 @@ class Comment extends Component {
           >
             <DropdownButton
               snow
-              icon="pencil"
               direction="left"
               style={{ position: 'absolute' }}
               opacity={0.8}

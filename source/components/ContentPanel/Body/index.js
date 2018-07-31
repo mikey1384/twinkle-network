@@ -17,6 +17,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal'
 import XPRewardInterface from 'components/XPRewardInterface'
 import RewardStatus from 'components/RewardStatus'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import Icon from 'components/Icon'
 import { determineXpButtonDisabled } from 'helpers/domHelpers'
 import {
   deleteContent,
@@ -262,33 +263,40 @@ class Body extends Component {
                         style={{ marginLeft: '1rem' }}
                         onClick={this.onCommentButtonClick}
                       >
-                        <span className="glyphicon glyphicon-comment" />&nbsp;
-                        {type === 'video' || type === 'url'
-                          ? 'Comment'
-                          : type === 'question'
-                            ? 'Answer'
-                            : 'Reply'}&nbsp;
-                        {numChildComments > 0 && !commentsShown
-                          ? `(${numChildComments})`
-                          : ''}
+                        <Icon icon="comment-alt" />
+                        <span style={{ marginLeft: '0.7rem' }}>
+                          {type === 'video' || type === 'url'
+                            ? 'Comment'
+                            : type === 'question'
+                              ? 'Answer'
+                              : 'Reply'}
+                        </span>
+                        {numChildComments > 0 &&
+                          !commentsShown && (
+                            <span style={{ marginLeft: '0.5rem' }}>
+                              ({numChildComments})
+                            </span>
+                          )}
                       </Button>
                     </Fragment>
                   )}
                   {type === 'discussion' && (
                     <Button transparent onClick={this.onCommentButtonClick}>
-                      <span className="glyphicon glyphicon-comment" />&nbsp;
-                      Answer{!!numChildComments &&
-                      numChildComments > 0 &&
-                      !commentsShown
-                        ? ` (${numChildComments})`
-                        : ''}
+                      <Icon icon="comment-alt" />
+                      <span style={{ marginLeft: '0.7rem' }}>Answer</span>
+                      {!!numChildComments &&
+                        numChildComments > 0 &&
+                        !commentsShown && (
+                          <span style={{ marginLeft: '0.5rem' }}>
+                            ({numChildComments})
+                          </span>
+                        )}
                     </Button>
                   )}
                   {editButtonShown && (
                     <DropdownButton
                       transparent
                       direction="right"
-                      shape="button"
                       style={{ marginLeft: '0.5rem', display: 'inline-block' }}
                       size={type !== 'discussion' ? 'sm' : null}
                       text="Edit"
@@ -307,8 +315,10 @@ class Body extends Component {
                           this.setState({ xpRewardInterfaceShown: true })
                         }
                       >
-                        <span className="glyphicon glyphicon-star" />{' '}
-                        {this.determineXpButtonDisabled() || 'Reward'}
+                        <Icon icon="star" />
+                        <span style={{ marginLeft: '0.7rem' }}>
+                          {this.determineXpButtonDisabled() || 'Reward'}
+                        </span>
                       </Button>
                     )}
                 </div>

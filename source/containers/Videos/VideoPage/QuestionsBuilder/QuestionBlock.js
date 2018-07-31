@@ -7,6 +7,7 @@ import Button from 'components/Button'
 import { cleanString } from 'helpers/stringHelpers'
 import { borderRadius, innerBorderRadius, Color } from 'constants/css'
 import Banner from 'components/Banner'
+import Icon from 'components/Icon'
 import { css } from 'emotion'
 
 export default class QuestionBlock extends Component {
@@ -183,15 +184,12 @@ export default class QuestionBlock extends Component {
               style={{ opacity: deleted && '0.2', fontSize: '2rem' }}
               disabled={deleted && true}
             >
-              <span className="glyphicon glyphicon-pencil" />&nbsp;&nbsp;Edit
-              Questions
+              <Icon icon="pencil-alt" />
+              <span style={{ marginLeft: '1.2rem' }}>Edit Questions</span>
             </Button>
           ) : (
-            <div>
-              <Button
-                transparent
-                onClick={() => this.onEditCancel(id)}
-              >
+            <div style={{ display: 'flex' }}>
+              <Button transparent onClick={() => this.onEditCancel(id)}>
                 Cancel
               </Button>
               <Button
@@ -329,4 +327,3 @@ export default class QuestionBlock extends Component {
     `
   }
 }
-

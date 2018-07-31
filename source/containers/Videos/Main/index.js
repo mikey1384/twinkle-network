@@ -9,6 +9,7 @@ import AllVideosPanel from './Panels/AllVideosPanel'
 import PlaylistsPanel from './Panels/PlaylistsPanel'
 import AddPlaylistModal from './Modals/AddPlaylistModal'
 import Notification from 'components/Notification'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import {
   openAddVideoModal,
   closeAddVideoModal
@@ -210,6 +211,9 @@ class Main extends Component {
   }
 
   searchPlaylist = async text => {
+    if (stringIsEmpty(text) || text.length < 3) {
+      return this.setState({ searchedPlaylists: [], isSearching: false })
+    }
     try {
       const { data: searchedPlaylists } = await request.get(
         `${URL}/playlist/search/playlist?query=${text}`

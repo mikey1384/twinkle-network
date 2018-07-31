@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import onClickOutside from 'react-onclickoutside'
+import Icon from 'components/Icon'
 
 class Content extends Component {
   static propTypes = {
@@ -25,7 +26,7 @@ class Content extends Component {
         className={this.props.className}
       >
         <button className="close" onClick={this.props.onHide}>
-          <span className="glyphicon glyphicon-remove" />
+          <Icon icon="times" />
         </button>
         {this.props.children}
       </div>

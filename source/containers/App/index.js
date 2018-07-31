@@ -1,4 +1,4 @@
-import 'regenerator-runtime/runtime'
+import 'regenerator-runtime/runtime' // for async await
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
@@ -18,7 +18,6 @@ import MobileMenu from './MobileMenu'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import Button from 'components/Button'
-import SearchBox from './SearchBox'
 import Loading from 'components/Loading'
 import SigninModal from 'containers/Signin'
 import loadable from 'loadable-components'
@@ -37,6 +36,9 @@ const Chat = loadable(() => import('containers/Chat'), {
 const ContentPage = loadable(() => import('containers/ContentPage'), {
   LoadingComponent: Loading
 })
+const SearchPage = loadable(() => import('containers/SearchPage'), {
+  LoadingComponent: Loading
+})
 import Redirect from 'containers/Redirect'
 
 let visibilityChange
@@ -45,28 +47,27 @@ let hidden
 class App extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    initSession: PropTypes.func,
-    turnChatOff: PropTypes.func,
+    changePageVisibility: PropTypes.func,
     chatNumUnreads: PropTypes.number,
+    closeSigninModal: PropTypes.func,
+    history: PropTypes.object,
+    initChat: PropTypes.func,
+    initSession: PropTypes.func,
+    location: PropTypes.object,
+    loggedIn: PropTypes.bool,
     numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
-    closeSigninModal: PropTypes.func,
     resetChat: PropTypes.func,
-    loggedIn: PropTypes.bool,
-    location: PropTypes.object,
-    initChat: PropTypes.func,
-    changePageVisibility: PropTypes.func,
-    history: PropTypes.object,
+    searchMode: PropTypes.bool,
+    searchText: PropTypes.string,
     signinModalShown: PropTypes.bool,
+    turnChatOff: PropTypes.func,
     username: PropTypes.string
   }
 
   state = {
     chatLoading: false,
-    scrollPosition: {
-      desktop: 0,
-      mobile: 0
-    },
+    scrollPosition: 0,
     updateNoticeShown: false,
     mobileMenuShown: false,
     navScrollPositions: {}
@@ -90,7 +91,6 @@ class App extends Component {
       visibilityChange = 'webkitvisibilitychange'
     }
     initSession(location.pathname)
-    addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     addEvent(document, visibilityChange, this.handleVisibilityChange)
     window.ga('send', 'pageview', location.pathname)
     history.listen(location => {
@@ -101,10 +101,7 @@ class App extends Component {
   getSnapshotBeforeUpdate(prevProps) {
     if (!prevProps.chatMode && this.props.chatMode) {
       return {
-        scrollPosition: {
-          desktop: document.getElementById('App').scrollTop,
-          mobile: this.body.scrollTop
-        }
+        scrollPosition: this.body.scrollTop
       }
     }
     if (prevProps.location.pathname !== this.props.location.pathname) {
@@ -130,16 +127,18 @@ class App extends Component {
     const { navScrollPositions } = this.state
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads
 
-    if (snapshot.scrollPosition) {
-      this.setState({ scrollPosition: snapshot.scrollPosition })
-    }
-
     if (snapshot.navScrollPosition) {
       this.setState(state => ({
         navScrollPositions: {
           ...state.navScrollPositions,
           ...snapshot.navScrollPosition
         }
+      }))
+    }
+
+    if (snapshot.scrollPosition) {
+      this.setState(state => ({
+        scrollPosition: snapshot.scrollPosition
       }))
     }
 
@@ -176,7 +175,9 @@ class App extends Component {
       closeSigninModal,
       location,
       history,
+      searchMode,
       signinModalShown,
+      searchText,
       turnChatOff,
       username,
       resetChat
@@ -249,6 +250,7 @@ class App extends Component {
           </div>
         )}
         <Header
+          searchBoxRef={ref => (this.SearchBox = ref)}
           chatMode={chatMode}
           chatLoading={chatLoading}
           onChatButtonClick={this.onChatButtonClick}
@@ -258,14 +260,10 @@ class App extends Component {
           }
           onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
-        <div id="App" className={`${siteContent} ${chatMode && 'hidden'}`}>
-          <SearchBox
-            className="mobile"
-            style={{
-              zIndex: 1000,
-              padding: '1rem 0'
-            }}
-          />
+        <div
+          id="App"
+          className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
+        >
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/questions" component={ContentPage} />
@@ -278,14 +276,27 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
+        {searchMode && (
+          <div
+            className={`${css`
+              margin-top: 6rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-top: 0;
+              }
+            `} ${chatMode ? 'hidden' : ''}`}
+          >
+            <SearchPage
+              searchText={searchText}
+              focusSearchBox={() => this.SearchBox.focus()}
+            />
+          </div>
+        )}
         {chatMode &&
           this.props.loggedIn && (
             <Chat
               onUnmount={async() => {
                 await resetChat()
-                document.getElementById('App').scrollTop =
-                  scrollPosition.desktop
-                this.body.scrollTop = scrollPosition.mobile
+                this.body.scrollTop = scrollPosition
                 turnChatOff()
               }}
             />
@@ -314,6 +325,9 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     chatMode: state.ChatReducer.chatMode,
     chatNumUnreads: state.ChatReducer.numUnreads,
+    scrollPosition: state.ViewReducer.scrollPositions.app,
+    searchMode: state.SearchReducer.searchMode,
+    searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
     username: state.UserReducer.username
   }),

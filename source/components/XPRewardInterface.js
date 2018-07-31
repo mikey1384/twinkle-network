@@ -11,6 +11,7 @@ import {
 } from 'helpers/stringHelpers'
 import Button from 'components/Button'
 import request from 'axios'
+import Icon from 'components/Icon'
 import { auth } from 'helpers/requestHelpers'
 import { URL } from 'constants/URL'
 import { connect } from 'react-redux'
@@ -61,23 +62,27 @@ class XPRewardInterface extends Component {
         >
           <Button
             logo
-            style={{ display: 'flex' }}
+            style={{ justifyContent: 'flex-start' }}
             filled={!twoStarSelected}
             onClick={() => this.setState({ twoStarSelected: false })}
           >
-            <span className="glyphicon glyphicon-star" />
-            &nbsp;Reward a star{canRewardTwoStars ? ' (Great - 200 XP)' : ''}
+            <Icon icon="star" />
+            <span style={{ marginLeft: '0.7rem' }}>
+              Reward a star{canRewardTwoStars ? ' (Great - 200 XP)' : ''}
+            </span>
           </Button>
           {canRewardTwoStars && (
             <Button
               gold
-              style={{ display: 'flex', marginTop: '1rem' }}
+              style={{ justifyContent: 'flex-start', marginTop: '1rem' }}
               filled={twoStarSelected}
               onClick={() => this.setState({ twoStarSelected: true })}
             >
-              <span className="glyphicon glyphicon-star" />
-              <span className="glyphicon glyphicon-star" />
-              &nbsp;Reward 2 stars (Excellent - 400 XP)
+              <Icon icon="star" />
+              <Icon icon="star" />
+              <span style={{ marginLeft: '0.7rem' }}>
+                Reward 2 stars (Excellent - 400 XP)
+              </span>
             </Button>
           )}
         </section>

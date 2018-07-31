@@ -9,6 +9,7 @@ export const chatStyle = css`
   font-size: 1.5rem;
   position: relative;
   @media (max-width: ${mobileMaxWidth}) {
+    width: CALC(100vw - 1rem);
     height: CALC(100% - 2rem);
   }
 `
@@ -17,11 +18,15 @@ export const channelContainer = css`
   display: flex;
   flex-direction: column;
   margin-top: 1rem;
-  height: CALC(100% - 1rem);
+  height: CALC(100vh - 8rem);
   width: 25%;
   position: relative;
   background: #fff;
   -webkit-overflow-scrolling: touch;
+  @media (max-width: ${mobileMaxWidth}) {
+    width: 30vw;
+    height: CALC(100% - 1rem);
+  }
 `
 
 export const MessageStyle = {

@@ -140,7 +140,6 @@ class Message extends Component {
                         snow
                         style={{ position: 'absolute', top: 0, right: '5px' }}
                         direction="left"
-                        icon="pencil"
                         opacity={0.8}
                         onButtonClick={menuDisplayed => {
                           this.setState(

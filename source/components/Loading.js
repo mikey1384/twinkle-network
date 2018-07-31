@@ -4,34 +4,25 @@ import Spinner from 'components/Spinner'
 import { css } from 'emotion'
 
 Loading.propTypes = {
-  absolute: PropTypes.bool,
+  relative: PropTypes.bool,
   className: PropTypes.string,
   style: PropTypes.object,
   text: PropTypes.string
 }
 export default function Loading({
-  absolute,
+  relative,
   className,
   text = '',
   style = {}
 }) {
-  const loadingStyle = absolute
-    ? css`
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
-    : css`
-        width: 100%;
-        height: 12rem;
-      `
   return (
-    <div className={loadingStyle} style={style}>
+    <div
+      className={`${css`
+        width: 100%;
+        height: 15rem;
+      `} ${className}`}
+      style={style}
+    >
       <div
         style={{
           display: 'flex',

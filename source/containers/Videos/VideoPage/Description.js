@@ -348,7 +348,6 @@ class Description extends Component {
                   gridArea: 'editButton'
                 }}
                 stretch
-                icon="pencil"
                 text="Edit or Delete This Video"
                 menuProps={editMenuItems}
               />

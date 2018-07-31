@@ -18,8 +18,7 @@ import {
 } from 'helpers/stringHelpers'
 import Banner from 'components/Banner'
 import { PanelStyle } from './Styles'
-import { innerBorderRadius, Color } from 'constants/css'
-import { css } from 'emotion'
+import Checkbox from 'components/Checkbox'
 
 class ContentInput extends Component {
   static propTypes = {
@@ -57,57 +56,20 @@ class ContentInput extends Component {
           placeholder="Copy the URL address of a website or a YouTube video and paste it here"
           type="text"
         />
-        <div
-          style={{
-            marginTop: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            postion: 'relative',
-            width: '100%'
+        <Checkbox
+          label={'YouTube Video:'}
+          onClick={() => {
+            this.setState({
+              form: {
+                ...form,
+                checkedVideo: !form.checkedVideo
+              },
+              urlError: null
+            })
           }}
-        >
-          <span style={{ fontSize: '1.2rem', color: Color.darkGray() }}>
-            YouTube Video:&nbsp;&nbsp;
-          </span>
-          <div
-            onClick={() => {
-              this.setState({
-                form: {
-                  ...form,
-                  checkedVideo: !form.checkedVideo
-                },
-                urlError: null
-              })
-            }}
-            style={{
-              borderRadius: innerBorderRadius,
-              border: `1px solid ${Color.borderGray()}`,
-              width: '2rem',
-              height: '2rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              background: form.checkedVideo
-                ? Color.logoBlue()
-                : Color.wellGray()
-            }}
-          >
-            {form.checkedVideo && (
-              <div
-                className={css`
-                  display: inline-block;
-                  width: 0.6rem;
-                  height: 1rem;
-                  margin-top: 2%;
-                  border: solid #fff;
-                  border-width: 0 3px 3px 0;
-                  transform: rotate(45deg);
-                `}
-              />
-            )}
-          </div>
-        </div>
+          style={{ marginTop: '1rem' }}
+          checked={form.checkedVideo}
+        />
         {descriptionFieldsShown && (
           <div style={{ marginTop: '0.5rem' }}>
             <div style={{ position: 'relative' }}>

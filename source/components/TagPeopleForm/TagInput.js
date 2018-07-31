@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import SearchDropdown from '../SearchDropdown'
 import Input from 'components/Texts/Input'
+import Icon from 'components/Icon'
 import { Color } from 'constants/css'
 import { css } from 'emotion'
 
@@ -47,10 +48,6 @@ class TagInput extends Component {
             display: flex;
             align-items: center;
           }
-          .glyphicon {
-            line-height: 4rem;
-            font-size: 1.5rem;
-          }
           input {
             height: 100%;
             border: 1px solid ${Color.inputBorderGray()};
@@ -60,7 +57,7 @@ class TagInput extends Component {
         style={style}
       >
         <div className="addon" style={{ background: Color.borderGray() }}>
-          <span className="glyphicon glyphicon-search" />
+          <Icon icon="search" />
         </div>
         <Input
           autoFocus={this.props.autoFocus}

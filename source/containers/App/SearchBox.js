@@ -3,112 +3,44 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import SearchInput from 'components/Texts/SearchInput'
-import { stringIsEmpty, cleanString } from 'helpers/stringHelpers'
-import { clearSearchResults, searchContent } from 'redux/actions/ContentActions'
-import { Color } from 'constants/css'
-import { recordUserAction } from 'helpers/userDataHelpers'
+import { changeSearch } from 'redux/actions/SearchActions'
 
 class SearchBox extends Component {
   static propTypes = {
     className: PropTypes.string,
-    clearSearchResults: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    loggedIn: PropTypes.bool,
-    searchContent: PropTypes.func.isRequired,
-    searchResult: PropTypes.array.isRequired,
+    changeSearch: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    innerRef: PropTypes.func,
+    searchText: PropTypes.string.isRequired,
     style: PropTypes.object
   }
 
-  state = {
-    searchText: ''
-  }
-
-  timer = null
-
   render() {
-    const { searchResult, clearSearchResults, className, style } = this.props
-    const { searchText } = this.state
+    const { className, onFocus, innerRef, searchText, style } = this.props
     return (
       <div className={className} style={style}>
         <SearchInput
-          placeholder="Search for Videos and Links"
+          innerRef={innerRef ? ref => innerRef(ref) : () => {}}
+          placeholder="Search Videos, Questions, Links, and More"
           onChange={this.onContentSearch}
           value={searchText}
-          searchResults={searchResult}
-          renderItemLabel={item => (
-            <div>
-              <div
-                style={{
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  lineHeight: 'normal'
-                }}
-              >
-                <span
-                  style={{
-                    color:
-                      item.type === 'video' ? Color.logoBlue() : Color.pink(),
-                    fontWeight: 'bold'
-                  }}
-                >
-                  [{item.type === 'video' ? 'Video' : 'Link'}]
-                </span>&nbsp;&nbsp;&nbsp;<span>{cleanString(item.label)}</span>
-              </div>
-            </div>
-          )}
-          renderItemUrl={item => `/${item.type}s/${item.id}`}
-          onClickOutSide={() => {
-            if (searchText) {
-              this.setState({ searchText: '' })
-              clearSearchResults()
-            }
-          }}
-          onSelect={this.onSelect}
+          onFocus={onFocus}
         />
       </div>
     )
   }
 
   onContentSearch = text => {
-    const { searchContent, clearSearchResults } = this.props
-    clearTimeout(this.timer)
-    this.setState({ searchText: text })
-    if (stringIsEmpty(text)) {
-      return clearSearchResults()
-    }
-    this.timer = setTimeout(() => searchContent(text), 300)
-  }
-
-  onSelect = item => {
-    const {
-      clearSearchResults,
-      history,
-      loggedIn,
-      location: { pathname }
-    } = this.props
-    this.setState({ searchText: '' })
-    clearSearchResults()
-    if (loggedIn) {
-      recordUserAction({
-        action: 'search',
-        target: item.type,
-        subTarget: item.id
-      })
-    }
-    if (pathname === `/${item.type}s/${item.id}`) return
-    history.push(`/${item.type}s/${item.id}`)
+    const { changeSearch } = this.props
+    changeSearch(text)
   }
 }
 
 export default connect(
   state => ({
-    searchResult: state.ContentReducer.searchResult,
-    loggedIn: state.UserReducer.loggedIn
+    searchText: state.SearchReducer.searchText
   }),
   {
-    searchContent,
-    clearSearchResults
+    changeSearch
   }
 )(withRouter(SearchBox))

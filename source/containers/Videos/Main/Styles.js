@@ -4,11 +4,11 @@ import { mobileMaxWidth } from 'constants/css'
 export const main = css`
   width: 100%;
   .left {
-    width: CALC(70% - 3rem);
+    width: CALC(73vw - 2rem);
     margin-left: 1rem;
   }
   .right {
-    width: 30%;
+    width: CALC(27vw - 1rem);
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     right: 1rem;

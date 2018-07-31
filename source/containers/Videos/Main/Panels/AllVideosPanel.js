@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { getMoreVideos } from 'redux/actions/VideoActions'
 import SectionPanel from 'components/SectionPanel'
 import Button from 'components/Button'
+import { stringIsEmpty } from 'helpers/stringHelpers'
 import request from 'axios'
 import { URL } from 'constants/URL'
 
@@ -58,7 +59,7 @@ class AllVideosPanel extends Component {
         emptyMessage="No Videos"
         isEmpty={videos.length === 0}
         loaded={loaded}
-        loadMoreButtonShown={loadMoreButton}
+        loadMoreButtonShown={stringIsEmpty(searchQuery) && loadMoreButton}
         loadMore={this.loadMoreVideos}
         onSearch={this.onVideoSearch}
         searchQuery={searchQuery}
@@ -106,6 +107,9 @@ class AllVideosPanel extends Component {
   }
 
   searchVideo = async text => {
+    if (stringIsEmpty(text) || text.length < 3) {
+      return this.setState({ searchedVideos: [], isSearching: false })
+    }
     try {
       const { data: searchedVideos } = await request.get(
         `${URL}/video/search?query=${text}`

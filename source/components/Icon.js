@@ -7,8 +7,8 @@ Icon.propTypes = {
   icon: PropTypes.string,
   size: PropTypes.string
 }
-export default function Icon({ icon, size }) {
+export default function Icon({ icon, size, ...props }) {
   return ExecutionEnvironment.canUseDOM ? (
-    <FontAwesomeIcon icon={icon} size={size} />
+    <FontAwesomeIcon icon={icon} size={size} {...props} />
   ) : null
 }

@@ -7,7 +7,8 @@ export default class LongText extends Component {
     children: PropTypes.string.isRequired,
     className: PropTypes.string,
     maxLines: PropTypes.number,
-    style: PropTypes.object
+    style: PropTypes.object,
+    noExpend: PropTypes.bool
   }
 
   mounted = false
@@ -19,18 +20,20 @@ export default class LongText extends Component {
   }
 
   componentDidMount() {
+    const { children } = this.props
     this.mounted = true
-    this.truncateText(this.props.children)
+    this.truncateText(children || '')
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.children !== this.props.children && this.mounted) {
+    const { children } = this.props
+    if (prevProps.children !== children && this.mounted) {
       this.setState({
         text: '',
         more: false,
         fullText: false
       })
-      this.truncateText(this.props.children)
+      this.truncateText(children || '')
     }
   }
 
@@ -39,7 +42,7 @@ export default class LongText extends Component {
   }
 
   render() {
-    const { style, className, children } = this.props
+    const { style, className, children = '', noExpend } = this.props
     const { text, more, fullText } = this.state
     return (
       <div
@@ -70,12 +73,14 @@ export default class LongText extends Component {
               {more && (
                 <Fragment>
                   {'... '}
-                  <a
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => this.setState({ fullText: true })}
-                  >
-                    Read More
-                  </a>
+                  {!noExpend && (
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => this.setState({ fullText: true })}
+                    >
+                      Read More
+                    </a>
+                  )}
                 </Fragment>
               )}
             </Fragment>

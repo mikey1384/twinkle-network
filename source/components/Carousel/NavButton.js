@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Button from 'components/Button'
+import Icon from 'components/Icon'
 import { css } from 'emotion'
 
 NavButton.propTypes = {
@@ -21,11 +22,7 @@ export default function NavButton({ disabled, nextSlide, left }) {
       snow
       onClick={handleClick}
     >
-      <span
-        className={`glyphicon ${
-          left ? 'glyphicon-chevron-left' : 'glyphicon-chevron-right'
-        }`}
-      />
+      <Icon icon={left ? 'chevron-left' : 'chevron-right'} />
     </Button>
   )
 

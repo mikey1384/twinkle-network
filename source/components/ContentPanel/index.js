@@ -101,7 +101,7 @@ class ContentPanel extends Component {
           className={container}
           style={{ height: !contentObj.loaded && '15rem' }}
         >
-          {!contentObj.loaded && <Loading absolute />}
+          {!contentObj.loaded && <Loading />}
           {contentObj.loaded && (
             <Heading
               contentObj={contentObj}

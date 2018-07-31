@@ -23,7 +23,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
 import ContentPanel from 'components/ContentPanel'
-import LoadMoreButton from 'components/LoadMoreButton'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
 import { queryStringForArray } from 'helpers/stringHelpers'
 import FilterBar from 'components/FilterBar'
@@ -62,9 +62,15 @@ class Body extends Component {
     loading: false
   }
 
+  body =
+    typeof document !== 'undefined'
+      ? document.scrollingElement || document.documentElement
+      : {}
+
   componentDidMount() {
     const { clearFeeds } = this.props
     this.mounted = true
+    addEvent(window, 'scroll', this.onScroll)
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     clearFeeds()
     this.loadContent()
@@ -80,6 +86,7 @@ class Body extends Component {
 
   componentWillUnmount() {
     this.mounted = false
+    removeEvent(window, 'scroll', this.onScroll)
     removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
   }
 
@@ -253,9 +260,11 @@ class Body extends Component {
         </div>
         {loadMoreButton && (
           <LoadMoreButton
-            style={{ marginTop: '1rem', marginBottom: '1rem' }}
+            style={{ marginTop: '1rem' }}
             onClick={this.loadMoreFeeds}
             loading={loading}
+            filled
+            info
           />
         )}
       </div>
@@ -336,12 +345,18 @@ class Body extends Component {
 
   onScroll = () => {
     let { chatMode, feeds } = this.props
-    const scrollPosition = document.getElementById('App').scrollTop
     if (!chatMode && feeds.length > 0) {
-      this.setState({ scrollPosition })
+      this.setState({
+        scrollPosition: {
+          desktop: document.getElementById('App').scrollTop,
+          mobile: this.body.scrollTop
+        }
+      })
       if (
-        this.state.scrollPosition >=
-        this.Container.offsetHeight - window.innerHeight - 500
+        this.state.scrollPosition.desktop >=
+          this.Container.offsetHeight - window.innerHeight - 500 ||
+        this.state.scrollPosition.mobile >=
+          this.Container.offsetHeight - window.innerHeight - 500
       ) {
         this.loadMoreFeeds()
       }

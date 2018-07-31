@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from 'constants/itemTypes'
+import Icon from 'components/Icon'
 import { Color } from 'constants/css'
 
 const ListItemSource = {
@@ -77,10 +78,7 @@ class ChoiceListItem extends Component {
         <main>
           <section>
             <div style={{ width: '10%' }}>
-              <span
-                className="glyphicon glyphicon-align-justify"
-                style={{ color: Color.menuGray() }}
-              />
+              <Icon icon="align-justify" style={{ color: Color.menuGray() }} />
             </div>
             <div
               style={{

@@ -31,6 +31,7 @@ import { auth } from 'helpers/requestHelpers'
 import { timeSince } from 'helpers/timeStampHelpers'
 import StatusInput from './StatusInput'
 import RankBar from './RankBar'
+import Icon from 'components/Icon'
 
 class ProfilePanel extends Component {
   static propTypes = {
@@ -219,14 +220,16 @@ class ProfilePanel extends Component {
                       this.StatusInput.focus()
                     }}
                   >
-                    <span className="glyphicon glyphicon-pencil" />&nbsp;&nbsp;Change
+                    <Icon icon="pencil-alt" />
+                    <span style={{ marginLeft: '0.7rem' }}>Change</span>
                   </Button>
                   <Button
                     transparent
                     style={{ marginLeft: '1rem' }}
                     onClick={() => this.setState({ confirmModalShown: true })}
                   >
-                    <span className="glyphicon glyphicon-trash" />&nbsp;&nbsp;Remove
+                    <Icon icon="trash-alt" />
+                    <span style={{ marginLeft: '0.7rem' }}>Remove</span>
                   </Button>
                 </div>
               )}
@@ -291,7 +294,7 @@ class ProfilePanel extends Component {
                 </div>
               ))}
             {canEdit && (
-              <div style={{ marginTop: '1.5rem', zIndex: 1 }}>
+              <div style={{ marginTop: '1.5rem', zIndex: 1, display: 'flex' }}>
                 <Button
                   transparent
                   onClick={() => this.setState({ bioEditModalShown: true })}
@@ -307,7 +310,8 @@ class ProfilePanel extends Component {
               userId !== profile.id && (
                 <div
                   style={{
-                    marginTop: noProfile ? '2rem' : '1rem'
+                    marginTop: noProfile ? '2rem' : '1rem',
+                    display: 'flex'
                   }}
                 >
                   <Button
@@ -327,7 +331,8 @@ class ProfilePanel extends Component {
                       )
                     }
                   >
-                    Message
+                    <Icon icon="comments" />
+                    <span style={{ marginLeft: '0.7rem' }}>Message</span>
                   </Button>
                 </div>
               )}

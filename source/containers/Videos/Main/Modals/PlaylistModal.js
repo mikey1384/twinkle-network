@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Modal from 'components/Modal'
 import Button from 'components/Button'
-import LoadMoreButton from 'components/LoadMoreButton'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 import Loading from 'components/Loading'
 import { Color } from 'constants/css'
 import { cleanString, queryStringForArray } from 'helpers/stringHelpers'
@@ -96,6 +96,8 @@ export default class PlaylistModal extends Component {
             <LoadMoreButton
               style={{ marginTop: '1.5em' }}
               loading={loading}
+              filled
+              info
               onClick={this.onLoadMoreVideos}
             />
           )}

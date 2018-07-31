@@ -19,6 +19,7 @@ import LongText from 'components/Texts/LongText'
 import { container } from '../Styles'
 import RewardStatus from 'components/RewardStatus'
 import XPRewardInterface from 'components/XPRewardInterface'
+import Icon from 'components/Icon'
 import { Link } from 'react-router-dom'
 import { editContent } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
@@ -122,7 +123,6 @@ class Reply extends Component {
                 <DropdownButton
                   snow
                   direction="left"
-                  icon="pencil"
                   opacity={0.8}
                   menuProps={[
                     {
@@ -182,7 +182,8 @@ class Reply extends Component {
                       style={{ marginLeft: '1rem' }}
                       onClick={this.onReplyButtonClick}
                     >
-                      <span className="glyphicon glyphicon-comment" /> Reply
+                      <Icon icon="comment-alt" />
+                      <span style={{ marginLeft: '0.7rem' }}>Reply</span>
                     </Button>
                     {canStar &&
                       userCanEditThis &&
@@ -199,12 +200,14 @@ class Reply extends Component {
                             stars
                           })}
                         >
-                          <span className="glyphicon glyphicon-star" />
-                          &nbsp;{determineXpButtonDisabled({
-                            myId: userId,
-                            xpRewardInterfaceShown,
-                            stars
-                          }) || 'Reward'}
+                          <Icon icon="star" />
+                          <span style={{ marginLeft: '0.7rem' }}>
+                            {determineXpButtonDisabled({
+                              myId: userId,
+                              xpRewardInterfaceShown,
+                              stars
+                            }) || 'Reward'}
+                          </span>
                         </Button>
                       )}
                   </div>

@@ -24,7 +24,7 @@ import {
 import { resetNumNewPosts } from 'redux/actions/NotiActions'
 import InputPanel from './InputPanel'
 import ContentPanel from 'components/ContentPanel'
-import LoadMoreButton from 'components/LoadMoreButton'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 import Loading from 'components/Loading'
 import { connect } from 'react-redux'
 import { addEvent, removeEvent } from 'helpers/listenerHelpers'
@@ -70,9 +70,13 @@ class Stories extends Component {
   scrollHeight = 0
 
   state = {
-    loadingMore: false,
-    scrollPosition: 0
+    loadingMore: false
   }
+
+  body =
+    typeof document !== 'undefined'
+      ? document.scrollingElement || document.documentElement
+      : {}
 
   async componentDidMount() {
     let {
@@ -82,6 +86,7 @@ class Stories extends Component {
       loaded,
       resetNumNewPosts
     } = this.props
+    addEvent(window, 'scroll', this.onScroll)
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
@@ -93,6 +98,7 @@ class Stories extends Component {
   }
 
   componentWillUnmount() {
+    removeEvent(window, 'scroll', this.onScroll)
     removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
   }
 
@@ -125,11 +131,11 @@ class Stories extends Component {
           ref={ref => {
             this.Container = ref
           }}
-          style={{ position: 'relative', paddingBottom: '1rem' }}
+          style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
         >
           {this.renderFilterBar()}
           <InputPanel />
-          <div>
+          <div style={{ width: '100%' }}>
             {!loaded && <Loading text="Loading Feeds..." />}
             {loaded &&
               feeds.length === 0 && (
@@ -154,7 +160,7 @@ class Stories extends Component {
                 <Fragment>
                   {numNewPosts > 0 && (
                     <Banner
-                      info
+                      gold
                       onClick={this.fetchNewFeeds}
                       style={{ marginBottom: '1rem' }}
                     >
@@ -198,6 +204,8 @@ class Stories extends Component {
                     <LoadMoreButton
                       onClick={this.loadMoreFeeds}
                       loading={loadingMore}
+                      filled
+                      info
                     />
                   )}
                 </Fragment>
@@ -235,17 +243,25 @@ class Stories extends Component {
   onScroll = () => {
     const { chatMode, feeds, loadMoreButton } = this.props
     if (document.getElementById('App').scrollHeight > this.scrollHeight) {
-      this.scrollHeight = document.getElementById('App').scrollHeight
+      this.scrollHeight = Math.max(
+        document.getElementById('App').scrollHeight,
+        this.body.scrollHeight
+      )
     }
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
       this.setState(
         {
-          scrollPosition: document.getElementById('App').scrollTop
+          scrollPosition: {
+            desktop: document.getElementById('App').scrollTop,
+            mobile: this.body.scrollTop
+          }
         },
         () => {
           if (
-            this.state.scrollPosition >=
-              this.Container.offsetHeight - window.innerHeight - 400 &&
+            (this.state.scrollPosition.desktop >=
+              this.Container.offsetHeight - window.innerHeight - 400 ||
+              this.state.scrollPosition.mobile >=
+                this.Container.offsetHeight - window.innerHeight - 400) &&
             loadMoreButton
           ) {
             this.loadMoreFeeds()

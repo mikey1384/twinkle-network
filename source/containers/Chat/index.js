@@ -7,6 +7,7 @@ import ChatInput from './ChatInput'
 import CreateNewChannelModal from './Modals/CreateNewChannel'
 import InviteUsersModal from './Modals/InviteUsers'
 import EditTitleModal from './Modals/EditTitle'
+import ConfirmModal from 'components/Modals/ConfirmModal'
 import UserListModal from 'components/Modals/UserListModal'
 import DropdownButton from 'components/Buttons/DropdownButton'
 import Button from 'components/Button'
@@ -17,7 +18,7 @@ import { textIsOverflown } from 'helpers/domHelpers'
 import FullTextReveal from 'components/FullTextReveal'
 import { socket } from 'constants/io'
 import { queryStringForArray } from 'helpers/stringHelpers'
-import FlatLoadMoreButton from 'components/LoadMoreButton/Flat'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 import { chatStyle, channelContainer } from './Styles'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
@@ -66,6 +67,7 @@ class Chat extends Component {
   state = {
     loading: false,
     currentChannelOnlineMembers: [],
+    leaveConfirmModalShown: false,
     createNewChannelModalShown: false,
     inviteUsersModalShown: false,
     userListModalShown: false,
@@ -157,6 +159,7 @@ class Chat extends Component {
     } = this.props
     const {
       loading,
+      leaveConfirmModalShown,
       createNewChannelModalShown,
       inviteUsersModalShown,
       userListModalShown,
@@ -183,12 +186,19 @@ class Chat extends Component {
           },
           {
             label: 'Leave Channel',
-            onClick: this.onLeaveChannel
+            onClick: () => this.setState({ leaveConfirmModalShown: true })
           }
         ]
 
     return (
       <div className={chatStyle}>
+        {leaveConfirmModalShown && (
+          <ConfirmModal
+            title="Leave Channel"
+            onHide={() => this.setState({ leaveConfirmModalShown: false })}
+            onConfirm={this.onLeaveChannel}
+          />
+        )}
         {createNewChannelModalShown && (
           <CreateNewChannelModal
             userId={userId}
@@ -269,7 +279,7 @@ class Chat extends Component {
                   : '(Deleted)'}
               </span>
               <FullTextReveal
-                text={channelName(channels, currentChannel)}
+                text={channelName(channels, currentChannel) || ''}
                 show={onTitleHover}
                 width="100%"
                 style={{ top: '4rem' }}
@@ -320,9 +330,16 @@ class Chat extends Component {
           >
             {this.renderChannels()}
             {channelLoadMoreButtonShown && (
-              <FlatLoadMoreButton
-                isLoading={channelsLoading}
+              <LoadMoreButton
+                success
+                filled
+                loading={channelsLoading}
                 onClick={this.loadMoreChannels}
+                style={{
+                  width: '100%',
+                  borderRadius: 0,
+                  border: 0
+                }}
               />
             )}
           </div>
@@ -348,7 +365,7 @@ class Chat extends Component {
                 right: '1rem'
               }}
               direction="left"
-              icon="menu-hamburger"
+              icon="bars"
               text="Menu"
               menuProps={menuProps}
             />
@@ -714,6 +731,7 @@ class Chat extends Component {
       username,
       profilePicId
     })
+    this.setState({ leaveConfirmModalShown: false })
   }
 
   onMouseOverTitle = () => {

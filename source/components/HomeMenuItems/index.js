@@ -20,7 +20,10 @@ export default function HomeMenuItems({ history, location, style = {} }) {
         path="/"
         exact
         children={({ match }) => (
-          <nav className={match && 'active'} onClick={() => history.push('/')}>
+          <nav
+            className={match ? 'active' : ''}
+            onClick={() => history.push('/')}
+          >
             <a href="/" onClick={e => e.preventDefault()}>
               <span className="icon">
                 <Icon icon="bolt" size="1x" />

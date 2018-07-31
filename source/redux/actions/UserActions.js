@@ -192,3 +192,8 @@ export const openSigninModal = () => ({
 export const closeSigninModal = () => ({
   type: USER.CLOSE_SIGNIN_MODAL
 })
+
+export const updateDefaultSearchFilter = filter => ({
+  type: USER.SET_DEFAULT_FILTER,
+  filter
+})

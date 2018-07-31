@@ -15,6 +15,7 @@ import {
 import Textarea from 'components/Texts/Textarea'
 import LongText from 'components/Texts/LongText'
 import ConfirmModal from 'components/Modals/ConfirmModal'
+import Icon from 'components/Icon'
 import Input from 'components/Texts/Input'
 import {
   attachStar,
@@ -145,7 +146,6 @@ class DiscussionPanel extends Component {
                 <DropdownButton
                   snow
                   direction="left"
-                  icon="pencil"
                   menuProps={[
                     {
                       label: 'Edit',
@@ -277,10 +277,12 @@ class DiscussionPanel extends Component {
                     style={{ fontSize: '2rem' }}
                     onClick={this.onExpand}
                   >
-                    <span className="glyphicon glyphicon-comment" /> Answer{numComments &&
-                    numComments > 0
-                      ? ` (${numComments})`
-                      : ''}
+                    <Icon icon="comment-alt" />
+                    <span style={{ marginLeft: '1rem' }}>
+                      Answer{numComments && numComments > 0
+                        ? ` (${numComments})`
+                        : ''}
+                    </span>
                   </Button>
                 </div>
               )}

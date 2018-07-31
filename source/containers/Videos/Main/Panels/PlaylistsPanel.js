@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PlaylistCarousel from '../Carousels/PlaylistCarousel'
 import SectionPanel from 'components/SectionPanel'
-import { queryStringForArray } from 'helpers/stringHelpers'
+import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers'
 import { getMorePlaylists } from 'redux/actions/PlaylistActions'
 import { connect } from 'react-redux'
 
@@ -45,7 +45,7 @@ class PlaylistsPanel extends Component {
         emptyMessage="No Playlists"
         isEmpty={playlists.length === 0}
         loaded={loaded}
-        loadMoreButtonShown={loadMoreButton}
+        loadMoreButtonShown={stringIsEmpty(searchQuery) && loadMoreButton}
         loadMore={this.loadMorePlaylists}
         isSearching={isSearching}
         onSearch={onSearch}
@@ -74,4 +74,7 @@ class PlaylistsPanel extends Component {
   }
 }
 
-export default connect(null, { getMorePlaylists })(withRouter(PlaylistsPanel))
+export default connect(
+  null,
+  { getMorePlaylists }
+)(withRouter(PlaylistsPanel))

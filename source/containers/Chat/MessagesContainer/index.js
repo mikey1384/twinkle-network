@@ -139,7 +139,7 @@ class MessagesContainer extends Component {
           />
         )}
         <div className={className}>
-          {loading && <Loading absolute />}
+          {loading && <Loading />}
           <div
             ref={ref => {
               this.messagesContainer = ref
@@ -167,18 +167,20 @@ class MessagesContainer extends Component {
               ref={ref => {
                 this.content = ref
               }}
+              style={{ width: '100%' }}
             >
               {loadMoreButton ? (
                 <div
                   style={{
                     marginBottom: '1rem',
-                    textAlign: 'center'
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '100%'
                   }}
                 >
                   <Button
                     filled
                     info
-                    style={{ marginTop: '1rem' }}
                     disabled={loadMoreButtonLock}
                     onClick={this.onLoadMoreButtonClick}
                   >
@@ -205,8 +207,9 @@ class MessagesContainer extends Component {
           <div
             style={{
               position: 'absolute',
-              bottom: '3rem',
-              textAlign: 'center',
+              bottom: '1rem',
+              display: 'flex',
+              justifyContent: 'center',
               width: '100%'
             }}
           >

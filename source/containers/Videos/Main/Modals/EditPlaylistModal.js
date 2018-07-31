@@ -234,6 +234,9 @@ class EditPlaylistModal extends Component {
   }
 }
 
-export default connect(null, {
-  changePlaylistVideos
-})(DragDropContext(HTML5Backend)(EditPlaylistModal))
+export default connect(
+  null,
+  {
+    changePlaylistVideos
+  }
+)(DragDropContext(HTML5Backend)(EditPlaylistModal))

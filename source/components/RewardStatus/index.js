@@ -4,6 +4,7 @@ import { css } from 'emotion'
 import { Color } from 'constants/css'
 import { connect } from 'react-redux'
 import Comment from './Comment'
+import Icon from 'components/Icon'
 
 class RewardStatus extends Component {
   static propTypes = {
@@ -30,7 +31,7 @@ class RewardStatus extends Component {
     const totalStars = stars.reduce((prev, star) => prev + star.rewardAmount, 0)
     let starMarks = []
     for (let i = 0; i < totalStars; i++) {
-      starMarks.push(<span key={i} className="glyphicon glyphicon-star" />)
+      starMarks.push(<Icon key={i} icon="star" />)
     }
     return (
       <Fragment>

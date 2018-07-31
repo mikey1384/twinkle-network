@@ -19,7 +19,12 @@ export default class Redirect extends Component {
   }
 
   componentDidMount() {
-    const { match: { params: { username } }, history } = this.props
+    const {
+      match: {
+        params: { username }
+      },
+      history
+    } = this.props
     return request
       .get(`${URL}/user/check?username=${username}`)
       .then(({ data: userExists }) => {
@@ -30,6 +35,10 @@ export default class Redirect extends Component {
 
   render() {
     const { loaded } = this.state
-    return <div>{loaded ? <NotFound /> : <Loading text="Loading..." />}</div>
+    return (
+      <div>
+        {loaded ? <NotFound /> : <Loading text="Loading..." />}
+      </div>
+    )
   }
 }

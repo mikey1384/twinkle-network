@@ -154,13 +154,23 @@ class LinkItem extends Component {
           }
         `}
       >
-        <div>
+        <div
+          className={css`
+            position: relative;
+            width: 20%;
+            &:after {
+              content: '';
+              display: block;
+              padding-bottom: 100%;
+            }
+          `}
+        >
           <Link to={`/links/${id}`}>
             <img
               className={css`
-                display: block;
-                width: 7vw;
-                height: 7vw;
+                position: absolute;
+                width: 100%;
+                height: 100%;
                 object-fit: cover;
               `}
               src={imageUrl}
@@ -184,6 +194,7 @@ class LinkItem extends Component {
                   width: 100%;
                   a {
                     font-size: 2rem;
+                    line-height: 1.2;
                     font-weight: bold;
                   }
                 `}
@@ -243,7 +254,6 @@ class LinkItem extends Component {
                 <DropdownButton
                   snow
                   direction="left"
-                  icon="pencil"
                   menuProps={editMenuItems}
                 />
               )}

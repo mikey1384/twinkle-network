@@ -54,8 +54,7 @@ export default function MainContent({
             padding: '1rem',
             whiteSpace: 'pre-wrap',
             overflowWrap: 'break-word',
-            wordBrea: 'break-word',
-            fontSize: '1.6rem'
+            wordBrea: 'break-word'
           }}
         >
           {!isEditing && (
