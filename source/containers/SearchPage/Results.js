@@ -6,7 +6,8 @@ import { setResults } from 'redux/actions/SearchActions'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { searchContent } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
-import { Color } from 'constants/css'
+import { Color, mobileMaxWidth } from 'constants/css'
+import { css } from 'emotion'
 import CloseText from './CloseText'
 
 class Results extends Component {
@@ -61,6 +62,11 @@ class Results extends Component {
     const { closeSearch, filter, results } = this.props
     return (
       <div
+        className={css`
+          @media (max-width: ${mobileMaxWidth}) {
+            padding-bottom: 30rem;
+          }
+        `}
         style={{
           display: 'flex',
           flexDirection: 'column',
