@@ -282,7 +282,7 @@ class Header extends Component {
               </HeaderNav>
             </Fragment>
             <div
-              className={!searchMode ? 'desktop' : ''}
+              className={!searchMode || chatLoading ? 'desktop' : ''}
               style={{ display: 'flex', width: searchMode ? '60%' : '65%' }}
             >
               <SearchBox
