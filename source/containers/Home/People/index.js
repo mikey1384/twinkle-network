@@ -102,6 +102,8 @@ class People extends Component {
             loaded &&
             loadMoreButton && (
               <LoadMoreButton
+                filled
+                info
                 onClick={this.loadMoreProfiles}
                 loading={loading}
               />
