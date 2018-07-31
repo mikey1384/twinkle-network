@@ -5,12 +5,13 @@ import { closeSearch } from 'redux/actions/SearchActions'
 import { connect } from 'react-redux'
 
 CloseText.propTypes = {
+  className: PropTypes.string,
   closeSearch: PropTypes.func.isRequired,
   style: PropTypes.object
 }
-function CloseText({ closeSearch, style }) {
+function CloseText({ className, closeSearch, style }) {
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div className={className} style={{ textAlign: 'center' }}>
       <p
         style={{
           cursor: 'pointer',

@@ -7,6 +7,7 @@ import Icon from 'components/Icon'
 
 class DropdownButton extends Component {
   static propTypes = {
+    buttonStyle: PropTypes.object,
     icon: PropTypes.string,
     iconSize: PropTypes.string,
     direction: PropTypes.string,
@@ -23,7 +24,7 @@ class DropdownButton extends Component {
     opacity: PropTypes.number,
     stretch: PropTypes.bool,
     style: PropTypes.object,
-    text: PropTypes.string
+    text: PropTypes.any
   }
 
   handleClickOutside = event => {
@@ -42,6 +43,7 @@ class DropdownButton extends Component {
   render() {
     const { menuDisplayed } = this.state
     const {
+      buttonStyle = {},
       direction,
       opacity = 1,
       style,
@@ -64,18 +66,17 @@ class DropdownButton extends Component {
         <Button
           {...props}
           style={{
-            display: 'flex',
-            alignItems: 'center',
             borderRadius: noBorderRadius && 0,
             border: noBorderRadius && 0,
             margin: noBorderRadius && 0,
-            width: stretch && '100%'
+            ...(stretch ? { width: '100%' } : {}),
+            ...buttonStyle
           }}
           onClick={this.onClick}
         >
           <Icon icon={icon} size={iconSize} />
           {text && <span>&nbsp;&nbsp;</span>}
-          <span>{text}</span>
+          {text}
         </Button>
         {menuDisplayed && (
           <DropdownList

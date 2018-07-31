@@ -160,7 +160,7 @@ class Stories extends Component {
                 <Fragment>
                   {numNewPosts > 0 && (
                     <Banner
-                      info
+                      gold
                       onClick={this.fetchNewFeeds}
                       style={{ marginBottom: '1rem' }}
                     >

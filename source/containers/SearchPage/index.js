@@ -7,10 +7,11 @@ import Checkbox from 'components/Checkbox'
 import Results from './Results'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { setDefaultSearchFilter } from 'helpers/requestHelpers'
-import { Color } from 'constants/css'
+import { Color, mobileMaxWidth } from 'constants/css'
 import { changeFilter, closeSearch } from 'redux/actions/SearchActions'
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions'
 import { connect } from 'react-redux'
+import { css } from 'emotion'
 import CloseText from './CloseText'
 
 class SearchPage extends Component {
@@ -41,11 +42,15 @@ class SearchPage extends Component {
     return (
       <div className={searchPage}>
         <div
-          style={{
-            width: '80%'
-          }}
+          className={css`
+            width: 80%;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+              margin: 0 1rem 0 1rem;
+            }
+          `}
         >
-          <CloseText />
+          <CloseText className="desktop" />
           <div
             style={{
               fontSize: '3rem',

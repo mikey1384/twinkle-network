@@ -6,19 +6,42 @@ import { openSigninModal } from 'redux/actions/UserActions'
 import { connect } from 'react-redux'
 
 AccountMenu.propTypes = {
+  buttonStyle: PropTypes.object,
+  className: PropTypes.string,
   loggedIn: PropTypes.bool,
   logout: PropTypes.func.isRequired,
   openSigninModal: PropTypes.func.isRequired,
   title: PropTypes.string
 }
-function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
+function AccountMenu({
+  buttonStyle = {},
+  className,
+  loggedIn,
+  openSigninModal,
+  title,
+  logout,
+  ...props
+}) {
   return loggedIn ? (
     <DropdownButton
       {...props}
+      className={className}
+      buttonStyle={buttonStyle}
       transparent
-      listStyle={{ marginTop: '0.5rem', width: '11rem' }}
+      listStyle={{ marginTop: '0.5rem' }}
       direction="left"
-      text={title}
+      text={
+        <div
+          style={{
+            maxWidth: '10rem',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          {title}
+        </div>
+      }
       shape="button"
       icon="caret-down"
       iconSize="lg"
@@ -31,12 +54,21 @@ function AccountMenu({ loggedIn, openSigninModal, title, logout, ...props }) {
     />
   ) : (
     <Button
+      className={className}
       onClick={openSigninModal}
-      style={{ marginLeft: '1rem' }}
+      style={{ marginLeft: '1rem', ...buttonStyle }}
       success
       filled
     >
-      Log In
+      <div
+        style={{
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis'
+        }}
+      >
+        Log In
+      </div>
     </Button>
   )
 }

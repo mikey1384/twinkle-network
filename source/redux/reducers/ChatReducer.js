@@ -228,7 +228,7 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreMessages = true
       }
       action.data.messages && action.data.messages.reverse()
-      if (action.data.channels.length > 10) {
+      if (action.data.channels.length > 20) {
         action.data.channels.pop()
         channelLoadMoreButton = true
       }
@@ -283,7 +283,7 @@ export default function ChatReducer(state = defaultState, action) {
         subject: action.subject
       }
     case CHAT.LOAD_MORE_CHANNELS:
-      if (action.data.length > 10) {
+      if (action.data.length > 20) {
         action.data.pop()
         channelLoadMoreButton = true
       }

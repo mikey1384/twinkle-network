@@ -27,10 +27,7 @@ export default function ChatButton({
     >
       {!loading && !chatMode && <Icon icon="comments" />}
       {loading && <Icon icon="spinner" pulse />}
-      {chatMode && <Icon icon="times" />}
-      <span style={{ marginLeft: chatMode ? '0.7rem' : '0.8rem' }}>{`${
-        chatMode ? 'Close' : ' Talk'
-      } `}</span>
+      <span style={{ marginLeft: chatMode ? '0.7rem' : '0.8rem' }}>Talk</span>
     </Button>
   )
 }

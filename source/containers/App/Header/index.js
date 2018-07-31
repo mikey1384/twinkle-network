@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+import { Route } from 'react-router-dom'
 import Link from 'components/Link'
 import { logout } from 'redux/actions/UserActions'
 import {
@@ -26,8 +27,7 @@ import HeaderNav from './HeaderNav'
 import { Color } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
-import { container } from './Styles'
-import { css } from 'emotion'
+import { container, logo } from './Styles'
 
 class Header extends Component {
   static propTypes = {
@@ -52,6 +52,7 @@ class Header extends Component {
     closeSearch: PropTypes.func.isRequired,
     onMobileMenuOpen: PropTypes.func,
     resetChat: PropTypes.func,
+    searchMode: PropTypes.bool,
     showUpdateNotice: PropTypes.func,
     style: PropTypes.object,
     totalRewardAmount: PropTypes.number,
@@ -63,8 +64,7 @@ class Header extends Component {
 
   state = {
     notificationsMenuShown: false,
-    feedLoading: false,
-    logoHovered: false
+    feedLoading: false
   }
 
   componentDidMount() {
@@ -155,259 +155,176 @@ class Header extends Component {
       numNewNotis,
       numNewPosts,
       closeSearch,
+      searchMode,
       style = {},
       totalRewardAmount,
       turnChatOff
     } = this.props
-    const { logoHovered } = this.state
+    const isUsername =
+      pathname.split('/')[1] !== 'videos' &&
+      ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) === -1 &&
+      pathname.length > 1
     return (
       <nav
         className={`unselectable ${container} ${
           mobileNavbarShown ? '' : 'desktop'
         }`}
         style={{
+          justifyContent: 'space-around',
           position: chatMode ? 'relative' : 'fixed',
           ...style
         }}
       >
-        <div
-          className={`desktop ${css`
-            position: relative;
-            margin-left: 1rem;
-            width: 12rem;
-            height: 2rem;
-            .logo-twin {
-              color: ${logoHovered ? '#fff' : Color.logoBlue()};
-            }
-            .logo-kle {
-              color: ${logoHovered ? '#fff' : Color.logoGreen()};
-            }
-          `}`}
-        >
-          <div
-            className={css`
-              font-size: 2rem;
-              font-weight: bold;
-              line-height: 1;
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              height: 100%;
-              width: 100%;
-              margin: 0;
-              text-decoration: none;
-              color: #fff;
-              &:before,
-              &:after {
-                display: block;
-                content: 'Twinkle';
-                position: absolute;
-                top: 0;
-                left: 0;
-                opacity: 0.8;
-              }
-              &:after {
-                color: #0ff;
-                z-index: -2;
-              }
-              &:before {
-                color: #f0f;
-                z-index: -1;
-              }
-              &:hover {
-                &:before {
-                  animation: glitch-left 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)
-                    both infinite;
-                }
-                &:after {
-                  animation: glitch-left-2 1s
-                    cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
-                }
-              }
-            }
-            @keyframes glitch-left {
-              0% {
-                transform: translate(0);
-              }
-              33% {
-                transform: translate(-5px, 3px);
-              }
-              66% {
-                transform: translate(5px, -3px);
-              }
-              to {
-                transform: translate(0);
-              }
-            }
-            @keyframes glitch-left-2 {
-              0% {
-                transform: translate(0);
-              }
-              33% {
-                transform: translate(-5px, -3px);
-              }
-              66% {
-                transform: translate(5px, 2px);
-              }
-              to {
-                transform: translate(0);
-              }
-            }`}
-          >
-            <Link
-              style={{
-                cursor: 'pointer',
-                textDecoration: 'none',
-                fontWeight: 'bold'
-              }}
+        {chatMode && (
+          <div className="chat-bar" onClick={turnChatOff}>
+            <Icon icon="times" />
+            <div style={{ marginLeft: '1rem' }}>Tap to close chat</div>
+          </div>
+        )}
+        {!chatMode && (
+          <div className="main-tabs">
+            <Route
               to="/"
-              onClick={this.onLogoClick}
+              children={({ match }) => {
+                return (
+                  <Link onClick={closeSearch} to="/">
+                    <div className={logo.outer}>
+                      <div
+                        onClick={this.onLogoClick}
+                        className={`${logo.inner} ${
+                          isUsername || match.isExact ? 'active' : ''
+                        }`}
+                      >
+                        <span
+                          style={
+                            numNewPosts > 0
+                              ? {
+                                  color: Color.gold()
+                                }
+                              : {}
+                          }
+                          className="logo-twin"
+                        >
+                          Twin
+                        </span>
+                        <span
+                          style={
+                            numNewPosts > 0
+                              ? {
+                                  color: Color.gold()
+                                }
+                              : {}
+                          }
+                          className="logo-kle"
+                        >
+                          kle
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                )
+              }}
+            />
+            <Fragment>
+              <HeaderNav
+                className={`${chatLoading ? 'hidden' : 'mobile'} ${
+                  searchMode ? 'desktop' : ''
+                }`}
+                alert={numNewNotis > 0 || totalRewardAmount > 0}
+                alertColor={Color.pink()}
+                imgLabel="user"
+                onClick={onMobileMenuOpen}
+              >
+                Menu
+              </HeaderNav>
+              <div
+                className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
+                style={searchMode ? { width: 'auto' } : {}}
+                onClick={searchMode ? closeSearch : initSearch}
+              >
+                <a
+                  className={`icon mobile-no-hover ${
+                    searchMode ? 'active' : ''
+                  }`}
+                >
+                  <Icon icon="search" />
+                </a>
+              </div>
+              <HeaderNav
+                to="/"
+                onClick={() => {
+                  closeSearch()
+                  window.scrollTo(0, 0)
+                }}
+                isHome
+                className={chatLoading || searchMode ? 'hidden' : 'mobile'}
+                imgLabel="home"
+                alert={numNewPosts > 0}
+                isUsername={isUsername}
+              >
+                Home
+              </HeaderNav>
+              <HeaderNav
+                to="/videos"
+                onClick={closeSearch}
+                className={chatLoading || searchMode ? 'desktop' : ''}
+                imgLabel="film"
+              >
+                Watch
+              </HeaderNav>
+              <HeaderNav
+                to="/links"
+                onClick={closeSearch}
+                className={chatLoading || searchMode ? 'desktop' : ''}
+                imgLabel="book"
+              >
+                Read
+              </HeaderNav>
+            </Fragment>
+            <div
+              className={!searchMode ? 'desktop' : ''}
+              style={{ display: 'flex', width: searchMode ? '60%' : '65%' }}
             >
-              <div
-                onMouseEnter={() => this.setState({ logoHovered: true })}
-                onMouseLeave={() => this.setState({ logoHovered: false })}
-              >
-                <span className="logo-twin">Twin</span>
-                <span className="logo-kle">kle</span>
-              </div>
-            </Link>
-          </div>
-        </div>
-        <div className="main-tabs">
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              width: '100%'
-            }}
-          >
-            {!chatMode && (
-              <Fragment>
-                <HeaderNav
-                  className={chatLoading ? 'hidden' : 'mobile'}
-                  alert={numNewNotis > 0 || totalRewardAmount > 0}
-                  alertColor={Color.pink()}
-                  imgLabel="user"
-                  onClick={onMobileMenuOpen}
-                >
-                  Menu
-                </HeaderNav>
-                <div
-                  className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
-                  onClick={initSearch}
-                >
-                  <a className="icon mobile-no-hover">
-                    <Icon icon="search" />
-                  </a>
-                </div>
-                <HeaderNav
-                  to="/"
-                  onClick={() => {
-                    closeSearch()
-                    window.scrollTo(0, 0)
-                  }}
-                  isHome
-                  className={chatLoading ? 'desktop' : ''}
-                  imgLabel="home"
-                  alert={numNewPosts > 0}
-                  isUsername={
-                    pathname.split('/')[1] !== 'videos' &&
-                    ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) ===
-                      -1 &&
-                    pathname.length > 1
-                  }
-                >
-                  Home
-                </HeaderNav>
-                <HeaderNav
-                  to="/videos"
-                  onClick={closeSearch}
-                  className={chatLoading ? 'desktop' : ''}
-                  imgLabel="film"
-                >
-                  Watch
-                </HeaderNav>
-                <HeaderNav
-                  to="/links"
-                  onClick={closeSearch}
-                  className={chatLoading ? 'desktop' : ''}
-                  imgLabel="book"
-                >
-                  Read
-                </HeaderNav>
-                <div
-                  className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
-                  onClick={onChatButtonClick}
-                >
-                  <a
-                    style={{ color: numChatUnreads > 0 && Color.pink() }}
-                    className="icon mobile-no-hover"
-                  >
-                    <Icon icon="comments" />
-                  </a>
-                </div>
-                <div
-                  className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}
-                >
-                  Loading...
-                </div>
-              </Fragment>
-            )}
-            {chatMode && (
-              <div
-                className="header-nav mobile"
-                style={{ display: 'flex', alignItems: 'center' }}
-                onClick={turnChatOff}
-              >
-                <Icon icon="times" />
-                <div style={{ marginLeft: '1.5rem' }}>Tap to close chat</div>
-              </div>
-            )}
-          </div>
-        </div>
-        <div
-          className="desktop"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '98%',
-            marginLeft: '2%',
-            alignItems: 'center'
-          }}
-        >
-          <div style={{ display: 'flex', width: '65%' }}>
-            {!chatMode && (
               <SearchBox
                 innerRef={ref => searchBoxRef(ref)}
                 onFocus={initSearch}
-                style={{ width: '100%' }}
+                style={{ marginLeft: '1rem', width: '100%' }}
               />
-            )}
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              width: '35%',
-              justifyContent: 'flex-end'
-            }}
-          >
+            </div>
+            <div
+              className={`header-nav ${
+                chatLoading || chatMode ? 'hidden' : 'mobile'
+              }`}
+              style={searchMode ? { width: 'auto' } : {}}
+              onClick={onChatButtonClick}
+            >
+              <a
+                style={{ color: numChatUnreads > 0 && Color.pink() }}
+                className="icon mobile-no-hover"
+              >
+                <Icon icon="comments" />
+              </a>
+            </div>
+            <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
+              Loading...
+            </div>
             <ChatButton
-              style={{ marginRight: '1rem' }}
+              className="desktop"
+              style={{ marginLeft: '1rem' }}
               onClick={onChatButtonClick}
               chatMode={chatMode}
               loading={chatLoading}
               numUnreads={numChatUnreads}
             />
             <AccountMenu
+              className="desktop"
+              style={{ marginLeft: '0.5rem' }}
               loggedIn={loggedIn}
               logout={this.onLogout}
               title={username}
             />
           </div>
-        </div>
+        )}
       </nav>
     )
   }
@@ -442,6 +359,7 @@ export default connect(
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,
     chatMode: state.ChatReducer.chatMode,
+    searchMode: state.SearchReducer.searchMode,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
     versionMatch: state.NotiReducer.versionMatch
   }),

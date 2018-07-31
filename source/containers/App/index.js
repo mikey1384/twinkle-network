@@ -278,8 +278,12 @@ class App extends Component {
         </div>
         {searchMode && (
           <div
-            className={chatMode ? 'hidden' : ''}
-            style={{ marginTop: '6rem' }}
+            className={`${css`
+              margin-top: 6rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-top: 0;
+              }
+            `} ${chatMode ? 'hidden' : ''}`}
           >
             <SearchPage
               searchText={searchText}

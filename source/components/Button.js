@@ -103,7 +103,6 @@ export default function Button({
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
         font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial,
           sans-serif;
         text-transform: uppercase;

@@ -82,7 +82,7 @@ export default class HeaderNav extends Component {
     return {
       alert: css`
         span {
-          color: ${alertColor || Color.lightBlue()}!important;
+          color: ${alertColor || Color.gold()}!important;
         }
       `
     }

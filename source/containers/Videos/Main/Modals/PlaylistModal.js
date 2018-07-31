@@ -96,6 +96,8 @@ export default class PlaylistModal extends Component {
             <LoadMoreButton
               style={{ marginTop: '1.5em' }}
               loading={loading}
+              filled
+              info
               onClick={this.onLoadMoreVideos}
             />
           )}
