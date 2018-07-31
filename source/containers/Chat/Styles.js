@@ -24,7 +24,7 @@ export const channelContainer = css`
   background: #fff;
   -webkit-overflow-scrolling: touch;
   @media (max-width: ${mobileMaxWidth}) {
-    width: 30vw;
+    width: 30%;
     height: CALC(100% - 1rem);
   }
 `
