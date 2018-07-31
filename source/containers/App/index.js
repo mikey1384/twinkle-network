@@ -285,10 +285,7 @@ class App extends Component {
               }
             `} ${chatMode ? 'hidden' : ''}`}
           >
-            <SearchPage
-              searchText={searchText}
-              focusSearchBox={() => this.SearchBox.focus()}
-            />
+            <SearchPage searchText={searchText} />
           </div>
         )}
         {chatMode &&

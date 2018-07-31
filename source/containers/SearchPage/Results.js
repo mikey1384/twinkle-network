@@ -33,10 +33,11 @@ class Results extends Component {
       searchText.length > 1 &&
       results.length === 0
     ) {
+      clearTimeout(this.timer)
       this.setState({ searching: true })
       this.timer = setTimeout(
         () => this.searchContent({ filter, searchText }),
-        300
+        500
       )
     }
   }
@@ -52,7 +53,7 @@ class Results extends Component {
       this.setState({ searching: true })
       this.timer = setTimeout(
         () => this.searchContent({ filter, searchText }),
-        300
+        500
       )
     }
   }
