@@ -80,7 +80,7 @@ export default function Result({ closeSearch, type, result }) {
                   color: Color.darkGray()
                 }}
               >
-                <LongText noExpend maxLines={4}>
+                <LongText noExpand maxLines={4}>
                   {result.description}
                 </LongText>
               </div>
@@ -146,7 +146,7 @@ export default function Result({ closeSearch, type, result }) {
                   color: Color.darkGray()
                 }}
               >
-                <LongText noExpend maxLines={4}>
+                <LongText noExpand maxLines={4}>
                   {result.description}
                 </LongText>
               </div>

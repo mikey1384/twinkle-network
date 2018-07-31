@@ -8,7 +8,7 @@ export default class LongText extends Component {
     className: PropTypes.string,
     maxLines: PropTypes.number,
     style: PropTypes.object,
-    noExpend: PropTypes.bool
+    noExpand: PropTypes.bool
   }
 
   mounted = false
@@ -42,7 +42,7 @@ export default class LongText extends Component {
   }
 
   render() {
-    const { style, className, children = '', noExpend } = this.props
+    const { style, className, children = '', noExpand } = this.props
     const { text, more, fullText } = this.state
     return (
       <div
@@ -73,7 +73,7 @@ export default class LongText extends Component {
               {more && (
                 <Fragment>
                   {'... '}
-                  {!noExpend && (
+                  {!noExpand && (
                     <a
                       style={{ cursor: 'pointer' }}
                       onClick={() => this.setState({ fullText: true })}
