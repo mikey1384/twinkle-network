@@ -39,7 +39,9 @@ class SearchPage extends Component {
       searchScrollPosition
     } = this.props
     if (!selectedFilter) changeFilter(searchFilter || 'video')
-    this.SearchPage.scrollTop = searchScrollPosition
+    setTimeout(() => {
+      this.SearchPage.scrollTop = searchScrollPosition
+    }, 10)
   }
 
   componentWillUnmount() {
