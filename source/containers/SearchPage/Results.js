@@ -29,9 +29,9 @@ class Results extends Component {
   componentDidUpdate(prevProps) {
     const { filter, searchText, setResults } = this.props
     if (prevProps.searchText !== searchText || prevProps.filter !== filter) {
-      setResults([])
       clearTimeout(this.timer)
       if (stringIsEmpty(searchText) || searchText.length < 2) {
+        setResults([])
         return this.setState({ searching: false })
       }
       this.setState({ searching: true })
@@ -60,14 +60,15 @@ class Results extends Component {
         }}
       >
         {searching && <Loading />}
-        {results.map(result => (
-          <Result
-            key={result.id}
-            closeSearch={closeSearch}
-            type={filter}
-            result={result}
-          />
-        ))}
+        {!searching &&
+          results.map(result => (
+            <Result
+              key={result.id}
+              closeSearch={closeSearch}
+              type={filter}
+              result={result}
+            />
+          ))}
         {!searching &&
           results.length === 0 && (
             <div
@@ -78,17 +79,20 @@ class Results extends Component {
                 justifyContent: 'center',
                 height: '40vh',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center'
               }}
             >
-              <span style={{ textTransform: 'capitalize' }}>
+              <div style={{ textTransform: 'capitalize' }}>
                 {`No ${filter === 'url' ? 'link' : filter}s Found`}
-              </span>
+              </div>
+              <CloseText style={{ marginTop: '1rem', marginBottom: '1rem' }} />
             </div>
           )}
-        {!searching && (
-          <CloseText style={{ marginTop: '1rem', marginBottom: '2rem' }} />
-        )}
+        {!searching &&
+          results.length > 0 && (
+            <CloseText style={{ marginTop: '1rem', marginBottom: '2rem' }} />
+          )}
       </div>
     )
   }
@@ -97,7 +101,7 @@ class Results extends Component {
     const { dispatch, setResults } = this.props
     const data = await searchContent({ filter, searchText, dispatch })
     if (data) setResults(data)
-    this.setState({ searching: false })
+    return this.setState({ searching: false })
   }
 }
 
