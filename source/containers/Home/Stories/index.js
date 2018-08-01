@@ -242,10 +242,13 @@ class Stories extends Component {
 
   onScroll = () => {
     const { chatMode, feeds, loadMoreButton } = this.props
-    if (document.getElementById('App').scrollHeight > this.scrollHeight) {
+    if (
+      document.getElementById('App').scrollHeight > this.scrollHeight ||
+      this.body.scrollTop > this.scrollHeight
+    ) {
       this.scrollHeight = Math.max(
         document.getElementById('App').scrollHeight,
-        this.body.scrollHeight
+        this.body.scrollTop
       )
     }
     if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
@@ -259,9 +262,9 @@ class Stories extends Component {
         () => {
           if (
             (this.state.scrollPosition.desktop >=
-              this.Container.offsetHeight - window.innerHeight - 400 ||
+              this.scrollHeight - window.innerHeight - 400 ||
               this.state.scrollPosition.mobile >=
-                this.Container.offsetHeight - window.innerHeight - 400) &&
+                this.scrollHeight - window.innerHeight - 400) &&
             loadMoreButton
           ) {
             this.loadMoreFeeds()

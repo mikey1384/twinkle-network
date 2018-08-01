@@ -143,10 +143,13 @@ class People extends Component {
 
   onScroll = () => {
     const { chatMode, loadMoreButton, profiles } = this.props
-    if (document.getElementById('App').scrollHeight > this.scrollHeight) {
-      this.scrollHeight = this.scrollHeight = Math.max(
+    if (
+      document.getElementById('App').scrollHeight > this.scrollHeight ||
+      this.body.scrollTop > this.scrollHeight
+    ) {
+      this.scrollHeight = Math.max(
         document.getElementById('App').scrollHeight,
-        this.body.scrollHeight
+        this.body.scrollTop
       )
     }
     if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {

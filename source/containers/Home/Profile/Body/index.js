@@ -67,6 +67,8 @@ class Body extends Component {
       ? document.scrollingElement || document.documentElement
       : {}
 
+  scrollHeight = 0
+
   componentDidMount() {
     const { clearFeeds } = this.props
     this.mounted = true
@@ -345,6 +347,15 @@ class Body extends Component {
 
   onScroll = () => {
     let { chatMode, feeds, loadMoreButton } = this.props
+    if (
+      document.getElementById('App').scrollHeight > this.scrollHeight ||
+      this.body.scrollTop > this.scrollHeight
+    ) {
+      this.scrollHeight = Math.max(
+        document.getElementById('App').scrollHeight,
+        this.body.scrollTop
+      )
+    }
     if (!chatMode && feeds.length > 0) {
       this.setState({
         scrollPosition: {
@@ -354,9 +365,9 @@ class Body extends Component {
       })
       if (
         (this.state.scrollPosition.desktop >=
-          this.Container.offsetHeight - window.innerHeight - 500 ||
+          this.scrollHeight - window.innerHeight - 500 ||
           this.state.scrollPosition.mobile >=
-            this.Container.offsetHeight - window.innerHeight - 500) &&
+            this.scrollHeight - window.innerHeight - 500) &&
         loadMoreButton
       ) {
         this.loadMoreFeeds()
