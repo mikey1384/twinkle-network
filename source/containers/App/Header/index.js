@@ -48,7 +48,6 @@ class Header extends Component {
     numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
     onChatButtonClick: PropTypes.func,
-    searchBoxRef: PropTypes.func,
     closeSearch: PropTypes.func.isRequired,
     onMobileMenuOpen: PropTypes.func,
     resetChat: PropTypes.func,
@@ -149,7 +148,6 @@ class Header extends Component {
       initSearch,
       onChatButtonClick,
       onMobileMenuOpen,
-      searchBoxRef,
       mobileNavbarShown,
       numChatUnreads,
       numNewNotis,
@@ -286,7 +284,6 @@ class Header extends Component {
               style={{ display: 'flex', width: searchMode ? '60%' : '65%' }}
             >
               <SearchBox
-                innerRef={ref => searchBoxRef(ref)}
                 onFocus={initSearch}
                 style={{ marginLeft: '1rem', width: '100%' }}
               />

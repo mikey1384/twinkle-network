@@ -6,7 +6,7 @@ import { setResults } from 'redux/actions/SearchActions'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { searchContent } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
-import { Color, mobileMaxWidth } from 'constants/css'
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import CloseText from './CloseText'
 
@@ -91,7 +91,18 @@ class Results extends Component {
           )}
         {!searching &&
           results.length > 0 && (
-            <CloseText style={{ marginTop: '1rem', marginBottom: '2rem' }} />
+            <CloseText
+              className="desktop"
+              style={{
+                position: 'fixed',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                bottom: '1rem',
+                padding: '1.5rem',
+                borderRadius: borderRadius,
+                background: Color.lightGray(0.8)
+              }}
+            />
           )}
       </div>
     )

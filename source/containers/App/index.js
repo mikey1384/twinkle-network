@@ -262,7 +262,6 @@ class App extends Component {
           </div>
         )}
         <Header
-          searchBoxRef={ref => (this.SearchBox = ref)}
           chatMode={chatMode}
           chatLoading={chatLoading}
           onChatButtonClick={this.onChatButtonClick}
