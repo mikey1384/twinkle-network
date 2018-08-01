@@ -47,21 +47,21 @@ let hidden
 class App extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    changePageVisibility: PropTypes.func,
+    changePageVisibility: PropTypes.func.isRequired,
     chatNumUnreads: PropTypes.number,
-    closeSigninModal: PropTypes.func,
+    closeSigninModal: PropTypes.func.isRequired,
     history: PropTypes.object,
-    initChat: PropTypes.func,
-    initSession: PropTypes.func,
+    initChat: PropTypes.func.isRequired,
+    initSession: PropTypes.func.isRequired,
     location: PropTypes.object,
     loggedIn: PropTypes.bool,
     numNewNotis: PropTypes.number,
     numNewPosts: PropTypes.number,
-    resetChat: PropTypes.func,
+    resetChat: PropTypes.func.isRequired,
     searchMode: PropTypes.bool,
     searchText: PropTypes.string,
     signinModalShown: PropTypes.bool,
-    turnChatOff: PropTypes.func,
+    turnChatOff: PropTypes.func.isRequired,
     username: PropTypes.string
   }
 
@@ -322,7 +322,6 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     chatMode: state.ChatReducer.chatMode,
     chatNumUnreads: state.ChatReducer.numUnreads,
-    scrollPosition: state.ViewReducer.scrollPositions.app,
     searchMode: state.SearchReducer.searchMode,
     searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,

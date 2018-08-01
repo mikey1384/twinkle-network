@@ -8,7 +8,11 @@ import Results from './Results'
 import { stringIsEmpty } from 'helpers/stringHelpers'
 import { setDefaultSearchFilter } from 'helpers/requestHelpers'
 import { Color, mobileMaxWidth } from 'constants/css'
-import { changeFilter, closeSearch } from 'redux/actions/SearchActions'
+import {
+  changeFilter,
+  closeSearch,
+  recordSearchScroll
+} from 'redux/actions/SearchActions'
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions'
 import { connect } from 'react-redux'
 import { css } from 'emotion'
@@ -19,15 +23,28 @@ class SearchPage extends Component {
     dispatch: PropTypes.func.isRequired,
     changeFilter: PropTypes.func.isRequired,
     closeSearch: PropTypes.func.isRequired,
+    recordSearchScroll: PropTypes.func.isRequired,
     searchFilter: PropTypes.string,
+    searchScrollPosition: PropTypes.number,
     searchText: PropTypes.string.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     userId: PropTypes.number
   }
 
   componentDidMount() {
-    const { selectedFilter, searchFilter, changeFilter } = this.props
+    const {
+      selectedFilter,
+      searchFilter,
+      changeFilter,
+      searchScrollPosition
+    } = this.props
     if (!selectedFilter) changeFilter(searchFilter || 'video')
+    this.SearchPage.scrollTop = searchScrollPosition
+  }
+
+  componentWillUnmount() {
+    const { recordSearchScroll } = this.props
+    recordSearchScroll(this.SearchPage.scrollTop)
   }
 
   render() {
@@ -39,7 +56,7 @@ class SearchPage extends Component {
       userId
     } = this.props
     return (
-      <div className={searchPage}>
+      <div ref={ref => (this.SearchPage = ref)} className={searchPage}>
         <div
           className={css`
             width: 80%;
@@ -127,12 +144,14 @@ export default connect(
   state => ({
     userId: state.UserReducer.userId,
     searchFilter: state.UserReducer.searchFilter,
+    searchScrollPosition: state.SearchReducer.searchScrollPosition,
     selectedFilter: state.SearchReducer.selectedFilter
   }),
   dispatch => ({
     dispatch,
     changeFilter: filter => dispatch(changeFilter(filter)),
     closeSearch: () => dispatch(closeSearch()),
+    recordSearchScroll: scrollTop => dispatch(recordSearchScroll(scrollTop)),
     updateDefaultSearchFilter: filter =>
       dispatch(updateDefaultSearchFilter(filter))
   })

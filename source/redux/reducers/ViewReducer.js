@@ -2,8 +2,7 @@ import VIEW from '../constants/View'
 
 const defaultState = {
   mobileNavbarShown: true,
-  pageVisible: true,
-  scrollPositions: {}
+  pageVisible: true
 }
 
 export default function ViewReducer(state = defaultState, action) {

@@ -3,6 +3,7 @@ import SEARCH from '../constants/Search'
 const defaultState = {
   results: [],
   searchMode: false,
+  searchScrollPosition: 0,
   searchText: '',
   selectedFilter: ''
 }
@@ -28,6 +29,11 @@ export default function SearchReducer(state = defaultState, action) {
       return {
         ...state,
         searchMode: true
+      }
+    case SEARCH.RECORD_SCROLL_POSITION:
+      return {
+        ...state,
+        searchScrollPosition: action.scrollTop
       }
     case SEARCH.SET_RESULTS:
       return {

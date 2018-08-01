@@ -164,6 +164,7 @@ export default function Result({ closeSearch, type, result }) {
               </span>
               <Embedly
                 small
+                noLink
                 style={{ marginTop: '0.5rem' }}
                 title={cleanString(result.title)}
                 url={result.content}

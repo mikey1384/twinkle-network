@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import request from 'axios'
 import { URL } from 'constants/URL'
 import { css } from 'emotion'
@@ -11,6 +11,7 @@ export default class Embedly extends Component {
   static propTypes = {
     small: PropTypes.bool,
     id: PropTypes.number.isRequired,
+    noLink: PropTypes.bool,
     siteUrl: PropTypes.string,
     style: PropTypes.object,
     thumbUrl: PropTypes.string,
@@ -80,16 +81,22 @@ export default class Embedly extends Component {
   }
 
   render() {
-    const { imageUrl, description, title, site } = this.state
-    const { small, style, url } = this.props
+    const { noLink, small, style, url } = this.props
+    const contentCss = css`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      color: ${Color.darkGray()};
+      position: relative;
+      overflow: hidden;
+      ${!small ? 'flex-direction: column;' : ''};
+    `
     return (
       <div
         className={css`
           width: 100%;
-          a {
-            color: ${Color.darkGray()};
-            position: relative;
-            overflow: hidden;
+          > a {
             text-decoration: none;
           }
           h3 {
@@ -102,54 +109,18 @@ export default class Embedly extends Component {
         `}
         style={style}
       >
-        <a
-          className={css`
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            ${!small ? 'flex-direction: column;' : ''};
-          `}
-          target="_blank"
-          rel="noopener noreferrer"
-          href={url}
-        >
-          <section
-            className={css`
-              position: relative;
-              width: ${small ? '25%' : '100%'};
-              &:after {
-                content: '';
-                display: block;
-                padding-bottom: ${small ? '100%' : '60%'};
-              }
-            `}
+        {noLink ? (
+          <div className={contentCss}>{this.renderInner()}</div>
+        ) : (
+          <a
+            className={contentCss}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={url}
           >
-            <img
-              className={css`
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-              `}
-              src={imageUrl}
-              onError={this.onImageLoadError}
-              alt={title}
-            />
-          </section>
-          <section
-            className={css`
-              width: 100%;
-              padding: 1rem;
-              ${small ? 'margin-left: 1rem;' : ''};
-              ${small ? '' : 'margin-top: 1rem;'};
-            `}
-          >
-            <h3>{title || this.props.title}</h3>
-            <p>{description}</p>
-            <p style={{ fontWeight: 'bold' }}>{site}</p>
-          </section>
-        </a>
+            {this.renderInner()}
+          </a>
+        )}
       </div>
     )
   }
@@ -160,5 +131,49 @@ export default class Embedly extends Component {
       imageUrl:
         !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
     }))
+  }
+
+  renderInner = () => {
+    const { imageUrl, description, title, site } = this.state
+    const { small } = this.props
+    return (
+      <Fragment>
+        <section
+          className={css`
+            position: relative;
+            width: ${small ? '25%' : '100%'};
+            &:after {
+              content: '';
+              display: block;
+              padding-bottom: ${small ? '100%' : '60%'};
+            }
+          `}
+        >
+          <img
+            className={css`
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            `}
+            src={imageUrl}
+            onError={this.onImageLoadError}
+            alt={title}
+          />
+        </section>
+        <section
+          className={css`
+            width: 100%;
+            padding: 1rem;
+            ${small ? 'margin-left: 1rem;' : ''};
+            ${small ? '' : 'margin-top: 1rem;'};
+          `}
+        >
+          <h3>{title || this.props.title}</h3>
+          <p>{description}</p>
+          <p style={{ fontWeight: 'bold' }}>{site}</p>
+        </section>
+      </Fragment>
+    )
   }
 }
