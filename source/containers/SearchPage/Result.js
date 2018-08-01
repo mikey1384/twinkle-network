@@ -6,6 +6,7 @@ import Link from 'components/Link'
 import { Color } from 'constants/css'
 import LongText from 'components/Texts/LongText'
 import Embedly from 'components/Embedly'
+import { css } from 'emotion'
 
 Result.propTypes = {
   closeSearch: PropTypes.func.isRequired,
@@ -80,7 +81,16 @@ export default function Result({ closeSearch, type, result }) {
                   color: Color.darkGray()
                 }}
               >
-                <LongText noExpand maxLines={4}>
+                <LongText
+                  className={css`
+                    p {
+                      text-overflow: ellipsis;
+                      overflow: hidden;
+                    }
+                  `}
+                  noExpand
+                  maxLines={4}
+                >
                   {result.description}
                 </LongText>
               </div>
