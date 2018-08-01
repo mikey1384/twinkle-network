@@ -158,6 +158,7 @@ class App extends Component {
         if (loggedIn) {
           recordUserAction({ action: 'navigation', target: location.pathname })
         }
+        this.body.scrollTop = 0
         document.getElementById('App').scrollTop = 0
       } else {
         document.getElementById('App').scrollTop =
