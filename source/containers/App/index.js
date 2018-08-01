@@ -267,6 +267,18 @@ class App extends Component {
           }
           onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
         />
+        {searchMode && (
+          <div
+            className={`${css`
+              margin-top: 6rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-top: 0;
+              }
+            `} ${chatMode ? 'hidden' : ''}`}
+          >
+            <SearchPage searchText={searchText} />
+          </div>
+        )}
         <div
           id="App"
           className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
@@ -283,18 +295,6 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
-        {searchMode && (
-          <div
-            className={`${css`
-              margin-top: 6rem;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-top: 0;
-              }
-            `} ${chatMode ? 'hidden' : ''}`}
-          >
-            <SearchPage searchText={searchText} />
-          </div>
-        )}
         {chatMode &&
           this.props.loggedIn && (
             <Chat
