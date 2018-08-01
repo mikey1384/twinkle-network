@@ -1,6 +1,6 @@
 /* global FileReader */
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import Button from 'components/Button'
@@ -82,19 +82,31 @@ class ProfileWidget extends Component {
               </Button>
             </div>
           )}
-          {!userId && (
-            <div className="login-message">Log in to access all features</div>
-          )}
-          {!userId && (
-            <Button
-              success
-              filled
-              style={{ marginTop: '1rem' }}
-              onClick={openSigninModal}
-            >
-              Tap here!
-            </Button>
-          )}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
+            {!userId && (
+              <Fragment>
+                <div className="login-message">Log in</div>
+                <div className="login-message">to access all features</div>
+              </Fragment>
+            )}
+            {!userId && (
+              <Button
+                success
+                filled
+                style={{ marginTop: '1rem' }}
+                onClick={openSigninModal}
+              >
+                Tap here!
+              </Button>
+            )}
+          </div>
           <input
             ref={ref => {
               this.fileInput = ref
