@@ -146,7 +146,11 @@ class App extends Component {
     }
 
     if (prevProps.searchMode && !this.props.searchMode) {
-      this.body.scrollTop = scrollPosition
+      if (location !== prevProps.location) {
+        this.setState({ scrollPosition: 0 })
+      } else {
+        this.body.scrollTop = scrollPosition
+      }
     }
 
     if (location !== prevProps.location) {
