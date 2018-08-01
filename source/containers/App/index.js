@@ -99,7 +99,10 @@ class App extends Component {
   }
 
   getSnapshotBeforeUpdate(prevProps) {
-    if (!prevProps.chatMode && this.props.chatMode) {
+    if (
+      (!this.props.searchMode && !prevProps.chatMode && this.props.chatMode) ||
+      (!prevProps.searchMode && this.props.searchMode)
+    ) {
       return {
         scrollPosition: this.body.scrollTop
       }
@@ -124,7 +127,7 @@ class App extends Component {
       location,
       loggedIn
     } = this.props
-    const { navScrollPositions } = this.state
+    const { navScrollPositions, scrollPosition } = this.state
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads
 
     if (snapshot.navScrollPosition) {
@@ -140,6 +143,10 @@ class App extends Component {
       this.setState(state => ({
         scrollPosition: snapshot.scrollPosition
       }))
+    }
+
+    if (prevProps.searchMode && !this.props.searchMode) {
+      this.body.scrollTop = scrollPosition
     }
 
     if (location !== prevProps.location) {
