@@ -23,7 +23,14 @@ export const recordSearchScroll = scrollTop => ({
   scrollTop
 })
 
-export const setResults = results => ({
+export const setResults = ({ results, loadMoreButton }) => ({
   type: SEARCH.SET_RESULTS,
-  results
+  results,
+  loadMoreButton
+})
+
+export const showMoreResults = ({ results, loadMoreButton }) => ({
+  type: SEARCH.LOAD_MORE_RESULTS,
+  results,
+  loadMoreButton
 })

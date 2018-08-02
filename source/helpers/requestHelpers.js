@@ -102,10 +102,17 @@ export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
   }
 }
 
-export const searchContent = async({ filter, searchText, dispatch }) => {
+export const searchContent = async({
+  filter,
+  searchText,
+  shownResults,
+  dispatch
+}) => {
   try {
     const { data } = await request.get(
-      `${URL}/content/search?filter=${filter}&searchText=${searchText}`
+      `${URL}/content/search?filter=${filter}&searchText=${searchText}${
+        shownResults ? `&${shownResults}` : ''
+      }`
     )
     return Promise.resolve(data)
   } catch (error) {

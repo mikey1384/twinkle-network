@@ -2,26 +2,29 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
 import Result from './Result'
-import { setResults } from 'redux/actions/SearchActions'
-import { stringIsEmpty } from 'helpers/stringHelpers'
+import { setResults, showMoreResults } from 'redux/actions/SearchActions'
+import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers'
 import { searchContent } from 'helpers/requestHelpers'
 import { connect } from 'react-redux'
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import CloseText from './CloseText'
+import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 
 class Results extends Component {
   static propTypes = {
     closeSearch: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     filter: PropTypes.string.isRequired,
+    loadMoreButton: PropTypes.bool.isRequired,
     results: PropTypes.array.isRequired,
     searchText: PropTypes.string.isRequired,
     setResults: PropTypes.func.isRequired
   }
 
   state = {
-    searching: false
+    searching: false,
+    loadingMore: false
   }
 
   timer = null
@@ -31,7 +34,7 @@ class Results extends Component {
     if (prevProps.searchText !== searchText || prevProps.filter !== filter) {
       clearTimeout(this.timer)
       if (stringIsEmpty(searchText) || searchText.length < 2) {
-        setResults([])
+        setResults({ results: [], loadMoreButton: false })
         return this.setState({ searching: false })
       }
       this.setState({ searching: true })
@@ -43,8 +46,8 @@ class Results extends Component {
   }
 
   render() {
-    const { searching } = this.state
-    const { closeSearch, filter, results } = this.props
+    const { loadingMore, searching } = this.state
+    const { closeSearch, filter, loadMoreButton, results } = this.props
     return (
       <div
         className={css`
@@ -89,6 +92,16 @@ class Results extends Component {
               <CloseText style={{ marginTop: '1rem', marginBottom: '1rem' }} />
             </div>
           )}
+        {loadMoreButton && (
+          <div style={{ paddingBottom: '8rem' }}>
+            <LoadMoreButton
+              filled
+              info
+              loading={loadingMore}
+              onClick={this.loadMoreSearchResults}
+            />
+          </div>
+        )}
         {!searching &&
           results.length > 0 && (
             <CloseText
@@ -110,18 +123,43 @@ class Results extends Component {
 
   searchContent = async({ filter, searchText }) => {
     const { dispatch, setResults } = this.props
-    const data = await searchContent({ filter, searchText, dispatch })
+    const data = await searchContent({
+      filter,
+      searchText,
+      dispatch
+    })
     if (data) setResults(data)
     return this.setState({ searching: false })
+  }
+
+  loadMoreSearchResults = async() => {
+    const {
+      dispatch,
+      filter,
+      results,
+      searchText,
+      showMoreResults
+    } = this.props
+    this.setState({ loadingMore: true })
+    const data = await searchContent({
+      filter,
+      searchText,
+      shownResults: queryStringForArray(results, 'id', 'shownResults'),
+      dispatch
+    })
+    if (data) showMoreResults(data)
+    this.setState({ loadingMore: false })
   }
 }
 
 export default connect(
   state => ({
+    loadMoreButton: state.SearchReducer.loadMoreButton,
     results: state.SearchReducer.results
   }),
   dispatch => ({
-    setResults: results => dispatch(setResults(results)),
+    setResults: data => dispatch(setResults(data)),
+    showMoreResults: data => dispatch(showMoreResults(data)),
     dispatch
   })
 )(Results)

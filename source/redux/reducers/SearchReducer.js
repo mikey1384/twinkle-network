@@ -2,6 +2,7 @@ import SEARCH from '../constants/Search'
 
 const defaultState = {
   results: [],
+  loadMoreButton: false,
   searchMode: false,
   searchScrollPosition: 0,
   searchText: '',
@@ -30,6 +31,12 @@ export default function SearchReducer(state = defaultState, action) {
         ...state,
         searchMode: true
       }
+    case SEARCH.LOAD_MORE_RESULTS:
+      return {
+        ...state,
+        results: state.results.concat(action.results),
+        loadMoreButton: action.loadMoreButton
+      }
     case SEARCH.RECORD_SCROLL_POSITION:
       return {
         ...state,
@@ -38,7 +45,8 @@ export default function SearchReducer(state = defaultState, action) {
     case SEARCH.SET_RESULTS:
       return {
         ...state,
-        results: action.results
+        results: action.results,
+        loadMoreButton: action.loadMoreButton
       }
     default:
       return state
