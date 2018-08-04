@@ -68,7 +68,7 @@ class XPRewardInterface extends Component {
           >
             <Icon icon="star" />
             <span style={{ marginLeft: '0.7rem' }}>
-              Reward a star{canRewardTwoStars ? ' (Great - 200 XP)' : ''}
+              Reward a star{canRewardTwoStars ? ' (Great - 200 XP)' : ' (200 XP)'}
             </span>
           </Button>
           {canRewardTwoStars && (
