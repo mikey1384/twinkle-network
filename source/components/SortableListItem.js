@@ -54,11 +54,11 @@ class SortableListItem extends Component {
           style={{
             opacity: isDragging ? 0 : 1,
             borderTop: index === 0 && `1px solid ${Color.borderGray()}`,
-            color: Color.menuGray()
+            color: Color.darkGray()
           }}
         >
           <section>{cleanString(item.label)}</section>
-          <Icon icon="align-justify" />
+          <Icon icon="align-justify" style={{ color: Color.menuGray() }} />
         </nav>
       )
     )
