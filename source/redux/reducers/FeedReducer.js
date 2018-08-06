@@ -248,6 +248,7 @@ export default function FeedReducer(state = defaultState, action) {
                 ...feed,
                 targetObj: feed.targetObj
                   ? {
+                      ...feed.targetObj,
                       comment: feed.targetObj.comment
                         ? feed.targetObj.comment.id === action.commentId
                           ? {
