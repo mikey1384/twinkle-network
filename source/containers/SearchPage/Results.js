@@ -92,16 +92,17 @@ class Results extends Component {
               <CloseText style={{ marginTop: '1rem', marginBottom: '1rem' }} />
             </div>
           )}
-        {loadMoreButton && (
-          <div style={{ paddingBottom: '8rem' }}>
-            <LoadMoreButton
-              filled
-              info
-              loading={loadingMore}
-              onClick={this.loadMoreSearchResults}
-            />
-          </div>
-        )}
+        {!searching &&
+          loadMoreButton && (
+            <div style={{ paddingBottom: '8rem' }}>
+              <LoadMoreButton
+                filled
+                info
+                loading={loadingMore}
+                onClick={this.loadMoreSearchResults}
+              />
+            </div>
+          )}
         {!searching &&
           results.length > 0 && (
             <CloseText

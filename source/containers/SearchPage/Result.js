@@ -88,6 +88,7 @@ export default function Result({ closeSearch, type, result }) {
                       overflow: hidden;
                     }
                   `}
+                  cleanString
                   noExpand
                   maxLines={4}
                 >
@@ -113,6 +114,7 @@ export default function Result({ closeSearch, type, result }) {
               >
                 <LongText
                   noExpand
+                  cleanString
                   maxLines={4}
                   style={{
                     fontWeight: 'bold',
@@ -138,6 +140,7 @@ export default function Result({ closeSearch, type, result }) {
             <div>
               <LongText
                 noExpand
+                cleanString
                 maxLines={4}
                 style={{
                   fontWeight: 'bold',
@@ -156,7 +159,7 @@ export default function Result({ closeSearch, type, result }) {
                   color: Color.darkGray()
                 }}
               >
-                <LongText noExpand maxLines={4}>
+                <LongText noExpand cleanString maxLines={4}>
                   {result.description}
                 </LongText>
               </div>

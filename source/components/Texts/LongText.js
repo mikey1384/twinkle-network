@@ -6,6 +6,7 @@ export default class LongText extends Component {
   static propTypes = {
     children: PropTypes.string.isRequired,
     className: PropTypes.string,
+    cleanString: PropTypes.bool,
     maxLines: PropTypes.number,
     style: PropTypes.object,
     noExpand: PropTypes.bool
@@ -42,7 +43,13 @@ export default class LongText extends Component {
   }
 
   render() {
-    const { style, className, children = '', noExpand } = this.props
+    const {
+      style,
+      className,
+      cleanString,
+      children = '',
+      noExpand
+    } = this.props
     const { text, more, fullText } = this.state
     return (
       <div
@@ -60,14 +67,18 @@ export default class LongText extends Component {
           {fullText ? (
             <span
               dangerouslySetInnerHTML={{
-                __html: limitBrs(processedStringWithURL(children))
+                __html: limitBrs(
+                  cleanString ? children : processedStringWithURL(children)
+                )
               }}
             />
           ) : (
             <Fragment>
               <span
                 dangerouslySetInnerHTML={{
-                  __html: limitBrs(processedStringWithURL(text))
+                  __html: limitBrs(
+                    cleanString ? text : processedStringWithURL(text)
+                  )
                 }}
               />
               {more && (
