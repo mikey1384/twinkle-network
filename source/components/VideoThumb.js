@@ -21,6 +21,7 @@ class VideoThumb extends Component {
   static propTypes = {
     arrayIndex: PropTypes.number,
     clickSafe: PropTypes.bool,
+    deletable: PropTypes.bool,
     deleteVideo: PropTypes.func.isRequired,
     editable: PropTypes.bool,
     editVideoTitle: PropTypes.func,
@@ -45,17 +46,20 @@ class VideoThumb extends Component {
 
   render() {
     const { onEdit, confirmModalShown, onTitleHover } = this.state
-    const { editable, video, style, to, user } = this.props
-    const menuProps = [
-      {
+    const { deletable, editable, video, style, to, user } = this.props
+    const menuProps = []
+    if (editable) {
+      menuProps.push({
         label: 'Edit',
         onClick: this.onEditTitle
-      },
-      {
+      })
+    }
+    if (deletable || editable) {
+      menuProps.push({
         label: 'Remove',
         onClick: this.onDeleteClick
-      }
-    ]
+      })
+    }
     return (
       <ErrorBoundary style={style}>
         <div
@@ -74,7 +78,7 @@ class VideoThumb extends Component {
             }
           `}
         >
-          {editable && (
+          {(deletable || editable) && (
             <DropdownButton
               style={{
                 position: 'absolute',
@@ -159,7 +163,9 @@ class VideoThumb extends Component {
               )}
               {video.numLikes > 0 && (
                 <div style={{ marginTop: '0.5rem' }}>
-                  <Icon icon="thumbs-up" />&nbsp;&times;&nbsp;{video.numLikes}
+                  <Icon icon="thumbs-up" />
+                  &nbsp;&times;&nbsp;
+                  {video.numLikes}
                 </div>
               )}
             </div>

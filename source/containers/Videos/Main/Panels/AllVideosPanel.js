@@ -16,6 +16,9 @@ const last = array => {
 
 class AllVideosPanel extends Component {
   static propTypes = {
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
     getMoreVideos: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
@@ -75,14 +78,14 @@ class AllVideosPanel extends Component {
           }}
         >
           {videos.map((video, index) => {
-            const editable = this.props.userId === video.uploaderId
             return (
               <VideoThumb
                 to={`videos/${video.id}`}
                 style={{ width: '22%', height: '25%', marginBottom: '2rem' }}
                 key={video.id}
                 arrayIndex={index}
-                editable={editable}
+                editable={this.determineEditable(video)}
+                deletable={this.determineDeletable(video)}
                 video={video}
                 user={{ username: video.uploaderName, id: video.uploaderId }}
                 lastVideoId={last(videos) ? last(videos).id : 0}
@@ -92,6 +95,20 @@ class AllVideosPanel extends Component {
         </div>
       </SectionPanel>
     )
+  }
+
+  determineDeletable = video => {
+    const { authLevel, canDelete, userId } = this.props
+    const userIsUploader = video.uploaderId === userId
+    const userCanDeleteThis = canDelete && authLevel > video.uploaderAuthLevel
+    return userIsUploader || userCanDeleteThis
+  }
+
+  determineEditable = video => {
+    const { authLevel, canEdit, userId } = this.props
+    const userIsUploader = video.uploaderId === userId
+    const userCanEditThis = canEdit && authLevel > video.uploaderAuthLevel
+    return userIsUploader || userCanEditThis
   }
 
   loadMoreVideos = () => {
@@ -123,6 +140,10 @@ class AllVideosPanel extends Component {
 
 export default connect(
   state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar,
     loaded: state.VideoReducer.loaded,
     loadMoreButton: state.VideoReducer.loadMoreButton,
     videos: state.VideoReducer.allVideoThumbs
