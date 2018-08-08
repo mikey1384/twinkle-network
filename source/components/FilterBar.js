@@ -8,6 +8,7 @@ FilterBar.propTypes = {
   className: PropTypes.string,
   bordered: PropTypes.bool,
   info: PropTypes.bool,
+  innerRef: PropTypes.func,
   success: PropTypes.bool,
   style: PropTypes.object
 }
@@ -16,6 +17,7 @@ export default function FilterBar({
   className,
   children,
   info,
+  innerRef,
   style,
   success
 }) {
@@ -30,6 +32,7 @@ export default function FilterBar({
   return (
     <div
       style={style}
+      ref={innerRef}
       className={`${css`
         background: #fff;
         height: 6rem;

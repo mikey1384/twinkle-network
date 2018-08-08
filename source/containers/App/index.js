@@ -5,7 +5,10 @@ import { Switch, Route } from 'react-router-dom'
 import Header from './Header'
 import { connect } from 'react-redux'
 import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions'
-import { changePageVisibility } from 'redux/actions/ViewActions'
+import {
+  changePageVisibility,
+  enableAutoscroll
+} from 'redux/actions/ViewActions'
 import {
   initSession,
   openSigninModal,
@@ -46,10 +49,12 @@ let hidden
 
 class App extends Component {
   static propTypes = {
+    autoscrollDisabled: PropTypes.bool.isRequired,
     chatMode: PropTypes.bool,
     changePageVisibility: PropTypes.func.isRequired,
     chatNumUnreads: PropTypes.number,
     closeSigninModal: PropTypes.func.isRequired,
+    enableAutoscroll: PropTypes.func.isRequired,
     history: PropTypes.object,
     initChat: PropTypes.func.isRequired,
     initSession: PropTypes.func.isRequired,
@@ -120,7 +125,9 @@ class App extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const {
+      autoscrollDisabled,
       chatNumUnreads,
+      enableAutoscroll,
       numNewNotis,
       numNewPosts,
       history,
@@ -158,8 +165,12 @@ class App extends Component {
         if (loggedIn) {
           recordUserAction({ action: 'navigation', target: location.pathname })
         }
-        this.body.scrollTop = 0
-        document.getElementById('App').scrollTop = 0
+        if (autoscrollDisabled) {
+          enableAutoscroll()
+        } else {
+          this.body.scrollTop = 0
+          document.getElementById('App').scrollTop = 0
+        }
       } else {
         document.getElementById('App').scrollTop =
           navScrollPositions[location.pathname]
@@ -328,6 +339,7 @@ class App extends Component {
 
 export default connect(
   state => ({
+    autoscrollDisabled: state.ViewReducer.autoscrollDisabled,
     loggedIn: state.UserReducer.loggedIn,
     numNewPosts: state.NotiReducer.numNewPosts,
     numNewNotis: state.NotiReducer.numNewNotis,
@@ -340,6 +352,7 @@ export default connect(
   }),
   {
     closeSigninModal,
+    enableAutoscroll,
     openSigninModal,
     initSession,
     turnChatOff,

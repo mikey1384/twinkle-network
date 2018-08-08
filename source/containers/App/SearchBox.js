@@ -20,7 +20,7 @@ class SearchBox extends Component {
     return (
       <div className={className} style={style}>
         <SearchInput
-          innerRef={innerRef ? ref => innerRef(ref) : () => {}}
+          innerRef={innerRef}
           placeholder="Search Videos, Questions, Links, and More"
           onChange={this.onContentSearch}
           value={searchText}

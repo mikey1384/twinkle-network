@@ -19,6 +19,7 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions'
+import { disableAutoscroll } from 'redux/actions/ViewActions'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Loading from 'components/Loading'
@@ -34,6 +35,7 @@ class Body extends Component {
     feeds: PropTypes.array,
     attachStar: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
+    disableAutoscroll: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
@@ -105,6 +107,7 @@ class Body extends Component {
       loadMoreButton,
       attachStar,
       contentFeedLike,
+      disableAutoscroll,
       fetchFeed,
       clearFeeds,
       feedCommentDelete,
@@ -137,6 +140,7 @@ class Body extends Component {
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   clearFeeds()
+                  disableAutoscroll()
                   history.push(route.url)
                 }}
               >
@@ -153,6 +157,7 @@ class Body extends Component {
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   clearFeeds()
+                  disableAutoscroll()
                   history.push(`${route.url}/posts`)
                 }}
               >
@@ -169,6 +174,7 @@ class Body extends Component {
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   clearFeeds()
+                  disableAutoscroll()
                   history.push(`${route.url}/comments`)
                 }}
               >
@@ -185,6 +191,7 @@ class Body extends Component {
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   clearFeeds()
+                  disableAutoscroll()
                   history.push(`${route.url}/videos`)
                 }}
               >
@@ -201,6 +208,7 @@ class Body extends Component {
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   clearFeeds()
+                  disableAutoscroll()
                   history.push(`${route.url}/links`)
                 }}
               >
@@ -210,7 +218,9 @@ class Body extends Component {
           />
         </FilterBar>
         <div>
-          {!loaded && <Loading text="Loading..." />}
+          {!loaded && (
+            <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
+          )}
           {loaded &&
             feeds.length > 0 && (
               <div>
@@ -302,6 +312,7 @@ class Body extends Component {
       this.setState({ currentTab: tabName })
     }
     fetchFeeds({ username, filter: tabName })
+    this.scrollHeight = 0
   }
 
   loadMoreFeeds = async() => {
@@ -397,6 +408,7 @@ export default connect(
   {
     attachStar,
     contentFeedLike,
+    disableAutoscroll,
     fetchFeed,
     fetchFeeds,
     fetchMoreFeeds,
