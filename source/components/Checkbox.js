@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { innerBorderRadius, Color } from 'constants/css'
+import { innerBorderRadius, Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
 Checkbox.propTypes = {
@@ -66,6 +66,9 @@ export default function Checkbox({
               border: solid #fff;
               border-width: 0 3px 3px 0;
               transform: rotate(45deg);
+              @media (max-width: ${mobileMaxWidth}) {
+                border-width: 0 2px 2px 0;
+              }
             `}
           />
         )}
