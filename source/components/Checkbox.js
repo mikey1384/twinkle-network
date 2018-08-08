@@ -4,12 +4,21 @@ import { innerBorderRadius, Color } from 'constants/css'
 import { css } from 'emotion'
 
 Checkbox.propTypes = {
+  backgroundColor: PropTypes.string,
   checked: PropTypes.bool,
   label: PropTypes.string,
   onClick: PropTypes.func.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  textIsClickable: PropTypes.bool
 }
-export default function Checkbox({ checked, label, onClick, style }) {
+export default function Checkbox({
+  backgroundColor = Color.wellGray(),
+  checked,
+  label,
+  onClick,
+  style,
+  textIsClickable
+}) {
   return (
     <div
       style={{
@@ -17,12 +26,20 @@ export default function Checkbox({ checked, label, onClick, style }) {
         alignItems: 'center',
         postion: 'relative',
         width: '100%',
+        fontSize: '1.2rem',
         ...style
       }}
     >
       {label && (
-        <span style={{ fontSize: '1.2rem', color: Color.darkGray() }}>
-          {label}&nbsp;&nbsp;
+        <span
+          style={{
+            color: Color.darkGray(),
+            cursor: textIsClickable ? 'pointer' : 'default'
+          }}
+          onClick={textIsClickable ? onClick : () => {}}
+        >
+          {label}
+          &nbsp;&nbsp;
         </span>
       )}
       <div
@@ -36,7 +53,7 @@ export default function Checkbox({ checked, label, onClick, style }) {
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          background: checked ? Color.logoBlue() : Color.wellGray()
+          background: checked ? Color.logoBlue() : backgroundColor
         }}
       >
         {checked && (

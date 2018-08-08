@@ -277,6 +277,7 @@ class App extends Component {
           chatLoading={chatLoading}
           onChatButtonClick={this.onChatButtonClick}
           turnChatOff={turnChatOff}
+          searchBoxRef={ref => (this.SearchBox = ref)}
           showUpdateNotice={match =>
             this.setState({ updateNoticeShown: !match })
           }
@@ -291,7 +292,12 @@ class App extends Component {
               }
             `} ${chatMode ? 'hidden' : ''}`}
           >
-            <SearchPage searchText={searchText} />
+            <SearchPage
+              searchText={searchText}
+              onSearchBoxFocus={
+                this.SearchBox ? () => this.SearchBox.focus() : () => {}
+              }
+            />
           </div>
         )}
         <div

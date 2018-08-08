@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { searchPage } from './Styles'
 import TopFilter from './TopFilter'
-import Instructions from './Instructions'
+import FirstPage from './FirstPage'
 import Checkbox from 'components/Checkbox'
 import Results from './Results'
 import { stringIsEmpty } from 'helpers/stringHelpers'
@@ -23,6 +23,7 @@ class SearchPage extends Component {
     dispatch: PropTypes.func.isRequired,
     changeFilter: PropTypes.func.isRequired,
     closeSearch: PropTypes.func.isRequired,
+    onSearchBoxFocus: PropTypes.func.isRequired,
     recordSearchScroll: PropTypes.func.isRequired,
     searchFilter: PropTypes.string,
     searchScrollPosition: PropTypes.number,
@@ -53,6 +54,7 @@ class SearchPage extends Component {
     const {
       changeFilter,
       closeSearch,
+      onSearchBoxFocus,
       selectedFilter,
       searchFilter,
       searchText,
@@ -93,6 +95,7 @@ class SearchPage extends Component {
             {userId && (
               <Checkbox
                 label="Default:"
+                backgroundColor="#fff"
                 checked={selectedFilter === searchFilter}
                 onClick={this.setDefaultSearchFilter}
               />
@@ -103,7 +106,13 @@ class SearchPage extends Component {
             selectedFilter={selectedFilter}
           />
           {stringIsEmpty(searchText) ? (
-            <Instructions />
+            <FirstPage
+              changeFilter={changeFilter}
+              defaultFilter={searchFilter}
+              filter={selectedFilter}
+              setDefaultSearchFilter={this.setDefaultSearchFilter}
+              onSearchBoxFocus={onSearchBoxFocus}
+            />
           ) : (
             <Results
               changeFilter={changeFilter}
