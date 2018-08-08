@@ -51,6 +51,7 @@ class SearchPage extends Component {
 
   render() {
     const {
+      changeFilter,
       closeSearch,
       selectedFilter,
       searchFilter,
@@ -85,7 +86,8 @@ class SearchPage extends Component {
               <span>
                 <span style={{ textTransform: 'capitalize' }}>
                   {selectedFilter === 'url' ? 'link' : selectedFilter}
-                </span>: {`"${searchText}"`}
+                </span>
+                : {`"${searchText}"`}
               </span>
             )}
             {userId && (
@@ -97,13 +99,14 @@ class SearchPage extends Component {
             )}
           </div>
           <TopFilter
-            applyFilter={this.applyFilter}
+            applyFilter={changeFilter}
             selectedFilter={selectedFilter}
           />
           {stringIsEmpty(searchText) ? (
             <Instructions />
           ) : (
             <Results
+              changeFilter={changeFilter}
               closeSearch={closeSearch}
               searchText={searchText}
               filter={selectedFilter}
@@ -112,11 +115,6 @@ class SearchPage extends Component {
         </div>
       </div>
     )
-  }
-
-  applyFilter = filter => {
-    const { changeFilter } = this.props
-    changeFilter(filter)
   }
 
   renderHelperText = () => {

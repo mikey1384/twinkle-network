@@ -7,13 +7,15 @@ import { connect } from 'react-redux'
 CloseText.propTypes = {
   className: PropTypes.string,
   closeSearch: PropTypes.func.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  text: PropTypes.string
 }
-function CloseText({ className, closeSearch, style }) {
+function CloseText({ className, closeSearch, style, text = 'Tap to close' }) {
   return (
     <div className={className} style={{ textAlign: 'center' }}>
       <p
         style={{
+          textTransform: 'capitalize',
           cursor: 'pointer',
           color: Color.darkGray(),
           fontSize: '1.7rem',
@@ -24,7 +26,7 @@ function CloseText({ className, closeSearch, style }) {
         }}
         onClick={closeSearch}
       >
-        Tap to Close
+        {text}
       </p>
     </div>
   )

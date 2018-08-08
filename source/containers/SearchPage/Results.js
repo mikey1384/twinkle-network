@@ -13,6 +13,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton'
 
 class Results extends Component {
   static propTypes = {
+    changeFilter: PropTypes.func.isRequired,
     closeSearch: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     filter: PropTypes.string.isRequired,
@@ -47,7 +48,16 @@ class Results extends Component {
 
   render() {
     const { loadingMore, searching } = this.state
-    const { closeSearch, filter, loadMoreButton, results } = this.props
+    const {
+      changeFilter,
+      closeSearch,
+      filter,
+      loadMoreButton,
+      results
+    } = this.props
+    const availableFilters = ['video', 'url', 'question', 'discussion'].filter(
+      availableFilter => availableFilter !== filter
+    )
     return (
       <div
         className={css`
@@ -86,10 +96,28 @@ class Results extends Component {
                 alignItems: 'center'
               }}
             >
-              <div style={{ textTransform: 'capitalize' }}>
-                {`No ${filter === 'url' ? 'link' : filter}s Found`}
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ textTransform: 'capitalize' }}>{`No ${
+                  filter === 'url' ? 'link' : filter
+                }s Found`}</p>
+                <div style={{ marginTop: '1rem', fontSize: '2rem' }}>
+                  Search with the same keyword(s) for:
+                  {availableFilters.map((availableFilter, index) => (
+                    <p style={{ textTransform: 'capitalize' }} key={index}>
+                      <a
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => changeFilter(availableFilter)}
+                      >{`${
+                        availableFilter === 'url' ? 'link' : availableFilter
+                      }s`}</a>
+                    </p>
+                  ))}
+                </div>
               </div>
-              <CloseText style={{ marginTop: '1rem', marginBottom: '1rem' }} />
+              <CloseText
+                text="Or tap to close"
+                style={{ marginTop: '3rem', marginBottom: '1rem' }}
+              />
             </div>
           )}
         {!searching &&
