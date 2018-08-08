@@ -266,7 +266,9 @@ class Body extends Component {
                   height: '15rem'
                 }}
               >
-                <h2>{this.onNoFeed(username)}</h2>
+                <h2 style={{ textAlign: 'center' }}>
+                  {this.onNoFeed(username)}
+                </h2>
               </div>
             )}
         </div>
