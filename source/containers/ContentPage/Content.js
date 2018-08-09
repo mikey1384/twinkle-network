@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import request from 'axios'
 import { URL } from 'constants/URL'
 
-class Comment extends Component {
+class Content extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     userId: PropTypes.number,
@@ -471,4 +471,4 @@ class Comment extends Component {
 
 export default connect(state => ({
   userId: state.UserReducer.userId
-}))(Comment)
+}))(Content)

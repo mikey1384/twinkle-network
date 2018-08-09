@@ -18,6 +18,7 @@ import { cleanString } from 'helpers/stringHelpers'
 import { css } from 'emotion'
 import { Color } from 'constants/css'
 import { charLimit } from 'constants/defaultValues'
+import Link from 'components/Link'
 
 class PlaylistCarousel extends Component {
   static propTypes = {
@@ -142,9 +143,12 @@ class PlaylistCarousel extends Component {
             h2 {
               cursor: pointer;
               display: inline;
-              color: ${Color.blue()};
-              &:hover {
-                color: ${Color.logoBlue()};
+              > a {
+                color: ${Color.blue()};
+                text-decoration: none;
+                &:hover {
+                  color: ${Color.logoBlue()};
+                }
               }
             }
             small {
@@ -164,9 +168,10 @@ class PlaylistCarousel extends Component {
             />
           ) : (
             <div>
-              <h2 onClick={() => this.setState({ playlistModalShown: true })}>
-                {cleanString(title)}
-                &nbsp;<small>by {uploader}</small>
+              <h2>
+                <Link to={`/playlists/${id}`}>{cleanString(title)}</Link>
+                &nbsp;
+                <small>by {uploader}</small>
               </h2>
             </div>
           )}

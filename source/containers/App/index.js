@@ -39,6 +39,9 @@ const Chat = loadable(() => import('containers/Chat'), {
 const ContentPage = loadable(() => import('containers/ContentPage'), {
   LoadingComponent: Loading
 })
+const PlaylistPage = loadable(() => import('containers/PlaylistPage'), {
+  loadingComponent: Loading
+})
 const SearchPage = loadable(() => import('containers/SearchPage'), {
   LoadingComponent: Loading
 })
@@ -309,6 +312,7 @@ class App extends Component {
             <Route path="/questions" component={ContentPage} />
             <Route path="/comments" component={ContentPage} />
             <Route path="/discussions" component={ContentPage} />
+            <Route path="/playlists" component={PlaylistPage} />
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
             <Route path="/users" component={Home} />
