@@ -203,7 +203,7 @@ class Header extends Component {
                                 }
                               : {}
                           }
-                          className="logo-twin"
+                          className="logo logo-twin"
                         >
                           Twin
                         </span>
@@ -215,7 +215,7 @@ class Header extends Component {
                                 }
                               : {}
                           }
-                          className="logo-kle"
+                          className="logo logo-kle"
                         >
                           kle
                         </span>

@@ -3,7 +3,7 @@ import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css'
 
 export const container = css`
   z-index: 500;
-  font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial, sans-serif;
+  font-family: sans-serif, verdana;
   font-size: 1.5rem;
   background: #fff;
   display: flex;
@@ -23,11 +23,12 @@ export const container = css`
       text-decoration: none;
       margin-left: 0.5rem;
       color: ${Color.menuGray()};
+      align-items: center;
+      line-height: 1;
       .icon {
         line-height: 1.7rem;
         margin-right: 0.7rem;
         display: flex;
-        align-items: center;
       }
     }
     a.active {
@@ -124,7 +125,7 @@ export const logo = {
   inner: css`
     font-size: 2rem;
     font-weight: bold;
-    line-height: 1;
+    font-family: sans-serif, verdana;
     position: absolute;
     top: 0;
     left: 0;
@@ -136,6 +137,9 @@ export const logo = {
     text-decoration: none;
     line-height: 0.9;
     color: ${Color.menuGray()};
+    > .logo {
+      line-height: 1;
+    }
     &:hover {
       > .logo-twin {
         color: ${Color.logoBlue()};

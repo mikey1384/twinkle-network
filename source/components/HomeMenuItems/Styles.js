@@ -4,7 +4,7 @@ import { mobileMaxWidth } from 'constants/css'
 export const container = css`
   display: flex;
   font-size: 2rem;
-  font-family: 'Helvetica Neue', Helvetica, 'Liberation Sans', Arial, sans-serif;
+  font-family: sans-serif, verdana;
   padding-left: 0;
   flex-direction: column;
   > nav {

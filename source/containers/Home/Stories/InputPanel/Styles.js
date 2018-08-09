@@ -12,7 +12,7 @@ export const PanelStyle = css`
     line-height: 2.5rem;
   }
   > p {
-    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, arial, verdana;
+    font-family: sans-serif, verdana;
     color: ${Color.darkGray()};
     margin-bottom: 1rem;
     font-size: 2rem;
