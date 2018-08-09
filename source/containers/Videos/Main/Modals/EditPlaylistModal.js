@@ -45,7 +45,7 @@ class EditPlaylistModal extends Component {
         ? request.get(`${URL}/video?numberToLoad=18`)
         : Promise.resolve({ data: [] })
     ])
-      .then(([{ data: selectedVideos }, { data: allVideos }]) => {
+      .then(([{ data: { videos: selectedVideos } }, { data: allVideos }]) => {
         let loadMoreButtonShown = false
         if (allVideos.length > 18) {
           allVideos.pop()
