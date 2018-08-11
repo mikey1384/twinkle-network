@@ -156,6 +156,11 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
+          stars: (state.videoPage.stars || []).map(star => ({
+                ...star,
+                rewardComment:
+                  star.id === action.id ? action.text : star.rewardComment
+              })),
           discussions: state.videoPage.discussions.map(discussion => ({
             ...discussion,
             comments: discussion.comments.map(comment => ({

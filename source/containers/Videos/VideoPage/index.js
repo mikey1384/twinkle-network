@@ -329,7 +329,7 @@ class VideoPage extends Component {
                   />
                   <RewardStatus
                     contentType="video"
-                    onCommentEdit={() => console.log('edit')}
+                    onCommentEdit={editRewardComment}
                     style={{
                       fontSize: '1.4rem'
                     }}
