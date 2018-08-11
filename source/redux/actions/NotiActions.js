@@ -4,7 +4,7 @@ import { URL } from 'constants/URL'
 import NOTI from '../constants/Noti'
 
 const API_URL = `${URL}/notification`
-const appVersion = '0.1.27'
+const appVersion = '0.1.28'
 
 export const checkVersion = () => async dispatch => {
   try {
