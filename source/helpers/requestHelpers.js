@@ -24,6 +24,7 @@ export function handleError(error, dispatch) {
     }
   }
   console.error(error.response || error)
+  return Promise.reject(error)
 }
 
 export const deleteContent = async({ id, type, dispatch }) => {
@@ -31,7 +32,7 @@ export const deleteContent = async({ id, type, dispatch }) => {
     await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth())
     return Promise.resolve()
   } catch (error) {
-    handleError(error, dispatch)
+    return handleError(error, dispatch)
   }
 }
 
@@ -63,7 +64,7 @@ export const editContent = async({
     )
     return Promise.resolve(data)
   } catch (error) {
-    handleError(error, dispatch)
+    return handleError(error, dispatch)
   }
 }
 
@@ -74,7 +75,7 @@ export const likeContent = async({ id, type, dispatch }) => {
     } = await request.post(`${URL}/content/like`, { id, type }, auth())
     return Promise.resolve(likes)
   } catch (error) {
-    handleError(error, dispatch)
+    return handleError(error, dispatch)
   }
 }
 
@@ -116,7 +117,7 @@ export const searchContent = async({
     )
     return Promise.resolve(data)
   } catch (error) {
-    handleError(error, dispatch)
+    return handleError(error, dispatch)
   }
 }
 
@@ -129,7 +130,7 @@ export const setDefaultSearchFilter = async({ filter, dispatch }) => {
     )
     return Promise.resolve(data)
   } catch (error) {
-    handleError(error, dispatch)
+    return handleError(error, dispatch)
   }
 }
 
@@ -148,6 +149,6 @@ export const uploadComment = async({
     )
     return Promise.resolve(data)
   } catch (error) {
-    handleError(error, dispatch)
+    return handleError(error, dispatch)
   }
 }

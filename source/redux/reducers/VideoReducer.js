@@ -28,6 +28,10 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: {
           ...state.videoPage,
+          stars:
+            action.data.contentType === 'video'
+              ? (state.videoPage.stars || []).concat(action.data)
+              : state.videoPage.stars || [],
           discussions: state.videoPage.discussions.map(discussion => ({
             ...discussion,
             comments: discussion.comments.map(comment => ({

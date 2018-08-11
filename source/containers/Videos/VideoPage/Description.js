@@ -8,8 +8,10 @@ import LongText from 'components/Texts/LongText'
 import { timeSince } from 'helpers/timeStampHelpers'
 import UserListModal from 'components/Modals/UserListModal'
 import FullTextReveal from 'components/FullTextReveal'
-import { textIsOverflown } from 'helpers/domHelpers'
+import { determineXpButtonDisabled, textIsOverflown } from 'helpers/domHelpers'
 import Input from 'components/Texts/Input'
+import Icon from 'components/Icon'
+import XPRewardInterface from 'components/XPRewardInterface'
 import {
   cleanString,
   exceedsCharLimit,
@@ -23,13 +25,14 @@ import { edit } from 'constants/placeholders'
 import Likers from 'components/Likers'
 import LikeButton from 'components/Buttons/LikeButton'
 import StarButton from 'components/StarButton'
-import { starVideo } from 'redux/actions/VideoActions'
+import { attachStar, starVideo } from 'redux/actions/VideoActions'
 import { connect } from 'react-redux'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 
 class Description extends Component {
   static propTypes = {
+    attachStar: PropTypes.func.isRequired,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -43,6 +46,7 @@ class Description extends Component {
     onEditCancel: PropTypes.func.isRequired,
     onEditFinish: PropTypes.func.isRequired,
     onEditStart: PropTypes.func.isRequired,
+    stars: PropTypes.array,
     starVideo: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
@@ -64,7 +68,8 @@ class Description extends Component {
       userListModalShown: false,
       editedTitle: cleanString(title),
       editedUrl: `https://www.youtube.com/watch?v=${content}`,
-      editedDescription: description
+      editedDescription: description,
+      xpRewardInterfaceShown: false
     }
   }
 
@@ -85,6 +90,7 @@ class Description extends Component {
 
   render() {
     const {
+      attachStar,
       authLevel,
       canDelete,
       canEdit,
@@ -98,6 +104,7 @@ class Description extends Component {
       description,
       likes,
       onDelete,
+      stars,
       starVideo,
       timeStamp,
       uploaderAuthLevel,
@@ -110,7 +117,8 @@ class Description extends Component {
       editedUrl,
       editedDescription,
       userListModalShown,
-      onTitleHover
+      onTitleHover,
+      xpRewardInterfaceShown
     } = this.state
     const userIsUploader = uploaderId === userId
     const userCanEditThis =
@@ -258,7 +266,8 @@ class Description extends Component {
                   color: Color.darkGray()
                 }}
               >
-                {videoViews} view{`${videoViews > 1 ? 's' : ''}`}
+                {videoViews} view
+                {`${videoViews > 1 ? 's' : ''}`}
               </div>
             )}
         </div>
@@ -266,16 +275,12 @@ class Description extends Component {
           className={css`
             grid-area: description;
             align-self: start;
-            display: grid;
-            grid-template-areas:
-              'content content content content'
-              ${!onEdit ? '"editButton . . ."' : ''};
-            grid-row-gap: 2rem;
-            grid-template-columns: auto 1fr 1fr 1fr;
+            display: flex;
+            flex-direction: column;
           `}
         >
           {onEdit ? (
-            <div style={{ gridArea: 'content' }}>
+            <div>
               <Textarea
                 minRows={5}
                 placeholder={edit.description}
@@ -326,7 +331,7 @@ class Description extends Component {
               </div>
             </div>
           ) : (
-            <div style={{ padding: '0 1rem', gridArea: 'content' }}>
+            <div style={{ padding: '0 1rem 2rem 1rem' }}>
               <LongText
                 style={{
                   whiteSpace: 'pre-wrap',
@@ -339,19 +344,59 @@ class Description extends Component {
               </LongText>
             </div>
           )}
-          {editButtonShown &&
-            !onEdit && (
-              <DropdownButton
-                snow
-                direction="left"
-                style={{
-                  gridArea: 'editButton'
-                }}
-                stretch
-                text="Edit or Delete This Video"
-                menuProps={editMenuItems}
-              />
-            )}
+          <div style={{ display: 'flex' }}>
+            {editButtonShown &&
+              !onEdit && (
+                <DropdownButton
+                  snow
+                  style={{ marginRight: '1rem' }}
+                  direction="left"
+                  text="Edit or Delete This Video"
+                  menuProps={editMenuItems}
+                />
+              )}
+            {!onEdit &&
+              canStar &&
+              userCanEditThis &&
+              !userIsUploader && (
+                <Button
+                  snow
+                  disabled={determineXpButtonDisabled({
+                    myId: userId,
+                    xpRewardInterfaceShown,
+                    stars
+                  })}
+                  style={{
+                    color: Color.pink()
+                  }}
+                  onClick={() =>
+                    this.setState({ xpRewardInterfaceShown: true })
+                  }
+                >
+                  <Icon icon="star" />
+                  <span style={{ marginLeft: '0.7rem' }}>
+                    {determineXpButtonDisabled({
+                      myId: userId,
+                      xpRewardInterfaceShown,
+                      stars
+                    }) || 'Reward'}
+                  </span>
+                </Button>
+              )}
+          </div>
+          {xpRewardInterfaceShown && (
+            <XPRewardInterface
+              stars={stars}
+              contentType="video"
+              contentId={Number(videoId)}
+              noPadding
+              uploaderId={uploaderId}
+              onRewardSubmit={data => {
+                this.setState({ xpRewardInterfaceShown: false })
+                attachStar(data)
+              }}
+            />
+          )}
         </div>
         {canStar && (
           <StarButton
@@ -509,6 +554,7 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   {
+    attachStar,
     starVideo
   }
 )(Description)

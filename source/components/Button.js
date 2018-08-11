@@ -120,13 +120,19 @@ export default function Button({
             )[colorKey]};
         border: 1px solid
           ${snow
-            ? Color.whiteGray()
+            ? disabled
+              ? Color.borderGray()
+              : Color.whiteGray()
             : buttonColor(
                 disabled ? backgroundDisabledOpacity : backgroundOpacity
               )[colorKey]};
         border-radius: ${borderRadius};
         transition: background 0.2s;
-        ${snow ? `box-shadow: 0 0 1px ${Color.black(0.8)};` : ''} &:focus {
+        ${snow
+          ? disabled
+            ? 'opacity: 0.5;'
+            : `box-shadow: 0 0 1px ${Color.black(0.8)};`
+          : ''} &:focus {
           outline: ${(transparent || disabled || snow) && 0};
         }
         &:hover {
@@ -143,9 +149,19 @@ export default function Button({
                 ? Color.black()
                 : '#fff'};
           border-color: ${buttonColor(
-            disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
+            snow
+              ? disabled
+                ? Color.black(0.1)
+                : Color.whiteGray()
+              : disabled
+                ? backgroundDisabledOpacity
+                : backgroundHoverOpacity
           )[colorKey]};
-          ${snow ? `box-shadow: 0 0 3px ${Color.black()};` : ''};
+          ${snow
+            ? disabled
+              ? ''
+              : `box-shadow: 0 0 3px ${Color.black()};`
+            : ''};
         }
         @media (max-width: ${mobileMaxWidth}) {
           font-size: 1.3rem;

@@ -34,12 +34,16 @@ function LikeButton({
       filled={filled || liked}
       style={style}
       onClick={async() => {
-        const likes = await likeContent({
-          id: contentId,
-          type: contentType,
-          dispatch
-        })
-        onClick(likes, contentId)
+        try {
+          const likes = await likeContent({
+            id: contentId,
+            type: contentType,
+            dispatch
+          })
+          onClick(likes, contentId)
+        } catch (error) {
+          return console.error(error)
+        }
       }}
     >
       <Icon icon="thumbs-up" />

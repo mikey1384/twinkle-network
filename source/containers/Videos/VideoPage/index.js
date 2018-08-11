@@ -38,6 +38,7 @@ import queryString from 'query-string'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 import DiscussionInputArea from './DiscussionInputArea'
 import Discussions from './Discussions'
+import RewardStatus from 'components/RewardStatus'
 import { Color, mobileMaxWidth } from 'constants/css'
 import { css } from 'emotion'
 import { loadComments } from 'helpers/requestHelpers'
@@ -69,6 +70,7 @@ class VideoPage extends Component {
     match: PropTypes.object.isRequired,
     questions: PropTypes.array,
     resetVideoPage: PropTypes.func.isRequired,
+    stars: PropTypes.array,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     uploadComment: PropTypes.func,
@@ -170,6 +172,7 @@ class VideoPage extends Component {
       questions = [],
       likes = [],
       location: { search },
+      stars = [],
       uploadComment,
       uploadReply,
       videoViews
@@ -297,25 +300,43 @@ class VideoPage extends Component {
                       )}
                   </div>
                 </div>
-                <Description
-                  isStarred={isStarred}
-                  likes={likes}
-                  likeVideo={likeVideo}
-                  videoId={videoId}
-                  content={content}
-                  title={title}
-                  timeStamp={timeStamp}
-                  uploaderName={uploaderName}
-                  description={description}
-                  uploaderAuthLevel={uploaderAuthLevel}
-                  uploaderId={uploaderId}
-                  userId={userId}
-                  onEditStart={() => this.setState({ onEdit: true })}
-                  onEditCancel={() => this.setState({ onEdit: false })}
-                  onEditFinish={this.onDescriptionEditFinish}
-                  onDelete={() => this.setState({ confirmModalShown: true })}
-                  videoViews={videoViews}
-                />
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    background: '#fff'
+                  }}
+                >
+                  <Description
+                    isStarred={isStarred}
+                    likes={likes}
+                    likeVideo={likeVideo}
+                    videoId={videoId}
+                    content={content}
+                    stars={stars}
+                    title={title}
+                    timeStamp={timeStamp}
+                    uploaderName={uploaderName}
+                    description={description}
+                    uploaderAuthLevel={uploaderAuthLevel}
+                    uploaderId={uploaderId}
+                    userId={userId}
+                    onEditStart={() => this.setState({ onEdit: true })}
+                    onEditCancel={() => this.setState({ onEdit: false })}
+                    onEditFinish={this.onDescriptionEditFinish}
+                    onDelete={() => this.setState({ confirmModalShown: true })}
+                    videoViews={videoViews}
+                  />
+                  <RewardStatus
+                    contentType="video"
+                    onCommentEdit={() => console.log('edit')}
+                    style={{
+                      fontSize: '1.4rem'
+                    }}
+                    stars={stars}
+                    uploaderName={uploaderName}
+                  />
+                </div>
                 <DiscussionInputArea videoId={videoId} />
                 <Discussions
                   loadMoreDiscussionsButton={loadMoreDiscussionsButton}

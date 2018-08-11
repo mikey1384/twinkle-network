@@ -22,7 +22,8 @@ class XPRewardInterface extends Component {
     contentId: PropTypes.number.isRequired,
     stars: PropTypes.array,
     uploaderId: PropTypes.number.isRequired,
-    userId: PropTypes.number.isRequired
+    userId: PropTypes.number.isRequired,
+    noPadding: PropTypes.bool
   }
 
   state = {
@@ -33,7 +34,7 @@ class XPRewardInterface extends Component {
 
   render() {
     const { rewarding, rewardExplanation, twoStarSelected } = this.state
-    const { contentType, stars = [], userId } = this.props
+    const { contentType, noPadding, stars = [], userId } = this.props
     if (!userId) return null
     const totalStars =
       stars.length > 0
@@ -51,7 +52,7 @@ class XPRewardInterface extends Component {
         className={css`
           display: flex;
           flex-direction: column;
-          padding: 1rem;
+          padding: ${noPadding ? '1rem 0 0 0' : '1rem'};
           font-size: 1.6rem;
           align-items: center;
           color: ${Color.pink()};
@@ -68,7 +69,8 @@ class XPRewardInterface extends Component {
           >
             <Icon icon="star" />
             <span style={{ marginLeft: '0.7rem' }}>
-              Reward a star{canRewardTwoStars ? ' (Great - 200 XP)' : ' (200 XP)'}
+              Reward a star
+              {canRewardTwoStars ? ' (Great - 200 XP)' : ' (200 XP)'}
             </span>
           </Button>
           {canRewardTwoStars && (
