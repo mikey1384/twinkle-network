@@ -68,6 +68,22 @@ class ProfilePanel extends Component {
     }
   }
 
+  async componentDidUpdate(prevProps) {
+    const { profile } = this.props
+    if (profile.id !== prevProps.profile.id) {
+      try {
+        const { comments } = await loadComments({
+          id: profile.id,
+          type: 'user',
+          limit: 1
+        })
+        this.setState({ comments })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   render() {
     const {
       comments,
