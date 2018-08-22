@@ -87,9 +87,8 @@ class MainFeeds extends Component {
               style={{ marginBottom: '1rem' }}
               onClick={this.onNewNotiAlertClick}
             >
-              Tap to See {numNewNotis} New Notification{numNewNotis > 1
-                ? 's'
-                : ''}
+              Tap to See {numNewNotis} New Notification
+              {numNewNotis > 1 ? 's' : ''}
             </Banner>
           )}
           {activeTab === 'reward' && (
@@ -295,10 +294,9 @@ function renderNotificationMessage(notification, myId) {
         action = 'likes'
         break
       case 'comment':
-        action =
-          rootType === 'question'
-            ? returnCommentActionText('answer')
-            : returnCommentActionText('comment')
+        action = returnCommentActionText(
+          rootType === 'question' || rootType === 'user' ? rootType : 'comment'
+        )
         break
       case 'discussion':
         action = 'added a discussion to'
@@ -312,7 +310,9 @@ function renderNotificationMessage(notification, myId) {
       ? 'comment'
       : isDiscussionAnswerNotification
         ? 'discussion topic'
-        : rootType
+        : rootType === 'user'
+          ? 'profile'
+          : rootType
   }: `
   let contentTitle = isReplyNotification
     ? commentContent
@@ -336,7 +336,8 @@ function renderNotificationMessage(notification, myId) {
         user={{ id: userId, username: username }}
         color={Color.blue()}
       />
-      &nbsp;{action} {target}
+      &nbsp;
+      {action} {target}
       <ContentLink
         content={content}
         type={
@@ -356,7 +357,9 @@ function renderNotificationMessage(notification, myId) {
         ? 'commented on'
         : type === 'reply'
           ? 'replied to'
-          : 'answered'
+          : type === 'question'
+            ? 'answered'
+            : 'left a message on'
     return (
       <ContentLink
         style={{ color: Color.green() }}
