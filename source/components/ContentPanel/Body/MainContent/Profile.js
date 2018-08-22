@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import ProfilePic from 'components/ProfilePic'
 import RankBar from 'components/RankBar'
 import UserDetails from 'components/UserDetails'
+import Link from 'components/Link'
 import { css } from 'emotion'
 import { connect } from 'react-redux'
 
@@ -26,13 +27,15 @@ function Profile({ profile, userId }) {
           width: '100%'
         }}
       >
-        <ProfilePic
-          style={{ width: '15rem', height: '15rem' }}
-          userId={profile.id}
-          profilePicId={profile.profilePicId}
-          online={userId === profile.id || !!profile.online}
-          large
-        />
+        <Link to={`/users/${profile.username}`}>
+          <ProfilePic
+            style={{ width: '15rem', height: '15rem' }}
+            userId={profile.id}
+            profilePicId={profile.profilePicId}
+            online={userId === profile.id || !!profile.online}
+            large
+          />
+        </Link>
         <UserDetails
           unEditable
           profile={profile}
