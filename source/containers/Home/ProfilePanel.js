@@ -96,6 +96,7 @@ class ProfilePanel extends Component {
     const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow
     return (
       <div
+        key={profile.id}
         className={css`
           display: flex;
           flex-direction: column;
