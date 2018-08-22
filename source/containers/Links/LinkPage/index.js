@@ -226,7 +226,7 @@ class LinkPage extends Component {
             />
           </div>
           <Comments
-            autoShowComments
+            autoExpand
             comments={comments}
             inputTypeLabel="comment"
             key={'comments' + id}

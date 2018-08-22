@@ -280,7 +280,7 @@ class Heading extends Component {
 
   renderTargetAction = () => {
     const {
-      contentObj: { commentId, replyId, targetObj = {} }
+      contentObj: { commentId, replyId, targetObj = {}, rootType }
     } = this.props
     if (targetObj.comment && !targetObj.comment.notFound) {
       return (
@@ -294,12 +294,16 @@ class Heading extends Component {
           <ContentLink
             content={{
               id: replyId || commentId,
-              title: replyId ? 'reply ' : 'comment '
+              title: replyId
+                ? 'reply '
+                : rootType === 'user'
+                  ? 'message '
+                  : 'comment '
             }}
             type="comment"
             style={{ color: Color.green() }}
           />
-          {'on'}
+          {!replyId && rootType === 'user' ? 'to' : 'on'}
         </span>
       )
     }

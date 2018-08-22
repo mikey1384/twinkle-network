@@ -81,12 +81,15 @@ export const likeContent = async({ id, type, dispatch }) => {
 
 export const loadComments = async({ id, type, lastCommentId, limit }) => {
   try {
-    const { data } = await request.get(
+    const {
+      data: { comments, loadMoreButton }
+    } = await request.get(
       `${URL}/content/comments?contentId=${id}&type=${type}&lastCommentId=${lastCommentId}&limit=${limit}`
     )
-    return Promise.resolve(data)
+    return Promise.resolve({ comments, loadMoreButton })
   } catch (error) {
     console.error(error.response || error)
+    return Promise.reject(error)
   }
 }
 

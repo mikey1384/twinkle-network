@@ -361,7 +361,7 @@ class VideoPage extends Component {
                     Comment on this video
                   </p>
                   <Comments
-                    autoShowComments
+                    autoExpand
                     comments={comments}
                     inputAreaInnerRef={ref => {
                       this.CommentInputArea = ref

@@ -12,11 +12,24 @@ Link.propTypes = {
   target: PropTypes.string,
   to: PropTypes.string
 }
-function Link({ className, to, onClick, onClickAsync, children, style, target, history }) {
-  return (
+function Link({
+  className,
+  to,
+  onClick,
+  onClickAsync,
+  children,
+  style,
+  target,
+  history
+}) {
+  return to ? (
     <a className={className} style={style} href={to} onClick={onLinkClick}>
       {children}
     </a>
+  ) : (
+    <div className={className} style={style}>
+      {children}
+    </div>
   )
 
   function onLinkClick(event) {

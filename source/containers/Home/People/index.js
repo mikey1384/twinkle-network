@@ -120,14 +120,13 @@ class People extends Component {
     )
   }
 
-  loadMoreProfiles = () => {
+  loadMoreProfiles = async() => {
     const { fetchMoreUsers, profiles } = this.props
     const { loading } = this.state
     if (!loading) {
       this.setState({ loading: true })
-      return fetchMoreUsers(
-        queryStringForArray(profiles, 'id', 'shownUsers')
-      ).then(() => this.setState({ loading: false }))
+      await fetchMoreUsers(queryStringForArray(profiles, 'id', 'shownUsers'))
+      this.setState({ loading: false })
     }
   }
 

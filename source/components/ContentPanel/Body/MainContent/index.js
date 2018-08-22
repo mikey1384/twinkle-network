@@ -6,6 +6,7 @@ import Embedly from 'components/Embedly'
 import LongText from 'components/Texts/LongText'
 import VideoPlayer from 'components/VideoPlayer'
 import ContentEditor from '../ContentEditor'
+import Profile from './Profile'
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
 
 MainContent.propTypes = {
@@ -136,6 +137,11 @@ export default function MainContent({
             />
           )}
         </div>
+        {!isEditing &&
+          type === 'comment' &&
+          contentObj.rootType === 'user' && (
+            <Profile profile={contentObj.rootObj} />
+          )}
         {!isEditing &&
           type === 'url' && (
             <Embedly

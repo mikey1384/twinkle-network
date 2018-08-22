@@ -14,31 +14,17 @@ ContentLink.propTypes = {
 }
 export default function ContentLink({
   style,
-  content: { id, content, title },
+  content: { id, content, title, username },
   type,
   ...actions
 }) {
   let destination = ''
-  switch (type) {
-    case 'url':
-      destination = 'links'
-      break
-    case 'discussion':
-      destination = 'discussions'
-      break
-    case 'video':
-      destination = 'videos'
-      break
-    case 'comment':
-      destination = 'comments'
-      break
-    case 'question':
-      destination = 'questions'
-      break
-    default:
-      break
+  if (type === 'url') {
+    destination = 'links'
+  } else {
+    destination = type + 's'
   }
-  title = title || content
+  title = title || content || username
   return title ? (
     <Link
       style={{
@@ -46,7 +32,7 @@ export default function ContentLink({
         color: Color.blue(),
         ...style
       }}
-      to={`/${destination}/${id}`}
+      to={`/${destination}/${type === 'user' ? username : id}`}
     >
       {removeLineBreaks(title)}
     </Link>

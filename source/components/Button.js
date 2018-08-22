@@ -59,7 +59,7 @@ export default function Button({
 }) {
   let Button
   const buttonColor = opacity => ({
-    default: Color.buttonGray(opacity),
+    default: Color.black(opacity),
     alert: Color.logoGreen(opacity),
     info: Color.lightBlue(opacity),
     love: Color.pink(opacity),
@@ -71,8 +71,7 @@ export default function Button({
     gold: Color.gold(opacity),
     danger: Color.red(opacity),
     snow: Color.white(opacity),
-    peace: Color.logoGreen(opacity),
-    transparent: Color.buttonGray(opacity)
+    peace: Color.logoGreen(opacity)
   })
 
   let colorKey = 'default'
@@ -88,12 +87,11 @@ export default function Button({
   if (danger) colorKey = 'danger'
   if (snow) colorKey = 'snow'
   if (peace) colorKey = 'peace'
-  if (transparent) colorKey = 'transparent'
   if (onHover) colorKey = hoverClass
   const backgroundOpacity = filled ? 1 : opacity || 0
   const backgroundHoverOpacity = transparent ? 0 : 0.9
   const backgroundDisabledOpacity = filled ? 0.2 : 0
-  const textOpacity = disabled ? 0.2 : 1
+  const textOpacity = disabled ? 0.2 : transparent ? 0.5 : 1
 
   return (
     <button
@@ -143,10 +141,10 @@ export default function Button({
               )[colorKey]};
           color: ${disabled && !filled
             ? buttonColor(textOpacity)[colorKey]
-            : transparent
+            : snow
               ? Color.black()
-              : snow
-                ? Color.black()
+              : transparent
+                ? buttonColor(1)[colorKey]
                 : '#fff'};
           border-color: ${buttonColor(
             snow
@@ -175,7 +173,7 @@ export default function Button({
               ? '#fff'
               : snow
                 ? Color.black(0.7)
-                : buttonColor(textOpacity)[colorKey]};
+                : buttonColor(transparent ? 1 : textOpacity)[colorKey]};
             border: 1px solid
               ${snow
                 ? Color.whiteGray()

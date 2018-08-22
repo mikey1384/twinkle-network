@@ -91,7 +91,7 @@ class Content extends Component {
       exists ? (
         <ContentPanel
           key={contentObj.type + contentObj.contentId}
-          autoShowComments
+          autoExpand
           inputAtBottom={contentObj.type === 'comment'}
           commentsLoadLimit={5}
           contentObj={contentObj}
@@ -244,15 +244,12 @@ class Content extends Component {
 
   onEditComment = ({ editedComment, commentId }) => {
     this.setState(state => {
-      const comments = state.contentObj.childComments.map(comment => ({
-        ...comment,
-        content: comment.id === commentId ? editedComment : comment.content
-      }))
       return {
         contentObj: {
           ...state.contentObj,
-          childComments: comments.map(comment => ({
+          childComments: state.contentObj.childComments.map(comment => ({
             ...comment,
+            content: comment.id === commentId ? editedComment : comment.content,
             replies: comment.replies
               ? comment.replies.map(
                   reply =>

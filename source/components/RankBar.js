@@ -5,9 +5,10 @@ import { borderRadius, mobileMaxWidth, Color } from 'constants/css'
 import { css } from 'emotion'
 
 RankBar.propTypes = {
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired,
+  style: PropTypes.object
 }
-export default function RankBar({ profile }) {
+export default function RankBar({ profile, style }) {
   const rankColor =
     profile.rank === 1
       ? Color.gold()
@@ -18,6 +19,7 @@ export default function RankBar({ profile }) {
           : undefined
   return (
     <div
+      style={style}
       className={css`
           padding: 1.5rem 0;
           font-size: 2rem;
@@ -101,7 +103,8 @@ export default function RankBar({ profile }) {
             }}
           >
             {' '}
-            (↑{addCommasToNumber(profile.xpThisMonth)} this month)
+            (↑
+            {addCommasToNumber(profile.xpThisMonth)} this month)
           </span>
         )}
       </span>

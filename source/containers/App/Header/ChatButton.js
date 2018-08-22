@@ -21,6 +21,7 @@ export default function ChatButton({
     <Button
       {...props}
       transparent={!newMessages}
+      default={!newMessages}
       love={newMessages}
       onClick={onClick}
       disabled={loading}

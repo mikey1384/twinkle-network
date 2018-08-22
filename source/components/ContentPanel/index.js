@@ -12,7 +12,7 @@ import { URL } from 'constants/URL'
 
 class ContentPanel extends Component {
   static propTypes = {
-    autoShowComments: PropTypes.bool,
+    autoExpand: PropTypes.bool,
     commentsLoadLimit: PropTypes.number,
     contentObj: PropTypes.object.isRequired,
     inputAtBottom: PropTypes.bool,
@@ -56,7 +56,7 @@ class ContentPanel extends Component {
 
   render() {
     const {
-      autoShowComments,
+      autoExpand,
       commentsLoadLimit,
       contentObj,
       inputAtBottom,
@@ -113,7 +113,9 @@ class ContentPanel extends Component {
                     : 'replied to'
                   : contentObj.rootType === 'question'
                     ? 'answered'
-                    : 'commented on'
+                    : contentObj.rootType === 'user'
+                      ? 'left a message to'
+                      : 'commented on'
               }
               onPlayVideoClick={() =>
                 this.setState({ attachedVideoShown: true })
@@ -125,7 +127,7 @@ class ContentPanel extends Component {
             <div className="body">
               {contentObj.loaded && (
                 <Body
-                  autoShowComments={autoShowComments}
+                  autoExpand={autoExpand}
                   contentObj={contentObj}
                   inputAtBottom={inputAtBottom}
                   attachedVideoShown={attachedVideoShown}

@@ -14,8 +14,9 @@ import { connect } from 'react-redux'
 
 class Comments extends Component {
   static propTypes = {
+    autoExpand: PropTypes.bool,
     autoFocus: PropTypes.bool,
-    autoShowComments: PropTypes.bool,
+    numPreviews: PropTypes.number,
     commentsShown: PropTypes.bool,
     comments: PropTypes.array.isRequired,
     commentsLoadLimit: PropTypes.number,
@@ -25,6 +26,7 @@ class Comments extends Component {
     inputTypeLabel: PropTypes.string,
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
+    noInput: PropTypes.bool,
     onAttachStar: PropTypes.func.isRequired,
     onCommentSubmit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
@@ -53,7 +55,7 @@ class Comments extends Component {
     const { commentSubmitted, deleting } = this.state
     const {
       autoFocus,
-      autoShowComments,
+      autoExpand,
       comments,
       commentsShown,
       inputAtBottom
@@ -93,7 +95,7 @@ class Comments extends Component {
     }
 
     if (
-      !autoShowComments &&
+      !autoExpand &&
       !prevProps.commentsShown &&
       !commentSubmitted &&
       autoFocus &&
@@ -102,22 +104,29 @@ class Comments extends Component {
       scrollElementToCenter(this.CommentInputArea)
     }
   }
+
   render() {
     const {
-      autoShowComments,
-      loadMoreButton,
+      autoExpand,
       comments = [],
       commentsShown,
-      style,
       inputAtBottom,
+      loadMoreButton,
+      noInput,
+      numPreviews,
       onAttachStar,
       onEditDone,
       onLikeClick,
       onLoadMoreReplies,
       onRewardCommentEdit,
       parent,
+      style,
       userId
     } = this.props
+    let previewComments = []
+    if (numPreviews > 0 && !autoExpand && !commentsShown) {
+      previewComments = comments.filter((comment, index) => index < numPreviews)
+    }
     return (
       <Context.Provider
         value={{
@@ -140,28 +149,33 @@ class Comments extends Component {
           }}
         >
           {!inputAtBottom &&
-            (commentsShown || autoShowComments) &&
+            !noInput &&
+            (commentsShown || autoExpand) &&
             this.renderInputArea()}
-          {(autoShowComments || commentsShown) && (
+          {(commentsShown || autoExpand || numPreviews > 0) && (
             <div style={{ width: '100%' }}>
               {inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
-              {comments.map((comment, index) => (
-                <Comment
-                  index={index}
-                  innerRef={ref => {
-                    this.Comments[comment.id] = ref
-                  }}
-                  parent={parent}
-                  comment={comment}
-                  key={comment.id}
-                  userId={userId}
-                />
-              ))}
+              {(previewComments.length > 0 ? previewComments : comments).map(
+                (comment, index) => (
+                  <Comment
+                    isPreview={previewComments.length > 0}
+                    index={index}
+                    innerRef={ref => {
+                      this.Comments[comment.id] = ref
+                    }}
+                    parent={parent}
+                    comment={comment}
+                    key={comment.id}
+                    userId={userId}
+                  />
+                )
+              )}
               {!inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
             </div>
           )}
           {inputAtBottom &&
-            (commentsShown || autoShowComments) &&
+            !noInput &&
+            (commentsShown || autoExpand) &&
             this.renderInputArea({
               marginTop: comments.length > 0 ? '1rem' : 0
             })}

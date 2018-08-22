@@ -27,7 +27,7 @@ import {
 
 class Body extends Component {
   static propTypes = {
-    autoShowComments: PropTypes.bool,
+    autoExpand: PropTypes.bool,
     attachedVideoShown: PropTypes.bool,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
@@ -68,12 +68,12 @@ class Body extends Component {
 
   async componentDidMount() {
     const {
-      autoShowComments,
+      autoExpand,
       onShowComments,
       commentsLoadLimit,
       contentObj: { type, contentId }
     } = this.props
-    if (autoShowComments) {
+    if (autoExpand) {
       const data = await loadComments({
         type: type,
         id: contentId,
@@ -127,7 +127,7 @@ class Body extends Component {
         uploader = {},
         views
       },
-      autoShowComments,
+      autoExpand,
       authLevel,
       canDelete,
       canEdit,
@@ -383,7 +383,7 @@ class Body extends Component {
           />
           <Comments
             autoFocus={autoFocusWhenCommentShown}
-            autoShowComments={autoShowComments}
+            autoExpand={autoExpand}
             comments={childComments}
             commentsLoadLimit={commentsLoadLimit}
             commentsShown={commentsShown}

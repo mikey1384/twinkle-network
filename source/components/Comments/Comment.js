@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import withContext from 'components/Wrappers/withContext'
 import Context from './Context'
 import { timeSince } from 'helpers/timeStampHelpers'
@@ -52,6 +52,7 @@ class Comment extends Component {
     }).isRequired,
     dispatch: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
+    isPreview: PropTypes.bool,
     onEditDone: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
@@ -108,6 +109,7 @@ class Comment extends Component {
         uploader
       },
       innerRef,
+      isPreview,
       onAttachStar,
       onLoadMoreReplies,
       onDelete,
@@ -168,7 +170,8 @@ class Comment extends Component {
               <UsernameText className="username" user={uploader} />{' '}
               <small className="timestamp">
                 <Link to={`/comments/${comment.id}`}>
-                  commented {timeSince(comment.timeStamp)}
+                  {parent.type === 'user' ? 'messag' : 'comment'}
+                  ed {timeSince(comment.timeStamp)}
                 </Link>
               </small>
             </div>
@@ -204,55 +207,59 @@ class Comment extends Component {
                   <LongText className="comment__content">
                     {comment.content}
                   </LongText>
-                  <div className="comment__buttons">
-                    <LikeButton
-                      contentType="comment"
-                      contentId={comment.id}
-                      onClick={this.onLikeClick}
-                      liked={userLikedThis}
-                    />
-                    <Button
-                      transparent
-                      style={{ marginLeft: '1rem' }}
-                      onClick={this.onReplyButtonClick}
-                    >
-                      <Icon icon="comment-alt" />
-                      <span style={{ marginLeft: '1rem' }}>Reply</span>
-                    </Button>
-                    {canStar &&
-                      userCanEditThis &&
-                      !userIsUploader && (
+                  {!isPreview && (
+                    <Fragment>
+                      <div className="comment__buttons">
+                        <LikeButton
+                          contentType="comment"
+                          contentId={comment.id}
+                          onClick={this.onLikeClick}
+                          liked={userLikedThis}
+                        />
                         <Button
-                          love
-                          style={{ marginLeft: '0.7rem' }}
-                          onClick={() =>
-                            this.setState({ xpRewardInterfaceShown: true })
-                          }
-                          disabled={determineXpButtonDisabled({
-                            myId: userId,
-                            xpRewardInterfaceShown,
-                            stars
-                          })}
+                          transparent
+                          style={{ marginLeft: '1rem' }}
+                          onClick={this.onReplyButtonClick}
                         >
-                          <Icon icon="star" />
-                          <span style={{ marginLeft: '0.7rem' }}>
-                            {determineXpButtonDisabled({
-                              myId: userId,
-                              xpRewardInterfaceShown,
-                              stars
-                            }) || 'Reward'}
-                          </span>
+                          <Icon icon="comment-alt" />
+                          <span style={{ marginLeft: '1rem' }}>Reply</span>
                         </Button>
-                      )}
-                  </div>
-                  <Likers
-                    className="comment__likes"
-                    userId={userId}
-                    likes={comment.likes}
-                    onLinkClick={() =>
-                      this.setState({ userListModalShown: true })
-                    }
-                  />
+                        {canStar &&
+                          userCanEditThis &&
+                          !userIsUploader && (
+                            <Button
+                              love
+                              style={{ marginLeft: '0.7rem' }}
+                              onClick={() =>
+                                this.setState({ xpRewardInterfaceShown: true })
+                              }
+                              disabled={determineXpButtonDisabled({
+                                myId: userId,
+                                xpRewardInterfaceShown,
+                                stars
+                              })}
+                            >
+                              <Icon icon="star" />
+                              <span style={{ marginLeft: '0.7rem' }}>
+                                {determineXpButtonDisabled({
+                                  myId: userId,
+                                  xpRewardInterfaceShown,
+                                  stars
+                                }) || 'Reward'}
+                              </span>
+                            </Button>
+                          )}
+                      </div>
+                      <Likers
+                        className="comment__likes"
+                        userId={userId}
+                        likes={comment.likes}
+                        onLinkClick={() =>
+                          this.setState({ userListModalShown: true })
+                        }
+                      />
+                    </Fragment>
+                  )}
                 </div>
               )}
             </div>
@@ -268,39 +275,45 @@ class Comment extends Component {
                 }}
               />
             )}
-            <RewardStatus
-              noMarginForEditButton
-              onCommentEdit={onRewardCommentEdit}
-              style={{
-                fontSize: '1.4rem',
-                marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
-              }}
-              stars={stars}
-              uploaderName={uploader.username}
-            />
-            <ReplyInputArea
-              innerRef={ref => (this.ReplyInputArea = ref)}
-              style={{
-                marginTop:
-                  stars.length > 0 || comment.likes.length > 0
-                    ? '0.5rem'
-                    : '1rem'
-              }}
-              onSubmit={this.onReplySubmit}
-              numReplies={replies.length}
-              rootCommentId={comment.commentId}
-              targetCommentId={comment.id}
-            />
-            <Replies
-              innerRef={({ ref, replyId }) => (this.Replies[replyId] = ref)}
-              Replies={this.Replies}
-              userId={userId}
-              replies={replies}
-              comment={comment}
-              parent={parent}
-              onLoadMoreReplies={onLoadMoreReplies}
-              onReplySubmit={this.onReplySubmit}
-            />
+            {!isPreview && (
+              <RewardStatus
+                noMarginForEditButton
+                onCommentEdit={onRewardCommentEdit}
+                style={{
+                  fontSize: '1.4rem',
+                  marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
+                }}
+                stars={stars}
+                uploaderName={uploader.username}
+              />
+            )}
+            {!isPreview && (
+              <Fragment>
+                <ReplyInputArea
+                  innerRef={ref => (this.ReplyInputArea = ref)}
+                  style={{
+                    marginTop:
+                      stars.length > 0 || comment.likes.length > 0
+                        ? '0.5rem'
+                        : '1rem'
+                  }}
+                  onSubmit={this.onReplySubmit}
+                  numReplies={replies.length}
+                  rootCommentId={comment.commentId}
+                  targetCommentId={comment.id}
+                />
+                <Replies
+                  innerRef={({ ref, replyId }) => (this.Replies[replyId] = ref)}
+                  Replies={this.Replies}
+                  userId={userId}
+                  replies={replies}
+                  comment={comment}
+                  parent={parent}
+                  onLoadMoreReplies={onLoadMoreReplies}
+                  onReplySubmit={this.onReplySubmit}
+                />
+              </Fragment>
+            )}
           </section>
         </div>
         {userListModalShown && (

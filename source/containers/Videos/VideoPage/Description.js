@@ -83,7 +83,8 @@ class Description extends Component {
         onEdit: false,
         editedTitle: cleanString(this.props.title),
         editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
-        editedDescription: this.props.description
+        editedDescription: this.props.description,
+        xpRewardInterfaceShown: false
       })
     }
   }
