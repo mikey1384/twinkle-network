@@ -83,7 +83,8 @@ class Heading extends Component {
             </small>
           </div>
           {type === 'comment' &&
-            rootType !== 'url' && (
+            rootType !== 'url' &&
+            rootType !== 'user' && (
               <div
                 style={{
                   width: '20%',

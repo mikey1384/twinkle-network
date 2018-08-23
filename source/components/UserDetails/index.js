@@ -83,7 +83,7 @@ export default class UserDetails extends Component {
           {profile.username}
         </Link>
         <p
-          style={{ fontSize: small ? '1.2rem' : '1.5rem', color: Color.gray() }}
+          style={{ fontSize: small ? '1.3rem' : '1.5rem', color: Color.gray() }}
         >{`(${profile.realName})`}</p>
         {userId === profile.id &&
           !unEditable && (
@@ -173,7 +173,8 @@ export default class UserDetails extends Component {
               whiteSpace: 'pre-wrap',
               overflowWrap: 'break-word',
               wordBreak: 'break-word',
-              paddingLeft: '2rem'
+              paddingLeft: '2rem',
+              fontSize: small ? '1.5rem' : '1.7rem'
             }}
           >
             {profileFirstRow && (
