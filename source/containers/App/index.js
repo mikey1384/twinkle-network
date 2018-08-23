@@ -185,13 +185,11 @@ class App extends Component {
       this.props.chatNumUnreads !== prevProps.chatNumUnreads ||
       this.props.numNewNotis !== prevProps.numNewNotis
     ) {
-      let title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
-      document.title = title
+      document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
-      let title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
-      document.title = title
+      document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
     }
   }
 

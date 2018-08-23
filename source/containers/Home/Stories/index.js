@@ -91,13 +91,13 @@ class Stories extends Component {
     setCurrentSection('storyFeeds')
     addEvent(window, 'scroll', this.onScroll)
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
+    resetNumNewPosts()
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true
       clearFeeds()
       this.clearingFeeds = false
       fetchFeeds()
     }
-    resetNumNewPosts()
   }
 
   componentWillUnmount() {
