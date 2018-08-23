@@ -179,7 +179,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.LOAD_NEW:
       return {
         ...state,
-        story: action.data.concat(state.story)
+        storyFeeds: action.data.concat(state.storyFeeds)
       }
     case FEED.DELETE_COMMENT:
       return {
