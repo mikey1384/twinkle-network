@@ -131,7 +131,7 @@ export default class Playlist extends Component {
         )}`
       )
       let loadMoreButtonShown = false
-      if (loadedVideos.length > 10) {
+      if (loadedVideos.length > 20) {
         loadedVideos.pop()
         loadMoreButtonShown = true
       }
