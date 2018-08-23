@@ -198,7 +198,7 @@ class ProfilePanel extends Component {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 position: 'relative',
-                width: 'CALC(100% - 18rem)'
+                width: 'CALC(100% - 19rem)'
               }}
             >
               <UserDetails

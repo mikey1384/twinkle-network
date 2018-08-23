@@ -56,7 +56,13 @@ export default class UserDetails extends Component {
     const { profileFirstRow, profileSecondRow, profileThirdRow } = profile
     const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', ...style }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          ...style
+        }}
+      >
         <Link
           to={isProfilePage ? null : `/users/${profile.username}`}
           style={{
