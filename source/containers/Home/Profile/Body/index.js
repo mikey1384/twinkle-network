@@ -15,6 +15,7 @@ import {
   clearFeeds,
   loadMoreFeedComments,
   loadMoreFeedReplies,
+  setCurrentSection,
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -32,7 +33,6 @@ import FilterBar from 'components/FilterBar'
 class Body extends Component {
   static propTypes = {
     chatMode: PropTypes.bool,
-    feeds: PropTypes.array,
     attachStar: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
     disableAutoscroll: PropTypes.func.isRequired,
@@ -48,6 +48,7 @@ class Body extends Component {
     feedVideoStar: PropTypes.func.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
+    setCurrentSection: PropTypes.func.isRequired,
     showFeedComments: PropTypes.func.isRequired,
     uploadFeedComment: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
@@ -56,7 +57,8 @@ class Body extends Component {
     loadMoreButton: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    myId: PropTypes.number
+    myId: PropTypes.number,
+    profileFeeds: PropTypes.array
   }
 
   state = {
@@ -72,7 +74,8 @@ class Body extends Component {
   scrollHeight = 0
 
   componentDidMount() {
-    const { clearFeeds } = this.props
+    const { clearFeeds, setCurrentSection } = this.props
+    setCurrentSection('profileFeeds')
     this.mounted = true
     addEvent(window, 'scroll', this.onScroll)
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
@@ -101,7 +104,7 @@ class Body extends Component {
         params: { username }
       },
       history,
-      feeds,
+      profileFeeds,
       myId,
       loaded,
       loadMoreButton,
@@ -222,9 +225,9 @@ class Body extends Component {
             <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
           )}
           {loaded &&
-            feeds.length > 0 && (
+            profileFeeds.length > 0 && (
               <div>
-                {feeds.map(feed => {
+                {profileFeeds.map(feed => {
                   return (
                     <ContentPanel
                       key={feed.feedId}
@@ -257,7 +260,7 @@ class Body extends Component {
               </div>
             )}
           {loaded &&
-            feeds.length === 0 && (
+            profileFeeds.length === 0 && (
               <div
                 style={{
                   display: 'flex',
@@ -323,7 +326,7 @@ class Body extends Component {
         params: { username }
       },
       fetchMoreFeeds,
-      feeds
+      profileFeeds
     } = this.props
     const { currentTab, loading } = this.state
 
@@ -331,7 +334,7 @@ class Body extends Component {
       this.setState({ loading: true })
       try {
         await fetchMoreFeeds({
-          shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds'),
+          shownFeeds: queryStringForArray(profileFeeds, 'feedId', 'shownFeeds'),
           filter: currentTab,
           username
         })
@@ -359,7 +362,7 @@ class Body extends Component {
   }
 
   onScroll = () => {
-    let { chatMode, feeds, loadMoreButton } = this.props
+    let { chatMode, profileFeeds, loadMoreButton } = this.props
     if (
       document.getElementById('App').scrollHeight > this.scrollHeight ||
       this.body.scrollTop > this.scrollHeight
@@ -369,7 +372,7 @@ class Body extends Component {
         this.body.scrollTop
       )
     }
-    if (!chatMode && feeds.length > 0) {
+    if (!chatMode && profileFeeds.length > 0) {
       this.setState({
         scrollPosition: {
           desktop: document.getElementById('App').scrollTop,
@@ -401,7 +404,7 @@ class Body extends Component {
 export default connect(
   state => ({
     chatMode: state.ChatReducer.chatMode,
-    feeds: state.FeedReducer.feeds,
+    profileFeeds: state.FeedReducer.profileFeeds,
     loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,
     loadMoreButton: state.FeedReducer.loadMoreButton,
@@ -423,6 +426,7 @@ export default connect(
     feedVideoStar,
     loadMoreFeedComments,
     loadMoreFeedReplies,
+    setCurrentSection,
     showFeedComments,
     uploadFeedComment,
     uploadTargetContentComment

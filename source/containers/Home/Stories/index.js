@@ -17,6 +17,7 @@ import {
   loadMoreFeedComments,
   clearFeeds,
   questionFeedLike,
+  setCurrentSection,
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -40,7 +41,6 @@ class Stories extends Component {
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
-    feeds: PropTypes.array.isRequired,
     feedCommentDelete: PropTypes.func.isRequired,
     feedContentDelete: PropTypes.func.isRequired,
     feedContentEdit: PropTypes.func.isRequired,
@@ -60,6 +60,7 @@ class Stories extends Component {
     resetNumNewPosts: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     showFeedComments: PropTypes.func.isRequired,
+    storyFeeds: PropTypes.array.isRequired,
     username: PropTypes.string,
     uploadFeedComment: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
@@ -84,8 +85,10 @@ class Stories extends Component {
       clearFeeds,
       fetchFeeds,
       loaded,
-      resetNumNewPosts
+      resetNumNewPosts,
+      setCurrentSection
     } = this.props
+    setCurrentSection('storyFeeds')
     addEvent(window, 'scroll', this.onScroll)
     addEvent(document.getElementById('App'), 'scroll', this.onScroll)
     if (history.action === 'PUSH' || !loaded) {
@@ -106,7 +109,7 @@ class Stories extends Component {
     const {
       attachStar,
       contentFeedLike,
-      feeds,
+      storyFeeds,
       feedCommentDelete,
       feedCommentEdit,
       feedContentDelete,
@@ -138,7 +141,7 @@ class Stories extends Component {
           <div style={{ width: '100%' }}>
             {!loaded && <Loading text="Loading Feeds..." />}
             {loaded &&
-              feeds.length === 0 && (
+              storyFeeds.length === 0 && (
                 <div
                   style={{
                     width: '100%',
@@ -156,7 +159,7 @@ class Stories extends Component {
                 </div>
               )}
             {loaded &&
-              feeds.length > 0 && (
+              storyFeeds.length > 0 && (
                 <Fragment>
                   {numNewPosts > 0 && (
                     <Banner
@@ -168,7 +171,7 @@ class Stories extends Component {
                       {numNewPosts > 1 ? 's' : ''}
                     </Banner>
                   )}
-                  {feeds.map(feed => {
+                  {storyFeeds.map(feed => {
                     return (
                       <ContentPanel
                         key={feed.feedId}
@@ -223,13 +226,13 @@ class Stories extends Component {
   }
 
   loadMoreFeeds = async() => {
-    const { feeds, fetchMoreFeeds, selectedFilter } = this.props
+    const { storyFeeds, fetchMoreFeeds, selectedFilter } = this.props
     const { loadingMore } = this.state
     if (!loadingMore) {
       this.setState({ loadingMore: true })
       try {
         await fetchMoreFeeds({
-          shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds'),
+          shownFeeds: queryStringForArray(storyFeeds, 'feedId', 'shownFeeds'),
           filter: selectedFilter
         })
         this.setState({ loadingMore: false })
@@ -240,7 +243,7 @@ class Stories extends Component {
   }
 
   onScroll = () => {
-    const { chatMode, feeds, loadMoreButton } = this.props
+    const { chatMode, storyFeeds, loadMoreButton } = this.props
     if (
       document.getElementById('App').scrollHeight > this.scrollHeight ||
       this.body.scrollTop > this.scrollHeight
@@ -250,7 +253,7 @@ class Stories extends Component {
         this.body.scrollTop
       )
     }
-    if (!chatMode && feeds.length > 0 && this.scrollHeight !== 0) {
+    if (!chatMode && storyFeeds.length > 0 && this.scrollHeight !== 0) {
       this.setState(
         {
           scrollPosition: {
@@ -339,7 +342,7 @@ class Stories extends Component {
 export default connect(
   state => ({
     loadMoreButton: state.FeedReducer.loadMoreButton,
-    feeds: state.FeedReducer.feeds,
+    storyFeeds: state.FeedReducer.storyFeeds,
     loaded: state.FeedReducer.loaded,
     numNewPosts: state.NotiReducer.numNewPosts,
     userId: state.UserReducer.userId,
@@ -366,6 +369,7 @@ export default connect(
     clearFeeds,
     questionFeedLike,
     resetNumNewPosts,
+    setCurrentSection,
     showFeedComments,
     uploadFeedComment,
     uploadTargetContentComment

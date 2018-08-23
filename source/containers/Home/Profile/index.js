@@ -31,7 +31,10 @@ class Profile extends Component {
       profile: { unavailable },
       match
     } = this.props
-    if (prevProps.match.params.username !== match.params.username) {
+    if (
+      prevProps.match.params.username &&
+      prevProps.match.params.username !== match.params.username
+    ) {
       return checkValidUsername(match.params.username)
     }
 

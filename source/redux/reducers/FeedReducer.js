@@ -1,20 +1,23 @@
 import FEED from '../constants/Feed'
 
 const defaultState = {
+  currentSection: 'storyFeeds',
   selectedFilter: 'all',
   scrollLocked: false,
-  feeds: [],
+  storyFeeds: [],
+  profileFeeds: [],
   loaded: false,
   loadMoreButton: false
 }
 
 export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false
+  const { currentSection } = state
   switch (action.type) {
     case FEED.ATTACH_STAR:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           const isComment = action.data.contentType === 'comment'
           const contentMatches =
             action.data.contentType === feed.type &&
@@ -66,14 +69,14 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.CLEAR:
       return {
         ...state,
-        feeds: [],
+        [currentSection]: [],
         loadMoreButton: false,
         loaded: false
       }
     case FEED.LIKE_CONTENT:
       return {
         ...state,
-        feeds: state.feeds.map(feed => ({
+        [currentSection]: state[currentSection].map(feed => ({
           ...feed,
           likes:
             feed.type === action.data.type && feed.id === action.data.contentId
@@ -129,7 +132,7 @@ export default function FeedReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        feeds: state.feeds.concat(action.data),
+        [currentSection]: state[currentSection].concat(action.data),
         selectedFilter: action.filter || state.selectedFilter,
         loadMoreButton,
         loaded: true
@@ -137,7 +140,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.LOAD_DETAIL:
       return {
         ...state,
-        feeds: state.feeds.map(
+        [currentSection]: state[currentSection].map(
           feed =>
             feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
         )
@@ -145,7 +148,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.LOAD_MORE_REPLIES:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           return feed.feedId === action.feedId
             ? {
                 ...feed,
@@ -169,19 +172,19 @@ export default function FeedReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        feeds: state.feeds.concat(action.data),
+        [currentSection]: state[currentSection].concat(action.data),
         selectedFilter: action.filter || state.selectedFilter,
         loadMoreButton
       }
     case FEED.LOAD_NEW:
       return {
         ...state,
-        feeds: action.data.concat(state.feeds)
+        story: action.data.concat(state.story)
       }
     case FEED.DELETE_COMMENT:
       return {
         ...state,
-        feeds: state.feeds.reduce((prev, feed) => {
+        [currentSection]: state[currentSection].reduce((prev, feed) => {
           if (
             feed.type === 'comment' &&
             (feed.contentId === action.commentId ||
@@ -229,7 +232,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.DELETE_CONTENT:
       return {
         ...state,
-        feeds: state.feeds.filter(
+        [currentSection]: state[currentSection].filter(
           feed =>
             feed.type !== action.contentType ||
             feed.contentId !== action.contentId
@@ -238,7 +241,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.EDIT_COMMENT:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           return feed.id === action.commentId && feed.type === 'comment'
             ? {
                 ...feed,
@@ -297,7 +300,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.EDIT_CONTENT:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           const contentMatches =
             feed.type === action.contentType &&
             feed.contentId === action.contentId
@@ -339,7 +342,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.EDIT_REWARD_COMMENT:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           return {
             ...feed,
             stars: feed.stars
@@ -394,7 +397,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.EDIT_QUESTION:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
             feed.type === 'question' && feed.contentId === action.contentId
           let rootContentMatches =
@@ -420,7 +423,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.EDIT_DISCUSSION:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
             feed.type === 'discussion' && feed.contentId === action.contentId
           let discussionIdMatches =
@@ -442,10 +445,15 @@ export default function FeedReducer(state = defaultState, action) {
           }
         })
       }
+    case FEED.SET_SECTION:
+      return {
+        ...state,
+        currentSection: action.section
+      }
     case FEED.STAR_VIDEO:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
             feed.type === 'video' && feed.contentId === action.videoId
           let rootVideoMatches =
@@ -465,7 +473,7 @@ export default function FeedReducer(state = defaultState, action) {
       if (action.data.comments.length === 0) return state
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           return feed.feedId === action.feedId
             ? {
                 ...feed,
@@ -478,7 +486,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.LOAD_MORE_COMMENTS:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           let match = feed.feedId === action.feedId
           return match
             ? {
@@ -495,13 +503,13 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.UPLOAD_CONTENT:
       return {
         ...state,
-        feeds: [action.data].concat(state.feeds)
+        [currentSection]: [action.data].concat(state[currentSection])
       }
     case FEED.UPLOAD_COMMENT:
       const commentId = action.comment.replyId || action.comment.commentId
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           if (
             (feed.type === 'comment' && feed.id === commentId) ||
             (feed.type !== 'comment' &&
@@ -545,7 +553,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.UPLOAD_TC_COMMENT:
       return {
         ...state,
-        feeds: state.feeds.map(feed => {
+        [currentSection]: state[currentSection].map(feed => {
           return {
             ...feed,
             targetObj:

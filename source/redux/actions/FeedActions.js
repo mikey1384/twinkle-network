@@ -125,6 +125,11 @@ export const loadMoreFeedReplies = (data, feedId) => ({
   data
 })
 
+export const setCurrentSection = section => ({
+  type: FEED.SET_SECTION,
+  section
+})
+
 export const showFeedComments = (data, feedId) => ({
   type: FEED.LOAD_COMMENTS,
   data,
