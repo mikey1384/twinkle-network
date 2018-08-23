@@ -26,7 +26,8 @@ export default class UserDetails extends Component {
     unEditable: PropTypes.bool,
     updateStatusMsg: PropTypes.func.isRequired,
     uploadBio: PropTypes.func.isRequired,
-    userId: PropTypes.number
+    userId: PropTypes.number,
+    small: PropTypes.bool
   }
 
   state = {
@@ -40,6 +41,7 @@ export default class UserDetails extends Component {
     const {
       isProfilePage,
       profile,
+      small,
       style = {},
       unEditable,
       userId
@@ -58,7 +60,7 @@ export default class UserDetails extends Component {
         <Link
           to={isProfilePage ? null : `/users/${profile.username}`}
           style={{
-            fontSize: '3.5rem',
+            fontSize: small ? '2.5rem' : '3.5rem',
             fontWeight: 'bold',
             color: Color.darkGray(),
             whiteSpace: 'nowrap',
@@ -80,9 +82,9 @@ export default class UserDetails extends Component {
         >
           {profile.username}
         </Link>
-        <p style={{ fontSize: '1.5rem', color: Color.gray() }}>{`(${
-          profile.realName
-        })`}</p>
+        <p
+          style={{ fontSize: small ? '1rem' : '1.5rem', color: Color.gray() }}
+        >{`(${profile.realName})`}</p>
         {userId === profile.id &&
           !unEditable && (
             <StatusInput

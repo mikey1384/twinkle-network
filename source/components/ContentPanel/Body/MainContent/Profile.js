@@ -37,6 +37,7 @@ function Profile({ profile, userId }) {
           />
         </Link>
         <UserDetails
+          small
           unEditable
           profile={profile}
           style={{ width: 'CALC(100% - 18rem)', marginLeft: '1rem' }}
