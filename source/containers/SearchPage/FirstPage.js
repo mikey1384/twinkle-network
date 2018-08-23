@@ -55,7 +55,7 @@ export default class FirstPage extends Component {
           {['video', 'url', 'question', 'discussion'].map(
             type =>
               filter === type ? (
-                <nav>
+                <nav key={type}>
                   <p>
                     Searching For {(type === 'url' ? 'link' : type) + 's...'}
                   </p>
@@ -83,7 +83,7 @@ export default class FirstPage extends Component {
                   </div>
                 </nav>
               ) : (
-                <a onClick={() => this.changeFilter(type)}>
+                <a key={type} onClick={() => this.changeFilter(type)}>
                   Search {(type === 'url' ? 'link' : type) + 's'}
                 </a>
               )
