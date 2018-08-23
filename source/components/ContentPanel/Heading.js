@@ -74,7 +74,10 @@ class Heading extends Component {
         >
           <div
             style={{
-              width: type === 'comment' && rootType !== 'url' ? '78%' : '100%'
+              width:
+                type === 'comment' && rootType !== 'url' && rootType !== 'user'
+                  ? '78%'
+                  : '100%'
             }}
           >
             <span className="title">{this.renderHeading()} </span>
