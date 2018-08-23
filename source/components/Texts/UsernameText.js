@@ -56,7 +56,7 @@ class UsernameText extends Component {
             </li>
             {user.id !== userId && (
               <li onClick={this.onLinkClick}>
-                <a style={{ color: Color.darkGray() }}>Message</a>
+                <a style={{ color: Color.darkGray() }}>Talk</a>
               </li>
             )}
           </DropdownList>
