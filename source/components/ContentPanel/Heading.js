@@ -80,7 +80,7 @@ class Heading extends Component {
                   : '100%'
             }}
           >
-            <span className="title">{this.renderHeading()} </span>
+            <span className="title">{this.renderHeading()}</span>
             <small className="timestamp">
               {timeStamp ? `(${timeSince(timeStamp)})` : ''}
             </small>
