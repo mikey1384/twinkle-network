@@ -180,6 +180,7 @@ export default class UserDetails extends Component {
               overflowWrap: 'break-word',
               wordBreak: 'break-word',
               paddingLeft: '2rem',
+              lineHeight: 1.6,
               fontSize: small ? '1.5rem' : '1.7rem'
             }}
           >
