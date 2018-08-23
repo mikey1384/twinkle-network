@@ -137,8 +137,7 @@ export default function MainContent({
             />
           )}
         </div>
-        {!isEditing &&
-          type === 'comment' &&
+        {type === 'comment' &&
           contentObj.rootType === 'user' && (
             <Profile profile={contentObj.rootObj} />
           )}
