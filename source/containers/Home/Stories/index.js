@@ -277,14 +277,14 @@ class Stories extends Component {
   }
 
   fetchNewFeeds = async() => {
-    const { feeds = [], resetNumNewPosts, fetchNewFeeds } = this.props
+    const { storyFeeds = [], resetNumNewPosts, fetchNewFeeds } = this.props
     const { loadingMore } = this.state
     if (!loadingMore) {
       this.setState({ loadingMore: true })
       resetNumNewPosts()
       const data = await loadNewFeeds({
-        lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
-        shownFeeds: queryStringForArray(feeds, 'feedId', 'shownFeeds')
+        lastInteraction: storyFeeds[0] ? storyFeeds[0].lastInteraction : 0,
+        shownFeeds: queryStringForArray(storyFeeds, 'feedId', 'shownFeeds')
       })
       if (data) fetchNewFeeds(data)
       this.setState({ loadingMore: false })
