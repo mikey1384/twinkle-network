@@ -341,7 +341,7 @@ class Stories extends Component {
 
 export default connect(
   state => ({
-    loadMoreButton: state.FeedReducer.loadMoreButton,
+    loadMoreButton: state.FeedReducer.storyFeedsLoadMoreButton,
     storyFeeds: state.FeedReducer.storyFeeds,
     loaded: state.FeedReducer.loaded,
     numNewPosts: state.NotiReducer.numNewPosts,

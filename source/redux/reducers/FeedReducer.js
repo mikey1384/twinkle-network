@@ -7,7 +7,8 @@ const defaultState = {
   storyFeeds: [],
   profileFeeds: [],
   loaded: false,
-  loadMoreButton: false
+  profileFeedsLoadMoreButton: false,
+  storyFeedsLoadMoreButton: false
 }
 
 export default function FeedReducer(state = defaultState, action) {
@@ -70,7 +71,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         [currentSection]: [],
-        loadMoreButton: false,
+        [`${currentSection}LoadMoreButton`]: false,
         loaded: false
       }
     case FEED.LIKE_CONTENT:
@@ -134,7 +135,7 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].concat(action.data),
         selectedFilter: action.filter || state.selectedFilter,
-        loadMoreButton,
+        [`${currentSection}LoadMoreButton`]: loadMoreButton,
         loaded: true
       }
     case FEED.LOAD_DETAIL:
@@ -174,7 +175,7 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].concat(action.data),
         selectedFilter: action.filter || state.selectedFilter,
-        loadMoreButton
+        [`${currentSection}LoadMoreButton`]: loadMoreButton
       }
     case FEED.LOAD_NEW:
       return {

@@ -407,7 +407,7 @@ export default connect(
     profileFeeds: state.FeedReducer.profileFeeds,
     loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,
-    loadMoreButton: state.FeedReducer.loadMoreButton,
+    loadMoreButton: state.FeedReducer.profileFeedsLoadMoreButton,
     homeComponentConnected: state.FeedReducer.homeComponentConnected
   }),
   {
