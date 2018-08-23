@@ -60,7 +60,7 @@ export default class UserDetails extends Component {
         <Link
           to={isProfilePage ? null : `/users/${profile.username}`}
           style={{
-            fontSize: small ? '2.5rem' : '3.5rem',
+            fontSize: small ? '3rem' : '3.5rem',
             fontWeight: 'bold',
             color: Color.darkGray(),
             whiteSpace: 'nowrap',
@@ -83,7 +83,7 @@ export default class UserDetails extends Component {
           {profile.username}
         </Link>
         <p
-          style={{ fontSize: small ? '1rem' : '1.5rem', color: Color.gray() }}
+          style={{ fontSize: small ? '1.2rem' : '1.5rem', color: Color.gray() }}
         >{`(${profile.realName})`}</p>
         {userId === profile.id &&
           !unEditable && (
