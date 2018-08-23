@@ -31,8 +31,12 @@ class Results extends Component {
   timer = null
 
   componentDidMount() {
-    const { filter, searchText } = this.props
-    if (!stringIsEmpty(searchText) && searchText.length > 1) {
+    const { filter, results, searchText } = this.props
+    if (
+      !stringIsEmpty(searchText) &&
+      searchText.length > 1 &&
+      results.length === 0
+    ) {
       this.setState({ searching: true })
       this.timer = setTimeout(
         () => this.searchContent({ filter, searchText }),
