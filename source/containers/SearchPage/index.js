@@ -11,7 +11,8 @@ import { Color, mobileMaxWidth } from 'constants/css'
 import {
   changeFilter,
   closeSearch,
-  recordSearchScroll
+  recordSearchScroll,
+  setResults
 } from 'redux/actions/SearchActions'
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions'
 import { connect } from 'react-redux'
@@ -29,6 +30,7 @@ class SearchPage extends Component {
     searchScrollPosition: PropTypes.number,
     searchText: PropTypes.string.isRequired,
     selectedFilter: PropTypes.string.isRequired,
+    setResults: PropTypes.func.isRequired,
     userId: PropTypes.number
   }
 
@@ -43,6 +45,17 @@ class SearchPage extends Component {
     setTimeout(() => {
       this.SearchPage.scrollTop = searchScrollPosition
     }, 10)
+  }
+
+  componentDidUpdate(prevProps) {
+    const { searchText, setResults } = this.props
+    if (
+      !stringIsEmpty(prevProps.searchText) &&
+      (stringIsEmpty(searchText) || searchText.length < 2)
+    ) {
+      setResults({ results: [], loadMoreButton: false })
+      return this.setState({ searching: false })
+    }
   }
 
   componentWillUnmount() {
@@ -161,6 +174,7 @@ export default connect(
     changeFilter: filter => dispatch(changeFilter(filter)),
     closeSearch: () => dispatch(closeSearch()),
     recordSearchScroll: scrollTop => dispatch(recordSearchScroll(scrollTop)),
+    setResults: data => dispatch(setResults(data)),
     updateDefaultSearchFilter: filter =>
       dispatch(updateDefaultSearchFilter(filter))
   })

@@ -46,13 +46,9 @@ class Results extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { filter, searchText, setResults } = this.props
+    const { filter, searchText } = this.props
     if (prevProps.searchText !== searchText || prevProps.filter !== filter) {
       clearTimeout(this.timer)
-      if (stringIsEmpty(searchText) || searchText.length < 2) {
-        setResults({ results: [], loadMoreButton: false })
-        return this.setState({ searching: false })
-      }
       this.setState({ searching: true })
       this.timer = setTimeout(
         () => this.searchContent({ filter, searchText }),
