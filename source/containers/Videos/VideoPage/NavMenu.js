@@ -166,7 +166,17 @@ class NavMenu extends Component {
                     wordBreak: 'break-word'
                   }}
                 >
-                  <p>{cleanString(playlistTitle)}</p>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <Link
+                      style={{
+                        fontSize: '2.5rem',
+                        textDecoration: 'none'
+                      }}
+                      to={`/playlists/${playlistId}`}
+                    >
+                      {cleanString(playlistTitle)}
+                    </Link>
+                  </div>
                   {this.renderVideos({
                     videos: playlistVideos,
                     arePlaylistVideos: true

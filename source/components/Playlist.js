@@ -32,7 +32,7 @@ export default class Playlist extends Component {
         data: { videos, title }
       } = await request.get(`${API_URL}/playlist?playlistId=${playlistId}`)
       let loadMoreButtonShown = false
-      if (videos.length > 10) {
+      if (videos.length > 20) {
         videos.pop()
         loadMoreButtonShown = true
       }

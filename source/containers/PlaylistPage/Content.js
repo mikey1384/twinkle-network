@@ -27,8 +27,10 @@ export default class Content extends Component {
           padding: '1rem'
         }}
       >
-        {title && <h1>{title}</h1>}
-        <div style={{ marginTop: '2rem' }}>
+        {title && (
+          <p style={{ fontSize: '3rem', fontWeight: 'bold' }}>{title}</p>
+        )}
+        <div style={{ marginTop: '1rem' }}>
           <Playlist
             playlistId={Number(contentId)}
             onLoad={({ exists, title }) =>
