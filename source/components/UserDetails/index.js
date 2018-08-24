@@ -24,8 +24,8 @@ export default class UserDetails extends Component {
     profile: PropTypes.object.isRequired,
     style: PropTypes.object,
     unEditable: PropTypes.bool,
-    updateStatusMsg: PropTypes.func.isRequired,
-    uploadBio: PropTypes.func.isRequired,
+    updateStatusMsg: PropTypes.func,
+    uploadBio: PropTypes.func,
     userId: PropTypes.number,
     small: PropTypes.bool
   }
@@ -280,14 +280,16 @@ export default class UserDetails extends Component {
       auth()
     )
     this.setState({ editedStatusColor: '', editedStatusMsg: '' })
-    updateStatusMsg(data)
+    if (typeof updateStatusMsg === 'function') updateStatusMsg(data)
   }
 
   uploadBio = async params => {
     const { profile, uploadBio } = this.props
-    await uploadBio({ ...params, profileId: profile.id })
-    this.setState({
-      bioEditModalShown: false
-    })
+    if (typeof uploadBio === 'function') {
+      await uploadBio({ ...params, profileId: profile.id })
+      this.setState({
+        bioEditModalShown: false
+      })
+    }
   }
 }

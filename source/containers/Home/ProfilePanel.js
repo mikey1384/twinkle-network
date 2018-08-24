@@ -557,10 +557,12 @@ class ProfilePanel extends Component {
       >
         <Icon icon="comment-alt" />
         <span style={{ marginLeft: '0.7rem' }}>
+          {id === userId ? '' : 'Leave '}
           Message
-          {Number(numMessages) > 0 && !commentsShown
-            ? `${numMessages > 1 ? 's' : ''} (${numMessages})`
+          {id === userId && Number(numMessages) > 0 && !commentsShown
+            ? `${numMessages > 1 ? 's' : ''}`
             : ''}
+          {Number(numMessages) > 0 && !commentsShown ? ` (${numMessages})` : ''}
         </span>
       </Button>
     )

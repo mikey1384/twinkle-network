@@ -41,8 +41,6 @@ function Profile({ profile, userId }) {
           unEditable
           profile={profile}
           style={{ width: 'CALC(100% - 18rem)', marginLeft: '1rem' }}
-          updateStatusMsg={() => console.log('update status')}
-          uploadBio={() => console.log('bio upload')}
           userId={userId}
         />
       </div>

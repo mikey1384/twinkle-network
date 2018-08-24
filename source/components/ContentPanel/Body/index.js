@@ -401,6 +401,7 @@ class Body extends Component {
                   ? 'answer'
                   : 'comment'
             }
+            numPreviews={1}
             onAttachStar={onAttachStar}
             onCommentSubmit={onCommentSubmit}
             onDelete={onDeleteComment}
