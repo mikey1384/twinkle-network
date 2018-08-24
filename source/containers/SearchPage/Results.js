@@ -57,6 +57,10 @@ class Results extends Component {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timer)
+  }
+
   render() {
     const { loadingMore, searching } = this.state
     const {

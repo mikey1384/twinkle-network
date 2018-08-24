@@ -51,10 +51,10 @@ class SearchPage extends Component {
     const { searchText, setResults } = this.props
     if (
       !stringIsEmpty(prevProps.searchText) &&
+      prevProps.searchText.length >= 2 &&
       (stringIsEmpty(searchText) || searchText.length < 2)
     ) {
       setResults({ results: [], loadMoreButton: false })
-      return this.setState({ searching: false })
     }
   }
 
