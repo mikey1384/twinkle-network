@@ -173,7 +173,7 @@ export default function Button({
               ? '#fff'
               : snow
                 ? Color.black(0.7)
-                : buttonColor(transparent ? 1 : textOpacity)[colorKey]};
+                : buttonColor(textOpacity)[colorKey]};
             border: 1px solid
               ${snow
                 ? Color.whiteGray()
