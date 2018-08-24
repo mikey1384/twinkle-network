@@ -275,7 +275,7 @@ class MessagesContainer extends Component {
     return messages.map((message, index) => {
       let { isNotification } = message
       let messageStyle = isNotification ? { color: Color.gray() } : null
-      return (
+      return message.deleted ? null : (
         <Message
           key={index}
           onDelete={messageId =>

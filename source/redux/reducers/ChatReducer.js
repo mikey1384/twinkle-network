@@ -135,8 +135,11 @@ export default function ChatReducer(state = defaultState, action) {
     case CHAT.DELETE_MESSAGE:
       return {
         ...state,
-        messages: state.messages.filter(
-          message => message.id !== action.messageId
+        messages: state.messages.map(
+          message =>
+            message.id === action.messageId
+              ? { ...message, deleted: true }
+              : message
         )
       }
     case CHAT.EDIT_MESSAGE:
