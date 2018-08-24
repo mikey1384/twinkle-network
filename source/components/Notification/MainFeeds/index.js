@@ -313,7 +313,7 @@ function renderNotificationMessage(notification, myId) {
         : rootType === 'user'
           ? 'profile'
           : rootType
-  }: `
+  }${rootType === 'user' ? '' : ': '}`
   let contentTitle = isReplyNotification
     ? commentContent
     : (isDiscussionAnswerNotification ? discussionTitle : rootTitle) || ''
@@ -338,16 +338,18 @@ function renderNotificationMessage(notification, myId) {
       />
       &nbsp;
       {action} {target}
-      <ContentLink
-        content={content}
-        type={
-          isReplyNotification
-            ? 'comment'
-            : type === 'discussion' || isDiscussionAnswerNotification
-              ? 'discussion'
-              : rootType
-        }
-      />
+      {rootType !== 'user' && (
+        <ContentLink
+          content={content}
+          type={
+            isReplyNotification
+              ? 'comment'
+              : type === 'discussion' || isDiscussionAnswerNotification
+                ? 'discussion'
+                : rootType
+          }
+        />
+      )}
     </div>
   )
 
