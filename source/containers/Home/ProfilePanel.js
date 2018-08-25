@@ -28,6 +28,7 @@ import UserDetails from 'components/UserDetails'
 
 class ProfilePanel extends Component {
   static propTypes = {
+    autoExpandComments: PropTypes.bool,
     expandable: PropTypes.bool,
     history: PropTypes.object,
     isCreator: PropTypes.bool,
@@ -55,14 +56,19 @@ class ProfilePanel extends Component {
   }
 
   async componentDidMount() {
-    const { profile } = this.props
+    const { autoExpandComments, profile } = this.props
     try {
-      const { comments } = await loadComments({
+      const { comments, loadMoreButton } = await loadComments({
         id: profile.id,
         type: 'user',
-        limit: 1
+        limit: autoExpandComments ? 3 : 1
       })
-      this.setState({ comments })
+      this.setState({
+        comments,
+        ...(autoExpandComments
+          ? { commentsLoadMoreButton: loadMoreButton }
+          : {})
+      })
     } catch (error) {
       console.error(error)
     }
@@ -97,6 +103,7 @@ class ProfilePanel extends Component {
       processing
     } = this.state
     const {
+      autoExpandComments,
       history,
       profile,
       userId,
@@ -232,6 +239,7 @@ class ProfilePanel extends Component {
                     </Button>
                     {profile.id === userId &&
                       comments.length > 0 &&
+                      !isProfilePage &&
                       this.renderMessagesButton({
                         style: { marginLeft: '0.5rem' }
                       })}
@@ -315,6 +323,7 @@ class ProfilePanel extends Component {
             )}
           </div>
           <Comments
+            autoExpand={autoExpandComments}
             autoFocus
             comments={comments}
             commentsLoadLimit={20}
@@ -325,7 +334,7 @@ class ProfilePanel extends Component {
             loadMoreButton={commentsLoadMoreButton}
             loadMoreComments={this.onLoadMoreComments}
             noInput={profile.id === userId}
-            numPreviews={3}
+            numPreviews={1}
             onAttachStar={this.onAttachStar}
             onCommentSubmit={this.onCommentSubmit}
             onDelete={this.onDeleteComment}
