@@ -78,7 +78,7 @@ class ProfilePanel extends Component {
         const { comments, loadMoreButton } = await loadComments({
           id: profile.id,
           type: 'user',
-          limit: 1
+          limit: isProfilePage ? 3 : 1
         })
         this.setState({
           comments,
