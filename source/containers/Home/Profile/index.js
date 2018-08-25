@@ -59,8 +59,8 @@ class Profile extends Component {
         {id && (
           <Fragment>
             <ProfilePanel
-              key={'profilePage' + userId}
               {...this.props}
+              key={'profilePage' + userId}
               expandable
               isProfilePage
             />
