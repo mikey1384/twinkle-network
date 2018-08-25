@@ -58,7 +58,12 @@ class Profile extends Component {
         {!id && <Loading text="Loading Profile..." />}
         {id && (
           <Fragment>
-            <ProfilePanel {...this.props} expandable isProfilePage />
+            <ProfilePanel
+              key={'profilePage' + userId}
+              {...this.props}
+              expandable
+              isProfilePage
+            />
             <Body {...this.props} />
           </Fragment>
         )}
