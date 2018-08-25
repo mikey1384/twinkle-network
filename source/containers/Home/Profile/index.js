@@ -58,12 +58,7 @@ class Profile extends Component {
         {!id && <Loading text="Loading Profile..." />}
         {id && (
           <Fragment>
-            <ProfilePanel
-              {...this.props}
-              autoExpandComments
-              expandable
-              isProfilePage
-            />
+            <ProfilePanel {...this.props} expandable isProfilePage />
             <Body {...this.props} />
           </Fragment>
         )}

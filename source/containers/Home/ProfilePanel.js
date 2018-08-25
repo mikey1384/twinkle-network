@@ -28,7 +28,6 @@ import UserDetails from 'components/UserDetails'
 
 class ProfilePanel extends Component {
   static propTypes = {
-    autoExpandComments: PropTypes.bool,
     expandable: PropTypes.bool,
     history: PropTypes.object,
     isCreator: PropTypes.bool,
@@ -56,18 +55,16 @@ class ProfilePanel extends Component {
   }
 
   async componentDidMount() {
-    const { autoExpandComments, profile } = this.props
+    const { isProfilePage, profile } = this.props
     try {
       const { comments, loadMoreButton } = await loadComments({
         id: profile.id,
         type: 'user',
-        limit: autoExpandComments ? 3 : 1
+        limit: isProfilePage ? 3 : 1
       })
       this.setState({
         comments,
-        ...(autoExpandComments
-          ? { commentsLoadMoreButton: loadMoreButton }
-          : {})
+        ...(isProfilePage ? { commentsLoadMoreButton: loadMoreButton } : {})
       })
     } catch (error) {
       console.error(error)
@@ -103,7 +100,6 @@ class ProfilePanel extends Component {
       processing
     } = this.state
     const {
-      autoExpandComments,
       history,
       profile,
       userId,
@@ -323,7 +319,7 @@ class ProfilePanel extends Component {
             )}
           </div>
           <Comments
-            autoExpand={autoExpandComments}
+            autoExpand={isProfilePage}
             autoFocus
             comments={comments}
             commentsLoadLimit={20}
