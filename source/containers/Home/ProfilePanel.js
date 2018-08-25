@@ -467,17 +467,19 @@ class ProfilePanel extends Component {
   }
 
   onExpandComments = async() => {
-    const { profile, userId } = this.props
-    const { comments, loadMoreButton } = await loadComments({
-      id: profile.id,
-      type: 'user',
-      limit: 5
-    })
-    this.setState({
-      comments,
-      commentsShown: true,
-      commentsLoadMoreButton: loadMoreButton
-    })
+    const { commentsShown, isProfilePage, profile, userId } = this.props
+    if (!commentsShown && !isProfilePage) {
+      const { comments, loadMoreButton } = await loadComments({
+        id: profile.id,
+        type: 'user',
+        limit: 5
+      })
+      this.setState({
+        comments,
+        commentsShown: true,
+        commentsLoadMoreButton: loadMoreButton
+      })
+    }
     if (profile.id !== userId) this.CommentInputArea.focus()
   }
 
@@ -549,6 +551,7 @@ class ProfilePanel extends Component {
 
   renderMessagesButton = (props = {}) => {
     const {
+      isProfilePage,
       profile: { id, numMessages },
       userId
     } = this.props
@@ -567,7 +570,9 @@ class ProfilePanel extends Component {
           {id === userId && Number(numMessages) > 0 && !commentsShown
             ? `${numMessages > 1 ? 's' : ''}`
             : ''}
-          {Number(numMessages) > 0 && !commentsShown ? ` (${numMessages})` : ''}
+          {Number(numMessages) > 0 && !commentsShown && !isProfilePage
+            ? ` (${numMessages})`
+            : ''}
         </span>
       </Button>
     )
