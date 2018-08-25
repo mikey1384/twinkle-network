@@ -50,6 +50,7 @@ class Profile extends Component {
 
   render() {
     const {
+      match,
       profile: { unavailable, id },
       userId
     } = this.props
@@ -60,7 +61,7 @@ class Profile extends Component {
           <Fragment>
             <ProfilePanel
               {...this.props}
-              key={'profilePage' + userId}
+              key={'profilePage' + match.params.username}
               expandable
               isProfilePage
             />
