@@ -227,16 +227,12 @@ class Header extends Component {
             />
             <Fragment>
               <HeaderNav
-                className={`${chatLoading ? 'hidden' : 'mobile'} ${
-                  searchMode ? 'desktop' : ''
-                }`}
+                className={`${chatLoading ? 'hidden' : 'mobile'}`}
                 alert={numNewNotis > 0 || totalRewardAmount > 0}
                 alertColor={Color.pink()}
                 imgLabel="user"
                 onClick={onMobileMenuOpen}
-              >
-                Menu
-              </HeaderNav>
+              />
               <div
                 className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
                 style={searchMode ? { width: 'auto' } : {}}

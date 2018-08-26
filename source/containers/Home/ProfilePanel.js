@@ -25,6 +25,7 @@ import Icon from 'components/Icon'
 import Comments from 'components/Comments'
 import Link from 'components/Link'
 import UserDetails from 'components/UserDetails'
+import { socket } from 'constants/io'
 
 class ProfilePanel extends Component {
   static propTypes = {
@@ -120,8 +121,6 @@ class ProfilePanel extends Component {
       <div
         key={profile.id}
         className={css`
-          display: flex;
-          flex-direction: column;
           width: 100%;
           margin-bottom: 1rem;
           line-height: 2.3rem;
@@ -132,6 +131,8 @@ class ProfilePanel extends Component {
         <div
           className={css`
             background: #fff;
+            display: flex;
+            flex-direction: column;
             padding: 1rem;
             border: #e7e7e7 1px solid;
             border-top-left-radius: ${borderRadius};
@@ -399,6 +400,7 @@ class ProfilePanel extends Component {
   }
 
   onCommentSubmit = comment => {
+    socket.emit('new_upload')
     this.setState(state => ({
       comments: [comment].concat(state.comments)
     }))

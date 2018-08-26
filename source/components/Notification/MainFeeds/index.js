@@ -313,7 +313,7 @@ function renderNotificationMessage(notification, myId) {
         : rootType === 'user'
           ? 'profile'
           : rootType
-  }${rootType === 'user' ? '' : ': '}`
+  }${rootType === 'user' && !isReplyNotification ? '' : ': '}`
   let contentTitle = isReplyNotification
     ? commentContent
     : (isDiscussionAnswerNotification ? discussionTitle : rootTitle) || ''
@@ -338,7 +338,7 @@ function renderNotificationMessage(notification, myId) {
       />
       &nbsp;
       {action} {target}
-      {rootType !== 'user' && (
+      {!(rootType === 'user' && !isReplyNotification) && (
         <ContentLink
           content={content}
           type={
