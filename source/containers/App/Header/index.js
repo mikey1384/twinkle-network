@@ -227,7 +227,7 @@ class Header extends Component {
             />
             <Fragment>
               <HeaderNav
-                className={`${chatLoading ? 'hidden' : 'mobile'}`}
+                className={`${(searchMode || chatLoading) ? 'hidden' : 'mobile'}`}
                 alert={numNewNotis > 0 || totalRewardAmount > 0}
                 alertColor={Color.pink()}
                 imgLabel="user"
