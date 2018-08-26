@@ -227,7 +227,7 @@ class Header extends Component {
             />
             <Fragment>
               <HeaderNav
-                className={`${(searchMode || chatLoading) ? 'hidden' : 'mobile'}`}
+                className={`${searchMode || chatLoading ? 'hidden' : 'mobile'}`}
                 alert={numNewNotis > 0 || totalRewardAmount > 0}
                 alertColor={Color.pink()}
                 imgLabel="user"
@@ -235,7 +235,11 @@ class Header extends Component {
               />
               <div
                 className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
-                style={searchMode ? { width: 'auto' } : {}}
+                style={{
+                  display: 'flex',
+                  justifyContent: searchMode ? 'flex-end' : 'center',
+                  ...(searchMode ? { width: '10%' } : {})
+                }}
                 onClick={searchMode ? closeSearch : initSearch}
               >
                 <a
@@ -279,23 +283,38 @@ class Header extends Component {
             </Fragment>
             <div
               className={!searchMode || chatLoading ? 'desktop' : ''}
-              style={{ display: 'flex', width: searchMode ? '60%' : '65%' }}
+              style={{
+                display: 'flex',
+                marginLeft: '1rem',
+                marginRight: '1rem',
+                width: '60%'
+              }}
             >
               <SearchBox
                 innerRef={searchBoxRef}
                 onFocus={initSearch}
-                style={{ marginLeft: '1rem', width: '100%' }}
+                style={{
+                  width: '100%'
+                }}
               />
             </div>
             <div
               className={`header-nav ${
                 chatLoading || chatMode ? 'hidden' : 'mobile'
               }`}
-              style={searchMode ? { width: 'auto' } : {}}
+              style={{
+                textAlign: 'center',
+                ...(searchMode ? { width: 'auto' } : {})
+              }}
               onClick={onChatButtonClick}
             >
               <a
-                style={{ color: numChatUnreads > 0 && Color.pink() }}
+                style={{
+                  width: '15%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  color: numChatUnreads > 0 && Color.pink()
+                }}
                 className="icon mobile-no-hover"
               >
                 <Icon icon="comments" />
@@ -304,14 +323,15 @@ class Header extends Component {
             <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
               Loading...
             </div>
-            <ChatButton
-              className="desktop"
-              style={{ marginLeft: '1rem' }}
-              onClick={onChatButtonClick}
-              chatMode={chatMode}
-              loading={chatLoading}
-              numUnreads={numChatUnreads}
-            />
+            <div style={{ marginLeft: '1rem' }}>
+              <ChatButton
+                className="desktop"
+                onClick={onChatButtonClick}
+                chatMode={chatMode}
+                loading={chatLoading}
+                numUnreads={numChatUnreads}
+              />
+            </div>
             <AccountMenu
               className="desktop"
               style={{ marginLeft: '0.5rem' }}
