@@ -532,6 +532,7 @@ class ProfilePanel extends Component {
   }
 
   onReplySubmit = data => {
+    socket.emit('new_upload')
     this.setState(state => ({
       comments: state.comments.map(comment => {
         let match = false
