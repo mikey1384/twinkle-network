@@ -303,16 +303,14 @@ class Header extends Component {
                 chatLoading || chatMode ? 'hidden' : 'mobile'
               }`}
               style={{
-                textAlign: 'center',
-                ...(searchMode ? { width: 'auto' } : {})
+                display: 'flex',
+                justifyContent: searchMode ? 'flex-end' : 'center',
+                ...(searchMode ? { width: '10%' } : {})
               }}
               onClick={onChatButtonClick}
             >
               <a
                 style={{
-                  width: '15%',
-                  display: 'flex',
-                  justifyContent: 'center',
                   color: numChatUnreads > 0 && Color.pink()
                 }}
                 className="icon mobile-no-hover"
