@@ -25,9 +25,15 @@ export default function HomeMenuItems({ history, location, style = {} }) {
             onClick={() => history.push('/')}
           >
             <a href="/" onClick={e => e.preventDefault()}>
-              <span className="icon">
+              <div
+                style={{
+                  width: '3rem',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
                 <Icon icon="bolt" size="1x" />
-              </span>
+              </div>
               <span className="homemenu__label">Stories</span>
             </a>
           </nav>
@@ -42,9 +48,15 @@ export default function HomeMenuItems({ history, location, style = {} }) {
             onClick={() => history.push('/users')}
           >
             <a href="/users" onClick={e => e.preventDefault()}>
-              <span className="icon">
+              <div
+                style={{
+                  width: '3rem',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
                 <Icon icon="users" size="1x" />
-              </span>
+              </div>
               <span className="homemenu__label">People</span>
             </a>
           </nav>

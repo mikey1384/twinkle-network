@@ -239,11 +239,7 @@ class Header extends Component {
                 onClick={searchMode ? closeSearch : initSearch}
                 style={{ width: searchMode && '10%' }}
               >
-                <a
-                  className={`icon mobile-no-hover ${
-                    searchMode ? 'active' : ''
-                  }`}
-                >
+                <a className={`mobile-no-hover ${searchMode ? 'active' : ''}`}>
                   {searchMode ? <Icon icon="times" /> : <Icon icon="search" />}
                 </a>
               </div>
@@ -308,7 +304,7 @@ class Header extends Component {
                 style={{
                   color: numChatUnreads > 0 && Color.pink()
                 }}
-                className="icon mobile-no-hover"
+                className="mobile-no-hover"
               >
                 <Icon icon="comments" />
               </a>

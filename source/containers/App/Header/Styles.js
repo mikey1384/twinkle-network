@@ -29,9 +29,6 @@ export const container = css`
     a.active {
       font-weight: bold;
       color: ${Color.black()};
-      svg.no-hover {
-        color: ${Color.menuGray()};
-      }
     }
     &:hover {
       > a {
@@ -53,6 +50,9 @@ export const container = css`
       &:hover {
         a {
           span {
+            color: ${Color.menuGray()};
+          }
+          > svg.mobile-no-hover {
             color: ${Color.menuGray()};
           }
         }

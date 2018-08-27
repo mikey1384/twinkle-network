@@ -19,6 +19,7 @@ export const container = css`
       text-align: center;
       width: 100%;
       display: flex;
+      align-items: center;
       justify-content: flex-start;
       color: #7c7c7c;
       text-decoration: none;
