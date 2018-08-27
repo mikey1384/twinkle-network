@@ -272,9 +272,13 @@ class Header extends Component {
               <HeaderNav
                 to="/links"
                 onClick={closeSearch}
-                className={chatLoading || searchMode ? 'desktop' : ''}
+                className={`${chatLoading || searchMode ? 'desktop' : ''} ${css`
+                  @media (max-width: ${desktopMinWidth}) {
+                    margin-right: 1rem;
+                    margin-left: 2rem;
+                  }
+                `}`}
                 imgLabel="book"
-                style={{ marginLeft: '2rem', marginRight: '1rem' }}
               >
                 Read
               </HeaderNav>
