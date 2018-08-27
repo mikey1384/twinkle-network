@@ -29,6 +29,9 @@ export const container = css`
     a.active {
       font-weight: bold;
       color: ${Color.black()};
+      svg.no-hover {
+        color: ${Color.menuGray()};
+      }
     }
     &:hover {
       > a {

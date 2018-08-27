@@ -100,6 +100,7 @@ export default function Button({
         cursor: ${disabled ? 'default' : 'pointer'};
         display: flex;
         align-items: center;
+        justify-content: center;
         font-family: sans-serif, verdana;
         text-transform: uppercase;
         font-weight: bold;
