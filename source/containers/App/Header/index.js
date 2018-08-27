@@ -273,7 +273,7 @@ class Header extends Component {
                 to="/links"
                 onClick={closeSearch}
                 className={`${chatLoading || searchMode ? 'desktop' : ''} ${css`
-                  @media (max-width: ${desktopMinWidth}) {
+                  @media (min-width: ${desktopMinWidth}) {
                     margin-right: 1rem;
                     margin-left: 2rem;
                   }
@@ -331,7 +331,7 @@ class Header extends Component {
             </div>
             <AccountMenu
               className={`desktop ${css`
-                @media (max-width: ${desktopMinWidth}) {
+                @media (min-width: ${desktopMinWidth}) {
                   margin-left: 0.5rem;
                 }
               `}`}
