@@ -36,25 +36,31 @@ export default class HeaderNav extends Component {
         path={to}
         exact={isHome && !isUsername}
         children={({ match }) => (
-          <div className={`${className} header-nav`}>
+          <div
+            className={`${className} header-nav`}
+            style={{ display: 'flex', justifyContent: 'center' }}
+          >
             {to ? (
               <Link
-                className={`${to && match ? 'active ' : ''} ${
+                className={`icon ${to && match ? 'active ' : ''} ${
                   alert ? this.styles().alert : ''
                 }`}
-                style={{ display: 'flex' }}
                 to={to}
                 onClick={onClick}
               >
-                <span className="icon">
-                  <Icon icon={isHome ? 'home' : imgLabel} />
+                <Icon icon={isHome ? 'home' : imgLabel} />
+                <span className="nav-label" style={{ marginLeft: '0.7rem' }}>
+                  {children}
                 </span>
-                <span className="nav-label">{children}</span>
               </Link>
             ) : (
               <a
                 className={active ? 'active ' : ''}
-                style={{ display: 'flex', cursor: 'pointer' }}
+                style={{
+                  display: 'flex',
+                  cursor: 'pointer',
+                  justifyContent: 'center'
+                }}
                 onClick={onClick}
               >
                 <div>
@@ -67,6 +73,7 @@ export default class HeaderNav extends Component {
                 </div>
                 <span
                   className={`nav-label ${alert ? this.styles().alert : ''}`}
+                  style={{ marginLeft: '0.7rem' }}
                 >
                   {children}
                 </span>

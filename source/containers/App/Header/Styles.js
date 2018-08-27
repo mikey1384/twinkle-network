@@ -25,11 +25,6 @@ export const container = css`
       color: ${Color.menuGray()};
       align-items: center;
       line-height: 1;
-      .icon {
-        line-height: 1.7rem;
-        margin-right: 0.7rem;
-        display: flex;
-      }
     }
     a.active {
       font-weight: bold;
@@ -71,10 +66,10 @@ export const container = css`
   }
 
   > .main-tabs {
-    width: 80%;
-    padding: 0 2rem;
+    width: 100%;
+    padding: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     @media (max-width: ${mobileMaxWidth}) {
       padding: 0;

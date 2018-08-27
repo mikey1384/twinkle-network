@@ -43,7 +43,7 @@ class MainFeeds extends Component {
           PropTypes.number,
           PropTypes.string
         ]),
-        rootTitle: PropTypes.string.isRequired,
+        rootTitle: PropTypes.string,
         rootType: PropTypes.string.isRequired,
         rootId: PropTypes.number.isRequired,
         timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

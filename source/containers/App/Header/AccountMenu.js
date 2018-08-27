@@ -24,7 +24,6 @@ function AccountMenu({
 }) {
   return loggedIn ? (
     <DropdownButton
-      {...props}
       className={className}
       buttonStyle={buttonStyle}
       transparent

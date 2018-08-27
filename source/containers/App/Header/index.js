@@ -24,7 +24,8 @@ import Icon from 'components/Icon'
 import { GENERAL_CHAT_ID } from 'constants/database'
 import SearchBox from '../SearchBox'
 import HeaderNav from './HeaderNav'
-import { Color } from 'constants/css'
+import { css } from 'emotion'
+import { Color, desktopMinWidth } from 'constants/css'
 import { socket } from 'constants/io'
 import { recordUserAction } from 'helpers/userDataHelpers'
 import { container, logo } from './Styles'
@@ -235,12 +236,8 @@ class Header extends Component {
               />
               <div
                 className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
-                style={{
-                  display: 'flex',
-                  justifyContent: searchMode ? 'flex-end' : 'center',
-                  ...(searchMode ? { width: '10%' } : {})
-                }}
                 onClick={searchMode ? closeSearch : initSearch}
+                style={{ width: searchMode && '10%' }}
               >
                 <a
                   className={`icon mobile-no-hover ${
@@ -285,6 +282,7 @@ class Header extends Component {
               className={!searchMode || chatLoading ? 'desktop' : ''}
               style={{
                 display: 'flex',
+                justifyContent: 'center',
                 marginLeft: '1rem',
                 marginRight: '1rem',
                 width: '60%'
@@ -294,7 +292,7 @@ class Header extends Component {
                 innerRef={searchBoxRef}
                 onFocus={initSearch}
                 style={{
-                  width: '100%'
+                  width: '95%'
                 }}
               />
             </div>
@@ -302,11 +300,7 @@ class Header extends Component {
               className={`header-nav ${
                 chatLoading || chatMode ? 'hidden' : 'mobile'
               }`}
-              style={{
-                display: 'flex',
-                justifyContent: searchMode ? 'flex-end' : 'center',
-                ...(searchMode ? { width: '10%' } : {})
-              }}
+              style={{ width: searchMode && '10%' }}
               onClick={onChatButtonClick}
             >
               <a
@@ -321,7 +315,7 @@ class Header extends Component {
             <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
               Loading...
             </div>
-            <div style={{ marginLeft: '1rem' }}>
+            <div>
               <ChatButton
                 className="desktop"
                 onClick={onChatButtonClick}
@@ -331,8 +325,11 @@ class Header extends Component {
               />
             </div>
             <AccountMenu
-              className="desktop"
-              style={{ marginLeft: '0.5rem' }}
+              className={`desktop ${css`
+                @media (max-width: ${desktopMinWidth}) {
+                  margin-left: 0.5rem;
+                }
+              `}`}
               loggedIn={loggedIn}
               logout={this.onLogout}
               title={username}

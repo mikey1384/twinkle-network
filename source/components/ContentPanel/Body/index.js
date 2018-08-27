@@ -357,7 +357,8 @@ class Body extends Component {
                         fontSize: '1.7rem'
                       }}
                     >
-                      {views} view{`${views > 1 ? 's' : ''}`}
+                      {views} view
+                      {`${views > 1 ? 's' : ''}`}
                     </div>
                   )}
               </div>
@@ -415,7 +416,8 @@ class Body extends Component {
             parent={contentObj}
             style={{
               padding: '0 1rem',
-              paddingBottom: commentsShown ? '0.5rem' : 0
+              paddingBottom:
+                childComments.length > 0 || commentsShown ? '0.5rem' : 0
             }}
             userId={myId}
           />
