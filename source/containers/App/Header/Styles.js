@@ -21,7 +21,6 @@ export const container = css`
     }
     a {
       text-decoration: none;
-      margin-left: 0.5rem;
       color: ${Color.menuGray()};
       align-items: center;
       line-height: 1;
