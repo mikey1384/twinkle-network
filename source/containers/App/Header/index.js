@@ -274,6 +274,7 @@ class Header extends Component {
                 onClick={closeSearch}
                 className={chatLoading || searchMode ? 'desktop' : ''}
                 imgLabel="book"
+                style={{ marginLeft: '2rem', marginRight: '1rem' }}
               >
                 Read
               </HeaderNav>

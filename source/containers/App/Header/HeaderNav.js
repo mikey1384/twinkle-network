@@ -16,6 +16,7 @@ export default class HeaderNav extends Component {
     isHome: PropTypes.bool,
     isUsername: PropTypes.bool,
     onClick: PropTypes.func,
+    style: PropTypes.object,
     to: PropTypes.string
   }
 
@@ -29,7 +30,8 @@ export default class HeaderNav extends Component {
       imgLabel,
       isHome,
       isUsername,
-      onClick = () => {}
+      onClick = () => {},
+      style
     } = this.props
     return (
       <Route
@@ -38,13 +40,14 @@ export default class HeaderNav extends Component {
         children={({ match }) => (
           <div
             className={`${className} header-nav`}
-            style={{ display: 'flex', justifyContent: 'center' }}
+            style={{ display: 'flex', justifyContent: 'center', ...style }}
           >
             {to ? (
               <Link
-                className={`icon ${to && match ? 'active ' : ''} ${
+                className={`${to && match ? 'active ' : ''} ${
                   alert ? this.styles().alert : ''
                 }`}
+                style={{ display: 'flex', alignItems: 'center' }}
                 to={to}
                 onClick={onClick}
               >

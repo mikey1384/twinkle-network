@@ -15,7 +15,7 @@ export const container = css`
 
   .header-nav {
     display: flex;
-    margin-right: 2rem;
+    align-items: center;
     .chat {
       color: ${Color.menuGray()};
     }
@@ -29,15 +29,13 @@ export const container = css`
     a.active {
       font-weight: bold;
       color: ${Color.black()};
-      span.no-hover {
-        color: ${Color.menuGray()};
-      }
     }
     &:hover {
-      a {
-        span {
+      > a {
+        > svg {
           color: ${Color.black()};
         }
+        color: ${Color.black()};
       }
     }
     @media (max-width: ${mobileMaxWidth}) {

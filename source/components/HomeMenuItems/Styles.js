@@ -13,11 +13,6 @@ export const container = css`
     display: flex;
     align-items: center;
     color: #7c7c7c;
-    .icon {
-      text-align: center;
-      margin-right: 1rem;
-      width: 3rem;
-    }
     justify-content: center;
     > a {
       padding-left: 1rem;
