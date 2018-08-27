@@ -48,11 +48,11 @@ export const container = css`
         }
       }
       &:hover {
+        .mobile-no-hover {
+          color: ${Color.menuGray()};
+        }
         a {
           span {
-            color: ${Color.menuGray()};
-          }
-          > svg.mobile-no-hover {
             color: ${Color.menuGray()};
           }
         }

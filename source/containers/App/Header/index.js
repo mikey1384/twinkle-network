@@ -239,8 +239,12 @@ class Header extends Component {
                 onClick={searchMode ? closeSearch : initSearch}
                 style={{ width: searchMode && '10%' }}
               >
-                <a className={`mobile-no-hover ${searchMode ? 'active' : ''}`}>
-                  {searchMode ? <Icon icon="times" /> : <Icon icon="search" />}
+                <a className={searchMode ? 'active' : ''}>
+                  {searchMode ? (
+                    <Icon icon="times" />
+                  ) : (
+                    <Icon className="mobile-no-hover" icon="search" />
+                  )}
                 </a>
               </div>
               <HeaderNav
