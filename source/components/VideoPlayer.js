@@ -181,6 +181,7 @@ class VideoPlayer extends Component {
     if (
       started &&
       isStarred &&
+      userId &&
       pageVisible !== prevProps.pageVisible &&
       !alreadyEarned
     ) {
