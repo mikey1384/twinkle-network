@@ -39,6 +39,7 @@ class UsernameText extends Component {
               : Color.lightGray(),
             ...style
           }}
+          onClick={this.onUsernameClick}
           onMouseEnter={this.onMouseEnter}
         >
           {user.username || '(Deleted)'}
@@ -85,6 +86,15 @@ class UsernameText extends Component {
         { userId: user.id, username: user.username },
         chatMode
       )
+    }
+  }
+
+  onUsernameClick = () => {
+    const { user } = this.props
+    if (user.username) {
+      this.setState(state => ({
+        menuShown: !state.menuShown
+      }))
     }
   }
 }

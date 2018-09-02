@@ -8,6 +8,7 @@
   "main": "index.js",
   "scripts": {
     "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./source pm2 start -i max index.js",
+    "reload": "sudo pm2 reload index.js",
     "stop": "sudo pm2 stop index.js",
     "dev": "cross-env NODE_PATH=$NODE_PATH:./source PORT=3000 node --harmony .",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.config.js",
