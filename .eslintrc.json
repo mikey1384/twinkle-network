@@ -15,11 +15,7 @@
     "node": true
   },
 
-  "plugins": [
-    "standard",
-    "promise",
-    "react"
-  ],
+  "plugins": ["standard", "promise", "react"],
 
   "extends": ["plugin:react/recommended"],
 
@@ -42,9 +38,9 @@
     "curly": [2, "multi-line"],
     "dot-location": [2, "property"],
     "eol-last": 2,
-    "eqeqeq": [2, "always", {"null": "ignore"}],
+    "eqeqeq": [2, "always", { "null": "ignore" }],
     "func-call-spacing": [2, "never"],
-    "handle-callback-err": [2, "^(err|error)$" ],
+    "handle-callback-err": [2, "^(err|error)$"],
     "key-spacing": [2, { "beforeColon": false, "afterColon": true }],
     "keyword-spacing": [2, { "before": true, "after": true }],
     "new-cap": [2, { "newIsCap": true, "capIsNew": false }],
@@ -130,9 +126,17 @@
     "no-with": 2,
     "object-property-newline": [2, { "allowMultiplePropertiesPerLine": true }],
     "one-var": [2, { "initialized": "never" }],
-    "operator-linebreak": [2, "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
+    "operator-linebreak": [
+      2,
+      "after",
+      { "overrides": { "?": "ignore", ":": "ignore" } }
+    ],
     "padded-blocks": [2, "never"],
-    "quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+    "quotes": [
+      2,
+      "single",
+      { "avoidEscape": true, "allowTemplateLiterals": true }
+    ],
     "react/no-unused-prop-types": [2],
     "react/no-children-prop": [0],
     "rest-spread-spacing": [2, "never"],
@@ -143,7 +147,18 @@
     "space-in-parens": [2, "never"],
     "space-infix-ops": 0,
     "space-unary-ops": [2, { "words": true, "nonwords": false }],
-    "spaced-comment": [2, "always", { "line": { "markers": ["*package", "!", ","] }, "block": { "balanced": true, "markers": ["*package", "!", ","], "exceptions": ["*"] } }],
+    "spaced-comment": [
+      2,
+      "always",
+      {
+        "line": { "markers": ["*package", "!", ","] },
+        "block": {
+          "balanced": true,
+          "markers": ["*package", "!", ","],
+          "exceptions": ["*"]
+        }
+      }
+    ],
     "unicode-bom": [2, "never"],
     "use-isnan": 2,
     "valid-typeof": 2,
@@ -156,5 +171,11 @@
     "standard/computed-property-even-spacing": [0, "even"],
 
     "promise/param-names": 2
+  },
+
+  "settings": {
+    "react": {
+      "version": "latest"
+    }
   }
 }

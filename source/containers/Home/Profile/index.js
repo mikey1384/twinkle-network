@@ -7,11 +7,11 @@ import { connect } from 'react-redux'
 import { checkValidUsername } from 'redux/actions/UserActions'
 import NotFound from 'components/NotFound'
 import Loading from 'components/Loading'
-import { browserHistory } from 'react-router'
 
 class Profile extends Component {
   static propTypes = {
     checkValidUsername: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
     userId: PropTypes.number,
@@ -27,6 +27,7 @@ class Profile extends Component {
   componentDidUpdate(prevProps) {
     const {
       checkValidUsername,
+      history,
       userId,
       profile: { unavailable },
       match
@@ -44,7 +45,7 @@ class Profile extends Component {
       userId &&
       unavailable
     ) {
-      browserHistory.push(`/${this.props.username}`)
+      history.push(`/${this.props.username}`)
     }
   }
 

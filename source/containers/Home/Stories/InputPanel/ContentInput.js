@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import Textarea from 'components/Texts/Textarea'
 import Button from 'components/Button'
 import { uploadContent } from 'redux/actions/FeedActions'
-import { loadVideoPageFromClientSide } from 'redux/actions/VideoActions'
 import Input from 'components/Texts/Input'
 import { scrollElementToCenter } from 'helpers/domHelpers'
 import {
@@ -269,7 +268,6 @@ export default connect(
     username: state.UserReducer.username
   }),
   {
-    loadVideoPage: loadVideoPageFromClientSide,
     uploadContent
   }
 )(ContentInput)

@@ -1,7 +1,7 @@
 'use strict'
 
-require('babel-register')({})
-require('babel-polyfill')
+require('@babel/register')({})
+require('@babel/polyfill')
 
 const server = require('./entry/server').default
 if (process.env.NODE_ENV === 'production') {

@@ -25,7 +25,6 @@ import {
   loadVideoDiscussionComments,
   loadMoreDiscussionComments,
   uploadComment,
-  uploadVideoDiscussionReply,
   likeVideoComment,
   loadMoreDiscussionReplies,
   editVideoDiscussion,
@@ -279,7 +278,8 @@ class DiscussionPanel extends Component {
                   >
                     <Icon icon="comment-alt" />
                     <span style={{ marginLeft: '1rem' }}>
-                      Answer{numComments && numComments > 0
+                      Answer
+                      {numComments && numComments > 0
                         ? ` (${numComments})`
                         : ''}
                     </span>
@@ -376,7 +376,6 @@ export default connect(
     loadVideoDiscussionComments,
     loadMoreComments: loadMoreDiscussionComments,
     onLikeClick: likeVideoComment,
-    onReplySubmit: uploadVideoDiscussionReply,
     onLoadMoreReplies: loadMoreDiscussionReplies,
     onDiscussionEditDone: editVideoDiscussion,
     onDiscussionDelete: deleteVideoDiscussion,

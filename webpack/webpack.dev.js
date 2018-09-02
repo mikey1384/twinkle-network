@@ -23,30 +23,16 @@ export default function devConfig(app) {
           include: [/source/, /entry/],
           loader: 'babel-loader',
           options: {
-            presets: [['es2015', { modules: false }], 'react'],
+            presets: ['@babel/preset-env', '@babel/preset-react'],
             plugins: [
               ['transform-object-rest-spread'],
-              ['transform-class-properties'],
-              [
-                'react-transform',
-                {
-                  transforms: [
-                    {
-                      transform: 'react-transform-hmr',
-                      imports: ['react'],
-                      locals: ['module']
-                    }
-                  ]
-                }
-              ]
+              ['transform-class-properties']
             ]
           }
         }
       ]
     },
-    plugins: [
-      new webpack.HotModuleReplacementPlugin()
-    ]
+    plugins: [new webpack.HotModuleReplacementPlugin()]
   }
 
   const compiler = webpack(config)

@@ -17,7 +17,6 @@ import {
 import {
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModal,
-  getVideosForModal,
   closeReorderPinnedPlaylistsModal,
   closeSelectPlaylistsToPinModal
 } from 'redux/actions/PlaylistActions'
@@ -252,7 +251,6 @@ export default connect(
   }),
   {
     openSelectPlaylistsToPinModal,
-    getVideosForModal,
     closeReorderPinnedPlaylistsModal,
     closeSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,
