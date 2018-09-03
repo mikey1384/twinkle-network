@@ -7,7 +7,7 @@
   "description": "Twinkle: educational social network",
   "main": "index.js",
   "scripts": {
-    "start": "sudo NODE_ENV=production forever -o content_out.log -e content_err.log start index.js",
+    "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./source forever -o content_out.log -e content_err.log start -c \"node --harmony .\" index.js",
     "stop": "sudo forever stop index.js",
     "dev": "cross-env NODE_PATH=$NODE_PATH:./source PORT=3000 node --harmony .",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.config.js",
