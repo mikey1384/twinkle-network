@@ -30,6 +30,11 @@ export const getMorePlaylists = shownPlaylistsIds => async dispatch => {
   }
 };
 
+export const setSearchedPlaylists = playlists => ({
+  type: PLAYLIST.SET_SEARCHED_PLAYLISTS,
+  playlists
+});
+
 export const uploadPlaylist = params => async dispatch => {
   try {
     const {
@@ -68,10 +73,10 @@ export const editPlaylistTitle = (
   }
 };
 
-export const changePlaylistVideos = (
+export const changePlaylistVideos = ({
   playlistId,
   selectedVideos
-) => async dispatch => {
+}) => async dispatch => {
   try {
     const { data } = await request.put(
       `${API_URL}/videos`,

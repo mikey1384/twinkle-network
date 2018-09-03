@@ -18,7 +18,8 @@ import {
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModal,
   closeReorderPinnedPlaylistsModal,
-  closeSelectPlaylistsToPinModal
+  closeSelectPlaylistsToPinModal,
+  setSearchedPlaylists
 } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import request from 'axios';
@@ -43,7 +44,9 @@ class Main extends Component {
     playlistsLoaded: PropTypes.bool.isRequired,
     playlistsToPin: PropTypes.array.isRequired,
     reorderPinnedPlaylistsModalShown: PropTypes.bool.isRequired,
+    searchedPlaylists: PropTypes.array.isRequired,
     selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
+    setSearchedPlaylists: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
 
@@ -52,43 +55,36 @@ class Main extends Component {
   state = {
     addPlaylistModalShown: false,
     playlistSearchQuery: '',
-    searchedPlaylists: [],
     isSearching: false
   };
 
   render() {
     const {
-      canPinPlaylists,
-      userId,
-
-      playlists: allPlaylists,
-      playlistsLoaded,
-      loadMorePlaylistsButton,
-
-      pinnedPlaylists,
-      pinnedPlaylistsLoaded,
-
       addVideoModalShown,
-
-      selectPlaylistsToPinModalShown,
-      playlistsToPin,
+      canPinPlaylists,
+      closeAddVideoModal,
+      closeSelectPlaylistsToPinModal,
+      closeReorderPinnedPlaylistsModal,
+      loadMorePlaylistsButton,
       loadMorePlaylistsToPinButton,
-
-      reorderPinnedPlaylistsModalShown,
-
       openSelectPlaylistsToPinModal,
       openReorderPinnedPlaylistsModal,
       openAddVideoModal,
-      closeAddVideoModal,
-      closeSelectPlaylistsToPinModal,
-      closeReorderPinnedPlaylistsModal
+      pinnedPlaylists,
+      pinnedPlaylistsLoaded,
+      playlists: allPlaylists,
+      playlistsLoaded,
+      playlistsToPin,
+      reorderPinnedPlaylistsModalShown,
+      searchedPlaylists,
+      selectPlaylistsToPinModalShown,
+      userId
     } = this.props;
 
     const {
       addPlaylistModalShown,
       playlistSearchQuery,
-      isSearching,
-      searchedPlaylists
+      isSearching
     } = this.state;
 
     const playlists = playlistSearchQuery ? searchedPlaylists : allPlaylists;
@@ -212,14 +208,17 @@ class Main extends Component {
   };
 
   searchPlaylist = async text => {
+    const { setSearchedPlaylists } = this.props;
     if (stringIsEmpty(text) || text.length < 3) {
-      return this.setState({ searchedPlaylists: [], isSearching: false });
+      setSearchedPlaylists([]);
+      return this.setState({ isSearching: false });
     }
     try {
       const { data: searchedPlaylists } = await request.get(
         `${URL}/playlist/search/playlist?query=${text}`
       );
-      this.setState({ searchedPlaylists, isSearching: false });
+      setSearchedPlaylists(searchedPlaylists);
+      this.setState({ isSearching: false });
     } catch (error) {
       console.error(error.response || error);
     }
@@ -228,34 +227,31 @@ class Main extends Component {
 
 export default connect(
   state => ({
-    canPinPlaylists: state.UserReducer.canPinPlaylists,
-    userType: state.UserReducer.userType,
-    userId: state.UserReducer.userId,
-
-    playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,
-    playlists: state.PlaylistReducer.allPlaylists,
-    loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
-
-    pinnedPlaylistsLoaded: state.PlaylistReducer.pinnedPlaylistsLoaded,
-    pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
-
     addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
     addVideoModalShown: state.VideoReducer.addVideoModalShown,
-
-    selectPlaylistsToPinModalShown:
-      state.PlaylistReducer.selectPlaylistsToPinModalShown,
-    playlistsToPin: state.PlaylistReducer.playlistsToPin,
+    canPinPlaylists: state.UserReducer.canPinPlaylists,
+    loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
     loadMorePlaylistsToPinButton:
       state.PlaylistReducer.loadMorePlaylistsToPinButton,
-
+    pinnedPlaylistsLoaded: state.PlaylistReducer.pinnedPlaylistsLoaded,
+    pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
+    playlistsToPin: state.PlaylistReducer.playlistsToPin,
+    playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,
+    playlists: state.PlaylistReducer.allPlaylists,
+    searchedPlaylists: state.PlaylistReducer.searchedPlaylists,
     reorderPinnedPlaylistsModalShown:
-      state.PlaylistReducer.reorderPinnedPlaylistsModalShown
+      state.PlaylistReducer.reorderPinnedPlaylistsModalShown,
+    userType: state.UserReducer.userType,
+    userId: state.UserReducer.userId,
+    selectPlaylistsToPinModalShown:
+      state.PlaylistReducer.selectPlaylistsToPinModalShown
   }),
   {
     openSelectPlaylistsToPinModal,
     closeReorderPinnedPlaylistsModal,
     closeSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,
+    setSearchedPlaylists,
     closeAddVideoModal,
     openAddVideoModal
   }

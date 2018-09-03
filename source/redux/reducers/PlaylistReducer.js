@@ -2,6 +2,7 @@ import PLAYLIST from '../constants/Playlist';
 
 const defaultState = {
   allPlaylists: [],
+  searchedPlaylists: [],
   pinnedPlaylists: [],
   allPlaylistsLoaded: false,
   pinnedPlaylistsLoaded: false,
@@ -118,6 +119,11 @@ export default function PlaylistReducer(state = defaultState, action) {
           ...playlist,
           title:
             playlist.id === action.playlistId ? action.data : playlist.title
+        })),
+        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
+          ...playlist,
+          title:
+            playlist.id === action.playlistId ? action.data : playlist.title
         }))
       };
     case PLAYLIST.CHANGE_VIDEOS:
@@ -129,6 +135,11 @@ export default function PlaylistReducer(state = defaultState, action) {
             playlist.id === action.playlistId ? action.data : playlist.playlist
         })),
         allPlaylists: state.allPlaylists.map(playlist => ({
+          ...playlist,
+          playlist:
+            playlist.id === action.playlistId ? action.data : playlist.playlist
+        })),
+        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
           ...playlist,
           playlist:
             playlist.id === action.playlistId ? action.data : playlist.playlist
@@ -171,6 +182,11 @@ export default function PlaylistReducer(state = defaultState, action) {
     case PLAYLIST.RESET:
       return {
         ...defaultState
+      };
+    case PLAYLIST.SET_SEARCHED_PLAYLISTS:
+      return {
+        ...state,
+        searchedPlaylists: action.playlists
       };
     case PLAYLIST.TURN_ON_CLICK_SAFE:
       return {

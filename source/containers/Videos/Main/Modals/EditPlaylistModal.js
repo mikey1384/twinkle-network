@@ -189,10 +189,10 @@ class EditPlaylistModal extends Component {
     const { selectedVideos } = this.state;
     const { onHide, playlistId, changePlaylistVideos } = this.props;
     this.setState({ isSaving: true });
-    await changePlaylistVideos(
+    await changePlaylistVideos({
       playlistId,
-      selectedVideos.map(video => video.id)
-    );
+      selectedVideos: selectedVideos.map(video => video.id)
+    });
     onHide();
   };
 
