@@ -6,7 +6,7 @@ import { StaticRouter } from 'react-router'
 import createHistory from 'history/createMemoryHistory'
 import { Provider } from 'react-redux'
 import path from 'path'
-import App from 'containers/App'
+import App from '../source/containers/App'
 import createStoreWithHistory from './store'
 
 const app = express()
