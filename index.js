@@ -7,16 +7,18 @@ const server = require('./entry/server').default
 if (process.env.NODE_ENV === 'production') {
   require('greenlock-express')
     .create({
-      version: 'draft-11',
+      version: 'draft-12',
       server: 'https://acme-v02.api.letsencrypt.org/directory',
-      email: 'mikey1384@gmail.com',
-      agreeTos: true,
-      approveDomains: [
-        'www.twin-kle.com',
-        'twin-kle.com',
-        'www.twinkle.network',
-        'twinkle.network'
-      ],
+      approveDomains: function approveDomains(opts, certs, cb) {
+        if (certs) { 
+           opts.domains = certs.altnames;
+        } else {
+           opts.email = 'mikey1384@gmail.com';
+           opts.agreeTos = true;
+        }
+
+        cb(null, { options: opts, certs });
+    },
       app: server
     })
     .listen(80, 443)
