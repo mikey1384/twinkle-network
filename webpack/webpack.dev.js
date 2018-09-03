@@ -23,7 +23,7 @@ export default function devConfig(app) {
           include: [/source/, /entry/],
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
+            presets: ['@babel/env', '@babel/react']
           }
         }
       ]
