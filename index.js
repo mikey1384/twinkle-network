@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === 'production') {
   require('greenlock-express')
     .create({
       version: 'draft-12',
+      configDir: '~/.config/acme',
       server: 'https://acme-v02.api.letsencrypt.org/directory',
       approveDomains: function approveDomains(opts, certs, cb) {
         if (certs) {
