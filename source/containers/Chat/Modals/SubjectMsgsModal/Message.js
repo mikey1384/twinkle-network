@@ -1,10 +1,10 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ProfilePic from 'components/ProfilePic'
-import UsernameText from 'components/Texts/UsernameText'
-import { MessageStyle } from '../../Styles'
-import { Color } from 'constants/css'
-import moment from 'moment'
+import React from 'react';
+import PropTypes from 'prop-types';
+import ProfilePic from 'components/ProfilePic';
+import UsernameText from 'components/Texts/UsernameText';
+import { MessageStyle } from '../../Styles';
+import { Color } from 'constants/css';
+import moment from 'moment';
 
 Message.propTypes = {
   userId: PropTypes.number,
@@ -13,7 +13,7 @@ Message.propTypes = {
   content: PropTypes.string,
   isReloadedSubject: PropTypes.number,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-}
+};
 export default function Message({
   content,
   userId,
@@ -57,5 +57,5 @@ export default function Message({
         </div>
       </div>
     </div>
-  )
+  );
 }

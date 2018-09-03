@@ -30,9 +30,9 @@ export const Color = {
   rose: (opacity = 1) => `rgba(250,128,157,${opacity})`,
   red: (opacity = 1) => `rgba(255,65,54,${opacity})`,
   white: (opacity = 1) => `rgba(255,255,255,${opacity})`
-}
+};
 
-export const borderRadius = '5px'
-export const innerBorderRadius = '4px'
-export const mobileMaxWidth = '1024px'
-export const desktopMinWidth = '1025px'
+export const borderRadius = '5px';
+export const innerBorderRadius = '4px';
+export const mobileMaxWidth = '1024px';
+export const desktopMinWidth = '1025px';

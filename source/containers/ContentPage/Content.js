@@ -1,24 +1,24 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ContentPanel from 'components/ContentPanel'
-import NotFound from 'components/NotFound'
-import Loading from 'components/Loading'
-import { connect } from 'react-redux'
-import request from 'axios'
-import { URL } from 'constants/URL'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ContentPanel from 'components/ContentPanel';
+import NotFound from 'components/NotFound';
+import Loading from 'components/Loading';
+import { connect } from 'react-redux';
+import request from 'axios';
+import { URL } from 'constants/URL';
 
 class Content extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     userId: PropTypes.number,
     history: PropTypes.object.isRequired
-  }
+  };
 
   state = {
     contentObj: {},
     loaded: false,
     exists: false
-  }
+  };
 
   async componentDidMount() {
     const {
@@ -26,14 +26,14 @@ class Content extends Component {
         params: { contentId },
         url
       }
-    } = this.props
-    const type = url.split('/')[1].slice(0, -1)
+    } = this.props;
+    const type = url.split('/')[1].slice(0, -1);
     try {
       const {
         data: { exists }
       } = await request.get(
         `${URL}/content/check?contentId=${contentId}&type=${type}`
-      )
+      );
       this.setState({
         loaded: true,
         exists,
@@ -41,13 +41,13 @@ class Content extends Component {
           contentId,
           type
         }
-      })
+      });
     } catch (error) {
-      console.error(error)
+      console.error(error);
       this.setState({
         loaded: true,
         exists: false
-      })
+      });
     }
   }
 
@@ -57,15 +57,15 @@ class Content extends Component {
         params: { contentId },
         url
       }
-    } = this.props
+    } = this.props;
     if (url !== prevProps.match.url) {
-      const type = url.split('/')[1].slice(0, -1)
+      const type = url.split('/')[1].slice(0, -1);
       try {
         const {
           data: { exists }
         } = await request.get(
           `${URL}/content/check?contentId=${contentId}&type=${type}`
-        )
+        );
         this.setState({
           loaded: true,
           exists,
@@ -73,20 +73,20 @@ class Content extends Component {
             contentId,
             type
           }
-        })
+        });
       } catch (error) {
-        console.error(error)
+        console.error(error);
         this.setState({
           loaded: true,
           exists: false
-        })
+        });
       }
     }
   }
 
   render() {
-    const { userId } = this.props
-    const { contentObj, loaded, exists } = this.state
+    const { userId } = this.props;
+    const { contentObj, loaded, exists } = this.state;
     return loaded ? (
       exists ? (
         <ContentPanel
@@ -116,7 +116,7 @@ class Content extends Component {
       )
     ) : (
       <Loading />
-    )
+    );
   }
 
   onAttachStar = data => {
@@ -144,7 +144,7 @@ class Content extends Component {
                   ? (reply.stars || []).concat(data)
                   : reply.stars || []
             }))
-          }
+          };
         }),
         targetObj: state.contentObj.targetObj
           ? {
@@ -164,13 +164,13 @@ class Content extends Component {
             }
           : undefined
       }
-    }))
-  }
+    }));
+  };
 
   onCommentSubmit = data => {
     const {
       contentObj: { type }
-    } = this.state
+    } = this.state;
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
@@ -179,40 +179,40 @@ class Content extends Component {
             ? (state.contentObj.childComments || []).concat([data])
             : [data].concat(state.contentObj.childComments)
       }
-    }))
-  }
+    }));
+  };
 
   onReplySubmit = data => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
         childComments: state.contentObj.childComments.map(comment => {
-          let match = false
-          let commentId = data.replyId || data.commentId
+          let match = false;
+          let commentId = data.replyId || data.commentId;
           if (comment.id === commentId) {
-            match = true
+            match = true;
           } else {
             for (let reply of comment.replies || []) {
               if (reply.id === commentId) {
-                match = true
-                break
+                match = true;
+                break;
               }
             }
           }
           return {
             ...comment,
             replies: match ? comment.replies.concat([data]) : comment.replies
-          }
+          };
         })
       }
-    }))
-  }
+    }));
+  };
 
   onDeleteComment = commentId => {
     this.setState(state => {
       const comments = (state.contentObj.childComments || []).filter(
         comment => comment.id !== commentId
-      )
+      );
       return {
         contentObj: {
           ...state.contentObj,
@@ -238,9 +238,9 @@ class Content extends Component {
             )
           }))
         }
-      }
-    })
-  }
+      };
+    });
+  };
 
   onEditComment = ({ editedComment, commentId }) => {
     this.setState(state => {
@@ -284,9 +284,9 @@ class Content extends Component {
               }
             : undefined
         }
-      }
-    })
-  }
+      };
+    });
+  };
 
   onEditRewardComment = ({ id, text }) => {
     this.setState(state => ({
@@ -336,13 +336,13 @@ class Content extends Component {
             }
           : undefined
       }
-    }))
-  }
+    }));
+  };
 
   onDeleteContent = () => {
-    const { history } = this.props
-    history.push('/')
-  }
+    const { history } = this.props;
+    history.push('/');
+  };
 
   onEditContent = async({ data }) => {
     this.setState(state => ({
@@ -350,8 +350,8 @@ class Content extends Component {
         ...state.contentObj,
         ...data
       }
-    }))
-  }
+    }));
+  };
 
   onLikeContent = ({ likes, type, contentId }) => {
     this.setState(state => ({
@@ -397,17 +397,17 @@ class Content extends Component {
             }
           : undefined
       }
-    }))
-  }
+    }));
+  };
 
   onLoadContent = async({ data }) => {
-    this.setState(state => ({ contentObj: { ...state.contentObj, ...data } }))
-  }
+    this.setState(state => ({ contentObj: { ...state.contentObj, ...data } }));
+  };
 
   onLoadMoreComments = async({ data: { comments, loadMoreButton } }) => {
     const {
       contentObj: { type }
-    } = this.state
+    } = this.state;
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
@@ -417,8 +417,8 @@ class Content extends Component {
             : state.contentObj.childComments.concat(comments),
         commentsLoadMoreButton: loadMoreButton
       }
-    }))
-  }
+    }));
+  };
 
   onLoadMoreReplies = ({ commentId, replies, loadMoreButton }) => {
     this.setState(state => ({
@@ -434,8 +434,8 @@ class Content extends Component {
             comment.id === commentId ? loadMoreButton : comment.loadMoreButton
         }))
       }
-    }))
-  }
+    }));
+  };
 
   onShowComments = ({ comments, loadMoreButton }) => {
     this.setState(state => ({
@@ -444,9 +444,9 @@ class Content extends Component {
         childComments: comments,
         commentsLoadMoreButton: loadMoreButton
       }
-    }))
-    return Promise.resolve()
-  }
+    }));
+    return Promise.resolve();
+  };
 
   onTargetCommentSubmit = data => {
     this.setState(state => ({
@@ -462,10 +462,10 @@ class Content extends Component {
           }
         }
       }
-    }))
-  }
+    }));
+  };
 }
 
 export default connect(state => ({
   userId: state.UserReducer.userId
-}))(Content)
+}))(Content);

@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
 
 ResultModal.propTypes = {
   numberCorrect: PropTypes.oneOfType([PropTypes.number, PropTypes.func])
     .isRequired,
   onHide: PropTypes.func.isRequired,
   totalQuestions: PropTypes.number.isRequired
-}
+};
 export default function ResultModal({ numberCorrect, totalQuestions, onHide }) {
-  const number = numberCorrect()
-  const perfect = numberCorrect === totalQuestions
+  const number = numberCorrect();
+  const perfect = numberCorrect === totalQuestions;
   return (
     <Modal onHide={onHide}>
       <header>Your Results</header>
@@ -26,5 +26,5 @@ export default function ResultModal({ numberCorrect, totalQuestions, onHide }) {
         </Button>
       </footer>
     </Modal>
-  )
+  );
 }

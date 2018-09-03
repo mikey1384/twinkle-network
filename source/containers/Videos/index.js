@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { Route } from 'react-router-dom'
-import Main from './Main'
-import VideoPage from './VideoPage'
-import { connect } from 'react-redux'
-import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
+import Main from './Main';
+import VideoPage from './VideoPage';
+import { connect } from 'react-redux';
+import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions';
 import {
   getPlaylists,
   getPinnedPlaylists,
   resetPlaylistState
-} from 'redux/actions/PlaylistActions'
+} from 'redux/actions/PlaylistActions';
 
 class Videos extends Component {
   static propTypes = {
@@ -19,36 +19,39 @@ class Videos extends Component {
     getPinnedPlaylists: PropTypes.func.isRequired,
     resetPlaylistState: PropTypes.func.isRequired,
     resetVideoState: PropTypes.func.isRequired
-  }
+  };
 
   componentDidMount() {
-    const { getPlaylists, getPinnedPlaylists, getInitialVideos } = this.props
-    getInitialVideos()
-    getPlaylists()
-    getPinnedPlaylists()
+    const { getPlaylists, getPinnedPlaylists, getInitialVideos } = this.props;
+    getInitialVideos();
+    getPlaylists();
+    getPinnedPlaylists();
   }
 
   componentWillUnmount() {
-    const { resetPlaylistState, resetVideoState } = this.props
-    resetPlaylistState()
-    resetVideoState()
+    const { resetPlaylistState, resetVideoState } = this.props;
+    resetPlaylistState();
+    resetVideoState();
   }
 
   render() {
-    const { match } = this.props
+    const { match } = this.props;
     return (
       <div style={{ width: '100%', height: '100%' }}>
         <Route exact path={`${match.url}`} component={Main} />
         <Route path={`${match.url}/:videoId`} component={VideoPage} />
       </div>
-    )
+    );
   }
 }
 
-export default connect(null, {
-  getPlaylists,
-  getPinnedPlaylists,
-  getInitialVideos,
-  resetPlaylistState,
-  resetVideoState
-})(Videos)
+export default connect(
+  null,
+  {
+    getPlaylists,
+    getPinnedPlaylists,
+    getInitialVideos,
+    resetPlaylistState,
+    resetVideoState
+  }
+)(Videos);

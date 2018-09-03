@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React from 'react';
+import { css } from 'emotion';
 
 NotFound.propTypes = {
   text: PropTypes.string,
   title: PropTypes.string
-}
+};
 export default function NotFound({ title, text }) {
   return (
     <div
@@ -28,5 +28,5 @@ export default function NotFound({ title, text }) {
       <p>{title || 'Not Found'}</p>
       <span>{text || 'The page you requested does not exist'}</span>
     </div>
-  )
+  );
 }

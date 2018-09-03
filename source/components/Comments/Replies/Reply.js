@@ -1,28 +1,28 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import withContext from 'components/Wrappers/withContext'
-import Context from '../Context'
-import { timeSince } from 'helpers/timeStampHelpers'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import EditTextArea from 'components/Texts/EditTextArea'
-import Likers from 'components/Likers'
-import UserListModal from 'components/Modals/UserListModal'
-import UsernameText from 'components/Texts/UsernameText'
-import ProfilePic from 'components/ProfilePic'
-import Button from 'components/Button'
-import LikeButton from 'components/Buttons/LikeButton'
-import ReplyInputArea from './ReplyInputArea'
-import { determineXpButtonDisabled } from 'helpers/domHelpers'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import LongText from 'components/Texts/LongText'
-import { container } from '../Styles'
-import RewardStatus from 'components/RewardStatus'
-import XPRewardInterface from 'components/XPRewardInterface'
-import Icon from 'components/Icon'
-import { Link } from 'react-router-dom'
-import { editContent } from 'helpers/requestHelpers'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import withContext from 'components/Wrappers/withContext';
+import Context from '../Context';
+import { timeSince } from 'helpers/timeStampHelpers';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import EditTextArea from 'components/Texts/EditTextArea';
+import Likers from 'components/Likers';
+import UserListModal from 'components/Modals/UserListModal';
+import UsernameText from 'components/Texts/UsernameText';
+import ProfilePic from 'components/ProfilePic';
+import Button from 'components/Button';
+import LikeButton from 'components/Buttons/LikeButton';
+import ReplyInputArea from './ReplyInputArea';
+import { determineXpButtonDisabled } from 'helpers/domHelpers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import LongText from 'components/Texts/LongText';
+import { container } from '../Styles';
+import RewardStatus from 'components/RewardStatus';
+import XPRewardInterface from 'components/XPRewardInterface';
+import Icon from 'components/Icon';
+import { Link } from 'react-router-dom';
+import { editContent } from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
 
 class Reply extends Component {
   static propTypes = {
@@ -54,14 +54,14 @@ class Reply extends Component {
       uploader: PropTypes.object.isRequired
     }),
     userId: PropTypes.number
-  }
+  };
 
   state = {
     onEdit: false,
     userListModalShown: false,
     confirmModalShown: false,
     xpRewardInterfaceShown: false
-  }
+  };
 
   render() {
     const {
@@ -78,34 +78,34 @@ class Reply extends Component {
       reply,
       reply: { likes = [], stars = [], uploader },
       userId
-    } = this.props
+    } = this.props;
     const {
       onEdit,
       userListModalShown,
       confirmModalShown,
       clickListenerState,
       xpRewardInterfaceShown
-    } = this.state
-    const userIsUploader = userId === uploader.id
+    } = this.state;
+    const userIsUploader = userId === uploader.id;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploader.authLevel
-    const editButtonShown = userIsUploader || userCanEditThis
-    const editMenuItems = []
+      (canEdit || canDelete) && authLevel > uploader.authLevel;
+    const editButtonShown = userIsUploader || userCanEditThis;
+    const editMenuItems = [];
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: () => this.setState({ onEdit: true })
-      })
+      });
     }
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Remove',
         onClick: () => this.setState({ confirmModalShown: true })
-      })
+      });
     }
-    let userLikedThis = false
+    let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === userId) userLikedThis = true
+      if (likes[i].userId === userId) userLikedThis = true;
     }
     return (
       <div className={container} ref={innerRef}>
@@ -231,8 +231,8 @@ class Reply extends Component {
                 contentId={reply.id}
                 uploaderId={uploader.id}
                 onRewardSubmit={data => {
-                  this.setState({ xpRewardInterfaceShown: false })
-                  onAttachStar(data)
+                  this.setState({ xpRewardInterfaceShown: false });
+                  onAttachStar(data);
                 }}
               />
             )}
@@ -248,7 +248,7 @@ class Reply extends Component {
             />
             <ReplyInputArea
               innerRef={ref => {
-                this.ReplyInputArea = ref
+                this.ReplyInputArea = ref;
               }}
               style={{
                 marginTop:
@@ -277,11 +277,11 @@ class Reply extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   onEditDone = async editedReply => {
-    const { dispatch, onEditDone, reply } = this.props
+    const { dispatch, onEditDone, reply } = this.props;
     await editContent({
       params: {
         editedComment: editedReply,
@@ -289,17 +289,17 @@ class Reply extends Component {
         type: 'comment'
       },
       dispatch
-    })
-    onEditDone({ editedComment: editedReply, commentId: reply.id })
-    this.setState({ onEdit: false })
-  }
+    });
+    onEditDone({ editedComment: editedReply, commentId: reply.id });
+    this.setState({ onEdit: false });
+  };
 
   onLikeClick = likes => {
-    const { reply, onLikeClick } = this.props
-    onLikeClick({ commentId: reply.id, likes })
-  }
+    const { reply, onLikeClick } = this.props;
+    onLikeClick({ commentId: reply.id, likes });
+  };
 
-  onReplyButtonClick = () => this.ReplyInputArea.focus()
+  onReplyButtonClick = () => this.ReplyInputArea.focus();
 }
 
 export default connect(
@@ -310,4 +310,4 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: Reply, Context }))
+)(withContext({ Component: Reply, Context }));

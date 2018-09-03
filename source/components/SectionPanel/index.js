@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Button from 'components/Button'
-import Loading from 'components/Loading'
-import SearchInput from 'components/Texts/SearchInput'
-import { stringIsEmpty } from 'helpers/stringHelpers'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Button from 'components/Button';
+import Loading from 'components/Loading';
+import SearchInput from 'components/Texts/SearchInput';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 export default class SectionPanel extends Component {
   static propTypes = {
@@ -22,11 +22,11 @@ export default class SectionPanel extends Component {
     searchPlaceholder: PropTypes.string,
     searchQuery: PropTypes.string,
     style: PropTypes.object
-  }
+  };
 
   state = {
     loading: false
-  }
+  };
 
   render() {
     const {
@@ -37,8 +37,8 @@ export default class SectionPanel extends Component {
       searchPlaceholder,
       searchQuery = '',
       style = {}
-    } = this.props
-    const { loading } = this.state
+    } = this.props;
+    const { loading } = this.state;
     return (
       <div
         className={css`
@@ -113,22 +113,22 @@ export default class SectionPanel extends Component {
           )}
         </main>
       </div>
-    )
+    );
   }
 
   onSearch = text => {
-    const { onSearch } = this.props
-    onSearch(text)
-  }
+    const { onSearch } = this.props;
+    onSearch(text);
+  };
 
   onLoadMore = () => {
-    const { loadMore } = this.props
-    const { loading } = this.state
+    const { loadMore } = this.props;
+    const { loading } = this.state;
     if (!loading) {
-      this.setState({ loading: true })
-      return loadMore().then(() => this.setState({ loading: false }))
+      this.setState({ loading: true });
+      return loadMore().then(() => this.setState({ loading: false }));
     }
-  }
+  };
 
   renderContent = () => {
     const {
@@ -138,7 +138,7 @@ export default class SectionPanel extends Component {
       isSearching,
       loaded,
       searchQuery
-    } = this.props
+    } = this.props;
     return loaded ? (
       (!stringIsEmpty(searchQuery) && isSearching) || isEmpty ? (
         <div className={this.statusMsg}>
@@ -153,8 +153,8 @@ export default class SectionPanel extends Component {
       )
     ) : (
       <Loading />
-    )
-  }
+    );
+  };
 
   statusMsg = css`
     font-size: 3rem;
@@ -167,5 +167,5 @@ export default class SectionPanel extends Component {
     display: flex;
     justify-content: center;
     align-items: center;
-  `
+  `;
 }

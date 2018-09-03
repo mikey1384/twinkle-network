@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Button from 'components/Button'
-import Textarea from 'components/Texts/Textarea'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Button from 'components/Button';
+import Textarea from 'components/Texts/Textarea';
 import {
   exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
   renderCharLimit
-} from 'helpers/stringHelpers'
+} from 'helpers/stringHelpers';
 
 export default class EditTextArea extends Component {
   static propTypes = {
@@ -20,28 +20,28 @@ export default class EditTextArea extends Component {
     placeholder: PropTypes.string,
     rows: PropTypes.number,
     text: PropTypes.string.isRequired
-  }
+  };
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       editedText: props.text
-    }
+    };
   }
 
   render() {
-    const { editedText } = this.state
+    const { editedText } = this.state;
     const {
       allowEmptyText,
       autoFocus = false,
       placeholder = 'Enter text',
       rows = 4,
       marginTop = '1rem'
-    } = this.props
+    } = this.props;
     const commentExceedsCharLimit = exceedsCharLimit({
       contentType: 'comment',
       text: editedText
-    })
+    });
     return (
       <div style={{ lineHeight: 1 }}>
         <Textarea
@@ -93,22 +93,22 @@ export default class EditTextArea extends Component {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   onChange = event => {
-    this.setState({ editedText: event.target.value })
-  }
+    this.setState({ editedText: event.target.value });
+  };
 
   handleKeyUp = event => {
     if (event.key === ' ') {
-      this.setState({ editedText: addEmoji(event.target.value) })
+      this.setState({ editedText: addEmoji(event.target.value) });
     }
-  }
+  };
 
   onSubmit = () => {
-    const { onEditDone } = this.props
-    const { editedText } = this.state
-    return onEditDone(finalizeEmoji(editedText))
-  }
+    const { onEditDone } = this.props;
+    const { editedText } = this.state;
+    return onEditDone(finalizeEmoji(editedText));
+  };
 }

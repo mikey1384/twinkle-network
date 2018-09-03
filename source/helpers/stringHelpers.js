@@ -1,19 +1,19 @@
-import { charLimit } from 'constants/defaultValues'
+import { charLimit } from 'constants/defaultValues';
 
 /* eslint-disable no-useless-escape */
 
 export function addCommasToNumber(number) {
-  const numArray = `${number}`.split('')
-  let result = ''
-  numArray.reverse()
+  const numArray = `${number}`.split('');
+  let result = '';
+  numArray.reverse();
   for (let i = 0; i < numArray.length; i++) {
     if (i % 3 === 0 && i !== 0) {
-      result = numArray[i] + ',' + result
+      result = numArray[i] + ',' + result;
     } else {
-      result = numArray[i] + result
+      result = numArray[i] + result;
     }
   }
-  return result
+  return result;
 }
 
 export function cleanString(string) {
@@ -23,7 +23,7 @@ export function cleanString(string) {
         .replace(/&amp;/gi, '&')
         .replace(/&lt;/gi, '<')
         .replace(/&gt;/gi, '>')
-    : ''
+    : '';
 }
 
 export function exceedsCharLimit({ inputType, contentType, text }) {
@@ -32,13 +32,13 @@ export function exceedsCharLimit({ inputType, contentType, text }) {
     contentType === 'rewardComment' ||
     contentType === 'statusMsg'
       ? charLimit[contentType]
-      : charLimit[contentType][inputType]
+      : charLimit[contentType][inputType];
   return text.length > limit
     ? {
         color: 'red',
         borderColor: 'red'
       }
-    : null
+    : null;
 }
 
 export function renderCharLimit({ inputType, contentType, text }) {
@@ -47,27 +47,27 @@ export function renderCharLimit({ inputType, contentType, text }) {
     contentType === 'rewardComment' ||
     contentType === 'statusMsg'
       ? charLimit[contentType]
-      : charLimit[contentType][inputType]
-  return `${text.length}/${limit} Characters`
+      : charLimit[contentType][inputType];
+  return `${text.length}/${limit} Characters`;
 }
 
 export function turnStringIntoQuestion(string) {
-  const toDelete = ['?', ' ']
+  const toDelete = ['?', ' '];
   while (toDelete.indexOf(string.charAt(string.length - 1)) !== -1) {
-    string = string.slice(0, -1)
+    string = string.slice(0, -1);
   }
-  return string + '?'
+  return string + '?';
 }
 
 export function limitBrs(string) {
   return string.replace(
     /(<br ?\/?>){11,}/gi,
     '<br><br><br><br><br><br><br><br><br><br>'
-  )
+  );
 }
 
 export function renderText(text) {
-  let newText = text
+  let newText = text;
   while (
     newText !== '' &&
     (newText[0] === ' ' ||
@@ -75,20 +75,20 @@ export function renderText(text) {
         newText[newText.length - 2] === ' '))
   ) {
     if (newText[0] === ' ') {
-      newText = newText.substring(1)
+      newText = newText.substring(1);
     }
     if (
       newText[newText.length - 1] === ' ' &&
       newText[newText.length - 2] === ' '
     ) {
-      newText = newText.slice(0, -1)
+      newText = newText.slice(0, -1);
     }
   }
-  return newText
+  return newText;
 }
 
 export function removeLineBreaks(string) {
-  return string.replace(/\n/gi, ' ').replace(/ {2,}/gi, ' ')
+  return string.replace(/\n/gi, ' ').replace(/ {2,}/gi, ' ');
 }
 
 export function addTwoLetterEmoji(string) {
@@ -100,7 +100,7 @@ export function addTwoLetterEmoji(string) {
     .replace(/(:P )/gi, '😛 ')
     .replace(/(:\( )/g, '🙁 ')
     .replace(/(:O )/gi, '😲 ')
-    .replace(/(<3 )/g, '❤️ ')
+    .replace(/(<3 )/g, '❤️ ');
 }
 
 export function addThreeLetterEmoji(string) {
@@ -112,7 +112,7 @@ export function addThreeLetterEmoji(string) {
     .replace(/(:-P )/gi, '😛 ')
     .replace(/(:-\( )/g, '🙁 ')
     .replace(/(:-O )/gi, '😲 ')
-    .replace(/(O_O )/gi, '😳 ')
+    .replace(/(O_O )/gi, '😳 ');
 }
 
 export function addAdvancedEmoji(string) {
@@ -173,25 +173,25 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(diamond\))/gi, '💎')
     .replace(/(\(clap\))/gi, '👏')
     .replace(/(\(star\))/gi, '⭐')
-    .replace(/(\(ufo\))/gi, '🛸')
+    .replace(/(\(ufo\))/gi, '🛸');
 }
 
 export function addEmoji(string) {
-  let firstPart = string.substring(0, string.length - 3)
-  let lastPart = addTwoLetterEmoji(string.slice(-3))
-  let firstResult = `${firstPart}${lastPart}`
+  let firstPart = string.substring(0, string.length - 3);
+  let lastPart = addTwoLetterEmoji(string.slice(-3));
+  let firstResult = `${firstPart}${lastPart}`;
 
-  firstPart = firstResult.substring(0, firstResult.length - 4)
-  lastPart = addThreeLetterEmoji(firstResult.slice(-4))
-  return `${firstPart}${lastPart}`
+  firstPart = firstResult.substring(0, firstResult.length - 4);
+  lastPart = addThreeLetterEmoji(firstResult.slice(-4));
+  return `${firstPart}${lastPart}`;
 }
 
 export function finalizeEmoji(string) {
   let emojifiedString = addAdvancedEmoji(string + ' ').replace(
     /((\s*\S+)*)\s*/,
     '$1'
-  )
-  return addEmoji(emojifiedString)
+  );
+  return addEmoji(emojifiedString);
 }
 
 export function processedQueryString(string) {
@@ -201,7 +201,7 @@ export function processedQueryString(string) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/\r?\n/g, '<br>')
-    : null
+    : null;
 }
 
 export function processedString(string) {
@@ -211,108 +211,108 @@ export function processedString(string) {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-    : null
+    : null;
 }
 
 export function processedStringWithURL(string) {
-  if (typeof string !== 'string') return string || null
-  const maxChar = 100
+  if (typeof string !== 'string') return string || null;
+  const maxChar = 100;
   const trimmedString = string =>
-    string.length > maxChar ? `${string.substring(0, maxChar)}...` : string
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
+    string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
   let tempString = string
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/\r?\n/g, '<br>')
-    .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
-  let newString = ''
+    .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`);
+  let newString = '';
   while (tempString.length > 0) {
-    let hrefPos = tempString.indexOf('href="')
+    let hrefPos = tempString.indexOf('href="');
     if (hrefPos === -1) {
-      let headPos = tempString.indexOf('target="_blank">')
-      let tailPos = tempString.indexOf('</a>')
+      let headPos = tempString.indexOf('target="_blank">');
+      let tailPos = tempString.indexOf('</a>');
       if (headPos !== -1) {
-        let wrapperHead = tempString.substring(0, headPos + 16)
-        let url = tempString.substring(headPos + 16, tailPos)
-        let wrapperTail = tempString.substring(tailPos, tempString.length)
-        newString += `${wrapperHead}${trimmedString(url)}${wrapperTail}`
+        let wrapperHead = tempString.substring(0, headPos + 16);
+        let url = tempString.substring(headPos + 16, tailPos);
+        let wrapperTail = tempString.substring(tailPos, tempString.length);
+        newString += `${wrapperHead}${trimmedString(url)}${wrapperTail}`;
       } else {
-        newString += tempString
+        newString += tempString;
       }
-      break
+      break;
     }
 
-    newString += tempString.substring(0, hrefPos + 6)
-    tempString = tempString.substring(hrefPos + 6, tempString.length)
+    newString += tempString.substring(0, hrefPos + 6);
+    tempString = tempString.substring(hrefPos + 6, tempString.length);
     if (tempString.indexOf('://') > 8 || tempString.indexOf('://') === -1) {
-      newString += 'http://'
+      newString += 'http://';
     }
   }
-  return newString
+  return newString;
 }
 
 export function processedURL(url) {
   if (url.indexOf('://') === -1) {
-    url = 'http://' + url
+    url = 'http://' + url;
   }
-  return url
+  return url;
 }
 
 export function queryStringForArray(array, originVar, destinationVar) {
   return `${array
     .map(elem => `${destinationVar}[]=${elem[originVar]}`)
-    .join('&')}`
+    .join('&')}`;
 }
 
 export function stringIsEmpty(string) {
   const checkedString = string
     ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
-    : ''
-  return checkedString === ''
+    : '';
+  return checkedString === '';
 }
 
 export function trimWhiteSpaces(text) {
-  let newText = text
+  let newText = text;
   while (
     newText !== '' &&
     (newText[0] === ' ' || newText[newText.length - 1] === ' ')
   ) {
     if (newText[0] === ' ') {
-      newText = newText.substring(1)
+      newText = newText.substring(1);
     }
     if (newText[newText.length - 1] === ' ') {
-      newText = newText.slice(0, -1)
+      newText = newText.slice(0, -1);
     }
   }
-  return newText
+  return newText;
 }
 
 export function isValidUrl(url) {
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
-  return regex.test(url)
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  return regex.test(url);
 }
 
 export function isValidYoutubeUrl(url) {
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
-  let trimOne = url.split('v=')[1]
-  let trimTwo = url.split('youtu.be/')[1]
+  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  let trimOne = url.split('v=')[1];
+  let trimTwo = url.split('youtu.be/')[1];
   return (
     regex.test(url) &&
     (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
-  )
+  );
 }
 
 export function fetchedVideoCodeFromURL(url) {
-  let videoCode = ''
+  let videoCode = '';
   if (typeof url.split('v=')[1] !== 'undefined') {
-    let trimmedUrl = url.split('v=')[1].split('#')[0]
-    videoCode = trimmedUrl.split('&')[0]
+    let trimmedUrl = url.split('v=')[1].split('#')[0];
+    videoCode = trimmedUrl.split('&')[0];
   } else {
-    let trimmedUrl = url.split('youtu.be/')[1].split('#')[0]
-    videoCode = trimmedUrl.split('&')[0].split('?')[0]
+    let trimmedUrl = url.split('youtu.be/')[1].split('#')[0];
+    videoCode = trimmedUrl.split('&')[0].split('?')[0];
   }
-  return videoCode
+  return videoCode;
 }
 
 /* eslint-enable no-useless-escape */

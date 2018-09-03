@@ -1,14 +1,14 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import HomeMenuItems from 'components/HomeMenuItems'
-import ProfileWidget from 'components/ProfileWidget'
-import { Color } from 'constants/css'
-import Notification from 'components/Notification'
-import { connect } from 'react-redux'
-import { logout, uploadProfilePic } from 'redux/actions/UserActions'
-import AlertModal from 'components/Modals/AlertModal'
-import ImageEditModal from 'components/Modals/ImageEditModal'
-import Icon from 'components/Icon'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import HomeMenuItems from 'components/HomeMenuItems';
+import ProfileWidget from 'components/ProfileWidget';
+import { Color } from 'constants/css';
+import Notification from 'components/Notification';
+import { connect } from 'react-redux';
+import { logout, uploadProfilePic } from 'redux/actions/UserActions';
+import AlertModal from 'components/Modals/AlertModal';
+import ImageEditModal from 'components/Modals/ImageEditModal';
+import Icon from 'components/Icon';
 
 class MobileMenu extends Component {
   static propTypes = {
@@ -19,7 +19,7 @@ class MobileMenu extends Component {
     uploadProfilePic: PropTypes.func,
     username: PropTypes.string,
     onClose: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     alertModalShown: false,
@@ -27,30 +27,30 @@ class MobileMenu extends Component {
     imageUri: null,
     marginLeft: '-100%',
     processing: false
-  }
+  };
   componentDidMount() {
-    this.setState({ marginLeft: 0 })
+    this.setState({ marginLeft: 0 });
   }
 
   componentDidUpdate(prevProps) {
-    const { chatMode, location, onClose } = this.props
+    const { chatMode, location, onClose } = this.props;
     if (location !== prevProps.location) {
-      onClose()
+      onClose();
     }
     if (chatMode !== prevProps.chatMode) {
-      onClose()
+      onClose();
     }
   }
 
   render() {
-    const { location, history, logout, username, onClose } = this.props
+    const { location, history, logout, username, onClose } = this.props;
     const {
       alertModalShown,
       imageEditModalShown,
       imageUri,
       marginLeft,
       processing
-    } = this.state
+    } = this.state;
     return (
       <div
         className="mobile"
@@ -144,21 +144,21 @@ class MobileMenu extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   uploadImage = async image => {
-    const { uploadProfilePic } = this.props
+    const { uploadProfilePic } = this.props;
     this.setState({
       processing: true
-    })
-    await uploadProfilePic(image)
+    });
+    await uploadProfilePic(image);
     this.setState({
       imageUri: null,
       processing: false,
       imageEditModalShown: false
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -166,4 +166,4 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   { logout, uploadProfilePic }
-)(MobileMenu)
+)(MobileMenu);

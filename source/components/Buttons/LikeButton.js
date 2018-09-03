@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Button from 'components/Button'
-import Icon from 'components/Icon'
-import { likeContent } from 'helpers/requestHelpers'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'components/Button';
+import Icon from 'components/Icon';
+import { likeContent } from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
 
 LikeButton.propTypes = {
   contentType: PropTypes.string.isRequired,
@@ -15,7 +15,7 @@ LikeButton.propTypes = {
   small: PropTypes.bool,
   style: PropTypes.object,
   targetLabel: PropTypes.string
-}
+};
 function LikeButton({
   contentId,
   contentType,
@@ -39,10 +39,10 @@ function LikeButton({
             id: contentId,
             type: contentType,
             dispatch
-          })
-          onClick(likes, contentId)
+          });
+          onClick(likes, contentId);
         } catch (error) {
-          return console.error(error)
+          return console.error(error);
         }
       }}
     >
@@ -53,10 +53,10 @@ function LikeButton({
           : `Like${targetLabel ? ' ' + targetLabel : ''}`}
       </span>
     </Button>
-  )
+  );
 }
 
 export default connect(
   null,
   dispatch => ({ dispatch })
-)(LikeButton)
+)(LikeButton);

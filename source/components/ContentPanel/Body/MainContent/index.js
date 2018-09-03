@@ -1,13 +1,13 @@
-import React, { Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { cleanString, stringIsEmpty } from 'helpers/stringHelpers'
-import { Color } from 'constants/css'
-import Embedly from 'components/Embedly'
-import LongText from 'components/Texts/LongText'
-import VideoPlayer from 'components/VideoPlayer'
-import ContentEditor from '../ContentEditor'
-import Profile from './Profile'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
+import { Color } from 'constants/css';
+import Embedly from 'components/Embedly';
+import LongText from 'components/Texts/LongText';
+import VideoPlayer from 'components/VideoPlayer';
+import ContentEditor from '../ContentEditor';
+import Profile from './Profile';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 MainContent.propTypes = {
   contentObj: PropTypes.object,
@@ -18,7 +18,7 @@ MainContent.propTypes = {
   rootObj: PropTypes.object,
   urlRelated: PropTypes.object,
   type: PropTypes.string.isRequired
-}
+};
 export default function MainContent({
   contentObj,
   contentId,
@@ -162,5 +162,5 @@ export default function MainContent({
           )}
       </div>
     </ErrorBoundary>
-  )
+  );
 }

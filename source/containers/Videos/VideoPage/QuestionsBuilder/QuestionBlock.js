@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import ChoiceListItem from './ChoiceListItem'
-import EditChoiceListItem from './EditChoiceListItem'
-import Textarea from 'components/Texts/Textarea'
-import Button from 'components/Button'
-import { cleanString } from 'helpers/stringHelpers'
-import { borderRadius, innerBorderRadius, Color } from 'constants/css'
-import Banner from 'components/Banner'
-import Icon from 'components/Icon'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import ChoiceListItem from './ChoiceListItem';
+import EditChoiceListItem from './EditChoiceListItem';
+import Textarea from 'components/Texts/Textarea';
+import Button from 'components/Button';
+import { cleanString } from 'helpers/stringHelpers';
+import { borderRadius, innerBorderRadius, Color } from 'constants/css';
+import Banner from 'components/Banner';
+import Icon from 'components/Icon';
+import { css } from 'emotion';
 
 export default class QuestionBlock extends Component {
   static propTypes = {
@@ -28,38 +28,38 @@ export default class QuestionBlock extends Component {
     onUndoRemove: PropTypes.func.isRequired,
     questionIndex: PropTypes.number.isRequired,
     title: PropTypes.string
-  }
+  };
 
   state = {
     editedQuestionTitle: '',
     choices: {},
     choiceIds: []
-  }
+  };
 
   componentDidMount() {
-    const { title, choices } = this.props
+    const { title, choices } = this.props;
     this.setState({
       editedQuestionTitle: title,
       choices: choices.reduce((prev, choice) => {
-        return { ...prev, [choice.id]: choice }
+        return { ...prev, [choice.id]: choice };
       }, {}),
       choiceIds: choices.map(choice => choice.id)
-    })
+    });
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.choices !== this.props.choices) {
       this.setState({
         choices: this.props.choices.reduce((prev, choice) => {
-          return { ...prev, [choice.id]: choice }
+          return { ...prev, [choice.id]: choice };
         }, {}),
         choiceIds: this.props.choices.map(choice => choice.id)
-      })
+      });
     }
   }
 
   render() {
-    const { choices, choiceIds, editedQuestionTitle } = this.state
+    const { choices, choiceIds, editedQuestionTitle } = this.state;
     const {
       errorMessage,
       id,
@@ -71,14 +71,14 @@ export default class QuestionBlock extends Component {
       deleted,
       title,
       hideErrorMsg
-    } = this.props
+    } = this.props;
     const choicePlaceHolder = [
       'Choice A',
       'Choice B',
       'Choice C (Optional)',
       'Choice D (Optional)',
       'Choice E (Optional)'
-    ]
+    ];
     return (
       <div
         className={css`
@@ -116,8 +116,8 @@ export default class QuestionBlock extends Component {
                 placeholder="Enter Question..."
                 value={cleanString(editedQuestionTitle)}
                 onChange={event => {
-                  hideErrorMsg(id)
-                  this.setState({ editedQuestionTitle: event.target.value })
+                  hideErrorMsg(id);
+                  this.setState({ editedQuestionTitle: event.target.value });
                 }}
               />
             )}
@@ -167,7 +167,7 @@ export default class QuestionBlock extends Component {
                 placeholder={choicePlaceHolder[index]}
                 checkDisabled={deleted}
               />
-            )
+            );
           })}
         </div>
         <div
@@ -203,12 +203,12 @@ export default class QuestionBlock extends Component {
           )}
         </div>
       </div>
-    )
+    );
   }
 
   onEditChoice = ({ choiceId, text }) => {
-    const { id, hideErrorMsg } = this.props
-    hideErrorMsg(id)
+    const { id, hideErrorMsg } = this.props;
+    hideErrorMsg(id);
     this.setState(state => ({
       choices: {
         ...state.choices,
@@ -217,29 +217,29 @@ export default class QuestionBlock extends Component {
           label: text
         }
       }
-    }))
-  }
+    }));
+  };
 
   onEditCancel = questionIndex => {
-    const { id, hideErrorMsg } = this.props
-    hideErrorMsg(id)
+    const { id, hideErrorMsg } = this.props;
+    hideErrorMsg(id);
     this.setState({
       editedChoiceTitles: this.props.choices.map(choice => choice.label),
       editedQuestionTitle: this.props.title
-    })
-    this.props.onEditCancel(questionIndex)
-  }
+    });
+    this.props.onEditCancel(questionIndex);
+  };
 
   onEditDone = () => {
-    const { id, hideErrorMsg, onEditDone } = this.props
-    const { choices, choiceIds, editedQuestionTitle } = this.state
-    hideErrorMsg(id)
-    onEditDone({ id, choices, choiceIds, editedQuestionTitle })
-  }
+    const { id, hideErrorMsg, onEditDone } = this.props;
+    const { choices, choiceIds, editedQuestionTitle } = this.state;
+    hideErrorMsg(id);
+    onEditDone({ id, choices, choiceIds, editedQuestionTitle });
+  };
 
   onSelectChoice = choiceId => {
-    const { id, hideErrorMsg } = this.props
-    hideErrorMsg(id)
+    const { id, hideErrorMsg } = this.props;
+    hideErrorMsg(id);
     this.setState(state => ({
       choices: this.props.choices.reduce((prev, choice) => {
         return {
@@ -248,29 +248,29 @@ export default class QuestionBlock extends Component {
             ...state.choices[choice.id],
             checked: choice.id === choiceId
           }
-        }
+        };
       }, {})
-    }))
-  }
+    }));
+  };
 
   onMove = ({ sourceId, targetId }) => {
-    const newIndices = [...this.state.choiceIds]
-    const sourceIndex = newIndices.indexOf(sourceId)
-    const targetIndex = newIndices.indexOf(targetId)
-    newIndices.splice(sourceIndex, 1)
-    newIndices.splice(targetIndex, 0, sourceId)
-    this.setState({ choiceIds: newIndices })
-  }
+    const newIndices = [...this.state.choiceIds];
+    const sourceIndex = newIndices.indexOf(sourceId);
+    const targetIndex = newIndices.indexOf(targetId);
+    newIndices.splice(sourceIndex, 1);
+    newIndices.splice(targetIndex, 0, sourceId);
+    this.setState({ choiceIds: newIndices });
+  };
 
   determineLabel = (choices, index) => {
-    let label = ''
+    let label = '';
     for (let i = 0; i < choices.length; i++) {
       if (choices[i].id === index) {
-        label = choices[i].label
+        label = choices[i].label;
       }
     }
-    return label
-  }
+    return label;
+  };
 
   Styles = {
     content: css`
@@ -325,5 +325,5 @@ export default class QuestionBlock extends Component {
         }
       }
     `
-  }
+  };
 }

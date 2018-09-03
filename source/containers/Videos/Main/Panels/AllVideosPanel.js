@@ -1,18 +1,18 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import VideoThumb from 'components/VideoThumb'
-import { connect } from 'react-redux'
-import { getMoreVideos } from 'redux/actions/VideoActions'
-import SectionPanel from 'components/SectionPanel'
-import Button from 'components/Button'
-import { stringIsEmpty } from 'helpers/stringHelpers'
-import request from 'axios'
-import { URL } from 'constants/URL'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import VideoThumb from 'components/VideoThumb';
+import { connect } from 'react-redux';
+import { getMoreVideos } from 'redux/actions/VideoActions';
+import SectionPanel from 'components/SectionPanel';
+import Button from 'components/Button';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import request from 'axios';
+import { URL } from 'constants/URL';
 
 const last = array => {
-  return array[array.length - 1]
-}
+  return array[array.length - 1];
+};
 
 class AllVideosPanel extends Component {
   static propTypes = {
@@ -26,15 +26,15 @@ class AllVideosPanel extends Component {
     title: PropTypes.string.isRequired,
     userId: PropTypes.number,
     videos: PropTypes.array.isRequired
-  }
+  };
 
-  timer = null
+  timer = null;
 
   state = {
     searchQuery: '',
     searchedVideos: [],
     isSearching: false
-  }
+  };
 
   render() {
     const {
@@ -43,9 +43,9 @@ class AllVideosPanel extends Component {
       title = 'All Videos',
       loaded,
       onAddVideoClick
-    } = this.props
-    const { searchQuery, searchedVideos, isSearching } = this.state
-    const videos = searchQuery ? searchedVideos : allVideos
+    } = this.props;
+    const { searchQuery, searchedVideos, isSearching } = this.state;
+    const videos = searchQuery ? searchedVideos : allVideos;
     return (
       <SectionPanel
         title={title}
@@ -90,52 +90,52 @@ class AllVideosPanel extends Component {
                 user={{ username: video.uploaderName, id: video.uploaderId }}
                 lastVideoId={last(videos) ? last(videos).id : 0}
               />
-            )
+            );
           })}
         </div>
       </SectionPanel>
-    )
+    );
   }
 
   determineDeletable = video => {
-    const { authLevel, canDelete, userId } = this.props
-    const userIsUploader = video.uploaderId === userId
-    const userCanDeleteThis = canDelete && authLevel > video.uploaderAuthLevel
-    return userIsUploader || userCanDeleteThis
-  }
+    const { authLevel, canDelete, userId } = this.props;
+    const userIsUploader = video.uploaderId === userId;
+    const userCanDeleteThis = canDelete && authLevel > video.uploaderAuthLevel;
+    return userIsUploader || userCanDeleteThis;
+  };
 
   determineEditable = video => {
-    const { authLevel, canEdit, userId } = this.props
-    const userIsUploader = video.uploaderId === userId
-    const userCanEditThis = canEdit && authLevel > video.uploaderAuthLevel
-    return userIsUploader || userCanEditThis
-  }
+    const { authLevel, canEdit, userId } = this.props;
+    const userIsUploader = video.uploaderId === userId;
+    const userCanEditThis = canEdit && authLevel > video.uploaderAuthLevel;
+    return userIsUploader || userCanEditThis;
+  };
 
   loadMoreVideos = () => {
-    const { videos, getMoreVideos } = this.props
-    const lastId = last(videos) ? last(videos).id : 0
-    return getMoreVideos(lastId)
-  }
+    const { videos, getMoreVideos } = this.props;
+    const lastId = last(videos) ? last(videos).id : 0;
+    return getMoreVideos(lastId);
+  };
 
   onVideoSearch = text => {
-    clearTimeout(this.timer)
-    this.setState({ searchQuery: text, isSearching: true })
-    this.timer = setTimeout(() => this.searchVideo(text), 300)
-  }
+    clearTimeout(this.timer);
+    this.setState({ searchQuery: text, isSearching: true });
+    this.timer = setTimeout(() => this.searchVideo(text), 300);
+  };
 
   searchVideo = async text => {
     if (stringIsEmpty(text) || text.length < 3) {
-      return this.setState({ searchedVideos: [], isSearching: false })
+      return this.setState({ searchedVideos: [], isSearching: false });
     }
     try {
       const { data: searchedVideos } = await request.get(
         `${URL}/video/search?query=${text}`
-      )
-      this.setState({ searchedVideos, isSearching: false })
+      );
+      this.setState({ searchedVideos, isSearching: false });
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
-  }
+  };
 }
 
 export default connect(
@@ -151,4 +151,4 @@ export default connect(
   {
     getMoreVideos
   }
-)(withRouter(AllVideosPanel))
+)(withRouter(AllVideosPanel));

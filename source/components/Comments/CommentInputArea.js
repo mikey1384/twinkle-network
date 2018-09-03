@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import InputForm from 'components/Texts/InputForm'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import InputForm from 'components/Texts/InputForm';
 
 export default class CommentInputArea extends Component {
   static propTypes = {
@@ -13,7 +13,7 @@ export default class CommentInputArea extends Component {
     rootCommentId: PropTypes.number,
     targetCommentId: PropTypes.number,
     style: PropTypes.object
-  }
+  };
 
   render() {
     const {
@@ -26,7 +26,7 @@ export default class CommentInputArea extends Component {
       rootCommentId,
       style,
       targetCommentId
-    } = this.props
+    } = this.props;
     return (
       <div style={{ ...style, position: 'relative' }} ref={InputFormRef}>
         <InputForm
@@ -40,6 +40,6 @@ export default class CommentInputArea extends Component {
           placeholder={`Enter your ${inputTypeLabel} here...`}
         />
       </div>
-    )
+    );
   }
 }

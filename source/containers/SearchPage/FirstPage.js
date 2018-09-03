@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
-import CloseText from './CloseText'
-import Checkbox from 'components/Checkbox'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
+import CloseText from './CloseText';
+import Checkbox from 'components/Checkbox';
 
 export default class FirstPage extends Component {
   static propTypes = {
@@ -12,9 +12,9 @@ export default class FirstPage extends Component {
     filter: PropTypes.string.isRequired,
     onSearchBoxFocus: PropTypes.func.isRequired,
     setDefaultSearchFilter: PropTypes.func.isRequired
-  }
+  };
   render() {
-    const { defaultFilter, filter } = this.props
+    const { defaultFilter, filter } = this.props;
     return (
       <div
         style={{
@@ -91,18 +91,18 @@ export default class FirstPage extends Component {
         </div>
         <CloseText />
       </div>
-    )
+    );
   }
 
   changeFilter = type => {
-    const { changeFilter, onSearchBoxFocus } = this.props
-    changeFilter(type)
-    onSearchBoxFocus()
-  }
+    const { changeFilter, onSearchBoxFocus } = this.props;
+    changeFilter(type);
+    onSearchBoxFocus();
+  };
 
   setDefaultSearchFilter = () => {
-    const { setDefaultSearchFilter, onSearchBoxFocus } = this.props
-    setDefaultSearchFilter()
-    onSearchBoxFocus()
-  }
+    const { setDefaultSearchFilter, onSearchBoxFocus } = this.props;
+    setDefaultSearchFilter();
+    onSearchBoxFocus();
+  };
 }

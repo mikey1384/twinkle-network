@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ProfilePic from 'components/ProfilePic'
-import UsernameText from 'components/Texts/UsernameText'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
-import LongText from 'components/Texts/LongText'
-import EditTextArea from 'components/Texts/EditTextArea'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import request from 'axios'
-import { timeSince } from 'helpers/timeStampHelpers'
-import { stringIsEmpty } from 'helpers/stringHelpers'
-import { auth, handleError } from 'helpers/requestHelpers'
-import { URL } from 'constants/URL'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ProfilePic from 'components/ProfilePic';
+import UsernameText from 'components/Texts/UsernameText';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import LongText from 'components/Texts/LongText';
+import EditTextArea from 'components/Texts/EditTextArea';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import request from 'axios';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import { auth, handleError } from 'helpers/requestHelpers';
+import { URL } from 'constants/URL';
+import { connect } from 'react-redux';
 
-const API_URL = `${URL}/user`
+const API_URL = `${URL}/user`;
 
 class Comment extends Component {
   static propTypes = {
@@ -26,24 +26,30 @@ class Comment extends Component {
     noMarginForEditButton: PropTypes.bool,
     onEditDone: PropTypes.func,
     star: PropTypes.object.isRequired
-  }
+  };
 
   state = {
     onEdit: false
-  }
+  };
 
   render() {
-    const { authLevel, canEdit, myId, noMarginForEditButton, star } = this.props
-    const { onEdit } = this.state
-    const userIsUploader = star.rewarderId === myId
-    const userCanEditThis = canEdit && authLevel > star.rewarderAuthLevel
-    const editButtonShown = userIsUploader || userCanEditThis
-    const editMenuItems = []
+    const {
+      authLevel,
+      canEdit,
+      myId,
+      noMarginForEditButton,
+      star
+    } = this.props;
+    const { onEdit } = this.state;
+    const userIsUploader = star.rewarderId === myId;
+    const userCanEditThis = canEdit && authLevel > star.rewarderAuthLevel;
+    const editButtonShown = userIsUploader || userCanEditThis;
+    const editMenuItems = [];
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: () => this.setState({ onEdit: true })
-      })
+      });
     }
     return (
       <ErrorBoundary>
@@ -105,7 +111,8 @@ class Comment extends Component {
                   }}
                 >
                   rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}
-                  Star{star.rewardAmount > 1 ? 's' : ''}
+                  Star
+                  {star.rewardAmount > 1 ? 's' : ''}
                 </span>{' '}
                 <span style={{ fontSize: '1rem', color: Color.gray() }}>
                   ({timeSince(star.timeStamp)})
@@ -140,11 +147,11 @@ class Comment extends Component {
           </div>
         </div>
       </ErrorBoundary>
-    )
+    );
   }
 
   onEditDone = async editedComment => {
-    const { handleError, onEditDone = () => {}, star } = this.props
+    const { handleError, onEditDone = () => {}, star } = this.props;
     try {
       const {
         data: { success }
@@ -152,15 +159,15 @@ class Comment extends Component {
         `${API_URL}/reward`,
         { editedComment, contentId: star.id },
         auth()
-      )
+      );
       if (success) {
-        onEditDone({ id: star.id, text: editedComment })
+        onEditDone({ id: star.id, text: editedComment });
       }
-      this.setState({ onEdit: false })
+      this.setState({ onEdit: false });
     } catch (error) {
-      handleError(error)
+      handleError(error);
     }
-  }
+  };
 }
 
 export default connect(
@@ -171,4 +178,4 @@ export default connect(
   dispatch => ({
     handleError: error => handleError(error, dispatch)
   })
-)(Comment)
+)(Comment);

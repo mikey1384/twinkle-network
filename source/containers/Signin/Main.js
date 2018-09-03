@@ -1,11 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Button from 'components/Button'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Button from 'components/Button';
 
 Main.propTypes = {
   showLoginForm: PropTypes.func.isRequired,
   showSignUpForm: PropTypes.func.isRequired
-}
+};
 export default function Main({ showLoginForm, showSignUpForm }) {
   return (
     <main>
@@ -24,5 +24,5 @@ export default function Main({ showLoginForm, showSignUpForm }) {
         {"No, I'm a new user. Make me a new account, please!"}
       </Button>
     </main>
-  )
+  );
 }

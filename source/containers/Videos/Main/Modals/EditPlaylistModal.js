@@ -1,18 +1,18 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { connect } from 'react-redux'
-import { changePlaylistVideos } from 'redux/actions/PlaylistActions'
-import Loading from 'components/Loading'
-import SelectVideosForm from './SelectVideosForm'
-import SortableThumb from './SortableThumb'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-touch-backend'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import FilterBar from 'components/FilterBar'
-import SearchInput from 'components/Texts/SearchInput'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { connect } from 'react-redux';
+import { changePlaylistVideos } from 'redux/actions/PlaylistActions';
+import Loading from 'components/Loading';
+import SelectVideosForm from './SelectVideosForm';
+import SortableThumb from './SortableThumb';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-touch-backend';
+import request from 'axios';
+import { URL } from 'constants/URL';
+import FilterBar from 'components/FilterBar';
+import SearchInput from 'components/Texts/SearchInput';
 
 class EditPlaylistModal extends Component {
   static propTypes = {
@@ -20,9 +20,9 @@ class EditPlaylistModal extends Component {
     modalType: PropTypes.string.isRequired,
     onHide: PropTypes.func.isRequired,
     playlistId: PropTypes.number.isRequired
-  }
+  };
 
-  timer = null
+  timer = null;
 
   state = {
     allVideos: [],
@@ -33,10 +33,10 @@ class EditPlaylistModal extends Component {
     loadMoreButtonShown: false,
     mainTabActive: true,
     searchText: ''
-  }
+  };
 
   componentDidMount() {
-    const { modalType, playlistId } = this.props
+    const { modalType, playlistId } = this.props;
     return Promise.all([
       request.get(
         `${URL}/playlist/playlist?noLimit=1&playlistId=${playlistId}`
@@ -46,23 +46,23 @@ class EditPlaylistModal extends Component {
         : Promise.resolve({ data: [] })
     ])
       .then(([{ data: { videos: selectedVideos } }, { data: allVideos }]) => {
-        let loadMoreButtonShown = false
+        let loadMoreButtonShown = false;
         if (allVideos.length > 18) {
-          allVideos.pop()
-          loadMoreButtonShown = true
+          allVideos.pop();
+          loadMoreButtonShown = true;
         }
         this.setState({
           selectedVideos,
           allVideos,
           loadMoreButtonShown,
           loaded: true
-        })
+        });
       })
-      .catch(error => console.error(error.response || error))
+      .catch(error => console.error(error.response || error));
   }
 
   render() {
-    const { modalType, onHide } = this.props
+    const { modalType, onHide } = this.props;
     const {
       isSaving,
       selectedVideos,
@@ -72,7 +72,7 @@ class EditPlaylistModal extends Component {
       loadMoreButtonShown,
       searchedVideos,
       allVideos
-    } = this.state
+    } = this.state;
     return (
       <Modal large onHide={onHide}>
         <header>
@@ -139,16 +139,18 @@ class EditPlaylistModal extends Component {
                     key={video.id}
                     video={video}
                     onMove={({ sourceId, targetId }) => {
-                      let selected = [...selectedVideos]
-                      const selectedVideoArray = selected.map(video => video.id)
-                      const sourceIndex = selectedVideoArray.indexOf(sourceId)
-                      const sourceVideo = selected[sourceIndex]
-                      const targetIndex = selectedVideoArray.indexOf(targetId)
-                      selected.splice(sourceIndex, 1)
-                      selected.splice(targetIndex, 0, sourceVideo)
+                      let selected = [...selectedVideos];
+                      const selectedVideoArray = selected.map(
+                        video => video.id
+                      );
+                      const sourceIndex = selectedVideoArray.indexOf(sourceId);
+                      const sourceVideo = selected[sourceIndex];
+                      const targetIndex = selectedVideoArray.indexOf(targetId);
+                      selected.splice(sourceIndex, 1);
+                      selected.splice(targetIndex, 0, sourceVideo);
                       this.setState({
                         selectedVideos: selected
-                      })
+                      });
                     }}
                   />
                 ))}
@@ -180,22 +182,22 @@ class EditPlaylistModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   handleSave = async() => {
-    const { selectedVideos } = this.state
-    const { onHide, playlistId, changePlaylistVideos } = this.props
-    this.setState({ isSaving: true })
+    const { selectedVideos } = this.state;
+    const { onHide, playlistId, changePlaylistVideos } = this.props;
+    this.setState({ isSaving: true });
     await changePlaylistVideos(
       playlistId,
       selectedVideos.map(video => video.id)
-    )
-    onHide()
-  }
+    );
+    onHide();
+  };
 
   loadMoreVideos = () => {
-    const { allVideos } = this.state
+    const { allVideos } = this.state;
     request
       .get(
         `${URL}/video?numberToLoad=18&videoId=${
@@ -203,35 +205,35 @@ class EditPlaylistModal extends Component {
         }`
       )
       .then(({ data: videos }) => {
-        let loadMoreButtonShown = false
+        let loadMoreButtonShown = false;
         if (videos.length > 18) {
-          videos.pop()
-          loadMoreButtonShown = true
+          videos.pop();
+          loadMoreButtonShown = true;
         }
         this.setState({
           allVideos: allVideos.concat(videos),
           loadMoreButtonShown
-        })
+        });
       })
-      .catch(error => console.error(error.response || error))
-  }
+      .catch(error => console.error(error.response || error));
+  };
 
   onVideoSearchInput = text => {
-    clearTimeout(this.timer)
-    this.setState({ searchText: text })
-    this.timer = setTimeout(() => this.searchVideo(text), 300)
-  }
+    clearTimeout(this.timer);
+    this.setState({ searchText: text });
+    this.timer = setTimeout(() => this.searchVideo(text), 300);
+  };
 
   searchVideo = async text => {
     try {
       const { data: searchedVideos } = await request.get(
         `${URL}/playlist/search/video?query=${text}`
-      )
-      this.setState({ searchedVideos })
+      );
+      this.setState({ searchedVideos });
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
-  }
+  };
 }
 
 export default connect(
@@ -239,4 +241,4 @@ export default connect(
   {
     changePlaylistVideos
   }
-)(DragDropContext(HTML5Backend)(EditPlaylistModal))
+)(DragDropContext(HTML5Backend)(EditPlaylistModal));

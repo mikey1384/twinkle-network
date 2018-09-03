@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 export const main = css`
   width: 100%;
@@ -27,4 +27,4 @@ export const main = css`
       display: none;
     }
   }
-`
+`;

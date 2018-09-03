@@ -1,29 +1,29 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import Button from 'components/Button'
-import { stringIsEmpty } from 'helpers/stringHelpers'
-import Input from 'components/Texts/Input'
-import Banner from 'components/Banner'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import Button from 'components/Button';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import Input from 'components/Texts/Input';
+import Banner from 'components/Banner';
 
 export default class LoginForm extends Component {
   static propTypes = {
     login: PropTypes.func.isRequired,
     showSignUpForm: PropTypes.func.isRequired
-  }
+  };
 
   constructor() {
-    super()
+    super();
     this.state = {
       username: '',
       password: '',
       errorMessage: ''
-    }
-    this.onSubmit = this.onSubmit.bind(this)
+    };
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   render() {
-    const { showSignUpForm } = this.props
-    const { username, password, errorMessage } = this.state
+    const { showSignUpForm } = this.props;
+    const { username, password, errorMessage } = this.state;
     return (
       <Fragment>
         {errorMessage && <Banner love>{errorMessage}</Banner>}
@@ -37,7 +37,7 @@ export default class LoginForm extends Component {
                   this.setState({
                     errorMessage: '',
                     username: text
-                  })
+                  });
                 }}
                 placeholder="Enter your username"
                 type="text"
@@ -47,7 +47,7 @@ export default class LoginForm extends Component {
                     !stringIsEmpty(password) &&
                     event.key === 'Enter'
                   ) {
-                    this.onSubmit()
+                    this.onSubmit();
                   }
                 }}
               />
@@ -60,7 +60,7 @@ export default class LoginForm extends Component {
                   this.setState({
                     errorMessage: '',
                     password: text
-                  })
+                  });
                 }}
                 placeholder="Enter your password"
                 type="password"
@@ -70,7 +70,7 @@ export default class LoginForm extends Component {
                     !stringIsEmpty(password) &&
                     event.key === 'Enter'
                   ) {
-                    this.onSubmit()
+                    this.onSubmit();
                   }
                 }}
               />
@@ -98,14 +98,14 @@ export default class LoginForm extends Component {
           </Button>
         </footer>
       </Fragment>
-    )
+    );
   }
 
   onSubmit() {
-    const { login } = this.props
-    const { username, password } = this.state
+    const { login } = this.props;
+    const { username, password } = this.state;
     return login({ username, password }).catch(error =>
       this.setState({ errorMessage: error })
-    )
+    );
   }
 }

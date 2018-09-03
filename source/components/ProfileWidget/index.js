@@ -1,14 +1,14 @@
 /* global FileReader */
 
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import ProfilePic from 'components/ProfilePic'
-import Button from 'components/Button'
-import { openSigninModal } from 'redux/actions/UserActions'
-import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { container } from './Styles'
-import { Color } from 'constants/css'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import ProfilePic from 'components/ProfilePic';
+import Button from 'components/Button';
+import { openSigninModal } from 'redux/actions/UserActions';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { container } from './Styles';
+import { Color } from 'constants/css';
 
 class ProfileWidget extends Component {
   static propTypes = {
@@ -20,7 +20,7 @@ class ProfileWidget extends Component {
     showAlert: PropTypes.func,
     userId: PropTypes.number,
     username: PropTypes.string
-  }
+  };
 
   render() {
     const {
@@ -30,7 +30,7 @@ class ProfileWidget extends Component {
       username,
       profilePicId,
       realName
-    } = this.props
+    } = this.props;
     return (
       <div
         className={container({
@@ -50,7 +50,7 @@ class ProfileWidget extends Component {
               userId={userId}
               profilePicId={profilePicId}
               onClick={() => {
-                if (userId) history.push(`/users/${username}`)
+                if (userId) history.push(`/users/${username}`);
               }}
             />
             <div className="names">
@@ -109,7 +109,7 @@ class ProfileWidget extends Component {
           </div>
           <input
             ref={ref => {
-              this.fileInput = ref
+              this.fileInput = ref;
             }}
             style={{ display: 'none' }}
             type="file"
@@ -118,21 +118,21 @@ class ProfileWidget extends Component {
           />
         </div>
       </div>
-    )
+    );
   }
 
   handlePicture = event => {
-    const { loadImage, showAlert } = this.props
-    const reader = new FileReader()
-    const maxSize = 5000
-    const file = event.target.files[0]
+    const { loadImage, showAlert } = this.props;
+    const reader = new FileReader();
+    const maxSize = 5000;
+    const file = event.target.files[0];
     if (file.size / 1000 > maxSize) {
-      return showAlert()
+      return showAlert();
     }
-    reader.onload = loadImage
-    reader.readAsDataURL(file)
-    event.target.value = null
-  }
+    reader.onload = loadImage;
+    reader.readAsDataURL(file);
+    event.target.value = null;
+  };
 }
 
 export default connect(
@@ -144,4 +144,4 @@ export default connect(
     profilePicId: state.UserReducer.profilePicId
   }),
   { openSigninModal }
-)(ProfileWidget)
+)(ProfileWidget);

@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import AddLinkModal from './AddLinkModal'
-import Button from 'components/Button'
-import SectionPanel from 'components/SectionPanel'
-import LinkGroup from './LinkGroup'
-import Notification from 'components/Notification'
-import { connect } from 'react-redux'
-import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions'
-import { container } from './Styles'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import AddLinkModal from './AddLinkModal';
+import Button from 'components/Button';
+import SectionPanel from 'components/SectionPanel';
+import LinkGroup from './LinkGroup';
+import Notification from 'components/Notification';
+import { connect } from 'react-redux';
+import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
+import { container } from './Styles';
 
 class Main extends Component {
   static propTypes = {
@@ -16,34 +16,34 @@ class Main extends Component {
     history: PropTypes.object.isRequired,
     links: PropTypes.array.isRequired,
     loadMoreLinksButtonShown: PropTypes.bool.isRequired
-  }
+  };
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       addLinkModalShown: false,
       loaded: !!props.links.length
-    }
+    };
   }
 
   componentDidMount() {
-    const { fetchLinks, history } = this.props
-    const { loaded } = this.state
-    this.mounted = true
+    const { fetchLinks, history } = this.props;
+    const { loaded } = this.state;
+    this.mounted = true;
     if (!loaded || history.action === 'PUSH') {
       fetchLinks().then(() => {
-        if (this.mounted) this.setState({ loaded: true })
-      })
+        if (this.mounted) this.setState({ loaded: true });
+      });
     }
   }
 
   componentWillUnmount() {
-    this.mounted = false
+    this.mounted = false;
   }
 
   render() {
-    const { links, loadMoreLinksButtonShown } = this.props
-    const { addLinkModalShown, loaded } = this.state
+    const { links, loadMoreLinksButtonShown } = this.props;
+    const { addLinkModalShown, loaded } = this.state;
     return (
       <div className={container}>
         <div className="left">
@@ -74,14 +74,14 @@ class Main extends Component {
         )}
         <Notification className="right" />
       </div>
-    )
+    );
   }
 
   loadMoreLinks = () => {
-    const { fetchMoreLinks, links } = this.props
-    const lastId = links[links.length - 1].id
-    return fetchMoreLinks(lastId)
-  }
+    const { fetchMoreLinks, links } = this.props;
+    const lastId = links[links.length - 1].id;
+    return fetchMoreLinks(lastId);
+  };
 }
 
 export default connect(
@@ -94,4 +94,4 @@ export default connect(
     fetchLinks,
     fetchMoreLinks
   }
-)(Main)
+)(Main);

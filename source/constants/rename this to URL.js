@@ -1,2 +1,1 @@
-export const URL = 'https://api.twinkle.network'
-
+export const URL = 'https://api.twinkle.network';

@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 export const searchPage = css`
   padding-top: 1rem;
@@ -14,4 +14,4 @@ export const searchPage = css`
     padding-top: 0;
     padding-bottom: 9rem;
   }
-`
+`;

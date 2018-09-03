@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
 import {
   searchUserToInvite,
   clearUserSearchResults
-} from 'redux/actions/ChatActions'
-import { connect } from 'react-redux'
-import TagPeopleForm from 'components/TagPeopleForm'
-import Input from 'components/Texts/Input'
+} from 'redux/actions/ChatActions';
+import { connect } from 'react-redux';
+import TagPeopleForm from 'components/TagPeopleForm';
+import Input from 'components/Texts/Input';
 
 class CreateNewChannelModal extends Component {
   static propTypes = {
@@ -18,12 +18,12 @@ class CreateNewChannelModal extends Component {
     userId: PropTypes.number.isRequired,
     searchResults: PropTypes.array.isRequired,
     searchUserToInvite: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     channelName: '',
     selectedUsers: []
-  }
+  };
 
   render() {
     const {
@@ -32,8 +32,8 @@ class CreateNewChannelModal extends Component {
       clearSearchResults,
       searchUserToInvite,
       searchResults
-    } = this.props
-    const { channelName, selectedUsers } = this.state
+    } = this.props;
+    const { channelName, selectedUsers } = this.state;
     return (
       <Modal onHide={this.props.onHide}>
         <header>New Chat</header>
@@ -77,11 +77,11 @@ class CreateNewChannelModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   onAddUser = user => {
-    const { selectedUsers } = this.state
+    const { selectedUsers } = this.state;
     this.setState({
       selectedUsers: selectedUsers.concat([
         {
@@ -89,27 +89,27 @@ class CreateNewChannelModal extends Component {
           username: user.username
         }
       ])
-    })
-  }
+    });
+  };
 
   onRemoveUser = user => {
-    const { selectedUsers } = this.state
+    const { selectedUsers } = this.state;
     this.setState({
       selectedUsers: selectedUsers.filter(
         selectedUser => selectedUser.userId !== user.userId
       )
-    })
-  }
+    });
+  };
 
   onChannelNameInput = value => {
-    this.setState({ channelName: value })
-  }
+    this.setState({ channelName: value });
+  };
 
   onDone = () => {
-    const { userId } = this.props
-    const { channelName, selectedUsers } = this.state
-    this.props.onDone({ userId, channelName, selectedUsers })
-  }
+    const { userId } = this.props;
+    const { channelName, selectedUsers } = this.state;
+    this.props.onDone({ userId, channelName, selectedUsers });
+  };
 }
 
 export default connect(
@@ -120,4 +120,4 @@ export default connect(
     clearSearchResults: clearUserSearchResults,
     searchUserToInvite
   }
-)(CreateNewChannelModal)
+)(CreateNewChannelModal);

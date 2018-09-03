@@ -1,16 +1,16 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Context from './Context'
-import CommentInputArea from './CommentInputArea'
-import Comment from './Comment'
-import Button from 'components/Button'
-import { scrollElementToCenter } from 'helpers/domHelpers'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Context from './Context';
+import CommentInputArea from './CommentInputArea';
+import Comment from './Comment';
+import Button from 'components/Button';
+import { scrollElementToCenter } from 'helpers/domHelpers';
 import {
   deleteContent,
   loadComments,
   uploadComment
-} from 'helpers/requestHelpers'
-import { connect } from 'react-redux'
+} from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
 
 class Comments extends Component {
   static propTypes = {
@@ -41,35 +41,35 @@ class Comments extends Component {
     }).isRequired,
     style: PropTypes.object,
     userId: PropTypes.number
-  }
+  };
 
   state = {
     deleting: false,
     isLoading: false,
     commentSubmitted: false
-  }
+  };
 
-  Comments = {}
+  Comments = {};
 
   componentDidUpdate(prevProps) {
-    const { commentSubmitted, deleting } = this.state
+    const { commentSubmitted, deleting } = this.state;
     const {
       autoFocus,
       autoExpand,
       comments,
       commentsShown,
       inputAtBottom
-    } = this.props
+    } = this.props;
     if (prevProps.comments.length > comments.length && deleting) {
-      this.setState({ deleting: false })
+      this.setState({ deleting: false });
       if (comments.length === 0) {
-        return scrollElementToCenter(this.Container)
+        return scrollElementToCenter(this.Container);
       }
       if (
         comments[comments.length - 1].id !==
         prevProps.comments[prevProps.comments.length - 1].id
       ) {
-        scrollElementToCenter(this.Comments[comments[comments.length - 1].id])
+        scrollElementToCenter(this.Comments[comments[comments.length - 1].id]);
       }
     }
     if (
@@ -80,8 +80,8 @@ class Comments extends Component {
         comments[comments.length - 1].id >
           prevProps.comments[prevProps.comments.length - 1].id)
     ) {
-      this.setState({ commentSubmitted: false })
-      scrollElementToCenter(this.Comments[comments[comments.length - 1].id])
+      this.setState({ commentSubmitted: false });
+      scrollElementToCenter(this.Comments[comments[comments.length - 1].id]);
     }
     if (
       !inputAtBottom &&
@@ -90,8 +90,8 @@ class Comments extends Component {
       (prevProps.comments.length === 0 ||
         comments[0].id > prevProps.comments[0].id)
     ) {
-      this.setState({ commentSubmitted: false })
-      scrollElementToCenter(this.Comments[comments[0].id])
+      this.setState({ commentSubmitted: false });
+      scrollElementToCenter(this.Comments[comments[0].id]);
     }
 
     if (
@@ -101,7 +101,7 @@ class Comments extends Component {
       autoFocus &&
       commentsShown
     ) {
-      scrollElementToCenter(this.CommentInputArea)
+      scrollElementToCenter(this.CommentInputArea);
     }
   }
 
@@ -122,10 +122,12 @@ class Comments extends Component {
       parent,
       style,
       userId
-    } = this.props
-    let previewComments = []
+    } = this.props;
+    let previewComments = [];
     if (numPreviews > 0 && !autoExpand && !commentsShown) {
-      previewComments = comments.filter((comment, index) => index < numPreviews)
+      previewComments = comments.filter(
+        (comment, index) => index < numPreviews
+      );
     }
     return (
       <Context.Provider
@@ -145,7 +147,7 @@ class Comments extends Component {
             ...style
           }}
           ref={ref => {
-            this.Container = ref
+            this.Container = ref;
           }}
         >
           {!inputAtBottom &&
@@ -161,7 +163,7 @@ class Comments extends Component {
                     isPreview={previewComments.length > 0}
                     index={index}
                     innerRef={ref => {
-                      this.Comments[comment.id] = ref
+                      this.Comments[comment.id] = ref;
                     }}
                     parent={parent}
                     comment={comment}
@@ -181,69 +183,69 @@ class Comments extends Component {
             })}
         </div>
       </Context.Provider>
-    )
+    );
   }
 
   onCommentSubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { dispatch, onCommentSubmit, parent } = this.props
-    this.setState({ commentSubmitted: true })
+    const { dispatch, onCommentSubmit, parent } = this.props;
+    this.setState({ commentSubmitted: true });
     const data = await uploadComment({
       content,
       parent,
       rootCommentId,
       targetCommentId,
       dispatch
-    })
-    if (data) onCommentSubmit(data)
-  }
+    });
+    if (data) onCommentSubmit(data);
+  };
 
   onReplySubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { dispatch, onReplySubmit, parent } = this.props
-    this.setState({ commentSubmitted: true })
+    const { dispatch, onReplySubmit, parent } = this.props;
+    this.setState({ commentSubmitted: true });
     const data = await uploadComment({
       content,
       parent,
       rootCommentId,
       targetCommentId,
       dispatch
-    })
-    if (data) onReplySubmit(data)
-  }
+    });
+    if (data) onReplySubmit(data);
+  };
 
   loadMoreComments = async() => {
-    const { isLoading } = this.state
-    const { commentsLoadLimit, inputAtBottom } = this.props
+    const { isLoading } = this.state;
+    const { commentsLoadLimit, inputAtBottom } = this.props;
     if (!isLoading) {
-      const { comments, parent, loadMoreComments } = this.props
-      this.setState({ isLoading: true })
-      const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1
+      const { comments, parent, loadMoreComments } = this.props;
+      this.setState({ isLoading: true });
+      const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1;
       const lastCommentId = comments[lastCommentLocation]
         ? comments[lastCommentLocation].id
-        : 'undefined'
+        : 'undefined';
       try {
         const data = await loadComments({
           id: parent.id,
           type: parent.type,
           lastCommentId,
           limit: commentsLoadLimit
-        })
-        if (data) loadMoreComments(data)
-        this.setState({ isLoading: false })
+        });
+        if (data) loadMoreComments(data);
+        this.setState({ isLoading: false });
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
-  }
+  };
 
   onDelete = async commentId => {
-    const { dispatch, onDelete } = this.props
-    this.setState({ deleting: true })
-    await deleteContent({ id: commentId, type: 'comment', dispatch })
-    onDelete(commentId)
-  }
+    const { dispatch, onDelete } = this.props;
+    this.setState({ deleting: true });
+    await deleteContent({ id: commentId, type: 'comment', dispatch });
+    onDelete(commentId);
+  };
 
   renderInputArea = style => {
-    const { autoFocus, inputAreaInnerRef, inputTypeLabel, parent } = this.props
+    const { autoFocus, inputAreaInnerRef, inputTypeLabel, parent } = this.props;
     return (
       <CommentInputArea
         autoFocus={autoFocus}
@@ -255,12 +257,12 @@ class Comments extends Component {
         rootCommentId={parent.type === 'comment' ? parent.commentId : null}
         targetCommentId={parent.type === 'comment' ? parent.id : null}
       />
-    )
-  }
+    );
+  };
 
   renderLoadMoreButton = () => {
-    const { isLoading } = this.state
-    const { inputAtBottom } = this.props
+    const { isLoading } = this.state;
+    const { inputAtBottom } = this.props;
     return (
       <Button
         filled
@@ -276,11 +278,11 @@ class Comments extends Component {
       >
         Load More
       </Button>
-    )
-  }
+    );
+  };
 }
 
 export default connect(
   null,
   dispatch => ({ dispatch })
-)(Comments)
+)(Comments);

@@ -6,10 +6,10 @@ const types = {
   LOAD_MORE_RESULTS: 'LOAD_MORE_RESULTS',
   RECORD_SCROLL_POSITION: 'RECORD_SCROLL_POSITION',
   SET_RESULTS: 'SET_RESULTS'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_SEARCH`
+  types[key] = `${types[key]}_SEARCH`;
 }
 
-export default types
+export default types;

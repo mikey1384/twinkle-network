@@ -1,23 +1,23 @@
-import express from 'express'
-import React from 'react'
-import { renderToString } from 'react-dom/server'
-import { renderStylesToString } from 'emotion-server'
-import { StaticRouter } from 'react-router'
-import createHistory from 'history/createMemoryHistory'
-import { Provider } from 'react-redux'
-import path from 'path'
-import App from '../source/containers/App'
-import createStoreWithHistory from './store'
+import express from 'express';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { renderStylesToString } from 'emotion-server';
+import { StaticRouter } from 'react-router';
+import createHistory from 'history/createMemoryHistory';
+import { Provider } from 'react-redux';
+import path from 'path';
+import App from '../source/containers/App';
+import createStoreWithHistory from './store';
 
-const app = express()
+const app = express();
 if (process.env.NODE_ENV !== 'production') {
-  require('../webpack/webpack.dev').default(app)
+  require('../webpack/webpack.dev').default(app);
 }
 
-const history = createHistory()
-export const store = createStoreWithHistory(history)
+const history = createHistory();
+export const store = createStoreWithHistory(history);
 
-app.use(express.static(path.join(__dirname, '../public')))
+app.use(express.static(path.join(__dirname, '../public')));
 app.use((req, res) => {
   res.end(
     (function() {
@@ -29,7 +29,7 @@ app.use((req, res) => {
             </StaticRouter>
           </Provider>
         )
-      )
+      );
       return `<!DOCTYPE html>
       <html>
         <head>
@@ -59,9 +59,9 @@ app.use((req, res) => {
           <script type="application/javascript" src="/vendor.js"></script>
           <script type="application/javascript" src="/main.js"></script>
         </body>
-      </html>`
+      </html>`;
     })()
-  )
-})
+  );
+});
 
-export default app
+export default app;

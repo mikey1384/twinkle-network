@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
 import {
   attachStar,
   contentFeedLike,
@@ -20,19 +20,19 @@ import {
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
-} from 'redux/actions/FeedActions'
-import { resetNumNewPosts } from 'redux/actions/NotiActions'
-import InputPanel from './InputPanel'
-import ContentPanel from 'components/ContentPanel'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
-import Loading from 'components/Loading'
-import { connect } from 'react-redux'
-import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import FilterBar from 'components/FilterBar'
-import Banner from 'components/Banner'
-import { queryStringForArray } from 'helpers/stringHelpers'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import { loadNewFeeds } from 'helpers/requestHelpers'
+} from 'redux/actions/FeedActions';
+import { resetNumNewPosts } from 'redux/actions/NotiActions';
+import InputPanel from './InputPanel';
+import ContentPanel from 'components/ContentPanel';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import Loading from 'components/Loading';
+import { connect } from 'react-redux';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
+import FilterBar from 'components/FilterBar';
+import Banner from 'components/Banner';
+import { queryStringForArray } from 'helpers/stringHelpers';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { loadNewFeeds } from 'helpers/requestHelpers';
 
 class Stories extends Component {
   static propTypes = {
@@ -64,19 +64,19 @@ class Stories extends Component {
     uploadFeedComment: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
     userId: PropTypes.number
-  }
+  };
 
-  clearingFeeds = false
-  scrollHeight = 0
+  clearingFeeds = false;
+  scrollHeight = 0;
 
   state = {
     loadingMore: false
-  }
+  };
 
   body =
     typeof document !== 'undefined'
       ? document.scrollingElement || document.documentElement
-      : {}
+      : {};
 
   async componentDidMount() {
     let {
@@ -86,22 +86,22 @@ class Stories extends Component {
       loaded,
       resetNumNewPosts,
       setCurrentSection
-    } = this.props
-    setCurrentSection('storyFeeds')
-    addEvent(window, 'scroll', this.onScroll)
-    addEvent(document.getElementById('App'), 'scroll', this.onScroll)
-    resetNumNewPosts()
+    } = this.props;
+    setCurrentSection('storyFeeds');
+    addEvent(window, 'scroll', this.onScroll);
+    addEvent(document.getElementById('App'), 'scroll', this.onScroll);
+    resetNumNewPosts();
     if (history.action === 'PUSH' || !loaded) {
-      this.clearingFeeds = true
-      clearFeeds()
-      this.clearingFeeds = false
-      fetchFeeds()
+      this.clearingFeeds = true;
+      clearFeeds();
+      this.clearingFeeds = false;
+      fetchFeeds();
     }
   }
 
   componentWillUnmount() {
-    removeEvent(window, 'scroll', this.onScroll)
-    removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
+    removeEvent(window, 'scroll', this.onScroll);
+    removeEvent(document.getElementById('App'), 'scroll', this.onScroll);
   }
 
   render() {
@@ -125,13 +125,13 @@ class Stories extends Component {
       showFeedComments,
       uploadTargetContentComment,
       username
-    } = this.props
-    const { loadingMore } = this.state
+    } = this.props;
+    const { loadingMore } = this.state;
     return (
       <ErrorBoundary>
         <div
           ref={ref => {
-            this.Container = ref
+            this.Container = ref;
           }}
           style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
         >
@@ -199,7 +199,7 @@ class Stories extends Component {
                         selfLoadingDisabled={this.clearingFeeds}
                         userId={userId}
                       />
-                    )
+                    );
                   })}
                   {loadMoreButton && (
                     <LoadMoreButton
@@ -214,35 +214,35 @@ class Stories extends Component {
           </div>
         </div>
       </ErrorBoundary>
-    )
+    );
   }
 
   applyFilter = filter => {
-    const { fetchFeeds, selectedFilter, clearFeeds } = this.props
-    if (filter === selectedFilter) return
-    clearFeeds()
-    fetchFeeds({ filter })
-  }
+    const { fetchFeeds, selectedFilter, clearFeeds } = this.props;
+    if (filter === selectedFilter) return;
+    clearFeeds();
+    fetchFeeds({ filter });
+  };
 
   loadMoreFeeds = async() => {
-    const { storyFeeds, fetchMoreFeeds, selectedFilter } = this.props
-    const { loadingMore } = this.state
+    const { storyFeeds, fetchMoreFeeds, selectedFilter } = this.props;
+    const { loadingMore } = this.state;
     if (!loadingMore) {
-      this.setState({ loadingMore: true })
+      this.setState({ loadingMore: true });
       try {
         await fetchMoreFeeds({
           shownFeeds: queryStringForArray(storyFeeds, 'feedId', 'shownFeeds'),
           filter: selectedFilter
-        })
-        this.setState({ loadingMore: false })
+        });
+        this.setState({ loadingMore: false });
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   onScroll = () => {
-    const { chatMode, storyFeeds, loadMoreButton } = this.props
+    const { chatMode, storyFeeds, loadMoreButton } = this.props;
     if (
       document.getElementById('App').scrollHeight > this.scrollHeight ||
       this.body.scrollTop > this.scrollHeight
@@ -250,7 +250,7 @@ class Stories extends Component {
       this.scrollHeight = Math.max(
         document.getElementById('App').scrollHeight,
         this.body.scrollTop
-      )
+      );
     }
     if (!chatMode && storyFeeds.length > 0 && this.scrollHeight !== 0) {
       this.setState(
@@ -268,30 +268,30 @@ class Stories extends Component {
                 this.scrollHeight - window.innerHeight - 400) &&
             loadMoreButton
           ) {
-            this.loadMoreFeeds()
+            this.loadMoreFeeds();
           }
         }
-      )
+      );
     }
-  }
+  };
 
   fetchNewFeeds = async() => {
-    const { storyFeeds = [], resetNumNewPosts, fetchNewFeeds } = this.props
-    const { loadingMore } = this.state
+    const { storyFeeds = [], resetNumNewPosts, fetchNewFeeds } = this.props;
+    const { loadingMore } = this.state;
     if (!loadingMore) {
-      this.setState({ loadingMore: true })
-      resetNumNewPosts()
+      this.setState({ loadingMore: true });
+      resetNumNewPosts();
       const data = await loadNewFeeds({
         lastInteraction: storyFeeds[0] ? storyFeeds[0].lastInteraction : 0,
         shownFeeds: queryStringForArray(storyFeeds, 'feedId', 'shownFeeds')
-      })
-      if (data) fetchNewFeeds(data)
-      this.setState({ loadingMore: false })
+      });
+      if (data) fetchNewFeeds(data);
+      this.setState({ loadingMore: false });
     }
-  }
+  };
 
   renderFilterBar = () => {
-    const { selectedFilter } = this.props
+    const { selectedFilter } = this.props;
     return (
       <FilterBar bordered>
         <nav
@@ -325,17 +325,17 @@ class Stories extends Component {
           Comments
         </nav>
       </FilterBar>
-    )
-  }
+    );
+  };
 
   uploadFeedComment = ({ feed, data }) => {
-    const { uploadFeedComment } = this.props
+    const { uploadFeedComment } = this.props;
     uploadFeedComment({
       data,
       type: feed.type,
       contentId: feed.contentId
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -372,4 +372,4 @@ export default connect(
     uploadFeedComment,
     uploadTargetContentComment
   }
-)(Stories)
+)(Stories);

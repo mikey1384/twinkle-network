@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Spinner from 'components/Spinner'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Spinner from 'components/Spinner';
+import { css } from 'emotion';
 
 Loading.propTypes = {
   relative: PropTypes.bool,
   className: PropTypes.string,
   style: PropTypes.object,
   text: PropTypes.string
-}
+};
 export default function Loading({
   relative,
   className,
@@ -37,5 +37,5 @@ export default function Loading({
         {text && <div style={{ marginLeft: '1.5rem' }}>{text}</div>}
       </div>
     </div>
-  )
+  );
 }

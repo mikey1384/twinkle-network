@@ -1,26 +1,26 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { Color } from 'constants/css'
-import { addEmoji, finalizeEmoji, stringIsEmpty } from 'helpers/stringHelpers'
-import Textarea from 'components/Texts/Textarea'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { Color } from 'constants/css';
+import { addEmoji, finalizeEmoji, stringIsEmpty } from 'helpers/stringHelpers';
+import Textarea from 'components/Texts/Textarea';
 
 export default class QuestionModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
     uploadAnswer: PropTypes.func.isRequired,
     question: PropTypes.string.isRequired
-  }
+  };
 
   state = {
     answer: '',
     answerSubmitted: false
-  }
+  };
 
   render() {
-    const { onHide, question } = this.props
-    const { answer, answerSubmitted } = this.state
+    const { onHide, question } = this.props;
+    const { answer, answerSubmitted } = this.state;
     return (
       <Modal onHide={onHide}>
         <header>
@@ -62,20 +62,20 @@ export default class QuestionModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   handleKeyUp = event => {
     if (event.key === ' ') {
-      this.setState({ answer: addEmoji(event.target.value) })
+      this.setState({ answer: addEmoji(event.target.value) });
     }
-  }
+  };
 
   onSubmit = async() => {
-    const { onHide, parent, uploadAnswer } = this.props
-    const { answer } = this.state
-    await uploadAnswer({ content: finalizeEmoji(answer), parent })
-    this.setState({ answerSubmitted: true })
-    setTimeout(() => onHide(), 1000)
-  }
+    const { onHide, parent, uploadAnswer } = this.props;
+    const { answer } = this.state;
+    await uploadAnswer({ content: finalizeEmoji(answer), parent });
+    this.setState({ answerSubmitted: true });
+    setTimeout(() => onHide(), 1000);
+  };
 }

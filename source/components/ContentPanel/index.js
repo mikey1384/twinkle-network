@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Context from './Context'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import withContext from 'components/Wrappers/withContext'
-import Heading from './Heading'
-import Body from './Body'
-import Loading from 'components/Loading'
-import { container } from './Styles'
-import request from 'axios'
-import { URL } from 'constants/URL'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Context from './Context';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import withContext from 'components/Wrappers/withContext';
+import Heading from './Heading';
+import Body from './Body';
+import Loading from 'components/Loading';
+import { container } from './Styles';
+import request from 'axios';
+import { URL } from 'constants/URL';
 
 class ContentPanel extends Component {
   static propTypes = {
@@ -32,25 +32,25 @@ class ContentPanel extends Component {
     onShowComments: PropTypes.func.isRequired,
     onStarVideo: PropTypes.func,
     onTargetCommentSubmit: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     attachedVideoShown: false,
     feedLoaded: false
-  }
+  };
 
   async componentDidMount() {
     const {
       contentObj: { contentId, feedId, newPost, type },
       onLoadContent
-    } = this.props
-    const { feedLoaded } = this.state
+    } = this.props;
+    const { feedLoaded } = this.state;
     if (!feedLoaded && !newPost) {
-      this.setState({ feedLoaded: true })
+      this.setState({ feedLoaded: true });
       const { data } = await request.get(
         `${URL}/content?contentId=${contentId}&type=${type}`
-      )
-      onLoadContent({ data, feedId })
+      );
+      onLoadContent({ data, feedId });
     }
   }
 
@@ -75,8 +75,8 @@ class ContentPanel extends Component {
       onStarVideo,
       onTargetCommentSubmit,
       userId
-    } = this.props
-    const { attachedVideoShown } = this.state
+    } = this.props;
+    const { attachedVideoShown } = this.state;
     return (
       <Context.Provider
         value={{
@@ -138,8 +138,8 @@ class ContentPanel extends Component {
           </ErrorBoundary>
         </div>
       </Context.Provider>
-    )
+    );
   }
 }
 
-export default withContext({ Component: ContentPanel, Context })
+export default withContext({ Component: ContentPanel, Context });

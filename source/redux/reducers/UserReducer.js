@@ -1,4 +1,4 @@
-import USER from '../constants/User'
+import USER from '../constants/User';
 
 const defaultState = {
   authLevel: 0,
@@ -12,65 +12,65 @@ const defaultState = {
   profiles: [],
   searchedProfiles: [],
   loadMoreButton: false
-}
+};
 
 export default function UserReducer(state = defaultState, action) {
-  let loadMoreButton = false
+  let loadMoreButton = false;
   switch (action.type) {
     case USER.CHANGE_XP:
       return {
         ...state,
         twinkleXP: action.xp,
         rank: action.rank
-      }
+      };
     case USER.CLEAR_SEARCH:
       return {
         ...state,
         searchedProfiles: []
-      }
+      };
     case USER.INIT_SESSION:
       return {
         ...state,
         ...action.data,
         isCreator: action.data.userType === 'creator'
-      }
+      };
     case USER.LOAD_USERS:
       if (action.data.length > 20) {
-        action.data.pop()
-        loadMoreButton = true
+        action.data.pop();
+        loadMoreButton = true;
       }
       return {
         ...state,
         profiles: action.data,
         loadMoreButton
-      }
+      };
     case USER.LOAD_MORE_USERS:
       if (action.data.length > 5) {
-        action.data.pop()
-        loadMoreButton = true
+        action.data.pop();
+        loadMoreButton = true;
       }
       return {
         ...state,
         profiles: state.profiles.concat(action.data),
         loadMoreButton
-      }
+      };
     case USER.SEARCH:
       return {
         ...state,
         searchedProfiles: action.users
-      }
+      };
     case USER.NOT_EXIST:
       return {
         ...state,
         profile: {
           unavailable: true
         }
-      }
+      };
     case USER.SHOW_PROFILE:
       return {
         ...state,
         profile: action.data
-      }
+      };
     case USER.LOGIN:
       return {
         ...state,
@@ -78,7 +78,7 @@ export default function UserReducer(state = defaultState, action) {
         loggedIn: true,
         signinModalShown: false,
         isCreator: action.data.userType === 'creator'
-      }
+      };
     case USER.LOGOUT:
       return {
         authLevel: 0,
@@ -91,24 +91,24 @@ export default function UserReducer(state = defaultState, action) {
         profile: state.profile,
         profiles: state.profiles,
         searchedProfiles: state.searchedProfiles
-      }
+      };
     case USER.SIGNUP:
       return {
         ...state,
         ...action.data,
         loggedIn: true,
         signinModalShown: false
-      }
+      };
     case USER.OPEN_SIGNIN_MODAL:
       return {
         ...state,
         signinModalShown: true
-      }
+      };
     case USER.CLOSE_SIGNIN_MODAL:
       return {
         ...state,
         signinModalShown: false
-      }
+      };
     case USER.DELETE_STATUS_MSG:
       return {
         ...state,
@@ -123,7 +123,7 @@ export default function UserReducer(state = defaultState, action) {
             ? { statusMsg: '', statusColor: '' }
             : {})
         }))
-      }
+      };
     case USER.EDIT_BIO:
       return {
         ...state,
@@ -135,7 +135,7 @@ export default function UserReducer(state = defaultState, action) {
           ...profile,
           ...(profile.id === action.userId ? action.bio : {})
         }))
-      }
+      };
     case USER.EDIT_PROFILE_PICTURE:
       return {
         ...state,
@@ -154,7 +154,7 @@ export default function UserReducer(state = defaultState, action) {
               ? action.data.imageId
               : profile.profilePicId
         }))
-      }
+      };
     case USER.EDIT_STATUS_MSG:
       return {
         ...state,
@@ -169,13 +169,13 @@ export default function UserReducer(state = defaultState, action) {
             ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
             : {})
         }))
-      }
+      };
     case USER.SET_DEFAULT_FILTER:
       return {
         ...state,
         searchFilter: action.filter
-      }
+      };
     default:
-      return state
+      return state;
   }
 }

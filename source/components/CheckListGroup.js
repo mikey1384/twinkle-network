@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import { css } from 'emotion'
-import { borderRadius, innerBorderRadius, Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React from 'react';
+import { css } from 'emotion';
+import { borderRadius, innerBorderRadius, Color } from 'constants/css';
 
 CheckListGroup.propTypes = {
   inputType: PropTypes.string,
@@ -13,7 +13,7 @@ CheckListGroup.propTypes = {
   ).isRequired,
   onSelect: PropTypes.func.isRequired,
   style: PropTypes.object
-}
+};
 export default function CheckListGroup({
   listItems,
   inputType,
@@ -84,8 +84,8 @@ export default function CheckListGroup({
               dangerouslySetInnerHTML={{ __html: listItem.label }}
             />
           </nav>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Button from 'components/Button'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Button from 'components/Button';
 
 export default class ButtonGroup extends Component {
   static propTypes = {
     buttons: PropTypes.array.isRequired,
     style: PropTypes.object
-  }
+  };
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       buttons: props.buttons.map(button => ({
         ...button,
         hoverClass: button.hoverClass || button.buttonClass
       }))
-    }
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -25,13 +25,13 @@ export default class ButtonGroup extends Component {
           ...button,
           hoverClass: button.hoverClass || button.buttonClass
         }))
-      })
+      });
     }
   }
 
   render() {
-    const { style } = this.props
-    const { buttons } = this.state
+    const { style } = this.props;
+    const { buttons } = this.state;
     return (
       <div style={{ ...style, display: 'flex' }}>
         {buttons.map((button, index) => {
@@ -65,9 +65,9 @@ export default class ButtonGroup extends Component {
             >
               {button.label}
             </Button>
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 }

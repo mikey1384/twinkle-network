@@ -140,7 +140,7 @@
     "react/no-unused-prop-types": [2],
     "react/no-children-prop": [0],
     "rest-spread-spacing": [2, "never"],
-    "semi": [2, "never"],
+    "semi": [2, "always"],
     "semi-spacing": [2, { "before": false, "after": true }],
     "space-before-blocks": [2, "always"],
     "space-before-function-paren": [2, "never"],

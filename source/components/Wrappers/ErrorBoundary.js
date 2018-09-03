@@ -1,22 +1,22 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
 
 export default class ErrorBoundary extends Component {
   static propTypes = {
     children: PropTypes.node
-  }
+  };
 
-  state = { hasError: false }
+  state = { hasError: false };
 
   componentDidCatch(error, info) {
-    this.setState({ hasError: true })
-    console.log(error, info)
+    this.setState({ hasError: true });
+    console.log(error, info);
   }
 
   render() {
-    const { children, ...props } = this.props
-    const { hasError } = this.state
+    const { children, ...props } = this.props;
+    const { hasError } = this.state;
     if (hasError) {
       return (
         <div
@@ -33,12 +33,12 @@ export default class ErrorBoundary extends Component {
         >
           Something went wrong
         </div>
-      )
+      );
     }
     return props ? (
       <div {...props}>{children}</div>
     ) : (
       <Fragment>{children}</Fragment>
-    )
+    );
   }
 }

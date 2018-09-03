@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import InputForm from 'components/Texts/InputForm'
+import PropTypes from 'prop-types';
+import React from 'react';
+import InputForm from 'components/Texts/InputForm';
 
 ReplyInputArea.propTypes = {
   rootCommentId: PropTypes.number,
@@ -9,7 +9,7 @@ ReplyInputArea.propTypes = {
   rows: PropTypes.number,
   style: PropTypes.object,
   targetCommentId: PropTypes.number
-}
+};
 export default function ReplyInputArea({
   innerRef,
   onSubmit,
@@ -29,5 +29,5 @@ export default function ReplyInputArea({
         placeholder="Enter your reply..."
       />
     </div>
-  )
+  );
 }

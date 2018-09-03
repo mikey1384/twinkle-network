@@ -1,5 +1,5 @@
-import LINK from '../constants/Link'
-import { processedURL } from 'helpers/stringHelpers'
+import LINK from '../constants/Link';
+import { processedURL } from 'helpers/stringHelpers';
 
 const defaultState = {
   links: [],
@@ -7,10 +7,10 @@ const defaultState = {
   linkPage: {
     comments: []
   }
-}
+};
 
 export default function linkReducer(state = defaultState, action) {
-  let loadMoreLinksButtonShown = false
+  let loadMoreLinksButtonShown = false;
   switch (action.type) {
     case LINK.ATTACH_STAR:
       return {
@@ -32,19 +32,19 @@ export default function linkReducer(state = defaultState, action) {
             }))
           }))
         }
-      }
+      };
     case LINK.DELETE:
       return {
         ...state,
         links: state.links.filter(link => link.id !== action.linkId)
-      }
+      };
     case LINK.DELETE_COMMENT:
       return {
         ...state,
         linkPage: {
           ...state.linkPage,
           comments: state.linkPage.comments.reduce((prev, comment) => {
-            if (comment.id === action.commentId) return prev
+            if (comment.id === action.commentId) return prev;
             return prev.concat([
               {
                 ...comment,
@@ -52,10 +52,10 @@ export default function linkReducer(state = defaultState, action) {
                   reply => reply.id !== action.commentId
                 )
               }
-            ])
+            ]);
           }, [])
         }
-      }
+      };
     case LINK.EDIT_COMMENT:
       return {
         ...state,
@@ -76,7 +76,7 @@ export default function linkReducer(state = defaultState, action) {
             }))
           }))
         }
-      }
+      };
     case LINK.EDIT_REWARD_COMMENT:
       return {
         ...state,
@@ -103,7 +103,7 @@ export default function linkReducer(state = defaultState, action) {
             }))
           }))
         }
-      }
+      };
     case LINK.EDIT_TITLE:
       return {
         ...state,
@@ -111,7 +111,7 @@ export default function linkReducer(state = defaultState, action) {
           ...link,
           title: action.data.id === link.id ? action.data.title : link.title
         }))
-      }
+      };
     case LINK.LIKE_COMMENT:
       return {
         ...state,
@@ -131,18 +131,18 @@ export default function linkReducer(state = defaultState, action) {
                     reply.id === action.data.commentId
                       ? action.data.likes
                       : reply.likes
-                }
+                };
               })
-            }
+            };
           })
         }
-      }
+      };
     case LINK.EDIT_PAGE:
       const {
         editedTitle: title,
         editedDescription: description,
         editedUrl: content
-      } = action.data
+      } = action.data;
       return {
         ...state,
         links: state.links.map(link => ({
@@ -159,27 +159,27 @@ export default function linkReducer(state = defaultState, action) {
           title,
           description
         }
-      }
+      };
     case LINK.LOAD:
       if (action.links.length > 20) {
-        loadMoreLinksButtonShown = true
-        action.links.pop()
+        loadMoreLinksButtonShown = true;
+        action.links.pop();
       }
       return {
         ...state,
         links: action.links,
         loadMoreLinksButtonShown
-      }
+      };
     case LINK.LOAD_MORE:
       if (action.links.length > 20) {
-        loadMoreLinksButtonShown = true
-        action.links.pop()
+        loadMoreLinksButtonShown = true;
+        action.links.pop();
       }
       return {
         ...state,
         links: state.links.concat(action.links),
         loadMoreLinksButtonShown
-      }
+      };
     case LINK.LOAD_COMMENTS:
       return {
         ...state,
@@ -188,7 +188,7 @@ export default function linkReducer(state = defaultState, action) {
           comments: action.comments,
           loadMoreCommentsButton: action.loadMoreButton
         }
-      }
+      };
     case LINK.LOAD_MORE_COMMENTS:
       return {
         ...state,
@@ -197,7 +197,7 @@ export default function linkReducer(state = defaultState, action) {
           comments: state.linkPage.comments.concat(action.comments),
           loadMoreCommentsButton: action.loadMoreButton
         }
-      }
+      };
     case LINK.LOAD_MORE_REPLIES:
       return {
         ...state,
@@ -215,7 +215,7 @@ export default function linkReducer(state = defaultState, action) {
                 : comment.loadMoreButton
           }))
         }
-      }
+      };
     case LINK.LIKE:
       return {
         ...state,
@@ -223,7 +223,7 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           likes: action.likes
         }
-      }
+      };
     case LINK.LOAD_PAGE:
       return {
         ...state,
@@ -231,7 +231,7 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           ...action.page
         }
-      }
+      };
     case LINK.UPLOAD_COMMENT:
       return {
         ...state,
@@ -239,7 +239,7 @@ export default function linkReducer(state = defaultState, action) {
           ...state.linkPage,
           comments: [action.comment].concat(state.linkPage.comments)
         }
-      }
+      };
     case LINK.UPLOAD_REPLY:
       return {
         ...state,
@@ -254,20 +254,20 @@ export default function linkReducer(state = defaultState, action) {
                 : comment.replies
           }))
         }
-      }
+      };
     case LINK.UPLOAD:
       return {
         ...state,
         links: [action.linkItem].concat(state.links)
-      }
+      };
     case LINK.RESET_PAGE:
       return {
         ...state,
         linkPage: {
           comments: []
         }
-      }
+      };
     default:
-      return state
+      return state;
   }
 }

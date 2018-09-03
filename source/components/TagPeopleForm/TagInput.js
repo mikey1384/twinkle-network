@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import onClickOutside from 'react-onclickoutside'
-import SearchDropdown from '../SearchDropdown'
-import Input from 'components/Texts/Input'
-import Icon from 'components/Icon'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import onClickOutside from 'react-onclickoutside';
+import SearchDropdown from '../SearchDropdown';
+import Input from 'components/Texts/Input';
+import Icon from 'components/Icon';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 
 class TagInput extends Component {
   static propTypes = {
@@ -18,22 +18,22 @@ class TagInput extends Component {
     selectedUsers: PropTypes.array.isRequired,
     style: PropTypes.object,
     onAddUser: PropTypes.func.isRequired
-  }
+  };
 
   handleClickOutside = event => {
-    this.props.onClickOutSide()
-  }
+    this.props.onClickOutSide();
+  };
 
   constructor() {
-    super()
+    super();
     this.state = {
       indexToHighlight: 0
-    }
-    this.onKeyDown = this.onKeyDown.bind(this)
+    };
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   render() {
-    const { className, style } = this.props
+    const { className, style } = this.props;
     return (
       <div
         className={`${css`
@@ -68,21 +68,21 @@ class TagInput extends Component {
         />
         {this.renderDropdownList()}
       </div>
-    )
+    );
   }
 
   renderDropdownList() {
-    let { searchResults, selectedUsers } = this.props
+    let { searchResults, selectedUsers } = this.props;
     searchResults = searchResults.filter(user => {
-      let result = true
+      let result = true;
       for (let i = 0; i < selectedUsers.length; i++) {
         if (selectedUsers[i].userId === user.id) {
-          result = false
-          break
+          result = false;
+          break;
         }
       }
-      return result
-    })
+      return result;
+    });
     return searchResults.length > 0 ? (
       <SearchDropdown
         searchResults={searchResults}
@@ -97,43 +97,43 @@ class TagInput extends Component {
           </span>
         )}
       />
-    ) : null
+    ) : null;
   }
 
   onKeyDown(event) {
-    let { searchResults, selectedUsers } = this.props
+    let { searchResults, selectedUsers } = this.props;
     searchResults = searchResults.filter(user => {
-      let result = true
+      let result = true;
       for (let i = 0; i < selectedUsers.length; i++) {
         if (selectedUsers[i].userId === user.id) {
-          result = false
-          break
+          result = false;
+          break;
         }
       }
-      return result
-    })
-    const { indexToHighlight } = this.state
-    let index = indexToHighlight
+      return result;
+    });
+    const { indexToHighlight } = this.state;
+    let index = indexToHighlight;
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
-        event.preventDefault()
-        let highlightIndex = Math.min(++index, searchResults.length - 1)
-        this.setState({ indexToHighlight: highlightIndex })
+        event.preventDefault();
+        let highlightIndex = Math.min(++index, searchResults.length - 1);
+        this.setState({ indexToHighlight: highlightIndex });
       }
 
       if (event.keyCode === 38) {
-        event.preventDefault()
-        let highlightIndex = Math.max(--index, 0)
-        this.setState({ indexToHighlight: highlightIndex })
+        event.preventDefault();
+        let highlightIndex = Math.max(--index, 0);
+        this.setState({ indexToHighlight: highlightIndex });
       }
 
       if (event.keyCode === 13) {
-        event.preventDefault()
-        let user = searchResults[index]
-        this.props.onAddUser(user)
+        event.preventDefault();
+        let user = searchResults[index];
+        this.props.onAddUser(user);
       }
     }
   }
 }
 
-export default onClickOutside(TagInput)
+export default onClickOutside(TagInput);

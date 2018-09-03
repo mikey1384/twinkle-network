@@ -1,49 +1,49 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Route } from 'react-router-dom'
-import Notification from 'components/Notification'
-import ProfileWidget from 'components/ProfileWidget'
-import HomeMenuItems from 'components/HomeMenuItems'
-import { container, Left, Center, Right } from './Styles'
-import Loading from 'components/Loading'
-import ImageEditModal from 'components/Modals/ImageEditModal'
-import AlertModal from 'components/Modals/AlertModal'
-import { uploadProfilePic } from 'redux/actions/UserActions'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import loadable from 'loadable-components'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Route } from 'react-router-dom';
+import Notification from 'components/Notification';
+import ProfileWidget from 'components/ProfileWidget';
+import HomeMenuItems from 'components/HomeMenuItems';
+import { container, Left, Center, Right } from './Styles';
+import Loading from 'components/Loading';
+import ImageEditModal from 'components/Modals/ImageEditModal';
+import AlertModal from 'components/Modals/AlertModal';
+import { uploadProfilePic } from 'redux/actions/UserActions';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import loadable from 'loadable-components';
 const Profile = loadable(() => import('./Profile'), {
   LoadingComponent: Loading
-})
+});
 const People = loadable(() => import('./People'), {
   LoadingComponent: Loading
-})
+});
 const Stories = loadable(() => import('./Stories'), {
   LoadingComponent: Loading
-})
+});
 
 class Home extends Component {
   static propTypes = {
     history: PropTypes.object,
     location: PropTypes.object,
     uploadProfilePic: PropTypes.func
-  }
+  };
 
   state = {
     alertModalShown: false,
     imageEditModalShown: false,
     imageUri: null,
     processing: false
-  }
+  };
 
   render() {
-    const { history, location } = this.props
+    const { history, location } = this.props;
     const {
       alertModalShown,
       imageEditModalShown,
       imageUri,
       processing
-    } = this.state
+    } = this.state;
     return (
       <ErrorBoundary>
         <div className={container}>
@@ -93,24 +93,24 @@ class Home extends Component {
           )}
         </div>
       </ErrorBoundary>
-    )
+    );
   }
 
   uploadImage = async image => {
-    const { uploadProfilePic } = this.props
+    const { uploadProfilePic } = this.props;
     this.setState({
       processing: true
-    })
-    await uploadProfilePic(image)
+    });
+    await uploadProfilePic(image);
     this.setState({
       imageUri: null,
       processing: false,
       imageEditModalShown: false
-    })
-  }
+    });
+  };
 }
 
 export default connect(
   null,
   { uploadProfilePic }
-)(Home)
+)(Home);

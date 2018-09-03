@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 FilterBar.propTypes = {
   children: PropTypes.node,
@@ -11,7 +11,7 @@ FilterBar.propTypes = {
   innerRef: PropTypes.func,
   success: PropTypes.bool,
   style: PropTypes.object
-}
+};
 export default function FilterBar({
   bordered,
   className,
@@ -25,10 +25,10 @@ export default function FilterBar({
     default: Color.blue(),
     success: Color.green(),
     info: Color.lightBlue()
-  }
-  let colorKey = 'default'
-  if (info) colorKey = 'info'
-  if (success) colorKey = 'success'
+  };
+  let colorKey = 'default';
+  if (info) colorKey = 'info';
+  if (success) colorKey = 'success';
   return (
     <div
       style={style}
@@ -121,5 +121,5 @@ export default function FilterBar({
     >
       {children}
     </div>
-  )
+  );
 }

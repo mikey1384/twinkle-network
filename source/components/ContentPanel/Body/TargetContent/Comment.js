@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import ProfilePic from 'components/ProfilePic'
-import UsernameText from 'components/Texts/UsernameText'
-import EditTextArea from 'components/Texts/EditTextArea'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import { timeSince } from 'helpers/timeStampHelpers'
-import { Color } from 'constants/css'
-import LongText from 'components/Texts/LongText'
-import { deleteContent } from 'helpers/requestHelpers'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import ProfilePic from 'components/ProfilePic';
+import UsernameText from 'components/Texts/UsernameText';
+import EditTextArea from 'components/Texts/EditTextArea';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { Color } from 'constants/css';
+import LongText from 'components/Texts/LongText';
+import { deleteContent } from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
 
 class Comment extends Component {
   static propTypes = {
@@ -24,16 +24,16 @@ class Comment extends Component {
     profilePicId: PropTypes.number,
     userId: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired
-  }
+  };
 
   state = {
     onEdit: false,
     confirmModalShown: false
-  }
+  };
 
   render() {
-    const { comment, username, userId, profilePicId } = this.props
-    const { onEdit, confirmModalShown } = this.state
+    const { comment, username, userId, profilePicId } = this.props;
+    const { onEdit, confirmModalShown } = this.state;
     return (
       <div
         style={{
@@ -85,7 +85,8 @@ class Comment extends Component {
                 }}
               />{' '}
               <small style={{ color: Color.gray() }}>
-                &nbsp;{timeSince(comment.timeStamp)}
+                &nbsp;
+                {timeSince(comment.timeStamp)}
               </small>
             </div>
             {onEdit ? (
@@ -120,25 +121,25 @@ class Comment extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   onDelete = async() => {
-    const { comment, dispatch, onDelete } = this.props
-    await deleteContent({ id: comment.id, type: 'comment', dispatch })
-    this.setState({ confirmModalShown: false })
-    onDelete(comment.id)
-  }
+    const { comment, dispatch, onDelete } = this.props;
+    await deleteContent({ id: comment.id, type: 'comment', dispatch });
+    this.setState({ confirmModalShown: false });
+    onDelete(comment.id);
+  };
 
   onEditDone = editedComment => {
-    const { comment, onEditDone } = this.props
+    const { comment, onEditDone } = this.props;
     return onEditDone({ editedComment, commentId: comment.id }).then(() =>
       this.setState({ onEdit: false })
-    )
-  }
+    );
+  };
 }
 
 export default connect(
   null,
   dispatch => ({ dispatch })
-)(Comment)
+)(Comment);

@@ -1,45 +1,45 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import Loading from 'components/Loading'
-import request from 'axios'
-import UsernameText from 'components/Texts/UsernameText'
-import ProfilePic from 'components/ProfilePic'
-import { addCommasToNumber } from 'helpers/stringHelpers'
-import { Color } from 'constants/css'
-import { URL } from 'constants/URL'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import Loading from 'components/Loading';
+import request from 'axios';
+import UsernameText from 'components/Texts/UsernameText';
+import ProfilePic from 'components/ProfilePic';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { Color } from 'constants/css';
+import { URL } from 'constants/URL';
 
-const API_URL = `${URL}/user`
+const API_URL = `${URL}/user`;
 
 export default class LeaderBoardTab extends Component {
   static propTypes = {
     myId: PropTypes.number
-  }
+  };
 
   state = {
     users: []
-  }
+  };
 
-  mounted = false
+  mounted = false;
 
   async componentDidMount() {
-    this.mounted = true
+    this.mounted = true;
     try {
-      const { data: users } = await request.get(`${API_URL}/leaderBoard`)
+      const { data: users } = await request.get(`${API_URL}/leaderBoard`);
       if (this.mounted) {
-        this.setState(() => ({ users }))
+        this.setState(() => ({ users }));
       }
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
   }
 
   componentWillUnmount() {
-    this.mounted = false
+    this.mounted = false;
   }
 
   render() {
-    const { myId } = this.props
-    const { users } = this.state
+    const { myId } = this.props;
+    const { users } = this.state;
     return (
       <Fragment>
         {users.length === 0 && <Loading />}
@@ -47,7 +47,7 @@ export default class LeaderBoardTab extends Component {
           const rank = !user.twinkleXP
             ? undefined
             : users.filter(otherUser => otherUser.twinkleXP > user.twinkleXP)
-                .length + 1
+                .length + 1;
           const rankColor =
             rank === 1
               ? Color.gold()
@@ -55,7 +55,7 @@ export default class LeaderBoardTab extends Component {
                 ? Color.lightGray()
                 : rank === 3
                   ? Color.orange()
-                  : undefined
+                  : undefined;
           return (
             <li
               key={user.id}
@@ -103,9 +103,9 @@ export default class LeaderBoardTab extends Component {
                 <span style={{ color: Color.gold() }}>XP</span>
               </div>
             </li>
-          )
+          );
         })}
       </Fragment>
-    )
+    );
   }
 }

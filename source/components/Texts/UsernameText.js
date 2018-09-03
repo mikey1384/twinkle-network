@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { openDirectMessageChannel } from 'redux/actions/ChatActions'
-import DropdownList from 'components/DropdownList'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
+import DropdownList from 'components/DropdownList';
+import { Color } from 'constants/css';
 
 class UsernameText extends Component {
   static propTypes = {
@@ -15,15 +15,15 @@ class UsernameText extends Component {
     user: PropTypes.object,
     userId: PropTypes.number,
     username: PropTypes.string
-  }
+  };
 
   state = {
     menuShown: false
-  }
+  };
 
   render() {
-    const { user = {}, userId, color, className, style = {} } = this.props
-    const { menuShown } = this.state
+    const { user = {}, userId, color, className, style = {} } = this.props;
+    const { menuShown } = this.state;
     return (
       <div
         style={{ display: 'inline', position: 'relative' }}
@@ -63,13 +63,13 @@ class UsernameText extends Component {
           </DropdownList>
         )}
       </div>
-    )
+    );
   }
 
   onMouseEnter = () => {
-    const { user } = this.props
-    if (user.username) this.setState({ menuShown: true })
-  }
+    const { user } = this.props;
+    if (user.username) this.setState({ menuShown: true });
+  };
 
   onLinkClick = () => {
     const {
@@ -78,25 +78,25 @@ class UsernameText extends Component {
       userId,
       username,
       chatMode
-    } = this.props
-    this.setState({ menuShown: false })
+    } = this.props;
+    this.setState({ menuShown: false });
     if (user.id !== userId) {
       openDirectMessageChannel(
         { userId, username },
         { userId: user.id, username: user.username },
         chatMode
-      )
+      );
     }
-  }
+  };
 
   onUsernameClick = () => {
-    const { user } = this.props
+    const { user } = this.props;
     if (user.username) {
       this.setState(state => ({
         menuShown: !state.menuShown
-      }))
+      }));
     }
-  }
+  };
 }
 
 export default connect(
@@ -106,4 +106,4 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   { openDirectMessageChannel }
-)(UsernameText)
+)(UsernameText);

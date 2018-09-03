@@ -1,12 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import FilterBar from 'components/FilterBar'
+import React from 'react';
+import PropTypes from 'prop-types';
+import FilterBar from 'components/FilterBar';
 
 TopFilter.propTypes = {
   applyFilter: PropTypes.func.isRequired,
   style: PropTypes.object,
   selectedFilter: PropTypes.string.isRequired
-}
+};
 export default function TopFilter({ applyFilter, selectedFilter, style }) {
   return (
     <FilterBar style={style} bordered>
@@ -35,5 +35,5 @@ export default function TopFilter({ applyFilter, selectedFilter, style }) {
         Discussions
       </nav>
     </FilterBar>
-  )
+  );
 }

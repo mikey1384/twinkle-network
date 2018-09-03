@@ -1,5 +1,5 @@
-import { Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'react-emotion'
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'react-emotion';
 
 export const chatStyle = css`
   width: 100%;
@@ -12,7 +12,7 @@ export const chatStyle = css`
     width: CALC(100vw - 1rem);
     height: CALC(100% - 2rem);
   }
-`
+`;
 
 export const channelContainer = css`
   display: flex;
@@ -27,7 +27,7 @@ export const channelContainer = css`
     width: 30%;
     height: CALC(100% - 1rem);
   }
-`
+`;
 
 export const MessageStyle = {
   container: css`
@@ -68,4 +68,4 @@ export const MessageStyle = {
     font-weight: bold;
     color: ${Color.green()};
   `
-}
+};

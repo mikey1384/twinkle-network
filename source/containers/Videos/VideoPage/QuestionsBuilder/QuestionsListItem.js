@@ -1,31 +1,31 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Icon from 'components/Icon'
-import { DragSource, DropTarget } from 'react-dnd'
-import ItemTypes from 'constants/itemTypes'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Icon from 'components/Icon';
+import { DragSource, DropTarget } from 'react-dnd';
+import ItemTypes from 'constants/itemTypes';
+import { Color } from 'constants/css';
 
 const listItemSource = {
   beginDrag(props) {
     return {
       questionId: props.questionId
-    }
+    };
   },
   isDragging(props, monitor) {
-    return props.questionId === monitor.getItem().questionId
+    return props.questionId === monitor.getItem().questionId;
   }
-}
+};
 
 const listItemTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.questionId
-    const sourceProps = monitor.getItem()
-    const sourceId = sourceProps.questionId
+    const targetId = targetProps.questionId;
+    const sourceProps = monitor.getItem();
+    const sourceId = sourceProps.questionId;
     if (sourceId !== targetId) {
-      targetProps.onMove({ sourceId, targetId })
+      targetProps.onMove({ sourceId, targetId });
     }
   }
-}
+};
 
 QuestionsListItem.propTypes = {
   connectDragSource: PropTypes.func,
@@ -33,7 +33,7 @@ QuestionsListItem.propTypes = {
   isDragging: PropTypes.bool,
   item: PropTypes.object,
   questionId: PropTypes.number
-}
+};
 function QuestionsListItem({
   connectDragSource,
   connectDropTarget,
@@ -65,7 +65,7 @@ function QuestionsListItem({
         </div>
       </li>
     )
-  )
+  );
 }
 
 export default DropTarget(ItemTypes.LIST_ITEM, listItemTarget, connect => ({
@@ -75,4 +75,4 @@ export default DropTarget(ItemTypes.LIST_ITEM, listItemTarget, connect => ({
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
   }))(QuestionsListItem)
-)
+);

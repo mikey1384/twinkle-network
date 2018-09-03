@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Button from 'components/Button'
-import Textarea from 'components/Texts/Textarea'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Button from 'components/Button';
+import Textarea from 'components/Texts/Textarea';
 import {
   exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
   renderCharLimit
-} from 'helpers/stringHelpers'
-import { css } from 'emotion'
+} from 'helpers/stringHelpers';
+import { css } from 'emotion';
 
 export default class InputForm extends Component {
   static propTypes = {
@@ -21,14 +21,14 @@ export default class InputForm extends Component {
     rows: PropTypes.number,
     style: PropTypes.object,
     className: PropTypes.string
-  }
+  };
 
   state = {
     text: ''
-  }
+  };
 
   render() {
-    const { text } = this.state
+    const { text } = this.state;
     const {
       innerRef,
       placeholder,
@@ -37,11 +37,11 @@ export default class InputForm extends Component {
       formGroupStyle = {},
       style = {},
       className = ''
-    } = this.props
+    } = this.props;
     const commentExceedsCharLimit = exceedsCharLimit({
       contentType: 'comment',
       text
-    })
+    });
     return (
       <div style={style} className={className}>
         <div
@@ -91,17 +91,17 @@ export default class InputForm extends Component {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   handleKeyUp = event => {
-    if (event.key === ' ') this.setState({ text: addEmoji(event.target.value) })
-  }
+    if (event.key === ' ') { this.setState({ text: addEmoji(event.target.value) }); }
+  };
 
   onSubmit = () => {
     if (!stringIsEmpty(this.state.text)) {
-      this.props.onSubmit(finalizeEmoji(this.state.text))
-      this.setState({ text: '' })
+      this.props.onSubmit(finalizeEmoji(this.state.text));
+      this.setState({ text: '' });
     }
-  }
+  };
 }

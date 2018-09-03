@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react'
-import PropTypes from 'prop-types'
-import Button from 'components/Button'
-import Textarea from 'components/Texts/Textarea'
-import ColorSelector from './ColorSelector'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
-import { exceedsCharLimit, renderCharLimit } from 'helpers/stringHelpers'
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import Button from 'components/Button';
+import Textarea from 'components/Texts/Textarea';
+import ColorSelector from './ColorSelector';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import { exceedsCharLimit, renderCharLimit } from 'helpers/stringHelpers';
 
 StatusInput.propTypes = {
   profile: PropTypes.object.isRequired,
@@ -16,7 +16,7 @@ StatusInput.propTypes = {
   onStatusSubmit: PropTypes.func.isRequired,
   onTextChange: PropTypes.func.isRequired,
   setColor: PropTypes.func.isRequired
-}
+};
 export default function StatusInput({
   profile,
   editedStatusMsg,
@@ -83,5 +83,5 @@ export default function StatusInput({
         </div>
       )}
     </Fragment>
-  )
+  );
 }

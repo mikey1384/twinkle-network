@@ -1,54 +1,54 @@
-import 'regenerator-runtime/runtime' // for async await
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { Switch, Route } from 'react-router-dom'
-import Header from './Header'
-import { connect } from 'react-redux'
-import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions'
+import 'regenerator-runtime/runtime'; // for async await
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Switch, Route } from 'react-router-dom';
+import Header from './Header';
+import { connect } from 'react-redux';
+import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions';
 import {
   changePageVisibility,
   enableAutoscroll
-} from 'redux/actions/ViewActions'
+} from 'redux/actions/ViewActions';
 import {
   initSession,
   openSigninModal,
   closeSigninModal
-} from 'redux/actions/UserActions'
-import { addEvent } from 'helpers/listenerHelpers'
-import { recordUserAction } from 'helpers/userDataHelpers'
-import { siteContent } from './Styles'
-import MobileMenu from './MobileMenu'
-import { Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
-import Button from 'components/Button'
-import Loading from 'components/Loading'
-import SigninModal from 'containers/Signin'
-import loadable from 'loadable-components'
+} from 'redux/actions/UserActions';
+import { addEvent } from 'helpers/listenerHelpers';
+import { recordUserAction } from 'helpers/userDataHelpers';
+import { siteContent } from './Styles';
+import MobileMenu from './MobileMenu';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
+import Button from 'components/Button';
+import Loading from 'components/Loading';
+import SigninModal from 'containers/Signin';
+import loadable from 'loadable-components';
 const Home = loadable(() => import('containers/Home'), {
   LoadingComponent: Loading
-})
+});
 const Videos = loadable(() => import('containers/Videos'), {
   LoadingComponent: Loading
-})
+});
 const Links = loadable(() => import('containers/Links'), {
   LoadingComponent: Loading
-})
+});
 const Chat = loadable(() => import('containers/Chat'), {
   LoadingComponent: Loading
-})
+});
 const ContentPage = loadable(() => import('containers/ContentPage'), {
   LoadingComponent: Loading
-})
+});
 const PlaylistPage = loadable(() => import('containers/PlaylistPage'), {
   loadingComponent: Loading
-})
+});
 const SearchPage = loadable(() => import('containers/SearchPage'), {
   LoadingComponent: Loading
-})
-import Redirect from 'containers/Redirect'
+});
+import Redirect from 'containers/Redirect';
 
-let visibilityChange
-let hidden
+let visibilityChange;
+let hidden;
 
 class App extends Component {
   static propTypes = {
@@ -71,7 +71,7 @@ class App extends Component {
     signinModalShown: PropTypes.bool,
     turnChatOff: PropTypes.func.isRequired,
     username: PropTypes.string
-  }
+  };
 
   state = {
     chatLoading: false,
@@ -79,31 +79,31 @@ class App extends Component {
     updateNoticeShown: false,
     mobileMenuShown: false,
     navScrollPositions: {}
-  }
+  };
 
   body =
     typeof document !== 'undefined'
       ? document.scrollingElement || document.documentElement
-      : {}
+      : {};
 
   componentDidMount() {
-    const { initSession, location, history } = this.props
+    const { initSession, location, history } = this.props;
     if (typeof document.hidden !== 'undefined') {
-      hidden = 'hidden'
-      visibilityChange = 'visibilitychange'
+      hidden = 'hidden';
+      visibilityChange = 'visibilitychange';
     } else if (typeof document.msHidden !== 'undefined') {
-      hidden = 'msHidden'
-      visibilityChange = 'msvisibilitychange'
+      hidden = 'msHidden';
+      visibilityChange = 'msvisibilitychange';
     } else if (typeof document.webkitHidden !== 'undefined') {
-      hidden = 'webkitHidden'
-      visibilityChange = 'webkitvisibilitychange'
+      hidden = 'webkitHidden';
+      visibilityChange = 'webkitvisibilitychange';
     }
-    initSession(location.pathname)
-    addEvent(document, visibilityChange, this.handleVisibilityChange)
-    window.ga('send', 'pageview', location.pathname)
+    initSession(location.pathname);
+    addEvent(document, visibilityChange, this.handleVisibilityChange);
+    window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
-      window.ga('send', 'pageview', location.pathname)
-    })
+      window.ga('send', 'pageview', location.pathname);
+    });
   }
 
   getSnapshotBeforeUpdate(prevProps) {
@@ -113,7 +113,7 @@ class App extends Component {
     ) {
       return {
         scrollPosition: this.body.scrollTop
-      }
+      };
     }
     if (prevProps.location.pathname !== this.props.location.pathname) {
       return {
@@ -121,9 +121,9 @@ class App extends Component {
           [prevProps.location.pathname]: document.getElementById('App')
             .scrollTop
         }
-      }
+      };
     }
-    return {}
+    return {};
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -136,9 +136,9 @@ class App extends Component {
       history,
       location,
       loggedIn
-    } = this.props
-    const { navScrollPositions, scrollPosition } = this.state
-    const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads
+    } = this.props;
+    const { navScrollPositions, scrollPosition } = this.state;
+    const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads;
 
     if (snapshot.navScrollPosition) {
       this.setState(state => ({
@@ -146,37 +146,37 @@ class App extends Component {
           ...state.navScrollPositions,
           ...snapshot.navScrollPosition
         }
-      }))
+      }));
     }
 
     if (snapshot.scrollPosition) {
       this.setState(state => ({
         scrollPosition: snapshot.scrollPosition
-      }))
+      }));
     }
 
     if (prevProps.searchMode && !this.props.searchMode) {
       if (location !== prevProps.location) {
-        this.setState({ scrollPosition: 0 })
+        this.setState({ scrollPosition: 0 });
       } else {
-        this.body.scrollTop = scrollPosition
+        this.body.scrollTop = scrollPosition;
       }
     }
 
     if (location !== prevProps.location) {
       if (history.action === 'PUSH') {
         if (loggedIn) {
-          recordUserAction({ action: 'navigation', target: location.pathname })
+          recordUserAction({ action: 'navigation', target: location.pathname });
         }
         if (autoscrollDisabled) {
-          enableAutoscroll()
+          enableAutoscroll();
         } else {
-          this.body.scrollTop = 0
-          document.getElementById('App').scrollTop = 0
+          this.body.scrollTop = 0;
+          document.getElementById('App').scrollTop = 0;
         }
       } else {
         document.getElementById('App').scrollTop =
-          navScrollPositions[location.pathname]
+          navScrollPositions[location.pathname];
       }
     }
 
@@ -185,11 +185,15 @@ class App extends Component {
       this.props.chatNumUnreads !== prevProps.chatNumUnreads ||
       this.props.numNewNotis !== prevProps.numNewNotis
     ) {
-      document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
+      document.title = `${
+        newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''
+      }Twinkle`;
     }
 
     if (this.props.chatMode !== prevProps.chatMode) {
-      document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`
+      document.title = `${
+        newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''
+      }Twinkle`;
     }
   }
 
@@ -205,13 +209,13 @@ class App extends Component {
       turnChatOff,
       username,
       resetChat
-    } = this.props
+    } = this.props;
     const {
       chatLoading,
       mobileMenuShown,
       scrollPosition,
       updateNoticeShown
-    } = this.state
+    } = this.state;
     return (
       <div
         className={css`
@@ -322,27 +326,27 @@ class App extends Component {
           this.props.loggedIn && (
             <Chat
               onUnmount={async() => {
-                await resetChat()
-                this.body.scrollTop = scrollPosition
-                turnChatOff()
+                await resetChat();
+                this.body.scrollTop = scrollPosition;
+                turnChatOff();
               }}
             />
           )}
       </div>
-    )
+    );
   }
 
   handleVisibilityChange = () => {
-    const { changePageVisibility } = this.props
-    changePageVisibility(!document[hidden])
-  }
+    const { changePageVisibility } = this.props;
+    changePageVisibility(!document[hidden]);
+  };
 
   onChatButtonClick = async() => {
-    const { initChat, chatMode, turnChatOff } = this.props
-    this.setState({ chatLoading: true })
-    await (chatMode ? turnChatOff() : initChat())
-    this.setState({ chatLoading: false })
-  }
+    const { initChat, chatMode, turnChatOff } = this.props;
+    this.setState({ chatLoading: true });
+    await (chatMode ? turnChatOff() : initChat());
+    this.setState({ chatLoading: false });
+  };
 }
 
 export default connect(
@@ -368,4 +372,4 @@ export default connect(
     resetChat,
     changePageVisibility
   }
-)(App)
+)(App);

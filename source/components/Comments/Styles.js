@@ -1,5 +1,5 @@
-import { css } from 'emotion'
-import { Color, mobileMaxWidth } from 'constants/css'
+import { css } from 'emotion';
+import { Color, mobileMaxWidth } from 'constants/css';
 
 export const container = css`
   display: flex;
@@ -72,4 +72,4 @@ export const container = css`
       color: ${Color.darkGray()};
     }
   }
-`
+`;

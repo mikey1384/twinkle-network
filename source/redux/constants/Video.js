@@ -35,10 +35,10 @@ const types = {
   UPLOAD_COMMENT: 'UPLOAD_COMMENT',
   UPLOAD_DISCUSSION: 'UPLOAD_DISCUSSION',
   UPLOAD_REPLY: 'UPLOAD_REPLY'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_VIDEO`
+  types[key] = `${types[key]}_VIDEO`;
 }
 
-export default types
+export default types;

@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 export const container = css`
   display: flex;
@@ -56,4 +56,4 @@ export const container = css`
       }
     }
   }
-`
+`;

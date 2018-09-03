@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import onClickOutside from 'react-onclickoutside'
-import Button from 'components/Button'
-import DropdownList from 'components/DropdownList'
-import Icon from 'components/Icon'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import onClickOutside from 'react-onclickoutside';
+import Button from 'components/Button';
+import DropdownList from 'components/DropdownList';
+import Icon from 'components/Icon';
 
 class DropdownButton extends Component {
   static propTypes = {
@@ -25,23 +25,23 @@ class DropdownButton extends Component {
     stretch: PropTypes.bool,
     style: PropTypes.object,
     text: PropTypes.any
-  }
+  };
 
   handleClickOutside = event => {
-    const { onOutsideClick } = this.props
-    const { menuDisplayed } = this.state
+    const { onOutsideClick } = this.props;
+    const { menuDisplayed } = this.state;
     if (menuDisplayed && typeof onOutsideClick === 'function') {
-      onOutsideClick()
+      onOutsideClick();
     }
-    this.setState({ menuDisplayed: false })
-  }
+    this.setState({ menuDisplayed: false });
+  };
 
   state = {
     menuDisplayed: false
-  }
+  };
 
   render() {
-    const { menuDisplayed } = this.state
+    const { menuDisplayed } = this.state;
     const {
       buttonStyle = {},
       direction,
@@ -54,7 +54,7 @@ class DropdownButton extends Component {
       text = '',
       stretch,
       ...props
-    } = this.props
+    } = this.props;
     return (
       <div
         style={{
@@ -90,34 +90,34 @@ class DropdownButton extends Component {
           </DropdownList>
         )}
       </div>
-    )
+    );
   }
 
   onClick = () => {
-    const { menuDisplayed } = this.state
-    const { onButtonClick } = this.props
-    if (typeof onButtonClick === 'function') onButtonClick(menuDisplayed)
-    this.setState({ menuDisplayed: !menuDisplayed })
-  }
+    const { menuDisplayed } = this.state;
+    const { onButtonClick } = this.props;
+    if (typeof onButtonClick === 'function') onButtonClick(menuDisplayed);
+    this.setState({ menuDisplayed: !menuDisplayed });
+  };
 
   renderMenu = () => {
-    const { menuProps } = this.props
+    const { menuProps } = this.props;
     return menuProps.map((prop, index) => {
       if (prop.separator) {
-        return <hr key={index} />
+        return <hr key={index} />;
       }
       return (
         <li onClick={() => this.handleMenuClick(prop.onClick)} key={index}>
           {prop.label}
         </li>
-      )
-    })
-  }
+      );
+    });
+  };
 
   handleMenuClick = action => {
-    action()
-    this.setState({ menuDisplayed: false })
-  }
+    action();
+    this.setState({ menuDisplayed: false });
+  };
 }
 
-export default onClickOutside(DropdownButton)
+export default onClickOutside(DropdownButton);

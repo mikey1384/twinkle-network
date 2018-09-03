@@ -1,28 +1,28 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import ReactPlayer from 'react-player'
-import { Color } from 'constants/css'
-import { connect } from 'react-redux'
-import { auth } from 'helpers/requestHelpers'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import ReactPlayer from 'react-player';
+import { Color } from 'constants/css';
+import { connect } from 'react-redux';
+import { auth } from 'helpers/requestHelpers';
 import {
   addVideoView,
   fillCurrentVideoSlot,
   emptyCurrentVideoSlot
-} from 'redux/actions/VideoActions'
-import { changeUserXP } from 'redux/actions/UserActions'
-import request from 'axios'
-import StarMark from 'components/StarMark'
-import { URL } from 'constants/URL'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import ProgressBar from 'components/ProgressBar'
-import Spinner from 'components/Spinner'
-import { css } from 'emotion'
+} from 'redux/actions/VideoActions';
+import { changeUserXP } from 'redux/actions/UserActions';
+import request from 'axios';
+import StarMark from 'components/StarMark';
+import { URL } from 'constants/URL';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ProgressBar from 'components/ProgressBar';
+import Spinner from 'components/Spinner';
+import { css } from 'emotion';
 
-const CONTENT_URL = `${URL}/content`
-const VIDEO_URL = `${URL}/video`
-const intervalLength = 2000
-const denominator = 4
-const requiredDurationCap = 150
+const CONTENT_URL = `${URL}/content`;
+const VIDEO_URL = `${URL}/video`;
+const intervalLength = 2000;
+const denominator = 4;
+const requiredDurationCap = 150;
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -44,12 +44,12 @@ class VideoPlayer extends Component {
     videoCode: PropTypes.string.isRequired,
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired
-  }
+  };
 
-  interval = null
-  Player = null
-  rewardingXP = false
-  playing = false
+  interval = null;
+  Player = null;
+  rewardingXP = false;
+  playing = false;
 
   state = {
     started: false,
@@ -58,7 +58,7 @@ class VideoPlayer extends Component {
     xpEarned: false,
     justEarned: false,
     imageUrl: ''
-  }
+  };
 
   async componentDidMount() {
     const {
@@ -68,8 +68,8 @@ class VideoPlayer extends Component {
       userId,
       videoCode,
       videoId
-    } = this.props
-    this.mounted = true
+    } = this.props;
+    this.mounted = true;
 
     if (videoCode && typeof hasHqThumb !== 'number') {
       try {
@@ -78,21 +78,21 @@ class VideoPlayer extends Component {
         } = await request.put(`${CONTENT_URL}/videoThumb`, {
           videoCode,
           videoId
-        })
+        });
         if (this.mounted) {
           this.setState({
             imageUrl:
               payload || `https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`
-          })
+          });
         }
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     } else {
-      const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault';
       this.setState({
         imageUrl: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`
-      })
+      });
     }
 
     if (isStarred && userId) {
@@ -102,15 +102,15 @@ class VideoPlayer extends Component {
         } = await request.get(
           `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
           auth()
-        )
-        if (this.mounted) this.setState(() => ({ xpEarned: !!xpEarned }))
+        );
+        if (this.mounted) this.setState(() => ({ xpEarned: !!xpEarned }));
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
 
     if (autoplay) {
-      this.setState({ started: true })
+      this.setState({ started: true });
     }
   }
 
@@ -125,17 +125,17 @@ class VideoPlayer extends Component {
       userId,
       videoCode,
       videoId
-    } = this.props
-    const { started, xpEarned, justEarned } = this.state
+    } = this.props;
+    const { started, xpEarned, justEarned } = this.state;
     if (prevProps.onEdit !== onEdit) {
-      if (onEdit === true) this.onVideoStop()
-      this.setState({ started: false })
+      if (onEdit === true) this.onVideoStop();
+      this.setState({ started: false });
     }
     const userWatchingMultipleVideo =
       currentVideoSlot &&
       currentVideoSlot !== prevProps.currentVideoSlot &&
-      currentVideoSlot !== Number(videoId)
-    const alreadyEarned = xpEarned || justEarned
+      currentVideoSlot !== Number(videoId);
+    const alreadyEarned = xpEarned || justEarned;
 
     if (prevProps.userId && !userId) {
       this.setState(state => ({
@@ -143,14 +143,14 @@ class VideoPlayer extends Component {
         timeWatched: 0,
         xpEarned: false,
         justEarned: false
-      }))
+      }));
     }
 
     if (prevProps.videoCode !== videoCode) {
-      const newImageName = hasHqThumb ? 'maxresdefault' : 'mqdefault'
+      const newImageName = hasHqThumb ? 'maxresdefault' : 'mqdefault';
       this.setState({
         imageUrl: `https://img.youtube.com/vi/${videoCode}/${newImageName}.jpg`
-      })
+      });
     }
 
     if (isStarred && userId && userId !== prevProps.userId) {
@@ -160,20 +160,20 @@ class VideoPlayer extends Component {
         } = await request.get(
           `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
           auth()
-        )
+        );
         if (xpEarned && this.mounted) {
-          this.setState(() => ({ xpEarned: !!xpEarned }))
+          this.setState(() => ({ xpEarned: !!xpEarned }));
         }
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
 
     if (started && userWatchingMultipleVideo) {
-      this.onVideoStop()
+      this.onVideoStop();
       if (this.Player) {
         if (this.Player.getInternalPlayer()) {
-          this.Player.getInternalPlayer().pauseVideo()
+          this.Player.getInternalPlayer().pauseVideo();
         }
       }
     }
@@ -185,10 +185,10 @@ class VideoPlayer extends Component {
       pageVisible !== prevProps.pageVisible &&
       !alreadyEarned
     ) {
-      this.onVideoStop()
+      this.onVideoStop();
       if (this.Player) {
         if (this.Player.getInternalPlayer()) {
-          this.Player.getInternalPlayer().pauseVideo()
+          this.Player.getInternalPlayer().pauseVideo();
         }
       }
     }
@@ -199,19 +199,19 @@ class VideoPlayer extends Component {
       chatMode !== prevProps.chatMode &&
       !alreadyEarned
     ) {
-      this.onVideoStop()
+      this.onVideoStop();
       if (this.Player) {
         if (this.Player.getInternalPlayer()) {
-          this.Player.getInternalPlayer().pauseVideo()
+          this.Player.getInternalPlayer().pauseVideo();
         }
       }
     }
   }
 
   componentWillUnmount() {
-    this.onVideoStop()
-    this.Player = undefined
-    this.mounted = false
+    this.onVideoStop();
+    this.Player = undefined;
+    this.mounted = false;
   }
 
   render() {
@@ -223,7 +223,7 @@ class VideoPlayer extends Component {
       videoCode,
       style = {},
       userId
-    } = this.props
+    } = this.props;
     const {
       imageUrl,
       started,
@@ -231,11 +231,11 @@ class VideoPlayer extends Component {
       totalDuration,
       xpEarned,
       justEarned
-    } = this.state
+    } = this.state;
     const requiredViewDuration = Math.min(
       totalDuration / denominator,
       requiredDurationCap
-    )
+    );
     const progress = xpEarned
       ? 100
       : requiredViewDuration > 0
@@ -243,7 +243,7 @@ class VideoPlayer extends Component {
             (Math.min(timeWatched, requiredViewDuration) * 100) /
               requiredViewDuration
           )
-        : 0
+        : 0;
     return (
       <ErrorBoundary style={style}>
         <div
@@ -262,7 +262,7 @@ class VideoPlayer extends Component {
           }}
           onClick={() => {
             if (!onEdit && !started) {
-              this.setState({ started: true })
+              this.setState({ started: true });
             }
           }}
         >
@@ -296,7 +296,7 @@ class VideoPlayer extends Component {
             started && (
               <ReactPlayer
                 ref={ref => {
-                  this.Player = ref
+                  this.Player = ref;
                 }}
                 className={css`
                   position: absolute;
@@ -373,16 +373,16 @@ class VideoPlayer extends Component {
             />
           )}
       </ErrorBoundary>
-    )
+    );
   }
 
   onVideoReady = () => {
     if (this.Player.getInternalPlayer()) {
       this.setState(() => ({
         totalDuration: this.Player.getInternalPlayer().getDuration()
-      }))
+      }));
     }
-  }
+  };
 
   onVideoPlay = () => {
     const {
@@ -392,66 +392,66 @@ class VideoPlayer extends Component {
       userId,
       addVideoView,
       fillCurrentVideoSlot
-    } = this.props
-    const { justEarned, xpEarned } = this.state
+    } = this.props;
+    const { justEarned, xpEarned } = this.state;
     if (!this.playing) {
-      this.playing = true
-      const time = this.Player.getCurrentTime()
+      this.playing = true;
+      const time = this.Player.getCurrentTime();
       if (Math.floor(time) === 0) {
-        addVideoView({ videoId, userId })
+        addVideoView({ videoId, userId });
       }
       if (!currentVideoSlot) {
-        fillCurrentVideoSlot(Number(videoId))
+        fillCurrentVideoSlot(Number(videoId));
         if (userId) {
-          this.interval = setInterval(this.increaseProgress, intervalLength)
+          this.interval = setInterval(this.increaseProgress, intervalLength);
         }
       }
-      const authorization = auth()
-      const authExists = !!authorization.headers.authorization
+      const authorization = auth();
+      const authExists = !!authorization.headers.authorization;
       if (authExists && isStarred && !(justEarned || xpEarned)) {
         try {
           request.put(
             `${VIDEO_URL}/currentlyWatching`,
             { videoId },
             authorization
-          )
+          );
         } catch (error) {
-          console.error(error.response || error)
+          console.error(error.response || error);
         }
       }
     }
-  }
+  };
 
   onVideoStop = () => {
-    const { emptyCurrentVideoSlot } = this.props
-    this.playing = false
-    clearInterval(this.interval)
-    emptyCurrentVideoSlot()
-    const authorization = auth()
-    const authExists = !!authorization.headers.authorization
+    const { emptyCurrentVideoSlot } = this.props;
+    this.playing = false;
+    clearInterval(this.interval);
+    emptyCurrentVideoSlot();
+    const authorization = auth();
+    const authExists = !!authorization.headers.authorization;
     if (authExists) {
       try {
         request.put(
           `${VIDEO_URL}/currentlyWatching`,
           { videoId: null },
           authorization
-        )
+        );
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
-  }
+  };
 
   increaseProgress = async() => {
-    const { justEarned, xpEarned, timeWatched, totalDuration } = this.state
-    const { changeUserXP, isStarred, videoId } = this.props
+    const { justEarned, xpEarned, timeWatched, totalDuration } = this.state;
+    const { changeUserXP, isStarred, videoId } = this.props;
     if (isStarred && !xpEarned && !justEarned && this.Player) {
       if (this.Player.getInternalPlayer()) {
         if (this.Player.getInternalPlayer().isMuted()) {
-          this.Player.getInternalPlayer().unMute()
+          this.Player.getInternalPlayer().unMute();
         }
         if (this.Player.getInternalPlayer().getVolume() < 30) {
-          this.Player.getInternalPlayer().setVolume(30)
+          this.Player.getInternalPlayer().setVolume(30);
         }
       }
     }
@@ -461,34 +461,34 @@ class VideoPlayer extends Component {
         Math.min(totalDuration / denominator, requiredDurationCap) &&
       !this.rewardingXP
     ) {
-      this.rewardingXP = true
+      this.rewardingXP = true;
       try {
-        await request.put(`${VIDEO_URL}/xpEarned`, { videoId }, auth())
+        await request.put(`${VIDEO_URL}/xpEarned`, { videoId }, auth());
         await changeUserXP({
           type: 'increase',
           action: 'watch',
           target: 'video',
           targetId: videoId,
           amount: 100
-        })
+        });
         if (this.mounted) {
           this.setState(() => ({
             justEarned: true,
             xpEarned: true
-          }))
+          }));
         }
-        this.rewardingXP = false
+        this.rewardingXP = false;
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
     if (!xpEarned && this.mounted) {
       this.setState(state => ({
         timeWatched: state.timeWatched + intervalLength / 1000
-      }))
+      }));
     }
-    const authorization = auth()
-    const authExists = !!authorization.headers.authorization
+    const authorization = auth();
+    const authExists = !!authorization.headers.authorization;
     if (authExists) {
       try {
         const {
@@ -497,20 +497,20 @@ class VideoPlayer extends Component {
           `${VIDEO_URL}/duration`,
           { videoId, isStarred, xpEarned },
           authorization
-        )
-        if (success) return
+        );
+        if (success) return;
         if (currentlyWatchingAnotherVideo) {
           if (this.Player) {
             if (this.Player.getInternalPlayer()) {
-              this.Player.getInternalPlayer().pauseVideo()
+              this.Player.getInternalPlayer().pauseVideo();
             }
           }
         }
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
-  }
+  };
 }
 
 export default connect(
@@ -526,4 +526,4 @@ export default connect(
     fillCurrentVideoSlot,
     emptyCurrentVideoSlot
   }
-)(VideoPlayer)
+)(VideoPlayer);

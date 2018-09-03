@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import UsernameText from 'components/Texts/UsernameText'
-import Textarea from 'components/Texts/Textarea'
-import Button from 'components/Button'
-import LongText from 'components/Texts/LongText'
-import { timeSince } from 'helpers/timeStampHelpers'
-import UserListModal from 'components/Modals/UserListModal'
-import FullTextReveal from 'components/FullTextReveal'
-import { determineXpButtonDisabled, textIsOverflown } from 'helpers/domHelpers'
-import Input from 'components/Texts/Input'
-import Icon from 'components/Icon'
-import XPRewardInterface from 'components/XPRewardInterface'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import UsernameText from 'components/Texts/UsernameText';
+import Textarea from 'components/Texts/Textarea';
+import Button from 'components/Button';
+import LongText from 'components/Texts/LongText';
+import { timeSince } from 'helpers/timeStampHelpers';
+import UserListModal from 'components/Modals/UserListModal';
+import FullTextReveal from 'components/FullTextReveal';
+import { determineXpButtonDisabled, textIsOverflown } from 'helpers/domHelpers';
+import Input from 'components/Texts/Input';
+import Icon from 'components/Icon';
+import XPRewardInterface from 'components/XPRewardInterface';
 import {
   cleanString,
   exceedsCharLimit,
@@ -20,15 +20,15 @@ import {
   finalizeEmoji,
   isValidYoutubeUrl,
   renderCharLimit
-} from 'helpers/stringHelpers'
-import { edit } from 'constants/placeholders'
-import Likers from 'components/Likers'
-import LikeButton from 'components/Buttons/LikeButton'
-import StarButton from 'components/StarButton'
-import { attachStar, starVideo } from 'redux/actions/VideoActions'
-import { connect } from 'react-redux'
-import { Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
+} from 'helpers/stringHelpers';
+import { edit } from 'constants/placeholders';
+import Likers from 'components/Likers';
+import LikeButton from 'components/Buttons/LikeButton';
+import StarButton from 'components/StarButton';
+import { attachStar, starVideo } from 'redux/actions/VideoActions';
+import { connect } from 'react-redux';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 class Description extends Component {
   static propTypes = {
@@ -58,10 +58,10 @@ class Description extends Component {
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     videoViews: PropTypes.string.isRequired
-  }
+  };
 
   constructor({ title, content, description }) {
-    super()
+    super();
     this.state = {
       onEdit: false,
       onTitleHover: false,
@@ -70,7 +70,7 @@ class Description extends Component {
       editedUrl: `https://www.youtube.com/watch?v=${content}`,
       editedDescription: description,
       xpRewardInterfaceShown: false
-    }
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -85,7 +85,7 @@ class Description extends Component {
         editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
         editedDescription: this.props.description,
         xpRewardInterfaceShown: false
-      })
+      });
     }
   }
 
@@ -111,7 +111,7 @@ class Description extends Component {
       uploaderAuthLevel,
       videoId,
       videoViews
-    } = this.props
+    } = this.props;
     let {
       onEdit,
       editedTitle,
@@ -120,25 +120,25 @@ class Description extends Component {
       userListModalShown,
       onTitleHover,
       xpRewardInterfaceShown
-    } = this.state
-    const userIsUploader = uploaderId === userId
+    } = this.state;
+    const userIsUploader = uploaderId === userId;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel
-    const editButtonShown = userIsUploader || userCanEditThis
-    const editMenuItems = []
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+    const editButtonShown = userIsUploader || userCanEditThis;
+    const editMenuItems = [];
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: this.onEditStart
-      })
+      });
     }
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Delete',
         onClick: onDelete
-      })
+      });
     }
-    const starButtonGrid = canStar ? 'starButton' : 'title'
+    const starButtonGrid = canStar ? 'starButton' : 'title';
     return (
       <div
         className={css`
@@ -182,7 +182,7 @@ class Description extends Component {
                 placeholder={edit.video}
                 value={editedUrl}
                 onChange={text => {
-                  this.setState({ editedUrl: text })
+                  this.setState({ editedUrl: text });
                 }}
                 style={this.urlExceedsCharLimit()}
               />
@@ -194,13 +194,13 @@ class Description extends Component {
                 placeholder={edit.title}
                 value={editedTitle}
                 onChange={text => {
-                  this.setState({ editedTitle: text })
+                  this.setState({ editedTitle: text });
                 }}
                 onKeyUp={event => {
                   if (event.key === ' ') {
                     this.setState({
                       editedTitle: addEmoji(event.target.value)
-                    })
+                    });
                   }
                 }}
                 style={this.titleExceedsCharLimit()}
@@ -219,7 +219,7 @@ class Description extends Component {
             <div style={{ position: 'relative' }}>
               <div
                 ref={ref => {
-                  this.thumbLabel = ref
+                  this.thumbLabel = ref;
                 }}
                 style={{
                   width: '100%',
@@ -287,13 +287,13 @@ class Description extends Component {
                 placeholder={edit.description}
                 value={editedDescription}
                 onChange={event => {
-                  this.setState({ editedDescription: event.target.value })
+                  this.setState({ editedDescription: event.target.value });
                 }}
                 onKeyUp={event => {
                   if (event.key === ' ') {
                     this.setState({
                       editedDescription: addEmoji(event.target.value)
-                    })
+                    });
                   }
                 }}
                 style={this.descriptionExceedsCharLimit()}
@@ -393,8 +393,8 @@ class Description extends Component {
               noPadding
               uploaderId={uploaderId}
               onRewardSubmit={data => {
-                this.setState({ xpRewardInterfaceShown: false })
-                attachStar(data)
+                this.setState({ xpRewardInterfaceShown: false });
+                attachStar(data);
               }}
             />
           )}
@@ -428,13 +428,13 @@ class Description extends Component {
             }}
             onClick={likeVideo}
             liked={(likes => {
-              let liked = false
+              let liked = false;
               if (likes) {
                 for (let i = 0; i < likes.length; i++) {
-                  if (likes[i].userId === userId) liked = true
+                  if (likes[i].userId === userId) liked = true;
                 }
               }
-              return liked
+              return liked;
             })(likes)}
           />
           <Likers
@@ -458,43 +458,43 @@ class Description extends Component {
               return {
                 username: like.username,
                 userId: like.userId
-              }
+              };
             })}
             description="(You)"
           />
         )}
       </div>
-    )
+    );
   }
 
   determineEditButtonDoneStatus = () => {
-    const { editedTitle, editedDescription, editedUrl } = this.state
-    const urlIsInvalid = !isValidYoutubeUrl(editedUrl)
-    const titleIsEmpty = stringIsEmpty(editedTitle)
-    const titleChanged = editedTitle !== this.props.title
+    const { editedTitle, editedDescription, editedUrl } = this.state;
+    const urlIsInvalid = !isValidYoutubeUrl(editedUrl);
+    const titleIsEmpty = stringIsEmpty(editedTitle);
+    const titleChanged = editedTitle !== this.props.title;
     const urlChanged =
-      editedUrl !== `https://www.youtube.com/watch?v=${this.props.content}`
-    const descriptionChanged = editedDescription !== this.props.description
-    if (urlIsInvalid) return true
-    if (titleIsEmpty) return true
-    if (!titleChanged && !descriptionChanged && !urlChanged) return true
-    if (this.urlExceedsCharLimit()) return true
-    if (this.titleExceedsCharLimit()) return true
-    if (this.descriptionExceedsCharLimit()) return true
-    return false
-  }
+      editedUrl !== `https://www.youtube.com/watch?v=${this.props.content}`;
+    const descriptionChanged = editedDescription !== this.props.description;
+    if (urlIsInvalid) return true;
+    if (titleIsEmpty) return true;
+    if (!titleChanged && !descriptionChanged && !urlChanged) return true;
+    if (this.urlExceedsCharLimit()) return true;
+    if (this.titleExceedsCharLimit()) return true;
+    if (this.descriptionExceedsCharLimit()) return true;
+    return false;
+  };
 
   onEditCancel = () => {
-    const { description } = this.props
-    this.props.onEditCancel()
+    const { description } = this.props;
+    this.props.onEditCancel();
     this.setState({
       editedUrl: `https://www.youtube.com/watch?v=${this.props.content}`,
       editedTitle: cleanString(this.props.title),
       editedDescription: description,
       onEdit: false,
       editDoneButtonDisabled: true
-    })
-  }
+    });
+  };
 
   onEditFinish = () => {
     const params = {
@@ -502,49 +502,49 @@ class Description extends Component {
       videoId: this.props.videoId,
       title: finalizeEmoji(this.state.editedTitle),
       description: finalizeEmoji(this.state.editedDescription)
-    }
+    };
     this.props.onEditFinish(params).then(() =>
       this.setState({
         onEdit: false,
         editDoneButtonDisabled: true
       })
-    )
-  }
+    );
+  };
 
   onEditStart = () => {
-    this.props.onEditStart()
-    this.setState({ onEdit: true })
-  }
+    this.props.onEditStart();
+    this.setState({ onEdit: true });
+  };
 
   onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({ onTitleHover: true })
+      this.setState({ onTitleHover: true });
     }
-  }
+  };
 
   descriptionExceedsCharLimit = () => {
     return exceedsCharLimit({
       contentType: 'video',
       inputType: 'description',
       text: this.state.editedDescription
-    })
-  }
+    });
+  };
 
   titleExceedsCharLimit = () => {
     return exceedsCharLimit({
       contentType: 'video',
       inputType: 'title',
       text: this.state.editedTitle
-    })
-  }
+    });
+  };
 
   urlExceedsCharLimit = () => {
     return exceedsCharLimit({
       contentType: 'video',
       inputType: 'url',
       text: this.state.editedUrl
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -558,4 +558,4 @@ export default connect(
     attachStar,
     starVideo
   }
-)(Description)
+)(Description);

@@ -1,1 +1,1 @@
-export const GENERAL_CHAT_ID = 2
+export const GENERAL_CHAT_ID = 2;

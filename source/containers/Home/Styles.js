@@ -1,12 +1,12 @@
-import { css } from 'react-emotion'
-import { mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 export const container = css`
   height: 100%;
   @media (max-width: ${mobileMaxWidth}) {
     display: flex;
   }
-`
+`;
 
 export const Left = css`
   width: CALC(18vw - 1rem);
@@ -16,7 +16,7 @@ export const Left = css`
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
   }
-`
+`;
 
 export const Center = css`
   width: 45vw;
@@ -26,7 +26,7 @@ export const Center = css`
     width: 100%;
     margin-left: 0;
   }
-`
+`;
 
 export const Right = css`
   width: CALC(27vw - 1rem);
@@ -39,4 +39,4 @@ export const Right = css`
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
   }
-`
+`;

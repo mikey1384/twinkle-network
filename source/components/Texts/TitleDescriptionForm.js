@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Textarea from 'components/Texts/Textarea'
-import Button from 'components/Button'
-import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
-import Input from './Input'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Textarea from 'components/Texts/Textarea';
+import Button from 'components/Button';
+import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
+import Input from './Input';
 
 export default class TitleDescriptionForm extends Component {
   static propTypes = {
@@ -15,12 +15,12 @@ export default class TitleDescriptionForm extends Component {
     rows: PropTypes.number,
     titleMaxChar: PropTypes.number,
     titlePlaceholder: PropTypes.string
-  }
+  };
 
   state = {
     title: '',
     description: ''
-  }
+  };
 
   render() {
     const {
@@ -31,8 +31,8 @@ export default class TitleDescriptionForm extends Component {
       titleMaxChar = 300,
       descriptionMaxChar = 5000,
       descriptionPlaceholder
-    } = this.props
-    const { title, description } = this.state
+    } = this.props;
+    const { title, description } = this.state;
     return (
       <div>
         <Input
@@ -104,17 +104,17 @@ export default class TitleDescriptionForm extends Component {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   onSubmit = event => {
-    const { onSubmit } = this.props
-    const { title, description } = this.state
-    event.preventDefault()
-    onSubmit(finalizeEmoji(title), finalizeEmoji(description))
+    const { onSubmit } = this.props;
+    const { title, description } = this.state;
+    event.preventDefault();
+    onSubmit(finalizeEmoji(title), finalizeEmoji(description));
     this.setState({
       title: '',
       description: ''
-    })
-  }
+    });
+  };
 }

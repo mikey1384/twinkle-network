@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Textarea from 'components/Texts/Textarea'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Textarea from 'components/Texts/Textarea';
 
 EditChoiceListItem.propTypes = {
   checked: PropTypes.bool.isRequired,
@@ -9,7 +9,7 @@ EditChoiceListItem.propTypes = {
   onSelect: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   text: PropTypes.string
-}
+};
 export default function EditChoiceListItem({
   checked,
   choiceId,
@@ -37,5 +37,5 @@ export default function EditChoiceListItem({
         />
       </aside>
     </nav>
-  )
+  );
 }

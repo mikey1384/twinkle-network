@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { cleanString } from 'helpers/stringHelpers'
-import FullTextReveal from 'components/FullTextReveal'
-import { textIsOverflown } from 'helpers/domHelpers'
-import VideoThumbImage from 'components/VideoThumbImage'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { cleanString } from 'helpers/stringHelpers';
+import FullTextReveal from 'components/FullTextReveal';
+import { textIsOverflown } from 'helpers/domHelpers';
+import VideoThumbImage from 'components/VideoThumbImage';
+import { Color } from 'constants/css';
 
 export default class VideoThumb extends Component {
   static propTypes = {
@@ -12,19 +12,19 @@ export default class VideoThumb extends Component {
     selected: PropTypes.bool,
     onSelect: PropTypes.func,
     onDeselect: PropTypes.func
-  }
+  };
 
   constructor() {
-    super()
+    super();
     this.state = {
       onTitleHover: false
-    }
-    this.onMouseOver = this.onMouseOver.bind(this)
+    };
+    this.onMouseOver = this.onMouseOver.bind(this);
   }
 
   render() {
-    const { video, selected, onSelect, onDeselect } = this.props
-    const { onTitleHover } = this.state
+    const { video, selected, onSelect, onDeselect } = this.props;
+    const { onTitleHover } = this.state;
     return (
       <div
         style={{
@@ -46,9 +46,9 @@ export default class VideoThumb extends Component {
           }}
           onClick={() => {
             if (selected) {
-              onDeselect(video.id)
+              onDeselect(video.id);
             } else {
-              onSelect(video)
+              onSelect(video);
             }
           }}
         >
@@ -70,7 +70,7 @@ export default class VideoThumb extends Component {
             <div>
               <p
                 ref={ref => {
-                  this.thumbLabel = ref
+                  this.thumbLabel = ref;
                 }}
                 style={{
                   marginTop: '1rem',
@@ -104,12 +104,12 @@ export default class VideoThumb extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   onMouseOver() {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({ onTitleHover: true })
+      this.setState({ onTitleHover: true });
     }
   }
 }

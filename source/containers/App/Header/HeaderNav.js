@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { Link, Route } from 'react-router-dom'
-import Icon from 'components/Icon'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Link, Route } from 'react-router-dom';
+import Icon from 'components/Icon';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 
 export default class HeaderNav extends Component {
   static propTypes = {
@@ -18,7 +18,7 @@ export default class HeaderNav extends Component {
     onClick: PropTypes.func,
     style: PropTypes.object,
     to: PropTypes.string
-  }
+  };
 
   render() {
     const {
@@ -32,7 +32,7 @@ export default class HeaderNav extends Component {
       isUsername,
       onClick = () => {},
       style
-    } = this.props
+    } = this.props;
     return (
       <Route
         path={to}
@@ -85,15 +85,15 @@ export default class HeaderNav extends Component {
           </div>
         )}
       />
-    )
+    );
   }
 
   styles = () => {
-    const { alertColor } = this.props
+    const { alertColor } = this.props;
     return {
       alert: css`
         color: ${alertColor || Color.gold()}!important;
       `
-    }
-  }
+    };
+  };
 }

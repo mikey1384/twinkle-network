@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Textarea from 'components/Texts/Textarea'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Textarea from 'components/Texts/Textarea';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 import {
   addEmoji,
   exceedsCharLimit,
   finalizeEmoji,
   stringIsEmpty
-} from 'helpers/stringHelpers'
-import Button from 'components/Button'
-import request from 'axios'
-import Icon from 'components/Icon'
-import { auth } from 'helpers/requestHelpers'
-import { URL } from 'constants/URL'
-import { connect } from 'react-redux'
+} from 'helpers/stringHelpers';
+import Button from 'components/Button';
+import request from 'axios';
+import Icon from 'components/Icon';
+import { auth } from 'helpers/requestHelpers';
+import { URL } from 'constants/URL';
+import { connect } from 'react-redux';
 
 class XPRewardInterface extends Component {
   static propTypes = {
@@ -24,29 +24,29 @@ class XPRewardInterface extends Component {
     uploaderId: PropTypes.number.isRequired,
     userId: PropTypes.number.isRequired,
     noPadding: PropTypes.bool
-  }
+  };
 
   state = {
     rewardExplanation: '',
     twoStarSelected: false,
     rewarding: false
-  }
+  };
 
   render() {
-    const { rewarding, rewardExplanation, twoStarSelected } = this.state
-    const { contentType, noPadding, stars = [], userId } = this.props
-    if (!userId) return null
+    const { rewarding, rewardExplanation, twoStarSelected } = this.state;
+    const { contentType, noPadding, stars = [], userId } = this.props;
+    if (!userId) return null;
     const totalStars =
       stars.length > 0
         ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)
-        : 0
+        : 0;
     const prevRewardedStars = stars.reduce((prev, star) => {
       if (star.rewarderId === userId) {
-        return prev + star.rewardAmount
+        return prev + star.rewardAmount;
       }
-      return prev
-    }, 0)
-    const canRewardTwoStars = 5 - totalStars >= 2 && prevRewardedStars === 0
+      return prev;
+    }, 0);
+    const canRewardTwoStars = 5 - totalStars >= 2 && prevRewardedStars === 0;
     return (
       <div
         className={css`
@@ -129,14 +129,14 @@ class XPRewardInterface extends Component {
           </Button>
         </section>
       </div>
-    )
+    );
   }
 
   onRewardSubmit = async() => {
-    const { rewardExplanation, twoStarSelected } = this.state
-    const { contentType, contentId, onRewardSubmit, uploaderId } = this.props
+    const { rewardExplanation, twoStarSelected } = this.state;
+    const { contentType, contentId, onRewardSubmit, uploaderId } = this.props;
     try {
-      this.setState({ rewarding: true })
+      this.setState({ rewarding: true });
       const { data } = await request.post(
         `${URL}/user/reward`,
         {
@@ -149,14 +149,14 @@ class XPRewardInterface extends Component {
           uploaderId
         },
         auth()
-      )
-      onRewardSubmit(data)
+      );
+      onRewardSubmit(data);
     } catch (error) {
-      console.error({ error })
+      console.error({ error });
     }
-  }
+  };
 }
 
 export default connect(state => ({
   userId: state.UserReducer.userId
-}))(XPRewardInterface)
+}))(XPRewardInterface);

@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import FilterBar from 'components/FilterBar'
+import PropTypes from 'prop-types';
+import React from 'react';
+import FilterBar from 'components/FilterBar';
 
 PageTab.propTypes = {
   onQuestionTabClick: PropTypes.func.isRequired,
   onWatchTabClick: PropTypes.func.isRequired,
   questions: PropTypes.array.isRequired,
   watchTabActive: PropTypes.bool.isRequired
-}
+};
 export default function PageTab({
   watchTabActive,
   onWatchTabClick,
@@ -26,5 +26,5 @@ export default function PageTab({
         Questions {questions.length > 0 && `(${questions.length})`}
       </nav>
     </FilterBar>
-  )
+  );
 }

@@ -21,10 +21,10 @@ const types = {
   UPLOAD_COMMENT: 'UPLOAD_COMMENT',
   UPLOAD_CONTENT: 'UPLOAD_CONTENT',
   UPLOAD_TC_COMMENT: 'UPLOAD_TC_COMMENT'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_FEED`
+  types[key] = `${types[key]}_FEED`;
 }
 
-export default types
+export default types;

@@ -1,26 +1,26 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Context from '../../Context'
-import withContext from 'components/Wrappers/withContext'
-import UsernameText from 'components/Texts/UsernameText'
-import Button from 'components/Button'
-import LikeButton from 'components/Buttons/LikeButton'
-import Likers from 'components/Likers'
-import { connect } from 'react-redux'
-import UserListModal from 'components/Modals/UserListModal'
-import InputForm from 'components/Texts/InputForm'
-import Comment from './Comment'
-import { borderRadius, Color } from 'constants/css'
-import LongText from 'components/Texts/LongText'
-import ContentLink from 'components/ContentLink'
-import { timeSince } from 'helpers/timeStampHelpers'
-import RewardStatus from 'components/RewardStatus'
-import XPRewardInterface from 'components/XPRewardInterface'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import Icon from 'components/Icon'
-import { determineXpButtonDisabled } from 'helpers/domHelpers'
-import { uploadComment } from 'helpers/requestHelpers'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Context from '../../Context';
+import withContext from 'components/Wrappers/withContext';
+import UsernameText from 'components/Texts/UsernameText';
+import Button from 'components/Button';
+import LikeButton from 'components/Buttons/LikeButton';
+import Likers from 'components/Likers';
+import { connect } from 'react-redux';
+import UserListModal from 'components/Modals/UserListModal';
+import InputForm from 'components/Texts/InputForm';
+import Comment from './Comment';
+import { borderRadius, Color } from 'constants/css';
+import LongText from 'components/Texts/LongText';
+import ContentLink from 'components/ContentLink';
+import { timeSince } from 'helpers/timeStampHelpers';
+import RewardStatus from 'components/RewardStatus';
+import XPRewardInterface from 'components/XPRewardInterface';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import Icon from 'components/Icon';
+import { determineXpButtonDisabled } from 'helpers/domHelpers';
+import { uploadComment } from 'helpers/requestHelpers';
+import { css } from 'emotion';
 
 class TargetContent extends Component {
   static propTypes = {
@@ -40,13 +40,13 @@ class TargetContent extends Component {
     rootType: PropTypes.string.isRequired,
     targetObj: PropTypes.object,
     username: PropTypes.string
-  }
+  };
 
   state = {
     userListModalShown: false,
     replyInputShown: false,
     xpRewardInterfaceShown: false
-  }
+  };
 
   render() {
     const {
@@ -67,22 +67,22 @@ class TargetContent extends Component {
         type
       },
       username
-    } = this.props
+    } = this.props;
     const {
       userListModalShown,
       replyInputShown,
       xpRewardInterfaceShown
-    } = this.state
-    let userLikedThis = false
-    let userIsUploader
-    let userCanStarThis
+    } = this.state;
+    let userLikedThis = false;
+    let userIsUploader;
+    let userCanStarThis;
     if (comment && !comment.notFound) {
       for (let i = 0; i < comment.likes.length; i++) {
-        if (comment.likes[i].userId === myId) userLikedThis = true
+        if (comment.likes[i].userId === myId) userLikedThis = true;
       }
-      userIsUploader = myId === comment.uploader.id
+      userIsUploader = myId === comment.uploader.id;
       userCanStarThis =
-        !userIsUploader && canStar && authLevel > comment.uploader.authLevel
+        !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
     }
     return (
       <ErrorBoundary
@@ -158,7 +158,8 @@ class TargetContent extends Component {
                       />
                     </div>
                     <div>
-                      <UsernameText user={discussion.uploader} />&nbsp;
+                      <UsernameText user={discussion.uploader} />
+                      &nbsp;
                       <span className="timestamp">
                         ({timeSince(discussion.timeStamp)})
                       </span>
@@ -298,8 +299,8 @@ class TargetContent extends Component {
                     uploaderId={comment.uploader.id}
                     stars={comment.stars}
                     onRewardSubmit={data => {
-                      this.setState({ xpRewardInterfaceShown: false })
-                      onAttachStar(data)
+                      this.setState({ xpRewardInterfaceShown: false });
+                      onAttachStar(data);
                     }}
                   />
                 )}
@@ -353,33 +354,33 @@ class TargetContent extends Component {
             ))}
         </div>
       </ErrorBoundary>
-    )
+    );
   }
 
   determineXpButtonDisabled = () => {
     const {
       targetObj: { type, comment, discussion },
       myId
-    } = this.props
-    const { xpRewardInterfaceShown } = this.state
+    } = this.props;
+    const { xpRewardInterfaceShown } = this.state;
     const stars =
-      type === 'comment' || type === 'reply' ? comment.stars : discussion.stars
-    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
-  }
+      type === 'comment' || type === 'reply' ? comment.stars : discussion.stars;
+    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown });
+  };
 
   onLikeClick = likes => {
     const {
       targetObj: { comment },
       onLikeContent
-    } = this.props
-    onLikeContent({ likes, type: 'comment', contentId: comment.id })
-  }
+    } = this.props;
+    onLikeContent({ likes, type: 'comment', contentId: comment.id });
+  };
 
   onReplyClick = () => {
-    const { replyInputShown } = this.state
-    if (!replyInputShown) return this.setState({ replyInputShown: true })
-    this.InputForm.focus()
-  }
+    const { replyInputShown } = this.state;
+    if (!replyInputShown) return this.setState({ replyInputShown: true });
+    this.InputForm.focus();
+  };
 
   onSubmit = async content => {
     const {
@@ -389,7 +390,7 @@ class TargetContent extends Component {
       rootObj,
       targetObj: { comment = {} },
       onTargetCommentSubmit
-    } = this.props
+    } = this.props;
     const data = await uploadComment({
       content,
       parent: {
@@ -399,9 +400,9 @@ class TargetContent extends Component {
       rootCommentId: comment.commentId,
       targetCommentId: comment.id,
       dispatch
-    })
-    if (data) onTargetCommentSubmit(data, feedId)
-  }
+    });
+    if (data) onTargetCommentSubmit(data, feedId);
+  };
 }
 
 export default connect(
@@ -412,4 +413,4 @@ export default connect(
     profilePicId: state.UserReducer.profilePicId
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: TargetContent, Context }))
+)(withContext({ Component: TargetContent, Context }));

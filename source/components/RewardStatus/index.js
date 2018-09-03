@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
-import { connect } from 'react-redux'
-import Comment from './Comment'
-import Icon from 'components/Icon'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import { connect } from 'react-redux';
+import Comment from './Comment';
+import Icon from 'components/Icon';
 
 class RewardStatus extends Component {
   static propTypes = {
@@ -15,7 +15,7 @@ class RewardStatus extends Component {
     stars: PropTypes.array,
     style: PropTypes.object,
     uploaderName: PropTypes.string
-  }
+  };
 
   render() {
     const {
@@ -26,12 +26,15 @@ class RewardStatus extends Component {
       userId,
       uploaderName,
       style
-    } = this.props
-    if (!stars || stars.length === 0) return null
-    const totalStars = stars.reduce((prev, star) => prev + star.rewardAmount, 0)
-    let starMarks = []
+    } = this.props;
+    if (!stars || stars.length === 0) return null;
+    const totalStars = stars.reduce(
+      (prev, star) => prev + star.rewardAmount,
+      0
+    );
+    let starMarks = [];
     for (let i = 0; i < totalStars; i++) {
-      starMarks.push(<Icon key={i} icon="star" />)
+      starMarks.push(<Icon key={i} icon="star" />);
     }
     return (
       <Fragment>
@@ -48,8 +51,9 @@ class RewardStatus extends Component {
         >
           {starMarks}
           &nbsp; {uploaderName} received {totalStars > 1 ? totalStars : 'a'}{' '}
-          Star{totalStars > 1 ? 's' : ''} ({totalStars * 200}XP) for this{' '}
-          {contentType === 'url' ? 'link' : contentType}
+          Star
+          {totalStars > 1 ? 's' : ''} ({totalStars * 200}
+          XP) for this {contentType === 'url' ? 'link' : contentType}
         </div>
         {stars.map(star => (
           <Comment
@@ -61,10 +65,10 @@ class RewardStatus extends Component {
           />
         ))}
       </Fragment>
-    )
+    );
   }
 }
 
 export default connect(state => ({
   userId: state.UserReducer.userId
-}))(RewardStatus)
+}))(RewardStatus);

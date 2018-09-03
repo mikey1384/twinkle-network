@@ -1,21 +1,21 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import DropdownButton from './Buttons/DropdownButton'
-import EditTitleForm from './Texts/EditTitleForm'
-import ConfirmModal from './Modals/ConfirmModal'
-import { editVideoTitle, deleteVideo } from 'redux/actions/VideoActions'
-import { connect } from 'react-redux'
-import UsernameText from './Texts/UsernameText'
-import { cleanString } from 'helpers/stringHelpers'
-import Link from 'components/Link'
-import FullTextReveal from 'components/FullTextReveal'
-import { textIsOverflown } from 'helpers/domHelpers'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import VideoThumbImage from 'components/VideoThumbImage'
-import Icon from 'components/Icon'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
-import { charLimit } from 'constants/defaultValues'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import DropdownButton from './Buttons/DropdownButton';
+import EditTitleForm from './Texts/EditTitleForm';
+import ConfirmModal from './Modals/ConfirmModal';
+import { editVideoTitle, deleteVideo } from 'redux/actions/VideoActions';
+import { connect } from 'react-redux';
+import UsernameText from './Texts/UsernameText';
+import { cleanString } from 'helpers/stringHelpers';
+import Link from 'components/Link';
+import FullTextReveal from 'components/FullTextReveal';
+import { textIsOverflown } from 'helpers/domHelpers';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import VideoThumbImage from 'components/VideoThumbImage';
+import Icon from 'components/Icon';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
+import { charLimit } from 'constants/defaultValues';
 
 class VideoThumb extends Component {
   static propTypes = {
@@ -36,29 +36,29 @@ class VideoThumb extends Component {
       numLikes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       title: PropTypes.string.isRequired
     }).isRequired
-  }
+  };
 
   state = {
     onEdit: false,
     confirmModalShown: false,
     onTitleHover: false
-  }
+  };
 
   render() {
-    const { onEdit, confirmModalShown, onTitleHover } = this.state
-    const { deletable, editable, video, style, to, user } = this.props
-    const menuProps = []
+    const { onEdit, confirmModalShown, onTitleHover } = this.state;
+    const { deletable, editable, video, style, to, user } = this.props;
+    const menuProps = [];
     if (editable) {
       menuProps.push({
         label: 'Edit',
         onClick: this.onEditTitle
-      })
+      });
     }
     if (deletable || editable) {
       menuProps.push({
         label: 'Remove',
         onClick: this.onDeleteClick
-      })
+      });
     }
     return (
       <ErrorBoundary style={style}>
@@ -131,7 +131,7 @@ class VideoThumb extends Component {
               <div style={{ width: '100%' }}>
                 <p
                   ref={ref => {
-                    this.thumbLabel = ref
+                    this.thumbLabel = ref;
                   }}
                   style={{
                     whiteSpace: 'nowrap',
@@ -179,48 +179,48 @@ class VideoThumb extends Component {
           />
         )}
       </ErrorBoundary>
-    )
+    );
   }
 
   onLinkClick = () => {
-    const { clickSafe } = this.props
-    return Promise.resolve(clickSafe)
-  }
+    const { clickSafe } = this.props;
+    return Promise.resolve(clickSafe);
+  };
 
   onEditTitle = () => {
-    this.setState({ onEdit: true })
-  }
+    this.setState({ onEdit: true });
+  };
 
   onEditedTitleSubmit = async title => {
-    const { video, editVideoTitle } = this.props
-    const videoId = video.id
-    await editVideoTitle({ title, videoId })
-    this.setState({ onEdit: false })
-  }
+    const { video, editVideoTitle } = this.props;
+    const videoId = video.id;
+    await editVideoTitle({ title, videoId });
+    this.setState({ onEdit: false });
+  };
 
   onEditTitleCancel = () => {
-    this.setState({ onEdit: false })
-  }
+    this.setState({ onEdit: false });
+  };
 
   onDeleteClick = () => {
-    this.setState({ confirmModalShown: true })
-  }
+    this.setState({ confirmModalShown: true });
+  };
 
   onDeleteConfirm = () => {
-    const { deleteVideo, video, arrayIndex, lastVideoId } = this.props
-    const videoId = video.id
-    deleteVideo({ videoId, arrayIndex, lastVideoId })
-  }
+    const { deleteVideo, video, arrayIndex, lastVideoId } = this.props;
+    const videoId = video.id;
+    deleteVideo({ videoId, arrayIndex, lastVideoId });
+  };
 
   onHideModal = () => {
-    this.setState({ confirmModalShown: false })
-  }
+    this.setState({ confirmModalShown: false });
+  };
 
   onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({ onTitleHover: true })
+      this.setState({ onTitleHover: true });
     }
-  }
+  };
 }
 
 export default connect(
@@ -229,4 +229,4 @@ export default connect(
     editVideoTitle,
     deleteVideo
   }
-)(VideoThumb)
+)(VideoThumb);

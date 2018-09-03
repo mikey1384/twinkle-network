@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import SearchDropdown from '../SearchDropdown'
-import onClickOutside from 'react-onclickoutside'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
-import Input from './Input'
-import Icon from 'components/Icon'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import SearchDropdown from '../SearchDropdown';
+import onClickOutside from 'react-onclickoutside';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import Input from './Input';
+import Icon from 'components/Icon';
 
 class SearchInput extends Component {
   static propTypes = {
@@ -24,19 +24,19 @@ class SearchInput extends Component {
     searchResults: PropTypes.array,
     style: PropTypes.object,
     value: PropTypes.string
-  }
+  };
 
-  static defaultProps = { searchResults: [] }
+  static defaultProps = { searchResults: [] };
 
   handleClickOutside = event => {
-    this.props.onClickOutSide ? this.props.onClickOutSide() : null
-  }
+    this.props.onClickOutSide ? this.props.onClickOutSide() : null;
+  };
 
   state = {
     indexToHighlight: 0
-  }
+  };
 
-  timer = null
+  timer = null;
 
   render() {
     const {
@@ -49,7 +49,7 @@ class SearchInput extends Component {
       onFocus,
       style,
       value
-    } = this.props
+    } = this.props;
     return (
       <div
         className={`${css`
@@ -92,7 +92,7 @@ class SearchInput extends Component {
         />
         {this.renderDropdownList()}
       </div>
-    )
+    );
   }
 
   renderDropdownList = () => {
@@ -101,7 +101,7 @@ class SearchInput extends Component {
       renderItemLabel,
       renderItemUrl,
       onSelect
-    } = this.props
+    } = this.props;
     return searchResults.length > 0 ? (
       <SearchDropdown
         searchResults={searchResults}
@@ -112,37 +112,37 @@ class SearchInput extends Component {
         renderItemLabel={renderItemLabel}
         renderItemUrl={renderItemUrl}
       />
-    ) : null
-  }
+    ) : null;
+  };
 
   onKeyDown = event => {
-    const { indexToHighlight } = this.state
-    const { searchResults, onSelect, onClear } = this.props
-    let index = indexToHighlight
+    const { indexToHighlight } = this.state;
+    const { searchResults, onSelect, onClear } = this.props;
+    let index = indexToHighlight;
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
-        event.preventDefault()
-        let highlightIndex = Math.min(++index, searchResults.length - 1)
-        this.setState({ indexToHighlight: highlightIndex })
+        event.preventDefault();
+        let highlightIndex = Math.min(++index, searchResults.length - 1);
+        this.setState({ indexToHighlight: highlightIndex });
       }
 
       if (event.keyCode === 38) {
-        event.preventDefault()
-        let highlightIndex = Math.max(--index, 0)
-        this.setState({ indexToHighlight: highlightIndex })
+        event.preventDefault();
+        let highlightIndex = Math.max(--index, 0);
+        this.setState({ indexToHighlight: highlightIndex });
       }
 
       if (event.keyCode === 13) {
-        event.preventDefault()
-        let item = searchResults[index]
-        onSelect(item)
+        event.preventDefault();
+        let item = searchResults[index];
+        onSelect(item);
       }
 
       if (event.keyCode === 9) {
-        if (onClear) onClear()
+        if (onClear) onClear();
       }
     }
-  }
+  };
 }
 
-export default onClickOutside(SearchInput)
+export default onClickOutside(SearchInput);

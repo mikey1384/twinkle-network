@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { addCommasToNumber } from 'helpers/stringHelpers'
-import { borderRadius, mobileMaxWidth, Color } from 'constants/css'
-import { css } from 'emotion'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { borderRadius, mobileMaxWidth, Color } from 'constants/css';
+import { css } from 'emotion';
 
 RankBar.propTypes = {
   profile: PropTypes.object.isRequired,
   style: PropTypes.object
-}
+};
 export default function RankBar({ profile, style }) {
   const rankColor =
     profile.rank === 1
@@ -16,7 +16,7 @@ export default function RankBar({ profile, style }) {
         ? Color.silver()
         : profile.rank === 3
           ? '#fff'
-          : undefined
+          : undefined;
   return (
     <div
       style={style}
@@ -109,5 +109,5 @@ export default function RankBar({ profile, style }) {
         )}
       </span>
     </div>
-  )
+  );
 }

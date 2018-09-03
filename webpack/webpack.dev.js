@@ -1,7 +1,7 @@
-import webpack from 'webpack'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import webpackHotMiddleware from 'webpack-hot-middleware'
-import prodCfg from './webpack.prod.config.js'
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+import prodCfg from './webpack.prod.config.js';
 
 export default function devConfig(app) {
   const config = {
@@ -29,10 +29,10 @@ export default function devConfig(app) {
       ]
     },
     plugins: [new webpack.HotModuleReplacementPlugin()]
-  }
+  };
 
-  const compiler = webpack(config)
+  const compiler = webpack(config);
 
-  app.use(webpackDevMiddleware(compiler, { noInfo: false }))
-  app.use(webpackHotMiddleware(compiler))
+  app.use(webpackDevMiddleware(compiler, { noInfo: false }));
+  app.use(webpackHotMiddleware(compiler));
 }

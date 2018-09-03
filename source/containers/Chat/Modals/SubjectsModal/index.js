@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { connect } from 'react-redux'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
-import SubjectItem from './SubjectItem'
-import { Color } from 'constants/css'
-import { queryStringForArray } from 'helpers/stringHelpers'
-import Loading from 'components/Loading'
-import SubjectMsgsModal from '../SubjectMsgsModal'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { connect } from 'react-redux';
+import request from 'axios';
+import { URL } from 'constants/URL';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import SubjectItem from './SubjectItem';
+import { Color } from 'constants/css';
+import { queryStringForArray } from 'helpers/stringHelpers';
+import Loading from 'components/Loading';
+import SubjectMsgsModal from '../SubjectMsgsModal';
 
-const API_URL = `${URL}/chat`
+const API_URL = `${URL}/chat`;
 
 class SubjectsModal extends Component {
   static propTypes = {
@@ -20,7 +20,7 @@ class SubjectsModal extends Component {
     userId: PropTypes.number,
     onHide: PropTypes.func,
     selectSubject: PropTypes.func
-  }
+  };
 
   state = {
     loaded: false,
@@ -39,10 +39,10 @@ class SubjectsModal extends Component {
       subjectId: null,
       title: ''
     }
-  }
+  };
 
   componentDidMount() {
-    const { userId } = this.props
+    const { userId } = this.props;
     return request
       .get(`${API_URL}/chatSubject/modal?userId=${userId}`)
       .then(({ data }) => {
@@ -50,14 +50,14 @@ class SubjectsModal extends Component {
           ...this.state,
           ...data,
           loaded: true
-        })
+        });
       })
-      .catch(error => console.error(error.response || error))
+      .catch(error => console.error(error.response || error));
   }
 
   render() {
-    const { currentSubjectId, onHide, selectSubject } = this.props
-    const { loaded, mySubjects, allSubjects, msgsModal } = this.state
+    const { currentSubjectId, onHide, selectSubject } = this.props;
+    const { loaded, mySubjects, allSubjects, msgsModal } = this.state;
     return (
       <Modal onHide={onHide} style={{ overflow: msgsModal.shown && 'hidden' }}>
         <header>View Subjects</header>
@@ -156,17 +156,17 @@ class SubjectsModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   loadMoreSubjects = mineOnly => {
-    const { userId } = this.props
-    const { mySubjects, allSubjects } = this.state
-    const { subjects } = mineOnly ? mySubjects : allSubjects
-    const subjectLabel = `${mineOnly ? 'mySubjects' : 'allSubjects'}`
+    const { userId } = this.props;
+    const { mySubjects, allSubjects } = this.state;
+    const { subjects } = mineOnly ? mySubjects : allSubjects;
+    const subjectLabel = `${mineOnly ? 'mySubjects' : 'allSubjects'}`;
     this.setState({
       [subjectLabel]: { ...this.state[subjectLabel], loading: true }
-    })
+    });
     return request
       .get(
         `
@@ -184,10 +184,10 @@ class SubjectsModal extends Component {
           }
         })
       )
-      .catch(error => console.error(error.response || error))
-  }
+      .catch(error => console.error(error.response || error));
+  };
 }
 
 export default connect(state => ({
   userId: state.UserReducer.userId
-}))(SubjectsModal)
+}))(SubjectsModal);

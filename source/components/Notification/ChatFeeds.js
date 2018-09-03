@@ -1,13 +1,13 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
-import UsernameText from 'components/Texts/UsernameText'
-import Button from 'components/Button'
-import { timeSince } from 'helpers/timeStampHelpers'
-import { connect } from 'react-redux'
-import { initChat } from 'redux/actions/ChatActions'
-import RoundList from 'components/RoundList'
-import Icon from 'components/Icon'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
+import UsernameText from 'components/Texts/UsernameText';
+import Button from 'components/Button';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { connect } from 'react-redux';
+import { initChat } from 'redux/actions/ChatActions';
+import RoundList from 'components/RoundList';
+import Icon from 'components/Icon';
 
 class ChatFeeds extends Component {
   static propTypes = {
@@ -20,10 +20,10 @@ class ChatFeeds extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     userId: PropTypes.number,
     username: PropTypes.string
-  }
+  };
 
   render() {
-    const { content, initChat, style = {} } = this.props
+    const { content, initChat, style = {} } = this.props;
     return (
       <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
         <li
@@ -52,7 +52,7 @@ class ChatFeeds extends Component {
           </Button>
         </li>
       </RoundList>
-    )
+    );
   }
 
   renderDetails = () => {
@@ -63,28 +63,28 @@ class ChatFeeds extends Component {
       reloadedBy,
       reloaderName,
       reloadTimeStamp
-    } = this.props
+    } = this.props;
     const posterString = (
       <Fragment>
         Started by <UsernameText user={{ id: userId, username }} />
         {timeStamp ? ` ${timeSince(timeStamp)}` : ''}
       </Fragment>
-    )
+    );
     const reloaderString = (
       <div style={{ marginTop: '0.5rem' }}>
         Brought back by{' '}
         <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
         {reloadTimeStamp ? ` ${timeSince(reloadTimeStamp)}` : ''}
       </div>
-    )
+    );
 
     return (
       <div style={{ margin: '0.5rem 0 1.5rem 0' }}>
         <div>{userId ? posterString : 'Join the conversation!'}</div>
         {reloadedBy && reloaderString}
       </div>
-    )
-  }
+    );
+  };
 }
 
 export default connect(
@@ -92,4 +92,4 @@ export default connect(
   {
     initChat
   }
-)(ChatFeeds)
+)(ChatFeeds);

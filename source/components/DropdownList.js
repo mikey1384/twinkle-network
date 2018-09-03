@@ -1,14 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 
 DropdownList.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   direction: PropTypes.string,
   style: PropTypes.object
-}
+};
 export default function DropdownList({
   children,
   className,
@@ -39,8 +39,8 @@ export default function DropdownList({
           display: inline-block;
           clear: both;
           float: left;
-          border-radius: 0!important;
-          border: none!important;
+          border-radius: 0 !important;
+          border: none !important;
           padding: 1rem;
           text-align: center;
           font-size: 1.5rem;
@@ -59,5 +59,5 @@ export default function DropdownList({
     >
       {children}
     </ul>
-  )
+  );
 }

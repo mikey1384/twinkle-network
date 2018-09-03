@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
 
 export default class LongText extends Component {
   static propTypes = {
@@ -10,36 +10,36 @@ export default class LongText extends Component {
     maxLines: PropTypes.number,
     style: PropTypes.object,
     noExpand: PropTypes.bool
-  }
+  };
 
-  mounted = false
+  mounted = false;
 
   state = {
     text: '',
     more: false,
     fullText: false
-  }
+  };
 
   componentDidMount() {
-    const { children } = this.props
-    this.mounted = true
-    this.truncateText(children || '')
+    const { children } = this.props;
+    this.mounted = true;
+    this.truncateText(children || '');
   }
 
   componentDidUpdate(prevProps) {
-    const { children } = this.props
+    const { children } = this.props;
     if (prevProps.children !== children && this.mounted) {
       this.setState({
         text: '',
         more: false,
         fullText: false
-      })
-      this.truncateText(children || '')
+      });
+      this.truncateText(children || '');
     }
   }
 
   componentWillUnmount() {
-    this.mounted = false
+    this.mounted = false;
   }
 
   render() {
@@ -49,19 +49,19 @@ export default class LongText extends Component {
       cleanString,
       children = '',
       noExpand
-    } = this.props
-    const { text, more, fullText } = this.state
+    } = this.props;
+    const { text, more, fullText } = this.state;
     return (
       <div
         ref={ref => {
-          this.Container = ref
+          this.Container = ref;
         }}
         style={style}
         className={className}
       >
         <p
           ref={ref => {
-            this.Text = ref
+            this.Text = ref;
           }}
         >
           {fullText ? (
@@ -98,44 +98,44 @@ export default class LongText extends Component {
           )}
         </p>
       </div>
-    )
+    );
   }
 
   truncateText = originalText => {
-    const { maxLines = 10 } = this.props
-    const maxWidth = this.Text.clientWidth
-    const canvas = document.createElement('canvas').getContext('2d')
-    const computedStyle = window.getComputedStyle(this.Container)
+    const { maxLines = 10 } = this.props;
+    const maxWidth = this.Text.clientWidth;
+    const canvas = document.createElement('canvas').getContext('2d');
+    const computedStyle = window.getComputedStyle(this.Container);
     const font = `${computedStyle['font-weight']} ${
       computedStyle['font-style']
-    } ${computedStyle['font-size']} ${computedStyle['font-family']}`
-    canvas.font = font
-    let line = ''
-    let numLines = 0
-    let trimmedText = ''
+    } ${computedStyle['font-size']} ${computedStyle['font-family']}`;
+    canvas.font = font;
+    let line = '';
+    let numLines = 0;
+    let trimmedText = '';
     for (let i = 0; i < originalText.length; i++) {
-      line += originalText[i]
+      line += originalText[i];
       if (
         originalText[i] === '\n' ||
         canvas.measureText(line).width > maxWidth
       ) {
-        numLines++
-        trimmedText += line
-        line = ''
+        numLines++;
+        trimmedText += line;
+        line = '';
       }
       if (numLines === maxLines && i < originalText.length - 1) {
-        const remainingText = originalText.slice(i + 1)
-        let more = true
+        const remainingText = originalText.slice(i + 1);
+        let more = true;
         if (
           remainingText[0] !== '\n' &&
           canvas.measureText(remainingText).width < maxWidth
         ) {
-          trimmedText += remainingText
-          more = false
+          trimmedText += remainingText;
+          more = false;
         }
-        return this.setState({ text: trimmedText, more })
+        return this.setState({ text: trimmedText, more });
       }
     }
-    this.setState({ text: trimmedText + line || line })
-  }
+    this.setState({ text: trimmedText + line || line });
+  };
 }

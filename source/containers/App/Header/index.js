@@ -1,34 +1,34 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router'
-import { Route } from 'react-router-dom'
-import Link from 'components/Link'
-import { logout } from 'redux/actions/UserActions'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Route } from 'react-router-dom';
+import Link from 'components/Link';
+import { logout } from 'redux/actions/UserActions';
 import {
   getNumberOfUnreadMessages,
   increaseNumberOfUnreadMessages,
   turnChatOff,
   resetChat
-} from 'redux/actions/ChatActions'
+} from 'redux/actions/ChatActions';
 import {
   checkVersion,
   notifyChatSubjectChange,
   increaseNumNewPosts,
   increaseNumNewNotis
-} from 'redux/actions/NotiActions'
-import { closeSearch, initSearch } from 'redux/actions/SearchActions'
-import AccountMenu from './AccountMenu'
-import ChatButton from './ChatButton'
-import Icon from 'components/Icon'
-import { GENERAL_CHAT_ID } from 'constants/database'
-import SearchBox from '../SearchBox'
-import HeaderNav from './HeaderNav'
-import { css } from 'emotion'
-import { Color, desktopMinWidth } from 'constants/css'
-import { socket } from 'constants/io'
-import { recordUserAction } from 'helpers/userDataHelpers'
-import { container, logo } from './Styles'
+} from 'redux/actions/NotiActions';
+import { closeSearch, initSearch } from 'redux/actions/SearchActions';
+import AccountMenu from './AccountMenu';
+import ChatButton from './ChatButton';
+import Icon from 'components/Icon';
+import { GENERAL_CHAT_ID } from 'constants/database';
+import SearchBox from '../SearchBox';
+import HeaderNav from './HeaderNav';
+import { css } from 'emotion';
+import { Color, desktopMinWidth } from 'constants/css';
+import { socket } from 'constants/io';
+import { recordUserAction } from 'helpers/userDataHelpers';
+import { container, logo } from './Styles';
 
 class Header extends Component {
   static propTypes = {
@@ -61,12 +61,12 @@ class Header extends Component {
     userId: PropTypes.number,
     username: PropTypes.string,
     versionMatch: PropTypes.bool
-  }
+  };
 
   state = {
     notificationsMenuShown: false,
     feedLoading: false
-  }
+  };
 
   componentDidMount() {
     const {
@@ -75,36 +75,36 @@ class Header extends Component {
       increaseNumNewNotis,
       increaseNumberOfUnreadMessages,
       checkVersion
-    } = this.props
+    } = this.props;
     socket.on('connect', () => {
-      checkVersion()
+      checkVersion();
       if (this.props.userId) {
         socket.emit(
           'bind_uid_to_socket',
           this.props.userId,
           this.props.username
-        )
+        );
       }
-    })
+    });
     socket.on('receive_message', data => {
       if (
         !this.props.chatMode &&
         data.channelId !== GENERAL_CHAT_ID &&
         data.userId !== this.props.userId
       ) {
-        increaseNumberOfUnreadMessages()
+        increaseNumberOfUnreadMessages();
       }
-    })
+    });
     socket.on('chat_invitation', data => {
-      socket.emit('join_chat_channel', data.channelId)
-      if (!this.props.chatMode) increaseNumberOfUnreadMessages()
-    })
+      socket.emit('join_chat_channel', data.channelId);
+      if (!this.props.chatMode) increaseNumberOfUnreadMessages();
+    });
     socket.on('disconnect', () => {
-      turnChatOff()
-    })
-    socket.on('subject_change', this.onSubjectChange)
-    socket.on('new_story_post', increaseNumNewPosts)
-    socket.on('new_notification', increaseNumNewNotis)
+      turnChatOff();
+    });
+    socket.on('subject_change', this.onSubjectChange);
+    socket.on('new_story_post', increaseNumNewPosts);
+    socket.on('new_notification', increaseNumNewNotis);
   }
 
   componentDidUpdate(prevProps) {
@@ -115,28 +115,28 @@ class Header extends Component {
       getNumberOfUnreadMessages,
       showUpdateNotice,
       versionMatch
-    } = this.props
+    } = this.props;
     if (userId && !prevProps.userId) {
-      socket.connect()
-      socket.emit('bind_uid_to_socket', userId, username)
+      socket.connect();
+      socket.emit('bind_uid_to_socket', userId, username);
     }
     if (!userId && prevProps.userId) {
-      socket.disconnect()
+      socket.disconnect();
     }
     if (userId && userId !== prevProps.userId) {
-      getNumberOfUnreadMessages()
+      getNumberOfUnreadMessages();
     }
     if (userId && chatMode !== prevProps.chatMode && chatMode === false) {
-      getNumberOfUnreadMessages()
+      getNumberOfUnreadMessages();
     }
     if (versionMatch !== prevProps.versionMatch) {
-      showUpdateNotice(versionMatch)
+      showUpdateNotice(versionMatch);
     }
     if (userId !== prevProps.userId) {
       if (prevProps.userId !== null) {
-        socket.emit('leave_my_notification_channel', prevProps.userId)
+        socket.emit('leave_my_notification_channel', prevProps.userId);
       }
-      socket.emit('enter_my_notification_channel', userId)
+      socket.emit('enter_my_notification_channel', userId);
     }
   }
 
@@ -160,11 +160,11 @@ class Header extends Component {
       style = {},
       totalRewardAmount,
       turnChatOff
-    } = this.props
+    } = this.props;
     const isUsername =
       pathname.split('/')[1] !== 'videos' &&
       ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) === -1 &&
-      pathname.length > 1
+      pathname.length > 1;
     return (
       <nav
         className={`unselectable ${container} ${
@@ -223,7 +223,7 @@ class Header extends Component {
                       </div>
                     </div>
                   </Link>
-                )
+                );
               }}
             />
             <Fragment>
@@ -250,8 +250,8 @@ class Header extends Component {
               <HeaderNav
                 to="/"
                 onClick={() => {
-                  closeSearch()
-                  window.scrollTo(0, 0)
+                  closeSearch();
+                  window.scrollTo(0, 0);
                 }}
                 isHome
                 className={chatLoading || searchMode ? 'hidden' : 'mobile'}
@@ -342,26 +342,26 @@ class Header extends Component {
           </div>
         )}
       </nav>
-    )
+    );
   }
 
   onLogoClick = () => {
     if (this.props.chatMode) {
-      this.props.turnChatOff()
+      this.props.turnChatOff();
     }
-  }
+  };
 
   onLogout = () => {
-    const { logout, resetChat } = this.props
-    recordUserAction({ action: 'logout' })
-    logout()
-    resetChat()
-  }
+    const { logout, resetChat } = this.props;
+    recordUserAction({ action: 'logout' });
+    logout();
+    resetChat();
+  };
 
   onSubjectChange = ({ subject }) => {
-    const { notifyChatSubjectChange } = this.props
-    notifyChatSubjectChange(subject)
-  }
+    const { notifyChatSubjectChange } = this.props;
+    notifyChatSubjectChange(subject);
+  };
 }
 
 export default connect(
@@ -392,4 +392,4 @@ export default connect(
     resetChat,
     turnChatOff
   }
-)(withRouter(Header))
+)(withRouter(Header));

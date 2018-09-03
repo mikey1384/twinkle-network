@@ -1,16 +1,16 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ProfilePic from 'components/ProfilePic'
-import RankBar from 'components/RankBar'
-import UserDetails from 'components/UserDetails'
-import Link from 'components/Link'
-import { css } from 'emotion'
-import { connect } from 'react-redux'
+import React from 'react';
+import PropTypes from 'prop-types';
+import ProfilePic from 'components/ProfilePic';
+import RankBar from 'components/RankBar';
+import UserDetails from 'components/UserDetails';
+import Link from 'components/Link';
+import { css } from 'emotion';
+import { connect } from 'react-redux';
 
 Profile.propTypes = {
   profile: PropTypes.object.isRequired,
   userId: PropTypes.number
-}
+};
 function Profile({ profile, userId }) {
   return (
     <div
@@ -51,9 +51,9 @@ function Profile({ profile, userId }) {
         />
       )}
     </div>
-  )
+  );
 }
 
 export default connect(state => ({
   userId: state.UserReducer.userId
-}))(Profile)
+}))(Profile);

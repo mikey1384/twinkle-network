@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { Color, borderRadius, mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 
 export const PanelStyle = css`
   background: #fff;
@@ -27,4 +27,4 @@ export const PanelStyle = css`
     border-left: none;
     border-right: none;
   }
-`
+`;

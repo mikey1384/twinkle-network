@@ -1,42 +1,42 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { DragSource, DropTarget } from 'react-dnd'
-import ItemTypes from 'constants/itemTypes'
-import Icon from 'components/Icon'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+import ItemTypes from 'constants/itemTypes';
+import Icon from 'components/Icon';
+import { Color } from 'constants/css';
 
 const ListItemSource = {
   beginDrag(props) {
     return {
       id: props.id,
       questionIndex: props.questionIndex
-    }
+    };
   },
   isDragging(props, monitor) {
     return (
       props.id === monitor.getItem().id &&
       props.questionIndex === monitor.getItem().questionIndex
-    )
+    );
   },
   endDrag(props) {
-    props.onDrop()
+    props.onDrop();
   }
-}
+};
 
 const ListItemTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.id
-    const sourceProps = monitor.getItem()
-    const sourceId = sourceProps.id
+    const targetId = targetProps.id;
+    const sourceProps = monitor.getItem();
+    const sourceId = sourceProps.id;
 
-    const targetQuestionIndex = targetProps.questionIndex
-    const sourceQuestionIndex = sourceProps.questionIndex
+    const targetQuestionIndex = targetProps.questionIndex;
+    const sourceQuestionIndex = sourceProps.questionIndex;
 
     if (targetQuestionIndex === sourceQuestionIndex && sourceId !== targetId) {
-      targetProps.onMove({ sourceId, targetId })
+      targetProps.onMove({ sourceId, targetId });
     }
   }
-}
+};
 
 class ChoiceListItem extends Component {
   static propTypes = {
@@ -49,13 +49,13 @@ class ChoiceListItem extends Component {
     checkDisabled: PropTypes.bool,
     label: PropTypes.string,
     placeholder: PropTypes.string
-  }
+  };
 
   render() {
-    const { deleted, connectDragSource, connectDropTarget } = this.props
+    const { deleted, connectDragSource, connectDropTarget } = this.props;
     return deleted
       ? this.renderListItem()
-      : connectDragSource(connectDropTarget(this.renderListItem()))
+      : connectDragSource(connectDropTarget(this.renderListItem()));
   }
 
   renderListItem = () => {
@@ -66,7 +66,7 @@ class ChoiceListItem extends Component {
       label,
       onSelect,
       placeholder
-    } = this.props
+    } = this.props;
     return (
       <nav
         style={{
@@ -100,8 +100,8 @@ class ChoiceListItem extends Component {
           />
         </aside>
       </nav>
-    )
-  }
+    );
+  };
 }
 
 export default DropTarget(ItemTypes.LIST_ITEM, ListItemTarget, connect => ({
@@ -111,4 +111,4 @@ export default DropTarget(ItemTypes.LIST_ITEM, ListItemTarget, connect => ({
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
   }))(ChoiceListItem)
-)
+);

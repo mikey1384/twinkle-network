@@ -1,22 +1,22 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Button from 'components/Button'
-import { timeSince } from 'helpers/timeStampHelpers'
-import UsernameText from 'components/Texts/UsernameText'
-import Comments from 'components/Comments'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Button from 'components/Button';
+import { timeSince } from 'helpers/timeStampHelpers';
+import UsernameText from 'components/Texts/UsernameText';
+import Comments from 'components/Comments';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import { connect } from 'react-redux';
 import {
   cleanString,
   stringIsEmpty,
   addEmoji,
   finalizeEmoji
-} from 'helpers/stringHelpers'
-import Textarea from 'components/Texts/Textarea'
-import LongText from 'components/Texts/LongText'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import Icon from 'components/Icon'
-import Input from 'components/Texts/Input'
+} from 'helpers/stringHelpers';
+import Textarea from 'components/Texts/Textarea';
+import LongText from 'components/Texts/LongText';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import Icon from 'components/Icon';
+import Input from 'components/Texts/Input';
 import {
   attachStar,
   deleteVideoComment,
@@ -30,10 +30,10 @@ import {
   editVideoDiscussion,
   deleteVideoDiscussion,
   uploadReply
-} from 'redux/actions/VideoActions'
-import { loadComments } from 'helpers/requestHelpers'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
+} from 'redux/actions/VideoActions';
+import { loadComments } from 'helpers/requestHelpers';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 
 class DiscussionPanel extends Component {
   static propTypes = {
@@ -65,10 +65,10 @@ class DiscussionPanel extends Component {
     uploaderAuthLevel: PropTypes.number.isRequired,
     uploadReply: PropTypes.func.isRequired,
     videoId: PropTypes.number.isRequired
-  }
+  };
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       expanded: false,
       onEdit: false,
@@ -76,7 +76,7 @@ class DiscussionPanel extends Component {
       editedTitle: cleanString(props.title),
       editedDescription: props.description || '',
       editDoneButtonDisabled: true
-    }
+    };
   }
 
   render() {
@@ -104,7 +104,7 @@ class DiscussionPanel extends Component {
       uploadComment,
       uploadReply,
       videoId
-    } = this.props
+    } = this.props;
     const {
       expanded,
       onEdit,
@@ -112,11 +112,11 @@ class DiscussionPanel extends Component {
       editedTitle,
       editedDescription,
       editDoneButtonDisabled
-    } = this.state
-    const userIsUploader = myId === userId
+    } = this.state;
+    const userIsUploader = myId === userId;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel
-    const editButtonEnabled = userIsUploader || userCanEditThis
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+    const editButtonEnabled = userIsUploader || userCanEditThis;
     return (
       <div
         className={css`
@@ -309,56 +309,56 @@ class DiscussionPanel extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   determineEditButtonDoneStatus = () => {
-    const { editedTitle, editedDescription } = this.state
-    const { title, description } = this.props
-    const titleIsEmpty = stringIsEmpty(editedTitle)
-    const titleChanged = editedTitle !== title
-    const descriptionChanged = editedDescription !== description
+    const { editedTitle, editedDescription } = this.state;
+    const { title, description } = this.props;
+    const titleIsEmpty = stringIsEmpty(editedTitle);
+    const titleChanged = editedTitle !== title;
+    const descriptionChanged = editedDescription !== description;
     const editDoneButtonDisabled =
-      titleIsEmpty || (!titleChanged && !descriptionChanged)
-    this.setState({ editDoneButtonDisabled })
-  }
+      titleIsEmpty || (!titleChanged && !descriptionChanged);
+    this.setState({ editDoneButtonDisabled });
+  };
 
   loadMoreComments = data => {
-    const { id, loadMoreComments } = this.props
-    loadMoreComments({ data, discussionId: id })
-  }
+    const { id, loadMoreComments } = this.props;
+    loadMoreComments({ data, discussionId: id });
+  };
 
   onDelete = () => {
-    const { id, onDiscussionDelete } = this.props
+    const { id, onDiscussionDelete } = this.props;
     onDiscussionDelete(id, () => {
-      this.setState({ confirmModalShown: false })
-    })
-  }
+      this.setState({ confirmModalShown: false });
+    });
+  };
 
   onExpand = async() => {
-    const { loadVideoDiscussionComments, id } = this.props
-    this.setState({ expanded: true })
+    const { loadVideoDiscussionComments, id } = this.props;
+    this.setState({ expanded: true });
     try {
-      const data = await loadComments({ type: 'discussion', id, limit: 10 })
-      if (data) loadVideoDiscussionComments({ data, discussionId: id })
+      const data = await loadComments({ type: 'discussion', id, limit: 10 });
+      if (data) loadVideoDiscussionComments({ data, discussionId: id });
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
-  }
+  };
 
   onEditDone = async() => {
-    const { editedTitle, editedDescription } = this.state
-    const { id, onDiscussionEditDone } = this.props
+    const { editedTitle, editedDescription } = this.state;
+    const { id, onDiscussionEditDone } = this.props;
     await onDiscussionEditDone(
       id,
       finalizeEmoji(editedTitle),
       finalizeEmoji(editedDescription)
-    )
+    );
     this.setState({
       onEdit: false,
       editDoneButtonDisabled: true
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -382,4 +382,4 @@ export default connect(
     uploadComment,
     uploadReply
   }
-)(DiscussionPanel)
+)(DiscussionPanel);

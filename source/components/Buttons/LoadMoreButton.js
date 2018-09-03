@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Button from 'components/Button'
-import Icon from 'components/Icon'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'components/Button';
+import Icon from 'components/Icon';
+import { css } from 'emotion';
 
 LoadMoreButton.propTypes = {
   style: PropTypes.object,
   onClick: PropTypes.func.isRequired,
   loading: PropTypes.bool
-}
+};
 export default function LoadMoreButton({ onClick, loading, style, ...props }) {
   return (
     <div
@@ -26,5 +26,5 @@ export default function LoadMoreButton({ onClick, loading, style, ...props }) {
         )}
       </Button>
     </div>
-  )
+  );
 }

@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import Button from 'components/Button'
-import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers'
-import Input from 'components/Texts/Input'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
-import Banner from 'components/Banner'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import Button from 'components/Button';
+import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers';
+import Input from 'components/Texts/Input';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import Banner from 'components/Banner';
 
 export default class SignUpForm extends Component {
   static propTypes = {
     signup: PropTypes.func.isRequired,
     showLoginForm: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     username: '',
@@ -20,10 +20,10 @@ export default class SignUpForm extends Component {
     lastname: '',
     email: '',
     errorMessage: ''
-  }
+  };
 
   render() {
-    const { showLoginForm } = this.props
+    const { showLoginForm } = this.props;
     const {
       username,
       password,
@@ -31,13 +31,13 @@ export default class SignUpForm extends Component {
       lastname,
       email,
       errorMessage
-    } = this.state
+    } = this.state;
     const submitDisabled =
       stringIsEmpty(username) ||
       stringIsEmpty(password) ||
       stringIsEmpty(firstname) ||
       stringIsEmpty(lastname) ||
-      errorMessage
+      errorMessage;
     return (
       <Fragment>
         {errorMessage && <Banner love>{errorMessage}</Banner>}
@@ -69,11 +69,11 @@ export default class SignUpForm extends Component {
                   this.setState({
                     errorMessage: '',
                     username: trimWhiteSpaces(text)
-                  })
+                  });
                 }}
                 onKeyPress={event => {
                   if (event.key === 'Enter' && !submitDisabled) {
-                    this.onSubmit()
+                    this.onSubmit();
                   }
                 }}
                 type="text"
@@ -88,11 +88,11 @@ export default class SignUpForm extends Component {
                   this.setState({
                     errorMessage: '',
                     password: text
-                  })
+                  });
                 }}
                 onKeyPress={event => {
                   if (event.key === 'Enter' && !submitDisabled) {
-                    this.onSubmit()
+                    this.onSubmit();
                   }
                 }}
                 type="password"
@@ -107,11 +107,11 @@ export default class SignUpForm extends Component {
                   this.setState({
                     errorMessage: '',
                     firstname: trimWhiteSpaces(text)
-                  })
+                  });
                 }}
                 onKeyPress={event => {
                   if (event.key === 'Enter' && !submitDisabled) {
-                    this.onSubmit()
+                    this.onSubmit();
                   }
                 }}
                 type="text"
@@ -126,11 +126,11 @@ export default class SignUpForm extends Component {
                   this.setState({
                     errorMessage: '',
                     lastname: trimWhiteSpaces(text)
-                  })
+                  });
                 }}
                 onKeyPress={event => {
                   if (event.key === 'Enter' && !submitDisabled) {
-                    this.onSubmit()
+                    this.onSubmit();
                   }
                 }}
                 type="text"
@@ -150,11 +150,11 @@ export default class SignUpForm extends Component {
                   this.setState({
                     errorMessage: '',
                     email: text
-                  })
+                  });
                 }}
                 onKeyPress={event => {
                   if (event.key === 'Enter' && !submitDisabled) {
-                    this.onSubmit()
+                    this.onSubmit();
                   }
                 }}
                 type="email"
@@ -183,28 +183,28 @@ export default class SignUpForm extends Component {
           </Button>
         </footer>
       </Fragment>
-    )
+    );
   }
 
   onSubmit = async() => {
-    const { signup } = this.props
-    const { username, password, firstname, lastname, email } = this.state
+    const { signup } = this.props;
+    const { username, password, firstname, lastname, email } = this.state;
     if (!isValidUsername(username)) {
-      return this.setState({ errorMessage: 'That is not a valid username' })
+      return this.setState({ errorMessage: 'That is not a valid username' });
     }
     if (!isValidPassword(password)) {
       return this.setState({
         errorMessage: 'Passwords need to be at least 5 characters long'
-      })
+      });
     }
     if (!isValidRealname(firstname)) {
-      return this.setState({ errorMessage: "That's not a valid name" })
+      return this.setState({ errorMessage: "That's not a valid name" });
     }
     if (!isValidRealname(lastname)) {
-      return this.setState({ errorMessage: "That's not a valid last name" })
+      return this.setState({ errorMessage: "That's not a valid last name" });
     }
     if (email && !isValidEmailAddress(email)) {
-      return this.setState({ errorMessage: 'That email address is invalid' })
+      return this.setState({ errorMessage: 'That email address is invalid' });
     }
     try {
       await signup({
@@ -213,35 +213,35 @@ export default class SignUpForm extends Component {
         firstname,
         lastname,
         email
-      })
+      });
     } catch (error) {
-      this.setState({ errorMessage: error })
+      this.setState({ errorMessage: error });
     }
-  }
+  };
 }
 
 function isValidEmailAddress(email) {
   let regex =
-    '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$'
-  let pattern = new RegExp(regex)
-  return pattern.test(email)
+    '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$';
+  let pattern = new RegExp(regex);
+  return pattern.test(email);
 }
 
 function isValidRealname(realName) {
-  var pattern = new RegExp(/^[a-zA-Z]+$/)
-  return pattern.test(realName)
+  var pattern = new RegExp(/^[a-zA-Z]+$/);
+  return pattern.test(realName);
 }
 
 function isValidUsername(username) {
-  var pattern = new RegExp(/^[a-zA-Z0-9]+$/)
+  var pattern = new RegExp(/^[a-zA-Z0-9]+$/);
   return (
     !!username &&
     username.length < 20 &&
     username.length > 3 &&
     pattern.test(username)
-  )
+  );
 }
 
 function isValidPassword(password) {
-  return password.length > 4 && !stringIsEmpty(password)
+  return password.length > 4 && !stringIsEmpty(password);
 }

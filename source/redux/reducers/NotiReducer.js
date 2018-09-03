@@ -1,4 +1,4 @@
-import NOTI from '../constants/Noti'
+import NOTI from '../constants/Noti';
 
 const defaultState = {
   versionMatch: true,
@@ -12,7 +12,7 @@ const defaultState = {
   numNewNotis: 0,
   numNewPosts: 0,
   totalRewardAmount: 0
-}
+};
 
 export default function NotiReducer(state = defaultState, action) {
   switch (action.type) {
@@ -20,7 +20,7 @@ export default function NotiReducer(state = defaultState, action) {
       return {
         ...state,
         versionMatch: action.data.match
-      }
+      };
     case NOTI.CHAT_SUBJECT_CHANGE:
       return {
         ...state,
@@ -28,7 +28,7 @@ export default function NotiReducer(state = defaultState, action) {
           ...state.currentChatSubject,
           ...action.subject
         }
-      }
+      };
     case NOTI.CLEAR:
       return {
         ...state,
@@ -39,7 +39,7 @@ export default function NotiReducer(state = defaultState, action) {
           notifications: false,
           rewards: false
         }
-      }
+      };
     case NOTI.CLEAR_REWARDS:
       return {
         ...state,
@@ -49,23 +49,23 @@ export default function NotiReducer(state = defaultState, action) {
           ...state.loadMore,
           rewards: false
         }
-      }
+      };
     case NOTI.INCREASE_NUM_NEW_NOTIS:
       return {
         ...state,
         numNewNotis: state.numNewNotis + 1
-      }
+      };
     case NOTI.INCREASE_NUM_NEW_POSTS:
       return {
         ...state,
         numNewPosts: state.numNewPosts + 1
-      }
+      };
     case NOTI.LOAD:
       return {
         ...state,
         ...action.data,
         numNewNotis: 0
-      }
+      };
     case NOTI.LOAD_MORE:
       return {
         ...state,
@@ -74,7 +74,7 @@ export default function NotiReducer(state = defaultState, action) {
           ...state.loadMore,
           notifications: action.data.loadMore
         }
-      }
+      };
     case NOTI.LOAD_MORE_REWARDS:
       return {
         ...state,
@@ -83,13 +83,13 @@ export default function NotiReducer(state = defaultState, action) {
           ...state.loadMore,
           rewards: action.data.loadMore
         }
-      }
+      };
     case NOTI.RESET_NUM_NEW_POSTS:
       return {
         ...state,
         numNewPosts: 0
-      }
+      };
     default:
-      return state
+      return state;
   }
 }

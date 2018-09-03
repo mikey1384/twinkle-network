@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
 
 FullTextReveal.propTypes = {
   show: PropTypes.bool,
   style: PropTypes.object,
   text: PropTypes.string.isRequired,
   width: PropTypes.string
-}
+};
 export default function FullTextReveal({ style, show, text, width = '500px' }) {
   return (
     <div
@@ -27,5 +27,5 @@ export default function FullTextReveal({ style, show, text, width = '500px' }) {
     >
       {text}
     </div>
-  )
+  );
 }

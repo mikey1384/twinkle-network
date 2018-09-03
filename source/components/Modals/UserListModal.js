@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import RoundList from 'components/RoundList'
-import { connect } from 'react-redux'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import RoundList from 'components/RoundList';
+import { connect } from 'react-redux';
+import { Color } from 'constants/css';
 
 UserListModal.propTypes = {
   description: PropTypes.string,
@@ -17,7 +17,7 @@ UserListModal.propTypes = {
   users: PropTypes.arrayOf(
     PropTypes.shape({ userId: PropTypes.number.isRequired })
   ).isRequired
-}
+};
 function UserListModal({
   users,
   userId,
@@ -28,10 +28,10 @@ function UserListModal({
   style,
   title
 }) {
-  const otherUsers = users.filter(user => user.userId !== userId)
-  let userArray = []
+  const otherUsers = users.filter(user => user.userId !== userId);
+  let userArray = [];
   for (let i = 0; i < users.length; i++) {
-    if (users[i].userId === userId) userArray.push(users[i])
+    if (users[i].userId === userId) userArray.push(users[i]);
   }
   return (
     <Modal small onHide={onHide}>
@@ -42,7 +42,7 @@ function UserListModal({
             let userStatusDisplayed =
               typeof descriptionShown === 'function'
                 ? descriptionShown(user)
-                : user.userId === userId
+                : user.userId === userId;
             return (
               <li key={user.userId}>
                 {user.username}{' '}
@@ -55,7 +55,7 @@ function UserListModal({
                   {userStatusDisplayed && description}
                 </span>
               </li>
-            )
+            );
           })}
         </RoundList>
       </main>
@@ -65,9 +65,9 @@ function UserListModal({
         </Button>
       </footer>
     </Modal>
-  )
+  );
 }
 
 export default connect(state => ({
   userId: state.UserReducer.userId
-}))(UserListModal)
+}))(UserListModal);

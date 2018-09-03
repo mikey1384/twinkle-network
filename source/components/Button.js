@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import { css } from 'emotion'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
+import PropTypes from 'prop-types';
+import React from 'react';
+import { css } from 'emotion';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 
 Button.propTypes = {
   alert: PropTypes.bool,
@@ -29,7 +29,7 @@ Button.propTypes = {
   success: PropTypes.bool,
   style: PropTypes.object,
   transparent: PropTypes.bool
-}
+};
 export default function Button({
   alert,
   className,
@@ -57,7 +57,7 @@ export default function Button({
   style = {},
   transparent
 }) {
-  let Button
+  let Button;
   const buttonColor = opacity => ({
     default: Color.black(opacity),
     alert: Color.logoGreen(opacity),
@@ -72,26 +72,26 @@ export default function Button({
     danger: Color.red(opacity),
     snow: Color.white(opacity),
     peace: Color.logoGreen(opacity)
-  })
+  });
 
-  let colorKey = 'default'
-  if (info) colorKey = 'info'
-  if (love) colorKey = 'love'
-  if (primary) colorKey = 'primary'
-  if (logo) colorKey = 'logo'
-  if (logoGreen) colorKey = 'logoGreen'
-  if (success) colorKey = 'success'
-  if (alert) colorKey = 'alert'
-  if (warning) colorKey = 'warning'
-  if (gold) colorKey = 'gold'
-  if (danger) colorKey = 'danger'
-  if (snow) colorKey = 'snow'
-  if (peace) colorKey = 'peace'
-  if (onHover) colorKey = hoverClass
-  const backgroundOpacity = filled ? 1 : opacity || 0
-  const backgroundHoverOpacity = transparent ? 0 : 0.9
-  const backgroundDisabledOpacity = filled ? 0.2 : 0
-  const textOpacity = disabled ? 0.2 : transparent ? 0.5 : 1
+  let colorKey = 'default';
+  if (info) colorKey = 'info';
+  if (love) colorKey = 'love';
+  if (primary) colorKey = 'primary';
+  if (logo) colorKey = 'logo';
+  if (logoGreen) colorKey = 'logoGreen';
+  if (success) colorKey = 'success';
+  if (alert) colorKey = 'alert';
+  if (warning) colorKey = 'warning';
+  if (gold) colorKey = 'gold';
+  if (danger) colorKey = 'danger';
+  if (snow) colorKey = 'snow';
+  if (peace) colorKey = 'peace';
+  if (onHover) colorKey = hoverClass;
+  const backgroundOpacity = filled ? 1 : opacity || 0;
+  const backgroundHoverOpacity = transparent ? 0 : 0.9;
+  const backgroundDisabledOpacity = filled ? 0.2 : 0;
+  const textOpacity = disabled ? 0.2 : transparent ? 0.5 : 1;
 
   return (
     <button
@@ -186,11 +186,11 @@ export default function Button({
         }
       `} ${className} unselectable`}
       ref={ref => {
-        Button = ref
+        Button = ref;
       }}
       onClick={event => {
-        if (Button !== null) Button.blur()
-        if (onClick) onClick(event)
+        if (Button !== null) Button.blur();
+        if (onClick) onClick(event);
       }}
       disabled={disabled}
       onMouseEnter={onMouseEnter}
@@ -198,5 +198,5 @@ export default function Button({
     >
       {children}
     </button>
-  )
+  );
 }

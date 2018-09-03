@@ -1,15 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
-import { closeSearch } from 'redux/actions/SearchActions'
-import { connect } from 'react-redux'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
+import { closeSearch } from 'redux/actions/SearchActions';
+import { connect } from 'react-redux';
 
 CloseText.propTypes = {
   className: PropTypes.string,
   closeSearch: PropTypes.func.isRequired,
   style: PropTypes.object,
   text: PropTypes.string
-}
+};
 function CloseText({ className, closeSearch, style, text = 'Tap to close' }) {
   return (
     <div className={className} style={{ textAlign: 'center' }}>
@@ -29,10 +29,10 @@ function CloseText({ className, closeSearch, style, text = 'Tap to close' }) {
         {text}
       </p>
     </div>
-  )
+  );
 }
 
 export default connect(
   null,
   { closeSearch }
-)(CloseText)
+)(CloseText);

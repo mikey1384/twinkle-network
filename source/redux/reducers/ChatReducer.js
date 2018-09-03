@@ -1,4 +1,4 @@
-import CHAT from '../constants/Chat'
+import CHAT from '../constants/Chat';
 
 const defaultState = {
   chatMode: false,
@@ -15,13 +15,13 @@ const defaultState = {
   msgsWhileInvisible: 0,
   subject: {},
   subjectSearchResults: []
-}
+};
 
 export default function ChatReducer(state = defaultState, action) {
-  let channelLoadMoreButton = false
-  let loadMoreMessages
-  let channels
-  let originalNumUnreads = 0
+  let channelLoadMoreButton = false;
+  let loadMoreMessages;
+  let channels;
+  let originalNumUnreads = 0;
   switch (action.type) {
     case CHAT.ADD_ID_TO_NEW_MESSAGE:
       return {
@@ -30,7 +30,7 @@ export default function ChatReducer(state = defaultState, action) {
           ...message,
           id: index === action.messageIndex ? action.messageId : message.id
         }))
-      }
+      };
     case CHAT.APPLY_CHANGED_CHANNEL_TITLE:
       return {
         ...state,
@@ -41,35 +41,35 @@ export default function ChatReducer(state = defaultState, action) {
               channel.id === action.data.channelId
                 ? action.data.title
                 : channel.channelName
-          }
+          };
         })
-      }
+      };
     case CHAT.CHANGE_SUBJECT:
       return {
         ...state,
         subject: action.subject
-      }
+      };
     case CHAT.CLEAR_CHAT_SEARCH_RESULTS:
       return {
         ...state,
         chatSearchResults: []
-      }
+      };
     case CHAT.CLEAR_SUBJECT_SEARCH_RESULTS:
       return {
         ...state,
         subjectSearchResults: []
-      }
+      };
     case CHAT.CLEAR_USER_SEARCH_RESULTS:
       return {
         ...state,
         userSearchResults: []
-      }
+      };
     case CHAT.RESET_MSG_UNREADS_ON_TAB_SWITCH:
       return {
         ...state,
         numUnreads: Math.max(state.numUnreads - state.msgsWhileInvisible, 0),
         msgsWhileInvisible: 0
-      }
+      };
     case CHAT.CREATE_NEW_CHANNEL:
       return {
         ...state,
@@ -95,7 +95,7 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [action.data.message],
         loadMoreMessages: false
-      }
+      };
     case CHAT.CREATE_NEW_DM_CHANNEL:
       return {
         ...state,
@@ -111,9 +111,9 @@ export default function ChatReducer(state = defaultState, action) {
                 username: action.data.username
               },
               lastUpdate: action.data.timeStamp
-            }
+            };
           }
-          return channel
+          return channel;
         }),
         selectedChannelId: action.data.channelId,
         currentChannel: {
@@ -123,13 +123,13 @@ export default function ChatReducer(state = defaultState, action) {
           members: action.data.members
         },
         messages: [action.data]
-      }
+      };
     case CHAT.SELECT_CHANNEL: {
       return {
         ...state,
         subject: action.channelId === 2 ? state.subject : {},
         selectedChannelId: action.channelId
-      }
+      };
     }
     case CHAT.DELETE_MESSAGE:
       return {
@@ -140,7 +140,7 @@ export default function ChatReducer(state = defaultState, action) {
               ? { ...message, deleted: true }
               : message
         )
-      }
+      };
     case CHAT.EDIT_MESSAGE:
       return {
         ...state,
@@ -151,17 +151,17 @@ export default function ChatReducer(state = defaultState, action) {
               message.id === action.data.messageId
                 ? action.data.editedMessage
                 : message.content
-          }
+          };
         })
-      }
+      };
     case CHAT.ENTER_CHANNEL:
-      loadMoreMessages = false
+      loadMoreMessages = false;
       if (action.data.messages.length === 21) {
-        action.data.messages.pop()
-        loadMoreMessages = true
+        action.data.messages.pop();
+        loadMoreMessages = true;
       }
-      action.data.messages.reverse()
-      const selectedChannel = action.data.channel
+      action.data.messages.reverse();
+      const selectedChannel = action.data.channel;
       return {
         ...state,
         subject: selectedChannel.id === 2 ? state.subject : {},
@@ -169,27 +169,27 @@ export default function ChatReducer(state = defaultState, action) {
         currentChannel: selectedChannel,
         channels: state.channels.reduce((prev, channel, index) => {
           if (channel.id === selectedChannel.id) {
-            originalNumUnreads = channel.numUnreads
+            originalNumUnreads = channel.numUnreads;
           }
           if (action.showOnTop && index === state.channels.length - 1) {
             return [selectedChannel].concat(
               prev.concat(channel.id === selectedChannel.id ? [] : [channel])
-            )
+            );
           }
-          if (action.showOnTop && selectedChannel.id === channel.id) return prev
+          if (action.showOnTop && selectedChannel.id === channel.id) { return prev; }
           return prev.concat([
             {
               ...channel,
               numUnreads:
                 channel.id === selectedChannel.id ? 0 : channel.numUnreads
             }
-          ])
+          ]);
         }, []),
         chatMode: true,
         messages: action.data.messages,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         loadMoreMessages
-      }
+      };
     case CHAT.ENTER_EMPTY_CHAT:
       return {
         ...state,
@@ -202,12 +202,12 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [],
         loadMoreMessages: false
-      }
+      };
     case CHAT.GET_NUM_UNREAD_MSGS:
       return {
         ...state,
         numUnreads: action.numUnreads
-      }
+      };
     case CHAT.HIDE_CHAT:
       return {
         ...state,
@@ -215,24 +215,24 @@ export default function ChatReducer(state = defaultState, action) {
           return {
             ...channel,
             isHidden: channel.id === action.channelId
-          }
+          };
         })
-      }
+      };
     case CHAT.INCREASE_NUM_UNREAD_MSGS:
       return {
         ...state,
         numUnreads: state.numUnreads + 1
-      }
+      };
     case CHAT.INIT:
-      loadMoreMessages = false
+      loadMoreMessages = false;
       if (action.data.messages && action.data.messages.length === 21) {
-        action.data.messages.pop()
-        loadMoreMessages = true
+        action.data.messages.pop();
+        loadMoreMessages = true;
       }
-      action.data.messages && action.data.messages.reverse()
+      action.data.messages && action.data.messages.reverse();
       if (action.data.channels.length > 20) {
-        action.data.channels.pop()
-        channelLoadMoreButton = true
+        action.data.channels.pop();
+        channelLoadMoreButton = true;
       }
       return {
         ...state,
@@ -243,21 +243,21 @@ export default function ChatReducer(state = defaultState, action) {
         selectedChannelId: action.data.currentChannel.id,
         channels: action.data.channels.reduce((resultingArray, channel) => {
           if (channel.id === action.data.currentChannel.id) {
-            if (channel.id !== 2) originalNumUnreads = channel.numUnreads
+            if (channel.id !== 2) originalNumUnreads = channel.numUnreads;
             return [
               {
                 ...channel,
                 numUnreads: 0
               }
-            ].concat(resultingArray)
+            ].concat(resultingArray);
           }
-          return resultingArray.concat([channel])
+          return resultingArray.concat([channel]);
         }, []),
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: action.data.messages,
         loadMoreMessages,
         userSearchResult: []
-      }
+      };
     case CHAT.INVITE_USERS_TO_CHANNEL:
       return {
         ...state,
@@ -271,43 +271,43 @@ export default function ChatReducer(state = defaultState, action) {
           )
         },
         messages: state.messages.concat([action.data.message])
-      }
+      };
     case CHAT.LEAVE_CHANNEL:
       return {
         ...state,
         channels: state.channels.filter(
           channel => channel.id !== action.channelId
         )
-      }
+      };
     case CHAT.LOAD_SUBJECT:
       return {
         ...state,
         subject: action.subject
-      }
+      };
     case CHAT.LOAD_MORE_CHANNELS:
       if (action.data.length > 20) {
-        action.data.pop()
-        channelLoadMoreButton = true
+        action.data.pop();
+        channelLoadMoreButton = true;
       }
       return {
         ...state,
         channelLoadMoreButton,
         channels: state.channels.concat(action.data)
-      }
+      };
     case CHAT.LOAD_MORE_MESSAGES:
-      loadMoreMessages = false
+      loadMoreMessages = false;
       if (action.data.length === 21) {
-        action.data.pop()
-        loadMoreMessages = true
+        action.data.pop();
+        loadMoreMessages = true;
       }
-      action.data.reverse()
+      action.data.reverse();
       return {
         ...state,
         loadMoreMessages,
         messages: action.data.concat(state.messages)
-      }
+      };
     case CHAT.NOTIFY_MEMBER_LEFT:
-      let timeStamp = Math.floor(Date.now() / 1000)
+      let timeStamp = Math.floor(Date.now() / 1000);
       return {
         ...state,
         channels: state.channels.map(
@@ -343,13 +343,13 @@ export default function ChatReducer(state = defaultState, action) {
             profilePicId: action.data.profilePicId
           }
         ])
-      }
+      };
     case CHAT.OPEN_DM:
       if (action.messages.length > 20) {
-        action.messages.pop()
-        loadMoreMessages = true
+        action.messages.pop();
+        loadMoreMessages = true;
       }
-      channels = action.channels.length > 0 ? action.channels : state.channels
+      channels = action.channels.length > 0 ? action.channels : state.channels;
       return {
         ...state,
         subject: {},
@@ -391,11 +391,11 @@ export default function ChatReducer(state = defaultState, action) {
         messages: action.messages.reverse(),
         loadMoreMessages,
         partnerId: action.partner.userId
-      }
+      };
     case CHAT.OPEN_NEW_TAB:
       let filteredChannel = state.channels.filter(channel => {
-        return channel.id !== 0
-      })
+        return channel.id !== 0;
+      });
       return {
         ...state,
         subject: {},
@@ -437,7 +437,7 @@ export default function ChatReducer(state = defaultState, action) {
         messages: [],
         loadMoreMessages: false,
         partnerId: action.partner.userId
-      }
+      };
     case CHAT.RECEIVE_FIRST_MSG:
       return {
         ...state,
@@ -489,7 +489,7 @@ export default function ChatReducer(state = defaultState, action) {
             (channel, index) => (action.duplicate ? index !== 0 : true)
           )
         )
-      }
+      };
     case CHAT.RECEIVE_MESSAGE:
       return {
         ...state,
@@ -512,15 +512,15 @@ export default function ChatReducer(state = defaultState, action) {
               numUnreads: 0,
               lastMessage: action.data.content,
               isHidden: false
-            }
+            };
           }
-          return channel
+          return channel;
         })
-      }
+      };
     case CHAT.RECEIVE_MSG_ON_DIFF_CHANNEL:
       for (let i = 0; i < state.channels.length; i++) {
         if (state.channels[i].id === action.data.channelId) {
-          action.channel[0].numUnreads = state.channels[i].numUnreads + 1
+          action.channel[0].numUnreads = state.channels[i].numUnreads + 1;
         }
       }
       return {
@@ -529,28 +529,28 @@ export default function ChatReducer(state = defaultState, action) {
         channels: action.channel.concat(
           state.channels.filter(channel => channel.id !== action.data.channelId)
         )
-      }
+      };
     case CHAT.RELOAD_SUBJECT:
       return {
         ...state,
         subject: action.subject,
         messages: state.messages.concat([action.message])
-      }
+      };
     case CHAT.SEARCH:
       return {
         ...state,
         chatSearchResults: action.data
-      }
+      };
     case CHAT.SEARCH_SUBJECT:
       return {
         ...state,
         subjectSearchResults: action.data
-      }
+      };
     case CHAT.SEARCH_USERS_FOR_CHANNEL:
       return {
         ...state,
         userSearchResults: action.data
-      }
+      };
     case CHAT.SUBMIT_MESSAGE:
       return {
         ...state,
@@ -568,7 +568,7 @@ export default function ChatReducer(state = defaultState, action) {
                   }
                 }
               ].concat(result)
-            : result.concat([channel])
+            : result.concat([channel]);
         }, []),
         messages: state.messages.concat([
           {
@@ -576,12 +576,12 @@ export default function ChatReducer(state = defaultState, action) {
             content: action.message.content
           }
         ])
-      }
+      };
     case CHAT.CLOSE:
       return {
         ...state,
         chatMode: false
-      }
+      };
     case CHAT.NEW_SUBJECT:
       return {
         ...state,
@@ -604,10 +604,10 @@ export default function ChatReducer(state = defaultState, action) {
             ...action.data.subject
           }
         ])
-      }
+      };
     case CHAT.RESET:
-      return defaultState
+      return defaultState;
     default:
-      return state
+      return state;
   }
 }

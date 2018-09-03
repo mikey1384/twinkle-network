@@ -1,35 +1,35 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { DragSource, DropTarget } from 'react-dnd'
-import ItemTypes from 'constants/itemTypes'
-import { cleanString } from 'helpers/stringHelpers'
-import FullTextReveal from 'components/FullTextReveal'
-import { textIsOverflown } from 'helpers/domHelpers'
-import VideoThumbImage from 'components/VideoThumbImage'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+import ItemTypes from 'constants/itemTypes';
+import { cleanString } from 'helpers/stringHelpers';
+import FullTextReveal from 'components/FullTextReveal';
+import { textIsOverflown } from 'helpers/domHelpers';
+import VideoThumbImage from 'components/VideoThumbImage';
+import { Color } from 'constants/css';
 
 const thumbSource = {
   beginDrag(props) {
     return {
       id: props.video.id
-    }
+    };
   },
   isDragging(props, monitor) {
-    return props.video.id && props.video.id === monitor.getItem().id
+    return props.video.id && props.video.id === monitor.getItem().id;
   }
-}
+};
 
 const thumbTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.video.id
-    const sourceProps = monitor.getItem()
-    const sourceId = sourceProps.id
+    const targetId = targetProps.video.id;
+    const sourceProps = monitor.getItem();
+    const sourceId = sourceProps.id;
 
     if (sourceId !== targetId) {
-      targetProps.onMove({ sourceId, targetId })
+      targetProps.onMove({ sourceId, targetId });
     }
   }
-}
+};
 
 class SortableThumb extends Component {
   static propTypes = {
@@ -37,11 +37,11 @@ class SortableThumb extends Component {
     connectDropTarget: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
     video: PropTypes.object.isRequired
-  }
+  };
 
   state = {
     onTitleHover: false
-  }
+  };
 
   render() {
     const {
@@ -49,8 +49,8 @@ class SortableThumb extends Component {
       connectDropTarget,
       isDragging,
       video
-    } = this.props
-    const { onTitleHover } = this.state
+    } = this.props;
+    const { onTitleHover } = this.state;
     return connectDragSource(
       connectDropTarget(
         <div
@@ -93,7 +93,7 @@ class SortableThumb extends Component {
               <div>
                 <p
                   ref={ref => {
-                    this.thumbLabel = ref
+                    this.thumbLabel = ref;
                   }}
                   style={{
                     marginTop: '1rem',
@@ -128,14 +128,14 @@ class SortableThumb extends Component {
           </div>
         </div>
       )
-    )
+    );
   }
 
   onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({ onTitleHover: true })
+      this.setState({ onTitleHover: true });
     }
-  }
+  };
 }
 
 export default DropTarget(ItemTypes.THUMB, thumbTarget, connect => ({
@@ -145,4 +145,4 @@ export default DropTarget(ItemTypes.THUMB, thumbTarget, connect => ({
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
   }))(SortableThumb)
-)
+);

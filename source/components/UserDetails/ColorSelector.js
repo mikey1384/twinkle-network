@@ -1,16 +1,16 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
 
 ColorSelector.propTypes = {
   setColor: PropTypes.func.isRequired,
   statusColor: PropTypes.string
-}
+};
 export default function ColorSelector({ setColor, statusColor }) {
   const highlightEffects = {
     border: `0.5rem solid #fff`,
     boxShadow: `0 0 5px #fff`
-  }
+  };
   return (
     <div
       style={{
@@ -81,5 +81,5 @@ export default function ColorSelector({ setColor, statusColor }) {
         onClick={() => setColor('menuGray')}
       />
     </div>
-  )
+  );
 }

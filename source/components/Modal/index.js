@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { css } from 'emotion'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
-import { hideMobileNavbar, showMobileNavbar } from 'redux/actions/ViewActions'
-import Content from './Content'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { css } from 'emotion';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { hideMobileNavbar, showMobileNavbar } from 'redux/actions/ViewActions';
+import Content from './Content';
+import { connect } from 'react-redux';
 
 class Modal extends Component {
   static propTypes = {
@@ -16,31 +16,31 @@ class Modal extends Component {
     small: PropTypes.bool,
     large: PropTypes.bool,
     style: PropTypes.object
-  }
+  };
 
   componentDidMount() {
-    const { hideMobileNavbar } = this.props
-    hideMobileNavbar()
+    const { hideMobileNavbar } = this.props;
+    hideMobileNavbar();
   }
 
   componentWillUnmount() {
-    const { showMobileNavbar } = this.props
-    showMobileNavbar()
+    const { showMobileNavbar } = this.props;
+    showMobileNavbar();
   }
 
   render() {
-    const { className, children, onHide, small, large, style } = this.props
+    const { className, children, onHide, small, large, style } = this.props;
     const modalWidth = {
       default: '50%',
       small: '26%',
       large: '80%'
-    }
+    };
     const marginLeft = {
       default: '25%',
       small: '37%',
       large: '10%'
-    }
-    const widthKey = small ? 'small' : large ? 'large' : 'default'
+    };
+    const widthKey = small ? 'small' : large ? 'large' : 'default';
     return (
       <div
         className={`${css`
@@ -138,8 +138,11 @@ class Modal extends Component {
           </Content>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default connect(null, { hideMobileNavbar, showMobileNavbar })(Modal)
+export default connect(
+  null,
+  { hideMobileNavbar, showMobileNavbar }
+)(Modal);

@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Button from 'components/Button'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import { openSigninModal } from 'redux/actions/UserActions'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'components/Button';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import { openSigninModal } from 'redux/actions/UserActions';
+import { connect } from 'react-redux';
 
 AccountMenu.propTypes = {
   buttonStyle: PropTypes.object,
@@ -12,7 +12,7 @@ AccountMenu.propTypes = {
   logout: PropTypes.func.isRequired,
   openSigninModal: PropTypes.func.isRequired,
   title: PropTypes.string
-}
+};
 function AccountMenu({
   buttonStyle = {},
   className,
@@ -69,10 +69,10 @@ function AccountMenu({
         Log In
       </div>
     </Button>
-  )
+  );
 }
 
 export default connect(
   null,
   { openSigninModal }
-)(AccountMenu)
+)(AccountMenu);

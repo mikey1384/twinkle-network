@@ -1,20 +1,20 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import { timeSince } from 'helpers/timeStampHelpers'
-import UsernameText from 'components/Texts/UsernameText'
-import UserListModal from 'components/Modals/UserListModal'
-import { Link } from 'react-router-dom'
-import { editTitle, deleteLink } from 'redux/actions/LinkActions'
-import { connect } from 'react-redux'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import EditTitleForm from 'components/Texts/EditTitleForm'
-import { cleanString } from 'helpers/stringHelpers'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
-import request from 'axios'
-import { URL } from 'constants/URL'
-const API_URL = `${URL}/content`
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import { timeSince } from 'helpers/timeStampHelpers';
+import UsernameText from 'components/Texts/UsernameText';
+import UserListModal from 'components/Modals/UserListModal';
+import { Link } from 'react-router-dom';
+import { editTitle, deleteLink } from 'redux/actions/LinkActions';
+import { connect } from 'react-redux';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import EditTitleForm from 'components/Texts/EditTitleForm';
+import { cleanString } from 'helpers/stringHelpers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
+import request from 'axios';
+import { URL } from 'constants/URL';
+const API_URL = `${URL}/content`;
 
 class LinkItem extends Component {
   static propTypes = {
@@ -36,13 +36,13 @@ class LinkItem extends Component {
         .isRequired
     }).isRequired,
     userId: PropTypes.number
-  }
+  };
 
-  apiUrl = 'https://api.embed.rocks/api'
-  fallbackImage = '/img/link.png'
+  apiUrl = 'https://api.embed.rocks/api';
+  fallbackImage = '/img/link.png';
 
   constructor({ link: { thumbUrl } }) {
-    super()
+    super();
     this.state = {
       confirmModalShown: false,
       imageUrl: thumbUrl
@@ -50,14 +50,14 @@ class LinkItem extends Component {
         : '/img/link.png',
       userListModalShown: false,
       onEdit: false
-    }
+    };
   }
 
   async componentDidMount() {
-    this.mounted = true
+    this.mounted = true;
     const {
       link: { id, content, siteUrl }
-    } = this.props
+    } = this.props;
     if (content && !siteUrl) {
       try {
         const {
@@ -65,14 +65,14 @@ class LinkItem extends Component {
         } = await request.put(`${API_URL}/embed`, {
           url: content,
           linkId: id
-        })
+        });
         if (this.mounted) {
           this.setState({
             imageUrl: image.url.replace('http://', 'https://')
-          })
+          });
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
   }
@@ -80,7 +80,7 @@ class LinkItem extends Component {
   async componentDidUpdate(prevProps) {
     const {
       link: { content, id }
-    } = this.props
+    } = this.props;
     if (prevProps.link.content !== content) {
       try {
         const {
@@ -88,14 +88,14 @@ class LinkItem extends Component {
         } = await request.put(`${API_URL}/embed`, {
           url: content,
           linkId: id
-        })
+        });
         if (this.mounted) {
           this.setState({
             imageUrl: image.url.replace('http://', 'https://')
-          })
+          });
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
   }
@@ -116,29 +116,29 @@ class LinkItem extends Component {
       canEdit,
       canDelete,
       userId
-    } = this.props
+    } = this.props;
     const {
       confirmModalShown,
       imageUrl,
       userListModalShown,
       onEdit
-    } = this.state
-    const userIsUploader = userId === uploader
+    } = this.state;
+    const userIsUploader = userId === uploader;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel
-    const editButtonShown = userIsUploader || userCanEditThis
-    const editMenuItems = []
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+    const editButtonShown = userIsUploader || userCanEditThis;
+    const editMenuItems = [];
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: () => this.setState({ onEdit: true })
-      })
+      });
     }
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Remove',
         onClick: () => this.setState({ confirmModalShown: true })
-      })
+      });
     }
 
     return (
@@ -219,7 +219,8 @@ class LinkItem extends Component {
                   line-height: 2rem;
                 `}
               >
-                Uploaded {`${timeSince(timeStamp)} `}by{' '}
+                Uploaded {`${timeSince(timeStamp)} `}
+                by{' '}
                 <UsernameText user={{ username: uploaderName, id: uploader }} />
               </div>
             </div>
@@ -237,13 +238,16 @@ class LinkItem extends Component {
                     style={{ cursor: 'pointer' }}
                     onClick={() => this.setState({ userListModalShown: true })}
                   >
-                    {`${likes.length}`} like{likes.length > 1 ? 's' : ''}
-                  </span>&nbsp;&nbsp;
+                    {`${likes.length}`} like
+                    {likes.length > 1 ? 's' : ''}
+                  </span>
+                  &nbsp;&nbsp;
                 </Fragment>
               )}
               {numComments > 0 && (
                 <span>
-                  {numComments} comment{numComments > 1 ? 's' : ''}
+                  {numComments} comment
+                  {numComments > 1 ? 's' : ''}
                 </span>
               )}
             </div>
@@ -275,33 +279,33 @@ class LinkItem extends Component {
           />
         )}
       </nav>
-    )
+    );
   }
 
   onDelete = () => {
-    const { link, deleteLink } = this.props
-    deleteLink(link.id)
-  }
+    const { link, deleteLink } = this.props;
+    deleteLink(link.id);
+  };
 
   onEditedTitleSubmit = text => {
     const {
       editTitle,
       link: { id }
-    } = this.props
+    } = this.props;
     return editTitle({ title: text, id }).then(() =>
       this.setState({ onEdit: false })
-    )
-  }
+    );
+  };
 
   onImageLoadError = () => {
     const {
       link: { thumbUrl }
-    } = this.props
+    } = this.props;
     this.setState(state => ({
       imageUrl:
         !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
-    }))
-  }
+    }));
+  };
 }
 
 export default connect(
@@ -312,4 +316,4 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   { deleteLink, editTitle }
-)(LinkItem)
+)(LinkItem);

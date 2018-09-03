@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { borderRadius, Color, innerBorderRadius } from 'constants/css'
-import { css } from 'emotion'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { borderRadius, Color, innerBorderRadius } from 'constants/css';
+import { css } from 'emotion';
 
 ProgressBar.propTypes = {
   noBorderRadius: PropTypes.bool,
@@ -10,7 +10,7 @@ ProgressBar.propTypes = {
   stretch: PropTypes.bool,
   style: PropTypes.object,
   text: PropTypes.string
-}
+};
 export default function ProgressBar({
   color = Color.blue(),
   noBorderRadius,
@@ -71,5 +71,5 @@ export default function ProgressBar({
         </span>
       </section>
     </div>
-  )
+  );
 }

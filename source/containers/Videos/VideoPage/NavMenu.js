@@ -1,24 +1,24 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
   loadRightMenuVideos,
   loadMorePlaylistVideos
-} from 'redux/actions/VideoActions'
+} from 'redux/actions/VideoActions';
 import {
   clearNotifications,
   fetchNotifications
-} from 'redux/actions/NotiActions'
-import Link from 'components/Link'
-import { Color, mobileMaxWidth } from 'constants/css'
-import { cleanString, queryStringForArray } from 'helpers/stringHelpers'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import VideoThumbImage from 'components/VideoThumbImage'
-import FilterBar from 'components/FilterBar'
-import Notification from 'components/Notification'
-import { socket } from 'constants/io'
-import { css } from 'emotion'
+} from 'redux/actions/NotiActions';
+import Link from 'components/Link';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { cleanString, queryStringForArray } from 'helpers/stringHelpers';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import VideoThumbImage from 'components/VideoThumbImage';
+import FilterBar from 'components/FilterBar';
+import Notification from 'components/Notification';
+import { socket } from 'constants/io';
+import { css } from 'emotion';
 
 class NavMenu extends Component {
   static propTypes = {
@@ -36,13 +36,13 @@ class NavMenu extends Component {
     userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
       .isRequired
-  }
+  };
 
   state = {
     rewardsExist: false,
     playlistVideosLoading: false,
     videoTabActive: true
-  }
+  };
 
   async componentDidMount() {
     const {
@@ -50,10 +50,10 @@ class NavMenu extends Component {
       fetchNotifications,
       videoId,
       playlistId
-    } = this.props
-    loadRightMenuVideos(videoId, playlistId)
-    await fetchNotifications()
-    socket.on('new_reward', this.notifyNewReward)
+    } = this.props;
+    loadRightMenuVideos(videoId, playlistId);
+    await fetchNotifications();
+    socket.on('new_reward', this.notifyNewReward);
   }
 
   async componentDidUpdate(prevProps) {
@@ -65,24 +65,24 @@ class NavMenu extends Component {
       videoId,
       playlistId,
       totalRewardAmount
-    } = this.props
+    } = this.props;
     if (!nextVideos || (videoId && prevProps.videoId !== videoId)) {
-      loadRightMenuVideos(videoId, playlistId)
+      loadRightMenuVideos(videoId, playlistId);
     }
     if (prevProps.totalRewardAmount !== totalRewardAmount) {
-      this.setState({ rewardsExist: totalRewardAmount > 0 })
+      this.setState({ rewardsExist: totalRewardAmount > 0 });
     }
     if (prevProps.userId !== this.props.userId) {
       if (!this.props.userId) {
-        clearNotifications()
+        clearNotifications();
       } else {
-        fetchNotifications()
+        fetchNotifications();
       }
     }
   }
 
   componentWillUnmount() {
-    socket.removeListener('new_reward', this.notifyNewReward)
+    socket.removeListener('new_reward', this.notifyNewReward);
   }
 
   render() {
@@ -96,9 +96,9 @@ class NavMenu extends Component {
       playlistTitle,
       playlistVideosLoadMoreShown,
       videoId
-    } = this.props
-    const { rewardsExist, videoTabActive } = this.state
-    const { playlistVideosLoading } = this.state
+    } = this.props;
+    const { rewardsExist, videoTabActive } = this.state;
+    const { playlistVideosLoading } = this.state;
     return (
       <ErrorBoundary
         className={css`
@@ -208,7 +208,7 @@ class NavMenu extends Component {
         )}
         {!videoTabActive && <Notification style={{ paddingTop: 0 }} />}
       </ErrorBoundary>
-    )
+    );
   }
 
   loadMorePlaylistVideos = async() => {
@@ -217,23 +217,23 @@ class NavMenu extends Component {
       playlistId,
       playlistVideos,
       videoId
-    } = this.props
-    this.setState({ playlistVideosLoading: true })
+    } = this.props;
+    this.setState({ playlistVideosLoading: true });
     await loadMorePlaylistVideos(
       videoId,
       playlistId,
       queryStringForArray(playlistVideos, 'videoId', 'shownVideos')
-    )
-    this.setState({ playlistVideosLoading: false })
-  }
+    );
+    this.setState({ playlistVideosLoading: false });
+  };
 
   notifyNewReward = async() => {
-    const { fetchNotifications } = this.props
-    fetchNotifications()
-  }
+    const { fetchNotifications } = this.props;
+    fetchNotifications();
+  };
 
   renderVideos = ({ videos, arePlaylistVideos }) => {
-    const { playlistId } = this.props
+    const { playlistId } = this.props;
     return videos.map((video, index) => (
       <div
         key={video.id}
@@ -287,8 +287,8 @@ class NavMenu extends Component {
           </small>
         </div>
       </div>
-    ))
-  }
+    ));
+  };
 }
 
 export default connect(
@@ -310,4 +310,4 @@ export default connect(
     loadRightMenuVideos,
     fetchNotifications
   }
-)(NavMenu)
+)(NavMenu);

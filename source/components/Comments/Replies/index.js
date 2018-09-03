@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Context from '../Context'
-import withContext from 'components/Wrappers/withContext'
-import Reply from './Reply'
-import { scrollElementToCenter } from 'helpers/domHelpers'
-import Button from 'components/Button'
-import { URL } from 'constants/URL'
-import request from 'axios'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Context from '../Context';
+import withContext from 'components/Wrappers/withContext';
+import Reply from './Reply';
+import { scrollElementToCenter } from 'helpers/domHelpers';
+import Button from 'components/Button';
+import { URL } from 'constants/URL';
+import request from 'axios';
 
 class Replies extends Component {
   static propTypes = {
@@ -26,40 +26,40 @@ class Replies extends Component {
     ).isRequired,
     Replies: PropTypes.object,
     userId: PropTypes.number
-  }
+  };
 
   state = {
     deleting: false,
     replying: false
-  }
+  };
 
   componentDidUpdate(prevProps) {
-    const { deleting, replying } = this.state
-    const { replies, Replies } = this.props
+    const { deleting, replying } = this.state;
+    const { replies, Replies } = this.props;
     if (replies.length < prevProps.replies.length) {
       if (deleting) {
-        this.setState({ deleting: false })
+        this.setState({ deleting: false });
         if (replies.length === 0) {
-          return scrollElementToCenter(this.ReplyContainer)
+          return scrollElementToCenter(this.ReplyContainer);
         }
         if (
           replies[replies.length - 1].id !==
           prevProps.replies[prevProps.replies.length - 1].id
         ) {
-          scrollElementToCenter(Replies[replies[replies.length - 1].id])
+          scrollElementToCenter(Replies[replies[replies.length - 1].id]);
         }
       }
     }
     if (replies.length > prevProps.replies.length) {
       if (replying) {
-        this.setState({ replying: false })
-        scrollElementToCenter(Replies[replies[replies.length - 1].id])
+        this.setState({ replying: false });
+        scrollElementToCenter(Replies[replies[replies.length - 1].id]);
       }
     }
   }
 
   render() {
-    const { innerRef, replies, userId, comment, parent } = this.props
+    const { innerRef, replies, userId, comment, parent } = this.props;
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
         {comment.loadMoreButton && (
@@ -88,38 +88,38 @@ class Replies extends Component {
               onDelete={this.onDelete}
               onReply={this.onReplySubmit}
             />
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 
   loadMoreReplies = async() => {
-    const { comment, onLoadMoreReplies, replies } = this.props
+    const { comment, onLoadMoreReplies, replies } = this.props;
     try {
-      const lastReplyId = replies[0] ? replies[0].id : 'undefined'
+      const lastReplyId = replies[0] ? replies[0].id : 'undefined';
       const { data } = await request.get(
         `${URL}/content/replies?lastReplyId=${lastReplyId}&commentId=${
           comment.id
         }`
-      )
-      onLoadMoreReplies(data)
+      );
+      onLoadMoreReplies(data);
     } catch (error) {
-      console.error(error.response, error)
+      console.error(error.response, error);
     }
-  }
+  };
 
   onDelete = replyId => {
-    const { onDelete } = this.props
-    this.setState({ deleting: true })
-    onDelete(replyId)
-  }
+    const { onDelete } = this.props;
+    this.setState({ deleting: true });
+    onDelete(replyId);
+  };
 
   onReplySubmit = params => {
-    const { onReplySubmit } = this.props
-    this.setState({ replying: true })
-    onReplySubmit(params)
-  }
+    const { onReplySubmit } = this.props;
+    this.setState({ replying: true });
+    onReplySubmit(params);
+  };
 }
 
-export default withContext({ Component: Replies, Context })
+export default withContext({ Component: Replies, Context });

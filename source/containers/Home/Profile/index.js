@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import ProfilePanel from '../ProfilePanel'
-import Body from './Body'
-import ExecutionEnvironment from 'exenv'
-import { connect } from 'react-redux'
-import { checkValidUsername } from 'redux/actions/UserActions'
-import NotFound from 'components/NotFound'
-import Loading from 'components/Loading'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import ProfilePanel from '../ProfilePanel';
+import Body from './Body';
+import ExecutionEnvironment from 'exenv';
+import { connect } from 'react-redux';
+import { checkValidUsername } from 'redux/actions/UserActions';
+import NotFound from 'components/NotFound';
+import Loading from 'components/Loading';
 
 class Profile extends Component {
   static propTypes = {
@@ -16,12 +16,12 @@ class Profile extends Component {
     profile: PropTypes.object.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string
-  }
+  };
 
   componentDidMount() {
-    const { checkValidUsername, match } = this.props
-    const { username } = match.params
-    if (ExecutionEnvironment.canUseDOM) checkValidUsername(username)
+    const { checkValidUsername, match } = this.props;
+    const { username } = match.params;
+    if (ExecutionEnvironment.canUseDOM) checkValidUsername(username);
   }
 
   componentDidUpdate(prevProps) {
@@ -31,12 +31,12 @@ class Profile extends Component {
       userId,
       profile: { unavailable },
       match
-    } = this.props
+    } = this.props;
     if (
       prevProps.match.params.username &&
       prevProps.match.params.username !== match.params.username
     ) {
-      return checkValidUsername(match.params.username)
+      return checkValidUsername(match.params.username);
     }
 
     if (
@@ -45,7 +45,7 @@ class Profile extends Component {
       userId &&
       unavailable
     ) {
-      history.push(`/${this.props.username}`)
+      history.push(`/${this.props.username}`);
     }
   }
 
@@ -54,7 +54,7 @@ class Profile extends Component {
       match,
       profile: { unavailable, id },
       userId
-    } = this.props
+    } = this.props;
     return !unavailable ? (
       <div>
         {!id && <Loading text="Loading Profile..." />}
@@ -75,7 +75,7 @@ class Profile extends Component {
         title={!userId ? 'For Registered Users Only' : ''}
         text={!userId ? 'Please Log In or Sign Up' : ''}
       />
-    )
+    );
   }
 }
 
@@ -86,4 +86,4 @@ export default connect(
     profile: state.UserReducer.profile
   }),
   { checkValidUsername }
-)(Profile)
+)(Profile);

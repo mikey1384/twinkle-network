@@ -5,4 +5,4 @@ export const edit = {
   url: 'Enter URL...',
   subject: 'Enter Subject...',
   video: 'Enter YouTube URL...'
-}
+};

@@ -16,10 +16,10 @@ const types = {
   TURN_OFF_CLICK_SAFE: 'TURN_OFF_CLICK_SAFE',
   TURN_ON_CLICK_SAFE: 'TURN_ON_CLICK_SAFE',
   UPLOAD: 'UPLOAD'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_PLAYLIST`
+  types[key] = `${types[key]}_PLAYLIST`;
 }
 
-export default types
+export default types;

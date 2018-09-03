@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { stringIsEmpty } from 'helpers/stringHelpers'
-import TagInput from './TagInput'
-import { borderRadius } from 'constants/css'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import TagInput from './TagInput';
+import { borderRadius } from 'constants/css';
 
 export default class TagPeopleForm extends Component {
   static propTypes = {
@@ -19,17 +19,17 @@ export default class TagPeopleForm extends Component {
       PropTypes.node
     ]),
     onSubmit: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
-  }
+  };
 
-  timer = null
+  timer = null;
 
   state = {
     searchText: ''
-  }
+  };
 
   componentWillUnmount() {
-    const { onClear } = this.props
-    onClear()
+    const { onClear } = this.props;
+    onClear();
   }
 
   render() {
@@ -40,15 +40,15 @@ export default class TagPeopleForm extends Component {
       filter,
       onSubmit,
       children
-    } = this.props
-    const { searchText } = this.state
-    const filteredResults = searchResults.filter(filter)
+    } = this.props;
+    const { searchText } = this.state;
+    const filteredResults = searchResults.filter(filter);
     return (
       <form
         style={{ width: '70%' }}
         onSubmit={event => {
-          event.preventDefault()
-          onSubmit && onSubmit()
+          event.preventDefault();
+          onSubmit && onSubmit();
         }}
       >
         <div style={{ width: '100%' }}>
@@ -60,8 +60,8 @@ export default class TagPeopleForm extends Component {
             value={searchText}
             onChange={this.onUserSearch}
             onClickOutSide={() => {
-              this.setState({ searchText: '' })
-              onClear()
+              this.setState({ searchText: '' });
+              onClear();
             }}
             searchResults={filteredResults}
             selectedUsers={selectedUsers}
@@ -70,11 +70,11 @@ export default class TagPeopleForm extends Component {
         </div>
         {children}
       </form>
-    )
+    );
   }
 
   renderTags = () => {
-    const { selectedUsers, onRemoveUser } = this.props
+    const { selectedUsers, onRemoveUser } = this.props;
     return selectedUsers.length > 0 ? (
       <div
         style={{
@@ -100,25 +100,25 @@ export default class TagPeopleForm extends Component {
             >
               {user.username} &times;
             </span>
-          )
+          );
         })}
       </div>
-    ) : null
-  }
+    ) : null;
+  };
 
   onUserSearch = text => {
-    const { onSearch, onClear } = this.props
-    clearTimeout(this.timer)
-    this.setState({ searchText: text })
+    const { onSearch, onClear } = this.props;
+    clearTimeout(this.timer);
+    this.setState({ searchText: text });
     if (stringIsEmpty(text) || text.length < 2) {
-      return onClear()
+      return onClear();
     }
-    this.timer = setTimeout(() => onSearch(text), 300)
-  }
+    this.timer = setTimeout(() => onSearch(text), 300);
+  };
 
   onAddUser = user => {
-    this.setState({ searchText: '' })
-    this.props.onAddUser(user)
-    this.props.onClear()
-  }
+    this.setState({ searchText: '' });
+    this.props.onAddUser(user);
+    this.props.onClear();
+  };
 }

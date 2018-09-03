@@ -1,22 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Link from 'components/Link'
-import StatusInput from './StatusInput'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Link from 'components/Link';
+import StatusInput from './StatusInput';
 import {
   addEmoji,
   finalizeEmoji,
   processedStringWithURL,
   renderText
-} from 'helpers/stringHelpers'
-import Button from 'components/Button'
-import Icon from 'components/Icon'
-import BioEditModal from 'components/Modals/BioEditModal'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
-import { URL } from 'constants/URL'
-import request from 'axios'
-import { auth } from 'helpers/requestHelpers'
+} from 'helpers/stringHelpers';
+import Button from 'components/Button';
+import Icon from 'components/Icon';
+import BioEditModal from 'components/Modals/BioEditModal';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import { URL } from 'constants/URL';
+import request from 'axios';
+import { auth } from 'helpers/requestHelpers';
 
 export default class UserDetails extends Component {
   static propTypes = {
@@ -28,14 +28,14 @@ export default class UserDetails extends Component {
     uploadBio: PropTypes.func,
     userId: PropTypes.number,
     small: PropTypes.bool
-  }
+  };
 
   state = {
     bioEditModalShown: false,
     confirmModalShown: false,
     editedStatusMsg: '',
     editedStatusColor: ''
-  }
+  };
 
   render() {
     const {
@@ -45,16 +45,16 @@ export default class UserDetails extends Component {
       style = {},
       unEditable,
       userId
-    } = this.props
+    } = this.props;
     const {
       bioEditModalShown,
       confirmModalShown,
       editedStatusColor,
       editedStatusMsg
-    } = this.state
-    const statusColor = editedStatusColor || profile.statusColor || 'logoBlue'
-    const { profileFirstRow, profileSecondRow, profileThirdRow } = profile
-    const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow
+    } = this.state;
+    const statusColor = editedStatusColor || profile.statusColor || 'logoBlue';
+    const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
+    const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
     return (
       <div
         style={{
@@ -95,7 +95,7 @@ export default class UserDetails extends Component {
           !unEditable && (
             <StatusInput
               innerRef={ref => {
-                this.StatusInput = ref
+                this.StatusInput = ref;
               }}
               profile={profile}
               statusColor={statusColor}
@@ -105,7 +105,7 @@ export default class UserDetails extends Component {
                 this.setState({
                   editedStatusMsg: addEmoji(renderText(event.target.value)),
                   ...(!event.target.value ? { editedStatusColor: '' } : {})
-                })
+                });
               }}
               onCancel={() =>
                 this.setState({
@@ -156,8 +156,8 @@ export default class UserDetails extends Component {
               <Button
                 transparent
                 onClick={() => {
-                  this.setState({ editedStatusMsg: profile.statusMsg })
-                  this.StatusInput.focus()
+                  this.setState({ editedStatusMsg: profile.statusMsg });
+                  this.StatusInput.focus();
                 }}
               >
                 <Icon icon="pencil-alt" />
@@ -256,21 +256,21 @@ export default class UserDetails extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   onRemoveStatus = async() => {
-    const { removeStatusMsg, userId } = this.props
-    await request.delete(`${URL}/user/statusMsg`, auth())
-    removeStatusMsg(userId)
-    this.setState({ confirmModalShown: false })
-  }
+    const { removeStatusMsg, userId } = this.props;
+    await request.delete(`${URL}/user/statusMsg`, auth());
+    removeStatusMsg(userId);
+    this.setState({ confirmModalShown: false });
+  };
 
   onStatusMsgSubmit = async() => {
-    const { updateStatusMsg, profile } = this.props
-    const { editedStatusMsg, editedStatusColor } = this.state
-    const statusMsg = finalizeEmoji(editedStatusMsg)
-    const statusColor = editedStatusColor || profile.statusColor
+    const { updateStatusMsg, profile } = this.props;
+    const { editedStatusMsg, editedStatusColor } = this.state;
+    const statusMsg = finalizeEmoji(editedStatusMsg);
+    const statusColor = editedStatusColor || profile.statusColor;
     const { data } = await request.post(
       `${URL}/user/statusMsg`,
       {
@@ -278,18 +278,18 @@ export default class UserDetails extends Component {
         statusColor
       },
       auth()
-    )
-    this.setState({ editedStatusColor: '', editedStatusMsg: '' })
-    if (typeof updateStatusMsg === 'function') updateStatusMsg(data)
-  }
+    );
+    this.setState({ editedStatusColor: '', editedStatusMsg: '' });
+    if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
+  };
 
   uploadBio = async params => {
-    const { profile, uploadBio } = this.props
+    const { profile, uploadBio } = this.props;
     if (typeof uploadBio === 'function') {
-      await uploadBio({ ...params, profileId: profile.id })
+      await uploadBio({ ...params, profileId: profile.id });
       this.setState({
         bioEditModalShown: false
-      })
+      });
     }
-  }
+  };
 }

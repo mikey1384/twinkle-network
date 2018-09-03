@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Textarea from 'components/Texts/Textarea'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { uploadLink } from 'redux/actions/LinkActions'
-import { connect } from 'react-redux'
-import Input from 'components/Texts/Input'
-import Banner from 'components/Banner'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Textarea from 'components/Texts/Textarea';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { uploadLink } from 'redux/actions/LinkActions';
+import { connect } from 'react-redux';
+import Input from 'components/Texts/Input';
+import Banner from 'components/Banner';
+import { css } from 'emotion';
 import {
   exceedsCharLimit,
   isValidUrl,
@@ -15,13 +15,13 @@ import {
   addEmoji,
   finalizeEmoji,
   renderCharLimit
-} from 'helpers/stringHelpers'
+} from 'helpers/stringHelpers';
 
 class AddLinkModal extends Component {
   static propTypes = {
     onHide: PropTypes.func,
     uploadLink: PropTypes.func
-  }
+  };
 
   state = {
     urlError: null,
@@ -30,11 +30,11 @@ class AddLinkModal extends Component {
       title: '',
       description: ''
     }
-  }
+  };
 
   render() {
-    const { onHide } = this.props
-    const { urlError, form } = this.state
+    const { onHide } = this.props;
+    const { urlError, form } = this.state;
     return (
       <Modal onHide={onHide}>
         <header>Add Links</header>
@@ -46,7 +46,7 @@ class AddLinkModal extends Component {
           )}
           <Input
             ref={ref => {
-              this.UrlField = ref
+              this.UrlField = ref;
             }}
             style={this.urlHasError()}
             value={form.url}
@@ -69,7 +69,7 @@ class AddLinkModal extends Component {
                     ...form,
                     title: addEmoji(event.target.value)
                   }
-                })
+                });
               }
             }}
             style={this.titleExceedsCharLimit()}
@@ -103,7 +103,7 @@ class AddLinkModal extends Component {
                     ...form,
                     description: addEmoji(event.target.value)
                   }
-                })
+                });
               }
             }}
           />
@@ -131,77 +131,84 @@ class AddLinkModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   onSubmit = event => {
-    const { uploadLink, onHide } = this.props
-    const { form: { url, title, description } } = this.state
+    const { uploadLink, onHide } = this.props;
+    const {
+      form: { url, title, description }
+    } = this.state;
 
-    event.preventDefault()
+    event.preventDefault();
     if (!isValidUrl(url)) {
-      this.setState({ urlError: 'That is not a valid url' })
-      return this.UrlField._rootDOMNode.focus()
+      this.setState({ urlError: 'That is not a valid url' });
+      return this.UrlField._rootDOMNode.focus();
     }
 
     return uploadLink({
       url,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description)
-    }).then(() => onHide())
-  }
+    }).then(() => onHide());
+  };
 
   onUrlFieldChange = text => {
-    const { form } = this.state
+    const { form } = this.state;
     this.setState({
       form: { ...form, url: text },
       urlError: null
-    })
-  }
+    });
+  };
 
   submitDisabled = () => {
-    const { form: { url, title } } = this.state
-    if (stringIsEmpty(url)) return true
-    if (stringIsEmpty(title)) return true
-    if (this.urlHasError()) return true
-    if (this.titleExceedsCharLimit()) return true
-    if (this.descriptionExceedsCharLimit()) return true
-    return false
-  }
+    const {
+      form: { url, title }
+    } = this.state;
+    if (stringIsEmpty(url)) return true;
+    if (stringIsEmpty(title)) return true;
+    if (this.urlHasError()) return true;
+    if (this.titleExceedsCharLimit()) return true;
+    if (this.descriptionExceedsCharLimit()) return true;
+    return false;
+  };
 
   urlHasError = () => {
     if (this.state.urlError) {
       return {
         color: 'red',
         borderColor: 'red'
-      }
+      };
     }
-    return this.urlExceedsCharLimit()
-  }
+    return this.urlExceedsCharLimit();
+  };
 
   descriptionExceedsCharLimit = () => {
     return exceedsCharLimit({
       contentType: 'url',
       inputType: 'description',
       text: this.state.form.description
-    })
-  }
+    });
+  };
 
   titleExceedsCharLimit = () => {
     return exceedsCharLimit({
       contentType: 'url',
       inputType: 'title',
       text: this.state.form.title
-    })
-  }
+    });
+  };
 
   urlExceedsCharLimit = () => {
     return exceedsCharLimit({
       contentType: 'url',
       inputType: 'url',
       text: this.state.form.url
-    })
-  }
+    });
+  };
 }
 
-export default connect(null, { uploadLink: uploadLink })(AddLinkModal)
+export default connect(
+  null,
+  { uploadLink: uploadLink }
+)(AddLinkModal);

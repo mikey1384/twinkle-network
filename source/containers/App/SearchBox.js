@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import SearchInput from 'components/Texts/SearchInput'
-import { changeSearch } from 'redux/actions/SearchActions'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import SearchInput from 'components/Texts/SearchInput';
+import { changeSearch } from 'redux/actions/SearchActions';
 
 class SearchBox extends Component {
   static propTypes = {
@@ -13,10 +13,10 @@ class SearchBox extends Component {
     innerRef: PropTypes.func,
     searchText: PropTypes.string.isRequired,
     style: PropTypes.object
-  }
+  };
 
   render() {
-    const { className, onFocus, innerRef, searchText, style } = this.props
+    const { className, onFocus, innerRef, searchText, style } = this.props;
     return (
       <div className={className} style={style}>
         <SearchInput
@@ -27,13 +27,13 @@ class SearchBox extends Component {
           onFocus={onFocus}
         />
       </div>
-    )
+    );
   }
 
   onContentSearch = text => {
-    const { changeSearch } = this.props
-    changeSearch(text)
-  }
+    const { changeSearch } = this.props;
+    changeSearch(text);
+  };
 }
 
 export default connect(
@@ -43,4 +43,4 @@ export default connect(
   {
     changeSearch
   }
-)(withRouter(SearchBox))
+)(withRouter(SearchBox));

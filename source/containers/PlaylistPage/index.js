@@ -1,14 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Route, Switch } from 'react-router-dom'
-import NotFound from 'components/NotFound'
-import Content from './Content'
-import { css } from 'emotion'
-import { mobileMaxWidth } from 'constants/css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Route, Switch } from 'react-router-dom';
+import NotFound from 'components/NotFound';
+import Content from './Content';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 Playlists.propTypes = {
   match: PropTypes.object.isRequired
-}
+};
 export default function Playlists({ match }) {
   return (
     <div
@@ -35,5 +35,5 @@ export default function Playlists({ match }) {
         </Switch>
       </section>
     </div>
-  )
+  );
 }

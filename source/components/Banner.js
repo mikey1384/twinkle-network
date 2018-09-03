@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
 
 Banner.propTypes = {
   children: PropTypes.node,
@@ -16,7 +16,7 @@ Banner.propTypes = {
   success: PropTypes.bool,
   warning: PropTypes.bool,
   onClick: PropTypes.func
-}
+};
 export default function Banner({
   children,
   danger,
@@ -41,16 +41,16 @@ export default function Banner({
     success: Color.green(),
     warning: Color.orange(),
     default: Color.lightGray()
-  }
-  let colorKey = 'default'
-  if (danger) colorKey = 'danger'
-  if (primary) colorKey = 'primary'
-  if (love) colorKey = 'love'
-  if (logo) colorKey = 'logo'
-  if (info) colorKey = 'info'
-  if (gold) colorKey = 'gold'
-  if (warning) colorKey = 'warning'
-  if (success) colorKey = 'success'
+  };
+  let colorKey = 'default';
+  if (danger) colorKey = 'danger';
+  if (primary) colorKey = 'primary';
+  if (love) colorKey = 'love';
+  if (logo) colorKey = 'logo';
+  if (info) colorKey = 'info';
+  if (gold) colorKey = 'gold';
+  if (warning) colorKey = 'warning';
+  if (success) colorKey = 'success';
   return (
     <div
       ref={innerRef}
@@ -76,5 +76,5 @@ export default function Banner({
     >
       {children}
     </div>
-  )
+  );
 }

@@ -18,10 +18,10 @@ const types = {
   UPLOAD: 'UPLOAD',
   UPLOAD_COMMENT: 'UPLOAD_COMMENT',
   UPLOAD_REPLY: 'UPLOAD_REPLY'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_LINK`
+  types[key] = `${types[key]}_LINK`;
 }
 
-export default types
+export default types;

@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import moment from 'moment'
-import ProfilePic from 'components/ProfilePic'
-import UsernameText from 'components/Texts/UsernameText'
-import { connect } from 'react-redux'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import { processedStringWithURL } from 'helpers/stringHelpers'
-import EditTextArea from 'components/Texts/EditTextArea'
-import { editMessage, saveMessage } from 'redux/actions/ChatActions'
-import Button from 'components/Button'
-import { MessageStyle } from '../Styles'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import moment from 'moment';
+import ProfilePic from 'components/ProfilePic';
+import UsernameText from 'components/Texts/UsernameText';
+import { connect } from 'react-redux';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import { processedStringWithURL } from 'helpers/stringHelpers';
+import EditTextArea from 'components/Texts/EditTextArea';
+import { editMessage, saveMessage } from 'redux/actions/ChatActions';
+import Button from 'components/Button';
+import { MessageStyle } from '../Styles';
 
 class Message extends Component {
   static propTypes = {
@@ -26,18 +26,18 @@ class Message extends Component {
     index: PropTypes.number,
     isLastMsg: PropTypes.bool,
     setScrollToBottom: PropTypes.func
-  }
+  };
 
   state = {
     onEdit: false,
     subjectMsgsModalShown: false,
     confirmModalShown: false
-  }
+  };
 
   componentDidMount() {
-    const { message, myId, saveMessage, index } = this.props
+    const { message, myId, saveMessage, index } = this.props;
     if (!message.id && message.userId === myId && !message.isSubject) {
-      saveMessage({ ...message, content: message.content }, index)
+      saveMessage({ ...message, content: message.content }, index);
     }
   }
 
@@ -64,31 +64,31 @@ class Message extends Component {
       showSubjectMsgsModal,
       myId,
       setScrollToBottom
-    } = this.props
-    const { editPadding } = this.state
-    const userIsUploader = myId === userId
+    } = this.props;
+    const { editPadding } = this.state;
+    const userIsUploader = myId === userId;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel
-    const editButtonShown = userIsUploader || userCanEditThis
-    const editMenuItems = []
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+    const editButtonShown = userIsUploader || userCanEditThis;
+    const editMenuItems = [];
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: () =>
           this.setState({ onEdit: true, editPadding: false }, () => {
             if (isLastMsg) {
-              setTimeout(() => setScrollToBottom(), 0)
+              setTimeout(() => setScrollToBottom(), 0);
             }
           })
-      })
+      });
     }
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Remove',
         onClick: () => onDelete(messageId)
-      })
+      });
     }
-    const { onEdit } = this.state
+    const { onEdit } = this.state;
     return (
       <Fragment>
         <div className={MessageStyle.container}>
@@ -147,12 +147,12 @@ class Message extends Component {
                               editPadding: !menuDisplayed && isLastMsg
                             },
                             () => (isLastMsg ? setScrollToBottom() : null)
-                          )
+                          );
                         }}
                         onOutsideClick={() => {
                           this.setState({
                             editPadding: false
-                          })
+                          });
                         }}
                         menuProps={editMenuItems}
                       />
@@ -179,33 +179,33 @@ class Message extends Component {
           </div>
         </div>
       </Fragment>
-    )
+    );
   }
 
   onEditDone = editedMessage => {
-    const { onEditDone, message } = this.props
+    const { onEditDone, message } = this.props;
     onEditDone({ editedMessage, messageId: message.id }).then(() =>
       this.setState({ onEdit: false, editPadding: false })
-    )
-  }
+    );
+  };
 
   renderPrefix = () => {
     const {
       message: { isSubject, isReloadedSubject }
-    } = this.props
-    let prefix = ''
+    } = this.props;
+    let prefix = '';
     if (isSubject) {
-      prefix = <span className={MessageStyle.subjectPrefix}>Subject: </span>
+      prefix = <span className={MessageStyle.subjectPrefix}>Subject: </span>;
     }
     if (isReloadedSubject) {
       prefix = (
         <span className={MessageStyle.subjectPrefix}>
           {'Returning Subject: '}
         </span>
-      )
+      );
     }
-    return prefix
-  }
+    return prefix;
+  };
 }
 
 export default connect(
@@ -219,4 +219,4 @@ export default connect(
     onEditDone: editMessage,
     saveMessage
   }
-)(Message)
+)(Message);

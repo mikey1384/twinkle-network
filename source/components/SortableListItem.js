@@ -1,33 +1,33 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { DragSource, DropTarget } from 'react-dnd'
-import ItemTypes from 'constants/itemTypes'
-import Icon from 'components/Icon'
-import { cleanString } from 'helpers/stringHelpers'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+import ItemTypes from 'constants/itemTypes';
+import Icon from 'components/Icon';
+import { cleanString } from 'helpers/stringHelpers';
+import { Color } from 'constants/css';
 
 const listItemSource = {
   beginDrag(props) {
     return {
       id: props.item.id
-    }
+    };
   },
   isDragging(props, monitor) {
-    return props.item.id === monitor.getItem().id
+    return props.item.id === monitor.getItem().id;
   }
-}
+};
 
 const listItemTarget = {
   hover(targetProps, monitor) {
-    const targetId = targetProps.item.id
-    const sourceProps = monitor.getItem()
-    const sourceId = sourceProps.id
+    const targetId = targetProps.item.id;
+    const sourceProps = monitor.getItem();
+    const sourceId = sourceProps.id;
 
     if (sourceId !== targetId) {
-      targetProps.onMove({ sourceId, targetId })
+      targetProps.onMove({ sourceId, targetId });
     }
   }
-}
+};
 
 class SortableListItem extends Component {
   static propTypes = {
@@ -39,7 +39,7 @@ class SortableListItem extends Component {
       id: PropTypes.number.isRequired,
       label: PropTypes.string.isRequired
     }).isRequired
-  }
+  };
   render() {
     const {
       connectDragSource,
@@ -47,7 +47,7 @@ class SortableListItem extends Component {
       isDragging,
       index,
       item
-    } = this.props
+    } = this.props;
     return connectDragSource(
       connectDropTarget(
         <nav
@@ -61,7 +61,7 @@ class SortableListItem extends Component {
           <Icon icon="align-justify" style={{ color: Color.menuGray() }} />
         </nav>
       )
-    )
+    );
   }
 }
 
@@ -76,4 +76,4 @@ export default DragSource(
   DropTarget(ItemTypes.LIST_ITEM, listItemTarget, connect => ({
     connectDropTarget: connect.dropTarget()
   }))(SortableListItem)
-)
+);

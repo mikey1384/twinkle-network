@@ -1,4 +1,4 @@
-import FEED from '../constants/Feed'
+import FEED from '../constants/Feed';
 
 const defaultState = {
   currentSection: 'storyFeeds',
@@ -9,20 +9,20 @@ const defaultState = {
   loaded: false,
   profileFeedsLoadMoreButton: false,
   storyFeedsLoadMoreButton: false
-}
+};
 
 export default function FeedReducer(state = defaultState, action) {
-  let loadMoreButton = false
-  const { currentSection } = state
+  let loadMoreButton = false;
+  const { currentSection } = state;
   switch (action.type) {
     case FEED.ATTACH_STAR:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
-          const isComment = action.data.contentType === 'comment'
+          const isComment = action.data.contentType === 'comment';
           const contentMatches =
             action.data.contentType === feed.type &&
-            action.data.contentId === feed.id
+            action.data.contentId === feed.id;
           return {
             ...feed,
             stars: contentMatches
@@ -42,7 +42,7 @@ export default function FeedReducer(state = defaultState, action) {
                       ? (reply.stars || []).concat(action.data)
                       : reply.stars || []
                 }))
-              }
+              };
             }),
             targetObj: feed.targetObj
               ? {
@@ -64,16 +64,16 @@ export default function FeedReducer(state = defaultState, action) {
                     : undefined
                 }
               : undefined
-          }
+          };
         })
-      }
+      };
     case FEED.CLEAR:
       return {
         ...state,
         [currentSection]: [],
         [`${currentSection}LoadMoreButton`]: false,
         loaded: false
-      }
+      };
     case FEED.LIKE_CONTENT:
       return {
         ...state,
@@ -125,11 +125,11 @@ export default function FeedReducer(state = defaultState, action) {
                 )
               : feed.childComments
         }))
-      }
+      };
     case FEED.LOAD:
       if (action.data.length > 20) {
-        action.data.pop()
-        loadMoreButton = true
+        action.data.pop();
+        loadMoreButton = true;
       }
       return {
         ...state,
@@ -137,7 +137,7 @@ export default function FeedReducer(state = defaultState, action) {
         selectedFilter: action.filter || state.selectedFilter,
         [`${currentSection}LoadMoreButton`]: loadMoreButton,
         loaded: true
-      }
+      };
     case FEED.LOAD_DETAIL:
       return {
         ...state,
@@ -145,7 +145,7 @@ export default function FeedReducer(state = defaultState, action) {
           feed =>
             feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
         )
-      }
+      };
     case FEED.LOAD_MORE_REPLIES:
       return {
         ...state,
@@ -160,28 +160,28 @@ export default function FeedReducer(state = defaultState, action) {
                         replies: action.data.replies.concat(comment.replies),
                         loadMoreButton: action.data.loadMoreButton
                       }
-                    : comment
+                    : comment;
                 })
               }
-            : feed
+            : feed;
         })
-      }
+      };
     case FEED.LOAD_MORE:
       if (action.data.length > 20) {
-        action.data.pop()
-        loadMoreButton = true
+        action.data.pop();
+        loadMoreButton = true;
       }
       return {
         ...state,
         [currentSection]: state[currentSection].concat(action.data),
         selectedFilter: action.filter || state.selectedFilter,
         [`${currentSection}LoadMoreButton`]: loadMoreButton
-      }
+      };
     case FEED.LOAD_NEW:
       return {
         ...state,
         storyFeeds: action.data.concat(state.storyFeeds)
-      }
+      };
     case FEED.DELETE_COMMENT:
       return {
         ...state,
@@ -192,7 +192,7 @@ export default function FeedReducer(state = defaultState, action) {
               feed.commentId === action.commentId ||
               feed.replyId === action.commentId)
           ) {
-            return prev
+            return prev;
           }
           return prev.concat([
             {
@@ -213,7 +213,7 @@ export default function FeedReducer(state = defaultState, action) {
               childComments: (feed.childComments || []).reduce(
                 (prev, comment) => {
                   if (comment.id === action.commentId) {
-                    return prev
+                    return prev;
                   }
                   return prev.concat([
                     {
@@ -222,14 +222,14 @@ export default function FeedReducer(state = defaultState, action) {
                         reply => reply.id !== action.commentId
                       )
                     }
-                  ])
+                  ]);
                 },
                 []
               )
             }
-          ])
+          ]);
         }, [])
-      }
+      };
     case FEED.DELETE_CONTENT:
       return {
         ...state,
@@ -238,7 +238,7 @@ export default function FeedReducer(state = defaultState, action) {
             feed.type !== action.contentType ||
             feed.contentId !== action.contentId
         )
-      }
+      };
     case FEED.EDIT_COMMENT:
       return {
         ...state,
@@ -293,21 +293,21 @@ export default function FeedReducer(state = defaultState, action) {
                                 }
                               : reply
                         )
-                      }
+                      };
                 })
-              }
+              };
         })
-      }
+      };
     case FEED.EDIT_CONTENT:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           const contentMatches =
             feed.type === action.contentType &&
-            feed.contentId === action.contentId
+            feed.contentId === action.contentId;
           const rootContentMatches =
             feed.rootType === action.contentType &&
-            feed.rootId === action.contentId
+            feed.rootId === action.contentId;
           return contentMatches
             ? {
                 ...feed,
@@ -337,9 +337,9 @@ export default function FeedReducer(state = defaultState, action) {
                           : undefined
                       }
                     : undefined
-                }
+                };
         })
-      }
+      };
     case FEED.EDIT_REWARD_COMMENT:
       return {
         ...state,
@@ -392,17 +392,17 @@ export default function FeedReducer(state = defaultState, action) {
                     : undefined
                 }
               : undefined
-          }
+          };
         })
-      }
+      };
     case FEED.EDIT_QUESTION:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
-            feed.type === 'question' && feed.contentId === action.contentId
+            feed.type === 'question' && feed.contentId === action.contentId;
           let rootContentMatches =
-            feed.rootType === 'question' && feed.rootId === action.contentId
+            feed.rootType === 'question' && feed.rootId === action.contentId;
           return {
             ...feed,
             content: contentMatches ? action.editedContent : feed.content,
@@ -418,17 +418,17 @@ export default function FeedReducer(state = defaultState, action) {
             rootContentDescription: rootContentMatches
               ? action.editedDescription
               : feed.rootContentDescription
-          }
+          };
         })
-      }
+      };
     case FEED.EDIT_DISCUSSION:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
-            feed.type === 'discussion' && feed.contentId === action.contentId
+            feed.type === 'discussion' && feed.contentId === action.contentId;
           let discussionIdMatches =
-            feed.type === 'comment' && feed.discussionId === action.contentId
+            feed.type === 'comment' && feed.discussionId === action.contentId;
           return {
             ...feed,
             contentTitle: contentMatches
@@ -443,35 +443,35 @@ export default function FeedReducer(state = defaultState, action) {
             discussionDescription: discussionIdMatches
               ? action.editedDescription
               : feed.discussionDescription
-          }
+          };
         })
-      }
+      };
     case FEED.SET_SECTION:
       return {
         ...state,
         currentSection: action.section
-      }
+      };
     case FEED.STAR_VIDEO:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
-            feed.type === 'video' && feed.contentId === action.videoId
+            feed.type === 'video' && feed.contentId === action.videoId;
           let rootVideoMatches =
             feed.type === 'comment' &&
             feed.rootId === action.videoId &&
-            feed.rootType === 'video'
+            feed.rootType === 'video';
           return {
             ...feed,
             isStarred: contentMatches ? action.isStarred : feed.isStarred,
             rootContentIsStarred: rootVideoMatches
               ? action.isStarred
               : feed.rootContentIsStarred
-          }
+          };
         })
-      }
+      };
     case FEED.LOAD_COMMENTS:
-      if (action.data.comments.length === 0) return state
+      if (action.data.comments.length === 0) return state;
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
@@ -481,14 +481,14 @@ export default function FeedReducer(state = defaultState, action) {
                 commentsLoadMoreButton: action.data.loadMoreButton,
                 childComments: action.data.comments
               }
-            : feed
+            : feed;
         })
-      }
+      };
     case FEED.LOAD_MORE_COMMENTS:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
-          let match = feed.feedId === action.feedId
+          let match = feed.feedId === action.feedId;
           return match
             ? {
                 ...feed,
@@ -498,16 +498,16 @@ export default function FeedReducer(state = defaultState, action) {
                     ? action.data.comments.concat(feed.childComments || [])
                     : (feed.childComments || []).concat(action.data.comments)
               }
-            : feed
+            : feed;
         })
-      }
+      };
     case FEED.UPLOAD_CONTENT:
       return {
         ...state,
         [currentSection]: [action.data].concat(state[currentSection])
-      }
+      };
     case FEED.UPLOAD_COMMENT:
-      const commentId = action.comment.replyId || action.comment.commentId
+      const commentId = action.comment.replyId || action.comment.commentId;
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
@@ -524,19 +524,19 @@ export default function FeedReducer(state = defaultState, action) {
                 feed.type === 'comment'
                   ? (feed.childComments || []).concat([action.comment])
                   : [action.comment].concat(feed.childComments || [])
-            }
+            };
           } else {
             return {
               ...feed,
               childComments: (feed.childComments || []).map(childComment => {
-                let match = false
+                let match = false;
                 if (childComment.id === commentId) {
-                  match = true
+                  match = true;
                 } else {
                   for (let reply of childComment.replies || []) {
                     if (reply.id === commentId) {
-                      match = true
-                      break
+                      match = true;
+                      break;
                     }
                   }
                 }
@@ -545,12 +545,12 @@ export default function FeedReducer(state = defaultState, action) {
                   replies: match
                     ? childComment.replies.concat([action.comment])
                     : childComment.replies
-                }
+                };
               })
-            }
+            };
           }
         })
-      }
+      };
     case FEED.UPLOAD_TC_COMMENT:
       return {
         ...state,
@@ -569,10 +569,10 @@ export default function FeedReducer(state = defaultState, action) {
                     }
                   }
                 : feed.targetObj
-          }
+          };
         })
-      }
+      };
     default:
-      return state
+      return state;
   }
 }

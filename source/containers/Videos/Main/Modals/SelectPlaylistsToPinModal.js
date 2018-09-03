@@ -1,19 +1,19 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import CheckListGroup from 'components/CheckListGroup'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import CheckListGroup from 'components/CheckListGroup';
 import {
   loadMorePlaylistList,
   changePinnedPlaylists
-} from 'redux/actions/PlaylistActions'
-import FilterBar from 'components/FilterBar'
-import Banner from 'components/Banner'
-import SearchInput from 'components/Texts/SearchInput'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import { connect } from 'react-redux'
-import { isEqual } from 'lodash'
+} from 'redux/actions/PlaylistActions';
+import FilterBar from 'components/FilterBar';
+import Banner from 'components/Banner';
+import SearchInput from 'components/Texts/SearchInput';
+import request from 'axios';
+import { URL } from 'constants/URL';
+import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
 
 class SelectPlaylistsToPinModal extends Component {
   static propTypes = {
@@ -24,7 +24,7 @@ class SelectPlaylistsToPinModal extends Component {
     playlistsToPin: PropTypes.array.isRequired,
     pinnedPlaylists: PropTypes.array.isRequired,
     selectedPlaylists: PropTypes.array.isRequired
-  }
+  };
 
   state = {
     selectTabActive: true,
@@ -32,10 +32,10 @@ class SelectPlaylistsToPinModal extends Component {
     searchedPlaylists: [],
     searchText: '',
     playlistObjects: {}
-  }
+  };
 
   componentDidMount() {
-    const { pinnedPlaylists, playlistsToPin, selectedPlaylists } = this.props
+    const { pinnedPlaylists, playlistsToPin, selectedPlaylists } = this.props;
     this.setState({
       selectedPlaylists,
       playlistObjects: {
@@ -48,7 +48,7 @@ class SelectPlaylistsToPinModal extends Component {
           {}
         )
       }
-    })
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -61,7 +61,7 @@ class SelectPlaylistsToPinModal extends Component {
             {}
           )
         }
-      }))
+      }));
     }
   }
 
@@ -71,9 +71,9 @@ class SelectPlaylistsToPinModal extends Component {
       searchText,
       selectedPlaylists,
       selectTabActive
-    } = this.state
-    const { loadMoreButton, playlistsToPin } = this.props
-    const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id
+    } = this.state;
+    const { loadMoreButton, playlistsToPin } = this.props;
+    const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
     return (
       <Modal onHide={this.props.onHide}>
         <header>Select up to 5 playlists</header>
@@ -182,18 +182,18 @@ class SelectPlaylistsToPinModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   loadMorePlaylists = lastPlaylistId => {
-    this.props.loadMorePlaylist(lastPlaylistId)
-  }
+    this.props.loadMorePlaylist(lastPlaylistId);
+  };
 
   onPlaylistSearchInput = async text => {
-    this.setState({ searchText: text })
+    this.setState({ searchText: text });
     const { data } = await request.get(
       `${URL}/playlist/search/toPin?query=${text}`
-    )
+    );
     this.setState(state => ({
       searchedPlaylists: data,
       playlistObjects: {
@@ -203,51 +203,54 @@ class SelectPlaylistsToPinModal extends Component {
           {}
         )
       }
-    }))
-  }
+    }));
+  };
 
   onSelect = index => {
-    const { searchText, searchedPlaylists } = this.state
-    const { playlistsToPin } = this.props
-    const playlists = searchText ? searchedPlaylists : playlistsToPin
-    let playlistId = playlists[index].id
+    const { searchText, searchedPlaylists } = this.state;
+    const { playlistsToPin } = this.props;
+    const playlists = searchText ? searchedPlaylists : playlistsToPin;
+    let playlistId = playlists[index].id;
     this.setState(state => ({
       selectedPlaylists:
         state.selectedPlaylists.indexOf(playlistId) === -1
           ? [playlistId].concat(state.selectedPlaylists)
           : state.selectedPlaylists.filter(id => id !== playlistId)
-    }))
-  }
+    }));
+  };
 
   onDeselect = index => {
-    const { selectedPlaylists } = this.state
-    let playlistIndex = 0
+    const { selectedPlaylists } = this.state;
+    let playlistIndex = 0;
     const newSelectedPlaylists = selectedPlaylists.filter(playlist => {
-      return playlistIndex++ !== index
-    })
-    this.setState({ selectedPlaylists: newSelectedPlaylists })
-  }
+      return playlistIndex++ !== index;
+    });
+    this.setState({ selectedPlaylists: newSelectedPlaylists });
+  };
 
   onSubmit = () => {
-    const { changePinnedPlaylists, onHide } = this.props
-    const { selectedPlaylists } = this.state
-    return changePinnedPlaylists(selectedPlaylists).then(() => onHide())
-  }
+    const { changePinnedPlaylists, onHide } = this.props;
+    const { selectedPlaylists } = this.state;
+    return changePinnedPlaylists(selectedPlaylists).then(() => onHide());
+  };
 
   renderListItems = () => {
-    const { playlistsToPin } = this.props
-    const { searchText, searchedPlaylists, selectedPlaylists } = this.state
-    const playlists = searchText ? searchedPlaylists : playlistsToPin
+    const { playlistsToPin } = this.props;
+    const { searchText, searchedPlaylists, selectedPlaylists } = this.state;
+    const playlists = searchText ? searchedPlaylists : playlistsToPin;
     return playlists.map(playlist => {
       return {
         label: playlist.title,
         checked: selectedPlaylists.indexOf(playlist.id) !== -1
-      }
-    })
-  }
+      };
+    });
+  };
 }
 
-export default connect(null, {
-  loadMorePlaylist: loadMorePlaylistList,
-  changePinnedPlaylists
-})(SelectPlaylistsToPinModal)
+export default connect(
+  null,
+  {
+    loadMorePlaylist: loadMorePlaylistList,
+    changePinnedPlaylists
+  }
+)(SelectPlaylistsToPinModal);

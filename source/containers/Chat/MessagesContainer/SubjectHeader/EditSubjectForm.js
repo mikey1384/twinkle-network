@@ -1,20 +1,20 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import onClickOutside from 'react-onclickoutside'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import onClickOutside from 'react-onclickoutside';
 import {
   cleanString,
   addEmoji,
   finalizeEmoji,
   trimWhiteSpaces
-} from 'helpers/stringHelpers'
-import SearchDropdown from 'components/SearchDropdown'
-import Button from 'components/Button'
-import { Color, mobileMaxWidth } from 'constants/css'
-import { timeSince } from 'helpers/timeStampHelpers'
-import SubjectsModal from '../../Modals/SubjectsModal'
-import Input from 'components/Texts/Input'
-import { edit } from 'constants/placeholders'
-import { css } from 'emotion'
+} from 'helpers/stringHelpers';
+import SearchDropdown from 'components/SearchDropdown';
+import Button from 'components/Button';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { timeSince } from 'helpers/timeStampHelpers';
+import SubjectsModal from '../../Modals/SubjectsModal';
+import Input from 'components/Texts/Input';
+import { edit } from 'constants/placeholders';
+import { css } from 'emotion';
 
 class EditSubjectForm extends Component {
   static propTypes = {
@@ -27,34 +27,34 @@ class EditSubjectForm extends Component {
     reloadChatSubject: PropTypes.func,
     searchResults: PropTypes.array,
     title: PropTypes.string.isRequired
-  }
+  };
 
-  timer = null
+  timer = null;
 
   handleClickOutside = event => {
-    const { subjectsModalShown } = this.state
-    if (!subjectsModalShown) this.props.onClickOutSide()
-  }
+    const { subjectsModalShown } = this.state;
+    if (!subjectsModalShown) this.props.onClickOutSide();
+  };
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       title: cleanString(props.title),
       highlightedIndex: -1,
       readyForSubmit: false,
       subjectsModalShown: false
-    }
+    };
   }
 
   render() {
-    const { title, highlightedIndex, subjectsModalShown } = this.state
+    const { title, highlightedIndex, subjectsModalShown } = this.state;
     const {
       currentSubjectId,
       reloadChatSubject,
       autoFocus,
       maxLength = 100,
       searchResults
-    } = this.props
+    } = this.props;
     return (
       <div
         className={css`
@@ -82,15 +82,13 @@ class EditSubjectForm extends Component {
             currentSubjectId={currentSubjectId}
             onHide={() => this.setState({ subjectsModalShown: false })}
             selectSubject={subjectId => {
-              reloadChatSubject(subjectId)
-              this.setState({ subjectsModalShown: false })
+              reloadChatSubject(subjectId);
+              this.setState({ subjectsModalShown: false });
             }}
           />
         )}
         <Fragment>
-          <form
-            onSubmit={event => this.onEditSubmit(event)}
-          >
+          <form onSubmit={event => this.onEditSubmit(event)}>
             <Input
               autoFocus={autoFocus}
               type="text"
@@ -136,73 +134,73 @@ class EditSubjectForm extends Component {
           </Button>
         </aside>
       </div>
-    )
+    );
   }
 
   onKeyDown = event => {
-    const { searchResults } = this.props
-    const { highlightedIndex } = this.state
-    let index = highlightedIndex
+    const { searchResults } = this.props;
+    const { highlightedIndex } = this.state;
+    let index = highlightedIndex;
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
-        event.preventDefault()
+        event.preventDefault();
         this.setState({
           highlightedIndex: Math.min(++index, searchResults.length - 1)
-        })
+        });
       }
 
       if (event.keyCode === 38) {
-        event.preventDefault()
-        this.setState({ highlightedIndex: Math.max(--index, -1) })
+        event.preventDefault();
+        this.setState({ highlightedIndex: Math.max(--index, -1) });
       }
     }
-  }
+  };
 
   onInputChange = text => {
-    const { onChange } = this.props
-    clearTimeout(this.timer)
-    this.setState({ title: text, readyForSubmit: false })
+    const { onChange } = this.props;
+    clearTimeout(this.timer);
+    this.setState({ title: text, readyForSubmit: false });
     this.timer = setTimeout(
       () =>
         onChange(text).then(() => {
-          const { searchResults } = this.props
-          const { title } = this.state
-          let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : ''
-          let exactMatchExists = false
-          let matchIndex
+          const { searchResults } = this.props;
+          const { title } = this.state;
+          let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : '';
+          let exactMatchExists = false;
+          let matchIndex;
           for (let i = 0; i < searchResults.length; i++) {
             if (text === searchResults[i].content) {
-              exactMatchExists = true
-              matchIndex = i
-              break
+              exactMatchExists = true;
+              matchIndex = i;
+              break;
             }
           }
           this.setState({
             highlightedIndex: exactMatchExists ? matchIndex : -1,
             readyForSubmit: true
-          })
+          });
         }),
       200
-    )
-  }
+    );
+  };
 
   onUpdate = () => {
-    const { searchResults } = this.props
-    const { title } = this.state
-    let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : ''
-    let exactMatchExists = false
-    let matchIndex
+    const { searchResults } = this.props;
+    const { title } = this.state;
+    let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : '';
+    let exactMatchExists = false;
+    let matchIndex;
     for (let i = 0; i < searchResults.length; i++) {
       if (text === searchResults[i].content) {
-        exactMatchExists = true
-        matchIndex = i
-        break
+        exactMatchExists = true;
+        matchIndex = i;
+        break;
       }
     }
     this.setState({
       highlightedIndex: exactMatchExists ? matchIndex : -1
-    })
-  }
+    });
+  };
 
   onEditSubmit = event => {
     const {
@@ -212,34 +210,34 @@ class EditSubjectForm extends Component {
       reloadChatSubject,
       searchResults,
       currentSubjectId
-    } = this.props
-    const { title, highlightedIndex, readyForSubmit } = this.state
-    event.preventDefault()
-    if (!readyForSubmit) return
+    } = this.props;
+    const { title, highlightedIndex, readyForSubmit } = this.state;
+    event.preventDefault();
+    if (!readyForSubmit) return;
     if (highlightedIndex > -1) {
-      const { id: subjectId } = searchResults[highlightedIndex]
-      if (subjectId === currentSubjectId) return onClickOutSide()
-      return reloadChatSubject(subjectId)
+      const { id: subjectId } = searchResults[highlightedIndex];
+      if (subjectId === currentSubjectId) return onClickOutSide();
+      return reloadChatSubject(subjectId);
     }
 
-    if (title && title.length > maxLength) return
+    if (title && title.length > maxLength) return;
     if (
       title &&
       trimWhiteSpaces(`${title[0].toUpperCase()}${title.slice(1)}`) !==
         this.props.title
     ) {
-      onEditSubmit(finalizeEmoji(title))
+      onEditSubmit(finalizeEmoji(title));
     } else {
-      onClickOutSide()
+      onClickOutSide();
     }
-  }
+  };
 
   onItemClick = item => {
-    const { currentSubjectId, reloadChatSubject, onClickOutSide } = this.props
-    const { id: subjectId } = item
-    if (subjectId === currentSubjectId) return onClickOutSide()
-    return reloadChatSubject(subjectId)
-  }
+    const { currentSubjectId, reloadChatSubject, onClickOutSide } = this.props;
+    const { id: subjectId } = item;
+    if (subjectId === currentSubjectId) return onClickOutSide();
+    return reloadChatSubject(subjectId);
+  };
 
   renderItemLabel = item => {
     return (
@@ -261,8 +259,8 @@ class EditSubjectForm extends Component {
           </small>
         </div>
       </div>
-    )
-  }
+    );
+  };
 }
 
-export default onClickOutside(EditSubjectForm)
+export default onClickOutside(EditSubjectForm);

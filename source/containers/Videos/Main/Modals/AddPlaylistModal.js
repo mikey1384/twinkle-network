@@ -1,34 +1,34 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Textarea from 'components/Texts/Textarea'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { uploadPlaylist } from 'redux/actions/PlaylistActions'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Textarea from 'components/Texts/Textarea';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { uploadPlaylist } from 'redux/actions/PlaylistActions';
 import {
   exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
   renderCharLimit
-} from 'helpers/stringHelpers'
-import { connect } from 'react-redux'
-import SortableThumb from './SortableThumb'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-touch-backend'
-import SelectVideosForm from './SelectVideosForm'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import Input from 'components/Texts/Input'
-import SearchInput from 'components/Texts/SearchInput'
-import { css } from 'emotion'
+} from 'helpers/stringHelpers';
+import { connect } from 'react-redux';
+import SortableThumb from './SortableThumb';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-touch-backend';
+import SelectVideosForm from './SelectVideosForm';
+import request from 'axios';
+import { URL } from 'constants/URL';
+import Input from 'components/Texts/Input';
+import SearchInput from 'components/Texts/SearchInput';
+import { css } from 'emotion';
 
 class AddPlaylistModal extends Component {
   static propTypes = {
     onHide: PropTypes.func,
     uploadPlaylist: PropTypes.func
-  }
+  };
 
-  timer = null
+  timer = null;
 
   state = {
     isUploading: false,
@@ -40,29 +40,29 @@ class AddPlaylistModal extends Component {
     selectedVideos: [],
     loadMoreButtonShown: false,
     searchText: ''
-  }
+  };
 
   async componentDidMount() {
     try {
       const { data: allVideos } = await request.get(
         `${URL}/video?numberToLoad=18`
-      )
-      let loadMoreButtonShown = false
+      );
+      let loadMoreButtonShown = false;
       if (allVideos.length > 18) {
-        allVideos.pop()
-        loadMoreButtonShown = true
+        allVideos.pop();
+        loadMoreButtonShown = true;
       }
       this.setState({
         allVideos,
         loadMoreButtonShown
-      })
+      });
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
   }
 
   render() {
-    const { onHide } = this.props
+    const { onHide } = this.props;
     const {
       isUploading,
       section,
@@ -73,17 +73,17 @@ class AddPlaylistModal extends Component {
       searchedVideos,
       selectedVideos,
       searchText
-    } = this.state
+    } = this.state;
     const titleExceedsCharLimit = exceedsCharLimit({
       contentType: 'playlist',
       inputType: 'title',
       text: title
-    })
+    });
     const descriptionExceedsCharLimit = exceedsCharLimit({
       contentType: 'playlist',
       inputType: 'description',
       text: description
-    })
+    });
     return (
       <Modal
         onHide={onHide}
@@ -110,7 +110,7 @@ class AddPlaylistModal extends Component {
                   onChange={text => this.setState({ title: text })}
                   onKeyUp={event => {
                     if (event.key === ' ') {
-                      this.setState({ title: addEmoji(event.target.value) })
+                      this.setState({ title: addEmoji(event.target.value) });
                     }
                   }}
                   style={titleExceedsCharLimit}
@@ -138,7 +138,7 @@ class AddPlaylistModal extends Component {
                     if (event.key === ' ') {
                       this.setState({
                         description: addEmoji(event.target.value)
-                      })
+                      });
                     }
                   }}
                   style={descriptionExceedsCharLimit}
@@ -197,16 +197,16 @@ class AddPlaylistModal extends Component {
                   key={video.id}
                   video={video}
                   onMove={({ sourceId, targetId }) => {
-                    let selected = [...selectedVideos]
-                    const selectedVideoArray = selected.map(video => video.id)
-                    const sourceIndex = selectedVideoArray.indexOf(sourceId)
-                    const sourceVideo = selected[sourceIndex]
-                    const targetIndex = selectedVideoArray.indexOf(targetId)
-                    selected.splice(sourceIndex, 1)
-                    selected.splice(targetIndex, 0, sourceVideo)
+                    let selected = [...selectedVideos];
+                    const selectedVideoArray = selected.map(video => video.id);
+                    const sourceIndex = selectedVideoArray.indexOf(sourceId);
+                    const sourceVideo = selected[sourceIndex];
+                    const targetIndex = selectedVideoArray.indexOf(targetId);
+                    selected.splice(sourceIndex, 1);
+                    selected.splice(targetIndex, 0, sourceVideo);
                     this.setState({
                       selectedVideos: selected
-                    })
+                    });
                   }}
                 />
               ))}
@@ -249,49 +249,49 @@ class AddPlaylistModal extends Component {
           )}
         </footer>
       </Modal>
-    )
+    );
   }
 
   renderTitle = () => {
-    const currentSection = this.state.section
+    const currentSection = this.state.section;
     switch (currentSection) {
       case 0:
-        return 'Add Playlist'
+        return 'Add Playlist';
       case 1:
-        return 'Add videos to your playlist'
+        return 'Add videos to your playlist';
       case 2:
-        return 'Click and drag videos into the order that you would like them to appear'
+        return 'Click and drag videos into the order that you would like them to appear';
       default:
-        return 'Error'
+        return 'Error';
     }
-  }
+  };
 
   handlePrev = () => {
-    const currentSection = this.state.section
-    const prevSection = Math.max(currentSection - 1, 0)
-    this.setState({ section: prevSection })
-  }
+    const currentSection = this.state.section;
+    const prevSection = Math.max(currentSection - 1, 0);
+    this.setState({ section: prevSection });
+  };
 
   handleNext = () => {
-    const currentSection = this.state.section
-    const nextSection = Math.min(currentSection + 1, 2)
-    this.setState({ section: nextSection })
-  }
+    const currentSection = this.state.section;
+    const nextSection = Math.min(currentSection + 1, 2);
+    this.setState({ section: nextSection });
+  };
 
   handleFinish = async() => {
-    const { uploadPlaylist, onHide } = this.props
-    const { title, description, selectedVideos } = this.state
-    this.setState({ isUploading: true })
+    const { uploadPlaylist, onHide } = this.props;
+    const { title, description, selectedVideos } = this.state;
+    this.setState({ isUploading: true });
     await uploadPlaylist({
       title: finalizeEmoji(title),
       description: finalizeEmoji(description),
       selectedVideos: selectedVideos.map(video => video.id)
-    })
-    onHide()
-  }
+    });
+    onHide();
+  };
 
   loadMoreVideos = () => {
-    const { allVideos } = this.state
+    const { allVideos } = this.state;
     request
       .get(
         `${URL}/video?numberToLoad=18&videoId=${
@@ -299,37 +299,38 @@ class AddPlaylistModal extends Component {
         }`
       )
       .then(({ data: videos }) => {
-        let loadMoreButtonShown = false
+        let loadMoreButtonShown = false;
         if (videos.length > 18) {
-          videos.pop()
-          loadMoreButtonShown = true
+          videos.pop();
+          loadMoreButtonShown = true;
         }
         this.setState({
           allVideos: allVideos.concat(videos),
           loadMoreButtonShown
-        })
+        });
       })
-      .catch(error => console.error(error.response || error))
-  }
+      .catch(error => console.error(error.response || error));
+  };
 
   onVideoSearchInput = text => {
-    clearTimeout(this.timer)
-    this.setState({ searchText: text })
-    this.timer = setTimeout(() => this.searchVideo(text), 300)
-  }
+    clearTimeout(this.timer);
+    this.setState({ searchText: text });
+    this.timer = setTimeout(() => this.searchVideo(text), 300);
+  };
 
   searchVideo = async text => {
     try {
       const { data: searchedVideos } = await request.get(
         `${URL}/playlist/search/video?query=${text}`
-      )
-      this.setState({ searchedVideos })
+      );
+      this.setState({ searchedVideos });
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
-  }
+  };
 }
 
-export default connect(null, { uploadPlaylist })(
-  DragDropContext(HTML5Backend)(AddPlaylistModal)
-)
+export default connect(
+  null,
+  { uploadPlaylist }
+)(DragDropContext(HTML5Backend)(AddPlaylistModal));

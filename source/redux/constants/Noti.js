@@ -9,10 +9,10 @@ const types = {
   LOAD_MORE: 'LOAD_MORE',
   LOAD_MORE_REWARDS: 'LOAD_MORE_REWARDS',
   RESET_NUM_NEW_POSTS: 'RESET_NUM_NEW_POSTS'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_NOTI`
+  types[key] = `${types[key]}_NOTI`;
 }
 
-export default types
+export default types;

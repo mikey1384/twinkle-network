@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import onClickOutside from 'react-onclickoutside'
-import Icon from 'components/Icon'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import onClickOutside from 'react-onclickoutside';
+import Icon from 'components/Icon';
 
 class Content extends Component {
   static propTypes = {
     onHide: PropTypes.func,
     className: PropTypes.string,
     children: PropTypes.node
-  }
+  };
 
   state = {
     innerClicked: false
-  }
+  };
 
   handleClickOutside = event => {
-    if (this.state.innerClicked) return this.setState({ innerClicked: false })
-    this.props.onHide()
-  }
+    if (this.state.innerClicked) return this.setState({ innerClicked: false });
+    this.props.onHide();
+  };
   render() {
     return (
       <div
@@ -30,8 +30,8 @@ class Content extends Component {
         </button>
         {this.props.children}
       </div>
-    )
+    );
   }
 }
 
-export default onClickOutside(Content)
+export default onClickOutside(Content);

@@ -1,43 +1,43 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { Color } from 'constants/css'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import Message from './Message'
-import Loading from 'components/Loading'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
-import { queryStringForArray } from 'helpers/stringHelpers'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { Color } from 'constants/css';
+import request from 'axios';
+import { URL } from 'constants/URL';
+import Message from './Message';
+import Loading from 'components/Loading';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import { queryStringForArray } from 'helpers/stringHelpers';
 
-const API_URL = `${URL}/chat`
+const API_URL = `${URL}/chat`;
 
 export default class SubjectMsgsModal extends Component {
   static propTypes = {
     onHide: PropTypes.func,
     subjectId: PropTypes.number,
     subjectTitle: PropTypes.string
-  }
+  };
 
   state = {
     loading: false,
     loadMoreButtonShown: false,
     messages: []
-  }
+  };
 
   componentDidMount() {
-    const { subjectId } = this.props
+    const { subjectId } = this.props;
     return request
       .get(`${API_URL}/chatSubject/messages?subjectId=${subjectId}`)
       .then(({ data: { messages, loadMoreButtonShown } }) =>
         this.setState({ messages, loadMoreButtonShown })
       )
-      .catch(error => console.error(error.response || error))
+      .catch(error => console.error(error.response || error));
   }
 
   render() {
-    const { onHide, subjectTitle } = this.props
-    const { messages, loading, loadMoreButtonShown } = this.state
+    const { onHide, subjectTitle } = this.props;
+    const { messages, loading, loadMoreButtonShown } = this.state;
     return (
       <Modal onHide={onHide}>
         <header>
@@ -53,7 +53,9 @@ export default class SubjectMsgsModal extends Component {
             />
           )}
           {messages.length === 0 && <Loading />}
-          {messages.map(message => <Message key={message.id} {...message} />)}
+          {messages.map(message => (
+            <Message key={message.id} {...message} />
+          ))}
         </main>
         <footer>
           <Button transparent onClick={onHide}>
@@ -61,13 +63,13 @@ export default class SubjectMsgsModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   onLoadMoreButtonClick = () => {
-    const { subjectId } = this.props
-    const { messages } = this.state
-    this.setState({ loading: true })
+    const { subjectId } = this.props;
+    const { messages } = this.state;
+    this.setState({ loading: true });
     return request
       .get(
         `
@@ -82,6 +84,6 @@ export default class SubjectMsgsModal extends Component {
           loadMoreButtonShown
         })
       )
-      .catch(error => console.error(error.response || error))
-  }
+      .catch(error => console.error(error.response || error));
+  };
 }

@@ -1,20 +1,20 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import Context from './Context'
-import withContext from 'components/Wrappers/withContext'
-import ContentLink from 'components/ContentLink'
-import { timeSince } from 'helpers/timeStampHelpers'
-import LikeButton from 'components/Buttons/LikeButton'
-import { Color } from 'constants/css'
-import ProfilePic from 'components/ProfilePic'
-import Button from 'components/Button'
-import QuestionModal from './QuestionModal'
-import StarMark from 'components/StarMark'
-import UsernameText from 'components/Texts/UsernameText'
-import Icon from 'components/Icon'
-import { uploadComment } from 'helpers/requestHelpers'
-import { css } from 'emotion'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import Context from './Context';
+import withContext from 'components/Wrappers/withContext';
+import ContentLink from 'components/ContentLink';
+import { timeSince } from 'helpers/timeStampHelpers';
+import LikeButton from 'components/Buttons/LikeButton';
+import { Color } from 'constants/css';
+import ProfilePic from 'components/ProfilePic';
+import Button from 'components/Button';
+import QuestionModal from './QuestionModal';
+import StarMark from 'components/StarMark';
+import UsernameText from 'components/Texts/UsernameText';
+import Icon from 'components/Icon';
+import { uploadComment } from 'helpers/requestHelpers';
+import { css } from 'emotion';
+import { connect } from 'react-redux';
 
 class Heading extends Component {
   static propTypes = {
@@ -37,11 +37,11 @@ class Heading extends Component {
     }).isRequired,
     myId: PropTypes.number,
     onPlayVideoClick: PropTypes.func
-  }
+  };
 
   state = {
     questionModalShown: false
-  }
+  };
 
   render() {
     const {
@@ -53,8 +53,8 @@ class Heading extends Component {
         timeStamp,
         type
       }
-    } = this.props
-    const { questionModalShown } = this.state
+    } = this.props;
+    const { questionModalShown } = this.state;
     return (
       <header className="heading">
         <ProfilePic
@@ -115,7 +115,7 @@ class Heading extends Component {
           />
         )}
       </header>
-    )
+    );
   }
 
   renderHeading = () => {
@@ -123,13 +123,13 @@ class Heading extends Component {
       contentObj,
       contentObj: { id, rootObj = {}, type, uploader = {}, rootType },
       action
-    } = this.props
+    } = this.props;
     const contentLabel =
       rootType === 'url'
         ? 'link'
         : rootType === 'question'
           ? 'a question'
-          : rootType
+          : rootType;
     switch (type) {
       case 'video':
         return (
@@ -137,7 +137,7 @@ class Heading extends Component {
             <UsernameText user={uploader} color={Color.blue()} /> uploaded a
             video: <ContentLink content={contentObj} type={type} />{' '}
           </Fragment>
-        )
+        );
       case 'comment':
         return (
           <Fragment>
@@ -150,7 +150,7 @@ class Heading extends Component {
             {this.renderTargetAction()} {contentLabel}:{' '}
             <ContentLink content={rootObj} type={rootType} />{' '}
           </Fragment>
-        )
+        );
       case 'url':
         return (
           <Fragment>
@@ -158,7 +158,7 @@ class Heading extends Component {
             link:&nbsp;
             <ContentLink content={contentObj} type={type} />{' '}
           </Fragment>
-        )
+        );
       case 'question':
         return (
           <Fragment>
@@ -169,7 +169,7 @@ class Heading extends Component {
               style={{ color: Color.green() }}
             />{' '}
           </Fragment>
-        )
+        );
       case 'discussion':
         return (
           <Fragment>
@@ -182,21 +182,21 @@ class Heading extends Component {
             &nbsp;on {contentLabel}:{' '}
             <ContentLink content={rootObj} type={rootType} />
           </Fragment>
-        )
+        );
       default:
-        return <span>Error</span>
+        return <span>Error</span>;
     }
-  }
+  };
 
   onAnswerUpload = async({ content, parent }) => {
-    const { dispatch, onCommentSubmit } = this.props
+    const { dispatch, onCommentSubmit } = this.props;
     const data = await uploadComment({
       content,
       parent,
       dispatch
-    })
-    if (data) onCommentSubmit(data)
-  }
+    });
+    if (data) onCommentSubmit(data);
+  };
 
   renderCornerButton = () => {
     const {
@@ -208,9 +208,9 @@ class Heading extends Component {
       attachedVideoShown,
       myId,
       onPlayVideoClick
-    } = this.props
-    const userLikedVideo = likes.map(like => like.userId).indexOf(myId) !== -1
-    if (!content) return null
+    } = this.props;
+    const userLikedVideo = likes.map(like => like.userId).indexOf(myId) !== -1;
+    if (!content) return null;
     if (rootType === 'video') {
       return (
         <Fragment>
@@ -268,7 +268,7 @@ class Heading extends Component {
             )
           )}
         </Fragment>
-      )
+      );
     } else if (rootType === 'question') {
       return (
         <Button
@@ -278,14 +278,14 @@ class Heading extends Component {
           <Icon icon="comment" />
           <span style={{ marginLeft: '0.7rem' }}>Answer</span>
         </Button>
-      )
+      );
     }
-  }
+  };
 
   renderTargetAction = () => {
     const {
       contentObj: { commentId, replyId, targetObj = {}, rootType }
-    } = this.props
+    } = this.props;
     if (targetObj.comment && !targetObj.comment.notFound) {
       return (
         <span>
@@ -309,21 +309,21 @@ class Heading extends Component {
           />
           {!replyId && rootType === 'user' ? 'to' : 'on'}
         </span>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   onLikeClick = likes => {
     const {
       contentObj: { rootId, rootType },
       onLikeContent
-    } = this.props
-    onLikeContent({ likes, contentId: rootId, type: rootType })
-  }
+    } = this.props;
+    onLikeContent({ likes, contentId: rootId, type: rootType });
+  };
 }
 
 export default connect(
   null,
   dispatch => ({ dispatch })
-)(withContext({ Component: Heading, Context }))
+)(withContext({ Component: Heading, Context }));

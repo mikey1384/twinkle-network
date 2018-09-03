@@ -1,31 +1,31 @@
 /* global FileReader */
 
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ProfilePic from 'components/ProfilePic'
-import Button from 'components/Button'
-import ImageEditModal from 'components/Modals/ImageEditModal'
-import BioEditModal from 'components/Modals/BioEditModal'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ProfilePic from 'components/ProfilePic';
+import Button from 'components/Button';
+import ImageEditModal from 'components/Modals/ImageEditModal';
+import BioEditModal from 'components/Modals/BioEditModal';
 import {
   removeStatusMsg,
   updateStatusMsg,
   uploadProfilePic,
   uploadBio
-} from 'redux/actions/UserActions'
-import { openDirectMessageChannel } from 'redux/actions/ChatActions'
-import AlertModal from 'components/Modals/AlertModal'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
-import { loadComments } from 'helpers/requestHelpers'
-import { timeSince } from 'helpers/timeStampHelpers'
-import RankBar from 'components/RankBar'
-import Icon from 'components/Icon'
-import Comments from 'components/Comments'
-import Link from 'components/Link'
-import UserDetails from 'components/UserDetails'
-import { socket } from 'constants/io'
+} from 'redux/actions/UserActions';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
+import AlertModal from 'components/Modals/AlertModal';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
+import { loadComments } from 'helpers/requestHelpers';
+import { timeSince } from 'helpers/timeStampHelpers';
+import RankBar from 'components/RankBar';
+import Icon from 'components/Icon';
+import Comments from 'components/Comments';
+import Link from 'components/Link';
+import UserDetails from 'components/UserDetails';
+import { socket } from 'constants/io';
 
 class ProfilePanel extends Component {
   static propTypes = {
@@ -40,7 +40,7 @@ class ProfilePanel extends Component {
     userId: PropTypes.number,
     uploadBio: PropTypes.func,
     uploadProfilePic: PropTypes.func
-  }
+  };
 
   state = {
     comments: [],
@@ -53,40 +53,40 @@ class ProfilePanel extends Component {
     mouseEnteredProfile: false,
     bioEditModalShown: false,
     alertModalShown: false
-  }
+  };
 
   async componentDidMount() {
-    const { isProfilePage, profile } = this.props
+    const { isProfilePage, profile } = this.props;
     try {
       const { comments, loadMoreButton } = await loadComments({
         id: profile.id,
         type: 'user',
         limit: isProfilePage ? 3 : 1
-      })
+      });
       this.setState({
         comments,
         ...(isProfilePage ? { commentsLoadMoreButton: loadMoreButton } : {})
-      })
+      });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
   async componentDidUpdate(prevProps) {
-    const { isProfilePage, profile } = this.props
+    const { isProfilePage, profile } = this.props;
     if (profile.id !== prevProps.profile.id) {
       try {
         const { comments, loadMoreButton } = await loadComments({
           id: profile.id,
           type: 'user',
           limit: isProfilePage ? 3 : 1
-        })
+        });
         this.setState({
           comments,
           ...(isProfilePage ? { commentsLoadMoreButton: loadMoreButton } : {})
-        })
+        });
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
   }
@@ -102,7 +102,7 @@ class ProfilePanel extends Component {
       alertModalShown,
       mouseEnteredProfile,
       processing
-    } = this.state
+    } = this.state;
     const {
       history,
       profile,
@@ -113,10 +113,10 @@ class ProfilePanel extends Component {
       openDirectMessageChannel,
       updateStatusMsg,
       uploadBio
-    } = this.props
-    const canEdit = userId === profile.id || isCreator
-    const { profileFirstRow, profileSecondRow, profileThirdRow } = profile
-    const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow
+    } = this.props;
+    const canEdit = userId === profile.id || isCreator;
+    const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
+    const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
     return (
       <div
         key={profile.id}
@@ -287,7 +287,7 @@ class ProfilePanel extends Component {
             </div>
             <input
               ref={ref => {
-                this.fileInput = ref
+                this.fileInput = ref;
               }}
               style={{ display: 'none' }}
               type="file"
@@ -357,26 +357,26 @@ class ProfilePanel extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   handlePicture = event => {
-    const reader = new FileReader()
-    const maxSize = 5000
-    const file = event.target.files[0]
+    const reader = new FileReader();
+    const maxSize = 5000;
+    const file = event.target.files[0];
     if (file.size / 1000 > maxSize) {
-      return this.setState({ alertModalShown: true })
+      return this.setState({ alertModalShown: true });
     }
     reader.onload = upload => {
       this.setState({
         imageEditModalShown: true,
         imageUri: upload.target.result
-      })
-    }
+      });
+    };
 
-    reader.readAsDataURL(file)
-    event.target.value = null
-  }
+    reader.readAsDataURL(file);
+    event.target.value = null;
+  };
 
   onAttachStar = star => {
     this.setState(state => ({
@@ -394,27 +394,27 @@ class ProfilePanel extends Component {
                 ? (reply.stars || []).concat(star)
                 : reply.stars || []
           }))
-        }
+        };
       })
-    }))
-  }
+    }));
+  };
 
   onCommentSubmit = comment => {
-    socket.emit('new_upload')
+    socket.emit('new_upload');
     this.setState(state => ({
       comments: [comment].concat(state.comments)
-    }))
-  }
+    }));
+  };
 
   onChangeProfilePictureClick = () => {
-    this.fileInput.click()
-  }
+    this.fileInput.click();
+  };
 
   onDeleteComment = commentId => {
     this.setState(state => {
       const comments = state.comments.filter(
         comment => comment.id !== commentId
-      )
+      );
       return {
         comments: comments.map(comment => ({
           ...comment,
@@ -422,9 +422,9 @@ class ProfilePanel extends Component {
             reply => reply.id !== commentId
           )
         }))
-      }
-    })
-  }
+      };
+    });
+  };
 
   onEditComment = ({ editedComment, commentId }) => {
     this.setState(state => {
@@ -444,9 +444,9 @@ class ProfilePanel extends Component {
               )
             : []
         }))
-      }
-    })
-  }
+      };
+    });
+  };
 
   onEditRewardComment = ({ id, text }) => {
     this.setState(state => ({
@@ -468,25 +468,25 @@ class ProfilePanel extends Component {
             : []
         }))
       }))
-    }))
-  }
+    }));
+  };
 
   onExpandComments = async() => {
-    const { commentsShown, isProfilePage, profile, userId } = this.props
+    const { commentsShown, isProfilePage, profile, userId } = this.props;
     if (!commentsShown && !isProfilePage) {
       const { comments, loadMoreButton } = await loadComments({
         id: profile.id,
         type: 'user',
         limit: 5
-      })
+      });
       this.setState({
         comments,
         commentsShown: true,
         commentsLoadMoreButton: loadMoreButton
-      })
+      });
     }
-    if (profile.id !== userId) this.CommentInputArea.focus()
-  }
+    if (profile.id !== userId) this.CommentInputArea.focus();
+  };
 
   onLikeComment = ({ commentId, likes }) => {
     this.setState(state => {
@@ -506,16 +506,16 @@ class ProfilePanel extends Component {
               )
             : []
         }))
-      }
-    })
-  }
+      };
+    });
+  };
 
   onLoadMoreComments = ({ comments, loadMoreButton }) => {
     this.setState(state => ({
       comments: state.comments.concat(comments),
       commentsLoadMoreButton: loadMoreButton
-    }))
-  }
+    }));
+  };
 
   onLoadMoreReplies = ({ commentId, replies, loadMoreButton }) => {
     this.setState(state => ({
@@ -528,40 +528,40 @@ class ProfilePanel extends Component {
         loadMoreButton:
           comment.id === commentId ? loadMoreButton : comment.loadMoreButton
       }))
-    }))
-  }
+    }));
+  };
 
   onReplySubmit = data => {
-    socket.emit('new_upload')
+    socket.emit('new_upload');
     this.setState(state => ({
       comments: state.comments.map(comment => {
-        let match = false
-        let commentId = data.replyId || data.commentId
+        let match = false;
+        let commentId = data.replyId || data.commentId;
         if (comment.id === commentId) {
-          match = true
+          match = true;
         } else {
           for (let reply of comment.replies || []) {
             if (reply.id === commentId) {
-              match = true
-              break
+              match = true;
+              break;
             }
           }
         }
         return {
           ...comment,
           replies: match ? comment.replies.concat([data]) : comment.replies
-        }
+        };
       })
-    }))
-  }
+    }));
+  };
 
   renderMessagesButton = (props = {}) => {
     const {
       isProfilePage,
       profile: { id, numMessages },
       userId
-    } = this.props
-    const { commentsShown } = this.state
+    } = this.props;
+    const { commentsShown } = this.state;
     return (
       <Button
         {...props}
@@ -581,29 +581,29 @@ class ProfilePanel extends Component {
             : ''}
         </span>
       </Button>
-    )
-  }
+    );
+  };
 
   uploadBio = async params => {
-    const { profile, uploadBio } = this.props
-    await uploadBio({ ...params, profileId: profile.id })
+    const { profile, uploadBio } = this.props;
+    await uploadBio({ ...params, profileId: profile.id });
     this.setState({
       bioEditModalShown: false
-    })
-  }
+    });
+  };
 
   uploadImage = async image => {
-    const { uploadProfilePic } = this.props
+    const { uploadProfilePic } = this.props;
     this.setState({
       processing: true
-    })
-    await uploadProfilePic(image)
+    });
+    await uploadProfilePic(image);
     this.setState({
       imageUri: null,
       processing: false,
       imageEditModalShown: false
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -618,4 +618,4 @@ export default connect(
     uploadBio,
     openDirectMessageChannel
   }
-)(withRouter(ProfilePanel))
+)(withRouter(ProfilePanel));

@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { borderRadius, mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { borderRadius, mobileMaxWidth } from 'constants/css';
 
 export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
   display: flex;
@@ -81,4 +81,4 @@ export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
       }
     }
   }
-`
+`;

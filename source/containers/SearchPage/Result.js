@@ -1,18 +1,18 @@
-import React, { Fragment } from 'react'
-import PropTypes from 'prop-types'
-import VideoThumbImage from 'components/VideoThumbImage'
-import { cleanString } from 'helpers/stringHelpers'
-import Link from 'components/Link'
-import { Color } from 'constants/css'
-import LongText from 'components/Texts/LongText'
-import Embedly from 'components/Embedly'
-import { css } from 'emotion'
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import VideoThumbImage from 'components/VideoThumbImage';
+import { cleanString } from 'helpers/stringHelpers';
+import Link from 'components/Link';
+import { Color } from 'constants/css';
+import LongText from 'components/Texts/LongText';
+import Embedly from 'components/Embedly';
+import { css } from 'emotion';
 
 Result.propTypes = {
   closeSearch: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   result: PropTypes.object.isRequired
-}
+};
 export default function Result({ closeSearch, type, result }) {
   return (
     <Link
@@ -188,5 +188,5 @@ export default function Result({ closeSearch, type, result }) {
         </div>
       </div>
     </Link>
-  )
+  );
 }

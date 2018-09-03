@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import DiscussionPanel from './DiscussionPanel'
-import Button from 'components/Button'
-import { css } from 'emotion'
+import React from 'react';
+import PropTypes from 'prop-types';
+import DiscussionPanel from './DiscussionPanel';
+import Button from 'components/Button';
+import { css } from 'emotion';
 
 Discussions.propTypes = {
   discussions: PropTypes.array,
@@ -11,7 +11,7 @@ Discussions.propTypes = {
   style: PropTypes.object,
   uploadComment: PropTypes.func.isRequired,
   videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-}
+};
 export default function Discussions({
   discussions,
   loadMoreDiscussions,
@@ -46,5 +46,5 @@ export default function Discussions({
         </Button>
       )}
     </div>
-  )
+  );
 }

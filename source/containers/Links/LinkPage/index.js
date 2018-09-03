@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import Loading from 'components/Loading'
-import Embedly from 'components/Embedly'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Loading from 'components/Loading';
+import Embedly from 'components/Embedly';
 import {
   attachStar,
   loadLinkPage,
@@ -19,17 +19,17 @@ import {
   resetPage,
   uploadComment,
   uploadReply
-} from 'redux/actions/LinkActions'
-import Comments from 'components/Comments'
-import LikeButton from 'components/Buttons/LikeButton'
-import Likers from 'components/Likers'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import UserListModal from 'components/Modals/UserListModal'
-import Description from './Description'
-import { css } from 'emotion'
-import { mobileMaxWidth } from 'constants/css'
-import NotFound from 'components/NotFound'
-import { loadComments } from 'helpers/requestHelpers'
+} from 'redux/actions/LinkActions';
+import Comments from 'components/Comments';
+import LikeButton from 'components/Buttons/LikeButton';
+import Likers from 'components/Likers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import UserListModal from 'components/Modals/UserListModal';
+import Description from './Description';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
+import NotFound from 'components/NotFound';
+import { loadComments } from 'helpers/requestHelpers';
 
 class LinkPage extends Component {
   static propTypes = {
@@ -52,13 +52,13 @@ class LinkPage extends Component {
     resetPage: PropTypes.func.isRequired,
     uploadComment: PropTypes.func.isRequired,
     uploadReply: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     confirmModalShown: false,
     likesModalShown: false,
     notFound: false
-  }
+  };
 
   async componentDidMount() {
     const {
@@ -67,22 +67,22 @@ class LinkPage extends Component {
       },
       loadLinkPage,
       fetchComments
-    } = this.props
+    } = this.props;
     try {
-      await loadLinkPage(linkId)
+      await loadLinkPage(linkId);
       const data = await loadComments({
         id: linkId,
         type: 'url'
-      })
-      if (data) fetchComments(data)
+      });
+      if (data) fetchComments(data);
     } catch (error) {
       if (error.response) {
-        const { data = {} } = error.response
+        const { data = {} } = error.response;
         if (data.notFound) {
-          this.setState({ notFound: true })
+          this.setState({ notFound: true });
         }
       }
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
   }
 
@@ -94,30 +94,30 @@ class LinkPage extends Component {
       match: {
         params: { linkId }
       }
-    } = this.props
+    } = this.props;
     if (prevProps.location.pathname !== location.pathname) {
       try {
-        await loadLinkPage(linkId)
+        await loadLinkPage(linkId);
         const data = await loadComments({
           id: linkId,
           type: 'url'
-        })
-        if (data) fetchComments(data)
+        });
+        if (data) fetchComments(data);
       } catch (error) {
         if (error.response) {
-          const { data = {} } = error.response
+          const { data = {} } = error.response;
           if (data.notFound) {
-            this.setState({ notFound: true })
+            this.setState({ notFound: true });
           }
         }
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
   }
 
   componentWillUnmount() {
-    const { resetPage } = this.props
-    resetPage()
+    const { resetPage } = this.props;
+    resetPage();
   }
 
   render() {
@@ -149,11 +149,11 @@ class LinkPage extends Component {
       myId,
       uploadComment,
       uploadReply
-    } = this.props
-    const { confirmModalShown, likesModalShown, notFound } = this.state
-    let userLikedThis = false
+    } = this.props;
+    const { confirmModalShown, likesModalShown, notFound } = this.state;
+    let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === myId) userLikedThis = true
+      if (likes[i].userId === myId) userLikedThis = true;
     }
 
     return id ? (
@@ -268,7 +268,7 @@ class LinkPage extends Component {
       <NotFound />
     ) : (
       <Loading text="Loading Page..." />
-    )
+    );
   }
 }
 
@@ -294,4 +294,4 @@ export default connect(
     uploadComment,
     uploadReply
   }
-)(LinkPage)
+)(LinkPage);

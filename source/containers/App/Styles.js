@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 export const siteContent = css`
   margin-top: 6rem;
@@ -10,4 +10,4 @@ export const siteContent = css`
     padding-top: 0;
     padding-bottom: 9rem;
   }
-`
+`;

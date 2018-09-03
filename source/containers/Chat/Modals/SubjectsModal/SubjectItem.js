@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import moment from 'moment'
-import UsernameText from 'components/Texts/UsernameText'
-import { Color } from 'constants/css'
-import ButtonGroup from 'components/Buttons/ButtonGroup'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import UsernameText from 'components/Texts/UsernameText';
+import { Color } from 'constants/css';
+import ButtonGroup from 'components/Buttons/ButtonGroup';
 
-const marginHeight = 1.1
-const subjectTitleHeight = 24
+const marginHeight = 1.1;
+const subjectTitleHeight = 24;
 
 export default class SubjectItem extends Component {
   static propTypes = {
@@ -19,18 +19,18 @@ export default class SubjectItem extends Component {
     selectSubject: PropTypes.func,
     showMsgsModal: PropTypes.func,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  }
+  };
 
   constructor() {
-    super()
+    super();
     this.state = {
       marginBottom: `${marginHeight}rem`
-    }
+    };
   }
 
   componentDidMount() {
-    const numLines = this.subjectTitle.clientHeight / subjectTitleHeight
-    this.setState({ marginBottom: `${numLines * marginHeight}rem` })
+    const numLines = this.subjectTitle.clientHeight / subjectTitleHeight;
+    this.setState({ marginBottom: `${numLines * marginHeight}rem` });
   }
 
   render() {
@@ -44,9 +44,9 @@ export default class SubjectItem extends Component {
       timeStamp,
       numMsgs,
       showMsgsModal
-    } = this.props
-    const { marginBottom } = this.state
-    let buttons = []
+    } = this.props;
+    const { marginBottom } = this.state;
+    let buttons = [];
     if (numMsgs > 0) {
       buttons.push({
         buttonClass: 'logo',
@@ -54,7 +54,7 @@ export default class SubjectItem extends Component {
         onClick: showMsgsModal,
         label: 'View',
         onHover: false
-      })
+      });
     }
     if (currentSubjectId !== id) {
       buttons.push({
@@ -63,7 +63,7 @@ export default class SubjectItem extends Component {
         onClick: selectSubject,
         label: 'Select',
         onHover: false
-      })
+      });
     }
     return (
       <div
@@ -87,7 +87,7 @@ export default class SubjectItem extends Component {
         >
           <div
             ref={ref => {
-              this.subjectTitle = ref
+              this.subjectTitle = ref;
             }}
             style={{ marginBottom }}
           >
@@ -118,6 +118,6 @@ export default class SubjectItem extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

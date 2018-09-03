@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { searchPage } from './Styles'
-import TopFilter from './TopFilter'
-import FirstPage from './FirstPage'
-import Checkbox from 'components/Checkbox'
-import Results from './Results'
-import { stringIsEmpty } from 'helpers/stringHelpers'
-import { setDefaultSearchFilter } from 'helpers/requestHelpers'
-import { Color, mobileMaxWidth } from 'constants/css'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { searchPage } from './Styles';
+import TopFilter from './TopFilter';
+import FirstPage from './FirstPage';
+import Checkbox from 'components/Checkbox';
+import Results from './Results';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import { setDefaultSearchFilter } from 'helpers/requestHelpers';
+import { Color, mobileMaxWidth } from 'constants/css';
 import {
   changeFilter,
   closeSearch,
   recordSearchScroll,
   setResults
-} from 'redux/actions/SearchActions'
-import { updateDefaultSearchFilter } from 'redux/actions/UserActions'
-import { connect } from 'react-redux'
-import { css } from 'emotion'
-import CloseText from './CloseText'
+} from 'redux/actions/SearchActions';
+import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
+import { connect } from 'react-redux';
+import { css } from 'emotion';
+import CloseText from './CloseText';
 
 class SearchPage extends Component {
   static propTypes = {
@@ -32,7 +32,7 @@ class SearchPage extends Component {
     selectedFilter: PropTypes.string.isRequired,
     setResults: PropTypes.func.isRequired,
     userId: PropTypes.number
-  }
+  };
 
   componentDidMount() {
     const {
@@ -40,27 +40,27 @@ class SearchPage extends Component {
       searchFilter,
       changeFilter,
       searchScrollPosition
-    } = this.props
-    if (!selectedFilter) changeFilter(searchFilter || 'video')
+    } = this.props;
+    if (!selectedFilter) changeFilter(searchFilter || 'video');
     setTimeout(() => {
-      this.SearchPage.scrollTop = searchScrollPosition
-    }, 10)
+      this.SearchPage.scrollTop = searchScrollPosition;
+    }, 10);
   }
 
   componentDidUpdate(prevProps) {
-    const { searchText, setResults } = this.props
+    const { searchText, setResults } = this.props;
     if (
       !stringIsEmpty(prevProps.searchText) &&
       prevProps.searchText.length >= 2 &&
       (stringIsEmpty(searchText) || searchText.length < 2)
     ) {
-      setResults({ results: [], loadMoreButton: false })
+      setResults({ results: [], loadMoreButton: false });
     }
   }
 
   componentWillUnmount() {
-    const { recordSearchScroll } = this.props
-    recordSearchScroll(this.SearchPage.scrollTop)
+    const { recordSearchScroll } = this.props;
+    recordSearchScroll(this.SearchPage.scrollTop);
   }
 
   render() {
@@ -72,7 +72,7 @@ class SearchPage extends Component {
       searchFilter,
       searchText,
       userId
-    } = this.props
+    } = this.props;
     return (
       <div ref={ref => (this.SearchPage = ref)} className={searchPage}>
         <div
@@ -136,15 +136,15 @@ class SearchPage extends Component {
           )}
         </div>
       </div>
-    )
+    );
   }
 
   renderHelperText = () => {
-    const { selectedFilter } = this.props
-    if (selectedFilter === 'all') return 'Search all content type...'
-    if (selectedFilter === 'url') return 'Search links...'
-    return `Search ${selectedFilter}s...`
-  }
+    const { selectedFilter } = this.props;
+    if (selectedFilter === 'all') return 'Search all content type...';
+    if (selectedFilter === 'url') return 'Search links...';
+    return `Search ${selectedFilter}s...`;
+  };
 
   setDefaultSearchFilter = async() => {
     const {
@@ -152,14 +152,14 @@ class SearchPage extends Component {
       searchFilter,
       selectedFilter,
       updateDefaultSearchFilter
-    } = this.props
-    if (selectedFilter === searchFilter) return
+    } = this.props;
+    if (selectedFilter === searchFilter) return;
     await setDefaultSearchFilter({
       filter: selectedFilter,
       dispatch
-    })
-    updateDefaultSearchFilter(selectedFilter)
-  }
+    });
+    updateDefaultSearchFilter(selectedFilter);
+  };
 }
 
 export default connect(
@@ -178,4 +178,4 @@ export default connect(
     updateDefaultSearchFilter: filter =>
       dispatch(updateDefaultSearchFilter(filter))
   })
-)(SearchPage)
+)(SearchPage);

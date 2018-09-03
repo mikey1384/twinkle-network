@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import MainFeeds from './MainFeeds'
-import ChatFeeds from './ChatFeeds'
-import { defaultChatSubject } from 'constants/defaultValues'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
+import MainFeeds from './MainFeeds';
+import ChatFeeds from './ChatFeeds';
+import { defaultChatSubject } from 'constants/defaultValues';
 import {
   clearNotifications,
   fetchNotifications
-} from 'redux/actions/NotiActions'
-import ExecutionEnvironment from 'exenv'
-import { container } from './Styles'
-import FilterBar from 'components/FilterBar'
-import { borderRadius, Color } from 'constants/css'
-import { addCommasToNumber } from 'helpers/stringHelpers'
-import { socket } from 'constants/io'
-import { css } from 'emotion'
+} from 'redux/actions/NotiActions';
+import ExecutionEnvironment from 'exenv';
+import { container } from './Styles';
+import FilterBar from 'components/FilterBar';
+import { borderRadius, Color } from 'constants/css';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { socket } from 'constants/io';
+import { css } from 'emotion';
 
 class Notification extends Component {
   static propTypes = {
@@ -35,21 +35,21 @@ class Notification extends Component {
     totalRewardAmount: PropTypes.number,
     position: PropTypes.string,
     twinkleXP: PropTypes.number
-  }
+  };
 
   constructor({ rewards }) {
-    super()
+    super();
     this.state = {
       activeTab: 'leaderboard',
       rewardTabShown: false
-    }
+    };
   }
 
   async componentDidMount() {
-    const { fetchNotifications } = this.props
-    addEvent(window, 'mousemove', this.onMouseMove)
-    socket.on('new_reward', this.notifyNewReward)
-    await fetchNotifications()
+    const { fetchNotifications } = this.props;
+    addEvent(window, 'mousemove', this.onMouseMove);
+    socket.on('new_reward', this.notifyNewReward);
+    await fetchNotifications();
     this.setState({
       activeTab:
         this.props.rewards.length > 0
@@ -58,17 +58,17 @@ class Notification extends Component {
             ? 'notification'
             : 'leaderboard',
       rewardTabShown: this.props.rewards.length > 0
-    })
+    });
   }
 
   async componentDidUpdate(prevProps) {
-    const { clearNotifications, fetchNotifications } = this.props
+    const { clearNotifications, fetchNotifications } = this.props;
     if (prevProps.myId !== this.props.myId) {
       if (!this.props.myId) {
-        this.setState({ activeTab: 'leaderboard' })
-        clearNotifications()
+        this.setState({ activeTab: 'leaderboard' });
+        clearNotifications();
       } else {
-        await fetchNotifications()
+        await fetchNotifications();
         this.setState({
           activeTab:
             this.props.rewards.length > 0
@@ -77,16 +77,16 @@ class Notification extends Component {
                 ? 'notification'
                 : 'leaderboard',
           rewardTabShown: this.props.rewards.length > 0
-        })
+        });
       }
     }
   }
 
   componentWillUnmount() {
     if (ExecutionEnvironment.canUseDOM) {
-      removeEvent(window, 'mousemove', this.onMouseMove)
+      removeEvent(window, 'mousemove', this.onMouseMove);
     }
-    socket.removeListener('new_reward', this.notifyNewReward)
+    socket.removeListener('new_reward', this.notifyNewReward);
   }
 
   render() {
@@ -103,7 +103,7 @@ class Notification extends Component {
       style,
       totalRewardAmount,
       twinkleXP
-    } = this.props
+    } = this.props;
     const rankedColor =
       rank === 1
         ? Color.gold()
@@ -111,8 +111,8 @@ class Notification extends Component {
           ? Color.borderGray()
           : rank === 3
             ? '#fff'
-            : undefined
-    const { activeTab, rewardTabShown } = this.state
+            : undefined;
+    const { activeTab, rewardTabShown } = this.state;
     return (
       <div
         style={style}
@@ -187,7 +187,8 @@ class Notification extends Component {
                   }}
                 >
                   XP
-                </span>&nbsp;&nbsp;
+                </span>
+                &nbsp;&nbsp;
                 <span
                   style={{
                     color:
@@ -248,17 +249,17 @@ class Notification extends Component {
           />
         </section>
       </div>
-    )
+    );
   }
 
   notifyNewReward = async() => {
-    const { fetchNotifications } = this.props
-    await fetchNotifications()
+    const { fetchNotifications } = this.props;
+    await fetchNotifications();
     this.setState({
       rewardTabShown: true,
       activeTab: 'reward'
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -275,4 +276,4 @@ export default connect(
     currentChatSubject: state.NotiReducer.currentChatSubject
   }),
   { clearNotifications, fetchNotifications }
-)(Notification)
+)(Notification);

@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Modal from 'components/Modal'
-import QuestionBlock from './QuestionBlock'
-import ButtonGroup from 'components/Buttons/ButtonGroup'
-import Button from 'components/Button'
-import QuestionsListGroup from './QuestionsListGroup'
-import { stringIsEmpty } from 'helpers/stringHelpers'
-import ReactPlayer from 'react-player'
-import { css } from 'emotion'
-import HTML5Backend from 'react-dnd-html5-touch-backend'
-import { DragDropContext } from 'react-dnd'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Modal from 'components/Modal';
+import QuestionBlock from './QuestionBlock';
+import ButtonGroup from 'components/Buttons/ButtonGroup';
+import Button from 'components/Button';
+import QuestionsListGroup from './QuestionsListGroup';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import ReactPlayer from 'react-player';
+import { css } from 'emotion';
+import HTML5Backend from 'react-dnd-html5-touch-backend';
+import { DragDropContext } from 'react-dnd';
 
 class QuestionsBuilder extends Component {
   static propTypes = {
@@ -18,18 +18,18 @@ class QuestionsBuilder extends Component {
     questions: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     videoCode: PropTypes.string.isRequired
-  }
+  };
 
   state = {
     reorderModeOn: false,
     questions: {},
     questionIds: []
-  }
+  };
 
-  Questions = []
+  Questions = [];
 
   componentDidMount() {
-    const { questions } = this.props
+    const { questions } = this.props;
     this.setState({
       questions:
         questions.length !== 0
@@ -37,12 +37,12 @@ class QuestionsBuilder extends Component {
           : this.newQuestion(0),
       questionIds:
         questions.length > 0 ? questions.map((question, index) => index) : [0]
-    })
+    });
   }
 
   render() {
-    const { reorderModeOn, questions, questionIds } = this.state
-    const { title, videoCode } = this.props
+    const { reorderModeOn, questions, questionIds } = this.state;
+    const { title, videoCode } = this.props;
     return (
       <Modal large onHide={this.props.onHide}>
         <header>{title}</header>
@@ -58,7 +58,7 @@ class QuestionsBuilder extends Component {
           <section
             className={this.Styles.leftSection}
             ref={ref => {
-              this.LeftMenu = ref
+              this.LeftMenu = ref;
             }}
             style={{
               width: reorderModeOn && '80%'
@@ -77,11 +77,11 @@ class QuestionsBuilder extends Component {
             ) : questionIds.length > 0 ? (
               <div
                 ref={ref => {
-                  this.QuestionBlocks = ref
+                  this.QuestionBlocks = ref;
                 }}
               >
                 {questionIds.map((questionId, index) => {
-                  const question = questions[questionId]
+                  const question = questions[questionId];
                   return (
                     <QuestionBlock
                       {...question}
@@ -101,7 +101,7 @@ class QuestionsBuilder extends Component {
                       questionIndex={index}
                       errorMessage={question.errorMessage}
                       innerRef={ref => {
-                        this.Questions[questionId] = ref
+                        this.Questions[questionId] = ref;
                       }}
                       onSelectChoice={this.onSelectChoice}
                       onRearrange={this.onChoicesRearrange}
@@ -116,7 +116,7 @@ class QuestionsBuilder extends Component {
                               onEdit: true
                             }
                           }
-                        }))
+                        }));
                       }}
                       onEditCancel={questionId => {
                         this.setState(state => ({
@@ -127,11 +127,11 @@ class QuestionsBuilder extends Component {
                               onEdit: false
                             }
                           }
-                        }))
+                        }));
                       }}
                       onEditDone={this.onChoiceEditDone}
                     />
-                  )
+                  );
                 })}
               </div>
             ) : null}
@@ -193,7 +193,7 @@ class QuestionsBuilder extends Component {
           )}
         </main>
       </Modal>
-    )
+    );
   }
 
   onAddQuestion = () => {
@@ -207,15 +207,15 @@ class QuestionsBuilder extends Component {
           questionIds: state.questionIds.concat(
             Object.keys(state.questions).length
           )
-        }
+        };
       },
       () => {
         setTimeout(() => {
-          this.LeftMenu.scrollTop = this.QuestionBlocks.offsetHeight
-        }, 0)
+          this.LeftMenu.scrollTop = this.QuestionBlocks.offsetHeight;
+        }, 0);
       }
-    )
-  }
+    );
+  };
 
   onRemoveQuestion = questionId => {
     this.setState(state => ({
@@ -226,8 +226,8 @@ class QuestionsBuilder extends Component {
           deleted: true
         }
       }
-    }))
-  }
+    }));
+  };
 
   onUndoRemove = questionId => {
     this.setState(state => ({
@@ -238,8 +238,8 @@ class QuestionsBuilder extends Component {
           deleted: false
         }
       }
-    }))
-  }
+    }));
+  };
 
   onChoiceEditDone = ({ id, choices, choiceIds, editedQuestionTitle }) => {
     this.setState(state => ({
@@ -252,19 +252,19 @@ class QuestionsBuilder extends Component {
           onEdit: false
         }
       }
-    }))
-  }
+    }));
+  };
 
   onQuestionsRearrange = ({ sourceId, targetId }) => {
-    const newQuestionOrder = [...this.state.questionIds]
-    const sourceIndex = newQuestionOrder.indexOf(sourceId)
-    const targetIndex = newQuestionOrder.indexOf(targetId)
-    newQuestionOrder.splice(sourceIndex, 1)
-    newQuestionOrder.splice(targetIndex, 0, sourceId)
+    const newQuestionOrder = [...this.state.questionIds];
+    const sourceIndex = newQuestionOrder.indexOf(sourceId);
+    const targetIndex = newQuestionOrder.indexOf(targetId);
+    newQuestionOrder.splice(sourceIndex, 1);
+    newQuestionOrder.splice(targetIndex, 0, sourceId);
     this.setState({
       questionIds: newQuestionOrder
-    })
-  }
+    });
+  };
 
   onSelectChoice = ({ questionId, choiceId }) => {
     this.setState(state => ({
@@ -279,8 +279,8 @@ class QuestionsBuilder extends Component {
           }))
         }
       }
-    }))
-  }
+    }));
+  };
 
   onChoicesRearrange = ({ questionIndex, choiceIds, choices }) => {
     this.setState(state => ({
@@ -291,11 +291,11 @@ class QuestionsBuilder extends Component {
           choices: choiceIds.map(choiceId => choices[choiceId])
         }
       }
-    }))
-  }
+    }));
+  };
 
   onReset = () => {
-    const { questions } = this.props
+    const { questions } = this.props;
     this.setState({
       questions:
         questions.length === 0
@@ -303,17 +303,17 @@ class QuestionsBuilder extends Component {
           : this.formatQuestions(questions),
       questionIds:
         questions.length > 0 ? questions.map((question, index) => index) : [0]
-    })
-  }
+    });
+  };
 
   onSubmit = () => {
-    const { questions, questionIds } = this.state
-    const { onSubmit } = this.props
+    const { questions, questionIds } = this.state;
+    const { onSubmit } = this.props;
     let errorObj = {
       questionId: null,
       message: '',
       onEdit: true
-    }
+    };
     const errorDictionary = {
       notDone: {
         message: 'Please click the "done" button below',
@@ -331,7 +331,7 @@ class QuestionsBuilder extends Component {
         message: 'Please mark the correct choice',
         onEdit: false
       }
-    }
+    };
     for (let i = 0; i < questionIds.length; i++) {
       if (!questions[i].deleted) {
         if (errorInQuestion(questions[i])) {
@@ -339,8 +339,8 @@ class QuestionsBuilder extends Component {
             questionId: i,
             message: errorDictionary[errorInQuestion(questions[i])].message,
             onEdit: errorDictionary[errorInQuestion(questions[i])].onEdit
-          }
-          break
+          };
+          break;
         }
       }
     }
@@ -357,37 +357,37 @@ class QuestionsBuilder extends Component {
           }
         }),
         () => {
-          this.Questions[errorObj.questionId].scrollIntoView()
+          this.Questions[errorObj.questionId].scrollIntoView();
         }
-      )
+      );
     }
 
     const finishedQuestions = questionIds
       .filter(questionId => !questions[questionId].deleted)
-      .map(questionId => questions[questionId])
+      .map(questionId => questions[questionId]);
 
-    onSubmit(finishedQuestions)
+    onSubmit(finishedQuestions);
 
     function errorInQuestion(question) {
-      if (question.onEdit) return 'notDone'
+      if (question.onEdit) return 'notDone';
       if (!question.title || stringIsEmpty(question.title)) {
-        return 'missingTitle'
+        return 'missingTitle';
       }
-      const validChoices = question.choices.filter(choice => !!choice.label)
+      const validChoices = question.choices.filter(choice => !!choice.label);
       if (validChoices.length < 2) {
-        return 'notEnoughChoices'
+        return 'notEnoughChoices';
       }
       for (let i = 0; i < validChoices.length; i++) {
         if (validChoices[i].checked) {
-          return false
+          return false;
         }
       }
-      return 'invalidChoice'
+      return 'invalidChoice';
     }
-  }
+  };
 
   formatQuestions = questions => {
-    let questionsObject = {}
+    let questionsObject = {};
     questions.forEach((question, index) => {
       questionsObject[index] = {
         title: question.title,
@@ -401,10 +401,10 @@ class QuestionsBuilder extends Component {
         })),
         errorMessage: '',
         deleted: false
-      }
-    })
-    return questionsObject
-  }
+      };
+    });
+    return questionsObject;
+  };
 
   newQuestion = questionId => ({
     [questionId]: {
@@ -440,7 +440,7 @@ class QuestionsBuilder extends Component {
       errorMessage: '',
       deleted: false
     }
-  })
+  });
 
   Styles = {
     Player: css`
@@ -475,7 +475,7 @@ class QuestionsBuilder extends Component {
       padding: 0 3rem;
       margin-top: 2rem;
     `
-  }
+  };
 }
 
-export default DragDropContext(HTML5Backend)(QuestionsBuilder)
+export default DragDropContext(HTML5Backend)(QuestionsBuilder);

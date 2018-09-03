@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { Color } from 'constants/css'
-import Input from 'components/Texts/Input'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { Color } from 'constants/css';
+import Input from 'components/Texts/Input';
+import { css } from 'emotion';
 
-const maxChar = 150
+const maxChar = 150;
 export default class BioEditModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
@@ -14,20 +14,20 @@ export default class BioEditModal extends Component {
     firstLine: PropTypes.string,
     secondLine: PropTypes.string,
     thirdLine: PropTypes.string
-  }
+  };
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       firstLine: props.firstLine || '',
       secondLine: props.secondLine || '',
       thirdLine: props.thirdLine || ''
-    }
+    };
   }
 
   render() {
-    const { onHide, onSubmit } = this.props
-    const { firstLine, secondLine, thirdLine } = this.state
+    const { onHide, onSubmit } = this.props;
+    const { firstLine, secondLine, thirdLine } = this.state;
     return (
       <Modal
         onHide={onHide}
@@ -135,6 +135,6 @@ export default class BioEditModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 }

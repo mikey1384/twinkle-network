@@ -1,32 +1,32 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import withContext from 'components/Wrappers/withContext'
-import Context from './Context'
-import { timeSince } from 'helpers/timeStampHelpers'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import Likers from 'components/Likers'
-import UserListModal from 'components/Modals/UserListModal'
-import Replies from './Replies'
-import ReplyInputArea from './Replies/ReplyInputArea'
-import EditTextArea from 'components/Texts/EditTextArea'
-import UsernameText from 'components/Texts/UsernameText'
-import ProfilePic from 'components/ProfilePic'
-import Button from 'components/Button'
-import LikeButton from 'components/Buttons/LikeButton'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import withContext from 'components/Wrappers/withContext';
+import Context from './Context';
+import { timeSince } from 'helpers/timeStampHelpers';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import Likers from 'components/Likers';
+import UserListModal from 'components/Modals/UserListModal';
+import Replies from './Replies';
+import ReplyInputArea from './Replies/ReplyInputArea';
+import EditTextArea from 'components/Texts/EditTextArea';
+import UsernameText from 'components/Texts/UsernameText';
+import ProfilePic from 'components/ProfilePic';
+import Button from 'components/Button';
+import LikeButton from 'components/Buttons/LikeButton';
 import {
   determineXpButtonDisabled,
   scrollElementToCenter
-} from 'helpers/domHelpers'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import LongText from 'components/Texts/LongText'
-import { container } from './Styles'
-import RewardStatus from 'components/RewardStatus'
-import XPRewardInterface from 'components/XPRewardInterface'
-import { Link } from 'react-router-dom'
-import { editContent } from 'helpers/requestHelpers'
-import { connect } from 'react-redux'
-import DiscussionTopicLink from './DiscussionTopicLink'
-import Icon from 'components/Icon'
+} from 'helpers/domHelpers';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import LongText from 'components/Texts/LongText';
+import { container } from './Styles';
+import RewardStatus from 'components/RewardStatus';
+import XPRewardInterface from 'components/XPRewardInterface';
+import { Link } from 'react-router-dom';
+import { editContent } from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
+import DiscussionTopicLink from './DiscussionTopicLink';
+import Icon from 'components/Icon';
 
 class Comment extends Component {
   static propTypes = {
@@ -61,9 +61,9 @@ class Comment extends Component {
     onReplySubmit: PropTypes.func.isRequired,
     parent: PropTypes.object,
     userId: PropTypes.number
-  }
+  };
 
-  Replies = {}
+  Replies = {};
 
   state = {
     onEdit: false,
@@ -71,20 +71,20 @@ class Comment extends Component {
     userListModalShown: false,
     confirmModalShown: false,
     xpRewardInterfaceShown: false
-  }
+  };
 
   componentDidUpdate(prevProps) {
     const {
       comment: { replies = [] }
-    } = this.props
-    const { replying } = this.state
+    } = this.props;
+    const { replying } = this.state;
     if (
       replying &&
       prevProps.comment.replies &&
       replies.length > prevProps.comment.replies.length
     ) {
-      this.setState({ replying: false })
-      scrollElementToCenter(this.Replies[replies[replies.length - 1].id])
+      this.setState({ replying: false });
+      scrollElementToCenter(this.Replies[replies[replies.length - 1].id]);
     }
   }
 
@@ -94,7 +94,7 @@ class Comment extends Component {
       userListModalShown,
       confirmModalShown,
       xpRewardInterfaceShown
-    } = this.state
+    } = this.state;
     const {
       authLevel,
       canDelete,
@@ -116,34 +116,34 @@ class Comment extends Component {
       onRewardCommentEdit,
       userId,
       parent
-    } = this.props
-    const userIsUploader = uploader.id === userId
+    } = this.props;
+    const userIsUploader = uploader.id === userId;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploader.authLevel
-    const editButtonShown = userIsUploader || userCanEditThis
-    const editMenuItems = []
+      (canEdit || canDelete) && authLevel > uploader.authLevel;
+    const editButtonShown = userIsUploader || userCanEditThis;
+    const editMenuItems = [];
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: () => this.setState({ onEdit: true })
-      })
+      });
     }
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Remove',
         onClick: () => this.setState({ confirmModalShown: true })
-      })
+      });
     }
-    let userLikedThis = false
+    let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === userId) userLikedThis = true
+      if (likes[i].userId === userId) userLikedThis = true;
     }
     return (
       <div
         className={container}
         ref={ref => {
-          this.Comment = ref
-          innerRef(ref)
+          this.Comment = ref;
+          innerRef(ref);
         }}
       >
         <div className="content-wrapper">
@@ -270,8 +270,8 @@ class Comment extends Component {
                 contentId={comment.id}
                 uploaderId={uploader.id}
                 onRewardSubmit={data => {
-                  this.setState({ xpRewardInterfaceShown: false })
-                  onAttachStar(data)
+                  this.setState({ xpRewardInterfaceShown: false });
+                  onAttachStar(data);
                 }}
               />
             )}
@@ -332,33 +332,33 @@ class Comment extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   onEditDone = async editedComment => {
-    const { dispatch, comment, onEditDone } = this.props
+    const { dispatch, comment, onEditDone } = this.props;
     await editContent({
       params: { editedComment, contentId: comment.id, type: 'comment' },
       dispatch
-    })
-    onEditDone({ editedComment, commentId: comment.id })
-    this.setState({ onEdit: false })
-  }
+    });
+    onEditDone({ editedComment, commentId: comment.id });
+    this.setState({ onEdit: false });
+  };
 
   onLikeClick = likes => {
-    const { comment, onLikeClick } = this.props
-    onLikeClick({ commentId: comment.id, likes })
-  }
+    const { comment, onLikeClick } = this.props;
+    onLikeClick({ commentId: comment.id, likes });
+  };
 
   onReplyButtonClick = () => {
-    this.ReplyInputArea.focus()
-  }
+    this.ReplyInputArea.focus();
+  };
 
   onReplySubmit = reply => {
-    const { onReplySubmit } = this.props
-    this.setState({ replying: true })
-    onReplySubmit(reply)
-  }
+    const { onReplySubmit } = this.props;
+    this.setState({ replying: true });
+    onReplySubmit(reply);
+  };
 }
 
 export default connect(
@@ -369,4 +369,4 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: Comment, Context }))
+)(withContext({ Component: Comment, Context }));

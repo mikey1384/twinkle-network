@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
-import TextareaAutosize from 'react-textarea-autosize'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
+import TextareaAutosize from 'react-textarea-autosize';
 
 Textarea.propTypes = {
   className: PropTypes.string,
   innerRef: PropTypes.func
-}
+};
 export default function Textarea({ className, innerRef, ...props }) {
   return (
     <TextareaAutosize
@@ -33,5 +33,5 @@ export default function Textarea({ className, innerRef, ...props }) {
         }
       `}`}
     />
-  )
+  );
 }

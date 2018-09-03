@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Route } from 'react-router'
+import React, { Component } from 'react';
+import { Route } from 'react-router';
 import {
   attachStar,
   contentFeedLike,
@@ -19,16 +19,16 @@ import {
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
-} from 'redux/actions/FeedActions'
-import { disableAutoscroll } from 'redux/actions/ViewActions'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import Loading from 'components/Loading'
-import ContentPanel from 'components/ContentPanel'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
-import { addEvent, removeEvent } from 'helpers/listenerHelpers'
-import { queryStringForArray } from 'helpers/stringHelpers'
-import FilterBar from 'components/FilterBar'
+} from 'redux/actions/FeedActions';
+import { disableAutoscroll } from 'redux/actions/ViewActions';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Loading from 'components/Loading';
+import ContentPanel from 'components/ContentPanel';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
+import { queryStringForArray } from 'helpers/stringHelpers';
+import FilterBar from 'components/FilterBar';
 
 class Body extends Component {
   static propTypes = {
@@ -59,42 +59,42 @@ class Body extends Component {
     match: PropTypes.object.isRequired,
     myId: PropTypes.number,
     profileFeeds: PropTypes.array
-  }
+  };
 
   state = {
     currentTab: 'all',
     loading: false
-  }
+  };
 
   body =
     typeof document !== 'undefined'
       ? document.scrollingElement || document.documentElement
-      : {}
+      : {};
 
-  scrollHeight = 0
+  scrollHeight = 0;
 
   componentDidMount() {
-    const { clearFeeds, setCurrentSection } = this.props
-    setCurrentSection('profileFeeds')
-    this.mounted = true
-    addEvent(window, 'scroll', this.onScroll)
-    addEvent(document.getElementById('App'), 'scroll', this.onScroll)
-    clearFeeds()
-    this.loadContent()
+    const { clearFeeds, setCurrentSection } = this.props;
+    setCurrentSection('profileFeeds');
+    this.mounted = true;
+    addEvent(window, 'scroll', this.onScroll);
+    addEvent(document.getElementById('App'), 'scroll', this.onScroll);
+    clearFeeds();
+    this.loadContent();
   }
 
   componentDidUpdate(prevProps) {
-    const { clearFeeds } = this.props
+    const { clearFeeds } = this.props;
     if (prevProps.location !== this.props.location) {
-      clearFeeds()
-      this.loadContent()
+      clearFeeds();
+      this.loadContent();
     }
   }
 
   componentWillUnmount() {
-    this.mounted = false
-    removeEvent(window, 'scroll', this.onScroll)
-    removeEvent(document.getElementById('App'), 'scroll', this.onScroll)
+    this.mounted = false;
+    removeEvent(window, 'scroll', this.onScroll);
+    removeEvent(document.getElementById('App'), 'scroll', this.onScroll);
   }
 
   render() {
@@ -123,13 +123,13 @@ class Body extends Component {
       loadMoreFeedReplies,
       showFeedComments,
       uploadTargetContentComment
-    } = this.props
-    const { loading } = this.state
+    } = this.props;
+    const { loading } = this.state;
 
     return (
       <div
         ref={ref => {
-          this.Container = ref
+          this.Container = ref;
         }}
         style={{ height: '100%', marginBottom: '1rem' }}
       >
@@ -142,9 +142,9 @@ class Body extends Component {
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  clearFeeds()
-                  disableAutoscroll()
-                  history.push(route.url)
+                  clearFeeds();
+                  disableAutoscroll();
+                  history.push(route.url);
                 }}
               >
                 <a>All</a>
@@ -159,9 +159,9 @@ class Body extends Component {
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  clearFeeds()
-                  disableAutoscroll()
-                  history.push(`${route.url}/posts`)
+                  clearFeeds();
+                  disableAutoscroll();
+                  history.push(`${route.url}/posts`);
                 }}
               >
                 <a>Posts</a>
@@ -176,9 +176,9 @@ class Body extends Component {
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  clearFeeds()
-                  disableAutoscroll()
-                  history.push(`${route.url}/comments`)
+                  clearFeeds();
+                  disableAutoscroll();
+                  history.push(`${route.url}/comments`);
                 }}
               >
                 <a>Comments</a>
@@ -193,9 +193,9 @@ class Body extends Component {
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  clearFeeds()
-                  disableAutoscroll()
-                  history.push(`${route.url}/videos`)
+                  clearFeeds();
+                  disableAutoscroll();
+                  history.push(`${route.url}/videos`);
                 }}
               >
                 <a>Videos</a>
@@ -210,9 +210,9 @@ class Body extends Component {
                 className={match ? 'active' : ''}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  clearFeeds()
-                  disableAutoscroll()
-                  history.push(`${route.url}/links`)
+                  clearFeeds();
+                  disableAutoscroll();
+                  history.push(`${route.url}/links`);
                 }}
               >
                 <a>Links</a>
@@ -255,7 +255,7 @@ class Body extends Component {
                       onTargetCommentSubmit={uploadTargetContentComment}
                       userId={myId}
                     />
-                  )
+                  );
                 })}
               </div>
             )}
@@ -285,26 +285,26 @@ class Body extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   loadContent = () => {
-    const { match, location } = this.props
+    const { match, location } = this.props;
     switch (location.pathname) {
       case match.url:
-        return this.loadTab('all')
+        return this.loadTab('all');
       case `${match.url}/posts`:
-        return this.loadTab('post')
+        return this.loadTab('post');
       case `${match.url}/comments`:
-        return this.loadTab('comment')
+        return this.loadTab('comment');
       case `${match.url}/videos`:
-        return this.loadTab('video')
+        return this.loadTab('video');
       case `${match.url}/links`:
-        return this.loadTab('url')
+        return this.loadTab('url');
       default:
-        break
+        break;
     }
-  }
+  };
 
   loadTab = tabName => {
     const {
@@ -312,13 +312,13 @@ class Body extends Component {
         params: { username }
       },
       fetchFeeds
-    } = this.props
+    } = this.props;
     if (this.mounted) {
-      this.setState({ currentTab: tabName })
+      this.setState({ currentTab: tabName });
     }
-    fetchFeeds({ username, filter: tabName })
-    this.scrollHeight = 0
-  }
+    fetchFeeds({ username, filter: tabName });
+    this.scrollHeight = 0;
+  };
 
   loadMoreFeeds = async() => {
     const {
@@ -327,42 +327,42 @@ class Body extends Component {
       },
       fetchMoreFeeds,
       profileFeeds
-    } = this.props
-    const { currentTab, loading } = this.state
+    } = this.props;
+    const { currentTab, loading } = this.state;
 
     if (!loading) {
-      this.setState({ loading: true })
+      this.setState({ loading: true });
       try {
         await fetchMoreFeeds({
           shownFeeds: queryStringForArray(profileFeeds, 'feedId', 'shownFeeds'),
           filter: currentTab,
           username
-        })
-        this.setState({ loading: false })
+        });
+        this.setState({ loading: false });
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   onNoFeed = username => {
-    const { currentTab } = this.state
+    const { currentTab } = this.state;
     switch (currentTab) {
       case 'all':
-        return `${username} has not uploaded anything, yet`
+        return `${username} has not uploaded anything, yet`;
       case 'post':
-        return `${username} has not uploaded a post, yet`
+        return `${username} has not uploaded a post, yet`;
       case 'comment':
-        return `${username} has not uploaded a comment, yet`
+        return `${username} has not uploaded a comment, yet`;
       case 'url':
-        return `${username} has not uploaded a link, yet`
+        return `${username} has not uploaded a link, yet`;
       case 'video':
-        return `${username} has not uploaded a video, yet`
+        return `${username} has not uploaded a video, yet`;
     }
-  }
+  };
 
   onScroll = () => {
-    let { chatMode, profileFeeds, loadMoreButton } = this.props
+    let { chatMode, profileFeeds, loadMoreButton } = this.props;
     if (
       document.getElementById('App').scrollHeight > this.scrollHeight ||
       this.body.scrollTop > this.scrollHeight
@@ -370,7 +370,7 @@ class Body extends Component {
       this.scrollHeight = Math.max(
         document.getElementById('App').scrollHeight,
         this.body.scrollTop
-      )
+      );
     }
     if (!chatMode && profileFeeds.length > 0) {
       this.setState({
@@ -378,7 +378,7 @@ class Body extends Component {
           desktop: document.getElementById('App').scrollTop,
           mobile: this.body.scrollTop
         }
-      })
+      });
       if (
         (this.state.scrollPosition.desktop >=
           this.scrollHeight - window.innerHeight - 500 ||
@@ -386,19 +386,19 @@ class Body extends Component {
             this.scrollHeight - window.innerHeight - 500) &&
         loadMoreButton
       ) {
-        this.loadMoreFeeds()
+        this.loadMoreFeeds();
       }
     }
-  }
+  };
 
   uploadFeedComment = ({ feed, data }) => {
-    const { uploadFeedComment } = this.props
+    const { uploadFeedComment } = this.props;
     uploadFeedComment({
       data,
       type: feed.type,
       contentId: feed.contentId
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -431,4 +431,4 @@ export default connect(
     uploadFeedComment,
     uploadTargetContentComment
   }
-)(Body)
+)(Body);

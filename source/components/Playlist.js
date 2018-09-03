@@ -1,57 +1,57 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
-import Loading from 'components/Loading'
-import VideoThumbImage from 'components/VideoThumbImage'
-import { Color } from 'constants/css'
-import { cleanString, queryStringForArray } from 'helpers/stringHelpers'
-import { Link } from 'react-router-dom'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import NotFound from 'components/NotFound'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import Loading from 'components/Loading';
+import VideoThumbImage from 'components/VideoThumbImage';
+import { Color } from 'constants/css';
+import { cleanString, queryStringForArray } from 'helpers/stringHelpers';
+import { Link } from 'react-router-dom';
+import request from 'axios';
+import { URL } from 'constants/URL';
+import NotFound from 'components/NotFound';
 
-const API_URL = `${URL}/playlist`
+const API_URL = `${URL}/playlist`;
 
 export default class Playlist extends Component {
   static propTypes = {
     onLoad: PropTypes.func,
     playlistId: PropTypes.number.isRequired
-  }
+  };
 
   state = {
     videos: [],
     loadMoreButtonShown: false,
     loading: false,
     loaded: false
-  }
+  };
 
   async componentDidMount() {
-    const { playlistId, onLoad } = this.props
+    const { playlistId, onLoad } = this.props;
     try {
       const {
         data: { videos, title }
-      } = await request.get(`${API_URL}/playlist?playlistId=${playlistId}`)
-      let loadMoreButtonShown = false
+      } = await request.get(`${API_URL}/playlist?playlistId=${playlistId}`);
+      let loadMoreButtonShown = false;
       if (videos.length > 20) {
-        videos.pop()
-        loadMoreButtonShown = true
+        videos.pop();
+        loadMoreButtonShown = true;
       }
       if (typeof onLoad === 'function') {
-        onLoad({ exists: videos.length > 0, title })
+        onLoad({ exists: videos.length > 0, title });
       }
       this.setState({
         videos,
         loaded: true,
         loadMoreButtonShown
-      })
+      });
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
   }
 
   render() {
-    const { playlistId } = this.props
-    const { videos, loaded, loading, loadMoreButtonShown } = this.state
+    const { playlistId } = this.props;
+    const { videos, loaded, loading, loadMoreButtonShown } = this.state;
     return (
       <Fragment>
         {videos.length === 0 ? (
@@ -113,13 +113,13 @@ export default class Playlist extends Component {
           />
         )}
       </Fragment>
-    )
+    );
   }
 
   onLoadMoreVideos = async() => {
-    const { playlistId } = this.props
-    const { videos } = this.state
-    this.setState({ loading: true })
+    const { playlistId } = this.props;
+    const { videos } = this.state;
+    this.setState({ loading: true });
     try {
       const {
         data: { videos: loadedVideos }
@@ -129,19 +129,19 @@ export default class Playlist extends Component {
           'id',
           'shownVideos'
         )}`
-      )
-      let loadMoreButtonShown = false
+      );
+      let loadMoreButtonShown = false;
       if (loadedVideos.length > 20) {
-        loadedVideos.pop()
-        loadMoreButtonShown = true
+        loadedVideos.pop();
+        loadMoreButtonShown = true;
       }
       this.setState({
         videos: videos.concat(loadedVideos),
         loadMoreButtonShown,
         loading: false
-      })
+      });
     } catch (error) {
-      console.error(error.response || error)
+      console.error(error.response || error);
     }
-  }
+  };
 }

@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import PlaylistCarousel from '../Carousels/PlaylistCarousel'
-import SectionPanel from 'components/SectionPanel'
-import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers'
-import { getMorePlaylists } from 'redux/actions/PlaylistActions'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import PlaylistCarousel from '../Carousels/PlaylistCarousel';
+import SectionPanel from 'components/SectionPanel';
+import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
+import { getMorePlaylists } from 'redux/actions/PlaylistActions';
+import { connect } from 'react-redux';
 
 class PlaylistsPanel extends Component {
   static propTypes = {
@@ -21,7 +21,7 @@ class PlaylistsPanel extends Component {
     searchQuery: PropTypes.string,
     title: PropTypes.string.isRequired,
     userId: PropTypes.number
-  }
+  };
 
   render() {
     const {
@@ -35,8 +35,8 @@ class PlaylistsPanel extends Component {
       onSearch,
       searchQuery,
       title = 'All Playlists'
-    } = this.props
-    let buttonGroupElement = buttonGroupShown ? buttonGroup() : null
+    } = this.props;
+    let buttonGroupElement = buttonGroupShown ? buttonGroup() : null;
     return (
       <SectionPanel
         title={title}
@@ -60,21 +60,21 @@ class PlaylistsPanel extends Component {
               userIsUploader={userId === playlist.uploaderId}
               showAllButton={playlist.showAllButton}
             />
-          )
+          );
         })}
       </SectionPanel>
-    )
+    );
   }
 
   loadMorePlaylists = () => {
-    const { playlists, getMorePlaylists } = this.props
+    const { playlists, getMorePlaylists } = this.props;
     return getMorePlaylists(
       queryStringForArray(playlists, 'id', 'shownPlaylists')
-    )
-  }
+    );
+  };
 }
 
 export default connect(
   null,
   { getMorePlaylists }
-)(withRouter(PlaylistsPanel))
+)(withRouter(PlaylistsPanel));

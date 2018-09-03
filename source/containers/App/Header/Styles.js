@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 
 export const container = css`
   z-index: 500;
@@ -108,7 +108,7 @@ export const container = css`
     height: 9rem;
     border-top: 1px solid ${Color.borderGray()};
   }
-`
+`;
 
 export const logo = {
   outer: `desktop ${css`
@@ -152,4 +152,4 @@ export const logo = {
       }
     }
   `
-}
+};

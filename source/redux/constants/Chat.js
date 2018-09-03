@@ -36,10 +36,10 @@ const types = {
   SEARCH_USERS_FOR_CHANNEL: 'SEARCH_USERS_FOR_CHANNEL',
   SELECT_CHANNEL: 'SELECT_CHANNEL',
   SUBMIT_MESSAGE: 'SUBMIT_MESSAGE'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_CHAT`
+  types[key] = `${types[key]}_CHAT`;
 }
 
-export default types
+export default types;

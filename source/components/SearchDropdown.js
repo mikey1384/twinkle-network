@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { Color } from 'constants/css'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 
 export default class Dropdown extends Component {
   static propTypes = {
@@ -15,7 +15,7 @@ export default class Dropdown extends Component {
     searchResults: PropTypes.array.isRequired,
     startingIndex: PropTypes.number,
     style: PropTypes.object
-  }
+  };
 
   componentDidUpdate(prevProps) {
     const {
@@ -23,25 +23,25 @@ export default class Dropdown extends Component {
       startingIndex = 0,
       searchResults,
       onUpdate
-    } = this.props
-    let searchResultsChanged = false
+    } = this.props;
+    let searchResultsChanged = false;
     if (prevProps.searchResults.length !== searchResults.length) {
-      searchResultsChanged = true
+      searchResultsChanged = true;
     } else {
       for (let i = 0; i < searchResults.length; i++) {
         if (searchResults[i] !== prevProps.searchResults[i]) {
-          searchResultsChanged = true
+          searchResultsChanged = true;
         }
       }
     }
 
     if (searchResultsChanged && indexToHighlight > startingIndex) {
-      onUpdate()
+      onUpdate();
     }
   }
 
   componentWillUnmount() {
-    this.props.onUnmount()
+    this.props.onUnmount();
   }
 
   render() {
@@ -52,7 +52,7 @@ export default class Dropdown extends Component {
       onItemClick,
       renderItemLabel,
       renderItemUrl
-    } = this.props
+    } = this.props;
     return (
       <div
         className={css`
@@ -88,8 +88,8 @@ export default class Dropdown extends Component {
             let itemStyle =
               index === indexToHighlight
                 ? { background: Color.headingGray() }
-                : {}
-            const href = renderItemUrl ? { href: renderItemUrl(item) } : {}
+                : {};
+            const href = renderItemUrl ? { href: renderItemUrl(item) } : {};
             return (
               <nav
                 key={index}
@@ -112,10 +112,10 @@ export default class Dropdown extends Component {
                   {renderItemLabel(item)}
                 </a>
               </nav>
-            )
+            );
           })}
         </div>
       </div>
-    )
+    );
   }
 }

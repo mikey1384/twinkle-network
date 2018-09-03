@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import UsernameText from 'components/Texts/UsernameText'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React from 'react';
+import UsernameText from 'components/Texts/UsernameText';
+import { Color } from 'constants/css';
 
 Likers.propTypes = {
   className: PropTypes.string,
@@ -16,7 +16,7 @@ Likers.propTypes = {
   style: PropTypes.object,
   target: PropTypes.string,
   userId: PropTypes.number
-}
+};
 export default function Likers({
   likes,
   target,
@@ -30,22 +30,22 @@ export default function Likers({
     <div style={style} className={className}>
       {renderLikers()}
     </div>
-  )
+  );
 
   function renderLikers() {
-    let userLiked = false
-    let totalLikes = 0
+    let userLiked = false;
+    let totalLikes = 0;
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if (likes[i].userId === userId) userLiked = true
-        totalLikes++
+        if (likes[i].userId === userId) userLiked = true;
+        totalLikes++;
       }
     }
     if (userLiked) {
-      totalLikes--
+      totalLikes--;
       if (totalLikes > 0) {
         if (totalLikes === 1) {
-          let otherLikes = likes.filter(like => like.userId !== userId)
+          let otherLikes = likes.filter(like => like.userId !== userId);
           return (
             <div>
               You and{' '}
@@ -58,7 +58,7 @@ export default function Likers({
               />{' '}
               like {`this${target ? ' ' + target : ''}.`}
             </div>
-          )
+          );
         } else {
           return (
             <div>
@@ -71,10 +71,10 @@ export default function Likers({
               </a>{' '}
               like {`this${target ? ' ' + target : ''}.`}
             </div>
-          )
+          );
         }
       }
-      return <div>You like {`this${target ? ' ' + target : ''}.`}</div>
+      return <div>You like {`this${target ? ' ' + target : ''}.`}</div>;
     } else if (totalLikes > 0) {
       if (totalLikes === 1) {
         return (
@@ -82,7 +82,7 @@ export default function Likers({
             <UsernameText color={Color.blue()} user={likes[0]} /> likes{' '}
             {`this${target ? ' ' + target : ''}.`}
           </div>
-        )
+        );
       } else {
         return (
           <div>
@@ -94,10 +94,10 @@ export default function Likers({
             </a>{' '}
             like {`this${target ? ' ' + target : ''}.`}
           </div>
-        )
+        );
       }
     } else {
-      return defaultText ? <div>{defaultText}</div> : null
+      return defaultText ? <div>{defaultText}</div> : null;
     }
   }
 }

@@ -1,5 +1,5 @@
-import React from 'react'
-import { css } from 'emotion'
+import React from 'react';
+import { css } from 'emotion';
 
 export default function Spinner() {
   return (
@@ -54,5 +54,5 @@ export default function Spinner() {
         />
       </svg>
     </div>
-  )
+  );
 }

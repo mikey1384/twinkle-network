@@ -17,10 +17,10 @@ const types = {
   SET_DEFAULT_FILTER: 'SET_DEFAULT_FILTER',
   SHOW_PROFILE: 'SHOW_PROFILE',
   SIGNUP: 'SIGNUP'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_USER`
+  types[key] = `${types[key]}_USER`;
 }
 
-export default types
+export default types;

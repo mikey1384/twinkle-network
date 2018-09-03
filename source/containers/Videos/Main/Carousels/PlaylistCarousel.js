@@ -1,24 +1,24 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import ExecutionEnvironment from 'exenv'
-import Carousel from 'components/Carousel'
-import VideoThumb from 'components/VideoThumb'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import EditTitleForm from 'components/Texts/EditTitleForm'
-import EditPlaylistModal from '../Modals/EditPlaylistModal'
-import PlaylistModal from '../Modals/PlaylistModal'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import { addEvent } from 'helpers/listenerHelpers'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import ExecutionEnvironment from 'exenv';
+import Carousel from 'components/Carousel';
+import VideoThumb from 'components/VideoThumb';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import EditTitleForm from 'components/Texts/EditTitleForm';
+import EditPlaylistModal from '../Modals/EditPlaylistModal';
+import PlaylistModal from '../Modals/PlaylistModal';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import { addEvent } from 'helpers/listenerHelpers';
 import {
   editPlaylistTitle,
   deletePlaylist
-} from 'redux/actions/PlaylistActions'
-import { connect } from 'react-redux'
-import { cleanString } from 'helpers/stringHelpers'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
-import { charLimit } from 'constants/defaultValues'
-import Link from 'components/Link'
+} from 'redux/actions/PlaylistActions';
+import { connect } from 'react-redux';
+import { cleanString } from 'helpers/stringHelpers';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import { charLimit } from 'constants/defaultValues';
+import Link from 'components/Link';
 
 class PlaylistCarousel extends Component {
   static propTypes = {
@@ -34,18 +34,18 @@ class PlaylistCarousel extends Component {
     showAllButton: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
     uploader: PropTypes.string.isRequired
-  }
+  };
 
-  defaultNumSlides = 5
+  defaultNumSlides = 5;
 
   constructor() {
-    super()
-    let numSlides = this.defaultNumSlides
+    super();
+    let numSlides = this.defaultNumSlides;
     if (
       ExecutionEnvironment.canUseDOM &&
       document.documentElement.clientWidth <= 991
     ) {
-      numSlides = 3
+      numSlides = 3;
     }
     this.state = {
       onEdit: false,
@@ -54,32 +54,32 @@ class PlaylistCarousel extends Component {
       deleteConfirmModalShown: false,
       playlistModalShown: false,
       numSlides
-    }
+    };
   }
 
   componentDidMount() {
-    this.mounted = true
-    addEvent(window, 'resize', this.onResize)
+    this.mounted = true;
+    addEvent(window, 'resize', this.onResize);
   }
 
   componentWillUnmount() {
-    unbindListeners.call(this)
-    this.mounted = false
+    unbindListeners.call(this);
+    this.mounted = false;
     function unbindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
-        removeEvent(window, 'resize', this.onResize)
+        removeEvent(window, 'resize', this.onResize);
       }
 
       function removeEvent(elem, type, eventHandle) {
         if (elem === null || typeof elem === 'undefined') {
-          return
+          return;
         }
         if (elem.removeEventListener) {
-          elem.removeEventListener(type, eventHandle, false)
+          elem.removeEventListener(type, eventHandle, false);
         } else if (elem.detachEvent) {
-          elem.detachEvent('on' + type, eventHandle)
+          elem.detachEvent('on' + type, eventHandle);
         } else {
-          elem['on' + type] = null
+          elem['on' + type] = null;
         }
       }
     }
@@ -93,7 +93,7 @@ class PlaylistCarousel extends Component {
       deleteConfirmModalShown,
       playlistModalShown,
       numSlides
-    } = this.state
+    } = this.state;
     const {
       canEdit,
       canEditPlaylists,
@@ -102,7 +102,7 @@ class PlaylistCarousel extends Component {
       userIsUploader,
       id,
       showAllButton
-    } = this.props
+    } = this.props;
     const menuProps = [
       {
         label: 'Edit Title',
@@ -123,7 +123,7 @@ class PlaylistCarousel extends Component {
         label: 'Remove Playlist',
         onClick: this.onDeleteClick
       }
-    ]
+    ];
 
     return (
       <div
@@ -225,11 +225,11 @@ class PlaylistCarousel extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   renderThumbs = () => {
-    const { playlist, clickSafe, id: playlistId } = this.props
+    const { playlist, clickSafe, id: playlistId } = this.props;
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
@@ -247,40 +247,40 @@ class PlaylistCarousel extends Component {
           }}
           user={{ username: thumb.video_uploader, id: thumb.video_uploader_id }}
         />
-      )
-    })
-  }
+      );
+    });
+  };
 
   onEditTitle = () => {
-    this.setState({ onEdit: true })
-  }
+    this.setState({ onEdit: true });
+  };
 
   onEditedTitleSubmit = async title => {
-    const { editPlaylistTitle, id: playlistId, arrayIndex } = this.props
-    await editPlaylistTitle({ title, playlistId }, arrayIndex)
-    this.setState({ onEdit: false })
-  }
+    const { editPlaylistTitle, id: playlistId, arrayIndex } = this.props;
+    await editPlaylistTitle({ title, playlistId }, arrayIndex);
+    this.setState({ onEdit: false });
+  };
 
   onEditTitleCancel = () => {
-    this.setState({ onEdit: false })
-  }
+    this.setState({ onEdit: false });
+  };
 
   onDeleteClick = () => {
-    this.setState({ deleteConfirmModalShown: true })
-  }
+    this.setState({ deleteConfirmModalShown: true });
+  };
 
   onDeleteConfirm = async() => {
-    const { deletePlaylist, id } = this.props
-    this.setState({ deleteConfirmModalShown: false })
-    deletePlaylist(id)
-  }
+    const { deletePlaylist, id } = this.props;
+    this.setState({ deleteConfirmModalShown: false });
+    deletePlaylist(id);
+  };
 
   onResize = () => {
     this.setState({
       numSlides:
         document.documentElement.clientWidth <= 991 ? 3 : this.defaultNumSlides
-    })
-  }
+    });
+  };
 }
 
 export default connect(
@@ -293,4 +293,4 @@ export default connect(
     editPlaylistTitle,
     deletePlaylist
   }
-)(PlaylistCarousel)
+)(PlaylistCarousel);

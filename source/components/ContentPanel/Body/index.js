@@ -1,29 +1,29 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import Context from '../Context'
-import withContext from 'components/Wrappers/withContext'
-import LikeButton from 'components/Buttons/LikeButton'
-import StarButton from 'components/StarButton'
-import Button from 'components/Button'
-import Likers from 'components/Likers'
-import { connect } from 'react-redux'
-import UserListModal from 'components/Modals/UserListModal'
-import VideoPlayer from 'components/VideoPlayer'
-import Comments from 'components/Comments'
-import MainContent from './MainContent'
-import TargetContent from './TargetContent'
-import DropdownButton from 'components/Buttons/DropdownButton'
-import ConfirmModal from 'components/Modals/ConfirmModal'
-import XPRewardInterface from 'components/XPRewardInterface'
-import RewardStatus from 'components/RewardStatus'
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary'
-import Icon from 'components/Icon'
-import { determineXpButtonDisabled } from 'helpers/domHelpers'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import Context from '../Context';
+import withContext from 'components/Wrappers/withContext';
+import LikeButton from 'components/Buttons/LikeButton';
+import StarButton from 'components/StarButton';
+import Button from 'components/Button';
+import Likers from 'components/Likers';
+import { connect } from 'react-redux';
+import UserListModal from 'components/Modals/UserListModal';
+import VideoPlayer from 'components/VideoPlayer';
+import Comments from 'components/Comments';
+import MainContent from './MainContent';
+import TargetContent from './TargetContent';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import XPRewardInterface from 'components/XPRewardInterface';
+import RewardStatus from 'components/RewardStatus';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import Icon from 'components/Icon';
+import { determineXpButtonDisabled } from 'helpers/domHelpers';
 import {
   deleteContent,
   editContent,
   loadComments
-} from 'helpers/requestHelpers'
+} from 'helpers/requestHelpers';
 
 class Body extends Component {
   static propTypes = {
@@ -52,7 +52,7 @@ class Body extends Component {
     onReplySubmit: PropTypes.func.isRequired,
     onShowComments: PropTypes.func.isRequired,
     onStarVideo: PropTypes.func
-  }
+  };
 
   state = {
     autoFocusWhenCommentShown: false,
@@ -64,7 +64,7 @@ class Body extends Component {
     confirmModalShown: false,
     twoStarSelected: false,
     xpRewardInterfaceShown: false
-  }
+  };
 
   async componentDidMount() {
     const {
@@ -72,15 +72,15 @@ class Body extends Component {
       onShowComments,
       commentsLoadLimit,
       contentObj: { type, contentId }
-    } = this.props
+    } = this.props;
     if (autoExpand) {
       const data = await loadComments({
         type: type,
         id: contentId,
         limit: commentsLoadLimit
-      })
-      if (data) onShowComments(data)
-      this.setState({ commentsShown: true })
+      });
+      if (data) onShowComments(data);
+      this.setState({ commentsShown: true });
     }
   }
 
@@ -89,13 +89,13 @@ class Body extends Component {
       prevProps.contentObj.id !== this.props.contentObj.id ||
       prevProps.type !== this.props.type
     ) {
-      this.setState({ commentsShown: false })
+      this.setState({ commentsShown: false });
     }
     if (prevProps.contentObj.content !== this.props.contentObj.content) {
-      this.setState({ edited: true })
+      this.setState({ edited: true });
     }
     if (prevProps.myId !== this.props.myId) {
-      this.setState({ xpRewardInterfaceShown: false })
+      this.setState({ xpRewardInterfaceShown: false });
     }
   }
 
@@ -145,7 +145,7 @@ class Body extends Component {
       onLoadMoreComments,
       onLoadMoreReplies,
       onReplySubmit
-    } = this.props
+    } = this.props;
     const {
       autoFocusWhenCommentShown,
       edited,
@@ -154,28 +154,28 @@ class Body extends Component {
       commentsShown,
       isEditing,
       xpRewardInterfaceShown
-    } = this.state
-    let userLikedThis = false
+    } = this.state;
+    let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === myId) userLikedThis = true
+      if (likes[i].userId === myId) userLikedThis = true;
     }
-    const userIsUploader = myId === uploader.id
+    const userIsUploader = myId === uploader.id;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploader.authLevel
-    const userCanStarThis = canStar && authLevel > uploader.authLevel
-    const editButtonShown = userIsUploader || userCanEditThis
-    const editMenuItems = []
+      (canEdit || canDelete) && authLevel > uploader.authLevel;
+    const userCanStarThis = canStar && authLevel > uploader.authLevel;
+    const editButtonShown = userIsUploader || userCanEditThis;
+    const editMenuItems = [];
     if (userIsUploader || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: () => this.setState({ isEditing: true })
-      })
+      });
     }
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Remove',
         onClick: () => this.setState({ confirmModalShown: true })
-      })
+      });
     }
     return (
       <ErrorBoundary>
@@ -371,8 +371,8 @@ class Body extends Component {
               uploaderId={uploader.id}
               stars={stars}
               onRewardSubmit={data => {
-                this.setState({ xpRewardInterfaceShown: false })
-                onAttachStar(data)
+                this.setState({ xpRewardInterfaceShown: false });
+                onAttachStar(data);
               }}
             />
           )}
@@ -431,57 +431,57 @@ class Body extends Component {
           )}
         </div>
       </ErrorBoundary>
-    )
+    );
   }
 
   determineXpButtonDisabled = () => {
     const {
       contentObj: { stars },
       myId
-    } = this.props
-    const { xpRewardInterfaceShown } = this.state
-    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown })
-  }
+    } = this.props;
+    const { xpRewardInterfaceShown } = this.state;
+    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown });
+  };
 
   onCommentButtonClick = async data => {
     const {
       commentsLoadLimit,
       onShowComments,
       contentObj: { type, contentId, feedId }
-    } = this.props
-    const { commentsShown } = this.state
+    } = this.props;
+    const { commentsShown } = this.state;
     if (!commentsShown) {
-      this.setState({ autoFocusWhenCommentShown: true })
+      this.setState({ autoFocusWhenCommentShown: true });
       const data = await loadComments({
         type,
         id: contentId,
         limit: commentsLoadLimit
-      })
-      if (data) onShowComments(data, feedId)
-      this.setState({ commentsShown: true })
+      });
+      if (data) onShowComments(data, feedId);
+      this.setState({ commentsShown: true });
     }
-    this.CommentInputArea.focus()
-  }
+    this.CommentInputArea.focus();
+  };
 
   onDeleteContent = async() => {
     const {
       contentObj: { type, id },
       dispatch,
       onDeleteContent
-    } = this.props
-    await deleteContent({ type, id, dispatch })
-    onDeleteContent({ type, contentId: id })
-  }
+    } = this.props;
+    await deleteContent({ type, id, dispatch });
+    onDeleteContent({ type, contentId: id });
+  };
 
   onEditContent = async params => {
     const {
       dispatch,
       onEditContent,
       contentObj: { type, contentId }
-    } = this.props
-    const data = await editContent({ params, dispatch })
-    if (data) onEditContent({ data, contentType: type, contentId })
-  }
+    } = this.props;
+    const data = await editContent({ params, dispatch });
+    if (data) onEditContent({ data, contentType: type, contentId });
+  };
 
   onLikeClick = async likes => {
     const {
@@ -489,27 +489,27 @@ class Body extends Component {
       contentObj: { type, contentId, feedId },
       onLikeContent,
       onShowComments
-    } = this.props
-    const { commentsShown } = this.state
-    onLikeContent({ likes, type, contentId })
+    } = this.props;
+    const { commentsShown } = this.state;
+    onLikeContent({ likes, type, contentId });
     if (!commentsShown) {
       const data = await loadComments({
         type,
         id: contentId,
         limit: commentsLoadLimit
-      })
-      if (data) onShowComments(data, feedId)
-      this.setState({ commentsShown: true })
+      });
+      if (data) onShowComments(data, feedId);
+      this.setState({ commentsShown: true });
     }
-  }
+  };
 
   onStarButtonClick = () => {
     const {
       contentObj: { contentId },
       onStarVideo
-    } = this.props
-    onStarVideo(contentId)
-  }
+    } = this.props;
+    onStarVideo(contentId);
+  };
 }
 
 export default connect(
@@ -520,4 +520,4 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: Body, Context }))
+)(withContext({ Component: Body, Context }));

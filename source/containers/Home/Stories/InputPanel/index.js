@@ -1,6 +1,6 @@
-import React from 'react'
-import ContentInput from './ContentInput'
-import QuestionInput from './QuestionInput'
+import React from 'react';
+import ContentInput from './ContentInput';
+import QuestionInput from './QuestionInput';
 
 export default function InputPanel() {
   return (
@@ -8,5 +8,5 @@ export default function InputPanel() {
       <QuestionInput />
       <ContentInput />
     </div>
-  )
+  );
 }

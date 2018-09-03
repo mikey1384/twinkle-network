@@ -1,12 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { css } from 'emotion'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { css } from 'emotion';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 
 RoundList.propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object
-}
+};
 export default function RoundList({ children, style = {} }) {
   return (
     <ul
@@ -50,5 +50,5 @@ export default function RoundList({ children, style = {} }) {
     >
       {children}
     </ul>
-  )
+  );
 }

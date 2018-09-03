@@ -1,24 +1,24 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { timeSince } from 'helpers/timeStampHelpers'
-import { Color } from 'constants/css'
-import ContentLink from 'components/ContentLink'
-import UsernameText from 'components/Texts/UsernameText'
-import RoundList from 'components/RoundList'
-import Banner from 'components/Banner'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { Color } from 'constants/css';
+import ContentLink from 'components/ContentLink';
+import UsernameText from 'components/Texts/UsernameText';
+import RoundList from 'components/RoundList';
+import Banner from 'components/Banner';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import {
   clearRewards,
   fetchNotifications,
   loadMoreNotifications,
   loadMoreRewards
-} from 'redux/actions/NotiActions'
-import { changeUserXP } from 'redux/actions/UserActions'
-import { connect } from 'react-redux'
-import LeaderBoardTab from './LeaderBoardTab'
-import { addCommasToNumber } from 'helpers/stringHelpers'
-import { notiFeedListItem } from '../Styles'
-import { rewardValue } from 'constants/defaultValues'
+} from 'redux/actions/NotiActions';
+import { changeUserXP } from 'redux/actions/UserActions';
+import { connect } from 'react-redux';
+import LeaderBoardTab from './LeaderBoardTab';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { notiFeedListItem } from '../Styles';
+import { rewardValue } from 'constants/defaultValues';
 
 class MainFeeds extends Component {
   static propTypes = {
@@ -57,13 +57,13 @@ class MainFeeds extends Component {
     style: PropTypes.object,
     totalRewardAmount: PropTypes.number,
     twinkleXP: PropTypes.number
-  }
+  };
 
   state = {
     loading: false,
     originalTotalReward: 0,
     originalTwinkleXP: 0
-  }
+  };
 
   render() {
     const {
@@ -75,9 +75,9 @@ class MainFeeds extends Component {
       rewards,
       style,
       totalRewardAmount
-    } = this.props
-    const { loading } = this.state
-    const { originalTotalReward, originalTwinkleXP } = this.state
+    } = this.props;
+    const { loading } = this.state;
+    const { originalTotalReward, originalTwinkleXP } = this.state;
     return (
       <div style={style}>
         <RoundList style={{ marginTop: '0' }}>
@@ -131,7 +131,7 @@ class MainFeeds extends Component {
                     {timeSince(notification.timeStamp)}
                   </small>
                 </li>
-              )
+              );
             })}
           {activeTab === 'leaderboard' && <LeaderBoardTab myId={myId} />}
           {activeTab === 'reward' &&
@@ -186,7 +186,7 @@ class MainFeeds extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   onCollectReward = async() => {
@@ -195,22 +195,22 @@ class MainFeeds extends Component {
       clearRewards,
       totalRewardAmount,
       twinkleXP
-    } = this.props
+    } = this.props;
     this.setState({
       originalTotalReward: totalRewardAmount,
       originalTwinkleXP: twinkleXP
-    })
+    });
     await changeUserXP({
       action: 'collect'
-    })
-    clearRewards()
-  }
+    });
+    clearRewards();
+  };
 
   onNewNotiAlertClick = async() => {
-    const { selectNotiTab, fetchNotifications } = this.props
-    await fetchNotifications()
-    selectNotiTab()
-  }
+    const { selectNotiTab, fetchNotifications } = this.props;
+    await fetchNotifications();
+    selectNotiTab();
+  };
 
   onLoadMore = async() => {
     const {
@@ -219,15 +219,15 @@ class MainFeeds extends Component {
       loadMoreNotifications,
       loadMoreRewards,
       activeTab
-    } = this.props
-    this.setState({ loading: true })
+    } = this.props;
+    this.setState({ loading: true });
     if (activeTab === 'notification') {
-      await loadMoreNotifications(notifications[notifications.length - 1].id)
+      await loadMoreNotifications(notifications[notifications.length - 1].id);
     } else {
-      await loadMoreRewards(rewards[rewards.length - 1].id)
+      await loadMoreRewards(rewards[rewards.length - 1].id);
     }
-    this.setState({ loading: false })
-  }
+    this.setState({ loading: false });
+  };
 }
 
 export default connect(
@@ -243,7 +243,7 @@ export default connect(
     loadMoreNotifications,
     loadMoreRewards
   }
-)(MainFeeds)
+)(MainFeeds);
 
 function renderNotificationMessage(notification, myId) {
   const {
@@ -260,16 +260,16 @@ function renderNotificationMessage(notification, myId) {
     rootCommentUploader,
     discussionTitle,
     discussionUploader
-  } = notification
-  let action = ''
+  } = notification;
+  let action = '';
   let isReplyNotification =
-    commentContent && Number(rootCommentUploader) === myId
+    commentContent && Number(rootCommentUploader) === myId;
   let isDiscussionAnswerNotification =
-    discussionTitle && discussionUploader === myId
+    discussionTitle && discussionUploader === myId;
   if (isReplyNotification) {
-    action = returnCommentActionText('reply')
+    action = returnCommentActionText('reply');
   } else if (isDiscussionAnswerNotification) {
-    action = returnCommentActionText('comment')
+    action = returnCommentActionText('comment');
   } else {
     switch (type) {
       case 'reward':
@@ -288,21 +288,21 @@ function renderNotificationMessage(notification, myId) {
             </span>{' '}
             for
           </Fragment>
-        )
-        break
+        );
+        break;
       case 'like':
-        action = 'likes'
-        break
+        action = 'likes';
+        break;
       case 'comment':
         action = returnCommentActionText(
           rootType === 'question' || rootType === 'user' ? rootType : 'comment'
-        )
-        break
+        );
+        break;
       case 'discussion':
-        action = 'added a discussion to'
-        break
+        action = 'added a discussion to';
+        break;
       default:
-        break
+        break;
     }
   }
   const target = `your ${
@@ -313,13 +313,15 @@ function renderNotificationMessage(notification, myId) {
         : rootType === 'user'
           ? 'profile'
           : rootType
-  }${rootType === 'user' && !isReplyNotification ? '' : ': '}`
+  }${rootType === 'user' && !isReplyNotification ? '' : ': '}`;
   let contentTitle = isReplyNotification
     ? commentContent
-    : (isDiscussionAnswerNotification ? discussionTitle : rootTitle) || ''
+    : (isDiscussionAnswerNotification ? discussionTitle : rootTitle) || '';
   let title =
-    contentTitle.length > 50 ? contentTitle.substr(0, 50) + '...' : contentTitle
-  if (isReplyNotification) title = `"${title}"`
+    contentTitle.length > 50
+      ? contentTitle.substr(0, 50) + '...'
+      : contentTitle;
+  if (isReplyNotification) title = `"${title}"`;
   const content = {
     title,
     id: isReplyNotification
@@ -329,7 +331,7 @@ function renderNotificationMessage(notification, myId) {
         : isDiscussionAnswerNotification
           ? discussionId
           : rootId
-  }
+  };
   return (
     <div>
       <UsernameText
@@ -351,7 +353,7 @@ function renderNotificationMessage(notification, myId) {
         />
       )}
     </div>
-  )
+  );
 
   function returnCommentActionText(type) {
     const title =
@@ -361,13 +363,13 @@ function renderNotificationMessage(notification, myId) {
           ? 'replied to'
           : type === 'question'
             ? 'answered'
-            : 'left a message on'
+            : 'left a message on';
     return (
       <ContentLink
         style={{ color: Color.green() }}
         content={{ id: contentId, title }}
         type="comment"
       />
-    )
+    );
   }
 }

@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Button from 'components/Button'
-import Icon from 'components/Icon'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'components/Button';
+import Icon from 'components/Icon';
+import { css } from 'emotion';
 
 NavButton.propTypes = {
   disabled: PropTypes.bool,
   nextSlide: PropTypes.func,
   left: PropTypes.bool
-}
+};
 
 export default function NavButton({ disabled, nextSlide, left }) {
   return disabled ? null : (
@@ -24,10 +24,10 @@ export default function NavButton({ disabled, nextSlide, left }) {
     >
       <Icon icon={left ? 'chevron-left' : 'chevron-right'} />
     </Button>
-  )
+  );
 
   function handleClick(event) {
-    event.preventDefault()
-    nextSlide()
+    event.preventDefault();
+    nextSlide();
   }
 }

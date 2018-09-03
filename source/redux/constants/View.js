@@ -4,10 +4,10 @@ const types = {
   ENABLE_AUTOSCROLL: 'ENABLE_AUTOSCROLL',
   HIDE_MOBILE_NAVBAR: 'HIDE_MOBILE_NAVBAR',
   SHOW_MOBILE_NAVBAR: 'SHOW_MOBILE_NAVBAR'
-}
+};
 
 for (let key in types) {
-  types[key] = `${types[key]}_VIEW`
+  types[key] = `${types[key]}_VIEW`;
 }
 
-export default types
+export default types;

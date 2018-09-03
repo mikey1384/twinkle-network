@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Loading from 'components/Loading'
-import Result from './Result'
-import { setResults, showMoreResults } from 'redux/actions/SearchActions'
-import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers'
-import { searchContent } from 'helpers/requestHelpers'
-import { connect } from 'react-redux'
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
-import CloseText from './CloseText'
-import LoadMoreButton from 'components/Buttons/LoadMoreButton'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Loading from 'components/Loading';
+import Result from './Result';
+import { setResults, showMoreResults } from 'redux/actions/SearchActions';
+import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
+import { searchContent } from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
+import CloseText from './CloseText';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
 class Results extends Component {
   static propTypes = {
@@ -21,58 +21,58 @@ class Results extends Component {
     results: PropTypes.array.isRequired,
     searchText: PropTypes.string.isRequired,
     setResults: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     searching: false,
     loadingMore: false
-  }
+  };
 
-  timer = null
+  timer = null;
 
   componentDidMount() {
-    const { filter, results, searchText } = this.props
+    const { filter, results, searchText } = this.props;
     if (
       !stringIsEmpty(searchText) &&
       searchText.length > 1 &&
       results.length === 0
     ) {
-      this.setState({ searching: true })
+      this.setState({ searching: true });
       this.timer = setTimeout(
         () => this.searchContent({ filter, searchText }),
         500
-      )
+      );
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { filter, searchText } = this.props
+    const { filter, searchText } = this.props;
     if (prevProps.searchText !== searchText || prevProps.filter !== filter) {
-      clearTimeout(this.timer)
-      this.setState({ searching: true })
+      clearTimeout(this.timer);
+      this.setState({ searching: true });
       this.timer = setTimeout(
         () => this.searchContent({ filter, searchText }),
         500
-      )
+      );
     }
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timer)
+    clearTimeout(this.timer);
   }
 
   render() {
-    const { loadingMore, searching } = this.state
+    const { loadingMore, searching } = this.state;
     const {
       changeFilter,
       closeSearch,
       filter,
       loadMoreButton,
       results
-    } = this.props
+    } = this.props;
     const availableFilters = ['video', 'url', 'question', 'discussion'].filter(
       availableFilter => availableFilter !== filter
-    )
+    );
     return (
       <div
         className={css`
@@ -162,19 +162,19 @@ class Results extends Component {
             />
           )}
       </div>
-    )
+    );
   }
 
   searchContent = async({ filter, searchText }) => {
-    const { dispatch, setResults } = this.props
+    const { dispatch, setResults } = this.props;
     const data = await searchContent({
       filter,
       searchText,
       dispatch
-    })
-    if (data) setResults(data)
-    return this.setState({ searching: false })
-  }
+    });
+    if (data) setResults(data);
+    return this.setState({ searching: false });
+  };
 
   loadMoreSearchResults = async() => {
     const {
@@ -183,17 +183,17 @@ class Results extends Component {
       results,
       searchText,
       showMoreResults
-    } = this.props
-    this.setState({ loadingMore: true })
+    } = this.props;
+    this.setState({ loadingMore: true });
     const data = await searchContent({
       filter,
       searchText,
       shownResults: queryStringForArray(results, 'id', 'shownResults'),
       dispatch
-    })
-    if (data) showMoreResults(data)
-    this.setState({ loadingMore: false })
-  }
+    });
+    if (data) showMoreResults(data);
+    this.setState({ loadingMore: false });
+  };
 }
 
 export default connect(
@@ -206,4 +206,4 @@ export default connect(
     showMoreResults: data => dispatch(showMoreResults(data)),
     dispatch
   })
-)(Results)
+)(Results);

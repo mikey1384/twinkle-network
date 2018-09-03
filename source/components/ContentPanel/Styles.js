@@ -1,5 +1,5 @@
-import { css } from 'react-emotion'
-import { Color, borderRadius, mobileMaxWidth } from 'constants/css'
+import { css } from 'react-emotion';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 
 export const container = css`
   background: #fff;
@@ -88,4 +88,4 @@ export const container = css`
       }
     }
   }
-`
+`;

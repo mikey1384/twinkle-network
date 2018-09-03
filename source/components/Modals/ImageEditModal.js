@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import PropTypes from 'prop-types'
-import Slider from 'rc-slider'
-import AvatarEditor from 'react-avatar-editor'
+import React, { Component } from 'react';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import PropTypes from 'prop-types';
+import Slider from 'rc-slider';
+import AvatarEditor from 'react-avatar-editor';
 
 export default class ImageEditModal extends Component {
   static propTypes = {
@@ -11,15 +11,15 @@ export default class ImageEditModal extends Component {
     onConfirm: PropTypes.func.isRequired,
     onHide: PropTypes.func.isRequired,
     processing: PropTypes.bool
-  }
+  };
 
   state = {
     imageScale: 1
-  }
+  };
 
   render() {
-    const { onHide, imageUri, onConfirm, processing } = this.props
-    const { imageScale } = this.state
+    const { onHide, imageUri, onConfirm, processing } = this.props;
+    const { imageScale } = this.state;
     return (
       <Modal onHide={onHide}>
         <header>Create Profile Picture</header>
@@ -29,7 +29,7 @@ export default class ImageEditModal extends Component {
               <div>
                 <AvatarEditor
                   ref={ref => {
-                    this.Editor = ref
+                    this.Editor = ref;
                   }}
                   image={imageUri}
                   width={350}
@@ -64,6 +64,6 @@ export default class ImageEditModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 }

@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import ExecutionEnvironment from 'exenv'
-import ButtonGroup from 'components/Buttons/ButtonGroup'
-import NavButton from './NavButton'
-import Button from 'components/Button'
-import { connect } from 'react-redux'
-import { clickSafeOn, clickSafeOff } from 'redux/actions/PlaylistActions'
+import React, { Component } from 'react';
+import ExecutionEnvironment from 'exenv';
+import ButtonGroup from 'components/Buttons/ButtonGroup';
+import NavButton from './NavButton';
+import Button from 'components/Button';
+import { connect } from 'react-redux';
+import { clickSafeOn, clickSafeOff } from 'redux/actions/PlaylistActions';
 import {
   getListStyles,
   getFrameStyles,
@@ -14,30 +14,30 @@ import {
   setInitialDimensions,
   setDimensions,
   setExternalData
-} from './helpers/styles'
-import { nextSlide, previousSlide } from './helpers/actions'
+} from './helpers/styles';
+import { nextSlide, previousSlide } from './helpers/actions';
 import {
   getTouchEvents,
   getMouseEvents,
   handleClick
-} from './helpers/interfaceEvents'
-import { css } from 'emotion'
-import ProgressBar from 'components/ProgressBar'
-import { easeInOutQuad } from 'tween-functions'
-import PropTypes from 'prop-types'
-import requestAnimationFrame from 'raf'
-import { Color } from 'constants/css'
-import { addEvent, removeEvent } from 'helpers/listenerHelpers'
+} from './helpers/interfaceEvents';
+import { css } from 'emotion';
+import ProgressBar from 'components/ProgressBar';
+import { easeInOutQuad } from 'tween-functions';
+import PropTypes from 'prop-types';
+import requestAnimationFrame from 'raf';
+import { Color } from 'constants/css';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
-const DEFAULT_STACK_BEHAVIOR = 'ADDITIVE'
-const DEFAULT_EASING = easeInOutQuad
-const DEFAULT_DURATION = 300
-const DEFAULT_DELAY = 0
+const DEFAULT_STACK_BEHAVIOR = 'ADDITIVE';
+const DEFAULT_EASING = easeInOutQuad;
+const DEFAULT_DURATION = 300;
+const DEFAULT_DELAY = 0;
 
 const stackBehavior = {
   ADDITIVE: 'ADDITIVE',
   DESTRUCTIVE: 'DESTRUCTIVE'
-}
+};
 
 class Carousel extends Component {
   static propTypes = {
@@ -55,7 +55,7 @@ class Carousel extends Component {
     slidesToScroll: PropTypes.number.isRequired,
     style: PropTypes.object,
     userIsUploader: PropTypes.bool
-  }
+  };
 
   static defaultProps = {
     afterSlide: function() {},
@@ -73,13 +73,13 @@ class Carousel extends Component {
     slideWidth: 1,
     speed: 500,
     width: '100%'
-  }
+  };
 
-  static touchObject = {}
-  static rafID = null
+  static touchObject = {};
+  static rafID = null;
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       tweenQueue: [],
       currentSlide: props.slideIndex,
@@ -90,49 +90,49 @@ class Carousel extends Component {
       slidesToScroll: props.slidesToScroll,
       slideWidth: 0,
       top: 0
-    }
+    };
   }
 
   componentDidMount() {
-    setInitialDimensions.call(this)
-    setDimensions.call(this)
-    bindListeners.call(this)
-    setExternalData.call(this)
+    setInitialDimensions.call(this);
+    setDimensions.call(this);
+    bindListeners.call(this);
+    setExternalData.call(this);
 
     function bindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
-        addEvent(window, 'resize', this.onResize)
-        addEvent(document, 'readystatechange', this.onReadyStateChange)
+        addEvent(window, 'resize', this.onResize);
+        addEvent(document, 'readystatechange', this.onReadyStateChange);
       }
     }
   }
 
   componentDidUpdate(prevProps, slideIndex) {
-    const { chatMode, searchMode } = this.props
-    if (prevProps.clickSafe !== this.props.clickSafe) return
+    const { chatMode, searchMode } = this.props;
+    if (prevProps.clickSafe !== this.props.clickSafe) return;
     if (prevProps.children.length !== this.props.children.length) {
       this.setState({
         slideCount: this.props.children.length
-      })
+      });
     }
     if (
       !chatMode &&
       !searchMode &&
       (prevProps.chatMode !== chatMode || prevProps.searchMode !== searchMode)
     ) {
-      setTimeout(setDimensions.bind(this), 0)
+      setTimeout(setDimensions.bind(this), 0);
     }
   }
 
   componentWillUnmount() {
-    unbindListeners.call(this)
-    requestAnimationFrame.cancel(this.rafID)
-    this.rafID = -1
+    unbindListeners.call(this);
+    requestAnimationFrame.cancel(this.rafID);
+    this.rafID = -1;
 
     function unbindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
-        removeEvent(window, 'resize', this.onResize)
-        removeEvent(document, 'readystatechange', this.onReadyStateChange)
+        removeEvent(window, 'resize', this.onResize);
+        removeEvent(document, 'readystatechange', this.onReadyStateChange);
       }
     }
   }
@@ -141,7 +141,7 @@ class Carousel extends Component {
     var children =
       React.Children.count(this.props.children) > 1
         ? formatChildren.call(this, this.props.children)
-        : this.props.children
+        : this.props.children;
     const {
       className,
       showAllButton,
@@ -150,16 +150,16 @@ class Carousel extends Component {
       onFinish,
       progressBar,
       style
-    } = this.props
-    const { slidesToScroll, currentSlide, slideCount } = this.state
-    const slideFraction = (currentSlide + 1) / slideCount
+    } = this.props;
+    const { slidesToScroll, currentSlide, slideCount } = this.state;
+    const slideFraction = (currentSlide + 1) / slideCount;
     return (
       <div
         className={`slider ${className} ${css`
           font-size: 1.5rem;
         `}`}
         ref={ref => {
-          this.Slider = ref
+          this.Slider = ref;
         }}
         style={{ ...getSliderStyles.call(this), ...style }}
       >
@@ -218,7 +218,7 @@ class Carousel extends Component {
         <div
           className="slider-frame"
           ref={ref => {
-            this.Frame = ref
+            this.Frame = ref;
           }}
           style={getFrameStyles.call(this)}
           {...getTouchEvents.call(this)}
@@ -228,7 +228,7 @@ class Carousel extends Component {
           <ul
             className="slider-list"
             ref={ref => {
-              this.List = ref
+              this.List = ref;
             }}
             style={getListStyles.call(this)}
           >
@@ -271,7 +271,7 @@ class Carousel extends Component {
           dangerouslySetInnerHTML={{ __html: getStyleTagStyles.call(this) }}
         />
       </div>
-    )
+    );
   }
 
   tweenState = (
@@ -287,12 +287,12 @@ class Carousel extends Component {
     }
   ) => {
     this.setState(prevState => {
-      let stateName
+      let stateName;
       // see comment below on pash hash
-      let pathHash
+      let pathHash;
       if (typeof path === 'string') {
-        stateName = path
-        pathHash = path
+        stateName = path;
+        pathHash = path;
       }
       // see the reasoning for these defaults at the top of file
       const newConfig = {
@@ -303,13 +303,13 @@ class Carousel extends Component {
         endValue: endValue,
         onEnd: onEnd,
         stackBehavior: configSB || DEFAULT_STACK_BEHAVIOR
-      }
+      };
 
-      let newTweenQueue = prevState.tweenQueue
+      let newTweenQueue = prevState.tweenQueue;
       if (newConfig.stackBehavior === stackBehavior.DESTRUCTIVE) {
         newTweenQueue = prevState.tweenQueue.filter(
           item => item.pathHash !== pathHash
-        )
+        );
       }
 
       // we store path hash, so that during value retrieval we can use hash
@@ -319,46 +319,46 @@ class Carousel extends Component {
         pathHash: pathHash,
         config: newConfig,
         initTime: Date.now() + newConfig.delay
-      })
+      });
 
       if (newTweenQueue.length === 1) {
-        this.rafID = requestAnimationFrame(this.rafCb)
+        this.rafID = requestAnimationFrame(this.rafCb);
       }
 
       return {
         tweenQueue: newTweenQueue,
         [stateName]: newConfig.endValue
-      }
-    })
-  }
+      };
+    });
+  };
 
   getTweeningValue = path => {
-    const state = this.state
+    const state = this.state;
 
-    let tweeningValue
-    let pathHash
+    let tweeningValue;
+    let pathHash;
     if (typeof path === 'string') {
-      tweeningValue = state[path]
-      pathHash = path
+      tweeningValue = state[path];
+      pathHash = path;
     } else {
-      tweeningValue = state
+      tweeningValue = state;
       for (let i = 0; i < path.length; i++) {
-        tweeningValue = tweeningValue[path[i]]
+        tweeningValue = tweeningValue[path[i]];
       }
-      pathHash = path.join('|')
+      pathHash = path.join('|');
     }
-    let now = Date.now()
+    let now = Date.now();
 
     for (let i = 0; i < state.tweenQueue.length; i++) {
-      const { pathHash: itemPathHash, initTime, config } = state.tweenQueue[i]
+      const { pathHash: itemPathHash, initTime, config } = state.tweenQueue[i];
       if (itemPathHash !== pathHash) {
-        continue
+        continue;
       }
 
       const progressTime =
         now - initTime > config.duration
           ? config.duration
-          : Math.max(0, now - initTime)
+          : Math.max(0, now - initTime);
       // `now - initTime` can be negative if initTime is scheduled in the
       // future by a delay. In this case we take 0
 
@@ -374,55 +374,55 @@ class Carousel extends Component {
               config.endValue,
               config.duration
               // TODO: some funcs accept a 5th param
-            )
-      const contrib = easeValue - config.endValue
-      tweeningValue += contrib
+            );
+      const contrib = easeValue - config.endValue;
+      tweeningValue += contrib;
     }
 
-    return tweeningValue
-  }
+    return tweeningValue;
+  };
 
   rafCb = () => {
-    const state = this.state
+    const state = this.state;
     if (state.tweenQueue.length === 0) {
-      return
+      return;
     }
 
-    const now = Date.now()
-    let newTweenQueue = []
+    const now = Date.now();
+    let newTweenQueue = [];
 
     for (let i = 0; i < state.tweenQueue.length; i++) {
-      const item = state.tweenQueue[i]
-      const { initTime, config } = item
+      const item = state.tweenQueue[i];
+      const { initTime, config } = item;
       if (now - initTime < config.duration) {
-        newTweenQueue.push(item)
+        newTweenQueue.push(item);
       } else {
-        config.onEnd && config.onEnd()
+        config.onEnd && config.onEnd();
       }
     }
 
     // onEnd might trigger a parent callback that removes this component
     // -1 means we've canceled it in componentWillUnmount
     if (this.rafID === -1) {
-      return
+      return;
     }
 
     this.setState({
       tweenQueue: newTweenQueue
-    })
+    });
 
-    this.rafID = requestAnimationFrame(this.rafCb)
-  }
+    this.rafID = requestAnimationFrame(this.rafCb);
+  };
 
   onResize = () => {
     if (!this.props.chatMode && !this.props.searchMode) {
-      setDimensions.call(this)
+      setDimensions.call(this);
     }
-  }
+  };
 
   onReadyStateChange = () => {
-    setDimensions.call(this)
-  }
+    setDimensions.call(this);
+  };
 }
 
 export default connect(
@@ -432,4 +432,4 @@ export default connect(
     clickSafe: state.PlaylistReducer.clickSafe
   }),
   { clickSafeOn, clickSafeOff }
-)(Carousel)
+)(Carousel);

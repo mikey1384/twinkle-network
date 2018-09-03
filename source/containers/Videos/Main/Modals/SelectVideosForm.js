@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import VideoThumb from './ModalVideoThumb'
-import Button from 'components/Button'
+import PropTypes from 'prop-types';
+import React from 'react';
+import VideoThumb from './ModalVideoThumb';
+import Button from 'components/Button';
 
 SelectVideosForm.propTypes = {
   loadMoreVideos: PropTypes.func,
@@ -10,7 +10,7 @@ SelectVideosForm.propTypes = {
   onDeselect: PropTypes.func.isRequired,
   selectedVideos: PropTypes.array.isRequired,
   videos: PropTypes.array.isRequired
-}
+};
 export default function SelectVideosForm({
   videos,
   selectedVideos,
@@ -38,13 +38,13 @@ export default function SelectVideosForm({
             }
             onSelect={video => onSelect(selectedVideos, video)}
             onDeselect={videoId => {
-              let selected = selectedVideos
-              const index = selected.map(video => video.id).indexOf(videoId)
-              selected.splice(index, 1)
-              onDeselect(selected)
+              let selected = selectedVideos;
+              const index = selected.map(video => video.id).indexOf(videoId);
+              selected.splice(index, 1);
+              onDeselect(selected);
             }}
           />
-        )
+        );
       })}
       {loadMoreVideosButton && (
         <div
@@ -64,5 +64,5 @@ export default function SelectVideosForm({
         </div>
       )}
     </div>
-  )
+  );
 }

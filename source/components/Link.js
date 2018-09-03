@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import { withRouter } from 'react-router'
+import PropTypes from 'prop-types';
+import React from 'react';
+import { withRouter } from 'react-router';
 
 Link.propTypes = {
   className: PropTypes.string,
@@ -11,7 +11,7 @@ Link.propTypes = {
   style: PropTypes.object,
   target: PropTypes.string,
   to: PropTypes.string
-}
+};
 function Link({
   className,
   to,
@@ -30,19 +30,19 @@ function Link({
     <div className={className} style={style}>
       {children}
     </div>
-  )
+  );
 
   function onLinkClick(event) {
-    event.preventDefault()
-    if (target) return window.open(to, target)
+    event.preventDefault();
+    if (target) return window.open(to, target);
     if (typeof onClickAsync === 'function') {
       return onClickAsync().then(clickSafe => {
-        if (!clickSafe) history.push(to)
-      })
+        if (!clickSafe) history.push(to);
+      });
     }
-    history.push(to)
-    if (onClick) onClick()
+    history.push(to);
+    if (onClick) onClick();
   }
 }
 
-export default withRouter(Link)
+export default withRouter(Link);

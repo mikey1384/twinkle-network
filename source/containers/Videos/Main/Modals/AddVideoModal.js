@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Textarea from 'components/Texts/Textarea'
-import Modal from 'components/Modal'
-import Button from 'components/Button'
-import { uploadVideo } from 'redux/actions/VideoActions'
-import { connect } from 'react-redux'
-import Input from 'components/Texts/Input'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Textarea from 'components/Texts/Textarea';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import { uploadVideo } from 'redux/actions/VideoActions';
+import { connect } from 'react-redux';
+import Input from 'components/Texts/Input';
 import {
   exceedsCharLimit,
   isValidYoutubeUrl,
@@ -13,13 +13,13 @@ import {
   addEmoji,
   finalizeEmoji,
   renderCharLimit
-} from 'helpers/stringHelpers'
+} from 'helpers/stringHelpers';
 
 class AddVideoModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
     uploadVideo: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     urlError: null,
@@ -28,21 +28,25 @@ class AddVideoModal extends Component {
       title: '',
       description: ''
     }
-  }
+  };
 
   render() {
-    const { onHide } = this.props
-    const { urlError, form, form: { title, description } } = this.state
+    const { onHide } = this.props;
+    const {
+      urlError,
+      form,
+      form: { title, description }
+    } = this.state;
     const titleExceedsCharLimit = exceedsCharLimit({
       inputType: 'title',
       contentType: 'video',
       text: title
-    })
+    });
     const descriptionExceedsCharLimit = exceedsCharLimit({
       inputType: 'description',
       contentType: 'video',
       text: description
-    })
+    });
     return (
       <Modal onHide={onHide}>
         <header>Add Videos</header>
@@ -51,7 +55,7 @@ class AddVideoModal extends Component {
             <section>
               <Input
                 ref={ref => {
-                  this.UrlField = ref
+                  this.UrlField = ref;
                 }}
                 value={form.url}
                 onChange={this.onUrlFieldChange}
@@ -86,7 +90,7 @@ class AddVideoModal extends Component {
                         ...form,
                         title: addEmoji(event.target.value)
                       }
-                    })
+                    });
                   }
                 }}
                 style={titleExceedsCharLimit}
@@ -118,7 +122,7 @@ class AddVideoModal extends Component {
                         ...form,
                         description: addEmoji(event.target.value)
                       }
-                    })
+                    });
                   }
                 }}
                 style={descriptionExceedsCharLimit}
@@ -149,38 +153,42 @@ class AddVideoModal extends Component {
           </Button>
         </footer>
       </Modal>
-    )
+    );
   }
 
   onSubmit = event => {
-    const { uploadVideo } = this.props
-    const { form: { url, title, description } } = this.state
+    const { uploadVideo } = this.props;
+    const {
+      form: { url, title, description }
+    } = this.state;
 
-    event.preventDefault()
+    event.preventDefault();
     if (!isValidYoutubeUrl(url)) {
-      this.setState({ urlError: 'That is not a valid YouTube url' })
-      return this.UrlField._rootDOMNode.focus()
+      this.setState({ urlError: 'That is not a valid YouTube url' });
+      return this.UrlField._rootDOMNode.focus();
     }
 
     uploadVideo({
       url,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description)
-    })
-  }
+    });
+  };
 
   onUrlFieldChange = text => {
-    const { form } = this.state
+    const { form } = this.state;
     this.setState({
       form: { ...form, url: text },
       urlError: null
-    })
-  }
+    });
+  };
 
   submitDisabled = () => {
-    const { form: { url, description, title } } = this.state
-    if (stringIsEmpty(url) || stringIsEmpty(title)) return true
-    if (this.urlHasError()) return true
+    const {
+      form: { url, description, title }
+    } = this.state;
+    if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
+    if (this.urlHasError()) return true;
     if (
       exceedsCharLimit({
         inputType: 'description',
@@ -188,20 +196,26 @@ class AddVideoModal extends Component {
         text: description
       })
     ) {
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   urlHasError = () => {
-    const { form: { url }, urlError } = this.state
-    if (urlError) return { color: 'red', borderColor: 'red' }
+    const {
+      form: { url },
+      urlError
+    } = this.state;
+    if (urlError) return { color: 'red', borderColor: 'red' };
     return exceedsCharLimit({
       contentType: 'video',
       inputType: 'url',
       text: url
-    })
-  }
+    });
+  };
 }
 
-export default connect(null, { uploadVideo })(AddVideoModal)
+export default connect(
+  null,
+  { uploadVideo }
+)(AddVideoModal);

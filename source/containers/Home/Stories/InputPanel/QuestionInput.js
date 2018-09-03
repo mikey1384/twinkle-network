@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { uploadContent } from 'redux/actions/FeedActions'
-import Button from 'components/Button'
-import Input from 'components/Texts/Input'
-import Textarea from 'components/Texts/Textarea'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { uploadContent } from 'redux/actions/FeedActions';
+import Button from 'components/Button';
+import Input from 'components/Texts/Input';
+import Textarea from 'components/Texts/Textarea';
 import {
   addEmoji,
   exceedsCharLimit,
@@ -12,29 +12,29 @@ import {
   finalizeEmoji,
   renderCharLimit,
   turnStringIntoQuestion
-} from 'helpers/stringHelpers'
-import { Color } from 'constants/css'
-import { PanelStyle } from './Styles'
-import { charLimit } from 'constants/defaultValues'
+} from 'helpers/stringHelpers';
+import { Color } from 'constants/css';
+import { PanelStyle } from './Styles';
+import { charLimit } from 'constants/defaultValues';
 
 class QuestionInput extends Component {
   static propTypes = {
     uploadContent: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     question: '',
     description: '',
     descriptionInputShown: false
-  }
+  };
 
   render() {
-    const { description, descriptionInputShown, question } = this.state
+    const { description, descriptionInputShown, question } = this.state;
     const descriptionExceedsCharLimit = exceedsCharLimit({
       contentType: 'question',
       inputType: 'description',
       text: description
-    })
+    });
     return (
       <div className={PanelStyle}>
         <p>
@@ -93,7 +93,7 @@ class QuestionInput extends Component {
                       ...this.state.form,
                       description: addEmoji(event.target.value)
                     }
-                  })
+                  });
                 }
               }}
             />
@@ -121,43 +121,43 @@ class QuestionInput extends Component {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   buttonDisabled = () => {
-    const { question, description } = this.state
-    if (question.length > charLimit.question.title) return true
-    if (description.length > charLimit.question.description) return true
-    return false
-  }
+    const { question, description } = this.state;
+    if (question.length > charLimit.question.title) return true;
+    if (description.length > charLimit.question.description) return true;
+    return false;
+  };
 
   onInputChange = text => {
     this.setState({
       question: text,
       descriptionInputShown: text.length > 0
-    })
-  }
+    });
+  };
 
   onSubmit = async event => {
-    const { uploadContent } = this.props
-    const { question, description } = this.state
-    event.preventDefault()
+    const { uploadContent } = this.props;
+    const { question, description } = this.state;
+    event.preventDefault();
     if (stringIsEmpty(question) || question.length > charLimit.question.title) {
-      return
+      return;
     }
     await uploadContent({
       title: turnStringIntoQuestion(question),
       description: finalizeEmoji(description)
-    })
+    });
     this.setState({
       question: '',
       description: '',
       descriptionInputShown: false
-    })
-  }
+    });
+  };
 }
 
 export default connect(
   null,
   { uploadContent }
-)(QuestionInput)
+)(QuestionInput);

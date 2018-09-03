@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import onClickOutside from 'react-onclickoutside'
-import Input from './Input'
-import { cleanString, addEmoji, finalizeEmoji } from 'helpers/stringHelpers'
-import { edit } from 'constants/placeholders'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import onClickOutside from 'react-onclickoutside';
+import Input from './Input';
+import { cleanString, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
+import { edit } from 'constants/placeholders';
 
 class EditTitleForm extends Component {
   static propTypes = {
@@ -13,22 +13,22 @@ class EditTitleForm extends Component {
     onEditSubmit: PropTypes.func.isRequired,
     style: PropTypes.object,
     title: PropTypes.string.isRequired
-  }
+  };
 
   handleClickOutside = event => {
-    this.props.onClickOutSide()
-  }
+    this.props.onClickOutSide();
+  };
 
   constructor(props) {
-    super()
+    super();
     this.state = {
       title: cleanString(props.title)
-    }
+    };
   }
 
   render() {
-    const { title } = this.state
-    const { style, autoFocus, maxLength = 100 } = this.props
+    const { title } = this.state;
+    const { style, autoFocus, maxLength = 100 } = this.props;
     return (
       <form style={style} onSubmit={event => this.onEditSubmit(event, title)}>
         <Input
@@ -54,19 +54,19 @@ class EditTitleForm extends Component {
           </small>
         </div>
       </form>
-    )
+    );
   }
 
   onEditSubmit = (event, title) => {
-    const { onEditSubmit, onClickOutSide, maxLength = 100 } = this.props
-    event.preventDefault()
-    if (title && title.length > maxLength) return
+    const { onEditSubmit, onClickOutSide, maxLength = 100 } = this.props;
+    event.preventDefault();
+    if (title && title.length > maxLength) return;
     if (title && title !== this.props.title) {
-      onEditSubmit(finalizeEmoji(title))
+      onEditSubmit(finalizeEmoji(title));
     } else {
-      onClickOutSide()
+      onClickOutSide();
     }
-  }
+  };
 }
 
-export default onClickOutside(EditTitleForm)
+export default onClickOutside(EditTitleForm);

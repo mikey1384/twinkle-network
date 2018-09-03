@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
-import request from 'axios'
-import { URL } from 'constants/URL'
-import { css } from 'emotion'
-import { Color } from 'constants/css'
+import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
+import request from 'axios';
+import { URL } from 'constants/URL';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
 
-const API_URL = `${URL}/content`
+const API_URL = `${URL}/content`;
 
 export default class Embedly extends Component {
   static propTypes = {
@@ -17,12 +17,12 @@ export default class Embedly extends Component {
     thumbUrl: PropTypes.string,
     title: PropTypes.string,
     url: PropTypes.string.isRequired
-  }
+  };
 
-  fallbackImage = '/img/link.png'
+  fallbackImage = '/img/link.png';
 
   constructor({ thumbUrl, actualTitle, actualDescription, siteUrl }) {
-    super()
+    super();
     this.state = {
       imageUrl: thumbUrl
         ? thumbUrl.replace('http://', 'https://')
@@ -30,58 +30,58 @@ export default class Embedly extends Component {
       title: actualTitle,
       description: actualDescription,
       site: siteUrl
-    }
+    };
   }
 
   async componentDidMount() {
-    this.mounted = true
-    const { id, siteUrl, url } = this.props
+    this.mounted = true;
+    const { id, siteUrl, url } = this.props;
     if (url && !siteUrl) {
       try {
         const {
           data: { image, title, description, site }
-        } = await request.put(`${API_URL}/embed`, { url, linkId: id })
+        } = await request.put(`${API_URL}/embed`, { url, linkId: id });
         if (this.mounted) {
           this.setState({
             imageUrl: image.url.replace('http://', 'https://'),
             title,
             description,
             site
-          })
+          });
         }
       } catch (error) {
-        console.error(error.response || error)
+        console.error(error.response || error);
       }
     }
   }
 
   async componentDidUpdate(prevProps) {
-    const { id, url } = this.props
+    const { id, url } = this.props;
     if (url && prevProps.url !== url) {
       try {
         const {
           data: { image, title, description, site }
-        } = await request.put(`${API_URL}/embed`, { url, linkId: id })
+        } = await request.put(`${API_URL}/embed`, { url, linkId: id });
         if (this.mounted) {
           this.setState({
             imageUrl: image.url.replace('http://', 'https://'),
             title,
             description,
             site
-          })
+          });
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
   }
 
   componentWillUnmount() {
-    this.mounted = false
+    this.mounted = false;
   }
 
   render() {
-    const { noLink, small, style, url } = this.props
+    const { noLink, small, style, url } = this.props;
     const contentCss = css`
       display: flex;
       justify-content: center;
@@ -91,7 +91,7 @@ export default class Embedly extends Component {
       position: relative;
       overflow: hidden;
       ${!small ? 'flex-direction: column;' : ''};
-    `
+    `;
     return (
       <div
         className={css`
@@ -122,20 +122,20 @@ export default class Embedly extends Component {
           </a>
         )}
       </div>
-    )
+    );
   }
 
   onImageLoadError = () => {
-    const { thumbUrl } = this.props
+    const { thumbUrl } = this.props;
     this.setState(state => ({
       imageUrl:
         !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
-    }))
-  }
+    }));
+  };
 
   renderInner = () => {
-    const { imageUrl, description, title, site } = this.state
-    const { small } = this.props
+    const { imageUrl, description, title, site } = this.state;
+    const { small } = this.props;
     return (
       <Fragment>
         <section
@@ -174,6 +174,6 @@ export default class Embedly extends Component {
           <p style={{ fontWeight: 'bold' }}>{site}</p>
         </section>
       </Fragment>
-    )
-  }
+    );
+  };
 }

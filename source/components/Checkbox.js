@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { innerBorderRadius, Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { innerBorderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 Checkbox.propTypes = {
   backgroundColor: PropTypes.string,
@@ -10,7 +10,7 @@ Checkbox.propTypes = {
   onClick: PropTypes.func.isRequired,
   style: PropTypes.object,
   textIsClickable: PropTypes.bool
-}
+};
 export default function Checkbox({
   backgroundColor = Color.wellGray(),
   checked,
@@ -74,5 +74,5 @@ export default function Checkbox({
         )}
       </div>
     </div>
-  )
+  );
 }

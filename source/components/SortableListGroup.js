@@ -1,18 +1,18 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-touch-backend'
-import SortableListItem from './SortableListItem'
-import { borderRadius, Color } from 'constants/css'
-import { css } from 'emotion'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-touch-backend';
+import SortableListItem from './SortableListItem';
+import { borderRadius, Color } from 'constants/css';
+import { css } from 'emotion';
 
 class SortableListGroup extends Component {
   static propTypes = {
     listItems: PropTypes.array.isRequired,
     onMove: PropTypes.func.isRequired
-  }
+  };
   render() {
-    const { listItems, onMove } = this.props
+    const { listItems, onMove } = this.props;
     return (
       <div
         className={css`
@@ -46,11 +46,11 @@ class SortableListGroup extends Component {
               item={item}
               onMove={onMove}
             />
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 }
 
-export default DragDropContext(HTML5Backend)(SortableListGroup)
+export default DragDropContext(HTML5Backend)(SortableListGroup);

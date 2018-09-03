@@ -1,25 +1,25 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Playlist from 'components/Playlist'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Playlist from 'components/Playlist';
 
 export default class Content extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired
-  }
+  };
 
   state = {
     background: null,
     title: ''
-  }
+  };
 
   render() {
     const {
       match: {
         params: { contentId }
       }
-    } = this.props
-    const { title } = this.state
-    const { background } = this.state
+    } = this.props;
+    const { title } = this.state;
+    const { background } = this.state;
     return (
       <div
         style={{
@@ -39,6 +39,6 @@ export default class Content extends Component {
           />
         </div>
       </div>
-    )
+    );
   }
 }

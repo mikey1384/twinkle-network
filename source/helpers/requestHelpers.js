@@ -1,40 +1,40 @@
 /* global localStorage */
-import { logout, openSigninModal } from 'redux/actions/UserActions'
-import request from 'axios'
-import { URL } from 'constants/URL'
+import { logout, openSigninModal } from 'redux/actions/UserActions';
+import request from 'axios';
+import { URL } from 'constants/URL';
 
 export const token = () =>
-  typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
 
 export const auth = () => ({
   headers: {
     authorization: token()
   }
-})
+});
 
 export function handleError(error, dispatch) {
   if (error.response) {
-    const { status } = error.response
+    const { status } = error.response;
     if (status === 401) {
-      dispatch(logout())
-      dispatch(openSigninModal())
+      dispatch(logout());
+      dispatch(openSigninModal());
     }
     if (status === 301) {
-      window.location.reload()
+      window.location.reload();
     }
   }
-  console.error(error.response || error)
-  return Promise.reject(error)
+  console.error(error.response || error);
+  return Promise.reject(error);
 }
 
 export const deleteContent = async({ id, type, dispatch }) => {
   try {
-    await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth())
-    return Promise.resolve()
+    await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth());
+    return Promise.resolve();
   } catch (error) {
-    return handleError(error, dispatch)
+    return handleError(error, dispatch);
   }
-}
+};
 
 export const editContent = async({
   params: {
@@ -61,23 +61,23 @@ export const editContent = async({
         type
       },
       auth()
-    )
-    return Promise.resolve(data)
+    );
+    return Promise.resolve(data);
   } catch (error) {
-    return handleError(error, dispatch)
+    return handleError(error, dispatch);
   }
-}
+};
 
 export const likeContent = async({ id, type, dispatch }) => {
   try {
     const {
       data: { likes }
-    } = await request.post(`${URL}/content/like`, { id, type }, auth())
-    return Promise.resolve(likes)
+    } = await request.post(`${URL}/content/like`, { id, type }, auth());
+    return Promise.resolve(likes);
   } catch (error) {
-    return handleError(error, dispatch)
+    return handleError(error, dispatch);
   }
-}
+};
 
 export const loadComments = async({ id, type, lastCommentId, limit }) => {
   try {
@@ -85,13 +85,13 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
       data: { comments, loadMoreButton }
     } = await request.get(
       `${URL}/content/comments?contentId=${id}&type=${type}&lastCommentId=${lastCommentId}&limit=${limit}`
-    )
-    return Promise.resolve({ comments, loadMoreButton })
+    );
+    return Promise.resolve({ comments, loadMoreButton });
   } catch (error) {
-    console.error(error.response || error)
-    return Promise.reject(error)
+    console.error(error.response || error);
+    return Promise.reject(error);
   }
-}
+};
 
 export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
   try {
@@ -99,12 +99,12 @@ export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
       `${URL}/content/newFeeds?lastInteraction=${lastInteraction}${
         shownFeeds ? `&${shownFeeds}` : ''
       }`
-    )
-    return Promise.resolve(data)
+    );
+    return Promise.resolve(data);
   } catch (error) {
-    console.error(error.response || error)
+    console.error(error.response || error);
   }
-}
+};
 
 export const searchContent = async({
   filter,
@@ -117,12 +117,12 @@ export const searchContent = async({
       `${URL}/content/search?filter=${filter}&searchText=${searchText}${
         shownResults ? `&${shownResults}` : ''
       }`
-    )
-    return Promise.resolve(data)
+    );
+    return Promise.resolve(data);
   } catch (error) {
-    return handleError(error, dispatch)
+    return handleError(error, dispatch);
   }
-}
+};
 
 export const setDefaultSearchFilter = async({ filter, dispatch }) => {
   try {
@@ -130,12 +130,12 @@ export const setDefaultSearchFilter = async({ filter, dispatch }) => {
       `${URL}/user/searchFilter`,
       { filter },
       auth()
-    )
-    return Promise.resolve(data)
+    );
+    return Promise.resolve(data);
   } catch (error) {
-    return handleError(error, dispatch)
+    return handleError(error, dispatch);
   }
-}
+};
 
 export const uploadComment = async({
   content,
@@ -149,9 +149,9 @@ export const uploadComment = async({
       `${URL}/content/comments`,
       { content, parent, rootCommentId, targetCommentId },
       auth()
-    )
-    return Promise.resolve(data)
+    );
+    return Promise.resolve(data);
   } catch (error) {
-    return handleError(error, dispatch)
+    return handleError(error, dispatch);
   }
-}
+};

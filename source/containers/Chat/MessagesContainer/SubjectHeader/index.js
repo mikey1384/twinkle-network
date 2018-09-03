@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import Button from 'components/Button'
-import { cleanString } from 'helpers/stringHelpers'
-import Loading from 'components/Loading'
-import { connect } from 'react-redux'
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import Button from 'components/Button';
+import { cleanString } from 'helpers/stringHelpers';
+import Loading from 'components/Loading';
+import { connect } from 'react-redux';
 import {
   clearSubjectSearchResults,
   loadChatSubject,
@@ -11,16 +11,16 @@ import {
   uploadChatSubject,
   changeChatSubject,
   searchChatSubject
-} from 'redux/actions/ChatActions'
-import { textIsOverflown } from 'helpers/domHelpers'
-import FullTextReveal from 'components/FullTextReveal'
-import UsernameText from 'components/Texts/UsernameText'
-import { timeSince } from 'helpers/timeStampHelpers'
-import EditSubjectForm from './EditSubjectForm'
-import { socket } from 'constants/io'
-import { charLimit, defaultChatSubject } from 'constants/defaultValues'
-import { Color, mobileMaxWidth } from 'constants/css'
-import { css } from 'emotion'
+} from 'redux/actions/ChatActions';
+import { textIsOverflown } from 'helpers/domHelpers';
+import FullTextReveal from 'components/FullTextReveal';
+import UsernameText from 'components/Texts/UsernameText';
+import { timeSince } from 'helpers/timeStampHelpers';
+import EditSubjectForm from './EditSubjectForm';
+import { socket } from 'constants/io';
+import { charLimit, defaultChatSubject } from 'constants/defaultValues';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 class SubjectHeader extends Component {
   static propTypes = {
@@ -35,26 +35,26 @@ class SubjectHeader extends Component {
     searchChatSubject: PropTypes.func,
     subjectSearchResults: PropTypes.array,
     uploadChatSubject: PropTypes.func
-  }
+  };
 
   state = {
     loaded: false,
     onHover: false,
     onEdit: false
-  }
+  };
 
   componentDidMount() {
-    const { loadChatSubject } = this.props
-    this.mounted = true
-    socket.on('subject_change', this.onSubjectChange)
+    const { loadChatSubject } = this.props;
+    this.mounted = true;
+    socket.on('subject_change', this.onSubjectChange);
     return loadChatSubject().then(() => {
-      if (this.mounted) this.setState({ loaded: true })
-    })
+      if (this.mounted) this.setState({ loaded: true });
+    });
   }
 
   componentWillUnmount() {
-    this.mounted = false
-    socket.removeListener('subject_change', this.onSubjectChange)
+    this.mounted = false;
+    socket.removeListener('subject_change', this.onSubjectChange);
   }
 
   render() {
@@ -63,9 +63,9 @@ class SubjectHeader extends Component {
       subject: { id: subjectId, content = defaultChatSubject },
       searchChatSubject,
       subjectSearchResults
-    } = this.props
-    const { loaded, onHover, onEdit } = this.state
-    const subjectTitle = cleanString(content)
+    } = this.props;
+    const { loaded, onHover, onEdit } = this.state;
+    const subjectTitle = cleanString(content);
     return (
       <div
         className={css`
@@ -111,7 +111,7 @@ class SubjectHeader extends Component {
                     onMouseOver={this.onMouseOver}
                     onMouseLeave={() => this.setState({ onHover: false })}
                     ref={ref => {
-                      this.headerLabel = ref
+                      this.headerLabel = ref;
                     }}
                   >
                     {subjectTitle}
@@ -144,8 +144,8 @@ class SubjectHeader extends Component {
                 onEditSubmit={this.onSubjectSubmit}
                 onChange={text => searchChatSubject(text)}
                 onClickOutSide={() => {
-                  this.setState({ onEdit: false })
-                  clearSubjectSearchResults()
+                  this.setState({ onEdit: false });
+                  clearSubjectSearchResults();
                 }}
                 reloadChatSubject={this.onReloadChatSubject}
                 searchResults={subjectSearchResults}
@@ -161,38 +161,38 @@ class SubjectHeader extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 
   onMouseOver = () => {
     if (textIsOverflown(this.headerLabel)) {
-      this.setState({ onHover: true })
+      this.setState({ onHover: true });
     }
-  }
+  };
 
   onSubjectChange = ({ subject }) => {
-    const { changeChatSubject } = this.props
-    changeChatSubject(subject)
-  }
+    const { changeChatSubject } = this.props;
+    changeChatSubject(subject);
+  };
 
   onReloadChatSubject = subjectId => {
-    const { reloadChatSubject, clearSubjectSearchResults } = this.props
+    const { reloadChatSubject, clearSubjectSearchResults } = this.props;
     return reloadChatSubject(subjectId).then(
       ({ subjectId, message, subject }) => {
-        socket.emit('new_subject', { subject, message })
+        socket.emit('new_subject', { subject, message });
         if (this.mounted) {
-          this.setState({ onEdit: false })
+          this.setState({ onEdit: false });
         }
-        clearSubjectSearchResults()
+        clearSubjectSearchResults();
       }
-    )
-  }
+    );
+  };
 
   onSubjectSubmit = text => {
-    const { uploadChatSubject, username, userId, profilePicId } = this.props
-    const content = `${text[0].toUpperCase()}${text.slice(1)}`
+    const { uploadChatSubject, username, userId, profilePicId } = this.props;
+    const content = `${text[0].toUpperCase()}${text.slice(1)}`;
     return uploadChatSubject(text).then(subjectId => {
-      const timeStamp = Math.floor(Date.now() / 1000)
+      const timeStamp = Math.floor(Date.now() / 1000);
       const subject = {
         id: subjectId,
         userId,
@@ -202,7 +202,7 @@ class SubjectHeader extends Component {
         uploader: { id: userId, username },
         content,
         timeStamp
-      }
+      };
       const message = {
         profilePicId,
         userId,
@@ -211,25 +211,25 @@ class SubjectHeader extends Component {
         isSubject: true,
         channelId: 2,
         timeStamp
-      }
-      socket.emit('new_subject', { subject, message })
-      if (this.mounted) this.setState({ onEdit: false })
-    })
-  }
+      };
+      socket.emit('new_subject', { subject, message });
+      if (this.mounted) this.setState({ onEdit: false });
+    });
+  };
 
   renderDetails = () => {
     const {
       subject: { uploader = {}, reloader = {}, timeStamp, reloadTimeStamp }
-    } = this.props
-    const isReloaded = reloader && reloader.id
+    } = this.props;
+    const isReloaded = reloader && reloader.id;
     let posterString =
-      'You can change this subject by clicking the blue "Change the subject" button'
+      'You can change this subject by clicking the blue "Change the subject" button';
     if (uploader.id) {
       posterString = (
         <span>
           Started by <UsernameText user={uploader} /> {timeSince(timeStamp)}
         </span>
-      )
+      );
     }
     if (isReloaded) {
       posterString = (
@@ -238,7 +238,7 @@ class SubjectHeader extends Component {
           {timeSince(reloadTimeStamp)} (started by{' '}
           {<UsernameText user={uploader} />})
         </span>
-      )
+      );
     }
     return (
       <Fragment>
@@ -252,8 +252,8 @@ class SubjectHeader extends Component {
           </small>
         )}
       </Fragment>
-    )
-  }
+    );
+  };
 }
 
 export default connect(
@@ -272,4 +272,4 @@ export default connect(
     uploadChatSubject,
     searchChatSubject
   }
-)(SubjectHeader)
+)(SubjectHeader);
