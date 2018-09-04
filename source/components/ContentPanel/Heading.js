@@ -180,7 +180,7 @@ class Heading extends Component {
               style={{ color: Color.green() }}
             />
             &nbsp;on {contentLabel}:{' '}
-            <ContentLink content={rootObj} type={rootType} />
+            <ContentLink content={rootObj} type={rootType} />{' '}
           </Fragment>
         );
       default:

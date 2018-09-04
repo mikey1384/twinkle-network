@@ -13,6 +13,8 @@ import request from 'axios';
 import { URL } from 'constants/URL';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
+import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
+import { loadVideos, searchContent } from 'helpers/requestHelpers';
 
 class EditPlaylistModal extends Component {
   static propTypes = {
@@ -30,35 +32,27 @@ class EditPlaylistModal extends Component {
     isSaving: false,
     searchedVideos: [],
     selectedVideos: [],
-    loadMoreButtonShown: false,
+    loadMoreButton: false,
+    searchLoadMoreButton: false,
     mainTabActive: true,
     searchText: ''
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { modalType, playlistId } = this.props;
-    return Promise.all([
-      request.get(
-        `${URL}/playlist/playlist?noLimit=1&playlistId=${playlistId}`
-      ),
-      modalType === 'change'
-        ? request.get(`${URL}/video?numberToLoad=18`)
-        : Promise.resolve({ data: [] })
-    ])
-      .then(([{ data: { videos: selectedVideos } }, { data: allVideos }]) => {
-        let loadMoreButtonShown = false;
-        if (allVideos.length > 18) {
-          allVideos.pop();
-          loadMoreButtonShown = true;
-        }
-        this.setState({
-          selectedVideos,
-          allVideos,
-          loadMoreButtonShown,
-          loaded: true
-        });
-      })
-      .catch(error => console.error(error.response || error));
+    const {
+      data: { videos: selectedVideos }
+    } = await request.get(
+      `${URL}/playlist/playlist?noLimit=1&playlistId=${playlistId}`
+    );
+    const { videos, loadMoreButton } =
+      modalType === 'change' ? await loadVideos({ limit: 18 }) : {};
+    this.setState({
+      selectedVideos,
+      allVideos: videos,
+      loadMoreButton,
+      loaded: true
+    });
   }
 
   render() {
@@ -69,7 +63,8 @@ class EditPlaylistModal extends Component {
       mainTabActive,
       searchText,
       loaded,
-      loadMoreButtonShown,
+      loadMoreButton,
+      searchLoadMoreButton,
       searchedVideos,
       allVideos
     } = this.state;
@@ -112,9 +107,13 @@ class EditPlaylistModal extends Component {
           {mainTabActive &&
             modalType === 'change' && (
               <SelectVideosForm
-                videos={searchText ? searchedVideos : allVideos}
+                videos={!stringIsEmpty(searchText) ? searchedVideos : allVideos}
                 selectedVideos={selectedVideos}
-                loadMoreVideosButton={searchText ? false : loadMoreButtonShown}
+                loadMoreVideosButton={
+                  !stringIsEmpty(searchText)
+                    ? searchLoadMoreButton
+                    : loadMoreButton
+                }
                 onSelect={(selected, video) =>
                   this.setState({ selectedVideos: [video].concat(selected) })
                 }
@@ -196,26 +195,28 @@ class EditPlaylistModal extends Component {
     onHide();
   };
 
-  loadMoreVideos = () => {
-    const { allVideos } = this.state;
-    request
-      .get(
-        `${URL}/video?numberToLoad=18&videoId=${
-          allVideos[allVideos.length - 1].id
-        }`
-      )
-      .then(({ data: videos }) => {
-        let loadMoreButtonShown = false;
-        if (videos.length > 18) {
-          videos.pop();
-          loadMoreButtonShown = true;
-        }
-        this.setState({
-          allVideos: allVideos.concat(videos),
-          loadMoreButtonShown
-        });
-      })
-      .catch(error => console.error(error.response || error));
+  loadMoreVideos = async() => {
+    const { allVideos, searchedVideos, searchText } = this.state;
+    if (!stringIsEmpty(searchText)) {
+      const { results, loadMoreButton } = await searchContent({
+        filter: 'video',
+        searchText,
+        shownResults: queryStringForArray(searchedVideos, 'id', 'shownResults')
+      });
+      this.setState(state => ({
+        searchedVideos: state.searchedVideos.concat(results),
+        searchLoadMoreButton: loadMoreButton
+      }));
+    } else {
+      const { videos, loadMoreButton } = await loadVideos({
+        limit: 18,
+        videoId: allVideos[allVideos.length - 1].id
+      });
+      this.setState(state => ({
+        allVideos: state.allVideos.concat(videos),
+        loadMoreButton
+      }));
+    }
   };
 
   onVideoSearchInput = text => {
@@ -225,14 +226,11 @@ class EditPlaylistModal extends Component {
   };
 
   searchVideo = async text => {
-    try {
-      const { data: searchedVideos } = await request.get(
-        `${URL}/playlist/search/video?query=${text}`
-      );
-      this.setState({ searchedVideos });
-    } catch (error) {
-      console.error(error.response || error);
-    }
+    const { results: searchedVideos, loadMoreButton } = await searchContent({
+      filter: 'video',
+      searchText: text
+    });
+    this.setState({ searchedVideos, searchLoadMoreButton: loadMoreButton });
   };
 }
 

@@ -9,6 +9,7 @@ import {
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
+  queryStringForArray,
   renderCharLimit
 } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
@@ -16,10 +17,9 @@ import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-touch-backend';
 import SelectVideosForm from './SelectVideosForm';
-import request from 'axios';
-import { URL } from 'constants/URL';
 import Input from 'components/Texts/Input';
 import SearchInput from 'components/Texts/SearchInput';
+import { loadVideos, searchContent } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 
 class AddPlaylistModal extends Component {
@@ -38,27 +38,17 @@ class AddPlaylistModal extends Component {
     allVideos: [],
     searchedVideos: [],
     selectedVideos: [],
-    loadMoreButtonShown: false,
+    loadMoreButton: false,
+    searchLoadMoreButton: false,
     searchText: ''
   };
 
   async componentDidMount() {
-    try {
-      const { data: allVideos } = await request.get(
-        `${URL}/video?numberToLoad=18`
-      );
-      let loadMoreButtonShown = false;
-      if (allVideos.length > 18) {
-        allVideos.pop();
-        loadMoreButtonShown = true;
-      }
-      this.setState({
-        allVideos,
-        loadMoreButtonShown
-      });
-    } catch (error) {
-      console.error(error.response || error);
-    }
+    const { videos, loadMoreButton } = await loadVideos({ limit: 18 });
+    this.setState({
+      allVideos: videos,
+      loadMoreButton
+    });
   }
 
   render() {
@@ -68,11 +58,12 @@ class AddPlaylistModal extends Component {
       section,
       title,
       description,
-      loadMoreButtonShown,
+      loadMoreButton,
       allVideos,
       searchedVideos,
       selectedVideos,
-      searchText
+      searchText,
+      searchLoadMoreButton
     } = this.state;
     const titleExceedsCharLimit = exceedsCharLimit({
       contentType: 'playlist',
@@ -168,9 +159,13 @@ class AddPlaylistModal extends Component {
                 onChange={this.onVideoSearchInput}
               />
               <SelectVideosForm
-                videos={searchText ? searchedVideos : allVideos}
+                videos={!stringIsEmpty(searchText) ? searchedVideos : allVideos}
                 selectedVideos={selectedVideos}
-                loadMoreVideosButton={searchText ? false : loadMoreButtonShown}
+                loadMoreVideosButton={
+                  !stringIsEmpty(searchText)
+                    ? searchLoadMoreButton
+                    : loadMoreButton
+                }
                 onSelect={(selected, video) =>
                   this.setState({
                     selectedVideos: selected.concat([video])
@@ -290,26 +285,28 @@ class AddPlaylistModal extends Component {
     onHide();
   };
 
-  loadMoreVideos = () => {
-    const { allVideos } = this.state;
-    request
-      .get(
-        `${URL}/video?numberToLoad=18&videoId=${
-          allVideos[allVideos.length - 1].id
-        }`
-      )
-      .then(({ data: videos }) => {
-        let loadMoreButtonShown = false;
-        if (videos.length > 18) {
-          videos.pop();
-          loadMoreButtonShown = true;
-        }
-        this.setState({
-          allVideos: allVideos.concat(videos),
-          loadMoreButtonShown
-        });
-      })
-      .catch(error => console.error(error.response || error));
+  loadMoreVideos = async() => {
+    const { allVideos, searchedVideos, searchText } = this.state;
+    if (!stringIsEmpty(searchText)) {
+      const { results, loadMoreButton } = await searchContent({
+        filter: 'video',
+        searchText,
+        shownResults: queryStringForArray(searchedVideos, 'id', 'shownResults')
+      });
+      this.setState(state => ({
+        searchedVideos: state.searchedVideos.concat(results),
+        searchLoadMoreButton: loadMoreButton
+      }));
+    } else {
+      const { videos, loadMoreButton } = await loadVideos({
+        limit: 18,
+        videoId: allVideos[allVideos.length - 1].id
+      });
+      this.setState(state => ({
+        allVideos: state.allVideos.concat(videos),
+        loadMoreButton
+      }));
+    }
   };
 
   onVideoSearchInput = text => {
@@ -319,14 +316,11 @@ class AddPlaylistModal extends Component {
   };
 
   searchVideo = async text => {
-    try {
-      const { data: searchedVideos } = await request.get(
-        `${URL}/playlist/search/video?query=${text}`
-      );
-      this.setState({ searchedVideos });
-    } catch (error) {
-      console.error(error.response || error);
-    }
+    const { results: searchedVideos, loadMoreButton } = await searchContent({
+      filter: 'video',
+      searchText: text
+    });
+    this.setState({ searchedVideos, searchLoadMoreButton: loadMoreButton });
   };
 }
 

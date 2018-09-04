@@ -14,11 +14,14 @@ export const attachStar = data => ({
 
 export const getInitialVideos = () => async dispatch => {
   try {
-    const { data } = await request.get(API_URL);
+    const {
+      data: { videos, loadMoreButton }
+    } = await request.get(API_URL);
     dispatch({
       type: VIDEO.LOAD,
       initialRun: true,
-      videos: data
+      loadMoreButton,
+      videos
     });
   } catch (error) {
     handleError(error, dispatch);
@@ -165,11 +168,14 @@ export const fillCurrentVideoSlot = videoId => ({
 
 export const getMoreVideos = videoId => async dispatch => {
   try {
-    const { data } = await request.get(`${API_URL}?videoId=${videoId}`);
+    const {
+      data: { videos, loadMoreButton }
+    } = await request.get(`${API_URL}?videoId=${videoId}`);
     dispatch({
       type: VIDEO.LOAD,
       initialRun: false,
-      videos: data
+      loadMoreButton,
+      videos
     });
     return Promise.resolve();
   } catch (error) {

@@ -15,7 +15,6 @@ class Results extends Component {
   static propTypes = {
     changeFilter: PropTypes.func.isRequired,
     closeSearch: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
     filter: PropTypes.string.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
     results: PropTypes.array.isRequired,
@@ -166,30 +165,22 @@ class Results extends Component {
   }
 
   searchContent = async({ filter, searchText }) => {
-    const { dispatch, setResults } = this.props;
+    const { setResults } = this.props;
     const data = await searchContent({
       filter,
-      searchText,
-      dispatch
+      searchText
     });
     if (data) setResults(data);
     return this.setState({ searching: false });
   };
 
   loadMoreSearchResults = async() => {
-    const {
-      dispatch,
-      filter,
-      results,
-      searchText,
-      showMoreResults
-    } = this.props;
+    const { filter, results, searchText, showMoreResults } = this.props;
     this.setState({ loadingMore: true });
     const data = await searchContent({
       filter,
       searchText,
-      shownResults: queryStringForArray(results, 'id', 'shownResults'),
-      dispatch
+      shownResults: queryStringForArray(results, 'id', 'shownResults')
     });
     if (data) showMoreResults(data);
     this.setState({ loadingMore: false });
@@ -201,9 +192,5 @@ export default connect(
     loadMoreButton: state.SearchReducer.loadMoreButton,
     results: state.SearchReducer.results
   }),
-  dispatch => ({
-    setResults: data => dispatch(setResults(data)),
-    showMoreResults: data => dispatch(showMoreResults(data)),
-    dispatch
-  })
+  { setResults, showMoreResults }
 )(Results);

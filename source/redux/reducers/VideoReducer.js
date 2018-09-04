@@ -19,9 +19,7 @@ const defaultState = {
 };
 
 export default function VideoReducer(state = defaultState, action) {
-  let loadMoreButton = false;
   let loadMoreDiscussionsButton = false;
-  let allVideosLoaded = false;
   switch (action.type) {
     case VIDEO.ATTACH_STAR:
       return {
@@ -235,21 +233,14 @@ export default function VideoReducer(state = defaultState, action) {
         currentVideoSlot: action.videoId
       };
     case VIDEO.LOAD:
-      if (action.videos.length > 12) {
-        action.videos.pop();
-        loadMoreButton = true;
-      } else {
-        allVideosLoaded = true;
-        loadMoreButton = false;
-      }
       return {
         ...state,
         loaded: true,
         allVideoThumbs: action.initialRun
           ? action.videos
           : state.allVideoThumbs.concat(action.videos),
-        loadMoreButton,
-        allVideosLoaded
+        loadMoreButton: action.loadMoreButton,
+        allVideosLoaded: !action.loadMoreButton
       };
     case VIDEO.EDIT_TITLE:
       return {

@@ -31,6 +31,7 @@ import {
   deleteVideoDiscussion,
   uploadReply
 } from 'redux/actions/VideoActions';
+import Link from 'components/Link';
 import { loadComments } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
@@ -132,14 +133,16 @@ class DiscussionPanel extends Component {
               display: flex;
               justify-content: space-between;
               align-items: center;
-              p {
+              a {
                 font-size: 2.5rem;
                 color: ${Color.green()};
                 font-weight: bold;
               }
             `}
           >
-            {!onEdit && <p>{cleanString(title)}</p>}
+            {!onEdit && (
+              <Link to={`/discussions/${id}`}>{cleanString(title)}</Link>
+            )}
             {editButtonEnabled &&
               !onEdit && (
                 <DropdownButton

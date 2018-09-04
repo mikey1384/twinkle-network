@@ -103,15 +103,25 @@ export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
     return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);
+    return Promise.reject(error);
   }
 };
 
-export const searchContent = async({
-  filter,
-  searchText,
-  shownResults,
-  dispatch
-}) => {
+export const loadVideos = async({ limit, videoId }) => {
+  try {
+    const {
+      data: { videos, loadMoreButton }
+    } = await request.get(
+      `${URL}/video?numberToLoad=${limit}&videoId=${videoId}`
+    );
+    return Promise.resolve({ videos, loadMoreButton });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const searchContent = async({ filter, searchText, shownResults }) => {
   try {
     const { data } = await request.get(
       `${URL}/content/search?filter=${filter}&searchText=${searchText}${
@@ -120,7 +130,8 @@ export const searchContent = async({
     );
     return Promise.resolve(data);
   } catch (error) {
-    return handleError(error, dispatch);
+    console.error(error.response || error);
+    return Promise.reject(error);
   }
 };
 
