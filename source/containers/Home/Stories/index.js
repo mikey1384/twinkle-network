@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import {
   attachStar,
   contentFeedLike,
@@ -159,7 +159,7 @@ class Stories extends Component {
               )}
             {loaded &&
               storyFeeds.length > 0 && (
-                <Fragment>
+                <>
                   {numNewPosts > 0 && (
                     <Banner
                       gold
@@ -209,7 +209,7 @@ class Stories extends Component {
                       info
                     />
                   )}
-                </Fragment>
+                </>
               )}
           </div>
         </div>

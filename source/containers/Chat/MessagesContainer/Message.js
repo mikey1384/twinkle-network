@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import moment from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -90,7 +90,7 @@ class Message extends Component {
     }
     const { onEdit } = this.state;
     return (
-      <Fragment>
+      <>
         <div className={MessageStyle.container}>
           <ProfilePic
             className={MessageStyle.profilePic}
@@ -178,7 +178,7 @@ class Message extends Component {
             </div>
           </div>
         </div>
-      </Fragment>
+      </>
     );
   }
 

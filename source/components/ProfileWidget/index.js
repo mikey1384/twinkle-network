@@ -1,6 +1,6 @@
 /* global FileReader */
 
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -91,10 +91,10 @@ class ProfileWidget extends Component {
             }}
           >
             {!userId && (
-              <Fragment>
+              <>
                 <div className="login-message">Log in</div>
                 <div className="login-message">to access all features</div>
-              </Fragment>
+              </>
             )}
             {!userId && (
               <Button

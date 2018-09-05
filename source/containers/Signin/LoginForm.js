@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Button from 'components/Button';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import Input from 'components/Texts/Input';
@@ -25,7 +25,7 @@ export default class LoginForm extends Component {
     const { showSignUpForm } = this.props;
     const { username, password, errorMessage } = this.state;
     return (
-      <Fragment>
+      <>
         {errorMessage && <Banner love>{errorMessage}</Banner>}
         <main>
           <div style={{ width: '100%' }}>
@@ -97,7 +97,7 @@ export default class LoginForm extends Component {
             {"Wait, I don't think I have an account, yet"}
           </Button>
         </footer>
-      </Fragment>
+      </>
     );
   }
 

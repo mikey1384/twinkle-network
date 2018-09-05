@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
@@ -53,7 +53,7 @@ export default class Playlist extends Component {
     const { playlistId } = this.props;
     const { videos, loaded, loading, loadMoreButtonShown } = this.state;
     return (
-      <Fragment>
+      <>
         {videos.length === 0 ? (
           loaded ? (
             <NotFound
@@ -112,7 +112,7 @@ export default class Playlist extends Component {
             onClick={this.onLoadMoreVideos}
           />
         )}
-      </Fragment>
+      </>
     );
   }
 

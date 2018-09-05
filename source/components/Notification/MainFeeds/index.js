@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
@@ -99,17 +99,17 @@ class MainFeeds extends Component {
               onClick={totalRewardAmount > 0 ? this.onCollectReward : null}
             >
               {totalRewardAmount > 0 && (
-                <Fragment>
+                <>
                   <p>Tap to collect all your rewards</p>
                   <p>
                     ({totalRewardAmount} stars x {rewardValue.star} XP/star ={' '}
                     {addCommasToNumber(totalRewardAmount * rewardValue.star)}{' '}
                     XP)
                   </p>
-                </Fragment>
+                </>
               )}
               {totalRewardAmount === 0 && (
-                <Fragment>
+                <>
                   <p>{originalTotalReward * rewardValue.star} XP Collected!</p>
                   <p>
                     Your XP went up from {addCommasToNumber(originalTwinkleXP)}{' '}
@@ -118,7 +118,7 @@ class MainFeeds extends Component {
                       originalTwinkleXP + originalTotalReward * rewardValue.star
                     )}
                   </p>
-                </Fragment>
+                </>
               )}
             </Banner>
           )}
@@ -274,7 +274,7 @@ function renderNotificationMessage(notification, myId) {
     switch (type) {
       case 'reward':
         action = (
-          <Fragment>
+          <>
             <span
               style={{
                 fontWeight: 'bold',
@@ -287,7 +287,7 @@ function renderNotificationMessage(notification, myId) {
               {reward.rewardAmount > 1 ? 's' : ''}
             </span>{' '}
             for
-          </Fragment>
+          </>
         );
         break;
       case 'like':

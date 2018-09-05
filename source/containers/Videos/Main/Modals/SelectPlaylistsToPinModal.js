@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import CheckListGroup from 'components/CheckListGroup';
@@ -99,7 +99,7 @@ class SelectPlaylistsToPinModal extends Component {
           </FilterBar>
           <div style={{ marginTop: '1rem', width: '100%' }}>
             {selectTabActive && (
-              <Fragment>
+              <>
                 <SearchInput
                   autoFocus
                   placeholder="Search for playlists to pin"
@@ -134,10 +134,10 @@ class SelectPlaylistsToPinModal extends Component {
                     <h3>No Playlists</h3>
                   </div>
                 )}
-              </Fragment>
+              </>
             )}
             {!selectTabActive && (
-              <Fragment>
+              <>
                 <CheckListGroup
                   inputType="checkbox"
                   onSelect={this.onDeselect}
@@ -158,7 +158,7 @@ class SelectPlaylistsToPinModal extends Component {
                     <h3>No Playlist Selected</h3>
                   </div>
                 )}
-              </Fragment>
+              </>
             )}
           </div>
         </main>

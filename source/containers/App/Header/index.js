@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Route } from 'react-router-dom';
@@ -226,7 +226,7 @@ class Header extends Component {
                 );
               }}
             />
-            <Fragment>
+            <>
               <HeaderNav
                 className={`${searchMode || chatLoading ? 'hidden' : 'mobile'}`}
                 alert={numNewNotis > 0 || totalRewardAmount > 0}
@@ -282,7 +282,7 @@ class Header extends Component {
               >
                 Read
               </HeaderNav>
-            </Fragment>
+            </>
             <div
               className={!searchMode || chatLoading ? 'desktop' : ''}
               style={{

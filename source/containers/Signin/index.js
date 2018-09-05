@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
@@ -33,7 +33,7 @@ class Signin extends Component {
             `Great! What's your username and password?`}
           {currentPage === 'signUp' && `Sure, let's set up your account...`}
         </header>
-        <Fragment>
+        <>
           {currentPage === 'main' && (
             <Main
               showLoginForm={() => this.setState({ currentPage: 'login' })}
@@ -52,7 +52,7 @@ class Signin extends Component {
               {...bindActionCreators(UserActions, dispatch)}
             />
           )}
-        </Fragment>
+        </>
       </Modal>
     );
   }

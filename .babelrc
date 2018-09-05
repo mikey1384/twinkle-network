@@ -3,6 +3,7 @@
   "plugins": [
     "@babel/plugin-proposal-class-properties",
     "emotion",
-    "dynamic-import-webpack"
+    "dynamic-import-webpack",
+    "react-hot-loader/babel"
   ]
 }

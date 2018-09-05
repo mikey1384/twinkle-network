@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Context from '../Context';
 import withContext from 'components/Wrappers/withContext';
 import LikeButton from 'components/Buttons/LikeButton';
@@ -248,7 +248,7 @@ class Body extends Component {
               <div className="buttons-bar">
                 <div className="left">
                   {type !== 'discussion' && (
-                    <Fragment>
+                    <>
                       <LikeButton
                         contentType={type}
                         contentId={contentId}
@@ -278,7 +278,7 @@ class Body extends Component {
                             </span>
                           )}
                       </Button>
-                    </Fragment>
+                    </>
                   )}
                   {type === 'discussion' && (
                     <Button transparent onClick={this.onCommentButtonClick}>

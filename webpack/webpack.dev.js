@@ -8,7 +8,7 @@ export default function devConfig(app) {
     ...prodCfg,
     devtool: 'cheap-module-eval-source-map',
     mode: 'development',
-    entry: ['webpack-hot-middleware/client.js', './entry/client.js'],
+    entry: ['webpack-hot-middleware/client', './entry/client'],
     module: {
       rules: [
         {
@@ -19,20 +19,33 @@ export default function devConfig(app) {
         },
         {
           test: /\.js$/,
-          exclude: /react-onclickoutside/,
           include: [/source/, /entry/],
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/env', '@babel/react']
+            presets: ['@babel/env', '@babel/react'],
+            cacheDirectory: true,
+            plugins: [
+              '@babel/plugin-transform-runtime',
+              'react-hot-loader/babel'
+            ]
           }
         }
       ]
     },
-    plugins: [new webpack.HotModuleReplacementPlugin()]
+    plugins: [
+      new webpack.optimize.OccurrenceOrderPlugin(),
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoEmitOnErrorsPlugin()
+    ]
   };
 
   const compiler = webpack(config);
 
-  app.use(webpackDevMiddleware(compiler, { noInfo: false }));
+  app.use(
+    webpackDevMiddleware(compiler, {
+      noInfo: true,
+      publicPath: prodCfg.output.publicPath
+    })
+  );
   app.use(webpackHotMiddleware(compiler));
 }

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
 import UsernameText from 'components/Texts/UsernameText';
@@ -65,10 +65,10 @@ class ChatFeeds extends Component {
       reloadTimeStamp
     } = this.props;
     const posterString = (
-      <Fragment>
+      <>
         Started by <UsernameText user={{ id: userId, username }} />
         {timeStamp ? ` ${timeSince(timeStamp)}` : ''}
-      </Fragment>
+      </>
     );
     const reloaderString = (
       <div style={{ marginTop: '0.5rem' }}>

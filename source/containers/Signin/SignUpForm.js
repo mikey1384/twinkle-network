@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Button from 'components/Button';
 import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers';
 import Input from 'components/Texts/Input';
@@ -39,7 +39,7 @@ export default class SignUpForm extends Component {
       stringIsEmpty(lastname) ||
       errorMessage;
     return (
-      <Fragment>
+      <>
         {errorMessage && <Banner love>{errorMessage}</Banner>}
         <main>
           <div
@@ -182,7 +182,7 @@ export default class SignUpForm extends Component {
             Wait, I already have an account!
           </Button>
         </footer>
-      </Fragment>
+      </>
     );
   }
 

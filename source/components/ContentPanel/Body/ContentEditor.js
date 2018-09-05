@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Input from 'components/Texts/Input';
@@ -96,7 +96,7 @@ export default class ContentEditor extends Component {
             </div>
           )}
           {type !== 'comment' && (
-            <Fragment>
+            <>
               <Input
                 autoFocus
                 onChange={text => this.onInputChange({ type, text })}
@@ -112,7 +112,7 @@ export default class ContentEditor extends Component {
               <small style={this.titleExceedsCharLimit(type)}>
                 {this.renderTitleCharLimit(type)}
               </small>
-            </Fragment>
+            </>
           )}
           <div style={{ position: 'relative', marginTop: '1rem' }}>
             <Textarea

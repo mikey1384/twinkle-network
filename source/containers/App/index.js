@@ -24,6 +24,7 @@ import Button from 'components/Button';
 import Loading from 'components/Loading';
 import SigninModal from 'containers/Signin';
 import loadable from 'loadable-components';
+import { hot } from 'react-hot-loader';
 const Home = loadable(() => import('containers/Home'), {
   LoadingComponent: Loading
 });
@@ -372,4 +373,4 @@ export default connect(
     resetChat,
     changePageVisibility
   }
-)(App);
+)(hot(module)(App));

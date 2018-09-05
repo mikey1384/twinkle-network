@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Button from 'components/Button';
 import { Color } from 'constants/css';
 import Loading from 'components/Loading';
@@ -126,7 +126,7 @@ class MessagesContainer extends Component {
       subjectMsgsModal
     } = this.state;
     return (
-      <Fragment>
+      <>
         {subjectMsgsModal.shown && (
           <SubjectMsgsModal
             subjectId={subjectMsgsModal.subjectId}
@@ -243,7 +243,7 @@ class MessagesContainer extends Component {
             />
           )}
         </div>
-      </Fragment>
+      </>
     );
   }
 

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import { cleanString } from 'helpers/stringHelpers';
@@ -92,9 +92,9 @@ class SubjectHeader extends Component {
         `}
       >
         {loaded ? (
-          <Fragment>
+          <>
             {!onEdit && (
-              <Fragment>
+              <>
                 <section>
                   <span
                     style={{
@@ -133,7 +133,7 @@ class SubjectHeader extends Component {
                     Change Subject
                   </Button>
                 </aside>
-              </Fragment>
+              </>
             )}
             {onEdit && (
               <EditSubjectForm
@@ -151,7 +151,7 @@ class SubjectHeader extends Component {
                 searchResults={subjectSearchResults}
               />
             )}
-          </Fragment>
+          </>
         ) : (
           <Loading
             style={{
@@ -241,7 +241,7 @@ class SubjectHeader extends Component {
       );
     }
     return (
-      <Fragment>
+      <>
         {uploader ? (
           <small>{posterString}</small>
         ) : (
@@ -251,7 +251,7 @@ class SubjectHeader extends Component {
             }
           </small>
         )}
-      </Fragment>
+      </>
     );
   };
 }

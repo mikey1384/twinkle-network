@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import request from 'axios';
 import { URL } from 'constants/URL';
 import { css } from 'emotion';
@@ -137,7 +137,7 @@ export default class Embedly extends Component {
     const { imageUrl, description, title, site } = this.state;
     const { small } = this.props;
     return (
-      <Fragment>
+      <>
         <section
           className={css`
             position: relative;
@@ -173,7 +173,7 @@ export default class Embedly extends Component {
           <p>{description}</p>
           <p style={{ fontWeight: 'bold' }}>{site}</p>
         </section>
-      </Fragment>
+      </>
     );
   };
 }

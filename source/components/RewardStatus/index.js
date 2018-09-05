@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
@@ -37,7 +37,7 @@ class RewardStatus extends Component {
       starMarks.push(<Icon key={i} icon="star" />);
     }
     return (
-      <Fragment>
+      <>
         <div
           style={style}
           className={css`
@@ -64,7 +64,7 @@ class RewardStatus extends Component {
             onEditDone={onCommentEdit}
           />
         ))}
-      </Fragment>
+      </>
     );
   }
 }

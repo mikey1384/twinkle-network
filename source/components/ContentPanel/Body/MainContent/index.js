@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
@@ -59,7 +59,7 @@ export default function MainContent({
           }}
         >
           {!isEditing && (
-            <Fragment>
+            <>
               {type === 'comment' && (
                 <div
                   style={{
@@ -119,7 +119,7 @@ export default function MainContent({
                       : ''}
                 </LongText>
               </div>
-            </Fragment>
+            </>
           )}
           {isEditing && (
             <ContentEditor

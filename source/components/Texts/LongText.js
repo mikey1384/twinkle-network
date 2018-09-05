@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
 
 export default class LongText extends Component {
@@ -73,7 +73,7 @@ export default class LongText extends Component {
               }}
             />
           ) : (
-            <Fragment>
+            <>
               <span
                 dangerouslySetInnerHTML={{
                   __html: limitBrs(
@@ -82,7 +82,7 @@ export default class LongText extends Component {
                 }}
               />
               {more && (
-                <Fragment>
+                <>
                   {'... '}
                   {!noExpand && (
                     <a
@@ -92,9 +92,9 @@ export default class LongText extends Component {
                       Read More
                     </a>
                   )}
-                </Fragment>
+                </>
               )}
-            </Fragment>
+            </>
           )}
         </p>
       </div>

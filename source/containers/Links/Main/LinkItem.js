@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { timeSince } from 'helpers/timeStampHelpers';
 import UsernameText from 'components/Texts/UsernameText';
 import UserListModal from 'components/Modals/UserListModal';
@@ -233,7 +233,7 @@ class LinkItem extends Component {
               `}
             >
               {likes.length > 0 && (
-                <Fragment>
+                <>
                   <span
                     style={{ cursor: 'pointer' }}
                     onClick={() => this.setState({ userListModalShown: true })}
@@ -242,7 +242,7 @@ class LinkItem extends Component {
                     {likes.length > 1 ? 's' : ''}
                   </span>
                   &nbsp;&nbsp;
-                </Fragment>
+                </>
               )}
               {numComments > 0 && (
                 <span>

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside';
 import {
   cleanString,
@@ -87,7 +87,7 @@ class EditSubjectForm extends Component {
             }}
           />
         )}
-        <Fragment>
+        <>
           <form onSubmit={event => this.onEditSubmit(event)}>
             <Input
               autoFocus={autoFocus}
@@ -122,7 +122,7 @@ class EditSubjectForm extends Component {
               searchResults={searchResults}
             />
           )}
-        </Fragment>
+        </>
         <aside>
           <Button
             style={{ width: '100%', fontSize: '1.4rem' }}

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import VideoThumbImage from 'components/VideoThumbImage';
 import { cleanString } from 'helpers/stringHelpers';
@@ -59,7 +59,7 @@ export default function Result({ closeSearch, type, result }) {
           }}
         >
           {type === 'video' && (
-            <Fragment>
+            <>
               <div>
                 <p
                   style={{
@@ -95,7 +95,7 @@ export default function Result({ closeSearch, type, result }) {
                   {result.description}
                 </LongText>
               </div>
-            </Fragment>
+            </>
           )}
           {type === 'question' && (
             <div

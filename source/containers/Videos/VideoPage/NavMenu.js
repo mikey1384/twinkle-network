@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -146,7 +146,7 @@ class NavMenu extends Component {
           </nav>
         </FilterBar>
         {videoTabActive && (
-          <Fragment>
+          <>
             {nextVideos.length > 0 && (
               <section key={videoId + 'up next'}>
                 <p>Up Next</p>
@@ -204,7 +204,7 @@ class NavMenu extends Component {
                 {this.renderVideos({ videos: otherVideos })}
               </section>
             )}
-          </Fragment>
+          </>
         )}
         {!videoTabActive && <Notification style={{ paddingTop: 0 }} />}
       </ErrorBoundary>

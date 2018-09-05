@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -110,7 +110,7 @@ class Description extends Component {
             }}
           >
             {onEdit ? (
-              <Fragment>
+              <>
                 <Input
                   type="text"
                   className={css`
@@ -139,7 +139,7 @@ class Description extends Component {
                     })}
                   </small>
                 )}
-              </Fragment>
+              </>
             ) : (
               <h2>{title}</h2>
             )}

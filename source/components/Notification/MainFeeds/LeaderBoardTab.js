@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import request from 'axios';
@@ -41,7 +41,7 @@ export default class LeaderBoardTab extends Component {
     const { myId } = this.props;
     const { users } = this.state;
     return (
-      <Fragment>
+      <>
         {users.length === 0 && <Loading />}
         {users.map(user => {
           const rank = !user.twinkleXP
@@ -105,7 +105,7 @@ export default class LeaderBoardTab extends Component {
             </li>
           );
         })}
-      </Fragment>
+      </>
     );
   }
 }

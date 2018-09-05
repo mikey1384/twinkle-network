@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import withContext from 'components/Wrappers/withContext';
 import Context from './Context';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -208,7 +208,7 @@ class Comment extends Component {
                     {comment.content}
                   </LongText>
                   {!isPreview && (
-                    <Fragment>
+                    <>
                       <div className="comment__buttons">
                         <LikeButton
                           contentType="comment"
@@ -258,7 +258,7 @@ class Comment extends Component {
                           this.setState({ userListModalShown: true })
                         }
                       />
-                    </Fragment>
+                    </>
                   )}
                 </div>
               )}
@@ -288,7 +288,7 @@ class Comment extends Component {
               />
             )}
             {!isPreview && (
-              <Fragment>
+              <>
                 <ReplyInputArea
                   innerRef={ref => (this.ReplyInputArea = ref)}
                   style={{
@@ -312,7 +312,7 @@ class Comment extends Component {
                   onLoadMoreReplies={onLoadMoreReplies}
                   onReplySubmit={this.onReplySubmit}
                 />
-              </Fragment>
+              </>
             )}
           </section>
         </div>

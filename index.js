@@ -1,6 +1,6 @@
 'use strict';
 
-require('@babel/register')({});
+require('@babel/register');
 require('@babel/polyfill');
 
 const server = require('./entry/server').default;

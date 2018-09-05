@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
@@ -28,7 +28,7 @@ export default function StatusInput({
   setColor
 }) {
   return (
-    <Fragment>
+    <>
       <Textarea
         className={css`
           margin-top: 1rem;
@@ -82,6 +82,6 @@ export default function StatusInput({
           </Button>
         </div>
       )}
-    </Fragment>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Context from './Context';
 import withContext from 'components/Wrappers/withContext';
 import ContentLink from 'components/ContentLink';
@@ -133,14 +133,14 @@ class Heading extends Component {
     switch (type) {
       case 'video':
         return (
-          <Fragment>
+          <>
             <UsernameText user={uploader} color={Color.blue()} /> uploaded a
             video: <ContentLink content={contentObj} type={type} />{' '}
-          </Fragment>
+          </>
         );
       case 'comment':
         return (
-          <Fragment>
+          <>
             <UsernameText user={uploader} color={Color.blue()} />{' '}
             <ContentLink
               content={{ id, title: action }}
@@ -149,30 +149,30 @@ class Heading extends Component {
             />
             {this.renderTargetAction()} {contentLabel}:{' '}
             <ContentLink content={rootObj} type={rootType} />{' '}
-          </Fragment>
+          </>
         );
       case 'url':
         return (
-          <Fragment>
+          <>
             <UsernameText user={uploader} color={Color.blue()} /> shared a
             link:&nbsp;
             <ContentLink content={contentObj} type={type} />{' '}
-          </Fragment>
+          </>
         );
       case 'question':
         return (
-          <Fragment>
+          <>
             <UsernameText user={uploader} color={Color.blue()} /> asked a{' '}
             <ContentLink
               content={{ id, title: 'question' }}
               type={type}
               style={{ color: Color.green() }}
             />{' '}
-          </Fragment>
+          </>
         );
       case 'discussion':
         return (
-          <Fragment>
+          <>
             <UsernameText user={uploader} color={Color.blue()} /> started a{' '}
             <ContentLink
               content={{ id, title: 'discussion' }}
@@ -181,7 +181,7 @@ class Heading extends Component {
             />
             &nbsp;on {contentLabel}:{' '}
             <ContentLink content={rootObj} type={rootType} />{' '}
-          </Fragment>
+          </>
         );
       default:
         return <span>Error</span>;
@@ -213,7 +213,7 @@ class Heading extends Component {
     if (!content) return null;
     if (rootType === 'video') {
       return (
-        <Fragment>
+        <>
           {attachedVideoShown ? (
             <LikeButton
               contentType="video"
@@ -267,7 +267,7 @@ class Heading extends Component {
               </div>
             )
           )}
-        </Fragment>
+        </>
       );
     } else if (rootType === 'question') {
       return (

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import ProfilePanel from '../ProfilePanel';
 import Body from './Body';
 import ExecutionEnvironment from 'exenv';
@@ -59,7 +59,7 @@ class Profile extends Component {
       <div>
         {!id && <Loading text="Loading Profile..." />}
         {id && (
-          <Fragment>
+          <>
             <ProfilePanel
               {...this.props}
               key={'profilePage' + match.params.username}
@@ -67,7 +67,7 @@ class Profile extends Component {
               isProfilePage
             />
             <Body {...this.props} />
-          </Fragment>
+          </>
         )}
       </div>
     ) : (

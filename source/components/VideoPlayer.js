@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 import { Color } from 'constants/css';
 import { connect } from 'react-redux';
@@ -268,7 +268,7 @@ class VideoPlayer extends Component {
         >
           {!minimized &&
             !started && (
-              <Fragment>
+              <>
                 <img
                   alt=""
                   src={imageUrl}
@@ -290,7 +290,7 @@ class VideoPlayer extends Component {
                     }}
                   />
                 )}
-              </Fragment>
+              </>
             )}
           {!onEdit &&
             started && (
