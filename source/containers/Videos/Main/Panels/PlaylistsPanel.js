@@ -55,7 +55,7 @@ class PlaylistsPanel extends Component {
           return (
             <PlaylistCarousel
               {...playlist}
-              key={index}
+              key={playlist.id}
               arrayIndex={index}
               userIsUploader={userId === playlist.uploaderId}
               showAllButton={playlist.showAllButton}

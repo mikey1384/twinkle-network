@@ -5,6 +5,12 @@ import PLAYLIST from '../constants/Playlist';
 
 const API_URL = `${URL}/playlist`;
 
+export const changePlaylistVideos = ({ playlistId, playlist }) => ({
+  type: PLAYLIST.CHANGE_VIDEOS,
+  playlistId,
+  playlist
+});
+
 export const getPlaylists = () => async dispatch => {
   try {
     const { data } = await request.get(API_URL);
@@ -67,27 +73,6 @@ export const editPlaylistTitle = (
         data: data.result
       });
     }
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
-export const changePlaylistVideos = ({
-  playlistId,
-  selectedVideos
-}) => async dispatch => {
-  try {
-    const { data } = await request.put(
-      `${API_URL}/videos`,
-      { playlistId, selectedVideos },
-      auth()
-    );
-    dispatch({
-      type: PLAYLIST.CHANGE_VIDEOS,
-      playlistId,
-      data: data.result
-    });
     return Promise.resolve();
   } catch (error) {
     handleError(error, dispatch);

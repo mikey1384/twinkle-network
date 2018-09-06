@@ -277,7 +277,7 @@ class MessagesContainer extends Component {
       let messageStyle = isNotification ? { color: Color.gray() } : null;
       return message.deleted ? null : (
         <Message
-          key={index}
+          key={message.id || 'newMessage' + index}
           onDelete={messageId =>
             this.setState({
               deleteModal: {

@@ -9,16 +9,22 @@ import SelectVideosForm from './SelectVideosForm';
 import SortableThumb from './SortableThumb';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-touch-backend';
-import request from 'axios';
-import { URL } from 'constants/URL';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
-import { loadVideos, searchContent } from 'helpers/requestHelpers';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import {
+  editPlaylistVideos,
+  loadVideos,
+  loadPlaylistVideos,
+  reorderPlaylistVideos,
+  searchContent
+} from 'helpers/requestHelpers';
 
 class EditPlaylistModal extends Component {
   static propTypes = {
     changePlaylistVideos: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     modalType: PropTypes.string.isRequired,
     onHide: PropTypes.func.isRequired,
     playlistId: PropTypes.number.isRequired
@@ -27,12 +33,17 @@ class EditPlaylistModal extends Component {
   timer = null;
 
   state = {
-    allVideos: [],
-    loaded: false,
-    isSaving: false,
+    addedVideos: [],
+    loadingMore: false,
+    modalVideos: [],
     searchedVideos: [],
-    selectedVideos: [],
+    originalPlaylistVideos: [],
+    videosToRemove: [],
+    isLoading: false,
+    isSaving: false,
+    removedVideoIds: {},
     loadMoreButton: false,
+    removeVideosLoadMoreButton: false,
     searchLoadMoreButton: false,
     mainTabActive: true,
     searchText: ''
@@ -40,34 +51,58 @@ class EditPlaylistModal extends Component {
 
   async componentDidMount() {
     const { modalType, playlistId } = this.props;
-    const {
-      data: { videos: selectedVideos }
-    } = await request.get(
-      `${URL}/playlist/playlist?noLimit=1&playlistId=${playlistId}`
-    );
-    const { videos, loadMoreButton } =
-      modalType === 'change' ? await loadVideos({ limit: 18 }) : {};
+    this.setState({ isLoading: true });
+    const { videos: modalVideos, loadMoreButton } =
+      modalType === 'change'
+        ? await loadVideos({ limit: 18 })
+        : await loadPlaylistVideos({
+            playlistId,
+            limit: 18
+          });
+    let originalPlaylistVideos = [];
+    if (modalType === 'change') {
+      const { videos } = await loadPlaylistVideos({
+        playlistId,
+        targetVideos: queryStringForArray(modalVideos, 'id', 'targetVideos')
+      });
+      originalPlaylistVideos = videos;
+    } else {
+      originalPlaylistVideos = modalVideos;
+    }
     this.setState({
-      selectedVideos,
-      allVideos: videos,
+      originalPlaylistVideos,
+      modalVideos,
       loadMoreButton,
-      loaded: true
+      isLoading: false
     });
   }
 
   render() {
     const { modalType, onHide } = this.props;
     const {
+      isLoading,
       isSaving,
-      selectedVideos,
+      addedVideos,
+      loadingMore,
+      originalPlaylistVideos,
       mainTabActive,
       searchText,
-      loaded,
       loadMoreButton,
+      removedVideoIds,
+      removeVideosLoadMoreButton,
       searchLoadMoreButton,
       searchedVideos,
-      allVideos
+      modalVideos,
+      videosToRemove
     } = this.state;
+    const selectedVideos = addedVideos.concat(
+      originalPlaylistVideos.filter(video => !removedVideoIds[video.id])
+    );
+    const videosToRearrange = modalVideos.filter(
+      video =>
+        !removedVideoIds[video.id] ||
+        addedVideos.map(video => video.id).indexOf(video.id) !== -1
+    );
     return (
       <Modal large onHide={onHide}>
         <header>
@@ -77,14 +112,16 @@ class EditPlaylistModal extends Component {
           <FilterBar style={{ marginBottom: '2rem', fontWeight: 'bold' }}>
             <nav
               className={mainTabActive ? 'active' : ''}
-              onClick={() => this.setState({ mainTabActive: true })}
+              onClick={() =>
+                this.setState({ mainTabActive: true, loadingMore: false })
+              }
               style={{ cursor: 'pointer' }}
             >
               {modalType === 'change' ? 'Add Videos' : 'Reorder Videos'}
             </nav>
             <nav
               className={mainTabActive ? '' : 'active'}
-              onClick={() => this.setState({ mainTabActive: false })}
+              onClick={this.openRemoveVideosTab}
               style={{ cursor: 'pointer' }}
             >
               Remove Videos
@@ -103,69 +140,127 @@ class EditPlaylistModal extends Component {
                 onChange={this.onVideoSearchInput}
               />
             )}
-          {!loaded && <Loading />}
-          {mainTabActive &&
-            modalType === 'change' && (
-              <SelectVideosForm
-                videos={!stringIsEmpty(searchText) ? searchedVideos : allVideos}
-                selectedVideos={selectedVideos}
-                loadMoreVideosButton={
-                  !stringIsEmpty(searchText)
-                    ? searchLoadMoreButton
-                    : loadMoreButton
-                }
-                onSelect={(selected, video) =>
-                  this.setState({ selectedVideos: [video].concat(selected) })
-                }
-                onDeselect={selected =>
-                  this.setState({ selectedVideos: selected })
-                }
-                loadMoreVideos={this.loadMoreVideos}
-              />
-            )}
-          {mainTabActive &&
-            modalType === 'reorder' && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  justifyContent: 'flex-start',
-                  width: '100%'
-                }}
-              >
-                {selectedVideos.map(video => (
-                  <SortableThumb
-                    key={video.id}
-                    video={video}
-                    onMove={({ sourceId, targetId }) => {
-                      let selected = [...selectedVideos];
-                      const selectedVideoArray = selected.map(
-                        video => video.id
-                      );
-                      const sourceIndex = selectedVideoArray.indexOf(sourceId);
-                      const sourceVideo = selected[sourceIndex];
-                      const targetIndex = selectedVideoArray.indexOf(targetId);
-                      selected.splice(sourceIndex, 1);
-                      selected.splice(targetIndex, 0, sourceVideo);
-                      this.setState({
-                        selectedVideos: selected
-                      });
-                    }}
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <>
+              {mainTabActive &&
+                modalType === 'change' && (
+                  <SelectVideosForm
+                    loadingMore={loadingMore}
+                    videos={
+                      !stringIsEmpty(searchText) ? searchedVideos : modalVideos
+                    }
+                    selectedVideos={selectedVideos}
+                    loadMoreVideosButton={
+                      !stringIsEmpty(searchText)
+                        ? searchLoadMoreButton
+                        : loadMoreButton
+                    }
+                    onSelect={video =>
+                      this.setState(state => ({
+                        addedVideos: [video].concat(state.addedVideos)
+                      }))
+                    }
+                    onDeselect={videoId =>
+                      this.setState(state => ({
+                        addedVideos: state.addedVideos.filter(
+                          video => video.id !== videoId
+                        ),
+                        removedVideoIds: {
+                          ...state.removedVideoIds,
+                          [videoId]: true
+                        }
+                      }))
+                    }
+                    loadMoreVideos={this.loadMoreVideos}
                   />
-                ))}
-              </div>
-            )}
-          {!mainTabActive && (
-            <SelectVideosForm
-              videos={selectedVideos}
-              selectedVideos={selectedVideos}
-              onSelect={(selected, video) =>
-                this.setState({ selectedVideos: selected.concat([video]) })
-              }
-              onDeselect={selected =>
-                this.setState({ selectedVideos: selected })
-              }
-            />
+                )}
+              {mainTabActive &&
+                modalType === 'reorder' && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      width: '100%'
+                    }}
+                  >
+                    {videosToRearrange.map(video => (
+                      <SortableThumb
+                        key={video.id}
+                        video={video}
+                        onMove={({ sourceId, targetId }) => {
+                          let selected = [...videosToRearrange];
+                          const selectedVideoArray = selected.map(
+                            video => video.id
+                          );
+                          const sourceIndex = selectedVideoArray.indexOf(
+                            sourceId
+                          );
+                          const sourceVideo = selected[sourceIndex];
+                          const targetIndex = selectedVideoArray.indexOf(
+                            targetId
+                          );
+                          selected.splice(sourceIndex, 1);
+                          selected.splice(targetIndex, 0, sourceVideo);
+                          this.setState({
+                            modalVideos: selected
+                          });
+                        }}
+                      />
+                    ))}
+                    {loadMoreButton && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          width: '100%'
+                        }}
+                      >
+                        <LoadMoreButton
+                          style={{ fontSize: '2rem', marginTop: '1rem' }}
+                          transparent
+                          loading={loadingMore}
+                          onClick={this.loadMoreVideos}
+                        >
+                          Load More
+                        </LoadMoreButton>
+                      </div>
+                    )}
+                  </div>
+                )}
+              {!mainTabActive && (
+                <SelectVideosForm
+                  loadingMore={loadingMore}
+                  videos={videosToRemove}
+                  loadMoreVideosButton={removeVideosLoadMoreButton}
+                  selectedVideos={selectedVideos}
+                  onSelect={video =>
+                    this.setState(state => ({
+                      addedVideos: [video].concat(state.addedVideos),
+                      modalVideos: [video].concat(
+                        state.modalVideos.filter(
+                          modalVideo => modalVideo.id !== video.id
+                        )
+                      )
+                    }))
+                  }
+                  onDeselect={videoId =>
+                    this.setState(state => ({
+                      addedVideos: state.addedVideos.filter(
+                        video => video.id !== videoId
+                      ),
+                      removedVideoIds: {
+                        ...state.removedVideoIds,
+                        [videoId]: true
+                      }
+                    }))
+                  }
+                  loadMoreVideos={this.loadMoreVideos}
+                />
+              )}
+            </>
           )}
         </main>
         <footer>
@@ -185,38 +280,150 @@ class EditPlaylistModal extends Component {
   }
 
   handleSave = async() => {
-    const { selectedVideos } = this.state;
-    const { onHide, playlistId, changePlaylistVideos } = this.props;
+    const {
+      addedVideos,
+      modalVideos,
+      originalPlaylistVideos,
+      removedVideoIds
+    } = this.state;
+    const {
+      dispatch,
+      modalType,
+      onHide,
+      playlistId,
+      changePlaylistVideos
+    } = this.props;
     this.setState({ isSaving: true });
+    const playlist =
+      modalType === 'change'
+        ? await editPlaylistVideos({
+            addedVideoIds: addedVideos.map(video => video.id),
+            dispatch,
+            removedVideoIds,
+            playlistId
+          })
+        : await reorderPlaylistVideos({
+            dispatch,
+            originalVideoIds: originalPlaylistVideos.map(video => video.id),
+            reorderedVideoIds: modalVideos
+              .filter(
+                video =>
+                  !removedVideoIds[video.id] ||
+                  addedVideos.map(video => video.id).indexOf(video.id) !== -1
+              )
+              .map(video => video.id),
+            playlistId
+          });
     await changePlaylistVideos({
       playlistId,
-      selectedVideos: selectedVideos.map(video => video.id)
+      playlist
     });
     onHide();
   };
 
   loadMoreVideos = async() => {
-    const { allVideos, searchedVideos, searchText } = this.state;
+    const { mainTabActive, originalPlaylistVideos, searchText } = this.state;
+    const { modalType, playlistId } = this.props;
+    this.setState({ loadingMore: true });
+    if (!mainTabActive) {
+      const { videosToRemove } = this.state;
+      const { videos, loadMoreButton } = await loadPlaylistVideos({
+        playlistId,
+        limit: 18,
+        shownVideos: queryStringForArray(videosToRemove, 'id', 'shownVideos')
+      });
+      for (let video of videos) {
+        if (
+          originalPlaylistVideos.map(video => video.id).indexOf(video.id) === -1
+        ) {
+          originalPlaylistVideos.push(video);
+        }
+      }
+      return this.setState(state => ({
+        loadingMore: false,
+        videosToRemove: state.videosToRemove.concat(videos),
+        removeVideosLoadMoreButton: loadMoreButton,
+        loadMoreButton:
+          modalType === 'change'
+            ? state.loadMoreButton
+            : state.loadMoreButton && loadMoreButton
+      }));
+    }
+
     if (!stringIsEmpty(searchText)) {
+      const { searchedVideos } = this.state;
       const { results, loadMoreButton } = await searchContent({
         filter: 'video',
         searchText,
         shownResults: queryStringForArray(searchedVideos, 'id', 'shownResults')
       });
-      this.setState(state => ({
+      const { videos: playlistVideos } = await loadPlaylistVideos({
+        playlistId,
+        targetVideos: queryStringForArray(results, 'id', 'targetVideos')
+      });
+      return this.setState(state => ({
+        loadingMore: false,
         searchedVideos: state.searchedVideos.concat(results),
-        searchLoadMoreButton: loadMoreButton
+        searchLoadMoreButton: loadMoreButton,
+        originalPlaylistVideos: state.originalPlaylistVideos.concat(
+          playlistVideos.filter(
+            video =>
+              state.originalPlaylistVideos
+                .map(video => video.id)
+                .indexOf(video.id) === -1
+          )
+        )
       }));
-    } else {
+    }
+
+    if (modalType === 'change') {
+      const { modalVideos } = this.state;
       const { videos, loadMoreButton } = await loadVideos({
         limit: 18,
-        videoId: allVideos[allVideos.length - 1].id
+        videoId: modalVideos[modalVideos.length - 1].id
       });
-      this.setState(state => ({
-        allVideos: state.allVideos.concat(videos),
+      const { videos: playlistVideos } = await loadPlaylistVideos({
+        playlistId,
+        targetVideos: queryStringForArray(videos, 'id', 'targetVideos')
+      });
+      return this.setState(state => ({
+        loadingMore: false,
+        modalVideos: state.modalVideos.concat(
+          videos.filter(
+            video =>
+              state.modalVideos
+                .map(modalVideo => modalVideo.id)
+                .indexOf(video.id) === -1
+          )
+        ),
+        originalPlaylistVideos: state.originalPlaylistVideos.concat(
+          playlistVideos
+        ),
         loadMoreButton
       }));
     }
+
+    const { videos, loadMoreButton } = await loadPlaylistVideos({
+      playlistId,
+      shownVideos: queryStringForArray(
+        originalPlaylistVideos,
+        'id',
+        'shownVideos'
+      )
+    });
+    this.setState(state => ({
+      originalPlaylistVideos: state.originalPlaylistVideos.concat(videos),
+      modalVideos: state.modalVideos.concat(
+        videos.filter(
+          video =>
+            state.modalVideos
+              .map(modalVideo => modalVideo.id)
+              .indexOf(video.id) === -1
+        )
+      ),
+      loadingMore: false,
+      loadMoreButton
+    }));
   };
 
   onVideoSearchInput = text => {
@@ -225,18 +432,61 @@ class EditPlaylistModal extends Component {
     this.timer = setTimeout(() => this.searchVideo(text), 300);
   };
 
+  openRemoveVideosTab = async() => {
+    const { originalPlaylistVideos } = this.state;
+    const { playlistId } = this.props;
+    this.setState({
+      loadingMore: false,
+      mainTabActive: false,
+      isLoading: true
+    });
+    const { videos, loadMoreButton } = await loadPlaylistVideos({
+      playlistId,
+      limit: 18
+    });
+    for (let video of videos) {
+      if (
+        originalPlaylistVideos.map(video => video.id).indexOf(video.id) === -1
+      ) {
+        originalPlaylistVideos.push(video);
+      }
+    }
+    this.setState({
+      videosToRemove: videos,
+      removeVideosLoadMoreButton: loadMoreButton,
+      isLoading: false
+    });
+  };
+
   searchVideo = async text => {
+    const { playlistId } = this.props;
     const { results: searchedVideos, loadMoreButton } = await searchContent({
       filter: 'video',
       searchText: text
     });
-    this.setState({ searchedVideos, searchLoadMoreButton: loadMoreButton });
+    const { videos: playlistVideos } = await loadPlaylistVideos({
+      playlistId,
+      targetVideos: queryStringForArray(searchedVideos, 'id', 'targetVideos')
+    });
+    this.setState(state => ({
+      searchedVideos,
+      searchLoadMoreButton: loadMoreButton,
+      originalPlaylistVideos: state.originalPlaylistVideos.concat(
+        playlistVideos.filter(
+          video =>
+            state.originalPlaylistVideos
+              .map(video => video.id)
+              .indexOf(video.id) === -1
+        )
+      )
+    }));
   };
 }
 
 export default connect(
   null,
-  {
-    changePlaylistVideos
-  }
+  dispatch => ({
+    dispatch,
+    changePlaylistVideos: params => dispatch(changePlaylistVideos(params))
+  })
 )(DragDropContext(HTML5Backend)(EditPlaylistModal));

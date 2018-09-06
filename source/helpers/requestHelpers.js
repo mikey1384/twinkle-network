@@ -68,6 +68,24 @@ export const editContent = async({
   }
 };
 
+export const editPlaylistVideos = async({
+  addedVideoIds,
+  dispatch,
+  removedVideoIds,
+  playlistId
+}) => {
+  try {
+    const { data: playlist } = await request.put(
+      `${URL}/playlist/videos`,
+      { addedVideoIds, removedVideoIds, playlistId },
+      auth()
+    );
+    return Promise.resolve(playlist);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const likeContent = async({ id, type, dispatch }) => {
   try {
     const {
@@ -118,6 +136,45 @@ export const loadVideos = async({ limit, videoId }) => {
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
+  }
+};
+
+export const loadPlaylistVideos = async({
+  limit,
+  shownVideos,
+  targetVideos,
+  playlistId
+}) => {
+  try {
+    const {
+      data: { title, videos, loadMoreButton }
+    } = await request.get(
+      `${URL}/playlist/playlist?playlistId=${playlistId}${
+        shownVideos ? '&' + shownVideos : ''
+      }${targetVideos ? '&' + targetVideos : ''}&limit=${limit}`
+    );
+    return Promise.resolve({ title, videos, loadMoreButton });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const reorderPlaylistVideos = async({
+  dispatch,
+  originalVideoIds,
+  reorderedVideoIds,
+  playlistId
+}) => {
+  try {
+    const { data: playlist } = await request.put(
+      `${URL}/playlist/videos`,
+      { originalVideoIds, reorderedVideoIds, playlistId },
+      auth()
+    );
+    return Promise.resolve(playlist);
+  } catch (error) {
+    return handleError(error, dispatch);
   }
 };
 

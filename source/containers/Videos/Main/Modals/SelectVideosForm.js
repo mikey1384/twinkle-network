@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import VideoThumb from './ModalVideoThumb';
-import Button from 'components/Button';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
 SelectVideosForm.propTypes = {
+  loadingMore: PropTypes.bool,
   loadMoreVideos: PropTypes.func,
   loadMoreVideosButton: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
@@ -14,6 +15,7 @@ SelectVideosForm.propTypes = {
 export default function SelectVideosForm({
   videos,
   selectedVideos,
+  loadingMore,
   loadMoreVideosButton,
   onSelect,
   onDeselect,
@@ -36,13 +38,8 @@ export default function SelectVideosForm({
             selected={
               selectedVideos.map(video => video.id).indexOf(video.id) !== -1
             }
-            onSelect={video => onSelect(selectedVideos, video)}
-            onDeselect={videoId => {
-              let selected = selectedVideos;
-              const index = selected.map(video => video.id).indexOf(videoId);
-              selected.splice(index, 1);
-              onDeselect(selected);
-            }}
+            onSelect={video => onSelect(video)}
+            onDeselect={videoId => onDeselect(videoId)}
           />
         );
       })}
@@ -54,13 +51,14 @@ export default function SelectVideosForm({
             width: '100%'
           }}
         >
-          <Button
+          <LoadMoreButton
             style={{ fontSize: '2rem', marginTop: '1rem' }}
             transparent
+            loading={loadingMore}
             onClick={loadMoreVideos}
           >
             Load More
-          </Button>
+          </LoadMoreButton>
         </div>
       )}
     </div>

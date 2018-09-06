@@ -166,13 +166,17 @@ class AddPlaylistModal extends Component {
                     ? searchLoadMoreButton
                     : loadMoreButton
                 }
-                onSelect={(selected, video) =>
-                  this.setState({
-                    selectedVideos: selected.concat([video])
-                  })
+                onSelect={video =>
+                  this.setState(state => ({
+                    selectedVideos: state.selectedVideos.concat([video])
+                  }))
                 }
-                onDeselect={selected =>
-                  this.setState({ selectedVideos: selected })
+                onDeselect={videoId =>
+                  this.setState(state => ({
+                    selectedVideos: state.selectedVideos.filter(
+                      video => video.id !== videoId
+                    )
+                  }))
                 }
                 loadMoreVideos={this.loadMoreVideos}
               />

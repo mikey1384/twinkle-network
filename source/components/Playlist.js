@@ -6,11 +6,8 @@ import VideoThumbImage from 'components/VideoThumbImage';
 import { Color } from 'constants/css';
 import { cleanString, queryStringForArray } from 'helpers/stringHelpers';
 import { Link } from 'react-router-dom';
-import request from 'axios';
-import { URL } from 'constants/URL';
+import { loadPlaylistVideos } from 'helpers/requestHelpers';
 import NotFound from 'components/NotFound';
-
-const API_URL = `${URL}/playlist`;
 
 export default class Playlist extends Component {
   static propTypes = {
@@ -20,38 +17,29 @@ export default class Playlist extends Component {
 
   state = {
     videos: [],
-    loadMoreButtonShown: false,
+    loadMoreButton: false,
     loading: false,
     loaded: false
   };
 
   async componentDidMount() {
     const { playlistId, onLoad } = this.props;
-    try {
-      const {
-        data: { videos, title }
-      } = await request.get(`${API_URL}/playlist?playlistId=${playlistId}`);
-      let loadMoreButtonShown = false;
-      if (videos.length > 20) {
-        videos.pop();
-        loadMoreButtonShown = true;
-      }
-      if (typeof onLoad === 'function') {
-        onLoad({ exists: videos.length > 0, title });
-      }
-      this.setState({
-        videos,
-        loaded: true,
-        loadMoreButtonShown
-      });
-    } catch (error) {
-      console.error(error.response || error);
+    const { title, videos, loadMoreButton } = await loadPlaylistVideos({
+      playlistId
+    });
+    if (typeof onLoad === 'function') {
+      onLoad({ exists: videos.length > 0, title });
     }
+    this.setState({
+      videos,
+      loaded: true,
+      loadMoreButton
+    });
   }
 
   render() {
     const { playlistId } = this.props;
-    const { videos, loaded, loading, loadMoreButtonShown } = this.state;
+    const { videos, loaded, loading, loadMoreButton } = this.state;
     return (
       <>
         {videos.length === 0 ? (
@@ -103,7 +91,7 @@ export default class Playlist extends Component {
             </div>
           </div>
         ))}
-        {loadMoreButtonShown && (
+        {loadMoreButton && (
           <LoadMoreButton
             style={{ marginTop: '1.5em' }}
             loading={loading}
@@ -120,28 +108,14 @@ export default class Playlist extends Component {
     const { playlistId } = this.props;
     const { videos } = this.state;
     this.setState({ loading: true });
-    try {
-      const {
-        data: { videos: loadedVideos }
-      } = await request.get(
-        `${API_URL}/playlist?playlistId=${playlistId}&${queryStringForArray(
-          videos,
-          'id',
-          'shownVideos'
-        )}`
-      );
-      let loadMoreButtonShown = false;
-      if (loadedVideos.length > 20) {
-        loadedVideos.pop();
-        loadMoreButtonShown = true;
-      }
-      this.setState({
-        videos: videos.concat(loadedVideos),
-        loadMoreButtonShown,
-        loading: false
-      });
-    } catch (error) {
-      console.error(error.response || error);
-    }
+    const { videos: loadedVideos, loadMoreButton } = await loadPlaylistVideos({
+      playlistId,
+      shownVideos: queryStringForArray(videos, 'id', 'shownVideos')
+    });
+    this.setState({
+      videos: videos.concat(loadedVideos),
+      loadMoreButton,
+      loading: false
+    });
   };
 }

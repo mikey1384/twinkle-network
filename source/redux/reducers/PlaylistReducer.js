@@ -132,17 +132,23 @@ export default function PlaylistReducer(state = defaultState, action) {
         pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
           ...playlist,
           playlist:
-            playlist.id === action.playlistId ? action.data : playlist.playlist
+            playlist.id === action.playlistId
+              ? action.playlist
+              : playlist.playlist
         })),
         allPlaylists: state.allPlaylists.map(playlist => ({
           ...playlist,
           playlist:
-            playlist.id === action.playlistId ? action.data : playlist.playlist
+            playlist.id === action.playlistId
+              ? action.playlist
+              : playlist.playlist
         })),
         searchedPlaylists: state.searchedPlaylists.map(playlist => ({
           ...playlist,
           playlist:
-            playlist.id === action.playlistId ? action.data : playlist.playlist
+            playlist.id === action.playlistId
+              ? action.playlist
+              : playlist.playlist
         }))
       };
     case PLAYLIST.DELETE:
