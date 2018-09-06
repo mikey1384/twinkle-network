@@ -267,7 +267,12 @@ class EditPlaylistModal extends Component {
           <Button
             primary
             onClick={this.handleSave}
-            disabled={selectedVideos.length < 2 || isSaving}
+            disabled={
+              (videosToRemove.length > 0 &&
+                !removeVideosLoadMoreButton &&
+                selectedVideos.length === 0) ||
+              isSaving
+            }
           >
             Save
           </Button>
@@ -433,8 +438,14 @@ class EditPlaylistModal extends Component {
   };
 
   openRemoveVideosTab = async() => {
-    const { originalPlaylistVideos } = this.state;
+    const { originalPlaylistVideos, videosToRemove } = this.state;
     const { playlistId } = this.props;
+    if (videosToRemove.length > 0) {
+      return this.setState({
+        mainTabActive: false,
+        loadingMore: false
+      });
+    }
     this.setState({
       loadingMore: false,
       mainTabActive: false,

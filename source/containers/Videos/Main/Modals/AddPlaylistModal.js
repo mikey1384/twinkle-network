@@ -226,7 +226,7 @@ class AddPlaylistModal extends Component {
                   (stringIsEmpty(title) ||
                     titleExceedsCharLimit ||
                     descriptionExceedsCharLimit)) ||
-                (section === 1 && this.state.selectedVideos.length < 2)
+                (section === 1 && this.state.selectedVideos.length === 0)
               }
               onClick={this.handleNext}
             >
