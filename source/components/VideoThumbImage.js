@@ -79,7 +79,7 @@ class VideoThumbImage extends Component {
             bottom: 0,
             right: 0,
             margin: 'auto',
-            borderBottom: !!xpEarned && `0.8rem solid ${Color.lightBlue}`
+            borderBottom: !!xpEarned && `0.8rem solid ${Color.lightBlue()}`
           }}
         />
         {isStarred && <StarMark style={{ top: 1, left: 1 }} size={3.5} />}
