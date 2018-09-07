@@ -270,7 +270,7 @@ class EditPlaylistModal extends Component {
             onClick={this.handleSave}
             disabled={
               (Object.keys(removedVideoIds).length === numPlaylistVids &&
-                (modalType !== 'change' || selectedVideos.length === 0)) ||
+                addedVideos.length === 0) ||
               isSaving
             }
           >
