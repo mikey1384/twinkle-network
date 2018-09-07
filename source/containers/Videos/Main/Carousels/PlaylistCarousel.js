@@ -33,7 +33,8 @@ class PlaylistCarousel extends Component {
     playlist: PropTypes.array.isRequired,
     showAllButton: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
-    uploader: PropTypes.string.isRequired
+    uploader: PropTypes.string.isRequired,
+    numPlaylistVids: PropTypes.number.isRequired
   };
 
   defaultNumSlides = 5;
@@ -101,6 +102,7 @@ class PlaylistCarousel extends Component {
       uploader,
       userIsUploader,
       id,
+      numPlaylistVids,
       showAllButton
     } = this.props;
     const menuProps = [
@@ -206,6 +208,7 @@ class PlaylistCarousel extends Component {
         {changePLVideosModalShown && (
           <EditPlaylistModal
             modalType="change"
+            numPlaylistVids={numPlaylistVids}
             playlistId={id}
             onHide={() => this.setState({ changePLVideosModalShown: false })}
           />
@@ -213,6 +216,7 @@ class PlaylistCarousel extends Component {
         {reorderPLVideosModalShown && (
           <EditPlaylistModal
             modalType="reorder"
+            numPlaylistVids={numPlaylistVids}
             playlistId={id}
             onHide={() => this.setState({ reorderPLVideosModalShown: false })}
           />

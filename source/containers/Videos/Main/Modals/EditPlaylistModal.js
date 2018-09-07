@@ -26,6 +26,7 @@ class EditPlaylistModal extends Component {
     changePlaylistVideos: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     modalType: PropTypes.string.isRequired,
+    numPlaylistVids: PropTypes.number.isRequired,
     onHide: PropTypes.func.isRequired,
     playlistId: PropTypes.number.isRequired
   };
@@ -78,7 +79,7 @@ class EditPlaylistModal extends Component {
   }
 
   render() {
-    const { modalType, onHide } = this.props;
+    const { modalType, numPlaylistVids, onHide } = this.props;
     const {
       isLoading,
       isSaving,
@@ -268,8 +269,7 @@ class EditPlaylistModal extends Component {
             primary
             onClick={this.handleSave}
             disabled={
-              (videosToRemove.length > 0 &&
-                !removeVideosLoadMoreButton &&
+              (Object.keys(removedVideoIds).length === numPlaylistVids &&
                 selectedVideos.length === 0) ||
               isSaving
             }
