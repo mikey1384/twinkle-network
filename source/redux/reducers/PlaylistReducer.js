@@ -159,6 +159,9 @@ export default function PlaylistReducer(state = defaultState, action) {
         ),
         allPlaylists: state.allPlaylists.filter(
           playlist => playlist.id !== action.data
+        ),
+        searchedPlaylists: state.searchedPlaylists.filter(
+          playlist => playlist.id !== action.data
         )
       };
     case PLAYLIST.LIKE_VIDEO:
