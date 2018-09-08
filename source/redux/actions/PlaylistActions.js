@@ -36,9 +36,10 @@ export const getMorePlaylists = shownPlaylistsIds => async dispatch => {
   }
 };
 
-export const setSearchedPlaylists = playlists => ({
+export const setSearchedPlaylists = ({ playlists, loadMoreButton }) => ({
   type: PLAYLIST.SET_SEARCHED_PLAYLISTS,
-  playlists
+  playlists,
+  loadMoreButton
 });
 
 export const uploadPlaylist = params => async dispatch => {

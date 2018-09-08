@@ -10,6 +10,7 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from './Modals/AddPlaylistModal';
 import Notification from 'components/Notification';
 import { stringIsEmpty } from 'helpers/stringHelpers';
+import { searchContent } from 'helpers/requestHelpers';
 import {
   openAddVideoModal,
   closeAddVideoModal
@@ -22,8 +23,6 @@ import {
   setSearchedPlaylists
 } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
-import request from 'axios';
-import { URL } from 'constants/URL';
 import { main } from './Styles';
 
 class Main extends Component {
@@ -210,18 +209,15 @@ class Main extends Component {
   searchPlaylist = async text => {
     const { setSearchedPlaylists } = this.props;
     if (stringIsEmpty(text) || text.length < 3) {
-      setSearchedPlaylists([]);
+      setSearchedPlaylists({ playlists: [], loadMoreButton: false });
       return this.setState({ isSearching: false });
     }
-    try {
-      const { data: searchedPlaylists } = await request.get(
-        `${URL}/playlist/search/playlist?query=${text}`
-      );
-      setSearchedPlaylists(searchedPlaylists);
-      this.setState({ isSearching: false });
-    } catch (error) {
-      console.error(error.response || error);
-    }
+    const { results, loadMoreButton } = await searchContent({
+      filter: 'playlist',
+      searchText: text
+    });
+    setSearchedPlaylists({ playlists: results, loadMoreButton });
+    this.setState({ isSearching: false });
   };
 }
 
