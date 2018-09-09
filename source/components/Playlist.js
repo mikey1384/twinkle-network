@@ -4,7 +4,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import VideoThumbImage from 'components/VideoThumbImage';
 import { Color } from 'constants/css';
-import { cleanString, queryStringForArray } from 'helpers/stringHelpers';
+import { cleanString } from 'helpers/stringHelpers';
 import { Link } from 'react-router-dom';
 import { loadPlaylistVideos } from 'helpers/requestHelpers';
 import NotFound from 'components/NotFound';
@@ -24,9 +24,11 @@ export default class Playlist extends Component {
 
   async componentDidMount() {
     const { playlistId, onLoad } = this.props;
-    const { title, videos, loadMoreButton } = await loadPlaylistVideos({
-      playlistId
-    });
+    const { title, results: videos, loadMoreButton } = await loadPlaylistVideos(
+      {
+        playlistId
+      }
+    );
     if (typeof onLoad === 'function') {
       onLoad({ exists: videos.length > 0, title });
     }
@@ -108,9 +110,9 @@ export default class Playlist extends Component {
     const { playlistId } = this.props;
     const { videos } = this.state;
     this.setState({ loading: true });
-    const { videos: loadedVideos, loadMoreButton } = await loadPlaylistVideos({
+    const { results: loadedVideos, loadMoreButton } = await loadPlaylistVideos({
       playlistId,
-      shownVideos: queryStringForArray(videos, 'id', 'shownVideos')
+      shownVideos: videos
     });
     this.setState({
       videos: videos.concat(loadedVideos),

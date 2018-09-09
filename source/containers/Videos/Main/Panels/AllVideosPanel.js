@@ -7,8 +7,7 @@ import { getMoreVideos } from 'redux/actions/VideoActions';
 import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import request from 'axios';
-import { URL } from 'constants/URL';
+import { loadVideos, searchContent } from 'helpers/requestHelpers';
 
 const last = array => {
   return array[array.length - 1];
@@ -33,6 +32,7 @@ class AllVideosPanel extends Component {
   state = {
     searchQuery: '',
     searchedVideos: [],
+    searchLoadMoreButton: false,
     isSearching: false
   };
 
@@ -44,7 +44,12 @@ class AllVideosPanel extends Component {
       loaded,
       onAddVideoClick
     } = this.props;
-    const { searchQuery, searchedVideos, isSearching } = this.state;
+    const {
+      searchQuery,
+      searchedVideos,
+      isSearching,
+      searchLoadMoreButton
+    } = this.state;
     const videos = searchQuery ? searchedVideos : allVideos;
     return (
       <SectionPanel
@@ -62,7 +67,10 @@ class AllVideosPanel extends Component {
         emptyMessage="No Videos"
         isEmpty={videos.length === 0}
         loaded={loaded}
-        loadMoreButtonShown={stringIsEmpty(searchQuery) && loadMoreButton}
+        loadMoreButtonShown={
+          !isSearching &&
+          (stringIsEmpty(searchQuery) ? loadMoreButton : searchLoadMoreButton)
+        }
         loadMore={this.loadMoreVideos}
         onSearch={this.onVideoSearch}
         searchQuery={searchQuery}
@@ -87,7 +95,7 @@ class AllVideosPanel extends Component {
                 editable={this.determineEditable(video)}
                 deletable={this.determineDeletable(video)}
                 video={video}
-                user={{ username: video.uploaderName, id: video.uploaderId }}
+                user={video.uploader}
                 lastVideoId={last(videos) ? last(videos).id : 0}
               />
             );
@@ -111,10 +119,30 @@ class AllVideosPanel extends Component {
     return userIsUploader || userCanEditThis;
   };
 
-  loadMoreVideos = () => {
+  loadMoreVideos = async() => {
     const { videos, getMoreVideos } = this.props;
+    const { searchedVideos } = this.state;
+    const { searchQuery } = this.state;
     const lastId = last(videos) ? last(videos).id : 0;
-    return getMoreVideos(lastId);
+    const { results: loadedVideos, loadMoreButton } = stringIsEmpty(searchQuery)
+      ? await loadVideos({
+          videoId: lastId
+        })
+      : await searchContent({
+          filter: 'video',
+          searchText: searchQuery,
+          shownResults: searchedVideos
+        });
+    if (stringIsEmpty(searchQuery)) {
+      return getMoreVideos({
+        videos: loadedVideos,
+        loadMoreButton
+      });
+    }
+    this.setState(state => ({
+      searchedVideos: state.searchedVideos.concat(loadedVideos),
+      searchLoadMoreButton: loadMoreButton
+    }));
   };
 
   onVideoSearch = text => {
@@ -127,14 +155,16 @@ class AllVideosPanel extends Component {
     if (stringIsEmpty(text) || text.length < 3) {
       return this.setState({ searchedVideos: [], isSearching: false });
     }
-    try {
-      const { data: searchedVideos } = await request.get(
-        `${URL}/video/search?query=${text}`
-      );
-      this.setState({ searchedVideos, isSearching: false });
-    } catch (error) {
-      console.error(error.response || error);
-    }
+    const { results, loadMoreButton } = await searchContent({
+      filter: 'video',
+      limit: 12,
+      searchText: text
+    });
+    this.setState({
+      searchedVideos: results,
+      isSearching: false,
+      searchLoadMoreButton: loadMoreButton
+    });
   };
 }
 

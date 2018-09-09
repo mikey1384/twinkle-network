@@ -166,22 +166,12 @@ export const fillCurrentVideoSlot = videoId => ({
   videoId
 });
 
-export const getMoreVideos = videoId => async dispatch => {
-  try {
-    const {
-      data: { videos, loadMoreButton }
-    } = await request.get(`${API_URL}?videoId=${videoId}`);
-    dispatch({
-      type: VIDEO.LOAD,
-      initialRun: false,
-      loadMoreButton,
-      videos
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const getMoreVideos = ({ videos, loadMoreButton }) => ({
+  type: VIDEO.LOAD,
+  initialRun: false,
+  loadMoreButton,
+  videos
+});
 
 export const likeVideo = (likes, videoId) => async dispatch => {
   dispatch({

@@ -2,6 +2,7 @@
 import { logout, openSigninModal } from 'redux/actions/UserActions';
 import request from 'axios';
 import { URL } from 'constants/URL';
+import { queryStringForArray } from 'helpers/stringHelpers';
 
 export const token = () =>
   typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
@@ -125,14 +126,18 @@ export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
   }
 };
 
-export const loadVideos = async({ limit, videoId }) => {
+export const loadPlaylists = async({ shownPlaylists }) => {
   try {
     const {
-      data: { videos, loadMoreButton }
+      data: { results, loadMoreButton }
     } = await request.get(
-      `${URL}/video?numberToLoad=${limit}&videoId=${videoId}`
+      `${URL}/playlist/?${queryStringForArray(
+        shownPlaylists,
+        'id',
+        'shownPlaylists'
+      )}`
     );
-    return Promise.resolve({ videos, loadMoreButton });
+    return Promise.resolve({ results, loadMoreButton });
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
@@ -150,10 +155,30 @@ export const loadPlaylistVideos = async({
       data: { title, videos, loadMoreButton }
     } = await request.get(
       `${URL}/playlist/playlist?playlistId=${playlistId}${
-        shownVideos ? '&' + shownVideos : ''
-      }${targetVideos ? '&' + targetVideos : ''}&limit=${limit}`
+        shownVideos
+          ? '&' + queryStringForArray(shownVideos, 'id', 'shownVideos')
+          : ''
+      }${
+        targetVideos
+          ? '&' + queryStringForArray(targetVideos, 'id', 'targetVideos')
+          : ''
+      }&limit=${limit}`
     );
-    return Promise.resolve({ title, videos, loadMoreButton });
+    return Promise.resolve({ title, results: videos, loadMoreButton });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const loadVideos = async({ limit, videoId }) => {
+  try {
+    const {
+      data: { videos: results, loadMoreButton }
+    } = await request.get(
+      `${URL}/video?numberToLoad=${limit}&videoId=${videoId}`
+    );
+    return Promise.resolve({ results, loadMoreButton });
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
@@ -178,11 +203,18 @@ export const reorderPlaylistVideos = async({
   }
 };
 
-export const searchContent = async({ filter, searchText, shownResults }) => {
+export const searchContent = async({
+  filter,
+  limit,
+  searchText,
+  shownResults
+}) => {
   try {
     const { data } = await request.get(
-      `${URL}/content/search?filter=${filter}&searchText=${searchText}${
-        shownResults ? `&${shownResults}` : ''
+      `${URL}/content/search?filter=${filter}&limit=${limit}&searchText=${searchText}${
+        shownResults
+          ? `&${queryStringForArray(shownResults, 'id', 'shownResults')}`
+          : ''
       }`
     );
     return Promise.resolve(data);

@@ -11,7 +11,7 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-touch-backend';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
-import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import {
   editPlaylistVideos,
@@ -53,7 +53,7 @@ class EditPlaylistModal extends Component {
   async componentDidMount() {
     const { modalType, playlistId } = this.props;
     this.setState({ isLoading: true });
-    const { videos: modalVideos, loadMoreButton } =
+    const { results: modalVideos, loadMoreButton } =
       modalType === 'change'
         ? await loadVideos({ limit: 18 })
         : await loadPlaylistVideos({
@@ -62,11 +62,11 @@ class EditPlaylistModal extends Component {
           });
     let originalPlaylistVideos = [];
     if (modalType === 'change') {
-      const { videos } = await loadPlaylistVideos({
+      const { results } = await loadPlaylistVideos({
         playlistId,
-        targetVideos: queryStringForArray(modalVideos, 'id', 'targetVideos')
+        targetVideos: modalVideos
       });
-      originalPlaylistVideos = videos;
+      originalPlaylistVideos = results;
     } else {
       originalPlaylistVideos = modalVideos;
     }
@@ -332,10 +332,10 @@ class EditPlaylistModal extends Component {
     this.setState({ loadingMore: true });
     if (!mainTabActive) {
       const { videosToRemove } = this.state;
-      const { videos, loadMoreButton } = await loadPlaylistVideos({
+      const { results: videos, loadMoreButton } = await loadPlaylistVideos({
         playlistId,
         limit: 18,
-        shownVideos: queryStringForArray(videosToRemove, 'id', 'shownVideos')
+        shownVideos: videosToRemove
       });
       for (let video of videos) {
         if (
@@ -360,11 +360,11 @@ class EditPlaylistModal extends Component {
       const { results, loadMoreButton } = await searchContent({
         filter: 'video',
         searchText,
-        shownResults: queryStringForArray(searchedVideos, 'id', 'shownResults')
+        shownResults: searchedVideos
       });
-      const { videos: playlistVideos } = await loadPlaylistVideos({
+      const { results: playlistVideos } = await loadPlaylistVideos({
         playlistId,
-        targetVideos: queryStringForArray(results, 'id', 'targetVideos')
+        targetVideos: results
       });
       return this.setState(state => ({
         loadingMore: false,
@@ -383,13 +383,13 @@ class EditPlaylistModal extends Component {
 
     if (modalType === 'change') {
       const { modalVideos } = this.state;
-      const { videos, loadMoreButton } = await loadVideos({
+      const { results: videos, loadMoreButton } = await loadVideos({
         limit: 18,
         videoId: modalVideos[modalVideos.length - 1].id
       });
-      const { videos: playlistVideos } = await loadPlaylistVideos({
+      const { results: playlistVideos } = await loadPlaylistVideos({
         playlistId,
-        targetVideos: queryStringForArray(videos, 'id', 'targetVideos')
+        targetVideos: videos
       });
       return this.setState(state => ({
         loadingMore: false,
@@ -408,13 +408,9 @@ class EditPlaylistModal extends Component {
       }));
     }
 
-    const { videos, loadMoreButton } = await loadPlaylistVideos({
+    const { results: videos, loadMoreButton } = await loadPlaylistVideos({
       playlistId,
-      shownVideos: queryStringForArray(
-        originalPlaylistVideos,
-        'id',
-        'shownVideos'
-      )
+      shownVideos: originalPlaylistVideos
     });
     this.setState(state => ({
       originalPlaylistVideos: state.originalPlaylistVideos.concat(videos),
@@ -451,7 +447,7 @@ class EditPlaylistModal extends Component {
       mainTabActive: false,
       isLoading: true
     });
-    const { videos, loadMoreButton } = await loadPlaylistVideos({
+    const { results: videos, loadMoreButton } = await loadPlaylistVideos({
       playlistId,
       limit: 18
     });
@@ -475,9 +471,9 @@ class EditPlaylistModal extends Component {
       filter: 'video',
       searchText: text
     });
-    const { videos: playlistVideos } = await loadPlaylistVideos({
+    const { results: playlistVideos } = await loadPlaylistVideos({
       playlistId,
-      targetVideos: queryStringForArray(searchedVideos, 'id', 'targetVideos')
+      targetVideos: searchedVideos
     });
     this.setState(state => ({
       searchedVideos,

@@ -121,12 +121,13 @@ export default class SectionPanel extends Component {
     onSearch(text);
   };
 
-  onLoadMore = () => {
+  onLoadMore = async() => {
     const { loadMore } = this.props;
     const { loading } = this.state;
     if (!loading) {
       this.setState({ loading: true });
-      return loadMore().then(() => this.setState({ loading: false }));
+      await loadMore();
+      this.setState({ loading: false });
     }
   };
 

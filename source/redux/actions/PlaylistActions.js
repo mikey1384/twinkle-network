@@ -13,28 +13,25 @@ export const changePlaylistVideos = ({ playlistId, playlist }) => ({
 
 export const getPlaylists = () => async dispatch => {
   try {
-    const { data } = await request.get(API_URL);
+    const {
+      data: { results, loadMoreButton }
+    } = await request.get(API_URL);
     dispatch({
       type: PLAYLIST.LOAD,
-      data
+      playlists: results,
+      loadMoreButton
     });
   } catch (error) {
     handleError(error, dispatch);
   }
 };
 
-export const getMorePlaylists = shownPlaylistsIds => async dispatch => {
-  try {
-    const { data } = await request.get(`${API_URL}?${shownPlaylistsIds}`);
-    dispatch({
-      type: PLAYLIST.LOAD_MORE,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const getMorePlaylists = ({ playlists, isSearch, loadMoreButton }) => ({
+  type: PLAYLIST.LOAD_MORE,
+  playlists,
+  isSearch,
+  loadMoreButton
+});
 
 export const setSearchedPlaylists = ({ playlists, loadMoreButton }) => ({
   type: PLAYLIST.SET_SEARCHED_PLAYLISTS,

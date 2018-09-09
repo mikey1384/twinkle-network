@@ -34,6 +34,7 @@ class Main extends Component {
     closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
     loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
+    loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
     openAddVideoModal: PropTypes.func.isRequired,
     openReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
@@ -66,6 +67,7 @@ class Main extends Component {
       closeReorderPinnedPlaylistsModal,
       loadMorePlaylistsButton,
       loadMorePlaylistsToPinButton,
+      loadMoreSearchedPlaylistsButton,
       openSelectPlaylistsToPinModal,
       openReorderPinnedPlaylistsModal,
       openAddVideoModal,
@@ -86,7 +88,9 @@ class Main extends Component {
       isSearching
     } = this.state;
 
-    const playlists = playlistSearchQuery ? searchedPlaylists : allPlaylists;
+    const playlists = !stringIsEmpty(playlistSearchQuery)
+      ? searchedPlaylists
+      : allPlaylists;
 
     const allPlaylistButtons = [
       {
@@ -126,7 +130,11 @@ class Main extends Component {
             key={'allplaylists'}
             buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
             title="All Playlists"
-            loadMoreButton={loadMorePlaylistsButton}
+            loadMoreButton={
+              !stringIsEmpty(playlistSearchQuery)
+                ? loadMoreSearchedPlaylistsButton
+                : loadMorePlaylistsButton
+            }
             userId={userId}
             playlists={playlists}
             loaded={playlistsLoaded}
@@ -214,7 +222,8 @@ class Main extends Component {
     }
     const { results, loadMoreButton } = await searchContent({
       filter: 'playlist',
-      searchText: text
+      searchText: text,
+      limit: 3
     });
     setSearchedPlaylists({ playlists: results, loadMoreButton });
     this.setState({ isSearching: false });
@@ -229,6 +238,7 @@ export default connect(
     loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
     loadMorePlaylistsToPinButton:
       state.PlaylistReducer.loadMorePlaylistsToPinButton,
+    loadMoreSearchedPlaylistsButton: state.PlaylistReducer.searchLoadMoreButton,
     pinnedPlaylistsLoaded: state.PlaylistReducer.pinnedPlaylistsLoaded,
     pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
     playlistsToPin: state.PlaylistReducer.playlistsToPin,

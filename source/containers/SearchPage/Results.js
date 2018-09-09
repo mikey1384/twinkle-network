@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import Result from './Result';
 import { setResults, showMoreResults } from 'redux/actions/SearchActions';
-import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
@@ -180,7 +180,7 @@ class Results extends Component {
     const data = await searchContent({
       filter,
       searchText,
-      shownResults: queryStringForArray(results, 'id', 'shownResults')
+      shownResults: results
     });
     if (data) showMoreResults(data);
     this.setState({ loadingMore: false });

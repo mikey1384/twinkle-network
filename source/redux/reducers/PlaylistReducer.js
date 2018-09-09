@@ -7,6 +7,7 @@ const defaultState = {
   allPlaylistsLoaded: false,
   pinnedPlaylistsLoaded: false,
   loadMoreButton: false,
+  searchLoadMoreButton: false,
 
   selectPlaylistsToPinModalShown: false,
   loadMorePlaylistsToPinButton: false,
@@ -19,28 +20,28 @@ const defaultState = {
 
 export default function PlaylistReducer(state = defaultState, action) {
   let loadMorePlaylistsToPinButton = false;
-  let loadMoreButton = false;
   switch (action.type) {
     case PLAYLIST.LOAD:
-      if (action.data.playlists.length > 3) {
-        action.data.playlists.pop();
-        loadMoreButton = true;
-      }
       return {
         ...state,
         allPlaylistsLoaded: true,
-        allPlaylists: action.data.playlists,
-        loadMoreButton
+        allPlaylists: action.playlists,
+        loadMoreButton: action.loadMoreButton
       };
     case PLAYLIST.LOAD_MORE:
-      if (action.data.playlists.length > 3) {
-        action.data.playlists.pop();
-        loadMoreButton = true;
-      }
       return {
         ...state,
-        allPlaylists: state.allPlaylists.concat(action.data.playlists),
-        loadMoreButton
+        ...(action.isSearch
+          ? {
+              searchedPlaylists: state.searchedPlaylists.concat(
+                action.playlists
+              ),
+              searchLoadMoreButton: action.loadMoreButton
+            }
+          : {
+              allPlaylists: state.allPlaylists.concat(action.playlists),
+              loadMoreButton: action.loadMoreButton
+            })
       };
     case PLAYLIST.LOAD_PINNED:
       return {
@@ -195,7 +196,8 @@ export default function PlaylistReducer(state = defaultState, action) {
     case PLAYLIST.SET_SEARCHED_PLAYLISTS:
       return {
         ...state,
-        searchedPlaylists: action.playlists
+        searchedPlaylists: action.playlists,
+        searchLoadMoreButton: action.loadMoreButton
       };
     case PLAYLIST.TURN_ON_CLICK_SAFE:
       return {

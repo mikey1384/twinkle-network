@@ -9,7 +9,6 @@ import {
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
-  queryStringForArray,
   renderCharLimit
 } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
@@ -44,9 +43,9 @@ class AddPlaylistModal extends Component {
   };
 
   async componentDidMount() {
-    const { videos, loadMoreButton } = await loadVideos({ limit: 18 });
+    const { results, loadMoreButton } = await loadVideos({ limit: 18 });
     this.setState({
-      allVideos: videos,
+      allVideos: results,
       loadMoreButton
     });
   }
@@ -295,19 +294,19 @@ class AddPlaylistModal extends Component {
       const { results, loadMoreButton } = await searchContent({
         filter: 'video',
         searchText,
-        shownResults: queryStringForArray(searchedVideos, 'id', 'shownResults')
+        shownResults: searchedVideos
       });
       this.setState(state => ({
         searchedVideos: state.searchedVideos.concat(results),
         searchLoadMoreButton: loadMoreButton
       }));
     } else {
-      const { videos, loadMoreButton } = await loadVideos({
+      const { results, loadMoreButton } = await loadVideos({
         limit: 18,
         videoId: allVideos[allVideos.length - 1].id
       });
       this.setState(state => ({
-        allVideos: state.allVideos.concat(videos),
+        allVideos: state.allVideos.concat(results),
         loadMoreButton
       }));
     }

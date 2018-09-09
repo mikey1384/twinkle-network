@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PlaylistCarousel from '../Carousels/PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
-import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { getMorePlaylists } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
+import { loadPlaylists, searchContent } from 'helpers/requestHelpers';
 
 class PlaylistsPanel extends Component {
   static propTypes = {
@@ -45,7 +46,7 @@ class PlaylistsPanel extends Component {
         emptyMessage="No Playlists"
         isEmpty={playlists.length === 0}
         loaded={loaded}
-        loadMoreButtonShown={stringIsEmpty(searchQuery) && loadMoreButton}
+        loadMoreButtonShown={!isSearching && loadMoreButton}
         loadMore={this.loadMorePlaylists}
         isSearching={isSearching}
         onSearch={onSearch}
@@ -66,11 +67,21 @@ class PlaylistsPanel extends Component {
     );
   }
 
-  loadMorePlaylists = () => {
-    const { playlists, getMorePlaylists } = this.props;
-    return getMorePlaylists(
-      queryStringForArray(playlists, 'id', 'shownPlaylists')
-    );
+  loadMorePlaylists = async() => {
+    const { playlists, getMorePlaylists, searchQuery } = this.props;
+    const { results, loadMoreButton } = stringIsEmpty(searchQuery)
+      ? await loadPlaylists({ shownPlaylists: playlists })
+      : await searchContent({
+          filter: 'playlist',
+          shownResults: playlists,
+          searchText: searchQuery,
+          limit: 3
+        });
+    getMorePlaylists({
+      playlists: results,
+      isSearch: !!searchQuery,
+      loadMoreButton
+    });
   };
 }
 
