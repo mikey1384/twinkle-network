@@ -45,10 +45,11 @@ class Results extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { filter, searchText } = this.props;
+    const { filter, searchText, setResults } = this.props;
     if (prevProps.searchText !== searchText || prevProps.filter !== filter) {
       clearTimeout(this.timer);
       this.setState({ searching: true });
+      setResults({ filter, results: [], loadMoreButton: false });
       this.timer = setTimeout(
         () => this.searchContent({ filter, searchText }),
         500
@@ -170,7 +171,7 @@ class Results extends Component {
       filter,
       searchText
     });
-    if (data) setResults(data);
+    if (data) setResults({ filter, ...data });
     return this.setState({ searching: false });
   };
 

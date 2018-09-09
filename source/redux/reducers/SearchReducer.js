@@ -43,6 +43,7 @@ export default function SearchReducer(state = defaultState, action) {
         searchScrollPosition: action.scrollTop
       };
     case SEARCH.SET_RESULTS:
+      if (action.filter !== state.selectedFilter) return state;
       return {
         ...state,
         results: action.results,
