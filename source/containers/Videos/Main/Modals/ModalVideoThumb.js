@@ -99,7 +99,7 @@ export default class VideoThumb extends Component {
                 lineHeight: 2
               }}
             >
-              {video.uploaderName}
+              {video.uploader ? video.uploader.username : video.uploaderName}
             </p>
           </div>
         </div>

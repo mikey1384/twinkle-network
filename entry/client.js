@@ -7,33 +7,35 @@ import createHistory from 'history/createBrowserHistory';
 import createStoreWithHistory from './store';
 import App from 'containers/App';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faAlignJustify } from '@fortawesome/free-solid-svg-icons/faAlignJustify';
-import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
-import { faBolt } from '@fortawesome/free-solid-svg-icons/faBolt';
-import { faBook } from '@fortawesome/free-solid-svg-icons/faBook';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons/faCaretDown';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
-import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
-import { faCommentAlt } from '@fortawesome/free-solid-svg-icons/faCommentAlt';
-import { faComments } from '@fortawesome/free-solid-svg-icons/faComments';
-import { faFilm } from '@fortawesome/free-solid-svg-icons/faFilm';
-import { faHome } from '@fortawesome/free-solid-svg-icons/faHome';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
-import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
-import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
-import { faThumbsUp } from '@fortawesome/free-solid-svg-icons/faThumbsUp';
-import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
-import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers';
+import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify';
+import { faBars } from '@fortawesome/pro-solid-svg-icons/faBars';
+import { faBolt } from '@fortawesome/pro-solid-svg-icons/faBolt';
+import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
+import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
+import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
+import { faChevronLeft } from '@fortawesome/pro-solid-svg-icons/faChevronLeft';
+import { faChevronRight } from '@fortawesome/pro-solid-svg-icons/faChevronRight';
+import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
+import { faCommentAlt } from '@fortawesome/pro-solid-svg-icons/faCommentAlt';
+import { faComments } from '@fortawesome/pro-solid-svg-icons/faComments';
+import { faFilm } from '@fortawesome/pro-solid-svg-icons/faFilm';
+import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
+import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
+import { faSearch } from '@fortawesome/pro-solid-svg-icons/faSearch';
+import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
+import { faStar } from '@fortawesome/pro-solid-svg-icons/faStar';
+import { faThumbsUp } from '@fortawesome/pro-solid-svg-icons/faThumbsUp';
+import { faTimes } from '@fortawesome/pro-solid-svg-icons/faTimes';
+import { faTrashAlt } from '@fortawesome/pro-solid-svg-icons/faTrashAlt';
+import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
+import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
 library.add(
   faAlignJustify,
   faBars,
   faBolt,
   faBook,
   faCaretDown,
+  faCertificate,
   faChevronLeft,
   faChevronRight,
   faComment,

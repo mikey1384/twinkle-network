@@ -34,7 +34,9 @@ class RewardStatus extends Component {
     );
     let starMarks = [];
     for (let i = 0; i < totalStars; i++) {
-      starMarks.push(<Icon key={i} icon="star" />);
+      starMarks.push(
+        <Icon key={i} icon="star" style={{ marginLeft: i !== 0 && '0.2rem' }} />
+      );
     }
     return (
       <>
