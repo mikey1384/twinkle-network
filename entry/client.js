@@ -24,6 +24,9 @@ import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
 import { faSearch } from '@fortawesome/pro-solid-svg-icons/faSearch';
 import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
 import { faStar } from '@fortawesome/pro-solid-svg-icons/faStar';
+import { faStarHalfAlt } from '@fortawesome/pro-solid-svg-icons/faStarHalfAlt';
+import { faStar as farStar } from '@fortawesome/pro-regular-svg-icons/faStar';
+import { faStarHalfAlt as farStarHalfAlt } from '@fortawesome/pro-regular-svg-icons/faStarHalfAlt';
 import { faThumbsUp } from '@fortawesome/pro-solid-svg-icons/faThumbsUp';
 import { faTimes } from '@fortawesome/pro-solid-svg-icons/faTimes';
 import { faTrashAlt } from '@fortawesome/pro-solid-svg-icons/faTrashAlt';
@@ -47,6 +50,9 @@ library.add(
   faSearch,
   faSpinner,
   faStar,
+  faStarHalfAlt,
+  farStar,
+  farStarHalfAlt,
   faThumbsUp,
   faTimes,
   faTrashAlt,

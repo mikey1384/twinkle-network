@@ -41,6 +41,7 @@ class Reply extends Component {
     onRewardCommentEdit: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onReply: PropTypes.func.isRequired,
+    parent: PropTypes.object.isRequired,
     reply: PropTypes.shape({
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
@@ -75,6 +76,7 @@ class Reply extends Component {
       onDelete,
       onRewardCommentEdit,
       onReply,
+      parent,
       reply,
       reply: { likes = [], stars = [], uploader },
       userId
@@ -244,6 +246,8 @@ class Reply extends Component {
                 marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
               stars={stars}
+              type="comment"
+              rootType={parent.type}
               uploaderName={uploader.username}
             />
             <ReplyInputArea

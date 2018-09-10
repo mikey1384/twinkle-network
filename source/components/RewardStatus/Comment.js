@@ -107,7 +107,7 @@ class Comment extends Component {
                   style={{
                     fontWeight: 'bold',
                     color:
-                      star.rewardAmount === 2 ? Color.gold() : Color.orange()
+                      star.rewardAmount >= 2 ? Color.gold() : Color.orange()
                   }}
                 >
                   rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}

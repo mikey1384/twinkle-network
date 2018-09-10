@@ -284,6 +284,8 @@ class Comment extends Component {
                   marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
                 }}
                 stars={stars}
+                type="comment"
+                rootType={parent.type}
                 uploaderName={uploader.username}
               />
             )}

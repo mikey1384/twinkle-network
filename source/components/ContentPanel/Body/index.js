@@ -380,6 +380,8 @@ class Body extends Component {
             contentType={type}
             onCommentEdit={onEditRewardComment}
             stars={stars}
+            type={type}
+            rootType={rootType}
             uploaderName={uploader.username}
           />
           <Comments

@@ -76,13 +76,17 @@ class TargetContent extends Component {
     let userLikedThis = false;
     let userIsUploader;
     let userCanStarThis;
+    let uploader = [];
     if (comment && !comment.notFound) {
+      uploader = comment.uploader;
       for (let i = 0; i < comment.likes.length; i++) {
         if (comment.likes[i].userId === myId) userLikedThis = true;
       }
       userIsUploader = myId === comment.uploader.id;
       userCanStarThis =
         !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
+    } else {
+      uploader = discussion.uploader;
     }
     return (
       <ErrorBoundary
@@ -313,6 +317,11 @@ class TargetContent extends Component {
                         : '1rem'
                   }}
                   stars={comment.stars}
+                  type={
+                    type === 'reply' || type === 'comment' ? 'comment' : type
+                  }
+                  rootType={rootType}
+                  uploaderName={uploader.username}
                 />
                 {replyInputShown && (
                   <InputForm

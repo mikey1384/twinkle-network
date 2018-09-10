@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ExecutionEnvironment from 'exenv';
 
 Icon.propTypes = {
-  icon: PropTypes.string,
+  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   size: PropTypes.string
 };
 export default function Icon({ icon, size, ...props }) {
