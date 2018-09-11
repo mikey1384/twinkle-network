@@ -111,7 +111,7 @@ class Comment extends Component {
                   }}
                 >
                   rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}
-                  Star
+                  Twinkle
                   {star.rewardAmount > 1 ? 's' : ''}
                 </span>{' '}
                 <span style={{ fontSize: '1rem', color: Color.gray() }}>
