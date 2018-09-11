@@ -91,8 +91,8 @@ class XPRewardInterface extends Component {
               filled={twoStarSelected}
               onClick={() => this.setState({ twoStarSelected: true })}
             >
-              <Icon icon="star" />
-              <Icon icon="star" />
+              <Icon icon="certificate" />
+              <Icon icon="certificate" />
               <span style={{ marginLeft: '0.7rem' }}>
                 Reward 2 Twinkles (Excellent - 400 XP)
               </span>
