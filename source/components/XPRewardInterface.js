@@ -58,7 +58,7 @@ class XPRewardInterface extends Component {
       }
       return prev;
     }, 0);
-    console.log(maxStars, currentStars, prevRewardedStars);
+    const canRewardTwoStars = 5 - currentStars >= 2 && prevRewardedStars === 0;
     return (
       <div
         className={css`
@@ -82,18 +82,20 @@ class XPRewardInterface extends Component {
             <Icon icon="certificate" />
             <span style={{ marginLeft: '0.7rem' }}>Reward a Twinkle</span>
           </Button>
-          <Button
-            gold
-            style={{ justifyContent: 'flex-start', marginTop: '1rem' }}
-            filled={twoStarSelected}
-            onClick={() => this.setState({ twoStarSelected: true })}
-          >
-            <Icon icon="certificate" />
-            <Icon icon="certificate" style={{ marginLeft: '0.2rem' }} />
-            <span style={{ marginLeft: '0.7rem' }}>
-              Reward 2 Twinkles (Excellent - 400 XP)
-            </span>
-          </Button>
+          {canRewardTwoStars && (
+            <Button
+              gold
+              style={{ justifyContent: 'flex-start', marginTop: '1rem' }}
+              filled={twoStarSelected}
+              onClick={() => this.setState({ twoStarSelected: true })}
+            >
+              <Icon icon="star" />
+              <Icon icon="star" />
+              <span style={{ marginLeft: '0.7rem' }}>
+                Reward 2 stars (Excellent - 400 XP)
+              </span>
+            </Button>
+          )}
         </section>
         <Textarea
           autoFocus
