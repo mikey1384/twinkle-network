@@ -12,6 +12,7 @@ import {
 import Button from 'components/Button';
 import request from 'axios';
 import Icon from 'components/Icon';
+import { returnMaxStars } from 'constants/defaultValues';
 import { auth } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';
 import { connect } from 'react-redux';
@@ -23,7 +24,9 @@ class XPRewardInterface extends Component {
     stars: PropTypes.array,
     uploaderId: PropTypes.number.isRequired,
     userId: PropTypes.number.isRequired,
-    noPadding: PropTypes.bool
+    noPadding: PropTypes.bool,
+    type: PropTypes.string,
+    rootType: PropTypes.string
   };
 
   state = {
@@ -34,19 +37,28 @@ class XPRewardInterface extends Component {
 
   render() {
     const { rewarding, rewardExplanation, twoStarSelected } = this.state;
-    const { contentType, noPadding, stars = [], userId } = this.props;
+    const {
+      contentType,
+      noPadding,
+      stars = [],
+      type,
+      rootType,
+      userId
+    } = this.props;
+    const maxStars = returnMaxStars({ type, rootType });
     if (!userId) return null;
-    const totalStars =
+    let currentStars =
       stars.length > 0
         ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)
         : 0;
+    currentStars = Math.min(currentStars, maxStars);
     const prevRewardedStars = stars.reduce((prev, star) => {
       if (star.rewarderId === userId) {
         return prev + star.rewardAmount;
       }
       return prev;
     }, 0);
-    const canRewardTwoStars = 5 - totalStars >= 2 && prevRewardedStars === 0;
+    console.log(maxStars, currentStars, prevRewardedStars);
     return (
       <div
         className={css`
@@ -68,25 +80,20 @@ class XPRewardInterface extends Component {
             onClick={() => this.setState({ twoStarSelected: false })}
           >
             <Icon icon="certificate" />
+            <span style={{ marginLeft: '0.7rem' }}>Reward a Twinkle</span>
+          </Button>
+          <Button
+            gold
+            style={{ justifyContent: 'flex-start', marginTop: '1rem' }}
+            filled={twoStarSelected}
+            onClick={() => this.setState({ twoStarSelected: true })}
+          >
+            <Icon icon="certificate" />
+            <Icon icon="certificate" style={{ marginLeft: '0.2rem' }} />
             <span style={{ marginLeft: '0.7rem' }}>
-              Reward a Twinkle
-              {canRewardTwoStars ? ' (Great - 200 XP)' : ' (200 XP)'}
+              Reward 2 Twinkles (Excellent - 400 XP)
             </span>
           </Button>
-          {canRewardTwoStars && (
-            <Button
-              gold
-              style={{ justifyContent: 'flex-start', marginTop: '1rem' }}
-              filled={twoStarSelected}
-              onClick={() => this.setState({ twoStarSelected: true })}
-            >
-              <Icon icon="certificate" />
-              <Icon icon="certificate" style={{ marginLeft: '0.2rem' }} />
-              <span style={{ marginLeft: '0.7rem' }}>
-                Reward 2 Twinkles (Excellent - 400 XP)
-              </span>
-            </Button>
-          )}
         </section>
         <Textarea
           autoFocus

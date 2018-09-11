@@ -37,3 +37,8 @@ export const charLimit = {
     url: 300
   }
 };
+
+export const returnMaxStars = ({ type, rootType }) => {
+  let maxStars = 5;
+  return maxStars;
+};

@@ -287,7 +287,7 @@ class TargetContent extends Component {
                               this.setState({ xpRewardInterfaceShown: true })
                             }
                           >
-                            <Icon icon="star" />
+                            <Icon icon="certificate" />
                             <span style={{ marginLeft: '0.7rem' }}>
                               {this.determineXpButtonDisabled() || 'Reward'}
                             </span>
@@ -306,6 +306,8 @@ class TargetContent extends Component {
                       this.setState({ xpRewardInterfaceShown: false });
                       onAttachStar(data);
                     }}
+                    type={type === 'reply' ? 'comment' : type}
+                    rootType={rootType}
                   />
                 )}
                 <RewardStatus
@@ -369,12 +371,19 @@ class TargetContent extends Component {
   determineXpButtonDisabled = () => {
     const {
       targetObj: { type, comment, discussion },
-      myId
+      myId,
+      rootType
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     const stars =
       type === 'comment' || type === 'reply' ? comment.stars : discussion.stars;
-    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown });
+    return determineXpButtonDisabled({
+      stars,
+      myId,
+      xpRewardInterfaceShown,
+      type: type === 'reply' ? 'comment' : type,
+      rootType
+    });
   };
 
   onLikeClick = likes => {

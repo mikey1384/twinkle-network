@@ -4,6 +4,7 @@ import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { returnMaxStars } from 'constants/defaultValues';
 import Comment from './Comment';
 import Starmarks from './Starmarks';
 
@@ -28,13 +29,7 @@ class RewardStatus extends Component {
       userId,
       style
     } = this.props;
-    let maxStars = 5;
-    if (type === 'comment') {
-      maxStars = 10;
-      if (rootType === 'question' || rootType === 'discussion') {
-        maxStars = 50;
-      }
-    }
+    const maxStars = returnMaxStars({ type, rootType });
     let rewardedStars = stars.reduce(
       (prev, star) => prev + star.rewardAmount,
       0

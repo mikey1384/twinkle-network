@@ -102,7 +102,8 @@ class MainFeeds extends Component {
                 <>
                   <p>Tap to collect all your rewards</p>
                   <p>
-                    ({totalRewardAmount} stars x {rewardValue.star} XP/star ={' '}
+                    ({totalRewardAmount} Twinkles x {rewardValue.star}{' '}
+                    XP/Twinkle ={' '}
                     {addCommasToNumber(totalRewardAmount * rewardValue.star)}{' '}
                     XP)
                   </p>

@@ -24,7 +24,7 @@ import {
 import { edit } from 'constants/placeholders';
 import Likers from 'components/Likers';
 import LikeButton from 'components/Buttons/LikeButton';
-import StarButton from 'components/StarButton';
+import StarButton from 'components/Buttons/StarButton';
 import { attachStar, starVideo } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -374,7 +374,7 @@ class Description extends Component {
                     this.setState({ xpRewardInterfaceShown: true })
                   }
                 >
-                  <Icon icon="star" />
+                  <Icon icon="certificate" />
                   <span style={{ marginLeft: '0.7rem' }}>
                     {determineXpButtonDisabled({
                       myId: userId,

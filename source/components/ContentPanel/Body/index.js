@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Context from '../Context';
 import withContext from 'components/Wrappers/withContext';
 import LikeButton from 'components/Buttons/LikeButton';
-import StarButton from 'components/StarButton';
+import StarButton from 'components/Buttons/StarButton';
 import Button from 'components/Button';
 import Likers from 'components/Likers';
 import { connect } from 'react-redux';
@@ -305,7 +305,6 @@ class Body extends Component {
                   )}
                   {canStar &&
                     userCanStarThis &&
-                    (type !== 'discussion' && type !== 'question') &&
                     !userIsUploader && (
                       <Button
                         love
@@ -315,7 +314,7 @@ class Body extends Component {
                           this.setState({ xpRewardInterfaceShown: true })
                         }
                       >
-                        <Icon icon="star" />
+                        <Icon icon="certificate" />
                         <span style={{ marginLeft: '0.7rem' }}>
                           {this.determineXpButtonDisabled() || 'Reward'}
                         </span>
@@ -374,6 +373,8 @@ class Body extends Component {
                 this.setState({ xpRewardInterfaceShown: false });
                 onAttachStar(data);
               }}
+              type={type}
+              rootType={rootType}
             />
           )}
           <RewardStatus
@@ -438,11 +439,17 @@ class Body extends Component {
 
   determineXpButtonDisabled = () => {
     const {
-      contentObj: { stars },
+      contentObj: { stars, type, rootType },
       myId
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
-    return determineXpButtonDisabled({ stars, myId, xpRewardInterfaceShown });
+    return determineXpButtonDisabled({
+      stars,
+      myId,
+      xpRewardInterfaceShown,
+      type,
+      rootType
+    });
   };
 
   onCommentButtonClick = async data => {

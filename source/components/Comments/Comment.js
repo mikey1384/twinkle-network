@@ -236,15 +236,19 @@ class Comment extends Component {
                               disabled={determineXpButtonDisabled({
                                 myId: userId,
                                 xpRewardInterfaceShown,
-                                stars
+                                stars,
+                                type: 'comment',
+                                rootType: parent.type
                               })}
                             >
-                              <Icon icon="star" />
+                              <Icon icon="certificate" />
                               <span style={{ marginLeft: '0.7rem' }}>
                                 {determineXpButtonDisabled({
                                   myId: userId,
                                   xpRewardInterfaceShown,
-                                  stars
+                                  stars,
+                                  type: 'comment',
+                                  rootType: parent.type
                                 }) || 'Reward'}
                               </span>
                             </Button>
@@ -273,6 +277,8 @@ class Comment extends Component {
                   this.setState({ xpRewardInterfaceShown: false });
                   onAttachStar(data);
                 }}
+                type="comment"
+                rootType={parent.type}
               />
             )}
             {!isPreview && (
