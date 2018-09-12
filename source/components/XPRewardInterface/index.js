@@ -57,7 +57,7 @@ class XPRewardInterface extends Component {
           color: ${Color.blue()};
         `}
       >
-        <FilterBar>
+        <FilterBar style={{ background: 'none' }}>
           <nav
             className={twinkleTabActive ? 'active' : ''}
             onClick={() =>
@@ -82,7 +82,7 @@ class XPRewardInterface extends Component {
               }))
             }
           >
-            Reward Stars (×5 Twinkles)
+            Reward Stars
           </nav>
         </FilterBar>
         <section
@@ -158,7 +158,7 @@ class XPRewardInterface extends Component {
     for (
       let i = 1;
       i * multiplier <=
-      Math.min(remainingStars, myRewardableStars, 5 * multiplier);
+      Math.min(remainingStars, myRewardableStars, twinkleTabActive ? 4 : 25);
       i++
     ) {
       buttons.push(
@@ -166,7 +166,10 @@ class XPRewardInterface extends Component {
           key={i * multiplier}
           info={i * multiplier < 5}
           warning={i * multiplier >= 5}
-          gold={i * multiplier >= 25}
+          gold={
+            (i === maxRewardableStars && maxRewardableStars < 5) ||
+            i * multiplier >= 25
+          }
           style={{
             justifyContent: 'flex-start',
             marginTop: i !== 1 && '0.5rem'
@@ -179,6 +182,24 @@ class XPRewardInterface extends Component {
             Reward {i * multiplier === 1 ? 'a' : i * multiplier} Twinkle
             {i * multiplier > 1 ? 's' : ''} (
             {addCommasToNumber(i * multiplier * 200)} XP)
+          </span>
+        </Button>
+      );
+    }
+    if (twinkleTabActive && Math.min(remainingStars, myRewardableStars) >= 5) {
+      buttons.push(
+        <Button
+          warning
+          key={5}
+          onClick={() => this.setState({ twinkleTabActive: false })}
+          style={{
+            justifyContent: 'flex-start',
+            marginTop: '0.5rem'
+          }}
+        >
+          <Icon icon="star" />
+          <span style={{ marginLeft: '0.7rem' }}>
+            Reward Stars (×5 Twinkles)
           </span>
         </Button>
       );
