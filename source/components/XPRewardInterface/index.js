@@ -4,11 +4,13 @@ import Textarea from 'components/Texts/Textarea';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import {
+  addCommasToNumber,
   addEmoji,
   exceedsCharLimit,
   finalizeEmoji,
   stringIsEmpty
 } from 'helpers/stringHelpers';
+import FilterBar from 'components/FilterBar';
 import Button from 'components/Button';
 import request from 'axios';
 import Icon from 'components/Icon';
@@ -30,33 +32,20 @@ class XPRewardInterface extends Component {
 
   state = {
     rewardExplanation: '',
-    twoStarSelected: false,
-    rewarding: false
+    rewarding: false,
+    selectedAmount: 0,
+    twinkleTabActive: true
   };
 
   render() {
-    const { rewarding, rewardExplanation, twoStarSelected } = this.state;
     const {
-      contentType,
-      difficulty,
-      noPadding,
-      stars = [],
-      userId
-    } = this.props;
-    const maxStars = returnMaxStars({ difficulty });
+      rewarding,
+      rewardExplanation,
+      selectedAmount,
+      twinkleTabActive
+    } = this.state;
+    const { contentType, noPadding, userId } = this.props;
     if (!userId) return null;
-    let currentStars =
-      stars.length > 0
-        ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)
-        : 0;
-    currentStars = Math.min(currentStars, maxStars);
-    const prevRewardedStars = stars.reduce((prev, star) => {
-      if (star.rewarderId === userId) {
-        return prev + star.rewardAmount;
-      }
-      return prev;
-    }, 0);
-    const canRewardTwoStars = 5 - currentStars >= 2 && prevRewardedStars === 0;
     return (
       <div
         className={css`
@@ -65,37 +54,41 @@ class XPRewardInterface extends Component {
           padding: ${noPadding ? '1rem 0 0 0' : '1rem'};
           font-size: 1.6rem;
           align-items: center;
-          color: ${Color.pink()};
+          color: ${Color.blue()};
         `}
       >
+        <FilterBar>
+          <nav
+            className={twinkleTabActive ? 'active' : ''}
+            onClick={() =>
+              this.setState(state => ({
+                selectedAmount: state.twinkleTabActive
+                  ? state.selectedAmount
+                  : 0,
+                twinkleTabActive: true
+              }))
+            }
+          >
+            Reward Twinkles
+          </nav>
+          <nav
+            className={!twinkleTabActive ? 'active' : ''}
+            onClick={() =>
+              this.setState(state => ({
+                selectedAmount: !state.twinkleTabActive
+                  ? state.selectedAmount
+                  : 0,
+                twinkleTabActive: false
+              }))
+            }
+          >
+            Reward Stars (×5 Twinkles)
+          </nav>
+        </FilterBar>
         <section
           style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
         >
-          <Button
-            logo
-            style={{ justifyContent: 'flex-start' }}
-            filled={!twoStarSelected}
-            onClick={() => this.setState({ twoStarSelected: false })}
-          >
-            <Icon icon="certificate" />
-            <span style={{ marginLeft: '0.7rem' }}>
-              Reward a Twinkle (Great - 200 XP)
-            </span>
-          </Button>
-          {canRewardTwoStars && (
-            <Button
-              gold
-              style={{ justifyContent: 'flex-start', marginTop: '1rem' }}
-              filled={twoStarSelected}
-              onClick={() => this.setState({ twoStarSelected: true })}
-            >
-              <Icon icon="certificate" />
-              <Icon icon="certificate" style={{ marginLeft: '0.2rem' }} />
-              <span style={{ marginLeft: '0.7rem' }}>
-                Reward 2 Twinkles (Excellent - 400 XP)
-              </span>
-            </Button>
-          )}
+          {this.renderButtons({ selectedAmount, twinkleTabActive })}
         </section>
         <Textarea
           autoFocus
@@ -130,7 +123,9 @@ class XPRewardInterface extends Component {
               exceedsCharLimit({
                 contentType: 'rewardComment',
                 text: rewardExplanation
-              }) || rewarding
+              }) ||
+              rewarding ||
+              selectedAmount === 0
             }
             onClick={this.onRewardSubmit}
           >
@@ -141,8 +136,86 @@ class XPRewardInterface extends Component {
     );
   }
 
+  renderButtons = ({ selectedAmount, twinkleTabActive }) => {
+    const { difficulty, stars = [], userId } = this.props;
+    const maxStars = returnMaxStars({ difficulty });
+    let currentStars =
+      stars.length > 0
+        ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)
+        : 0;
+    currentStars = Math.min(currentStars, maxStars);
+    const prevRewardedStars = stars.reduce((prev, star) => {
+      if (star.rewarderId === userId) {
+        return prev + star.rewardAmount;
+      }
+      return prev;
+    }, 0);
+    const maxRewardableStars = Math.ceil(maxStars / 2);
+    const myRewardableStars = maxRewardableStars - prevRewardedStars;
+    const remainingStars = maxStars - currentStars;
+    const multiplier = twinkleTabActive ? 1 : 5;
+    const buttons = [];
+    for (
+      let i = 1;
+      i * multiplier <= Math.min(remainingStars, myRewardableStars, 5);
+      i++
+    ) {
+      buttons.push(
+        <Button
+          key={i * multiplier}
+          info={i * multiplier < 5}
+          warning={i * multiplier >= 5}
+          gold={i * multiplier >= 25}
+          style={{
+            justifyContent: 'flex-start',
+            marginTop: i !== 1 && '0.5rem'
+          }}
+          onClick={() => this.setState({ selectedAmount: i * multiplier })}
+          filled={selectedAmount === i * multiplier}
+        >
+          {this.renderStars(i)}
+          <span style={{ marginLeft: '0.7rem' }}>
+            Reward {i * multiplier === 1 ? 'a' : i * multiplier} Twinkle
+            {i * multiplier > 1 ? 's' : ''} (
+            {addCommasToNumber(i * multiplier * 200)} XP)
+          </span>
+        </Button>
+      );
+    }
+    return buttons.length > 0 ? (
+      buttons
+    ) : (
+      <div
+        style={{
+          textAlign: 'center',
+          padding: '2rem 0 2rem 0',
+          fontWeight: 'bold'
+        }}
+      >
+        Cannot reward more than {Math.min(remainingStars, myRewardableStars)}{' '}
+        Twinkle
+        {Math.min(remainingStars, myRewardableStars) > 1 ? 's' : ''} at this
+        point
+      </div>
+    );
+  };
+
+  renderStars = number => {
+    const result = [];
+    for (let i = 0; i < number; i++) {
+      result.push(
+        <Icon
+          key={i}
+          icon="certificate"
+          style={{ marginLeft: i !== 0 && '0.2rem' }}
+        />
+      );
+    }
+    return result;
+  };
+
   onRewardSubmit = async() => {
-    const { rewardExplanation, twoStarSelected } = this.state;
+    const { rewardExplanation, selectedAmount } = this.state;
     const { contentType, contentId, onRewardSubmit, uploaderId } = this.props;
     try {
       this.setState({ rewarding: true });
@@ -152,7 +225,7 @@ class XPRewardInterface extends Component {
           rewardExplanation: finalizeEmoji(
             stringIsEmpty(rewardExplanation) ? '' : rewardExplanation
           ),
-          twoStarSelected,
+          amount: selectedAmount,
           contentType,
           contentId,
           uploaderId

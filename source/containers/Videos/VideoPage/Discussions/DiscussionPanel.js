@@ -18,6 +18,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import Icon from 'components/Icon';
 import Input from 'components/Texts/Input';
 import DifficultyBar from 'components/DifficultyBar';
+import DifficultyModal from 'components/Modals/DifficultyModal';
 import {
   attachStar,
   deleteVideoComment,
@@ -30,6 +31,7 @@ import {
   loadMoreDiscussionReplies,
   editVideoDiscussion,
   deleteVideoDiscussion,
+  setDiscussionDifficulty,
   uploadReply
 } from 'redux/actions/VideoActions';
 import Link from 'components/Link';
@@ -43,6 +45,7 @@ class DiscussionPanel extends Component {
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
+    canEditDifficulty: PropTypes.bool,
     comments: PropTypes.array.isRequired,
     description: PropTypes.string,
     difficulty: PropTypes.number,
@@ -59,6 +62,7 @@ class DiscussionPanel extends Component {
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
+    setDiscussionDifficulty: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
@@ -76,6 +80,7 @@ class DiscussionPanel extends Component {
       expanded: false,
       onEdit: false,
       confirmModalShown: false,
+      difficultyModalShown: false,
       editedTitle: cleanString(props.title),
       editedDescription: props.description || '',
       editDoneButtonDisabled: true
@@ -105,11 +110,13 @@ class DiscussionPanel extends Component {
       onDelete,
       onEditDone,
       onLoadMoreReplies,
+      setDiscussionDifficulty,
       uploadComment,
       uploadReply,
       videoId
     } = this.props;
     const {
+      difficultyModalShown,
       expanded,
       onEdit,
       confirmModalShown,
@@ -151,16 +158,7 @@ class DiscussionPanel extends Component {
                 <DropdownButton
                   snow
                   direction="left"
-                  menuProps={[
-                    {
-                      label: 'Edit',
-                      onClick: () => this.setState({ onEdit: true })
-                    },
-                    {
-                      label: 'Remove',
-                      onClick: () => this.setState({ confirmModalShown: true })
-                    }
-                  ]}
+                  menuProps={this.renderMenuProps()}
                 />
               )}
           </div>
@@ -314,9 +312,42 @@ class DiscussionPanel extends Component {
             onConfirm={this.onDelete}
           />
         )}
+        {difficultyModalShown && (
+          <DifficultyModal
+            type="discussion"
+            contentId={id}
+            difficulty={difficulty}
+            onSubmit={data => {
+              setDiscussionDifficulty(data);
+              this.setState({ difficultyModalShown: false });
+            }}
+            onHide={() => this.setState({ difficultyModalShown: false })}
+          />
+        )}
       </div>
     );
   }
+
+  renderMenuProps = () => {
+    const { canEditDifficulty } = this.props;
+    const menuProps = [
+      {
+        label: 'Edit',
+        onClick: () => this.setState({ onEdit: true })
+      }
+    ];
+    if (canEditDifficulty) {
+      menuProps.push({
+        label: 'Set Difficulty',
+        onClick: () => this.setState({ difficultyModalShown: true })
+      });
+    }
+    menuProps.push({
+      label: 'Remove',
+      onClick: () => this.setState({ confirmModalShown: true })
+    });
+    return menuProps;
+  };
 
   determineEditButtonDoneStatus = () => {
     const { editedTitle, editedDescription } = this.state;
@@ -372,7 +403,8 @@ export default connect(
     myId: state.UserReducer.userId,
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit
+    canEdit: state.UserReducer.canEdit,
+    canEditDifficulty: state.UserReducer.canEditDifficulty
   }),
   {
     attachStar,
@@ -385,6 +417,7 @@ export default connect(
     onLoadMoreReplies: loadMoreDiscussionReplies,
     onDiscussionEditDone: editVideoDiscussion,
     onDiscussionDelete: deleteVideoDiscussion,
+    setDiscussionDifficulty,
     uploadComment,
     uploadReply
   }

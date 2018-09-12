@@ -588,6 +588,21 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         videoPage: defaultVideoPageState
       };
+    case VIDEO.SET_DISCUSSION_DIFFICULTY:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          discussions: state.videoPage.discussions.map(discussion => {
+            return discussion.id === action.contentId
+              ? {
+                  ...discussion,
+                  difficulty: action.difficulty
+                }
+              : discussion;
+          })
+        }
+      };
     case VIDEO.RESET:
       return defaultState;
     case VIDEO.PAGE_UNAVAILABLE:

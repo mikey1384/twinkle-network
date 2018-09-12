@@ -326,6 +326,12 @@ export const resetVideoState = () => ({
   type: VIDEO.RESET
 });
 
+export const setDiscussionDifficulty = ({ contentId, difficulty }) => ({
+  type: VIDEO.SET_DISCUSSION_DIFFICULTY,
+  contentId,
+  difficulty
+});
+
 export const starVideo = videoId => async dispatch => {
   try {
     const { data } = await request.put(`${API_URL}/star`, { videoId }, auth());

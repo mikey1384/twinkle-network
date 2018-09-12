@@ -22,6 +22,7 @@ class Comment extends Component {
     authLevel: PropTypes.number,
     canEdit: PropTypes.bool,
     handleError: PropTypes.func.isRequired,
+    maxRewardableStars: PropTypes.number.isRequired,
     myId: PropTypes.number,
     noMarginForEditButton: PropTypes.bool,
     onEditDone: PropTypes.func,
@@ -36,6 +37,7 @@ class Comment extends Component {
     const {
       authLevel,
       canEdit,
+      maxRewardableStars,
       myId,
       noMarginForEditButton,
       star
@@ -107,7 +109,11 @@ class Comment extends Component {
                   style={{
                     fontWeight: 'bold',
                     color:
-                      star.rewardAmount >= 2 ? Color.gold() : Color.orange()
+                      star.rewardAmount >= maxRewardableStars
+                        ? Color.gold()
+                        : star.rewardAmount >= 5
+                          ? Color.orange()
+                          : Color.lightBlue()
                   }}
                 >
                   rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}

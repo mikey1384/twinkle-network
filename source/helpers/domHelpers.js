@@ -45,7 +45,7 @@ export function determineXpButtonDisabled({
     }
     return prev;
   }, 0);
-  const maxRewardableStars = Math.floor(maxStars / 2);
+  const maxRewardableStars = Math.ceil(maxStars / 2);
   if (numPrevStars >= maxRewardableStars) {
     return `${maxRewardableStars}/${maxRewardableStars} Rewarded`;
   }

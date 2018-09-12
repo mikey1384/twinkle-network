@@ -384,7 +384,9 @@ class Body extends Component {
             <XPRewardInterface
               contentType={type}
               contentId={contentId}
-              difficulty={rootObj.difficulty}
+              difficulty={
+                rootObj.difficulty || (targetObj.discussion || {}).difficulty
+              }
               uploaderId={uploader.id}
               stars={stars}
               onRewardSubmit={data => {
@@ -395,7 +397,9 @@ class Body extends Component {
           )}
           <RewardStatus
             contentType={type}
-            difficulty={rootObj.difficulty}
+            difficulty={
+              rootObj.difficulty || (targetObj.discussion || {}).difficulty
+            }
             onCommentEdit={onEditRewardComment}
             stars={stars}
             type={type}
@@ -466,13 +470,13 @@ class Body extends Component {
 
   determineXpButtonDisabled = () => {
     const {
-      contentObj: { difficulty, stars },
+      contentObj: { stars, rootObj = {}, targetObj = {} },
       myId
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     return determineXpButtonDisabled({
       stars,
-      difficulty,
+      difficulty: rootObj.difficulty || (targetObj.discussion || {}).difficulty,
       myId,
       xpRewardInterfaceShown
     });

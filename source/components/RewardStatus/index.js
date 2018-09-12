@@ -5,6 +5,7 @@ import { Color } from 'constants/css';
 import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { returnMaxStars } from 'constants/defaultValues';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Comment from './Comment';
 import Starmarks from './Starmarks';
 
@@ -18,6 +19,10 @@ class RewardStatus extends Component {
     style: PropTypes.object
   };
 
+  state = {
+    loaded: 3
+  };
+
   render() {
     const {
       difficulty,
@@ -27,6 +32,7 @@ class RewardStatus extends Component {
       userId,
       style
     } = this.props;
+    const { loaded } = this.state;
     const maxStars = returnMaxStars({ difficulty });
     let rewardedStars = stars.reduce(
       (prev, star) => prev + star.rewardAmount,
@@ -62,15 +68,28 @@ class RewardStatus extends Component {
             {maxStars > 1 ? 's' : ''})
           </div>
         </div>
-        {stars.map(star => (
-          <Comment
-            noMarginForEditButton={noMarginForEditButton}
-            key={star.id}
-            star={star}
-            myId={userId}
-            onEditDone={onCommentEdit}
+        {loaded < stars.length && (
+          <LoadMoreButton
+            filled
+            logoGreen
+            style={{ width: '100%', borderRadius: 0 }}
+            onClick={() =>
+              this.setState(state => ({ loaded: state.loaded + 3 }))
+            }
           />
-        ))}
+        )}
+        {stars
+          .filter((star, index) => index > stars.length - loaded - 1)
+          .map(star => (
+            <Comment
+              maxRewardableStars={Math.ceil(maxStars / 2)}
+              noMarginForEditButton={noMarginForEditButton}
+              key={star.id}
+              star={star}
+              myId={userId}
+              onEditDone={onCommentEdit}
+            />
+          ))}
       </>
     );
   }

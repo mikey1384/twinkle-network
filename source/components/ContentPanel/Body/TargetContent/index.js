@@ -300,7 +300,9 @@ class TargetContent extends Component {
                   <XPRewardInterface
                     contentType={'comment'}
                     contentId={comment.id}
-                    difficulty={rootObj.difficulty || discussion.difficulty}
+                    difficulty={
+                      rootObj.difficulty || (discussion || {}).difficulty
+                    }
                     uploaderId={comment.uploader.id}
                     stars={comment.stars}
                     onRewardSubmit={data => {
@@ -310,7 +312,9 @@ class TargetContent extends Component {
                   />
                 )}
                 <RewardStatus
-                  difficulty={rootObj.difficulty || discussion.difficulty}
+                  difficulty={
+                    rootObj.difficulty || (discussion || {}).difficulty
+                  }
                   onCommentEdit={onEditRewardComment}
                   style={{
                     marginTop:
@@ -374,7 +378,7 @@ class TargetContent extends Component {
     const stars =
       type === 'comment' || type === 'reply' ? comment.stars : discussion.stars;
     return determineXpButtonDisabled({
-      difficulty: rootObj.difficulty || discussion.difficulty,
+      difficulty: rootObj.difficulty || (discussion || {}).difficulty,
       stars,
       myId,
       xpRewardInterfaceShown
