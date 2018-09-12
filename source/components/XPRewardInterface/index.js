@@ -157,7 +157,8 @@ class XPRewardInterface extends Component {
     const buttons = [];
     for (
       let i = 1;
-      i * multiplier <= Math.min(remainingStars, myRewardableStars, 5);
+      i * multiplier <=
+      Math.min(remainingStars, myRewardableStars, 5 * multiplier);
       i++
     ) {
       buttons.push(
