@@ -25,6 +25,8 @@ class SelectPlaylistsToPinModal extends Component {
     selectedPlaylists: PropTypes.array.isRequired
   };
 
+  timer = null;
+
   state = {
     selectTabActive: true,
     selectedPlaylists: [],
@@ -188,8 +190,13 @@ class SelectPlaylistsToPinModal extends Component {
     this.props.loadMorePlaylist(lastPlaylistId);
   };
 
-  onPlaylistSearchInput = async text => {
+  onPlaylistSearchInput = text => {
     this.setState({ searchText: text });
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => this.onPlaylistSearch(text), 300);
+  };
+
+  onPlaylistSearch = async text => {
     const { results } = await searchContent({
       filter: 'playlist',
       searchText: text
