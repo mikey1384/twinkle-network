@@ -300,17 +300,17 @@ class TargetContent extends Component {
                   <XPRewardInterface
                     contentType={'comment'}
                     contentId={comment.id}
+                    difficulty={rootObj.difficulty || discussion.difficulty}
                     uploaderId={comment.uploader.id}
                     stars={comment.stars}
                     onRewardSubmit={data => {
                       this.setState({ xpRewardInterfaceShown: false });
                       onAttachStar(data);
                     }}
-                    type={type === 'reply' ? 'comment' : type}
-                    rootType={rootType}
                   />
                 )}
                 <RewardStatus
+                  difficulty={rootObj.difficulty || discussion.difficulty}
                   onCommentEdit={onEditRewardComment}
                   style={{
                     marginTop:
@@ -319,10 +319,6 @@ class TargetContent extends Component {
                         : '1rem'
                   }}
                   stars={comment.stars}
-                  type={
-                    type === 'reply' || type === 'comment' ? 'comment' : type
-                  }
-                  rootType={rootType}
                   uploaderName={uploader.username}
                 />
                 {replyInputShown && (
@@ -372,17 +368,16 @@ class TargetContent extends Component {
     const {
       targetObj: { type, comment, discussion },
       myId,
-      rootType
+      rootObj
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     const stars =
       type === 'comment' || type === 'reply' ? comment.stars : discussion.stars;
     return determineXpButtonDisabled({
+      difficulty: rootObj.difficulty || discussion.difficulty,
       stars,
       myId,
-      xpRewardInterfaceShown,
-      type: type === 'reply' ? 'comment' : type,
-      rootType
+      xpRewardInterfaceShown
     });
   };
 

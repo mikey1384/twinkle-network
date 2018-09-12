@@ -17,6 +17,7 @@ import LongText from 'components/Texts/LongText';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Icon from 'components/Icon';
 import Input from 'components/Texts/Input';
+import DifficultyBar from 'components/DifficultyBar';
 import {
   attachStar,
   deleteVideoComment,
@@ -44,6 +45,7 @@ class DiscussionPanel extends Component {
     canEdit: PropTypes.bool,
     comments: PropTypes.array.isRequired,
     description: PropTypes.string,
+    difficulty: PropTypes.number,
     editRewardComment: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
     loadVideoDiscussionComments: PropTypes.func.isRequired,
@@ -89,6 +91,7 @@ class DiscussionPanel extends Component {
       id,
       title,
       description,
+      difficulty,
       editRewardComment,
       uploaderAuthLevel,
       username,
@@ -122,12 +125,12 @@ class DiscussionPanel extends Component {
       <div
         className={css`
           background: #fff;
-          padding: 1rem;
           margin-top: 1rem;
           font-size: 1.5rem;
         `}
       >
-        <div>
+        {difficulty > 0 && <DifficultyBar difficulty={difficulty} />}
+        <div style={{ padding: '1rem' }}>
           <div
             className={css`
               display: flex;
@@ -291,18 +294,18 @@ class DiscussionPanel extends Component {
               )}
             </div>
           )}
-        </div>
-        <div style={{ marginTop: '1rem' }}>
-          By{' '}
-          <strong>
-            <UsernameText
-              user={{
-                username,
-                id: userId
-              }}
-            />
-          </strong>{' '}
-          &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+          <div style={{ marginTop: '1rem' }}>
+            By{' '}
+            <b>
+              <UsernameText
+                user={{
+                  username,
+                  id: userId
+                }}
+              />
+            </b>{' '}
+            &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+          </div>
         </div>
         {confirmModalShown && (
           <ConfirmModal

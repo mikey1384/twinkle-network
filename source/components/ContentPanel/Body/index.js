@@ -18,6 +18,7 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import RewardStatus from 'components/RewardStatus';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
+import DifficultyModal from 'components/Modals/DifficultyModal';
 import { determineXpButtonDisabled } from 'helpers/domHelpers';
 import {
   deleteContent,
@@ -32,6 +33,7 @@ class Body extends Component {
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
+    canEditDifficulty: PropTypes.bool,
     contentObj: PropTypes.object.isRequired,
     canStar: PropTypes.bool,
     commentsLoadLimit: PropTypes.number,
@@ -50,6 +52,7 @@ class Body extends Component {
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
+    onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,
     onStarVideo: PropTypes.func
   };
@@ -57,6 +60,7 @@ class Body extends Component {
   state = {
     autoFocusWhenCommentShown: false,
     rewardExplanation: '',
+    difficultyModalShown: false,
     edited: false,
     isEditing: false,
     userListModalShown: false,
@@ -106,6 +110,7 @@ class Body extends Component {
         actualDescription,
         actualTitle,
         contentId,
+        difficulty,
         feedId,
         numChildComments,
         discussionId,
@@ -131,6 +136,7 @@ class Body extends Component {
       authLevel,
       canDelete,
       canEdit,
+      canEditDifficulty,
       canStar,
       commentsLoadLimit,
       inputAtBottom,
@@ -144,7 +150,8 @@ class Body extends Component {
       onLikeContent,
       onLoadMoreComments,
       onLoadMoreReplies,
-      onReplySubmit
+      onReplySubmit,
+      onSetDifficulty
     } = this.props;
     const {
       autoFocusWhenCommentShown,
@@ -152,6 +159,7 @@ class Body extends Component {
       userListModalShown,
       confirmModalShown,
       commentsShown,
+      difficultyModalShown,
       isEditing,
       xpRewardInterfaceShown
     } = this.state;
@@ -326,7 +334,16 @@ class Body extends Component {
                     type === 'video' && (
                       <StarButton
                         isStarred={!!isStarred}
-                        onClick={this.onStarButtonClick}
+                        onClick={this.onToggleStarred}
+                      />
+                    )}
+                  {canEditDifficulty &&
+                    (type === 'question' || type === 'discussion') && (
+                      <StarButton
+                        isStarred={!!difficulty}
+                        onClick={() =>
+                          this.setState({ difficultyModalShown: true })
+                        }
                       />
                     )}
                 </div>
@@ -367,23 +384,21 @@ class Body extends Component {
             <XPRewardInterface
               contentType={type}
               contentId={contentId}
+              difficulty={rootObj.difficulty}
               uploaderId={uploader.id}
               stars={stars}
               onRewardSubmit={data => {
                 this.setState({ xpRewardInterfaceShown: false });
                 onAttachStar(data);
               }}
-              type={type}
-              rootType={rootType}
             />
           )}
           <RewardStatus
             contentType={type}
+            difficulty={rootObj.difficulty}
             onCommentEdit={onEditRewardComment}
             stars={stars}
             type={type}
-            rootType={rootType}
-            uploaderName={uploader.username}
           />
           <Comments
             autoFocus={autoFocusWhenCommentShown}
@@ -432,6 +447,18 @@ class Body extends Component {
               description="(You)"
             />
           )}
+          {difficultyModalShown && (
+            <DifficultyModal
+              type={type}
+              contentId={contentId}
+              difficulty={difficulty}
+              onSubmit={data => {
+                onSetDifficulty(data);
+                this.setState({ difficultyModalShown: false });
+              }}
+              onHide={() => this.setState({ difficultyModalShown: false })}
+            />
+          )}
         </div>
       </ErrorBoundary>
     );
@@ -439,16 +466,15 @@ class Body extends Component {
 
   determineXpButtonDisabled = () => {
     const {
-      contentObj: { stars, type, rootType },
+      contentObj: { difficulty, stars },
       myId
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     return determineXpButtonDisabled({
       stars,
+      difficulty,
       myId,
-      xpRewardInterfaceShown,
-      type,
-      rootType
+      xpRewardInterfaceShown
     });
   };
 
@@ -512,7 +538,7 @@ class Body extends Component {
     }
   };
 
-  onStarButtonClick = () => {
+  onToggleStarred = () => {
     const {
       contentObj: { contentId },
       onStarVideo
@@ -526,6 +552,7 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
+    canEditDifficulty: state.UserReducer.canEditDifficulty,
     canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })

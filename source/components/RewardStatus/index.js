@@ -10,26 +10,24 @@ import Starmarks from './Starmarks';
 
 class RewardStatus extends Component {
   static propTypes = {
+    difficulty: PropTypes.number,
     userId: PropTypes.number,
     noMarginForEditButton: PropTypes.bool,
     onCommentEdit: PropTypes.func,
     stars: PropTypes.array,
-    style: PropTypes.object,
-    type: PropTypes.string,
-    rootType: PropTypes.string
+    style: PropTypes.object
   };
 
   render() {
     const {
+      difficulty,
       noMarginForEditButton,
       onCommentEdit,
-      rootType,
       stars,
-      type,
       userId,
       style
     } = this.props;
-    const maxStars = returnMaxStars({ type, rootType });
+    const maxStars = returnMaxStars({ difficulty });
     let rewardedStars = stars.reduce(
       (prev, star) => prev + star.rewardAmount,
       0

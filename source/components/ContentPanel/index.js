@@ -29,6 +29,7 @@ class ContentPanel extends Component {
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
+    onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,
     onStarVideo: PropTypes.func,
     onTargetCommentSubmit: PropTypes.func.isRequired
@@ -71,6 +72,7 @@ class ContentPanel extends Component {
       onLoadMoreComments,
       onLoadMoreReplies,
       onReplySubmit,
+      onSetDifficulty,
       onShowComments,
       onStarVideo,
       onTargetCommentSubmit,
@@ -92,6 +94,7 @@ class ContentPanel extends Component {
           onLoadMoreComments,
           onLoadMoreReplies,
           onReplySubmit,
+          onSetDifficulty,
           onShowComments,
           onStarVideo,
           onTargetCommentSubmit

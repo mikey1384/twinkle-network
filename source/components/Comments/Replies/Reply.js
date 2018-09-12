@@ -33,6 +33,7 @@ class Reply extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
+    discussion: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
     onAttachStar: PropTypes.func.isRequired,
@@ -71,6 +72,7 @@ class Reply extends Component {
       canDelete,
       canEdit,
       canStar,
+      discussion,
       innerRef = () => {},
       onAttachStar,
       onDelete,
@@ -197,21 +199,21 @@ class Reply extends Component {
                             this.setState({ xpRewardInterfaceShown: true })
                           }
                           disabled={determineXpButtonDisabled({
+                            difficulty:
+                              parent.difficulty || discussion.difficulty,
                             myId: userId,
                             xpRewardInterfaceShown,
-                            stars,
-                            type: 'comment',
-                            rootType: parent.type
+                            stars
                           })}
                         >
                           <Icon icon="certificate" />
                           <span style={{ marginLeft: '0.7rem' }}>
                             {determineXpButtonDisabled({
+                              difficulty:
+                                parent.difficulty || discussion.difficulty,
                               myId: userId,
                               xpRewardInterfaceShown,
-                              stars,
-                              type: 'comment',
-                              rootType: parent.type
+                              stars
                             }) || 'Reward'}
                           </span>
                         </Button>
@@ -232,6 +234,7 @@ class Reply extends Component {
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
+                difficulty={parent.difficulty || discussion.difficulty}
                 stars={stars}
                 contentType="comment"
                 contentId={reply.id}
@@ -240,20 +243,17 @@ class Reply extends Component {
                   this.setState({ xpRewardInterfaceShown: false });
                   onAttachStar(data);
                 }}
-                type="comment"
-                rootType={parent.type}
               />
             )}
             <RewardStatus
               noMarginForEditButton
+              difficulty={parent.difficulty || discussion.difficulty}
               onCommentEdit={onRewardCommentEdit}
               style={{
                 fontSize: '1.4rem',
                 marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
               stars={stars}
-              type="comment"
-              rootType={parent.type}
               uploaderName={uploader.username}
             />
             <ReplyInputArea

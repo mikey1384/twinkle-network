@@ -237,6 +237,24 @@ export const setDefaultSearchFilter = async({ filter, dispatch }) => {
   }
 };
 
+export const setDifficulty = async({
+  difficulty,
+  contentId,
+  dispatch,
+  type
+}) => {
+  try {
+    await request.put(
+      `${URL}/content/difficulty`,
+      { difficulty, contentId, type },
+      auth()
+    );
+    return Promise.resolve();
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const uploadComment = async({
   content,
   parent,

@@ -8,6 +8,7 @@ import VideoPlayer from 'components/VideoPlayer';
 import ContentEditor from '../ContentEditor';
 import Profile from './Profile';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import DifficultyBar from 'components/DifficultyBar';
 
 MainContent.propTypes = {
   contentObj: PropTypes.object,
@@ -48,9 +49,16 @@ export default function MainContent({
             style={{ paddingBottom: '0.5rem' }}
           />
         )}
+        {(type === 'question' || type === 'discussion') &&
+          !!contentObj.difficulty && (
+            <DifficultyBar
+              style={{ marginTop: '-0.5rem' }}
+              difficulty={contentObj.difficulty}
+            />
+          )}
         <div
           style={{
-            marginTop: type !== 'question' && '1rem',
+            marginTop: '1rem',
             marginBottom: type !== 'video' && '1rem',
             padding: '1rem',
             whiteSpace: 'pre-wrap',

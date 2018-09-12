@@ -12,6 +12,7 @@ export const container = css`
     margin-bottom: 0;
   }
   .heading {
+    user-select: none;
     padding: 0 1rem;
     display: flex;
     align-items: center;

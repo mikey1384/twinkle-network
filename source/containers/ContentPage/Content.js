@@ -108,6 +108,7 @@ class Content extends Component {
           onLoadMoreComments={this.onLoadMoreComments}
           onLoadMoreReplies={this.onLoadMoreReplies}
           onReplySubmit={this.onReplySubmit}
+          onSetDifficulty={this.onSetDifficulty}
           onShowComments={this.onShowComments}
           onTargetCommentSubmit={this.onTargetCommentSubmit}
         />
@@ -433,6 +434,15 @@ class Content extends Component {
           loadMoreButton:
             comment.id === commentId ? loadMoreButton : comment.loadMoreButton
         }))
+      }
+    }));
+  };
+
+  onSetDifficulty = ({ difficulty }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        difficulty
       }
     }));
   };

@@ -234,21 +234,23 @@ class Comment extends Component {
                                 this.setState({ xpRewardInterfaceShown: true })
                               }
                               disabled={determineXpButtonDisabled({
+                                difficulty:
+                                  parent.difficulty ||
+                                  (targetObj.discussion || {}).difficulty,
                                 myId: userId,
                                 xpRewardInterfaceShown,
-                                stars,
-                                type: 'comment',
-                                rootType: parent.type
+                                stars
                               })}
                             >
                               <Icon icon="certificate" />
                               <span style={{ marginLeft: '0.7rem' }}>
                                 {determineXpButtonDisabled({
+                                  difficulty:
+                                    parent.difficulty ||
+                                    (targetObj.discussion || {}).difficulty,
                                   myId: userId,
                                   xpRewardInterfaceShown,
-                                  stars,
-                                  type: 'comment',
-                                  rootType: parent.type
+                                  stars
                                 }) || 'Reward'}
                               </span>
                             </Button>
@@ -269,6 +271,9 @@ class Comment extends Component {
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
+                difficulty={
+                  parent.difficulty || (targetObj.discussion || {}).difficulty
+                }
                 stars={stars}
                 contentType="comment"
                 contentId={comment.id}
@@ -277,12 +282,13 @@ class Comment extends Component {
                   this.setState({ xpRewardInterfaceShown: false });
                   onAttachStar(data);
                 }}
-                type="comment"
-                rootType={parent.type}
               />
             )}
             {!isPreview && (
               <RewardStatus
+                difficulty={
+                  parent.difficulty || (targetObj.discussion || {}).difficulty
+                }
                 noMarginForEditButton
                 onCommentEdit={onRewardCommentEdit}
                 style={{
@@ -290,8 +296,6 @@ class Comment extends Component {
                   marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
                 }}
                 stars={stars}
-                type="comment"
-                rootType={parent.type}
                 uploaderName={uploader.username}
               />
             )}
@@ -311,6 +315,7 @@ class Comment extends Component {
                   targetCommentId={comment.id}
                 />
                 <Replies
+                  discussion={targetObj.discussion || {}}
                   innerRef={({ ref, replyId }) => (this.Replies[replyId] = ref)}
                   Replies={this.Replies}
                   userId={userId}

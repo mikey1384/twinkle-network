@@ -24,7 +24,8 @@ export default function ProfilePic({
       style={{
         ...style,
         display: 'block',
-        position: 'relative'
+        position: 'relative',
+        userSelect: 'none'
       }}
     >
       <img

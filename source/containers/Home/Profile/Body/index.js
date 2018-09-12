@@ -16,6 +16,7 @@ import {
   loadMoreFeedComments,
   loadMoreFeedReplies,
   setCurrentSection,
+  setDifficulty,
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -58,7 +59,8 @@ class Body extends Component {
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     myId: PropTypes.number,
-    profileFeeds: PropTypes.array
+    profileFeeds: PropTypes.array,
+    setDifficulty: PropTypes.func
   };
 
   state = {
@@ -121,6 +123,7 @@ class Body extends Component {
       feedVideoStar,
       loadMoreFeedComments,
       loadMoreFeedReplies,
+      setDifficulty,
       showFeedComments,
       uploadTargetContentComment
     } = this.props;
@@ -250,6 +253,7 @@ class Body extends Component {
                       onReplySubmit={data =>
                         this.uploadFeedComment({ feed, data })
                       }
+                      onSetDifficulty={setDifficulty}
                       onStarVideo={feedVideoStar}
                       onShowComments={showFeedComments}
                       onTargetCommentSubmit={uploadTargetContentComment}
@@ -427,6 +431,7 @@ export default connect(
     loadMoreFeedComments,
     loadMoreFeedReplies,
     setCurrentSection,
+    setDifficulty,
     showFeedComments,
     uploadFeedComment,
     uploadTargetContentComment

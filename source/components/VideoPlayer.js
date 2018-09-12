@@ -248,6 +248,7 @@ class VideoPlayer extends Component {
       <ErrorBoundary style={style}>
         <div
           className={`${css`
+            user-select: none;
             position: relative;
             padding-top: 56.25%;
           `}${minimized ? ' desktop' : ''}`}

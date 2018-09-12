@@ -129,6 +129,13 @@ export const loadMoreFeedReplies = (data, feedId) => ({
   data
 });
 
+export const setDifficulty = ({ type, contentId, difficulty }) => ({
+  type: FEED.SET_DIFFICULTY,
+  contentType: type,
+  contentId,
+  difficulty
+});
+
 export const setCurrentSection = section => ({
   type: FEED.SET_SECTION,
   section

@@ -17,6 +17,7 @@ import {
   loadMoreFeedComments,
   clearFeeds,
   setCurrentSection,
+  setDifficulty,
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -58,6 +59,7 @@ class Stories extends Component {
     numNewPosts: PropTypes.number.isRequired,
     resetNumNewPosts: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
+    setDifficulty: PropTypes.func,
     showFeedComments: PropTypes.func.isRequired,
     storyFeeds: PropTypes.array.isRequired,
     username: PropTypes.string,
@@ -122,6 +124,7 @@ class Stories extends Component {
       userId,
       loaded,
       loadMoreFeedComments,
+      setDifficulty,
       showFeedComments,
       uploadTargetContentComment,
       username
@@ -193,6 +196,7 @@ class Stories extends Component {
                         onReplySubmit={data =>
                           this.uploadFeedComment({ feed, data })
                         }
+                        onSetDifficulty={setDifficulty}
                         onStarVideo={feedVideoStar}
                         onShowComments={showFeedComments}
                         onTargetCommentSubmit={uploadTargetContentComment}
@@ -368,6 +372,7 @@ export default connect(
     clearFeeds,
     resetNumNewPosts,
     setCurrentSection,
+    setDifficulty,
     showFeedComments,
     uploadFeedComment,
     uploadTargetContentComment

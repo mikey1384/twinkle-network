@@ -501,6 +501,19 @@ export default function FeedReducer(state = defaultState, action) {
             : feed;
         })
       };
+    case FEED.SET_DIFFICULTY:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => {
+          return feed.type === action.contentType &&
+            feed.id === action.contentId
+            ? {
+                ...feed,
+                difficulty: action.difficulty
+              }
+            : feed;
+        })
+      };
     case FEED.UPLOAD_CONTENT:
       return {
         ...state,

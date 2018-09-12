@@ -21,12 +21,11 @@ class XPRewardInterface extends Component {
   static propTypes = {
     contentType: PropTypes.string.isRequired,
     contentId: PropTypes.number.isRequired,
+    difficulty: PropTypes.number,
     stars: PropTypes.array,
     uploaderId: PropTypes.number.isRequired,
     userId: PropTypes.number.isRequired,
-    noPadding: PropTypes.bool,
-    type: PropTypes.string,
-    rootType: PropTypes.string
+    noPadding: PropTypes.bool
   };
 
   state = {
@@ -39,13 +38,12 @@ class XPRewardInterface extends Component {
     const { rewarding, rewardExplanation, twoStarSelected } = this.state;
     const {
       contentType,
+      difficulty,
       noPadding,
       stars = [],
-      type,
-      rootType,
       userId
     } = this.props;
-    const maxStars = returnMaxStars({ type, rootType });
+    const maxStars = returnMaxStars({ difficulty });
     if (!userId) return null;
     let currentStars =
       stars.length > 0

@@ -37,6 +37,8 @@ class Notification extends Component {
     twinkleXP: PropTypes.number
   };
 
+  mounted = false;
+
   constructor({ rewards }) {
     super();
     this.state = {
@@ -47,18 +49,21 @@ class Notification extends Component {
 
   async componentDidMount() {
     const { fetchNotifications } = this.props;
+    this.mounted = true;
     addEvent(window, 'mousemove', this.onMouseMove);
     socket.on('new_reward', this.notifyNewReward);
     await fetchNotifications();
-    this.setState({
-      activeTab:
-        this.props.rewards.length > 0
-          ? 'reward'
-          : this.props.notifications.length > 0
-            ? 'notification'
-            : 'leaderboard',
-      rewardTabShown: this.props.rewards.length > 0
-    });
+    if (this.mounted) {
+      this.setState({
+        activeTab:
+          this.props.rewards.length > 0
+            ? 'reward'
+            : this.props.notifications.length > 0
+              ? 'notification'
+              : 'leaderboard',
+        rewardTabShown: this.props.rewards.length > 0
+      });
+    }
   }
 
   async componentDidUpdate(prevProps) {
@@ -87,6 +92,7 @@ class Notification extends Component {
       removeEvent(window, 'mousemove', this.onMouseMove);
     }
     socket.removeListener('new_reward', this.notifyNewReward);
+    this.mounted = false;
   }
 
   render() {
@@ -105,13 +111,7 @@ class Notification extends Component {
       twinkleXP
     } = this.props;
     const rankedColor =
-      rank === 1
-        ? Color.gold()
-        : rank === 2
-          ? Color.borderGray()
-          : rank === 3
-            ? '#fff'
-            : undefined;
+      rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
     const { activeTab, rewardTabShown } = this.state;
     return (
       <div
@@ -146,7 +146,7 @@ class Notification extends Component {
               background: myId
                 ? rank > 0 &&
                   (rank < 3
-                    ? Color.black(1 - (rank - 1) / 10)
+                    ? Color.black()
                     : rank === 3
                       ? Color.orange()
                       : null)

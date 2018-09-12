@@ -27,13 +27,12 @@ export function textIsOverflown(element) {
 }
 
 export function determineXpButtonDisabled({
+  difficulty,
   stars,
   myId,
-  xpRewardInterfaceShown,
-  type,
-  rootType
+  xpRewardInterfaceShown
 }) {
-  const maxStars = returnMaxStars({ type, rootType });
+  const maxStars = returnMaxStars({ difficulty });
   if (xpRewardInterfaceShown) return 'Reward';
   const numTotalStars = stars.reduce(
     (prev, star) => prev + star.rewardAmount,
@@ -47,6 +46,8 @@ export function determineXpButtonDisabled({
     return prev;
   }, 0);
   const maxRewardableStars = Math.floor(maxStars / 2);
-  if (numPrevStars >= maxRewardableStars) { return `${maxRewardableStars}/${maxRewardableStars} Rewarded`; }
+  if (numPrevStars >= maxRewardableStars) {
+    return `${maxRewardableStars}/${maxRewardableStars} Rewarded`;
+  }
   return false;
 }

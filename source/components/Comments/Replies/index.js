@@ -13,6 +13,7 @@ class Replies extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }).isRequired,
+    discussion: PropTypes.object,
     innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
@@ -59,7 +60,14 @@ class Replies extends Component {
   }
 
   render() {
-    const { innerRef, replies, userId, comment, parent } = this.props;
+    const {
+      innerRef,
+      replies,
+      userId,
+      comment,
+      discussion,
+      parent
+    } = this.props;
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
         {comment.loadMoreButton && (
@@ -83,6 +91,7 @@ class Replies extends Component {
               key={reply.id}
               parent={parent}
               comment={comment}
+              discussion={discussion}
               reply={reply}
               userId={userId}
               onDelete={this.onDelete}

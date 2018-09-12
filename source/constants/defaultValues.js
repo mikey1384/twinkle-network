@@ -38,7 +38,10 @@ export const charLimit = {
   }
 };
 
-export const returnMaxStars = ({ type, rootType }) => {
+export const returnMaxStars = ({ difficulty }) => {
   let maxStars = 5;
+  if (difficulty > 0) {
+    maxStars = 10 * difficulty;
+  }
   return maxStars;
 };
