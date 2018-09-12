@@ -155,7 +155,12 @@ class MainFeeds extends Component {
                     />{' '}
                     <span
                       style={{
-                        color: rewardAmount > 1 ? Color.gold() : Color.orange(),
+                        color:
+                          rewardAmount > 9
+                            ? Color.gold()
+                            : rewardAmount > 4
+                              ? Color.orange()
+                              : Color.lightBlue(),
                         fontWeight: 'bold'
                       }}
                     >
@@ -279,7 +284,12 @@ function renderNotificationMessage(notification, myId) {
             <span
               style={{
                 fontWeight: 'bold',
-                color: reward.rewardAmount > 1 ? Color.gold() : Color.orange()
+                color:
+                  reward.rewardAmount > 9
+                    ? Color.gold()
+                    : reward.rewardAmount > 4
+                      ? Color.orange()
+                      : Color.lightBlue()
               }}
             >
               rewarded you{' '}
