@@ -10,8 +10,7 @@ import {
 import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';
-import request from 'axios';
-import { URL } from 'constants/URL';
+import { searchContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 
@@ -191,14 +190,15 @@ class SelectPlaylistsToPinModal extends Component {
 
   onPlaylistSearchInput = async text => {
     this.setState({ searchText: text });
-    const { data } = await request.get(
-      `${URL}/playlist/search/toPin?query=${text}`
-    );
+    const { results } = await searchContent({
+      filter: 'playlist',
+      searchText: text
+    });
     this.setState(state => ({
-      searchedPlaylists: data,
+      searchedPlaylists: results,
       playlistObjects: {
         ...state.playlistObjects,
-        ...data.reduce(
+        ...results.reduce(
           (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
           {}
         )
