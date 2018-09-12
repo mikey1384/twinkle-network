@@ -174,7 +174,7 @@ class XPRewardInterface extends Component {
           onClick={() => this.setState({ selectedAmount: i * multiplier })}
           filled={selectedAmount === i * multiplier}
         >
-          {this.renderStars(i)}
+          {this.renderStars({ numStars: i, twinkleTabActive })}
           <span style={{ marginLeft: '0.7rem' }}>
             Reward {i * multiplier === 1 ? 'a' : i * multiplier} Twinkle
             {i * multiplier > 1 ? 's' : ''} (
@@ -195,19 +195,18 @@ class XPRewardInterface extends Component {
       >
         Cannot reward more than {Math.min(remainingStars, myRewardableStars)}{' '}
         Twinkle
-        {Math.min(remainingStars, myRewardableStars) > 1 ? 's' : ''} at this
-        point
+        {Math.min(remainingStars, myRewardableStars) > 1 ? 's' : ''}
       </div>
     );
   };
 
-  renderStars = number => {
+  renderStars = ({ numStars, twinkleTabActive }) => {
     const result = [];
-    for (let i = 0; i < number; i++) {
+    for (let i = 0; i < numStars; i++) {
       result.push(
         <Icon
           key={i}
-          icon="certificate"
+          icon={twinkleTabActive ? 'certificate' : 'star'}
           style={{ marginLeft: i !== 0 && '0.2rem' }}
         />
       );
