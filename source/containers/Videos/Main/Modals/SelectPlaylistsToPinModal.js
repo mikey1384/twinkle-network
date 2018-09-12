@@ -191,7 +191,7 @@ class SelectPlaylistsToPinModal extends Component {
   };
 
   onPlaylistSearchInput = text => {
-    this.setState({ searchText: text });
+    this.setState({ searchText: text, searchedPlaylists: [] });
     clearTimeout(this.timer);
     this.timer = setTimeout(() => this.onPlaylistSearch(text), 300);
   };
