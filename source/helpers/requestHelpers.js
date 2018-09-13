@@ -112,6 +112,22 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 };
 
+export const loadDiscussions = async({
+  type,
+  contentId,
+  lastDiscussionId
+}) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/discussions?contentId=${contentId}&type=${type}&lastDiscussionId=${lastDiscussionId}`
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
   try {
     const { data } = await request.get(
@@ -266,6 +282,25 @@ export const uploadComment = async({
     const { data } = await request.post(
       `${URL}/content/comments`,
       { content, parent, rootCommentId, targetCommentId },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
+export const uploadDiscussion = async({
+  type,
+  contentId,
+  title,
+  description,
+  dispatch
+}) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/content/discussions`,
+      { title, description, contentId, type },
       auth()
     );
     return Promise.resolve(data);

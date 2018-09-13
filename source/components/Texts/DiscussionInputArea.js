@@ -3,15 +3,17 @@ import React, { Component } from 'react';
 import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import { connect } from 'react-redux';
-import { uploadVideoDiscussion } from 'redux/actions/VideoActions';
+import { uploadDiscussion } from 'helpers/requestHelpers';
 import { charLimit } from 'constants/defaultValues';
+import { connect } from 'react-redux';
 
 class DiscussionInputArea extends Component {
   static propTypes = {
-    uploadDiscussion: PropTypes.func.isRequired,
-    videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired
+    onUploadDiscussion: PropTypes.func.isRequired,
+    contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
+    dispatch: PropTypes.func.isRequired,
+    type: PropTypes.string.isRequired
   };
 
   state = {
@@ -19,7 +21,6 @@ class DiscussionInputArea extends Component {
   };
 
   render() {
-    const { videoId, uploadDiscussion } = this.props;
     const { discussionFormShown } = this.state;
     return (
       <div
@@ -33,10 +34,7 @@ class DiscussionInputArea extends Component {
           {discussionFormShown ? (
             <TitleDescriptionForm
               autoFocus
-              onSubmit={(title, description) => {
-                uploadDiscussion(title, description, videoId);
-                this.setState({ discussionFormShown: false });
-              }}
+              onSubmit={this.onSubmit}
               onClose={() => this.setState({ discussionFormShown: false })}
               rows={4}
               titleMaxChar={charLimit.discussion.title}
@@ -63,11 +61,22 @@ class DiscussionInputArea extends Component {
       </div>
     );
   }
+
+  onSubmit = async(title, description) => {
+    const { contentId, dispatch, onUploadDiscussion, type } = this.props;
+    const data = await uploadDiscussion({
+      title,
+      description,
+      dispatch,
+      contentId,
+      type
+    });
+    onUploadDiscussion(data);
+    this.setState({ discussionFormShown: false });
+  };
 }
 
 export default connect(
   null,
-  {
-    uploadDiscussion: uploadVideoDiscussion
-  }
+  dispatch => ({ dispatch })
 )(DiscussionInputArea);

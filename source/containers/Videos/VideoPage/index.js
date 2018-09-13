@@ -13,12 +13,14 @@ import {
   likeVideoComment,
   resetVideoPage,
   loadVideoComments,
+  loadVideoDiscussions,
   loadVideoPage,
   loadMoreComments,
   loadMoreDiscussions,
   loadMoreReplies,
   uploadComment,
-  uploadReply
+  uploadReply,
+  uploadVideoDiscussion
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
@@ -41,7 +43,7 @@ import Discussions from 'components/Discussions';
 import RewardStatus from 'components/RewardStatus';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { loadComments } from 'helpers/requestHelpers';
+import { loadComments, loadDiscussions } from 'helpers/requestHelpers';
 
 class VideoPage extends Component {
   static propTypes = {
@@ -62,10 +64,12 @@ class VideoPage extends Component {
     likeVideoComment: PropTypes.func.isRequired,
     loadMoreComments: PropTypes.func.isRequired,
     loadMoreCommentsButton: PropTypes.bool,
+    loadMoreDiscussions: PropTypes.func.isRequired,
     loadMoreDiscussionsButton: PropTypes.bool,
     loadMoreReplies: PropTypes.func.isRequired,
     loadVideoPage: PropTypes.func.isRequired,
     loadVideoComments: PropTypes.func.isRequired,
+    loadVideoDiscussions: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     questions: PropTypes.array,
@@ -79,6 +83,7 @@ class VideoPage extends Component {
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
     uploadQuestions: PropTypes.func.isRequired,
+    uploadVideoDiscussion: PropTypes.func.isRequired,
     userId: PropTypes.number,
     videoUnavailable: PropTypes.bool,
     videoLoading: PropTypes.bool,
@@ -108,11 +113,17 @@ class VideoPage extends Component {
     const {
       match: { params },
       loadVideoComments,
+      loadVideoDiscussions,
       loadVideoPage
     } = this.props;
     await loadVideoPage(params.videoId);
-    const data = await loadComments({ id: params.videoId, type: 'video' });
-    if (data) loadVideoComments(data);
+    const discussions = await loadDiscussions({
+      type: 'video',
+      contentId: params.videoId
+    });
+    loadVideoDiscussions(discussions);
+    const comments = await loadComments({ id: params.videoId, type: 'video' });
+    if (comments) loadVideoComments(comments);
   }
 
   async componentDidUpdate(prevProps) {
@@ -154,6 +165,7 @@ class VideoPage extends Component {
       loadMoreCommentsButton,
       hasHqThumb,
       isStarred,
+      loadMoreDiscussions,
       loadMoreDiscussionsButton,
       loadMoreReplies,
       uploaderAuthLevel,
@@ -175,6 +187,7 @@ class VideoPage extends Component {
       stars = [],
       uploadComment,
       uploadReply,
+      uploadVideoDiscussion,
       videoViews
     } = this.props;
     const {
@@ -337,13 +350,18 @@ class VideoPage extends Component {
                     uploaderName={uploaderName}
                   />
                 </div>
-                <DiscussionInputArea videoId={videoId} />
+                <DiscussionInputArea
+                  contentId={videoId}
+                  type="video"
+                  onUploadDiscussion={uploadVideoDiscussion}
+                />
                 <Discussions
                   loadMoreDiscussionsButton={loadMoreDiscussionsButton}
                   discussions={discussions}
-                  loadMoreDiscussions={loadMoreDiscussions}
+                  onLoadMoreDiscussions={loadMoreDiscussions}
                   uploadComment={uploadComment}
-                  videoId={videoId}
+                  contentId={videoId}
+                  type="video"
                 />
                 <div
                   style={{
@@ -561,8 +579,10 @@ export default connect(
     loadMoreDiscussions,
     loadMoreReplies,
     loadVideoComments,
+    loadVideoDiscussions,
     resetVideoPage,
     uploadComment,
+    uploadVideoDiscussion,
     uploadReply,
     loadVideoPage
   }

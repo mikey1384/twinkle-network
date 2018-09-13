@@ -66,12 +66,13 @@ class DiscussionPanel extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string.isRequired,
     uploadComment: PropTypes.func.isRequired,
     uploaderAuthLevel: PropTypes.number.isRequired,
     uploadReply: PropTypes.func.isRequired,
-    videoId: PropTypes.number.isRequired
+    contentId: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -113,7 +114,8 @@ class DiscussionPanel extends Component {
       setDiscussionDifficulty,
       uploadComment,
       uploadReply,
-      videoId
+      contentId,
+      type
     } = this.props;
     const {
       difficultyModalShown,
@@ -243,7 +245,6 @@ class DiscussionPanel extends Component {
                   commentsLoadLimit={10}
                   commentsShown={expanded}
                   inputTypeLabel={'answer'}
-                  type="videoDiscussionPanel"
                   comments={comments}
                   loadMoreButton={loadMoreDiscussionCommentsButton}
                   userId={myId}
@@ -259,8 +260,8 @@ class DiscussionPanel extends Component {
                   loadMoreComments={this.loadMoreComments}
                   parent={{
                     id,
-                    rootId: videoId,
-                    rootType: 'video',
+                    rootId: contentId,
+                    rootType: type,
                     type: 'discussion',
                     rootObj: true
                   }}

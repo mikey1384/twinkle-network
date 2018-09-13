@@ -9,16 +9,16 @@ import { setDifficulty } from 'helpers/requestHelpers';
 class DifficultyModal extends Component {
   static propTypes = {
     contentId: PropTypes.number.isRequired,
-    difficulty: PropTypes.number.isRequired,
+    difficulty: PropTypes.number,
     onHide: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired
   };
 
-  constructor(props) {
+  constructor({ difficulty = 0 }) {
     super();
     this.state = {
-      difficulty: props.difficulty
+      difficulty: difficulty
     };
   }
 

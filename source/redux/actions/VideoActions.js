@@ -216,22 +216,15 @@ export const loadMoreDiscussionComments = ({ data, discussionId }) => ({
   ...data
 });
 
-export const loadMoreDiscussions = (
-  videoId,
-  lastDiscussionId
-) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/discussions?videoId=${videoId}&lastDiscussionId=${lastDiscussionId}`
-    );
-    dispatch({
-      type: VIDEO.LOAD_MORE_DISCUSSIONS,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const loadVideoDiscussions = data => ({
+  type: VIDEO.LOAD_DISCUSSIONS,
+  data
+});
+
+export const loadMoreDiscussions = data => ({
+  type: VIDEO.LOAD_MORE_DISCUSSIONS,
+  data
+});
 
 export const loadMorePlaylistVideos = (
   videoId,
@@ -278,20 +271,6 @@ export const loadVideoComments = data => ({
   ...data
 });
 
-export const loadVideoDiscussions = videoId => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/discussions?videoId=${videoId}`
-    );
-    dispatch({
-      type: VIDEO.LOAD_DISCUSSIONS,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
 export const loadVideoDiscussionComments = ({ data, discussionId }) => ({
   type: VIDEO.LOAD_DISCUSSION_COMMENTS,
   discussionId,
@@ -306,7 +285,6 @@ export const loadVideoPage = (videoId, fromClientSide) => async dispatch => {
       type: VIDEO.LOAD_PAGE,
       data
     });
-    dispatch(loadVideoDiscussions(videoId));
     return Promise.resolve();
   } catch (error) {
     dispatch({ type: VIDEO.PAGE_UNAVAILABLE });
@@ -393,22 +371,7 @@ export const uploadReply = reply => ({
   reply
 });
 
-export const uploadVideoDiscussion = (
-  title,
-  description,
-  videoId
-) => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${API_URL}/discussions`,
-      { title, description, videoId },
-      auth()
-    );
-    dispatch({
-      type: VIDEO.UPLOAD_DISCUSSION,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const uploadVideoDiscussion = data => ({
+  type: VIDEO.UPLOAD_DISCUSSION,
+  data
+});
