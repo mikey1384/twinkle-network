@@ -255,7 +255,11 @@ class Reply extends Component {
             )}
             <RewardStatus
               noMarginForEditButton
-              difficulty={parent.difficulty || discussion.difficulty}
+              difficulty={
+                parent.difficulty ||
+                discussion.difficulty ||
+                (parent.rootObj || {}).difficulty
+              }
               onCommentEdit={onRewardCommentEdit}
               style={{
                 fontSize: '1.4rem',
