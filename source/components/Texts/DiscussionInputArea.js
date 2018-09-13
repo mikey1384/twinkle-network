@@ -6,7 +6,6 @@ import Icon from 'components/Icon';
 import { connect } from 'react-redux';
 import { uploadVideoDiscussion } from 'redux/actions/VideoActions';
 import { charLimit } from 'constants/defaultValues';
-import { css } from 'emotion';
 
 class DiscussionInputArea extends Component {
   static propTypes = {
@@ -24,11 +23,11 @@ class DiscussionInputArea extends Component {
     const { discussionFormShown } = this.state;
     return (
       <div
-        className={css`
-          background: #fff;
-          font-size: 1.5rem;
-          margin-top: 1rem;
-        `}
+        style={{
+          background: '#fff',
+          fontSize: '1.5rem',
+          marginTop: '1rem'
+        }}
       >
         <div style={{ padding: '1rem' }}>
           {discussionFormShown ? (

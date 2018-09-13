@@ -17,6 +17,7 @@ class Comments extends Component {
     autoExpand: PropTypes.bool,
     autoFocus: PropTypes.bool,
     numPreviews: PropTypes.number,
+    className: PropTypes.string,
     commentsShown: PropTypes.bool,
     comments: PropTypes.array.isRequired,
     commentsLoadLimit: PropTypes.number,
@@ -108,6 +109,7 @@ class Comments extends Component {
   render() {
     const {
       autoExpand,
+      className,
       comments = [],
       commentsShown,
       inputAtBottom,
@@ -142,8 +144,8 @@ class Comments extends Component {
         }}
       >
         <div
+          className={className}
           style={{
-            width: '100%',
             ...style
           }}
           ref={ref => {

@@ -72,7 +72,8 @@ class LinkPage extends Component {
       await loadLinkPage(linkId);
       const data = await loadComments({
         id: linkId,
-        type: 'url'
+        type: 'url',
+        limit: 5
       });
       if (data) fetchComments(data);
     } catch (error) {
@@ -160,19 +161,21 @@ class LinkPage extends Component {
       <div
         className={css`
           display: flex;
+          flex-direction: column;
           justify-content: center;
+          align-items: center;
           width: 100%;
           font-size: 1.7rem;
         `}
       >
         <div
           className={css`
-            width: 50%;
+            width: 60%;
             background-color: #fff;
+            padding-bottom: 1rem;
             margin-bottom: 1rem;
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;
-              min-height: 100vh;
             }
           `}
         >
@@ -225,26 +228,33 @@ class LinkPage extends Component {
               onLinkClick={() => this.setState({ likesModalShown: true })}
             />
           </div>
-          <Comments
-            autoExpand
-            comments={comments}
-            inputTypeLabel="comment"
-            key={'comments' + id}
-            loadMoreButton={loadMoreCommentsButton}
-            loadMoreComments={fetchMoreComments}
-            onAttachStar={attachStar}
-            onCommentSubmit={uploadComment}
-            onDelete={deleteComment}
-            onEditDone={editComment}
-            onLikeClick={likeComment}
-            onLoadMoreReplies={fetchMoreReplies}
-            onReplySubmit={uploadReply}
-            onRewardCommentEdit={editRewardComment}
-            parent={{ type: 'url', id }}
-            style={{ padding: '1rem' }}
-            userId={myId}
-          />
         </div>
+        <Comments
+          autoExpand
+          comments={comments}
+          inputTypeLabel="comment"
+          key={'comments' + id}
+          loadMoreButton={loadMoreCommentsButton}
+          loadMoreComments={fetchMoreComments}
+          onAttachStar={attachStar}
+          onCommentSubmit={uploadComment}
+          onDelete={deleteComment}
+          onEditDone={editComment}
+          onLikeClick={likeComment}
+          onLoadMoreReplies={fetchMoreReplies}
+          onReplySubmit={uploadReply}
+          onRewardCommentEdit={editRewardComment}
+          parent={{ type: 'url', id }}
+          className={css`
+            padding: 1rem;
+            width: 60%;
+            background: #fff;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
+          `}
+          userId={myId}
+        />
         {confirmModalShown && (
           <ConfirmModal
             key={'confirm' + id}
