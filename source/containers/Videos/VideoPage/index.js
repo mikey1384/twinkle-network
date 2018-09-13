@@ -7,7 +7,9 @@ import {
   editVideoPage,
   deleteVideo,
   deleteVideoComment,
+  deleteVideoDiscussion,
   editRewardComment,
+  editVideoDiscussion,
   uploadQuestions,
   likeVideo,
   likeVideoComment,
@@ -17,7 +19,11 @@ import {
   loadVideoPage,
   loadMoreComments,
   loadMoreDiscussions,
+  loadMoreDiscussionComments,
+  loadMoreDiscussionReplies,
   loadMoreReplies,
+  loadVideoDiscussionComments,
+  setDiscussionDifficulty,
   uploadComment,
   uploadReply,
   uploadVideoDiscussion
@@ -38,7 +44,6 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import queryString from 'query-string';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import DiscussionInputArea from 'components/Texts/DiscussionInputArea';
 import Discussions from 'components/Discussions';
 import RewardStatus from 'components/RewardStatus';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -52,10 +57,12 @@ class VideoPage extends Component {
     content: PropTypes.string,
     deleteVideo: PropTypes.func.isRequired,
     deleteVideoComment: PropTypes.func.isRequired,
+    deleteVideoDiscussion: PropTypes.func.isRequired,
     description: PropTypes.string,
     discussions: PropTypes.array,
     editRewardComment: PropTypes.func.isRequired,
     editVideoComment: PropTypes.func.isRequired,
+    editVideoDiscussion: PropTypes.func.isRequired,
     editVideoPage: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
     isStarred: PropTypes.bool,
@@ -65,15 +72,19 @@ class VideoPage extends Component {
     loadMoreComments: PropTypes.func.isRequired,
     loadMoreCommentsButton: PropTypes.bool,
     loadMoreDiscussions: PropTypes.func.isRequired,
+    loadMoreDiscussionComments: PropTypes.func.isRequired,
+    loadMoreDiscussionReplies: PropTypes.func.isRequired,
     loadMoreDiscussionsButton: PropTypes.bool,
     loadMoreReplies: PropTypes.func.isRequired,
     loadVideoPage: PropTypes.func.isRequired,
     loadVideoComments: PropTypes.func.isRequired,
+    loadVideoDiscussionComments: PropTypes.func.isRequired,
     loadVideoDiscussions: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     questions: PropTypes.array,
     resetVideoPage: PropTypes.func.isRequired,
+    setDiscussionDifficulty: PropTypes.func.isRequired,
     stars: PropTypes.array,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
@@ -160,14 +171,19 @@ class VideoPage extends Component {
       comments,
       discussions,
       deleteVideoComment,
+      deleteVideoDiscussion,
       editVideoComment,
       editRewardComment,
+      editVideoDiscussion,
       loadMoreCommentsButton,
       hasHqThumb,
       isStarred,
       loadMoreDiscussions,
+      loadMoreDiscussionComments,
+      loadMoreDiscussionReplies,
       loadMoreDiscussionsButton,
       loadMoreReplies,
+      loadVideoDiscussionComments,
       uploaderAuthLevel,
       uploaderId,
       uploaderName,
@@ -175,6 +191,7 @@ class VideoPage extends Component {
       likeVideo,
       likeVideoComment,
       loadMoreComments,
+      setDiscussionDifficulty,
       userId,
       videoUnavailable,
       videoLoading,
@@ -350,18 +367,29 @@ class VideoPage extends Component {
                     uploaderName={uploaderName}
                   />
                 </div>
-                <DiscussionInputArea
-                  contentId={videoId}
-                  type="video"
-                  onUploadDiscussion={uploadVideoDiscussion}
-                />
                 <Discussions
                   loadMoreDiscussionsButton={loadMoreDiscussionsButton}
                   discussions={discussions}
                   onLoadMoreDiscussions={loadMoreDiscussions}
+                  onLoadDiscussionComments={loadVideoDiscussionComments}
+                  onDiscussionEditDone={editVideoDiscussion}
+                  onDiscussionDelete={deleteVideoDiscussion}
+                  setDiscussionDifficulty={setDiscussionDifficulty}
                   uploadComment={uploadComment}
+                  uploadDiscussion={uploadVideoDiscussion}
                   contentId={videoId}
                   type="video"
+                  commentActions={{
+                    attachStar,
+                    editRewardComment,
+                    onDelete: deleteVideoComment,
+                    onEditDone: editVideoComment,
+                    onLikeClick: likeVideoComment,
+                    onLoadMoreComments: loadMoreDiscussionComments,
+                    onLoadMoreReplies: loadMoreDiscussionReplies,
+                    onUploadComment: uploadComment,
+                    onUploadReply: uploadReply
+                  }}
                 />
                 <div
                   style={{
@@ -572,15 +600,21 @@ export default connect(
     editRewardComment,
     deleteVideo,
     deleteVideoComment,
+    deleteVideoDiscussion,
+    editVideoDiscussion,
     uploadQuestions,
     likeVideo,
     likeVideoComment,
     loadMoreComments,
     loadMoreDiscussions,
+    loadMoreDiscussionComments,
+    loadMoreDiscussionReplies,
     loadMoreReplies,
     loadVideoComments,
     loadVideoDiscussions,
+    loadVideoDiscussionComments,
     resetVideoPage,
+    setDiscussionDifficulty,
     uploadComment,
     uploadVideoDiscussion,
     uploadReply,

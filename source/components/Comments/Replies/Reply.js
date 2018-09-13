@@ -200,7 +200,9 @@ class Reply extends Component {
                           }
                           disabled={determineXpButtonDisabled({
                             difficulty:
-                              parent.difficulty || discussion.difficulty,
+                              parent.difficulty ||
+                              discussion.difficulty ||
+                              (parent.rootObj || {}).difficulty,
                             myId: userId,
                             xpRewardInterfaceShown,
                             stars
@@ -210,7 +212,9 @@ class Reply extends Component {
                           <span style={{ marginLeft: '0.7rem' }}>
                             {determineXpButtonDisabled({
                               difficulty:
-                                parent.difficulty || discussion.difficulty,
+                                parent.difficulty ||
+                                discussion.difficulty ||
+                                (parent.rootObj || {}).difficulty,
                               myId: userId,
                               xpRewardInterfaceShown,
                               stars
@@ -234,7 +238,11 @@ class Reply extends Component {
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
-                difficulty={parent.difficulty || discussion.difficulty}
+                difficulty={
+                  parent.difficulty ||
+                  discussion.difficulty ||
+                  (parent.rootObj || {}).difficulty
+                }
                 stars={stars}
                 contentType="comment"
                 contentId={reply.id}

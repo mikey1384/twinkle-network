@@ -236,6 +236,7 @@ class Comment extends Component {
                               disabled={determineXpButtonDisabled({
                                 difficulty:
                                   parent.difficulty ||
+                                  (parent.rootObj || {}).difficulty ||
                                   (targetObj.discussion || {}).difficulty,
                                 myId: userId,
                                 xpRewardInterfaceShown,
@@ -247,6 +248,7 @@ class Comment extends Component {
                                 {determineXpButtonDisabled({
                                   difficulty:
                                     parent.difficulty ||
+                                    (parent.rootObj || {}).difficulty ||
                                     (targetObj.discussion || {}).difficulty,
                                   myId: userId,
                                   xpRewardInterfaceShown,
@@ -272,7 +274,9 @@ class Comment extends Component {
             {xpRewardInterfaceShown && (
               <XPRewardInterface
                 difficulty={
-                  parent.difficulty || (targetObj.discussion || {}).difficulty
+                  parent.difficulty ||
+                  (parent.rootObj || {}).difficulty ||
+                  (targetObj.discussion || {}).difficulty
                 }
                 stars={stars}
                 contentType="comment"
@@ -287,7 +291,9 @@ class Comment extends Component {
             {!isPreview && (
               <RewardStatus
                 difficulty={
-                  parent.difficulty || (targetObj.discussion || {}).difficulty
+                  parent.difficulty ||
+                  (parent.rootObj || {}).difficulty ||
+                  (targetObj.discussion || {}).difficulty
                 }
                 noMarginForEditButton
                 onCommentEdit={onRewardCommentEdit}

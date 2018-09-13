@@ -173,7 +173,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(diamond\))/gi, '💎')
     .replace(/(\(clap\))/gi, '👏')
     .replace(/(\(star\))/gi, '⭐')
-    .replace(/(\(ufo\))/gi, '🛸');
+    .replace(/(\(ufo\))/gi, '🛸')
+    .replace(/(\(volcano\))/gi, '🌋');
 }
 
 export function addEmoji(string) {

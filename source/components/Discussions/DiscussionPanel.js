@@ -19,25 +19,11 @@ import Icon from 'components/Icon';
 import Input from 'components/Texts/Input';
 import DifficultyBar from 'components/DifficultyBar';
 import DifficultyModal from 'components/Modals/DifficultyModal';
-import {
-  attachStar,
-  deleteVideoComment,
-  editRewardComment,
-  editVideoComment,
-  loadVideoDiscussionComments,
-  loadMoreDiscussionComments,
-  uploadComment,
-  likeVideoComment,
-  loadMoreDiscussionReplies,
-  editVideoDiscussion,
-  deleteVideoDiscussion,
-  setDiscussionDifficulty,
-  uploadReply
-} from 'redux/actions/VideoActions';
 import Link from 'components/Link';
+import withContext from 'components/Wrappers/withContext';
+import Context from './Context';
 import { loadComments } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
-import { css } from 'emotion';
 
 class DiscussionPanel extends Component {
   static propTypes = {
@@ -51,8 +37,8 @@ class DiscussionPanel extends Component {
     difficulty: PropTypes.number,
     editRewardComment: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
-    loadVideoDiscussionComments: PropTypes.func.isRequired,
-    loadMoreComments: PropTypes.func.isRequired,
+    onLoadDiscussionComments: PropTypes.func.isRequired,
+    onLoadMoreComments: PropTypes.func.isRequired,
     loadMoreDiscussionCommentsButton: PropTypes.bool.isRequired,
     myId: PropTypes.number,
     numComments: PropTypes.string,
@@ -62,6 +48,8 @@ class DiscussionPanel extends Component {
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
+    onUploadComment: PropTypes.func.isRequired,
+    onUploadReply: PropTypes.func.isRequired,
     setDiscussionDifficulty: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
@@ -69,9 +57,7 @@ class DiscussionPanel extends Component {
     type: PropTypes.string.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string.isRequired,
-    uploadComment: PropTypes.func.isRequired,
     uploaderAuthLevel: PropTypes.number.isRequired,
-    uploadReply: PropTypes.func.isRequired,
     contentId: PropTypes.number.isRequired
   };
 
@@ -111,9 +97,9 @@ class DiscussionPanel extends Component {
       onDelete,
       onEditDone,
       onLoadMoreReplies,
+      onUploadComment,
+      onUploadReply,
       setDiscussionDifficulty,
-      uploadComment,
-      uploadReply,
       contentId,
       type
     } = this.props;
@@ -132,28 +118,32 @@ class DiscussionPanel extends Component {
     const editButtonEnabled = userIsUploader || userCanEditThis;
     return (
       <div
-        className={css`
-          background: #fff;
-          margin-top: 1rem;
-          font-size: 1.5rem;
-        `}
+        style={{
+          background: '#fff',
+          marginTop: '1rem',
+          fontSize: '1.5rem'
+        }}
       >
         {difficulty > 0 && <DifficultyBar difficulty={difficulty} />}
         <div style={{ padding: '1rem' }}>
           <div
-            className={css`
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              a {
-                font-size: 2.5rem;
-                color: ${Color.green()};
-                font-weight: bold;
-              }
-            `}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
           >
             {!onEdit && (
-              <Link to={`/discussions/${id}`}>{cleanString(title)}</Link>
+              <Link
+                to={`/discussions/${id}`}
+                style={{
+                  fontSize: '2.5rem',
+                  color: Color.green(),
+                  fontWeight: 'bold'
+                }}
+              >
+                {cleanString(title)}
+              </Link>
             )}
             {editButtonEnabled &&
               !onEdit && (
@@ -249,12 +239,12 @@ class DiscussionPanel extends Component {
                   loadMoreButton={loadMoreDiscussionCommentsButton}
                   userId={myId}
                   onAttachStar={attachStar}
-                  onCommentSubmit={uploadComment}
+                  onCommentSubmit={onUploadComment}
                   onDelete={onDelete}
                   onEditDone={onEditDone}
                   onLikeClick={onLikeClick}
                   onLoadMoreReplies={onLoadMoreReplies}
-                  onReplySubmit={uploadReply}
+                  onReplySubmit={onUploadReply}
                   onRewardCommentEdit={editRewardComment}
                   contentId={id}
                   loadMoreComments={this.loadMoreComments}
@@ -362,8 +352,8 @@ class DiscussionPanel extends Component {
   };
 
   loadMoreComments = data => {
-    const { id, loadMoreComments } = this.props;
-    loadMoreComments({ data, discussionId: id });
+    const { id, onLoadMoreComments } = this.props;
+    onLoadMoreComments({ data, discussionId: id });
   };
 
   onDelete = () => {
@@ -374,11 +364,11 @@ class DiscussionPanel extends Component {
   };
 
   onExpand = async() => {
-    const { loadVideoDiscussionComments, id } = this.props;
+    const { onLoadDiscussionComments, id } = this.props;
     this.setState({ expanded: true });
     try {
       const data = await loadComments({ type: 'discussion', id, limit: 10 });
-      if (data) loadVideoDiscussionComments({ data, discussionId: id });
+      if (data) onLoadDiscussionComments({ data, discussionId: id });
     } catch (error) {
       console.error(error.response || error);
     }
@@ -399,27 +389,10 @@ class DiscussionPanel extends Component {
   };
 }
 
-export default connect(
-  state => ({
-    myId: state.UserReducer.userId,
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canEditDifficulty: state.UserReducer.canEditDifficulty
-  }),
-  {
-    attachStar,
-    editRewardComment,
-    onDelete: deleteVideoComment,
-    onEditDone: editVideoComment,
-    loadVideoDiscussionComments,
-    loadMoreComments: loadMoreDiscussionComments,
-    onLikeClick: likeVideoComment,
-    onLoadMoreReplies: loadMoreDiscussionReplies,
-    onDiscussionEditDone: editVideoDiscussion,
-    onDiscussionDelete: deleteVideoDiscussion,
-    setDiscussionDifficulty,
-    uploadComment,
-    uploadReply
-  }
-)(DiscussionPanel);
+export default connect(state => ({
+  myId: state.UserReducer.userId,
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit,
+  canEditDifficulty: state.UserReducer.canEditDifficulty
+}))(withContext({ Component: DiscussionPanel, Context }));
