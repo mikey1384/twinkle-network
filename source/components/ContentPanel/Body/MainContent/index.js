@@ -18,6 +18,7 @@ MainContent.propTypes = {
   onEditDismiss: PropTypes.func.isRequired,
   rootObj: PropTypes.object,
   urlRelated: PropTypes.object,
+  rootType: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired
 };
 export default function MainContent({
@@ -28,12 +29,14 @@ export default function MainContent({
   onEditDismiss,
   rootObj,
   urlRelated,
+  rootType,
   type
 }) {
   return (
     <ErrorBoundary>
       <div>
-        {(type === 'video' || type === 'discussion') && (
+        {(type === 'video' ||
+          (type === 'discussion' && rootType === 'video')) && (
           <VideoPlayer
             stretch
             isStarred={!!(contentObj.isStarred || rootObj.isStarred)}
@@ -158,8 +161,8 @@ export default function MainContent({
               {...urlRelated}
             />
           )}
-        {type === 'comment' &&
-          contentObj.rootType === 'url' && (
+        {(type === 'comment' || type === 'discussion') &&
+          rootType === 'url' && (
             <Embedly
               small
               title={cleanString(rootObj.title)}

@@ -5,7 +5,9 @@ const defaultState = {
   links: [],
   loadMoreLinksButtonShown: false,
   linkPage: {
-    comments: []
+    comments: [],
+    discussions: [],
+    discussionsLoadMoreButton: false
   }
 };
 
@@ -30,6 +32,23 @@ export default function linkReducer(state = defaultState, action) {
                   ? (reply.stars || []).concat(action.data)
                   : reply.stars || []
             }))
+          })),
+          discussions: state.linkPage.discussions.map(discussion => ({
+            ...discussion,
+            comments: discussion.comments.map(comment => ({
+              ...comment,
+              stars:
+                comment.id === action.data.contentId
+                  ? (comment.stars || []).concat(action.data)
+                  : comment.stars || [],
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                stars:
+                  reply.id === action.data.contentId
+                    ? (reply.stars || []).concat(action.data)
+                    : reply.stars || []
+              }))
+            }))
           }))
         }
       };
@@ -53,7 +72,30 @@ export default function linkReducer(state = defaultState, action) {
                 )
               }
             ]);
-          }, [])
+          }, []),
+          discussions: state.linkPage.discussions.map(discussion => {
+            return {
+              ...discussion,
+              comments: (discussion.comments || [])
+                .filter(comment => comment.id !== action.commentId)
+                .map(comment => ({
+                  ...comment,
+                  replies: (comment.replies || []).filter(
+                    reply => reply.id !== action.commentId
+                  )
+                }))
+            };
+          })
+        }
+      };
+    case LINK.DELETE_DISCUSSION:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: state.linkPage.discussions.filter(
+            discussion => discussion.id !== action.discussionId
+          )
         }
       };
     case LINK.EDIT_COMMENT:
@@ -74,6 +116,41 @@ export default function linkReducer(state = defaultState, action) {
                   ? action.editedComment
                   : reply.content
             }))
+          })),
+          discussions: state.linkPage.discussions.map(discussion => ({
+            ...discussion,
+            comments: discussion.comments.map(comment => ({
+              ...comment,
+              content:
+                comment.id === action.commentId
+                  ? action.editedComment
+                  : comment.content,
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                content:
+                  reply.id === action.commentId
+                    ? action.editedComment
+                    : reply.content
+              }))
+            }))
+          }))
+        }
+      };
+    case LINK.EDIT_DISCUSSION:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: state.linkPage.discussions.map(discussion => ({
+            ...discussion,
+            title:
+              discussion.id === action.discussionId
+                ? action.data.title
+                : discussion.title,
+            description:
+              discussion.id === action.discussionId
+                ? action.data.description
+                : discussion.description
           }))
         }
       };
@@ -100,6 +177,29 @@ export default function linkReducer(state = defaultState, action) {
                       star.id === action.id ? action.text : star.rewardComment
                   }))
                 : []
+            }))
+          })),
+          discussions: state.linkPage.discussions.map(discussion => ({
+            ...discussion,
+            comments: discussion.comments.map(comment => ({
+              ...comment,
+              stars: comment.stars
+                ? comment.stars.map(star => ({
+                    ...star,
+                    rewardComment:
+                      star.id === action.id ? action.text : star.rewardComment
+                  }))
+                : [],
+              replies: comment.replies.map(reply => ({
+                ...reply,
+                stars: reply.stars
+                  ? reply.stars.map(star => ({
+                      ...star,
+                      rewardComment:
+                        star.id === action.id ? action.text : star.rewardComment
+                    }))
+                  : []
+              }))
             }))
           }))
         }
@@ -131,6 +231,29 @@ export default function linkReducer(state = defaultState, action) {
                     reply.id === action.data.commentId
                       ? action.data.likes
                       : reply.likes
+                };
+              })
+            };
+          }),
+          discussions: state.linkPage.discussions.map(discussion => {
+            return {
+              ...discussion,
+              comments: discussion.comments.map(comment => {
+                return {
+                  ...comment,
+                  likes:
+                    comment.id === action.data.commentId
+                      ? action.data.likes
+                      : comment.likes,
+                  replies: comment.replies.map(reply => {
+                    return {
+                      ...reply,
+                      likes:
+                        reply.id === action.data.commentId
+                          ? action.data.likes
+                          : reply.likes
+                    };
+                  })
                 };
               })
             };
@@ -216,6 +339,83 @@ export default function linkReducer(state = defaultState, action) {
           }))
         }
       };
+    case LINK.LOAD_DISCUSSIONS:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: action.results,
+          discussionsLoadMoreButton: action.loadMoreButton
+        }
+      };
+    case LINK.LOAD_MORE_DISCUSSIONS:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: state.linkPage.discussions.concat(action.results),
+          discussionsLoadMoreButton: action.loadMoreButton
+        }
+      };
+    case LINK.LOAD_DISCUSSION_COMMENTS:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: state.linkPage.discussions.map(discussion => {
+            if (discussion.id === action.discussionId) {
+              return {
+                ...discussion,
+                comments: action.comments,
+                loadMoreCommentsButton: action.loadMoreButton
+              };
+            }
+            return discussion;
+          })
+        }
+      };
+    case LINK.LOAD_MORE_DISCUSSION_COMMENTS:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: state.linkPage.discussions.map(discussion => {
+            if (discussion.id === action.discussionId) {
+              return {
+                ...discussion,
+                comments: discussion.comments.concat(action.comments),
+                loadMoreCommentsButton: action.loadMoreButton
+              };
+            }
+            return discussion;
+          })
+        }
+      };
+    case LINK.LOAD_MORE_DISCUSSION_REPLIES:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: state.linkPage.discussions.map(discussion => {
+            return {
+              ...discussion,
+              comments: discussion.comments.map(comment => {
+                return {
+                  ...comment,
+                  replies:
+                    comment.id === action.commentId
+                      ? action.replies.concat(comment.replies)
+                      : comment.replies,
+                  loadMoreButton:
+                    comment.id === action.commentId
+                      ? action.loadMoreButton
+                      : comment.loadMoreButton
+                };
+              })
+            };
+          })
+        }
+      };
     case LINK.LIKE:
       return {
         ...state,
@@ -232,12 +432,34 @@ export default function linkReducer(state = defaultState, action) {
           ...action.page
         }
       };
+    case LINK.SET_DISCUSSION_DIFFICULTY:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: state.linkPage.discussions.map(discussion => {
+            return discussion.id === action.contentId
+              ? {
+                  ...discussion,
+                  difficulty: action.difficulty
+                }
+              : discussion;
+          })
+        }
+      };
     case LINK.UPLOAD_COMMENT:
       return {
         ...state,
         linkPage: {
           ...state.linkPage,
-          comments: [action.comment].concat(state.linkPage.comments)
+          comments: [action.comment].concat(state.linkPage.comments),
+          discussions: state.linkPage.discussions.map(discussion => ({
+            ...discussion,
+            comments:
+              discussion.id === action.comment.discussionId
+                ? [action.comment].concat(discussion.comments)
+                : discussion.comments
+          }))
         }
       };
     case LINK.UPLOAD_REPLY:
@@ -252,7 +474,30 @@ export default function linkReducer(state = defaultState, action) {
               comment.id === action.reply.commentId
                 ? comment.replies.concat([action.reply])
                 : comment.replies
-          }))
+          })),
+          discussions: state.linkPage.discussions.map(discussion => {
+            return {
+              ...discussion,
+              comments: discussion.comments.map(comment => {
+                return {
+                  ...comment,
+                  replies:
+                    comment.id === action.reply.commentId ||
+                    comment.id === action.reply.replyId
+                      ? comment.replies.concat([action.reply])
+                      : comment.replies
+                };
+              })
+            };
+          })
+        }
+      };
+    case LINK.UPLOAD_DISCUSSION:
+      return {
+        ...state,
+        linkPage: {
+          ...state.linkPage,
+          discussions: [action.discussion].concat(state.linkPage.discussions)
         }
       };
     case LINK.UPLOAD:

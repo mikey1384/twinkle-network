@@ -128,23 +128,29 @@ class VideoPage extends Component {
       loadVideoPage
     } = this.props;
     await loadVideoPage(params.videoId);
-    const discussions = await loadDiscussions({
+    const discussionsObj = await loadDiscussions({
       type: 'video',
       contentId: params.videoId
     });
-    loadVideoDiscussions(discussions);
+    loadVideoDiscussions(discussionsObj);
     const comments = await loadComments({ id: params.videoId, type: 'video' });
     if (comments) loadVideoComments(comments);
   }
 
   async componentDidUpdate(prevProps) {
     const {
+      match: { params },
       loadVideoPage,
-      loadVideoComments,
-      match: { params }
+      loadVideoDiscussions,
+      loadVideoComments
     } = this.props;
     if (prevProps.match.params.videoId !== params.videoId) {
       await loadVideoPage(params.videoId);
+      const discussionsObj = await loadDiscussions({
+        type: 'video',
+        contentId: params.videoId
+      });
+      loadVideoDiscussions(discussionsObj);
       const data = await loadComments({ id: params.videoId, type: 'video' });
       if (data) loadVideoComments(data);
       return this.setState({
@@ -368,14 +374,13 @@ class VideoPage extends Component {
                   />
                 </div>
                 <Discussions
-                  loadMoreDiscussionsButton={loadMoreDiscussionsButton}
+                  loadMoreButton={loadMoreDiscussionsButton}
                   discussions={discussions}
                   onLoadMoreDiscussions={loadMoreDiscussions}
                   onLoadDiscussionComments={loadVideoDiscussionComments}
                   onDiscussionEditDone={editVideoDiscussion}
                   onDiscussionDelete={deleteVideoDiscussion}
                   setDiscussionDifficulty={setDiscussionDifficulty}
-                  uploadComment={uploadComment}
                   uploadDiscussion={uploadVideoDiscussion}
                   contentId={videoId}
                   type="video"

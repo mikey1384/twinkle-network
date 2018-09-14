@@ -37,6 +37,18 @@ export const deleteContent = async({ id, type, dispatch }) => {
   }
 };
 
+export const deleteDiscussion = async({ discussionId, dispatch }) => {
+  try {
+    await request.delete(
+      `${URL}/content/discussions?discussionId=${discussionId}`,
+      auth()
+    );
+    return Promise.resolve();
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const editContent = async({
   params: {
     contentId,
@@ -61,6 +73,24 @@ export const editContent = async({
         editedUrl,
         type
       },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
+export const editDiscussion = async({
+  discussionId,
+  editedTitle,
+  editedDescription,
+  dispatch
+}) => {
+  try {
+    const { data } = await request.put(
+      `${URL}/content/discussions`,
+      { discussionId, editedTitle, editedDescription },
       auth()
     );
     return Promise.resolve(data);

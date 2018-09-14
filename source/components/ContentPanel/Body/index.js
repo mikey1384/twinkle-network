@@ -163,28 +163,11 @@ class Body extends Component {
       isEditing,
       xpRewardInterfaceShown
     } = this.state;
-    let userLikedThis = false;
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === myId) userLikedThis = true;
-    }
-    const userIsUploader = myId === uploader.id;
+
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploader.authLevel;
     const userCanStarThis = canStar && authLevel > uploader.authLevel;
-    const editButtonShown = userIsUploader || userCanEditThis;
-    const editMenuItems = [];
-    if (userIsUploader || canEdit) {
-      editMenuItems.push({
-        label: 'Edit',
-        onClick: () => this.setState({ isEditing: true })
-      });
-    }
-    if (userIsUploader || canDelete) {
-      editMenuItems.push({
-        label: 'Remove',
-        onClick: () => this.setState({ confirmModalShown: true })
-      });
-    }
+    const editButtonShown = myId === uploader.id || userCanEditThis;
     return (
       <ErrorBoundary>
         <div>
@@ -262,7 +245,7 @@ class Body extends Component {
                         contentId={contentId}
                         key="likeButton"
                         onClick={this.onLikeClick}
-                        liked={userLikedThis}
+                        liked={this.determineUserLikedThis(likes)}
                         small
                       />
                       <Button
@@ -308,12 +291,12 @@ class Body extends Component {
                       style={{ marginLeft: '0.5rem', display: 'inline-block' }}
                       size={type !== 'discussion' ? 'sm' : null}
                       text="Edit"
-                      menuProps={editMenuItems}
+                      menuProps={this.renderEditMenuItems()}
                     />
                   )}
                   {canStar &&
                     userCanStarThis &&
-                    !userIsUploader && (
+                    myId !== uploader.id && (
                       <Button
                         love
                         disabled={this.determineXpButtonDisabled()}
@@ -467,6 +450,38 @@ class Body extends Component {
       </ErrorBoundary>
     );
   }
+
+  renderEditMenuItems = () => {
+    const {
+      canDelete,
+      canEdit,
+      myId,
+      contentObj: { uploader }
+    } = this.props;
+    const editMenuItems = [];
+    if (myId === uploader.id || canEdit) {
+      editMenuItems.push({
+        label: 'Edit',
+        onClick: () => this.setState({ isEditing: true })
+      });
+    }
+    if (myId === uploader.id || canDelete) {
+      editMenuItems.push({
+        label: 'Remove',
+        onClick: () => this.setState({ confirmModalShown: true })
+      });
+    }
+    return editMenuItems;
+  };
+
+  determineUserLikedThis = likes => {
+    const { myId } = this.props;
+    let userLikedThis = false;
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i].userId === myId) userLikedThis = true;
+    }
+    return userLikedThis;
+  };
 
   determineXpButtonDisabled = () => {
     const {

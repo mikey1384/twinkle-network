@@ -9,18 +9,28 @@ import {
   deleteComment,
   deleteLinkFromPage,
   editComment,
+  deleteDiscussion,
+  editDiscussion,
   editLinkPage,
   editRewardComment,
   fetchComments,
   fetchMoreComments,
   fetchMoreReplies,
+  fetchDiscussionComments,
+  fetchDiscussions,
+  fetchMoreDiscussions,
+  fetchMoreDiscussionComments,
+  fetchMoreDiscussionReplies,
   likeComment,
   likeLink,
   resetPage,
+  setDiscussionDifficulty,
   uploadComment,
+  uploadDiscussion,
   uploadReply
 } from 'redux/actions/LinkActions';
 import Comments from 'components/Comments';
+import Discussions from 'components/Discussions';
 import LikeButton from 'components/Buttons/LikeButton';
 import Likers from 'components/Likers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
@@ -29,19 +39,26 @@ import Description from './Description';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import NotFound from 'components/NotFound';
-import { loadComments } from 'helpers/requestHelpers';
+import { loadComments, loadDiscussions } from 'helpers/requestHelpers';
 
 class LinkPage extends Component {
   static propTypes = {
     attachStar: PropTypes.func.isRequired,
     deleteComment: PropTypes.func.isRequired,
+    deleteDiscussion: PropTypes.func.isRequired,
     deleteLinkFromPage: PropTypes.func.isRequired,
     editComment: PropTypes.func.isRequired,
+    editDiscussion: PropTypes.func.isRequired,
     editLinkPage: PropTypes.func.isRequired,
     editRewardComment: PropTypes.func.isRequired,
     fetchComments: PropTypes.func.isRequired,
     fetchMoreComments: PropTypes.func.isRequired,
     fetchMoreReplies: PropTypes.func.isRequired,
+    fetchDiscussionComments: PropTypes.func.isRequired,
+    fetchDiscussions: PropTypes.func.isRequired,
+    fetchMoreDiscussions: PropTypes.func.isRequired,
+    fetchMoreDiscussionComments: PropTypes.func.isRequired,
+    fetchMoreDiscussionReplies: PropTypes.func.isRequired,
     likeComment: PropTypes.func.isRequired,
     likeLink: PropTypes.func.isRequired,
     loadLinkPage: PropTypes.func.isRequired,
@@ -50,7 +67,9 @@ class LinkPage extends Component {
     myId: PropTypes.number,
     pageProps: PropTypes.object.isRequired,
     resetPage: PropTypes.func.isRequired,
+    setDiscussionDifficulty: PropTypes.func.isRequired,
     uploadComment: PropTypes.func.isRequired,
+    uploadDiscussion: PropTypes.func.isRequired,
     uploadReply: PropTypes.func.isRequired
   };
 
@@ -66,16 +85,22 @@ class LinkPage extends Component {
         params: { linkId }
       },
       loadLinkPage,
-      fetchComments
+      fetchComments,
+      fetchDiscussions
     } = this.props;
     try {
       await loadLinkPage(linkId);
-      const data = await loadComments({
+      const discussionsObj = await loadDiscussions({
+        type: 'url',
+        contentId: linkId
+      });
+      fetchDiscussions(discussionsObj);
+      const commentsObj = await loadComments({
         id: linkId,
         type: 'url',
         limit: 5
       });
-      if (data) fetchComments(data);
+      if (commentsObj) fetchComments(commentsObj);
     } catch (error) {
       if (error.response) {
         const { data = {} } = error.response;
@@ -99,11 +124,11 @@ class LinkPage extends Component {
     if (prevProps.location.pathname !== location.pathname) {
       try {
         await loadLinkPage(linkId);
-        const data = await loadComments({
+        const commentsObj = await loadComments({
           id: linkId,
           type: 'url'
         });
-        if (data) fetchComments(data);
+        if (commentsObj) fetchComments(commentsObj);
       } catch (error) {
         if (error.response) {
           const { data = {} } = error.response;
@@ -128,6 +153,8 @@ class LinkPage extends Component {
         title,
         content,
         description,
+        discussions,
+        discussionsLoadMoreButton,
         timeStamp,
         uploader,
         uploaderAuthLevel,
@@ -139,16 +166,24 @@ class LinkPage extends Component {
       },
       attachStar,
       deleteComment,
+      deleteDiscussion,
       deleteLinkFromPage,
       editComment,
+      editDiscussion,
       editLinkPage,
       editRewardComment,
       fetchMoreComments,
       fetchMoreReplies,
+      fetchMoreDiscussions,
+      fetchDiscussionComments,
+      fetchMoreDiscussionComments,
+      fetchMoreDiscussionReplies,
       likeComment,
       likeLink,
       myId,
+      setDiscussionDifficulty,
       uploadComment,
+      uploadDiscussion,
       uploadReply
     } = this.props;
     const { confirmModalShown, likesModalShown, notFound } = this.state;
@@ -159,21 +194,20 @@ class LinkPage extends Component {
 
     return id ? (
       <div
-        className={css`
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          font-size: 1.7rem;
-        `}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          fontSize: '1.7rem'
+        }}
       >
         <div
           className={css`
             width: 60%;
             background-color: #fff;
             padding-bottom: 1rem;
-            margin-bottom: 1rem;
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;
             }
@@ -229,6 +263,30 @@ class LinkPage extends Component {
             />
           </div>
         </div>
+        <Discussions
+          style={{ width: '60%' }}
+          contentId={id}
+          loadMoreButton={discussionsLoadMoreButton}
+          discussions={discussions}
+          onLoadMoreDiscussions={fetchMoreDiscussions}
+          onLoadDiscussionComments={fetchDiscussionComments}
+          onDiscussionEditDone={editDiscussion}
+          onDiscussionDelete={deleteDiscussion}
+          setDiscussionDifficulty={setDiscussionDifficulty}
+          uploadDiscussion={uploadDiscussion}
+          type="url"
+          commentActions={{
+            attachStar,
+            editRewardComment,
+            onDelete: deleteComment,
+            onEditDone: editComment,
+            onLikeClick: likeComment,
+            onLoadMoreComments: fetchMoreDiscussionComments,
+            onLoadMoreReplies: fetchMoreDiscussionReplies,
+            onUploadComment: uploadComment,
+            onUploadReply: uploadReply
+          }}
+        />
         <Comments
           autoExpand
           comments={comments}
@@ -291,17 +349,26 @@ export default connect(
     attachStar,
     loadLinkPage,
     deleteComment,
+    deleteDiscussion,
     deleteLinkFromPage,
     editComment,
+    editDiscussion,
     editLinkPage,
     editRewardComment,
     fetchComments,
+    fetchDiscussionComments,
     fetchMoreComments,
     fetchMoreReplies,
+    fetchDiscussions,
+    fetchMoreDiscussions,
+    fetchMoreDiscussionComments,
+    fetchMoreDiscussionReplies,
     likeComment,
     likeLink,
     resetPage,
+    setDiscussionDifficulty,
     uploadComment,
-    uploadReply
+    uploadReply,
+    uploadDiscussion
   }
 )(LinkPage);

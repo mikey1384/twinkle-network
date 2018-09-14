@@ -22,7 +22,11 @@ import DifficultyModal from 'components/Modals/DifficultyModal';
 import Link from 'components/Link';
 import withContext from 'components/Wrappers/withContext';
 import Context from './Context';
-import { loadComments } from 'helpers/requestHelpers';
+import {
+  deleteDiscussion,
+  editDiscussion,
+  loadComments
+} from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
 
 class DiscussionPanel extends Component {
@@ -35,11 +39,12 @@ class DiscussionPanel extends Component {
     comments: PropTypes.array.isRequired,
     description: PropTypes.string,
     difficulty: PropTypes.number,
+    dispatch: PropTypes.func.isRequired,
     editRewardComment: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
     onLoadDiscussionComments: PropTypes.func.isRequired,
     onLoadMoreComments: PropTypes.func.isRequired,
-    loadMoreDiscussionCommentsButton: PropTypes.bool.isRequired,
+    loadMoreCommentsButton: PropTypes.bool.isRequired,
     myId: PropTypes.number,
     numComments: PropTypes.string,
     onDelete: PropTypes.func.isRequired,
@@ -92,7 +97,7 @@ class DiscussionPanel extends Component {
       numComments,
       myId,
       comments,
-      loadMoreDiscussionCommentsButton,
+      loadMoreCommentsButton,
       onLikeClick,
       onDelete,
       onEditDone,
@@ -236,7 +241,7 @@ class DiscussionPanel extends Component {
                   commentsShown={expanded}
                   inputTypeLabel={'answer'}
                   comments={comments}
-                  loadMoreButton={loadMoreDiscussionCommentsButton}
+                  loadMoreButton={loadMoreCommentsButton}
                   userId={myId}
                   onAttachStar={attachStar}
                   onCommentSubmit={onUploadComment}
@@ -356,11 +361,15 @@ class DiscussionPanel extends Component {
     onLoadMoreComments({ data, discussionId: id });
   };
 
-  onDelete = () => {
-    const { id, onDiscussionDelete } = this.props;
-    onDiscussionDelete(id, () => {
+  onDelete = async() => {
+    const { dispatch, id, onDiscussionDelete } = this.props;
+    try {
+      await deleteDiscussion({ discussionId: id, dispatch });
       this.setState({ confirmModalShown: false });
-    });
+      onDiscussionDelete(id);
+    } catch (error) {
+      return console.error(error);
+    }
   };
 
   onExpand = async() => {
@@ -376,12 +385,14 @@ class DiscussionPanel extends Component {
 
   onEditDone = async() => {
     const { editedTitle, editedDescription } = this.state;
-    const { id, onDiscussionEditDone } = this.props;
-    await onDiscussionEditDone(
-      id,
-      finalizeEmoji(editedTitle),
-      finalizeEmoji(editedDescription)
-    );
+    const { id, dispatch, onDiscussionEditDone } = this.props;
+    const editedDiscussion = await editDiscussion({
+      discussionId: id,
+      editedTitle: finalizeEmoji(editedTitle),
+      editedDescription: finalizeEmoji(editedDescription),
+      dispatch
+    });
+    onDiscussionEditDone({ editedDiscussion, discussionId: id });
     this.setState({
       onEdit: false,
       editDoneButtonDisabled: true
@@ -389,10 +400,13 @@ class DiscussionPanel extends Component {
   };
 }
 
-export default connect(state => ({
-  myId: state.UserReducer.userId,
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit,
-  canEditDifficulty: state.UserReducer.canEditDifficulty
-}))(withContext({ Component: DiscussionPanel, Context }));
+export default connect(
+  state => ({
+    myId: state.UserReducer.userId,
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canEditDifficulty: state.UserReducer.canEditDifficulty
+  }),
+  dispatch => ({ dispatch })
+)(withContext({ Component: DiscussionPanel, Context }));

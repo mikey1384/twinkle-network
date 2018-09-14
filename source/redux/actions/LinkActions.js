@@ -21,6 +21,11 @@ export const deleteComment = commentId => ({
   commentId
 });
 
+export const deleteDiscussion = discussionId => ({
+  type: LINK.DELETE_DISCUSSION,
+  discussionId
+});
+
 export const deleteLink = linkId => async dispatch => {
   try {
     await request.delete(`${API_URL}?linkId=${linkId}`, auth());
@@ -51,6 +56,12 @@ export const editRewardComment = ({ id, text }) => ({
   type: LINK.EDIT_REWARD_COMMENT,
   id,
   text
+});
+
+export const editDiscussion = ({ editedDiscussion, discussionId }) => ({
+  type: LINK.EDIT_DISCUSSION,
+  data: editedDiscussion,
+  discussionId
 });
 
 export const editLinkPage = params => async dispatch => {
@@ -122,6 +133,41 @@ export const fetchMoreReplies = ({ commentId, loadMoreButton, replies }) => ({
   replies
 });
 
+export const fetchDiscussions = ({ results, loadMoreButton }) => ({
+  type: LINK.LOAD_DISCUSSIONS,
+  results,
+  loadMoreButton
+});
+
+export const fetchMoreDiscussions = ({ results, loadMoreButton }) => ({
+  type: LINK.LOAD_MORE_DISCUSSIONS,
+  results,
+  loadMoreButton
+});
+
+export const fetchDiscussionComments = ({ data, discussionId }) => ({
+  type: LINK.LOAD_DISCUSSION_COMMENTS,
+  discussionId,
+  ...data
+});
+
+export const fetchMoreDiscussionReplies = ({
+  commentId,
+  loadMoreButton,
+  replies
+}) => ({
+  type: LINK.LOAD_MORE_DISCUSSION_REPLIES,
+  commentId,
+  loadMoreButton,
+  replies
+});
+
+export const fetchMoreDiscussionComments = ({ data, discussionId }) => ({
+  type: LINK.LOAD_MORE_DISCUSSION_COMMENTS,
+  discussionId,
+  ...data
+});
+
 export const likeLink = likes => ({
   type: LINK.LIKE,
   likes
@@ -145,6 +191,12 @@ export const resetPage = () => ({
   type: LINK.RESET_PAGE
 });
 
+export const setDiscussionDifficulty = ({ contentId, difficulty }) => ({
+  type: LINK.SET_DISCUSSION_DIFFICULTY,
+  contentId,
+  difficulty
+});
+
 export const uploadComment = comment => ({
   type: LINK.UPLOAD_COMMENT,
   comment
@@ -153,6 +205,11 @@ export const uploadComment = comment => ({
 export const uploadReply = reply => ({
   type: LINK.UPLOAD_REPLY,
   reply
+});
+
+export const uploadDiscussion = discussion => ({
+  type: LINK.UPLOAD_DISCUSSION,
+  discussion
 });
 
 export const uploadLink = ({ url, title, description }) => async dispatch => {

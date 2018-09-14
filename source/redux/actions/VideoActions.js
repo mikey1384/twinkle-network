@@ -70,23 +70,10 @@ export const deleteVideoComment = commentId => ({
   commentId
 });
 
-export const deleteVideoDiscussion = (
-  discussionId,
-  callback
-) => async dispatch => {
-  try {
-    await request.delete(
-      `${API_URL}/discussions?discussionId=${discussionId}`,
-      auth()
-    );
-    dispatch({
-      type: VIDEO.DELETE_DISCUSSION,
-      discussionId
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const deleteVideoDiscussion = discussionId => ({
+  type: VIDEO.DELETE_DISCUSSION,
+  discussionId
+});
 
 export const editVideoComment = data => ({
   type: VIDEO.EDIT_COMMENT,
@@ -99,28 +86,11 @@ export const editRewardComment = ({ id, text }) => ({
   text
 });
 
-export const editVideoDiscussion = (
-  discussionId,
-  editedTitle,
-  editedDescription,
-  callback
-) => async dispatch => {
-  try {
-    const { data } = await request.put(
-      `${API_URL}/discussions`,
-      { discussionId, editedTitle, editedDescription },
-      auth()
-    );
-    dispatch({
-      type: VIDEO.EDIT_DISCUSSION,
-      data,
-      discussionId
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const editVideoDiscussion = ({ editedDiscussion, discussionId }) => ({
+  type: VIDEO.EDIT_DISCUSSION,
+  data: editedDiscussion,
+  discussionId
+});
 
 export const editVideoPage = params => async dispatch => {
   try {
@@ -216,14 +186,16 @@ export const loadMoreDiscussionComments = ({ data, discussionId }) => ({
   ...data
 });
 
-export const loadVideoDiscussions = data => ({
+export const loadVideoDiscussions = ({ results, loadMoreButton }) => ({
   type: VIDEO.LOAD_DISCUSSIONS,
-  data
+  results,
+  loadMoreButton
 });
 
-export const loadMoreDiscussions = data => ({
+export const loadMoreDiscussions = ({ results, loadMoreButton }) => ({
   type: VIDEO.LOAD_MORE_DISCUSSIONS,
-  data
+  results,
+  loadMoreButton
 });
 
 export const loadMorePlaylistVideos = (

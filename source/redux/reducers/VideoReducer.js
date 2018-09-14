@@ -19,7 +19,6 @@ const defaultState = {
 };
 
 export default function VideoReducer(state = defaultState, action) {
-  let loadMoreDiscussionsButton = false;
   switch (action.type) {
     case VIDEO.ATTACH_STAR:
       return {
@@ -149,6 +148,24 @@ export default function VideoReducer(state = defaultState, action) {
           }))
         }
       };
+    case VIDEO.EDIT_DISCUSSION:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          discussions: state.videoPage.discussions.map(discussion => ({
+            ...discussion,
+            title:
+              discussion.id === action.discussionId
+                ? action.data.title
+                : discussion.title,
+            description:
+              discussion.id === action.discussionId
+                ? action.data.description
+                : discussion.description
+          }))
+        }
+      };
     case VIDEO.EDIT_REWARD_COMMENT:
       return {
         ...state,
@@ -204,23 +221,13 @@ export default function VideoReducer(state = defaultState, action) {
           }))
         }
       };
-    case VIDEO.EDIT_DISCUSSION:
+    case VIDEO.EDIT_TITLE:
       return {
         ...state,
-        videoPage: {
-          ...state.videoPage,
-          discussions: state.videoPage.discussions.map(discussion => ({
-            ...discussion,
-            title:
-              discussion.id === action.discussionId
-                ? action.data.title
-                : discussion.title,
-            description:
-              discussion.id === action.discussionId
-                ? action.data.description
-                : discussion.description
-          }))
-        }
+        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
+          ...thumb,
+          title: thumb.id === action.videoId ? action.data : thumb.title
+        }))
       };
     case VIDEO.EMPTY_CURRENT_VIDEO_SLOT:
       return {
@@ -232,6 +239,67 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         currentVideoSlot: action.videoId
       };
+    case VIDEO.LIKE_COMMENT:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          discussions: state.videoPage.discussions.map(discussion => {
+            return {
+              ...discussion,
+              comments: discussion.comments.map(comment => {
+                return {
+                  ...comment,
+                  likes:
+                    comment.id === action.data.commentId
+                      ? action.data.likes
+                      : comment.likes,
+                  replies: comment.replies.map(reply => {
+                    return {
+                      ...reply,
+                      likes:
+                        reply.id === action.data.commentId
+                          ? action.data.likes
+                          : reply.likes
+                    };
+                  })
+                };
+              })
+            };
+          }),
+          comments: state.videoPage.comments.map(comment => {
+            return {
+              ...comment,
+              likes:
+                comment.id === action.data.commentId
+                  ? action.data.likes
+                  : comment.likes,
+              replies: comment.replies.map(reply => {
+                return {
+                  ...reply,
+                  likes:
+                    reply.id === action.data.commentId
+                      ? action.data.likes
+                      : reply.likes
+                };
+              })
+            };
+          })
+        }
+      };
+    case VIDEO.LIKE:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          likes: action.data
+        },
+        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
+          ...thumb,
+          numLikes:
+            thumb.id === action.videoId ? action.data.length : thumb.numLikes
+        }))
+      };
     case VIDEO.LOAD:
       return {
         ...state,
@@ -242,23 +310,23 @@ export default function VideoReducer(state = defaultState, action) {
         loadMoreButton: action.loadMoreButton,
         allVideosLoaded: !action.loadMoreButton
       };
-    case VIDEO.EDIT_TITLE:
+    case VIDEO.LOAD_DISCUSSIONS:
       return {
         ...state,
-        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
-          ...thumb,
-          title: thumb.id === action.videoId ? action.data : thumb.title
-        }))
+        videoPage: {
+          ...state.videoPage,
+          discussions: action.results,
+          loadMoreDiscussionsButton: action.loadMoreButton
+        }
       };
-    case VIDEO.OPEN_MODAL:
+    case VIDEO.LOAD_MORE_DISCUSSIONS:
       return {
         ...state,
-        addVideoModalShown: true
-      };
-    case VIDEO.CLOSE_MODAL:
-      return {
-        ...state,
-        addVideoModalShown: false
+        videoPage: {
+          ...state.videoPage,
+          discussions: state.videoPage.discussions.concat(action.results),
+          loadMoreDiscussionsButton: action.loadMoreButton
+        }
       };
     case VIDEO.LOAD_MORE_DISCUSSION_REPLIES:
       return {
@@ -305,20 +373,6 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       };
-    case VIDEO.LOAD_MORE_DISCUSSIONS:
-      loadMoreDiscussionsButton = false;
-      if (action.data.length > 3) {
-        action.data.pop();
-        loadMoreDiscussionsButton = true;
-      }
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          discussions: state.videoPage.discussions.concat(action.data),
-          loadMoreDiscussionsButton
-        }
-      };
     case VIDEO.LOAD_MORE_DISCUSSION_COMMENTS:
       return {
         ...state,
@@ -329,7 +383,7 @@ export default function VideoReducer(state = defaultState, action) {
               return {
                 ...discussion,
                 comments: discussion.comments.concat(action.comments),
-                loadMoreDiscussionCommentsButton: action.loadMoreButton
+                loadMoreCommentsButton: action.loadMoreButton
               };
             }
             return discussion;
@@ -365,7 +419,7 @@ export default function VideoReducer(state = defaultState, action) {
               return {
                 ...discussion,
                 comments: action.comments,
-                loadMoreDiscussionCommentsButton: action.loadMoreButton
+                loadMoreCommentsButton: action.loadMoreButton
               };
             }
             return discussion;
@@ -400,19 +454,15 @@ export default function VideoReducer(state = defaultState, action) {
           loadMoreCommentsButton: action.loadMoreButton
         }
       };
-    case VIDEO.LOAD_DISCUSSIONS:
-      loadMoreDiscussionsButton = false;
-      if (action.data.length > 3) {
-        action.data.pop();
-        loadMoreDiscussionsButton = true;
-      }
+    case VIDEO.OPEN_MODAL:
       return {
         ...state,
-        videoPage: {
-          ...state.videoPage,
-          discussions: action.data,
-          loadMoreDiscussionsButton
-        }
+        addVideoModalShown: true
+      };
+    case VIDEO.CLOSE_MODAL:
+      return {
+        ...state,
+        addVideoModalShown: false
       };
     case VIDEO.UPLOAD:
       const newState = action.data.concat(state.allVideoThumbs);
@@ -478,67 +528,6 @@ export default function VideoReducer(state = defaultState, action) {
             };
           })
         }
-      };
-    case VIDEO.LIKE_COMMENT:
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          discussions: state.videoPage.discussions.map(discussion => {
-            return {
-              ...discussion,
-              comments: discussion.comments.map(comment => {
-                return {
-                  ...comment,
-                  likes:
-                    comment.id === action.data.commentId
-                      ? action.data.likes
-                      : comment.likes,
-                  replies: comment.replies.map(reply => {
-                    return {
-                      ...reply,
-                      likes:
-                        reply.id === action.data.commentId
-                          ? action.data.likes
-                          : reply.likes
-                    };
-                  })
-                };
-              })
-            };
-          }),
-          comments: state.videoPage.comments.map(comment => {
-            return {
-              ...comment,
-              likes:
-                comment.id === action.data.commentId
-                  ? action.data.likes
-                  : comment.likes,
-              replies: comment.replies.map(reply => {
-                return {
-                  ...reply,
-                  likes:
-                    reply.id === action.data.commentId
-                      ? action.data.likes
-                      : reply.likes
-                };
-              })
-            };
-          })
-        }
-      };
-    case VIDEO.LIKE:
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          likes: action.data
-        },
-        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
-          ...thumb,
-          numLikes:
-            thumb.id === action.videoId ? action.data.length : thumb.numLikes
-        }))
       };
     case VIDEO.STAR:
       return {

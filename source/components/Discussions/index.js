@@ -10,7 +10,7 @@ export default class Discussions extends Component {
   static propTypes = {
     contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     discussions: PropTypes.array,
-    loadMoreDiscussionsButton: PropTypes.bool,
+    loadMoreButton: PropTypes.bool,
     onLoadMoreDiscussions: PropTypes.func.isRequired,
     onDiscussionEditDone: PropTypes.func.isRequired,
     onDiscussionDelete: PropTypes.func.isRequired,
@@ -34,7 +34,7 @@ export default class Discussions extends Component {
   render() {
     const {
       discussions,
-      loadMoreDiscussionsButton,
+      loadMoreButton,
       style = {},
       type,
       contentId,
@@ -73,31 +73,33 @@ export default class Discussions extends Component {
           onUploadReply
         }}
       >
-        <DiscussionInputArea
-          contentId={contentId}
-          type={type}
-          onUploadDiscussion={uploadDiscussion}
-        />
-        <div style={{ margin: '1rem 0', ...style }}>
-          {discussions &&
-            discussions.map(discussion => (
-              <DiscussionPanel
-                key={discussion.id}
-                contentId={Number(contentId)}
-                type={type}
-                {...discussion}
-              />
-            ))}
-          {loadMoreDiscussionsButton && (
-            <Button
-              style={{ width: '100%', borderRadius: 0 }}
-              filled
-              info
-              onClick={this.onLoadMoreDiscussions}
-            >
-              Load More Discussions
-            </Button>
-          )}
+        <div style={style}>
+          <DiscussionInputArea
+            contentId={contentId}
+            type={type}
+            onUploadDiscussion={uploadDiscussion}
+          />
+          <div style={{ margin: '1rem 0' }}>
+            {discussions &&
+              discussions.map(discussion => (
+                <DiscussionPanel
+                  key={discussion.id}
+                  contentId={Number(contentId)}
+                  type={type}
+                  {...discussion}
+                />
+              ))}
+            {loadMoreButton && (
+              <Button
+                style={{ width: '100%', borderRadius: 0 }}
+                filled
+                info
+                onClick={this.onLoadMoreDiscussions}
+              >
+                Load More Discussions
+              </Button>
+            )}
+          </div>
         </div>
       </Context.Provider>
     );
