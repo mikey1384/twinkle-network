@@ -77,7 +77,7 @@ class Comment extends Component {
             className={css`
               width: 100%;
               margin-left: 0.5rem;
-              font-size: 1.4rem;
+              font-size: 1.5rem;
               display: flex;
               justify-content: space-between;
               align-items: flex-start;

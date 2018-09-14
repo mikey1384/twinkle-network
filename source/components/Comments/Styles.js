@@ -39,7 +39,7 @@ export const container = css`
     font-weight: bold;
   }
   .username {
-    font-size: 1.7rem;
+    font-size: 1.8rem;
   }
   .comment__content {
     white-space: pre-wrap;
