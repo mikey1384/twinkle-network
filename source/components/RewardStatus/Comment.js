@@ -120,7 +120,7 @@ class Comment extends Component {
                   Twinkle
                   {star.rewardAmount > 1 ? 's' : ''}
                 </span>{' '}
-                <span style={{ fontSize: '1rem', color: Color.gray() }}>
+                <span style={{ fontSize: '1.2rem', color: Color.gray() }}>
                   ({timeSince(star.timeStamp)})
                 </span>
               </div>

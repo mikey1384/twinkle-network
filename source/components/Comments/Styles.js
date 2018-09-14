@@ -66,7 +66,7 @@ export const container = css`
   }
   @media (max-width: ${mobileMaxWidth}) {
     .likes {
-      font-size: 1.7rem;
+      font-size: 1.8rem;
       margin-top: 0.5rem;
       font-weight: bold;
       color: ${Color.darkGray()};

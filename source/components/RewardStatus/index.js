@@ -61,7 +61,7 @@ class RewardStatus extends Component {
           `}
         >
           <Starmarks stars={rewardedStars} />
-          <div style={{ fontSize: '1.3rem' }}>
+          <div style={{ fontSize: '1.5rem' }}>
             {rewardedStars} Twinkle
             {rewardedStars > 1 ? 's' : ''} rewarded ({rewardedStars} × 200 XP ={' '}
             {addCommasToNumber(rewardedStars * 200)} XP | max {maxStars} Twinkle

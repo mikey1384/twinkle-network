@@ -298,7 +298,7 @@ class Comment extends Component {
                 noMarginForEditButton
                 onCommentEdit={onRewardCommentEdit}
                 style={{
-                  fontSize: '1.4rem',
+                  fontSize: '1.5rem',
                   marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
                 }}
                 stars={stars}

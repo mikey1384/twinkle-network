@@ -263,7 +263,7 @@ class App extends Component {
               The website has been updated. Click the button below to apply the
               update.
             </p>
-            <p style={{ fontSize: '1.2em' }}>
+            <p style={{ fontSize: '1.3em' }}>
               {
                 "Warning: Update is mandatory. Some features will not work properly if you don't update!"
               }

@@ -262,7 +262,7 @@ class Reply extends Component {
               }
               onCommentEdit={onRewardCommentEdit}
               style={{
-                fontSize: '1.4rem',
+                fontSize: '1.5rem',
                 marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
               stars={stars}
