@@ -7,7 +7,7 @@ export const container = css`
   flex-direction: column;
   margin-top: 1.5rem;
   position: relative;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   .dropdown-wrapper {
     right: 0;
     position: absolute;

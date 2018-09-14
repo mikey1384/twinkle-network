@@ -91,7 +91,7 @@ class TargetContent extends Component {
     return (
       <ErrorBoundary
         className={css`
-          font-size: 1.5rem;
+          font-size: 1.6rem;
           white-space: pre-wrap;
           overflow-wrap: break-word;
           word-break: break-word;
@@ -103,7 +103,7 @@ class TargetContent extends Component {
           padding-left: 0;
           background: ${Color.wellGray()};
           margin-bottom: 2rem;
-          line-height: 2.3rem;
+          line-height: 1.5;
           .buttons {
             margin-top: 2rem;
             display: flex;
