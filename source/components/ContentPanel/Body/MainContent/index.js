@@ -106,7 +106,7 @@ export default function MainContent({
                       color: Color.green()
                     }}
                   >
-                    Discuss:
+                    Subject:
                   </p>
                   <h3 style={{ marginBottom: '1rem' }}>
                     {cleanString(contentObj.title)}
