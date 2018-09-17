@@ -428,7 +428,11 @@ class VideoPage extends Component {
                     onLoadMoreReplies={loadMoreReplies}
                     onReplySubmit={uploadReply}
                     onRewardCommentEdit={editRewardComment}
-                    parent={{ type: 'video', id: Number(videoId) }}
+                    parent={{
+                      type: 'video',
+                      id: Number(videoId),
+                      uploader: { id: uploaderId }
+                    }}
                     style={{ paddingTop: '1rem' }}
                     userId={userId}
                   />

@@ -25,7 +25,6 @@ import Icon from 'components/Icon';
 import Comments from 'components/Comments';
 import Link from 'components/Link';
 import UserDetails from 'components/UserDetails';
-import { socket } from 'constants/io';
 
 class ProfilePanel extends Component {
   static propTypes = {
@@ -400,7 +399,6 @@ class ProfilePanel extends Component {
   };
 
   onCommentSubmit = comment => {
-    socket.emit('new_upload');
     this.setState(state => ({
       comments: [comment].concat(state.comments)
     }));
@@ -532,7 +530,6 @@ class ProfilePanel extends Component {
   };
 
   onReplySubmit = data => {
-    socket.emit('new_upload');
     this.setState(state => ({
       comments: state.comments.map(comment => {
         let match = false;
