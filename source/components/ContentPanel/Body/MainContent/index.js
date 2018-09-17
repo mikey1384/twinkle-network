@@ -18,7 +18,7 @@ MainContent.propTypes = {
   onEditDismiss: PropTypes.func.isRequired,
   rootObj: PropTypes.object,
   urlRelated: PropTypes.object,
-  rootType: PropTypes.string.isRequired,
+  rootType: PropTypes.string,
   type: PropTypes.string.isRequired
 };
 export default function MainContent({

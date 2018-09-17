@@ -19,7 +19,7 @@ import {
 } from 'helpers/domHelpers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
-import { container } from './Styles';
+import { commentContainer } from './Styles';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import { Link } from 'react-router-dom';
@@ -140,7 +140,8 @@ class Comment extends Component {
     }
     return (
       <div
-        className={container}
+        style={isPreview ? { cursor: 'pointer' } : {}}
+        className={commentContainer}
         ref={ref => {
           this.Comment = ref;
           innerRef(ref);

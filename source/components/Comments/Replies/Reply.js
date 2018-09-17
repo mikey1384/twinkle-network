@@ -16,7 +16,7 @@ import ReplyInputArea from './ReplyInputArea';
 import { determineXpButtonDisabled } from 'helpers/domHelpers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
-import { container } from '../Styles';
+import { commentContainer } from '../Styles';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
@@ -112,7 +112,7 @@ class Reply extends Component {
       if (likes[i].userId === userId) userLikedThis = true;
     }
     return (
-      <div className={container} ref={innerRef}>
+      <div className={commentContainer} ref={innerRef}>
         <div className="content-wrapper">
           <aside>
             <ProfilePic

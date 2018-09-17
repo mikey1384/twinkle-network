@@ -323,7 +323,6 @@ class ProfilePanel extends Component {
           </div>
           <Comments
             autoExpand={isProfilePage}
-            autoFocus
             comments={comments}
             commentsLoadLimit={20}
             commentsShown={commentsShown}
@@ -340,6 +339,7 @@ class ProfilePanel extends Component {
             onEditDone={this.onEditComment}
             onLikeClick={this.onLikeComment}
             onLoadMoreReplies={this.onLoadMoreReplies}
+            onPreviewClick={this.onExpandComments}
             onReplySubmit={this.onReplySubmit}
             onRewardCommentEdit={this.onEditRewardComment}
             parent={{ ...profile, type: 'user' }}
@@ -470,7 +470,7 @@ class ProfilePanel extends Component {
   };
 
   onExpandComments = async() => {
-    const { commentsShown, isProfilePage, profile, userId } = this.props;
+    const { commentsShown, isProfilePage, profile } = this.props;
     if (!commentsShown && !isProfilePage) {
       const { comments, loadMoreButton } = await loadComments({
         id: profile.id,
@@ -483,7 +483,6 @@ class ProfilePanel extends Component {
         commentsLoadMoreButton: loadMoreButton
       });
     }
-    if (profile.id !== userId) this.CommentInputArea.focus();
   };
 
   onLikeComment = ({ commentId, likes }) => {
@@ -529,6 +528,12 @@ class ProfilePanel extends Component {
     }));
   };
 
+  onMessagesButtonClick = async() => {
+    const { profile, userId } = this.props;
+    await this.onExpandComments();
+    if (profile.id !== userId) this.CommentInputArea.focus();
+  };
+
   onReplySubmit = data => {
     this.setState(state => ({
       comments: state.comments.map(comment => {
@@ -564,7 +569,7 @@ class ProfilePanel extends Component {
         {...props}
         disabled={commentsShown && id === userId}
         logo
-        onClick={this.onExpandComments}
+        onClick={this.onMessagesButtonClick}
       >
         <Icon icon="comment-alt" />
         <span style={{ marginLeft: '0.7rem' }}>
