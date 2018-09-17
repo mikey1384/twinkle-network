@@ -37,6 +37,13 @@ class XPRewardInterface extends Component {
     twinkleTabActive: true
   };
 
+  componentDidUpdate(prevProps) {
+    const { difficulty } = this.props;
+    if (prevProps.difficulty !== difficulty) {
+      this.setState({ selectedAmount: 0 });
+    }
+  }
+
   render() {
     const {
       rewarding,

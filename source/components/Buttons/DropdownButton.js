@@ -56,31 +56,27 @@ class DropdownButton extends Component {
       ...props
     } = this.props;
     return (
-      <div
+      <Button
+        {...props}
         style={{
-          opacity: menuDisplayed ? 1 : opacity,
+          borderRadius: noBorderRadius && 0,
+          border: noBorderRadius && 0,
+          margin: noBorderRadius && 0,
           position: 'relative',
+          opacity: menuDisplayed ? 1 : opacity,
+          ...(stretch ? { width: '100%' } : {}),
+          ...buttonStyle,
           ...style
         }}
+        onClick={this.onClick}
       >
-        <Button
-          {...props}
-          style={{
-            borderRadius: noBorderRadius && 0,
-            border: noBorderRadius && 0,
-            margin: noBorderRadius && 0,
-            ...(stretch ? { width: '100%' } : {}),
-            ...buttonStyle
-          }}
-          onClick={this.onClick}
-        >
-          <Icon icon={icon} size={iconSize} />
-          {text && <span>&nbsp;&nbsp;</span>}
-          {text}
-        </Button>
+        <Icon icon={icon} size={iconSize} />
+        {text && <span>&nbsp;&nbsp;</span>}
+        {text}
         {menuDisplayed && (
           <DropdownList
             style={{
+              textTransform: 'none',
               minWidth: '12rem',
               ...listStyle
             }}
@@ -89,7 +85,7 @@ class DropdownButton extends Component {
             {this.renderMenu()}
           </DropdownList>
         )}
-      </div>
+      </Button>
     );
   }
 

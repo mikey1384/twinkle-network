@@ -29,11 +29,13 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import { connect } from 'react-redux';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
-import { queryStringForArray } from 'helpers/stringHelpers';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import { queryStringForArray } from 'helpers/stringHelpers';
 import { loadNewFeeds } from 'helpers/requestHelpers';
+import { borderRadius, Color } from 'constants/css';
+import { css } from 'emotion';
 
 class Stories extends Component {
   static propTypes = {
@@ -124,6 +126,7 @@ class Stories extends Component {
       userId,
       loaded,
       loadMoreFeedComments,
+      selectedFilter,
       setDifficulty,
       showFeedComments,
       uploadTargetContentComment,
@@ -138,7 +141,7 @@ class Stories extends Component {
           }}
           style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
         >
-          {this.renderFilterBar()}
+          {this.renderFilterBar(selectedFilter)}
           <InputPanel />
           <div style={{ width: '100%' }}>
             {!loaded && <Loading text="Loading Feeds..." />}
@@ -294,41 +297,33 @@ class Stories extends Component {
     }
   };
 
-  renderFilterBar = () => {
-    const { selectedFilter } = this.props;
+  renderFilterBar = selectedFilter => {
     return (
-      <FilterBar bordered>
-        <nav
-          className={selectedFilter === 'all' ? 'active' : ''}
-          onClick={() => this.applyFilter('all')}
-        >
-          All
-        </nav>
-        <nav
-          className={selectedFilter === 'post' ? 'active' : ''}
-          onClick={() => this.applyFilter('post')}
-        >
-          Posts
-        </nav>
-        <nav
-          className={selectedFilter === 'video' ? 'active' : ''}
-          onClick={() => this.applyFilter('video')}
-        >
-          Videos
-        </nav>
-        <nav
-          className={selectedFilter === 'url' ? 'active' : ''}
-          onClick={() => this.applyFilter('url')}
-        >
-          Links
-        </nav>
-        <nav
-          className={selectedFilter === 'comment' ? 'active' : ''}
-          onClick={() => this.applyFilter('comment')}
-        >
-          Comments
-        </nav>
-      </FilterBar>
+      <nav
+        className={css`
+          background: #fff;
+          margin-bottom: 1rem;
+          border: 1px solid ${Color.borderGray()};
+          padding: 1rem;
+          border-radius: ${borderRadius};
+        `}
+      >
+        <DropdownButton
+          snow
+          icon="caret-down"
+          text={`${selectedFilter === 'url' ? 'link' : selectedFilter}${
+            selectedFilter === 'all' ? '' : 's'
+          }`}
+          opacity={0.8}
+          menuProps={[
+            { label: 'All', onClick: () => this.applyFilter('all') },
+            { label: 'Posts', onClick: () => this.applyFilter('post') },
+            { label: 'Videos', onClick: () => this.applyFilter('video') },
+            { label: 'Links', onClick: () => this.applyFilter('url') },
+            { label: 'Comments', onClick: () => this.applyFilter('comment') }
+          ]}
+        />
+      </nav>
     );
   };
 
