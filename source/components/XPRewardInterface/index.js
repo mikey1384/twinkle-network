@@ -44,7 +44,7 @@ class XPRewardInterface extends Component {
       selectedAmount,
       twinkleTabActive
     } = this.state;
-    const { contentType, noPadding, userId } = this.props;
+    const { contentType, difficulty, noPadding, userId } = this.props;
     if (!userId) return null;
     return (
       <div
@@ -88,7 +88,7 @@ class XPRewardInterface extends Component {
         <section
           style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
         >
-          {this.renderButtons({ selectedAmount, twinkleTabActive })}
+          {this.renderButtons({ difficulty, selectedAmount, twinkleTabActive })}
         </section>
         <Textarea
           autoFocus
@@ -136,8 +136,8 @@ class XPRewardInterface extends Component {
     );
   }
 
-  renderButtons = ({ selectedAmount, twinkleTabActive }) => {
-    const { difficulty, stars = [], userId } = this.props;
+  renderButtons = ({ difficulty, selectedAmount, twinkleTabActive }) => {
+    const { stars = [], userId } = this.props;
     const maxStars = returnMaxStars({ difficulty });
     let currentStars =
       stars.length > 0
