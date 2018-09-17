@@ -1,7 +1,7 @@
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 
-export const container = css`
+export const commentContainer = css`
   display: flex;
   width: 100%;
   flex-direction: column;

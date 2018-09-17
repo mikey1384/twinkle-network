@@ -416,6 +416,7 @@ class Body extends Component {
               onLikeContent({ likes, contentId: commentId, type: 'comment' })
             }
             onLoadMoreReplies={data => onLoadMoreReplies(data, feedId)}
+            onPreviewClick={this.onExpandComments}
             onReplySubmit={onReplySubmit}
             onRewardCommentEdit={onEditRewardComment}
             parent={contentObj}
@@ -498,21 +499,9 @@ class Body extends Component {
   };
 
   onCommentButtonClick = async data => {
-    const {
-      commentsLoadLimit,
-      onShowComments,
-      contentObj: { type, contentId, feedId }
-    } = this.props;
     const { commentsShown } = this.state;
     if (!commentsShown) {
-      this.setState({ autoFocusWhenCommentShown: true });
-      const data = await loadComments({
-        type,
-        id: contentId,
-        limit: commentsLoadLimit
-      });
-      if (data) onShowComments(data, feedId);
-      this.setState({ commentsShown: true });
+      await this.onExpandComments();
     }
     this.CommentInputArea.focus();
   };
@@ -537,23 +526,30 @@ class Body extends Component {
     if (data) onEditContent({ data, contentType: type, contentId });
   };
 
-  onLikeClick = async likes => {
+  onExpandComments = async() => {
     const {
       commentsLoadLimit,
       contentObj: { type, contentId, feedId },
-      onLikeContent,
       onShowComments
+    } = this.props;
+    const data = await loadComments({
+      type,
+      id: contentId,
+      limit: commentsLoadLimit
+    });
+    if (data) onShowComments(data, feedId);
+    this.setState({ commentsShown: true });
+  };
+
+  onLikeClick = async likes => {
+    const {
+      contentObj: { type, contentId },
+      onLikeContent
     } = this.props;
     const { commentsShown } = this.state;
     onLikeContent({ likes, type, contentId });
     if (!commentsShown) {
-      const data = await loadComments({
-        type,
-        id: contentId,
-        limit: commentsLoadLimit
-      });
-      if (data) onShowComments(data, feedId);
-      this.setState({ commentsShown: true });
+      this.onExpandComments();
     }
   };
 

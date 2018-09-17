@@ -11,6 +11,8 @@ import {
   uploadComment
 } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
 
 class Comments extends Component {
   static propTypes = {
@@ -34,6 +36,7 @@ class Comments extends Component {
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
+    onPreviewClick: PropTypes.func,
     onReplySubmit: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
     parent: PropTypes.shape({
@@ -120,6 +123,7 @@ class Comments extends Component {
       onEditDone,
       onLikeClick,
       onLoadMoreReplies,
+      onPreviewClick = () => {},
       onRewardCommentEdit,
       parent,
       style,
@@ -144,20 +148,33 @@ class Comments extends Component {
         }}
       >
         <div
-          className={className}
+          className={`${
+            previewComments.length > 0
+              ? css`
+                  &:hover {
+                    background: ${Color.headingGray()};
+                  }
+                `
+              : ''
+          } ${className}`}
           style={{
             ...style
           }}
           ref={ref => {
             this.Container = ref;
           }}
+          onClick={previewComments.length > 0 ? onPreviewClick : () => {}}
         >
           {!inputAtBottom &&
             !noInput &&
             (commentsShown || autoExpand) &&
             this.renderInputArea()}
           {(commentsShown || autoExpand || numPreviews > 0) && (
-            <div style={{ width: '100%' }}>
+            <div
+              style={{
+                width: '100%'
+              }}
+            >
               {inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
               {(previewComments.length > 0 ? previewComments : comments).map(
                 (comment, index) => (
