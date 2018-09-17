@@ -12,7 +12,7 @@ import {
 } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 
 class Comments extends Component {
   static propTypes = {
@@ -153,6 +153,11 @@ class Comments extends Component {
               ? css`
                   &:hover {
                     background: ${Color.headingGray()};
+                  }
+                  @media (max-width: ${mobileMaxWidth}) {
+                    &:hover {
+                      background: #fff;
+                    }
                   }
                 `
               : ''
