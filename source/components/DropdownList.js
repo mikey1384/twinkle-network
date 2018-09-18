@@ -35,6 +35,7 @@ export default function DropdownList({
         background: #fff;
         box-shadow: 1px 1px 2px ${Color.black(0.49)};
         font-weight: normal !important;
+        line-height: 1.5;
         li {
           display: inline-block;
           clear: both;

@@ -306,6 +306,8 @@ class Stories extends Component {
           border: 1px solid ${Color.borderGray()};
           padding: 1rem;
           border-radius: ${borderRadius};
+          display: flex;
+          align-items: center;
         `}
       >
         <DropdownButton
@@ -314,13 +316,64 @@ class Stories extends Component {
           text={`${selectedFilter === 'url' ? 'link' : selectedFilter}${
             selectedFilter === 'all' ? '' : 's'
           }`}
-          opacity={0.8}
           menuProps={[
-            { label: 'All', onClick: () => this.applyFilter('all') },
-            { label: 'Posts', onClick: () => this.applyFilter('post') },
-            { label: 'Videos', onClick: () => this.applyFilter('video') },
-            { label: 'Links', onClick: () => this.applyFilter('url') },
-            { label: 'Comments', onClick: () => this.applyFilter('comment') }
+            {
+              key: 'all',
+              label: 'All',
+              onClick: () => this.applyFilter('all')
+            },
+            {
+              key: 'video',
+              label: 'Videos',
+              onClick: () => this.applyFilter('video')
+            },
+            {
+              key: 'url',
+              label: 'Links',
+              onClick: () => this.applyFilter('url')
+            },
+            {
+              key: 'post',
+              label: 'Posts',
+              onClick: () => this.applyFilter('post')
+            },
+            {
+              key: 'comment',
+              label: 'Comments',
+              onClick: () => this.applyFilter('comment')
+            }
+          ].filter(prop => prop.key !== selectedFilter)}
+        />
+        <DropdownButton
+          snow
+          icon="caret-down"
+          text={`Uploads`}
+          style={{ marginLeft: '1rem' }}
+          menuProps={[
+            {
+              label: 'Challenges',
+              onClick: () => console.log('difficult')
+            },
+            {
+              label: 'Answers and Responses',
+              onClick: () => console.log('reward')
+            },
+            {
+              label: 'Starred Videos',
+              onClick: () => console.log('popular')
+            }
+          ]}
+        />
+        <DropdownButton
+          snow
+          icon="caret-down"
+          text={`Newest to Oldest`}
+          style={{ marginLeft: '1rem' }}
+          menuProps={[
+            {
+              label: 'Oldest to Newest',
+              onClick: () => console.log('oldest to newest')
+            }
           ]}
         />
       </nav>
