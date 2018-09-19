@@ -469,8 +469,8 @@ class ProfilePanel extends Component {
   };
 
   onExpandComments = async() => {
-    const { commentsShown, isProfilePage, profile } = this.props;
-    if (!commentsShown && !isProfilePage) {
+    const { commentsShown, profile } = this.props;
+    if (!commentsShown) {
       const { comments, loadMoreButton } = await loadComments({
         id: profile.id,
         type: 'user',
