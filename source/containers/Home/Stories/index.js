@@ -341,6 +341,7 @@ class Stories extends Component {
       this.clearingFeeds = true;
       clearFeeds();
       this.clearingFeeds = false;
+      resetNumNewPosts();
       return fetchFeeds();
     }
     if (!loadingMore) {
