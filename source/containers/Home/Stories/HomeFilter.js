@@ -28,7 +28,7 @@ export default class HomeFilter extends Component {
       label: 'Top Responses'
     },
     videos: {
-      label: 'Starred Videos'
+      label: 'Popular Starred Videos'
     }
   };
 
