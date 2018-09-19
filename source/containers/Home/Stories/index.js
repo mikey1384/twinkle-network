@@ -325,10 +325,7 @@ class Stories extends Component {
       orderBy: this.categoryObj[category].orderBy
     });
     this.setState({ displayOrder: 'desc', category });
-    this.scrollHeight = Math.max(
-      document.getElementById('App').scrollHeight,
-      this.body.scrollTop
-    );
+    this.scrollHeight = 0;
   };
 
   fetchNewFeeds = async() => {
@@ -374,10 +371,7 @@ class Stories extends Component {
           : this.categoryObj[category].filter
     });
     this.setState({ displayOrder: newDisplayOrder });
-    this.scrollHeight = Math.max(
-      document.getElementById('App').scrollHeight,
-      this.body.scrollTop
-    );
+    this.scrollHeight = 0;
   };
 
   uploadFeedComment = ({ feed, data }) => {
