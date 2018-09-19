@@ -55,16 +55,15 @@ class ProfilePanel extends Component {
   };
 
   async componentDidMount() {
-    const { isProfilePage, profile } = this.props;
+    const { profile } = this.props;
     try {
-      const { comments, loadMoreButton } = await loadComments({
+      const { comments } = await loadComments({
         id: profile.id,
         type: 'user',
-        limit: isProfilePage ? 3 : 1
+        limit: 1
       });
       this.setState({
-        comments,
-        ...(isProfilePage ? { commentsLoadMoreButton: loadMoreButton } : {})
+        comments
       });
     } catch (error) {
       console.error(error);
@@ -72,17 +71,16 @@ class ProfilePanel extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    const { isProfilePage, profile } = this.props;
+    const { profile } = this.props;
     if (profile.id !== prevProps.profile.id) {
       try {
-        const { comments, loadMoreButton } = await loadComments({
+        const { comments } = await loadComments({
           id: profile.id,
           type: 'user',
-          limit: isProfilePage ? 3 : 1
+          limit: 1
         });
         this.setState({
-          comments,
-          ...(isProfilePage ? { commentsLoadMoreButton: loadMoreButton } : {})
+          comments
         });
       } catch (error) {
         console.error(error);
