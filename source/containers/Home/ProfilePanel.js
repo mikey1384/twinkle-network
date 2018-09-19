@@ -322,7 +322,6 @@ class ProfilePanel extends Component {
             )}
           </div>
           <Comments
-            autoExpand={isProfilePage}
             comments={comments}
             commentsLoadLimit={20}
             commentsShown={commentsShown}
