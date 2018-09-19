@@ -337,7 +337,7 @@ class Stories extends Component {
       fetchNewFeeds
     } = this.props;
     const { category, displayOrder, loadingMore } = this.state;
-    if (category !== 'uploads' || !displayOrder) {
+    if (category !== 'uploads' || displayOrder === 'asc') {
       this.clearingFeeds = true;
       clearFeeds();
       this.clearingFeeds = false;
