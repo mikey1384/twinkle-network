@@ -118,7 +118,10 @@ export default class HomeFilter extends Component {
                 label: this.categoryObj['videos'].label,
                 onClick: () => changeCategory('videos')
               }
-            ].filter(prop => prop.key !== category)}
+            ].map(
+              prop =>
+                prop.key === category ? { ...prop, disabled: true } : prop
+            )}
           />
           {(category === 'uploads' || category === 'challenges') && (
             <DropdownButton

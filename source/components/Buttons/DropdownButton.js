@@ -4,6 +4,7 @@ import onClickOutside from 'react-onclickoutside';
 import Button from 'components/Button';
 import DropdownList from 'components/DropdownList';
 import Icon from 'components/Icon';
+import { css } from 'emotion';
 
 class DropdownButton extends Component {
   static propTypes = {
@@ -103,7 +104,25 @@ class DropdownButton extends Component {
         return <hr key={index} />;
       }
       return (
-        <li onClick={() => this.handleMenuClick(prop.onClick)} key={index}>
+        <li
+          style={{
+            opacity: prop.disabled && 0.3,
+            cursor: prop.disabled ? 'default' : 'pointer'
+          }}
+          className={
+            prop.disabled
+              ? css`
+                  &:hover {
+                    background: #fff !important;
+                  }
+                `
+              : ''
+          }
+          onClick={
+            prop.disabled ? () => {} : () => this.handleMenuClick(prop.onClick)
+          }
+          key={index}
+        >
           {prop.label}
         </li>
       );
