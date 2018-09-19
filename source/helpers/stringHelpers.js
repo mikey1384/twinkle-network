@@ -175,7 +175,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(star\))/gi, '⭐')
     .replace(/(\(ufo\))/gi, '🛸')
     .replace(/(\(volcano\))/gi, '🌋')
-    .replace(/(\(dinosaur\))/gi, '🦖');
+    .replace(/(\(dinosaur\))/gi, '🦖')
+    .replace(/(\(fox\))/gi, '🦊');
 }
 
 export function addEmoji(string) {

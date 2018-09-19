@@ -76,7 +76,7 @@ class TargetContent extends Component {
     let userLikedThis = false;
     let userIsUploader;
     let userCanStarThis;
-    let uploader = [];
+    let uploader = {};
     if (comment && !comment.notFound) {
       uploader = comment.uploader;
       for (let i = 0; i < comment.likes.length; i++) {
@@ -86,7 +86,7 @@ class TargetContent extends Component {
       userCanStarThis =
         !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
     } else {
-      uploader = discussion.uploader;
+      uploader = (discussion || {}).uploader || uploader;
     }
     return (
       <ErrorBoundary

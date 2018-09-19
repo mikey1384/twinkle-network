@@ -31,11 +31,9 @@ import { connect } from 'react-redux';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import DropdownButton from 'components/Buttons/DropdownButton';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { loadNewFeeds } from 'helpers/requestHelpers';
-import { borderRadius, Color } from 'constants/css';
-import { css } from 'emotion';
+import HomeFilter from './HomeFilter';
 
 class Stories extends Component {
   static propTypes = {
@@ -73,7 +71,28 @@ class Stories extends Component {
   clearingFeeds = false;
   scrollHeight = 0;
 
+  categoryObj = {
+    uploads: {
+      filter: 'all',
+      orderBy: 'lastInteraction'
+    },
+    challenges: {
+      filter: 'post',
+      orderBy: 'difficulty'
+    },
+    responses: {
+      filter: 'comment',
+      orderBy: 'totalStars'
+    },
+    videos: {
+      filter: 'video',
+      orderBy: 'totalViewDuration'
+    }
+  };
+
   state = {
+    category: 'uploads',
+    displayOrder: 'desc',
     loadingMore: false
   };
 
@@ -132,7 +151,7 @@ class Stories extends Component {
       uploadTargetContentComment,
       username
     } = this.props;
-    const { loadingMore } = this.state;
+    const { category, displayOrder, loadingMore } = this.state;
     return (
       <ErrorBoundary>
         <div
@@ -141,7 +160,14 @@ class Stories extends Component {
           }}
           style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
         >
-          {this.renderFilterBar(selectedFilter)}
+          <HomeFilter
+            category={category}
+            changeCategory={this.changeCategory}
+            displayOrder={displayOrder}
+            selectedFilter={selectedFilter}
+            applyFilter={this.applyFilter}
+            setDisplayOrder={this.setDisplayOrder}
+          />
           <InputPanel />
           <div style={{ width: '100%' }}>
             {!loaded && <Loading text="Loading Feeds..." />}
@@ -229,17 +255,23 @@ class Stories extends Component {
     if (filter === selectedFilter) return;
     clearFeeds();
     fetchFeeds({ filter });
+    this.setState({ displayOrder: 'desc' });
   };
 
   loadMoreFeeds = async() => {
     const { storyFeeds, fetchMoreFeeds, selectedFilter } = this.props;
-    const { loadingMore } = this.state;
+    const { category, displayOrder, loadingMore } = this.state;
     if (!loadingMore) {
       this.setState({ loadingMore: true });
       try {
         await fetchMoreFeeds({
+          order: displayOrder,
+          orderBy: this.categoryObj[category].orderBy,
           shownFeeds: queryStringForArray(storyFeeds, 'feedId', 'shownFeeds'),
-          filter: selectedFilter
+          filter:
+            category === 'uploads'
+              ? selectedFilter
+              : this.categoryObj[category].filter
         });
         this.setState({ loadingMore: false });
       } catch (error) {
@@ -282,6 +314,19 @@ class Stories extends Component {
     }
   };
 
+  changeCategory = category => {
+    const { clearFeeds, fetchFeeds } = this.props;
+    this.clearingFeeds = true;
+    clearFeeds();
+    this.clearingFeeds = false;
+    fetchFeeds({
+      order: 'desc',
+      filter: this.categoryObj[category].filter,
+      orderBy: this.categoryObj[category].orderBy
+    });
+    this.setState({ displayOrder: 'desc', category });
+  };
+
   fetchNewFeeds = async() => {
     const { storyFeeds = [], resetNumNewPosts, fetchNewFeeds } = this.props;
     const { loadingMore } = this.state;
@@ -297,87 +342,22 @@ class Stories extends Component {
     }
   };
 
-  renderFilterBar = selectedFilter => {
-    return (
-      <nav
-        className={css`
-          background: #fff;
-          margin-bottom: 1rem;
-          border: 1px solid ${Color.borderGray()};
-          padding: 1rem;
-          border-radius: ${borderRadius};
-          display: flex;
-          align-items: center;
-        `}
-      >
-        <DropdownButton
-          snow
-          icon="caret-down"
-          text={`${selectedFilter === 'url' ? 'link' : selectedFilter}${
-            selectedFilter === 'all' ? '' : 's'
-          }`}
-          menuProps={[
-            {
-              key: 'all',
-              label: 'All',
-              onClick: () => this.applyFilter('all')
-            },
-            {
-              key: 'video',
-              label: 'Videos',
-              onClick: () => this.applyFilter('video')
-            },
-            {
-              key: 'url',
-              label: 'Links',
-              onClick: () => this.applyFilter('url')
-            },
-            {
-              key: 'post',
-              label: 'Posts',
-              onClick: () => this.applyFilter('post')
-            },
-            {
-              key: 'comment',
-              label: 'Comments',
-              onClick: () => this.applyFilter('comment')
-            }
-          ].filter(prop => prop.key !== selectedFilter)}
-        />
-        <DropdownButton
-          snow
-          icon="caret-down"
-          text={`Uploads`}
-          style={{ marginLeft: '1rem' }}
-          menuProps={[
-            {
-              label: 'Challenges',
-              onClick: () => console.log('difficult')
-            },
-            {
-              label: 'Answers and Responses',
-              onClick: () => console.log('reward')
-            },
-            {
-              label: 'Starred Videos',
-              onClick: () => console.log('popular')
-            }
-          ]}
-        />
-        <DropdownButton
-          snow
-          icon="caret-down"
-          text={`Newest to Oldest`}
-          style={{ marginLeft: '1rem' }}
-          menuProps={[
-            {
-              label: 'Oldest to Newest',
-              onClick: () => console.log('oldest to newest')
-            }
-          ]}
-        />
-      </nav>
-    );
+  setDisplayOrder = () => {
+    const { clearFeeds, fetchFeeds, selectedFilter } = this.props;
+    const { category, displayOrder } = this.state;
+    const newDisplayOrder = displayOrder === 'desc' ? 'asc' : 'desc';
+    this.clearingFeeds = true;
+    clearFeeds();
+    this.clearingFeeds = false;
+    fetchFeeds({
+      order: newDisplayOrder,
+      orderBy: this.categoryObj[category].orderBy,
+      filter:
+        category === 'uploads'
+          ? selectedFilter
+          : this.categoryObj[category].filter
+    });
+    this.setState({ displayOrder: newDisplayOrder });
   };
 
   uploadFeedComment = ({ feed, data }) => {

@@ -72,11 +72,13 @@ export const fetchFeed = ({ data, feedId }) => ({
 
 export const fetchFeeds = ({
   filter = 'all',
+  order = 'desc',
+  orderBy = 'lastInteraction',
   username
 } = {}) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${URL}/content/feeds?filter=${filter}&username=${username}`
+      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}`
     );
     dispatch({
       type: FEED.LOAD,
@@ -97,13 +99,15 @@ export const fetchNewFeeds = data => ({
 export const fetchMoreFeeds = ({
   shownFeeds,
   filter,
+  order = 'desc',
+  orderBy = 'lastInteraction',
   username
 }) => async dispatch => {
   try {
     const { data } = await request.get(
       `${URL}/content/feeds?filter=${filter}&username=${username}${
         shownFeeds ? `&${shownFeeds}` : ''
-      }`
+      }&order=${order}&orderBy=${orderBy}`
     );
     dispatch({
       type: FEED.LOAD_MORE,
