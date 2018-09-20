@@ -78,7 +78,8 @@ export const fetchFeeds = ({
 } = {}) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}`
+      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}`,
+      auth()
     );
     dispatch({
       type: FEED.LOAD,
@@ -107,7 +108,8 @@ export const fetchMoreFeeds = ({
     const { data } = await request.get(
       `${URL}/content/feeds?filter=${filter}&username=${username}${
         shownFeeds ? `&${shownFeeds}` : ''
-      }&order=${order}&orderBy=${orderBy}`
+      }&order=${order}&orderBy=${orderBy}`,
+      auth()
     );
     dispatch({
       type: FEED.LOAD_MORE,
