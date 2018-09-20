@@ -125,6 +125,23 @@ class Stories extends Component {
     }
   }
 
+  async componentDidUpdate(prevProps) {
+    const { clearFeeds, fetchFeeds } = this.props;
+    if (
+      prevProps.hideWatched !== this.props.hideWatched &&
+      this.state.category === 'videos'
+    ) {
+      this.clearingFeeds = true;
+      clearFeeds();
+      this.clearingFeeds = false;
+      fetchFeeds({
+        order: 'desc',
+        filter: this.categoryObj.videos.filter,
+        orderBy: this.categoryObj.videos.orderBy
+      });
+    }
+  }
+
   componentWillUnmount() {
     removeEvent(window, 'scroll', this.onScroll);
     removeEvent(document.getElementById('App'), 'scroll', this.onScroll);
@@ -152,6 +169,7 @@ class Stories extends Component {
       setDifficulty,
       showFeedComments,
       storyFeeds,
+      toggleHideWatched,
       uploadTargetContentComment,
       username
     } = this.props;
@@ -172,7 +190,7 @@ class Stories extends Component {
             selectedFilter={selectedFilter}
             applyFilter={this.applyFilter}
             setDisplayOrder={this.setDisplayOrder}
-            toggleHideWatched={this.toggleHideWatched}
+            toggleHideWatched={toggleHideWatched}
           />
           <InputPanel />
           <div style={{ width: '100%' }}>
@@ -379,19 +397,6 @@ class Stories extends Component {
     });
     this.setState({ displayOrder: newDisplayOrder });
     this.scrollHeight = 0;
-  };
-
-  toggleHideWatched = async() => {
-    const { clearFeeds, fetchFeeds, toggleHideWatched } = this.props;
-    await toggleHideWatched();
-    this.clearingFeeds = true;
-    clearFeeds();
-    this.clearingFeeds = false;
-    fetchFeeds({
-      order: 'desc',
-      filter: this.categoryObj.videos.filter,
-      orderBy: this.categoryObj.videos.orderBy
-    });
   };
 
   uploadFeedComment = ({ feed, data }) => {
