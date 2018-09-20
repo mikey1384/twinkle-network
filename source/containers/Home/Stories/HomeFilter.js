@@ -3,8 +3,9 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import { borderRadius, Color } from 'constants/css';
 import { PropTypes } from 'prop-types';
 import Switch from 'components/Switch';
+import { connect } from 'react-redux';
 
-export default class HomeFilter extends Component {
+class HomeFilter extends Component {
   static propTypes = {
     applyFilter: PropTypes.func.isRequired,
     category: PropTypes.string.isRequired,
@@ -13,6 +14,7 @@ export default class HomeFilter extends Component {
     hideWatched: PropTypes.number,
     setDisplayOrder: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
+    userId: PropTypes.number,
     toggleHideWatched: PropTypes.func.isRequired
   };
 
@@ -44,7 +46,8 @@ export default class HomeFilter extends Component {
       hideWatched,
       selectedFilter,
       setDisplayOrder,
-      toggleHideWatched
+      toggleHideWatched,
+      userId
     } = this.props;
     return (
       <nav
@@ -146,15 +149,20 @@ export default class HomeFilter extends Component {
             />
           )}
         </div>
-        {category === 'videos' && (
-          <Switch
-            color={Color.green()}
-            checked={!!hideWatched}
-            label="Hide Watched"
-            onChange={toggleHideWatched}
-          />
-        )}
+        {category === 'videos' &&
+          userId && (
+            <Switch
+              color={Color.green()}
+              checked={!!hideWatched}
+              label="Hide Watched"
+              onChange={toggleHideWatched}
+            />
+          )}
       </nav>
     );
   }
 }
+
+export default connect(state => ({
+  userId: state.UserReducer.userId
+}))(HomeFilter);
