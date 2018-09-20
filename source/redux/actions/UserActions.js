@@ -151,6 +151,20 @@ export const signup = params => async dispatch => {
   }
 };
 
+export const toggleHideWatched = () => async dispatch => {
+  try {
+    const {
+      data: { hideWatched }
+    } = await request.put(`${API_URL}/hideWatched`, {}, auth());
+    dispatch({
+      type: USER.TOGGLE_HIDE_WATCHED,
+      hideWatched
+    });
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const updateStatusMsg = ({ statusColor, statusMsg, userId }) => ({
   type: USER.EDIT_STATUS_MSG,
   statusColor,

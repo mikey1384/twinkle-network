@@ -177,6 +177,11 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         searchFilter: action.filter
       };
+    case USER.TOGGLE_HIDE_WATCHED:
+      return {
+        ...state,
+        hideWatched: action.hideWatched
+      };
     default:
       return state;
   }

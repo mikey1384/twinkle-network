@@ -22,6 +22,7 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
+import { toggleHideWatched } from 'redux/actions/UserActions';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
@@ -51,6 +52,7 @@ class Stories extends Component {
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
     fetchNewFeeds: PropTypes.func.isRequired,
+    hideWatched: PropTypes.bool,
     history: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
@@ -62,6 +64,7 @@ class Stories extends Component {
     setDifficulty: PropTypes.func,
     showFeedComments: PropTypes.func.isRequired,
     storyFeeds: PropTypes.array.isRequired,
+    toggleHideWatched: PropTypes.func.isRequired,
     username: PropTypes.string,
     uploadFeedComment: PropTypes.func.isRequired,
     uploadTargetContentComment: PropTypes.func.isRequired,
@@ -131,7 +134,6 @@ class Stories extends Component {
     const {
       attachStar,
       contentFeedLike,
-      storyFeeds,
       feedCommentDelete,
       feedCommentEdit,
       feedContentDelete,
@@ -139,6 +141,7 @@ class Stories extends Component {
       feedVideoStar,
       feedRewardCommentEdit,
       fetchFeed,
+      hideWatched,
       loadMoreButton,
       loadMoreFeedReplies,
       numNewPosts,
@@ -148,6 +151,7 @@ class Stories extends Component {
       selectedFilter,
       setDifficulty,
       showFeedComments,
+      storyFeeds,
       uploadTargetContentComment,
       username
     } = this.props;
@@ -164,9 +168,11 @@ class Stories extends Component {
             category={category}
             changeCategory={this.changeCategory}
             displayOrder={displayOrder}
+            hideWatched={hideWatched}
             selectedFilter={selectedFilter}
             applyFilter={this.applyFilter}
             setDisplayOrder={this.setDisplayOrder}
+            toggleHideWatched={this.toggleHideWatched}
           />
           <InputPanel />
           <div style={{ width: '100%' }}>
@@ -375,6 +381,19 @@ class Stories extends Component {
     this.scrollHeight = 0;
   };
 
+  toggleHideWatched = async() => {
+    const { clearFeeds, fetchFeeds, toggleHideWatched } = this.props;
+    await toggleHideWatched();
+    this.clearingFeeds = true;
+    clearFeeds();
+    this.clearingFeeds = false;
+    fetchFeeds({
+      order: 'desc',
+      filter: this.categoryObj.videos.filter,
+      orderBy: this.categoryObj.videos.orderBy
+    });
+  };
+
   uploadFeedComment = ({ feed, data }) => {
     const { uploadFeedComment } = this.props;
     uploadFeedComment({
@@ -387,6 +406,7 @@ class Stories extends Component {
 
 export default connect(
   state => ({
+    hideWatched: state.UserReducer.hideWatched,
     loadMoreButton: state.FeedReducer.storyFeedsLoadMoreButton,
     storyFeeds: state.FeedReducer.storyFeeds,
     loaded: state.FeedReducer.loaded,
@@ -417,6 +437,7 @@ export default connect(
     setCurrentSection,
     setDifficulty,
     showFeedComments,
+    toggleHideWatched,
     uploadFeedComment,
     uploadTargetContentComment
   }

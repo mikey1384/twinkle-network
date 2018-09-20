@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { borderRadius, Color } from 'constants/css';
 import { PropTypes } from 'prop-types';
+import Switch from 'components/Switch';
 
 export default class HomeFilter extends Component {
   static propTypes = {
@@ -9,8 +10,10 @@ export default class HomeFilter extends Component {
     category: PropTypes.string.isRequired,
     changeCategory: PropTypes.func.isRequired,
     displayOrder: PropTypes.string.isRequired,
+    hideWatched: PropTypes.number,
     setDisplayOrder: PropTypes.func.isRequired,
-    selectedFilter: PropTypes.string.isRequired
+    selectedFilter: PropTypes.string.isRequired,
+    toggleHideWatched: PropTypes.func.isRequired
   };
 
   categoryObj = {
@@ -38,8 +41,10 @@ export default class HomeFilter extends Component {
       category,
       changeCategory,
       displayOrder,
+      hideWatched,
       selectedFilter,
-      setDisplayOrder
+      setDisplayOrder,
+      toggleHideWatched
     } = this.props;
     return (
       <nav
@@ -141,6 +146,14 @@ export default class HomeFilter extends Component {
             />
           )}
         </div>
+        {category === 'videos' && (
+          <Switch
+            color={Color.green()}
+            checked={!!hideWatched}
+            label="Hide Watched"
+            onChange={toggleHideWatched}
+          />
+        )}
       </nav>
     );
   }

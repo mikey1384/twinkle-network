@@ -2,6 +2,7 @@ export const Color = {
   lightBlue: (opacity = 1) => `rgba(117,202,235,${opacity})`,
   blue: (opacity = 1) => `rgba(21,140,186,${opacity})`,
   darkBlue: (opacity = 1) => `rgba(0,60,106,${opacity})`,
+  oceanBlue: (opacity = 1) => `rgba(33,150,243,${opacity})`,
   black: (opacity = 1) => `rgba(51,51,51,${opacity})`,
   darkGray: (opacity = 1) => `rgba(85,85,85,${opacity})`,
   buttonGray: (opacity = 1) => `rgba(137,137,137,${opacity})`,

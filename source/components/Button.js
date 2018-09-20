@@ -19,6 +19,7 @@ Button.propTypes = {
   onClick: PropTypes.func,
   children: PropTypes.node,
   danger: PropTypes.bool,
+  ocean: PropTypes.bool,
   onHover: PropTypes.bool,
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
@@ -44,6 +45,7 @@ export default function Button({
   filled,
   info,
   logoGreen,
+  ocean,
   opacity,
   primary,
   stretch,
@@ -66,6 +68,7 @@ export default function Button({
     primary: Color.blue(opacity),
     logo: Color.logoBlue(opacity),
     logoGreen: Color.logoGreen(opacity),
+    ocean: Color.oceanBlue(opacity),
     success: Color.green(opacity),
     warning: Color.orange(opacity),
     gold: Color.gold(opacity),
@@ -75,18 +78,19 @@ export default function Button({
   });
 
   let colorKey = 'default';
+  if (alert) colorKey = 'alert';
+  if (danger) colorKey = 'danger';
+  if (gold) colorKey = 'gold';
   if (info) colorKey = 'info';
-  if (love) colorKey = 'love';
-  if (primary) colorKey = 'primary';
   if (logo) colorKey = 'logo';
   if (logoGreen) colorKey = 'logoGreen';
-  if (success) colorKey = 'success';
-  if (alert) colorKey = 'alert';
-  if (warning) colorKey = 'warning';
-  if (gold) colorKey = 'gold';
-  if (danger) colorKey = 'danger';
-  if (snow) colorKey = 'snow';
+  if (love) colorKey = 'love';
+  if (ocean) colorKey = 'ocean';
   if (peace) colorKey = 'peace';
+  if (primary) colorKey = 'primary';
+  if (snow) colorKey = 'snow';
+  if (success) colorKey = 'success';
+  if (warning) colorKey = 'warning';
   if (onHover) colorKey = hoverClass;
   const backgroundOpacity = filled ? 1 : opacity || 0;
   const backgroundHoverOpacity = transparent ? 0 : 0.9;
