@@ -366,6 +366,7 @@ class Stories extends Component {
       clearFeeds();
       this.clearingFeeds = false;
       resetNumNewPosts();
+      this.setState({ category: 'uploads' });
       return fetchFeeds();
     }
     if (!loadingMore) {
