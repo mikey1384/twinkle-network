@@ -11,7 +11,7 @@ class HomeFilter extends Component {
     category: PropTypes.string.isRequired,
     changeCategory: PropTypes.func.isRequired,
     displayOrder: PropTypes.string.isRequired,
-    hideWatched: PropTypes.bool,
+    hideWatched: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
     setDisplayOrder: PropTypes.func.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     userId: PropTypes.number,

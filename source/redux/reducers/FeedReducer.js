@@ -511,7 +511,30 @@ export default function FeedReducer(state = defaultState, action) {
                 ...feed,
                 difficulty: action.difficulty
               }
-            : feed;
+            : {
+                ...feed,
+                rootObj: feed.rootObj
+                  ? feed.rootType === action.contentType &&
+                    feed.rootId === action.contentId
+                    ? {
+                        ...feed.rootObj,
+                        difficulty: action.difficulty
+                      }
+                    : feed.rootObj
+                  : undefined,
+                targetObj: feed.targetObj
+                  ? feed.targetObj.discussion &&
+                    feed.discussionId === action.contentId
+                    ? {
+                        ...feed.targetObj,
+                        discussion: {
+                          ...feed.targetObj.discussion,
+                          difficulty: action.difficulty
+                        }
+                      }
+                    : feed.targetObj
+                  : undefined
+              };
         })
       };
     case FEED.UPLOAD_CONTENT:

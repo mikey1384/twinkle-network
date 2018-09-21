@@ -175,7 +175,7 @@ class XPRewardInterface extends Component {
             !(i === maxRewardableStars && maxRewardableStars < 5) &&
             i * multiplier < 5
           }
-          warning={i * multiplier >= 5}
+          warning={i * multiplier >= 5 && i * multiplier < 25}
           gold={
             (i === maxRewardableStars && maxRewardableStars < 5) ||
             i * multiplier >= 25

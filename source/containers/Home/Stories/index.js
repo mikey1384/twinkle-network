@@ -52,7 +52,7 @@ class Stories extends Component {
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
     fetchNewFeeds: PropTypes.func.isRequired,
-    hideWatched: PropTypes.bool,
+    hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
     history: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
