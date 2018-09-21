@@ -125,7 +125,7 @@ class Stories extends Component {
     }
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     const { clearFeeds, fetchFeeds } = this.props;
     if (
       prevProps.hideWatched !== this.props.hideWatched &&

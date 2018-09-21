@@ -105,30 +105,13 @@ class HomeFilter extends Component {
             icon="caret-down"
             text={this.categoryObj[category].label}
             style={{ marginLeft: category === 'uploads' && '1rem' }}
-            menuProps={[
-              {
-                key: 'uploads',
-                label: this.categoryObj['uploads'].label,
-                onClick: () => changeCategory('uploads')
-              },
-              {
-                key: 'challenges',
-                label: this.categoryObj['challenges'].label,
-                onClick: () => changeCategory('challenges')
-              },
-              {
-                key: 'responses',
-                label: this.categoryObj['responses'].label,
-                onClick: () => changeCategory('responses')
-              },
-              {
-                key: 'videos',
-                label: this.categoryObj['videos'].label,
-                onClick: () => changeCategory('videos')
-              }
-            ].map(
-              prop =>
-                prop.key === category ? { ...prop, disabled: true } : prop
+            menuProps={['uploads', 'challenges', 'responses', 'videos'].map(
+              elem => ({
+                key: elem,
+                label: this.categoryObj[elem].label,
+                onClick: () => changeCategory(elem),
+                disabled: elem === category
+              })
             )}
           />
           {(category === 'uploads' || category === 'challenges') && (
