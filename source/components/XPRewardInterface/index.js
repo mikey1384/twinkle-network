@@ -171,7 +171,10 @@ class XPRewardInterface extends Component {
       buttons.push(
         <Button
           key={i * multiplier}
-          info={i * multiplier < 5}
+          info={
+            !(i === maxRewardableStars && maxRewardableStars < 5) &&
+            i * multiplier < 5
+          }
           warning={i * multiplier >= 5}
           gold={
             (i === maxRewardableStars && maxRewardableStars < 5) ||
