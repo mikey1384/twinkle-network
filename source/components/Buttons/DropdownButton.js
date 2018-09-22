@@ -93,7 +93,7 @@ class DropdownButton extends Component {
   onClick = () => {
     const { menuDisplayed } = this.state;
     const { onButtonClick } = this.props;
-    if (typeof onButtonClick === 'function') onButtonClick(menuDisplayed);
+    if (typeof onButtonClick === 'function' && !menuDisplayed) { onButtonClick(menuDisplayed); }
     this.setState({ menuDisplayed: !menuDisplayed });
   };
 

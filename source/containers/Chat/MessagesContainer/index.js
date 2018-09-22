@@ -43,15 +43,13 @@ class MessagesContainer extends Component {
 
   componentDidMount() {
     this.setScrollToBottom();
-    this.setState(
-      {
-        fillerHeight:
-          this.messagesContainer.offsetHeight > this.messages.offsetHeight
-            ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
-            : 0
-      },
-      () => this.setScrollToBottom()
-    );
+    this.setState({
+      fillerHeight:
+        this.messagesContainer.offsetHeight > this.messages.offsetHeight
+          ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+          : 0
+    });
+    this.setScrollToBottom();
     setTimeout(() => this.setScrollToBottom(), 300);
   }
 
@@ -60,18 +58,20 @@ class MessagesContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, scrollAtBottom) {
-    const { messages, userId } = this.props;
+    const { userId } = this.props;
+    const prevMessages = prevProps.messages.filter(message => !message.deleted);
+    const currentMessages = this.props.messages.filter(
+      message => !message.deleted
+    );
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId;
     const newMessageArrived =
-      prevProps.messages.length >= 0 &&
-      prevProps.messages.length < this.props.messages.length &&
-      (prevProps.messages[0]
-        ? prevProps.messages[0].id === this.props.messages[0].id
-        : false);
+      prevMessages.length >= 0 &&
+      prevMessages.length < currentMessages.length &&
+      (prevMessages[0] ? prevMessages[0].id === currentMessages[0].id : false);
     const messageDeleted =
       prevProps.currentChannelId === this.props.currentChannelId &&
-      prevProps.messages.length > this.props.messages.length;
+      prevMessages.length > currentMessages.length;
     if (switchedChannel) {
       this.setState({
         fillerHeight:
@@ -83,16 +83,16 @@ class MessagesContainer extends Component {
       return setTimeout(() => this.setScrollToBottom(), 300);
     }
     if (messageDeleted) {
-      this.setState({
+      return this.setState({
         fillerHeight:
           this.messagesContainer.offsetHeight > this.messages.offsetHeight
             ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
             : 0
       });
-      return;
     }
     if (newMessageArrived) {
-      const messageSenderId = messages[messages.length - 1].userId;
+      const messageSenderId =
+        currentMessages[currentMessages.length - 1].userId;
       if (messageSenderId !== userId && !scrollAtBottom) {
         this.setState({ newUnseenMessage: true });
       } else {
@@ -238,16 +238,9 @@ class MessagesContainer extends Component {
     const { messageId } = this.state.deleteModal;
     try {
       await deleteMessage(messageId);
-      this.setState(
-        {
-          deleteModal: { shown: false, messageId: null },
-          fillerHeight:
-            this.messagesContainer.offsetHeight > this.messages.offsetHeight
-              ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
-              : 0
-        },
-        () => this.setScrollToBottom()
-      );
+      this.setState({
+        deleteModal: { shown: false, messageId: null }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -273,14 +266,7 @@ class MessagesContainer extends Component {
       return message.deleted ? null : (
         <Message
           key={message.id || 'newMessage' + index}
-          onDelete={messageId => {
-            this.setState({
-              deleteModal: {
-                shown: true,
-                messageId
-              }
-            });
-          }}
+          onDelete={this.onShowDeleteModal}
           index={index}
           style={messageStyle}
           message={message}
@@ -296,13 +282,22 @@ class MessagesContainer extends Component {
     });
   };
 
+  onShowDeleteModal = messageId => {
+    this.setState({
+      deleteModal: {
+        shown: true,
+        messageId
+      }
+    });
+  };
+
   setScrollToBottom = () => {
-    (this.messagesContainer || {}).scrollTop = Math.max(
+    this.messagesContainer.scrollTop = Math.max(
       this.state.maxScroll,
-      (this.messagesContainer || {}).offsetHeight,
-      this.state.fillerHeight + (this.messages || {}).offsetHeight
+      this.messagesContainer.offsetHeight,
+      this.state.fillerHeight + this.messages.offsetHeight
     );
-    this.setState({ maxScroll: (this.messagesContainer || {}).scrollTop });
+    this.setState({ maxScroll: this.messagesContainer.scrollTop });
   };
 }
 
