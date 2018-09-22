@@ -9,7 +9,6 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import { connect } from 'react-redux';
 import { deleteMessage } from 'redux/actions/ChatActions';
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal';
-import { css } from 'emotion';
 
 const scrollIsAtTheBottom = (content, container) => {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop;
@@ -108,15 +107,6 @@ class MessagesContainer extends Component {
     }
   }
 
-  setScrollToBottom() {
-    this.messagesContainer.scrollTop = Math.max(
-      this.state.maxScroll,
-      this.messagesContainer.offsetHeight,
-      this.state.fillerHeight + this.messages.offsetHeight
-    );
-    this.setState({ maxScroll: this.messagesContainer.scrollTop });
-  }
-
   render() {
     const { className, loadMoreButton, loading, currentChannelId } = this.props;
     const {
@@ -141,16 +131,12 @@ class MessagesContainer extends Component {
         <div className={className}>
           {loading && <Loading />}
           <div
-            ref={ref => {
-              this.messagesContainer = ref;
-            }}
-            className={css`
-              position: absolute;
-              left: 0;
-              right: 0;
-              bottom: 0;
-            `}
+            ref={ref => (this.messagesContainer = ref)}
             style={{
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              bottom: '0',
               opacity: loading && '0.3',
               top: currentChannelId === 2 ? '6rem' : 0,
               overflowY: 'scroll'
@@ -252,7 +238,16 @@ class MessagesContainer extends Component {
     const { messageId } = this.state.deleteModal;
     try {
       await deleteMessage(messageId);
-      this.setState({ deleteModal: { shown: false, messageId: null } });
+      this.setState(
+        {
+          deleteModal: { shown: false, messageId: null },
+          fillerHeight:
+            this.messagesContainer.offsetHeight > this.messages.offsetHeight
+              ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
+              : 0
+        },
+        () => this.setScrollToBottom()
+      );
     } catch (error) {
       console.error(error);
     }
@@ -278,19 +273,19 @@ class MessagesContainer extends Component {
       return message.deleted ? null : (
         <Message
           key={message.id || 'newMessage' + index}
-          onDelete={messageId =>
+          onDelete={messageId => {
             this.setState({
               deleteModal: {
                 shown: true,
                 messageId
               }
-            })
-          }
+            });
+          }}
           index={index}
           style={messageStyle}
           message={message}
           isLastMsg={index === messages.length - 1}
-          setScrollToBottom={this.setScrollToBottom.bind(this)}
+          setScrollToBottom={this.setScrollToBottom}
           showSubjectMsgsModal={({ subjectId, content }) =>
             this.setState({
               subjectMsgsModal: { shown: true, subjectId, content }
@@ -299,6 +294,15 @@ class MessagesContainer extends Component {
         />
       );
     });
+  };
+
+  setScrollToBottom = () => {
+    (this.messagesContainer || {}).scrollTop = Math.max(
+      this.state.maxScroll,
+      (this.messagesContainer || {}).offsetHeight,
+      this.state.fillerHeight + (this.messages || {}).offsetHeight
+    );
+    this.setState({ maxScroll: (this.messagesContainer || {}).scrollTop });
   };
 }
 
