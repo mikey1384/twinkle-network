@@ -13,10 +13,13 @@ import {
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
+  processedStringWithURL,
   renderCharLimit
 } from 'helpers/stringHelpers';
 import Banner from 'components/Banner';
 import { PanelStyle } from './Styles';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
 import Checkbox from 'components/Checkbox';
 
 class ContentInput extends Component {
@@ -84,9 +87,15 @@ class ContentInput extends Component {
               marginTop: '1rem',
               display: 'block'
             }}
-          >
-            {urlHelper}
-          </b>
+            className={css`
+              > a {
+                color: ${Color.oceanBlue()};
+              }
+            `}
+            dangerouslySetInnerHTML={{
+              __html: processedStringWithURL(urlHelper)
+            }}
+          />
         )}
         <div style={{ marginTop: '0.5rem' }}>
           <div style={{ position: 'relative' }}>
