@@ -269,7 +269,7 @@ class ContentInput extends Component {
         },
         urlHelper: stringIsEmpty(url)
           ? ''
-          : `You can think of URL as the "address" of a webpage. For example, this webpage's URL is www.twin-kle.com and www.twinkle.network (yes, you can use either one). YouTube's URL is www.youtube.com, and my favorite YouTube video's URL is https://www.youtube.com/watch?v=KUWn_TJTrnU. You can find a webpage's URL at the top area of your browser. Copy a URL you want to share and paste it to the box above.`,
+          : `You can think of URL as the "address" of a webpage. For example, this webpage's URL is www.twin-kle.com and www.twinkle.network (yes, you can use either one). YouTube's URL is www.youtube.com, and my favorite YouTube video's URL is https://www.youtube.com/watch?v=rf8FX2sI3gU. You can find a webpage's URL at the top area of your browser. Copy a URL you want to share and paste it to the box above.`,
         descriptionFieldShown: false,
         titleFieldShown: !stringIsEmpty(url)
       });
