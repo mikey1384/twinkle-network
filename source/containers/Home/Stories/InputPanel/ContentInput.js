@@ -25,18 +25,26 @@ class ContentInput extends Component {
   };
 
   state = {
-    descriptionFieldsShown: false,
+    descriptionFieldShown: false,
+    titleFieldShown: false,
     form: {
       url: '',
       checkedVideo: false,
       title: '',
       description: ''
     },
-    urlError: null
+    urlHelper: '',
+    urlError: ''
   };
 
   render() {
-    const { form, urlError, descriptionFieldsShown } = this.state;
+    const {
+      form,
+      urlError,
+      urlHelper,
+      descriptionFieldShown,
+      titleFieldShown
+    } = this.state;
     return (
       <div className={PanelStyle}>
         <p>Share interesting videos or web links</p>
@@ -69,63 +77,85 @@ class ContentInput extends Component {
           style={{ marginTop: '1rem' }}
           checked={form.checkedVideo}
         />
-        {descriptionFieldsShown && (
-          <div style={{ marginTop: '0.5rem' }}>
-            <div style={{ position: 'relative' }}>
-              <Input
-                value={form.title}
-                onChange={text =>
-                  this.setState({ form: { ...form, title: text } })
-                }
-                placeholder="Enter Title"
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    this.setState({
-                      form: {
-                        ...this.state.form,
-                        title: addEmoji(event.target.value)
-                      }
-                    });
+        {!stringIsEmpty(urlHelper) && (
+          <b
+            style={{
+              fontSize: '1.7rem',
+              marginTop: '1rem',
+              display: 'block'
+            }}
+          >
+            {urlHelper}
+          </b>
+        )}
+        <div style={{ marginTop: '0.5rem' }}>
+          <div style={{ position: 'relative' }}>
+            {titleFieldShown && (
+              <>
+                <Input
+                  value={form.title}
+                  onChange={text =>
+                    this.setState({ form: { ...form, title: text } })
                   }
-                }}
-                style={this.titleExceedsCharLimit()}
-                type="text"
-              />
-              {this.titleExceedsCharLimit() && (
-                <small style={{ color: 'red' }}>
-                  {this.renderTitleCharLimit()}
-                </small>
-              )}
-              <Textarea
-                value={form.description}
-                minRows={4}
-                placeholder="Enter Description (Optional, you don't need to write this)"
-                onChange={event =>
-                  this.setState({
-                    form: { ...form, description: event.target.value }
-                  })
-                }
-                onKeyUp={event => {
-                  if (event.key === ' ') {
+                  placeholder="Enter Title Here"
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({
+                        form: {
+                          ...this.state.form,
+                          title: addEmoji(event.target.value)
+                        }
+                      });
+                    }
+                  }}
+                  style={{
+                    marginTop: '0.5rem',
+                    ...this.titleExceedsCharLimit()
+                  }}
+                  type="text"
+                />
+                {this.titleExceedsCharLimit() && (
+                  <small style={{ color: 'red' }}>
+                    {this.renderTitleCharLimit()}
+                  </small>
+                )}
+              </>
+            )}
+            {descriptionFieldShown && (
+              <>
+                <Textarea
+                  value={form.description}
+                  minRows={4}
+                  placeholder="Enter Description (Optional, you don't need to write this)"
+                  onChange={event =>
                     this.setState({
-                      form: {
-                        ...this.state.form,
-                        description: addEmoji(event.target.value)
-                      }
-                    });
+                      form: { ...form, description: event.target.value }
+                    })
                   }
-                }}
-                style={{
-                  marginTop: '1rem',
-                  ...(this.descriptionExceedsCharLimit() || {})
-                }}
-              />
-              {this.descriptionExceedsCharLimit() && (
-                <small style={{ color: 'red' }}>
-                  {this.renderDescriptionCharLimit()}
-                </small>
-              )}
-            </div>
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({
+                        form: {
+                          ...this.state.form,
+                          description: addEmoji(event.target.value)
+                        }
+                      });
+                    }
+                  }}
+                  style={{
+                    marginTop: '1rem',
+                    ...(this.descriptionExceedsCharLimit() || {})
+                  }}
+                />
+                {this.descriptionExceedsCharLimit() && (
+                  <small style={{ color: 'red' }}>
+                    {this.renderDescriptionCharLimit()}
+                  </small>
+                )}
+              </>
+            )}
+          </div>
+          {descriptionFieldShown && (
             <div className="button-container">
               <Button
                 type="submit"
@@ -138,8 +168,8 @@ class ContentInput extends Component {
                 Share!
               </Button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
@@ -188,14 +218,16 @@ class ContentInput extends Component {
     }
 
     this.setState({
-      descriptionFieldsShown: false,
+      titleFieldShown: false,
+      descriptionFieldShown: false,
       form: {
         url: '',
         checkedVideo: false,
         title: '',
         description: ''
       },
-      urlError: null
+      urlHelper: '',
+      urlError: ''
     });
     uploadContent({
       ...form,
@@ -207,15 +239,32 @@ class ContentInput extends Component {
 
   onUrlFieldChange = url => {
     const { form } = this.state;
-    this.setState({
-      form: {
-        ...form,
-        url,
-        checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo
-      },
-      urlError: null,
-      descriptionFieldsShown: true
-    });
+    if (isValidUrl(url)) {
+      this.setState({
+        form: {
+          ...form,
+          url,
+          checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo
+        },
+        urlError: '',
+        urlHelper: '',
+        descriptionFieldShown: true,
+        titleFieldShown: true
+      });
+    } else {
+      this.setState({
+        form: {
+          ...form,
+          url,
+          checkedVideo: false
+        },
+        urlHelper: stringIsEmpty(url)
+          ? ''
+          : `You can think of URL as the "address" of a website. For example, this website's URL is www.twin-kle.com or www.twinkle.network. YouTube's URL is www.youtube.com. You can find a website's URL at the top area of your browser. Copy the URL of a website you want to share and paste it to the box above.`,
+        descriptionFieldShown: false,
+        titleFieldShown: !stringIsEmpty(url)
+      });
+    }
   };
 
   renderDescriptionCharLimit = () => {

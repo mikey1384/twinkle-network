@@ -69,9 +69,7 @@ export default class HeaderNav extends Component {
                 <div>
                   <Icon
                     icon={imgLabel}
-                    className={`mobile-no-hover ${
-                      alert ? this.styles().alert : ''
-                    }`}
+                    className={alert ? this.styles().alert : ''}
                   />
                 </div>
                 <span

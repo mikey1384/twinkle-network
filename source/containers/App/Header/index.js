@@ -240,11 +240,7 @@ class Header extends Component {
                 style={{ width: searchMode && '10%' }}
               >
                 <a className={searchMode ? 'active' : ''}>
-                  {searchMode ? (
-                    <Icon icon="times" />
-                  ) : (
-                    <Icon className="mobile-no-hover" icon="search" />
-                  )}
+                  {searchMode ? <Icon icon="times" /> : <Icon icon="search" />}
                 </a>
               </div>
               <HeaderNav
@@ -312,7 +308,6 @@ class Header extends Component {
                 style={{
                   color: numChatUnreads > 0 && Color.pink()
                 }}
-                className="mobile-no-hover"
               >
                 <Icon icon="comments" />
               </a>

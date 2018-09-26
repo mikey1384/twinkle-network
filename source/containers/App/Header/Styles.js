@@ -47,17 +47,14 @@ export const container = css`
         }
       }
       &:hover {
-        .mobile-no-hover {
-          color: ${Color.menuGray()};
-        }
-        a {
-          span {
+        > a {
+          > svg {
             color: ${Color.menuGray()};
           }
         }
-        a.active {
+        > a.active {
           color: ${Color.black()};
-          span {
+          > svg {
             color: ${Color.black()};
           }
         }
