@@ -71,11 +71,7 @@ class QuestionInput extends Component {
           </span>
         </div>
         {descriptionInputShown && (
-          <div
-            css={`
-              position: relative;
-            `}
-          >
+          <div style={{ position: 'relative' }}>
             <Textarea
               type="text"
               style={{
