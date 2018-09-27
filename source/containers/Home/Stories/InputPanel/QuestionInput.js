@@ -165,6 +165,6 @@ export default connect(
   null,
   dispatch => ({
     dispatch,
-    uploadFeedContent: params => uploadFeedContent(params)
+    uploadFeedContent: params => dispatch(uploadFeedContent(params))
   })
 )(QuestionInput);
