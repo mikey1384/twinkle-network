@@ -465,8 +465,8 @@ export default function VideoReducer(state = defaultState, action) {
         addVideoModalShown: false
       };
     case VIDEO.UPLOAD:
-      const newState = action.data.concat(state.allVideoThumbs);
-      if (action.data.length > 0 && !state.allVideosLoaded) {
+      const newState = [action.data].concat(state.allVideoThumbs);
+      if (!state.allVideosLoaded) {
         newState.pop();
       }
       return {

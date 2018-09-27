@@ -107,15 +107,15 @@ class AllVideosPanel extends Component {
 
   determineDeletable = video => {
     const { authLevel, canDelete, userId } = this.props;
-    const userIsUploader = video.uploaderId === userId;
-    const userCanDeleteThis = canDelete && authLevel > video.uploaderAuthLevel;
+    const userIsUploader = video.uploader.id === userId;
+    const userCanDeleteThis = canDelete && authLevel > video.uploader.authLevel;
     return userIsUploader || userCanDeleteThis;
   };
 
   determineEditable = video => {
     const { authLevel, canEdit, userId } = this.props;
-    const userIsUploader = video.uploaderId === userId;
-    const userCanEditThis = canEdit && authLevel > video.uploaderAuthLevel;
+    const userIsUploader = video.uploader.id === userId;
+    const userCanEditThis = canEdit && authLevel > video.uploader.authLevel;
     return userIsUploader || userCanEditThis;
   };
 

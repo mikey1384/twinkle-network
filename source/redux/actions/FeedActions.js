@@ -153,17 +153,10 @@ export const showFeedComments = (data, feedId) => ({
   feedId
 });
 
-export const uploadContent = params => async dispatch => {
-  try {
-    const { data } = await request.post(`${URL}/content`, params, auth());
-    return dispatch({
-      type: FEED.UPLOAD_CONTENT,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const uploadFeedContent = data => ({
+  type: FEED.UPLOAD_CONTENT,
+  data
+});
 
 export const uploadFeedComment = ({ data, type, contentId }) => ({
   type: FEED.UPLOAD_COMMENT,

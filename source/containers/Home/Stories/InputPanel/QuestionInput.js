@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { uploadContent } from 'redux/actions/FeedActions';
+import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
@@ -16,10 +16,12 @@ import {
 import { Color } from 'constants/css';
 import { PanelStyle } from './Styles';
 import { charLimit } from 'constants/defaultValues';
+import { uploadContent } from 'helpers/requestHelpers';
 
 class QuestionInput extends Component {
   static propTypes = {
-    uploadContent: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    uploadFeedContent: PropTypes.func.isRequired
   };
 
   state = {
@@ -139,16 +141,18 @@ class QuestionInput extends Component {
   };
 
   onSubmit = async event => {
-    const { uploadContent } = this.props;
+    const { dispatch, uploadFeedContent } = this.props;
     const { question, description } = this.state;
     event.preventDefault();
     if (stringIsEmpty(question) || question.length > charLimit.question.title) {
       return;
     }
-    await uploadContent({
+    const data = await uploadContent({
       title: turnStringIntoQuestion(question),
-      description: finalizeEmoji(description)
+      description: finalizeEmoji(description),
+      dispatch
     });
+    uploadFeedContent(data);
     this.setState({
       question: '',
       description: '',
@@ -159,5 +163,8 @@ class QuestionInput extends Component {
 
 export default connect(
   null,
-  { uploadContent }
+  dispatch => ({
+    dispatch,
+    uploadFeedContent: params => uploadFeedContent(params)
+  })
 )(QuestionInput);

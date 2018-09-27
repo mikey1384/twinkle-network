@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
-import { uploadContent } from 'redux/actions/FeedActions';
+import { uploadContent } from 'helpers/requestHelpers';
 import Input from 'components/Texts/Input';
 import { scrollElementToCenter } from 'helpers/domHelpers';
 import {
@@ -16,6 +16,7 @@ import {
   processedStringWithURL,
   renderCharLimit
 } from 'helpers/stringHelpers';
+import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Banner from 'components/Banner';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
@@ -24,7 +25,8 @@ import Checkbox from 'components/Checkbox';
 
 class ContentInput extends Component {
   static propTypes = {
-    uploadContent: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    uploadFeedContent: PropTypes.func.isRequired
   };
 
   state = {
@@ -32,7 +34,7 @@ class ContentInput extends Component {
     titleFieldShown: false,
     form: {
       url: '',
-      checkedVideo: false,
+      isVideo: false,
       title: '',
       description: ''
     },
@@ -72,13 +74,13 @@ class ContentInput extends Component {
             this.setState({
               form: {
                 ...form,
-                checkedVideo: !form.checkedVideo
+                isVideo: !form.isVideo
               },
               urlError: null
             });
           }}
           style={{ marginTop: '1rem' }}
-          checked={form.checkedVideo}
+          checked={form.isVideo}
         />
         {!stringIsEmpty(urlHelper) && (
           <b
@@ -197,26 +199,26 @@ class ContentInput extends Component {
 
   errorInUrlField = () => {
     const {
-      form: { checkedVideo, url },
+      form: { isVideo, url },
       urlError
     } = this.state;
     if (urlError) return { borderColor: 'red', color: 'red' };
     return exceedsCharLimit({
       inputType: 'url',
-      contentType: checkedVideo ? 'video' : 'url',
+      contentType: isVideo ? 'video' : 'url',
       text: url
     });
   };
 
-  onSubmit = event => {
-    const { uploadContent } = this.props;
+  onSubmit = async event => {
     const { form } = this.state;
-    const { url, checkedVideo } = form;
+    const { dispatch, uploadFeedContent } = this.props;
+    const { url, isVideo } = form;
     let urlError;
     event.preventDefault();
 
     if (!isValidUrl(url)) urlError = 'That is not a valid url';
-    if (checkedVideo && !isValidYoutubeUrl(url)) {
+    if (isVideo && !isValidYoutubeUrl(url)) {
       urlError = 'That is not a valid YouTube url';
     }
 
@@ -231,18 +233,20 @@ class ContentInput extends Component {
       descriptionFieldShown: false,
       form: {
         url: '',
-        checkedVideo: false,
+        isVideo: false,
         title: '',
         description: ''
       },
       urlHelper: '',
       urlError: ''
     });
-    uploadContent({
+    const data = await uploadContent({
       ...form,
       title: finalizeEmoji(form.title),
-      description: finalizeEmoji(form.description)
+      description: finalizeEmoji(form.description),
+      dispatch
     });
+    uploadFeedContent(data);
     document.getElementById('App').scrollTop = 0;
   };
 
@@ -253,7 +257,7 @@ class ContentInput extends Component {
         form: {
           ...form,
           url,
-          checkedVideo: isValidYoutubeUrl(url) || form.checkedVideo
+          isVideo: isValidYoutubeUrl(url) || form.isVideo
         },
         urlError: '',
         urlHelper: '',
@@ -265,7 +269,7 @@ class ContentInput extends Component {
         form: {
           ...form,
           url,
-          checkedVideo: false
+          isVideo: false
         },
         urlHelper: stringIsEmpty(url)
           ? ''
@@ -278,44 +282,44 @@ class ContentInput extends Component {
 
   renderDescriptionCharLimit = () => {
     const {
-      form: { checkedVideo, description }
+      form: { isVideo, description }
     } = this.state;
     return renderCharLimit({
       inputType: 'description',
-      contentType: checkedVideo ? 'video' : 'url',
+      contentType: isVideo ? 'video' : 'url',
       text: description
     });
   };
 
   renderTitleCharLimit = () => {
     const {
-      form: { checkedVideo, title }
+      form: { isVideo, title }
     } = this.state;
     return renderCharLimit({
       inputType: 'title',
-      contentType: checkedVideo ? 'video' : 'url',
+      contentType: isVideo ? 'video' : 'url',
       text: title
     });
   };
 
   descriptionExceedsCharLimit = () => {
     const {
-      form: { checkedVideo, description }
+      form: { isVideo, description }
     } = this.state;
     return exceedsCharLimit({
       inputType: 'description',
-      contentType: checkedVideo ? 'video' : 'url',
+      contentType: isVideo ? 'video' : 'url',
       text: description
     });
   };
 
   titleExceedsCharLimit = () => {
     const {
-      form: { checkedVideo, title }
+      form: { isVideo, title }
     } = this.state;
     return exceedsCharLimit({
       inputType: 'title',
-      contentType: checkedVideo ? 'video' : 'url',
+      contentType: isVideo ? 'video' : 'url',
       text: title
     });
   };
@@ -325,7 +329,8 @@ export default connect(
   state => ({
     username: state.UserReducer.username
   }),
-  {
-    uploadContent
-  }
+  dispatch => ({
+    dispatch,
+    uploadFeedContent: params => dispatch(uploadFeedContent(params))
+  })
 )(ContentInput);

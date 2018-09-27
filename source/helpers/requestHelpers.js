@@ -320,6 +320,25 @@ export const uploadComment = async({
   }
 };
 
+export const uploadContent = async({
+  url,
+  isVideo,
+  title,
+  description,
+  dispatch
+}) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/content`,
+      { url, isVideo, title, description },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const uploadDiscussion = async({
   type,
   contentId,

@@ -57,7 +57,7 @@ export const deleteVideo = ({
       dispatch({
         type: VIDEO.DELETE,
         arrayIndex,
-        data: data.result
+        data
       });
     }
   } catch (error) {
@@ -321,17 +321,10 @@ export const uploadQuestions = params => async dispatch => {
   }
 };
 
-export const uploadVideo = params => async dispatch => {
-  try {
-    const { data } = await request.post(API_URL, params, auth());
-    dispatch({
-      type: VIDEO.UPLOAD,
-      data: [data.result]
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const uploadVideo = data => ({
+  type: VIDEO.UPLOAD,
+  data
+});
 
 export const uploadComment = comment => ({
   type: VIDEO.UPLOAD_COMMENT,

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
+import { uploadContent } from 'helpers/requestHelpers';
 import { uploadVideo } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import Input from 'components/Texts/Input';
@@ -17,8 +18,11 @@ import {
 
 class AddVideoModal extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     onHide: PropTypes.func.isRequired,
-    uploadVideo: PropTypes.func.isRequired
+    uploadVideo: PropTypes.func.isRequired,
+    userId: PropTypes.number,
+    username: PropTypes.string
   };
 
   state = {
@@ -156,9 +160,9 @@ class AddVideoModal extends Component {
     );
   }
 
-  onSubmit = event => {
-    const { uploadVideo } = this.props;
-    const {
+  onSubmit = async event => {
+    const { dispatch, uploadVideo, userId, username } = this.props;
+    let {
       form: { url, title, description }
     } = this.state;
 
@@ -167,11 +171,23 @@ class AddVideoModal extends Component {
       this.setState({ urlError: 'That is not a valid YouTube url' });
       return this.UrlField._rootDOMNode.focus();
     }
-
-    uploadVideo({
+    title = finalizeEmoji(title);
+    description = finalizeEmoji(description);
+    const data = await uploadContent({
       url,
-      title: finalizeEmoji(title),
-      description: finalizeEmoji(description)
+      isVideo: true,
+      title,
+      description,
+      dispatch
+    });
+    uploadVideo({
+      id: data.contentId,
+      title,
+      content: data.content,
+      uploader: {
+        id: userId,
+        username
+      }
     });
   };
 
@@ -216,6 +232,12 @@ class AddVideoModal extends Component {
 }
 
 export default connect(
-  null,
-  { uploadVideo }
+  state => ({
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username
+  }),
+  dispatch => ({
+    dispatch,
+    uploadVideo: params => dispatch(uploadVideo(params))
+  })
 )(AddVideoModal);
