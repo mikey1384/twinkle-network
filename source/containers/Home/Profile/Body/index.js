@@ -33,7 +33,7 @@ import FilterBar from 'components/FilterBar';
 
 class Body extends Component {
   static propTypes = {
-    chatMode: PropTypes.bool,
+    chatMode: PropTypes.bool.isRequired,
     attachStar: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
     disableAutoscroll: PropTypes.func.isRequired,
@@ -60,6 +60,7 @@ class Body extends Component {
     match: PropTypes.object.isRequired,
     myId: PropTypes.number,
     profileFeeds: PropTypes.array,
+    searchMode: PropTypes.bool.isRequired,
     setDifficulty: PropTypes.func
   };
 
@@ -366,7 +367,7 @@ class Body extends Component {
   };
 
   onScroll = () => {
-    let { chatMode, profileFeeds, loadMoreButton } = this.props;
+    let { chatMode, loadMoreButton, profileFeeds, searchMode } = this.props;
     if (
       document.getElementById('App').scrollHeight > this.scrollHeight ||
       this.body.scrollTop > this.scrollHeight
@@ -376,7 +377,7 @@ class Body extends Component {
         this.body.scrollTop
       );
     }
-    if (!chatMode && profileFeeds.length > 0) {
+    if (!chatMode && !searchMode && profileFeeds.length > 0) {
       this.setState({
         scrollPosition: {
           desktop: document.getElementById('App').scrollTop,
@@ -412,7 +413,8 @@ export default connect(
     loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,
     loadMoreButton: state.FeedReducer.profileFeedsLoadMoreButton,
-    homeComponentConnected: state.FeedReducer.homeComponentConnected
+    homeComponentConnected: state.FeedReducer.homeComponentConnected,
+    searchMode: state.SearchReducer.searchMode
   }),
   {
     attachStar,

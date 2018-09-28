@@ -60,6 +60,7 @@ class Stories extends Component {
     loadMoreFeedReplies: PropTypes.func.isRequired,
     numNewPosts: PropTypes.number.isRequired,
     resetNumNewPosts: PropTypes.func.isRequired,
+    searchMode: PropTypes.bool.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     setDifficulty: PropTypes.func,
     showFeedComments: PropTypes.func.isRequired,
@@ -305,7 +306,7 @@ class Stories extends Component {
   };
 
   onScroll = () => {
-    const { chatMode, storyFeeds, loadMoreButton } = this.props;
+    const { chatMode, searchMode, storyFeeds, loadMoreButton } = this.props;
     if (
       document.getElementById('App').scrollHeight > this.scrollHeight ||
       this.body.scrollTop > this.scrollHeight
@@ -315,7 +316,12 @@ class Stories extends Component {
         this.body.scrollTop
       );
     }
-    if (!chatMode && storyFeeds.length > 0 && this.scrollHeight !== 0) {
+    if (
+      !searchMode &&
+      !chatMode &&
+      storyFeeds.length > 0 &&
+      this.scrollHeight !== 0
+    ) {
       this.setState(
         {
           scrollPosition: {
@@ -421,7 +427,8 @@ export default connect(
     username: state.UserReducer.username,
     selectedFilter: state.FeedReducer.selectedFilter,
     chatMode: state.ChatReducer.chatMode,
-    noFeeds: state.FeedReducer.noFeeds
+    noFeeds: state.FeedReducer.noFeeds,
+    searchMode: state.SearchReducer.searchMode
   }),
   {
     attachStar,

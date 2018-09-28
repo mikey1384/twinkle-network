@@ -18,13 +18,14 @@ import { Color, mobileMaxWidth } from 'constants/css';
 
 class People extends Component {
   static propTypes = {
-    chatMode: PropTypes.bool,
+    chatMode: PropTypes.bool.isRequired,
     clearUserSearch: PropTypes.func.isRequired,
     fetchMoreUsers: PropTypes.func.isRequired,
     fetchUsers: PropTypes.func.isRequired,
     loadMoreButton: PropTypes.bool,
     profiles: PropTypes.array.isRequired,
     searchedProfiles: PropTypes.array.isRequired,
+    searchMode: PropTypes.bool.isRequired,
     searchUsers: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
@@ -141,7 +142,7 @@ class People extends Component {
   };
 
   onScroll = () => {
-    const { chatMode, loadMoreButton, profiles } = this.props;
+    const { chatMode, loadMoreButton, profiles, searchMode } = this.props;
     if (
       document.getElementById('App').scrollHeight > this.scrollHeight ||
       this.body.scrollTop > this.scrollHeight
@@ -151,7 +152,12 @@ class People extends Component {
         this.body.scrollTop
       );
     }
-    if (!chatMode && profiles.length > 0 && this.scrollHeight !== 0) {
+    if (
+      !chatMode &&
+      !searchMode &&
+      profiles.length > 0 &&
+      this.scrollHeight !== 0
+    ) {
       this.setState(
         {
           scrollPosition: {
@@ -180,6 +186,7 @@ export default connect(
     chatMode: state.ChatReducer.chatMode,
     loadMoreButton: state.UserReducer.loadMoreButton,
     profiles: state.UserReducer.profiles,
+    searchMode: state.SearchReducer.searchMode,
     searchedProfiles: state.UserReducer.searchedProfiles,
     userId: state.UserReducer.userId
   }),
