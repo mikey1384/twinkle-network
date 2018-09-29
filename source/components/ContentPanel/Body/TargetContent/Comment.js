@@ -8,7 +8,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import LongText from 'components/Texts/LongText';
-import { deleteContent } from 'helpers/requestHelpers';
+import { editContent, deleteContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
 class Comment extends Component {
@@ -131,11 +131,18 @@ class Comment extends Component {
     onDelete(comment.id);
   };
 
-  onEditDone = editedComment => {
-    const { comment, onEditDone } = this.props;
-    return onEditDone({ editedComment, commentId: comment.id }).then(() =>
-      this.setState({ onEdit: false })
-    );
+  onEditDone = async editedComment => {
+    const { comment, dispatch, onEditDone } = this.props;
+    await editContent({
+      params: {
+        editedComment,
+        contentId: comment.id,
+        type: 'comment'
+      },
+      dispatch
+    });
+    onEditDone({ editedComment, commentId: comment.id });
+    this.setState({ onEdit: false });
   };
 }
 
