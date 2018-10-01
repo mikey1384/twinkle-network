@@ -74,7 +74,8 @@ export default function Button({
     gold: Color.gold(opacity),
     danger: Color.red(opacity),
     snow: Color.white(opacity),
-    peace: Color.logoGreen(opacity)
+    peace: Color.logoGreen(opacity),
+    transparent: Color.black(opacity)
   });
 
   let colorKey = 'default';

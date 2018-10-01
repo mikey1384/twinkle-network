@@ -59,7 +59,7 @@ export default class ButtonGroup extends Component {
               onClick={button.onClick}
               disabled={button.disabled}
               filled={button.filled}
-              hoverClass={button.hoverClass}
+              hoverClass={button.hoverClass || button.buttonClass}
               onHover={button.onHover}
               {...{ [button.buttonClass]: true }}
             >
