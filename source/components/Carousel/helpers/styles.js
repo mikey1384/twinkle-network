@@ -70,8 +70,8 @@ export function getSlideStyles() {
     height: 'auto',
     boxSizing: 'border-box',
     MozBoxSizing: 'border-box',
-    marginLeft: this.props.cellSpacing / 2,
-    marginRight: this.props.cellSpacing / 2,
+    marginLeft: this.props.cellSpacing / 2 - 0.5,
+    marginRight: this.props.cellSpacing / 2 - 0.5,
     marginTop: 'auto',
     marginBottom: 'auto'
   };
@@ -131,7 +131,7 @@ export function setDimensions() {
   }
 
   if (typeof this.props.slideWidth !== 'number') {
-    slideWidth = parseInt(this.props.slideWidth, 10);
+    slideWidth = parseInt(this.props.slideWidth, 0);
   } else {
     slideWidth =
       (frame.offsetWidth / this.props.slidesToShow) * this.props.slideWidth;
