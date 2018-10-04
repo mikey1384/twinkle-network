@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './entry/client.js',
@@ -44,6 +45,9 @@ module.exports = {
           chunks: 'initial'
         }
       }
+    },
+    optimization: {
+      minimizer: [new TerserPlugin()]
     }
   },
   plugins: [
