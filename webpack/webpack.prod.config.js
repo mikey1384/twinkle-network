@@ -46,9 +46,7 @@ module.exports = {
         }
       }
     },
-    optimization: {
-      minimizer: [new TerserPlugin()]
-    }
+    minimizer: [new TerserPlugin()]
   },
   plugins: [
     new UglifyJsPlugin({ cache: false }),
