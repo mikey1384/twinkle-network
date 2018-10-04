@@ -3,6 +3,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import { borderRadius, Color } from 'constants/css';
 import { PropTypes } from 'prop-types';
 import Switch from 'components/Switch';
+import FilterBar from 'components/FilterBar';
 import { connect } from 'react-redux';
 
 class HomeFilter extends Component {
@@ -16,6 +17,10 @@ class HomeFilter extends Component {
     selectedFilter: PropTypes.string.isRequired,
     userId: PropTypes.number,
     toggleHideWatched: PropTypes.func.isRequired
+  };
+
+  state = {
+    activeTab: 'uploads'
   };
 
   categoryObj = {
@@ -33,7 +38,7 @@ class HomeFilter extends Component {
       label: 'Top Responses'
     },
     videos: {
-      label: 'Popular Starred Videos'
+      label: 'Starred Videos'
     }
   };
 
@@ -41,7 +46,6 @@ class HomeFilter extends Component {
     const {
       applyFilter,
       category,
-      changeCategory,
       displayOrder,
       hideWatched,
       selectedFilter,
@@ -49,101 +53,117 @@ class HomeFilter extends Component {
       toggleHideWatched,
       userId
     } = this.props;
+    const { activeTab } = this.state;
     return (
-      <nav
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          width: '100%',
-          background: '#fff',
-          padding: '1rem',
-          marginBottom: '1rem',
-          border: `1px solid ${Color.borderGray()}`,
-          borderRadius: borderRadius,
-          alignItems: 'center'
-        }}
-      >
-        <div style={{ display: 'flex' }}>
-          {category === 'uploads' && (
-            <DropdownButton
-              snow
-              icon="caret-down"
-              text={`${selectedFilter === 'url' ? 'link' : selectedFilter}${
-                selectedFilter === 'all' ? '' : 's'
-              }`}
-              menuProps={[
-                {
-                  key: 'all',
-                  label: 'All',
-                  onClick: () => applyFilter('all')
-                },
-                {
-                  key: 'video',
-                  label: 'Videos',
-                  onClick: () => applyFilter('video')
-                },
-                {
-                  key: 'url',
-                  label: 'Links',
-                  onClick: () => applyFilter('url')
-                },
-                {
-                  key: 'post',
-                  label: 'Posts',
-                  onClick: () => applyFilter('post')
-                },
-                {
-                  key: 'comment',
-                  label: 'Comments',
-                  onClick: () => applyFilter('comment')
-                }
-              ].filter(prop => prop.key !== selectedFilter)}
-            />
-          )}
-          <DropdownButton
-            snow
-            icon="caret-down"
-            text={this.categoryObj[category].label}
-            style={{ marginLeft: category === 'uploads' && '1rem' }}
-            menuProps={['uploads', 'challenges', 'responses', 'videos'].map(
-              elem => ({
-                key: elem,
-                label: this.categoryObj[elem].label,
-                onClick: () => changeCategory(elem),
-                disabled: elem === category
-              })
-            )}
-          />
-          {(category === 'uploads' || category === 'challenges') && (
-            <DropdownButton
-              snow
-              icon="caret-down"
-              text={this.categoryObj[category][displayOrder]}
-              style={{ marginLeft: '1rem' }}
-              menuProps={[
-                {
-                  label:
-                    displayOrder === 'desc'
-                      ? this.categoryObj[category]['asc']
-                      : this.categoryObj[category]['desc'],
-                  onClick: setDisplayOrder
-                }
-              ]}
-            />
-          )}
-        </div>
-        {category === 'videos' &&
-          userId && (
-            <Switch
-              color={Color.green()}
-              checked={!!hideWatched}
-              label="Hide Watched"
-              onChange={toggleHideWatched}
-            />
-          )}
-      </nav>
+      <>
+        <FilterBar
+          bordered
+          style={{
+            marginTop: '1rem',
+            fontSize: '1.6rem'
+          }}
+        >
+          {['uploads', 'responses', 'challenges', 'videos'].map(elem => (
+            <nav
+              key={elem}
+              className={activeTab === elem && 'active'}
+              onClick={() => this.changeCategory(elem)}
+            >
+              {this.categoryObj[elem].label}
+            </nav>
+          ))}
+        </FilterBar>
+        {(activeTab === 'uploads' ||
+          activeTab === 'challenges' ||
+          (category === 'videos' && userId)) && (
+          <nav
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+              background: '#fff',
+              padding: '1rem',
+              marginBottom: '1rem',
+              border: `1px solid ${Color.borderGray()}`,
+              borderRadius: borderRadius,
+              alignItems: 'center'
+            }}
+          >
+            <div style={{ display: 'flex' }}>
+              {category === 'uploads' && (
+                <DropdownButton
+                  snow
+                  icon="caret-down"
+                  text={`${selectedFilter === 'url' ? 'link' : selectedFilter}${
+                    selectedFilter === 'all' ? '' : 's'
+                  }`}
+                  menuProps={[
+                    {
+                      key: 'all',
+                      label: 'All',
+                      onClick: () => applyFilter('all')
+                    },
+                    {
+                      key: 'video',
+                      label: 'Videos',
+                      onClick: () => applyFilter('video')
+                    },
+                    {
+                      key: 'url',
+                      label: 'Links',
+                      onClick: () => applyFilter('url')
+                    },
+                    {
+                      key: 'post',
+                      label: 'Posts',
+                      onClick: () => applyFilter('post')
+                    },
+                    {
+                      key: 'comment',
+                      label: 'Comments',
+                      onClick: () => applyFilter('comment')
+                    }
+                  ].filter(prop => prop.key !== selectedFilter)}
+                />
+              )}
+              {(category === 'uploads' || category === 'challenges') && (
+                <DropdownButton
+                  snow
+                  icon="caret-down"
+                  text={this.categoryObj[category][displayOrder]}
+                  style={{ marginLeft: category === 'uploads' && '1rem' }}
+                  menuProps={[
+                    {
+                      label:
+                        displayOrder === 'desc'
+                          ? this.categoryObj[category]['asc']
+                          : this.categoryObj[category]['desc'],
+                      onClick: setDisplayOrder
+                    }
+                  ]}
+                />
+              )}
+              {category === 'videos' &&
+                userId && (
+                  <Switch
+                    color={Color.green()}
+                    checked={!!hideWatched}
+                    label="Hide Watched"
+                    onChange={toggleHideWatched}
+                  />
+                )}
+            </div>
+          </nav>
+        )}
+      </>
     );
   }
+
+  changeCategory = elem => {
+    const { changeCategory } = this.props;
+    this.setState({ activeTab: elem });
+    changeCategory(elem);
+  };
 }
 
 export default connect(state => ({
