@@ -31,7 +31,7 @@ export function handleError(error, dispatch) {
 export const checkIfContentExists = async({ url, videoCode, type }) => {
   try {
     const {
-      data: { exists, content, videoCode }
+      data: { exists, content }
     } = await request.get(
       `${URL}/content/checkUrl?url=${url}&type=${type}${
         videoCode ? `&videoCode=${videoCode}` : ''
