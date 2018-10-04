@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
-import { uploadContent } from 'helpers/requestHelpers';
+import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
 import Input from 'components/Texts/Input';
 import { scrollElementToCenter } from 'helpers/domHelpers';
 import {
@@ -20,7 +20,7 @@ import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Banner from 'components/Banner';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
+import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
 
 class ContentInput extends Component {
@@ -29,7 +29,11 @@ class ContentInput extends Component {
     uploadFeedContent: PropTypes.func.isRequired
   };
 
+  checkContentExistsTimer = null;
+  showHelperMessageTimer = null;
+
   state = {
+    alreadyPosted: undefined,
     descriptionFieldShown: false,
     titleFieldShown: false,
     form: {
@@ -44,6 +48,7 @@ class ContentInput extends Component {
 
   render() {
     const {
+      alreadyPosted,
       form,
       urlError,
       urlHelper,
@@ -68,6 +73,19 @@ class ContentInput extends Component {
           placeholder="Copy the URL address of a website or a YouTube video and paste it here"
           type="text"
         />
+        {alreadyPosted && (
+          <div style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
+            This content has{' '}
+            <Link
+              style={{ fontWeight: 'bold' }}
+              to={`/${alreadyPosted.type === 'url' ? 'link' : 'video'}s/${
+                alreadyPosted.id
+              }`}
+            >
+              already been posted before
+            </Link>
+          </div>
+        )}
         <Checkbox
           label={'YouTube Video:'}
           onClick={() => {
@@ -83,7 +101,7 @@ class ContentInput extends Component {
           checked={form.isVideo}
         />
         {!stringIsEmpty(urlHelper) && (
-          <b
+          <span
             style={{
               fontSize: '1.7rem',
               marginTop: '1rem',
@@ -91,7 +109,7 @@ class ContentInput extends Component {
             }}
             className={css`
               > a {
-                color: ${Color.oceanBlue()};
+                font-weight: bold;
               }
             `}
             dangerouslySetInnerHTML={{
@@ -216,19 +234,17 @@ class ContentInput extends Component {
     const { url, isVideo } = form;
     let urlError;
     event.preventDefault();
-
     if (!isValidUrl(url)) urlError = 'That is not a valid url';
     if (isVideo && !isValidYoutubeUrl(url)) {
       urlError = 'That is not a valid YouTube url';
     }
-
     if (urlError) {
       this.setState({ urlError });
       this.UrlField.focus();
       return scrollElementToCenter(this.UrlField);
     }
-
     this.setState({
+      alreadyPosted: false,
       titleFieldShown: false,
       descriptionFieldShown: false,
       form: {
@@ -251,33 +267,47 @@ class ContentInput extends Component {
   };
 
   onUrlFieldChange = url => {
-    const { form } = this.state;
-    if (isValidUrl(url)) {
-      this.setState({
-        form: {
-          ...form,
-          url,
-          isVideo: isValidYoutubeUrl(url) || form.isVideo
-        },
-        urlError: '',
-        urlHelper: '',
-        descriptionFieldShown: true,
-        titleFieldShown: true
-      });
-    } else {
-      this.setState({
-        form: {
-          ...form,
-          url,
-          isVideo: false
-        },
-        urlHelper: stringIsEmpty(url)
-          ? ''
-          : `You can think of URL as the "address" of a webpage. For example, this webpage's URL is www.twin-kle.com and www.twinkle.network (yes, you can use either one). YouTube's URL is www.youtube.com, and my favorite YouTube video's URL is https://www.youtube.com/watch?v=rf8FX2sI3gU. You can find a webpage's URL at the top area of your browser. Copy a URL you want to share and paste it to the box above.`,
-        descriptionFieldShown: false,
-        titleFieldShown: !stringIsEmpty(url)
-      });
-    }
+    clearTimeout(this.checkContentExistsTimer);
+    clearTimeout(this.showHelperMessageTimer);
+    const urlIsValid = isValidUrl(url);
+    this.setState(state => ({
+      alreadyPosted: false,
+      form: {
+        ...state.form,
+        url,
+        isVideo: isValidYoutubeUrl(url)
+      },
+      titleFieldShown: urlIsValid,
+      descriptionFieldShown: urlIsValid,
+      urlError: '',
+      urlHelper: ''
+    }));
+    this.checkContentExistsTimer = setTimeout(
+      () => this.checkIfContentExists(url),
+      300
+    );
+    this.showHelperMessageTimer = setTimeout(
+      () =>
+        this.setState(state => ({
+          urlHelper:
+            urlIsValid || stringIsEmpty(url)
+              ? ''
+              : `You can think of URL as the "address" of a webpage. For example, this webpage's URL is www.twin-kle.com and www.twinkle.network (yes, you can use either one). YouTube's URL is www.youtube.com, and my favorite YouTube video's URL is https://www.youtube.com/watch?v=rf8FX2sI3gU. You can find a webpage's URL at the top area of your browser. Copy a URL you want to share and paste it to the box above.`,
+          titleFieldShown: !stringIsEmpty(url)
+        })),
+      300
+    );
+  };
+
+  checkIfContentExists = async url => {
+    const isVideo = isValidYoutubeUrl(url);
+    const { exists, content } = await checkIfContentExists({
+      url,
+      type: isVideo ? 'video' : 'url'
+    });
+    return this.setState({
+      alreadyPosted: exists ? content : undefined
+    });
   };
 
   renderDescriptionCharLimit = () => {

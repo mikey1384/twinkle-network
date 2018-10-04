@@ -1,5 +1,4 @@
 import { charLimit } from 'constants/defaultValues';
-
 /* eslint-disable no-useless-escape */
 
 export function addCommasToNumber(number) {
@@ -294,12 +293,18 @@ export function trimWhiteSpaces(text) {
 }
 
 export function isValidUrl(url) {
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
+  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+    url = 'www.' + url;
+  }
   return regex.test(url);
 }
 
 export function isValidYoutubeUrl(url) {
-  const regex = /(\b(((https?|ftp|file|):\/\/)|www[.])[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
+  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+    url = 'www.' + url;
+  }
   let trimOne = url.split('v=')[1];
   let trimTwo = url.split('youtu.be/')[1];
   return (

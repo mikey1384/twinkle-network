@@ -9,6 +9,7 @@ import ContentEditor from '../ContentEditor';
 import Profile from './Profile';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
+import AlreadyPosted from './AlreadyPosted';
 
 MainContent.propTypes = {
   contentObj: PropTypes.object,
@@ -50,6 +51,14 @@ export default function MainContent({
             videoId={type === 'video' ? contentObj.id : contentObj.rootId}
             videoCode={type === 'video' ? contentObj.content : rootObj.content}
             style={{ paddingBottom: '0.5rem' }}
+          />
+        )}
+        {(type === 'url' || type === 'video') && (
+          <AlreadyPosted
+            uploaderId={(contentObj.uploader || {}).id}
+            contentId={contentId}
+            type={type}
+            url={contentObj.content}
           />
         )}
         {(type === 'question' || type === 'discussion') &&

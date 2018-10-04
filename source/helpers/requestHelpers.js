@@ -28,6 +28,18 @@ export function handleError(error, dispatch) {
   return Promise.reject(error);
 }
 
+export const checkIfContentExists = async({ url, type }) => {
+  try {
+    const {
+      data: { exists, content }
+    } = await request.get(`${URL}/content/checkUrl?url=${url}&type=${type}`);
+    return Promise.resolve({ exists, content });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const deleteContent = async({ id, type, dispatch }) => {
   try {
     await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth());
