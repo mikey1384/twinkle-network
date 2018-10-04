@@ -282,10 +282,12 @@ class ContentInput extends Component {
       urlError: '',
       urlHelper: ''
     }));
-    this.checkContentExistsTimer = setTimeout(
-      () => this.checkIfContentExists(url),
-      300
-    );
+    if (urlIsValid) {
+      this.checkContentExistsTimer = setTimeout(
+        () => this.checkIfContentExists(url),
+        300
+      );
+    }
     this.showHelperMessageTimer = setTimeout(
       () =>
         this.setState(state => ({
