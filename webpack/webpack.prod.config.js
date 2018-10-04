@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
@@ -49,7 +48,6 @@ module.exports = {
     minimizer: [new TerserPlugin()]
   },
   plugins: [
-    new UglifyJsPlugin({ cache: false }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
