@@ -42,10 +42,17 @@ class HomeFilter extends Component {
     }
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.category !== this.props.category) {
+      this.setState({ activeTab: this.props.category });
+    }
+  }
+
   render() {
     const {
       applyFilter,
       category,
+      changeCategory,
       displayOrder,
       hideWatched,
       selectedFilter,
@@ -66,8 +73,8 @@ class HomeFilter extends Component {
           {['uploads', 'responses', 'challenges', 'videos'].map(elem => (
             <nav
               key={elem}
-              className={activeTab === elem && 'active'}
-              onClick={() => this.changeCategory(elem)}
+              className={activeTab === elem ? 'active' : ''}
+              onClick={() => changeCategory(elem)}
             >
               {this.categoryObj[elem].label}
             </nav>
@@ -158,12 +165,6 @@ class HomeFilter extends Component {
       </>
     );
   }
-
-  changeCategory = elem => {
-    const { changeCategory } = this.props;
-    this.setState({ activeTab: elem });
-    changeCategory(elem);
-  };
 }
 
 export default connect(state => ({
