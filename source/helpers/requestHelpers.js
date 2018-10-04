@@ -28,11 +28,15 @@ export function handleError(error, dispatch) {
   return Promise.reject(error);
 }
 
-export const checkIfContentExists = async({ url, type }) => {
+export const checkIfContentExists = async({ url, videoCode, type }) => {
   try {
     const {
-      data: { exists, content }
-    } = await request.get(`${URL}/content/checkUrl?url=${url}&type=${type}`);
+      data: { exists, content, videoCode }
+    } = await request.get(
+      `${URL}/content/checkUrl?url=${url}&type=${type}${
+        videoCode ? `&videoCode=${videoCode}` : ''
+      }`
+    );
     return Promise.resolve({ exists, content });
   } catch (error) {
     console.error(error.response || error);

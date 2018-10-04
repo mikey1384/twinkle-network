@@ -10,7 +10,8 @@ export default class AlreadyPosted extends Component {
     contentId: PropTypes.number.isRequired,
     type: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
-    uploaderId: PropTypes.number
+    uploaderId: PropTypes.number,
+    videoCode: PropTypes.string
   };
 
   state = {
@@ -18,10 +19,11 @@ export default class AlreadyPosted extends Component {
   };
 
   async componentDidMount() {
-    const { type, url } = this.props;
+    const { type, url, videoCode } = this.props;
     const { content: existingContent } = await checkIfContentExists({
       type,
-      url
+      url,
+      videoCode
     });
     this.setState({ existingContent });
   }

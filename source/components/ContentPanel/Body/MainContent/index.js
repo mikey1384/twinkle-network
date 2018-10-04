@@ -59,6 +59,7 @@ export default function MainContent({
             contentId={contentId}
             type={type}
             url={contentObj.content}
+            videoCode={type === 'video' ? contentObj.content : undefined}
           />
         )}
         {(type === 'question' || type === 'discussion') &&
