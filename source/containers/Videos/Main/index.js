@@ -73,7 +73,7 @@ class Main extends Component {
       openAddVideoModal,
       pinnedPlaylists,
       pinnedPlaylistsLoaded,
-      playlists: allPlaylists,
+      playlists: allPlaylists = [],
       playlistsLoaded,
       playlistsToPin,
       reorderPinnedPlaylistsModalShown,
@@ -87,7 +87,6 @@ class Main extends Component {
       playlistSearchQuery,
       isSearching
     } = this.state;
-
     const playlists = !stringIsEmpty(playlistSearchQuery)
       ? searchedPlaylists
       : allPlaylists;

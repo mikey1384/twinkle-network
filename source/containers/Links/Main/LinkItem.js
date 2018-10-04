@@ -40,6 +40,7 @@ class LinkItem extends Component {
 
   apiUrl = 'https://api.embed.rocks/api';
   fallbackImage = '/img/link.png';
+  mounted = false;
 
   constructor({ link: { thumbUrl } }) {
     super();
@@ -98,6 +99,10 @@ class LinkItem extends Component {
         console.error(error);
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {
