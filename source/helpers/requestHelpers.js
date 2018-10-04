@@ -33,7 +33,7 @@ export const checkIfContentExists = async({ url, videoCode, type }) => {
     const {
       data: { exists, content }
     } = await request.get(
-      `${URL}/content/checkUrl?url=${url}&type=${type}${
+      `${URL}/content/checkUrl?url=${encodeURIComponent(url)}&type=${type}${
         videoCode ? `&videoCode=${videoCode}` : ''
       }`
     );
