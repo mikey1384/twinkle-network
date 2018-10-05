@@ -69,6 +69,18 @@ export default function MainContent({
               difficulty={contentObj.difficulty}
             />
           )}
+        {type === 'video' && (
+          <div
+            style={{
+              display: 'flex',
+              padding: '0 1rem'
+            }}
+          >
+            <a style={{ fontWeight: 'bold', cursor: 'pointer' }}>
+              + Add to Playlists
+            </a>
+          </div>
+        )}
         <div
           style={{
             marginTop: '1rem',
