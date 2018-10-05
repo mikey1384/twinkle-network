@@ -47,8 +47,8 @@ export default class ChatInput extends Component {
     const enterKeyPressed = event.keyCode === 13;
     const { onKeyDown } = this.props;
     const { message } = this.state;
-
-    setTimeout(() => onKeyDown(this.Textarea.clientHeight), 100);
+    const clientHeight = (this.Textarea || {}).clientHeight;
+    setTimeout(() => onKeyDown(clientHeight), 100);
 
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault();
