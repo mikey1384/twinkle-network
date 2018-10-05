@@ -103,33 +103,19 @@ class HomeFilter extends Component {
                   text={`${selectedFilter === 'url' ? 'link' : selectedFilter}${
                     selectedFilter === 'all' ? '' : 's'
                   }`}
-                  menuProps={[
-                    {
-                      key: 'all',
-                      label: 'All',
-                      onClick: () => applyFilter('all')
-                    },
-                    {
-                      key: 'video',
-                      label: 'Videos',
-                      onClick: () => applyFilter('video')
-                    },
-                    {
-                      key: 'url',
-                      label: 'Links',
-                      onClick: () => applyFilter('url')
-                    },
-                    {
-                      key: 'post',
-                      label: 'Posts',
-                      onClick: () => applyFilter('post')
-                    },
-                    {
-                      key: 'comment',
-                      label: 'Comments',
-                      onClick: () => applyFilter('comment')
-                    }
-                  ].filter(prop => prop.key !== selectedFilter)}
+                  menuProps={['all', 'video', 'url', 'post', 'comment']
+                    .map(type => {
+                      const displayLabel = type === 'url' ? 'link' : type;
+                      const s = type === 'all' ? '' : 's';
+                      return {
+                        key: type,
+                        label: `${displayLabel
+                          .charAt(0)
+                          .toUpperCase()}${displayLabel.slice(1)}${s}`,
+                        onClick: () => applyFilter(type)
+                      };
+                    })
+                    .filter(prop => prop.key !== selectedFilter)}
                 />
               )}
               {(category === 'uploads' || category === 'challenges') && (
