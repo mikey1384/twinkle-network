@@ -126,7 +126,12 @@ class Comment extends Component {
               </div>
               <div
                 style={{
-                  width: '100%'
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word'
                 }}
               >
                 {!onEdit && <LongText>{star.rewardComment}</LongText>}
