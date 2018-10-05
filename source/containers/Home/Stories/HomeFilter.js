@@ -66,7 +66,6 @@ class HomeFilter extends Component {
         <FilterBar
           bordered
           style={{
-            marginTop: '1rem',
             fontSize: '1.6rem'
           }}
         >
