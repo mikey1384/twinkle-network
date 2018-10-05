@@ -41,6 +41,9 @@ class MessagesContainer extends Component {
     }
   };
 
+  messages = {};
+  messagesContainer = {};
+
   componentDidMount() {
     this.setScrollToBottom();
     this.setState({
@@ -294,7 +297,7 @@ class MessagesContainer extends Component {
   setScrollToBottom = () => {
     this.messagesContainer.scrollTop = Math.max(
       this.state.maxScroll,
-      this.messagesContainer.offsetHeight,
+      this.messagesContainer.offsetHeight || 0,
       this.state.fillerHeight + this.messages.offsetHeight
     );
     this.setState({ maxScroll: this.messagesContainer.scrollTop });
