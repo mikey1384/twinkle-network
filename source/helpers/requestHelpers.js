@@ -133,6 +133,18 @@ export const editPlaylistVideos = async({
   }
 };
 
+export const fetchPlaylistsContaining = async({ videoId }) => {
+  try {
+    const { data: playlists } = await request.get(
+      `${URL}/playlist/containing?videoId=${videoId}`
+    );
+    return Promise.resolve(playlists);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const likeContent = async({ id, type, dispatch }) => {
   try {
     const {

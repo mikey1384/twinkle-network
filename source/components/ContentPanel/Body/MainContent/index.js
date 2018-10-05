@@ -10,6 +10,7 @@ import Profile from './Profile';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
 import AlreadyPosted from './AlreadyPosted';
+import TagStatus from './TagStatus';
 
 MainContent.propTypes = {
   contentObj: PropTypes.object,
@@ -69,18 +70,7 @@ export default function MainContent({
               difficulty={contentObj.difficulty}
             />
           )}
-        {type === 'video' && (
-          <div
-            style={{
-              display: 'flex',
-              padding: '0 1rem'
-            }}
-          >
-            <a style={{ fontWeight: 'bold', cursor: 'pointer' }}>
-              + Add to Playlists
-            </a>
-          </div>
-        )}
+        {type === 'video' && <TagStatus contentId={contentObj.contentId} />}
         <div
           style={{
             marginTop: '1rem',

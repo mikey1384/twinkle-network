@@ -198,6 +198,16 @@ export function finalizeEmoji(string) {
   return addEmoji(emojifiedString);
 }
 
+export function hashfy(string) {
+  const stringArray = string.split(' ');
+  const hashedString =
+    '#' +
+    stringArray
+      .map(string => string.charAt(0).toUpperCase() + string.slice(1))
+      .join('');
+  return hashedString;
+}
+
 export function processedQueryString(string) {
   return string
     ? string
