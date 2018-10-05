@@ -10,6 +10,8 @@ export default class ChatInput extends Component {
     onMessageSubmit: PropTypes.func.isRequired
   };
 
+  Textarea = {};
+
   state = {
     message: ''
   };
@@ -47,7 +49,7 @@ export default class ChatInput extends Component {
     const enterKeyPressed = event.keyCode === 13;
     const { onKeyDown } = this.props;
     const { message } = this.state;
-    const clientHeight = (this.Textarea || {}).clientHeight;
+    const clientHeight = this.Textarea.clientHeight;
     setTimeout(() => onKeyDown(clientHeight), 100);
 
     if (enterKeyPressed && !shiftKeyPressed) {
