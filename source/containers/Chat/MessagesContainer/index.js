@@ -134,7 +134,7 @@ class MessagesContainer extends Component {
         <div className={className}>
           {loading && <Loading />}
           <div
-            ref={ref => (this.messagesContainer = ref)}
+            ref={ref => (this.messagesContainer = ref || {})}
             style={{
               position: 'absolute',
               left: '0',
@@ -154,7 +154,7 @@ class MessagesContainer extends Component {
           >
             <div
               ref={ref => {
-                this.content = ref;
+                this.content = ref || {};
               }}
               style={{ width: '100%' }}
             >
@@ -185,7 +185,7 @@ class MessagesContainer extends Component {
               )}
               <div
                 ref={ref => {
-                  this.messages = ref;
+                  this.messages = ref || {};
                 }}
               >
                 {this.renderMessages()}
