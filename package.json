@@ -7,15 +7,12 @@
   "description": "Twinkle: educational social network",
   "main": "index.js",
   "scripts": {
-    "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./source pm2 start index.js -i max",
-    "reload": "sudo pm2 reload index.js",
-    "stop": "sudo pm2 stop index.js",
     "dev": "cross-env NODE_PATH=$NODE_PATH:./source PORT=3000 node .",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.config.js",
-    "test": "node scripts/test.js --env=jsdom",
-    "startapi": "sudo NODE_ENV=production forever -o api_out.log -e api_err.log start api",
-    "stopapi": "sudo forever stop api",
-    "devapi": "NODE_PATH=$NODE_PATH:./source PORT=3500 nodemon api"
+    "reload": "sudo pm2 reload index.js",
+    "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./source pm2 start index.js -i max",
+    "stop": "sudo pm2 stop index.js",
+    "test": "node scripts/test.js --env=jsdom"
   },
   "dependencies": {
     "@babel/core": "^7.1.2",
