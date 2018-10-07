@@ -6,8 +6,9 @@ import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 export default class ChatInput extends Component {
   static propTypes = {
     currentChannelId: PropTypes.number.isRequired,
-    onKeyDown: PropTypes.func.isRequired,
-    onMessageSubmit: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    onMessageSubmit: PropTypes.func.isRequired,
+    resetTextAreaHeight: PropTypes.func.isRequired
   };
 
   Textarea = {};
@@ -33,7 +34,7 @@ export default class ChatInput extends Component {
         placeholder="Type a message..."
         onKeyDown={this.onKeyDown}
         value={this.state.message}
-        onChange={event => this.setState({ message: event.target.value })}
+        onChange={this.onChange}
         onKeyUp={event => {
           if (event.key === ' ') {
             this.setState({ message: addEmoji(event.target.value) });
@@ -44,14 +45,23 @@ export default class ChatInput extends Component {
     );
   }
 
+  onChange = event => {
+    const { onChange, resetTextAreaHeight } = this.props;
+    if (event.target.value.length === 0) {
+      resetTextAreaHeight();
+    } else {
+      setTimeout(() => {
+        const clientHeight = this.Textarea.clientHeight;
+        if (this.state.message.length > 0) onChange(clientHeight);
+      }, 100);
+    }
+    this.setState({ message: event.target.value });
+  };
+
   onKeyDown = event => {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
-    const { onKeyDown } = this.props;
     const { message } = this.state;
-    const clientHeight = this.Textarea.clientHeight;
-    setTimeout(() => onKeyDown(clientHeight), 100);
-
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault();
       if (stringIsEmpty(message)) return;

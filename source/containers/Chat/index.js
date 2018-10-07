@@ -391,11 +391,12 @@ class Chat extends Component {
           <ChatInput
             currentChannelId={this.props.currentChannel.id}
             onMessageSubmit={this.onMessageSubmit}
-            onKeyDown={height => {
+            onChange={height => {
               if (height !== this.state.textAreaHeight) {
                 this.setState({ textAreaHeight: height > 46 ? height : 0 });
               }
             }}
+            resetTextAreaHeight={() => this.setState({ textAreaHeight: 0 })}
           />
         </div>
       </div>
@@ -554,6 +555,7 @@ class Chat extends Component {
       partnerId,
       subjectId
     } = this.props;
+    this.setState({ textAreaHeight: 0 });
     let isFirstDirectMessage = currentChannel.id === 0;
     if (isFirstDirectMessage) {
       return sendFirstDirectMessage({ message, userId, partnerId }).then(
