@@ -14,26 +14,23 @@ class TagInput extends Component {
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     onClickOutSide: PropTypes.func.isRequired,
+    placeholder: PropTypes.string.isRequired,
     searchResults: PropTypes.array.isRequired,
-    selectedUsers: PropTypes.array.isRequired,
+    selectedItems: PropTypes.object.isRequired,
     style: PropTypes.object,
-    onAddUser: PropTypes.func.isRequired
+    onAddItem: PropTypes.func.isRequired
   };
 
   handleClickOutside = event => {
     this.props.onClickOutSide();
   };
 
-  constructor() {
-    super();
-    this.state = {
-      indexToHighlight: 0
-    };
-    this.onKeyDown = this.onKeyDown.bind(this);
-  }
+  state = {
+    indexToHighlight: 0
+  };
 
   render() {
-    const { className, style } = this.props;
+    const { className, placeholder, style } = this.props;
     return (
       <div
         className={`${css`
@@ -62,7 +59,7 @@ class TagInput extends Component {
         <Input
           autoFocus={this.props.autoFocus}
           value={this.props.value}
-          placeholder="Search and select people you want to chat with"
+          placeholder={placeholder}
           onChange={text => this.props.onChange(text)}
           onKeyDown={this.onKeyDown}
         />
@@ -71,25 +68,16 @@ class TagInput extends Component {
     );
   }
 
-  renderDropdownList() {
-    let { searchResults, selectedUsers } = this.props;
-    searchResults = searchResults.filter(user => {
-      let result = true;
-      for (let i = 0; i < selectedUsers.length; i++) {
-        if (selectedUsers[i].userId === user.id) {
-          result = false;
-          break;
-        }
-      }
-      return result;
-    });
+  renderDropdownList = () => {
+    let { searchResults, selectedItems } = this.props;
+    searchResults = searchResults.filter(user => !selectedItems[user.id]);
     return searchResults.length > 0 ? (
       <SearchDropdown
         searchResults={searchResults}
         onUpdate={() => this.setState({ indexToHighlight: 0 })}
         onUnmount={() => this.setState({ indexToHighlight: 0 })}
         indexToHighlight={this.state.indexToHighlight}
-        onItemClick={user => this.props.onAddUser(user)}
+        onItemClick={user => this.props.onAddItem(user)}
         renderItemLabel={item => (
           <span>
             {item.username}{' '}
@@ -98,20 +86,11 @@ class TagInput extends Component {
         )}
       />
     ) : null;
-  }
+  };
 
-  onKeyDown(event) {
-    let { searchResults, selectedUsers } = this.props;
-    searchResults = searchResults.filter(user => {
-      let result = true;
-      for (let i = 0; i < selectedUsers.length; i++) {
-        if (selectedUsers[i].userId === user.id) {
-          result = false;
-          break;
-        }
-      }
-      return result;
-    });
+  onKeyDown = event => {
+    let { searchResults, selectedItems } = this.props;
+    searchResults = searchResults.filter(user => !selectedItems[user.id]);
     const { indexToHighlight } = this.state;
     let index = indexToHighlight;
     if (searchResults.length > 0) {
@@ -130,10 +109,10 @@ class TagInput extends Component {
       if (event.keyCode === 13) {
         event.preventDefault();
         let user = searchResults[index];
-        this.props.onAddUser(user);
+        this.props.onAddItem(user);
       }
     }
-  }
+  };
 }
 
 export default onClickOutside(TagInput);

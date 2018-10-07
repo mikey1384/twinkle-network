@@ -9,7 +9,7 @@ import UsernameText from './Texts/UsernameText';
 import { cleanString } from 'helpers/stringHelpers';
 import Link from 'components/Link';
 import FullTextReveal from 'components/FullTextReveal';
-import { textIsOverflown } from 'helpers/domHelpers';
+import { textIsOverflown } from 'helpers';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Icon from 'components/Icon';

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import TagPeopleForm from 'components/TagPeopleForm';
+import TagForm from 'components/TagForm';
 import { connect } from 'react-redux';
 import {
   clearUserSearchResults,
@@ -41,15 +41,17 @@ class InviteUsersModal extends Component {
       <Modal onHide={onHide}>
         <header>Invite people to this channel</header>
         <main>
-          <TagPeopleForm
+          <TagForm
+            title="People"
             searchResults={searchResults}
             filter={result => currentMembersUID.indexOf(result.id) === -1}
             onSearch={searchUserToInvite}
             onClear={clearSearchResults}
-            selectedUsers={selectedUsers}
-            onAddUser={this.onAddUser}
-            onRemoveUser={this.onRemoveUser}
+            onAddItem={this.onAddUser}
+            onRemoveItem={this.onRemoveUser}
             onSubmit={selectedUsers.length > 0 && this.onDone}
+            searchPlaceholder="Search for people you want to chat with"
+            selectedItems={selectedUsers}
           />
         </main>
         <footer>
@@ -71,22 +73,16 @@ class InviteUsersModal extends Component {
   onAddUser = user => {
     const { selectedUsers } = this.state;
     this.setState({
-      selectedUsers: selectedUsers.concat([
-        {
-          userId: user.id,
-          username: user.username
-        }
-      ])
+      selectedUsers: selectedUsers.concat([user])
     });
   };
 
-  onRemoveUser = user => {
-    const { selectedUsers } = this.state;
-    this.setState({
-      selectedUsers: selectedUsers.filter(
-        selectedUser => selectedUser.userId !== user.userId
+  onRemoveUser = userId => {
+    this.setState(state => ({
+      selectedUsers: state.selectedUsers.filter(
+        selectedUser => selectedUser.id !== userId
       )
-    });
+    }));
   };
 
   onDone = async() => {
@@ -96,7 +92,7 @@ class InviteUsersModal extends Component {
       selectedUsers,
       channelId: currentChannel.id
     });
-    onDone(selectedUsers.map(user => user.userId), message);
+    onDone(selectedUsers.map(user => user.id), message);
   };
 }
 

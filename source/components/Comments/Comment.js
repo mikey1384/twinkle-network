@@ -13,10 +13,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/Buttons/LikeButton';
-import {
-  determineXpButtonDisabled,
-  scrollElementToCenter
-} from 'helpers/domHelpers';
+import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
 import { commentContainer } from './Styles';

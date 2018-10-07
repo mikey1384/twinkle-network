@@ -4,7 +4,7 @@ import Context from './Context';
 import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
 import Button from 'components/Button';
-import { scrollElementToCenter } from 'helpers/domHelpers';
+import { scrollElementToCenter } from 'helpers';
 import {
   deleteContent,
   loadComments,

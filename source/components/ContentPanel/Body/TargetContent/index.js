@@ -18,7 +18,7 @@ import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
-import { determineXpButtonDisabled } from 'helpers/domHelpers';
+import { determineXpButtonDisabled } from 'helpers';
 import { uploadComment } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 

@@ -19,7 +19,7 @@ import RewardStatus from 'components/RewardStatus';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
 import DifficultyModal from 'components/Modals/DifficultyModal';
-import { determineXpButtonDisabled } from 'helpers/domHelpers';
+import { determineXpButtonDisabled } from 'helpers';
 import {
   deleteContent,
   editContent,

@@ -8,7 +8,7 @@ import LongText from 'components/Texts/LongText';
 import { timeSince } from 'helpers/timeStampHelpers';
 import UserListModal from 'components/Modals/UserListModal';
 import FullTextReveal from 'components/FullTextReveal';
-import { determineXpButtonDisabled, textIsOverflown } from 'helpers/domHelpers';
+import { determineXpButtonDisabled, textIsOverflown } from 'helpers';
 import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
 import XPRewardInterface from 'components/XPRewardInterface';

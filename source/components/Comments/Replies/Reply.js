@@ -13,7 +13,7 @@ import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/Buttons/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
-import { determineXpButtonDisabled } from 'helpers/domHelpers';
+import { determineXpButtonDisabled } from 'helpers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
 import { commentContainer } from '../Styles';

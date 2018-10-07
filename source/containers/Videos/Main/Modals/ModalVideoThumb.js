@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { cleanString } from 'helpers/stringHelpers';
 import FullTextReveal from 'components/FullTextReveal';
-import { textIsOverflown } from 'helpers/domHelpers';
+import { textIsOverflown } from 'helpers';
 import VideoThumbImage from 'components/VideoThumbImage';
 import { Color } from 'constants/css';
 

@@ -12,7 +12,7 @@ import {
   changeChatSubject,
   searchChatSubject
 } from 'redux/actions/ChatActions';
-import { textIsOverflown } from 'helpers/domHelpers';
+import { textIsOverflown } from 'helpers';
 import FullTextReveal from 'components/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import { timeSince } from 'helpers/timeStampHelpers';

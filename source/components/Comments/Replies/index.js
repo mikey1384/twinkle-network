@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Context from '../Context';
 import withContext from 'components/Wrappers/withContext';
 import Reply from './Reply';
-import { scrollElementToCenter } from 'helpers/domHelpers';
+import { scrollElementToCenter } from 'helpers';
 import Button from 'components/Button';
 import { URL } from 'constants/URL';
 import request from 'axios';

@@ -7,7 +7,7 @@ import {
   clearUserSearchResults
 } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
-import TagPeopleForm from 'components/TagPeopleForm';
+import TagForm from 'components/TagForm';
 import Input from 'components/Texts/Input';
 
 class CreateNewChannelModal extends Component {
@@ -38,15 +38,17 @@ class CreateNewChannelModal extends Component {
       <Modal onHide={this.props.onHide}>
         <header>New Chat</header>
         <main>
-          <TagPeopleForm
+          <TagForm
+            title="People"
             searchResults={searchResults}
             filter={result => result.id !== userId}
             onSearch={searchUserToInvite}
             onClear={clearSearchResults}
             channelName={channelName}
-            selectedUsers={selectedUsers}
-            onAddUser={this.onAddUser}
-            onRemoveUser={this.onRemoveUser}
+            onAddItem={this.onAddUser}
+            onRemoveItem={this.onRemoveUser}
+            searchPlaceholder="Search for people you want to chat with"
+            selectedItems={selectedUsers}
           >
             {selectedUsers.length > 1 && (
               <div style={{ marginTop: '1.5rem' }}>
@@ -59,7 +61,7 @@ class CreateNewChannelModal extends Component {
                 />
               </div>
             )}
-          </TagPeopleForm>
+          </TagForm>
         </main>
         <footer>
           <Button
@@ -83,22 +85,16 @@ class CreateNewChannelModal extends Component {
   onAddUser = user => {
     const { selectedUsers } = this.state;
     this.setState({
-      selectedUsers: selectedUsers.concat([
-        {
-          userId: user.id,
-          username: user.username
-        }
-      ])
+      selectedUsers: selectedUsers.concat([user])
     });
   };
 
-  onRemoveUser = user => {
-    const { selectedUsers } = this.state;
-    this.setState({
-      selectedUsers: selectedUsers.filter(
-        selectedUser => selectedUser.userId !== user.userId
+  onRemoveUser = userId => {
+    this.setState(state => ({
+      selectedUsers: state.selectedUsers.filter(
+        selectedUser => selectedUser.id !== userId
       )
-    });
+    }));
   };
 
   onChannelNameInput = value => {

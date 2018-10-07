@@ -14,7 +14,7 @@ import Button from 'components/Button';
 import ChatSearchBox from './ChatSearchBox';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { textIsOverflown } from 'helpers/domHelpers';
+import { textIsOverflown } from 'helpers';
 import FullTextReveal from 'components/FullTextReveal';
 import { socket } from 'constants/io';
 import { queryStringForArray } from 'helpers/stringHelpers';

@@ -14,18 +14,25 @@ export default class AlreadyPosted extends Component {
     videoCode: PropTypes.string
   };
 
+  mounted = false;
+
   state = {
     existingContent: {}
   };
 
   async componentDidMount() {
+    this.mounted = true;
     const { type, url, videoCode } = this.props;
     const { content: existingContent } = await checkIfContentExists({
       type,
       url,
       videoCode
     });
-    this.setState({ existingContent });
+    if (this.mounted) this.setState({ existingContent });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {

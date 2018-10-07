@@ -5,7 +5,7 @@ import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
 import Input from 'components/Texts/Input';
-import { scrollElementToCenter } from 'helpers/domHelpers';
+import { scrollElementToCenter } from 'helpers';
 import {
   exceedsCharLimit,
   isValidUrl,

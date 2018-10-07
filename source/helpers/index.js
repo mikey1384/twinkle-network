@@ -1,5 +1,13 @@
 import { returnMaxStars } from 'constants/defaultValues';
 
+export function objectify(array) {
+  const result = {};
+  for (let elem of array) {
+    result[elem.id] = elem;
+  }
+  return result;
+}
+
 export function scrollElementToCenter(element) {
   if (!element) return;
   let offsetTop = 0;

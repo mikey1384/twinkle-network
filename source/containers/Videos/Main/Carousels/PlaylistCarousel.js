@@ -6,7 +6,7 @@ import VideoThumb from 'components/VideoThumb';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTitleForm from 'components/Texts/EditTitleForm';
 import EditPlaylistModal from '../Modals/EditPlaylistModal';
-import PlaylistModal from '../Modals/PlaylistModal';
+import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import { addEvent } from 'helpers/listenerHelpers';
 import {
