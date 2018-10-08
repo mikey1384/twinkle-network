@@ -2,6 +2,7 @@
   "presets": ["@babel/env", "@babel/react"],
   "plugins": [
     "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-optional-chaining",
     "emotion",
     "dynamic-import-webpack",
     "react-hot-loader/babel"

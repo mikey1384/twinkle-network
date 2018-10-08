@@ -1,5 +1,3 @@
-/* global FileReader */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';

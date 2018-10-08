@@ -1,4 +1,3 @@
-/* global localStorage */
 import { logout, openSigninModal } from 'redux/actions/UserActions';
 import request from 'axios';
 import { URL } from 'constants/URL';

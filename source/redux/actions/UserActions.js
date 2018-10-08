@@ -1,5 +1,3 @@
-/* global localStorage */
-
 import request from 'axios';
 import { token, auth, handleError } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';
