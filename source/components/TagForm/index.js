@@ -7,6 +7,7 @@ import Tag from './Tag';
 
 export default class TagForm extends Component {
   static propTypes = {
+    itemLabel: PropTypes.string.isRequired,
     searchPlaceholder: PropTypes.string.isRequired,
     searchResults: PropTypes.array.isRequired,
     selectedItems: PropTypes.array.isRequired,
@@ -21,6 +22,8 @@ export default class TagForm extends Component {
       PropTypes.node
     ]),
     onSubmit: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    renderDropdownLabel: PropTypes.func.isRequired,
+    renderTagLabel: PropTypes.func,
     title: PropTypes.string
   };
 
@@ -43,6 +46,7 @@ export default class TagForm extends Component {
       filter,
       onSubmit,
       children,
+      renderDropdownLabel,
       searchPlaceholder,
       title
     } = this.props;
@@ -53,14 +57,14 @@ export default class TagForm extends Component {
         style={{ width: '70%' }}
         onSubmit={event => {
           event.preventDefault();
-          onSubmit && onSubmit();
+          onSubmit?.();
         }}
       >
         <div style={{ width: '100%' }}>
           {title && <h3>{title}</h3>}
           {this.renderTags()}
           <TagInput
-            style={{ marginTop: '1rem' }}
+            style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
             autoFocus
             value={searchText}
             onChange={this.onItemSearch}
@@ -69,6 +73,7 @@ export default class TagForm extends Component {
               onClear();
             }}
             placeholder={searchPlaceholder}
+            renderDropdownLabel={renderDropdownLabel}
             searchResults={filteredResults}
             selectedItems={objectify(selectedItems)}
             onAddItem={this.onAddItem}
@@ -80,11 +85,16 @@ export default class TagForm extends Component {
   }
 
   renderTags = () => {
-    const { selectedItems, onRemoveItem } = this.props;
+    const {
+      itemLabel,
+      selectedItems,
+      onRemoveItem,
+      renderTagLabel
+    } = this.props;
     return selectedItems.length > 0 ? (
       <div
         style={{
-          margin: '1rem 0'
+          marginTop: '1rem'
         }}
       >
         {selectedItems.map((item, index) => {
@@ -92,8 +102,9 @@ export default class TagForm extends Component {
             <Tag
               key={item.id}
               index={index}
-              label={item.username}
+              label={item[itemLabel]}
               onClick={() => onRemoveItem(item.id)}
+              renderTagLabel={renderTagLabel}
             />
           );
         })}

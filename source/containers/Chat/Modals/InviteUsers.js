@@ -43,6 +43,7 @@ class InviteUsersModal extends Component {
         <main>
           <TagForm
             title="People"
+            itemLabel="username"
             searchResults={searchResults}
             filter={result => currentMembersUID.indexOf(result.id) === -1}
             onSearch={searchUserToInvite}
@@ -50,6 +51,12 @@ class InviteUsersModal extends Component {
             onAddItem={this.onAddUser}
             onRemoveItem={this.onRemoveUser}
             onSubmit={selectedUsers.length > 0 && this.onDone}
+            renderDropdownLabel={item => (
+              <span>
+                {item.username}{' '}
+                {item.realName && <small>{`(${item.realName})`}</small>}
+              </span>
+            )}
             searchPlaceholder="Search for people you want to chat with"
             selectedItems={selectedUsers}
           />

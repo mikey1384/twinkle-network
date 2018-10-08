@@ -27,6 +27,23 @@ export function handleError(error, dispatch) {
   return Promise.reject(error);
 }
 
+export const addVideoToPlaylists = async({
+  dispatch,
+  videoId,
+  playlistIds
+}) => {
+  try {
+    await request.post(
+      `${URL}/playlist/videoToPlaylists`,
+      { videoId, playlistIds },
+      auth()
+    );
+    return Promise.resolve();
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const checkIfContentExists = async({ url, videoCode, type }) => {
   try {
     const {

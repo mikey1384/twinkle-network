@@ -18,7 +18,8 @@ class TagInput extends Component {
     searchResults: PropTypes.array.isRequired,
     selectedItems: PropTypes.object.isRequired,
     style: PropTypes.object,
-    onAddItem: PropTypes.func.isRequired
+    onAddItem: PropTypes.func.isRequired,
+    renderDropdownLabel: PropTypes.func
   };
 
   handleClickOutside = event => {
@@ -69,21 +70,21 @@ class TagInput extends Component {
   }
 
   renderDropdownList = () => {
-    let { searchResults, selectedItems } = this.props;
-    searchResults = searchResults.filter(user => !selectedItems[user.id]);
+    let {
+      onAddItem,
+      renderDropdownLabel,
+      searchResults,
+      selectedItems
+    } = this.props;
+    searchResults = searchResults.filter(item => !selectedItems[item.id]);
     return searchResults.length > 0 ? (
       <SearchDropdown
         searchResults={searchResults}
         onUpdate={() => this.setState({ indexToHighlight: 0 })}
         onUnmount={() => this.setState({ indexToHighlight: 0 })}
         indexToHighlight={this.state.indexToHighlight}
-        onItemClick={user => this.props.onAddItem(user)}
-        renderItemLabel={item => (
-          <span>
-            {item.username}{' '}
-            {item.realName && <small>{`(${item.realName})`}</small>}
-          </span>
-        )}
+        onItemClick={onAddItem}
+        renderItemLabel={renderDropdownLabel}
       />
     ) : null;
   };

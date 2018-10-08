@@ -40,6 +40,7 @@ class CreateNewChannelModal extends Component {
         <main>
           <TagForm
             title="People"
+            itemLabel="username"
             searchResults={searchResults}
             filter={result => result.id !== userId}
             onSearch={searchUserToInvite}
@@ -47,6 +48,12 @@ class CreateNewChannelModal extends Component {
             channelName={channelName}
             onAddItem={this.onAddUser}
             onRemoveItem={this.onRemoveUser}
+            renderDropdownLabel={item => (
+              <span>
+                {item.username}{' '}
+                {item.realName && <small>{`(${item.realName})`}</small>}
+              </span>
+            )}
             searchPlaceholder="Search for people you want to chat with"
             selectedItems={selectedUsers}
           >

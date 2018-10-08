@@ -5,25 +5,28 @@ import { borderRadius } from 'constants/css';
 Tag.propTypes = {
   index: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  renderTagLabel: PropTypes.func
 };
-export default function Tag({ index, label, onClick }) {
+export default function Tag({ index, label, onClick, renderTagLabel }) {
   return (
-    <span
+    <div
       style={{
-        marginLeft: index > 0 && '0.5rem',
+        marginRight: '0.5rem',
+        marginBottom: '1rem',
         backgroundColor: '#18aae0',
+        display: 'inline-block',
         color: '#fff',
-        paddingTop: '3px',
-        paddingBottom: '3px',
-        paddingLeft: '8px',
-        paddingRight: '8px',
+        paddingTop: '0.5rem',
+        paddingBottom: '0.5rem',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
         borderRadius,
         cursor: 'pointer'
       }}
       onClick={onClick}
     >
-      {label} &times;
-    </span>
+      {renderTagLabel?.(label) || label} &times;
+    </div>
   );
 }

@@ -16,7 +16,7 @@ class Content extends Component {
 
   handleClickOutside = event => {
     if (this.state.innerClicked) return this.setState({ innerClicked: false });
-    this.props.onHide();
+    this.props.onHide?.();
   };
   render() {
     return (
