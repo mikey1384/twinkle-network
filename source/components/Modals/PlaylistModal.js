@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Playlist from 'components/Playlist';
+import Link from 'components/Link';
 
 export default class PlaylistModal extends Component {
   static propTypes = {
@@ -15,7 +16,11 @@ export default class PlaylistModal extends Component {
     const { onHide, playlistId, title } = this.props;
     return (
       <Modal onHide={onHide}>
-        <header>{title}</header>
+        <header>
+          <Link style={{ fontSize: '2.5rem' }} to={`/playlists/${playlistId}`}>
+            {title}
+          </Link>
+        </header>
         <main>
           <Playlist playlistId={playlistId} />
         </main>

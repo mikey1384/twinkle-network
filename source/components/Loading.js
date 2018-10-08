@@ -4,17 +4,11 @@ import Spinner from 'components/Spinner';
 import { css } from 'emotion';
 
 Loading.propTypes = {
-  relative: PropTypes.bool,
   className: PropTypes.string,
   style: PropTypes.object,
   text: PropTypes.string
 };
-export default function Loading({
-  relative,
-  className,
-  text = '',
-  style = {}
-}) {
+export default function Loading({ className, text = '', style = {} }) {
   return (
     <div
       className={`${css`

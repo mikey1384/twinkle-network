@@ -30,12 +30,19 @@ export default class TagForm extends Component {
   timer = null;
 
   state = {
+    loading: false,
     searchText: ''
   };
 
   componentWillUnmount() {
     const { onClear } = this.props;
     onClear();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.searchResults !== this.props.searchResults) {
+      this.setState({ loading: false });
+    }
   }
 
   render() {
@@ -50,6 +57,7 @@ export default class TagForm extends Component {
       searchPlaceholder,
       title
     } = this.props;
+    const { loading } = this.state;
     const { searchText } = this.state;
     const filteredResults = searchResults.filter(filter);
     return (
@@ -66,6 +74,7 @@ export default class TagForm extends Component {
           <TagInput
             style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
             autoFocus
+            loading={loading}
             value={searchText}
             onChange={this.onItemSearch}
             onClickOutSide={() => {
@@ -115,7 +124,7 @@ export default class TagForm extends Component {
   onItemSearch = text => {
     const { onSearch, onClear } = this.props;
     clearTimeout(this.timer);
-    this.setState({ searchText: text });
+    this.setState({ searchText: text, loading: true });
     if (stringIsEmpty(text) || text.length < 2) {
       return onClear();
     }

@@ -44,6 +44,9 @@ class TagStatus extends Component {
     return (
       <div
         className={css`
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          word-break: break-word;
           a {
             font-weight: bold;
             cursor: pointer;
@@ -54,7 +57,7 @@ class TagStatus extends Component {
           <div style={{ padding: '0 1rem' }}>
             {playlists.map((playlist, index) => (
               <a
-                style={{ marginLeft: index !== 0 ? '0.5rem' : 0 }}
+                style={{ marginRight: '0.5rem' }}
                 key={playlist.id}
                 onClick={() =>
                   this.setState({
@@ -69,7 +72,6 @@ class TagStatus extends Component {
             {canEditPlaylists && (
               <a
                 style={{
-                  marginLeft: playlists.length > 0 ? '1rem' : 0,
                   color: playlists.length > 0 ? Color.orange() : Color.blue()
                 }}
                 onClick={() => this.setState({ tagModalShown: true })}

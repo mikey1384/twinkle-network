@@ -6,11 +6,13 @@ import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import Loading from 'components/Loading';
 
 class TagInput extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
     className: PropTypes.string,
+    loading: PropTypes.bool,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     onClickOutSide: PropTypes.func.isRequired,
@@ -31,12 +33,10 @@ class TagInput extends Component {
   };
 
   render() {
-    const { className, placeholder, style } = this.props;
+    const { loading, className, placeholder, style } = this.props;
     return (
       <div
         className={`${css`
-          display: flex;
-          align-items: center;
           height: 4.3rem;
           position: relative;
           .addon {
@@ -54,16 +54,19 @@ class TagInput extends Component {
         `} ${className}`}
         style={style}
       >
-        <div className="addon" style={{ background: Color.borderGray() }}>
-          <Icon icon="search" />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div className="addon" style={{ background: Color.borderGray() }}>
+            <Icon icon="search" />
+          </div>
+          <Input
+            autoFocus={this.props.autoFocus}
+            value={this.props.value}
+            placeholder={placeholder}
+            onChange={text => this.props.onChange(text)}
+            onKeyDown={this.onKeyDown}
+          />
         </div>
-        <Input
-          autoFocus={this.props.autoFocus}
-          value={this.props.value}
-          placeholder={placeholder}
-          onChange={text => this.props.onChange(text)}
-          onKeyDown={this.onKeyDown}
-        />
+        {loading && <Loading style={{ position: 'absolute', top: '1rem' }} />}
         {this.renderDropdownList()}
       </div>
     );
