@@ -98,13 +98,19 @@ export default class TagForm extends Component {
         </form>
         {addPlaylistModalShown && (
           <AddPlaylistModal
-            postPlaylist={() => this.setState({ addPlaylistModalShown: false })}
+            postPlaylist={this.onAddPlaylist}
             onHide={() => this.setState({ addPlaylistModalShown: false })}
           />
         )}
       </>
     );
   }
+
+  onAddPlaylist = playlist => {
+    const { onAddItem } = this.props;
+    onAddItem(playlist);
+    this.setState({ addPlaylistModalShown: false });
+  };
 
   renderTags = () => {
     const {
