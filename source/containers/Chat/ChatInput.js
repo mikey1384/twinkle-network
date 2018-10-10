@@ -23,7 +23,7 @@ export default class ChatInput extends Component {
   }
 
   render() {
-    const { message } = this.props;
+    const { message, onChange } = this.props;
     return (
       <Textarea
         innerRef={ref => {
@@ -36,7 +36,7 @@ export default class ChatInput extends Component {
         onChange={this.onChange}
         onKeyUp={event => {
           if (event.key === ' ') {
-            this.setState({ message: addEmoji(event.target.value) });
+            onChange(addEmoji(event.target.value));
           }
         }}
         autoFocus
@@ -65,12 +65,12 @@ export default class ChatInput extends Component {
   onKeyDown = event => {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
-    const { message } = this.props;
+    const { message, onChange } = this.props;
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault();
       if (stringIsEmpty(message)) return;
       this.props.onMessageSubmit(finalizeEmoji(message));
-      this.setState({ message: '' });
+      onChange('');
     }
   };
 }
