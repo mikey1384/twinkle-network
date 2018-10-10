@@ -6,16 +6,14 @@ import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 export default class ChatInput extends Component {
   static propTypes = {
     currentChannelId: PropTypes.number.isRequired,
+    message: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    onHeightChange: PropTypes.func.isRequired,
     onMessageSubmit: PropTypes.func.isRequired,
     resetTextAreaHeight: PropTypes.func.isRequired
   };
 
   Textarea = {};
-
-  state = {
-    message: ''
-  };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.currentChannelId !== this.props.currentChannelId) {
@@ -25,6 +23,7 @@ export default class ChatInput extends Component {
   }
 
   render() {
+    const { message } = this.props;
     return (
       <Textarea
         innerRef={ref => {
@@ -33,7 +32,7 @@ export default class ChatInput extends Component {
         minRows={1}
         placeholder="Type a message..."
         onKeyDown={this.onKeyDown}
-        value={this.state.message}
+        value={message}
         onChange={this.onChange}
         onKeyUp={event => {
           if (event.key === ' ') {
@@ -46,16 +45,16 @@ export default class ChatInput extends Component {
   }
 
   onChange = event => {
-    const { onChange, resetTextAreaHeight } = this.props;
+    const { onChange, onHeightChange, resetTextAreaHeight } = this.props;
     if (event.target.value.length === 0) {
       resetTextAreaHeight();
     } else {
       setTimeout(() => {
         const clientHeight = this.Textarea.clientHeight;
-        if (this.state.message.length > 0) onChange(clientHeight);
+        if (this.state.message.length > 0) onHeightChange({ clientHeight });
       }, 100);
     }
-    this.setState({ message: event.target.value });
+    onChange(event.target.value);
   };
 
   onKeyDown = event => {

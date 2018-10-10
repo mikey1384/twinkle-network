@@ -5,10 +5,16 @@ import { css } from 'emotion';
 
 Loading.propTypes = {
   className: PropTypes.string,
+  innerStyle: PropTypes.object,
   style: PropTypes.object,
   text: PropTypes.string
 };
-export default function Loading({ className, text = '', style = {} }) {
+export default function Loading({
+  className,
+  text = '',
+  innerStyle = {},
+  style = {}
+}) {
   return (
     <div
       className={`${css`
@@ -24,7 +30,8 @@ export default function Loading({ className, text = '', style = {} }) {
           height: '100%',
           justifyContent: 'center',
           alignItems: 'center',
-          fontSize: '2.8rem'
+          fontSize: '2.8rem',
+          ...innerStyle
         }}
       >
         <Spinner />

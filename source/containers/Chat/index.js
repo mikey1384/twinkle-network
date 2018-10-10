@@ -22,6 +22,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { chatStyle, channelContainer } from './Styles';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
+import Loading from 'components/Loading';
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -56,6 +57,7 @@ class Chat extends Component {
     receiveMessage: PropTypes.func,
     receiveMessageOnDifferentChannel: PropTypes.func,
     receiveFirstMsg: PropTypes.func,
+    socketConnected: PropTypes.bool,
     editChannelTitle: PropTypes.func,
     hideChat: PropTypes.func,
     leaveChannel: PropTypes.func,
@@ -65,6 +67,7 @@ class Chat extends Component {
   };
 
   state = {
+    chatMessage: '',
     loading: false,
     currentChannelOnlineMembers: [],
     leaveConfirmModalShown: false,
@@ -155,9 +158,11 @@ class Chat extends Component {
       channels,
       currentChannel,
       userId,
-      channelLoadMoreButtonShown
+      channelLoadMoreButtonShown,
+      socketConnected
     } = this.props;
     const {
+      chatMessage,
       loading,
       leaveConfirmModalShown,
       createNewChannelModalShown,
@@ -388,16 +393,28 @@ class Chat extends Component {
             userId={this.props.userId}
             loadMoreMessages={this.props.loadMoreMessages}
           />
-          <ChatInput
-            currentChannelId={this.props.currentChannel.id}
-            onMessageSubmit={this.onMessageSubmit}
-            onChange={height => {
-              if (height !== this.state.textAreaHeight) {
-                this.setState({ textAreaHeight: height > 46 ? height : 0 });
-              }
-            }}
-            resetTextAreaHeight={() => this.setState({ textAreaHeight: 0 })}
-          />
+          {socketConnected ? (
+            <ChatInput
+              onChange={text => this.setState({ chatMessage: text })}
+              message={chatMessage}
+              currentChannelId={this.props.currentChannel.id}
+              onMessageSubmit={this.onMessageSubmit}
+              onHeightChange={height => {
+                if (height !== this.state.textAreaHeight) {
+                  this.setState({ textAreaHeight: height > 46 ? height : 0 });
+                }
+              }}
+              resetTextAreaHeight={() => this.setState({ textAreaHeight: 0 })}
+            />
+          ) : (
+            <div>
+              <Loading
+                style={{ height: '2.5rem' }}
+                innerStyle={{ fontSize: '2rem' }}
+                text="Socket disconnected. Reconnecting..."
+              />
+            </div>
+          )}
         </div>
       </div>
     );
@@ -764,6 +781,7 @@ export default connect(
     channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
     loadMoreButton: state.ChatReducer.loadMoreMessages,
     partnerId: state.ChatReducer.partnerId,
+    socketConnected: state.NotiReducer.socketConnected,
     subjectId: state.ChatReducer.subject.id
   }),
   {

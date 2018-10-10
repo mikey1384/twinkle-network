@@ -6,6 +6,11 @@ import NOTI from '../constants/Noti';
 const API_URL = `${URL}/notification`;
 const appVersion = '0.1.52';
 
+export const changeSocketStatus = connected => ({
+  type: NOTI.CHANGE_SOCKET_STATUS,
+  connected
+});
+
 export const checkVersion = () => async dispatch => {
   try {
     const { data } = await request.get(

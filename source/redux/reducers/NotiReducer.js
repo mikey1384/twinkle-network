@@ -11,11 +11,17 @@ const defaultState = {
   },
   numNewNotis: 0,
   numNewPosts: 0,
+  socketConnected: false,
   totalRewardAmount: 0
 };
 
 export default function NotiReducer(state = defaultState, action) {
   switch (action.type) {
+    case NOTI.CHANGE_SOCKET_STATUS:
+      return {
+        ...state,
+        socketConnected: action.connected
+      };
     case NOTI.CHECK_VERSION:
       return {
         ...state,

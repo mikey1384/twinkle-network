@@ -12,6 +12,7 @@ import {
   resetChat
 } from 'redux/actions/ChatActions';
 import {
+  changeSocketStatus,
   checkVersion,
   notifyChatSubjectChange,
   increaseNumNewPosts,
@@ -34,6 +35,7 @@ class Header extends Component {
   static propTypes = {
     chatLoading: PropTypes.bool,
     chatMode: PropTypes.bool,
+    changeSocketStatus: PropTypes.func,
     checkVersion: PropTypes.func,
     getNumberOfUnreadMessages: PropTypes.func,
     increaseNumNewPosts: PropTypes.func,
@@ -70,13 +72,15 @@ class Header extends Component {
 
   componentDidMount() {
     const {
-      turnChatOff,
       increaseNumNewPosts,
       increaseNumNewNotis,
       increaseNumberOfUnreadMessages,
-      checkVersion
+      checkVersion,
+      changeSocketStatus
     } = this.props;
     socket.on('connect', () => {
+      console.log('connected to socket');
+      changeSocketStatus(true);
       checkVersion();
       if (this.props.userId) {
         socket.emit(
@@ -100,7 +104,8 @@ class Header extends Component {
       if (!this.props.chatMode) increaseNumberOfUnreadMessages();
     });
     socket.on('disconnect', () => {
-      turnChatOff();
+      console.log('disconnected from socket');
+      changeSocketStatus(false);
     });
     socket.on('subject_change', this.onSubjectChange);
     socket.on('new_story_post', increaseNumNewPosts);
@@ -375,6 +380,7 @@ export default connect(
     versionMatch: state.NotiReducer.versionMatch
   }),
   {
+    changeSocketStatus,
     checkVersion,
     getNumberOfUnreadMessages,
     increaseNumNewPosts,
