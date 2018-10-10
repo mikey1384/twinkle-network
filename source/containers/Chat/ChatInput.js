@@ -45,13 +45,18 @@ export default class ChatInput extends Component {
   }
 
   onChange = event => {
-    const { onChange, onHeightChange, resetTextAreaHeight } = this.props;
+    const {
+      message,
+      onChange,
+      onHeightChange,
+      resetTextAreaHeight
+    } = this.props;
     if (event.target.value.length === 0) {
       resetTextAreaHeight();
     } else {
       setTimeout(() => {
         const clientHeight = this.Textarea.clientHeight;
-        if (this.state.message.length > 0) onHeightChange({ clientHeight });
+        if (message.length > 0) onHeightChange({ clientHeight });
       }, 100);
     }
     onChange(event.target.value);
@@ -60,7 +65,7 @@ export default class ChatInput extends Component {
   onKeyDown = event => {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
-    const { message } = this.state;
+    const { message } = this.props;
     if (enterKeyPressed && !shiftKeyPressed) {
       event.preventDefault();
       if (stringIsEmpty(message)) return;
