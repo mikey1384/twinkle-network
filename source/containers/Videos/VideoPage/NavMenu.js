@@ -222,7 +222,11 @@ class NavMenu extends Component {
     await loadMorePlaylistVideos(
       videoId,
       playlistId,
-      queryStringForArray(playlistVideos, 'videoId', 'shownVideos')
+      queryStringForArray({
+        array: playlistVideos,
+        originVar: 'videoId',
+        destinationVar: 'shownVideos'
+      })
     );
     this.setState({ playlistVideosLoading: false });
   };

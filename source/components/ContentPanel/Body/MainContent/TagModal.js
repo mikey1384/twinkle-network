@@ -23,7 +23,7 @@ class TagModal extends Component {
   };
 
   render() {
-    const { currentPlaylists, title, onHide } = this.props;
+    const { currentPlaylists, title, onHide, videoId } = this.props;
     const { searchResults, selectedPlaylists } = this.state;
     return (
       <Modal onHide={onHide}>
@@ -43,10 +43,15 @@ class TagModal extends Component {
             renderTagLabel={label => hashfy(label)}
             searchPlaceholder="Search for playlists here..."
             selectedItems={selectedPlaylists}
+            videoId={videoId}
           />
         </main>
         <footer>
-          <Button primary onClick={this.onSubmit}>
+          <Button
+            disabled={selectedPlaylists.length === 0}
+            primary
+            onClick={this.onSubmit}
+          >
             Done
           </Button>
           <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>

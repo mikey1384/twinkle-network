@@ -23,7 +23,8 @@ class TagInput extends Component {
     style: PropTypes.object,
     onAddItem: PropTypes.func.isRequired,
     renderDropdownLabel: PropTypes.func,
-    showAddPlaylistModal: PropTypes.func.isRequired
+    showAddPlaylistModal: PropTypes.func.isRequired,
+    videoId: PropTypes.number
   };
 
   handleClickOutside = event => {
@@ -54,7 +55,8 @@ class TagInput extends Component {
       placeholder,
       showAddPlaylistModal,
       style,
-      value
+      value,
+      videoId
     } = this.props;
     const { noResults } = this.state;
     return (
@@ -90,7 +92,8 @@ class TagInput extends Component {
           />
         </div>
         {loading && <Loading style={{ position: 'absolute', top: '1rem' }} />}
-        {!loading &&
+        {videoId &&
+          !loading &&
           noResults &&
           !stringIsEmpty(value) &&
           value.length > 1 && (

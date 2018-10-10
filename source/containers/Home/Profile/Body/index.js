@@ -339,7 +339,11 @@ class Body extends Component {
       this.setState({ loading: true });
       try {
         await fetchMoreFeeds({
-          shownFeeds: queryStringForArray(profileFeeds, 'feedId', 'shownFeeds'),
+          shownFeeds: queryStringForArray({
+            array: profileFeeds,
+            originVar: 'feedId',
+            destinationVar: 'shownFeeds'
+          }),
           filter: currentTab,
           username
         });

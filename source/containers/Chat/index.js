@@ -507,7 +507,11 @@ class Chat extends Component {
       this.setState({ channelsLoading: true });
       loadMoreChannels(
         currentChannel.id,
-        queryStringForArray(channels, 'id', 'channelIds')
+        queryStringForArray({
+          array: channels,
+          originVar: 'id',
+          destinationVar: 'channelIds'
+        })
       ).then(() => this.setState({ channelsLoading: false }));
     }
   };

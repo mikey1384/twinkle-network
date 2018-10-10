@@ -74,7 +74,11 @@ export default class SubjectMsgsModal extends Component {
       .get(
         `
       ${API_URL}/chatSubject/messages/more?subjectId=${subjectId}
-      &${queryStringForArray(messages, 'id', 'messageIds')}
+      &${queryStringForArray({
+        array: messages,
+        originVar: 'id',
+        destinationVar: 'messageIds'
+      })}
     `
       )
       .then(({ data: { messages: loadedMsgs, loadMoreButtonShown } }) =>

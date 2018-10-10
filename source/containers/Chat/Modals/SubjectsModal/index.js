@@ -172,7 +172,11 @@ class SubjectsModal extends Component {
         `
       ${API_URL}/chatSubject/modal/more?${
           mineOnly ? `mineOnly=${mineOnly}&` : ''
-        }userId=${userId}&${queryStringForArray(subjects, 'id', 'subjectIds')}
+        }userId=${userId}&${queryStringForArray({
+          array: subjects,
+          originVar: 'id',
+          destinationVar: 'subjectIds'
+        })}
     `
       )
       .then(({ data: { subjects, loadMoreButton } }) =>

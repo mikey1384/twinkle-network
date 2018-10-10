@@ -273,9 +273,9 @@ export function processedURL(url) {
   return url;
 }
 
-export function queryStringForArray(array, originVar, destinationVar) {
+export function queryStringForArray({ array, originVar, destinationVar }) {
   return `${array
-    .map(elem => `${destinationVar}[]=${elem[originVar]}`)
+    .map(elem => `${destinationVar}[]=${originVar ? elem[originVar] : elem}`)
     .join('&')}`;
 }
 

@@ -27,6 +27,7 @@ import { connect } from 'react-redux';
 class AddPlaylistModal extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
+    excludeVideoIds: PropTypes.array,
     onHide: PropTypes.func,
     postPlaylist: PropTypes.func
   };
@@ -47,7 +48,11 @@ class AddPlaylistModal extends Component {
   };
 
   async componentDidMount() {
-    const { results, loadMoreButton } = await loadVideos({ limit: 18 });
+    const { excludeVideoIds = [] } = this.props;
+    const { results, loadMoreButton } = await loadVideos({
+      limit: 18,
+      excludeVideoIds
+    });
     this.setState({
       allVideos: results,
       loadMoreButton

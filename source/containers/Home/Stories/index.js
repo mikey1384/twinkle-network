@@ -292,7 +292,11 @@ class Stories extends Component {
         await fetchMoreFeeds({
           order: displayOrder,
           orderBy: this.categoryObj[category].orderBy,
-          shownFeeds: queryStringForArray(storyFeeds, 'feedId', 'shownFeeds'),
+          shownFeeds: queryStringForArray({
+            array: storyFeeds,
+            originVar: 'feedId',
+            destinationVar: 'shownFeeds'
+          }),
           filter:
             category === 'uploads'
               ? selectedFilter
@@ -380,7 +384,11 @@ class Stories extends Component {
       resetNumNewPosts();
       const data = await loadNewFeeds({
         lastInteraction: storyFeeds[0] ? storyFeeds[0].lastInteraction : 0,
-        shownFeeds: queryStringForArray(storyFeeds, 'feedId', 'shownFeeds')
+        shownFeeds: queryStringForArray({
+          array: storyFeeds,
+          originVar: 'feedId',
+          destinationVar: 'shownFeeds'
+        })
       });
       if (data) fetchNewFeeds(data);
       this.setState({ loadingMore: false });

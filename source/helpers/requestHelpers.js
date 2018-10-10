@@ -221,11 +221,11 @@ export const loadPlaylists = async({ shownPlaylists }) => {
     const {
       data: { results, loadMoreButton }
     } = await request.get(
-      `${URL}/playlist/?${queryStringForArray(
-        shownPlaylists,
-        'id',
-        'shownPlaylists'
-      )}`
+      `${URL}/playlist/?${queryStringForArray({
+        array: shownPlaylists,
+        originVar: 'id',
+        destinationVar: 'shownPlaylists'
+      })}`
     );
     return Promise.resolve({ results, loadMoreButton });
   } catch (error) {
@@ -246,11 +246,21 @@ export const loadPlaylistVideos = async({
     } = await request.get(
       `${URL}/playlist/playlist?playlistId=${playlistId}${
         shownVideos
-          ? '&' + queryStringForArray(shownVideos, 'id', 'shownVideos')
+          ? '&' +
+            queryStringForArray({
+              array: shownVideos,
+              originVar: 'id',
+              destinationVar: 'shownVideos'
+            })
           : ''
       }${
         targetVideos
-          ? '&' + queryStringForArray(targetVideos, 'id', 'targetVideos')
+          ? '&' +
+            queryStringForArray({
+              array: targetVideos,
+              originVar: 'id',
+              destinationVar: 'targetVideos'
+            })
           : ''
       }&limit=${limit}`
     );
@@ -261,12 +271,19 @@ export const loadPlaylistVideos = async({
   }
 };
 
-export const loadVideos = async({ limit, videoId }) => {
+export const loadVideos = async({ limit, videoId, excludeVideoIds = [] }) => {
   try {
     const {
       data: { videos: results, loadMoreButton }
     } = await request.get(
-      `${URL}/video?numberToLoad=${limit}&videoId=${videoId}`
+      `${URL}/video?numberToLoad=${limit}&videoId=${videoId}${
+        excludeVideoIds.length > 0
+          ? `&${queryStringForArray({
+              array: excludeVideoIds,
+              destinationVar: 'excludes'
+            })}`
+          : ''
+      }`
     );
     return Promise.resolve({ results, loadMoreButton });
   } catch (error) {
@@ -303,7 +320,11 @@ export const searchContent = async({
     const { data } = await request.get(
       `${URL}/content/search?filter=${filter}&limit=${limit}&searchText=${searchText}${
         shownResults
-          ? `&${queryStringForArray(shownResults, 'id', 'shownResults')}`
+          ? `&${queryStringForArray({
+              array: shownResults,
+              originVar: 'id',
+              destinationVar: 'shownResults'
+            })}`
           : ''
       }`
     );

@@ -126,7 +126,13 @@ class People extends Component {
     const { loading } = this.state;
     if (!loading) {
       this.setState({ loading: true });
-      await fetchMoreUsers(queryStringForArray(profiles, 'id', 'shownUsers'));
+      await fetchMoreUsers(
+        queryStringForArray({
+          array: profiles,
+          originVar: 'id',
+          destinationVar: 'shownUsers'
+        })
+      );
       this.setState({ loading: false });
     }
   };

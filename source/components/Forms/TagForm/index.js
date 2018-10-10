@@ -25,7 +25,8 @@ export default class TagForm extends Component {
     onSubmit: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     renderDropdownLabel: PropTypes.func.isRequired,
     renderTagLabel: PropTypes.func,
-    title: PropTypes.string
+    title: PropTypes.string,
+    videoId: PropTypes.number
   };
 
   timer = null;
@@ -57,7 +58,8 @@ export default class TagForm extends Component {
       children,
       renderDropdownLabel,
       searchPlaceholder,
-      title
+      title,
+      videoId
     } = this.props;
     const { addPlaylistModalShown, loading } = this.state;
     const { searchText } = this.state;
@@ -92,12 +94,14 @@ export default class TagForm extends Component {
               showAddPlaylistModal={() =>
                 this.setState({ addPlaylistModalShown: true })
               }
+              videoId={videoId}
             />
           </div>
           {children}
         </form>
         {addPlaylistModalShown && (
           <AddPlaylistModal
+            excludeVideoIds={[videoId]}
             postPlaylist={this.onAddPlaylist}
             onHide={() => this.setState({ addPlaylistModalShown: false })}
           />
