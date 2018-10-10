@@ -401,3 +401,23 @@ export const uploadDiscussion = async({
     return handleError(error, dispatch);
   }
 };
+
+export const uploadPlaylist = async({
+  dispatch,
+  title,
+  description,
+  selectedVideos
+}) => {
+  try {
+    const {
+      data: { result }
+    } = await request.post(
+      `${URL}/playlist`,
+      { title, description, selectedVideos },
+      auth()
+    );
+    return Promise.resolve(result);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};

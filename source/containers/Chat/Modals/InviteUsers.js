@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import TagForm from 'components/TagForm';
+import TagForm from 'components/Forms/TagForm';
 import { connect } from 'react-redux';
 import {
   clearUserSearchResults,

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import { uploadPlaylist } from 'redux/actions/PlaylistActions';
 import {
   exceedsCharLimit,
   stringIsEmpty,
@@ -11,20 +10,25 @@ import {
   finalizeEmoji,
   renderCharLimit
 } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
-import SortableThumb from './SortableThumb';
+import SortableThumb from 'components/SortableThumb';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-touch-backend';
-import SelectVideosForm from './SelectVideosForm';
+import SelectVideosForm from 'components/Forms/SelectVideosForm';
 import Input from 'components/Texts/Input';
 import SearchInput from 'components/Texts/SearchInput';
-import { loadVideos, searchContent } from 'helpers/requestHelpers';
+import {
+  loadVideos,
+  searchContent,
+  uploadPlaylist
+} from 'helpers/requestHelpers';
 import { css } from 'emotion';
+import { connect } from 'react-redux';
 
 class AddPlaylistModal extends Component {
   static propTypes = {
+    dispatch: PropTypes.func,
     onHide: PropTypes.func,
-    uploadPlaylist: PropTypes.func
+    postPlaylist: PropTypes.func
   };
 
   timer = null;
@@ -277,14 +281,16 @@ class AddPlaylistModal extends Component {
   };
 
   handleFinish = async() => {
-    const { uploadPlaylist, onHide } = this.props;
+    const { dispatch, postPlaylist, onHide } = this.props;
     const { title, description, selectedVideos } = this.state;
     this.setState({ isUploading: true });
-    await uploadPlaylist({
+    const data = await uploadPlaylist({
+      dispatch,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description),
       selectedVideos: selectedVideos.map(video => video.id)
     });
+    await postPlaylist(data);
     onHide();
   };
 
@@ -329,5 +335,5 @@ class AddPlaylistModal extends Component {
 
 export default connect(
   null,
-  { uploadPlaylist }
+  dispatch => ({ dispatch })
 )(DragDropContext(HTML5Backend)(AddPlaylistModal));

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import TagInput from './TagInput';
 import { objectify } from 'helpers';
+import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import Tag from './Tag';
 
 export default class TagForm extends Component {
@@ -30,6 +31,7 @@ export default class TagForm extends Component {
   timer = null;
 
   state = {
+    addPlaylistModalShown: false,
     loading: false,
     searchText: ''
   };
@@ -57,39 +59,50 @@ export default class TagForm extends Component {
       searchPlaceholder,
       title
     } = this.props;
-    const { loading } = this.state;
+    const { addPlaylistModalShown, loading } = this.state;
     const { searchText } = this.state;
     const filteredResults = searchResults.filter(filter);
     return (
-      <form
-        style={{ width: '70%' }}
-        onSubmit={event => {
-          event.preventDefault();
-          onSubmit?.();
-        }}
-      >
-        <div style={{ width: '100%' }}>
-          {title && <h3>{title}</h3>}
-          {this.renderTags()}
-          <TagInput
-            style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
-            autoFocus
-            loading={loading}
-            value={searchText}
-            onChange={this.onItemSearch}
-            onClickOutSide={() => {
-              this.setState({ searchText: '' });
-              onClear();
-            }}
-            placeholder={searchPlaceholder}
-            renderDropdownLabel={renderDropdownLabel}
-            searchResults={filteredResults}
-            selectedItems={objectify(selectedItems)}
-            onAddItem={this.onAddItem}
+      <>
+        <form
+          style={{ width: '70%' }}
+          onSubmit={event => {
+            event.preventDefault();
+            onSubmit?.();
+          }}
+        >
+          <div style={{ width: '100%' }}>
+            {title && <h3>{title}</h3>}
+            {this.renderTags()}
+            <TagInput
+              style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
+              autoFocus
+              loading={loading}
+              value={searchText}
+              onChange={this.onItemSearch}
+              onClickOutSide={() => {
+                this.setState({ searchText: '' });
+                onClear();
+              }}
+              placeholder={searchPlaceholder}
+              renderDropdownLabel={renderDropdownLabel}
+              searchResults={filteredResults}
+              selectedItems={objectify(selectedItems)}
+              onAddItem={this.onAddItem}
+              showAddPlaylistModal={() =>
+                this.setState({ addPlaylistModalShown: true })
+              }
+            />
+          </div>
+          {children}
+        </form>
+        {addPlaylistModalShown && (
+          <AddPlaylistModal
+            postPlaylist={() => this.setState({ addPlaylistModalShown: false })}
+            onHide={() => this.setState({ addPlaylistModalShown: false })}
           />
-        </div>
-        {children}
-      </form>
+        )}
+      </>
     );
   }
 
@@ -124,10 +137,11 @@ export default class TagForm extends Component {
   onItemSearch = text => {
     const { onSearch, onClear } = this.props;
     clearTimeout(this.timer);
-    this.setState({ searchText: text, loading: true });
+    this.setState({ searchText: text, loading: false });
     if (stringIsEmpty(text) || text.length < 2) {
       return onClear();
     }
+    this.setState({ loading: true });
     this.timer = setTimeout(() => onSearch(text), 300);
   };
 

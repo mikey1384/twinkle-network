@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import TagForm from 'components/TagForm';
+import TagForm from 'components/Forms/TagForm';
 import { addVideoToPlaylists, searchContent } from 'helpers/requestHelpers';
 import { hashfy } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';

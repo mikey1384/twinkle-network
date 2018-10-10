@@ -39,22 +39,10 @@ export const setSearchedPlaylists = ({ playlists, loadMoreButton }) => ({
   loadMoreButton
 });
 
-export const uploadPlaylist = params => async dispatch => {
-  try {
-    const {
-      data: { result }
-    } = await request.post(API_URL, params, auth());
-    if (result) {
-      dispatch({
-        type: PLAYLIST.UPLOAD,
-        data: result
-      });
-    }
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const postPlaylist = data => ({
+  type: PLAYLIST.UPLOAD,
+  data
+});
 
 export const editPlaylistTitle = (
   params,

@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside';
-import SearchDropdown from '../SearchDropdown';
+import SearchDropdown from 'components/SearchDropdown';
 import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import Loading from 'components/Loading';
 
 class TagInput extends Component {
@@ -21,7 +22,8 @@ class TagInput extends Component {
     selectedItems: PropTypes.object.isRequired,
     style: PropTypes.object,
     onAddItem: PropTypes.func.isRequired,
-    renderDropdownLabel: PropTypes.func
+    renderDropdownLabel: PropTypes.func,
+    showAddPlaylistModal: PropTypes.func.isRequired
   };
 
   handleClickOutside = event => {
@@ -29,11 +31,32 @@ class TagInput extends Component {
   };
 
   state = {
-    indexToHighlight: 0
+    indexToHighlight: 0,
+    noResults: false
   };
 
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.loading &&
+      !this.props.loading &&
+      !stringIsEmpty(this.props.value)
+    ) {
+      this.setState({ noResults: this.props.searchResults.length === 0 });
+    }
+  }
+
   render() {
-    const { loading, className, placeholder, style } = this.props;
+    const {
+      autoFocus,
+      loading,
+      className,
+      onChange,
+      placeholder,
+      showAddPlaylistModal,
+      style,
+      value
+    } = this.props;
+    const { noResults } = this.state;
     return (
       <div
         className={`${css`
@@ -59,14 +82,23 @@ class TagInput extends Component {
             <Icon icon="search" />
           </div>
           <Input
-            autoFocus={this.props.autoFocus}
-            value={this.props.value}
+            autoFocus={autoFocus}
+            value={value}
             placeholder={placeholder}
-            onChange={text => this.props.onChange(text)}
+            onChange={text => onChange(text)}
             onKeyDown={this.onKeyDown}
           />
         </div>
         {loading && <Loading style={{ position: 'absolute', top: '1rem' }} />}
+        {!loading &&
+          noResults &&
+          !stringIsEmpty(value) &&
+          value.length > 1 && (
+            <div style={{ marginTop: '0.5rem' }}>
+              No playlists were found.{' '}
+              <a onClick={showAddPlaylistModal}>Create a new playlist</a>
+            </div>
+          )}
         {this.renderDropdownList()}
       </div>
     );

@@ -7,7 +7,7 @@ import {
   clearUserSearchResults
 } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
-import TagForm from 'components/TagForm';
+import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
 
 class CreateNewChannelModal extends Component {

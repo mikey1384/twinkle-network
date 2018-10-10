@@ -7,7 +7,7 @@ import ButtonGroup from 'components/Buttons/ButtonGroup';
 import AddVideoModal from './Modals/AddVideoModal';
 import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
-import AddPlaylistModal from './Modals/AddPlaylistModal';
+import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import Notification from 'components/Notification';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
@@ -20,7 +20,8 @@ import {
   openSelectPlaylistsToPinModal,
   closeReorderPinnedPlaylistsModal,
   closeSelectPlaylistsToPinModal,
-  setSearchedPlaylists
+  setSearchedPlaylists,
+  postPlaylist
 } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import { main } from './Styles';
@@ -47,6 +48,7 @@ class Main extends Component {
     searchedPlaylists: PropTypes.array.isRequired,
     selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
     setSearchedPlaylists: PropTypes.func.isRequired,
+    postPlaylist: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
 
@@ -79,6 +81,7 @@ class Main extends Component {
       reorderPinnedPlaylistsModalShown,
       searchedPlaylists,
       selectPlaylistsToPinModalShown,
+      postPlaylist,
       userId
     } = this.props;
 
@@ -152,6 +155,7 @@ class Main extends Component {
           )}
           {addPlaylistModalShown && (
             <AddPlaylistModal
+              postPlaylist={postPlaylist}
               onHide={() => this.setState({ addPlaylistModalShown: false })}
             />
           )}
@@ -258,6 +262,7 @@ export default connect(
     openReorderPinnedPlaylistsModal,
     setSearchedPlaylists,
     closeAddVideoModal,
-    openAddVideoModal
+    openAddVideoModal,
+    postPlaylist
   }
 )(Main);
