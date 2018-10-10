@@ -25,7 +25,8 @@ class Message extends Component {
     showSubjectMsgsModal: PropTypes.func,
     index: PropTypes.number,
     isLastMsg: PropTypes.bool,
-    setScrollToBottom: PropTypes.func
+    setScrollToBottom: PropTypes.func,
+    socketConnected: PropTypes.bool
   };
 
   state = {
@@ -61,6 +62,7 @@ class Message extends Component {
       isLastMsg,
       onDelete,
       style,
+      socketConnected,
       showSubjectMsgsModal,
       myId,
       setScrollToBottom
@@ -114,6 +116,7 @@ class Message extends Component {
               {onEdit ? (
                 <EditTextArea
                   autoFocus
+                  disabled={!socketConnected}
                   rows={2}
                   text={content}
                   onCancel={() =>
@@ -213,7 +216,8 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
-    myId: state.UserReducer.userId
+    myId: state.UserReducer.userId,
+    socketConnected: state.NotiReducer.socketConnected
   }),
   {
     onEditDone: editMessage,

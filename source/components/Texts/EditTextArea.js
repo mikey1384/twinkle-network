@@ -14,6 +14,7 @@ export default class EditTextArea extends Component {
   static propTypes = {
     allowEmptyText: PropTypes.bool,
     autoFocus: PropTypes.bool,
+    disabled: PropTypes.bool,
     marginTop: PropTypes.string,
     onCancel: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
@@ -34,6 +35,7 @@ export default class EditTextArea extends Component {
     const {
       allowEmptyText,
       autoFocus = false,
+      disabled,
       placeholder = 'Enter text',
       rows = 4,
       marginTop = '1rem'
@@ -77,7 +79,8 @@ export default class EditTextArea extends Component {
             onClick={this.onSubmit}
             disabled={
               (!allowEmptyText && stringIsEmpty(editedText)) ||
-              commentExceedsCharLimit
+              commentExceedsCharLimit ||
+              disabled
             }
           >
             Done
