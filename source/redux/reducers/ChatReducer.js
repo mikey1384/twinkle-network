@@ -522,7 +522,7 @@ export default function ChatReducer(state = defaultState, action) {
     case CHAT.RECEIVE_MSG_ON_DIFF_CHANNEL:
       for (let i = 0; i < state.channels.length; i++) {
         if (state.channels[i].id === action.data.channelId) {
-          action.channels[0].numUnreads = state.channels[i].numUnreads + 1;
+          action.channel[0].numUnreads = state.channels[i].numUnreads + 1;
         }
       }
       return {
