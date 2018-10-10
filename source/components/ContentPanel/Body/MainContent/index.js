@@ -56,6 +56,7 @@ export default function MainContent({
         )}
         {(type === 'url' || type === 'video') && (
           <AlreadyPosted
+            style={{ marginTop: '-0.5rem' }}
             uploaderId={(contentObj.uploader || {}).id}
             contentId={contentId}
             type={type}

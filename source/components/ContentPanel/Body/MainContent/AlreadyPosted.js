@@ -10,6 +10,7 @@ export default class AlreadyPosted extends Component {
     contentId: PropTypes.number.isRequired,
     type: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
+    style: PropTypes.object,
     uploaderId: PropTypes.number,
     videoCode: PropTypes.string
   };
@@ -37,7 +38,7 @@ export default class AlreadyPosted extends Component {
 
   render() {
     const { existingContent = {} } = this.state;
-    const { contentId, type, uploaderId } = this.props;
+    const { contentId, style, type, uploaderId } = this.props;
     return existingContent.id && existingContent.id !== contentId ? (
       <div
         style={{
@@ -47,7 +48,8 @@ export default class AlreadyPosted extends Component {
           backgroundColor:
             uploaderId !== existingContent.uploader
               ? Color.orange()
-              : Color.blue()
+              : Color.blue(),
+          ...style
         }}
         className={css`
           > a {
