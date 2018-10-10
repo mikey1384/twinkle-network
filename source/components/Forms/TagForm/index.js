@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import TagInput from './TagInput';
 import { objectify } from 'helpers';
-import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import Tag from './Tag';
 
 export default class TagForm extends Component {
@@ -22,11 +21,11 @@ export default class TagForm extends Component {
       PropTypes.array,
       PropTypes.node
     ]),
+    onNotFound: PropTypes.func,
     onSubmit: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     renderDropdownLabel: PropTypes.func.isRequired,
     renderTagLabel: PropTypes.func,
-    title: PropTypes.string,
-    videoId: PropTypes.number
+    title: PropTypes.string
   };
 
   timer = null;
@@ -54,14 +53,14 @@ export default class TagForm extends Component {
       onClear,
       selectedItems,
       filter,
+      onNotFound,
       onSubmit,
       children,
       renderDropdownLabel,
       searchPlaceholder,
-      title,
-      videoId
+      title
     } = this.props;
-    const { addPlaylistModalShown, loading } = this.state;
+    const { loading } = this.state;
     const { searchText } = this.state;
     const filteredResults = searchResults.filter(filter);
     return (
@@ -86,6 +85,7 @@ export default class TagForm extends Component {
                 this.setState({ searchText: '' });
                 onClear();
               }}
+              onNotFound={onNotFound}
               placeholder={searchPlaceholder}
               renderDropdownLabel={renderDropdownLabel}
               searchResults={filteredResults}
@@ -94,27 +94,13 @@ export default class TagForm extends Component {
               showAddPlaylistModal={() =>
                 this.setState({ addPlaylistModalShown: true })
               }
-              videoId={videoId}
             />
           </div>
           {children}
         </form>
-        {addPlaylistModalShown && (
-          <AddPlaylistModal
-            excludeVideoIds={[videoId]}
-            postPlaylist={this.onAddPlaylist}
-            onHide={() => this.setState({ addPlaylistModalShown: false })}
-          />
-        )}
       </>
     );
   }
-
-  onAddPlaylist = playlist => {
-    const { onAddItem } = this.props;
-    onAddItem(playlist);
-    this.setState({ addPlaylistModalShown: false });
-  };
 
   renderTags = () => {
     const {
@@ -145,10 +131,11 @@ export default class TagForm extends Component {
   };
 
   onItemSearch = text => {
-    const { onSearch, onClear } = this.props;
+    const { onNotFound, onSearch, onClear } = this.props;
     clearTimeout(this.timer);
     this.setState({ searchText: text, loading: false });
     if (stringIsEmpty(text) || text.length < 2) {
+      onNotFound?.({ messageShown: false });
       return onClear();
     }
     this.setState({ loading: true });

@@ -263,7 +263,7 @@ export const openDirectMessageChannel = (
 ) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${API_URL}/channel/check?partnerId=${partner.userId}`,
+      `${API_URL}/channel/check?partnerId=${partner.id}`,
       auth()
     );
     const { currentChannel, channels } = await fetchChannels(data);

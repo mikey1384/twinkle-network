@@ -17,14 +17,13 @@ class TagInput extends Component {
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     onClickOutSide: PropTypes.func.isRequired,
+    onNotFound: PropTypes.func,
     placeholder: PropTypes.string.isRequired,
     searchResults: PropTypes.array.isRequired,
     selectedItems: PropTypes.object.isRequired,
     style: PropTypes.object,
     onAddItem: PropTypes.func.isRequired,
-    renderDropdownLabel: PropTypes.func,
-    showAddPlaylistModal: PropTypes.func.isRequired,
-    videoId: PropTypes.number
+    renderDropdownLabel: PropTypes.func
   };
 
   handleClickOutside = event => {
@@ -32,17 +31,18 @@ class TagInput extends Component {
   };
 
   state = {
-    indexToHighlight: 0,
-    noResults: false
+    indexToHighlight: 0
   };
 
   componentDidUpdate(prevProps) {
-    if (
-      prevProps.loading &&
-      !this.props.loading &&
-      !stringIsEmpty(this.props.value)
-    ) {
-      this.setState({ noResults: this.props.searchResults.length === 0 });
+    const { loading, onNotFound, searchResults = [], value } = this.props;
+    if (prevProps.loading && !this.props.loading) {
+      const shown =
+        !loading &&
+        searchResults.length === 0 &&
+        !stringIsEmpty(value) &&
+        value.length > 1;
+      onNotFound?.({ messageShown: shown });
     }
   }
 
@@ -53,12 +53,9 @@ class TagInput extends Component {
       className,
       onChange,
       placeholder,
-      showAddPlaylistModal,
       style,
-      value,
-      videoId
+      value
     } = this.props;
-    const { noResults } = this.state;
     return (
       <div
         className={`${css`
@@ -92,16 +89,6 @@ class TagInput extends Component {
           />
         </div>
         {loading && <Loading style={{ position: 'absolute', top: '1rem' }} />}
-        {videoId &&
-          !loading &&
-          noResults &&
-          !stringIsEmpty(value) &&
-          value.length > 1 && (
-            <div style={{ marginTop: '0.5rem' }}>
-              No playlists were found.{' '}
-              <a onClick={showAddPlaylistModal}>Create a new playlist</a>
-            </div>
-          )}
         {this.renderDropdownList()}
       </div>
     );

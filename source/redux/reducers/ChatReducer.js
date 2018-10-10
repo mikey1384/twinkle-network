@@ -176,7 +176,9 @@ export default function ChatReducer(state = defaultState, action) {
               prev.concat(channel.id === selectedChannel.id ? [] : [channel])
             );
           }
-          if (action.showOnTop && selectedChannel.id === channel.id) { return prev; }
+          if (action.showOnTop && selectedChannel.id === channel.id) {
+            return prev;
+          }
           return prev.concat([
             {
               ...channel,
@@ -265,7 +267,7 @@ export default function ChatReducer(state = defaultState, action) {
           ...state.currentChannel,
           members: state.currentChannel.members.concat(
             action.data.selectedUsers.map(user => ({
-              userId: user.userId,
+              userId: user.id,
               username: user.username
             }))
           )
@@ -364,11 +366,11 @@ export default function ChatReducer(state = defaultState, action) {
             members: [
               {
                 username: action.user.username,
-                userId: action.user.userId
+                userId: action.user.id
               },
               {
                 username: action.partner.username,
-                userId: action.partner.userId
+                userId: action.partner.id
               }
             ]
           }
@@ -380,17 +382,17 @@ export default function ChatReducer(state = defaultState, action) {
           members: [
             {
               username: action.user.username,
-              userId: action.user.userId
+              userId: action.user.id
             },
             {
               username: action.partner.username,
-              userId: action.partner.userId
+              userId: action.partner.id
             }
           ]
         },
         messages: action.messages.reverse(),
         loadMoreMessages,
-        partnerId: action.partner.userId
+        partnerId: action.partner.id
       };
     case CHAT.OPEN_NEW_TAB:
       let filteredChannel = state.channels.filter(channel => {
@@ -410,11 +412,11 @@ export default function ChatReducer(state = defaultState, action) {
             members: [
               {
                 username: action.user.username,
-                userId: action.user.userId
+                userId: action.user.id
               },
               {
                 username: action.partner.username,
-                userId: action.partner.userId
+                userId: action.partner.id
               }
             ]
           }
@@ -426,17 +428,17 @@ export default function ChatReducer(state = defaultState, action) {
           members: [
             {
               username: action.user.username,
-              userId: action.user.userId
+              userId: action.user.id
             },
             {
               username: action.partner.username,
-              userId: action.partner.userId
+              userId: action.partner.id
             }
           ]
         },
         messages: [],
         loadMoreMessages: false,
-        partnerId: action.partner.userId
+        partnerId: action.partner.id
       };
     case CHAT.RECEIVE_FIRST_MSG:
       return {
@@ -520,7 +522,7 @@ export default function ChatReducer(state = defaultState, action) {
     case CHAT.RECEIVE_MSG_ON_DIFF_CHANNEL:
       for (let i = 0; i < state.channels.length; i++) {
         if (state.channels[i].id === action.data.channelId) {
-          action.channel[0].numUnreads = state.channels[i].numUnreads + 1;
+          action.channels[0].numUnreads = state.channels[i].numUnreads + 1;
         }
       }
       return {

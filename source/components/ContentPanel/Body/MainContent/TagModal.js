@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
+import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { addVideoToPlaylists, searchContent } from 'helpers/requestHelpers';
 import { hashfy } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
@@ -18,13 +19,20 @@ class TagModal extends Component {
   };
 
   state = {
+    addPlaylistModalShown: false,
+    notFoundMessageShown: false,
     searchResults: [],
     selectedPlaylists: []
   };
 
   render() {
     const { currentPlaylists, title, onHide, videoId } = this.props;
-    const { searchResults, selectedPlaylists } = this.state;
+    const {
+      addPlaylistModalShown,
+      notFoundMessageShown,
+      searchResults,
+      selectedPlaylists
+    } = this.state;
     return (
       <Modal onHide={onHide}>
         <header>{title}</header>
@@ -37,6 +45,9 @@ class TagModal extends Component {
             onSearch={this.onSearchPlaylists}
             onClear={this.onClearSearchResults}
             onAddItem={this.onAddPlaylist}
+            onNotFound={({ messageShown }) =>
+              this.setState({ notFoundMessageShown: messageShown })
+            }
             onRemoveItem={this.onRemovePlaylist}
             onSubmit={selectedPlaylists.length > 0 && this.onSubmit}
             renderDropdownLabel={item => <span>{item.title}</span>}
@@ -44,7 +55,25 @@ class TagModal extends Component {
             searchPlaceholder="Search for playlists here..."
             selectedItems={selectedPlaylists}
             videoId={videoId}
-          />
+          >
+            {notFoundMessageShown && (
+              <div style={{ marginTop: '0.5rem' }}>
+                No playlists were found.{' '}
+                <a
+                  onClick={() => this.setState({ addPlaylistModalShown: true })}
+                >
+                  Create a new playlist
+                </a>
+              </div>
+            )}
+          </TagForm>
+          {addPlaylistModalShown && (
+            <AddPlaylistModal
+              excludeVideoIds={[videoId]}
+              postPlaylist={this.onAddPlaylist}
+              onHide={() => this.setState({ addPlaylistModalShown: false })}
+            />
+          )}
         </main>
         <footer>
           <Button
@@ -64,6 +93,7 @@ class TagModal extends Component {
 
   onAddPlaylist = playlist => {
     this.setState(state => ({
+      addPlaylistModalShown: false,
       selectedPlaylists: state.selectedPlaylists.concat([playlist])
     }));
   };

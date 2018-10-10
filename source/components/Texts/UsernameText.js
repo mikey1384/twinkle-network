@@ -82,8 +82,8 @@ class UsernameText extends Component {
     this.setState({ menuShown: false });
     if (user.id !== userId) {
       openDirectMessageChannel(
-        { userId, username },
-        { userId: user.id, username: user.username },
+        { id: userId, username },
+        { id: user.id, username: user.username },
         chatMode
       );
     }

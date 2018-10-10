@@ -37,7 +37,12 @@ class Message extends Component {
 
   componentDidMount() {
     const { message, myId, saveMessage, index } = this.props;
-    if (!message.id && message.userId === myId && !message.isSubject) {
+    if (
+      !message.id &&
+      message.userId === myId &&
+      !message.isSubject &&
+      !message.isNotification
+    ) {
       saveMessage({ ...message, content: message.content }, index);
     }
   }

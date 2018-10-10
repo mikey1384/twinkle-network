@@ -634,15 +634,15 @@ class Chat extends Component {
     } = this.props;
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0];
-      return openDirectMessageChannel({ username, userId }, partner, true).then(
-        () => this.setState({ createNewChannelModalShown: false })
-      );
+      return openDirectMessageChannel(
+        { username, id: userId },
+        partner,
+        true
+      ).then(() => this.setState({ createNewChannelModalShown: false }));
     }
 
     const data = await createNewChannel(params);
-    const users = params.selectedUsers.map(user => {
-      return user.userId;
-    });
+    const users = params.selectedUsers.map(user => user.id);
     socket.emit('join_chat_channel', data.message.channelId);
     socket.emit('send_group_chat_invitation', users, data);
     this.setState({ createNewChannelModalShown: false });

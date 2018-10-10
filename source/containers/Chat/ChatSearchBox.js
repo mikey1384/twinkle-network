@@ -79,8 +79,8 @@ class ChatSearchBox extends Component {
       enterChannelWithId(item.channelId, true);
     } else {
       openNewChatTab(
-        { username, userId },
-        { username: item.label, userId: item.userId }
+        { username, id: userId },
+        { username: item.label, id: item.id }
       );
     }
     this.setState({ searchText: '' });
