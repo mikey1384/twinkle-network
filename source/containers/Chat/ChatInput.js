@@ -9,8 +9,7 @@ export default class ChatInput extends Component {
     message: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     onHeightChange: PropTypes.func.isRequired,
-    onMessageSubmit: PropTypes.func.isRequired,
-    resetTextAreaHeight: PropTypes.func.isRequired
+    onMessageSubmit: PropTypes.func.isRequired
   };
 
   Textarea = {};
@@ -45,20 +44,10 @@ export default class ChatInput extends Component {
   }
 
   onChange = event => {
-    const {
-      message,
-      onChange,
-      onHeightChange,
-      resetTextAreaHeight
-    } = this.props;
-    if (event.target.value.length === 0) {
-      resetTextAreaHeight();
-    } else {
-      setTimeout(() => {
-        const clientHeight = this.Textarea.clientHeight;
-        if (message.length > 0) onHeightChange({ clientHeight });
-      }, 100);
-    }
+    const { onChange, onHeightChange } = this.props;
+    setTimeout(() => {
+      onHeightChange(this.Textarea?.clientHeight);
+    }, 0);
     onChange(event.target.value);
   };
 

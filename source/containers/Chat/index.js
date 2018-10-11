@@ -404,7 +404,6 @@ class Chat extends Component {
                   this.setState({ textAreaHeight: height > 46 ? height : 0 });
                 }
               }}
-              resetTextAreaHeight={() => this.setState({ textAreaHeight: 0 })}
             />
           ) : (
             <div>
