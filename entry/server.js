@@ -35,6 +35,10 @@ app.use((req, res) => {
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+          <meta property="og:title" content="Twinkle Network">
+          <meta property="og:description" content="Filling Minds With Wonder">
+          <meta property="og:image" content="/favicon.png">
+          <meta property="og:url" content="https://www.twinkle.network">
           <title>Twinkle</title>
           <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
           <link rel="stylesheet" href="/css/slider.css">
