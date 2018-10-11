@@ -54,7 +54,6 @@ class TagModal extends Component {
             renderTagLabel={label => hashfy(label)}
             searchPlaceholder="Search for playlists here..."
             selectedItems={selectedPlaylists}
-            videoId={videoId}
           >
             {notFoundMessageShown && (
               <div style={{ marginTop: '0.5rem' }}>

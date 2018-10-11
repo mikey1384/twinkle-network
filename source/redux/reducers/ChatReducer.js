@@ -363,32 +363,14 @@ export default function ChatReducer(state = defaultState, action) {
             lastMessage: action.lastMessage,
             lastUpdate: action.lastUpdate,
             lastMessageSender: action.lastMessageSender,
-            members: [
-              {
-                username: action.user.username,
-                userId: action.user.id
-              },
-              {
-                username: action.partner.username,
-                userId: action.partner.id
-              }
-            ]
+            members: [action.user, action.partner]
           }
         ].concat(channels.filter(channel => channel.id !== action.channelId)),
         selectedChannelId: action.channelId,
         currentChannel: {
           id: action.channelId,
           twoPeople: true,
-          members: [
-            {
-              username: action.user.username,
-              userId: action.user.id
-            },
-            {
-              username: action.partner.username,
-              userId: action.partner.id
-            }
-          ]
+          members: [action.user, action.partner]
         },
         messages: action.messages.reverse(),
         loadMoreMessages,
@@ -409,32 +391,14 @@ export default function ChatReducer(state = defaultState, action) {
             lastMessage: null,
             lastUpdate: null,
             lastMessageSender: null,
-            members: [
-              {
-                username: action.user.username,
-                userId: action.user.id
-              },
-              {
-                username: action.partner.username,
-                userId: action.partner.id
-              }
-            ]
+            members: [action.user, action.partner]
           }
         ].concat(filteredChannel),
         selectedChannelId: 0,
         currentChannel: {
           id: 0,
           twoPeople: true,
-          members: [
-            {
-              username: action.user.username,
-              userId: action.user.id
-            },
-            {
-              username: action.partner.username,
-              userId: action.partner.id
-            }
-          ]
+          members: [action.user, action.partner]
         },
         messages: [],
         loadMoreMessages: false,

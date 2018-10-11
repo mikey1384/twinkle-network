@@ -4,7 +4,6 @@ import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
 import UserDetails from 'components/UserDetails';
 import Link from 'components/Link';
-import { css } from 'emotion';
 import { connect } from 'react-redux';
 
 Profile.propTypes = {
@@ -14,10 +13,10 @@ Profile.propTypes = {
 function Profile({ profile, userId }) {
   return (
     <div
-      className={css`
-        display: flex;
-        flex-direction: column;
-      `}
+      style={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}
     >
       <div
         style={{

@@ -256,7 +256,7 @@ class ProfilePanel extends Component {
                       onClick={() =>
                         openDirectMessageChannel(
                           { userId },
-                          { userId: profile.id, username: profile.username },
+                          { id: profile.id, username: profile.username },
                           false
                         )
                       }
