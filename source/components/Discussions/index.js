@@ -8,6 +8,7 @@ import { loadDiscussions } from 'helpers/requestHelpers';
 
 export default class Discussions extends Component {
   static propTypes = {
+    className: PropTypes.string,
     contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     discussions: PropTypes.array,
     loadMoreButton: PropTypes.bool,
@@ -33,6 +34,7 @@ export default class Discussions extends Component {
   };
   render() {
     const {
+      className,
       discussions,
       loadMoreButton,
       style = {},
@@ -73,7 +75,7 @@ export default class Discussions extends Component {
           onUploadReply
         }}
       >
-        <div style={style}>
+        <div className={className} style={style}>
           <DiscussionInputArea
             contentId={contentId}
             type={type}

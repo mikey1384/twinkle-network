@@ -264,7 +264,12 @@ class LinkPage extends Component {
           </div>
         </div>
         <Discussions
-          style={{ width: '60%' }}
+          className={css`
+            width: 60%;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
+          `}
           contentId={id}
           loadMoreButton={discussionsLoadMoreButton}
           discussions={discussions}
