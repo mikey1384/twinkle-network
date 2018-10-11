@@ -34,6 +34,14 @@ class TagStatus extends Component {
     onLoadTags({ tags: playlists, contentId, type: 'video' });
   }
 
+  async componentDidUpdate(prevProps) {
+    const { onLoadTags, contentId } = this.props;
+    if (contentId !== prevProps.contentId) {
+      const playlists = await fetchPlaylistsContaining({ videoId: contentId });
+      onLoadTags({ tags: playlists, contentId, type: 'video' });
+    }
+  }
+
   componentWillUnmount() {
     this.mounted = false;
   }
