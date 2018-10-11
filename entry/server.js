@@ -39,6 +39,10 @@ app.use((req, res) => {
           <meta property="og:description" content="Filling Minds With Wonder">
           <meta property="og:image" content="/favicon.png">
           <meta property="og:url" content="https://www.twinkle.network">
+          <meta name="twitter:title" content="Twinkle Network">
+          <meta name="twitter:description" content="Filling Minds With Wonder">
+          <meta name="twitter:image" content="/favicon.png">
+          <meta name="twitter:card" content="/favicon.png">
           <title>Twinkle</title>
           <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
           <link rel="stylesheet" href="/css/slider.css">
