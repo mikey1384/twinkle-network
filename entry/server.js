@@ -34,15 +34,15 @@ app.use((req, res) => {
       <html>
         <head>
           <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
           <meta property="og:title" content="Twinkle Network">
           <meta property="og:description" content="Filling Minds With Wonder">
           <meta property="og:image" content="https://www.twinkle.network/favicon.png">
           <meta property="og:url" content="https://www.twinkle.network">
           <meta name="twitter:title" content="Twinkle Network">
           <meta name="twitter:description" content="Filling Minds With Wonder">
-          <meta name="twitter:image" content="/favicon.png">
-          <meta name="twitter:card" content="/favicon.png">
+          <meta name="twitter:image" content="https://www.twinkle.network/favicon.png">
+          <meta name="twitter:card" content="https://www.twinkle.network/favicon.png">
           <title>Twinkle</title>
           <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
           <link rel="stylesheet" href="/css/slider.css">
