@@ -37,7 +37,7 @@ app.use((req, res) => {
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
           <meta property="og:title" content="Twinkle Network">
           <meta property="og:description" content="Filling Minds With Wonder">
-          <meta property="og:image" content="/favicon.png">
+          <meta property="og:image" content="https://www.twinkle.network/favicon.png">
           <meta property="og:url" content="https://www.twinkle.network">
           <meta name="twitter:title" content="Twinkle Network">
           <meta name="twitter:description" content="Filling Minds With Wonder">
