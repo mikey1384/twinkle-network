@@ -15,6 +15,7 @@ class TagModal extends Component {
     title: PropTypes.string.isRequired,
     onHide: PropTypes.func.isRequired,
     videoId: PropTypes.number.isRequired,
+    onAddPlaylist: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired
   };
 
@@ -44,7 +45,12 @@ class TagModal extends Component {
             filter={result => currentPlaylists.indexOf(result.id) === -1}
             onSearch={this.onSearchPlaylists}
             onClear={this.onClearSearchResults}
-            onAddItem={this.onAddPlaylist}
+            onAddItem={playlist =>
+              this.setState(state => ({
+                addPlaylistModalShown: false,
+                selectedPlaylists: state.selectedPlaylists.concat([playlist])
+              }))
+            }
             onNotFound={({ messageShown }) =>
               this.setState({ notFoundMessageShown: messageShown })
             }
@@ -91,6 +97,14 @@ class TagModal extends Component {
   }
 
   onAddPlaylist = playlist => {
+    const { onAddPlaylist, videoId } = this.props;
+    onAddPlaylist({
+      videoIds: playlist?.playlist
+        ?.map(video => video.videoId)
+        ?.filter(id => id !== videoId),
+      playlistId: playlist.id,
+      playlistTitle: playlist.title
+    });
     this.setState(state => ({
       addPlaylistModalShown: false,
       selectedPlaylists: state.selectedPlaylists.concat([playlist])

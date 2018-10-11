@@ -71,7 +71,12 @@ export default function MainContent({
               difficulty={contentObj.difficulty}
             />
           )}
-        {type === 'video' && <TagStatus contentId={contentObj.contentId} />}
+        {type === 'video' && (
+          <TagStatus
+            tags={contentObj.tags || []}
+            contentId={contentObj.contentId}
+          />
+        )}
         <div
           style={{
             marginTop: '1rem',

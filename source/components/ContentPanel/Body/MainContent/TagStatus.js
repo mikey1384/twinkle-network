@@ -7,6 +7,7 @@ import { fetchPlaylistsContaining } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
+import { addTags, addTagToContents, loadTags } from 'redux/actions/FeedActions';
 
 class TagStatus extends Component {
   mounted = false;
@@ -18,15 +19,19 @@ class TagStatus extends Component {
   };
 
   static propTypes = {
+    addTags: PropTypes.func.isRequired,
+    addTagToContents: PropTypes.func.isRequired,
+    loadTags: PropTypes.func.isRequired,
     canEditPlaylists: PropTypes.bool,
-    contentId: PropTypes.number.isRequired
+    contentId: PropTypes.number.isRequired,
+    tags: PropTypes.array.isRequired
   };
 
   async componentDidMount() {
-    const { contentId } = this.props;
+    const { loadTags, contentId } = this.props;
     this.mounted = true;
     const playlists = await fetchPlaylistsContaining({ videoId: contentId });
-    if (this.mounted) this.setState({ playlists });
+    loadTags({ tags: playlists, contentId, type: 'video' });
   }
 
   componentWillUnmount() {
@@ -34,13 +39,8 @@ class TagStatus extends Component {
   }
 
   render() {
-    const {
-      playlists,
-      shownPlaylistId,
-      shownPlaylistTitle,
-      tagModalShown
-    } = this.state;
-    const { contentId, canEditPlaylists } = this.props;
+    const { shownPlaylistId, shownPlaylistTitle, tagModalShown } = this.state;
+    const { addTagToContents, contentId, canEditPlaylists, tags } = this.props;
     return (
       <div
         className={css`
@@ -53,46 +53,49 @@ class TagStatus extends Component {
           }
         `}
       >
-        {(playlists.length > 0 || canEditPlaylists) && (
+        {(tags.length > 0 || canEditPlaylists) && (
           <div style={{ padding: '0 1rem' }}>
-            {playlists.map((playlist, index) => (
+            {tags.map((tag, index) => (
               <a
                 style={{ marginRight: '0.5rem' }}
-                key={playlist.id}
+                key={tag.id}
                 onClick={() =>
                   this.setState({
-                    shownPlaylistId: playlist.id,
-                    shownPlaylistTitle: playlist.title
+                    shownPlaylistId: tag.id,
+                    shownPlaylistTitle: tag.title
                   })
                 }
               >
-                {hashfy(playlist.title)}
+                {hashfy(tag.title)}
               </a>
             ))}
             {canEditPlaylists && (
               <a
                 style={{
-                  color: playlists.length > 0 ? Color.orange() : Color.blue()
+                  color: tags.length > 0 ? Color.orange() : Color.blue()
                 }}
                 onClick={() => this.setState({ tagModalShown: true })}
               >
                 +Add
-                {playlists.length === 0 ? ' to Playlists' : ''}
+                {tags.length === 0 ? ' to Playlists' : ''}
               </a>
             )}
           </div>
         )}
         {tagModalShown && (
           <TagModal
-            currentPlaylists={playlists.map(playlist => playlist.id)}
+            currentPlaylists={tags.map(tag => tag.id)}
             title="Add Video to Playlists"
             onHide={() => this.setState({ tagModalShown: false })}
-            onSubmit={selectedPlaylists =>
-              this.setState(state => ({
-                tagModalShown: false,
-                playlists: state.playlists.concat(selectedPlaylists)
-              }))
+            onAddPlaylist={({ videoIds, playlistId, playlistTitle }) =>
+              addTagToContents({
+                contentIds: videoIds,
+                contentType: 'video',
+                tagId: playlistId,
+                tagTitle: playlistTitle
+              })
             }
+            onSubmit={this.onTagSubmit}
             videoId={contentId}
           />
         )}
@@ -108,8 +111,19 @@ class TagStatus extends Component {
       </div>
     );
   }
+
+  onTagSubmit = selectedPlaylists => {
+    const { addTags, contentId } = this.props;
+    addTags({ tags: selectedPlaylists, type: 'video', contentId });
+    this.setState(state => ({
+      tagModalShown: false
+    }));
+  };
 }
 
-export default connect(state => ({
-  canEditPlaylists: state.UserReducer.canEditPlaylists
-}))(TagStatus);
+export default connect(
+  state => ({
+    canEditPlaylists: state.UserReducer.canEditPlaylists
+  }),
+  { addTags, addTagToContents, loadTags }
+)(TagStatus);

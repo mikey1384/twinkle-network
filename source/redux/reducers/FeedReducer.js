@@ -15,6 +15,32 @@ export default function FeedReducer(state = defaultState, action) {
   let loadMoreButton = false;
   const { currentSection } = state;
   switch (action.type) {
+    case FEED.ADD_TAGS:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(
+          feed =>
+            feed.type === action.contentType &&
+            feed.contentId === action.contentId
+              ? {
+                  ...feed,
+                  tags: (feed.tags || []).concat(action.tags)
+                }
+              : feed
+        )
+      };
+    case FEED.ADD_TAG_TO_CONTENTS:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => ({
+          ...feed,
+          tags:
+            feed.type === action.contentType &&
+            action.contentIds.indexOf(feed.contentId) !== -1
+              ? (feed.tags || []).concat(action.tag)
+              : feed.tags
+        }))
+      };
     case FEED.ATTACH_STAR:
       return {
         ...state,
@@ -181,6 +207,18 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         storyFeeds: action.data.concat(state.storyFeeds)
+      };
+    case FEED.LOAD_TAGS:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => ({
+          ...feed,
+          tags:
+            feed.type === action.contentType &&
+            feed.contentId === action.contentId
+              ? action.tags
+              : feed.tags
+        }))
       };
     case FEED.DELETE_COMMENT:
       return {

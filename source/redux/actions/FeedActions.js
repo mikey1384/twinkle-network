@@ -3,6 +3,25 @@ import { auth, handleError } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';
 import FEED from '../constants/Feed';
 
+export const addTags = ({ type, contentId, tags }) => ({
+  type: FEED.ADD_TAGS,
+  contentId,
+  contentType: type,
+  tags
+});
+
+export const addTagToContents = ({
+  contentIds,
+  contentType,
+  tagId,
+  tagTitle
+}) => ({
+  type: FEED.ADD_TAG_TO_CONTENTS,
+  contentIds,
+  contentType,
+  tag: { id: tagId, title: tagTitle }
+});
+
 export const attachStar = data => ({
   type: FEED.ATTACH_STAR,
   data
@@ -133,6 +152,13 @@ export const loadMoreFeedReplies = (data, feedId) => ({
   type: FEED.LOAD_MORE_REPLIES,
   feedId,
   data
+});
+
+export const loadTags = ({ type, contentId, tags }) => ({
+  type: FEED.LOAD_TAGS,
+  contentId,
+  contentType: type,
+  tags
 });
 
 export const setDifficulty = ({ type, contentId, difficulty }) => ({

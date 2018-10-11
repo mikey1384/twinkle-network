@@ -61,9 +61,9 @@ export default function FilterBar({
           height: 100%;
           width: 100%;
           border-bottom: 1px solid ${Color.borderGray()};
-          color: ${Color.menuGray()};
+          color: ${Color.gray()};
           > a {
-            color: ${Color.menuGray()};
+            color: ${Color.gray()};
             text-decoration: none;
           }
           &.alert {
