@@ -7,26 +7,15 @@ import VIDEO from '../constants/Video';
 
 const API_URL = `${URL}/video`;
 
+export const addTags = ({ tags }) => ({
+  type: VIDEO.ADD_TAGS,
+  tags
+});
+
 export const attachStar = data => ({
   type: VIDEO.ATTACH_STAR,
   data
 });
-
-export const getInitialVideos = () => async dispatch => {
-  try {
-    const {
-      data: { videos, loadMoreButton }
-    } = await request.get(API_URL);
-    dispatch({
-      type: VIDEO.LOAD,
-      initialRun: true,
-      loadMoreButton,
-      videos
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
 
 export const addVideoView = params => dispatch => {
   try {
@@ -136,11 +125,32 @@ export const fillCurrentVideoSlot = videoId => ({
   videoId
 });
 
+export const getInitialVideos = () => async dispatch => {
+  try {
+    const {
+      data: { videos, loadMoreButton }
+    } = await request.get(API_URL);
+    dispatch({
+      type: VIDEO.LOAD,
+      initialRun: true,
+      loadMoreButton,
+      videos
+    });
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const getMoreVideos = ({ videos, loadMoreButton }) => ({
   type: VIDEO.LOAD,
   initialRun: false,
   loadMoreButton,
   videos
+});
+
+export const loadTags = ({ tags }) => ({
+  type: VIDEO.LOAD_TAGS,
+  tags
 });
 
 export const likeVideo = (likes, videoId) => async dispatch => {

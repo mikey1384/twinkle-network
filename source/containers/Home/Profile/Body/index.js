@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import {
+  addTags,
+  addTagToContents,
   attachStar,
   contentFeedLike,
   feedCommentDelete,
@@ -15,6 +17,7 @@ import {
   clearFeeds,
   loadMoreFeedComments,
   loadMoreFeedReplies,
+  loadTags,
   setCurrentSection,
   setDifficulty,
   showFeedComments,
@@ -33,8 +36,10 @@ import FilterBar from 'components/FilterBar';
 
 class Body extends Component {
   static propTypes = {
-    chatMode: PropTypes.bool.isRequired,
+    addTags: PropTypes.func.isRequired,
+    addTagToContents: PropTypes.func.isRequired,
     attachStar: PropTypes.func.isRequired,
+    chatMode: PropTypes.bool.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
     disableAutoscroll: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
@@ -49,6 +54,7 @@ class Body extends Component {
     feedVideoStar: PropTypes.func.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
+    loadTags: PropTypes.func.isRequired,
     setCurrentSection: PropTypes.func.isRequired,
     showFeedComments: PropTypes.func.isRequired,
     uploadFeedComment: PropTypes.func.isRequired,
@@ -111,6 +117,8 @@ class Body extends Component {
       myId,
       loaded,
       loadMoreButton,
+      addTags,
+      addTagToContents,
       attachStar,
       contentFeedLike,
       disableAutoscroll,
@@ -124,12 +132,12 @@ class Body extends Component {
       feedVideoStar,
       loadMoreFeedComments,
       loadMoreFeedReplies,
+      loadTags,
       setDifficulty,
       showFeedComments,
       uploadTargetContentComment
     } = this.props;
     const { loading } = this.state;
-
     return (
       <div
         ref={ref => {
@@ -239,6 +247,8 @@ class Body extends Component {
                       contentObj={feed}
                       inputAtBottom={feed.type === 'comment'}
                       onLoadContent={fetchFeed}
+                      onAddTags={addTags}
+                      onAddTagToContents={addTagToContents}
                       onAttachStar={attachStar}
                       onCommentSubmit={data =>
                         this.uploadFeedComment({ feed, data })
@@ -251,6 +261,7 @@ class Body extends Component {
                       onLikeContent={contentFeedLike}
                       onLoadMoreComments={loadMoreFeedComments}
                       onLoadMoreReplies={loadMoreFeedReplies}
+                      onLoadTags={loadTags}
                       onReplySubmit={data =>
                         this.uploadFeedComment({ feed, data })
                       }
@@ -421,6 +432,8 @@ export default connect(
     searchMode: state.SearchReducer.searchMode
   }),
   {
+    addTags,
+    addTagToContents,
     attachStar,
     contentFeedLike,
     disableAutoscroll,
@@ -436,6 +449,7 @@ export default connect(
     feedVideoStar,
     loadMoreFeedComments,
     loadMoreFeedReplies,
+    loadTags,
     setCurrentSection,
     setDifficulty,
     showFeedComments,

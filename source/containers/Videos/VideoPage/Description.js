@@ -25,13 +25,20 @@ import { edit } from 'constants/placeholders';
 import Likers from 'components/Likers';
 import LikeButton from 'components/Buttons/LikeButton';
 import StarButton from 'components/Buttons/StarButton';
-import { attachStar, starVideo } from 'redux/actions/VideoActions';
+import TagStatus from 'components/TagStatus';
+import {
+  addTags,
+  attachStar,
+  loadTags,
+  starVideo
+} from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 class Description extends Component {
   static propTypes = {
+    addTags: PropTypes.func.isRequired,
     attachStar: PropTypes.func.isRequired,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
@@ -42,10 +49,12 @@ class Description extends Component {
     isStarred: PropTypes.bool,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
+    loadTags: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onEditCancel: PropTypes.func.isRequired,
     onEditFinish: PropTypes.func.isRequired,
     onEditStart: PropTypes.func.isRequired,
+    tags: PropTypes.array,
     stars: PropTypes.array,
     starVideo: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -91,6 +100,7 @@ class Description extends Component {
 
   render() {
     const {
+      addTags,
       attachStar,
       authLevel,
       canDelete,
@@ -104,7 +114,9 @@ class Description extends Component {
       title,
       description,
       likes,
+      loadTags,
       onDelete,
+      tags = [],
       stars,
       starVideo,
       timeStamp,
@@ -140,14 +152,21 @@ class Description extends Component {
     }
     const starButtonGrid = canStar ? 'starButton' : 'title';
     return (
-      <div
-        className={css`
+      <div>
+        <TagStatus
+          style={{ fontSize: '1.5rem' }}
+          onAddTags={addTags}
+          onLoadTags={loadTags}
+          tags={tags}
+          contentId={Number(videoId)}
+        />
+        <div
+          className={css`
           display: grid;
           height: auto;
           width: 100%;
           background: #fff;
           padding: 1rem;
-          margin-top: 1rem;
           align-items: center;
           align-content: space-around;
           font-size: 1.5rem;
@@ -167,302 +186,305 @@ class Description extends Component {
               "description description description description description";
           }
         `}
-      >
-        <div
-          style={{
-            gridArea: 'title',
-            alignSelf: 'start',
-            marginRight: '1rem'
-          }}
         >
-          {onEdit ? (
-            <div>
-              <Input
-                type="text"
-                placeholder={edit.video}
-                value={editedUrl}
-                onChange={text => {
-                  this.setState({ editedUrl: text });
-                }}
-                style={this.urlExceedsCharLimit()}
-              />
-              <Input
-                className={css`
-                  margin-top: 1rem;
-                `}
-                type="text"
-                placeholder={edit.title}
-                value={editedTitle}
-                onChange={text => {
-                  this.setState({ editedTitle: text });
-                }}
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    this.setState({
-                      editedTitle: addEmoji(event.target.value)
-                    });
-                  }
-                }}
-                style={this.titleExceedsCharLimit()}
-              />
-              {this.titleExceedsCharLimit() && (
-                <small style={{ color: 'red' }}>
-                  {renderCharLimit({
-                    contentType: 'video',
-                    inputType: 'title',
-                    text: editedTitle
-                  })}
-                </small>
+          <div
+            style={{
+              gridArea: 'title',
+              alignSelf: 'start',
+              marginRight: '1rem'
+            }}
+          >
+            {onEdit ? (
+              <div>
+                <Input
+                  type="text"
+                  placeholder={edit.video}
+                  value={editedUrl}
+                  onChange={text => {
+                    this.setState({ editedUrl: text });
+                  }}
+                  style={this.urlExceedsCharLimit()}
+                />
+                <Input
+                  className={css`
+                    margin-top: 1rem;
+                  `}
+                  type="text"
+                  placeholder={edit.title}
+                  value={editedTitle}
+                  onChange={text => {
+                    this.setState({ editedTitle: text });
+                  }}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({
+                        editedTitle: addEmoji(event.target.value)
+                      });
+                    }
+                  }}
+                  style={this.titleExceedsCharLimit()}
+                />
+                {this.titleExceedsCharLimit() && (
+                  <small style={{ color: 'red' }}>
+                    {renderCharLimit({
+                      contentType: 'video',
+                      inputType: 'title',
+                      text: editedTitle
+                    })}
+                  </small>
+                )}
+              </div>
+            ) : (
+              <div style={{ position: 'relative' }}>
+                <div
+                  ref={ref => {
+                    this.thumbLabel = ref;
+                  }}
+                  style={{
+                    width: '100%',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    lineHeight: 'normal'
+                  }}
+                >
+                  <span
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      overflowWrap: 'break-word',
+                      wordBreak: 'break-word',
+                      fontSize: '3rem',
+                      fontWeight: 'bold'
+                    }}
+                    onMouseOver={this.onMouseOver}
+                    onMouseLeave={() => this.setState({ onTitleHover: false })}
+                  >
+                    {cleanString(title)}
+                  </span>
+                </div>
+                <FullTextReveal
+                  width="100%"
+                  show={onTitleHover}
+                  text={cleanString(title)}
+                />
+              </div>
+            )}
+            {!onEdit && (
+              <div style={{ marginTop: '0.5rem' }}>
+                Added by{' '}
+                <UsernameText
+                  user={{ username: uploaderName, id: uploaderId }}
+                />{' '}
+                <span>{`${timeStamp ? timeSince(timeStamp) : ''}`}</span>
+              </div>
+            )}
+            {!onEdit &&
+              videoViews > 10 && (
+                <div
+                  style={{
+                    fontSize: '2rem',
+                    fontWeight: 'bold',
+                    marginTop: '1rem',
+                    color: Color.darkGray()
+                  }}
+                >
+                  {videoViews} view
+                  {`${videoViews > 1 ? 's' : ''}`}
+                </div>
               )}
-            </div>
-          ) : (
-            <div style={{ position: 'relative' }}>
-              <div
-                ref={ref => {
-                  this.thumbLabel = ref;
-                }}
-                style={{
-                  width: '100%',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  lineHeight: 'normal'
-                }}
-              >
-                <span
+          </div>
+          <div
+            className={css`
+              grid-area: description;
+              align-self: start;
+              display: flex;
+              flex-direction: column;
+            `}
+          >
+            {onEdit ? (
+              <div>
+                <Textarea
+                  minRows={5}
+                  placeholder={edit.description}
+                  value={editedDescription}
+                  onChange={event => {
+                    this.setState({ editedDescription: event.target.value });
+                  }}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      this.setState({
+                        editedDescription: addEmoji(event.target.value)
+                      });
+                    }
+                  }}
+                  style={this.descriptionExceedsCharLimit()}
+                />
+                {this.descriptionExceedsCharLimit() && (
+                  <small style={{ color: 'red' }}>
+                    {renderCharLimit({
+                      contentType: 'video',
+                      inputType: 'description',
+                      text: editedDescription
+                    })}
+                  </small>
+                )}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '1rem'
+                  }}
+                >
+                  <Button
+                    transparent
+                    style={{ fontSize: '1.7rem', marginRight: '1rem' }}
+                    onClick={this.onEditCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    primary
+                    disabled={this.determineEditButtonDoneStatus()}
+                    onClick={this.onEditFinish}
+                    style={{ fontSize: '1.7rem' }}
+                  >
+                    Done
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ padding: '0 1rem 2rem 1rem' }}>
+                <LongText
                   style={{
                     whiteSpace: 'pre-wrap',
                     overflowWrap: 'break-word',
                     wordBreak: 'break-word',
-                    fontSize: '3rem',
-                    fontWeight: 'bold'
+                    lineHeight: '2.3rem'
                   }}
-                  onMouseOver={this.onMouseOver}
-                  onMouseLeave={() => this.setState({ onTitleHover: false })}
                 >
-                  {cleanString(title)}
-                </span>
-              </div>
-              <FullTextReveal
-                width="100%"
-                show={onTitleHover}
-                text={cleanString(title)}
-              />
-            </div>
-          )}
-          {!onEdit && (
-            <div style={{ marginTop: '0.5rem' }}>
-              Added by{' '}
-              <UsernameText user={{ username: uploaderName, id: uploaderId }} />{' '}
-              <span>{`${timeStamp ? timeSince(timeStamp) : ''}`}</span>
-            </div>
-          )}
-          {!onEdit &&
-            videoViews > 10 && (
-              <div
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  marginTop: '1rem',
-                  color: Color.darkGray()
-                }}
-              >
-                {videoViews} view
-                {`${videoViews > 1 ? 's' : ''}`}
+                  {stringIsEmpty(description) ? 'No Description' : description}
+                </LongText>
               </div>
             )}
-        </div>
-        <div
-          className={css`
-            grid-area: description;
-            align-self: start;
-            display: flex;
-            flex-direction: column;
-          `}
-        >
-          {onEdit ? (
-            <div>
-              <Textarea
-                minRows={5}
-                placeholder={edit.description}
-                value={editedDescription}
-                onChange={event => {
-                  this.setState({ editedDescription: event.target.value });
-                }}
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    this.setState({
-                      editedDescription: addEmoji(event.target.value)
-                    });
-                  }
-                }}
-                style={this.descriptionExceedsCharLimit()}
-              />
-              {this.descriptionExceedsCharLimit() && (
-                <small style={{ color: 'red' }}>
-                  {renderCharLimit({
-                    contentType: 'video',
-                    inputType: 'description',
-                    text: editedDescription
-                  })}
-                </small>
-              )}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '1rem'
-                }}
-              >
-                <Button
-                  transparent
-                  style={{ fontSize: '1.7rem', marginRight: '1rem' }}
-                  onClick={this.onEditCancel}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  primary
-                  disabled={this.determineEditButtonDoneStatus()}
-                  onClick={this.onEditFinish}
-                  style={{ fontSize: '1.7rem' }}
-                >
-                  Done
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div style={{ padding: '0 1rem 2rem 1rem' }}>
-              <LongText
-                style={{
-                  whiteSpace: 'pre-wrap',
-                  overflowWrap: 'break-word',
-                  wordBreak: 'break-word',
-                  lineHeight: '2.3rem'
-                }}
-              >
-                {stringIsEmpty(description) ? 'No Description' : description}
-              </LongText>
-            </div>
-          )}
-          <div style={{ display: 'flex' }}>
-            {editButtonShown &&
-              !onEdit && (
-                <DropdownButton
-                  snow
-                  style={{ marginRight: '1rem' }}
-                  direction="left"
-                  text="Edit or Delete This Video"
-                  menuProps={editMenuItems}
-                />
-              )}
-            {!onEdit &&
-              canStar &&
-              userCanEditThis &&
-              !userIsUploader && (
-                <Button
-                  snow
-                  disabled={determineXpButtonDisabled({
-                    myId: userId,
-                    xpRewardInterfaceShown,
-                    stars
-                  })}
-                  style={{
-                    color: Color.pink()
-                  }}
-                  onClick={() =>
-                    this.setState({ xpRewardInterfaceShown: true })
-                  }
-                >
-                  <Icon icon="certificate" />
-                  <span style={{ marginLeft: '0.7rem' }}>
-                    {determineXpButtonDisabled({
+            <div style={{ display: 'flex' }}>
+              {editButtonShown &&
+                !onEdit && (
+                  <DropdownButton
+                    snow
+                    style={{ marginRight: '1rem' }}
+                    direction="left"
+                    text="Edit or Delete This Video"
+                    menuProps={editMenuItems}
+                  />
+                )}
+              {!onEdit &&
+                canStar &&
+                userCanEditThis &&
+                !userIsUploader && (
+                  <Button
+                    snow
+                    disabled={determineXpButtonDisabled({
                       myId: userId,
                       xpRewardInterfaceShown,
                       stars
-                    }) || 'Reward'}
-                  </span>
-                </Button>
-              )}
+                    })}
+                    style={{
+                      color: Color.pink()
+                    }}
+                    onClick={() =>
+                      this.setState({ xpRewardInterfaceShown: true })
+                    }
+                  >
+                    <Icon icon="certificate" />
+                    <span style={{ marginLeft: '0.7rem' }}>
+                      {determineXpButtonDisabled({
+                        myId: userId,
+                        xpRewardInterfaceShown,
+                        stars
+                      }) || 'Reward'}
+                    </span>
+                  </Button>
+                )}
+            </div>
+            {xpRewardInterfaceShown && (
+              <XPRewardInterface
+                stars={stars}
+                contentType="video"
+                contentId={Number(videoId)}
+                noPadding
+                uploaderId={uploaderId}
+                onRewardSubmit={data => {
+                  this.setState({ xpRewardInterfaceShown: false });
+                  attachStar(data);
+                }}
+              />
+            )}
           </div>
-          {xpRewardInterfaceShown && (
-            <XPRewardInterface
-              stars={stars}
+          {canStar && (
+            <StarButton
+              style={{
+                gridArea: 'starButton',
+                alignSelf: 'start',
+                justifySelf: 'end'
+              }}
+              isStarred={isStarred}
+              onClick={() => starVideo(videoId)}
+            />
+          )}
+          <div
+            style={{
+              gridArea: 'likeButton',
+              alignSelf: 'start',
+              justifySelf: 'end',
+              width: '100%'
+            }}
+          >
+            <LikeButton
               contentType="video"
               contentId={Number(videoId)}
-              noPadding
-              uploaderId={uploaderId}
-              onRewardSubmit={data => {
-                this.setState({ xpRewardInterfaceShown: false });
-                attachStar(data);
+              filled
+              style={{
+                fontSize: '2.5rem',
+                width: '100%'
               }}
+              onClick={likeVideo}
+              liked={(likes => {
+                let liked = false;
+                if (likes) {
+                  for (let i = 0; i < likes.length; i++) {
+                    if (likes[i].userId === userId) liked = true;
+                  }
+                }
+                return liked;
+              })(likes)}
+            />
+            <Likers
+              style={{
+                textAlign: 'center',
+                lineHeight: '1.7rem',
+                marginTop: '0.5rem'
+              }}
+              userId={userId}
+              likes={likes}
+              onLinkClick={() => this.setState({ userListModalShown: true })}
+              target="video"
+              defaultText="Be the first to like this video"
+            />
+          </div>
+          {userListModalShown && (
+            <UserListModal
+              onHide={() => this.setState({ userListModalShown: false })}
+              title="People who liked this video"
+              users={likes.map(like => {
+                return {
+                  username: like.username,
+                  userId: like.userId
+                };
+              })}
+              description="(You)"
             />
           )}
         </div>
-        {canStar && (
-          <StarButton
-            style={{
-              gridArea: 'starButton',
-              alignSelf: 'start',
-              justifySelf: 'end'
-            }}
-            isStarred={isStarred}
-            onClick={() => starVideo(videoId)}
-          />
-        )}
-        <div
-          style={{
-            gridArea: 'likeButton',
-            alignSelf: 'start',
-            justifySelf: 'end',
-            width: '100%'
-          }}
-        >
-          <LikeButton
-            contentType="video"
-            contentId={Number(videoId)}
-            filled
-            style={{
-              fontSize: '2.5rem',
-              width: '100%'
-            }}
-            onClick={likeVideo}
-            liked={(likes => {
-              let liked = false;
-              if (likes) {
-                for (let i = 0; i < likes.length; i++) {
-                  if (likes[i].userId === userId) liked = true;
-                }
-              }
-              return liked;
-            })(likes)}
-          />
-          <Likers
-            style={{
-              textAlign: 'center',
-              lineHeight: '1.7rem',
-              marginTop: '0.5rem'
-            }}
-            userId={userId}
-            likes={likes}
-            onLinkClick={() => this.setState({ userListModalShown: true })}
-            target="video"
-            defaultText="Be the first to like this video"
-          />
-        </div>
-        {userListModalShown && (
-          <UserListModal
-            onHide={() => this.setState({ userListModalShown: false })}
-            title="People who liked this video"
-            users={likes.map(like => {
-              return {
-                username: like.username,
-                userId: like.userId
-              };
-            })}
-            description="(You)"
-          />
-        )}
       </div>
     );
   }
@@ -555,7 +577,9 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   {
+    addTags,
     attachStar,
+    loadTags,
     starVideo
   }
 )(Description);

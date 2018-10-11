@@ -10,14 +10,17 @@ import Profile from './Profile';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
 import AlreadyPosted from './AlreadyPosted';
-import TagStatus from './TagStatus';
+import TagStatus from 'components/TagStatus';
 
 MainContent.propTypes = {
   contentObj: PropTypes.object,
   contentId: PropTypes.number.isRequired,
   isEditing: PropTypes.bool.isRequired,
+  onAddTags: PropTypes.func,
+  onAddTagToContents: PropTypes.func,
   onEditContent: PropTypes.func.isRequired,
   onEditDismiss: PropTypes.func.isRequired,
+  onLoadTags: PropTypes.func,
   rootObj: PropTypes.object,
   urlRelated: PropTypes.object,
   rootType: PropTypes.string,
@@ -27,8 +30,11 @@ export default function MainContent({
   contentObj,
   contentId,
   isEditing,
+  onAddTags,
+  onAddTagToContents,
   onEditContent,
   onEditDismiss,
+  onLoadTags,
   rootObj,
   urlRelated,
   rootType,
@@ -73,6 +79,9 @@ export default function MainContent({
           )}
         {type === 'video' && (
           <TagStatus
+            onAddTags={onAddTags}
+            onAddTagToContents={onAddTagToContents}
+            onLoadTags={onLoadTags}
             tags={contentObj.tags || []}
             contentId={contentObj.contentId}
           />

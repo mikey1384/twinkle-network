@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
+  addTags,
+  addTagToContents,
   attachStar,
   contentFeedLike,
   feedCommentDelete,
@@ -15,6 +17,7 @@ import {
   fetchFeed,
   loadMoreFeedReplies,
   loadMoreFeedComments,
+  loadTags,
   clearFeeds,
   setCurrentSection,
   setDifficulty,
@@ -38,6 +41,8 @@ import HomeFilter from './HomeFilter';
 
 class Stories extends Component {
   static propTypes = {
+    addTags: PropTypes.func.isRequired,
+    addTagToContents: PropTypes.func.isRequired,
     attachStar: PropTypes.func.isRequired,
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
@@ -58,6 +63,7 @@ class Stories extends Component {
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
+    loadTags: PropTypes.func.isRequired,
     numNewPosts: PropTypes.number.isRequired,
     resetNumNewPosts: PropTypes.func.isRequired,
     searchMode: PropTypes.bool.isRequired,
@@ -150,6 +156,8 @@ class Stories extends Component {
 
   render() {
     const {
+      addTags,
+      addTagToContents,
       attachStar,
       contentFeedLike,
       feedCommentDelete,
@@ -162,6 +170,7 @@ class Stories extends Component {
       hideWatched,
       loadMoreButton,
       loadMoreFeedReplies,
+      loadTags,
       numNewPosts,
       userId,
       loaded,
@@ -235,6 +244,8 @@ class Stories extends Component {
                         contentObj={feed}
                         inputAtBottom={feed.type === 'comment'}
                         onLoadContent={fetchFeed}
+                        onAddTags={addTags}
+                        onAddTagToContents={addTagToContents}
                         onAttachStar={attachStar}
                         onCommentSubmit={data =>
                           this.uploadFeedComment({ feed, data })
@@ -247,6 +258,7 @@ class Stories extends Component {
                         onLikeContent={contentFeedLike}
                         onLoadMoreComments={loadMoreFeedComments}
                         onLoadMoreReplies={loadMoreFeedReplies}
+                        onLoadTags={loadTags}
                         onReplySubmit={data =>
                           this.uploadFeedComment({ feed, data })
                         }
@@ -439,6 +451,8 @@ export default connect(
     searchMode: state.SearchReducer.searchMode
   }),
   {
+    addTags,
+    addTagToContents,
     attachStar,
     contentFeedLike,
     fetchMoreFeeds,
@@ -453,6 +467,7 @@ export default connect(
     feedVideoStar,
     loadMoreFeedComments,
     loadMoreFeedReplies,
+    loadTags,
     clearFeeds,
     resetNumNewPosts,
     setCurrentSection,

@@ -7,7 +7,6 @@ import { fetchPlaylistsContaining } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
-import { addTags, addTagToContents, loadTags } from 'redux/actions/FeedActions';
 
 class TagStatus extends Component {
   mounted = false;
@@ -19,19 +18,20 @@ class TagStatus extends Component {
   };
 
   static propTypes = {
-    addTags: PropTypes.func.isRequired,
-    addTagToContents: PropTypes.func.isRequired,
-    loadTags: PropTypes.func.isRequired,
+    onAddTags: PropTypes.func.isRequired,
+    onAddTagToContents: PropTypes.func,
+    onLoadTags: PropTypes.func.isRequired,
     canEditPlaylists: PropTypes.bool,
     contentId: PropTypes.number.isRequired,
+    style: PropTypes.object,
     tags: PropTypes.array.isRequired
   };
 
   async componentDidMount() {
-    const { loadTags, contentId } = this.props;
+    const { onLoadTags, contentId } = this.props;
     this.mounted = true;
     const playlists = await fetchPlaylistsContaining({ videoId: contentId });
-    loadTags({ tags: playlists, contentId, type: 'video' });
+    onLoadTags({ tags: playlists, contentId, type: 'video' });
   }
 
   componentWillUnmount() {
@@ -40,9 +40,16 @@ class TagStatus extends Component {
 
   render() {
     const { shownPlaylistId, shownPlaylistTitle, tagModalShown } = this.state;
-    const { addTagToContents, contentId, canEditPlaylists, tags } = this.props;
+    const {
+      onAddTagToContents,
+      contentId,
+      canEditPlaylists,
+      style,
+      tags
+    } = this.props;
     return (
       <div
+        style={style}
         className={css`
           white-space: pre-wrap;
           overflow-wrap: break-word;
@@ -88,7 +95,7 @@ class TagStatus extends Component {
             title="Add Video to Playlists"
             onHide={() => this.setState({ tagModalShown: false })}
             onAddPlaylist={({ videoIds, playlistId, playlistTitle }) =>
-              addTagToContents({
+              onAddTagToContents?.({
                 contentIds: videoIds,
                 contentType: 'video',
                 tagId: playlistId,
@@ -113,17 +120,14 @@ class TagStatus extends Component {
   }
 
   onTagSubmit = selectedPlaylists => {
-    const { addTags, contentId } = this.props;
-    addTags({ tags: selectedPlaylists, type: 'video', contentId });
+    const { onAddTags, contentId } = this.props;
+    onAddTags({ tags: selectedPlaylists, type: 'video', contentId });
     this.setState(state => ({
       tagModalShown: false
     }));
   };
 }
 
-export default connect(
-  state => ({
-    canEditPlaylists: state.UserReducer.canEditPlaylists
-  }),
-  { addTags, addTagToContents, loadTags }
-)(TagStatus);
+export default connect(state => ({
+  canEditPlaylists: state.UserReducer.canEditPlaylists
+}))(TagStatus);

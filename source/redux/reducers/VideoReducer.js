@@ -5,6 +5,7 @@ const defaultVideoPageState = {
   videoLoading: true,
   comments: [],
   discussions: [],
+  tags: [],
   loadMoreCommentsButton: false,
   loadMoreDiscussionsButton: false
 };
@@ -20,6 +21,14 @@ const defaultState = {
 
 export default function VideoReducer(state = defaultState, action) {
   switch (action.type) {
+    case VIDEO.ADD_TAGS:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          tags: state.videoPage.tags.concat(action.tags)
+        }
+      };
     case VIDEO.ATTACH_STAR:
       return {
         ...state,
@@ -238,6 +247,14 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         currentVideoSlot: action.videoId
+      };
+    case VIDEO.LOAD_TAGS:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          tags: action.tags
+        }
       };
     case VIDEO.LIKE_COMMENT:
       return {

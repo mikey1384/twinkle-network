@@ -82,6 +82,7 @@ class VideoPage extends Component {
     loadVideoDiscussions: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
+    tags: PropTypes.array,
     questions: PropTypes.array,
     resetVideoPage: PropTypes.func.isRequired,
     setDiscussionDifficulty: PropTypes.func.isRequired,
@@ -197,6 +198,7 @@ class VideoPage extends Component {
       likeVideo,
       likeVideoComment,
       loadMoreComments,
+      tags,
       setDiscussionDifficulty,
       userId,
       videoUnavailable,
@@ -350,6 +352,7 @@ class VideoPage extends Component {
                     videoId={videoId}
                     content={content}
                     stars={stars}
+                    tags={tags}
                     title={title}
                     timeStamp={timeStamp}
                     uploaderName={uploaderName}
@@ -579,9 +582,9 @@ class VideoPage extends Component {
           })(),
           choice1: choices[0].label,
           choice2: choices[1].label,
-          choice3: choices[2] ? choices[2].label : null,
-          choice4: choices[3] ? choices[3].label : null,
-          choice5: choices[4] ? choices[4].label : null,
+          choice3: choices[2]?.label,
+          choice4: choices[3]?.label,
+          choice5: choices[4]?.label,
           creator: this.props.userId
         };
       })

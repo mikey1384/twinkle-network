@@ -55,14 +55,14 @@ class XPRewardInterface extends Component {
     if (!userId) return null;
     return (
       <div
-        className={css`
-          display: flex;
-          flex-direction: column;
-          padding: ${noPadding ? '1rem 0 0 0' : '1rem'};
-          font-size: 1.6rem;
-          align-items: center;
-          color: ${Color.blue()};
-        `}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: noPadding ? '1rem 0 0 0' : '1rem',
+          fontSize: '1.6rem',
+          alignItems: 'center',
+          color: Color.blue()
+        }}
       >
         <FilterBar style={{ background: 'none' }}>
           <nav

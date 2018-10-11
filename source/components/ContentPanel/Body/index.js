@@ -41,6 +41,8 @@ class Body extends Component {
     inputAtBottom: PropTypes.bool,
     myId: PropTypes.number,
     type: PropTypes.string,
+    onAddTags: PropTypes.func,
+    onAddTagToContents: PropTypes.func,
     onAttachStar: PropTypes.func.isRequired,
     onCommentSubmit: PropTypes.func.isRequired,
     onDeleteComment: PropTypes.func.isRequired,
@@ -51,6 +53,7 @@ class Body extends Component {
     onLikeContent: PropTypes.func.isRequired,
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
+    onLoadTags: PropTypes.func,
     onReplySubmit: PropTypes.func.isRequired,
     onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,
@@ -142,6 +145,8 @@ class Body extends Component {
       inputAtBottom,
       myId,
       attachedVideoShown,
+      onAddTags,
+      onAddTagToContents,
       onAttachStar,
       onCommentSubmit,
       onDeleteComment,
@@ -150,6 +155,7 @@ class Body extends Component {
       onLikeContent,
       onLoadMoreComments,
       onLoadMoreReplies,
+      onLoadTags,
       onReplySubmit,
       onSetDifficulty
     } = this.props;
@@ -207,9 +213,12 @@ class Body extends Component {
             contentObj={contentObj}
             type={type}
             contentTitle={title || rootObj.title}
+            onAddTags={onAddTags}
+            onAddTagToContents={onAddTagToContents}
             isEditing={isEditing}
             onEditContent={this.onEditContent}
             onEditDismiss={() => this.setState({ isEditing: false })}
+            onLoadTags={onLoadTags}
             rootObj={rootObj}
             rootType={rootType}
             urlRelated={
