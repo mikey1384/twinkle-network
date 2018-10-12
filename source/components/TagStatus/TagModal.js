@@ -110,6 +110,7 @@ class TagModal extends Component {
     });
     this.setState(state => ({
       addPlaylistModalShown: false,
+      notFoundMessageShown: false,
       selectedPlaylists: state.selectedPlaylists.concat([playlist])
     }));
   };
