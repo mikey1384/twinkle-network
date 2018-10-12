@@ -241,29 +241,26 @@ export default function FeedReducer(state = defaultState, action) {
                     comment: feed.targetObj.comment
                       ? {
                           ...feed.targetObj.comment,
-                          comments: (
-                            feed.targetObj.comment.comments || []
-                          ).filter(comment => comment.id !== action.commentId)
+                          comments: feed.targetObj.comment.comments?.filter(
+                            comment => comment.id !== action.commentId
+                          )
                         }
                       : undefined
                   }
                 : undefined,
-              childComments: (feed.childComments || []).reduce(
-                (prev, comment) => {
-                  if (comment.id === action.commentId) {
-                    return prev;
+              childComments: feed.childComments?.reduce((prev, comment) => {
+                if (comment.id === action.commentId) {
+                  return prev;
+                }
+                return prev.concat([
+                  {
+                    ...comment,
+                    replies: comment.replies?.filter(
+                      reply => reply.id !== action.commentId
+                    )
                   }
-                  return prev.concat([
-                    {
-                      ...comment,
-                      replies: (comment.replies || []).filter(
-                        reply => reply.id !== action.commentId
-                      )
-                    }
-                  ]);
-                },
-                []
-              )
+                ]);
+              }, [])
             }
           ]);
         }, [])
@@ -271,11 +268,49 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.DELETE_CONTENT:
       return {
         ...state,
-        [currentSection]: state[currentSection].filter(
-          feed =>
-            feed.type !== action.contentType ||
-            feed.contentId !== action.contentId
-        )
+        [currentSection]: state[currentSection]
+          .filter(
+            feed =>
+              feed.type !== action.contentType ||
+              feed.contentId !== action.contentId
+          )
+          .map(
+            feed =>
+              action.contentType === 'comment'
+                ? {
+                    ...feed,
+                    targetObj: feed.targetObj
+                      ? {
+                          ...feed.targetObj,
+                          comment: feed.targetObj.comment
+                            ? {
+                                ...feed.targetObj.comment,
+                                comments: feed.targetObj.comment.comments?.filter(
+                                  comment => comment.id !== action.contentId
+                                )
+                              }
+                            : undefined
+                        }
+                      : undefined,
+                    childComments: feed.childComments?.reduce(
+                      (prev, comment) => {
+                        if (comment.id === action.contentId) {
+                          return prev;
+                        }
+                        return prev.concat([
+                          {
+                            ...comment,
+                            replies: comment.replies?.filter(
+                              reply => reply.id !== action.contentId
+                            )
+                          }
+                        ]);
+                      },
+                      []
+                    )
+                  }
+                : feed
+          )
       };
     case FEED.EDIT_COMMENT:
       return {

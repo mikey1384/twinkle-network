@@ -19,7 +19,8 @@ export default class TitleDescriptionForm extends Component {
 
   state = {
     title: '',
-    description: ''
+    description: '',
+    submitting: false
   };
 
   render() {
@@ -32,7 +33,7 @@ export default class TitleDescriptionForm extends Component {
       descriptionMaxChar = 5000,
       descriptionPlaceholder
     } = this.props;
-    const { title, description } = this.state;
+    const { title, description, submitting } = this.state;
     return (
       <div>
         <Input
@@ -94,6 +95,7 @@ export default class TitleDescriptionForm extends Component {
             style={{ fontSize: '1.7rem' }}
             onClick={this.onSubmit}
             disabled={
+              submitting ||
               !title ||
               stringIsEmpty(title) ||
               title.length > titleMaxChar ||
@@ -107,14 +109,21 @@ export default class TitleDescriptionForm extends Component {
     );
   }
 
-  onSubmit = event => {
+  onSubmit = async event => {
     const { onSubmit } = this.props;
     const { title, description } = this.state;
     event.preventDefault();
-    onSubmit(finalizeEmoji(title), finalizeEmoji(description));
-    this.setState({
-      title: '',
-      description: ''
-    });
+    this.setState({ submitting: true });
+    try {
+      await onSubmit(finalizeEmoji(title), finalizeEmoji(description));
+      this.setState({
+        title: '',
+        description: '',
+        submitting: false
+      });
+    } catch (error) {
+      this.setState({ submitting: false });
+      console.error(error);
+    }
   };
 }

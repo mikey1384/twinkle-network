@@ -27,11 +27,17 @@ class QuestionInput extends Component {
   state = {
     question: '',
     description: '',
-    descriptionInputShown: false
+    descriptionInputShown: false,
+    submitting: false
   };
 
   render() {
-    const { description, descriptionInputShown, question } = this.state;
+    const {
+      description,
+      descriptionInputShown,
+      question,
+      submitting
+    } = this.state;
     const descriptionExceedsCharLimit = exceedsCharLimit({
       contentType: 'question',
       inputType: 'description',
@@ -110,7 +116,7 @@ class QuestionInput extends Component {
                 success
                 type="submit"
                 style={{ marginTop: '1rem' }}
-                disabled={this.buttonDisabled()}
+                disabled={submitting || this.buttonDisabled()}
                 onClick={this.onSubmit}
               >
                 Ask!
@@ -143,17 +149,24 @@ class QuestionInput extends Component {
     if (stringIsEmpty(question) || question.length > charLimit.question.title) {
       return;
     }
-    const data = await uploadContent({
-      title: turnStringIntoQuestion(question),
-      description: finalizeEmoji(description),
-      dispatch
-    });
-    uploadFeedContent(data);
-    this.setState({
-      question: '',
-      description: '',
-      descriptionInputShown: false
-    });
+    this.setState({ submitting: true });
+    try {
+      const data = await uploadContent({
+        title: turnStringIntoQuestion(question),
+        description: finalizeEmoji(description),
+        dispatch
+      });
+      uploadFeedContent(data);
+      this.setState({
+        question: '',
+        description: '',
+        descriptionInputShown: false,
+        submitting: false
+      });
+    } catch (error) {
+      this.setState({ submitting: false });
+      console.error(error);
+    }
   };
 }
 

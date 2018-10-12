@@ -24,11 +24,12 @@ export default class InputForm extends Component {
   };
 
   state = {
+    submitting: false,
     text: ''
   };
 
   render() {
-    const { text } = this.state;
+    const { submitting, text } = this.state;
     const {
       innerRef,
       placeholder,
@@ -83,7 +84,9 @@ export default class InputForm extends Component {
               style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
               filled
               success
-              disabled={commentExceedsCharLimit}
+              disabled={
+                submitting || stringIsEmpty(text) || commentExceedsCharLimit
+              }
               onClick={this.onSubmit}
             >
               Click This Button to Submit!
@@ -95,13 +98,19 @@ export default class InputForm extends Component {
   }
 
   handleKeyUp = event => {
-    if (event.key === ' ') { this.setState({ text: addEmoji(event.target.value) }); }
+    if (event.key === ' ') {
+      this.setState({ text: addEmoji(event.target.value) });
+    }
   };
 
-  onSubmit = () => {
-    if (!stringIsEmpty(this.state.text)) {
-      this.props.onSubmit(finalizeEmoji(this.state.text));
-      this.setState({ text: '' });
+  onSubmit = async() => {
+    this.setState({ submitting: true });
+    try {
+      await this.props.onSubmit(finalizeEmoji(this.state.text));
+      this.setState({ text: '', submitting: false });
+    } catch (error) {
+      this.setState({ submitting: false });
+      console.error(error);
     }
   };
 }

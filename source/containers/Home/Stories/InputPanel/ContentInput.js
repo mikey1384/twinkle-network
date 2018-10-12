@@ -42,6 +42,7 @@ class ContentInput extends Component {
       title: '',
       description: ''
     },
+    submitting: false,
     urlHelper: '',
     urlError: ''
   };
@@ -53,6 +54,7 @@ class ContentInput extends Component {
       urlError,
       urlHelper,
       descriptionFieldShown,
+      submitting,
       titleFieldShown
     } = this.state;
     return (
@@ -191,7 +193,7 @@ class ContentInput extends Component {
                 filled
                 success
                 style={{ marginTop: '1rem' }}
-                disabled={this.buttonDisabled()}
+                disabled={submitting || this.buttonDisabled()}
                 onClick={this.onSubmit}
               >
                 Share!
@@ -243,27 +245,34 @@ class ContentInput extends Component {
       this.UrlField.focus();
       return scrollElementToCenter(this.UrlField);
     }
-    this.setState({
-      alreadyPosted: false,
-      titleFieldShown: false,
-      descriptionFieldShown: false,
-      form: {
-        url: '',
-        isVideo: false,
-        title: '',
-        description: ''
-      },
-      urlHelper: '',
-      urlError: ''
-    });
-    const data = await uploadContent({
-      ...form,
-      title: finalizeEmoji(form.title),
-      description: finalizeEmoji(form.description),
-      dispatch
-    });
-    uploadFeedContent(data);
-    document.getElementById('App').scrollTop = 0;
+    this.setState({ submitting: true });
+    try {
+      const data = await uploadContent({
+        ...form,
+        title: finalizeEmoji(form.title),
+        description: finalizeEmoji(form.description),
+        dispatch
+      });
+      this.setState({
+        alreadyPosted: false,
+        titleFieldShown: false,
+        descriptionFieldShown: false,
+        form: {
+          url: '',
+          isVideo: false,
+          title: '',
+          description: ''
+        },
+        submitting: false,
+        urlHelper: '',
+        urlError: ''
+      });
+      uploadFeedContent(data);
+      document.getElementById('App').scrollTop = 0;
+    } catch (error) {
+      this.setState({ submitting: false });
+      console.error(error);
+    }
   };
 
   onUrlFieldChange = url => {

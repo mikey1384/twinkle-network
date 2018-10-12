@@ -200,7 +200,8 @@ class LinkPage extends Component {
           justifyContent: 'center',
           alignItems: 'center',
           width: '100%',
-          fontSize: '1.7rem'
+          fontSize: '1.7rem',
+          paddingBottom: '10rem'
         }}
       >
         <div
