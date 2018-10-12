@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { addVideoToPlaylists, searchContent } from 'helpers/requestHelpers';
-import { hashfy } from 'helpers/stringHelpers';
+import { hashify } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 
 class TagModal extends Component {
@@ -59,7 +59,7 @@ class TagModal extends Component {
             onRemoveItem={this.onRemovePlaylist}
             onSubmit={selectedPlaylists.length > 0 && this.onSubmit}
             renderDropdownLabel={item => <span>{item.title}</span>}
-            renderTagLabel={label => hashfy(label)}
+            renderTagLabel={label => hashify(label)}
             searchPlaceholder="Search for playlists here..."
             selectedItems={selectedPlaylists}
           >

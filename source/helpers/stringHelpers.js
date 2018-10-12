@@ -198,7 +198,7 @@ export function finalizeEmoji(string) {
   return addEmoji(emojifiedString);
 }
 
-export function hashfy(string) {
+export function hashify(string) {
   const stringArray = string.split(' ');
   const hashedString =
     '#' +

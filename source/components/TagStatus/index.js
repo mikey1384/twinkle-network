@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import TagModal from './TagModal';
-import { hashfy } from 'helpers/stringHelpers';
+import { hashify } from 'helpers/stringHelpers';
 import { fetchPlaylistsContaining } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
@@ -81,7 +81,7 @@ class TagStatus extends Component {
                   })
                 }
               >
-                {hashfy(tag.title)}
+                {hashify(tag.title)}
               </a>
             ))}
             {canEditPlaylists && (

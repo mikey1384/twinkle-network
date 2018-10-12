@@ -40,7 +40,7 @@ class AddPlaylistModal extends Component {
     this.state = {
       isUploading: false,
       section: 0,
-      title,
+      title: title?.charAt(0).toUpperCase() + title?.slice(1),
       description: '',
       allVideos: [],
       searchedVideos: [],
