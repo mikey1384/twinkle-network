@@ -12,17 +12,17 @@ import UserListModal from 'components/Modals/UserListModal';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Button from 'components/Button';
 import ChatSearchBox from './ChatSearchBox';
+import Channels from './Channels';
+import FullTextReveal from 'components/FullTextReveal';
+import Loading from 'components/Loading';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { textIsOverflown } from 'helpers';
-import FullTextReveal from 'components/FullTextReveal';
 import { socket } from 'constants/io';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { chatStyle, channelContainer } from './Styles';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
-import Loading from 'components/Loading';
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -38,7 +38,7 @@ class Chat extends Component {
     onUnmount: PropTypes.func.isRequired,
     notifyThatMemberLeftChannel: PropTypes.func,
     currentChannel: PropTypes.object,
-    channels: PropTypes.array,
+    channels: PropTypes.array.isRequired,
     selectedChannelId: PropTypes.number,
     userId: PropTypes.number,
     loadMoreButton: PropTypes.bool,
@@ -159,6 +159,7 @@ class Chat extends Component {
       currentChannel,
       userId,
       channelLoadMoreButtonShown,
+      selectedChannelId,
       socketConnected
     } = this.props;
     const {
@@ -333,7 +334,13 @@ class Chat extends Component {
               this.channelList = ref;
             }}
           >
-            {this.renderChannels()}
+            <Channels
+              userId={userId}
+              currentChannel={currentChannel}
+              channels={channels}
+              selectedChannelId={selectedChannelId}
+              onChannelEnter={this.onChannelEnter}
+            />
             {channelLoadMoreButtonShown && (
               <LoadMoreButton
                 success
@@ -418,103 +425,6 @@ class Chat extends Component {
       </div>
     );
   }
-
-  renderChannels = () => {
-    const { userId, currentChannel, channels, selectedChannelId } = this.props;
-    return channels.filter(channel => !channel.isHidden).map(channel => {
-      const {
-        lastMessageSender,
-        lastMessage,
-        id,
-        channelName,
-        numUnreads
-      } = channel;
-      return (
-        <div
-          className={css`
-            &:hover {
-              background: ${Color.wellGray()};
-            }
-          `}
-          style={{
-            width: '100%',
-            backgroundColor: id === selectedChannelId && Color.channelGray(),
-            cursor: 'pointer',
-            padding: '1rem',
-            height: '6.5rem'
-          }}
-          onClick={() => this.onChannelEnter(id)}
-          key={id}
-        >
-          <div
-            style={{
-              display: 'flex',
-              height: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                width: '85%',
-                height: '100%',
-                whiteSpace: 'nowrap',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}
-            >
-              <div>
-                <h4
-                  style={{
-                    color: !channelName && '#7c7c7c',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    lineHeight: 'normal'
-                  }}
-                >
-                  {channelName || '(Deleted)'}
-                </h4>
-              </div>
-              <div
-                style={{
-                  width: '100%',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden'
-                }}
-              >
-                {lastMessageSender && lastMessage
-                  ? `${
-                      lastMessageSender.id === userId
-                        ? 'You'
-                        : lastMessageSender.username
-                    }: ${lastMessage}`
-                  : '\u00a0'}
-              </div>
-            </div>
-            {id !== currentChannel.id &&
-              numUnreads > 0 && (
-                <div
-                  style={{
-                    background: Color.pink(),
-                    display: 'flex',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    minWidth: '2rem',
-                    height: '2rem',
-                    borderRadius: '50%',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}
-                >
-                  {numUnreads}
-                </div>
-              )}
-          </div>
-        </div>
-      );
-    });
-  };
 
   loadMoreChannels = () => {
     const { currentChannel, channels, loadMoreChannels } = this.props;
@@ -633,11 +543,8 @@ class Chat extends Component {
     } = this.props;
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0];
-      return openDirectMessageChannel(
-        { username, id: userId },
-        partner,
-        true
-      ).then(() => this.setState({ createNewChannelModalShown: false }));
+      await openDirectMessageChannel({ username, id: userId }, partner, true);
+      return this.setState({ createNewChannelModalShown: false });
     }
 
     const data = await createNewChannel(params);

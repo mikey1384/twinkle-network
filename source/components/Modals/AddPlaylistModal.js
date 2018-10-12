@@ -29,23 +29,27 @@ class AddPlaylistModal extends Component {
     dispatch: PropTypes.func,
     excludeVideoIds: PropTypes.array,
     onHide: PropTypes.func,
-    postPlaylist: PropTypes.func
+    postPlaylist: PropTypes.func,
+    title: PropTypes.string
   };
 
   timer = null;
 
-  state = {
-    isUploading: false,
-    section: 0,
-    title: '',
-    description: '',
-    allVideos: [],
-    searchedVideos: [],
-    selectedVideos: [],
-    loadMoreButton: false,
-    searchLoadMoreButton: false,
-    searchText: ''
-  };
+  constructor({ title }) {
+    super();
+    this.state = {
+      isUploading: false,
+      section: 0,
+      title: title,
+      description: '',
+      allVideos: [],
+      searchedVideos: [],
+      selectedVideos: [],
+      loadMoreButton: false,
+      searchLoadMoreButton: false,
+      searchText: ''
+    };
+  }
 
   async componentDidMount() {
     const { excludeVideoIds = [] } = this.props;

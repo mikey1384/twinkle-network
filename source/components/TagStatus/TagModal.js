@@ -22,6 +22,7 @@ class TagModal extends Component {
   state = {
     addPlaylistModalShown: false,
     notFoundMessageShown: false,
+    searchText: '',
     searchResults: [],
     selectedPlaylists: []
   };
@@ -32,6 +33,7 @@ class TagModal extends Component {
       addPlaylistModalShown,
       notFoundMessageShown,
       searchResults,
+      searchText,
       selectedPlaylists
     } = this.state;
     return (
@@ -77,6 +79,7 @@ class TagModal extends Component {
               excludeVideoIds={[videoId]}
               postPlaylist={this.onAddPlaylist}
               onHide={() => this.setState({ addPlaylistModalShown: false })}
+              title={searchText}
             />
           )}
         </main>
@@ -131,6 +134,7 @@ class TagModal extends Component {
       videoId,
       playlistIds: selectedPlaylists.map(playlist => playlist.id)
     });
+    this.setState({ searchText: '' });
     onSubmit(selectedPlaylists);
   };
 
@@ -140,7 +144,7 @@ class TagModal extends Component {
       searchText: text,
       limit: 5
     });
-    this.setState({ searchResults: results });
+    this.setState({ searchText: text, searchResults: results });
   };
 }
 
