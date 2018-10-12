@@ -35,12 +35,12 @@ class AddPlaylistModal extends Component {
 
   timer = null;
 
-  constructor({ title }) {
+  constructor({ title = '' }) {
     super();
     this.state = {
       isUploading: false,
       section: 0,
-      title: title,
+      title,
       description: '',
       allVideos: [],
       searchedVideos: [],
