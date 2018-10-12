@@ -371,10 +371,10 @@ class Comment extends Component {
     this.ReplyInputArea.focus();
   };
 
-  onReplySubmit = reply => {
+  onReplySubmit = async reply => {
     const { onReplySubmit } = this.props;
     this.setState({ replying: true });
-    onReplySubmit(reply);
+    await onReplySubmit(reply);
   };
 }
 

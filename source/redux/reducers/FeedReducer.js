@@ -349,7 +349,7 @@ export default function FeedReducer(state = defaultState, action) {
                         : undefined
                     }
                   : undefined,
-                childComments: (feed.childComments || []).map(comment => {
+                childComments: feed.childComments?.map(comment => {
                   return comment.id === action.commentId
                     ? {
                         ...comment,
@@ -357,7 +357,7 @@ export default function FeedReducer(state = defaultState, action) {
                       }
                     : {
                         ...comment,
-                        replies: (comment.replies || []).map(
+                        replies: comment.replies?.map(
                           reply =>
                             reply.id === action.commentId
                               ? {
@@ -409,7 +409,29 @@ export default function FeedReducer(state = defaultState, action) {
                             : feed.targetObj[action.contentType]
                           : undefined
                       }
-                    : undefined
+                    : undefined,
+                  childComments:
+                    action.contentType === 'comment'
+                      ? feed.childComments?.map(comment => {
+                          return comment.id === action.contentId
+                            ? {
+                                ...comment,
+                                ...action.data
+                              }
+                            : {
+                                ...comment,
+                                replies: comment.replies?.map(
+                                  reply =>
+                                    reply.id === action.contentId
+                                      ? {
+                                          ...reply,
+                                          ...action.data
+                                        }
+                                      : reply
+                                )
+                              };
+                        })
+                      : feed.childComments
                 };
         })
       };
