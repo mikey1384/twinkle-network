@@ -400,7 +400,7 @@ export const uploadContent = async({
     );
     return Promise.resolve(data);
   } catch (error) {
-    handleError(error, dispatch);
+    return handleError(error, dispatch);
   }
 };
 
