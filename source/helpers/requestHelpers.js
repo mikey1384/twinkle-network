@@ -11,7 +11,6 @@ export const auth = () => ({
     authorization: token()
   }
 });
-
 export function handleError(error, dispatch) {
   if (error.response) {
     const { status } = error.response;
@@ -183,6 +182,18 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
+  }
+};
+
+export const loadChat = async({ channelId, dispatch, testAuth } = {}) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/chat?channelId=${channelId}`,
+      testAuth || auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    return dispatch ? handleError(error, dispatch) : Promise.reject(error);
   }
 };
 

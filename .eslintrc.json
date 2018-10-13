@@ -20,11 +20,15 @@
   "extends": ["plugin:react/recommended"],
 
   "globals": {
+    "beforeEach": true,
     "document": false,
+    "spyOn": true,
     "navigator": false,
     "window": false,
     "FileReader": true,
-    "localStorage": true
+    "localStorage": true,
+    "test": true,
+    "expect": true
   },
 
   "rules": {

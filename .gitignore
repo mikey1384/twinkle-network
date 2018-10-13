@@ -22,3 +22,5 @@ certs
 .vscode
 .docker
 package-lock.json
+__snapshots__
+test.js

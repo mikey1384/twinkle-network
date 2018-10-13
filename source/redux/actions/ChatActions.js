@@ -147,21 +147,10 @@ export const increaseNumberOfUnreadMessages = () => ({
   type: CHAT.INCREASE_NUM_UNREAD_MSGS
 });
 
-export const initChat = channelId => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}?channelId=${channelId}`,
-      auth()
-    );
-    dispatch({
-      type: CHAT.INIT,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const initChat = data => ({
+  type: CHAT.INIT,
+  data
+});
 
 export const inviteUsersToChannel = (params, callback) => async dispatch => {
   try {

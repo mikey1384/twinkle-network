@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import Header from './Header';
 import { connect } from 'react-redux';
 import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions';
+import { loadChat } from 'helpers/requestHelpers';
 import {
   changePageVisibility,
   enableAutoscroll
@@ -343,10 +344,16 @@ class App extends Component {
   };
 
   onChatButtonClick = async() => {
-    const { initChat, chatMode, turnChatOff } = this.props;
+    const { chatMode, turnChatOff } = this.props;
     this.setState({ chatLoading: true });
-    await (chatMode ? turnChatOff() : initChat());
+    await (chatMode ? turnChatOff() : this.initChat());
     this.setState({ chatLoading: false });
+  };
+
+  initChat = async() => {
+    const { dispatch, initChat } = this.props;
+    const data = await loadChat({ dispatch });
+    initChat(data);
   };
 }
 
@@ -363,14 +370,15 @@ export default connect(
     signinModalShown: state.UserReducer.signinModalShown,
     username: state.UserReducer.username
   }),
-  {
-    closeSigninModal,
-    enableAutoscroll,
-    openSigninModal,
-    initSession,
-    turnChatOff,
-    initChat,
-    resetChat,
-    changePageVisibility
-  }
+  dispatch => ({
+    dispatch,
+    closeSigninModal: () => dispatch(closeSigninModal()),
+    enableAutoscroll: () => dispatch(enableAutoscroll()),
+    openSigninModal: () => dispatch(openSigninModal()),
+    initSession: pathname => dispatch(initSession(pathname)),
+    turnChatOff: () => dispatch(turnChatOff()),
+    initChat: data => dispatch(initChat(data)),
+    resetChat: () => dispatch(resetChat()),
+    changePageVisibility: visible => dispatch(changePageVisibility(visible))
+  })
 )(hot(module)(App));

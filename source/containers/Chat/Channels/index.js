@@ -7,7 +7,18 @@ export default class Channels extends Component {
   static propTypes = {
     userId: PropTypes.number.isRequired,
     currentChannel: PropTypes.object.isRequired,
-    channels: PropTypes.array.isRequired,
+    channels: PropTypes.arrayOf(
+      PropTypes.shape({
+        lastMessageSender: PropTypes.shape({
+          id: PropTypes.number,
+          username: PropTypes.string
+        }),
+        lastMessage: PropTypes.string,
+        id: PropTypes.number.isRequired,
+        channelName: PropTypes.string.isRequired,
+        numUnreads: PropTypes.number.isRequired
+      })
+    ).isRequired,
     onChannelEnter: PropTypes.func.isRequired,
     selectedChannelId: PropTypes.number.isRequired
   };

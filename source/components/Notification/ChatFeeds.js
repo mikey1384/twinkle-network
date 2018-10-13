@@ -4,6 +4,7 @@ import { Color } from 'constants/css';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
 import { timeSince } from 'helpers/timeStampHelpers';
+import { loadChat } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { initChat } from 'redux/actions/ChatActions';
 import RoundList from 'components/RoundList';
@@ -12,6 +13,7 @@ import Icon from 'components/Icon';
 class ChatFeeds extends Component {
   static propTypes = {
     content: PropTypes.string,
+    dispatch: PropTypes.func.isRequired,
     initChat: PropTypes.func.isRequired,
     reloadedBy: PropTypes.number,
     reloaderName: PropTypes.string,
@@ -23,7 +25,7 @@ class ChatFeeds extends Component {
   };
 
   render() {
-    const { content, initChat, style = {} } = this.props;
+    const { content, style = {} } = this.props;
     return (
       <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
         <li
@@ -46,7 +48,7 @@ class ChatFeeds extends Component {
             {content}
           </p>
           {this.renderDetails()}
-          <Button success onClick={() => initChat(2)}>
+          <Button success onClick={this.initChat}>
             <Icon icon="comments" />
             <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
           </Button>
@@ -54,6 +56,12 @@ class ChatFeeds extends Component {
       </RoundList>
     );
   }
+
+  initChat = async() => {
+    const { dispatch, initChat } = this.props;
+    const data = await loadChat({ dispatch, channelId: 2 });
+    initChat(data);
+  };
 
   renderDetails = () => {
     const {
@@ -89,7 +97,8 @@ class ChatFeeds extends Component {
 
 export default connect(
   null,
-  {
-    initChat
-  }
+  dispatch => ({
+    dispatch,
+    initChat: data => dispatch(initChat(data))
+  })
 )(ChatFeeds);
