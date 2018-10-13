@@ -54,7 +54,7 @@ export default function FilterBar({
         width: 100%;
         align-items: center;
         justify-content: space-between;
-        .filter-section {
+        > .filter-section {
           width: 30%;
           height: 100%;
           padding: 0.5rem 1rem;
@@ -62,7 +62,7 @@ export default function FilterBar({
           justify-content: flex-end;
           border-bottom: 1px solid ${Color.borderGray()};
         };
-        .nav-section {
+        > .nav-section {
           display: flex;
           justify-content: space-between;
           align-items: center;
