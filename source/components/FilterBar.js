@@ -7,6 +7,7 @@ FilterBar.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   bordered: PropTypes.bool,
+  dropdownButton: PropTypes.node,
   info: PropTypes.bool,
   innerRef: PropTypes.func,
   success: PropTypes.bool,
@@ -18,6 +19,7 @@ export default function FilterBar({
   children,
   info,
   innerRef,
+  dropdownButton,
   style,
   success
 }) {
@@ -46,68 +48,88 @@ export default function FilterBar({
         border-radius: ${borderRadius};
         `
             : ''
-        } display: flex;
+        };
+        display: flex;
         font-size: 1.7rem;
         width: 100%;
         align-items: center;
-        justify-content: space-around;
-        > nav {
-          font-family: sans-serif;
-          font-weight: bold;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        justify-content: space-between;
+        .filter-section {
+          width: 30%;
           height: 100%;
-          width: 100%;
+          padding: 0.5rem 1rem;
+          display: flex;
+          justify-content: flex-end;
           border-bottom: 1px solid ${Color.borderGray()};
-          color: ${Color.gray()};
-          > a {
+        };
+        .nav-section {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          height: 100%;
+          width: ${!dropdownButton ? '100%' : '70%'};
+          > nav {
+            font-family: sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            border-bottom: 1px solid ${Color.borderGray()};
             color: ${Color.gray()};
-            text-decoration: none;
+            > a {
+              color: ${Color.gray()};
+              text-decoration: none;
+            }
+            &.alert {
+              color: ${Color.pink()}!important;
+            }
           }
-          &.alert {
-            color: ${Color.pink()}!important;
-          }
-        }
-        > nav.active {
-          border-bottom: 3px solid ${color[colorKey]};
-          color: ${color[colorKey]};
-          > a {
+          > nav.active {
+            border-bottom: 3px solid ${color[colorKey]};
             color: ${color[colorKey]};
+            > a {
+              color: ${color[colorKey]};
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              border-bottom: 4px solid ${color[colorKey]};
+            }
           }
-          @media (max-width: ${mobileMaxWidth}) {
-            border-bottom: 6px solid ${color[colorKey]};
-          }
-        }
-        > nav.active.alert {
-          border-bottom: 3px solid ${Color.pink()}!important;
-        }
-        > nav:first-child {
-          ${
-            bordered ? 'border-bottom-left-radius: 5px;' : ''
-          } @media (max-width: ${mobileMaxWidth}) {
-            border-bottom-left-radius: 0;
-          }
-        }
-        > nav:last-child {
-          @media (max-width: ${mobileMaxWidth}) {
-            border-bottom-right-radius: 0;
-          }
-          ${bordered ? 'border-bottom-right-radius: 5px;' : ''};
-        }
-        > nav:hover {
-          transition: border-bottom 0.5s;
-          color: ${color[colorKey]};
-          border-bottom: 3px solid ${color[colorKey]};
-          &.alert {
-            color: ${Color.pink()}!important;
+          > nav.active.alert {
             border-bottom: 3px solid ${Color.pink()}!important;
           }
-          > a {
+          > nav:first-child {
+            ${
+              bordered ? 'border-bottom-left-radius: 5px;' : ''
+            } @media (max-width: ${mobileMaxWidth}) {
+              border-bottom-left-radius: 0;
+            }
+          }
+          > nav:last-child {
+            @media (max-width: ${mobileMaxWidth}) {
+              border-bottom-right-radius: 0;
+            }
+            ${
+              bordered && !dropdownButton
+                ? 'border-bottom-right-radius: 5px;'
+                : ''
+            };
+          }
+          > nav:hover {
+            transition: border-bottom 0.5s;
             color: ${color[colorKey]};
-            transition: color 0.5s, font-weight 0.5s;
-            font-weight: bold;
+            border-bottom: 3px solid ${color[colorKey]};
+            &.alert {
+              color: ${Color.pink()}!important;
+              border-bottom: 3px solid ${Color.pink()}!important;
+            }
+            > a {
+              color: ${color[colorKey]};
+              transition: color 0.5s, font-weight 0.5s;
+              font-weight: bold;
+            }
           }
         }
         @media (max-width: ${mobileMaxWidth}) {
@@ -119,7 +141,8 @@ export default function FilterBar({
         }
       `} ${className}`}
     >
-      {children}
+      <div className="nav-section">{children}</div>
+      {dropdownButton && <div className="filter-section">{dropdownButton}</div>}
     </div>
   );
 }
