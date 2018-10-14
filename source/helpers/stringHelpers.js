@@ -302,7 +302,7 @@ export function trimWhiteSpaces(text) {
   return newText;
 }
 
-export function isValidUrl(url) {
+export function isValidUrl(url = '') {
   const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
   if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
     url = 'www.' + url;

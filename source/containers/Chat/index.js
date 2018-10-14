@@ -415,7 +415,7 @@ class Chat extends Component {
           ) : (
             <div>
               <Loading
-                style={{ height: '2.5rem' }}
+                style={{ height: '2.2rem' }}
                 innerStyle={{ fontSize: '2rem' }}
                 text="Socket disconnected. Reconnecting..."
               />
