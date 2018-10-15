@@ -12,6 +12,7 @@ import { determineXpButtonDisabled, textIsOverflown } from 'helpers';
 import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
 import XPRewardInterface from 'components/XPRewardInterface';
+import AlreadyPosted from 'components/AlreadyPosted';
 import {
   cleanString,
   exceedsCharLimit,
@@ -106,6 +107,7 @@ class Description extends Component {
       canDelete,
       canEdit,
       canStar,
+      content,
       isStarred,
       likeVideo,
       uploaderId,
@@ -153,6 +155,14 @@ class Description extends Component {
     const starButtonGrid = canStar ? 'starButton' : 'title';
     return (
       <div>
+        <AlreadyPosted
+          style={{ marginBottom: '1rem' }}
+          contentId={Number(videoId)}
+          type="video"
+          url={content}
+          uploaderId={uploaderId}
+          videoCode={content}
+        />
         <TagStatus
           style={{ fontSize: '1.5rem' }}
           onAddTags={addTags}

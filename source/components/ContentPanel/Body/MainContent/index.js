@@ -9,7 +9,7 @@ import ContentEditor from '../ContentEditor';
 import Profile from './Profile';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
-import AlreadyPosted from './AlreadyPosted';
+import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
 
 MainContent.propTypes = {

@@ -7,6 +7,7 @@ import LongText from 'components/Texts/LongText';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
 import Input from 'components/Texts/Input';
+import AlreadyPosted from 'components/AlreadyPosted';
 import {
   cleanString,
   exceedsCharLimit,
@@ -53,6 +54,7 @@ class Description extends Component {
       authLevel,
       canDelete,
       canEdit,
+      linkId,
       uploaderId,
       myId,
       title,
@@ -60,7 +62,8 @@ class Description extends Component {
       uploaderAuthLevel,
       uploaderName,
       timeStamp,
-      onDelete
+      onDelete,
+      url
     } = this.props;
     const { onEdit, editedTitle, editedDescription, editedUrl } = this.state;
     const userIsUploader = uploaderId === myId;
@@ -154,12 +157,22 @@ class Description extends Component {
         </div>
         <div
           style={{
-            marginTop: '3rem',
+            marginTop: '2rem',
             whiteSpace: 'pre-wrap',
             overflowWrap: 'break-word',
             wordBreak: 'break-word'
           }}
         >
+          <AlreadyPosted
+            style={{
+              marginLeft: '-1rem',
+              marginRight: '-1rem'
+            }}
+            contentId={Number(linkId)}
+            type="url"
+            url={url}
+            uploaderId={uploaderId}
+          />
           {onEdit ? (
             <div>
               <Input
