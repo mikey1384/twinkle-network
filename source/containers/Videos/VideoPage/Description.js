@@ -45,6 +45,7 @@ class Description extends Component {
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
     canStar: PropTypes.bool,
+    changingPage: PropTypes.bool,
     content: PropTypes.string.isRequired,
     description: PropTypes.string,
     isStarred: PropTypes.bool,
@@ -107,6 +108,7 @@ class Description extends Component {
       canDelete,
       canEdit,
       canStar,
+      changingPage,
       content,
       isStarred,
       likeVideo,
@@ -156,6 +158,7 @@ class Description extends Component {
     return (
       <div>
         <AlreadyPosted
+          changingPage={changingPage}
           style={{ marginBottom: '1rem' }}
           contentId={Number(videoId)}
           type="video"

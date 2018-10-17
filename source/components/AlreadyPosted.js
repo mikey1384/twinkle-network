@@ -7,6 +7,7 @@ import { checkIfContentExists } from 'helpers/requestHelpers';
 
 export default class AlreadyPosted extends Component {
   static propTypes = {
+    changingPage: PropTypes.bool,
     contentId: PropTypes.number.isRequired,
     type: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
@@ -15,10 +16,11 @@ export default class AlreadyPosted extends Component {
     videoCode: PropTypes.string
   };
 
+  existingContent = {};
   mounted = false;
 
   state = {
-    existingContent: {}
+    loading: false
   };
 
   async componentDidMount() {
@@ -29,7 +31,20 @@ export default class AlreadyPosted extends Component {
       url,
       videoCode
     });
-    if (this.mounted) this.setState({ existingContent });
+    if (this.mounted) this.existingContent = existingContent;
+  }
+
+  async componentDidUpdate(prevProps) {
+    if (this.props.url !== prevProps.url) {
+      this.setState({ existingContent: {} });
+      const { type, url, videoCode } = this.props;
+      const { content: existingContent } = await checkIfContentExists({
+        type,
+        url,
+        videoCode
+      });
+      if (this.mounted) this.existingContent = existingContent;
+    }
   }
 
   componentWillUnmount() {
@@ -37,23 +52,26 @@ export default class AlreadyPosted extends Component {
   }
 
   render() {
-    const { existingContent = {} } = this.state;
-    const { contentId, style, type, uploaderId } = this.props;
-    return existingContent.id && existingContent.id !== contentId ? (
+    const { changingPage, contentId, style, type, uploaderId } = this.props;
+    return !changingPage &&
+      this.existingContent.id &&
+      this.existingContent.id !== contentId ? (
       <div
         style={{
           fontSize: '1.6rem',
           padding: '1rem',
-          color: uploaderId !== existingContent.uploader ? '#000' : '#fff',
+          color: uploaderId !== this.existingContent.uploader ? '#000' : '#fff',
           backgroundColor:
-            uploaderId !== existingContent.uploader
+            uploaderId !== this.existingContent.uploader
               ? Color.orange()
               : Color.blue(),
           ...style
         }}
         className={css`
           > a {
-            color: ${uploaderId !== existingContent.uploader ? '#000' : '#fff'};
+            color: ${uploaderId !== this.existingContent.uploader
+              ? '#000'
+              : '#fff'};
             font-weight: bold;
           }
         `}
@@ -61,10 +79,14 @@ export default class AlreadyPosted extends Component {
         This content has{' '}
         <Link
           style={{ fontWeight: 'bold' }}
-          to={`/${type === 'url' ? 'link' : 'video'}s/${existingContent.id}`}
+          to={`/${type === 'url' ? 'link' : 'video'}s/${
+            this.existingContent.id
+          }`}
         >
           already been posted before
-          {uploaderId !== existingContent.uploader ? ' by someone else' : ''}
+          {uploaderId !== this.existingContent.uploader
+            ? ' by someone else'
+            : ''}
         </Link>
       </div>
     ) : null;
