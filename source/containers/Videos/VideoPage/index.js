@@ -109,6 +109,7 @@ class VideoPage extends Component {
   }) {
     super();
     this.state = {
+      changingPage: false,
       watchTabActive: true,
       currentSlide: 0,
       userAnswers: [],
@@ -146,6 +147,7 @@ class VideoPage extends Component {
       loadVideoComments
     } = this.props;
     if (prevProps.match.params.videoId !== params.videoId) {
+      this.setState({ changingPage: true });
       await loadVideoPage(params.videoId);
       const discussionsObj = await loadDiscussions({
         type: 'video',
@@ -155,6 +157,7 @@ class VideoPage extends Component {
       const data = await loadComments({ id: params.videoId, type: 'video' });
       if (data) loadVideoComments(data);
       return this.setState({
+        changingPage: false,
         watchTabActive: true,
         currentSlide: 0,
         userAnswers: [],
@@ -216,6 +219,7 @@ class VideoPage extends Component {
       videoViews
     } = this.props;
     const {
+      changingPage,
       watchTabActive,
       questionsBuilderShown,
       resultModalShown,
@@ -346,6 +350,7 @@ class VideoPage extends Component {
                   }}
                 >
                   <Description
+                    changingPage={changingPage}
                     isStarred={isStarred}
                     likes={likes}
                     likeVideo={likeVideo}
