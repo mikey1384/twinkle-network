@@ -8,7 +8,7 @@ import {
   fetchMoreUsers,
   searchUsers
 } from 'redux/actions/UserActions';
-import ProfilePanel from '../ProfilePanel';
+import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';

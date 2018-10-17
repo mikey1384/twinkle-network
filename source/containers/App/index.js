@@ -44,6 +44,9 @@ const ContentPage = loadable(() => import('containers/ContentPage'), {
 const PlaylistPage = loadable(() => import('containers/PlaylistPage'), {
   loadingComponent: Loading
 });
+const Profile = loadable(() => import('containers/Profile'), {
+  loadingComponent: Loading
+});
 const SearchPage = loadable(() => import('containers/SearchPage'), {
   LoadingComponent: Loading
 });
@@ -319,8 +322,8 @@ class App extends Component {
             <Route path="/playlists" component={PlaylistPage} />
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
+            <Route path="/users/:username" component={Profile} />
             <Route path="/users" component={Home} />
-            <Route path="/users/:username" component={Home} />
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>

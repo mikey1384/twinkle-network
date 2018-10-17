@@ -3,6 +3,7 @@ import { mobileMaxWidth } from 'constants/css';
 
 export const container = css`
   height: 100%;
+  margin-top: 1rem;
   @media (max-width: ${mobileMaxWidth}) {
     display: flex;
   }

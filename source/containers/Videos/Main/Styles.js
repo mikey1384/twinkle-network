@@ -5,6 +5,7 @@ export const main = css`
   width: 100%;
   .left {
     width: CALC(73vw - 2rem);
+    margin-top: 1rem;
     margin-left: 1rem;
   }
   .right {

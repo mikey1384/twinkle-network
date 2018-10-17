@@ -16,6 +16,7 @@ export default function ContentPage({ match }) {
         width: 100%;
         display: flex;
         justify-content: center;
+        margin-top: 1rem;
         margin-bottom: 1rem;
         padding-bottom: 20rem;
       `}

@@ -22,10 +22,10 @@ export default function ProfilePic({
     <div
       {...props}
       style={{
-        ...style,
         display: 'block',
         position: 'relative',
-        userSelect: 'none'
+        userSelect: 'none',
+        ...style
       }}
     >
       <img

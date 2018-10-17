@@ -15,6 +15,10 @@ export function addCommasToNumber(number) {
   return result;
 }
 
+export function capitalize(string = '') {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function cleanString(string) {
   return string
     ? string
@@ -201,10 +205,7 @@ export function finalizeEmoji(string) {
 export function hashify(string) {
   const stringArray = string.split(' ');
   const hashedString =
-    '#' +
-    stringArray
-      .map(string => string.charAt(0).toUpperCase() + string.slice(1))
-      .join('');
+    '#' + stringArray.map(string => capitalize(string)).join('');
   return hashedString;
 }
 

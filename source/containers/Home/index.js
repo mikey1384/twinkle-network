@@ -12,9 +12,6 @@ import AlertModal from 'components/Modals/AlertModal';
 import { uploadProfilePic } from 'redux/actions/UserActions';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import loadable from 'loadable-components';
-const Profile = loadable(() => import('./Profile'), {
-  LoadingComponent: Loading
-});
 const People = loadable(() => import('./People'), {
   LoadingComponent: Loading
 });
@@ -66,7 +63,6 @@ class Home extends Component {
           </div>
           <div className={Center}>
             <Route exact path="/" component={Stories} />
-            <Route path="/users/:username" component={Profile} />
             <Route exact path="/users" component={People} />
           </div>
           <Notification className={Right} />

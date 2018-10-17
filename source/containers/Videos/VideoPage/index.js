@@ -232,6 +232,7 @@ class VideoPage extends Component {
           justify-content: space-between;
           width: 100%;
           height: 100%;
+          margin-top: 1rem;
           @media (max-width: ${mobileMaxWidth}) {
             flex-direction: column;
           }
