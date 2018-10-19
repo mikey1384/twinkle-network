@@ -23,7 +23,8 @@ class Cover extends Component {
           style={{
             background: Color[statusColor](),
             height: '24rem',
-            marginTop: '-1rem'
+            marginTop: '-1rem',
+            width: '100%'
           }}
         >
           <div
@@ -43,7 +44,7 @@ class Cover extends Component {
             position: 'absolute',
             width: '25rem',
             height: '25rem',
-            marginLeft: '5rem',
+            left: '5rem',
             top: '4rem',
             fontSize: '2rem',
             zIndex: 10

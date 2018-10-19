@@ -5,12 +5,11 @@ import { css } from 'emotion';
 export default class LeftMenu extends Component {
   static propTypes = {
     menuItems: PropTypes.array.isRequired,
-    onClickFeedMenu: PropTypes.func.isRequired,
-    style: PropTypes.object.isRequired,
-    url: PropTypes.string.isRequired
+    onMenuClick: PropTypes.func.isRequired,
+    style: PropTypes.object.isRequired
   };
   render() {
-    const { menuItems, onClickFeedMenu, style, url } = this.props;
+    const { menuItems, onMenuClick, style } = this.props;
     return (
       <div
         style={{
@@ -35,13 +34,13 @@ export default class LeftMenu extends Component {
             top: '1rem'
           }}
         >
-          {menuItems.map(item => (
+          {menuItems.map(({ key, label }) => (
             <nav
-              key={item}
-              onClick={() => onClickFeedMenu({ type: item, url })}
+              key={key}
+              onClick={() => onMenuClick({ item: key })}
               style={{ cursor: 'pointer' }}
             >
-              {item}
+              {label}
             </nav>
           ))}
         </div>

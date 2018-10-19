@@ -12,6 +12,7 @@ class Profile extends Component {
   static propTypes = {
     checkValidUsername: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
     userId: PropTypes.number,
@@ -51,6 +52,9 @@ class Profile extends Component {
 
   render() {
     const {
+      history,
+      location,
+      match,
       profile: { unavailable, id },
       profile,
       userId
@@ -59,9 +63,18 @@ class Profile extends Component {
       <div>
         {!id && <Loading text="Loading Profile..." />}
         {id && (
-          <div style={{ position: 'relative' }}>
+          <div
+            style={{
+              position: 'relative'
+            }}
+          >
             <Cover profile={profile} />
-            <Body {...this.props} />
+            <Body
+              history={history}
+              location={location}
+              match={match}
+              profile={profile}
+            />
           </div>
         )}
       </div>
