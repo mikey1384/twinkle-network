@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Color } from 'constants/css';
+import { profileThemes } from 'constants/defaultValues';
 import { connect } from 'react-redux';
 import ProfilePic from 'components/ProfilePic';
 
@@ -8,20 +8,27 @@ class Cover extends Component {
   static propTypes = {
     profile: PropTypes.shape({
       id: PropTypes.number.isRequired,
-      statusColor: PropTypes.string.isRequired
+      profileTheme: PropTypes.string
     }),
     userId: PropTypes.number
   };
   render() {
     const {
       userId,
-      profile: { id, profilePicId, online, statusColor, realName, username }
+      profile: {
+        id,
+        profilePicId,
+        online,
+        profileTheme = 'blue',
+        realName,
+        username
+      }
     } = this.props;
     return (
       <>
         <div
           style={{
-            background: Color[statusColor](),
+            ...profileThemes[profileTheme],
             height: '24rem',
             marginTop: '-1rem',
             width: '100%'

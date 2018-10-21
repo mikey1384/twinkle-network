@@ -12,7 +12,7 @@ export const Color = {
   inputBorderGray: (opacity = 1) => `rgba(231,231,231,${opacity})`,
   silver: (opacity = 1) => `rgba(235,235,235,${opacity})`,
   borderGray: (opacity = 1) => `rgba(238,238,238,${opacity})`,
-  backgroundGray: (opacity = 1) => `rgba(242,244,246,${opacity})`,
+  backgroundGray: (opacity = 1) => `rgba(241,243,246,${opacity})`,
   headingGray: (opacity = 1) => `rgba(245,245,245,${opacity})`,
   channelGray: (opacity = 1) => `rgba(247,247,247,${opacity})`,
   wellGray: (opacity = 1) => `rgba(249,249,249,${opacity})`,

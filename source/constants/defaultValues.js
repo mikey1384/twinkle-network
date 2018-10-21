@@ -2,6 +2,8 @@ export const defaultChatSubject = 'Introduce yourself!';
 export const rewardValue = {
   star: 200
 };
+import { Color } from './css';
+
 export const charLimit = {
   chat: {
     subject: 200,
@@ -37,7 +39,12 @@ export const charLimit = {
     url: 300
   }
 };
-
+export const profileThemes = {
+  blue: {
+    background: Color.logoBlue(),
+    color: '#fff'
+  }
+};
 export const returnMaxStars = ({ difficulty }) => {
   let maxStars = 5;
   if (difficulty > 0) {

@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import StatusInput from './StatusInput';
-import {
-  addEmoji,
-  finalizeEmoji,
-  processedStringWithURL,
-  renderText
-} from 'helpers/stringHelpers';
+import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import BioEditModal from 'components/Modals/BioEditModal';
@@ -17,6 +12,8 @@ import { Color } from 'constants/css';
 import { URL } from 'constants/URL';
 import request from 'axios';
 import { auth } from 'helpers/requestHelpers';
+import StatusMsg from 'components/Texts/StatusMsg';
+import Bio from 'components/Texts/Bio';
 
 export default class UserDetails extends Component {
   static propTypes = {
@@ -117,29 +114,9 @@ export default class UserDetails extends Component {
             />
           )}
         {(profile.statusMsg || editedStatusMsg) && (
-          <div
-            className={css`
-              background: ${Color[statusColor]()};
-              color: ${statusColor === 'ivory' ? Color.black() : '#fff'};
-              font-size: 1.7rem;
-              padding: 1rem;
-              margin-top: 1rem;
-              box-shadow: 0 5px 5px ${Color.lightGray()};
-              overflow-wrap: break-word;
-              word-break: break-word;
-              > a {
-                color: ${statusColor === 'ivory'
-                  ? Color.blue()
-                  : statusColor === 'logoGreen'
-                    ? Color.ivory()
-                    : Color.gold()};
-              }
-            `}
-            dangerouslySetInnerHTML={{
-              __html: processedStringWithURL(
-                editedStatusMsg || profile.statusMsg
-              )
-            }}
+          <StatusMsg
+            statusColor={statusColor}
+            statusMsg={editedStatusMsg || profile.statusMsg}
           />
         )}
         {profile.statusMsg &&
@@ -174,38 +151,12 @@ export default class UserDetails extends Component {
             </div>
           )}
         {!noProfile && (
-          <ul
-            style={{
-              whiteSpace: 'pre-wrap',
-              overflowWrap: 'break-word',
-              wordBreak: 'break-word',
-              paddingLeft: '2rem',
-              lineHeight: 1.6,
-              fontSize: small ? '1.5rem' : '1.7rem'
-            }}
-          >
-            {profileFirstRow && (
-              <li
-                dangerouslySetInnerHTML={{
-                  __html: processedStringWithURL(profileFirstRow)
-                }}
-              />
-            )}
-            {profileSecondRow && (
-              <li
-                dangerouslySetInnerHTML={{
-                  __html: processedStringWithURL(profileSecondRow)
-                }}
-              />
-            )}
-            {profileThirdRow && (
-              <li
-                dangerouslySetInnerHTML={{
-                  __html: processedStringWithURL(profileThirdRow)
-                }}
-              />
-            )}
-          </ul>
+          <Bio
+            small={small}
+            firstRow={profileFirstRow}
+            secondRow={profileSecondRow}
+            thirdRow={profileThirdRow}
+          />
         )}
         {noProfile &&
           (userId === profile.id && !unEditable ? (

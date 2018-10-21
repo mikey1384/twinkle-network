@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
+import { Color } from 'constants/css';
 
 export default class LeftMenu extends Component {
   static propTypes = {
     menuItems: PropTypes.array.isRequired,
     onMenuClick: PropTypes.func.isRequired,
+    selectedKey: PropTypes.string.isRequired,
     style: PropTypes.object.isRequired
   };
+
   render() {
-    const { menuItems, onMenuClick, style } = this.props;
+    const { onMenuClick, menuItems, selectedKey, style } = this.props;
     return (
       <div
         style={{
@@ -24,8 +27,12 @@ export default class LeftMenu extends Component {
             position: -webkit-sticky;
             > nav {
               padding: 1rem;
-              background: #fff;
               font-size: 2rem;
+              font-weight: bold;
+              color: ${Color.buttonGray()};
+              &:hover {
+                color: ${Color.black()};
+              }
             }
           `}
           style={{
@@ -34,11 +41,15 @@ export default class LeftMenu extends Component {
             top: '1rem'
           }}
         >
-          {menuItems.map(({ key, label }) => (
+          {menuItems.map(({ key, label }, index) => (
             <nav
               key={key}
               onClick={() => onMenuClick({ item: key })}
-              style={{ cursor: 'pointer' }}
+              style={{
+                cursor: 'pointer',
+                color: selectedKey === key ? Color.black() : null,
+                background: selectedKey === key ? '#fff' : null
+              }}
             >
               {label}
             </nav>

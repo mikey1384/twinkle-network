@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { capitalize } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import FilterBar from 'components/FilterBar';
-import About from './About';
+import BasicInfo from './BasicInfo';
+import Achievements from './Achievements';
 import Posts from './Posts';
 import SideMenu from './SideMenu';
 import { clearFeeds } from 'redux/actions/FeedActions';
@@ -23,10 +24,9 @@ class Body extends Component {
     })
   };
 
-  AboutObject = {};
-
   state = {
-    currentTab: 'about'
+    currentTab: 'profile',
+    selectedSection: 'info'
   };
 
   render() {
@@ -38,7 +38,7 @@ class Body extends Component {
       },
       profile
     } = this.props;
-    const { currentTab } = this.state;
+    const { currentTab, selectedSection } = this.state;
     return (
       <div
         ref={ref => {
@@ -57,16 +57,23 @@ class Body extends Component {
           />
           <FilterBar>
             <nav
-              className={currentTab === 'about' ? 'active' : ''}
+              className={currentTab === 'profile' ? 'active' : ''}
               style={{ cursor: 'pointer' }}
-              onClick={() => this.setState({ currentTab: 'about' })}
+              onClick={() =>
+                this.setState({
+                  currentTab: 'profile',
+                  selectedSection: 'info'
+                })
+              }
             >
-              <a>About {capitalize(username)}</a>
+              <a>{`${capitalize(username)}'s Profile`}</a>
             </nav>
             <nav
               className={currentTab === 'posts' ? 'active' : ''}
               style={{ cursor: 'pointer' }}
-              onClick={() => this.setState({ currentTab: 'posts' })}
+              onClick={() =>
+                this.setState({ currentTab: 'posts', selectedSection: 'all' })
+              }
             >
               <a>Posts</a>
             </nav>
@@ -92,18 +99,22 @@ class Body extends Component {
             }}
           >
             <div style={{ width: 'CALC(100% - 30rem)' }}>
-              {currentTab === 'about' ? (
-                <About profile={profile} />
+              {currentTab === 'profile' ? (
+                selectedSection === 'info' ? (
+                  <BasicInfo profile={profile} />
+                ) : (
+                  <Achievements />
+                )
               ) : (
                 <Posts username={username} location={location} match={match} />
               )}
             </div>
             <SideMenu
               menuItems={
-                currentTab === 'about'
+                currentTab === 'profile'
                   ? [
                       { key: 'info', label: 'Basic Info' },
-                      { key: 'diary', label: 'Diary' }
+                      { key: 'achievements', label: 'Achievements' }
                     ]
                   : [
                       { key: 'all', label: 'All' },
@@ -113,7 +124,12 @@ class Body extends Component {
                       { key: 'url', label: 'Links' }
                     ]
               }
-              onMenuClick={this.onClickPostsMenu}
+              onMenuClick={
+                currentTab === 'posts'
+                  ? this.onClickPostsMenu
+                  : this.onClickProfileMenu
+              }
+              selectedKey={selectedSection}
               style={{ width: '30rem' }}
             />
           </div>
@@ -131,6 +147,11 @@ class Body extends Component {
         item !== 'all' ? `/${item === 'url' ? 'link' : item}s` : ''
       }`
     );
+    this.setState({ selectedSection: item });
+  };
+
+  onClickProfileMenu = ({ item }) => {
+    this.setState({ selectedSection: item });
   };
 }
 

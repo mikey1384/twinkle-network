@@ -14,7 +14,7 @@ export default class SectionPanel extends Component {
     emptyMessage: PropTypes.string,
     isEmpty: PropTypes.bool,
     isSearching: PropTypes.bool,
-    headerColor: PropTypes.string,
+    headerTheme: PropTypes.object,
     loaded: PropTypes.bool,
     loadMore: PropTypes.func,
     children: PropTypes.node,
@@ -31,7 +31,7 @@ export default class SectionPanel extends Component {
 
   render() {
     const {
-      headerColor = 'logoBlue',
+      headerTheme = { color: '#fff', background: Color.logoBlue() },
       title,
       button,
       loadMoreButtonShown,
@@ -54,8 +54,8 @@ export default class SectionPanel extends Component {
             width: 100%;
             grid-template-areas: 'title search buttons';
             grid-template-columns: auto ${onSearch ? '40%' : 'auto'} auto;
-            background: ${Color[headerColor]()};
-            color: #fff;
+            background: ${headerTheme.background};
+            color: ${headerTheme.color};
             border-top-left-radius: ${borderRadius};
             border-top-right-radius: ${borderRadius};
             padding: 1rem;
@@ -65,8 +65,11 @@ export default class SectionPanel extends Component {
           }
           > main {
             position: relative;
+            display: flex;
+            flex-direction: column;
             padding: 1rem;
             width: 100%;
+            justify-content: center;
             min-height: 15rem;
           }
           @media (max-width: ${mobileMaxWidth}) {
