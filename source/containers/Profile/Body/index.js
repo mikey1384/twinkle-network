@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { capitalize } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import FilterBar from 'components/FilterBar';
-import BasicInfo from './BasicInfo';
+import Home from './Home';
 import Achievements from './Achievements';
 import Posts from './Posts';
 import SideMenu from './SideMenu';
@@ -26,7 +26,7 @@ class Body extends Component {
 
   state = {
     currentTab: 'profile',
-    selectedSection: 'info'
+    selectedSection: 'home'
   };
 
   render() {
@@ -62,7 +62,7 @@ class Body extends Component {
               onClick={() =>
                 this.setState({
                   currentTab: 'profile',
-                  selectedSection: 'info'
+                  selectedSection: 'home'
                 })
               }
             >
@@ -100,8 +100,8 @@ class Body extends Component {
           >
             <div style={{ width: 'CALC(100% - 30rem)' }}>
               {currentTab === 'profile' ? (
-                selectedSection === 'info' ? (
-                  <BasicInfo profile={profile} />
+                selectedSection === 'home' ? (
+                  <Home profile={profile} />
                 ) : (
                   <Achievements />
                 )
@@ -113,7 +113,7 @@ class Body extends Component {
               menuItems={
                 currentTab === 'profile'
                   ? [
-                      { key: 'info', label: 'Basic Info' },
+                      { key: 'home', label: 'Home' },
                       { key: 'achievements', label: 'Achievements' }
                     ]
                   : [

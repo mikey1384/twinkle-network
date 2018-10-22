@@ -13,7 +13,9 @@ export default class Item extends Component {
     return (
       <div>
         <span>{item.label}: </span>
-        <span>{item.value}</span>
+        <a href={item.key === 'email' ? `mailto:${item.value}` : item.value}>
+          {item.value}
+        </a>
       </div>
     );
   }

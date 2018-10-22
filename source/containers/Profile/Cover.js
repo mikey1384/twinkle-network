@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ProfilePic from 'components/ProfilePic';
+import ColorSelector from 'components/ColorSelector';
+import Button from 'components/Button';
+import { borderRadius } from 'constants/css';
 import { profileThemes } from 'constants/defaultValues';
 import { connect } from 'react-redux';
-import ProfilePic from 'components/ProfilePic';
 
 class Cover extends Component {
   static propTypes = {
@@ -12,6 +15,11 @@ class Cover extends Component {
     }),
     userId: PropTypes.number
   };
+
+  state = {
+    colorSelectorShown: false
+  };
+
   render() {
     const {
       userId,
@@ -24,35 +32,97 @@ class Cover extends Component {
         username
       }
     } = this.props;
+    const { colorSelectorShown } = this.state;
     return (
       <>
         <div
           style={{
             ...profileThemes[profileTheme],
-            height: '24rem',
+            height: '23rem',
             marginTop: '-1rem',
-            width: '100%'
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+            position: 'relative'
           }}
         >
           <div
             style={{
-              marginLeft: '35rem',
+              marginLeft: '30rem',
               color: '#fff',
               fontSize: '5rem',
-              paddingTop: '10rem'
+              paddingTop: '12rem'
             }}
           >
             {username}
             <p style={{ fontSize: '2rem', lineHeight: '1rem' }}>({realName})</p>
           </div>
+          <div
+            style={{
+              background: colorSelectorShown && '#fff',
+              borderRadius,
+              position: 'absolute',
+              padding: '1rem',
+              bottom: '1rem',
+              right: '1rem'
+            }}
+          >
+            {!colorSelectorShown && (
+              <Button
+                style={{ marginBottom: '-1rem', marginRight: '-1rem' }}
+                default
+                filled
+                onClick={() => this.setState({ colorSelectorShown: true })}
+              >
+                Change Theme
+              </Button>
+            )}
+            {colorSelectorShown && (
+              <>
+                <ColorSelector
+                  colors={['logoBlue', 'gold', 'red']}
+                  setColor={() => console.log('color')}
+                  selectedColor={profileTheme}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    justifyContent: 'center'
+                  }}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    marginTop: '1rem',
+                    justifyContent: 'flex-end'
+                  }}
+                >
+                  <Button
+                    style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                    snow
+                    onClick={() => this.setState({ colorSelectorShown: false })}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    style={{ fontSize: '1.2rem' }}
+                    primary
+                    filled
+                    onClick={() => this.setState({ colorSelectorShown: false })}
+                  >
+                    Change
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
         <ProfilePic
           style={{
             position: 'absolute',
-            width: '25rem',
-            height: '25rem',
-            left: '5rem',
-            top: '4rem',
+            width: '22rem',
+            height: '22rem',
+            left: '3rem',
+            top: '5rem',
             fontSize: '2rem',
             zIndex: 10
           }}

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
-import ColorSelector from './ColorSelector';
+import ColorSelector from 'components/ColorSelector';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { exceedsCharLimit, renderCharLimit } from 'helpers/stringHelpers';
@@ -60,7 +60,11 @@ export default function StatusInput({
             width: '100%'
           }}
         >
-          <ColorSelector setColor={setColor} statusColor={statusColor} />
+          <ColorSelector
+            colors={['pink', 'ivory', 'logoGreen', 'logoBlue', 'menuGray']}
+            setColor={setColor}
+            selectedColor={statusColor}
+          />
           <Button
             snow
             onClick={onCancel}
