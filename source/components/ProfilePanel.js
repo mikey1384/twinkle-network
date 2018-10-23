@@ -29,7 +29,6 @@ class ProfilePanel extends Component {
     expandable: PropTypes.bool,
     history: PropTypes.object,
     isCreator: PropTypes.bool,
-    isProfilePage: PropTypes.bool,
     updateStatusMsg: PropTypes.func,
     openDirectMessageChannel: PropTypes.func,
     profile: PropTypes.object,
@@ -104,7 +103,6 @@ class ProfilePanel extends Component {
       userId,
       expandable,
       isCreator,
-      isProfilePage,
       openDirectMessageChannel,
       updateStatusMsg,
       uploadBio
@@ -163,9 +161,13 @@ class ProfilePanel extends Component {
                   this.setState({ mouseEnteredProfile: false })
                 }
               >
-                <Link to={isProfilePage ? null : `/users/${profile.username}`}>
+                <Link to={`/users/${profile.username}`}>
                   <ProfilePic
-                    style={{ width: '18rem', height: '18rem' }}
+                    style={{
+                      width: '18rem',
+                      height: '18rem',
+                      cursor: 'pointer'
+                    }}
                     userId={profile.id}
                     profilePicId={profile.profilePicId}
                     online={userId === profile.id || !!profile.online}
@@ -173,25 +175,23 @@ class ProfilePanel extends Component {
                   />
                 </Link>
               </div>
-              {!isProfilePage && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: '1.5rem'
-                  }}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: '1.5rem'
+                }}
+              >
+                <Button
+                  warning
+                  transparent
+                  style={{ color: mouseEnteredProfile && Color.orange() }}
+                  onClick={() => history.push(`/users/${profile.username}`)}
                 >
-                  <Button
-                    warning
-                    transparent
-                    style={{ color: mouseEnteredProfile && Color.orange() }}
-                    onClick={() => history.push(`/users/${profile.username}`)}
-                  >
-                    View Profile
-                  </Button>
-                </div>
-              )}
+                  View Profile
+                </Button>
+              </div>
             </div>
             <div
               style={{
@@ -205,7 +205,6 @@ class ProfilePanel extends Component {
             >
               <UserDetails
                 profile={profile}
-                isProfilePage={isProfilePage}
                 updateStatusMsg={updateStatusMsg}
                 uploadBio={uploadBio}
                 userId={userId}
@@ -234,7 +233,6 @@ class ProfilePanel extends Component {
                     </Button>
                     {profile.id === userId &&
                       comments.length > 0 &&
-                      !isProfilePage &&
                       this.renderMessagesButton({
                         style: { marginLeft: '0.5rem' }
                       })}

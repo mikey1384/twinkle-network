@@ -19,9 +19,9 @@ class Body extends Component {
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     profile: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      statusColor: PropTypes.string.isRequired
-    })
+      id: PropTypes.number.isRequired
+    }),
+    selectedTheme: PropTypes.string.isRequired
   };
 
   state = {
@@ -36,7 +36,8 @@ class Body extends Component {
       match: {
         params: { username }
       },
-      profile
+      profile,
+      selectedTheme
     } = this.props;
     const { currentTab, selectedSection } = this.state;
     return (
@@ -55,7 +56,7 @@ class Body extends Component {
               borderBottom: `1px solid ${Color.borderGray()}`
             }}
           />
-          <FilterBar>
+          <FilterBar color={selectedTheme}>
             <nav
               className={currentTab === 'profile' ? 'active' : ''}
               style={{ cursor: 'pointer' }}
@@ -101,7 +102,7 @@ class Body extends Component {
             <div style={{ width: 'CALC(100% - 30rem)' }}>
               {currentTab === 'profile' ? (
                 selectedSection === 'home' ? (
-                  <Home profile={profile} />
+                  <Home profile={profile} selectedTheme={selectedTheme} />
                 ) : (
                   <Achievements />
                 )

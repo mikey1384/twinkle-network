@@ -57,23 +57,23 @@ class DropdownButton extends Component {
       ...props
     } = this.props;
     return (
-      <Button
-        {...props}
-        style={{
-          borderRadius: noBorderRadius && 0,
-          border: noBorderRadius && 0,
-          margin: noBorderRadius && 0,
-          position: 'relative',
-          opacity: menuDisplayed ? 1 : opacity,
-          ...(stretch ? { width: '100%' } : {}),
-          ...buttonStyle,
-          ...style
-        }}
-        onClick={this.onClick}
-      >
-        <Icon icon={icon} size={iconSize} />
-        {text && <span>&nbsp;&nbsp;</span>}
-        {text}
+      <div style={{ position: 'relative', ...style }}>
+        <Button
+          {...props}
+          style={{
+            borderRadius: noBorderRadius && 0,
+            border: noBorderRadius && 0,
+            margin: noBorderRadius && 0,
+            opacity: menuDisplayed ? 1 : opacity,
+            ...(stretch ? { width: '100%' } : {}),
+            ...buttonStyle
+          }}
+          onClick={this.onClick}
+        >
+          <Icon icon={icon} size={iconSize} />
+          {text && <span>&nbsp;&nbsp;</span>}
+          {text}
+        </Button>
         {menuDisplayed && (
           <DropdownList
             style={{
@@ -86,15 +86,17 @@ class DropdownButton extends Component {
             {this.renderMenu()}
           </DropdownList>
         )}
-      </Button>
+      </div>
     );
   }
 
   onClick = () => {
     const { menuDisplayed } = this.state;
     const { onButtonClick } = this.props;
-    if (typeof onButtonClick === 'function' && !menuDisplayed) { onButtonClick(menuDisplayed); }
-    this.setState({ menuDisplayed: !menuDisplayed });
+    if (typeof onButtonClick === 'function') {
+      onButtonClick(menuDisplayed);
+    }
+    this.setState(state => ({ menuDisplayed: !state.menuDisplayed }));
   };
 
   renderMenu = () => {

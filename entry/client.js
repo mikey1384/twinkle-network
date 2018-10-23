@@ -11,6 +11,7 @@ import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify'
 import { faBars } from '@fortawesome/pro-solid-svg-icons/faBars';
 import { faBolt } from '@fortawesome/pro-solid-svg-icons/faBolt';
 import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
+import { faCameraAlt } from '@fortawesome/pro-solid-svg-icons/faCameraAlt';
 import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
 import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
 import { faChevronLeft } from '@fortawesome/pro-solid-svg-icons/faChevronLeft';
@@ -37,6 +38,7 @@ library.add(
   faBars,
   faBolt,
   faBook,
+  faCameraAlt,
   faCaretDown,
   faCertificate,
   faChevronLeft,

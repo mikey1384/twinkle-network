@@ -18,6 +18,14 @@ const defaultState = {
 export default function UserReducer(state = defaultState, action) {
   let loadMoreButton = false;
   switch (action.type) {
+    case USER.CHANGE_PROFILE_THEME:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          profileTheme: action.theme
+        }
+      };
     case USER.CHANGE_XP:
       return {
         ...state,

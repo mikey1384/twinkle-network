@@ -19,6 +19,13 @@ class Profile extends Component {
     username: PropTypes.string
   };
 
+  constructor({ profile: { profileTheme } }) {
+    super();
+    this.state = {
+      selectedTheme: profileTheme || 'logoBlue'
+    };
+  }
+
   componentDidMount() {
     const { checkValidUsername, match } = this.props;
     const { username } = match.params;
@@ -48,6 +55,12 @@ class Profile extends Component {
     ) {
       history.push(`/${this.props.username}`);
     }
+
+    if (prevProps.profile.id !== this.props.profile.id) {
+      this.setState({
+        selectedTheme: this.props.profile?.profileTheme || 'logoBlue'
+      });
+    }
   }
 
   render() {
@@ -59,6 +72,7 @@ class Profile extends Component {
       profile,
       userId
     } = this.props;
+    const { selectedTheme } = this.state;
     return !unavailable ? (
       <div>
         {!id && <Loading text="Loading Profile..." />}
@@ -68,12 +82,17 @@ class Profile extends Component {
               position: 'relative'
             }}
           >
-            <Cover profile={profile} />
+            <Cover
+              profile={profile}
+              onSelectColor={color => this.setState({ selectedTheme: color })}
+              selectedTheme={selectedTheme}
+            />
             <Body
               history={history}
               location={location}
               match={match}
               profile={profile}
+              selectedTheme={selectedTheme}
             />
           </div>
         )}

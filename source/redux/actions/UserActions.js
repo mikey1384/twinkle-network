@@ -5,6 +5,27 @@ import USER from '../constants/User';
 
 const API_URL = `${URL}/user`;
 
+export const changeProfileTheme = theme => ({
+  type: USER.CHANGE_PROFILE_THEME,
+  theme
+});
+
+export const changeUserXP = params => async dispatch => {
+  try {
+    const {
+      data: { xp, alreadyDone, rank }
+    } = await request.post(`${API_URL}/xp`, params, auth());
+    if (alreadyDone) return;
+    return dispatch({
+      type: USER.CHANGE_XP,
+      xp,
+      rank
+    });
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const checkValidUsername = username => async dispatch => {
   try {
     const { data } = await request.get(
@@ -52,22 +73,6 @@ export const fetchMoreUsers = shownUsersIds => async dispatch => {
       data
     });
     return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
-export const changeUserXP = params => async dispatch => {
-  try {
-    const {
-      data: { xp, alreadyDone, rank }
-    } = await request.post(`${API_URL}/xp`, params, auth());
-    if (alreadyDone) return;
-    return dispatch({
-      type: USER.CHANGE_XP,
-      xp,
-      rank
-    });
   } catch (error) {
     handleError(error, dispatch);
   }

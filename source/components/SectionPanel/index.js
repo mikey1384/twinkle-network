@@ -61,7 +61,6 @@ export default class SectionPanel extends Component {
             padding: 1rem;
             font-size: 2.5rem;
             align-items: center;
-            margin-bottom: 1rem;
           }
           > main {
             position: relative;
@@ -80,7 +79,6 @@ export default class SectionPanel extends Component {
             }
           }
         `}
-        style={style}
       >
         <header>
           <div style={{ gridArea: 'title', marginRight: '1rem' }}>{title}</div>
@@ -102,7 +100,7 @@ export default class SectionPanel extends Component {
             {button}
           </div>
         </header>
-        <main>
+        <main style={style}>
           {this.renderContent()}
           {loadMoreButtonShown && (
             <div style={{ display: 'flex', justifyContent: 'center' }}>

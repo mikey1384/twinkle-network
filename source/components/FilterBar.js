@@ -6,31 +6,21 @@ import { css } from 'emotion';
 FilterBar.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
+  color: PropTypes.string,
   bordered: PropTypes.bool,
   dropdownButton: PropTypes.node,
-  info: PropTypes.bool,
   innerRef: PropTypes.func,
-  success: PropTypes.bool,
   style: PropTypes.object
 };
 export default function FilterBar({
+  color = 'blue',
   bordered,
   className,
   children,
-  info,
   innerRef,
   dropdownButton,
-  style,
-  success
+  style
 }) {
-  const color = {
-    default: Color.blue(),
-    success: Color.green(),
-    info: Color.lightBlue()
-  };
-  let colorKey = 'default';
-  if (info) colorKey = 'info';
-  if (success) colorKey = 'success';
   return (
     <div
       style={style}
@@ -88,13 +78,13 @@ export default function FilterBar({
             }
           }
           > nav.active {
-            border-bottom: 3px solid ${color[colorKey]};
-            color: ${color[colorKey]};
+            border-bottom: 3px solid ${Color[color]()};
+            color: ${Color[color]()};
             > a {
-              color: ${color[colorKey]};
+              color: ${Color[color]()};
             }
             @media (max-width: ${mobileMaxWidth}) {
-              border-bottom: 4px solid ${color[colorKey]};
+              border-bottom: 4px solid ${Color[color]()};
             }
           }
           > nav.active.alert {
@@ -119,14 +109,14 @@ export default function FilterBar({
           }
           > nav:hover {
             transition: border-bottom 0.5s;
-            color: ${color[colorKey]};
-            border-bottom: 3px solid ${color[colorKey]};
+            color: ${Color[color]()};
+            border-bottom: 3px solid ${Color[color]()};
             &.alert {
               color: ${Color.pink()}!important;
               border-bottom: 3px solid ${Color.pink()}!important;
             }
             > a {
-              color: ${color[colorKey]};
+              color: ${Color[color]()};
               transition: color 0.5s, font-weight 0.5s;
               font-weight: bold;
             }

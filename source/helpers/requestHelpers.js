@@ -377,6 +377,15 @@ export const setDifficulty = async({
   }
 };
 
+export const setTheme = async({ color, dispatch }) => {
+  try {
+    await request.put(`${URL}/user/theme`, { color }, auth());
+    return Promise.resolve();
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const uploadComment = async({
   content,
   parent,

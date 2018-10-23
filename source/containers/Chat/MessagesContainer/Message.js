@@ -31,8 +31,7 @@ class Message extends Component {
 
   state = {
     onEdit: false,
-    subjectMsgsModalShown: false,
-    confirmModalShown: false
+    subjectMsgsModalShown: false
   };
 
   componentDidMount() {
@@ -92,7 +91,10 @@ class Message extends Component {
     if (userIsUploader || canDelete) {
       editMenuItems.push({
         label: 'Remove',
-        onClick: () => onDelete(messageId)
+        onClick: () => {
+          this.setState({ editPadding: false });
+          onDelete(messageId);
+        }
       });
     }
     const { onEdit } = this.state;

@@ -40,8 +40,20 @@ export const charLimit = {
   }
 };
 export const profileThemes = {
-  blue: {
+  logoBlue: {
     background: Color.logoBlue(),
+    color: '#fff'
+  },
+  green: {
+    background: Color.green(),
+    color: '#fff'
+  },
+  orange: {
+    background: Color.orange(),
+    color: '#fff'
+  },
+  pink: {
+    background: Color.pink(),
     color: '#fff'
   }
 };

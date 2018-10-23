@@ -6,19 +6,23 @@ import ContactItems from './ContactItems';
 import Comments from 'components/Comments';
 import { connect } from 'react-redux';
 import { loadComments } from 'helpers/requestHelpers';
-import { processedStringWithURL } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { profileThemes } from 'constants/defaultValues';
 import { Color } from 'constants/css';
+import StatusMsg from 'components/Texts/StatusMsg';
+import RankBar from 'components/RankBar';
 
 class Home extends Component {
   static propTypes = {
     profile: PropTypes.shape({
       email: PropTypes.string,
-      profileTheme: PropTypes.string,
+      id: PropTypes.number,
       statusColor: PropTypes.string,
       statusMsg: PropTypes.string,
+      username: PropTypes.string.isRequired,
       youtube: PropTypes.string
     }).isRequired,
+    selectedTheme: PropTypes.string.isRequired,
     userId: PropTypes.number
   };
 
@@ -46,56 +50,125 @@ class Home extends Component {
     }
   }
 
+  async componentDidUpdate(prevProps) {
+    if (this.props.profile?.id !== prevProps.profile?.id) {
+      const {
+        profile: { id }
+      } = this.props;
+      try {
+        const { comments, loadMoreButton } = await loadComments({
+          id,
+          type: 'user',
+          limit: 5
+        });
+        this.setState({
+          comments,
+          commentsLoadMoreButton: loadMoreButton
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
   render() {
     const {
       profile,
       profile: {
         email,
         id,
-        profileTheme,
         statusMsg,
         profileFirstRow,
         profileSecondRow,
         profileThirdRow,
+        statusColor,
         username,
         youtube
       },
+      selectedTheme,
       userId
     } = this.props;
     const { comments, commentsLoadMoreButton } = this.state;
+    const bioExists = profileFirstRow || profileSecondRow || profileThirdRow;
+    const usernameColor = Color[selectedTheme]();
+    let greeting = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
     return (
       <div>
         <SectionPanel
-          headerStyle={profileThemes[profileTheme]}
-          title="Bio"
+          headerTheme={profileThemes[selectedTheme]}
+          title="Welcome"
           loaded={true}
           loadMoreButtonShown={false}
         >
-          {statusMsg && (
-            <>
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              minHeight: '10rem',
+              marginTop: stringIsEmpty(statusMsg) ? '-1rem' : 0
+            }}
+          >
+            {!stringIsEmpty(statusMsg) && (
+              <StatusMsg
+                style={{
+                  width: '50%',
+                  fontSize: '1.6rem',
+                  textAlign: 'center',
+                  marginTop: profile.twinkleXP > 0 || bioExists ? '1rem' : 0,
+                  marginBottom: profile.twinkleXP > 0 || bioExists ? '2rem' : 0
+                }}
+                statusColor={statusColor}
+                statusMsg={statusMsg}
+              />
+            )}
+            {stringIsEmpty(statusMsg) && (
               <div
                 style={{
+                  width: '50%',
                   fontSize: '2rem',
-                  textAlign: 'center',
-                  paddingBottom: '2rem'
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
-                dangerouslySetInnerHTML={{
-                  __html: processedStringWithURL(statusMsg)
+                dangerouslySetInnerHTML={{ __html: greeting }}
+              />
+            )}
+            <ContactItems
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                width: '50%'
+              }}
+              email={email}
+              youtube={youtube}
+            />
+          </div>
+          {profile.twinkleXP > 0 && (
+            <RankBar
+              profile={profile}
+              style={{
+                display: 'block',
+                marginLeft: '-1rem',
+                marginRight: '-1rem',
+                borderRadius: 0
+              }}
+            />
+          )}
+          {!stringIsEmpty(statusMsg) &&
+            !profile.twinkleXP &&
+            bioExists && (
+              <hr
+                style={{
+                  padding: '1px',
+                  background: '#fff',
+                  borderTop: `2px solid ${Color[selectedTheme](0.6)}`,
+                  borderBottom: `2px solid ${Color[selectedTheme](0.6)}`
                 }}
               />
-              {(profileFirstRow || profileSecondRow || profileThirdRow) && (
-                <hr
-                  style={{
-                    padding: '1px',
-                    background: '#fff',
-                    borderTop: `2px solid ${Color.lightGray()}`,
-                    borderBottom: `2px solid ${Color.lightGray()}`
-                  }}
-                />
-              )}
-            </>
-          )}
-          {(profileFirstRow || profileSecondRow || profileThirdRow) && (
+            )}
+          {bioExists && (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Bio
                 style={{ fontSize: '2rem', marginBottom: '1rem' }}
@@ -105,36 +178,9 @@ class Home extends Component {
               />
             </div>
           )}
-        </SectionPanel>
-        {false && (
-          <SectionPanel
-            headerStyle={profileThemes[profileTheme]}
-            style={{
-              fontSize: '1.7rem'
-            }}
-            title="Social"
-            loaded={true}
-            loadMoreButtonShown={false}
-          >
-            <ContactItems
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                height: '50%'
-              }}
-              email={email}
-              youtube={youtube}
-            />
-          </SectionPanel>
-        )}
-        <SectionPanel
-          title="Messages"
-          loaded={true}
-          style={{ marginBottom: 0 }}
-        >
           <Comments
+            autoFocus
+            style={{ marginTop: '1rem' }}
             comments={comments}
             commentsLoadLimit={20}
             commentsShown={true}
@@ -155,7 +201,6 @@ class Home extends Component {
             onReplySubmit={this.onReplySubmit}
             onRewardCommentEdit={this.onEditRewardComment}
             parent={{ ...profile, type: 'user' }}
-            style={{ marginTop: '-1rem' }}
             userId={userId}
           />
         </SectionPanel>
