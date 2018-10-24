@@ -10,16 +10,20 @@ AccountMenu.propTypes = {
   className: PropTypes.string,
   loggedIn: PropTypes.bool,
   logout: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
   openSigninModal: PropTypes.func.isRequired,
-  title: PropTypes.string
+  title: PropTypes.string,
+  username: PropTypes.string
 };
 function AccountMenu({
   buttonStyle = {},
   className,
+  history,
   loggedIn,
   openSigninModal,
   title,
   logout,
+  username,
   ...props
 }) {
   return loggedIn ? (
@@ -45,6 +49,10 @@ function AccountMenu({
       icon="caret-down"
       iconSize="lg"
       menuProps={[
+        {
+          label: 'Profile',
+          onClick: () => history.push(`./${username}`)
+        },
         {
           label: 'Log out',
           onClick: logout
@@ -73,6 +81,8 @@ function AccountMenu({
 }
 
 export default connect(
-  null,
+  state => ({
+    username: state.UserReducer.username
+  }),
   { openSigninModal }
 )(AccountMenu);

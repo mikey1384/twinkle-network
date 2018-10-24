@@ -32,7 +32,7 @@ class Home extends Component {
       statusColor: PropTypes.string,
       statusMsg: PropTypes.string,
       username: PropTypes.string.isRequired,
-      youtube: PropTypes.string
+      youtubeUrl: PropTypes.string
     }).isRequired,
     selectedTheme: PropTypes.string.isRequired,
     userId: PropTypes.number
@@ -103,7 +103,7 @@ class Home extends Component {
         profileThirdRow,
         statusColor,
         username,
-        youtube
+        youtubeUrl
       },
       selectedTheme,
       userId
@@ -150,6 +150,7 @@ class Home extends Component {
               >
                 {userId === profile.id && (
                   <StatusInput
+                    autoFocus
                     innerRef={ref => {
                       this.StatusInput = ref;
                     }}
@@ -249,7 +250,7 @@ class Home extends Component {
               userId={id}
               username={username}
               selectedTheme={selectedTheme}
-              youtube={youtube}
+              youtubeUrl={youtubeUrl}
             />
           </div>
           {profile.twinkleXP > 0 && (

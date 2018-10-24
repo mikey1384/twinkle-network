@@ -22,6 +22,7 @@ class People extends Component {
     clearUserSearch: PropTypes.func.isRequired,
     fetchMoreUsers: PropTypes.func.isRequired,
     fetchUsers: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
     loadMoreButton: PropTypes.bool,
     profiles: PropTypes.array.isRequired,
     searchedProfiles: PropTypes.array.isRequired,
@@ -46,11 +47,14 @@ class People extends Component {
     searching: false
   };
 
-  componentDidMount() {
-    const { fetchUsers } = this.props;
+  async componentDidMount() {
+    const { fetchUsers, history, profiles } = this.props;
+    if (history.action === 'PUSH' || profiles.length === 0) {
+      await fetchUsers();
+    }
+    this.setState({ loaded: true });
     addEvent(window, 'scroll', this.onScroll);
     addEvent(document.getElementById('App'), 'scroll', this.onScroll);
-    return fetchUsers().then(() => this.setState({ loaded: true }));
   }
 
   componentWillUnmount() {
@@ -86,7 +90,8 @@ class People extends Component {
             width: '100%'
           }}
         >
-          {!loaded && <Loading text="Loading Users..." />}
+          {!loaded &&
+            profiles.length === 0 && <Loading text="Loading Users..." />}
           {loaded &&
             !searching &&
             profiles.map(profile => (

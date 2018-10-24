@@ -121,8 +121,6 @@ class Stories extends Component {
       setCurrentSection
     } = this.props;
     setCurrentSection('storyFeeds');
-    addEvent(window, 'scroll', this.onScroll);
-    addEvent(document.getElementById('App'), 'scroll', this.onScroll);
     resetNumNewPosts();
     if (history.action === 'PUSH' || !loaded) {
       this.clearingFeeds = true;
@@ -130,6 +128,8 @@ class Stories extends Component {
       this.clearingFeeds = false;
       fetchFeeds();
     }
+    addEvent(window, 'scroll', this.onScroll);
+    addEvent(document.getElementById('App'), 'scroll', this.onScroll);
   }
 
   componentDidUpdate(prevProps) {

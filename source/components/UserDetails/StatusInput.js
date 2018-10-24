@@ -8,6 +8,7 @@ import { Color } from 'constants/css';
 import { exceedsCharLimit, renderCharLimit } from 'helpers/stringHelpers';
 
 StatusInput.propTypes = {
+  autoFocus: PropTypes.bool,
   profile: PropTypes.object.isRequired,
   statusColor: PropTypes.string,
   editedStatusMsg: PropTypes.string,
@@ -18,6 +19,7 @@ StatusInput.propTypes = {
   setColor: PropTypes.func.isRequired
 };
 export default function StatusInput({
+  autoFocus,
   profile,
   editedStatusMsg,
   innerRef,
@@ -30,6 +32,7 @@ export default function StatusInput({
   return (
     <>
       <Textarea
+        autoFocus={autoFocus}
         className={css`
           margin-top: 1rem;
           ${profile.statusMsg
@@ -46,7 +49,7 @@ export default function StatusInput({
           text: editedStatusMsg
         })}
       />
-      <p style={{ fontSize: '1.3rem' }}>
+      <p style={{ fontSize: '1.3rem', marginTop: '0.5rem' }}>
         {renderCharLimit({
           contentType: 'statusMsg',
           text: editedStatusMsg
@@ -75,10 +78,12 @@ export default function StatusInput({
           <Button
             primary
             filled
-            disabled={exceedsCharLimit({
-              contentType: 'statusMsg',
-              text: editedStatusMsg
-            })}
+            disabled={
+              !!exceedsCharLimit({
+                contentType: 'statusMsg',
+                text: editedStatusMsg
+              })
+            }
             style={{ marginLeft: '1rem', fontSize: '1rem' }}
             onClick={onStatusSubmit}
           >

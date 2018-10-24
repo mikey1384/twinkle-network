@@ -41,7 +41,7 @@ export function exceedsCharLimit({ inputType, contentType, text }) {
         color: 'red',
         borderColor: 'red'
       }
-    : null;
+    : undefined;
 }
 
 export function renderCharLimit({ inputType, contentType, text }) {
@@ -301,6 +301,11 @@ export function trimWhiteSpaces(text) {
     }
   }
   return newText;
+}
+
+export function isValidEmail(email = '') {
+  const regex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g;
+  return regex.test(email);
 }
 
 export function isValidUrl(url = '') {

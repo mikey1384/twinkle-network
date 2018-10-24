@@ -180,8 +180,12 @@ class App extends Component {
           document.getElementById('App').scrollTop = 0;
         }
       } else {
-        document.getElementById('App').scrollTop =
-          navScrollPositions[location.pathname];
+        setTimeout(
+          () =>
+            (document.getElementById('App').scrollTop =
+              navScrollPositions[location.pathname]),
+          0
+        );
       }
     }
 
@@ -285,6 +289,7 @@ class App extends Component {
         <Header
           chatMode={chatMode}
           chatLoading={chatLoading}
+          history={history}
           onChatButtonClick={this.onChatButtonClick}
           turnChatOff={turnChatOff}
           searchBoxRef={ref => (this.SearchBox = ref)}

@@ -37,6 +37,7 @@ class Header extends Component {
     chatMode: PropTypes.bool,
     changeSocketStatus: PropTypes.func,
     checkVersion: PropTypes.func,
+    history: PropTypes.object.isRequired,
     getNumberOfUnreadMessages: PropTypes.func,
     increaseNumNewPosts: PropTypes.func,
     increaseNumNewNotis: PropTypes.func,
@@ -149,6 +150,7 @@ class Header extends Component {
     const {
       chatLoading,
       location: { pathname },
+      history,
       loggedIn,
       username,
       chatMode,
@@ -335,6 +337,7 @@ class Header extends Component {
                   margin-left: 0.5rem;
                 }
               `}`}
+              history={history}
               loggedIn={loggedIn}
               logout={this.onLogout}
               title={username}
