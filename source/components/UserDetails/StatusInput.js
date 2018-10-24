@@ -68,7 +68,7 @@ export default function StatusInput({
           <Button
             snow
             onClick={onCancel}
-            style={{ marginLeft: '2rem', fontSize: '1rem' }}
+            style={{ marginLeft: '1rem', fontSize: '1rem' }}
           >
             Cancel
           </Button>

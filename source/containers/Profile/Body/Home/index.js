@@ -2,15 +2,27 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import Bio from 'components/Texts/Bio';
-import ContactItems from './ContactItems';
+import BasicInfos from './BasicInfos';
 import Comments from 'components/Comments';
+import StatusMsg from 'components/UserDetails/StatusMsg';
+import StatusInput from 'components/UserDetails/StatusInput';
+import RankBar from 'components/RankBar';
+import request from 'axios';
+import Button from 'components/Button';
+import Icon from 'components/Icon';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import { removeStatusMsg, updateStatusMsg } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
-import { loadComments } from 'helpers/requestHelpers';
-import { stringIsEmpty } from 'helpers/stringHelpers';
+import { auth, loadComments } from 'helpers/requestHelpers';
+import {
+  addEmoji,
+  finalizeEmoji,
+  renderText,
+  stringIsEmpty
+} from 'helpers/stringHelpers';
 import { profileThemes } from 'constants/defaultValues';
 import { Color } from 'constants/css';
-import StatusMsg from 'components/Texts/StatusMsg';
-import RankBar from 'components/RankBar';
+import { URL } from 'constants/URL';
 
 class Home extends Component {
   static propTypes = {
@@ -26,10 +38,16 @@ class Home extends Component {
     userId: PropTypes.number
   };
 
-  state = {
-    comments: [],
-    commentsLoadMoreButton: false
-  };
+  constructor({ profile: { statusColor } }) {
+    super();
+    this.state = {
+      comments: [],
+      commentsLoadMoreButton: false,
+      confirmModalShown: false,
+      editedStatusColor: statusColor,
+      editedStatusMsg: ''
+    };
+  }
 
   async componentDidMount() {
     const {
@@ -77,6 +95,8 @@ class Home extends Component {
       profile: {
         email,
         id,
+        joinDate,
+        lastActive,
         statusMsg,
         profileFirstRow,
         profileSecondRow,
@@ -88,7 +108,13 @@ class Home extends Component {
       selectedTheme,
       userId
     } = this.props;
-    const { comments, commentsLoadMoreButton } = this.state;
+    const {
+      comments,
+      commentsLoadMoreButton,
+      confirmModalShown,
+      editedStatusColor,
+      editedStatusMsg
+    } = this.state;
     const bioExists = profileFirstRow || profileSecondRow || profileThirdRow;
     const usernameColor = Color[selectedTheme]();
     let greeting = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
@@ -97,51 +123,132 @@ class Home extends Component {
         <SectionPanel
           headerTheme={profileThemes[selectedTheme]}
           title="Welcome"
-          loaded={true}
+          loaded
           loadMoreButtonShown={false}
         >
           <div
             style={{
               display: 'flex',
-              width: '100%',
               minHeight: '10rem',
-              marginTop: stringIsEmpty(statusMsg) ? '-1rem' : 0
+              width: '100%'
             }}
           >
-            {!stringIsEmpty(statusMsg) && (
-              <StatusMsg
-                style={{
-                  width: '50%',
-                  fontSize: '1.6rem',
-                  textAlign: 'center',
-                  marginTop: profile.twinkleXP > 0 || bioExists ? '1rem' : 0,
-                  marginBottom: profile.twinkleXP > 0 || bioExists ? '2rem' : 0
-                }}
-                statusColor={statusColor}
-                statusMsg={statusMsg}
-              />
-            )}
-            {stringIsEmpty(statusMsg) && (
+            <div
+              style={{
+                width: '50%',
+                marginRight: '0.5rem'
+              }}
+            >
               <div
                 style={{
-                  width: '50%',
-                  fontSize: '2rem',
+                  width: '100%',
+                  height: '100%',
                   display: 'flex',
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  flexDirection: 'column'
                 }}
-                dangerouslySetInnerHTML={{ __html: greeting }}
-              />
-            )}
-            <ContactItems
+              >
+                {userId === profile.id && (
+                  <StatusInput
+                    innerRef={ref => {
+                      this.StatusInput = ref;
+                    }}
+                    profile={profile}
+                    statusColor={editedStatusColor || statusColor}
+                    editedStatusMsg={editedStatusMsg}
+                    setColor={color =>
+                      this.setState({ editedStatusColor: color })
+                    }
+                    onTextChange={event => {
+                      this.setState({
+                        editedStatusMsg: addEmoji(
+                          renderText(event.target.value)
+                        ),
+                        ...(!event.target.value
+                          ? { editedStatusColor: '' }
+                          : {})
+                      });
+                    }}
+                    onCancel={() =>
+                      this.setState({
+                        editedStatusMsg: '',
+                        editedStatusColor: ''
+                      })
+                    }
+                    onStatusSubmit={this.onStatusMsgSubmit}
+                  />
+                )}
+                {(!stringIsEmpty(statusMsg) || editedStatusMsg) && (
+                  <StatusMsg
+                    style={{
+                      fontSize: '1.6rem',
+                      width: '100%',
+                      marginTop:
+                        profile.twinkleXP > 0 || bioExists ? '1rem' : 0,
+                      marginBottom:
+                        profile.twinkleXP > 0 || bioExists
+                          ? userId === profile.id
+                            ? '1rem'
+                            : '2rem'
+                          : 0
+                    }}
+                    statusColor={editedStatusColor || statusColor || 'logoBlue'}
+                    statusMsg={editedStatusMsg || statusMsg}
+                  />
+                )}
+                {userId === profile.id &&
+                  !editedStatusMsg &&
+                  !stringIsEmpty(statusMsg) && (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Button
+                        transparent
+                        style={{
+                          marginBottom:
+                            profile.twinkleXP > 0 || bioExists ? '1rem' : 0
+                        }}
+                        onClick={() =>
+                          this.setState({ confirmModalShown: true })
+                        }
+                      >
+                        <Icon icon="trash-alt" />
+                        <span style={{ marginLeft: '0.7rem' }}>Remove</span>
+                      </Button>
+                    </div>
+                  )}
+                {userId !== profile.id &&
+                  stringIsEmpty(statusMsg) && (
+                    <div
+                      style={{
+                        marginTop: '-1rem',
+                        width: '100%',
+                        fontSize: '2rem',
+                        display: 'flex',
+                        textAlign: 'center',
+                        alignItems: 'center'
+                      }}
+                      dangerouslySetInnerHTML={{ __html: greeting }}
+                    />
+                  )}
+              </div>
+            </div>
+            <BasicInfos
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                width: '50%'
+                width: '50%',
+                fontSize: '1.7rem',
+                marginLeft: '0.5rem',
+                marginBottom: '1rem'
               }}
               email={email}
+              joinDate={joinDate}
+              lastActive={lastActive}
+              myId={userId}
+              userId={id}
+              username={username}
+              selectedTheme={selectedTheme}
               youtube={youtube}
             />
           </div>
@@ -204,6 +311,13 @@ class Home extends Component {
             userId={userId}
           />
         </SectionPanel>
+        {confirmModalShown && (
+          <ConfirmModal
+            onConfirm={this.onRemoveStatus}
+            onHide={() => this.setState({ confirmModalShown: false })}
+            title={`Remove Status Message`}
+          />
+        )}
       </div>
     );
   }
@@ -339,6 +453,13 @@ class Home extends Component {
     }));
   };
 
+  onRemoveStatus = async() => {
+    const { removeStatusMsg, userId } = this.props;
+    await request.delete(`${URL}/user/statusMsg`, auth());
+    removeStatusMsg(userId);
+    this.setState({ confirmModalShown: false });
+  };
+
   onReplySubmit = data => {
     this.setState(state => ({
       comments: state.comments.map(comment => {
@@ -361,6 +482,26 @@ class Home extends Component {
       })
     }));
   };
+
+  onStatusMsgSubmit = async() => {
+    const { updateStatusMsg, profile } = this.props;
+    const { editedStatusMsg, editedStatusColor } = this.state;
+    const statusMsg = finalizeEmoji(editedStatusMsg);
+    const statusColor = editedStatusColor || profile.statusColor;
+    const { data } = await request.post(
+      `${URL}/user/statusMsg`,
+      {
+        statusMsg,
+        statusColor
+      },
+      auth()
+    );
+    this.setState({ editedStatusColor: '', editedStatusMsg: '' });
+    if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
+  };
 }
 
-export default connect(state => ({ userId: state.UserReducer.userId }))(Home);
+export default connect(
+  state => ({ userId: state.UserReducer.userId }),
+  { removeStatusMsg, updateStatusMsg }
+)(Home);

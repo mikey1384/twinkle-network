@@ -45,7 +45,7 @@ class Body extends Component {
         ref={ref => {
           this.Container = ref;
         }}
-        style={{ height: '100%', marginBottom: '1rem' }}
+        style={{ height: '100%' }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div
@@ -119,7 +119,7 @@ class Body extends Component {
                     ]
                   : [
                       { key: 'all', label: 'All' },
-                      { key: 'post', label: 'Posts' },
+                      { key: 'post', label: 'Discussions' },
                       { key: 'comment', label: 'Comments' },
                       { key: 'video', label: 'Videos' },
                       { key: 'url', label: 'Links' }

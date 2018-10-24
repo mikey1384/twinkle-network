@@ -12,7 +12,7 @@ import { Color } from 'constants/css';
 import { URL } from 'constants/URL';
 import request from 'axios';
 import { auth } from 'helpers/requestHelpers';
-import StatusMsg from 'components/Texts/StatusMsg';
+import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
 
 export default class UserDetails extends Component {
