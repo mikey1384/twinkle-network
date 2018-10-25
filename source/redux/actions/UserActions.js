@@ -138,6 +138,11 @@ export const searchUsers = query => async dispatch => {
   }
 };
 
+export const setProfileInfo = data => ({
+  type: USER.SET_PROFILE_INFO,
+  data
+});
+
 export const signup = params => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/signup`, params);

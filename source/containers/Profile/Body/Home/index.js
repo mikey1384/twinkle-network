@@ -32,6 +32,8 @@ class Home extends Component {
       statusColor: PropTypes.string,
       statusMsg: PropTypes.string,
       username: PropTypes.string.isRequired,
+      website: PropTypes.string,
+      youtubeName: PropTypes.string,
       youtubeUrl: PropTypes.string
     }).isRequired,
     selectedTheme: PropTypes.string.isRequired,
@@ -103,6 +105,8 @@ class Home extends Component {
         profileThirdRow,
         statusColor,
         username,
+        website,
+        youtubeName,
         youtubeUrl
       },
       selectedTheme,
@@ -250,6 +254,8 @@ class Home extends Component {
               userId={id}
               username={username}
               selectedTheme={selectedTheme}
+              website={website}
+              youtubeName={youtubeName}
               youtubeUrl={youtubeUrl}
             />
           </div>

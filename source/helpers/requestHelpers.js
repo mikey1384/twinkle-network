@@ -386,6 +386,31 @@ export const setTheme = async({ color, dispatch }) => {
   }
 };
 
+export const uploadProfileInfo = async({
+  dispatch,
+  email,
+  website,
+  youtubeName,
+  youtubeUrl
+}) => {
+  try {
+    const { data } = await request.put(
+      `${URL}/user/info`,
+      {
+        email,
+        website,
+        youtubeName,
+        youtubeUrl
+      },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.log(error);
+    return handleError(error, dispatch);
+  }
+};
+
 export const uploadComment = async({
   content,
   parent,

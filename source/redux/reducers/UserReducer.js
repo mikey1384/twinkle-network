@@ -102,6 +102,20 @@ export default function UserReducer(state = defaultState, action) {
         profiles: state.profiles,
         searchedProfiles: state.searchedProfiles
       };
+    case USER.SET_DEFAULT_FILTER:
+      return {
+        ...state,
+        searchFilter: action.filter
+      };
+    case USER.SET_PROFILE_INFO:
+      return {
+        ...state,
+        ...action.data,
+        profile: {
+          ...state.profile,
+          ...action.data
+        }
+      };
     case USER.SIGNUP:
       return {
         ...state,
@@ -179,11 +193,6 @@ export default function UserReducer(state = defaultState, action) {
             ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
             : {})
         }))
-      };
-    case USER.SET_DEFAULT_FILTER:
-      return {
-        ...state,
-        searchFilter: action.filter
       };
     case USER.TOGGLE_HIDE_WATCHED:
       return {

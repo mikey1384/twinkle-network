@@ -209,6 +209,41 @@ export function hashify(string) {
   return hashedString;
 }
 
+export function isValidEmail(email = '') {
+  const regex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g;
+  return regex.test(email);
+}
+
+export function isValidUrl(url = '') {
+  const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
+  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+    url = 'www.' + url;
+  }
+  return regex.test(url);
+}
+
+export function isValidYoutubeUrl(url = '') {
+  const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
+  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+    url = 'www.' + url;
+  }
+  let trimOne = url.split('v=')[1];
+  let trimTwo = url.split('youtu.be/')[1];
+  return (
+    regex.test(url) &&
+    (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
+  );
+}
+
+export function isValidYoutubeChannelUrl(url = '') {
+  const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
+  const trim = url.split('youtube.com/')[1];
+  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+    url = 'www.' + url;
+  }
+  return regex.test(url) && typeof trim !== 'undefined';
+}
+
 export function processedQueryString(string) {
   return string
     ? string
@@ -287,6 +322,12 @@ export function stringIsEmpty(string) {
   return checkedString === '';
 }
 
+export function trimUrl(url) {
+  const trimHttp = url?.split('//')[1] || url?.split('//')[0];
+  const trimWWW = trimHttp?.split('www.')[1] || trimHttp?.split('www.')[0];
+  return trimWWW;
+}
+
 export function trimWhiteSpaces(text) {
   let newText = text;
   while (
@@ -301,32 +342,6 @@ export function trimWhiteSpaces(text) {
     }
   }
   return newText;
-}
-
-export function isValidEmail(email = '') {
-  const regex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g;
-  return regex.test(email);
-}
-
-export function isValidUrl(url = '') {
-  const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
-  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
-    url = 'www.' + url;
-  }
-  return regex.test(url);
-}
-
-export function isValidYoutubeUrl(url) {
-  const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
-  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
-    url = 'www.' + url;
-  }
-  let trimOne = url.split('v=')[1];
-  let trimTwo = url.split('youtu.be/')[1];
-  return (
-    regex.test(url) &&
-    (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
-  );
 }
 
 export function fetchedVideoCodeFromURL(url) {

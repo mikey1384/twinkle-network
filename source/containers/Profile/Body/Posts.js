@@ -127,7 +127,7 @@ class Posts extends Component {
     } = this.props;
     const { loading } = this.state;
     return (
-      <>
+      <div style={{ marginBottom: '1rem' }}>
         {!loaded && (
           <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
         )}
@@ -178,14 +178,13 @@ class Posts extends Component {
           )}
         {loadMoreButton && (
           <LoadMoreButton
-            style={{ marginTop: '1rem' }}
             onClick={this.loadMoreFeeds}
             loading={loading}
             filled
             info
           />
         )}
-      </>
+      </div>
     );
   }
 

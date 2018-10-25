@@ -2,28 +2,49 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Input from 'components/Texts/Input';
 import Button from 'components/Button';
-import { isValidEmail, stringIsEmpty } from 'helpers/stringHelpers';
+import {
+  isValidEmail,
+  isValidUrl,
+  isValidYoutubeChannelUrl,
+  stringIsEmpty
+} from 'helpers/stringHelpers';
 
 export default class InfoEditForm extends Component {
   static propTypes = {
     email: PropTypes.string,
-    youtubeUrl: PropTypes.string,
     onCancel: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
+    website: PropTypes.string,
+    youtubeName: PropTypes.string,
+    youtubeUrl: PropTypes.string
   };
 
-  constructor({ email, youtubeUrl }) {
+  timer;
+
+  constructor({ email, website, youtubeName, youtubeUrl }) {
     super();
     this.state = {
       editedEmail: email || '',
       emailError: '',
-      editedYoutubeUrl: youtubeUrl || ''
+      editedWebsite: website || '',
+      websiteError: '',
+      editedYoutubeUrl: youtubeUrl || '',
+      youtubeError: '',
+      editedYoutubeName: youtubeName || ''
     };
   }
 
   render() {
     const { onCancel, onSubmit } = this.props;
-    const { editedEmail, emailError, editedYoutubeUrl } = this.state;
+    const {
+      editedEmail,
+      emailError,
+      editedWebsite,
+      editedYoutubeName,
+      editedYoutubeUrl,
+      websiteError,
+      youtubeError
+    } = this.state;
     return (
       <div>
         <Input
@@ -34,11 +55,27 @@ export default class InfoEditForm extends Component {
         />
         {emailError && <span style={{ color: 'red' }}>{emailError}</span>}
         <Input
-          placeholder="YouTube Address"
-          style={{ marginTop: '1rem' }}
-          onChange={text => this.setState({ editedYoutubeUrl: text })}
+          placeholder="YouTube Channel URL"
+          style={{ marginTop: '1rem', borderColor: youtubeError && 'red' }}
+          onChange={this.onYoutubeInputChange}
           value={editedYoutubeUrl}
         />
+        {youtubeError && <span style={{ color: 'red' }}>{youtubeError}</span>}
+        {!stringIsEmpty(editedYoutubeUrl) && (
+          <Input
+            placeholder="YouTube Channel Name"
+            style={{ marginTop: '1rem' }}
+            onChange={text => this.setState({ editedYoutubeName: text })}
+            value={editedYoutubeName}
+          />
+        )}
+        <Input
+          placeholder="Website URL"
+          style={{ marginTop: '1rem', borderColor: websiteError && 'red' }}
+          onChange={this.onWebsiteInputChange}
+          value={editedWebsite}
+        />
+        {websiteError && <span style={{ color: 'red' }}>{websiteError}</span>}
         <div
           style={{
             display: 'flex',
@@ -51,9 +88,18 @@ export default class InfoEditForm extends Component {
           </Button>
           <Button
             primary
-            disabled={true}
+            disabled={
+              emailError || websiteError || youtubeError || this.noChange()
+            }
             style={{ marginLeft: '0.5rem' }}
-            onClick={onSubmit}
+            onClick={() =>
+              onSubmit({
+                email: editedEmail,
+                website: editedWebsite,
+                youtubeName: editedYoutubeName,
+                youtubeUrl: editedYoutubeUrl
+              })
+            }
           >
             Done
           </Button>
@@ -62,13 +108,82 @@ export default class InfoEditForm extends Component {
     );
   }
 
+  noChange = () => {
+    const {
+      editedEmail,
+      editedWebsite,
+      editedYoutubeName,
+      editedYoutubeUrl
+    } = this.state;
+    const { email, website, youtubeName, youtubeUrl } = this.state;
+    return (
+      editedEmail === (email || '') &&
+      editedWebsite === (website || '') &&
+      editedYoutubeName === (youtubeName || '') &&
+      editedYoutubeUrl === (youtubeUrl || '')
+    );
+  };
+
   onEmailInputChange = text => {
     this.setState({
       editedEmail: text,
-      emailError:
-        !stringIsEmpty(text) && !isValidEmail(text)
-          ? 'That is not a valid email'
-          : ''
+      emailError: ''
     });
+    this.checkEmail(text);
+  };
+
+  checkEmail = text => {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(
+      () =>
+        this.setState({
+          emailError:
+            !stringIsEmpty(text) && !isValidEmail(text)
+              ? 'That is not a valid email'
+              : ''
+        }),
+      500
+    );
+  };
+
+  onWebsiteInputChange = text => {
+    this.setState({ editedWebsite: text, websiteError: '' });
+    this.checkWebsiteUrl(text);
+  };
+
+  checkWebsiteUrl = text => {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(
+      () =>
+        this.setState({
+          websiteError:
+            !stringIsEmpty(text) && !isValidUrl(text)
+              ? 'That is not a valid website address'
+              : ''
+        }),
+      500
+    );
+  };
+
+  onYoutubeInputChange = text => {
+    this.setState({
+      editedYoutubeUrl: text,
+      youtubeError: ''
+    });
+    this.checkYoutubeUrl(text);
+  };
+
+  checkYoutubeUrl = text => {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(
+      () =>
+        this.setState({
+          youtubeError:
+            !stringIsEmpty(text) && !isValidYoutubeChannelUrl(text)
+              ? 'That is not a valid YouTube channel address'
+              : ''
+        }),
+      500
+    );
   };
 }
