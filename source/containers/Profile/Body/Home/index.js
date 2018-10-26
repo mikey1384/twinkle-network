@@ -11,9 +11,13 @@ import request from 'axios';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { removeStatusMsg, updateStatusMsg } from 'redux/actions/UserActions';
+import {
+  removeStatusMsg,
+  updateStatusMsg,
+  setGreeting
+} from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
-import { auth, loadComments } from 'helpers/requestHelpers';
+import { auth, loadComments, uploadGreeting } from 'helpers/requestHelpers';
 import {
   addEmoji,
   finalizeEmoji,
@@ -26,9 +30,11 @@ import { URL } from 'constants/URL';
 
 class Home extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     profile: PropTypes.shape({
       email: PropTypes.string,
       id: PropTypes.number,
+      greeting: PropTypes.string,
       statusColor: PropTypes.string,
       statusMsg: PropTypes.string,
       username: PropTypes.string.isRequired,
@@ -37,6 +43,7 @@ class Home extends Component {
       youtubeUrl: PropTypes.string
     }).isRequired,
     selectedTheme: PropTypes.string.isRequired,
+    setGreeting: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
 
@@ -96,6 +103,7 @@ class Home extends Component {
       profile,
       profile: {
         email,
+        greeting,
         id,
         joinDate,
         lastActive,
@@ -121,14 +129,16 @@ class Home extends Component {
     } = this.state;
     const bioExists = profileFirstRow || profileSecondRow || profileThirdRow;
     const usernameColor = Color[selectedTheme]();
-    let greeting = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
+    let defaultMessage = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
     return (
       <div>
         <SectionPanel
-          headerTheme={profileThemes[selectedTheme]}
-          title="Welcome"
           loaded
-          loadMoreButtonShown={false}
+          canEdit={id === userId}
+          headerTheme={profileThemes[selectedTheme]}
+          placeholder="Enter a message for your visitors"
+          title={greeting || 'Welcome!'}
+          onEditTitle={this.onEditGreeting}
         >
           <div
             style={{
@@ -191,11 +201,7 @@ class Home extends Component {
                       marginTop:
                         profile.twinkleXP > 0 || bioExists ? '1rem' : 0,
                       marginBottom:
-                        profile.twinkleXP > 0 || bioExists
-                          ? userId === profile.id
-                            ? '1rem'
-                            : '2rem'
-                          : 0
+                        profile.twinkleXP > 0 || bioExists ? '2rem' : 0
                     }}
                     statusColor={editedStatusColor || statusColor || 'logoBlue'}
                     statusMsg={editedStatusMsg || statusMsg}
@@ -208,6 +214,7 @@ class Home extends Component {
                       <Button
                         transparent
                         style={{
+                          marginTop: '-1rem',
                           marginBottom:
                             profile.twinkleXP > 0 || bioExists ? '1rem' : 0
                         }}
@@ -231,7 +238,7 @@ class Home extends Component {
                         textAlign: 'center',
                         alignItems: 'center'
                       }}
-                      dangerouslySetInnerHTML={{ __html: greeting }}
+                      dangerouslySetInnerHTML={{ __html: defaultMessage }}
                     />
                   )}
               </div>
@@ -394,6 +401,12 @@ class Home extends Component {
     });
   };
 
+  onEditGreeting = async greeting => {
+    const { dispatch, setGreeting } = this.props;
+    await uploadGreeting({ greeting, dispatch });
+    setGreeting(greeting);
+  };
+
   onEditRewardComment = ({ id, text }) => {
     this.setState(state => ({
       comments: state.comments.map(comment => ({
@@ -510,5 +523,10 @@ class Home extends Component {
 
 export default connect(
   state => ({ userId: state.UserReducer.userId }),
-  { removeStatusMsg, updateStatusMsg }
+  dispatch => ({
+    dispatch,
+    removeStatusMsg: userId => dispatch(removeStatusMsg(userId)),
+    setGreeting: greeting => dispatch(setGreeting(greeting)),
+    updateStatusMsg: data => dispatch(updateStatusMsg(data))
+  })
 )(Home);

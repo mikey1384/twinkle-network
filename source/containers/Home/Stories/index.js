@@ -266,7 +266,6 @@ class Stories extends Component {
                         onStarVideo={feedVideoStar}
                         onShowComments={showFeedComments}
                         onTargetCommentSubmit={uploadTargetContentComment}
-                        selfLoadingDisabled={this.clearingFeeds}
                         userId={userId}
                       />
                     );

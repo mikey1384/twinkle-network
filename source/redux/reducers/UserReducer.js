@@ -107,6 +107,14 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         searchFilter: action.filter
       };
+    case USER.SET_GREETING:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          greeting: action.greeting
+        }
+      };
     case USER.SET_PROFILE_INFO:
       return {
         ...state,

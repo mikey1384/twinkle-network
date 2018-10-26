@@ -48,6 +48,7 @@ export default class InfoEditForm extends Component {
     return (
       <div>
         <Input
+          maxLength={50}
           placeholder="Email Address"
           onChange={this.onEmailInputChange}
           value={editedEmail}
@@ -55,6 +56,7 @@ export default class InfoEditForm extends Component {
         />
         {emailError && <span style={{ color: 'red' }}>{emailError}</span>}
         <Input
+          maxLength={50}
           placeholder="YouTube Channel URL"
           style={{ marginTop: '1rem', borderColor: youtubeError && 'red' }}
           onChange={this.onYoutubeInputChange}
@@ -63,6 +65,7 @@ export default class InfoEditForm extends Component {
         {youtubeError && <span style={{ color: 'red' }}>{youtubeError}</span>}
         {!stringIsEmpty(editedYoutubeUrl) && (
           <Input
+            maxLength={50}
             placeholder="YouTube Channel Name"
             style={{ marginTop: '1rem' }}
             onChange={text => this.setState({ editedYoutubeName: text })}
@@ -70,6 +73,7 @@ export default class InfoEditForm extends Component {
           />
         )}
         <Input
+          maxLength={50}
           placeholder="Website URL"
           style={{ marginTop: '1rem', borderColor: websiteError && 'red' }}
           onChange={this.onWebsiteInputChange}
@@ -115,7 +119,7 @@ export default class InfoEditForm extends Component {
       editedYoutubeName,
       editedYoutubeUrl
     } = this.state;
-    const { email, website, youtubeName, youtubeUrl } = this.state;
+    const { email, website, youtubeName, youtubeUrl } = this.props;
     return (
       editedEmail === (email || '') &&
       editedWebsite === (website || '') &&

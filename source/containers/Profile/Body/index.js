@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { capitalize } from 'helpers/stringHelpers';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import FilterBar from 'components/FilterBar';
 import Home from './Home';
 import Achievements from './Achievements';
 import Posts from './Posts';
 import SideMenu from './SideMenu';
+import { css } from 'emotion';
 import { clearFeeds } from 'redux/actions/FeedActions';
 import { disableAutoscroll } from 'redux/actions/ViewActions';
 import { connect } from 'react-redux';
@@ -18,6 +19,7 @@ class Body extends Component {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
+    myId: PropTypes.number,
     profile: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
@@ -36,6 +38,7 @@ class Body extends Component {
       match: {
         params: { username }
       },
+      myId,
       profile,
       selectedTheme
     } = this.props;
@@ -92,19 +95,26 @@ class Body extends Component {
           style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
         >
           <div
-            style={{
-              display: 'flex',
-              margin: '0 1rem',
-              width: '80vw',
-              justifyContent: 'space-between'
-            }}
+            className={css`
+              display: flex;
+              margin: 0 1rem;
+              width: 80vw;
+              justify-content: space-between;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100vw;
+              }
+            `}
           >
-            <div style={{ width: 'CALC(100% - 30rem)' }}>
+            <div style={{ width: 'CALC(100% - 25rem)' }}>
               {currentTab === 'profile' ? (
                 selectedSection === 'home' ? (
                   <Home profile={profile} selectedTheme={selectedTheme} />
                 ) : (
-                  <Achievements />
+                  <Achievements
+                    myId={myId}
+                    profile={profile}
+                    selectedTheme={selectedTheme}
+                  />
                 )
               ) : (
                 <Posts username={username} location={location} match={match} />
@@ -157,6 +167,8 @@ class Body extends Component {
 }
 
 export default connect(
-  null,
+  state => ({
+    myId: state.UserReducer.userId
+  }),
   { clearFeeds, disableAutoscroll }
 )(Body);

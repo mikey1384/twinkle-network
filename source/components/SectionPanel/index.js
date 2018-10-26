@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
-import { stringIsEmpty } from 'helpers/stringHelpers';
+import Input from 'components/Texts/Input';
+import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 export default class SectionPanel extends Component {
   static propTypes = {
+    canEdit: PropTypes.bool,
     title: PropTypes.string,
     button: PropTypes.node,
     emptyMessage: PropTypes.string,
@@ -19,28 +21,38 @@ export default class SectionPanel extends Component {
     loadMore: PropTypes.func,
     children: PropTypes.node,
     loadMoreButtonShown: PropTypes.bool,
+    onEditTitle: PropTypes.func,
     onSearch: PropTypes.func,
+    placeholder: PropTypes.string,
     searchPlaceholder: PropTypes.string,
     searchQuery: PropTypes.string,
     style: PropTypes.object
   };
 
-  state = {
-    loading: false
-  };
+  constructor({ title }) {
+    super();
+    this.state = {
+      loading: false,
+      onEdit: false,
+      editedTitle: title
+    };
+  }
 
   render() {
     const {
+      canEdit,
       headerTheme = { color: '#fff', background: Color.logoBlue() },
       title,
       button,
       loadMoreButtonShown,
+      onEditTitle,
       onSearch,
+      placeholder = 'Enter Title',
       searchPlaceholder,
       searchQuery = '',
       style = {}
     } = this.props;
-    const { loading } = this.state;
+    const { loading, onEdit, editedTitle } = this.state;
     return (
       <div
         className={css`
@@ -81,7 +93,52 @@ export default class SectionPanel extends Component {
         `}
       >
         <header>
-          <div style={{ gridArea: 'title', marginRight: '1rem' }}>{title}</div>
+          <div
+            style={{
+              gridArea: 'title',
+              marginRight: '1rem',
+              display: 'flex'
+            }}
+          >
+            {onEdit ? (
+              <Input
+                maxLength={100}
+                placeholder={placeholder}
+                autoFocus
+                onChange={text =>
+                  this.setState({ editedTitle: addEmoji(text) })
+                }
+                onKeyPress={event => {
+                  if (!stringIsEmpty(editedTitle) && event.key === 'Enter') {
+                    this.onChangeTitle(editedTitle);
+                  }
+                }}
+                value={editedTitle}
+              />
+            ) : (
+              <div style={{ lineHeight: '3rem' }}>{title}</div>
+            )}
+            {canEdit && onEditTitle ? (
+              <div
+                style={{
+                  textDecoration: 'underline',
+                  fontSize: '1.5rem',
+                  marginLeft: '1rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'flex-end'
+                }}
+                onClick={() =>
+                  this.setState({ onEdit: !onEdit, editedTitle: title })
+                }
+              >
+                {onEdit ? 'cancel' : 'change'}
+              </div>
+            ) : (
+              ''
+            )}
+          </div>
+
           {onSearch && (
             <SearchInput
               style={{
@@ -118,6 +175,12 @@ export default class SectionPanel extends Component {
       </div>
     );
   }
+
+  onChangeTitle = async title => {
+    const { onEditTitle } = this.props;
+    await onEditTitle(title);
+    this.setState({ onEdit: false });
+  };
 
   onSearch = text => {
     const { onSearch } = this.props;

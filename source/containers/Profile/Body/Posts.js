@@ -54,7 +54,7 @@ class Posts extends Component {
     loadTags: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    myId: PropTypes.number.isRequired,
+    myId: PropTypes.number,
     profileFeeds: PropTypes.array.isRequired,
     searchMode: PropTypes.bool.isRequired,
     showFeedComments: PropTypes.func.isRequired,

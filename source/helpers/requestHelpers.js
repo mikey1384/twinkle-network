@@ -62,7 +62,7 @@ export const checkIfContentExists = async({ url, videoCode, type }) => {
 export const deleteContent = async({ id, type, dispatch }) => {
   try {
     await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth());
-    return Promise.resolve();
+    return Promise.resolve({ contentId: id, type });
   } catch (error) {
     return handleError(error, dispatch);
   }
@@ -179,6 +179,18 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
       `${URL}/content/comments?contentId=${id}&type=${type}&lastCommentId=${lastCommentId}&limit=${limit}`
     );
     return Promise.resolve({ comments, loadMoreButton });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const loadNotableContent = async({ userId }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/noteworthy?userId=${userId}`
+    );
+    return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
@@ -407,6 +419,15 @@ export const uploadProfileInfo = async({
     return Promise.resolve(data);
   } catch (error) {
     console.log(error);
+    return handleError(error, dispatch);
+  }
+};
+
+export const uploadGreeting = async({ greeting, dispatch }) => {
+  try {
+    await request.put(`${URL}/user/greeting`, { greeting }, auth());
+    return Promise.resolve();
+  } catch (error) {
     return handleError(error, dispatch);
   }
 };

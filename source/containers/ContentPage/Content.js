@@ -345,7 +345,7 @@ class Content extends Component {
     history.push('/');
   };
 
-  onEditContent = async({ data }) => {
+  onEditContent = ({ data }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
@@ -401,11 +401,11 @@ class Content extends Component {
     }));
   };
 
-  onLoadContent = async({ data }) => {
+  onLoadContent = ({ data }) => {
     this.setState(state => ({ contentObj: { ...state.contentObj, ...data } }));
   };
 
-  onLoadMoreComments = async({ data: { comments, loadMoreButton } }) => {
+  onLoadMoreComments = ({ data: { comments, loadMoreButton } }) => {
     const {
       contentObj: { type }
     } = this.state;

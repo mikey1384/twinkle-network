@@ -138,6 +138,11 @@ export const searchUsers = query => async dispatch => {
   }
 };
 
+export const setGreeting = greeting => ({
+  type: USER.SET_GREETING,
+  greeting
+});
+
 export const setProfileInfo = data => ({
   type: USER.SET_PROFILE_INFO,
   data

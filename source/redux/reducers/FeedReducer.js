@@ -159,7 +159,7 @@ export default function FeedReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        [currentSection]: state[currentSection].concat(action.data),
+        [currentSection]: action.data,
         selectedFilter: action.filter || state.selectedFilter,
         [`${currentSection}LoadMoreButton`]: loadMoreButton,
         loaded: true

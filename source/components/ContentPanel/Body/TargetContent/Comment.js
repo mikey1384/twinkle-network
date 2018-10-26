@@ -22,7 +22,7 @@ class Comment extends Component {
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     profilePicId: PropTypes.number,
-    userId: PropTypes.number.isRequired,
+    userId: PropTypes.number,
     username: PropTypes.string.isRequired
   };
 
