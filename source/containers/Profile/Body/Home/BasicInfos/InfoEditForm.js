@@ -56,7 +56,7 @@ export default class InfoEditForm extends Component {
         />
         {emailError && <span style={{ color: 'red' }}>{emailError}</span>}
         <Input
-          maxLength={50}
+          maxLength={150}
           placeholder="YouTube Channel URL"
           style={{ marginTop: '1rem', borderColor: youtubeError && 'red' }}
           onChange={this.onYoutubeInputChange}
@@ -73,7 +73,7 @@ export default class InfoEditForm extends Component {
           />
         )}
         <Input
-          maxLength={50}
+          maxLength={150}
           placeholder="Website URL"
           style={{ marginTop: '1rem', borderColor: websiteError && 'red' }}
           onChange={this.onWebsiteInputChange}
