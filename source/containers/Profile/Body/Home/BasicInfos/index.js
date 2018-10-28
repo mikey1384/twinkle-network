@@ -73,7 +73,13 @@ class BasicInfos extends Component {
               {email && (
                 <div>
                   <span>Email: </span>
-                  <a href={`mailto:${email}`}>{email}</a>
+                  <a
+                    href={`mailto:${email}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {email}
+                  </a>
                 </div>
               )}
               {youtubeUrl && (
