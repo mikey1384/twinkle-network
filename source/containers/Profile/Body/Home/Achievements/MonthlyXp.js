@@ -21,6 +21,13 @@ export default class MonthlyXp extends Component {
     this.setState({ data, loaded: true });
   }
 
+  async componentDidUpdate(prevProps) {
+    if (prevProps.userId !== this.props.userId) {
+      const data = await loadMonthlyXp(this.props.userId);
+      this.setState({ data, loaded: true });
+    }
+  }
+
   render() {
     const { headerTheme } = this.props;
     const { data, loaded } = this.state;
