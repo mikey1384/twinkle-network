@@ -17,6 +17,8 @@ export default class Achievements extends Component {
     myId: PropTypes.number
   };
 
+  mounted = false;
+
   state = {
     loading: true,
     notables: [],
@@ -27,17 +29,28 @@ export default class Achievements extends Component {
     const {
       profile: { id }
     } = this.props;
+    this.mounted = true;
     const { results, loadMoreButton } = await loadNotableContent({
       userId: id
     });
-    this.setState({ notables: results, loadMoreButton, loading: false });
+    if (this.mounted) {
+      this.setState({ notables: results, loadMoreButton, loading: false });
+    }
   }
 
   async componentDidUpdate(prevProps) {
     if (prevProps.profile.id !== this.props.profile.id) {
-      const data = await loadNotableContent({ userId: this.props.profile.id });
-      this.setState({ notables: data, loading: false });
+      const { results, loadMoreButton } = await loadNotableContent({
+        userId: this.props.profile.id
+      });
+      if (this.mounted) {
+        this.setState({ notables: results, loadMoreButton, loading: false });
+      }
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {
@@ -59,7 +72,7 @@ export default class Achievements extends Component {
               style={{ fontSize: '2rem', textAlign: 'center' }}
             >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
           )}
-          {notables.map(contentObj => (
+          {notables?.map(contentObj => (
             <ContentPanel
               key={contentObj.feedId}
               inputAtBottom={contentObj.type === 'comment'}

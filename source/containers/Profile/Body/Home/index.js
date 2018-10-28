@@ -48,6 +48,8 @@ class Home extends Component {
     userId: PropTypes.number
   };
 
+  mounted = false;
+
   constructor({ profile: { statusColor } }) {
     super();
     this.state = {
@@ -63,16 +65,19 @@ class Home extends Component {
     const {
       profile: { id }
     } = this.props;
+    this.mounted = true;
     try {
       const { comments, loadMoreButton } = await loadComments({
         id,
         type: 'user',
         limit: 5
       });
-      this.setState({
-        comments,
-        commentsLoadMoreButton: loadMoreButton
-      });
+      if (this.mounted) {
+        this.setState({
+          comments,
+          commentsLoadMoreButton: loadMoreButton
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -89,15 +94,21 @@ class Home extends Component {
           type: 'user',
           limit: 5
         });
-        this.setState({
-          comments,
-          commentsLoadMoreButton: loadMoreButton,
-          editedStatusColor: statusColor
-        });
+        if (this.mounted) {
+          this.setState({
+            comments,
+            commentsLoadMoreButton: loadMoreButton,
+            editedStatusColor: statusColor
+          });
+        }
       } catch (error) {
         console.error(error);
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {
