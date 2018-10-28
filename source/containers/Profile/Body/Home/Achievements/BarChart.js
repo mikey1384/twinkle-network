@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
-import { rewardValue } from 'constants/defaultValues';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 
 export default class BarChart extends Component {
@@ -56,7 +55,7 @@ export default class BarChart extends Component {
                     fontWeight: 'bold'
                   }}
                 >
-                  {`${addCommasToNumber(bar.value * rewardValue.star)} XP`}
+                  {`${addCommasToNumber(bar.value)} XP`}
                 </div>
                 {barPercentage < 100 && (
                   <div style={{ width: `${100 - barPercentage}%` }} />
