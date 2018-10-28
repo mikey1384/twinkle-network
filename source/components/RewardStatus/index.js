@@ -20,7 +20,7 @@ class RewardStatus extends Component {
   };
 
   state = {
-    loaded: 3
+    loaded: 1
   };
 
   render() {
@@ -70,9 +70,15 @@ class RewardStatus extends Component {
         </div>
         {loaded < stars.length && (
           <LoadMoreButton
+            {...(rewardedStars === maxStars || rewardedStars > 10
+              ? { warning: true }
+              : { logo: true })}
+            label="Show Previous Reward Records"
             filled
-            logoGreen
-            style={{ width: '100%', borderRadius: 0 }}
+            style={{
+              fontSize: '1.3rem',
+              marginTop: '1rem'
+            }}
             onClick={() =>
               this.setState(state => ({ loaded: state.loaded + 3 }))
             }

@@ -19,7 +19,7 @@ export default class DifficultyBar extends Component {
     return (
       <div
         style={{
-          background: difficulty > 3 ? Color.black() : Color.oceanBlue(),
+          background: difficulty > 3 ? Color.black() : Color.logoBlue(),
           color: difficulty === 5 ? Color.gold() : '#fff',
           padding: '0.5rem 1rem',
           display: 'flex',

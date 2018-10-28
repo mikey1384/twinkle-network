@@ -78,7 +78,7 @@ class Home extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    if (this.props.profile?.id !== prevProps.profile?.id) {
+    if (this.props.profile.id !== prevProps.profile.id) {
       const {
         profile: { id }
       } = this.props;
@@ -273,7 +273,9 @@ class Home extends Component {
                 display: 'block',
                 marginLeft: '-1rem',
                 marginRight: '-1rem',
-                borderRadius: 0
+                borderRadius: 0,
+                borderRight: 0,
+                borderLeft: 0
               }}
             />
           )}

@@ -219,6 +219,7 @@ class Posts extends Component {
 
   loadContent = () => {
     const { match, location } = this.props;
+    document.getElementById('App').scrollTop = 0;
     switch (location.pathname) {
       case match.url:
         return this.loadTab('all');

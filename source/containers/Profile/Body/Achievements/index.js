@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import ContentPanel from 'components/ContentPanel';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import MonthlyXp from './MonthlyXp';
 import { profileThemes } from 'constants/defaultValues';
-import { loadNotableContent } from 'helpers/requestHelpers';
+import {
+  loadNotableContent,
+  loadMoreNotableContents
+} from 'helpers/requestHelpers';
 
 export default class Achievements extends Component {
   static propTypes = {
@@ -14,31 +19,34 @@ export default class Achievements extends Component {
 
   state = {
     loading: true,
-    notables: []
+    notables: [],
+    loadMoreButton: false
   };
 
   async componentDidMount() {
     const {
       profile: { id }
     } = this.props;
-    const data = await loadNotableContent({ userId: id });
-    this.setState({ notables: data, loading: false });
+    const { results, loadMoreButton } = await loadNotableContent({
+      userId: id
+    });
+    this.setState({ notables: results, loadMoreButton, loading: false });
   }
 
   async componentDidUpdate(prevProps) {
-    if (prevProps.profile?.id !== this.props.profile?.id) {
-      const data = await loadNotableContent({ userId: this.props.profile?.id });
+    if (prevProps.profile.id !== this.props.profile.id) {
+      const data = await loadNotableContent({ userId: this.props.profile.id });
       this.setState({ notables: data, loading: false });
     }
   }
 
   render() {
     const {
-      profile: { username },
+      profile: { id, username },
       myId,
       selectedTheme
     } = this.props;
-    const { loading, notables } = this.state;
+    const { loading, loadMoreButton, notables } = this.state;
     return (
       <div>
         <SectionPanel
@@ -53,7 +61,7 @@ export default class Achievements extends Component {
           )}
           {notables.map(contentObj => (
             <ContentPanel
-              key={contentObj.type + contentObj.contentId}
+              key={contentObj.feedId}
               inputAtBottom={contentObj.type === 'comment'}
               commentsLoadLimit={5}
               contentObj={contentObj}
@@ -81,17 +89,32 @@ export default class Achievements extends Component {
               onTargetCommentSubmit={this.onTargetCommentSubmit}
             />
           ))}
+          {loadMoreButton && (
+            <LoadMoreButton
+              style={{ fontSize: '1.7rem' }}
+              label="Show More"
+              transparent
+              onClick={this.onShowMoreNotables}
+            />
+          )}
         </SectionPanel>
-        <SectionPanel
-          headerTheme={profileThemes[selectedTheme]}
-          title="Achievements"
-          loaded
-        >
-          Achievements
-        </SectionPanel>
+        <MonthlyXp headerTheme={profileThemes[selectedTheme]} userId={id} />
       </div>
     );
   }
+
+  onShowMoreNotables = async() => {
+    const { notables } = this.state;
+    const { profile } = this.props;
+    const { results, loadMoreButton } = await loadMoreNotableContents({
+      userId: profile.id,
+      notables
+    });
+    this.setState(state => ({
+      notables: state.notables.concat(results),
+      loadMoreButton
+    }));
+  };
 
   onAttachStar = async data => {
     this.setState(state => ({
@@ -152,7 +175,7 @@ export default class Achievements extends Component {
       return {
         notables: state.notables.map(contentObj => {
           if (
-            (contentObj.type === 'comment' && comment.id === commentId) ||
+            (contentObj.type === 'comment' && contentObj.id === commentId) ||
             (contentObj.type !== 'comment' &&
               !commentId &&
               contentObj.type === contentType &&
@@ -299,7 +322,6 @@ export default class Achievements extends Component {
   onEditComment = ({ editedComment, commentId }) => {
     this.setState(state => {
       return {
-        ...state,
         notables: state.notables.map(contentObj => {
           return contentObj.id === commentId && contentObj.type === 'comment'
             ? {

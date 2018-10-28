@@ -58,7 +58,7 @@ class Profile extends Component {
 
     if (prevProps.profile.id !== this.props.profile.id) {
       this.setState({
-        selectedTheme: this.props.profile?.profileTheme || 'logoBlue'
+        selectedTheme: this.props.profile.profileTheme || 'logoBlue'
       });
     }
   }

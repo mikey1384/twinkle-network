@@ -1,5 +1,5 @@
-import { logout, openSigninModal } from 'redux/actions/UserActions';
 import request from 'axios';
+import { logout, openSigninModal } from 'redux/actions/UserActions';
 import { URL } from 'constants/URL';
 import { queryStringForArray } from 'helpers/stringHelpers';
 
@@ -171,6 +171,18 @@ export const likeContent = async({ id, type, dispatch }) => {
   }
 };
 
+export const loadChat = async({ channelId, dispatch, testAuth } = {}) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/chat?channelId=${channelId}`,
+      testAuth || auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    return dispatch ? handleError(error, dispatch) : Promise.reject(error);
+  }
+};
+
 export const loadComments = async({ id, type, lastCommentId, limit }) => {
   try {
     const {
@@ -187,25 +199,33 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
 
 export const loadNotableContent = async({ userId }) => {
   try {
-    const { data } = await request.get(
-      `${URL}/content/noteworthy?userId=${userId}`
-    );
-    return Promise.resolve(data);
+    const {
+      data: { results, loadMoreButton }
+    } = await request.get(`${URL}/content/noteworthy?userId=${userId}&limit=1`);
+    return Promise.resolve({ results, loadMoreButton });
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
   }
 };
 
-export const loadChat = async({ channelId, dispatch, testAuth } = {}) => {
+export const loadMoreNotableContents = async({ userId, notables }) => {
   try {
-    const { data } = await request.get(
-      `${URL}/chat?channelId=${channelId}`,
-      testAuth || auth()
+    const {
+      data: { results, loadMoreButton }
+    } = await request.get(
+      `${URL}/content/noteworthy?userId=${userId}&limit=5&${queryStringForArray(
+        {
+          array: notables,
+          originVar: 'feedId',
+          destinationVar: 'shownFeeds'
+        }
+      )}`
     );
-    return Promise.resolve(data);
+    return Promise.resolve({ results, loadMoreButton });
   } catch (error) {
-    return dispatch ? handleError(error, dispatch) : Promise.reject(error);
+    console.error(error.response || error);
+    return Promise.reject(error);
   }
 };
 
@@ -217,6 +237,18 @@ export const loadDiscussions = async({
   try {
     const { data } = await request.get(
       `${URL}/content/discussions?contentId=${contentId}&type=${type}&lastDiscussionId=${lastDiscussionId}`
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const loadMonthlyXp = async userId => {
+  try {
+    const { data } = await request.get(
+      `${URL}/user/monthlyXp?userId=${userId}`
     );
     return Promise.resolve(data);
   } catch (error) {
