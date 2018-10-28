@@ -44,15 +44,15 @@ export default class BarChart extends Component {
                 </div>
                 <div
                   style={{
-                    width: `${barPercentage}%`,
-                    height: '2.5rem',
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                    minWidth: `${barPercentage}%`,
+                    padding: '0.5rem',
                     marginLeft: '1rem',
                     background: index === 0 ? Color.orange() : Color.logoBlue(),
                     fontSize: '1.5rem',
                     color: '#fff',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    textAlign: 'center',
                     fontWeight: 'bold'
                   }}
                 >
