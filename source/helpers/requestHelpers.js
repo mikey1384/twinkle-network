@@ -214,7 +214,7 @@ export const loadMoreNotableContents = async({ userId, notables }) => {
     const {
       data: { results, loadMoreButton }
     } = await request.get(
-      `${URL}/content/noteworthy?userId=${userId}&limit=5&${queryStringForArray(
+      `${URL}/content/noteworthy?userId=${userId}&limit=2&${queryStringForArray(
         {
           array: notables,
           originVar: 'feedId',

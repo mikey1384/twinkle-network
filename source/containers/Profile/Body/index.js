@@ -4,7 +4,6 @@ import { capitalize } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import FilterBar from 'components/FilterBar';
 import Home from './Home';
-import Achievements from './Achievements';
 import Posts from './Posts';
 import SideMenu from './SideMenu';
 import { css } from 'emotion';
@@ -19,7 +18,6 @@ class Body extends Component {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    myId: PropTypes.number,
     profile: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
@@ -28,7 +26,8 @@ class Body extends Component {
 
   state = {
     currentTab: 'profile',
-    selectedSection: 'home'
+    selectedSection: 'home',
+    selectedFilter: 'all'
   };
 
   render() {
@@ -38,11 +37,10 @@ class Body extends Component {
       match: {
         params: { username }
       },
-      myId,
       profile,
       selectedTheme
     } = this.props;
-    const { currentTab, selectedSection } = this.state;
+    const { currentTab, selectedSection, selectedFilter } = this.state;
     return (
       <div
         ref={ref => {
@@ -52,14 +50,24 @@ class Body extends Component {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div
-            style={{
-              width: '55rem',
-              background: '#fff',
-              marginBottom: '1rem',
-              borderBottom: `1px solid ${Color.borderGray()}`
-            }}
+            className={css`
+              width: 55rem;
+              background: #fff;
+              margin-bottom: 1rem;
+              border-bottom: 1px solid ${Color.borderGray()};
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 25rem;
+              }
+            `}
           />
-          <FilterBar color={selectedTheme}>
+          <FilterBar
+            className={css`
+              @media (max-width: ${mobileMaxWidth}) {
+                height: 6rem;
+              }
+            `}
+            color={selectedTheme}
+          >
             <nav
               className={currentTab === 'profile' ? 'active' : ''}
               style={{ cursor: 'pointer' }}
@@ -83,14 +91,37 @@ class Body extends Component {
             </nav>
           </FilterBar>
           <div
-            style={{
-              width: '35rem',
-              background: '#fff',
-              marginBottom: '1rem',
-              borderBottom: `1px solid ${Color.borderGray()}`
-            }}
+            className={css`
+              width: 35rem;
+              background: #fff;
+              margin-bottom: 1rem;
+              border-bottom: 1px solid ${Color.borderGray()};
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 0;
+              }
+            `}
           />
         </div>
+        {currentTab === 'posts' && (
+          <FilterBar className="mobile">
+            {[
+              { key: 'all', label: 'All' },
+              { key: 'post', label: 'Discussions' },
+              { key: 'video', label: 'Videos' },
+              { key: 'url', label: 'Links' }
+            ].map(type => {
+              return (
+                <nav
+                  key={type.key}
+                  className={selectedFilter === type.key ? 'active' : ''}
+                  onClick={() => this.onClickPostsMenu({ item: type.key })}
+                >
+                  {type.label}
+                </nav>
+              );
+            })}
+          </FilterBar>
+        )}
         <div
           style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
         >
@@ -98,51 +129,45 @@ class Body extends Component {
             className={css`
               display: flex;
               margin: 0 1rem;
-              width: 80vw;
+              width: ${currentTab === 'posts' ? '80vw' : '70vw'};
               justify-content: space-between;
               @media (max-width: ${mobileMaxWidth}) {
                 width: 100vw;
+                margin: 0;
               }
             `}
           >
-            <div style={{ width: 'CALC(100% - 25rem)' }}>
+            <div
+              className={css`
+                width: ${currentTab === 'posts'
+                  ? 'CALC(100% - 25rem)'
+                  : '100%'};
+                @media (max-width: ${mobileMaxWidth}) {
+                  width: 100%;
+                }
+              `}
+            >
               {currentTab === 'profile' ? (
-                selectedSection === 'home' ? (
-                  <Home profile={profile} selectedTheme={selectedTheme} />
-                ) : (
-                  <Achievements
-                    myId={myId}
-                    profile={profile}
-                    selectedTheme={selectedTheme}
-                  />
-                )
+                <Home profile={profile} selectedTheme={selectedTheme} />
               ) : (
                 <Posts username={username} location={location} match={match} />
               )}
             </div>
-            <SideMenu
-              menuItems={
-                currentTab === 'profile'
-                  ? [
-                      { key: 'home', label: 'Home' },
-                      { key: 'achievements', label: 'Achievements' }
-                    ]
-                  : [
-                      { key: 'all', label: 'All' },
-                      { key: 'post', label: 'Discussions' },
-                      { key: 'comment', label: 'Comments' },
-                      { key: 'video', label: 'Videos' },
-                      { key: 'url', label: 'Links' }
-                    ]
-              }
-              onMenuClick={
-                currentTab === 'posts'
-                  ? this.onClickPostsMenu
-                  : this.onClickProfileMenu
-              }
-              selectedKey={selectedSection}
-              style={{ width: '30rem' }}
-            />
+            {currentTab === 'posts' && (
+              <SideMenu
+                className={`desktop ${css`
+                  width: 30rem;
+                `}`}
+                menuItems={[
+                  { key: 'all', label: 'All' },
+                  { key: 'post', label: 'Discussions' },
+                  { key: 'video', label: 'Videos' },
+                  { key: 'url', label: 'Links' }
+                ]}
+                onMenuClick={this.onClickPostsMenu}
+                selectedKey={selectedSection}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -158,7 +183,7 @@ class Body extends Component {
         item !== 'all' ? `/${item === 'url' ? 'link' : item}s` : ''
       }`
     );
-    this.setState({ selectedSection: item });
+    this.setState({ selectedFilter: item, selectedSection: item });
   };
 
   onClickProfileMenu = ({ item }) => {

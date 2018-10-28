@@ -192,6 +192,16 @@ class ProfilePanel extends Component {
                   View Profile
                 </Button>
               </div>
+              {profile.youtubeUrl && (
+                <Button
+                  style={{ padding: '0.5rem' }}
+                  danger
+                  transparent
+                  onClick={() => window.open(profile.youtubeUrl)}
+                >
+                  Visit YouTube
+                </Button>
+              )}
             </div>
             <div
               style={{

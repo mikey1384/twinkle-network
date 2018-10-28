@@ -9,11 +9,12 @@ import {
   changeProfileTheme,
   uploadProfilePic
 } from 'redux/actions/UserActions';
+import { css } from 'emotion';
 import { setTheme } from 'helpers/requestHelpers';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { profileThemes } from 'constants/defaultValues';
-import Icon from 'components/Icon';
 import { connect } from 'react-redux';
+import Icon from 'components/Icon';
 
 class Cover extends Component {
   static propTypes = {
@@ -65,25 +66,42 @@ class Cover extends Component {
         <div
           style={{
             ...profileThemes[profileTheme],
-            background: profileThemes[selectedTheme].background,
-            height: '23rem',
-            marginTop: '-1rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '100%',
-            position: 'relative'
+            background: profileThemes[selectedTheme].background
           }}
+          className={css`
+            height: 23rem;
+            margin-top: -1rem;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+            @media (max-width: ${mobileMaxWidth}) {
+              height: 12rem;
+            }
+          `}
         >
           <div
-            style={{
-              marginLeft: '30rem',
-              color: '#fff',
-              fontSize: '5rem',
-              paddingTop: '12rem'
-            }}
+            className={css`
+              margin-left: 30rem;
+              color: #fff;
+              font-size: 5rem;
+              padding-top: 12rem;
+              > p {
+                font-size: 2rem;
+                line-height: 1rem;
+              }
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-left: 15rem;
+                padding-top: 5.5rem;
+                font-size: 3rem;
+                > p {
+                  font-size: 1.3rem;
+                }
+              }
+            `}
           >
             {username}
-            <p style={{ fontSize: '2rem', lineHeight: '1rem' }}>({realName})</p>
+            <p>({realName})</p>
           </div>
           <div
             style={{
@@ -178,15 +196,20 @@ class Cover extends Component {
         </div>
         <ProfilePic
           isProfilePage
-          style={{
-            position: 'absolute',
-            width: '22rem',
-            height: '22rem',
-            left: '3rem',
-            top: '5rem',
-            fontSize: '2rem',
-            zIndex: 10
-          }}
+          className={css`
+            width: 22rem;
+            height: 22rem;
+            left: 3rem;
+            top: 5rem;
+            font-size: 2rem;
+            z-index: 10;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 12rem;
+              height: 12rem;
+              left: 1rem;
+            }
+          `}
+          style={{ position: 'absolute' }}
           userId={id}
           onClick={userId === id ? () => this.fileInput.click() : undefined}
           profilePicId={profilePicId}

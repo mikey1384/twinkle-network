@@ -11,6 +11,7 @@ import request from 'axios';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import Achievements from './Achievements';
 import {
   removeStatusMsg,
   updateStatusMsg,
@@ -80,7 +81,7 @@ class Home extends Component {
   async componentDidUpdate(prevProps) {
     if (this.props.profile.id !== prevProps.profile.id) {
       const {
-        profile: { id }
+        profile: { id, statusColor }
       } = this.props;
       try {
         const { comments, loadMoreButton } = await loadComments({
@@ -90,7 +91,8 @@ class Home extends Component {
         });
         this.setState({
           comments,
-          commentsLoadMoreButton: loadMoreButton
+          commentsLoadMoreButton: loadMoreButton,
+          editedStatusColor: statusColor
         });
       } catch (error) {
         console.error(error);
@@ -134,10 +136,10 @@ class Home extends Component {
       <div>
         <SectionPanel
           loaded
-          canEdit={id === userId}
           headerTheme={profileThemes[selectedTheme]}
-          placeholder="Enter a message for your visitors"
           title={greeting || 'Welcome!'}
+          canEdit={id === userId}
+          placeholder="Enter a message for your visitors"
           onEditTitle={this.onEditGreeting}
         >
           <div
@@ -164,7 +166,6 @@ class Home extends Component {
               >
                 {userId === profile.id && (
                   <StatusInput
-                    autoFocus
                     innerRef={ref => {
                       this.StatusInput = ref;
                     }}
@@ -294,16 +295,32 @@ class Home extends Component {
           {bioExists && (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Bio
-                style={{ fontSize: '2rem', marginBottom: '1rem' }}
+                style={{ fontSize: '1.6rem', marginBottom: '1rem' }}
                 firstRow={profileFirstRow}
                 secondRow={profileSecondRow}
                 thirdRow={profileThirdRow}
               />
             </div>
           )}
+        </SectionPanel>
+        <Achievements
+          profile={profile}
+          myId={userId}
+          selectedTheme={selectedTheme}
+        />
+        {confirmModalShown && (
+          <ConfirmModal
+            onConfirm={this.onRemoveStatus}
+            onHide={() => this.setState({ confirmModalShown: false })}
+            title={`Remove Status Message`}
+          />
+        )}
+        <SectionPanel
+          loaded
+          headerTheme={profileThemes[selectedTheme]}
+          title="Message Board"
+        >
           <Comments
-            autoFocus
-            style={{ marginTop: '1rem' }}
             comments={comments}
             commentsLoadLimit={20}
             commentsShown={true}
@@ -327,13 +344,6 @@ class Home extends Component {
             userId={userId}
           />
         </SectionPanel>
-        {confirmModalShown && (
-          <ConfirmModal
-            onConfirm={this.onRemoveStatus}
-            onHide={() => this.setState({ confirmModalShown: false })}
-            title={`Remove Status Message`}
-          />
-        )}
       </div>
     );
   }

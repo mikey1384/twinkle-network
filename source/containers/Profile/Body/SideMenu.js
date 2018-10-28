@@ -5,16 +5,24 @@ import { Color } from 'constants/css';
 
 export default class LeftMenu extends Component {
   static propTypes = {
+    className: PropTypes.string,
     menuItems: PropTypes.array.isRequired,
     onMenuClick: PropTypes.func.isRequired,
     selectedKey: PropTypes.string.isRequired,
-    style: PropTypes.object.isRequired
+    style: PropTypes.object
   };
 
   render() {
-    const { onMenuClick, menuItems, selectedKey, style } = this.props;
+    const {
+      className,
+      onMenuClick,
+      menuItems,
+      selectedKey,
+      style
+    } = this.props;
     return (
       <div
+        className={className}
         style={{
           display: 'flex',
           position: 'relative',

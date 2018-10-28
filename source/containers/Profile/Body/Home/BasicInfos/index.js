@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import InforEditForm from './InfoEditForm';
+import InfoEditForm from './InfoEditForm';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
@@ -58,7 +58,7 @@ class BasicInfos extends Component {
           About {username}
         </div>
         {onEdit && (
-          <InforEditForm
+          <InfoEditForm
             email={email}
             youtubeUrl={youtubeUrl}
             youtubeName={youtubeName}
@@ -79,13 +79,21 @@ class BasicInfos extends Component {
               {youtubeUrl && (
                 <div>
                   <span>YouTube: </span>
-                  <a href={youtubeUrl}>{youtubeName || trimUrl(youtubeUrl)}</a>
+                  <a
+                    href={youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {youtubeName || trimUrl(youtubeUrl)}
+                  </a>
                 </div>
               )}
               {website && (
                 <div>
                   <span>Website: </span>
-                  <a href={website}>{trimUrl(website)}</a>
+                  <a href={website} target="_blank" rel="noopener noreferrer">
+                    {trimUrl(website)}
+                  </a>
                 </div>
               )}
             </div>
