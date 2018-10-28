@@ -10,6 +10,8 @@ export default class MonthlyXp extends Component {
     userId: PropTypes.number.isRequired
   };
 
+  mounted = false;
+
   state = {
     data: undefined,
     loaded: false
@@ -17,15 +19,24 @@ export default class MonthlyXp extends Component {
 
   async componentDidMount() {
     const { userId } = this.props;
+    this.mounted = true;
     const data = await loadMonthlyXp(userId);
-    this.setState({ data, loaded: true });
+    if (this.mounted) {
+      this.setState({ data, loaded: true });
+    }
   }
 
   async componentDidUpdate(prevProps) {
     if (prevProps.userId !== this.props.userId) {
       const data = await loadMonthlyXp(this.props.userId);
-      this.setState({ data, loaded: true });
+      if (this.mounted) {
+        this.setState({ data, loaded: true });
+      }
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {
