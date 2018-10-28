@@ -38,6 +38,8 @@ class ProfilePanel extends Component {
     uploadProfilePic: PropTypes.func
   };
 
+  mounted = false;
+
   state = {
     comments: [],
     commentsShown: false,
@@ -53,15 +55,18 @@ class ProfilePanel extends Component {
 
   async componentDidMount() {
     const { profile } = this.props;
+    this.mounted = true;
     try {
       const { comments } = await loadComments({
         id: profile.id,
         type: 'user',
         limit: 1
       });
-      this.setState({
-        comments
-      });
+      if (this.mounted) {
+        this.setState({
+          comments
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -76,13 +81,19 @@ class ProfilePanel extends Component {
           type: 'user',
           limit: 1
         });
-        this.setState({
-          comments
-        });
+        if (this.mounted) {
+          this.setState({
+            comments
+          });
+        }
       } catch (error) {
         console.error(error);
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {

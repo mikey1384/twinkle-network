@@ -25,7 +25,7 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
-import { toggleHideWatched } from 'redux/actions/UserActions';
+import { clearProfiles, toggleHideWatched } from 'redux/actions/UserActions';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
@@ -115,11 +115,13 @@ class Stories extends Component {
     let {
       history,
       clearFeeds,
+      clearProfiles,
       fetchFeeds,
       loaded,
       resetNumNewPosts,
       setCurrentSection
     } = this.props;
+    clearProfiles();
     setCurrentSection('storyFeeds');
     resetNumNewPosts();
     if (history.action === 'PUSH' || !loaded) {
@@ -453,6 +455,7 @@ export default connect(
     addTags,
     addTagToContents,
     attachStar,
+    clearProfiles,
     contentFeedLike,
     fetchMoreFeeds,
     fetchFeed,

@@ -5,6 +5,10 @@ import USER from '../constants/User';
 
 const API_URL = `${URL}/user`;
 
+export const clearProfiles = () => ({
+  type: USER.CLEAR
+});
+
 export const changeProfileTheme = theme => ({
   type: USER.CHANGE_PROFILE_THEME,
   theme
