@@ -5,6 +5,7 @@ import ColorSelector from 'components/ColorSelector';
 import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import {
   changeProfileTheme,
   uploadProfilePic
@@ -27,6 +28,7 @@ class Cover extends Component {
       realName: PropTypes.string,
       username: PropTypes.string
     }),
+    openDirectMessageChannel: PropTypes.func.isRequired,
     onSelectColor: PropTypes.func.isRequired,
     selectedTheme: PropTypes.string.isRequired,
     uploadProfilePic: PropTypes.func,
@@ -52,6 +54,7 @@ class Cover extends Component {
         realName,
         username
       },
+      openDirectMessageChannel,
       selectedTheme
     } = this.props;
     const {
@@ -136,7 +139,13 @@ class Cover extends Component {
                 <Button
                   style={{ width: '100%', color: Color[selectedTheme]() }}
                   snow
-                  onClick={() => this.setState({ colorSelectorShown: true })}
+                  onClick={() =>
+                    openDirectMessageChannel(
+                      { userId },
+                      { id, username },
+                      false
+                    )
+                  }
                 >
                   <Icon icon="comments" />
                   <span style={{ marginLeft: '0.7rem' }}>
@@ -300,6 +309,8 @@ export default connect(
   }),
   dispatch => ({
     dispatch,
+    openDirectMessageChannel: (...params) =>
+      dispatch(openDirectMessageChannel(...params)),
     uploadProfilePic: image => dispatch(uploadProfilePic(image)),
     changeProfileTheme: theme => dispatch(changeProfileTheme(theme))
   })
