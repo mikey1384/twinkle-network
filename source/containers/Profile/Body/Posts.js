@@ -215,7 +215,9 @@ class Posts extends Component {
           filter: selectedSection,
           username
         });
-        this.setState({ loading: false });
+        if (this.mounted) {
+          this.setState({ loading: false });
+        }
       } catch (error) {
         console.error(error);
       }
