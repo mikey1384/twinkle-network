@@ -126,7 +126,6 @@ export default class SectionPanel extends Component {
             {canEdit && onEditTitle ? (
               <div
                 style={{
-                  textDecoration: 'underline',
                   fontSize: '1.5rem',
                   marginLeft: '1rem',
                   cursor: 'pointer',
