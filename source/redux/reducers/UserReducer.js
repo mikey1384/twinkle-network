@@ -212,6 +212,11 @@ export default function UserReducer(state = defaultState, action) {
         ...state,
         hideWatched: action.hideWatched
       };
+    case USER.UNMOUNT_PROFILE:
+      return {
+        ...state,
+        profile: {}
+      };
     default:
       return state;
   }

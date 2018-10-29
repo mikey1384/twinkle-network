@@ -182,6 +182,10 @@ export const toggleHideWatched = () => async dispatch => {
   }
 };
 
+export const unmountProfile = () => ({
+  type: USER.UNMOUNT_PROFILE
+});
+
 export const updateStatusMsg = ({ statusColor, statusMsg, userId }) => ({
   type: USER.EDIT_STATUS_MSG,
   statusColor,
