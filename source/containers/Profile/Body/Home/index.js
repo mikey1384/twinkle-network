@@ -266,7 +266,7 @@ class Home extends Component {
                   userId === profile.id
                     ? greeting.length > 50
                       ? 0
-                      : '-5rem'
+                      : '-7rem'
                     : '-4rem',
                 display: 'flex',
                 alignItems: 'center',
