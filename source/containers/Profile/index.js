@@ -4,7 +4,7 @@ import Cover from './Cover';
 import Body from './Body';
 import ExecutionEnvironment from 'exenv';
 import { connect } from 'react-redux';
-import { checkValidUsername } from 'redux/actions/UserActions';
+import { checkValidUsername, unmountProfile } from 'redux/actions/UserActions';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 
@@ -15,6 +15,7 @@ class Profile extends Component {
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
+    unmountProfile: PropTypes.func.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string
   };
@@ -61,6 +62,11 @@ class Profile extends Component {
         selectedTheme: this.props.profile.profileTheme || 'logoBlue'
       });
     }
+  }
+
+  componentWillUnmount() {
+    const { unmountProfile } = this.props;
+    unmountProfile();
   }
 
   render() {
@@ -112,5 +118,5 @@ export default connect(
     username: state.UserReducer.username,
     profile: state.UserReducer.profile
   }),
-  { checkValidUsername }
+  { checkValidUsername, unmountProfile }
 )(Profile);
