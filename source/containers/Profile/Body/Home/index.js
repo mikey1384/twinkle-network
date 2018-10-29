@@ -158,7 +158,8 @@ class Home extends Component {
             style={{
               display: 'flex',
               minHeight: '10rem',
-              width: '100%'
+              width: '100%',
+              marginTop: userId !== profile.id ? '-1.5rem' : 0
             }}
           >
             <div
