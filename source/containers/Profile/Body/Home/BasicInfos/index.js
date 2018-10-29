@@ -12,6 +12,7 @@ import { setProfileInfo } from 'redux/actions/UserActions';
 
 class BasicInfos extends Component {
   static propTypes = {
+    className: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     email: PropTypes.string,
     joinDate: PropTypes.string,
@@ -33,6 +34,7 @@ class BasicInfos extends Component {
 
   render() {
     const {
+      className,
       email,
       joinDate,
       lastActive,
@@ -47,7 +49,7 @@ class BasicInfos extends Component {
     } = this.props;
     const { onEdit } = this.state;
     return (
-      <div style={style}>
+      <div className={className} style={style}>
         <div
           style={{
             color: Color[selectedTheme](),

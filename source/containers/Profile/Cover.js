@@ -149,7 +149,8 @@ class Cover extends Component {
                 >
                   <Icon icon="comments" />
                   <span style={{ marginLeft: '0.7rem' }}>
-                    Chat with {username}
+                    Chat
+                    <span className="desktop"> with {username}</span>
                   </span>
                 </Button>
               </div>

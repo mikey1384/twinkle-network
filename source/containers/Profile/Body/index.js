@@ -78,7 +78,10 @@ class Body extends Component {
                 })
               }
             >
-              <a>{`${capitalize(username)}'s Profile`}</a>
+              <a>
+                <span className="desktop">{`${capitalize(username)}'s`} </span>
+                Profile
+              </a>
             </nav>
             <nav
               className={currentTab === 'posts' ? 'active' : ''}

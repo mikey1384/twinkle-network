@@ -164,8 +164,8 @@ class Home extends Component {
           >
             <div
               style={{
-                width: '50%',
-                marginRight: '0.5rem'
+                width: 'CALC(50% - 1rem)',
+                marginRight: '1rem'
               }}
             >
               <div
@@ -259,13 +259,14 @@ class Home extends Component {
             </div>
             <BasicInfos
               style={{
+                marginTop: userId === profile.id ? '-5rem' : '-4rem',
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                width: '50%',
+                width: 'CALC(50% - 1rem)',
                 fontSize: '1.7rem',
-                marginLeft: '0.5rem',
+                marginLeft: '1rem',
                 marginBottom: '1rem'
               }}
               email={email}
