@@ -59,36 +59,43 @@ export default function StatusInput({
         <div
           style={{
             display: 'flex',
-            justifyContent: 'flex-end',
-            width: '100%'
+            flexDirection: 'column',
+            width: '100%',
+            marginTop: '0.5rem'
           }}
         >
-          <ColorSelector
-            colors={['pink', 'ivory', 'logoGreen', 'logoBlue', 'menuGray']}
-            setColor={setColor}
-            selectedColor={statusColor}
-          />
-          <Button
-            snow
-            onClick={onCancel}
-            style={{ marginLeft: '1rem', fontSize: '1rem' }}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <ColorSelector
+              colors={['pink', 'ivory', 'logoGreen', 'logoBlue', 'menuGray']}
+              setColor={setColor}
+              selectedColor={statusColor}
+            />
+          </div>
+          <div
+            style={{
+              marginTop: '1rem',
+              display: 'flex',
+              justifyContent: 'center'
+            }}
           >
-            Cancel
-          </Button>
-          <Button
-            primary
-            filled
-            disabled={
-              !!exceedsCharLimit({
-                contentType: 'statusMsg',
-                text: editedStatusMsg
-              })
-            }
-            style={{ marginLeft: '1rem', fontSize: '1rem' }}
-            onClick={onStatusSubmit}
-          >
-            Enter
-          </Button>
+            <Button snow onClick={onCancel} style={{ fontSize: '1rem' }}>
+              Cancel
+            </Button>
+            <Button
+              primary
+              filled
+              disabled={
+                !!exceedsCharLimit({
+                  contentType: 'statusMsg',
+                  text: editedStatusMsg
+                })
+              }
+              style={{ marginLeft: '1rem', fontSize: '1rem' }}
+              onClick={onStatusSubmit}
+            >
+              Enter
+            </Button>
+          </div>
         </div>
       )}
     </>

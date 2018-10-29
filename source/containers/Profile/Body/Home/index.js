@@ -11,11 +11,14 @@ import request from 'axios';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import BioEditModal from 'components/Modals/BioEditModal';
 import Achievements from './Achievements';
+import DropDownButton from 'components/Buttons/DropDownButton';
 import {
   removeStatusMsg,
   updateStatusMsg,
-  setGreeting
+  setGreeting,
+  uploadBio
 } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { auth, loadComments, uploadGreeting } from 'helpers/requestHelpers';
@@ -53,6 +56,7 @@ class Home extends Component {
   constructor({ profile: { statusColor } }) {
     super();
     this.state = {
+      bioEditModalShown: false,
       comments: [],
       commentsLoadMoreButton: false,
       confirmModalShown: false,
@@ -134,6 +138,7 @@ class Home extends Component {
       userId
     } = this.props;
     const {
+      bioEditModalShown,
       comments,
       commentsLoadMoreButton,
       confirmModalShown,
@@ -227,14 +232,28 @@ class Home extends Component {
                 {userId === profile.id &&
                   !editedStatusMsg &&
                   !stringIsEmpty(statusMsg) && (
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '-1rem',
+                        marginBottom:
+                          profile.twinkleXP > 0 || bioExists ? '1rem' : 0
+                      }}
+                    >
                       <Button
                         transparent
-                        style={{
-                          marginTop: '-1rem',
-                          marginBottom:
-                            profile.twinkleXP > 0 || bioExists ? '1rem' : 0
+                        onClick={() => {
+                          this.setState({ editedStatusMsg: statusMsg });
+                          this.StatusInput.focus();
                         }}
+                      >
+                        <Icon icon="pencil-alt" />
+                        <span style={{ marginLeft: '0.7rem' }}>Edit</span>
+                      </Button>
+                      <Button
+                        transparent
+                        style={{ marginLeft: '0.5rem' }}
                         onClick={() =>
                           this.setState({ confirmModalShown: true })
                         }
@@ -315,13 +334,59 @@ class Home extends Component {
               />
             )}
           {bioExists && (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                position: 'relative'
+              }}
+            >
+              {userId === profile.id && (
+                <DropDownButton
+                  direction="left"
+                  style={{ right: 0, top: '1rem', position: 'absolute' }}
+                  snow
+                  menuProps={[
+                    {
+                      label: 'Edit',
+                      onClick: () => this.setState({ bioEditModalShown: true })
+                    },
+                    {
+                      label: 'Remove',
+                      onClick: () =>
+                        this.uploadBio({
+                          firstLine: '',
+                          secondLine: '',
+                          thirdLine: ''
+                        })
+                    }
+                  ]}
+                />
+              )}
               <Bio
                 style={{ fontSize: '1.6rem', marginBottom: '1rem' }}
                 firstRow={profileFirstRow}
                 secondRow={profileSecondRow}
                 thirdRow={profileThirdRow}
               />
+            </div>
+          )}
+          {!bioExists && (
+            <div
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                display: 'flex',
+                marginTop: '1rem'
+              }}
+            >
+              <Button
+                style={{ fontSize: '2rem' }}
+                transparent
+                onClick={() => this.setState({ bioEditModalShown: true })}
+              >
+                Add a Bio
+              </Button>
             </div>
           )}
         </SectionPanel>
@@ -367,6 +432,19 @@ class Home extends Component {
             userId={userId}
           />
         </SectionPanel>
+        {bioEditModalShown && (
+          <BioEditModal
+            firstLine={profileFirstRow}
+            secondLine={profileSecondRow}
+            thirdLine={profileThirdRow}
+            onSubmit={this.uploadBio}
+            onHide={() =>
+              this.setState({
+                bioEditModalShown: false
+              })
+            }
+          />
+        )}
       </div>
     );
   }
@@ -554,12 +632,21 @@ class Home extends Component {
     this.setState({ editedStatusColor: '', editedStatusMsg: '' });
     if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
   };
+
+  uploadBio = async params => {
+    const { profile, uploadBio } = this.props;
+    await uploadBio({ ...params, profileId: profile.id });
+    this.setState({
+      bioEditModalShown: false
+    });
+  };
 }
 
 export default connect(
   state => ({ userId: state.UserReducer.userId }),
   dispatch => ({
     dispatch,
+    uploadBio: params => dispatch(uploadBio(params)),
     removeStatusMsg: userId => dispatch(removeStatusMsg(userId)),
     setGreeting: greeting => dispatch(setGreeting(greeting)),
     updateStatusMsg: data => dispatch(updateStatusMsg(data))
