@@ -371,7 +371,7 @@ class Home extends Component {
               />
             </div>
           )}
-          {!bioExists && (
+          {!bioExists && profile.id === userId && (
             <div
               style={{
                 width: '100%',
