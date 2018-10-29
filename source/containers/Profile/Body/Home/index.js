@@ -282,11 +282,11 @@ class Home extends Component {
             <BasicInfos
               style={{
                 marginTop:
-                  userId === profile.id
-                    ? greeting.length > 50
-                      ? 0
-                      : '-7rem'
-                    : '-4rem',
+                  (!greeting || greeting.length) < 50
+                    ? userId === profile.id
+                      ? '-7rem'
+                      : '-4rem'
+                    : 0,
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'column',
@@ -372,24 +372,25 @@ class Home extends Component {
               />
             </div>
           )}
-          {!bioExists && profile.id === userId && (
-            <div
-              style={{
-                width: '100%',
-                justifyContent: 'center',
-                display: 'flex',
-                marginTop: '1rem'
-              }}
-            >
-              <Button
-                style={{ fontSize: '2rem' }}
-                transparent
-                onClick={() => this.setState({ bioEditModalShown: true })}
+          {!bioExists &&
+            profile.id === userId && (
+              <div
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  display: 'flex',
+                  marginTop: '1rem'
+                }}
               >
-                Add a Bio
-              </Button>
-            </div>
-          )}
+                <Button
+                  style={{ fontSize: '2rem' }}
+                  transparent
+                  onClick={() => this.setState({ bioEditModalShown: true })}
+                >
+                  Add a Bio
+                </Button>
+              </div>
+            )}
         </SectionPanel>
         <Achievements
           profile={profile}
