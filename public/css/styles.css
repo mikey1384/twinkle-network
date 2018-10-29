@@ -43,6 +43,9 @@ h4 {
 a {
   text-decoration: none;
   color: #158cba;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 a:hover {
