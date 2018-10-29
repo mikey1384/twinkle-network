@@ -344,6 +344,7 @@ class Home extends Component {
               {userId === profile.id && (
                 <DropDownButton
                   direction="left"
+                  opacity={0.7}
                   style={{ right: 0, top: '1rem', position: 'absolute' }}
                   snow
                   menuProps={[
