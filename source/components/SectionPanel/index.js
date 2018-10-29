@@ -14,6 +14,7 @@ export default class SectionPanel extends Component {
     title: PropTypes.string,
     button: PropTypes.node,
     emptyMessage: PropTypes.string,
+    inverted: PropTypes.bool,
     isEmpty: PropTypes.bool,
     isSearching: PropTypes.bool,
     headerTheme: PropTypes.object,
@@ -42,6 +43,7 @@ export default class SectionPanel extends Component {
     const {
       canEdit,
       headerTheme = { color: '#fff', background: Color.logoBlue() },
+      inverted,
       title,
       button,
       loadMoreButtonShown,
@@ -66,11 +68,14 @@ export default class SectionPanel extends Component {
             width: 100%;
             grid-template-areas: 'title search buttons';
             grid-template-columns: auto ${onSearch ? '40%' : 'auto'} auto;
-            background: ${headerTheme.background};
-            color: ${headerTheme.color};
+            background: ${inverted
+              ? headerTheme.color
+              : headerTheme.background};
+            color: ${inverted ? headerTheme.background : headerTheme.color};
             border-top-left-radius: ${borderRadius};
             border-top-right-radius: ${borderRadius};
-            padding: 1rem;
+            padding: ${inverted ? '2rem' : '1rem'};
+            font-weight: ${inverted ? 'bold' : ''};
             font-size: 2.5rem;
             align-items: center;
           }

@@ -146,6 +146,7 @@ class Home extends Component {
     return (
       <div>
         <SectionPanel
+          inverted
           loaded
           headerTheme={profileThemes[selectedTheme]}
           title={greeting || 'Welcome!'}
@@ -327,6 +328,7 @@ class Home extends Component {
           />
         )}
         <SectionPanel
+          inverted
           loaded
           headerTheme={profileThemes[selectedTheme]}
           title="Message Board"

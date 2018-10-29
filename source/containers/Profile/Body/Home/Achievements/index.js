@@ -63,6 +63,7 @@ export default class Achievements extends Component {
     return (
       <div>
         <SectionPanel
+          inverted
           headerTheme={profileThemes[selectedTheme]}
           title="Notable Activities"
           loaded={!loading}

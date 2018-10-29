@@ -44,6 +44,7 @@ export default class MonthlyXp extends Component {
     const { data, loaded } = this.state;
     return (
       <SectionPanel
+        inverted
         headerTheme={headerTheme}
         title="Monthly XP Growth"
         loaded={loaded}
