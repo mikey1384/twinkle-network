@@ -13,7 +13,7 @@ import Icon from 'components/Icon';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import BioEditModal from 'components/Modals/BioEditModal';
 import Achievements from './Achievements';
-import DropDownButton from 'components/Buttons/DropDownButton';
+import DropDownButton from 'components/Buttons/DropdownButton';
 import {
   removeStatusMsg,
   updateStatusMsg,
