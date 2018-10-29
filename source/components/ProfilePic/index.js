@@ -82,6 +82,9 @@ class ProfilePic extends Component {
                   background: Color.green(),
                   color: '#fff',
                   padding: '0.3rem',
+                  minWidth: '5rem',
+                  fontSize: '1.4rem',
+                  textAlign: 'center',
                   borderRadius: innerBorderRadius,
                   fontWeight: 'bold'
                 }}
