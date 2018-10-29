@@ -4,6 +4,7 @@ import Button from 'components/Button';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
 import Input from 'components/Texts/Input';
+import Icon from 'components/Icon';
 import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -106,52 +107,90 @@ export default class SectionPanel extends Component {
               display: 'flex'
             }}
           >
-            {onEdit ? (
-              <Input
-                maxLength={100}
-                placeholder={placeholder}
-                autoFocus
-                onChange={text =>
-                  this.setState({ editedTitle: addEmoji(text) })
-                }
-                onKeyPress={event => {
-                  if (!stringIsEmpty(editedTitle) && event.key === 'Enter') {
-                    this.onChangeTitle(editedTitle);
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%'
+              }}
+            >
+              {onEdit ? (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Input
+                    maxLength={100}
+                    placeholder={placeholder}
+                    autoFocus
+                    onChange={text =>
+                      this.setState({ editedTitle: addEmoji(text) })
+                    }
+                    onKeyPress={event => {
+                      if (
+                        !stringIsEmpty(editedTitle) &&
+                        event.key === 'Enter'
+                      ) {
+                        this.onChangeTitle(editedTitle);
+                      }
+                    }}
+                    value={editedTitle}
+                  />
+                  <div
+                    className={css`
+                      &:hover {
+                        text-decoration: underline;
+                      }
+                    `}
+                    style={{
+                      color: Color.gray(),
+                      position: 'abolute',
+                      zIndex: 3,
+                      marginLeft: '1rem',
+                      fontWeight: 'normal',
+                      fontSize: '1.5rem',
+                      cursor: 'pointer',
+                      lineHeight: '1.7rem',
+                      alignItems: 'flex-end'
+                    }}
+                    onClick={() =>
+                      this.setState({ onEdit: false, editedTitle: title })
+                    }
+                  >
+                    <span>Cancel</span>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ lineHeight: '3rem' }}>{title}</div>
+              )}
+              {canEdit && onEditTitle && !onEdit ? (
+                <div
+                  className={css`
+                    &:hover {
+                      text-decoration: underline;
+                    }
+                  `}
+                  style={{
+                    color: Color.gray(),
+                    fontWeight: 'normal',
+                    marginTop: '0.5rem',
+                    fontSize: '1.5rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    lineHeight: '1.7rem',
+                    alignItems: 'flex-end'
+                  }}
+                  onClick={() =>
+                    this.setState({ onEdit: true, editedTitle: title })
                   }
-                }}
-                value={editedTitle}
-              />
-            ) : (
-              <div style={{ lineHeight: '3rem' }}>{title}</div>
-            )}
-            {canEdit && onEditTitle ? (
-              <div
-                className={css`
-                  &:hover {
-                    text-decoration: underline;
-                  }
-                `}
-                style={{
-                  color: Color.gray(),
-                  fontSize: '1.5rem',
-                  marginLeft: onEdit ? '1rem' : '1.5rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  fontWeight: 'normal',
-                  lineHeight: '1.7rem',
-                  alignItems: 'flex-end'
-                }}
-                onClick={() =>
-                  this.setState({ onEdit: !onEdit, editedTitle: title })
-                }
-              >
-                {onEdit ? 'Cancel' : 'Edit'}
-              </div>
-            ) : (
-              ''
-            )}
+                >
+                  <span>
+                    <Icon icon="pencil-alt" />
+                    &nbsp;&nbsp;Edit
+                  </span>
+                </div>
+              ) : (
+                ''
+              )}
+            </div>
           </div>
-
           {onSearch && (
             <SearchInput
               style={{

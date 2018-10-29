@@ -165,12 +165,15 @@ class Home extends Component {
             <div
               style={{
                 width: 'CALC(50% - 1rem)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
                 marginRight: '1rem'
               }}
             >
               <div
                 style={{
-                  width: '100%',
+                  width: '90%',
                   height: '100%',
                   display: 'flex',
                   justifyContent: 'center',
@@ -259,7 +262,12 @@ class Home extends Component {
             </div>
             <BasicInfos
               style={{
-                marginTop: userId === profile.id ? '-5rem' : '-4rem',
+                marginTop:
+                  userId === profile.id
+                    ? greeting.length > 50
+                      ? 0
+                      : '-5rem'
+                    : '-4rem',
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'column',
