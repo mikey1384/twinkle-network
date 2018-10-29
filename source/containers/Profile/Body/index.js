@@ -153,7 +153,12 @@ class Body extends Component {
               {currentTab === 'profile' ? (
                 <Home profile={profile} selectedTheme={selectedTheme} />
               ) : (
-                <Posts username={username} location={location} match={match} />
+                <Posts
+                  selectedSection={selectedSection}
+                  username={username}
+                  location={location}
+                  match={match}
+                />
               )}
             </div>
             {currentTab === 'posts' && (

@@ -58,9 +58,10 @@ class Posts extends Component {
     profileFeeds: PropTypes.array.isRequired,
     searchMode: PropTypes.bool.isRequired,
     showFeedComments: PropTypes.func.isRequired,
-    uploadTargetContentComment: PropTypes.func.isRequired,
+    selectedSection: PropTypes.string.isRequired,
     setCurrentSection: PropTypes.func.isRequired,
     setDifficulty: PropTypes.func,
+    uploadTargetContentComment: PropTypes.func.isRequired,
     uploadFeedComment: PropTypes.func.isRequired,
     username: PropTypes.string.isRequired
   };
@@ -167,13 +168,16 @@ class Posts extends Component {
           profileFeeds.length === 0 && (
             <div
               style={{
+                marginTop: '6rem',
+                fontSize: '2.5rem',
+                fontWeight: 'bold',
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '15rem'
+                justifyContent: 'center'
               }}
             >
-              <h2 style={{ textAlign: 'center' }}>{this.onNoFeed(username)}</h2>
+              <div style={{ textAlign: 'center' }}>
+                {this.onNoFeed(username)}
+              </div>
             </div>
           )}
         {loadMoreButton && (
@@ -196,7 +200,8 @@ class Posts extends Component {
       fetchMoreFeeds,
       profileFeeds
     } = this.props;
-    const { currentTab, loading } = this.state;
+    const { selectedSection } = this.props;
+    const { loading } = this.state;
 
     if (!loading) {
       this.setState({ loading: true });
@@ -207,7 +212,7 @@ class Posts extends Component {
             originVar: 'feedId',
             destinationVar: 'shownFeeds'
           }),
-          filter: currentTab,
+          filter: selectedSection,
           username
         });
         this.setState({ loading: false });
@@ -248,8 +253,8 @@ class Posts extends Component {
   };
 
   onNoFeed = username => {
-    const { currentTab } = this.state;
-    switch (currentTab) {
+    const { selectedSection } = this.props;
+    switch (selectedSection) {
       case 'all':
         return `${username} has not uploaded anything, yet`;
       case 'post':
