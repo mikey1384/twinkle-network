@@ -74,7 +74,8 @@ export default class SectionPanel extends Component {
             color: ${inverted ? headerTheme.background : headerTheme.color};
             border-top-left-radius: ${borderRadius};
             border-top-right-radius: ${borderRadius};
-            padding: ${inverted ? '2rem' : '1rem'};
+            padding: 1rem;
+            padding-top: ${inverted ? '1.7rem' : '1rem'};
             font-weight: ${inverted ? 'bold' : ''};
             font-size: 2.5rem;
             align-items: center;
