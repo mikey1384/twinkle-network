@@ -125,18 +125,26 @@ export default class SectionPanel extends Component {
             )}
             {canEdit && onEditTitle ? (
               <div
+                className={css`
+                  &:hover {
+                    text-decoration: underline;
+                  }
+                `}
                 style={{
+                  color: Color.gray(),
                   fontSize: '1.5rem',
-                  marginLeft: '1rem',
+                  marginLeft: onEdit ? '1rem' : '1.5rem',
                   cursor: 'pointer',
                   display: 'flex',
+                  fontWeight: 'normal',
+                  lineHeight: '1.7rem',
                   alignItems: 'flex-end'
                 }}
                 onClick={() =>
                   this.setState({ onEdit: !onEdit, editedTitle: title })
                 }
               >
-                {onEdit ? 'cancel' : 'change'}
+                {onEdit ? 'Cancel' : 'Edit'}
               </div>
             ) : (
               ''
