@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Cover from './Cover';
 import Body from './Body';
 import ExecutionEnvironment from 'exenv';
+import { css } from 'emotion';
 import { connect } from 'react-redux';
 import { checkValidUsername, unmountProfile } from 'redux/actions/UserActions';
 import NotFound from 'components/NotFound';
@@ -84,6 +85,13 @@ class Profile extends Component {
         {!id && <Loading text="Loading Profile..." />}
         {id && (
           <div
+            className={css`
+              a {
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+                word-break: break-word;
+              }
+            `}
             style={{
               position: 'relative'
             }}
