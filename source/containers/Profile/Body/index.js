@@ -48,14 +48,7 @@ class Body extends Component {
               }
             `}
           />
-          <FilterBar
-            className={css`
-              @media (max-width: ${mobileMaxWidth}) {
-                height: 5.5rem;
-              }
-            `}
-            color={selectedTheme}
-          >
+          <FilterBar color={selectedTheme}>
             <nav
               className={
                 location.pathname === `/users/${username}` ? 'active' : ''

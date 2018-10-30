@@ -123,7 +123,7 @@ export default function FilterBar({
           }
         }
         @media (max-width: ${mobileMaxWidth}) {
-          height: 7rem;
+          height: 5.5rem;
           border-radius: 0;
           border-left: none;
           border-right: none;
