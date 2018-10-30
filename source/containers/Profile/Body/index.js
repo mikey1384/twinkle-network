@@ -66,10 +66,7 @@ class Body extends Component {
                 location.pathname !== `/users/${username}` ? 'active' : ''
               }
               style={{ cursor: 'pointer' }}
-              onClick={() => {
-                this.setState({ selectedSection: 'all' });
-                history.push(`${match.url}${`/all`}`);
-              }}
+              onClick={() => history.push(`${match.url}${`/all`}`)}
             >
               <a>Posts</a>
             </nav>
@@ -112,10 +109,6 @@ class Body extends Component {
       </div>
     );
   }
-
-  onClickProfileMenu = ({ item }) => {
-    this.setState({ selectedSection: item });
-  };
 }
 
 export default connect(state => ({
