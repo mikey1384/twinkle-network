@@ -14,6 +14,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import BioEditModal from 'components/Modals/BioEditModal';
 import Achievements from './Achievements';
 import DropDownButton from 'components/Buttons/DropdownButton';
+import { css } from 'emotion';
 import {
   removeStatusMsg,
   updateStatusMsg,
@@ -29,7 +30,7 @@ import {
   stringIsEmpty
 } from 'helpers/stringHelpers';
 import { profileThemes } from 'constants/defaultValues';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { URL } from 'constants/URL';
 
 class Home extends Component {
@@ -149,7 +150,14 @@ class Home extends Component {
     const usernameColor = Color[selectedTheme]();
     let defaultMessage = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
     return (
-      <div>
+      <div
+        className={css`
+          width: 65vw;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100vw;
+          }
+        `}
+      >
         <SectionPanel
           inverted
           loaded

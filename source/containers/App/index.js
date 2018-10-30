@@ -1,8 +1,12 @@
 import 'regenerator-runtime/runtime'; // for async await
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Header from './Header';
+import Button from 'components/Button';
+import Loading from 'components/Loading';
+import SigninModal from 'containers/Signin';
+import loadable from 'loadable-components';
+import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions';
 import { loadChat } from 'helpers/requestHelpers';
@@ -21,10 +25,6 @@ import { siteContent } from './Styles';
 import MobileMenu from './MobileMenu';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import Button from 'components/Button';
-import Loading from 'components/Loading';
-import SigninModal from 'containers/Signin';
-import loadable from 'loadable-components';
 import { hot } from 'react-hot-loader';
 const Home = loadable(() => import('containers/Home'), {
   LoadingComponent: Loading

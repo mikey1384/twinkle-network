@@ -3,18 +3,12 @@ import PropTypes from 'prop-types';
 import { capitalize } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import FilterBar from 'components/FilterBar';
-import Home from './Home';
-import Posts from './Posts';
-import SideMenu from './SideMenu';
+import Routes from './Routes';
 import { css } from 'emotion';
-import { clearFeeds } from 'redux/actions/FeedActions';
-import { disableAutoscroll } from 'redux/actions/ViewActions';
 import { connect } from 'react-redux';
 
 class Body extends Component {
   static propTypes = {
-    disableAutoscroll: PropTypes.func.isRequired,
-    clearFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
@@ -24,14 +18,9 @@ class Body extends Component {
     selectedTheme: PropTypes.string.isRequired
   };
 
-  state = {
-    currentTab: 'profile',
-    selectedSection: 'home',
-    selectedFilter: 'all'
-  };
-
   render() {
     const {
+      history,
       location,
       match,
       match: {
@@ -40,7 +29,6 @@ class Body extends Component {
       profile,
       selectedTheme
     } = this.props;
-    const { currentTab, selectedSection, selectedFilter } = this.state;
     return (
       <div
         ref={ref => {
@@ -69,14 +57,11 @@ class Body extends Component {
             color={selectedTheme}
           >
             <nav
-              className={currentTab === 'profile' ? 'active' : ''}
-              style={{ cursor: 'pointer' }}
-              onClick={() =>
-                this.setState({
-                  currentTab: 'profile',
-                  selectedSection: 'home'
-                })
+              className={
+                location.pathname === `/users/${username}` ? 'active' : ''
               }
+              style={{ cursor: 'pointer' }}
+              onClick={() => history.push(`/users/${username}`)}
             >
               <a>
                 <span className="desktop">{`${capitalize(username)}'s`} </span>
@@ -84,11 +69,14 @@ class Body extends Component {
               </a>
             </nav>
             <nav
-              className={currentTab === 'posts' ? 'active' : ''}
-              style={{ cursor: 'pointer' }}
-              onClick={() =>
-                this.setState({ currentTab: 'posts', selectedSection: 'all' })
+              className={
+                location.pathname !== `/users/${username}` ? 'active' : ''
               }
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                this.setState({ selectedSection: 'all' });
+                history.push(`${match.url}${`/all`}`);
+              }}
             >
               <a>Posts</a>
             </nav>
@@ -105,26 +93,6 @@ class Body extends Component {
             `}
           />
         </div>
-        {currentTab === 'posts' && (
-          <FilterBar className="mobile">
-            {[
-              { key: 'all', label: 'All' },
-              { key: 'post', label: 'Discussions' },
-              { key: 'video', label: 'Videos' },
-              { key: 'url', label: 'Links' }
-            ].map(type => {
-              return (
-                <nav
-                  key={type.key}
-                  className={selectedFilter === type.key ? 'active' : ''}
-                  onClick={() => this.onClickPostsMenu({ item: type.key })}
-                >
-                  {type.label}
-                </nav>
-              );
-            })}
-          </FilterBar>
-        )}
         <div
           style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
         >
@@ -132,76 +100,31 @@ class Body extends Component {
             className={css`
               display: flex;
               margin: 0 1rem;
-              width: ${currentTab === 'posts' ? '80vw' : '70vw'};
-              justify-content: space-between;
+              width: 100%;
+              justify-content: center;
               @media (max-width: ${mobileMaxWidth}) {
-                width: 100vw;
                 margin: 0;
               }
             `}
           >
-            <div
-              className={css`
-                width: ${currentTab === 'posts'
-                  ? 'CALC(100% - 25rem)'
-                  : '100%'};
-                @media (max-width: ${mobileMaxWidth}) {
-                  width: 100%;
-                }
-              `}
-            >
-              {currentTab === 'profile' ? (
-                <Home profile={profile} selectedTheme={selectedTheme} />
-              ) : (
-                <Posts
-                  selectedSection={selectedSection}
-                  username={username}
-                  location={location}
-                  match={match}
-                />
-              )}
-            </div>
-            {currentTab === 'posts' && (
-              <SideMenu
-                className={`desktop ${css`
-                  width: 30rem;
-                `}`}
-                menuItems={[
-                  { key: 'all', label: 'All' },
-                  { key: 'post', label: 'Discussions' },
-                  { key: 'video', label: 'Videos' },
-                  { key: 'url', label: 'Links' }
-                ]}
-                onMenuClick={this.onClickPostsMenu}
-                selectedKey={selectedSection}
-              />
-            )}
+            <Routes
+              history={history}
+              location={location}
+              match={match}
+              profile={profile}
+              selectedTheme={selectedTheme}
+            />
           </div>
         </div>
       </div>
     );
   }
 
-  onClickPostsMenu = ({ item }) => {
-    const { clearFeeds, disableAutoscroll, history, match } = this.props;
-    clearFeeds();
-    disableAutoscroll();
-    history.push(
-      `${match.url}${
-        item !== 'all' ? `/${item === 'url' ? 'link' : item}s` : ''
-      }`
-    );
-    this.setState({ selectedFilter: item, selectedSection: item });
-  };
-
   onClickProfileMenu = ({ item }) => {
     this.setState({ selectedSection: item });
   };
 }
 
-export default connect(
-  state => ({
-    myId: state.UserReducer.userId
-  }),
-  { clearFeeds, disableAutoscroll }
-)(Body);
+export default connect(state => ({
+  myId: state.UserReducer.userId
+}))(Body);

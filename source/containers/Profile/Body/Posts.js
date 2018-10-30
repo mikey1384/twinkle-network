@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import FilterBar from 'components/FilterBar';
+import SideMenu from './SideMenu';
+import { disableAutoscroll } from 'redux/actions/ViewActions';
+import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import {
@@ -39,6 +43,7 @@ class Posts extends Component {
     clearFeeds: PropTypes.func.isRequired,
     chatMode: PropTypes.bool.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
+    disableAutoscroll: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
     feedCommentDelete: PropTypes.func.isRequired,
     feedContentDelete: PropTypes.func.isRequired,
@@ -47,6 +52,7 @@ class Posts extends Component {
     feedRewardCommentEdit: PropTypes.func.isRequired,
     feedVideoStar: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
@@ -58,7 +64,6 @@ class Posts extends Component {
     profileFeeds: PropTypes.array.isRequired,
     searchMode: PropTypes.bool.isRequired,
     showFeedComments: PropTypes.func.isRequired,
-    selectedSection: PropTypes.string.isRequired,
     setCurrentSection: PropTypes.func.isRequired,
     setDifficulty: PropTypes.func,
     uploadTargetContentComment: PropTypes.func.isRequired,
@@ -70,6 +75,13 @@ class Posts extends Component {
     typeof document !== 'undefined'
       ? document.scrollingElement || document.documentElement
       : {};
+
+  filterTable = {
+    all: 'all',
+    posts: 'post',
+    videos: 'video',
+    links: 'url'
+  };
 
   scrollHeight = 0;
 
@@ -120,6 +132,7 @@ class Posts extends Component {
       loaded,
       loadMoreButton,
       loadTags,
+      match,
       profileFeeds,
       showFeedComments,
       uploadTargetContentComment,
@@ -128,67 +141,106 @@ class Posts extends Component {
     } = this.props;
     const { loading } = this.state;
     return (
-      <div style={{ marginBottom: '1rem' }}>
-        {!loaded && (
-          <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
-        )}
-        {loaded &&
-          profileFeeds.length > 0 &&
-          profileFeeds.map(feed => {
+      <>
+        <FilterBar className="mobile">
+          {[
+            { key: 'all', label: 'All' },
+            { key: 'post', label: 'Discussions' },
+            { key: 'video', label: 'Videos' },
+            { key: 'url', label: 'Links' }
+          ].map(type => {
             return (
-              <ContentPanel
-                key={feed.feedId}
-                commentsLoadLimit={5}
-                contentObj={feed}
-                inputAtBottom={feed.type === 'comment'}
-                onLoadContent={fetchFeed}
-                onAddTags={addTags}
-                onAddTagToContents={addTagToContents}
-                onAttachStar={attachStar}
-                onCommentSubmit={data => this.uploadFeedComment({ feed, data })}
-                onDeleteComment={feedCommentDelete}
-                onDeleteContent={feedContentDelete}
-                onEditComment={feedCommentEdit}
-                onEditContent={feedContentEdit}
-                onEditRewardComment={feedRewardCommentEdit}
-                onLikeContent={contentFeedLike}
-                onLoadMoreComments={loadMoreFeedComments}
-                onLoadMoreReplies={loadMoreFeedReplies}
-                onLoadTags={loadTags}
-                onReplySubmit={data => this.uploadFeedComment({ feed, data })}
-                onSetDifficulty={setDifficulty}
-                onStarVideo={feedVideoStar}
-                onShowComments={showFeedComments}
-                onTargetCommentSubmit={uploadTargetContentComment}
-                userId={myId}
-              />
+              <nav
+                key={type.key}
+                className={match.params.section === type.key ? 'active' : ''}
+                onClick={() => this.onClickPostsMenu({ item: type.key })}
+              >
+                {type.label}
+              </nav>
             );
           })}
-        {loaded &&
-          profileFeeds.length === 0 && (
-            <div
-              style={{
-                marginTop: '6rem',
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                display: 'flex',
-                justifyContent: 'center'
-              }}
-            >
-              <div style={{ textAlign: 'center' }}>
-                {this.onNoFeed(username)}
-              </div>
-            </div>
-          )}
-        {loadMoreButton && (
-          <LoadMoreButton
-            onClick={this.loadMoreFeeds}
-            loading={loading}
-            filled
-            info
+        </FilterBar>
+        <div style={{ width: '80vw', display: 'flex' }}>
+          <div style={{ width: 'CALC(100% - 25rem)', marginBottom: '1rem' }}>
+            {!loaded && (
+              <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
+            )}
+            {loaded &&
+              profileFeeds.length > 0 &&
+              profileFeeds.map(feed => {
+                return (
+                  <ContentPanel
+                    key={feed.feedId}
+                    commentsLoadLimit={5}
+                    contentObj={feed}
+                    inputAtBottom={feed.type === 'comment'}
+                    onLoadContent={fetchFeed}
+                    onAddTags={addTags}
+                    onAddTagToContents={addTagToContents}
+                    onAttachStar={attachStar}
+                    onCommentSubmit={data =>
+                      this.uploadFeedComment({ feed, data })
+                    }
+                    onDeleteComment={feedCommentDelete}
+                    onDeleteContent={feedContentDelete}
+                    onEditComment={feedCommentEdit}
+                    onEditContent={feedContentEdit}
+                    onEditRewardComment={feedRewardCommentEdit}
+                    onLikeContent={contentFeedLike}
+                    onLoadMoreComments={loadMoreFeedComments}
+                    onLoadMoreReplies={loadMoreFeedReplies}
+                    onLoadTags={loadTags}
+                    onReplySubmit={data =>
+                      this.uploadFeedComment({ feed, data })
+                    }
+                    onSetDifficulty={setDifficulty}
+                    onStarVideo={feedVideoStar}
+                    onShowComments={showFeedComments}
+                    onTargetCommentSubmit={uploadTargetContentComment}
+                    userId={myId}
+                  />
+                );
+              })}
+            {loaded &&
+              profileFeeds.length === 0 && (
+                <div
+                  style={{
+                    marginTop: '6rem',
+                    fontSize: '2.5rem',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div style={{ textAlign: 'center' }}>
+                    {this.onNoFeed(username)}
+                  </div>
+                </div>
+              )}
+            {loadMoreButton && (
+              <LoadMoreButton
+                onClick={this.loadMoreFeeds}
+                loading={loading}
+                filled
+                info
+              />
+            )}
+          </div>
+          <SideMenu
+            className={`desktop ${css`
+              width: 30rem;
+            `}`}
+            menuItems={[
+              { key: 'all', label: 'All' },
+              { key: 'post', label: 'Discussions' },
+              { key: 'video', label: 'Videos' },
+              { key: 'url', label: 'Links' }
+            ]}
+            onMenuClick={this.onClickPostsMenu}
+            selectedKey={this.filterTable[match.params.section]}
           />
-        )}
-      </div>
+        </div>
+      </>
     );
   }
 
@@ -225,22 +277,9 @@ class Posts extends Component {
   };
 
   loadContent = () => {
-    const { match, location } = this.props;
+    const { match } = this.props;
     document.getElementById('App').scrollTop = 0;
-    switch (location.pathname) {
-      case match.url:
-        return this.loadTab('all');
-      case `${match.url}/posts`:
-        return this.loadTab('post');
-      case `${match.url}/comments`:
-        return this.loadTab('comment');
-      case `${match.url}/videos`:
-        return this.loadTab('video');
-      case `${match.url}/links`:
-        return this.loadTab('url');
-      default:
-        break;
-    }
+    this.loadTab(match.params.section);
   };
 
   loadTab = tabName => {
@@ -250,13 +289,23 @@ class Posts extends Component {
       },
       fetchFeeds
     } = this.props;
-    fetchFeeds({ username, filter: tabName });
+    fetchFeeds({ username, filter: this.filterTable[tabName] });
     this.scrollHeight = 0;
   };
 
+  onClickPostsMenu = ({ item }) => {
+    const { disableAutoscroll, history, username } = this.props;
+    disableAutoscroll();
+    history.push(
+      `/users/${username}/${item === 'url' ? 'link' : item}${
+        item === 'all' ? '' : 's'
+      }`
+    );
+  };
+
   onNoFeed = username => {
-    const { selectedSection } = this.props;
-    switch (selectedSection) {
+    const { match } = this.props;
+    switch (match.params.section) {
       case 'all':
         return `${username} has not uploaded anything, yet`;
       case 'post':
@@ -325,6 +374,7 @@ export default connect(
     addTagToContents,
     attachStar,
     contentFeedLike,
+    disableAutoscroll,
     fetchFeed,
     fetchFeeds,
     fetchMoreFeeds,
