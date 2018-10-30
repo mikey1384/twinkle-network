@@ -217,6 +217,7 @@ class Cover extends Component {
               width: 12rem;
               height: 12rem;
               left: 1rem;
+              top: 4rem;
             }
           `}
           style={{ position: 'absolute' }}

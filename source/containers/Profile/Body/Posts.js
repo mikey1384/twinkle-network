@@ -7,6 +7,7 @@ import FilterBar from 'components/FilterBar';
 import SideMenu from './SideMenu';
 import { disableAutoscroll } from 'redux/actions/ViewActions';
 import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import {
@@ -141,8 +142,8 @@ class Posts extends Component {
     } = this.props;
     const { loading } = this.state;
     return (
-      <>
-        <FilterBar className="mobile">
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <FilterBar style={{ height: '5rem' }} className="mobile">
           {[
             { key: 'all', label: 'All' },
             { key: 'post', label: 'Discussions' },
@@ -152,7 +153,11 @@ class Posts extends Component {
             return (
               <nav
                 key={type.key}
-                className={match.params.section === type.key ? 'active' : ''}
+                className={
+                  this.filterTable[match.params.section] === type.key
+                    ? 'active'
+                    : ''
+                }
                 onClick={() => this.onClickPostsMenu({ item: type.key })}
               >
                 {type.label}
@@ -160,8 +165,24 @@ class Posts extends Component {
             );
           })}
         </FilterBar>
-        <div style={{ width: '80vw', display: 'flex' }}>
-          <div style={{ width: 'CALC(100% - 25rem)', marginBottom: '1rem' }}>
+        <div
+          className={css`
+            width: 80vw;
+            display: flex;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100vw;
+            }
+          `}
+        >
+          <div
+            className={css`
+              width: CALC(100% - 25rem);
+              marginbottom: 1rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100%;
+              }
+            `}
+          >
             {!loaded && (
               <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
             )}
@@ -240,7 +261,7 @@ class Posts extends Component {
             selectedKey={this.filterTable[match.params.section]}
           />
         </div>
-      </>
+      </div>
     );
   }
 

@@ -51,7 +51,7 @@ class Body extends Component {
           <FilterBar
             className={css`
               @media (max-width: ${mobileMaxWidth}) {
-                height: 6rem;
+                height: 5.5rem;
               }
             `}
             color={selectedTheme}
