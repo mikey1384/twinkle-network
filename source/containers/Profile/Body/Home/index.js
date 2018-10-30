@@ -152,7 +152,7 @@ class Home extends Component {
     return (
       <div
         className={css`
-          width: 65vw;
+          width: 70vw;
           @media (max-width: ${mobileMaxWidth}) {
             width: 100vw;
           }
