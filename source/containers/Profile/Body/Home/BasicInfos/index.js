@@ -73,31 +73,45 @@ class BasicInfos extends Component {
           (email || youtubeUrl) && (
             <div style={{ textAlign: 'center' }}>
               {email && (
-                <div>
-                  <span>Email: </span>
-                  <a
-                    href={`mailto:${email}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {email}
-                  </a>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div>
+                    <span>Email: </span>
+                    <a
+                      href={`mailto:${email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {email}
+                    </a>
+                  </div>
                 </div>
               )}
               {youtubeUrl && (
-                <div>
-                  <span>YouTube: </span>
-                  <a
-                    href={youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {youtubeName || trimUrl(youtubeUrl)}
-                  </a>
+                <div
+                  style={{
+                    marginTop: '0.5rem'
+                  }}
+                >
+                  <div>
+                    <span>YouTube: </span>
+                    <a
+                      href={youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {youtubeName || trimUrl(youtubeUrl)}
+                    </a>
+                  </div>
                 </div>
               )}
               {website && (
-                <div>
+                <div style={{ marginTop: '0.5rem' }}>
                   <span>Website: </span>
                   <a href={website} target="_blank" rel="noopener noreferrer">
                     {trimUrl(website)}

@@ -79,6 +79,7 @@ class Posts extends Component {
 
   filterTable = {
     all: 'all',
+    comments: 'comment',
     posts: 'post',
     videos: 'video',
     links: 'url'
@@ -253,6 +254,7 @@ class Posts extends Component {
             `}`}
             menuItems={[
               { key: 'all', label: 'All' },
+              { key: 'comment', label: 'Comments' },
               { key: 'post', label: 'Discussions' },
               { key: 'video', label: 'Videos' },
               { key: 'url', label: 'Links' }
@@ -329,13 +331,13 @@ class Posts extends Component {
     switch (match.params.section) {
       case 'all':
         return `${username} has not uploaded anything, yet`;
-      case 'post':
+      case 'posts':
         return `${username} has not uploaded a post, yet`;
-      case 'comment':
+      case 'comments':
         return `${username} has not uploaded a comment, yet`;
-      case 'url':
+      case 'links':
         return `${username} has not uploaded a link, yet`;
-      case 'video':
+      case 'videos':
         return `${username} has not uploaded a video, yet`;
     }
   };
