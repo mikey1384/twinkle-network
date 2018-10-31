@@ -270,12 +270,11 @@ class Posts extends Component {
   loadMoreFeeds = async() => {
     const {
       match: {
-        params: { username }
+        params: { section, username }
       },
       fetchMoreFeeds,
       profileFeeds
     } = this.props;
-    const { selectedSection } = this.props;
     const { loading } = this.state;
 
     if (!loading) {
@@ -287,7 +286,7 @@ class Posts extends Component {
             originVar: 'feedId',
             destinationVar: 'shownFeeds'
           }),
-          filter: selectedSection,
+          filter: this.filterTable[section],
           username
         });
         if (this.mounted) {
