@@ -90,6 +90,14 @@ class BasicInfos extends Component {
                       {email}
                     </a>
                   </div>
+                  <Icon
+                    style={{
+                      cursor: 'pointer',
+                      marginLeft: '1rem',
+                      color: Color.lightGray()
+                    }}
+                    icon="check-circle"
+                  />
                 </div>
               )}
               {youtubeUrl && (
