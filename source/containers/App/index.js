@@ -327,8 +327,8 @@ class App extends Component {
             <Route path="/playlists" component={PlaylistPage} />
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
+            <Route exact path="/users" component={Home} />
             <Route path="/users/:username" component={Profile} />
-            <Route path="/users" component={Home} />
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
