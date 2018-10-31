@@ -178,7 +178,7 @@ class Posts extends Component {
           <div
             className={css`
               width: CALC(100% - 25rem);
-              marginbottom: 1rem;
+              margin-bottom: 1rem;
               @media (max-width: ${mobileMaxWidth}) {
                 width: 100%;
               }
