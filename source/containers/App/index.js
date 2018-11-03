@@ -50,6 +50,9 @@ const Profile = loadable(() => import('containers/Profile'), {
 const SearchPage = loadable(() => import('containers/SearchPage'), {
   LoadingComponent: Loading
 });
+const Verify = loadable(() => import('containers/Verify'), {
+  LoadingComponent: Loading
+});
 import Redirect from 'containers/Redirect';
 
 let visibilityChange;
@@ -329,6 +332,7 @@ class App extends Component {
             <Route path="/links" component={Links} />
             <Route exact path="/users" component={Home} />
             <Route path="/users/:username" component={Profile} />
+            <Route path="/verify" component={Verify} />
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>

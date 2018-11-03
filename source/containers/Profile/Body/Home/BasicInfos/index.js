@@ -6,7 +6,7 @@ import InfoEditForm from './InfoEditForm';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
-import { uploadProfileInfo } from 'helpers/requestHelpers';
+import { uploadProfileInfo, verifyEmail } from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { setProfileInfo } from 'redux/actions/UserActions';
 
@@ -28,9 +28,20 @@ class BasicInfos extends Component {
     style: PropTypes.object
   };
 
+  mounted = false;
+
   state = {
+    emailCheckHighlighted: false,
     onEdit: false
   };
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
 
   render() {
     const {
@@ -47,7 +58,7 @@ class BasicInfos extends Component {
       youtubeUrl,
       style
     } = this.props;
-    const { onEdit } = this.state;
+    const { emailCheckHighlighted, onEdit } = this.state;
     return (
       <div className={className} style={style}>
         <div
@@ -73,32 +84,70 @@ class BasicInfos extends Component {
           (email || youtubeUrl) && (
             <div style={{ textAlign: 'center' }}>
               {email && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div>
-                    <span>Email: </span>
-                    <a
-                      href={`mailto:${email}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {email}
-                    </a>
-                  </div>
-                  <Icon
+                <>
+                  <div
                     style={{
-                      cursor: 'pointer',
-                      marginLeft: '1rem',
-                      color: Color.lightGray()
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
-                    icon="check-circle"
-                  />
-                </div>
+                  >
+                    <div
+                      style={{
+                        lineHeight: myId === userId ? '0.5rem' : undefined
+                      }}
+                    >
+                      <span>Email: </span>
+                      <a
+                        href={`mailto:${email}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {email}
+                      </a>
+                    </div>
+                    <Icon
+                      onMouseEnter={() =>
+                        this.setState({ emailCheckHighlighted: true })
+                      }
+                      onMouseLeave={() =>
+                        this.setState({ emailCheckHighlighted: false })
+                      }
+                      style={{
+                        cursor: 'pointer',
+                        marginLeft: '1rem',
+                        color: emailCheckHighlighted
+                          ? Color[selectedTheme]()
+                          : Color.lightGray()
+                      }}
+                      icon="check-circle"
+                      onClick={this.onVerifyEmail}
+                    />
+                  </div>
+                  {myId === userId && (
+                    <div>
+                      <a
+                        onMouseEnter={() =>
+                          this.setState({ emailCheckHighlighted: true })
+                        }
+                        onMouseLeave={() =>
+                          this.setState({ emailCheckHighlighted: false })
+                        }
+                        style={{
+                          textDecoration: emailCheckHighlighted
+                            ? 'underline'
+                            : undefined,
+                          cursor: 'pointer',
+                          fontSize: '1.2rem',
+                          color: Color[selectedTheme]()
+                        }}
+                        onClick={this.onVerifyEmail}
+                      >
+                        Verify your email and get 5,000 XP
+                      </a>
+                    </div>
+                  )}
+                </>
               )}
               {youtubeUrl && (
                 <div
@@ -177,8 +226,15 @@ class BasicInfos extends Component {
       youtubeName,
       youtubeUrl
     });
-    setProfileInfo(data);
-    this.setState({ onEdit: false });
+    if (this.mounted) {
+      setProfileInfo(data);
+      this.setState({ onEdit: false });
+    }
+  };
+
+  onVerifyEmail = () => {
+    const { dispatch } = this.props;
+    verifyEmail({ dispatch });
   };
 
   renderEditMessage = ({ email, youtubeUrl, website }) => {

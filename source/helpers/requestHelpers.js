@@ -540,3 +540,16 @@ export const uploadPlaylist = async({
     return handleError(error, dispatch);
   }
 };
+
+export const verifyEmail = async({ dispatch }) => {
+  try {
+    const { data } = await request.put(
+      `${URL}/user/email/verify`,
+      undefined,
+      auth()
+    );
+    console.log(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
