@@ -4,7 +4,8 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import InfoEditForm from './InfoEditForm';
 import { connect } from 'react-redux';
-import { Color } from 'constants/css';
+import { css } from 'emotion';
+import { Color, mobileMexWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
 import {
   uploadProfileInfo,
@@ -114,37 +115,42 @@ class BasicInfos extends Component {
                       >
                         {email}
                       </a>
+                      <Icon
+                        onMouseEnter={() =>
+                          this.setState({
+                            emailCheckHighlighted:
+                              !verificationEmailSent && myId === userId
+                          })
+                        }
+                        onMouseLeave={() =>
+                          this.setState({ emailCheckHighlighted: false })
+                        }
+                        className={css`
+                          margin-left: 1rem;
+                          @media (max-width: ${mobileMexWidth}) {
+                            margin-left: 0;
+                          }
+                        `}
+                        style={{
+                          cursor:
+                            verificationEmailSent ||
+                            myId !== userId ||
+                            emailVerified
+                              ? 'default'
+                              : 'pointer',
+                          color:
+                            emailVerified || emailCheckHighlighted
+                              ? Color[selectedTheme]()
+                              : Color.lightGray()
+                        }}
+                        icon="check-circle"
+                        onClick={
+                          myId !== userId || emailVerified
+                            ? () => {}
+                            : this.onVerifyEmail
+                        }
+                      />
                     </div>
-                    <Icon
-                      onMouseEnter={() =>
-                        this.setState({
-                          emailCheckHighlighted:
-                            !verificationEmailSent && myId === userId
-                        })
-                      }
-                      onMouseLeave={() =>
-                        this.setState({ emailCheckHighlighted: false })
-                      }
-                      style={{
-                        cursor:
-                          verificationEmailSent ||
-                          myId !== userId ||
-                          emailVerified
-                            ? 'default'
-                            : 'pointer',
-                        marginLeft: '1rem',
-                        color:
-                          emailVerified || emailCheckHighlighted
-                            ? Color[selectedTheme]()
-                            : Color.lightGray()
-                      }}
-                      icon="check-circle"
-                      onClick={
-                        myId !== userId || emailVerified
-                          ? () => {}
-                          : this.onVerifyEmail
-                      }
-                    />
                   </div>
                   {myId === userId &&
                     !emailVerified && (

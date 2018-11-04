@@ -289,13 +289,21 @@ class Home extends Component {
               </div>
             </div>
             <BasicInfos
-              style={{
-                marginTop:
-                  (!greeting || greeting.length) < 50
+              className={css`
+                margin-top: ${(!greeting || greeting.length) < 50
+                  ? userId === profile.id
+                    ? '-7rem'
+                    : '-4rem'
+                  : 0};
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-top: ${(!greeting || greeting.length) < 20
                     ? userId === profile.id
                       ? '-7rem'
                       : '-4rem'
-                    : 0,
+                    : 0};
+                }
+              `}
+              style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'column',

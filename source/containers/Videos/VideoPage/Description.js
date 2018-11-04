@@ -263,12 +263,15 @@ class Description extends Component {
                 >
                   <span
                     style={{
-                      whiteSpace: 'pre-wrap',
-                      overflowWrap: 'break-word',
-                      wordBreak: 'break-word',
                       fontSize: '3rem',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
+                      cursor: 'default'
                     }}
+                    onClick={() =>
+                      this.setState(state => ({
+                        onTitleHover: !state.onTitleHover
+                      }))
+                    }
                     onMouseOver={this.onMouseOver}
                     onMouseLeave={() => this.setState({ onTitleHover: false })}
                   >
@@ -283,7 +286,7 @@ class Description extends Component {
               </div>
             )}
             {!onEdit && (
-              <div style={{ marginTop: '0.5rem' }}>
+              <div>
                 Added by{' '}
                 <UsernameText
                   user={{ username: uploaderName, id: uploaderId }}
@@ -291,29 +294,30 @@ class Description extends Component {
                 <span>{`${timeStamp ? timeSince(timeStamp) : ''}`}</span>
               </div>
             )}
-            {!onEdit &&
-              videoViews > 10 && (
-                <div
-                  style={{
-                    fontSize: '2rem',
-                    fontWeight: 'bold',
-                    marginTop: '1rem',
-                    color: Color.darkGray()
-                  }}
-                >
-                  {videoViews} view
-                  {`${videoViews > 1 ? 's' : ''}`}
-                </div>
-              )}
           </div>
           <div
-            className={css`
-              grid-area: description;
-              align-self: start;
-              display: flex;
-              flex-direction: column;
-            `}
+            style={{
+              gridArea: 'description',
+              alignSelf: 'start',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
           >
+            <div>
+              {!onEdit &&
+                videoViews > 10 && (
+                  <div
+                    style={{
+                      fontSize: '2rem',
+                      fontWeight: 'bold',
+                      color: Color.darkGray()
+                    }}
+                  >
+                    {videoViews} view
+                    {`${videoViews > 1 ? 's' : ''}`}
+                  </div>
+                )}
+            </div>
             {onEdit ? (
               <div>
                 <Textarea
@@ -366,7 +370,7 @@ class Description extends Component {
                 </div>
               </div>
             ) : (
-              <div style={{ padding: '0 1rem 2rem 1rem' }}>
+              <div style={{ padding: '2rem 1rem' }}>
                 <LongText
                   style={{
                     whiteSpace: 'pre-wrap',
