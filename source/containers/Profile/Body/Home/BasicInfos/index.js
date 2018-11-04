@@ -114,7 +114,6 @@ class BasicInfos extends Component {
                             : undefined
                       }}
                     >
-                      <span>Email: </span>
                       <a
                         href={`mailto:${email}`}
                         target="_blank"
@@ -122,42 +121,39 @@ class BasicInfos extends Component {
                       >
                         {email}
                       </a>
-                      <Icon
-                        onMouseEnter={() =>
-                          this.setState({
-                            emailCheckHighlighted:
-                              !verificationEmailSent && myId === userId
-                          })
-                        }
-                        onMouseLeave={() =>
-                          this.setState({ emailCheckHighlighted: false })
-                        }
-                        className={css`
-                          margin-left: 1rem;
-                          @media (max-width: ${mobileMaxWidth}) {
-                            margin-left: 0.5rem;
-                          }
-                        `}
-                        style={{
-                          cursor:
-                            verificationEmailSent ||
-                            myId !== userId ||
-                            emailVerified
-                              ? 'default'
-                              : 'pointer',
-                          color:
-                            emailVerified || emailCheckHighlighted
-                              ? Color[selectedTheme]()
-                              : Color.lightGray()
-                        }}
-                        icon="check-circle"
-                        onClick={
-                          myId !== userId || emailVerified
-                            ? () => {}
-                            : this.onVerifyEmail
-                        }
-                      />
                     </div>
+                    <Icon
+                      onMouseEnter={() =>
+                        this.setState({
+                          emailCheckHighlighted:
+                            !verificationEmailSent && myId === userId
+                        })
+                      }
+                      onMouseLeave={() =>
+                        this.setState({ emailCheckHighlighted: false })
+                      }
+                      className={css`
+                        margin-left: 0.5rem;
+                      `}
+                      style={{
+                        cursor:
+                          verificationEmailSent ||
+                          myId !== userId ||
+                          emailVerified
+                            ? 'default'
+                            : 'pointer',
+                        color:
+                          emailVerified || emailCheckHighlighted
+                            ? Color[selectedTheme]()
+                            : Color.lightGray()
+                      }}
+                      icon="check-circle"
+                      onClick={
+                        myId !== userId || emailVerified
+                          ? () => {}
+                          : this.onVerifyEmail
+                      }
+                    />
                   </div>
                   {myId === userId &&
                     !emailVerified && (
@@ -255,7 +251,7 @@ class BasicInfos extends Component {
         ) : (
           <div
             style={{
-              marginTop: email || youtubeUrl ? '2rem' : 0,
+              marginTop: email || youtubeUrl ? '1.5rem' : 0,
               textAlign: 'center'
             }}
           >

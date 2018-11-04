@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Link, Route } from 'react-router-dom';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
-import { css } from 'emotion';
 
 export default class HeaderNav extends Component {
   static propTypes = {
@@ -24,6 +23,7 @@ export default class HeaderNav extends Component {
     const {
       active,
       alert,
+      alertColor,
       className,
       to,
       children,
@@ -73,8 +73,11 @@ export default class HeaderNav extends Component {
                   />
                 </div>
                 <span
-                  className={`nav-label ${alert ? this.styles().alert : ''}`}
-                  style={{ marginLeft: '0.7rem' }}
+                  className={`nav-label`}
+                  style={{
+                    marginLeft: '0.7rem',
+                    ...(alert ? { color: alertColor || Color.gold() } : {})
+                  }}
                 >
                   {children}
                 </span>
@@ -85,13 +88,4 @@ export default class HeaderNav extends Component {
       />
     );
   }
-
-  styles = () => {
-    const { alertColor } = this.props;
-    return {
-      alert: css`
-        color: ${alertColor || Color.gold()}!important;
-      `
-    };
-  };
 }

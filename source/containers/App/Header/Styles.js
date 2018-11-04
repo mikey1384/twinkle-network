@@ -53,9 +53,9 @@ export const container = css`
           }
         }
         > a.active {
-          color: ${Color.black()};
+          color: ${Color.black()}!important;
           > svg {
-            color: ${Color.black()};
+            color: ${Color.black()}!important;
           }
         }
       }
