@@ -100,7 +100,10 @@ class BasicInfos extends Component {
                   >
                     <div
                       style={{
-                        lineHeight: myId === userId ? '0.5rem' : undefined
+                        lineHeight:
+                          myId === userId && !emailVerified
+                            ? '0.5rem'
+                            : undefined
                       }}
                     >
                       <span>Email: </span>
