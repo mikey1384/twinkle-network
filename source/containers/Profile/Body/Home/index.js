@@ -121,6 +121,7 @@ class Home extends Component {
       profile,
       profile: {
         email,
+        emailVerified,
         greeting,
         id,
         joinDate,
@@ -305,6 +306,7 @@ class Home extends Component {
                 marginBottom: '1rem'
               }}
               email={email}
+              emailVerified={emailVerified}
               joinDate={joinDate}
               lastActive={lastActive}
               myId={userId}

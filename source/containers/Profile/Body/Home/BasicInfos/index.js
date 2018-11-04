@@ -6,7 +6,10 @@ import InfoEditForm from './InfoEditForm';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
-import { uploadProfileInfo, verifyEmail } from 'helpers/requestHelpers';
+import {
+  uploadProfileInfo,
+  sendVerificationEmail
+} from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { setProfileInfo } from 'redux/actions/UserActions';
 
@@ -15,6 +18,7 @@ class BasicInfos extends Component {
     className: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     email: PropTypes.string,
+    emailVerified: PropTypes.bool,
     joinDate: PropTypes.string,
     lastActive: PropTypes.string,
     myId: PropTypes.number,
@@ -32,7 +36,8 @@ class BasicInfos extends Component {
 
   state = {
     emailCheckHighlighted: false,
-    onEdit: false
+    onEdit: false,
+    verificationEmailSent: false
   };
 
   componentDidMount() {
@@ -47,6 +52,7 @@ class BasicInfos extends Component {
     const {
       className,
       email,
+      emailVerified,
       joinDate,
       lastActive,
       myId,
@@ -58,7 +64,7 @@ class BasicInfos extends Component {
       youtubeUrl,
       style
     } = this.props;
-    const { emailCheckHighlighted, onEdit } = this.state;
+    const { emailCheckHighlighted, onEdit, verificationEmailSent } = this.state;
     return (
       <div className={className} style={style}>
         <div
@@ -108,45 +114,73 @@ class BasicInfos extends Component {
                     </div>
                     <Icon
                       onMouseEnter={() =>
-                        this.setState({ emailCheckHighlighted: true })
+                        this.setState({
+                          emailCheckHighlighted:
+                            !verificationEmailSent && myId === userId
+                        })
                       }
                       onMouseLeave={() =>
                         this.setState({ emailCheckHighlighted: false })
                       }
                       style={{
-                        cursor: 'pointer',
+                        cursor:
+                          verificationEmailSent ||
+                          myId !== userId ||
+                          emailVerified
+                            ? 'default'
+                            : 'pointer',
                         marginLeft: '1rem',
-                        color: emailCheckHighlighted
-                          ? Color[selectedTheme]()
-                          : Color.lightGray()
+                        color:
+                          emailVerified || emailCheckHighlighted
+                            ? Color[selectedTheme]()
+                            : Color.lightGray()
                       }}
                       icon="check-circle"
-                      onClick={this.onVerifyEmail}
+                      onClick={
+                        myId !== userId || emailVerified
+                          ? () => {}
+                          : this.onVerifyEmail
+                      }
                     />
                   </div>
-                  {myId === userId && (
-                    <div>
-                      <a
-                        onMouseEnter={() =>
-                          this.setState({ emailCheckHighlighted: true })
-                        }
-                        onMouseLeave={() =>
-                          this.setState({ emailCheckHighlighted: false })
-                        }
-                        style={{
-                          textDecoration: emailCheckHighlighted
-                            ? 'underline'
-                            : undefined,
-                          cursor: 'pointer',
-                          fontSize: '1.2rem',
-                          color: Color[selectedTheme]()
-                        }}
-                        onClick={this.onVerifyEmail}
-                      >
-                        Verify your email and get 5,000 XP
-                      </a>
-                    </div>
-                  )}
+                  {myId === userId &&
+                    !emailVerified && (
+                      <div>
+                        <a
+                          onMouseEnter={() =>
+                            this.setState({
+                              emailCheckHighlighted: !verificationEmailSent
+                            })
+                          }
+                          onMouseLeave={() =>
+                            this.setState({ emailCheckHighlighted: false })
+                          }
+                          style={{
+                            textDecoration: emailCheckHighlighted
+                              ? 'underline'
+                              : undefined,
+                            cursor: 'pointer',
+                            fontSize: '1.2rem',
+                            color: Color[selectedTheme]()
+                          }}
+                          onClick={
+                            verificationEmailSent
+                              ? this.goToEmail
+                              : this.onVerifyEmail
+                          }
+                        >
+                          {verificationEmailSent
+                            ? 'Email has been sent. Click here to check your inbox'
+                            : 'Please verify your email'}
+                        </a>
+                      </div>
+                    )}
+                  {myId !== userId &&
+                    !emailVerified && (
+                      <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
+                        {`This user's email has not been verified, yet`}
+                      </div>
+                    )}
                 </>
               )}
               {youtubeUrl && (
@@ -217,6 +251,12 @@ class BasicInfos extends Component {
     );
   }
 
+  goToEmail = () => {
+    const { email } = this.props;
+    const emailProvider = 'http://www.' + email.split('@')[1];
+    window.location = emailProvider;
+  };
+
   onEditedInfoSubmit = async({ email, website, youtubeName, youtubeUrl }) => {
     const { dispatch, setProfileInfo } = this.props;
     const data = await uploadProfileInfo({
@@ -226,15 +266,19 @@ class BasicInfos extends Component {
       youtubeName,
       youtubeUrl
     });
+    setProfileInfo(data);
     if (this.mounted) {
-      setProfileInfo(data);
       this.setState({ onEdit: false });
     }
   };
 
   onVerifyEmail = () => {
     const { dispatch } = this.props;
-    verifyEmail({ dispatch });
+    sendVerificationEmail({ dispatch });
+    this.setState({
+      emailCheckHighlighted: false,
+      verificationEmailSent: true
+    });
   };
 
   renderEditMessage = ({ email, youtubeUrl, website }) => {

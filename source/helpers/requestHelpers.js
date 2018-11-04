@@ -541,15 +541,28 @@ export const uploadPlaylist = async({
   }
 };
 
-export const verifyEmail = async({ dispatch }) => {
+export const sendVerificationEmail = async({ dispatch }) => {
   try {
     const { data } = await request.put(
       `${URL}/user/email/verify`,
       undefined,
       auth()
     );
-    console.log(data);
+    return Promise.resolve(data);
   } catch (error) {
     return handleError(error, dispatch);
+  }
+};
+
+export const verifyEmail = async({ token }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/user/email/verify?token=${token}`,
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
   }
 };
