@@ -5,7 +5,7 @@ import Icon from 'components/Icon';
 import InfoEditForm from './InfoEditForm';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
-import { Color, mobileMexWidth } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
 import {
   uploadProfileInfo,
@@ -89,7 +89,14 @@ class BasicInfos extends Component {
         )}
         {!onEdit &&
           (email || youtubeUrl) && (
-            <div style={{ textAlign: 'center' }}>
+            <div
+              className={css`
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1.4rem;
+                }
+              `}
+              style={{ textAlign: 'center' }}
+            >
               {email && (
                 <>
                   <div
@@ -127,8 +134,8 @@ class BasicInfos extends Component {
                         }
                         className={css`
                           margin-left: 1rem;
-                          @media (max-width: ${mobileMexWidth}) {
-                            margin-left: 0;
+                          @media (max-width: ${mobileMaxWidth}) {
+                            margin-left: 0.5rem;
                           }
                         `}
                         style={{
