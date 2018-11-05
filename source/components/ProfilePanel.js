@@ -133,30 +133,39 @@ class ProfilePanel extends Component {
         `}
       >
         <div
+          style={{
+            background: Color[profile.profileTheme || 'logoBlue'](),
+            height: '3.5rem',
+            borderTopRightRadius: borderRadius,
+            borderTopLeftRadius: borderRadius,
+            border: '#e7e7e7 1px solid',
+            borderBottom: 'none'
+          }}
+        />
+        <div
           className={css`
             background: #fff;
             display: flex;
             flex-direction: column;
             padding: 1rem;
             border: #e7e7e7 1px solid;
-            border-top-left-radius: ${borderRadius};
-            border-top-right-radius: ${borderRadius};
-            ${
-              profile.twinkleXP
-                ? 'border-bottom: none;'
-                : `
+            border-top: none;
+              ${
+                profile.twinkleXP
+                  ? 'border-bottom: none;'
+                  : `
                 border-bottom-left-radius: ${borderRadius};
                 border-bottom-right-radius: ${borderRadius};
               `
-            }
-            @media (max-width: ${mobileMaxWidth}) {
+              }
+                @media (max-width: ${mobileMaxWidth}) {
               border-radius: 0;
               border-left: none;
               border-right: none;
             }
           `}
         >
-          <div style={{ display: 'flex', height: '100%' }}>
+          <div style={{ display: 'flex', height: '100%', marginTop: '1rem' }}>
             <div
               style={{
                 width: '20rem',
