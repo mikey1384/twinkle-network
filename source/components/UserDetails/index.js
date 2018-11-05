@@ -78,7 +78,7 @@ export default class UserDetails extends Component {
               : css`
                   transition: color 0.2s;
                   &:hover {
-                    color: ${Color.orange()}!important;
+                    color: ${Color[profile.profileTheme]()}!important;
                   }
                 `
           }

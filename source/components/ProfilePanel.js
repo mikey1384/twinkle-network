@@ -206,11 +206,7 @@ class ProfilePanel extends Component {
                 <Button
                   warning
                   transparent
-                  style={{
-                    color:
-                      mouseEnteredProfile &&
-                      Color[profile.profileTheme || 'logoBlue']()
-                  }}
+                  style={{ color: mouseEnteredProfile && Color.orange() }}
                   onClick={() => history.push(`/users/${profile.username}`)}
                 >
                   View Profile
