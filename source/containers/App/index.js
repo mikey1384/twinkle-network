@@ -323,15 +323,29 @@ class App extends Component {
           className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
         >
           <Switch>
-            <Route exact path="/" component={Home} />
+            <Route
+              exact
+              path="/"
+              render={({ history, location }) => (
+                <Home history={history} location={location} />
+              )}
+            />
             <Route path="/questions" component={ContentPage} />
             <Route path="/comments" component={ContentPage} />
             <Route path="/discussions" component={ContentPage} />
             <Route path="/playlists" component={PlaylistPage} />
-            <Route path="/videos" component={Videos} />
+            <Route
+              path="/videos"
+              render={({ match }) => <Videos match={match} />}
+            />
             <Route path="/links" component={Links} />
             <Route exact path="/users" component={Home} />
-            <Route path="/users/:username" component={Profile} />
+            <Route
+              path="/users/:username"
+              render={({ history, location, match }) => (
+                <Profile history={history} location={location} match={match} />
+              )}
+            />
             <Route path="/verify" component={Verify} />
             <Route path="/:username" component={Redirect} />
           </Switch>

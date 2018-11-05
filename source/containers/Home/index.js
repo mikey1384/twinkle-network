@@ -21,9 +21,9 @@ const Stories = loadable(() => import('./Stories'), {
 
 class Home extends Component {
   static propTypes = {
-    history: PropTypes.object,
-    location: PropTypes.object,
-    uploadProfilePic: PropTypes.func
+    history: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    uploadProfilePic: PropTypes.func.isRequired
   };
 
   state = {
