@@ -67,10 +67,7 @@ export default class HeaderNav extends Component {
                 onClick={onClick}
               >
                 <div>
-                  <Icon
-                    icon={imgLabel}
-                    className={alert ? this.styles().alert : ''}
-                  />
+                  <Icon icon={imgLabel} />
                 </div>
                 <span
                   className={`nav-label`}
