@@ -88,7 +88,7 @@ class BasicInfos extends Component {
           />
         )}
         {!onEdit &&
-          (email || youtubeUrl) && (
+          (email || youtubeUrl || website) && (
             <div
               className={css`
                 @media (max-width: ${mobileMaxWidth}) {
