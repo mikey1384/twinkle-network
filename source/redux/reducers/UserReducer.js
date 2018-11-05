@@ -26,6 +26,7 @@ export default function UserReducer(state = defaultState, action) {
     case USER.CHANGE_PROFILE_THEME:
       return {
         ...state,
+        profileTheme: action.theme,
         profile: {
           ...state.profile,
           profileTheme: action.theme

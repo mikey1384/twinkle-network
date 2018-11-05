@@ -32,8 +32,8 @@ class ProfileWidget extends Component {
     return (
       <div
         className={container({
-          headingGray: Color.headingGray(),
-          borderGray: Color.borderGray(),
+          heading: Color.headingGray(),
+          border: Color.borderGray(),
           blue: Color.blue(),
           darkGray: Color.darkGray()
         })}
@@ -139,7 +139,8 @@ export default connect(
     twinkleXP: state.UserReducer.twinkleXP,
     username: state.UserReducer.username,
     userId: state.UserReducer.userId,
-    profilePicId: state.UserReducer.profilePicId
+    profilePicId: state.UserReducer.profilePicId,
+    profileTheme: state.UserReducer.profileTheme
   }),
   { openSigninModal }
 )(ProfileWidget);

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Cover from './Cover';
 import Body from './Body';
-import ExecutionEnvironment from 'exenv';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 import { checkValidUsername, unmountProfile } from 'redux/actions/UserActions';
@@ -31,7 +30,7 @@ class Profile extends Component {
   componentDidMount() {
     const { checkValidUsername, match } = this.props;
     const { username } = match.params;
-    if (ExecutionEnvironment.canUseDOM) checkValidUsername(username);
+    checkValidUsername(username);
   }
 
   componentDidUpdate(prevProps) {

@@ -1,7 +1,7 @@
 import { css } from 'react-emotion';
 import { borderRadius, mobileMaxWidth } from 'constants/css';
 
-export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
+export const container = ({ heading, border, blue, darkGray }) => css`
   display: flex;
   border: none;
   flex-direction: column;
@@ -12,13 +12,13 @@ export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
   }
   .heading {
     padding: 1rem;
-    border: 1px solid ${borderGray};
+    border: 1px solid ${border};
     border-bottom: none;
     border-radius: ${borderRadius};
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     display: flex;
-    background: ${headingGray};
+    background: ${heading};
     width: 100%;
     align-items: center;
     justify-content: flex-start;
@@ -44,7 +44,7 @@ export const container = ({ headingGray, borderGray, blue, darkGray }) => css`
   }
   .details {
     font-size: 1.3rem;
-    border: 1px solid ${borderGray};
+    border: 1px solid ${border};
     border-bottom-left-radius: ${borderRadius};
     border-bottom-right-radius: ${borderRadius};
     background: #fff;

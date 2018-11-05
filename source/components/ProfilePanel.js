@@ -135,10 +135,9 @@ class ProfilePanel extends Component {
         <div
           className={css`
             background: ${Color[profile.profileTheme || 'logoBlue']()};
-            height: 3.5rem;
+            height: 2.5rem;
             border-top-right-radius: ${borderRadius};
             border-top-left-radius: ${borderRadius};
-            border: #e7e7e7 1px solid;
             border-bottom: none;
             @media (max-width: ${mobileMaxWidth}) {
               border-radius: 0;
@@ -154,7 +153,6 @@ class ProfilePanel extends Component {
             flex-direction: column;
             padding: 1rem;
             border: #e7e7e7 1px solid;
-            border-top: none;
               ${
                 profile.twinkleXP
                   ? 'border-bottom: none;'
@@ -170,7 +168,7 @@ class ProfilePanel extends Component {
             }
           `}
         >
-          <div style={{ display: 'flex', height: '100%', marginTop: '0.5rem' }}>
+          <div style={{ display: 'flex', height: '100%', marginTop: '1rem' }}>
             <div
               style={{
                 width: '20rem',
@@ -211,7 +209,10 @@ class ProfilePanel extends Component {
                 <Button
                   warning
                   transparent
-                  style={{ color: mouseEnteredProfile && Color.orange() }}
+                  style={{
+                    color: mouseEnteredProfile && Color.orange(),
+                    padding: '0.5rem'
+                  }}
                   onClick={() => history.push(`/users/${profile.username}`)}
                 >
                   View Profile
@@ -219,12 +220,22 @@ class ProfilePanel extends Component {
               </div>
               {profile.youtubeUrl && (
                 <Button
-                  style={{ padding: '0.5rem' }}
                   danger
                   transparent
+                  style={{ padding: '0.5rem' }}
                   onClick={() => window.open(profile.youtubeUrl)}
                 >
                   Visit YouTube
+                </Button>
+              )}
+              {profile.website && (
+                <Button
+                  primary
+                  transparent
+                  style={{ padding: '0.5rem' }}
+                  onClick={() => window.open(profile.website)}
+                >
+                  Visit Website
                 </Button>
               )}
             </div>
