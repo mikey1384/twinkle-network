@@ -324,10 +324,9 @@ class App extends Component {
         >
           <Switch>
             <Route
-              exact
-              path="/"
-              render={({ history, location }) => (
-                <Home history={history} location={location} />
+              path="/users/:username"
+              render={({ history, location, match }) => (
+                <Profile history={history} location={location} match={match} />
               )}
             />
             <Route path="/questions" component={ContentPage} />
@@ -339,14 +338,13 @@ class App extends Component {
               render={({ match }) => <Videos match={match} />}
             />
             <Route path="/links" component={Links} />
-            <Route exact path="/users" component={Home} />
+            <Route path="/verify" component={Verify} />
             <Route
-              path="/users/:username"
-              render={({ history, location, match }) => (
-                <Profile history={history} location={location} match={match} />
+              path="/"
+              render={({ history, location }) => (
+                <Home history={history} location={location} />
               )}
             />
-            <Route path="/verify" component={Verify} />
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>

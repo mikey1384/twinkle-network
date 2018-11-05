@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Notification from 'components/Notification';
 import ProfileWidget from 'components/ProfileWidget';
 import HomeMenuItems from 'components/HomeMenuItems';
@@ -62,8 +62,17 @@ class Home extends Component {
             />
           </div>
           <div className={Center}>
-            <Route exact path="/" component={Stories} />
-            <Route exact path="/users" component={People} />
+            <Switch>
+              <Route
+                path="/users"
+                render={({ history }) => <People history={history} />}
+              />
+              <Route
+                exact
+                path="/"
+                render={({ history }) => <Stories history={history} />}
+              />
+            </Switch>
           </div>
           <Notification className={Right} />
           {imageEditModalShown && (

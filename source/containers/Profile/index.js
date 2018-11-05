@@ -81,7 +81,7 @@ class Profile extends Component {
     } = this.props;
     const { selectedTheme } = this.state;
     return (
-      <div>
+      <div style={{ minHeight: '10rem' }}>
         {!unavailable ? (
           <>
             {!id && <Loading text="Loading Profile..." />}
