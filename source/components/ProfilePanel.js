@@ -133,14 +133,19 @@ class ProfilePanel extends Component {
         `}
       >
         <div
-          style={{
-            background: Color[profile.profileTheme || 'logoBlue'](),
-            height: '3.5rem',
-            borderTopRightRadius: borderRadius,
-            borderTopLeftRadius: borderRadius,
-            border: '#e7e7e7 1px solid',
-            borderBottom: 'none'
-          }}
+          className={css`
+            background: ${Color[profile.profileTheme || 'logoBlue']()};
+            height: 3.5rem;
+            border-top-right-radius: ${borderRadius};
+            border-top-left-radius: ${borderRadius};
+            border: #e7e7e7 1px solid;
+            border-bottom: none;
+            @media (max-width: ${mobileMaxWidth}) {
+              border-radius: 0;
+              border-left: none;
+              border-right: none;
+            }
+          `}
         />
         <div
           className={css`
@@ -158,7 +163,7 @@ class ProfilePanel extends Component {
                 border-bottom-right-radius: ${borderRadius};
               `
               }
-                @media (max-width: ${mobileMaxWidth}) {
+            @media (max-width: ${mobileMaxWidth}) {
               border-radius: 0;
               border-left: none;
               border-right: none;
