@@ -238,6 +238,7 @@ class VideoPage extends Component {
           height: 100%;
           margin-top: 1rem;
           @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 0;
             flex-direction: column;
           }
         `}

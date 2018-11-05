@@ -21,6 +21,7 @@ export const main = css`
     display: flex;
     .left {
       width: 100%;
+      margin-top: 0;
       margin-left: 0;
       margin-right: 0;
     }

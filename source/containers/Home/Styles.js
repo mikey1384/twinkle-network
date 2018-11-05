@@ -5,6 +5,7 @@ export const container = css`
   height: 100%;
   margin-top: 1rem;
   @media (max-width: ${mobileMaxWidth}) {
+    margin-top: 0;
     display: flex;
   }
 `;

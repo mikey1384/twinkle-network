@@ -19,6 +19,9 @@ export default function Playlists({ match }) {
         margin-top: 1rem;
         margin-bottom: 1rem;
         padding-bottom: 20rem;
+        @media (max-width: ${mobileMaxWidth}) {
+          margin-top: 0;
+        }
       `}
     >
       <section
