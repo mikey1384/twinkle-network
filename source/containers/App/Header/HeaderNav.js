@@ -44,10 +44,12 @@ export default class HeaderNav extends Component {
           >
             {to ? (
               <Link
-                className={`${to && match ? 'active ' : ''} ${
-                  alert ? this.styles().alert : ''
-                }`}
-                style={{ display: 'flex', alignItems: 'center' }}
+                className={to && match ? 'active ' : ''}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  ...(alert ? { color: alertColor || Color.gold() } : {})
+                }}
                 to={to}
                 onClick={onClick}
               >
@@ -67,10 +69,15 @@ export default class HeaderNav extends Component {
                 onClick={onClick}
               >
                 <div>
-                  <Icon icon={imgLabel} />
+                  <Icon
+                    style={{
+                      ...(alert ? { color: alertColor || Color.gold() } : {})
+                    }}
+                    icon={imgLabel}
+                  />
                 </div>
                 <span
-                  className={`nav-label`}
+                  className="nav-label"
                   style={{
                     marginLeft: '0.7rem',
                     ...(alert ? { color: alertColor || Color.gold() } : {})
