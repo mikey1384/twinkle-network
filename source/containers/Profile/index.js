@@ -80,42 +80,48 @@ class Profile extends Component {
       userId
     } = this.props;
     const { selectedTheme } = this.state;
-    return !unavailable ? (
+    return (
       <div>
-        {!id && <Loading text="Loading Profile..." />}
-        {id && (
-          <div
-            className={css`
-              a {
-                white-space: pre-wrap;
-                overflow-wrap: break-word;
-                word-break: break-word;
-              }
-            `}
-            style={{
-              position: 'relative'
-            }}
-          >
-            <Cover
-              profile={profile}
-              onSelectColor={color => this.setState({ selectedTheme: color })}
-              selectedTheme={selectedTheme}
-            />
-            <Body
-              history={history}
-              location={location}
-              match={match}
-              profile={profile}
-              selectedTheme={selectedTheme}
-            />
-          </div>
+        {!unavailable ? (
+          <>
+            {!id && <Loading text="Loading Profile..." />}
+            {id && (
+              <div
+                className={css`
+                  a {
+                    white-space: pre-wrap;
+                    overflow-wrap: break-word;
+                    word-break: break-word;
+                  }
+                `}
+                style={{
+                  position: 'relative'
+                }}
+              >
+                <Cover
+                  profile={profile}
+                  onSelectColor={color =>
+                    this.setState({ selectedTheme: color })
+                  }
+                  selectedTheme={selectedTheme}
+                />
+                <Body
+                  history={history}
+                  location={location}
+                  match={match}
+                  profile={profile}
+                  selectedTheme={selectedTheme}
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <NotFound
+            title={!userId ? 'For Registered Users Only' : ''}
+            text={!userId ? 'Please Log In or Sign Up' : ''}
+          />
         )}
       </div>
-    ) : (
-      <NotFound
-        title={!userId ? 'For Registered Users Only' : ''}
-        text={!userId ? 'Please Log In or Sign Up' : ''}
-      />
     );
   }
 }
