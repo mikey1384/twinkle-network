@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from 'components/Button';
-import Loading from 'components/Loading';
+import Body from './Body';
 import SearchInput from 'components/Texts/SearchInput';
 import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
+import Loading from 'components/Loading';
 import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -53,7 +54,12 @@ export default class SectionPanel extends Component {
       placeholder = 'Enter Title',
       searchPlaceholder,
       searchQuery = '',
-      style = {}
+      style = {},
+      children,
+      emptyMessage,
+      isEmpty,
+      isSearching,
+      loaded
     } = this.props;
     const { loading, onEdit, editedTitle } = this.state;
     return (
@@ -210,7 +216,18 @@ export default class SectionPanel extends Component {
           </div>
         </header>
         <main style={style}>
-          {this.renderContent()}
+          {loaded ? (
+            <Body
+              content={children}
+              emptyMessage={emptyMessage}
+              isEmpty={isEmpty}
+              isSearching={isSearching}
+              searchQuery={searchQuery}
+              statusMsgStyle={this.statusMsg}
+            />
+          ) : (
+            <Loading />
+          )}
           {loadMoreButtonShown && (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button
@@ -247,32 +264,6 @@ export default class SectionPanel extends Component {
       await loadMore();
       this.setState({ loading: false });
     }
-  };
-
-  renderContent = () => {
-    const {
-      children,
-      emptyMessage,
-      isEmpty,
-      isSearching,
-      loaded,
-      searchQuery
-    } = this.props;
-    return loaded ? (
-      (!stringIsEmpty(searchQuery) && isSearching) || isEmpty ? (
-        <div className={this.statusMsg}>
-          {searchQuery && isSearching
-            ? 'Searching...'
-            : searchQuery
-              ? 'No Results'
-              : emptyMessage}
-        </div>
-      ) : (
-        children
-      )
-    ) : (
-      <Loading />
-    );
   };
 
   statusMsg = css`

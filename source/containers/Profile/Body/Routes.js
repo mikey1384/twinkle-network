@@ -20,7 +20,7 @@ export default class Routes extends Component {
         <Route
           exact
           path={`${match.path}`}
-          component={() => (
+          render={() => (
             <Home profile={profile} selectedTheme={selectedTheme} />
           )}
         />

@@ -40,6 +40,7 @@ export default class Achievements extends Component {
 
   async componentDidUpdate(prevProps) {
     if (prevProps.profile.id !== this.props.profile.id) {
+      console.log('updated');
       const { results, loadMoreButton } = await loadNotableContent({
         userId: this.props.profile.id
       });
@@ -73,7 +74,7 @@ export default class Achievements extends Component {
               style={{ fontSize: '2rem', textAlign: 'center' }}
             >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
           )}
-          {notables?.map(contentObj => (
+          {notables.map(contentObj => (
             <ContentPanel
               key={contentObj.feedId}
               inputAtBottom={contentObj.type === 'comment'}
