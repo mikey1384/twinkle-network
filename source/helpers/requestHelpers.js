@@ -556,11 +556,11 @@ export const sendVerificationEmail = async({ dispatch }) => {
 
 export const verifyEmail = async({ token }) => {
   try {
-    const { data } = await request.get(
+    const { data: {username} } = await request.get(
       `${URL}/user/email/verify?token=${token}`,
       auth()
     );
-    return Promise.resolve(data);
+    return Promise.resolve(username);
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);

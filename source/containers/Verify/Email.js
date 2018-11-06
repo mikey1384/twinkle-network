@@ -1,35 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Loading from 'components/Loading';
 import { verifyEmail } from 'helpers/requestHelpers';
 import Link from 'components/Link';
 
-class Email extends Component {
+export default class Email extends Component {
   static propTypes = {
-    match: PropTypes.object.isRequired,
-    username: PropTypes.string
+    match: PropTypes.object.isRequired
   };
 
   state = {
     loaded: false,
     verified: false,
-    expired: false
+    expired: false,
+    username: undefined
   };
 
   async componentDidMount() {
     const { match } = this.props;
     try {
-      await verifyEmail({ token: match?.params?.token });
-      this.setState({ loaded: true, verified: true });
+      const username = await verifyEmail({ token: match?.params?.token });
+      this.setState({ loaded: true, verified: true, username });
     } catch (error) {
       this.setState({ loaded: true, expired: error.response?.status === 401 });
     }
   }
 
   render() {
-    const { loaded, expired, verified } = this.state;
-    const { username } = this.props;
+    const { loaded, expired, username, verified } = this.state;
     return (
       <div
         style={{
@@ -68,6 +66,3 @@ class Email extends Component {
   }
 }
 
-export default connect(state => ({
-  username: state.UserReducer.username
-}))(Email);
