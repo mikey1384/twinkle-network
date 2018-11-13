@@ -342,7 +342,7 @@ class App extends Component {
             <Route
               exact
               path="/"
-              component={({ history, location }) => (
+              render={({ history, location }) => (
                 <Home history={history} location={location} />
               )}
             />
