@@ -340,7 +340,15 @@ class App extends Component {
             <Route path="/links" component={Links} />
             <Route path="/verify" component={Verify} />
             <Route
+              exact
               path="/"
+              render={({ history, location }) => (
+                <Home history={history} location={location} />
+              )}
+            />
+            <Route
+              exact
+              path="/users/"
               render={({ history, location }) => (
                 <Home history={history} location={location} />
               )}
