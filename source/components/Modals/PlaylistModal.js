@@ -8,12 +8,13 @@ import Link from 'components/Link';
 export default class PlaylistModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
+    onLinkClick: PropTypes.func.isRequired,
     playlistId: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired
   };
 
   render() {
-    const { onHide, playlistId, title } = this.props;
+    const { onHide, onLinkClick, playlistId, title } = this.props;
     return (
       <Modal onHide={onHide}>
         <header>
@@ -22,7 +23,7 @@ export default class PlaylistModal extends Component {
           </Link>
         </header>
         <main>
-          <Playlist playlistId={playlistId} />
+          <Playlist onLinkClick={onLinkClick} playlistId={playlistId} />
         </main>
         <footer>
           <Button transparent onClick={onHide}>

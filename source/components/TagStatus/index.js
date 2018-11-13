@@ -43,7 +43,6 @@ class TagStatus extends Component {
   }
 
   componentWillUnmount() {
-    this.setState({ tagModalShown: false });
     this.mounted = false;
   }
 
@@ -117,6 +116,7 @@ class TagStatus extends Component {
         )}
         {shownPlaylistId && (
           <PlaylistModal
+            onLinkClick={this.setState({ shownPlaylistId: null })}
             title={shownPlaylistTitle}
             playlistId={shownPlaylistId}
             onHide={() =>
