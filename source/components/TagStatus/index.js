@@ -43,6 +43,7 @@ class TagStatus extends Component {
   }
 
   componentWillUnmount() {
+    this.setState({ tagModalShown: false });
     this.mounted = false;
   }
 
