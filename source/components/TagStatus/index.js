@@ -116,7 +116,7 @@ class TagStatus extends Component {
         )}
         {shownPlaylistId && (
           <PlaylistModal
-            onLinkClick={this.setState({ shownPlaylistId: null })}
+            onLinkClick={() => this.setState({ shownPlaylistId: null })}
             title={shownPlaylistTitle}
             playlistId={shownPlaylistId}
             onHide={() =>
