@@ -142,6 +142,7 @@ export default function MainContent({
               )}
               <div
                 style={{
+                  marginTop: type === 'url' ? '-1rem' : 0,
                   whiteSpace: 'pre-wrap',
                   overflowWrap: 'break-word',
                   wordBreak: 'break-word',
