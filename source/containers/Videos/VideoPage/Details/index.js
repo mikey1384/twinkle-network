@@ -204,7 +204,7 @@ class Details extends Component {
                 onMouseOver={this.onMouseOver}
                 onTitleHover={() =>
                   this.setState(state => ({
-                    onTitleHover: !state.onTitleHover
+                    titleHovered: !state.titleHovered
                   }))
                 }
                 title={title}
