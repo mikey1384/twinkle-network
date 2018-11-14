@@ -348,7 +348,8 @@ class VideoPage extends Component {
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    background: '#fff'
+                    background: '#fff',
+                    width: '100%'
                   }}
                 >
                   <Details

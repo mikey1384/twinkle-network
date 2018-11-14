@@ -25,8 +25,7 @@ import {
   starVideo
 } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
-import { Color, mobileMaxWidth } from 'constants/css';
-import { css } from 'emotion';
+import { Color } from 'constants/css';
 
 class Details extends Component {
   static propTypes = {
@@ -144,7 +143,7 @@ class Details extends Component {
       });
     }
     return (
-      <div>
+      <div style={{ width: '100%' }}>
         <AlreadyPosted
           changingPage={changingPage}
           style={{ marginBottom: '1rem' }}
@@ -161,25 +160,24 @@ class Details extends Component {
           tags={tags}
           contentId={Number(videoId)}
         />
-        <div style={{ padding: '0 1rem 1rem 1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '0 1rem 1rem 1rem', width: '100%' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+          >
             <div
-              className={css`
-                display: flex;
-                height: auto;
-                width: 100%;
-                background: #fff;
-                align-items: center;
-                justify-content: space-between;
-                font-size: 1.5rem;
-                @media (max-width: ${mobileMaxWidth}) {
-                }
-              `}
+              style={{
+                display: 'flex',
+                width: '100%',
+                background: '#fff',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontSize: '1.5rem'
+              }}
             >
               <BasicInfos
                 style={{
                   marginRight: '1rem',
-                  width: '70%',
+                  width: '75%',
                   display: 'flex',
                   flexDirection: 'column'
                 }}
@@ -218,6 +216,10 @@ class Details extends Component {
                 urlExceedsCharLimit={this.urlExceedsCharLimit}
               />
               <SideButtons
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
                 canStar={canStar}
                 isStarred={isStarred}
                 likes={likes}

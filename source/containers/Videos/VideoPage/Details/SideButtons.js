@@ -12,6 +12,7 @@ export default class SideButtons extends Component {
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
     starVideo: PropTypes.func.isRequired,
+    style: PropTypes.object,
     userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired
@@ -28,13 +29,22 @@ export default class SideButtons extends Component {
       likes,
       likeVideo,
       starVideo,
+      style,
       userId,
       videoId
     } = this.props;
     const { userListModalShown } = this.state;
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={style}>
+        <div
+          style={{
+            display: 'flex',
+            overflow: 'auto',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%'
+          }}
+        >
           {canStar && (
             <StarButton
               style={{ marginRight: '1rem' }}
@@ -47,8 +57,8 @@ export default class SideButtons extends Component {
             contentId={Number(videoId)}
             filled
             style={{
-              fontSize: '2.5rem',
-              width: '100%'
+              fontSize: '2.5vw',
+              minWidth: '50%'
             }}
             onClick={likeVideo}
             liked={(likes => {

@@ -378,7 +378,11 @@ class App extends Component {
   onChatButtonClick = async() => {
     const { chatMode, turnChatOff } = this.props;
     this.setState({ chatLoading: true });
-    await (chatMode ? turnChatOff() : this.initChat());
+    try {
+      await (chatMode ? turnChatOff() : this.initChat());
+    } catch (error) {
+      this.setState({ chatLoading: false });
+    }
     this.setState({ chatLoading: false });
   };
 

@@ -6,6 +6,7 @@ import { likeContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
 LikeButton.propTypes = {
+  className: PropTypes.string,
   contentType: PropTypes.string.isRequired,
   contentId: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
@@ -17,6 +18,7 @@ LikeButton.propTypes = {
   targetLabel: PropTypes.string
 };
 function LikeButton({
+  className,
   contentId,
   contentType,
   dispatch,
@@ -29,6 +31,7 @@ function LikeButton({
 }) {
   return (
     <Button
+      className={className}
       logo={(filled && liked) || !filled}
       info={filled && !liked}
       filled={filled || liked}
