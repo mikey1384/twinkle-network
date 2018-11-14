@@ -36,7 +36,7 @@ import NotFound from 'components/NotFound';
 import CheckListGroup from 'components/CheckListGroup';
 import PageTab from './PageTab';
 import Comments from 'components/Comments';
-import Description from './Description';
+import Details from './Details';
 import NavMenu from './NavMenu';
 import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
@@ -351,7 +351,7 @@ class VideoPage extends Component {
                     background: '#fff'
                   }}
                 >
-                  <Description
+                  <Details
                     changingPage={changingPage}
                     isStarred={isStarred}
                     likes={likes}
