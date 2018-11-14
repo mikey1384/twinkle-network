@@ -200,7 +200,7 @@ class Details extends Component {
                   this.setState({ editedUrl: text });
                 }}
                 onEdit={onEdit}
-                onMouseLeave={() => this.setState({ onTitleHover: false })}
+                onMouseLeave={() => this.setState({ titleHovered: false })}
                 onMouseOver={this.onMouseOver}
                 onTitleHover={() =>
                   this.setState(state => ({
@@ -372,7 +372,7 @@ class Details extends Component {
 
   onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
-      this.setState({ onTitleHover: true });
+      this.setState({ titleHovered: true });
     }
   };
 
