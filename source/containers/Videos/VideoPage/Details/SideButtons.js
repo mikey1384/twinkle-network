@@ -58,7 +58,8 @@ export default class SideButtons extends Component {
             filled
             style={{
               fontSize: '2.5vw',
-              minWidth: '50%'
+              minWidth: '50%',
+              maxWidth: '13vw'
             }}
             onClick={likeVideo}
             liked={(likes => {
