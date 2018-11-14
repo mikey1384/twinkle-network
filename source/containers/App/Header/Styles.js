@@ -16,6 +16,7 @@ export const container = css`
   .header-nav {
     display: flex;
     align-items: center;
+    justify-content: center;
     .chat {
       color: ${Color.menuGray()};
     }
@@ -46,16 +47,15 @@ export const container = css`
           display: none;
         }
       }
+      > a.active {
+        > svg {
+          color: ${Color.black()}!important;
+        }
+      }
       &:hover {
         > a {
           > svg {
             color: ${Color.menuGray()};
-          }
-        }
-        > a.active {
-          color: ${Color.black()}!important;
-          > svg {
-            color: ${Color.black()}!important;
           }
         }
       }

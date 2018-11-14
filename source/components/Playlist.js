@@ -5,12 +5,13 @@ import Loading from 'components/Loading';
 import VideoThumbImage from 'components/VideoThumbImage';
 import { Color } from 'constants/css';
 import { cleanString } from 'helpers/stringHelpers';
-import { Link } from 'react-router-dom';
+import Link from 'components/Link';
 import { loadPlaylistVideos } from 'helpers/requestHelpers';
 import NotFound from 'components/NotFound';
 
 export default class Playlist extends Component {
   static propTypes = {
+    onLinkClick: PropTypes.func,
     onLoad: PropTypes.func,
     playlistId: PropTypes.number.isRequired
   };
@@ -40,7 +41,7 @@ export default class Playlist extends Component {
   }
 
   render() {
-    const { playlistId } = this.props;
+    const { onLinkClick = () => {}, playlistId } = this.props;
     const { videos, loaded, loading, loadMoreButton } = this.state;
     return (
       <>
@@ -66,7 +67,10 @@ export default class Playlist extends Component {
             }}
           >
             <div style={{ width: '35%' }}>
-              <Link to={`/videos/${video.id}?playlist=${playlistId}`}>
+              <Link
+                onClick={onLinkClick}
+                to={`/videos/${video.id}?playlist=${playlistId}`}
+              >
                 <VideoThumbImage
                   isStarred={!!video.isStarred}
                   videoId={video.id}
@@ -83,6 +87,7 @@ export default class Playlist extends Component {
                   fontWeight: 'bold',
                   lineHeight: 1.5
                 }}
+                onClick={onLinkClick}
                 to={`/videos/${video.id}?playlist=${playlistId}`}
               >
                 {cleanString(video.title)}
