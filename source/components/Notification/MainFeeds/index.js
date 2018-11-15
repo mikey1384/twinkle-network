@@ -382,7 +382,7 @@ function renderNotificationMessage(notification, myId) {
         ? 'commented on'
         : type === 'reply'
           ? 'replied to'
-          : type === 'question'
+          : type === 'subject'
             ? 'responded to'
             : 'left a message on';
     return (
