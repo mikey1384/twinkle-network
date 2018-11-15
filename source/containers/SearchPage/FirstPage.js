@@ -89,7 +89,12 @@ export default class FirstPage extends Component {
                 </nav>
               ) : (
                 <a key={type} onClick={() => this.changeFilter(type)}>
-                  Search {(type === 'url' ? 'link' : type) + 's'}
+                  Search{' '}
+                  {(type === 'url'
+                    ? 'link'
+                    : type === 'question'
+                      ? 'subject'
+                      : type) + 's'}
                 </a>
               )
           )}
