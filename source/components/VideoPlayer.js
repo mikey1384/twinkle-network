@@ -60,13 +60,7 @@ class VideoPlayer extends Component {
   };
 
   async componentDidMount() {
-    const {
-      hasHqThumb,
-      isStarred,
-      userId,
-      videoCode,
-      videoId
-    } = this.props;
+    const { hasHqThumb, isStarred, userId, videoCode, videoId } = this.props;
     this.mounted = true;
 
     if (videoCode && typeof hasHqThumb !== 'number') {
@@ -388,6 +382,7 @@ class VideoPlayer extends Component {
       fillCurrentVideoSlot
     } = this.props;
     const { justEarned, xpEarned } = this.state;
+    this.setState({ started: true });
     if (!this.playing) {
       this.playing = true;
       const time = this.Player.getCurrentTime();
