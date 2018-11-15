@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { connect } from 'react-redux';
-import { addCommasToNumber } from 'helpers/stringHelpers';
+import { addCommasToNumber, stringIsEmpty } from 'helpers/stringHelpers';
 import { returnMaxStars } from 'constants/defaultValues';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Comment from './Comment';
@@ -20,18 +20,28 @@ class RewardStatus extends Component {
   };
 
   state = {
-    loaded: 1
+    loaded: 2
   };
 
   render() {
-    const {
+    let {
       difficulty,
       noMarginForEditButton,
       onCommentEdit,
-      stars,
+      stars = [],
       userId,
       style
     } = this.props;
+    const finalStar = stars.length > 0 ? stars[stars.length - 1] : {};
+    const starsWithComment = stars.filter(
+      star => !stringIsEmpty(star.rewardComment) && star.id !== finalStar.id
+    );
+    const starsWithoutComment = stars.filter(
+      star => stringIsEmpty(star.rewardComment) && star.id !== finalStar.id
+    );
+    stars = starsWithoutComment
+      .concat(starsWithComment)
+      .concat(finalStar.id ? [finalStar] : []);
     const { loaded } = this.state;
     const maxStars = returnMaxStars({ difficulty });
     let rewardedStars = stars.reduce(
