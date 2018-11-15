@@ -27,7 +27,6 @@ const requiredDurationCap = 150;
 class VideoPlayer extends Component {
   static propTypes = {
     addVideoView: PropTypes.func.isRequired,
-    autoplay: PropTypes.bool,
     chatMode: PropTypes.bool,
     emptyCurrentVideoSlot: PropTypes.func,
     fillCurrentVideoSlot: PropTypes.func,
@@ -62,7 +61,6 @@ class VideoPlayer extends Component {
 
   async componentDidMount() {
     const {
-      autoplay,
       hasHqThumb,
       isStarred,
       userId,
@@ -107,10 +105,6 @@ class VideoPlayer extends Component {
       } catch (error) {
         console.error(error.response || error);
       }
-    }
-
-    if (autoplay) {
-      this.setState({ started: true });
     }
   }
 

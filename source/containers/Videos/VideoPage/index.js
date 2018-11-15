@@ -285,7 +285,6 @@ class VideoPage extends Component {
                   <div style={{ marginTop: '2rem' }}>
                     {!questionsBuilderShown && (
                       <VideoPlayer
-                        autoplay
                         isStarred={isStarred}
                         key={videoId}
                         hasHqThumb={hasHqThumb}
